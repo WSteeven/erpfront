@@ -1,0 +1,212 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+// import {default as PrintJS, PrintTypes} from "print-js"
+
+import { Ref } from "vue"
+import {Notificaciones} from "./componentes/toastification/application/notificaciones"
+import {EntidadAuditable} from "./entidad/domain/entidadAuditable"
+import {ApiError} from "./error/domain/ApiError"
+
+export function limpiarListado<T>(listado: T[]): void {
+  listado.splice(0, listado.length)
+}
+
+export function reemplazarListado<T>(listado: T[], elementos: T[]): void {
+  listado.splice(0, listado.length, ...elementos)
+}
+
+export function compararObjetos(
+  data_inicial?: EntidadAuditable,
+  data_final?: EntidadAuditable
+): boolean {
+  return JSON.stringify(data_inicial) !== JSON.stringify(data_final)
+}
+
+export function validarKeyBuscar(keyCode?: number): boolean {
+  return keyCode === 9 || keyCode === 13
+}
+
+export function validarEmail(email?: string): boolean {
+  const validador =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return validador.test(String(email).toLowerCase())
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function descargarArchivo(
+  data: any,
+  titulo: string,
+  formato: string
+): void {
+  const link = document.createElement("a")
+  link.href = URL.createObjectURL(
+    new Blob([data], {type: `application/${formato}`})
+  )
+  link.setAttribute("download", `${titulo}.${formato}`)
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+}
+
+export function agregarCerosIzquierda(
+  num: string | number,
+  size: number
+): string {
+  const parse = typeof num === "string" ? parseInt(num === "" ? "1" : num) : num
+  return (Math.pow(10, size) + parse).toString().substring(1)
+}
+
+/* imprimirArchivo(data: any, formato: PrintTypes) {
+    const objectUrl = URL.createObjectURL(
+      new Blob([data], {type: `application/${formato}`})
+    )
+    PrintJS({
+      printable: objectUrl,
+      type: formato
+    })
+  } */
+
+export function clonar(data: EntidadAuditable): any {
+  return JSON.parse(JSON.stringify(data))
+}
+
+export function crearIconoHtml(icon: string): any {
+  const iconHTML = document.createElement("i")
+  iconHTML.classList.add("bi", icon)
+  return iconHTML
+}
+
+export function quitarComasNumero(num: string): string {
+  let formateo = "0"
+  if (num !== undefined) {
+    num = `${num}`
+    formateo = num.toString()
+    formateo = formateo.replace(/,/gi, "")
+  }
+  return formateo
+}
+
+export function convertirDecimaleFloat(num: any): number {
+  return typeof num === "undefined" ||
+    num === null ||
+    num === "" ||
+    num === "." ||
+    num.toString() === "NaN"
+    ? 0
+    : parseFloat(quitarComasNumero(num))
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function redondear(numero: any, decimales = 6): number {
+  numero = numero ? numero : 0
+  numero = convertirDecimaleFloat(numero)
+  return +`${Math.round(parseFloat(`${numero}e+${decimales}`))}e-${decimales}`
+}
+
+export function redondearAtributos<R = Record<string, any>>(
+  entidad: R,
+  atributos: (keyof R)[],
+  decimales: number
+): void {
+  for (const atributo of atributos) {
+    entidad[atributo] = redondear(entidad[atributo], decimales) as any
+  }
+}
+
+export function formatoNumeroTexto(
+  amount: number,
+  decimalCount: number
+): string {
+  return amount
+    .toFixed(decimalCount)
+    .toString()
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+}
+
+export function resaltarCampoNoValido(errors: string[]): boolean | null {
+  return errors.length > 0 ? false : null
+}
+
+export function mensajeCampoNoValido(errors: string[]): string {
+  return errors[0]
+}
+
+export function obtenerStringCerosUno(cantidadCeros: number): string {
+  return (Math.pow(10, cantidadCeros) + 1).toString().substring(1)
+}
+
+export function generarFilters<T>(
+  listaIDs: number[],
+  campoFiltrado: keyof T
+): string | null {
+  let res = ""
+  listaIDs.forEach((id: number, index: number) => {
+    res += `${index > 0 ? "|" : ""}(${campoFiltrado}=${id})`
+  })
+  if (listaIDs.length === 0) return null
+  return res
+}
+
+export function partirNumeroDocumento(numeroDocumento: string): string[] {
+  return numeroDocumento.split("-")
+}
+
+export function construirNumeroDocumento(
+  establecimiento: string,
+  punto_emision: string,
+  secuencial: string
+): string {
+  return `${establecimiento}-${punto_emision}-${secuencial}`
+}
+
+export function opcionesSeleccionColumnaExcel(value: number): any[] {
+  return generarOpciones(value - 1).reverse()
+}
+
+function generarOpciones(iterador: number): any[] {
+  const codes = []
+  while (iterador >= 0) {
+    codes.push({id: generarLabel(iterador)})
+    iterador--
+  }
+  return codes
+}
+
+function generarLabel(iterador: number): any {
+  const letra = String.fromCharCode(65 + (iterador % 26))
+  const aux = parseInt(`${iterador / 26}`)
+  if (aux > 0) {
+    return generarLabel(aux - 1) + letra
+  } else {
+    return letra
+  }
+}
+
+export function sleep(ms: number): Promise<void> {
+  return new Promise((res) => setTimeout(res, ms))
+}
+
+export function isAxiosError(candidate: any): candidate is ApiError {
+  return candidate instanceof ApiError === true
+}
+
+export async function notificarMensajesError(
+  mensajes: string[]
+): Promise<void> {
+  const notificaciones = new Notificaciones()
+  for (let i = 0; i < mensajes.length; i++) {
+    await sleep(0)
+    notificaciones.notificarError(mensajes[i])
+    await sleep(1000)
+  }
+}
+
+export function wrap(el: HTMLElement, wrapper: HTMLElement) {
+  el.parentNode?.insertBefore(wrapper, el)
+  wrapper.appendChild(el)
+}
+
+export function resetInput(input: HTMLElement) {
+  const form = document.createElement("form")
+  wrap(input, form)
+  form.reset()
+}
