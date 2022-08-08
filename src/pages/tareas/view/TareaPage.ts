@@ -1,10 +1,10 @@
 // Dependencias
-import { configuracionColumnas } from '../domain/configuracionColumnas'
 import { defineComponent, ref, reactive } from 'vue'
+import { provincias, ciudades } from 'src/config/utils'
 import { useQuasar } from 'quasar'
 
 // Componentes
-import EssentialTable from 'src/components/EssentialTable.vue'
+import TabLayout from 'layouts/TabLayout.vue'
 
 // Logica y controladores
 import { Tarea } from '../domain/Tarea'
@@ -13,7 +13,7 @@ import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
 
 export default defineComponent({
   name: 'TareaPage',
-  components: { EssentialTable },
+  components: { TabLayout },
   setup() {
     const authentication = useAuthenticationStore()
     const credentiales = new UserLogin()
@@ -23,13 +23,6 @@ export default defineComponent({
     const $q = useQuasar()
 
     const tarea = reactive(new Tarea())
-
-    const datos = [
-      {
-        tarea_jp: 'JP001',
-        tarea_cliente: 'ADD878',
-      },
-    ]
 
     const toggle = ref(false)
     function enviar() {
@@ -50,11 +43,11 @@ export default defineComponent({
 
     return {
       tarea,
-      datos,
-      configuracionColumnas,
       toggle,
       enviar,
       authentication,
+      provincias,
+      ciudades,
     }
   },
 })

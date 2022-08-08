@@ -13,4 +13,25 @@ export const configuracionColumnas = [
     field: 'tarea_cliente',
     sortable: true,
   },
+  {
+    name: 'coordinador',
+    label: 'Coordinador',
+    align: 'center',
+    field: 'coordinador',
+    sortable: true,
+  },
+  {
+    name: 'cliente',
+    label: 'Cliente',
+    align: 'center',
+    field: 'cliente',
+    sortable: true,
+  },
+  {
+    name: 'estado',
+    label: 'Estado',
+    align: 'center',
+    field: 'estado',
+    sortable: true,
+  },
 ]

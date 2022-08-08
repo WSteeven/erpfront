@@ -33,6 +33,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const setUser = (userData: any) => {
     user.value = userData
     auth.value = Boolean(userData)
+    localStorage.setItem('LoggedIn', Boolean(userData).toString())
   }
 
   const getUser = async () => {
@@ -52,11 +53,20 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
+  function isUserLoggedIn() {
+    const res = localStorage.getItem('LoggedIn') == 'true'
+    console.log('DEsde pinia')
+    console.log(res)
+    console.log('Fin pinia')
+    return res
+  }
+
   return {
     user,
     login,
     logout,
     getUser,
     actualizarContrasena,
+    isUserLoggedIn,
   }
 })

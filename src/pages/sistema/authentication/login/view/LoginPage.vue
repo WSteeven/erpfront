@@ -1,64 +1,81 @@
 <template>
   <q-page padding>
-    <div class="row align-items-center">
-      <div class="q-pa-md logo-section">
-        <img src="src/assets/logo.svg" height="30" />
-        <h4 class="q-ml-2 fw-bold text-decoration-none text-texto">Business</h4>
-      </div>
+    <div class="q-pa-xs row">
+      <img src="src/assets/logo.jpeg" height="30" />
+      <span class="q-ml-md fw-bold text-h5">JPConstrucred</span>
+    </div>
+
+    <div class="row items-center q-pa-xl">
       <!-- Left side -->
-      <div class="col-12 d-none d-lg-block col-lg-8 text-center">
+      <div class="col-12 col-md-8 text-center q-pa-lg">
         <img
           src="src/assets/login.svg"
           alt="Imagen bienvenida"
-          class="h-50 w-75"
+          class="portada"
         />
       </div>
+
       <!-- Right side -->
       <div
-        class="col-12 col-lg-4 q-px-4 q-px-md-5 text-start row items-center justify-center"
+        class="col-12 col-md-4 q-px-4 text-start row items-center justify-center"
       >
         <form @submit.prevent="login">
-          <div class="d-grid gap-2">
-            <div class="pb-4">
-              <h2 class="text-texto">Bienvenidos a Business</h2>
-              <span class="text-texto">Inicie sesión con su cuenta</span>
+          <div class="q-gutter-sm">
+            <div class="q-pb-md">
+              <h2>Bienvenidos a JPConstrucred</h2>
+              <span>Inicie sesión con su cuenta</span>
             </div>
 
             <!-- Correo -->
-            <div class="mb-2">
-              <label class="form-text" for="email">Correo</label>
-              <input
-                id="email"
-                class="form-control"
+            <div class="col-12 q-mb-md">
+              <q-input
                 v-model="loginUser.email"
                 type="email"
-                placeholder="Ingrese su correo"
+                label="Correo"
+                outlined
+                dense
               />
             </div>
 
             <!-- Contraseña -->
-            <label class="form-text" for="password">Contraseña</label>
-            <password-input v-model="loginUser.password"></password-input>
+            <div class="col-12 q-mb-md">
+              <q-input
+                v-model="loginUser.password"
+                label="Contraseña"
+                outlined
+                dense
+                :type="isPwd ? 'password' : 'text'"
+                hint="No comparta su contraseña con nadie"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                  />
+                </template>
+              </q-input>
+            </div>
 
             <!-- Recuerdame -->
-            <div class="mb-3 form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="remember_session"
+            <div class="col-12 q-mb-md">
+              <q-toggle
+                v-model="loginUser.remember_session"
+                label="Recuérdame"
               />
-              <label class="form-check-label text-texto" for="remember_session"
-                >Recuérdame</label
-              >
             </div>
 
             <!-- Botones -->
-            <button
-              class="btn btn-primary"
-              :class="{ disabled: !enableLoginButton }"
+            <q-btn
+              color="primary"
+              label="Iniciar sesión"
+              class="full-width"
+              :disabled="!enableLoginButton"
+              no-caps
+              unelevated
+              @click="login()"
             >
-              Iniciar sesión
-            </button>
+            </q-btn>
             <!--  <router-link :to="{ name: 'Register' }" class="btn btn-danger"
               >Crear cuenta</router-link
             >
@@ -75,39 +92,18 @@
 <script src="./LoginPage.ts"></script>
 
 <style lang="scss" scoped>
-.logo-section {
-  position: absolute;
-  left: 0px;
-  top: 0;
-  text-align: start;
-  display: flex;
-  align-items: flex-start;
-}
-
 h2 {
   line-height: 1.2;
   font-size: 1.714rem;
 }
 
-a {
-  cursor: pointer;
+.portada {
+  width: 75%;
 }
 
-@media (max-width: 576px) {
-  form {
-    width: 100%;
-  }
-}
-
-@media (min-width: 577px) {
-  form {
-    width: 50%;
-  }
-}
-
-@media (min-width: 992px) {
-  form {
-    width: 100%;
+@media (max-width: 1023px) {
+  .portada {
+    display: none;
   }
 }
 </style>

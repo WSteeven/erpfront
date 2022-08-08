@@ -1,22 +1,17 @@
 // Dependencias
 import { computed, defineComponent, reactive, ref } from 'vue'
-// Componentes
-import PasswordInput from 'components/passwordInput/view/PasswordInput.vue'
+
 // Logica y controladores
 import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
-import { LoginController } from '../infraestructure/login.controller'
+import { LoginController } from '../infraestructure/LoginController'
 import { Cargando } from 'components/cargando/application/cargando.application'
 
 export default defineComponent({
   name: 'LoginPage',
-  components: { PasswordInput },
   setup() {
     const loginUser = reactive(new UserLogin())
     loginUser.email = 'admin@admin.com'
     loginUser.password = 'password'
-
-    // pending
-    const rememberSession = ref(false)
 
     const loginController = new LoginController()
 
@@ -41,8 +36,8 @@ export default defineComponent({
     )
 
     return {
+      isPwd: ref(true),
       loginUser,
-      rememberSession,
       // computed
       enableLoginButton,
       // functions
