@@ -8,7 +8,8 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-const { configure } = require('quasar/wrappers');
+const { configure } = require('quasar/wrappers')
+let path = require('path')
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -44,6 +45,7 @@ module.exports = configure(function (/* ctx */) {
 
       'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
+      'bootstrap-icons',
     ],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
@@ -51,6 +53,16 @@ module.exports = configure(function (/* ctx */) {
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node16',
+      },
+
+      /*  alias: {
+        shared: path.join(__dirname, 'src/pages/shared'),
+      }, */
+
+      extendViteConf(viteConf, { isServer, isClient }) {
+        Object.assign(viteConf.resolve.alias, {
+          shared: path.join(__dirname, './src/pages/shared'),
+        })
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
@@ -98,7 +110,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify'],
     },
 
     // animations: 'all', // --- includes all animations
@@ -195,5 +207,5 @@ module.exports = configure(function (/* ctx */) {
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
     },
-  };
-});
+  }
+})
