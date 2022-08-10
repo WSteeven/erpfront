@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-// import {default as PrintJS, PrintTypes} from "print-js"
-
-import { Ref } from "vue"
-import {Notificaciones} from "./componentes/toastification/application/notificaciones"
-import {EntidadAuditable} from "./entidad/domain/entidadAuditable"
-import {ApiError} from "./error/domain/ApiError"
+import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
+import { EntidadAuditable } from './entidad/domain/entidadAuditable'
+import { ApiError } from './error/domain/ApiError'
+import { useNotificaciones } from './notificaciones'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -37,11 +35,11 @@ export function descargarArchivo(
   titulo: string,
   formato: string
 ): void {
-  const link = document.createElement("a")
+  const link = document.createElement('a')
   link.href = URL.createObjectURL(
-    new Blob([data], {type: `application/${formato}`})
+    new Blob([data], { type: `application/${formato}` })
   )
-  link.setAttribute("download", `${titulo}.${formato}`)
+  link.setAttribute('download', `${titulo}.${formato}`)
   document.body.appendChild(link)
   link.click()
   link.remove()
@@ -51,7 +49,7 @@ export function agregarCerosIzquierda(
   num: string | number,
   size: number
 ): string {
-  const parse = typeof num === "string" ? parseInt(num === "" ? "1" : num) : num
+  const parse = typeof num === 'string' ? parseInt(num === '' ? '1' : num) : num
   return (Math.pow(10, size) + parse).toString().substring(1)
 }
 
@@ -70,27 +68,27 @@ export function clonar(data: EntidadAuditable): any {
 }
 
 export function crearIconoHtml(icon: string): any {
-  const iconHTML = document.createElement("i")
-  iconHTML.classList.add("bi", icon)
+  const iconHTML = document.createElement('i')
+  iconHTML.classList.add('bi', icon)
   return iconHTML
 }
 
 export function quitarComasNumero(num: string): string {
-  let formateo = "0"
+  let formateo = '0'
   if (num !== undefined) {
     num = `${num}`
     formateo = num.toString()
-    formateo = formateo.replace(/,/gi, "")
+    formateo = formateo.replace(/,/gi, '')
   }
   return formateo
 }
 
 export function convertirDecimaleFloat(num: any): number {
-  return typeof num === "undefined" ||
+  return typeof num === 'undefined' ||
     num === null ||
-    num === "" ||
-    num === "." ||
-    num.toString() === "NaN"
+    num === '' ||
+    num === '.' ||
+    num.toString() === 'NaN'
     ? 0
     : parseFloat(quitarComasNumero(num))
 }
@@ -119,7 +117,7 @@ export function formatoNumeroTexto(
   return amount
     .toFixed(decimalCount)
     .toString()
-    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
 }
 
 export function resaltarCampoNoValido(errors: string[]): boolean | null {
@@ -138,16 +136,16 @@ export function generarFilters<T>(
   listaIDs: number[],
   campoFiltrado: keyof T
 ): string | null {
-  let res = ""
+  let res = ''
   listaIDs.forEach((id: number, index: number) => {
-    res += `${index > 0 ? "|" : ""}(${campoFiltrado}=${id})`
+    res += `${index > 0 ? '|' : ''}(${campoFiltrado.toString()}=${id})`
   })
   if (listaIDs.length === 0) return null
   return res
 }
 
 export function partirNumeroDocumento(numeroDocumento: string): string[] {
-  return numeroDocumento.split("-")
+  return numeroDocumento.split('-')
 }
 
 export function construirNumeroDocumento(
@@ -165,7 +163,7 @@ export function opcionesSeleccionColumnaExcel(value: number): any[] {
 function generarOpciones(iterador: number): any[] {
   const codes = []
   while (iterador >= 0) {
-    codes.push({id: generarLabel(iterador)})
+    codes.push({ id: generarLabel(iterador) })
     iterador--
   }
   return codes
@@ -192,7 +190,7 @@ export function isAxiosError(candidate: any): candidate is ApiError {
 export async function notificarMensajesError(
   mensajes: string[]
 ): Promise<void> {
-  const notificaciones = new Notificaciones()
+  const notificaciones = useNotificaciones()
   for (let i = 0; i < mensajes.length; i++) {
     await sleep(0)
     notificaciones.notificarError(mensajes[i])
@@ -206,7 +204,19 @@ export function wrap(el: HTMLElement, wrapper: HTMLElement) {
 }
 
 export function resetInput(input: HTMLElement) {
-  const form = document.createElement("form")
+  const form = document.createElement('form')
   wrap(input, form)
   form.reset()
+}
+
+export function getVisibleColumns<T>(
+  configuracionColumnas: ColumnConfig<T>[]
+): string[] {
+  const columnas: string[] = []
+  for (const columna of configuracionColumnas) {
+    if (!columna.hasOwnProperty('visible') || columna.visible)
+      columnas.push(columna.field.toString())
+  }
+
+  return columnas
 }

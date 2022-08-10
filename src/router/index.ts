@@ -38,8 +38,7 @@ export default route(function (/* { store, ssrContext } */) {
   const authentication = useAuthenticationStore()
 
   Router.beforeEach(async (to, _, next) => {
-    const sessionIniciada = authentication.isUserLoggedIn()
-    console.log(sessionIniciada)
+    const sessionIniciada = await authentication.isUserLoggedIn()
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {

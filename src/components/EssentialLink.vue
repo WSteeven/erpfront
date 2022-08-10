@@ -1,14 +1,47 @@
 <template>
-  <q-item clickable tag="a" :to="link" active-class="my-menu-link" exact>
-    <q-item-section v-if="icon" avatar>
+  <q-item
+    v-if="!children"
+    clickable
+    tag="a"
+    :to="link"
+    active-class="my-menu-link"
+    exact
+  >
+    <q-item-section v-if="icon" avatar class="q-pa-sm">
       <q-icon :name="icon" />
     </q-item-section>
 
     <q-item-section>
       <q-item-label>{{ title }}</q-item-label>
-      <!-- <q-item-label caption>{{ caption }}</q-item-label> -->
     </q-item-section>
   </q-item>
+
+  <q-expansion-item
+    v-else
+    clickable
+    tag="a"
+    active-class="my-menu-link"
+    exact
+    :label="title"
+    :icon="icon"
+  >
+    <q-item
+      v-for="child in children"
+      :key="child.title"
+      tag="a"
+      :to="child.link"
+      active-class="my-menu-link"
+      exact
+    >
+      <q-item-section v-if="child.icon" avatar class="q-pa-sm">
+        <q-icon :name="child.icon" size="xs" />
+      </q-item-section>
+
+      <q-item-section>
+        <q-item-label>{{ child.title }}</q-item-label>
+      </q-item-section>
+    </q-item>
+  </q-expansion-item>
 </template>
 
 <script lang="ts">
@@ -22,11 +55,6 @@ export default defineComponent({
       required: true,
     },
 
-    caption: {
-      type: String,
-      default: '',
-    },
-
     link: {
       type: String,
       default: '#',
@@ -36,15 +64,26 @@ export default defineComponent({
       type: String,
       default: '',
     },
+
+    children: {
+      type: Object as () => any[],
+      required: false,
+    },
   },
 })
 </script>
 
 <style lang="scss">
 .my-menu-link {
-  color: white;
-  background: $primary;
-  border-radius: 4px;
-  box-shadow: 0 0 10px 1px rgba($primary, 0.5);
+  background: rgba($primary, 0.1);
+  border-right: 3px solid $primary;
+
+  i {
+    color: $primary;
+  }
+
+  .q-item__label {
+    font-weight: bold;
+  }
 }
 </style>

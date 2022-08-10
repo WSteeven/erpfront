@@ -16,6 +16,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/tareas/view/TareaPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/tipos-tareas',
+        component: () =>
+          import('pages/tareas/modules/tiposTareas/view/TipoTareaPage.vue'),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

@@ -1,13 +1,13 @@
+import { useAuthenticationStore } from 'src/stores/authentication'
 import { UserLogin } from '../domain/UserLogin'
 import { useRouter } from 'vue-router'
-import { useAuthenticationStore } from 'src/stores/authentication'
 
 export class LoginController {
   store = useAuthenticationStore()
   Router = useRouter()
 
-  async login(loginUser: UserLogin): Promise<void> {
-    return this.store.login(loginUser).then(() => {
+  async login(userLogin: UserLogin): Promise<void> {
+    return this.store.login(userLogin).then(() => {
       this.Router.replace('/')
     })
   }

@@ -5,6 +5,7 @@ import { computed, defineComponent, reactive, ref } from 'vue'
 import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
 import { LoginController } from '../infraestructure/LoginController'
 import { Cargando } from 'components/cargando/application/cargando.application'
+import { useNotificaciones } from 'src/pages/shared/notificaciones'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -15,17 +16,16 @@ export default defineComponent({
 
     const loginController = new LoginController()
 
-    // const notificaciones = new Notificaciones()
+    const notificaciones = useNotificaciones()
     const cargando = new Cargando()
 
     const login = async () => {
       try {
         cargando.activar()
         await loginController.login(loginUser)
-        // notificaciones.notificarCorrecto('Bienvenido a Business!')
-        console.log('Bienvenido')
+        notificaciones.notificarCorrecto('Bienvenido!')
       } catch (error: any) {
-        console.log('No se pudo autenticar')
+        notificaciones.notificarError('No se pudo autenticar')
       } finally {
         cargando.desactivar()
       }

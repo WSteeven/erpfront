@@ -8,6 +8,7 @@ import { ref } from 'vue'
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
+  let usuarioFueConsultado = false
 
   // State
   const user = ref(null)
@@ -18,7 +19,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     try {
       await axios.get(axios.getEndpoint(endpoints.authentication))
       await axios.post(axios.getEndpoint(endpoints.login), credentiales)
-      getUser()
+      await getUser()
     } catch (error: any) {
       throw new ApiError(error)
     }
@@ -27,13 +28,12 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   async function logout(): Promise<void> {
     const axios = AxiosHttpRepository.getInstance()
     await axios.post('/logout')
-    getUser()
+    await getUser()
   }
 
   const setUser = (userData: any) => {
     user.value = userData
     auth.value = Boolean(userData)
-    localStorage.setItem('LoggedIn', Boolean(userData).toString())
   }
 
   const getUser = async () => {
@@ -53,12 +53,12 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  function isUserLoggedIn() {
-    const res = localStorage.getItem('LoggedIn') == 'true'
-    console.log('DEsde pinia')
-    console.log(res)
-    console.log('Fin pinia')
-    return res
+  async function isUserLoggedIn(): Promise<boolean> {
+    if (!usuarioFueConsultado) {
+      await getUser()
+      usuarioFueConsultado = true
+    }
+    return auth.value
   }
 
   return {

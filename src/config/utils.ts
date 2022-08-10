@@ -1,2 +1,2 @@
-export const provincias = ['El Oro', 'Azuay', 'Cañar', 'Carchi']
-export const ciudades = ['Machala', 'Pasaje', 'Santa Rosa']
+export const provincias = ['EL ORO', 'AZUAY', 'CAÑAR', 'CARCHI']
+export const ciudades = ['MACHALA', 'PASAJE', 'SANTA ROSA']

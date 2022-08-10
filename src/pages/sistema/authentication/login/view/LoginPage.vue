@@ -2,7 +2,7 @@
   <q-page padding>
     <div class="q-pa-xs row">
       <img src="src/assets/logo.jpeg" height="30" />
-      <span class="q-ml-md fw-bold text-h5">JPConstrucred</span>
+      <span class="q-ml-md fw-bold text-h5">CONSTRUCRED</span>
     </div>
 
     <div class="row items-center q-pa-xl">
@@ -22,7 +22,7 @@
         <form @submit.prevent="login">
           <div class="q-gutter-sm">
             <div class="q-pb-md">
-              <h2>Bienvenidos a JPConstrucred</h2>
+              <h2>Bienvenidos a JPCONSTRUCRED</h2>
               <span>Inicie sesión con su cuenta</span>
             </div>
 
