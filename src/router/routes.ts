@@ -13,11 +13,13 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/tareas',
+        name: 'Tareas',
         component: () => import('pages/tareas/view/TareaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/tipos-tareas',
+        name: 'Tipos de tareas',
         component: () =>
           import('pages/tareas/modules/tiposTareas/view/TipoTareaPage.vue'),
         meta: { requiresAuth: true },

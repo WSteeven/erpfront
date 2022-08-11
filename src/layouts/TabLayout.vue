@@ -1,5 +1,3 @@
-import { useRouter } from 'vue-router' import { useRouter } from 'vue-router'
-import { useRouter } from 'vue-router'
 <template>
   <q-page padding>
     <div class="text-h6 q-my-md q-ml-md">Gestión de tareas</div>
@@ -40,6 +38,10 @@ import { useRouter } from 'vue-router'
           :titulo="tituloTabla"
           :configuracionColumnas="configuracionColumnas"
           :datos="datos"
+          @consultar="consultar"
+          @editar="editar()"
+          @eliminar="eliminar()"
+          @selected="(valor: any) => seleccionado = valor"
         ></essential-table>
       </q-tab-panel>
     </q-tab-panels>
@@ -53,6 +55,7 @@ import { useRouter } from 'vue-router'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { useTareaStore } from 'src/stores/tarea'
 
 export default defineComponent({
   props: {
@@ -72,9 +75,31 @@ export default defineComponent({
   components: { EssentialTable },
   setup() {
     const Router = useRouter()
+    const tareaStore = useTareaStore()
+
+    function consultar(entidad: any) {
+      tareaStore.tarea.hydrate(JSON.parse(entidad))
+      tab.value = 'formulario'
+    }
+
+    function editar() {
+      console.log('Editar')
+    }
+    function eliminar() {
+      console.log('Eliminar')
+    }
+
+    const seleccionado = ref()
+    const tab = ref('listado')
+
     return {
-      tab: ref('formulario'),
+      tab,
       tituloTabla: Router.currentRoute.value.name?.toString().toLowerCase(),
+      seleccionado,
+      // acciones tabla
+      consultar,
+      editar,
+      eliminar,
     }
   },
 })

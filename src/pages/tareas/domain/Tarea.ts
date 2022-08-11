@@ -1,9 +1,12 @@
-export class Tarea {
+import { Hidratable } from 'pages/shared/entidad/domain/hidratable'
+
+export class Tarea extends Hidratable {
   codigo_tarea_jp: string | null
   codigo_tarea_cliente: string | null
   detalle: string | null
-  cliente: number | null
+  cliente: number | string | null
   solicitante: string | null
+  correo_solicitante: string | null
   fecha_vencimiento: string | null
   fecha_agendado: string | null
   hora_agendado: string | null
@@ -24,14 +27,16 @@ export class Tarea {
   celular_contacto: string | null
 
   constructor() {
+    super()
     this.codigo_tarea_jp = null
     this.codigo_tarea_cliente = null
     this.detalle = null
     this.cliente = null
     this.solicitante = null
+    this.correo_solicitante = null
     this.fecha_vencimiento = null
-    this.fecha_agendado = '20/04/1996'
-    this.hora_agendado = '08:32'
+    this.fecha_agendado = null
+    this.hora_agendado = null
     this.coordinador = null
     this.estado = null
     // ubicacion de cliente
@@ -42,7 +47,7 @@ export class Tarea {
     this.direccion = 'AV. SIEMPRE VIVA'
     this.georeferencia_x = '000'
     this.georeferencia_y = '111'
-    // contatco
+    // contacto
     this.nombre_contacto = 'HOMERO'
     this.apellidos_contacto = 'SIMPSON'
     this.telefono_contacto = '123546'

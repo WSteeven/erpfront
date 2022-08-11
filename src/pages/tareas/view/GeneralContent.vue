@@ -15,6 +15,7 @@
             label="Código de tarea JP"
             outlined
             dense
+            readonly
             :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
           ></q-input>
         </div>
@@ -30,33 +31,11 @@
           ></q-input>
         </div>
 
-        <!-- Detalle -->
-        <div class="col-12 col-md-6">
-          <q-input
-            v-model="tarea.detalle"
-            label="Detalle"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
-          ></q-input>
-        </div>
-
         <!-- Cliente -->
         <div class="col-12 col-md-3">
           <q-input
             v-model="tarea.cliente"
             label="Cliente"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
-          ></q-input>
-        </div>
-
-        <!-- Solicitante -->
-        <div class="col-12 col-md-3">
-          <q-input
-            v-model="tarea.solicitante"
-            label="Persona que solicita"
             outlined
             dense
             :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
@@ -91,11 +70,34 @@
           </q-input>
         </div>
 
+        <!-- Solicitante -->
+        <div class="col-12 col-md-3">
+          <q-input
+            v-model="tarea.solicitante"
+            label="Persona que solicita"
+            outlined
+            dense
+            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+          ></q-input>
+        </div>
+
+        <!-- Correo -->
+        <div class="col-12 col-md-3">
+          <q-input
+            v-model="tarea.correo_solicitante"
+            label="Correo del solicitante"
+            outlined
+            dense
+            readonly
+            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+          ></q-input>
+        </div>
+
         <!-- Fecha agendado -->
         <div class="col-12 col-md-3">
           <q-input
             v-model="tarea.fecha_agendado"
-            label="Fecha agendado"
+            label="Fecha de agendamiento"
             outlined
             dense
             readonly
@@ -107,7 +109,7 @@
         <div class="col-12 col-md-3">
           <q-input
             v-model="tarea.hora_agendado"
-            label="Hora agendado"
+            label="Hora de agendamiento"
             outlined
             dense
             readonly
@@ -123,6 +125,19 @@
             outlined
             dense
             readonly
+            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+          ></q-input>
+        </div>
+
+        <!-- Detalle -->
+        <div class="col-12 col-md-9">
+          <q-input
+            v-model="tarea.detalle"
+            label="Detalle"
+            outlined
+            dense
+            autogrow
+            type="textarea"
             :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
           ></q-input>
         </div>
@@ -184,6 +199,7 @@
             :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
           ></q-input>
         </div>
+
         <div class="col-12">
           <div class="row justify-end q-gutter-sm">
             <q-btn color="positive" no-caps rounded push>
@@ -290,14 +306,22 @@
 </template>
 
 <script lang="ts">
+import { useAuthenticationStore } from 'src/stores/authentication'
 import { provincias, ciudades } from 'src/config/utils'
+import { defineComponent, watchEffect } from 'vue'
 import { useTareaStore } from 'src/stores/tarea'
-import { defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {
     const tareaStore = useTareaStore()
     const tarea = tareaStore.tarea
+
+    const authenticationStore = useAuthenticationStore()
+
+    watchEffect(() => {
+      const usuario = authenticationStore.user
+      tarea.coordinador = `${usuario.name} ${usuario.apellidos ?? ''} `
+    })
 
     function enviar() {
       //

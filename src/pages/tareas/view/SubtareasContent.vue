@@ -1,6 +1,6 @@
 <template>
   <essential-table
-    titulo="Listado de subtareas"
+    titulo="subtareas"
     :configuracionColumnas="configuracionColumnasSubtareas"
     :datos="listado"
   ></essential-table>
@@ -27,10 +27,20 @@ export default defineComponent({
     //
     const listado = [
       {
-        numero_subtarea: 'JP000003_001',
+        id: 1,
+        coordinador: 'MARILÚ JARAMILLO',
+        codigo_subtarea_jp: 'JP000001_1',
         tipo_tarea: 'INSTALACION',
-        fecha_asignado: '20/04/1996',
+        fecha_asignado: '11/08/2022',
         estado: 'REALIZADO',
+      },
+      {
+        id: 2,
+        coordinador: 'MARILÚ JARAMILLO',
+        codigo_subtarea_jp: 'JP000001_2',
+        tipo_tarea: 'INSTALACION',
+        fecha_asignado: '20/08/2022',
+        estado: 'CREADO',
       },
     ]
     return { configuracionColumnasSubtareas, listado }

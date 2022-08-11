@@ -5,7 +5,7 @@
       <span class="q-ml-md fw-bold text-h5">CONSTRUCRED</span>
     </div>
 
-    <div class="row items-center q-pa-xl">
+    <div class="row items-center q-pa-xl q-my-xl">
       <!-- Left side -->
       <div class="col-12 col-md-8 text-center q-pa-lg">
         <img

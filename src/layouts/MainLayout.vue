@@ -68,7 +68,6 @@
             <q-item-label v-if="item.hasOwnProperty('header')" header>{{
               item.header
             }}</q-item-label>
-            <!-- v-else -->
             <EssentialLink v-else v-bind="item" />
           </div>
         </q-list>
@@ -83,11 +82,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
-import { useMenuStore } from 'src/stores/menu'
+// Dependencias
 import { useAuthenticationStore } from 'src/stores/authentication'
+import { defineComponent, ref, computed } from 'vue'
+import { useMenuStore } from 'src/stores/menu'
 import { useRouter } from 'vue-router'
+
+// Componentes
+import EssentialLink from 'components/EssentialLink.vue'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -111,16 +113,6 @@ export default defineComponent({
       return ''
     })
 
-    const nombreUsuarioTag = computed(() => {
-      const usuario: any = authenticationStore.user
-      if (usuario) {
-        return `https://ui-avatars.com/api/?name=${usuario.name}+${
-          usuario.apellidos ?? ''
-        }&size=28`
-      }
-      return ''
-    })
-
     async function logout() {
       await authenticationStore.logout()
       Router.replace({ name: 'Login' })
@@ -134,7 +126,6 @@ export default defineComponent({
       },
       logout,
       nombreUsuario,
-      nombreUsuarioTag,
     }
   },
 })

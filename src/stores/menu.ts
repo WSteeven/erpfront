@@ -16,7 +16,7 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-pin-angle-fill',
       children: [
         {
-          title: 'Gestionar tareas',
+          title: 'Control de tareas',
           link: 'tareas',
           icon: 'bi-circle',
         },
@@ -28,6 +28,11 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Control de progresivas',
           link: 'control-progresivas',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Informes',
+          link: 'informes',
           icon: 'bi-circle',
         },
       ],

@@ -11,7 +11,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   let usuarioFueConsultado = false
 
   // State
-  const user = ref(null)
+  const user = ref()
   const auth = ref(false)
 
   // Actions

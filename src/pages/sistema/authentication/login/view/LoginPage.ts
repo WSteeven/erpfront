@@ -23,7 +23,7 @@ export default defineComponent({
       try {
         cargando.activar()
         await loginController.login(loginUser)
-        notificaciones.notificarCorrecto('Bienvenido!')
+        notificaciones.notificarCorrecto('Bienvenido a JPCONSTRUCRED!')
       } catch (error: any) {
         notificaciones.notificarError('No se pudo autenticar')
       } finally {

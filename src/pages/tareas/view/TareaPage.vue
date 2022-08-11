@@ -30,29 +30,29 @@
         </q-step>
 
         <!-- Solicitud de materiales -->
-        <q-step
+        <!--  <q-step
           :name="3"
           title="Solicitud de materiales"
           icon="add_comment"
           :done="done3"
         >
           <solicitud-materiales-content></solicitud-materiales-content>
-        </q-step>
+        </q-step> -->
 
         <!-- Devolucion de materiales -->
-        <q-step
+        <!-- <q-step
           :name="4"
           title="Devolución de materiales"
           icon="create_new_folder"
           :done="done4"
         >
           <devolucion-materiales-content></devolucion-materiales-content>
-        </q-step>
+        </q-step> -->
 
         <!-- Prefactura -->
-        <q-step :name="5" title="Prefactura" icon="add_comment" :done="done5">
+        <!-- <q-step :name="5" title="Prefactura" icon="add_comment" :done="done5">
           <prefacturas-content></prefacturas-content>
-        </q-step>
+        </q-step> -->
       </q-stepper>
     </template>
   </tab-layout>

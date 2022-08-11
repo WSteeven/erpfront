@@ -1,6 +1,6 @@
 // Dependencias
-import { defineComponent, reactive, ref } from 'vue'
 import { configuracionColumnasTareas } from '../domain/configuracionColumnasTareas'
+import { defineComponent, reactive, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'layouts/TabLayout.vue'
@@ -36,50 +36,71 @@ export default defineComponent({
     const listado = [
       {
         id: 1,
-        tarea_jp: 'JP001',
-        tarea_cliente: 'ADD878',
-        coordinador: 'MARILÚ JARAMILLO',
+        codigo_tarea_jp: 'JP000001',
+        codigo_tarea_cliente: 'ADD878',
+        detalle: 'Nombre de tarea',
         cliente: 'NEDETEL',
+        solicitante: 'JOAQUIN PIZARRO',
+        correo_solicitante: 'JPIZARRO@NEDETEL.EC',
+        fecha_vencimiento: '2022/08/31',
+        fecha_agendado: '11/08/2022',
+        hora_agendado: '08:32',
+        coordinador: 'MARILÚ JARAMILLO',
         estado: 'FINALIZADO',
+        provincia: 'EL ORO',
+        ciudad: 'MACHALA',
+        parroquia: 'JAMBELÍ',
+        referencias: '',
+        direccion: 'MI CASA',
+        georeferencia_x: '0145 855',
+        georeferencia_y: '425 785',
       },
       {
         id: 2,
-        tarea_jp: 'JP002',
-        tarea_cliente: 'ADD879',
+        codigo_tarea_jp: 'JP000002',
+        codigo_tarea_cliente: 'ADD879',
         coordinador: 'MARILÚ JARAMILLO',
         cliente: 'NEDETEL',
         estado: 'EJECUTANDO',
       },
       {
         id: 3,
-        tarea_jp: 'JP003',
-        tarea_cliente: 'ADD858',
+        codigo_tarea_jp: 'JP000003',
+        codigo_tarea_cliente: 'ADD858',
         coordinador: 'MARILÚ JARAMILLO',
         cliente: 'NEDETEL',
         estado: 'CREADO',
       },
       {
         id: 4,
-        tarea_jp: 'JP004',
-        tarea_cliente: 'ADD874',
+        codigo_tarea_jp: 'JP000004',
+        codigo_tarea_cliente: 'ADD874',
         coordinador: 'MARILÚ JARAMILLO',
         cliente: 'NEDETEL',
         estado: 'FINALIZADO',
       },
       {
         id: 5,
-        tarea_jp: 'JP005',
-        tarea_cliente: 'ADD875',
+        codigo_tarea_jp: 'JP000005',
+        codigo_tarea_cliente: 'ADD875',
         coordinador: 'MARILÚ JARAMILLO',
         cliente: 'NEDETEL',
         estado: 'EJECUTANDO',
       },
       {
         id: 6,
-        tarea_jp: 'JP006',
-        tarea_cliente: 'ADD856',
+        codigo_tarea_jp: 'JP000006',
+        codigo_tarea_cliente: 'ADD856',
         coordinador: 'MARILÚ JARAMILLO',
         cliente: 'NEDETEL',
+        estado: 'CREADO',
+      },
+      {
+        id: 7,
+        codigo_tarea_jp: 'JP000007',
+        codigo_tarea_cliente: '56551844',
+        coordinador: 'DARIO LOJA',
+        cliente: 'TELCONET',
         estado: 'CREADO',
       },
     ]

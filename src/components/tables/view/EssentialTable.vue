@@ -15,7 +15,7 @@
       <div class="column full-width">
         <div class="row justify-between items-center q-mb-md">
           <div>
-            <div class="text-h6">{{ titulo }}</div>
+            <div class="text-h6">{{ 'Listado de ' + titulo }}</div>
             <small>JPCONSTRUCRED</small>
           </div>
           <!-- <q-space></q-space> -->
@@ -60,22 +60,50 @@
         </div>
 
         <div class="row q-gutter-md justify-start">
-          <q-btn color="primary" no-caps rounded unelevated push>
+          <q-btn
+            v-if="permitirConsultar"
+            color="primary"
+            no-caps
+            rounded
+            push
+            @click="consultar()"
+          >
             <q-icon name="bi-eye" size="xs" class="q-pr-sm"></q-icon>
             <div>Consultar</div>
           </q-btn>
 
-          <q-btn color="primary" no-caps rounded unelevated push>
+          <q-btn
+            v-if="permitirEditar"
+            color="primary"
+            no-caps
+            rounded
+            push
+            @click="editar()"
+          >
             <q-icon name="bi-pencil-square" size="xs" class="q-pr-sm"></q-icon>
             <div>Editar</div>
           </q-btn>
 
-          <q-btn color="primary" no-caps rounded unelevated push>
+          <q-btn
+            v-if="permitirEliminar"
+            color="primary"
+            no-caps
+            rounded
+            push
+            @click="eliminar()"
+          >
             <q-icon name="bi-trash" size="xs" class="q-pr-sm"></q-icon>
             <div>Eliminar</div>
           </q-btn>
 
-          <q-btn color="secondary" no-caps rounded unelevated push>
+          <q-btn
+            v-if="permitirAccion1"
+            color="secondary"
+            no-caps
+            rounded
+            push
+            @click="accion1()"
+          >
             <q-icon name="bi-tools" size="xs" class="q-pr-sm"></q-icon>
             <div>Gestionar</div>
           </q-btn>
@@ -97,35 +125,64 @@
       </q-tr>
     </template> -->
   </q-table>
-
-  <!-- <div class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div> -->
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { getVisibleColumns } from 'src/pages/shared/utils'
-import { defineComponent, ref } from 'vue'
+import { ref, watch } from 'vue'
 
-export default defineComponent({
-  props: {
-    titulo: {
-      type: String,
-      default: 'Listado',
-    },
-    configuracionColumnas: {
-      type: Object as () => any[],
-      required: true,
-    },
-    datos: {
-      type: Object as () => any[],
-      required: true,
-    },
+// Props
+const props = defineProps({
+  titulo: {
+    type: String,
+    default: 'Listado',
   },
-  setup(props) {
-    return {
-      filter: ref(null),
-      selected: ref([]),
-      visibleColumns: ref(getVisibleColumns(props.configuracionColumnas)),
-    }
+  configuracionColumnas: {
+    type: Object as () => any[],
+    required: true,
+  },
+  datos: {
+    type: Object as () => any[],
+    required: true,
+  },
+  permitirConsultar: {
+    type: Boolean,
+    default: true,
+  },
+  permitirEditar: {
+    type: Boolean,
+    default: true,
+  },
+  permitirEliminar: {
+    type: Boolean,
+    default: true,
+  },
+  permitirAccion1: {
+    type: Boolean,
+    default: false,
   },
 })
+
+// Emits
+const emit = defineEmits([
+  'consultar',
+  'editar',
+  'eliminar',
+  'accion1',
+  'accion2',
+])
+
+// Acciones tabla
+const consultar = () => emit('consultar', JSON.stringify(selected.value[0]))
+const editar = () => emit('editar', JSON.stringify(selected.value[0]))
+const eliminar = () => emit('eliminar', JSON.stringify(selected.value[0]))
+const accion1 = () => emit('accion1')
+
+// Variables
+const filter = ref(null)
+const selected = ref([])
+const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
+
+// Observers
+// watch(selected, () => emit('selected', JSON.stringify(selected.value)))
 </script>
