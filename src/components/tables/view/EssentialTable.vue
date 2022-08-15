@@ -93,6 +93,7 @@
       <q-td :props="props" class="q-gutter-sm">
         <!-- Consultar -->
         <q-btn
+          v-if="permitirConsultar"
           color="indigo-1"
           round
           unelevated
@@ -124,8 +125,10 @@
           <q-icon name="bi-trash" color="primary" size="xs"></q-icon>
           <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
         </q-btn>
+
         <!-- Accion personalizada 1 -->
         <q-btn
+          v-if="permitirAccion1"
           color="primary"
           rounded
           unelevated
@@ -165,6 +168,7 @@
               >
                 <!-- Consultar -->
                 <q-btn
+                  v-if="permitirConsultar"
                   color="indigo-1"
                   round
                   unelevated
@@ -196,8 +200,10 @@
                   <q-icon name="bi-trash" color="primary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
                 </q-btn>
+
                 <!-- Accion personalizada 1 -->
                 <q-btn
+                  v-if="permitirAccion1"
                   color="primary"
                   rounded
                   unelevated
@@ -218,6 +224,19 @@
         </q-list>
       </q-card>
     </template>
+
+    <!-- <template v-slot:body="props">
+      <q-tr :props="props">
+        <q-td key="cantidad_solicitada" :props="props">
+          {{ props.row.cantidad_solicitada }}
+          <q-popup-edit v-model="props.row.cantidad_solicitada" v-slot="scope">
+            <q-input v-model="scope.value" dense autofocus counter />
+          </q-popup-edit>
+        </q-td>
+
+        <q-td key="protein" :props="props">{{ props.row.protein }}</q-td>
+      </q-tr>
+    </template> -->
   </q-table>
 </template>
 
@@ -277,9 +296,9 @@ const grid = ref(false)
 
 // Acciones tabla
 const consultar = (data: object) => emit('consultar', data)
-const editar = (data: object) => emit('editar', JSON.stringify(data))
-const eliminar = (data: object) => emit('eliminar', JSON.stringify(data))
-const accion1 = (data: object) => emit('accion1', JSON.stringify(data))
+const editar = (data: object) => emit('editar', data)
+const eliminar = (data: object) => emit('eliminar', data)
+const accion1 = (data: object) => emit('accion1', data)
 
 // Variables
 const filter = ref(null)

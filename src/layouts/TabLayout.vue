@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-h6 q-my-md q-ml-md">Gestión de tareas</div>
+    <div class="text-h6 q-my-md q-ml-md">{{ tituloPagina }}</div>
 
     <!-- Tabs -->
     <q-tabs v-model="tab" align="left" narrow-indicator class="q-mb-lg">
@@ -103,9 +103,13 @@ export default defineComponent({
     const seleccionado = ref()
     const tab = ref('listado')
 
+    const tituloTabla =
+      Router.currentRoute.value.name?.toString().toLowerCase() ?? ''
+
     return {
       tab,
-      tituloTabla: Router.currentRoute.value.name?.toString().toLowerCase(),
+      tituloTabla,
+      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,
       // acciones tabla

@@ -1,6 +1,6 @@
 <template>
   <tab-layout
-    :configuracionColumnas="configuracionColumnasTiposTareas"
+    :configuracionColumnas="(configuracionColumnasTiposTareas as any)"
     :datos="datos"
   >
     <template #formulario>

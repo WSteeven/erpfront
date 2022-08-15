@@ -6,7 +6,6 @@ import { defineComponent, reactive, ref } from 'vue'
 import TabLayout from 'layouts/TabLayout.vue'
 import GeneralPage from 'src/pages/tareas/view/GeneralContent.vue'
 import SubtareasContent from 'src/pages/tareas/view/SubtareasContent.vue'
-import SolicitudMaterialesContent from 'src/pages/tareas/view/SolicitudMaterialesContent.vue'
 import DevolucionMaterialesContent from 'src/pages/tareas/view/DevolucionMaterialesContent.vue'
 import PrefacturasContent from 'src/pages/tareas/view/PrefacturasContent.vue'
 
@@ -19,7 +18,6 @@ export default defineComponent({
     TabLayout,
     GeneralPage,
     SubtareasContent,
-    SolicitudMaterialesContent,
     PrefacturasContent,
     DevolucionMaterialesContent,
   },

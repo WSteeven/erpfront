@@ -27,6 +27,11 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Solicitud de materiales',
+          link: 'solicitud-materiales',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Control de progresivas',
           link: 'control-progresivas',
           icon: 'bi-circle',
@@ -34,6 +39,11 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Informes',
           link: 'informes',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Control diario de materiales',
+          link: 'control-diario-materiales',
           icon: 'bi-circle',
         },
       ],

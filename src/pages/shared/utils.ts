@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
@@ -222,4 +223,14 @@ export function getVisibleColumns<T>(
   }
 
   return columnas
+}
+
+export function getIndexOf(listado: any[], id: number) {
+  return listado.findIndex((item: any) => item.id === id)
+}
+
+export function obtenerFechaActual() {
+  const timeStamp = Date.now()
+  const formattedString = date.formatDate(timeStamp, 'DD-MM-YYYY')
+  return formattedString
 }

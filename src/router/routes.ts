@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/tareas',
-        name: 'Tareas',
+        name: 'Control de tareas',
         component: () => import('pages/tareas/view/TareaPage.vue'),
         meta: { requiresAuth: true },
       },
@@ -22,6 +22,31 @@ const routes: RouteRecordRaw[] = [
         name: 'Tipos de tareas',
         component: () =>
           import('pages/tareas/modules/tiposTareas/view/TipoTareaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/solicitud-materiales',
+        name: 'Solicitud de materiales',
+        component: () =>
+          import(
+            'pages/tareas/modules/solicitudMateriales/view/SolicitudMaterialesPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/control-progresivas',
+        name: 'Control de progresivas',
+        component: () =>
+          import('pages/tareas/modules/progresivas/view/ProgresivaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/control-diario-materiales',
+        name: 'Control diario de materiales',
+        component: () =>
+          import(
+            'pages/tareas/modules/controlDiarioMateriales/view/ControlDiarioMaterialPage.vue'
+          ),
         meta: { requiresAuth: true },
       },
       {
