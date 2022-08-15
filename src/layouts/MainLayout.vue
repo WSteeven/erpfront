@@ -21,8 +21,12 @@
             <div class="row no-wrap q-pa-md">
               <div class="column">
                 <div class="text-h6 q-mb-md">Coordinador</div>
-                <div class="q-mb-md">Perfil</div>
-                <div>Configuración</div>
+                <q-item clickable dense :to="{ name: 'Perfil' }">
+                  <q-item-section> Perfil </q-item-section>
+                </q-item>
+                <q-item clickable dense :to="{ name: 'Perfil' }">
+                  <q-item-section> Configuración </q-item-section>
+                </q-item>
               </div>
 
               <q-separator vertical inset class="q-mx-lg" />
@@ -32,7 +36,9 @@
                   <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
                 </q-avatar>
 
-                <div class="text-subtitle1 q-mt-md q-mb-xs">Juan Cuesta</div>
+                <div class="text-subtitle1 q-mt-md q-mb-xs">
+                  {{ nombreUsuario }}
+                </div>
 
                 <q-btn
                   label="Cerrar sesión"
@@ -52,13 +58,13 @@
     </q-header>
 
     <!-- Drawer -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-grey-1">
+    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-grey-2">
       <!-- Drawer Header -->
       <div class="absolute-top text-center q-pa-md">
         <q-avatar size="58px" class="q-mb-md">
           <img src="src/assets/logo.jpeg" />
         </q-avatar>
-        <div class="text-h5">JPConstrucred</div>
+        <div class="text-h5 text-primary">JPCONSTRUCRED</div>
       </div>
 
       <!-- Drawer Body -->
@@ -76,7 +82,11 @@
 
     <!-- Router -->
     <q-page-container class="bg-white">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="scale" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </q-page-container>
   </q-layout>
 </template>
@@ -106,9 +116,9 @@ export default defineComponent({
     const Router = useRouter()
 
     const nombreUsuario = computed(() => {
-      const usuario: any = authenticationStore.user
+      const usuario = authenticationStore.user
       if (usuario) {
-        return `${usuario.name} ${usuario.apellidos ?? ''} `
+        return `${usuario.nombres} ${usuario.apellidos ?? ''} `
       }
       return ''
     })

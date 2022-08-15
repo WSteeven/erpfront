@@ -23,8 +23,19 @@ export function useNotificaciones() {
     })
   }
 
+  function notificarAdvertencia(mensaje: string) {
+    $q.notify({
+      color: 'white',
+      textColor: 'amber-6',
+      icon: 'bi-x-lg',
+      message: mensaje,
+      position: 'top-right',
+    })
+  }
+
   return {
     notificarCorrecto,
     notificarError,
+    notificarAdvertencia,
   }
 }

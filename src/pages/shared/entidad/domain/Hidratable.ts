@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export class Hidratable {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   hydrate(data: any): any {
     // entidad para obtener atributos por defecto
-    const defValues = this.constructor // dejar ()
+    // const defValues = this.constructor // dejar ()
     for (const key in this) {
       const value: any = this[key]
       if (value instanceof Hidratable) value.hydrate(data[key])

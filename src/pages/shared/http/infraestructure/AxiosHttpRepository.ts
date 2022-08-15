@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
-import { Endpoint } from '../domain/Endpoint'
 import { HttpRepository } from '../domain/HttpRepository'
+import { Endpoint } from '../domain/Endpoint'
 
 // SINGLETON
 export class AxiosHttpRepository implements HttpRepository {

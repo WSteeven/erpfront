@@ -24,6 +24,12 @@ const routes: RouteRecordRaw[] = [
           import('pages/tareas/modules/tiposTareas/view/TipoTareaPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/perfil',
+        name: 'Perfil',
+        component: () => import('pages/perfil/view/PerfilPage.vue'),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

@@ -36,12 +36,11 @@
       <q-tab-panel name="listado" class="q-py-none">
         <essential-table
           :titulo="tituloTabla"
-          :configuracionColumnas="configuracionColumnas"
+          :configuracionColumnas="columnas"
           :datos="datos"
           @consultar="consultar"
           @editar="editar()"
           @eliminar="eliminar()"
-          @selected="(valor: any) => seleccionado = valor"
         ></essential-table>
       </q-tab-panel>
     </q-tab-panels>
@@ -56,6 +55,8 @@ import { useRouter } from 'vue-router'
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useTareaStore } from 'src/stores/tarea'
+import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
+import { Hidratable } from 'src/pages/shared/entidad/domain/Hidratable'
 
 export default defineComponent({
   props: {
@@ -64,21 +65,31 @@ export default defineComponent({
       default: true,
     },
     configuracionColumnas: {
-      type: Object as () => any[],
+      type: Object as () => ColumnConfig<Hidratable>[],
       required: true,
     },
     datos: {
-      type: Object as () => any[],
+      type: Array,
       required: true,
     },
   },
   components: { EssentialTable },
-  setup() {
+  setup(props) {
     const Router = useRouter()
     const tareaStore = useTareaStore()
 
-    function consultar(entidad: any) {
-      tareaStore.tarea.hydrate(JSON.parse(entidad))
+    const columnas = [
+      ...props.configuracionColumnas,
+      {
+        name: 'acciones',
+        field: 'acciones',
+        label: 'Acciones',
+        align: 'center',
+      },
+    ]
+
+    function consultar(entidad: object) {
+      tareaStore.tarea.hydrate(entidad)
       tab.value = 'formulario'
     }
 
@@ -96,6 +107,7 @@ export default defineComponent({
       tab,
       tituloTabla: Router.currentRoute.value.name?.toString().toLowerCase(),
       seleccionado,
+      columnas,
       // acciones tabla
       consultar,
       editar,

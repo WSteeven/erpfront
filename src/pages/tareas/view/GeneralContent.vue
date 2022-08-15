@@ -306,9 +306,9 @@
 </template>
 
 <script lang="ts">
-import { useAuthenticationStore } from 'src/stores/authentication'
+// import { useAuthenticationStore } from 'src/stores/authentication'
 import { provincias, ciudades } from 'src/config/utils'
-import { defineComponent, watchEffect } from 'vue'
+import { defineComponent } from 'vue'
 import { useTareaStore } from 'src/stores/tarea'
 
 export default defineComponent({
@@ -316,12 +316,12 @@ export default defineComponent({
     const tareaStore = useTareaStore()
     const tarea = tareaStore.tarea
 
-    const authenticationStore = useAuthenticationStore()
+    // const authenticationStore = useAuthenticationStore()
 
-    watchEffect(() => {
+    /* watchEffect(() => {
       const usuario = authenticationStore.user
       tarea.coordinador = `${usuario.name} ${usuario.apellidos ?? ''} `
-    })
+    }) */
 
     function enviar() {
       //

@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
-import { endpoints } from 'src/config/api'
-import { ApiError } from 'src/pages/shared/error/domain/ApiError'
 import { AxiosHttpRepository } from 'src/pages/shared/http/infraestructure/AxiosHttpRepository'
 import { UserLogin } from 'src/pages/sistema/authentication/login/domain/UserLogin'
+import { ApiError } from 'src/pages/shared/error/domain/ApiError'
+import { endpoints } from 'src/config/api'
+import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useAuthenticationStore = defineStore('authentication', () => {

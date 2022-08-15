@@ -11,7 +11,7 @@ export default defineComponent({
   name: 'LoginPage',
   setup() {
     const loginUser = reactive(new UserLogin())
-    loginUser.email = 'admin@admin.com'
+    loginUser.email = 'mjaramillo@jp.com'
     loginUser.password = 'password'
 
     const loginController = new LoginController()

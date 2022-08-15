@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
+import { MenuOption } from 'src/pages/shared/menu/MenuOption'
 
 export const useMenuStore = defineStore('menu', () => {
   // State
-  const links = [
+  const links: MenuOption[] = [
     {
       header: 'Modulos',
     },

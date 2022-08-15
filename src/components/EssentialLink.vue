@@ -46,6 +46,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { MenuOption } from 'pages/shared/menu/MenuOption'
 
 export default defineComponent({
   name: 'EssentialLink',
@@ -66,7 +67,7 @@ export default defineComponent({
     },
 
     children: {
-      type: Object as () => any[],
+      type: Object as () => MenuOption[],
       required: false,
     },
   },

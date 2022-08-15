@@ -1,4 +1,4 @@
-import { Hidratable } from 'pages/shared/entidad/domain/hidratable'
+import { Hidratable } from 'src/pages/shared/entidad/domain/Hidratable'
 
 export class Tarea extends Hidratable {
   codigo_tarea_jp: string | null

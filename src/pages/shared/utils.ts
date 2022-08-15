@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
@@ -83,7 +84,7 @@ export function quitarComasNumero(num: string): string {
   return formateo
 }
 
-export function convertirDecimaleFloat(num: any): number {
+export function convertirDecimalFloat(num: string): number {
   return typeof num === 'undefined' ||
     num === null ||
     num === '' ||
@@ -96,11 +97,17 @@ export function convertirDecimaleFloat(num: any): number {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function redondear(numero: any, decimales = 6): number {
   numero = numero ? numero : 0
-  numero = convertirDecimaleFloat(numero)
+  numero = convertirDecimalFloat(numero)
   return +`${Math.round(parseFloat(`${numero}e+${decimales}`))}e-${decimales}`
 }
 
-export function redondearAtributos<R = Record<string, any>>(
+/**
+ *
+ * @param entidad: Instancia de entidad
+ * @param atributos: Array de atributos que se desean redondear
+ * @param decimales: Cantidad de decimales
+ */
+export function redondearAtributos<R = Record<string, number>>(
   entidad: R,
   atributos: (keyof R)[],
   decimales: number
@@ -156,29 +163,6 @@ export function construirNumeroDocumento(
   return `${establecimiento}-${punto_emision}-${secuencial}`
 }
 
-export function opcionesSeleccionColumnaExcel(value: number): any[] {
-  return generarOpciones(value - 1).reverse()
-}
-
-function generarOpciones(iterador: number): any[] {
-  const codes = []
-  while (iterador >= 0) {
-    codes.push({ id: generarLabel(iterador) })
-    iterador--
-  }
-  return codes
-}
-
-function generarLabel(iterador: number): any {
-  const letra = String.fromCharCode(65 + (iterador % 26))
-  const aux = parseInt(`${iterador / 26}`)
-  if (aux > 0) {
-    return generarLabel(aux - 1) + letra
-  } else {
-    return letra
-  }
-}
-
 export function sleep(ms: number): Promise<void> {
   return new Promise((res) => setTimeout(res, ms))
 }
@@ -195,6 +179,25 @@ export async function notificarMensajesError(
     await sleep(0)
     notificaciones.notificarError(mensajes[i])
     await sleep(1000)
+  }
+}
+
+export function gestionarNotificacionError(error: any): void {
+  const { notificarAdvertencia } = useNotificaciones()
+
+  if (isAxiosError(error)) {
+    const mensajes: string[] = error.erroresValidacion
+    if (mensajes.length > 0) {
+      notificarMensajesError(mensajes)
+    } else {
+      if (error.status === 413) {
+        notificarAdvertencia('El tamaño del archivo es demasiado grande.')
+      } else {
+        notificarAdvertencia(error.mensaje)
+      }
+    }
+  } else {
+    notificarAdvertencia(error.message)
   }
 }
 
