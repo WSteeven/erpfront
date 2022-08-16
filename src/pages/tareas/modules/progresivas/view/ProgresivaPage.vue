@@ -5,6 +5,7 @@
   >
     <template #formulario>
       <q-form @submit.prevent="enviar()">
+        <b>Información de la tarea</b>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Tarea JP -->
           <div class="col-12 col-md-3">
@@ -28,6 +29,16 @@
             ></q-input>
           </div>
 
+          <div class="col-12 col-md-3">
+            <q-input
+              v-model="progresiva.nombre_proyecto"
+              label="Nombre del proyecto"
+              readonly
+              outlined
+              dense
+            ></q-input>
+          </div>
+
           <!-- Técnico -->
           <div class="col-12 col-md-3">
             <q-input
@@ -43,7 +54,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.fecha"
-              label="Fecha actual"
+              label="Fecha de instalación"
               readonly
               outlined
               dense
@@ -71,9 +82,7 @@
               dense
             ></q-input>
           </div>
-        </div>
 
-        <div class="row q-col-gutter-sm q-py-md">
           <!-- Codigo bobina -->
           <div class="col-12 col-md-3">
             <q-input
@@ -89,7 +98,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.marca_inicial"
-              label="Marca inicial"
+              label="Número de MT inicial"
               outlined
               dense
               :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
@@ -100,21 +109,26 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.marca_final"
-              label="Marca final"
+              label="Número de MT final"
               outlined
               dense
               :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
             ></q-input>
           </div>
+        </div>
 
+        <b>Detalles del elemento</b>
+        <div class="row q-col-gutter-sm q-py-md">
           <!-- Tipo elemento -->
           <div class="col-12 col-md-3">
-            <q-input
+            <q-select
               v-model="progresiva.tipo_elemento"
+              :options="tiposElementos"
               label="Tipo de elemento"
-              outlined
+              options-dense
               dense
-            ></q-input>
+              outlined
+            />
           </div>
 
           <!-- Numero poste -->
@@ -152,7 +166,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.progresiva_entrada"
-              label="Progresiva de entrada"
+              label="Progresiva de entrada (metros)"
               outlined
               dense
               :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
@@ -163,7 +177,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.progresiva_salida"
-              label="Progresiva de salida"
+              label="Progresiva de salida (metros)"
               outlined
               dense
               :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
@@ -174,7 +188,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.herraje_instalado"
-              label="Herraje instalado"
+              label="Tipo de herraje instalado"
               outlined
               dense
             ></q-input>
@@ -184,7 +198,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.guardacabo"
-              label="Guardacabo"
+              label="Cantidad de guardacabo (unidad)"
               outlined
               dense
             ></q-input>
@@ -194,7 +208,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.preformado"
-              label="Preformado"
+              label="Cantidad de preformado (unidad)"
               outlined
               dense
             ></q-input>
@@ -204,7 +218,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.cintas3_4"
-              label="Cintas 3/4"
+              label="Cantidad de cintas 3/4 (metros)"
               outlined
               dense
               :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
@@ -215,7 +229,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.hebillas3_4"
-              label="Hebillas 3/4"
+              label="Cantidad de hebillas 3/4 (metros)"
               outlined
               dense
               :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
@@ -233,10 +247,10 @@
           </div>
 
           <!-- Cantidad_placas_rotulo -->
-          <div class="col-12 col-md-3">
+          <div v-if="progresiva.tiene_placas_rotulo" class="col-12 col-md-3">
             <q-input
               v-model="progresiva.cantidad_placas_rotulo"
-              label="Cantidad placas/rotulo"
+              label="Cantidad de placas/rotulo (unidad)"
               outlined
               dense
             ></q-input>
@@ -246,7 +260,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.amarra15cm"
-              label="Amarra 15cm"
+              label="Cantidad de amarras 15cm (unidad)"
               outlined
               dense
             ></q-input>
@@ -256,7 +270,7 @@
           <div class="col-12 col-md-3">
             <q-input
               v-model="progresiva.amarra30cm"
-              label="Amarra 30cm"
+              label="Cantidad de amarras 30cm (unidad)"
               outlined
               dense
             ></q-input>
@@ -304,7 +318,10 @@
           </div>
 
           <!-- Cantidad transformadores -->
-          <div class="col-12 col-md-3">
+          <div
+            v-if="progresiva.poste_tiene_transformador"
+            class="col-12 col-md-3"
+          >
             <q-input
               v-model="progresiva.cantidad_transformadores"
               label="Cantidad transformadores"
@@ -324,10 +341,12 @@
           </div>
 
           <!-- Cantidad retenidas -->
-          <div class="col-12 col-md-3">
+          <div v-if="progresiva.poste_tiene_retenidas" class="col-12 col-md-3">
             <q-input
               v-model="progresiva.cantidad_retenidas"
               label="Cantidad retenidas"
+              type="number"
+              min="0"
               outlined
               dense
             ></q-input>
@@ -340,6 +359,28 @@
               label="Observaciones"
               outlined
               dense
+            ></q-input>
+          </div>
+
+          <!-- Latitud -->
+          <div class="col-12 col-md-3">
+            <q-input
+              v-model="progresiva.latitud"
+              label="Latitud"
+              outlined
+              dense
+              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
+            ></q-input>
+          </div>
+
+          <!-- Longitud -->
+          <div class="col-12 col-md-3">
+            <q-input
+              v-model="progresiva.longitud"
+              label="Longitud"
+              outlined
+              dense
+              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
             ></q-input>
           </div>
 
@@ -356,32 +397,10 @@
 
           <!-- Imagen -->
           <div class="col-12 col-md-3">
-            <q-input
-              v-model="progresiva.imagen"
-              label="Imagen"
-              outlined
-              dense
-            ></q-input>
-          </div>
-
-          <!-- Latitud -->
-          <div class="col-12 col-md-3">
-            <q-input
-              v-model="progresiva.latitud"
-              label="Latitud"
-              outlined
-              dense
-            ></q-input>
-          </div>
-
-          <!-- Longitud -->
-          <div class="col-12 col-md-3">
-            <q-input
-              v-model="progresiva.longitud"
-              label="Longitud"
-              outlined
-              dense
-            ></q-input>
+            <selector-imagen
+              :modelValue="progresiva.imagen"
+              @update:modelValue="(data) => (progresiva.imagen = data)"
+            ></selector-imagen>
           </div>
         </div>
       </q-form>

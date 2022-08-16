@@ -1,4 +1,5 @@
 <template>
+  <!-- No tiene submenus -->
   <q-item
     v-if="!children"
     clickable
@@ -16,6 +17,7 @@
     </q-item-section>
   </q-item>
 
+  <!-- Tiene submenus -->
   <q-expansion-item
     v-else
     clickable

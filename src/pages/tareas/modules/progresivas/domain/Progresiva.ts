@@ -2,6 +2,7 @@ export class Progresiva {
   id: number | null
   codigo_tarea_jp: string | null
   codigo_subtarea_jp: string | null
+  nombre_proyecto: string | null
   fecha: string | null
   grupo: string | null
   tecnico_responsable: string | null
@@ -34,7 +35,7 @@ export class Progresiva {
   cantidad_retenidas: number | null
   observaciones: string | null
   hora: string | null //*
-  imagen: string | null //*
+  imagen: string | null | ArrayBuffer //*
   latitud: string | null //*
   longitud: string | null //*
 
@@ -42,6 +43,7 @@ export class Progresiva {
     this.id = null
     this.codigo_tarea_jp = null
     this.codigo_subtarea_jp = null
+    this.nombre_proyecto = null
     this.fecha = null
     this.grupo = null
     this.tecnico_responsable = null

@@ -2,9 +2,11 @@
 import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasProgresivas'
 import { obtenerFechaActual } from 'pages/shared/utils'
 import { defineComponent, reactive } from 'vue'
+import { tiposElementos } from 'src/config/utils'
 
 // Componentes
 import TabLayout from 'layouts/TabLayout.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import { Progresiva } from '../domain/Progresiva'
@@ -12,12 +14,14 @@ import { Progresiva } from '../domain/Progresiva'
 export default defineComponent({
   components: {
     TabLayout,
+    SelectorImagen,
   },
   setup() {
     const progresiva = reactive(new Progresiva())
     progresiva.codigo_tarea_jp = 'JP000001'
     progresiva.codigo_subtarea_jp = 'JP000001_1'
     progresiva.fecha = obtenerFechaActual()
+    progresiva.nombre_proyecto = 'FTTH SARACAY'
     progresiva.grupo = 'MACHALA'
     progresiva.tecnico_responsable = 'FERNANDO AYORA'
     progresiva.tecnico = 'LUIS VACA'
@@ -86,7 +90,17 @@ export default defineComponent({
     ]
 
     function enviar() {
-      //
+      console.log(progresiva)
+    }
+
+    const setBase64 = (file: File) => {
+      if (file !== null && file !== undefined) {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => (progresiva.imagen = reader.result)
+      } else {
+        progresiva.imagen = file
+      }
     }
 
     return {
@@ -94,6 +108,8 @@ export default defineComponent({
       datos,
       enviar,
       configuracionColumnasTiposTareas,
+      setBase64,
+      tiposElementos,
     }
   },
 })

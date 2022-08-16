@@ -35,6 +35,18 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Control de progresivas',
           link: 'control-progresivas',
           icon: 'bi-circle',
+          children: [
+            {
+              title: 'Control de tareas',
+              link: 'tareas',
+              icon: 'bi-circle',
+            },
+            {
+              title: 'Tipos de tareas',
+              link: 'tipos-tareas',
+              icon: 'bi-circle',
+            },
+          ],
         },
         {
           title: 'Informes',

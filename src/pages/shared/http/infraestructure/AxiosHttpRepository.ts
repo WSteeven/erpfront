@@ -76,7 +76,7 @@ export class AxiosHttpRepository implements HttpRepository {
   }
 
   private mapearArgumentos(args: Record<string, any>): string {
-    const query = []
+    const query: any = []
 
     // comprueba si el valor es valido
     for (const key in args)
