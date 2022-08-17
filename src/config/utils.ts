@@ -10,3 +10,16 @@ export const tiposElementos = [
   'RADIO BASE',
   'NODO',
 ]
+export const propietariosElementos = [
+  'NO POSEE',
+  'TELCONET',
+  'CONECEL',
+  'OTECEL',
+  'CNEL',
+  'CAJA',
+  'EMPRESA ELECTRICA QUITO',
+  'CNT',
+  'NEDETEL',
+]
+
+export const estadoElementos = ['BUENO', 'MALO']

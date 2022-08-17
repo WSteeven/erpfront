@@ -3,6 +3,7 @@
     :mostrar-button-submits="false"
     :configuracionColumnas="configuracionColumnas"
     :datos="listado"
+    tituloPagina="Control de tareas"
   >
     <template #formulario>
       <q-stepper

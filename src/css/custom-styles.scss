@@ -5,3 +5,16 @@
 .text-shadow {
   text-shadow: 1px 1px 4px #00000055;
 }
+
+// Custom scrollbar
+body {
+  &::-webkit-scrollbar {
+    width: 10px;
+    background-color: #fff;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 50px;
+  }
+}

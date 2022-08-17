@@ -1,5 +1,7 @@
 <template>
   <q-page padding>
+    <slot name="modales" />
+
     <div class="text-h6 q-my-md q-ml-md">{{ tituloPagina }}</div>
 
     <!-- Tabs -->
@@ -72,6 +74,9 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    tituloPagina: {
+      type: String,
+    },
   },
   components: { EssentialTable },
   setup(props) {
@@ -109,7 +114,7 @@ export default defineComponent({
     return {
       tab,
       tituloTabla,
-      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
+      // tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,
       // acciones tabla

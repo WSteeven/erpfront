@@ -2,6 +2,7 @@
   <tab-layout
     :configuracionColumnas="configuracionColumnasTiposTareas"
     :datos="datos"
+    titulo-pagina="Control diario de materiales"
   >
     <template #formulario>
       <q-form @submit.prevent="enviar()">

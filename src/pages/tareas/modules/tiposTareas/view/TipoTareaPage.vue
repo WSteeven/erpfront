@@ -2,6 +2,7 @@
   <tab-layout
     :configuracionColumnas="(configuracionColumnasTiposTareas as any)"
     :datos="datos"
+    titulo-pagina="Tipo de tareas"
   >
     <template #formulario>
       <q-form @submit.prevent="enviar()">

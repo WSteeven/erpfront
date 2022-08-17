@@ -1,7 +1,6 @@
 <template>
   <q-file
     v-model="imagen"
-    label="Imagen"
     dense
     outlined
     class="q-mb-sm"

@@ -1,20 +1,29 @@
 // Dependencias
 import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasProgresivas'
+import {
+  tiposElementos,
+  propietariosElementos,
+  estadoElementos,
+} from 'src/config/utils'
 import { obtenerFechaActual } from 'pages/shared/utils'
 import { defineComponent, reactive } from 'vue'
-import { tiposElementos } from 'src/config/utils'
 
 // Componentes
 import TabLayout from 'layouts/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { Progresiva } from '../domain/Progresiva'
+import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
 
 export default defineComponent({
   components: {
     TabLayout,
     SelectorImagen,
+    LabelAbrirModal,
+    ModalesEntidad,
   },
   setup() {
     const progresiva = reactive(new Progresiva())
@@ -103,13 +112,19 @@ export default defineComponent({
       }
     }
 
+    const modalesProgresiva = new ComportamientoModalesProgresiva()
+
     return {
       progresiva,
       datos,
       enviar,
       configuracionColumnasTiposTareas,
       setBase64,
+      modalesProgresiva,
+      // listados
       tiposElementos,
+      propietariosElementos,
+      estadoElementos,
     }
   },
 })

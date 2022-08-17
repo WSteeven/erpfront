@@ -85,6 +85,30 @@
             </q-btn>
           </div>
         </div>
+
+        <!-- Botones exportar -->
+        <div class="row q-gutter-sm justify-end">
+          <q-btn
+            color="positive"
+            label="Exportar CSV"
+            no-caps
+            push
+            rounded
+            @click="exportTable()"
+          ></q-btn>
+          <q-btn
+            color="positive"
+            label="Exportar Excel"
+            no-caps
+            push
+            rounded
+            @click="exportTable()"
+          ></q-btn>
+          <q-btn color="positive" push rounded @click="exportTable()" no-caps>
+            <q-icon name="bi-eye" class="q-pr-sm" size="xs"></q-icon>
+            <div>Mostrar filtros</div>
+          </q-btn>
+        </div>
       </div>
     </template>
 
@@ -241,11 +265,12 @@
 </template>
 
 <script lang="ts" setup>
-import { getVisibleColumns } from 'src/pages/shared/utils'
-import { TipoSeleccion } from 'src/config/utils'
-import { ref } from 'vue'
-import { ColumnConfig } from '../domain/ColumnConfig'
 import { Hidratable } from 'src/pages/shared/entidad/domain/Hidratable'
+import { getVisibleColumns } from 'src/pages/shared/utils'
+import { ColumnConfig } from '../domain/ColumnConfig'
+import { TipoSeleccion } from 'src/config/utils'
+import { exportFile, useQuasar } from 'quasar'
+import { ref } from 'vue'
 
 // Props
 const props = defineProps({
@@ -307,4 +332,56 @@ const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
 
 // Observers
 // watch(selected, () => emit('selected', JSON.stringify(selected.value)))
+
+const $q = useQuasar()
+
+function wrapCsvValue(val, formatFn?, row?) {
+  let formatted = formatFn !== void 0 ? formatFn(val, row) : val
+
+  formatted =
+    formatted === void 0 || formatted === null ? '' : String(formatted)
+
+  formatted = formatted.split('"').join('""')
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`
+}
+
+function exportTable() {
+  // naive encoding to csv format
+  const content = [
+    props.configuracionColumnas.map((col) => wrapCsvValue(col.label)),
+  ]
+    .concat(
+      props.datos.map((row: any) =>
+        props.configuracionColumnas
+          .map((col: any) =>
+            wrapCsvValue(
+              typeof col.field === 'function'
+                ? col.field(row)
+                : row[col.field === void 0 ? col.name : col.field],
+              col.format,
+              row
+            )
+          )
+          .join(',')
+      )
+    )
+    .join('\r\n')
+
+  const status = exportFile('table-export.csv', '\ufeff' + content, 'text/csv')
+
+  if (status !== true) {
+    $q.notify({
+      message: 'Browser denied file download...',
+      color: 'negative',
+      icon: 'warning',
+    })
+  }
+}
 </script>

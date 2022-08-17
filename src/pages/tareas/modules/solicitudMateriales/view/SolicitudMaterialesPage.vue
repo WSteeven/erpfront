@@ -3,6 +3,7 @@
     :configuracionColumnas="configuracionColumnas"
     :datos="datos"
     :mostrar-button-submits="false"
+    titulo-pagina="Solicitud de materiales"
   >
     <template #formulario>
       <q-card flat bordered class="q-mb-md">
