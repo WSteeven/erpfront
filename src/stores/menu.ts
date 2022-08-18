@@ -9,12 +9,12 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Dashboard',
-      icon: 'bi-graph-up',
+      icon: 'bi-layers-fill',
       link: '/',
     },
     {
       title: 'Tareas',
-      icon: 'bi-pin-angle-fill',
+      icon: 'bi-paperclip',
       children: [
         {
           title: 'Control de tareas',
@@ -32,19 +32,23 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title: 'Control de progresivas',
-          link: 'control-progresivas',
+          title: 'Progresivas',
           icon: 'bi-circle',
           children: [
             {
-              title: 'Control de tareas',
-              link: 'tareas',
-              icon: 'bi-circle',
+              title: 'Control de progresivas',
+              link: 'control-progresivas',
+              icon: 'bi-dash',
             },
             {
-              title: 'Tipos de tareas',
+              title: 'Tipos de elementos',
+              link: 'tipos-elementos',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Propietarios de elementos',
               link: 'tipos-tareas',
-              icon: 'bi-circle',
+              icon: 'bi-dash',
             },
           ],
         },
@@ -62,7 +66,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Bodega',
-      icon: 'bi-boxes',
+      icon: 'bi-ui-checks-grid',
       children: [
         {
           title: 'Item 1',

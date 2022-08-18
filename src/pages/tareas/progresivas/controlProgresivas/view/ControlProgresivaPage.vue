@@ -150,7 +150,11 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Tipo elemento -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Tipo de elemento</label>
+            <label-abrir-modal
+              label="Tipo de elemento"
+              @click="modalesProgresiva.abrirModalEntidad('TipoElementoPage')"
+            ></label-abrir-modal>
+            <!-- <label class="q-mb-sm block">Tipo de elemento</label> -->
             <q-select
               v-model="progresiva.tipo_elemento"
               :options="tiposElementos"
@@ -445,4 +449,4 @@
   </tab-layout>
 </template>
 
-<script src="./ProgresivaPage.ts"></script>
+<script src="./ControlProgresivaPage.ts"></script>

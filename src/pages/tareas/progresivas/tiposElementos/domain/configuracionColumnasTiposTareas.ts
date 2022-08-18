@@ -1,5 +1,5 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { TipoTarea } from './Progresiva'
+import { TipoTarea } from './TipoTarea'
 
 export const configuracionColumnasTiposTareas: ColumnConfig<TipoTarea>[] = [
   {

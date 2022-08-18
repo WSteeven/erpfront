@@ -1,4 +1,4 @@
-export class Progresiva {
+export class ControlProgresiva {
   id: number | null
   codigo_tarea_jp: string | null
   codigo_subtarea_jp: string | null

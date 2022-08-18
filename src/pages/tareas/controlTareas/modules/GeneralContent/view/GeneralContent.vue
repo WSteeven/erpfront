@@ -10,43 +10,45 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Numero cliente JP -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Código de tarea JP</label>
           <q-input
             v-model="tarea.codigo_tarea_jp"
-            label="Código de tarea JP"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Numero tarea cliente -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Código de tarea Cliente</label>
           <q-input
             v-model="tarea.codigo_tarea_cliente"
-            label="Código de tarea Cliente"
+            placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
           ></q-input>
         </div>
 
         <!-- Cliente -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Cliente</label>
           <q-input
             v-model="tarea.cliente"
-            label="Cliente"
+            placeholder="Obligatorio"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
-        <!-- Fecha de vencimiento -->
+        <!-- Fecha de inicio -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de inicio</label>
           <q-input
-            v-model="tarea.fecha_vencimiento"
-            label="Fecha de vencimiento"
+            v-model="tarea.fecha_inicio"
+            placeholder="Opcional"
             outlined
             dense
             mask="date"
@@ -59,7 +61,36 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="tarea.fecha_vencimiento">
+                  <q-date v-model="tarea.fecha_inicio">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+
+        <!-- Fecha de vencimiento -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de finalización</label>
+          <q-input
+            v-model="tarea.fecha_finalizacion"
+            placeholder="Opcional"
+            outlined
+            dense
+            mask="date"
+            :rules="['date']"
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date v-model="tarea.fecha_finalizacion">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -72,73 +103,74 @@
 
         <!-- Solicitante -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Persona solicitante</label>
           <q-input
             v-model="tarea.solicitante"
-            label="Persona que solicita"
+            placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
           ></q-input>
         </div>
 
         <!-- Correo -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Correo del solicitante</label>
           <q-input
             v-model="tarea.correo_solicitante"
-            label="Correo del solicitante"
+            placeholder="Opcional"
+            type="email"
             outlined
             dense
-            readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
           ></q-input>
         </div>
 
         <!-- Fecha agendado -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de agendamiento</label>
           <q-input
             v-model="tarea.fecha_agendado"
-            label="Fecha de agendamiento"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Hora agendado -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Hora de agendamiento</label>
           <q-input
             v-model="tarea.hora_agendado"
-            label="Hora de agendamiento"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Coordinador -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Coordinador</label>
           <q-input
             v-model="tarea.coordinador"
-            label="Coordinador"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Detalle -->
-        <div class="col-12 col-md-9">
+        <div class="col-12 col-md-6">
+          <label class="q-mb-sm block">Detalle</label>
           <q-input
             v-model="tarea.detalle"
-            label="Detalle"
+            placeholder="Obligatorio"
             outlined
             dense
             autogrow
             type="textarea"
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
       </div>
@@ -154,49 +186,49 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Nombre -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Nombres</label>
           <q-input
             v-model="tarea.nombre_contacto"
-            label="Nombre"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Apellidos -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Apellidos</label>
           <q-input
             v-model="tarea.apellidos_contacto"
-            label="Apellidos"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Teléfono -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Teléfono</label>
           <q-input
             v-model="tarea.telefono_contacto"
-            label="Teléfono"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Celular -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Celular</label>
           <q-input
             v-model="tarea.celular_contacto"
-            label="Celular"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
@@ -225,10 +257,10 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Provincia -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Provincias</label>
           <q-select
             v-model="tarea.provincia"
             :options="provincias"
-            label="Provincias"
             options-dense
             dense
             outlined
@@ -237,11 +269,11 @@
 
         <!-- Ciudad -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Ciudades</label>
           <q-select
             outlined
             v-model="tarea.ciudad"
             :options="ciudades"
-            label="Ciudades"
             options-dense
             dense
           />
@@ -249,85 +281,74 @@
 
         <!-- Parroquia -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Parroquia/Barrio</label>
           <q-input
             v-model="tarea.parroquia"
-            label="Parroquia/Barrio"
+            placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Direccion -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Dirección</label>
           <q-input
             v-model="tarea.direccion"
-            label="Dirección"
+            placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Referencias -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Referencias</label>
           <q-input
             v-model="tarea.referencias"
-            label="Referencias"
+            placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Georeferencia X -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Georeferencia Y (DMS)</label>
           <q-input
             v-model="tarea.georeferencia_x"
-            label="Georeferencia x"
+            placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
-          ></q-input>
+          >
+            <template #append>
+              <q-icon name="bi-arrow-repeat" class="q-mr-sm"></q-icon>
+              <div class="text-caption">Convertir a UTM</div>
+            </template>
+          </q-input>
         </div>
 
         <!-- Georeferencia Y -->
         <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Georeferencia Y (DMS)</label>
           <q-input
             v-model="tarea.georeferencia_y"
-            label="Georeferencia y"
+            placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Escribe algo']"
-          ></q-input>
-        </div></div
-    ></q-expansion-item>
+          >
+            <template #append>
+              <q-icon name="bi-arrow-repeat" class="q-mr-sm"></q-icon>
+              <div class="text-caption">Convertir a UTM</div>
+            </template>
+          </q-input>
+        </div>
+      </div></q-expansion-item
+    >
   </q-form>
 </template>
 
-<script lang="ts">
-// import { useAuthenticationStore } from 'src/stores/authentication'
-import { provincias, ciudades } from 'src/config/utils'
-import { defineComponent } from 'vue'
-import { useTareaStore } from 'src/stores/tarea'
-
-export default defineComponent({
-  setup() {
-    const tareaStore = useTareaStore()
-    const tarea = tareaStore.tarea
-
-    // const authenticationStore = useAuthenticationStore()
-
-    /* watchEffect(() => {
-      const usuario = authenticationStore.user
-      tarea.coordinador = `${usuario.name} ${usuario.apellidos ?? ''} `
-    }) */
-
-    function enviar() {
-      //
-    }
-
-    return { tarea, provincias, ciudades, enviar }
-  },
-})
-</script>
+<script src="./GeneralContent.ts"></script>

@@ -4,8 +4,8 @@ import { defineComponent, reactive, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'layouts/TabLayout.vue'
-import GeneralPage from 'src/pages/tareas/view/GeneralContent.vue'
-import SubtareasContent from 'src/pages/tareas/view/SubtareasContent.vue'
+import GeneralPage from 'src/pages/tareas/controlTareas/modules/GeneralContent/view/GeneralContent.vue'
+import SubtareasContent from 'src/pages/tareas/controlTareas/modules/subtareasContent/view/SubtareasContent.vue'
 import DevolucionMaterialesContent from 'src/pages/tareas/view/DevolucionMaterialesContent.vue'
 import PrefacturasContent from 'src/pages/tareas/view/PrefacturasContent.vue'
 
@@ -31,7 +31,7 @@ export default defineComponent({
     const done4 = ref(false)
     const done5 = ref(false)
 
-    const listado = [
+    const listado: any[] = [
       {
         id: 1,
         codigo_tarea_jp: 'JP000001',
@@ -40,7 +40,7 @@ export default defineComponent({
         cliente: 'NEDETEL',
         solicitante: 'JOAQUIN PIZARRO',
         correo_solicitante: 'JPIZARRO@NEDETEL.EC',
-        fecha_vencimiento: '2022/08/31',
+        fecha_finalizacion: '2022/08/31',
         fecha_agendado: '11/08/2022',
         hora_agendado: '08:32',
         coordinador: 'MARILÚ JARAMILLO',

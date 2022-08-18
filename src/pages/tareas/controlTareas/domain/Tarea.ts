@@ -1,21 +1,23 @@
-import { Hidratable } from 'src/pages/shared/entidad/domain/Hidratable'
+import { Hidratable } from 'pages/shared/entidad/domain/Hidratable'
 
 export class Tarea extends Hidratable {
+  id: number | null
   codigo_tarea_jp: string | null
   codigo_tarea_cliente: string | null
   detalle: string | null
   cliente: number | string | null
   solicitante: string | null
   correo_solicitante: string | null
-  fecha_vencimiento: string | null
+  fecha_inicio: string | null
+  fecha_finalizacion: string | null
   fecha_agendado: string | null
   hora_agendado: string | null
   coordinador: string | null
   estado: string | null // pendiente
   // ubicacion de cliente
-  provincia: number | null
-  ciudad: number | null
-  parroquia: number | null
+  provincia: string | null
+  ciudad: string | null
+  parroquia: string | null
   referencias: string | null
   direccion: string | null
   georeferencia_x: string | null
@@ -28,13 +30,15 @@ export class Tarea extends Hidratable {
 
   constructor() {
     super()
+    this.id = null
     this.codigo_tarea_jp = null
     this.codigo_tarea_cliente = null
     this.detalle = null
     this.cliente = null
     this.solicitante = null
     this.correo_solicitante = null
-    this.fecha_vencimiento = null
+    this.fecha_inicio = null
+    this.fecha_finalizacion = null
     this.fecha_agendado = null
     this.hora_agendado = null
     this.coordinador = null

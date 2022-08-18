@@ -1,5 +1,5 @@
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
-import { Tarea } from './Tarea'
+import { Tarea } from '../domain/Tarea'
 
 export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
   {

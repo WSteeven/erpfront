@@ -8,8 +8,8 @@
     active-class="my-menu-link"
     exact
   >
-    <q-item-section v-if="icon" avatar class="q-pa-sm">
-      <q-icon :name="icon" />
+    <q-item-section v-if="icon" avatar class="q-py-sm">
+      <q-icon :name="icon" size="sm" />
     </q-item-section>
 
     <q-item-section>
@@ -18,31 +18,25 @@
   </q-item>
 
   <!-- Tiene submenus -->
-  <q-expansion-item
-    v-else
-    clickable
-    tag="a"
-    active-class="my-menu-link"
-    exact
-    :label="title"
-    :icon="icon"
-  >
-    <q-item
-      v-for="child in children"
-      :key="child.title"
-      tag="a"
-      :to="child.link"
-      active-class="my-menu-link"
-      exact
-    >
-      <q-item-section v-if="child.icon" avatar class="q-pa-sm">
-        <q-icon :name="child.icon" size="xs" />
+  <q-expansion-item v-else clickable tag="a" active-class="my-menu-link" exact>
+    <template #header>
+      <q-item-section v-if="icon" avatar class="q-py-sm">
+        <q-icon :name="icon" size="sm" />
       </q-item-section>
 
       <q-item-section>
-        <q-item-label>{{ child.title }}</q-item-label>
+        <q-item-label>{{ title }}</q-item-label>
       </q-item-section>
-    </q-item>
+    </template>
+
+    <div v-for="child in children" :key="child.title">
+      <EssentialLink
+        :title="child.title ?? ''"
+        :link="child.link"
+        :icon="child.icon"
+        :children="child.children"
+      ></EssentialLink>
+    </div>
   </q-expansion-item>
 </template>
 

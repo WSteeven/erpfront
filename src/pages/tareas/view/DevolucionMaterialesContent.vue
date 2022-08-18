@@ -16,7 +16,7 @@
 <script lang="ts">
 // Dependencias
 import { defineComponent } from 'vue'
-import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
+import { configuracionColumnasSubtareas } from '../controlTareas/modules/subtareasContent/domain/configuracionColumnasSubtareas'
 
 // Componentes
 import EssentialTable from 'src/components/tables/view/EssentialTable.vue'

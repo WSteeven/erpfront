@@ -3,8 +3,8 @@
     {{ label }}
     <a :id="label" class="pointer" v-bind="$attrs" v-on="$attrs">
       <i class="bi bi-plus-circle" />
+      <q-tooltip class="bg-dark">{{ 'Agregar' }}</q-tooltip>
     </a>
-    <q-tooltip class="bg-dark">{{ 'Abrir modal' }}</q-tooltip>
   </label>
 </template>
 

@@ -1,4 +1,4 @@
-import { Tarea } from 'src/pages/tareas/domain/Tarea'
+import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 

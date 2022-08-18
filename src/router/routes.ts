@@ -14,14 +14,15 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/tareas',
         name: 'Control de tareas',
-        component: () => import('pages/tareas/view/TareaPage.vue'),
+        component: () =>
+          import('pages/tareas/controlTareas/view/TareaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/tipos-tareas',
         name: 'Tipos de tareas',
         component: () =>
-          import('pages/tareas/modules/tiposTareas/view/TipoTareaPage.vue'),
+          import('pages/tareas/tiposTareas/view/TipoTareaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -29,7 +30,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Solicitud de materiales',
         component: () =>
           import(
-            'pages/tareas/modules/solicitudMateriales/view/SolicitudMaterialesPage.vue'
+            'pages/tareas/solicitudMateriales/view/SolicitudMaterialesPage.vue'
           ),
         meta: { requiresAuth: true },
       },
@@ -37,7 +38,18 @@ const routes: RouteRecordRaw[] = [
         path: '/control-progresivas',
         name: 'Control de progresivas',
         component: () =>
-          import('pages/tareas/modules/progresivas/view/ProgresivaPage.vue'),
+          import(
+            'pages/tareas/progresivas/controlProgresivas/view/ControlProgresivaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-elementos',
+        name: 'Tipos de elementos',
+        component: () =>
+          import(
+            'pages/tareas/progresivas/tiposElementos/view/TipoElementoPage.vue'
+          ),
         meta: { requiresAuth: true },
       },
       {
@@ -45,7 +57,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Control diario de materiales',
         component: () =>
           import(
-            'pages/tareas/modules/controlDiarioMateriales/view/ControlDiarioMaterialPage.vue'
+            'pages/tareas/controlDiarioMateriales/view/ControlDiarioMaterialPage.vue'
           ),
         meta: { requiresAuth: true },
       },
