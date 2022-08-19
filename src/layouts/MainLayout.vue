@@ -61,10 +61,10 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-grey-2">
       <!-- Drawer Header -->
       <div class="absolute-top text-center q-pa-md">
-        <q-avatar size="58px" class="q-mb-md">
-          <img src="src/assets/logo.jpeg" />
+        <q-avatar size="58px" class="q-mb-md" square>
+          <img src="src/assets/logo.svg" />
         </q-avatar>
-        <div class="text-h5 text-primary">JPCONSTRUCRED</div>
+        <div class="text-h5 text-primary">CONSTRUCRED</div>
       </div>
 
       <!-- Drawer Body -->

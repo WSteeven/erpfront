@@ -14,6 +14,7 @@ export class Tarea extends Hidratable {
   hora_agendado: string | null
   coordinador: string | null
   estado: string | null // pendiente
+  es_proyecto: boolean
   // ubicacion de cliente
   provincia: string | null
   ciudad: string | null
@@ -43,6 +44,7 @@ export class Tarea extends Hidratable {
     this.hora_agendado = null
     this.coordinador = null
     this.estado = null
+    this.es_proyecto = false
     // ubicacion de cliente
     this.provincia = null
     this.ciudad = null

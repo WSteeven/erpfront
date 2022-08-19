@@ -173,6 +173,16 @@
             :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
+
+        <!-- Es proyecto -->
+        <div class="col-12 col-md-3">
+          <q-checkbox
+            v-model="tarea.es_proyecto"
+            label="Es proyecto"
+            outlined
+            dense
+          ></q-checkbox>
+        </div>
       </div>
     </q-expansion-item>
 

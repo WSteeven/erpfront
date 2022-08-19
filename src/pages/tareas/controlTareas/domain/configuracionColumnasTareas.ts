@@ -12,7 +12,7 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
   {
     name: 'codigo_tarea_cliente',
     field: 'codigo_tarea_cliente',
-    label: 'Código tarea cliente',
+    label: 'Código tarea Cliente',
     align: 'center',
     sortable: true,
   },
@@ -32,9 +32,9 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     visible: false,
   },
   {
-    name: 'fecha_vencimiento',
-    field: 'fecha_vencimiento',
-    label: 'Fecha de vencimiento',
+    name: 'fecha_finalizacion',
+    field: 'fecha_finalizacion',
+    label: 'Fecha de finalización',
     align: 'center',
     sortable: true,
     visible: false,

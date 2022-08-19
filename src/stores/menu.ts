@@ -8,7 +8,7 @@ export const useMenuStore = defineStore('menu', () => {
       header: 'Modulos',
     },
     {
-      title: 'Dashboard',
+      title: 'Inicio',
       icon: 'bi-layers-fill',
       link: '/',
     },
@@ -27,7 +27,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title: 'Solicitud de materiales',
+          title: 'Solicitud de materiales a bodega',
+          link: 'solicitud-materiales',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Devolución de materiales a bodega',
           link: 'solicitud-materiales',
           icon: 'bi-circle',
         },
@@ -60,6 +65,11 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Control diario de materiales',
           link: 'control-diario-materiales',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Control de cambios',
+          link: 'control-cambios',
           icon: 'bi-circle',
         },
       ],
@@ -96,7 +106,18 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Configuración',
       icon: 'bi-gear-fill',
-      link: 'configuracion',
+      children: [
+        {
+          title: 'Imprimir / Exportar',
+          link: 'tareas',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Empresa',
+          link: 'control-progresivas',
+          icon: 'bi-circle',
+        },
+      ],
     },
   ]
 

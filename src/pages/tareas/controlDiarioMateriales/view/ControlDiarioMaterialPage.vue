@@ -9,9 +9,9 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Tarea JP -->
           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Código tarea JP</label>
             <q-input
               v-model="control.codigo_tarea_jp"
-              label="Tarea"
               outlined
               dense
               :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"

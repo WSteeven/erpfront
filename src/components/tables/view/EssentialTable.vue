@@ -88,22 +88,20 @@
 
         <!-- Botones exportar -->
         <div class="row q-gutter-sm justify-end">
-          <q-btn
-            color="positive"
-            label="Exportar CSV"
-            no-caps
-            push
-            rounded
-            @click="exportTable()"
-          ></q-btn>
-          <q-btn
-            color="positive"
-            label="Exportar Excel"
-            no-caps
-            push
-            rounded
-            @click="exportTable()"
-          ></q-btn>
+          <q-btn color="positive" push rounded @click="exportTable()" no-caps>
+            <q-icon name="bi-printer" class="q-pr-sm" size="xs"></q-icon>
+            <div>Imprimir</div>
+          </q-btn>
+
+          <q-btn color="positive" no-caps push rounded @click="exportTable()">
+            <q-icon
+              name="bi-file-spreadsheet"
+              class="q-pr-sm"
+              size="xs"
+            ></q-icon>
+            <div>Exportar Excel</div>
+          </q-btn>
+
           <q-btn color="positive" push rounded @click="exportTable()" no-caps>
             <q-icon name="bi-eye" class="q-pr-sm" size="xs"></q-icon>
             <div>Mostrar filtros</div>

@@ -12,10 +12,10 @@ export class ProgresivaModales {
 
   constructor() {
     this.TipoTareaPage = markRaw(
-      new ComponenteModal('Tipos de tareas', TipoTareaPage)
+      new ComponenteModal('CONSTRUCRED', TipoTareaPage)
     )
     this.TipoElementoPage = markRaw(
-      new ComponenteModal('Tipos de elementos', TipoElementoPage)
+      new ComponenteModal('CONSTRUCRED', TipoElementoPage)
     )
   }
 }

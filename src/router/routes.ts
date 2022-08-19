@@ -62,6 +62,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/control-cambios',
+        name: 'Control cambios',
+        component: () =>
+          import('pages/tareas/controlCambios/view/ControlCambioPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/perfil',
         name: 'Perfil',
         component: () => import('pages/perfil/view/PerfilPage.vue'),

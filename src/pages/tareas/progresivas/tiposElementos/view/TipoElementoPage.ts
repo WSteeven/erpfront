@@ -1,78 +1,38 @@
 // Dependencias
-import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTiposTareas'
+import { configuracionColumnasTiposElementos } from '../domain/configuracionColumnasTiposElementos'
 import { defineComponent, reactive } from 'vue'
 
 // Componentes
 import TabLayout from 'layouts/TabLayout.vue'
 
 // Logica y controladores
-import { TipoTarea } from '../domain/TipoTarea'
+import { TipoElemento } from '../domain/TipoElemento'
 
 export default defineComponent({
   components: { TabLayout },
   setup() {
-    const tipoTarea = reactive(new TipoTarea())
+    const tipoElemento = reactive(new TipoElemento())
 
     const datos = [
       {
-        cliente: 'ACCESS',
-        categoria: 'RECABLEADO',
-        nombre: 'RFO01-RECABLEADO CUADNO EL DAÑO ES FUERA DE CASA DEL CLIENTE',
+        id: 1,
+        nombre: 'POSTE',
       },
       {
-        cliente: 'ACCESS',
-        categoria: 'INSTALACIÓN NUEVA',
-        nombre: 'IBF01-INSTALACIÓN BÁSICA CASA GPON HASTA 300 METROS',
+        id: 2,
+        nombre: 'CAJA',
       },
       {
-        cliente: 'ACCESS',
-        categoria: 'INSTALACIÓN NUEVA',
-        nombre: 'IBF02-INSTALACIÓN BÁSICA EDIFICIO GPON 300 METROS',
+        id: 3,
+        nombre: 'AMERICANO',
       },
       {
-        cliente: 'NEDETEL',
-        categoria: 'TAREA PROGRAMADA',
-        nombre: 'TP-ARREGLO PATH NODO',
+        id: 4,
+        nombre: 'RADIO BASE',
       },
       {
-        cliente: 'NEDETEL',
-        categoria: 'TAREA PROGRAMADA',
-        nombre: 'TP-CAMBIO DE MANGAS',
-      },
-      {
-        cliente: 'NEDETEL',
-        categoria: 'CORTE FIBRA',
-        nombre: 'CF-ACCIDENTE DE TRÁNSITO',
-      },
-      {
-        cliente: 'NEDETEL',
-        categoria: '',
-        nombre: 'INSTALACIÓN',
-      },
-      {
-        cliente: 'NEDETEL',
-        categoria: '',
-        nombre: 'CABLEADO',
-      },
-      {
-        cliente: 'TELCONET',
-        categoria: '',
-        nombre: 'HINCADO',
-      },
-      {
-        cliente: 'TELCONET',
-        categoria: '',
-        nombre: 'RETIRO',
-      },
-      {
-        cliente: 'TELCONET',
-        categoria: '',
-        nombre: 'TENDIDO',
-      },
-      {
-        cliente: 'TELCONET',
-        categoria: '',
-        nombre: 'DESMONTAJE',
+        id: 5,
+        nombre: 'NODO',
       },
     ]
 
@@ -80,9 +40,9 @@ export default defineComponent({
       //
     }
     return {
-      tipoTarea,
+      tipoElemento,
       datos,
-      configuracionColumnas: configuracionColumnasTiposTareas,
+      configuracionColumnas: configuracionColumnasTiposElementos,
     }
   },
 })

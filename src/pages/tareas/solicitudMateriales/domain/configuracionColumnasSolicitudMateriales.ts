@@ -11,6 +11,13 @@ export const configuracionColumnasSolicitudMateriales: ColumnConfig<SolicitudMat
       sortable: true,
     },
     {
+      name: 'codigo_tarea_jp',
+      field: 'codigo_tarea_jp',
+      label: 'Código tarea JP',
+      align: 'left',
+      sortable: true,
+    },
+    {
       name: 'grupo',
       field: 'grupo',
       label: 'Grupo solicitante',

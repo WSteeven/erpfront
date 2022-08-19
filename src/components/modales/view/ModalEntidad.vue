@@ -3,7 +3,7 @@
     <q-card>
       <q-toolbar>
         <q-avatar>
-          <img src="src/assets/logo.jpeg" />
+          <img src="src/assets/logo.svg" />
         </q-avatar>
 
         <q-toolbar-title>{{ titulo }}</q-toolbar-title>

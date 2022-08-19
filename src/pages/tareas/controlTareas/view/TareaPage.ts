@@ -36,7 +36,8 @@ export default defineComponent({
         id: 1,
         codigo_tarea_jp: 'JP000001',
         codigo_tarea_cliente: 'ADD878',
-        detalle: 'Nombre de tarea',
+        detalle:
+          'RUTA MPLS CIRCULAR PALMALES, HINCADO DE POSTE EN RUTA MPLS CIRCULAR PALMALES',
         cliente: 'NEDETEL',
         solicitante: 'JOAQUIN PIZARRO',
         correo_solicitante: 'JPIZARRO@NEDETEL.EC',

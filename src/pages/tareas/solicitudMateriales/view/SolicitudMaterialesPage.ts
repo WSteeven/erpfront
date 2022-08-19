@@ -28,16 +28,25 @@ export default defineComponent({
         fecha_solicitud: '15/08/2022',
         grupo: 'MACHALA',
         estado: 'PENDIENTE',
+        codigo_tarea_jp: 'JP000001',
+        detalle_tarea:
+          'RUTA MPLS CIRCULAR PALMALES, HINCADO DE POSTE EN RUTA MPLS CIRCULAR PALMALES',
       },
       {
         fecha_solicitud: '15/08/2022',
         grupo: 'MACHALA',
         estado: 'APROBADO',
+        codigo_tarea_jp: 'JP000001',
+        detalle_tarea:
+          'RUTA MPLS CIRCULAR PALMALES, HINCADO DE POSTE EN RUTA MPLS CIRCULAR PALMALES',
       },
       {
         fecha_solicitud: '15/08/2022',
         grupo: 'MACHALA',
         estado: 'RECHAZADO',
+        codigo_tarea_jp: 'JP000001',
+        detalle_tarea:
+          'RUTA MPLS CIRCULAR PALMALES, HINCADO DE POSTE EN RUTA MPLS CIRCULAR PALMALES',
       },
     ]
 
