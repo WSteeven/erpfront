@@ -4,6 +4,7 @@ export class MaterialesSolicitados {
   nombre_producto: string | null
   cantidad_solicitada: number | null
   cantidad_despachada: number | null
+  cantidad_usada: number | null
 
   constructor() {
     this.id = null
@@ -11,5 +12,6 @@ export class MaterialesSolicitados {
     this.nombre_producto = null
     this.cantidad_solicitada = null
     this.cantidad_despachada = null
+    this.cantidad_usada = null
   }
 }

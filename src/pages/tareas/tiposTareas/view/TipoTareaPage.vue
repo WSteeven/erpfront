@@ -9,27 +9,29 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Cliente -->
           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cliente</label>
             <q-input
               v-model="tipoTarea.cliente"
-              label="Cliente"
+              placeholder="Obligatorio"
               outlined
               dense
-              :rules="[(val: string) => (val && val.length > 0) || 'Escribe algo']"
+              :rules="[(val: string) => (val && val.length > 0) || 'Campo requerido']"
             ></q-input>
           </div>
 
           <!-- Nombre -->
           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Descripción</label>
             <q-input
               v-model="tipoTarea.nombre"
-              label="Nombre de tarea"
+              placeholder="Obligatorio"
               outlined
               dense
-              :rules="[(val: string) => (val && val.length > 0) || 'Escribe algo']"
+              :rules="[(val: string) => (val && val.length > 0) || 'Campo requerido']"
             ></q-input>
           </div>
 
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 q-pt-lg">
             <q-checkbox
               v-model="tipoTarea.tiene_categoria"
               label="Tiene categoría"
@@ -38,12 +40,12 @@
 
           <!-- Categoria -->
           <div v-if="tipoTarea.tiene_categoria" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Categoría</label>
             <q-input
               v-model="tipoTarea.categoria"
-              label="Categoría"
+              placeholder="Opcional"
               outlined
               dense
-              :rules="[(val: string) => (val && val.length > 0) || 'Escribe algo']"
             ></q-input>
           </div>
         </div>

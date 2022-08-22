@@ -19,6 +19,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/subtareas',
+        name: 'Subtareas',
+        component: () => import('pages/tareas/subtareas/view/SubtareaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/tipos-tareas',
         name: 'Tipos de tareas',
         component: () =>
@@ -66,6 +72,15 @@ const routes: RouteRecordRaw[] = [
         name: 'Control cambios',
         component: () =>
           import('pages/tareas/controlCambios/view/ControlCambioPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/control-asistencia',
+        name: 'Control de asistencia',
+        component: () =>
+          import(
+            'pages/tareas/controlAsistencia/view/ControlAsistenciaPage.vue'
+          ),
         meta: { requiresAuth: true },
       },
       {

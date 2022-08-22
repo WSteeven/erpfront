@@ -6,6 +6,8 @@ import { defineComponent, reactive, ref } from 'vue'
 import TabLayout from 'layouts/TabLayout.vue'
 import GeneralPage from 'src/pages/tareas/controlTareas/modules/GeneralContent/view/GeneralContent.vue'
 import SubtareasContent from 'src/pages/tareas/controlTareas/modules/subtareasContent/view/SubtareasContent.vue'
+import ResumenMaterialSolicitadoContent from 'src/pages/tareas/controlTareas/modules/resumenMaterialesSolicitados/view/ResumenMaterialSolicitadoContent.vue'
+
 import DevolucionMaterialesContent from 'src/pages/tareas/view/DevolucionMaterialesContent.vue'
 import PrefacturasContent from 'src/pages/tareas/view/PrefacturasContent.vue'
 
@@ -20,6 +22,7 @@ export default defineComponent({
     SubtareasContent,
     PrefacturasContent,
     DevolucionMaterialesContent,
+    ResumenMaterialSolicitadoContent,
   },
   setup() {
     const tarea = reactive(new Tarea())

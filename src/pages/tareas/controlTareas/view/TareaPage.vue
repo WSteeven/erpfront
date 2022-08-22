@@ -11,7 +11,7 @@
         header-nav
         ref="stepper"
         color="primary"
-        active-icon="bi-controller"
+        active-icon="bi-check"
         animated
         bordered
         flat
@@ -24,6 +24,16 @@
         <!-- Subtareas -->
         <q-step :name="2" title="Subtareas" icon="bi-list-check" :done="done2">
           <subtareas-content></subtareas-content>
+        </q-step>
+
+        <!-- Resumen materiales solicitados a bodega -->
+        <q-step
+          :name="3"
+          title="Resumen de materiales solicitados a bodega"
+          icon="bi-wrench-adjustable"
+          :done="done3"
+        >
+          <resumen-material-solicitado-content></resumen-material-solicitado-content>
         </q-step>
       </q-stepper>
     </template>

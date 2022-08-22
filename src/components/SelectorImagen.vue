@@ -14,6 +14,7 @@
   </q-file>
 
   <q-img
+    v-show="imagenCodificada"
     :src="imagenCodificada"
     style="max-width: 100%; height: 150px"
     fit="cover"

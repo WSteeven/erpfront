@@ -1,8 +1,11 @@
 <template>
   <essential-table
     titulo="subtareas"
-    :configuracionColumnas="configuracionColumnasSubtareas"
+    :configuracionColumnas="configuracionColumnas"
     :datos="listado"
+    :accion1="botonEditarSubtarea"
+    :permitirConsultar="false"
+    :permitirEditar="false"
   ></essential-table>
 
   <div class="row justify-end q-gutter-sm q-pt-md">

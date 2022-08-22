@@ -1,13 +1,16 @@
 // Dependencias
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { defineComponent } from 'vue'
 
 // Componentes
-import EssentialTable from 'src/components/tables/view/EssentialTable.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   components: { EssentialTable },
   setup() {
+    const router = useRouter()
     //
     const listado = [
       {
@@ -27,6 +30,30 @@ export default defineComponent({
         estado: 'CREADO',
       },
     ]
-    return { configuracionColumnasSubtareas, listado }
+
+    const configuracionColumnas = [
+      ...configuracionColumnasSubtareas,
+      {
+        name: 'acciones',
+        field: 'acciones',
+        label: 'Acciones',
+        align: 'center',
+      },
+    ]
+
+    const botonEditarSubtarea: CustomActionTable = {
+      titulo: 'Gestionar',
+      accion: (entidad) => {
+        console.log(entidad)
+        router.replace({ name: 'Subtareas' })
+      },
+    }
+
+    return {
+      configuracionColumnas,
+      configuracionColumnasSubtareas,
+      listado,
+      botonEditarSubtarea,
+    }
   },
 })

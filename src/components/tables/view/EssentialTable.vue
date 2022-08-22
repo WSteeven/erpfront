@@ -87,7 +87,7 @@
         </div>
 
         <!-- Botones exportar -->
-        <div class="row q-gutter-sm justify-end">
+        <div v-if="mostrarBotones" class="row q-gutter-sm justify-end">
           <q-btn color="positive" push rounded @click="exportTable()" no-caps>
             <q-icon name="bi-printer" class="q-pr-sm" size="xs"></q-icon>
             <div>Imprimir</div>
@@ -125,8 +125,10 @@
           <q-icon name="bi-eye" color="primary" size="xs"></q-icon>
           <q-tooltip class="bg-dark"> Consultar </q-tooltip>
         </q-btn>
+
         <!-- Editar -->
         <q-btn
+          v-if="permitirEditar"
           color="indigo-1"
           round
           unelevated
@@ -136,8 +138,10 @@
           <q-icon name="bi-pencil" color="primary" size="xs"></q-icon>
           <q-tooltip class="bg-dark"> Editar </q-tooltip>
         </q-btn>
+
         <!-- Eliminar -->
         <q-btn
+          v-if="permitirEliminar"
           color="indigo-1"
           round
           unelevated
@@ -150,23 +154,23 @@
 
         <!-- Accion personalizada 1 -->
         <q-btn
-          v-if="permitirAccion1"
+          v-if="accion1"
           color="primary"
           rounded
           unelevated
           dense
           outline
           no-caps
-          label="Gestionar"
+          :label="accion1.titulo"
           class="q-px-sm"
-          @click="accion1(props.row)"
+          @click="accion1?.accion(props.row)"
         >
-          <q-tooltip class="bg-dark"> Accion 1 </q-tooltip>
+          <q-tooltip class="bg-dark"> {{ accion1.titulo }} </q-tooltip>
         </q-btn>
       </q-td>
     </template>
 
-    <!-- Botones de acciones Mobile  -->
+    <!-- Botones de acciones Mobile (Grid)  -->
     <template v-slot:item="props">
       <q-card
         :class="props.selected ? 'bg-grey-2' : ''"
@@ -200,8 +204,10 @@
                   <q-icon name="bi-eye" color="primary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Consultar </q-tooltip>
                 </q-btn>
+
                 <!-- Editar -->
                 <q-btn
+                  v-if="permitirEditar"
                   color="indigo-1"
                   round
                   unelevated
@@ -211,8 +217,10 @@
                   <q-icon name="bi-pencil" color="primary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
                 </q-btn>
+
                 <!-- Eliminar -->
                 <q-btn
+                  v-if="permitirEliminar"
                   color="indigo-1"
                   round
                   unelevated
@@ -225,18 +233,18 @@
 
                 <!-- Accion personalizada 1 -->
                 <q-btn
-                  v-if="permitirAccion1"
+                  v-if="accion1"
                   color="primary"
                   rounded
                   unelevated
                   dense
                   outline
                   no-caps
-                  label="Gestionar"
+                  :label="accion1.titulo"
                   class="q-px-sm"
-                  @click="accion1(props.row)"
+                  @click="accion1?.accion(props.row)"
                 >
-                  <q-tooltip class="bg-dark"> Accion 1 </q-tooltip>
+                  <q-tooltip class="bg-dark">{{ accion1.titulo }} </q-tooltip>
                 </q-btn>
               </div>
 
@@ -264,6 +272,7 @@
 
 <script lang="ts" setup>
 import { Hidratable } from 'src/pages/shared/entidad/domain/Hidratable'
+import { CustomActionTable } from '../domain/CustomActionTable'
 import { getVisibleColumns } from 'src/pages/shared/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'src/config/utils'
@@ -296,13 +305,17 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  permitirAccion1: {
-    type: Boolean,
-    default: false,
-  },
   tipoSeleccion: {
     type: String as () => TipoSeleccion,
     default: 'none',
+  },
+  accion1: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  mostrarBotones: {
+    type: Boolean,
+    default: true,
   },
 })
 
@@ -321,7 +334,7 @@ const grid = ref(false)
 const consultar = (data: object) => emit('consultar', data)
 const editar = (data: object) => emit('editar', data)
 const eliminar = (data: object) => emit('eliminar', data)
-const accion1 = (data: object) => emit('accion1', data)
+//const accion1 = (data: object) => emit('accion1', data)
 
 // Variables
 const filter = ref(null)

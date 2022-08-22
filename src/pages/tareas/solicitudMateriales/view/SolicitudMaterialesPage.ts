@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasMaterialesSolicitados } from '../domain/configuracionColumnasMaterialesSolicitados'
 import { configuracionColumnasSolicitudMateriales } from '../domain/configuracionColumnasSolicitudMateriales'
-import { getIndexOf } from 'src/pages/shared/utils'
 import { defineComponent, reactive, ref, Ref } from 'vue'
+import { getIndexOf } from 'src/pages/shared/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -57,6 +57,7 @@ export default defineComponent({
         nombre_producto: 'HERRAJE FIBRA OPTICO TIPO A BASE CON DOBLE',
         cantidad_solicitada: 10,
         cantidad_despachada: 0,
+        cantidad_usada: 0,
       },
       {
         id: 2,
@@ -64,6 +65,7 @@ export default defineComponent({
         nombre_producto: 'HERRAJE B',
         cantidad_solicitada: 9,
         cantidad_despachada: 0,
+        cantidad_usada: 0,
       },
       {
         id: 3,
@@ -71,6 +73,7 @@ export default defineComponent({
         nombre_producto: 'PREFORMADO AMARILLO',
         cantidad_solicitada: 140,
         cantidad_despachada: 0,
+        cantidad_usada: 0,
       },
       {
         id: 4,
@@ -78,6 +81,7 @@ export default defineComponent({
         nombre_producto: 'HEBILLA DE ACERO 2/4',
         cantidad_solicitada: 9,
         cantidad_despachada: 0,
+        cantidad_usada: 0,
       },
       {
         id: 5,
@@ -85,6 +89,7 @@ export default defineComponent({
         nombre_producto: 'GRILLETE PARA CABLE DE 3/6 (10MM)',
         cantidad_solicitada: 72,
         cantidad_despachada: 0,
+        cantidad_usada: 0,
       },
       {
         id: 6,
@@ -92,6 +97,7 @@ export default defineComponent({
         nombre_producto: 'AMARRAS PLÁSTICAS 30 CM',
         cantidad_solicitada: 200,
         cantidad_despachada: 0,
+        cantidad_usada: 0,
       },
       {
         id: 7,
@@ -99,6 +105,7 @@ export default defineComponent({
         nombre_producto: 'AMARRAS PLÁSTICAS 15 CM',
         cantidad_solicitada: 200,
         cantidad_despachada: 0,
+        cantidad_usada: 0,
       },
       {
         id: 8,
@@ -106,6 +113,7 @@ export default defineComponent({
         nombre_producto: 'ETIQUETAS ACRÍLICAS',
         cantidad_solicitada: 166,
         cantidad_despachada: 0,
+        cantidad_usada: 0,
       },
     ])
 

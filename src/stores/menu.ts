@@ -27,6 +27,11 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Control de asistencia',
+          link: 'control-asistencia',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Solicitud de materiales a bodega',
           link: 'solicitud-materiales',
           icon: 'bi-circle',
