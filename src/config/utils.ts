@@ -23,3 +23,5 @@ export const propietariosElementos = [
 ]
 
 export const estadoElementos = ['BUENO', 'MALO']
+
+export const grupos = ['MACHALA', 'SANTO DOMINGO']

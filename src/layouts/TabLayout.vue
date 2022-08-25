@@ -1,13 +1,18 @@
 <template>
-  <q-page padding>
+  <div padding>
     <slot name="modales" />
 
     <div class="text-h6 q-my-md q-ml-md">{{ tituloPagina }}</div>
 
     <!-- Tabs -->
     <q-tabs v-model="tab" align="left" narrow-indicator class="q-mb-lg">
-      <q-tab name="formulario" label="Formulario" no-caps />
-      <q-tab name="listado" label="Listado" no-caps />
+      <q-tab
+        v-if="mostrarFormulario"
+        name="formulario"
+        label="Formulario"
+        no-caps
+      />
+      <q-tab v-if="mostrarListado" name="listado" label="Listado" no-caps />
     </q-tabs>
 
     <!-- Tab content -->
@@ -24,10 +29,10 @@
           v-if="mostrarButtonSubmits"
           class="row justify-end q-gutter-sm q-pt-md"
         >
-          <q-btn color="primary" no-caps>
+          <q-btn color="primary" no-caps push>
             <q-icon name="bi-save" class="q-pr-sm" size="xs"></q-icon>
             <div>Guardar</div> </q-btn
-          ><q-btn color="negative" no-caps>
+          ><q-btn color="negative" no-caps push>
             <q-icon name="bi-x" class="q-pr-sm" size="xs"></q-icon>
             <div>Cancelar</div>
           </q-btn>
@@ -46,7 +51,7 @@
         ></essential-table>
       </q-tab-panel>
     </q-tab-panels>
-  </q-page>
+  </div>
 </template>
 
 <script lang="ts">
@@ -77,6 +82,14 @@ export default defineComponent({
     tituloPagina: {
       type: String,
     },
+    mostrarFormulario: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarListado: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: { EssentialTable },
   setup(props) {
@@ -106,7 +119,7 @@ export default defineComponent({
     }
 
     const seleccionado = ref()
-    const tab = ref('listado')
+    const tab = ref('formulario')
 
     const tituloTabla =
       Router.currentRoute.value.name?.toString().toLowerCase() ?? ''

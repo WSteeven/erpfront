@@ -12,7 +12,7 @@ export const configuracionColumnasTiposTareas: ColumnConfig<Tecnico>[] = [
   {
     name: 'apellidos',
     field: 'apellidos',
-    label: 'Apellidios',
+    label: 'Apellidos',
     align: 'left',
     sortable: true,
   },

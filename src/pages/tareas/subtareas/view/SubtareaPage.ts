@@ -1,17 +1,25 @@
 // Dependencias
 import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTecnico'
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, Ref, ref } from 'vue'
+import { grupos } from 'src/config/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { Subtarea } from '../domain/Subtarea'
+import { Tecnico } from '../domain/Tecnico'
+import { getIndexOf } from 'src/pages/shared/utils'
+import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
 
 export default defineComponent({
-  components: { EssentialTable },
+  components: { EssentialTable, LabelAbrirModal, ModalesEntidad },
   setup() {
     const subtarea = reactive(new Subtarea())
+    const busqueda = ref()
+    const tecnicoSeleccionado = ref()
 
     const seleccionBusqueda = ref('por_tecnico')
 
@@ -25,17 +33,31 @@ export default defineComponent({
       },
     ]
 
-    const datos = [
+    const datos: Ref<Tecnico[]> = ref([
       {
-        cliente: 'ACCESS',
-        categoria: 'RECABLEADO',
-        nombre: 'RFO01-RECABLEADO CUADNO EL DAÑO ES FUERA DE CASA DEL CLIENTE',
+        id: 1,
+        nombres: 'LUIS',
+        apellidos: 'TORRES',
+        grupo: 'MACHALA',
       },
-    ]
+      {
+        id: 2,
+        nombres: 'ROBERTO',
+        apellidos: 'CAICEDO',
+        grupo: 'SANTO DOMINGO',
+      },
+    ])
 
     function enviar() {
       //
     }
+
+    function eliminarTecnico(entidad) {
+      const index = getIndexOf(datos.value, entidad.id)
+      datos.value.splice(index, 1)
+    }
+
+    const modalesSubtarea = new ComportamientoModalesSubtarea()
 
     return {
       subtarea,
@@ -43,6 +65,11 @@ export default defineComponent({
       columnas,
       datos,
       enviar,
+      tecnicoSeleccionado,
+      busqueda,
+      grupos,
+      eliminarTecnico,
+      modalesSubtarea,
     }
   },
 })
