@@ -7,9 +7,9 @@ export const configuracionColumnasSubtareas = [
     sortable: true,
   },
   {
-    name: 'codigo_subtarea_jp',
-    field: 'codigo_subtarea_jp',
-    label: 'Código de subtarea JP',
+    name: 'codigo_subtarea',
+    field: 'codigo_subtarea',
+    label: 'Código de subtarea',
     align: 'left',
     sortable: true,
   },

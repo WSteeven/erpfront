@@ -3,24 +3,27 @@
   <q-table
     :hide-header="grid"
     :grid="grid"
-    :columns="(configuracionColumnas as any)"
+    :columns="configuracionColumnas"
     :rows="datos"
     :filter="filter"
     row-key="id"
     :visible-columns="visibleColumns"
     flat
     bordered
+    virtual-scroll
     :selection="tipoSeleccion"
     v-model:selected="selected"
-    :pagination="{ rowsPerPage: 10 }"
+    :pagination="{ rowsPerPage: 0 }"
+    :rows-per-page-options="[0]"
     class="bg-white"
+    :class="{ 'alto-fijo': !inFullscreen, 'my-sticky-dynamic': !inFullscreen }"
   >
     <!-- Header table -->
     <template v-slot:top="props">
       <div class="column full-width">
         <div class="row justify-between items-center q-mb-md">
           <div :class="{ 'q-mb-md': $q.screen.xs }">
-            <div class="text-h6">{{ 'Listado de ' + titulo }}</div>
+            <div class="text-bold">{{ 'Listado de ' + titulo }}</div>
             <small>JPCONSTRUCRED</small>
           </div>
           <!-- <q-space></q-space> -->
@@ -54,7 +57,6 @@
               :class="{ 'full-width': $q.screen.xs }"
               style="min-width: 150px"
             />
-
             <q-btn
               flat
               round
@@ -62,7 +64,12 @@
               :icon="
                 props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'
               "
-              @click="props.toggleFullscreen"
+              @click="
+                () => {
+                  props.toggleFullscreen()
+                  inFullscreen = !props.inFullscreen
+                }
+              "
               class="q-ml-md"
             >
               <q-tooltip class="bg-dark">{{
@@ -270,129 +277,35 @@
   </q-table>
 </template>
 
-<script lang="ts" setup>
-import { Hidratable } from 'src/pages/shared/entidad/domain/Hidratable'
-import { CustomActionTable } from '../domain/CustomActionTable'
-import { getVisibleColumns } from 'src/pages/shared/utils'
-import { ColumnConfig } from '../domain/ColumnConfig'
-import { TipoSeleccion } from 'src/config/utils'
-import { exportFile, useQuasar } from 'quasar'
-import { ref } from 'vue'
+<style lang="scss">
+.my-sticky-dynamic {
+  /* height or max-height is important */
+  height: 410px;
 
-// Props
-const props = defineProps({
-  titulo: {
-    type: String,
-    default: 'Listado',
-  },
-  configuracionColumnas: {
-    type: Object as () => ColumnConfig<Hidratable>[],
-    required: true,
-  },
-  datos: {
-    type: Array,
-    required: true,
-  },
-  permitirConsultar: {
-    type: Boolean,
-    default: true,
-  },
-  permitirEditar: {
-    type: Boolean,
-    default: true,
-  },
-  permitirEliminar: {
-    type: Boolean,
-    default: true,
-  },
-  tipoSeleccion: {
-    type: String as () => TipoSeleccion,
-    default: 'none',
-  },
-  accion1: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  mostrarBotones: {
-    type: Boolean,
-    default: true,
-  },
-})
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th {
+    /* bg color is important for th; just specify one */
+    background-color: #fff;
+  }
 
-// Emits
-const emit = defineEmits([
-  'consultar',
-  'editar',
-  'eliminar',
-  'accion1',
-  'accion2',
-])
-
-const grid = ref(false)
-
-// Acciones tabla
-const consultar = (data: object) => emit('consultar', data)
-const editar = (data: object) => emit('editar', data)
-const eliminar = (data: object) => emit('eliminar', data)
-//const accion1 = (data: object) => emit('accion1', data)
-
-// Variables
-const filter = ref(null)
-const selected = ref([])
-const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
-
-// Observers
-// watch(selected, () => emit('selected', JSON.stringify(selected.value)))
-
-const $q = useQuasar()
-
-function wrapCsvValue(val, formatFn?, row?) {
-  let formatted = formatFn !== void 0 ? formatFn(val, row) : val
-
-  formatted =
-    formatted === void 0 || formatted === null ? '' : String(formatted)
-
-  formatted = formatted.split('"').join('""')
-  /**
-   * Excel accepts \n and \r in strings, but some other CSV parsers do not
-   * Uncomment the next two lines to escape new lines
-   */
-  // .split('\n').join('\\n')
-  // .split('\r').join('\\r')
-
-  return `"${formatted}"`
-}
-
-function exportTable() {
-  // naive encoding to csv format
-  const content = [
-    props.configuracionColumnas.map((col) => wrapCsvValue(col.label)),
-  ]
-    .concat(
-      props.datos.map((row: any) =>
-        props.configuracionColumnas
-          .map((col: any) =>
-            wrapCsvValue(
-              typeof col.field === 'function'
-                ? col.field(row)
-                : row[col.field === void 0 ? col.name : col.field],
-              col.format,
-              row
-            )
-          )
-          .join(',')
-      )
-    )
-    .join('\r\n')
-
-  const status = exportFile('table-export.csv', '\ufeff' + content, 'text/csv')
-
-  if (status !== true) {
-    $q.notify({
-      message: 'Browser denied file download...',
-      color: 'negative',
-      icon: 'warning',
-    })
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+  }
+  /* this will be the loading indicator */
+  thead tr:last-child th {
+    /* height of all previous header rows */
+    top: 48px;
+  }
+  thead tr:first-child th {
+    top: 0;
   }
 }
-</script>
+
+.alto-fijo {
+  height: calc(100vh - 240px);
+}
+</style>
+
+<script src="./EssentialTable.ts"></script>

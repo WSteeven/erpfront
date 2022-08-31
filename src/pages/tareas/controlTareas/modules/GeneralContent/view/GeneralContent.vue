@@ -162,7 +162,7 @@
 
         <!-- Detalle -->
         <div class="col-12 col-md-6">
-          <label class="q-mb-sm block">Detalle</label>
+          <label class="q-mb-sm block">Detalle / Proyecto / Ruta</label>
           <q-input
             v-model="tarea.detalle"
             placeholder="Obligatorio"
@@ -253,108 +253,6 @@
               <div>Registrar nuevo contacto</div>
             </q-btn>
           </div>
-        </div>
-      </div></q-expansion-item
-    >
-
-    <q-expansion-item
-      class="overflow-hidden"
-      style="border-radius: 8px; border: 1px solid #ddd"
-      icon="map"
-      label="Ubicación del cliente"
-      header-class="bg-grey-1"
-    >
-      <div class="row q-col-gutter-sm q-pa-md">
-        <!-- Provincia -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Provincias</label>
-          <q-select
-            v-model="tarea.provincia"
-            :options="provincias"
-            options-dense
-            dense
-            outlined
-          />
-        </div>
-
-        <!-- Ciudad -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Ciudades</label>
-          <q-select
-            outlined
-            v-model="tarea.ciudad"
-            :options="ciudades"
-            options-dense
-            dense
-          />
-        </div>
-
-        <!-- Parroquia -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Parroquia/Barrio</label>
-          <q-input
-            v-model="tarea.parroquia"
-            placeholder="Opcional"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
-        </div>
-
-        <!-- Direccion -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Dirección</label>
-          <q-input
-            v-model="tarea.direccion"
-            placeholder="Opcional"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
-        </div>
-
-        <!-- Referencias -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Referencias</label>
-          <q-input
-            v-model="tarea.referencias"
-            placeholder="Opcional"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
-        </div>
-
-        <!-- Georeferencia X -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Georeferencia Y (DMS)</label>
-          <q-input
-            v-model="tarea.georeferencia_x"
-            placeholder="Opcional"
-            outlined
-            dense
-          >
-            <template #append>
-              <q-icon name="bi-arrow-repeat" class="q-mr-sm"></q-icon>
-              <div class="text-caption">Convertir a UTM</div>
-            </template>
-          </q-input>
-        </div>
-
-        <!-- Georeferencia Y -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Georeferencia Y (DMS)</label>
-          <q-input
-            v-model="tarea.georeferencia_y"
-            placeholder="Opcional"
-            outlined
-            dense
-          >
-            <template #append>
-              <q-icon name="bi-arrow-repeat" class="q-mr-sm"></q-icon>
-              <div class="text-caption">Convertir a UTM</div>
-            </template>
-          </q-input>
         </div>
       </div></q-expansion-item
     >

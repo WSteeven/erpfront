@@ -1,9 +1,10 @@
-export class TipoElemento {
-  id: number | null
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+
+export class TipoElemento extends EntidadAuditable {
   nombre: string | null
 
   constructor() {
-    this.id = null
+    super()
     this.nombre = null
   }
 }

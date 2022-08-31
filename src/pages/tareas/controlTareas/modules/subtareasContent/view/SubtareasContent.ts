@@ -6,13 +6,23 @@ import { defineComponent } from 'vue'
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useRouter } from 'vue-router'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
+import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 
 export default defineComponent({
   components: { EssentialTable },
   setup() {
+    const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+
+    const { listado } = mixin.useReferencias()
+    const { listar } = mixin.useComportamiento()
+
     const router = useRouter()
+
+    listar()
     //
-    const listado = [
+    /* const listado = [
       {
         id: 1,
         coordinador: 'MARILÚ JARAMILLO',
@@ -29,7 +39,7 @@ export default defineComponent({
         fecha_asignado: '20/08/2022',
         estado: 'CREADO',
       },
-    ]
+    ] */
 
     const configuracionColumnas = [
       ...configuracionColumnasSubtareas,
@@ -44,7 +54,6 @@ export default defineComponent({
     const botonEditarSubtarea: CustomActionTable = {
       titulo: 'Gestionar',
       accion: (entidad) => {
-        console.log(entidad)
         router.replace({ name: 'Subtareas' })
       },
     }

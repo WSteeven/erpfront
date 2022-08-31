@@ -1,47 +1,40 @@
 // Dependencias
 import { configuracionColumnasTiposElementos } from '../domain/configuracionColumnasTiposElementos'
-import { defineComponent, reactive } from 'vue'
+import { required } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
+import { defineComponent } from 'vue'
 
 // Componentes
 import TabLayout from 'layouts/TabLayout.vue'
 
 // Logica y controladores
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { TipoElementoController } from '../infraestructure/TipoElementoController'
 import { TipoElemento } from '../domain/TipoElemento'
 
 export default defineComponent({
   components: { TabLayout },
   setup() {
-    const tipoElemento = reactive(new TipoElemento())
+    const mixin = new ContenedorSimpleMixin(
+      TipoElemento,
+      new TipoElementoController()
+    )
+    const { entidad: tipoElemento, disabled } = mixin.useReferencias()
+    const { setValidador } = mixin.useComportamiento()
 
-    const datos = [
-      {
-        id: 1,
-        nombre: 'POSTE',
-      },
-      {
-        id: 2,
-        nombre: 'CAJA',
-      },
-      {
-        id: 3,
-        nombre: 'AMERICANO',
-      },
-      {
-        id: 4,
-        nombre: 'RADIO BASE',
-      },
-      {
-        id: 5,
-        nombre: 'NODO',
-      },
-    ]
-
-    function enviar() {
-      //
+    // Reglas de validacion
+    const reglas = {
+      nombre: { required },
     }
+
+    const v$ = useVuelidate(reglas, tipoElemento)
+    setValidador(v$.value)
+
     return {
+      mixin,
       tipoElemento,
-      datos,
+      v$,
+      disabled,
       configuracionColumnas: configuracionColumnasTiposElementos,
     }
   },

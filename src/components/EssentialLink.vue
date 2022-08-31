@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { MenuOption } from 'pages/shared/menu/MenuOption'
+import { MenuOption } from 'shared/menu/MenuOption'
 
 export default defineComponent({
   name: 'EssentialLink',

@@ -1,7 +1,7 @@
 <template>
   <tab-layout
     :configuracionColumnas="configuracionColumnas"
-    :datos="datos"
+    :mixin="mixin"
     titulo-pagina="Control de asistencia"
   >
     <template #formulario>

@@ -1,7 +1,6 @@
-import { Hidratable } from 'pages/shared/entidad/domain/Hidratable'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class Tarea extends Hidratable {
-  id: number | null
+export class Tarea extends EntidadAuditable {
   codigo_tarea_jp: string | null
   codigo_tarea_cliente: string | null
   detalle: string | null
@@ -31,7 +30,6 @@ export class Tarea extends Hidratable {
 
   constructor() {
     super()
-    this.id = null
     this.codigo_tarea_jp = null
     this.codigo_tarea_cliente = null
     this.detalle = null

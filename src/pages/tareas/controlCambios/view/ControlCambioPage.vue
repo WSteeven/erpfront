@@ -1,7 +1,7 @@
 <template>
   <tab-layout
+    :mixin="mixin"
     :configuracionColumnas="configuracionColumnasControlCambios"
-    :datos="datos"
     titulo-pagina="Control de cambios"
   >
     <template #formulario>

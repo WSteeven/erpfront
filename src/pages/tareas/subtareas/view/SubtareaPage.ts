@@ -1,7 +1,14 @@
 // Dependencias
 import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTecnico'
 import { defineComponent, reactive, Ref, ref } from 'vue'
-import { grupos } from 'src/config/utils'
+import {
+  provincias,
+  ciudades,
+  grupos,
+  tiposInstalaciones,
+  tiposTareasTelconet,
+  tiposTareasNedetel,
+} from 'config/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -11,7 +18,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 // Logica y controladores
 import { Subtarea } from '../domain/Subtarea'
 import { Tecnico } from '../domain/Tecnico'
-import { getIndexOf } from 'src/pages/shared/utils'
+import { getIndexOf } from 'shared/utils'
 import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
 
 export default defineComponent({
@@ -70,6 +77,11 @@ export default defineComponent({
       grupos,
       eliminarTecnico,
       modalesSubtarea,
+      provincias,
+      ciudades,
+      tiposInstalaciones,
+      tiposTareasTelconet,
+      tiposTareasNedetel,
     }
   },
 })

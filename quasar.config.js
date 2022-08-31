@@ -55,15 +55,13 @@ module.exports = configure(function (/* ctx */) {
         node: 'node16',
       },
 
-      /*  alias: {
-        shared: path.join(__dirname, 'src/pages/shared'),
-      }, */
-
-      extendViteConf(viteConf, { isServer, isClient }) {
+      /* extendViteConf(viteConf, { isServer, isClient }) {
         Object.assign(viteConf.resolve.alias, {
-          shared: path.join(__dirname, './src/pages/shared'),
+          config: path.join(__dirname, './src/config'),
+          shared: path.join(__dirname, './src/shared'),
+          components: path.join(__dirname, './src/components'),
         })
-      },
+      }, */
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
@@ -87,6 +85,11 @@ module.exports = configure(function (/* ctx */) {
       // vitePlugins: [
       //   [ 'package-name', { ..options.. } ]
       // ]
+      alias: {
+        config: path.join(__dirname, './src/config'),
+        shared: path.join(__dirname, './src/shared'),
+        pages: path.join(__dirname, './src/pages'),
+      },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
@@ -101,6 +104,7 @@ module.exports = configure(function (/* ctx */) {
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
+      lang: 'es', // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),

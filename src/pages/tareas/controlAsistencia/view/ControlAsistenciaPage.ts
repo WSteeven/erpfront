@@ -2,7 +2,7 @@
 import { configuracionColumnasAsistenciaTecnicos } from '../domain/configuracionColumnasAsistenciaTecnicos'
 import { configuracionColumnasControlAsistencia } from '../domain/configuracionColumnasControlAsistencia'
 import { defineComponent, reactive, ref, Ref } from 'vue'
-import { getIndexOf, obtenerFechaActual } from 'src/pages/shared/utils'
+import { getIndexOf, obtenerFechaActual } from 'shared/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -12,19 +12,28 @@ import TabLayout from 'layouts/TabLayout.vue'
 // Logica y controladores
 import { AsistenciaTecnico } from '../domain/AsistenciaTecnico'
 import { ControlAsistencia } from '../domain/ControlAsistencia'
-import { useNotificaciones } from 'src/pages/shared/notificaciones'
-import { CustomActionTable } from 'src/components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ControlAsistenciaController } from '../infraestructure/ControlAsistenciaController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen },
   setup() {
-    const control = reactive(new ControlAsistencia())
-    control.grupo = 'MACHALA'
-    control.fecha = obtenerFechaActual()
+    // const control = reactive(new ControlAsistencia())
+    const mixin = new ContenedorSimpleMixin(
+      ControlAsistencia,
+      new ControlAsistenciaController()
+    )
+
+    const { entidad: control, disabled, accion } = mixin.useReferencias()
+
+    // control.grupo = 'MACHALA'
+    // control.fecha = obtenerFechaActual()
 
     const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
-    const datos: ControlAsistencia[] = [
+    const datos: any[] = [
       {
         id: 1,
         grupo: 'MACHALA',
@@ -144,6 +153,9 @@ export default defineComponent({
       eliminar,
       botonAgregarObservacion,
       control,
+      disabled,
+      accion,
+      mixin,
     }
   },
 })

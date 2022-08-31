@@ -1,4 +1,4 @@
-import { Endpoint } from 'src/pages/shared/http/domain/Endpoint'
+import { Endpoint } from 'shared/http/domain/Endpoint'
 
 export const apiConfig = {
   URL_BALSE: process.env.VUE_APP_API_URL,
@@ -13,15 +13,13 @@ export const endpoints = {
   perfil_usuario: new Endpoint('user/profile-information', false),
   cambiar_contrasena: new Endpoint('user/password', false),
   logout: new Endpoint('logout', false),
-  permisos: new Endpoint('permisos'),
-  seleccionar_negocio: new Endpoint('seleccionar-negocio'),
   // acceso a modulos
-  negocios: new Endpoint('negocios/'),
-  clientes: new Endpoint('clientes/'),
-  proveedores: new Endpoint('proveedores/'),
-  productos: new Endpoint('productos/'),
-  categorias_productos: new Endpoint('categorias_productos/'),
-  tipos_negocios: new Endpoint('tipos-negocios/'),
+  tareas: new Endpoint('tareas/'),
+  subtareas: new Endpoint('subtareas/'),
+  tipos_tareas: new Endpoint('tipos-tareas/'),
+  control_asistencias: new Endpoint('control-asistencias/'),
+  control_cambios: new Endpoint('control-cambios/'),
+  tipos_elementos: new Endpoint('tipos-elementos/'),
   // ubicacion
   paises: new Endpoint('paises/'),
   provincias: new Endpoint('provincias/'),

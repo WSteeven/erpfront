@@ -1,11 +1,11 @@
 // Dependencias
-import { AxiosHttpRepository } from 'src/pages/shared/http/infraestructure/AxiosHttpRepository'
-import { gestionarNotificacionError } from 'src/pages/shared/utils'
-import { useAuthenticationStore } from 'src/stores/authentication'
-import { ApiError } from 'src/pages/shared/error/domain/ApiError'
-import { useNotificaciones } from 'pages/shared/notificaciones'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { gestionarNotificacionError } from 'shared/utils'
+import { useAuthenticationStore } from 'stores/authentication'
+import { ApiError } from 'shared/error/domain/ApiError'
+import { useNotificaciones } from 'shared/notificaciones'
 import { defineComponent, reactive } from 'vue'
-import { endpoints } from 'src/config/api'
+import { endpoints } from 'config/api'
 
 // Logica y controladores
 import { Perfil } from '../domain/Perfil'

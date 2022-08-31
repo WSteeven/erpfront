@@ -1,14 +1,15 @@
-import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useTareaStore = defineStore('tarea', () => {
   // State
-  const tarea = reactive(new Tarea())
+  const tarea = ref()
 
-  // Actions
+  const mostrarFormulario = computed(() => Boolean(tarea.value))
+
   return {
     // State
     tarea,
+    mostrarFormulario,
   }
 })

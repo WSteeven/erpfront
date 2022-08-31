@@ -4,8 +4,8 @@ import {
   tiposElementos,
   propietariosElementos,
   estadoElementos,
-} from 'src/config/utils'
-import { obtenerFechaActual } from 'pages/shared/utils'
+} from 'config/utils'
+import { obtenerFechaActual } from 'shared/utils'
 import { defineComponent, reactive } from 'vue'
 
 // Componentes

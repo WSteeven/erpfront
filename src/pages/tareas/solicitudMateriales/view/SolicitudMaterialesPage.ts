@@ -2,7 +2,7 @@
 import { configuracionColumnasMaterialesSolicitados } from '../domain/configuracionColumnasMaterialesSolicitados'
 import { configuracionColumnasSolicitudMateriales } from '../domain/configuracionColumnasSolicitudMateriales'
 import { defineComponent, reactive, ref, Ref } from 'vue'
-import { getIndexOf } from 'src/pages/shared/utils'
+import { getIndexOf } from 'shared/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -11,7 +11,7 @@ import TabLayout from 'layouts/TabLayout.vue'
 // Logica y controladores
 import { MaterialesSolicitados } from '../domain/MaterialesSolicitados'
 import { SolicitudMateriales } from '../domain/SolicitudMateriales'
-import { useNotificaciones } from 'src/pages/shared/notificaciones'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },

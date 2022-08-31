@@ -1,6 +1,6 @@
-import { AxiosHttpRepository } from 'src/pages/shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { UserLogin } from 'src/pages/sistema/authentication/login/domain/UserLogin'
-import { ApiError } from 'src/pages/shared/error/domain/ApiError'
+import { ApiError } from 'shared/error/domain/ApiError'
 import { endpoints } from 'src/config/api'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'

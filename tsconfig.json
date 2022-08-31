@@ -2,6 +2,13 @@
   "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
     "baseUrl": ".",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "paths": {
+      "config/*": ["src/config/*"],
+      "shared/*": ["src/shared/*"],
+      "components/*": ["src/components/*"],
+      "stores/*": ["src/stores/*"],
+      "pages/*": ["src/pages/*"]
+    }
   }
 }

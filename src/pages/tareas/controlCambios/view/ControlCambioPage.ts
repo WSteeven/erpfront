@@ -7,14 +7,24 @@ import TabLayout from 'layouts/TabLayout.vue'
 
 // Logica y controladores
 import { ControlCambio } from '../domain/ControlCambio'
-import { obtenerFechaActual } from 'src/pages/shared/utils'
+import { obtenerFechaActual } from 'shared/utils'
+import { ControlCambioController } from '../infraestructure/ControlCambioController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
 
 export default defineComponent({
   components: {
     TabLayout,
   },
   setup() {
-    const control = reactive(new ControlCambio())
+    const mixin = new ContenedorSimpleMixin(
+      ControlCambio,
+      new ControlCambioController()
+    )
+
+    const { entidad: control, disabled, accion } = mixin.useReferencias()
+    const { cargarVista, obtenerListados, setValidador } =
+      mixin.useComportamiento()
+
     control.codigo_tarea_jp = 'JP000001'
     control.fecha = obtenerFechaActual()
 
@@ -56,10 +66,13 @@ export default defineComponent({
       },
     ]
 
-    function enviar() {
-      //
+    return {
+      mixin,
+      control,
+      disabled,
+      accion,
+      datos,
+      configuracionColumnasControlCambios,
     }
-
-    return { control, datos, enviar, configuracionColumnasControlCambios }
   },
 })

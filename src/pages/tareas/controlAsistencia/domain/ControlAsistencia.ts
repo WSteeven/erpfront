@@ -1,5 +1,6 @@
-export class ControlAsistencia {
-  id: number | null
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+
+export class ControlAsistencia extends EntidadAuditable {
   codigo_tarea_jp: string | null
   codigo_subtarea: string | null
   detalle_tarea: string | null
@@ -10,7 +11,7 @@ export class ControlAsistencia {
   imagen: string | null | ArrayBuffer
 
   constructor() {
-    this.id = null
+    super()
     this.codigo_tarea_jp = null
     this.codigo_subtarea = null
     this.detalle_tarea = null

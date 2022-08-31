@@ -5,7 +5,7 @@ import { computed, defineComponent, reactive, ref } from 'vue'
 import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
 import { LoginController } from '../infraestructure/LoginController'
 import { Cargando } from 'components/cargando/application/cargando.application'
-import { useNotificaciones } from 'src/pages/shared/notificaciones'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   name: 'LoginPage',

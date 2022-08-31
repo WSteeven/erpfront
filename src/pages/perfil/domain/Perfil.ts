@@ -1,7 +1,6 @@
-import { Hidratable } from 'src/pages/shared/entidad/domain/Hidratable'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class Perfil extends Hidratable {
-  id: number | null
+export class Perfil extends EntidadAuditable {
   nombres: string | null
   apellidos: string | null
   telefono: string | null
@@ -13,7 +12,6 @@ export class Perfil extends Hidratable {
 
   constructor() {
     super()
-    this.id = null
     this.nombres = null
     this.apellidos = null
     this.telefono = null
