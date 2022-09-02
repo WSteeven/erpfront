@@ -89,6 +89,7 @@ module.exports = configure(function (/* ctx */) {
         config: path.join(__dirname, './src/config'),
         shared: path.join(__dirname, './src/shared'),
         pages: path.join(__dirname, './src/pages'),
+        sistema: path.join(__dirname, './src/pages/sistema'),
       },
     },
 

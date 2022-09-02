@@ -2,9 +2,9 @@
 import { computed, defineComponent, reactive, ref } from 'vue'
 
 // Logica y controladores
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
 import { LoginController } from '../infraestructure/LoginController'
-import { Cargando } from 'components/cargando/application/cargando.application'
 import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
@@ -17,7 +17,7 @@ export default defineComponent({
     const loginController = new LoginController()
 
     const notificaciones = useNotificaciones()
-    const cargando = new Cargando()
+    const cargando = new StatusEssentialLoading()
 
     const login = async () => {
       try {

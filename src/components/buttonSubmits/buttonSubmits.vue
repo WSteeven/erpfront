@@ -26,7 +26,7 @@
       @click="emitir('editar')"
     >
       <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-      <span>Modificar</span>
+      <span>Guardar cambios</span>
     </q-btn>
 
     <!-- Boton eliminar -->

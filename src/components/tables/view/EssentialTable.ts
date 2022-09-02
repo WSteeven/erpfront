@@ -3,7 +3,7 @@ import { getVisibleColumns } from 'shared/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'config/utils'
 import { exportFile, useQuasar } from 'quasar'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export default defineComponent({
@@ -45,7 +45,7 @@ export default defineComponent({
       default: true,
     },
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'selected'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -62,7 +62,8 @@ export default defineComponent({
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
 
     // Observers
-    // watch(selected, () => emit('selected', JSON.stringify(selected.value)))
+    // watch(selected, () => emit('selected', selected.value))
+    const seleccionar = () => emit('selected', selected.value)
 
     const $q = useQuasar()
 
@@ -129,6 +130,7 @@ export default defineComponent({
       filter,
       selected,
       visibleColumns,
+      seleccionar,
     }
   },
 })

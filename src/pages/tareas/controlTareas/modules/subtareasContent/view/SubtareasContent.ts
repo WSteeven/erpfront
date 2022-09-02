@@ -1,45 +1,34 @@
 // Dependencias
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+// import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { useRouter } from 'vue-router'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+
+// Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
-import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
+import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
+import { ComportamientoModalesSubtareaContent } from '../application/ComportamientoModalesSubtareaContent'
+import { useTareaStore } from 'stores/tarea'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
-  components: { EssentialTable },
+  components: { EssentialTable, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
     const { listado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
-    const router = useRouter()
+    // const router = useRouter()
+    const { notificarAdvertencia } = useNotificaciones()
 
-    listar()
-    //
-    /* const listado = [
-      {
-        id: 1,
-        coordinador: 'MARILÚ JARAMILLO',
-        codigo_subtarea_jp: 'JP000001_1',
-        tipo_tarea: 'INSTALACION',
-        fecha_asignado: '11/08/2022',
-        estado: 'REALIZADO',
-      },
-      {
-        id: 2,
-        coordinador: 'MARILÚ JARAMILLO',
-        codigo_subtarea_jp: 'JP000001_2',
-        tipo_tarea: 'INSTALACION',
-        fecha_asignado: '20/08/2022',
-        estado: 'CREADO',
-      },
-    ] */
+    const tareaStore = useTareaStore()
+    if (tareaStore.tarea.id) listar({ tarea: tareaStore.tarea.id })
 
     const configuracionColumnas = [
       ...configuracionColumnasSubtareas,
@@ -51,11 +40,23 @@ export default defineComponent({
       },
     ]
 
+    const modales = new ComportamientoModalesSubtareaContent()
+
     const botonEditarSubtarea: CustomActionTable = {
       titulo: 'Gestionar',
       accion: (entidad) => {
-        router.replace({ name: 'Subtareas' })
+        tareaStore.consultarSubtarea(entidad.id)
+        modales.abrirModalEntidad('SubtareasPage')
+        // router.replace({ name: 'Subtareas' })
       },
+    }
+
+    if (!tareaStore.tarea.id)
+      notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
+
+    function agregarSubtarea() {
+      if (!tareaStore.tarea.id)
+        notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
     }
 
     return {
@@ -63,6 +64,8 @@ export default defineComponent({
       configuracionColumnasSubtareas,
       listado,
       botonEditarSubtarea,
+      modales,
+      agregarSubtarea,
     }
   },
 })

@@ -4,7 +4,7 @@ import { Controller } from 'shared/controller/domain/Controller.domain'
 import { Endpoint } from 'shared/http/domain/Endpoint'
 // CRUD
 import { ListableRepository } from 'shared/controller/infraestructure/listable.repository'
-import { GuardableRepository } from 'shared/controller/infraestructure/guardable.repository'
+import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
 import { EditableRepository } from 'shared/controller/infraestructure/editable.repository'
 import { EliminableRepository } from 'shared/controller/infraestructure/eliminable.repository'
 import { ConsultableRepository } from 'shared/controller/infraestructure/ConsultableRepository'

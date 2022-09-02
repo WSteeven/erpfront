@@ -1,10 +1,10 @@
-import { Endpoint } from '@/app/shared/http/domain/Endpoint'
+import { Endpoint } from 'shared/http/domain/Endpoint'
 import {
   HttpResponseDelete,
   HttpResponseGet,
   HttpResponsePost,
   HttpResponsePut,
-} from '@/app/shared/http/domain/HttpResponse'
+} from 'shared/http/domain/HttpResponse'
 
 export interface HttpRepository {
   post<T, S = HttpResponsePost<T>>(url: string, data?: any): Promise<S>

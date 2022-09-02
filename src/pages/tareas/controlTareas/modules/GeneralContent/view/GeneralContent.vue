@@ -1,22 +1,22 @@
 <template>
-  <q-form @submit.prevent="enviar()">
+  <q-form @submit.prevent>
     <q-expansion-item
       class="overflow-hidden q-mb-md"
       style="border-radius: 8px; border: 1px solid #ddd"
-      icon="explore"
-      label="Información de la tarea"
+      icon="bi-paperclip"
+      label="Información general"
       header-class="bg-grey-1"
+      default-opened
     >
       <div class="row q-col-gutter-sm q-pa-md">
-        <!-- Numero cliente JP -->
-        <div class="col-12 col-md-3">
+        <!-- Codigo tarea JP -->
+        <div v-if="tarea.codigo_tarea_jp" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de tarea JP</label>
           <q-input
             v-model="tarea.codigo_tarea_jp"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
@@ -26,78 +26,36 @@
           <q-input
             v-model="tarea.codigo_tarea_cliente"
             placeholder="Opcional"
+            @update:model-value="
+              (v) => (tarea.codigo_tarea_cliente = v.toUpperCase())
+            "
             outlined
             dense
+            autofocus
           ></q-input>
         </div>
 
         <!-- Cliente -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Cliente</label>
           <q-input
-            v-model="tarea.cliente"
+            v-model="criterioBusquedaCliente"
             placeholder="Obligatorio"
+            @update:model-value="
+              (v) => (criterioBusquedaCliente = v.toUpperCase())
+            "
+            hint="Presiona Enter para seleccionar un cliente"
+            @keydown.enter="listarClientes()"
+            @blur="criterioBusquedaCliente === '' ? limpiarCliente() : null"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
-        </div>
-
-        <!-- Fecha de inicio -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de inicio</label>
-          <q-input
-            v-model="tarea.fecha_inicio"
-            placeholder="Opcional"
-            outlined
-            dense
-            mask="date"
-            :rules="['date']"
           >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="tarea.fecha_inicio">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-
-        <!-- Fecha de vencimiento -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de finalización</label>
-          <q-input
-            v-model="tarea.fecha_finalizacion"
-            placeholder="Opcional"
-            outlined
-            dense
-            mask="date"
-            :rules="['date']"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="tarea.fecha_finalizacion">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
+            <!-- :error="!!v$.cliente.$errors.length" -->
+            <!--  <template v-slot:error>
+              <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template> -->
           </q-input>
         </div>
 
@@ -107,6 +65,7 @@
           <q-input
             v-model="tarea.solicitante"
             placeholder="Opcional"
+            @update:model-value="(v) => (tarea.solicitante = v.toUpperCase())"
             outlined
             dense
           ></q-input>
@@ -118,70 +77,62 @@
           <q-input
             v-model="tarea.correo_solicitante"
             placeholder="Opcional"
+            @update:model-value="
+              (v) => (tarea.correo_solicitante = v.toUpperCase())
+            "
             type="email"
             outlined
             dense
           ></q-input>
         </div>
 
-        <!-- Fecha agendado -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de agendamiento</label>
-          <q-input
-            v-model="tarea.fecha_agendado"
-            outlined
-            dense
-            readonly
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
-        </div>
-
-        <!-- Hora agendado -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Hora de agendamiento</label>
-          <q-input
-            v-model="tarea.hora_agendado"
-            outlined
-            dense
-            readonly
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
-        </div>
-
         <!-- Coordinador -->
-        <div class="col-12 col-md-3">
+        <div v-if="tarea.coordinador" class="col-12 col-md-3">
           <label class="q-mb-sm block">Coordinador</label>
           <q-input
             v-model="tarea.coordinador"
             outlined
             dense
             readonly
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
-        </div>
-
-        <!-- Detalle -->
-        <div class="col-12 col-md-6">
-          <label class="q-mb-sm block">Detalle / Proyecto / Ruta</label>
-          <q-input
-            v-model="tarea.detalle"
-            placeholder="Obligatorio"
-            outlined
-            dense
-            autogrow
-            type="textarea"
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
         <!-- Es proyecto -->
         <div class="col-12 col-md-3">
+          <br />
           <q-checkbox
             v-model="tarea.es_proyecto"
             label="Es proyecto"
             outlined
             dense
           ></q-checkbox>
+        </div>
+
+        <!-- Codigo de proyecto -->
+        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Código de proyecto</label>
+          <q-input
+            v-model="tarea.codigo_proyecto"
+            @update:model-value="
+              (v) => (tarea.codigo_proyecto = v.toUpperCase())
+            "
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Detalle -->
+        <div class="col-12 col-md-6">
+          <label class="q-mb-sm block">Detalle / Proyecto</label>
+          <q-input
+            v-model="tarea.detalle"
+            placeholder="Obligatorio"
+            @update:model-value="(v) => (tarea.detalle = v.toUpperCase())"
+            outlined
+            dense
+            autogrow
+            type="textarea"
+          ></q-input>
         </div>
       </div>
     </q-expansion-item>
@@ -192,6 +143,7 @@
       icon="phone"
       label="Información de contacto"
       header-class="bg-grey-1"
+      default-opened
     >
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Nombre -->
@@ -256,7 +208,34 @@
         </div>
       </div></q-expansion-item
     >
+
+    <!-- Botones formulario -->
+    <!-- <div class="row q-gutter-md justify-end">
+      <q-btn color="primary" no-caps @click="enviar()" push>
+        <q-icon name="bi-save" class="q-mr-sm" size="xs"></q-icon>
+        <div>Guardar</div>
+      </q-btn>
+
+      <q-btn color="negative" no-caps @click="enviar()" push>
+        <q-icon name="bi-x-lg" size="xs" class="q-mr-sm"></q-icon>
+        <div>Cancelar</div>
+      </q-btn>
+    </div> -->
+    <button-submits
+      :accion="tareaStore.accion"
+      @cancelar="reestablecer()"
+      @editar="editar(tarea)"
+      @eliminar="eliminar(tarea)"
+      @guardar="guardar(tarea)"
+    />
   </q-form>
+
+  <essential-selectable-table
+    ref="refListadoSeleccionableClientes"
+    :configuracion-columnas="configuracionColumnasClientes"
+    :datos="listadoClientes"
+    @selected="seleccionarCliente"
+  ></essential-selectable-table>
 </template>
 
 <script src="./GeneralContent.ts"></script>

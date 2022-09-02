@@ -16,6 +16,7 @@ import { markRaw, watch } from 'vue'
 // import { Catalogos } from 'src/pages/sistema/permisos/permisos'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 // import { useForm } from 'vee-validate'
 // import { columnaImportable } from '@/app/shared/importable/domain/importable'
 
@@ -23,12 +24,8 @@ export class ContenedorSimpleMixin<
   T extends EntidadAuditable
 > extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
-  // private myForm = useForm()
-  // private readonly validateForm = () => this.myForm.validate()
-  // private readonly resetForm = () => this.myForm.resetForm
-  /* private readonly refreshForm = (entidad: any) =>
-    this.myForm.setValues(entidad) */
   private notificaciones = useNotificaciones()
+  private statusEssentialLoading = new StatusEssentialLoading()
 
   constructor(
     entidad: Instanciable,
@@ -44,107 +41,50 @@ export class ContenedorSimpleMixin<
   }
 
   private async cargarVista(callback: () => Promise<void>): Promise<void> {
-    // this.cargando.activar()
+    this.statusEssentialLoading.activar()
     await callback()
-    // this.cargando.desactivar()
-  }
-
-  /**
-   * metodo publico que expone las funciones genericas de comportamiento
-   * para una transaccion simple
-   * @returns listar, consultar, guardar, editar, eliminar, cambiarEstado, descargarListado, imprimirListado, importarListado, reestablecer, obtenerPlantilla
-   */
-  useComportamiento(): any {
-    const listar = this.listarTransacccionSimple.bind(this)
-    const consultar = this.consultarTransaccionSimple.bind(this)
-    const guardar = this.guardarTransaccionSimple.bind(this)
-    const editar = this.editarTransaccionSimple.bind(this)
-    const eliminar = this.eliminarTransaccionSimple.bind(this)
-    // const cambiarEstado = this.cambiarEstadoTransaccionSimple.bind(this)
-    // const imprimirListado = this.imprimirListadoActual.bind(this)
-    // const descargarListado = this.descargarListadoActual.bind(this)
-    // const importarListado = this.importarListado.bind(this)
-    // const configurarDefecto = this.configurarDefecto.bind(this)
-    const obtenerListados = this.obtenerListados.bind(this)
-    const reestablecer = this.reestablecerTransaccionSimple.bind(this)
-    const cargarVista = this.cargarVista.bind(this)
-    // const obtenerPlantilla = this.obtenerPlantilla.bind(this)
-    // const notificaciones = this.notificaciones
-
-    return {
-      listar,
-      consultar,
-      guardar,
-      editar,
-      eliminar,
-      // cambiarEstado,
-      // descargarListado,
-      // imprimirListado,
-      // importarListado,
-      reestablecer,
-      // obtenerPlantilla,
-      obtenerListados,
-      // configurarDefecto,
-      cargarVista,
-      setValidador: this.setValidador.bind(this),
-      // notificaciones,
-    }
+    this.statusEssentialLoading.desactivar()
   }
 
   useReferencias(): any {
     return { entidad: this.entidad as T, ...this.refs }
   }
 
-  useHooks(): any {
-    const onBeforeGuardar = (callback: () => void) =>
-      this.hooks.bindHook('onBeforeGuardar', callback)
-    const onGuardado = (callback: () => void) =>
-      this.hooks.bindHook('onGuardado', callback)
-    const onBeforeConsultar = (callback: () => void) =>
-      this.hooks.bindHook('onBeforeConsultar', callback)
-    const onConsultado = (callback: () => void) =>
-      this.hooks.bindHook('onConsultado', callback)
-    const onBeforeModificar = (callback: () => void) =>
-      this.hooks.bindHook('onBeforeModificar', callback)
-    const onModificado = (callback: () => void) =>
-      this.hooks.bindHook('onModificado', callback)
-    const onReestablecer = (callback: () => void) =>
-      this.hooks.bindHook('onReestablecer', callback)
-
+  useComportamiento(): any {
     return {
-      onBeforeGuardar,
-      onGuardado,
-      onBeforeConsultar,
-      onConsultado,
-      onBeforeModificar,
-      onModificado,
-      onReestablecer,
+      listar: this.listar.bind(this),
+      consultar: this.consultar.bind(this),
+      guardar: this.guardar.bind(this),
+      editar: this.editar.bind(this),
+      eliminar: this.eliminar.bind(this),
+      reestablecer: this.reestablecer.bind(this),
+      obtenerListados: this.obtenerListados.bind(this),
+      cargarVista: this.cargarVista.bind(this),
+      setValidador: this.setValidador.bind(this),
     }
   }
 
-  /* protected async importarListado(listado: T[]): Promise<void> {
-    try {
-      const { response } = await this.controller.importarListado(
-        listado,
-        this.argsDefault
-      )
-      this.notificaciones.notificarCorrecto([
-        response.data.mensaje,
-        'Actualice la página, por favor.',
-      ])
-    } catch (error: any) {
-      if (isAxiosError(error)) {
-        const mensajes: string[] = error.erroresValidacion
-        notificarMensajesError(mensajes)
-      }
+  useHooks(): any {
+    return {
+      onBeforeGuardar: (callback: () => void) =>
+        this.hooks.bindHook('onBeforeGuardar', callback),
+      onGuardado: (callback: () => void) =>
+        this.hooks.bindHook('onGuardado', callback),
+      onBeforeConsultar: (callback: () => void) =>
+        this.hooks.bindHook('onBeforeConsultar', callback),
+      onConsultado: (callback: () => void) =>
+        this.hooks.bindHook('onConsultado', callback),
+      onBeforeModificar: (callback: () => void) =>
+        this.hooks.bindHook('onBeforeModificar', callback),
+      onModificado: (callback: () => void) =>
+        this.hooks.bindHook('onModificado', callback),
+      onReestablecer: (callback: () => void) =>
+        this.hooks.bindHook('onReestablecer', callback),
     }
-  } */
+  }
 
-  /* protected obtenerPlantilla(): columnaImportable<T>[] {
-    return this.controller.obtenerPlantillaImportable()
-  } */
-
-  private async consultarTransaccionSimple(data: T) {
+  // Consultar
+  private async consultar(data: T) {
     this.hooks.onBeforeConsultar()
     this.cargarVista(async () => {
       if (data.id === null) {
@@ -160,10 +100,8 @@ export class ContenedorSimpleMixin<
       this.entidad.hydrate(result)
       this.entidad_copia.hydrate(this.entidad)
       this.refs.tabs.value = 'formulario'
-      // this.refs.tabs.value?.mostrarFormulario()
-      // this.refreshForm(this.entidad)
     })
-    // this.resetForm()
+
     const stop = watch(this.entidad, () => {
       if (this.entidad.id !== null) {
         this.hooks.onConsultado()
@@ -172,22 +110,25 @@ export class ContenedorSimpleMixin<
     })
   }
 
-  private async listarTransacccionSimple(params: any, append: boolean) {
-    this.cargarVista(async () => {
-      try {
-        const { result } = await this.controller.listar({
-          ...this.argsDefault,
-          ...params,
-        })
-        if (append) this.refs.listado.value.push(...result)
-        else this.refs.listado.value = result
-      } catch (error) {
-        this.notificaciones.notificarError('Error al obtener el listado.')
-      }
-    })
+  // Listar
+  private async listar(params: any, append: boolean) {
+    this.statusEssentialLoading.activar()
+
+    try {
+      const { result } = await this.controller.listar({
+        ...this.argsDefault,
+        ...params,
+      })
+      if (append) this.refs.listado.value.push(...result)
+      else this.refs.listado.value = result
+    } catch (error) {
+      this.notificaciones.notificarError('Error al obtener el listado.')
+    }
+
+    this.statusEssentialLoading.desactivar()
   }
 
-  private async reestablecerTransaccionSimple() {
+  private async reestablecer() {
     //preguntar = false) {
     /* let reestablecer = false
     if (preguntar) {
@@ -207,47 +148,57 @@ export class ContenedorSimpleMixin<
     // }
   }
 
-  private async guardarTransaccionSimple(data: T) {
+  // Guardar
+  private async guardar(data: any) {
     this.hooks.onBeforeGuardar()
-    if (this.seCambioEntidad(this.entidad_vacia)) {
-      if (await this.refs.validador.value.$validate()) {
-        try {
-          const { response } = await this.controller.guardar(
-            data,
-            this.argsDefault
-          )
 
-          this.notificaciones.notificarCorrecto(response.data.mensaje)
-          this.agregarElementoListadoActual(response.data.modelo)
-          this.reestablecerTransaccionSimple()
-          // this.resetForm()
-          // this.refs.validador.value.$reset()
-          this.hooks.onGuardado()
-        } catch (error: any) {
-          if (isAxiosError(error)) {
-            const mensajes: string[] = error.erroresValidacion
-            await notificarMensajesError(mensajes)
-          }
-        }
-      } else {
-        this.notificaciones.notificarAdvertencia('Verifique el formulario')
-      }
-    } else {
-      this.notificaciones.notificarAdvertencia(
+    if (!this.seCambioEntidad(data)) {
+      return this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
-      await this.reestablecerTransaccionSimple()
     }
+
+    if (!(await this.refs.validador.value.$validate())) {
+      return this.notificaciones.notificarAdvertencia('Verifique el formulario')
+    }
+
+    this.cargarVista(async () => {
+      try {
+        const { response } = await this.controller.guardar(
+          data,
+          this.argsDefault
+        )
+
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+        this.agregarElementoListadoActual(response.data.modelo)
+        this.entidad.hydrate(response.data.modelo)
+        this.hooks.onGuardado()
+        // this.reestablecer()
+      } catch (error: any) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes)
+        }
+      }
+    })
+
+    /* const stop = watch(this.entidad, () => {
+      if (this.entidad.id !== null) {
+        this.hooks.onGuardado()
+        stop()
+      }
+    }) */
   }
 
-  private async editarTransaccionSimple(data: T, resetFormulario = true) {
+  // Editar
+  private async editar(data: T) {
+    this.hooks.onBeforeModificar()
+
     if (this.entidad.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'
       )
     }
-
-    this.hooks.onBeforeModificar()
 
     if (!this.seCambioEntidad(this.entidad_copia)) {
       return this.notificaciones.notificarAdvertencia(
@@ -259,26 +210,29 @@ export class ContenedorSimpleMixin<
       return this.notificaciones.notificarAdvertencia('Verifique el formulario')
     }
 
-    try {
-      const { response, result: modelo } = await this.controller.editar(
-        data,
-        this.argsDefault
-      )
-      this.notificaciones.notificarCorrecto(response.data.mensaje)
-      this.actualizarElementoListadoActual(modelo)
-      if (resetFormulario) await this.reestablecerTransaccionSimple()
-      this.hooks.onModificado()
-    } catch (error: any) {
-      if (isAxiosError(error)) {
-        const mensajes: string[] = error.erroresValidacion
-        notificarMensajesError(mensajes)
-      } else {
-        this.notificaciones.notificarError(error.message)
+    this.cargarVista(async () => {
+      try {
+        const { response, result: modelo } = await this.controller.editar(
+          data,
+          this.argsDefault
+        )
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+        this.actualizarElementoListadoActual(modelo)
+      } catch (error: any) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes)
+        } else {
+          this.notificaciones.notificarError(error.message)
+        }
       }
-    }
+    })
+
+    this.hooks.onModificado()
   }
 
-  private async eliminarTransaccionSimple(data: T, callback?: () => void) {
+  // Eliminar
+  private async eliminar(data: T, callback?: () => void) {
     this.notificaciones.confirmar('Esta seguro que desea eliminar?', () => {
       if (data.id === null) {
         return this.notificaciones.notificarAdvertencia(
@@ -291,7 +245,7 @@ export class ContenedorSimpleMixin<
         .then(({ response }) => {
           this.notificaciones.notificarCorrecto(response.data.mensaje)
           this.eliminarElementoListaActual(data)
-          this.reestablecerTransaccionSimple()
+          this.reestablecer()
           if (callback) callback()
         })
         .catch((error) => {
@@ -303,57 +257,4 @@ export class ContenedorSimpleMixin<
   private setValidador(validador) {
     this.refs.validador.value = validador
   }
-
-  /* private cambiarEstadoTransaccionSimple(data: T, meta: any) {
-    this.controller
-      .editarParcial(data.id, "estado", meta.estado, this.argsDefault)
-      .then(({response}) => {
-        this.notificaciones.notificarCorrecto(response.data.mensaje)
-        this.actualizarElementoListadoActual(response.data.modelo)
-      })
-      .catch((error) => {
-        if (error.response.data?.mensaje) {
-          this.notificaciones.notificarError(error.response.data?.mensaje)
-        }
-      })
-  } */
-
-  /* private descargarListadoActual(formato: string) {
-    if (this.refs.listado.value.length !== 0) {
-      const paramsListado: { [key: string]: any } = { opcion: 'print' }
-
-      if (formato !== 'pdf') {
-        paramsListado.opcion = 'export'
-        paramsListado.formato = formato
-      }
-
-      this.controller
-        .descargarListado(paramsListado)
-        .then((response: any) => {
-          descargarArchivo(response.response.data, this.refs.catalogo, formato)
-        })
-        .catch(() =>
-          this.notificaciones.notificarError(
-            'No se consiguio obtener el archivo del servidor.'
-          )
-        )
-    } else {
-      this.notificaciones.notificarAdvertencia('No hay datos para exportar')
-    }
-  } */
-
-  // importaciones
-
-  /* private imprimirListadoActual() {
-    if (this.refs.listado.value.length !== 0) {
-      this.controller
-        .descargarListado({...this.argsDefault, ...{opcion: "print"}})
-        .then((data: any) => this.utils.imprimirArchivo(data, "pdf"))
-        .catch(() =>
-          this.notificaciones.notificarError(
-            "No se consiguio imprimir el archivo."
-          )
-        )
-    }
-  } */
 }

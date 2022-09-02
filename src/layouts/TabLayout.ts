@@ -46,6 +46,7 @@ export default defineComponent({
       props.mixin.useReferencias()
 
     const Router = useRouter()
+    let listadoCargado = false
     // const tareaStore = useTareaStore()
 
     const columnas = [
@@ -58,10 +59,13 @@ export default defineComponent({
       },
     ]
 
-    listar()
+    if (!listadoCargado) {
+      listar()
+      listadoCargado = true
+    }
 
     const seleccionado = ref()
-    tabs.value = 'listado'
+    tabs.value = 'formulario'
 
     const tituloTabla =
       Router.currentRoute.value.name?.toString().toLowerCase() ?? ''

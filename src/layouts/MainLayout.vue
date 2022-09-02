@@ -84,7 +84,10 @@
     <q-page-container class="bg-white">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
-          <component :is="Component" />
+          <div>
+            <essential-loading></essential-loading>
+            <component :is="Component" />
+          </div>
         </transition>
       </router-view>
     </q-page-container>
@@ -97,6 +100,7 @@ import { useAuthenticationStore } from 'src/stores/authentication'
 import { defineComponent, ref, computed } from 'vue'
 import { useMenuStore } from 'src/stores/menu'
 import { useRouter } from 'vue-router'
+import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 
 // Componentes
 import EssentialLink from 'components/EssentialLink.vue'
@@ -106,6 +110,7 @@ export default defineComponent({
 
   components: {
     EssentialLink,
+    EssentialLoading,
   },
 
   setup() {
