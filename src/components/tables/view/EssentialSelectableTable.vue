@@ -1,24 +1,27 @@
 <template>
   <q-dialog v-model="abierto" full-width position="top">
     <q-card>
+      <q-linear-progress :value="1" color="primary" />
       <essential-table
-        ref="refListado"
+        ref="refTabla"
         :configuracion-columnas="configuracionColumnas"
         :datos="datos"
-        :permitir-ocultar-columnas="false"
-        :permitir-exportar="false"
-        tipoSeleccion="single"
-        @fila-seleccionada="emitEventSeleccionar"
+        :mostrar-botones="false"
+        :tipoSeleccion="tipoSeleccion"
+        @selected="emitSelected"
       ></essential-table>
 
       <div class="modal-footer">
-        <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
-          <button class="btn btn-primary" @click="seleccionar()">
-            Seleccionar
-          </button>
-          <button class="btn btn-danger text-white" @click="ocultar()">
-            Cancelar
-          </button>
+        <div class="row justify-end q-pa-md q-gutter-md">
+          <q-btn color="primary" no-caps push @click="seleccionar()">
+            <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+            <span>Seleccionar</span>
+          </q-btn>
+
+          <q-btn color="negative" no-caps push @click="ocultar()">
+            <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+            <span>Cancelar</span>
+          </q-btn>
         </div>
       </div>
     </q-card>
@@ -30,7 +33,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { defineComponent, ref } from 'vue'
 import { ColumnConfig } from '../domain/ColumnConfig'
-// import { TipoSeleccion } from 'config/utils'
+import { TipoSeleccion } from 'config/utils'
 
 // Componentes
 import EssentialTable from './EssentialTable.vue'
@@ -45,44 +48,45 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    tipoSeleccion: {
+      type: String as () => TipoSeleccion,
+      default: 'single',
+    },
   },
   components: { EssentialTable },
-  emits: ['seleccionar'],
+  emits: ['selected'],
   setup(props, { emit }) {
-    const refModal = ref()
-    const refListado = ref()
-    let modal: any
+    const refTabla = ref()
 
     const abierto = ref(false)
 
     const mostrar = () => (abierto.value = true)
     const ocultar = () => (abierto.value = false)
 
-    const seleccionar = (result?: any) => {
-      if (result) {
-        emit('seleccionar', result.id)
-        return
-      }
-
-      refListado.value.seleccionar()
+    /**
+     * Si se deja el campo de busqueda vacio lista todos los elementos, en ese caso no se pasa ningún parametro y se llama a seleccionar de refTabla
+     * @param itemSeleccionado Si la búsqueda devuelve un elemento, se autoselecciona
+     */
+    const seleccionar = (itemSeleccionado?: any) => {
+      if (itemSeleccionado) return emit('selected', itemSeleccionado.id)
+      refTabla.value.seleccionar()
     }
 
-    const emitEventSeleccionar = (filaSeleccionada: any) => {
-      if (filaSeleccionada) {
-        emit('seleccionar', filaSeleccionada.id)
-        ocultar()
+    const emitSelected = (itemsSeleccionados: EntidadAuditable[]) => {
+      if (itemsSeleccionados.length) {
+        if (props.tipoSeleccion === 'single')
+          emit('selected', itemsSeleccionados[0].id)
       }
+      ocultar()
     }
 
     return {
-      refModal,
-      refListado,
+      refTabla,
       mostrar,
       ocultar,
       seleccionar,
       abierto,
-      // tipoSeleccion,
-      emitEventSeleccionar,
+      emitSelected,
     }
   },
 })

@@ -6,7 +6,7 @@ import { getIndexOf } from 'shared/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import TabLayout from 'layouts/TabLayout.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores
 import { MaterialesSolicitados } from '../domain/MaterialesSolicitados'

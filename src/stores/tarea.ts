@@ -1,15 +1,37 @@
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
+import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { reactive, ref } from 'vue'
+import { acciones } from 'config/utils'
 
 export const useTareaStore = defineStore('tarea', () => {
   // State
-  const tarea = ref()
+  const tarea = reactive(new Tarea())
+  const subtarea = reactive(new Subtarea())
+  const accion = ref(acciones.nuevo)
 
-  const mostrarFormulario = computed(() => Boolean(tarea.value))
+  const statusLoading = new StatusEssentialLoading()
+
+  // const mostrarFormulario = computed(() => Boolean(tarea.value))
+  async function consultarSubtarea(id: number) {
+    statusLoading.activar()
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = axios.getEndpoint(endpoints.subtareas) + id
+    const response: AxiosResponse = await axios.get(ruta)
+    subtarea.hydrate(response.data.modelo)
+    statusLoading.desactivar()
+  }
 
   return {
     // State
     tarea,
-    mostrarFormulario,
+    subtarea,
+    consultarSubtarea,
+    accion,
+    // mostrarFormulario,
   }
 })

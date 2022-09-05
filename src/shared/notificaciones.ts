@@ -1,7 +1,8 @@
 import { useQuasar } from 'quasar'
+import { useNotificacionStore } from 'stores/notificacion'
 
 export function useNotificaciones() {
-  const $q = useQuasar()
+  const $q = useNotificacionStore().$q ?? useQuasar()
 
   function obtenerMensaje(mensaje: string | string[]): string {
     if (Array.isArray(mensaje)) return mensaje.join('<br/>')

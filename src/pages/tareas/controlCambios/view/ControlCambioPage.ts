@@ -3,13 +3,13 @@ import { configuracionColumnasControlCambios } from '../domain/configuracionColu
 import { defineComponent, reactive } from 'vue'
 
 // Componentes
-import TabLayout from 'layouts/TabLayout.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores
 import { ControlCambio } from '../domain/ControlCambio'
 import { obtenerFechaActual } from 'shared/utils'
 import { ControlCambioController } from '../infraestructure/ControlCambioController'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 
 export default defineComponent({
   components: {

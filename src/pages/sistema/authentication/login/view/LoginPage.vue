@@ -1,7 +1,9 @@
 <template>
   <q-page padding>
-    <div class="q-pa-xs row">
-      <img src="src/assets/logo.jpeg" height="30" />
+    <div class="q-pa-xs row items-center">
+      <q-avatar square>
+        <img src="src/assets/logo.svg" />
+      </q-avatar>
       <span class="q-ml-md fw-bold text-h5">CONSTRUCRED</span>
     </div>
 

@@ -4,13 +4,18 @@ export class Subtarea extends EntidadAuditable {
   coordinador: string | null
   codigo_tarea_cliente: string | null
   codigo_subtarea: string | null
-  detalle_tarea: string | null
-  detalle_subtarea: string | null
+  // detalle_tarea: string | null
+  detalle: string | null
   tecnico_responsable: string | null
   actividad_realizada: string | null
   novedades: string | null
   cliente: string | null
   estado: string | null
+  // Tiempos
+  fecha_solicitud: string | null
+  fecha_inicio: string | null
+  fecha_finalizacion: string | null
+  cantidad_dias: string | null // para calculo
   // NEDETEL
   fiscalizador: string | null
   ing_soporte: string | null
@@ -31,13 +36,18 @@ export class Subtarea extends EntidadAuditable {
     this.coordinador = null
     this.codigo_tarea_cliente = null
     this.codigo_subtarea = null
-    this.detalle_tarea = null
-    this.detalle_subtarea = null
+    // this.detalle_tarea = null
+    this.detalle = null
     this.tecnico_responsable = null
     this.actividad_realizada = null
     this.novedades = null
     this.cliente = null
     this.estado = null
+    // Tiempos
+    this.fecha_solicitud = null
+    this.fecha_inicio = null
+    this.fecha_finalizacion = null
+    this.cantidad_dias = null
     // NEDETEL
     this.fiscalizador = null
     this.ing_soporte = null

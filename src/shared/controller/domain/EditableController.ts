@@ -1,4 +1,4 @@
-import { HttpResponsePut } from '@/app/shared/http/domain/HttpResponse'
+import { HttpResponsePut } from 'shared/http/domain/HttpResponse'
 import { ResponseItem } from './ResponseItem'
 
 export interface EditableController<T> {

@@ -8,7 +8,8 @@
       "shared/*": ["src/shared/*"],
       "components/*": ["src/components/*"],
       "stores/*": ["src/stores/*"],
-      "pages/*": ["src/pages/*"]
+      "pages/*": ["src/pages/*"],
+      "sistema/*": ["src/pages/sistema/*"]
     }
   }
 }

@@ -35,6 +35,15 @@ export const grupos = ['MACHALA', 'SANTO DOMINGO']
 
 export const tiposInstalaciones = ['SUBTERRÁNEA', 'AEREA']
 
-export const tiposTareasTelconet = ['TENDIDO DE FIBRA', 'COLOCACIÓN DE CAJAS']
+export const tiposTareasTelconet = [
+  {
+    label: 'TENDIDO DE FIBRA',
+    value: 1,
+  },
+  {
+    label: 'COLOCACIÓN DE CAJAS',
+    value: 2,
+  },
+]
 
 export const tiposTareasNedetel = ['TENDIDO DE FIBRA', 'COLOCACIÓN DE CAJAS']

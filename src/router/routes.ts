@@ -7,33 +7,33 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        name: 'Dashboard',
+        name: 'tablero',
         component: () => import('pages/IndexPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/tareas',
-        name: 'Control de tareas',
+        name: 'tareas',
         component: () =>
           import('pages/tareas/controlTareas/view/ControlTareaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/subtareas',
-        name: 'Subtareas',
+        name: 'subtareas',
         component: () => import('pages/tareas/subtareas/view/SubtareaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/tipos-tareas',
-        name: 'Tipos de tareas',
+        name: 'tipos_tareas',
         component: () =>
           import('pages/tareas/tiposTareas/view/TipoTareaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/solicitud-materiales',
-        name: 'Solicitud de materiales',
+        name: 'solicitud_materiales',
         component: () =>
           import(
             'pages/tareas/solicitudMateriales/view/SolicitudMaterialesPage.vue'
@@ -42,7 +42,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/control-progresivas',
-        name: 'Control de progresivas',
+        name: 'control_progresivas',
         component: () =>
           import(
             'pages/tareas/progresivas/controlProgresivas/view/ControlProgresivaPage.vue'
@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/tipos-elementos',
-        name: 'Tipos de elementos',
+        name: 'tipos_elementos',
         component: () =>
           import(
             'pages/tareas/progresivas/tiposElementos/view/TipoElementoPage.vue'
@@ -60,7 +60,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/control-diario-materiales',
-        name: 'Control diario de materiales',
+        name: 'control_diario_materiales',
         component: () =>
           import(
             'pages/tareas/controlDiarioMateriales/view/ControlDiarioMaterialPage.vue'
@@ -69,14 +69,14 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/control-cambios',
-        name: 'Control cambios',
+        name: 'control_cambios',
         component: () =>
           import('pages/tareas/controlCambios/view/ControlCambioPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/control-asistencia',
-        name: 'Control de asistencia',
+        name: 'control_asistencia',
         component: () =>
           import(
             'pages/tareas/controlAsistencia/view/ControlAsistenciaPage.vue'
@@ -85,7 +85,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/perfil',
-        name: 'Perfil',
+        name: 'perfil',
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
@@ -108,6 +108,7 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
+    name: '404',
     component: () => import('pages/ErrorNotFound.vue'),
   },
 ]

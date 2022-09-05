@@ -11,11 +11,15 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Cliente</label>
             <q-input
-              v-model="tipoTarea.cliente"
+              v-model="criterioBusquedaCliente"
               placeholder="Obligatorio"
+              @update:model-value="
+                (v) => (criterioBusquedaCliente = v.toUpperCase())
+              "
               :readonly="disabled"
               hint="Presiona Enter para seleccionar un cliente"
               @keydown.enter="listarClientes()"
+              @blur="criterioBusquedaCliente === '' ? limpiarCliente() : null"
               autofocus
               outlined
               dense
@@ -42,7 +46,7 @@
               :error="!!v$.nombre.$errors.length"
             >
               <template v-slot:error>
-                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -54,8 +58,8 @@
       <essential-selectable-table
         ref="refListadoSeleccionableClientes"
         :configuracion-columnas="configuracionColumnasClientes"
-        :elementos="listadoClientes"
-        @seleccionar="seleccionarCliente"
+        :datos="listadoClientes"
+        @selected="seleccionarCliente"
       ></essential-selectable-table>
     </template>
   </tab-layout>

@@ -3,7 +3,7 @@ import { configuracionColumnasTiposTareas } from '../domain/configuracionColumna
 import { defineComponent, reactive } from 'vue'
 
 // Componentes
-import TabLayout from 'layouts/TabLayout.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores
 import { ControlDiarioMaterial } from '../domain/ControlDiarioMaterial'

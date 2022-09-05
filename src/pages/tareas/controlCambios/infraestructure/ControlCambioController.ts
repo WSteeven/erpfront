@@ -1,4 +1,4 @@
-import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/transacccionSimple.controller'
+import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 import { ControlCambio } from '../domain/ControlCambio'
 import { endpoints } from 'config/api'
 

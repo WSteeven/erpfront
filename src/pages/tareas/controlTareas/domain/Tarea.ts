@@ -4,16 +4,13 @@ export class Tarea extends EntidadAuditable {
   codigo_tarea_jp: string | null
   codigo_tarea_cliente: string | null
   detalle: string | null
-  cliente: number | string | null
+  cliente: number | null
   solicitante: string | null
   correo_solicitante: string | null
-  fecha_inicio: string | null
-  fecha_finalizacion: string | null
-  fecha_agendado: string | null
-  hora_agendado: string | null
   coordinador: string | null
   estado: string | null // pendiente
   es_proyecto: boolean
+  codigo_proyecto: string | null
   // ubicacion de cliente
   provincia: string | null
   ciudad: string | null
@@ -36,13 +33,10 @@ export class Tarea extends EntidadAuditable {
     this.cliente = null
     this.solicitante = null
     this.correo_solicitante = null
-    this.fecha_inicio = null
-    this.fecha_finalizacion = null
-    this.fecha_agendado = null
-    this.hora_agendado = null
     this.coordinador = null
     this.estado = null
     this.es_proyecto = false
+    this.codigo_proyecto = null
     // ubicacion de cliente
     this.provincia = null
     this.ciudad = null

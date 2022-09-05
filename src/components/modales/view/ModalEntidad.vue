@@ -1,9 +1,9 @@
 <template>
-  <q-dialog v-model="abierto" full-width position="top">
+  <q-dialog v-model="abierto" :maximized="true" :full-width="false">
     <q-card>
-      <q-linear-progress :value="1" color="primary" />
+      <!-- <q-linear-progress :value="1" color="grey-4" /> -->
       <q-toolbar>
-        <q-avatar>
+        <q-avatar square>
           <img src="src/assets/logo.svg" />
         </q-avatar>
 
@@ -20,7 +20,8 @@
       </q-toolbar>
 
       <q-card-section>
-        <component :is="componente" :mostrar-listado="false"></component>
+        <component :is="componente"></component>
+        <!-- :mostrar-listado="false"></component> -->
       </q-card-section>
     </q-card>
   </q-dialog>

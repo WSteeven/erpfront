@@ -173,32 +173,33 @@ export function isAxiosError(candidate: any): candidate is ApiError {
 }
 
 export async function notificarMensajesError(
-  mensajes: string[]
+  mensajes: string[],
+  notificaciones: any
 ): Promise<void> {
-  const notificaciones = useNotificaciones()
   for (let i = 0; i < mensajes.length; i++) {
-    await sleep(0)
-    notificaciones.notificarError(mensajes[i])
-    await sleep(1000)
+    notificaciones.notificarAdvertencia(mensajes[i])
   }
 }
 
-export function gestionarNotificacionError(error: any): void {
-  const { notificarAdvertencia } = useNotificaciones()
-
+export function gestionarNotificacionError(
+  error: any,
+  notificaciones: any
+): void {
   if (isAxiosError(error)) {
     const mensajes: string[] = error.erroresValidacion
     if (mensajes.length > 0) {
-      notificarMensajesError(mensajes)
+      notificarMensajesError(mensajes, notificaciones)
     } else {
       if (error.status === 413) {
-        notificarAdvertencia('El tamaño del archivo es demasiado grande.')
+        notificaciones.notificarAdvertencia(
+          'El tamaño del archivo es demasiado grande.'
+        )
       } else {
-        notificarAdvertencia(error.mensaje)
+        notificaciones.notificarAdvertencia(error.mensaje)
       }
     }
   } else {
-    notificarAdvertencia(error.message)
+    notificaciones.notificarAdvertencia(error.message)
   }
 }
 

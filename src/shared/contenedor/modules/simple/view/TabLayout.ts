@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 // Componentes
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
@@ -46,6 +46,7 @@ export default defineComponent({
       props.mixin.useReferencias()
 
     const Router = useRouter()
+    let listadoCargado = false
     // const tareaStore = useTareaStore()
 
     const columnas = [
@@ -58,10 +59,13 @@ export default defineComponent({
       },
     ]
 
-    listar()
+    if (!listadoCargado) {
+      listar()
+      listadoCargado = true
+    }
 
     const seleccionado = ref()
-    tabs.value = 'listado'
+    tabs.value = 'formulario'
 
     const tituloTabla =
       Router.currentRoute.value.name?.toString().toLowerCase() ?? ''

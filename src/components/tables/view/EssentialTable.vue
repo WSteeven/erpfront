@@ -95,12 +95,12 @@
 
         <!-- Botones exportar -->
         <div v-if="mostrarBotones" class="row q-gutter-sm justify-end">
-          <q-btn color="positive" push rounded @click="exportTable()" no-caps>
+          <q-btn color="primary" push @click="previsualizarPdf()" no-caps>
             <q-icon name="bi-printer" class="q-pr-sm" size="xs"></q-icon>
-            <div>Imprimir</div>
+            <div>Imprimir PDF</div>
           </q-btn>
 
-          <q-btn color="positive" no-caps push rounded @click="exportTable()">
+          <q-btn color="primary" no-caps push @click="exportTable()">
             <q-icon
               name="bi-file-spreadsheet"
               class="q-pr-sm"
@@ -109,7 +109,7 @@
             <div>Exportar Excel</div>
           </q-btn>
 
-          <q-btn color="positive" push rounded @click="exportTable()" no-caps>
+          <q-btn color="primary" push @click="exportTable()" no-caps>
             <q-icon name="bi-eye" class="q-pr-sm" size="xs"></q-icon>
             <div>Mostrar filtros</div>
           </q-btn>
@@ -275,6 +275,13 @@
       </q-tr>
     </template> -->
   </q-table>
+
+  <previsualizar-tabla-pdf
+    :configuracionColumnas="configuracionColumnas"
+    :datos="datos"
+    :print-table="printTable"
+    :titulo="'Listado de ' + titulo"
+  ></previsualizar-tabla-pdf>
 </template>
 
 <style lang="scss">

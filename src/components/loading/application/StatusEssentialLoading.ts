@@ -1,7 +1,7 @@
-import { useCargandoStore } from 'src/stores/cargando'
+import { useCargandoStore } from 'stores/cargando'
 import { computed, ComputedRef } from 'vue'
 
-export class Cargando {
+export class StatusEssentialLoading {
   public estaCargando: ComputedRef<boolean>
   store = useCargandoStore()
 
@@ -10,10 +10,12 @@ export class Cargando {
   }
 
   activar(): void {
+    console.log('activando')
     this.store.activarCargando()
   }
 
   desactivar(): void {
+    console.log('desactivando')
     this.store.desactivarCargando()
   }
 }

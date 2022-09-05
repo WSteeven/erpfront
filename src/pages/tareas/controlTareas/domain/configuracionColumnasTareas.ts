@@ -31,7 +31,7 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     sortable: true,
     visible: false,
   },
-  {
+  /* {
     name: 'fecha_finalizacion',
     field: 'fecha_finalizacion',
     label: 'Fecha de finalización',
@@ -54,7 +54,7 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     align: 'center',
     sortable: true,
     visible: false,
-  },
+  }, */
   {
     name: 'coordinador',
     field: 'coordinador',

@@ -1,18 +1,98 @@
-import { provincias, ciudades } from 'src/config/utils'
-import { useTareaStore } from 'src/stores/tarea'
-import { defineComponent } from 'vue'
+// Dependencias
+import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
+import { useOrquestadorSelectorClientes } from '../application/OrquestadorSelectorClientes'
+import { provincias, ciudades, acciones } from 'config/utils'
+import { defineComponent, watchEffect } from 'vue'
+import { useTareaStore } from 'stores/tarea'
+import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
+
+// Componentes
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
+import { endpoints } from 'config/api'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 
 export default defineComponent({
-  setup() {
+  props: {
+    mixin: {
+      type: Object as () => ContenedorSimpleMixin<any>,
+      required: true,
+    },
+  },
+  components: {
+    EssentialSelectableTable,
+    ButtonSubmits,
+  },
+  setup(props) {
     const tareaStore = useTareaStore()
     const tarea = tareaStore.tarea
-    tarea.georeferencia_x = '0°14\'13.00"S'
-    tarea.georeferencia_y = '79°10\'33.84"W'
 
-    function enviar() {
-      //
+    const { guardar, editar, eliminar, reestablecer, setValidador } =
+      props.mixin.useComportamiento()
+
+    const { onGuardado, onReestablecer } = props.mixin.useHooks()
+
+    const {
+      refListadoSeleccionable: refListadoSeleccionableClientes,
+      criterioBusqueda: criterioBusquedaCliente,
+      listado: listadoClientes,
+      listar: listarClientes,
+      limpiar: limpiarCliente,
+      seleccionar: seleccionarCliente,
+    } = useOrquestadorSelectorClientes(tarea, 'clientes')
+
+    watchEffect(() => {
+      if (tarea.id && tarea.cliente) {
+        seleccionarCliente(tarea.cliente)
+      }
+    })
+
+    /* async function guardar() {
+
+    } */
+    const rules = {
+      cliente: { required },
+      detalle: { required },
+      solicitante: { required },
     }
 
-    return { tarea, provincias, ciudades, enviar }
+    const v$ = useVuelidate(rules, tarea)
+    setValidador(v$.value)
+
+    /* onGuardado(() => {
+      console.log('guardado')
+      console.log(tarea)
+      tareaStore.tarea = tarea
+    }) */
+
+    // onReestablecer(() => )
+
+    /* function reestablecer() {
+      tareaStore.tarea.hydrate(new Tarea())
+      tareaStore.accion = acciones.nuevo
+      limpiarCliente()
+    } */
+
+    return {
+      tarea,
+      provincias,
+      ciudades,
+      guardar,
+      editar,
+      eliminar,
+      tareaStore,
+      reestablecer,
+      // Selector
+      refListadoSeleccionableClientes,
+      criterioBusquedaCliente,
+      listadoClientes,
+      listarClientes,
+      limpiarCliente,
+      seleccionarCliente,
+      configuracionColumnasClientes,
+    }
   },
 })

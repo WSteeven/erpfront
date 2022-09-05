@@ -64,7 +64,7 @@
         <q-avatar size="58px" class="q-mb-md" square>
           <img src="src/assets/logo.svg" />
         </q-avatar>
-        <div class="text-h5 text-primary">CONSTRUCRED</div>
+        <div class="text-h5 text-secondary">CONSTRUCRED</div>
       </div>
 
       <!-- Drawer Body -->
@@ -74,7 +74,15 @@
             <q-item-label v-if="item.hasOwnProperty('header')" header>{{
               item.header
             }}</q-item-label>
-            <EssentialLink v-else v-bind="item" />
+            <!-- <EssentialLink v-else v-bind="item" /> -->
+            <EssentialLink
+              v-else
+              :title="item.title ?? ''"
+              :link="item.link"
+              :icon="item.icon"
+              :children="item.children"
+              :can="item.can"
+            ></EssentialLink>
           </div>
         </q-list>
       </q-scroll-area>
@@ -84,7 +92,10 @@
     <q-page-container class="bg-white">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
-          <component :is="Component" />
+          <div>
+            <essential-loading></essential-loading>
+            <component :is="Component" />
+          </div>
         </transition>
       </router-view>
     </q-page-container>
@@ -97,6 +108,7 @@ import { useAuthenticationStore } from 'src/stores/authentication'
 import { defineComponent, ref, computed } from 'vue'
 import { useMenuStore } from 'src/stores/menu'
 import { useRouter } from 'vue-router'
+import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 
 // Componentes
 import EssentialLink from 'components/EssentialLink.vue'
@@ -106,6 +118,7 @@ export default defineComponent({
 
   components: {
     EssentialLink,
+    EssentialLoading,
   },
 
   setup() {
