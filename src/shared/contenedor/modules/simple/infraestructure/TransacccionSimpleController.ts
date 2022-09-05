@@ -1,33 +1,23 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Controller } from 'shared/controller/domain/Controller.domain'
 import { Endpoint } from 'shared/http/domain/Endpoint'
 // CRUD
-import { ListableRepository } from 'shared/controller/infraestructure/listable.repository'
+import { ListableRepository } from 'shared/controller/infraestructure/ListableRepository'
 import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
-import { EditableRepository } from 'shared/controller/infraestructure/editable.repository'
-import { EliminableRepository } from 'shared/controller/infraestructure/eliminable.repository'
+import { EditableRepository } from 'shared/controller/infraestructure/EditableRepository'
+import { EliminableRepository } from 'shared/controller/infraestructure/EliminableRepository'
 import { ConsultableRepository } from 'shared/controller/infraestructure/ConsultableRepository'
-// Exportar e importar
-// import { DescargableRepository } from 'shared/controller/infraestructure/listado/descargable.repository'
-// import { ImportableRepository } from 'shared/controller/infraestructure/listado/importable.repository'
-/* import {
-  columnaImportable,
-  Importable,
-} from 'shared/importable/domain/importable' */
-// import { HttpResponsePut } from 'shared/http/domain/HttpResponse'
-// import { ResponseItem } from 'shared/controller/domain/ResponseItem'
 
 export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   implements Controller<T>
 {
   //, Importable<T>
   // Repositorios
-  private consultableRepository: ConsultableRepository<T> // GET
-  private guardableRepository: GuardableRepository<T> // POST
-  private editableRepository: EditableRepository<T> // PUT
-  private eliminableRepository: EliminableRepository<T> // DEL
-  private listableRepository: ListableRepository<T> // GET - LISTA
+  private consultableRepository: ConsultableRepository<T>
+  private guardableRepository: GuardableRepository<T>
+  private editableRepository: EditableRepository<T>
+  private eliminableRepository: EliminableRepository<T>
+  private listableRepository: ListableRepository<T>
   // private descargableRepository: DescargableRepository
   // private importableRepository: ImportableRepository<T>
 
@@ -44,20 +34,6 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   async listar<C = T>(params?: any) {
     return this.listableRepository.listar<C>(params)
   }
-
-  /* async obtener<C = T>(id: number | null, params?: any) {
-    if (id === null) {
-      throw new Error('No se puede obtener el recurso con id null')
-    }
-    return this.consultableRepository
-      .obtenerID<C>(id, params)
-      .then((response: any) => {
-        return {
-          response,
-          result: response.data,
-        }
-      })
-  } */
 
   async consultar(id: number, params?: any) {
     return await this.consultableRepository.consultar(id, params)

@@ -9,7 +9,7 @@ import { obtenerFechaActual } from 'shared/utils'
 import { defineComponent, reactive } from 'vue'
 
 // Componentes
-import TabLayout from 'layouts/TabLayout.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'

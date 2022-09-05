@@ -1,4 +1,4 @@
-import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/transacccionSimple.controller'
+import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 // import { ReferenciasSimples } from 'shared/contenedor/modules/simple/domain/referenciasSimples'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Contenedor } from '../../../application/contenedor.mixin'
@@ -17,6 +17,8 @@ import { markRaw, watch } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useRouter } from 'vue-router'
 // import { useForm } from 'vee-validate'
 // import { columnaImportable } from '@/app/shared/importable/domain/importable'
 
@@ -85,7 +87,10 @@ export class ContenedorSimpleMixin<
 
   // Consultar
   private async consultar(data: T) {
+    this.verificarAutenticacion()
+
     this.hooks.onBeforeConsultar()
+
     this.cargarVista(async () => {
       if (data.id === null) {
         return this.notificaciones.notificarAdvertencia(
@@ -112,6 +117,8 @@ export class ContenedorSimpleMixin<
 
   // Listar
   private async listar(params: any, append: boolean) {
+    this.verificarAutenticacion()
+
     this.statusEssentialLoading.activar()
 
     try {
@@ -150,9 +157,11 @@ export class ContenedorSimpleMixin<
 
   // Guardar
   private async guardar(data: any) {
+    this.verificarAutenticacion()
+
     this.hooks.onBeforeGuardar()
 
-    if (!this.seCambioEntidad(data)) {
+    if (!this.seCambioEntidad(this.entidad_vacia)) {
       return this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
@@ -177,7 +186,7 @@ export class ContenedorSimpleMixin<
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
-          await notificarMensajesError(mensajes)
+          await notificarMensajesError(mensajes, this.notificaciones)
         }
       }
     })
@@ -192,6 +201,8 @@ export class ContenedorSimpleMixin<
 
   // Editar
   private async editar(data: T) {
+    this.verificarAutenticacion()
+
     this.hooks.onBeforeModificar()
 
     if (this.entidad.id === null) {
@@ -221,7 +232,7 @@ export class ContenedorSimpleMixin<
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes)
+          notificarMensajesError(mensajes, this.notificaciones)
         } else {
           this.notificaciones.notificarError(error.message)
         }
@@ -233,6 +244,8 @@ export class ContenedorSimpleMixin<
 
   // Eliminar
   private async eliminar(data: T, callback?: () => void) {
+    this.verificarAutenticacion()
+
     this.notificaciones.confirmar('Esta seguro que desea eliminar?', () => {
       if (data.id === null) {
         return this.notificaciones.notificarAdvertencia(
@@ -256,5 +269,13 @@ export class ContenedorSimpleMixin<
 
   private setValidador(validador) {
     this.refs.validador.value = validador
+  }
+
+  private async verificarAutenticacion(): Promise<void> {
+    const authentication = useAuthenticationStore()
+    const autenticado = await authentication.isUserLoggedIn()
+    const router = useRouter()
+
+    if (!autenticado) router.replace({ name: 'Login' })
   }
 }

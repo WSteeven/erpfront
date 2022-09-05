@@ -4,4 +4,5 @@ export interface MenuOption {
   icon?: string
   link?: string
   children?: MenuOption[]
+  can?: boolean
 }

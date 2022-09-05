@@ -42,7 +42,11 @@ export default route(function (/* { store, ssrContext } */) {
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
-        next()
+        if (authentication.can('puede.ver.' + to.name?.toString())) {
+          next()
+        } else {
+          next({ name: '404' })
+        }
       } else {
         next({ name: 'Login' })
       }
@@ -50,7 +54,7 @@ export default route(function (/* { store, ssrContext } */) {
       sessionIniciada &&
       ['Login', 'ResetPassword', 'Register'].includes(to.name?.toString() ?? '')
     ) {
-      next({ name: 'Dashboard' })
+      next({ name: 'tablero' })
     } else {
       next()
     }

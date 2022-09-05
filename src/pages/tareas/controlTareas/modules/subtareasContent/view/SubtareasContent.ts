@@ -9,7 +9,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { ComportamientoModalesSubtareaContent } from '../application/ComportamientoModalesSubtareaContent'

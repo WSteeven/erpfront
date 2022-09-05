@@ -1,30 +1,35 @@
 import { defineStore } from 'pinia'
-import { MenuOption } from 'src/pages/shared/menu/MenuOption'
+import { MenuOption } from 'shared/menu/MenuOption'
+import { useAuthenticationStore } from './authentication'
 
 export const useMenuStore = defineStore('menu', () => {
+  const store = useAuthenticationStore()
   // State
   const links: MenuOption[] = [
     {
       header: 'Modulos',
     },
     {
-      title: 'Inicio',
+      title: 'Tablero',
       icon: 'bi-layers-fill',
       link: '/',
     },
     {
       title: 'Tareas',
       icon: 'bi-paperclip',
+      can: store.can('puede.ver.modulo_tareas'),
       children: [
         {
           title: 'Control de tareas',
           link: 'tareas',
           icon: 'bi-circle',
+          can: store.can('puede.ver.tareas'),
         },
         {
           title: 'Tipos de tareas',
           link: 'tipos-tareas',
           icon: 'bi-circle',
+          can: store.can('puede.ver.tipos_tareas'),
         },
         {
           title: 'Control de asistencia',
@@ -82,6 +87,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Bodega',
       icon: 'bi-ui-checks-grid',
+      can: store.can('puede.ver.modulo_bodega'),
       children: [
         {
           title: 'Item 1',

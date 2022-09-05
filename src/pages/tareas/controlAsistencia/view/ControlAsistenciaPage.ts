@@ -7,14 +7,14 @@ import { getIndexOf, obtenerFechaActual } from 'shared/utils'
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
-import TabLayout from 'layouts/TabLayout.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores
 import { AsistenciaTecnico } from '../domain/AsistenciaTecnico'
 import { ControlAsistencia } from '../domain/ControlAsistencia'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ControlAsistenciaController } from '../infraestructure/ControlAsistenciaController'
 
 export default defineComponent({

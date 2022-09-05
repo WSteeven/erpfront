@@ -1,12 +1,19 @@
-import { CustomActionTable } from '../domain/CustomActionTable'
-import { getVisibleColumns } from 'shared/utils'
-import { ColumnConfig } from '../domain/ColumnConfig'
-import { TipoSeleccion } from 'config/utils'
-import { exportFile, useQuasar } from 'quasar'
-import { defineComponent, ref, watch } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { CustomActionTable } from '../domain/CustomActionTable'
+import { ColumnConfig } from '../domain/ColumnConfig'
+import { getVisibleColumns } from 'shared/utils'
+import { exportFile, useQuasar } from 'quasar'
+import { TipoSeleccion } from 'config/utils'
+import { defineComponent, ref } from 'vue'
+import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
+
+// Componentes
+import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
 
 export default defineComponent({
+  components: {
+    PrevisualizarTablaPdf,
+  },
   props: {
     titulo: {
       type: String,
@@ -120,6 +127,13 @@ export default defineComponent({
         })
       }
     }
+
+    const printTable = new EstadoPrevisualizarTablaPDF()
+
+    function previsualizarPdf() {
+      printTable.abrirVistaPrevia()
+    }
+
     return {
       grid,
       inFullscreen,
@@ -131,6 +145,8 @@ export default defineComponent({
       selected,
       visibleColumns,
       seleccionar,
+      previsualizarPdf,
+      printTable,
     }
   },
 })

@@ -13,6 +13,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   // State
   const user = ref()
   const auth = ref(false)
+  const permisos = ref()
 
   // Actions
   const login = async (credentiales: UserLogin): Promise<void> => {
@@ -40,6 +41,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     try {
       const res = await axios.get<any>(axios.getEndpoint(endpoints.api_user))
       setUser(res.data)
+      if (auth.value) await getPermisos()
     } catch (e) {
       setUser(null)
     }
@@ -61,10 +63,26 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     return auth.value
   }
 
+  // Permisos
+  const getPermisos = async () => {
+    try {
+      const res = await axios.get<any>(axios.getEndpoint(endpoints.permisos))
+      permisos.value = res.data
+    } catch (error: any) {
+      throw new ApiError(error)
+    }
+  }
+
+  function can(permiso: string) {
+    return permisos.value.indexOf(permiso) !== -1
+  }
+
   return {
     user,
     login,
     logout,
+    permisos,
+    can,
     getUser,
     actualizarContrasena,
     isUserLoggedIn,

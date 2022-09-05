@@ -64,7 +64,7 @@
         <q-avatar size="58px" class="q-mb-md" square>
           <img src="src/assets/logo.svg" />
         </q-avatar>
-        <div class="text-h5 text-primary">CONSTRUCRED</div>
+        <div class="text-h5 text-secondary">CONSTRUCRED</div>
       </div>
 
       <!-- Drawer Body -->
@@ -74,7 +74,15 @@
             <q-item-label v-if="item.hasOwnProperty('header')" header>{{
               item.header
             }}</q-item-label>
-            <EssentialLink v-else v-bind="item" />
+            <!-- <EssentialLink v-else v-bind="item" /> -->
+            <EssentialLink
+              v-else
+              :title="item.title ?? ''"
+              :link="item.link"
+              :icon="item.icon"
+              :children="item.children"
+              :can="item.can"
+            ></EssentialLink>
           </div>
         </q-list>
       </q-scroll-area>

@@ -11,7 +11,7 @@ import EssentialSelectableTable from 'components/tables/view/EssentialSelectable
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 import { endpoints } from 'config/api'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 

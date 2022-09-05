@@ -5,10 +5,10 @@ import useVuelidate from '@vuelidate/core'
 import { defineComponent } from 'vue'
 
 // Componentes
-import TabLayout from 'layouts/TabLayout.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoElementoController } from '../infraestructure/TipoElementoController'
 import { TipoElemento } from '../domain/TipoElemento'
 

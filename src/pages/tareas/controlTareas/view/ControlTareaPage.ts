@@ -4,13 +4,13 @@ import { useTareaStore } from 'stores/tarea'
 import { defineComponent, ref } from 'vue'
 
 // Componentes
-import TabLayout from 'layouts/TabLayout.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import GeneralContent from 'pages/tareas/controlTareas/modules/GeneralContent/view/GeneralContent.vue'
 import SubtareasContent from 'pages/tareas/controlTareas/modules/subtareasContent/view/SubtareasContent.vue'
 // import ResumenMaterialSolicitadoContent from 'pages/tareas/controlTareas/modules/resumenMaterialesSolicitados/view/ResumenMaterialSolicitadoContent.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TareaController } from '../infraestructure/TareaController'
 import { Tarea } from '../domain/Tarea'
 

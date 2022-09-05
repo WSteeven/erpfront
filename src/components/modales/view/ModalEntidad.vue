@@ -3,7 +3,7 @@
     <q-card>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
       <q-toolbar>
-        <q-avatar>
+        <q-avatar square>
           <img src="src/assets/logo.svg" />
         </q-avatar>
 

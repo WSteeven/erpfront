@@ -13,7 +13,7 @@ export const endpoints = {
   perfil_usuario: new Endpoint('user/profile-information', false),
   cambiar_contrasena: new Endpoint('user/password', false),
   logout: new Endpoint('logout', false),
-
+  permisos: new Endpoint('user/permisos'),
   // acceso a modulos
   tareas: new Endpoint('tareas/'),
   subtareas: new Endpoint('subtareas/'),

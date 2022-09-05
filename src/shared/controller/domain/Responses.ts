@@ -4,7 +4,7 @@ import {
   HttpResponseList,
   HttpResponsePost,
   HttpResponsePut,
-} from '@/app/shared/http/domain/HttpResponse'
+} from 'shared/http/domain/HttpResponse'
 
 export type Responses =
   | HttpResponseDelete

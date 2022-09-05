@@ -19,9 +19,9 @@ export function useSelector(selector: any) {
     status.desactivar()
 
     if (result.length === 0) {
-      // const { notificarAdvertencia } = useNotificaciones()
+      const { notificarAdvertencia } = useNotificaciones()
       // await sleep(0)
-      alert('No se encontraron coincidencias')
+      notificarAdvertencia('No se encontraron coincidencias')
       return
     }
 

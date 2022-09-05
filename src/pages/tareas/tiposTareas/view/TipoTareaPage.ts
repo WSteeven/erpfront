@@ -7,13 +7,15 @@ import { defineComponent } from 'vue'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import TabLayout from 'layouts/TabLayout.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useOrquestadorSelectorClientes } from '../application/OrquestadorSelectorClientes'
 import { TipoTareaController } from '../infraestructure/TipoTareaController'
 import { TipoTarea } from '../domain/TipoTarea'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: {
@@ -34,6 +36,8 @@ export default defineComponent({
       cliente: { required },
       nombre: { required },
     }
+
+    useNotificacionStore().setQuasar(useQuasar())
 
     const v$ = useVuelidate(rules, tipoTarea)
     setValidador(v$.value)

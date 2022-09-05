@@ -1,9 +1,9 @@
 // Dependencias
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { gestionarNotificacionError } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
-import { ApiError } from 'shared/error/domain/ApiError'
 import { useNotificaciones } from 'shared/notificaciones'
+import { gestionarNotificacionError } from 'shared/utils'
+import { ApiError } from 'shared/error/domain/ApiError'
 import { defineComponent, reactive } from 'vue'
 import { endpoints } from 'config/api'
 
@@ -13,7 +13,8 @@ import { Perfil } from '../domain/Perfil'
 export default defineComponent({
   setup() {
     const perfil = reactive(new Perfil())
-    const { notificarCorrecto } = useNotificaciones()
+
+    const notificaciones = useNotificaciones()
 
     const authenticationStore = useAuthenticationStore()
     perfil.hydrate(authenticationStore.user)
@@ -25,10 +26,10 @@ export default defineComponent({
           axios.getEndpoint(endpoints.perfil_usuario),
           perfil
         )
-        notificarCorrecto('Perfil actualizado exitosamente!')
+        notificaciones.notificarCorrecto('Perfil actualizado exitosamente!')
         authenticationStore.user = perfil
       } catch (e: any) {
-        gestionarNotificacionError(new ApiError(e))
+        gestionarNotificacionError(new ApiError(e), notificaciones)
       }
     }
 
