@@ -7,7 +7,7 @@ export const apiConfig = {
 export const endpoints = {
   // autenticacion
   authentication: new Endpoint('sanctum/csrf-cookie', false),
-  login: new Endpoint('api/usuarios/login', false),
+  login: new Endpoint('login', false),
   api_user: new Endpoint('api/user', false),
   reset_password: new Endpoint('reset-password', false),
   perfil_usuario: new Endpoint('user/profile-information', false),

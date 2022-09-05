@@ -14,7 +14,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const user = ref()
   const auth = ref(false)
 
-  // Actions
+  // Actions 
   const login = async (credentiales: UserLogin): Promise<void> => {
     try {
       await axios.get(axios.getEndpoint(endpoints.authentication))
