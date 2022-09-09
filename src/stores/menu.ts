@@ -90,21 +90,144 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_bodega'),
       children: [
         {
-          title: 'Item 1',
-          link: 'tareas',
+          title: 'Productos',
+          link: 'productos',
           icon: 'bi-circle',
         },
         {
-          title: 'Item 2',
-          link: 'tipos-tareas',
+          title: 'Autorizaciones',
+          link: 'autorizaciones',
           icon: 'bi-circle',
         },
         {
-          title: 'Item 3',
-          link: 'control-progresivas',
+          title: 'Inventario',
+          link: 'inventario',
           icon: 'bi-circle',
+        },
+        {
+          title: 'Ingreso de materiales',
+          icon: 'bi-circle',
+          children:[
+            {
+              title: 'Nuevo',
+              link: 'nuevo-ingreso',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Pendientes',
+              link: 'ingresos-pendientes',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Completados',
+              link: 'ingresos-completados',
+              icon: 'bi-dash',
+            },
+          ]
+        },
+        {
+          title: 'Salida de materiales',
+          icon: 'bi-circle',
+          children:[
+            {
+              title: 'Nuevo',
+              link: 'nuevo-egreso',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Pendientes',
+              link: 'egresos-pendientes',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Completados',
+              link: 'egresos-completados',
+              icon: 'bi-dash',
+            },
+          ]
+        },
+        {
+          title: 'Transferencias entre bodegas',
+          link: 'transferencias',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Liquidaciones',
+          link: 'liquidaciones',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-circle',
+          children:[
+            {
+              title: 'Reporte de ingresos',
+              link: 'reporte-ingresos',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Reporte de egresos',
+              link: 'reporte-egresos',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Reporte de transferencias',
+              link: 'reporte-transferencias',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Reporte item',
+              link: 'reporte-item1',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Reporte item',
+              link: 'reporte-item2',
+              icon: 'bi-dash',
+            },
+          ]
         },
       ],
+    },
+    {
+      header:'Administración',
+    },
+    {
+      title: 'Bodega',
+      icon: 'bi-ui-checks-grid',
+      children: [
+        {
+          title: 'Nombres de Productos',
+          link: 'nombre-productos',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Inventario',
+          link: 'inventario',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Ingreso de materiales',
+          icon: 'bi-circle',
+          children:[
+            {
+              title: 'Nuevo',
+              link: 'nuevo-ingreso',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Pendientes',
+              link: 'ingresos-pendientes',
+              icon: 'bi-dash',
+            },
+            {
+              title: 'Completados',
+              link: 'ingresos-completados',
+              icon: 'bi-dash',
+            },
+          ]
+        },
+      ]
     },
     {
       header: 'Sistema',

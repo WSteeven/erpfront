@@ -89,6 +89,36 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
+      // Routes for bodega
+      {
+        path: '/productos',
+        name: 'productos',
+        component: () =>
+          import(
+            'pages/bodega/productos/view/ProductoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/autorizaciones',
+        name: 'autorizaciones',
+        component: () =>
+          import(
+            'pages/bodega/autorizaciones/view/AutorizacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+
+      //Routes for administracion
+      {
+        path: '/nombressssssss-productos',
+        name: 'nombre_productos',
+        component: () =>
+          import(
+            'pages/administracion/nombresProductos/view/NombreProductoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {
