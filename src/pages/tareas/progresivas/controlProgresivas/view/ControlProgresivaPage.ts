@@ -17,6 +17,8 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 // Logica y controladores
 import { ControlProgresiva } from '../domain/ControlProgresiva'
 import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ControlProgresivaController } from '../domain/ControlProgresivaController'
 
 export default defineComponent({
   components: {
@@ -26,14 +28,20 @@ export default defineComponent({
     ModalesEntidad,
   },
   setup() {
-    const progresiva = reactive(new ControlProgresiva())
-    progresiva.codigo_tarea_jp = 'JP000001'
+    const mixin = new ContenedorSimpleMixin(
+      ControlProgresiva,
+      new ControlProgresivaController()
+    )
+
+    const { entidad: progresiva, disabled, accion } = mixin.useReferencias()
+
+    /*progresiva.codigo_tarea_jp = 'JP000001'
     progresiva.codigo_subtarea_jp = 'JP000001_1'
     progresiva.fecha = obtenerFechaActual()
     progresiva.nombre_proyecto = 'FTTH SARACAY'
     progresiva.grupo = 'MACHALA'
     progresiva.tecnico_responsable = 'FERNANDO AYORA'
-    progresiva.tecnico = 'LUIS VACA'
+    progresiva.tecnico = 'LUIS VACA'*/
 
     const datos: any[] = [
       {
@@ -95,6 +103,7 @@ export default defineComponent({
     const modalesProgresiva = new ComportamientoModalesProgresiva()
 
     return {
+      mixin,
       progresiva,
       datos,
       enviar,

@@ -1,5 +1,6 @@
 <template>
   <tab-layout
+  :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTiposTareas"
     :datos="datos"
     tituloPagina="Control de progresivas"

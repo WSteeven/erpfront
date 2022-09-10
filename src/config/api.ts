@@ -22,7 +22,7 @@ export const endpoints = {
   control_cambios: new Endpoint('control-cambios/'),
   tipos_elementos: new Endpoint('tipos-elementos/'),
   clientes: new Endpoint('clientes/'),
-
+  progresivas: new Endpoint('progresivas/'),
   // ubicacion
   paises: new Endpoint('paises/'),
   provincias: new Endpoint('provincias/'),

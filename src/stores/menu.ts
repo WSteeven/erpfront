@@ -54,6 +54,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Control de progresivas',
               link: 'control-progresivas',
               icon: 'bi-dash',
+              can: store.can('puede.ver.control_progresivas'),
             },
             {
               title: 'Tipos de elementos',

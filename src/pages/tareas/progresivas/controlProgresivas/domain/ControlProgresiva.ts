@@ -1,5 +1,6 @@
-export class ControlProgresiva {
-  id: number | null
+import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
+
+export class ControlProgresiva extends EntidadAuditable {
   codigo_tarea_jp: string | null
   codigo_subtarea_jp: string | null
   nombre_proyecto: string | null
@@ -40,7 +41,7 @@ export class ControlProgresiva {
   longitud: string | null //*
 
   constructor() {
-    this.id = null
+    super()
     this.codigo_tarea_jp = null
     this.codigo_subtarea_jp = null
     this.nombre_proyecto = null
