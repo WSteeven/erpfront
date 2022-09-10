@@ -31,3 +31,7 @@ yarn.lock
 *.ntvs*
 *.njsproj
 *.sln
+
+# vscode
+extensions.json
+settings.json

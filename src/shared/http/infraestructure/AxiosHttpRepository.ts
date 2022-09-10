@@ -17,7 +17,7 @@ export class AxiosHttpRepository implements HttpRepository {
       withCredentials: true,
       headers: {},
     })
-  }
+  } 
 
   public static getInstance(): AxiosHttpRepository {
     if (!this.instance) {
