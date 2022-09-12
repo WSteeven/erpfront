@@ -3,15 +3,17 @@ import {Producto} from './Producto';
 
 export const configuracionColumnasProductos: ColumnConfig<Producto>[]=[
   {
-    name:'categoria_id',
-    field:'categoria_id',
-    label:'left',
+    name:'nombre',
+    field:'nombre',
+    label:'Producto',
+    align: 'left',
     sortable:true,
   },
   {
-    name:'nombre_id',
-    field:'nombre_id',
-    label:'left',
+    name:'categoria',
+    field:'categoria',
+    label:'Categoria',
+    align:'left',
     sortable:true,
   },
   // add other fields of Product class

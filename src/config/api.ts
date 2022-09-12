@@ -30,6 +30,7 @@ export const endpoints = {
 
   //endpoints de bodega
   //productos
+  categorias: new Endpoint('categorias/'),
   productos: new Endpoint('productos/'),
   autorizaciones: new Endpoint('autorizaciones'),
   

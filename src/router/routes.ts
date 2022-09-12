@@ -91,6 +91,15 @@ const routes: RouteRecordRaw[] = [
       },
       // Routes for bodega
       {
+        path: '/categorias',
+        name: 'categorias',
+        component: () =>
+          import( 
+            'pages/bodega/categorias/view/CategoriaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/productos',
         name: 'productos',
         component: () =>

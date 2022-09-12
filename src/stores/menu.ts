@@ -91,6 +91,11 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_bodega'),
       children: [
         {
+          title: 'Categorías',
+          link: 'categorias',    
+          icon: 'bi-circle',
+        },
+        {
           title: 'Productos',
           link: 'productos',
           icon: 'bi-circle',
