@@ -29,9 +29,17 @@ export const endpoints = {
   ciudades: new Endpoint('ciudades/'),
 
   //endpoints de bodega
-  //productos
+  autorizaciones: new Endpoint('autorizaciones/'),
   categorias: new Endpoint('categorias/'),
+  condiciones: new Endpoint('condiciones/'),
+  hilos: new Endpoint('hilos/'),
+  marcas: new Endpoint('marcas/'),
+  modelos: new Endpoint('modelos/'),
   productos: new Endpoint('productos/'),
-  autorizaciones: new Endpoint('autorizaciones'),
+  sucursales: new Endpoint('sucursales/'),
+  tipos_fibras: new Endpoint('tipos-fibras/'),
+  perchas: new Endpoint('perchas/'),
+  pisos: new Endpoint('pisos/'),
+  ubicaciones: new Endpoint('ubicaciones/'),
   
 }

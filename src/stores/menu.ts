@@ -96,13 +96,18 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title: 'Productos',
-          link: 'productos',
+          title: 'Marcas',
+          link: 'marcas',
           icon: 'bi-circle',
         },
         {
-          title: 'Autorizaciones',
-          link: 'autorizaciones',
+          title: 'Modelos',
+          link: 'modelos',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Productos',
+          link: 'productos',
           icon: 'bi-circle',
         },
         {
@@ -203,8 +208,23 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-ui-checks-grid',
       children: [
         {
-          title: 'Nombres de Productos',
-          link: 'nombre-productos',
+          title: 'Autorizaciones',
+          link: 'autorizaciones',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Condiciones de productos',
+          link: 'condiciones',    
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Hilos',
+          link: 'hilos',    
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Tipos de Fibras',
+          link: 'tipos-fibras',    
           icon: 'bi-circle',
         },
         {
@@ -232,6 +252,16 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-dash',
             },
           ]
+        },
+        {
+          title: 'Pisos',
+          link: 'pisos',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Sucursales',
+          link: 'sucursales',
+          icon: 'bi-circle',
         },
       ]
     },

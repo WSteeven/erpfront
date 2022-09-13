@@ -6,7 +6,7 @@
           <!-- Categoria -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Categoria</label>
-            <q-input v-model="criterioBusquedaCategoria" placeholder="=Obligatorio"
+            <q-input v-model="criterioBusquedaCategoria" placeholder="Obligatorio"
               @update:model-value="(v)=>(criterioBusquedaCategoria=v.toUpperCase())" :readonly="disabled"
               hint="Presiona Enter para seleccionar una categoría" @keydown.enter="listarCategorias()"
               @blur="criterioBusquedaCategoria ===''? limpiarCategoria() : null" autofocus outlined dense
@@ -21,7 +21,7 @@
           <!-- Nombre -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Nombre</label>
-            <q-input v-model="producto.nombre" placeholder="=Obligatorio" :readonly="disabled"
+            <q-input v-model="producto.nombre" placeholder="Obligatorio" :readonly="disabled"
               :error="!!v$.nombre.$errors-length"
               @update:model-value="(v)=>(producto.nombre=v.toUpperCase())" outlined dense>
               <template v-slot:error>

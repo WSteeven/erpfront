@@ -100,26 +100,100 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/marcas',
+        name: 'marcas',
+        component: () =>
+        import(
+            'pages/bodega/marcas/view/MarcaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/modelos',
+        name: 'modelos',
+        component: () =>
+        import(
+            'pages/bodega/modelos/view/ModeloPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/productos',
         name: 'productos',
         component: () =>
-          import(
+        import(
             'pages/bodega/productos/view/ProductoPage.vue'
           ),
         meta: { requiresAuth: true },
       },
+      
+      
+      //Routes for administracion
       {
         path: '/autorizaciones',
         name: 'autorizaciones',
         component: () =>
-          import(
-            'pages/bodega/autorizaciones/view/AutorizacionPage.vue'
+          import( 
+            'pages/administracion/autorizaciones/view/AutorizacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/condiciones',
+        name: 'condiciones',
+        component: () =>
+          import( 
+            'pages/administracion/condiciones/view/CondicionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/hilos',
+        name: 'hilos',
+        component: () =>
+          import( 
+            'pages/administracion/hilos/view/HiloPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/perchas',
+        name: 'perchas',
+        component: () =>
+          import( 
+            'pages/administracion/perchas/view/PerchaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/pisos',
+        name: 'pisos',
+        component: () =>
+          import( 
+            'pages/administracion/pisos/view/PisoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/sucursales',
+        name: 'sucursales',
+        component: () =>
+          import( 
+            'pages/administracion/sucursales/view/SucursalPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-fibras',
+        name: 'tipos_fibras',
+        component: () =>
+          import( 
+            'pages/administracion/tipos_fibras/view/TipoFibraPage.vue'
           ),
         meta: { requiresAuth: true },
       },
 
-      //Routes for administracion
-      {
+      /* {
         path: '/nombressssssss-productos',
         name: 'nombre_productos',
         component: () =>
@@ -127,7 +201,7 @@ const routes: RouteRecordRaw[] = [
             'pages/administracion/nombresProductos/view/NombreProductoPage.vue'
           ),
         meta: { requiresAuth: true },
-      },
+      }, */
     ],
   },
   {
