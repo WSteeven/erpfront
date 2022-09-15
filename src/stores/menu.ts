@@ -254,6 +254,11 @@ export const useMenuStore = defineStore('menu', () => {
           ]
         },
         {
+          title: 'Perchas',
+          link: 'perchas',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Pisos',
           link: 'pisos',
           icon: 'bi-circle',
@@ -261,6 +266,11 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Sucursales',
           link: 'sucursales',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Ubicaciones',
+          link: 'ubicaciones',
           icon: 'bi-circle',
         },
       ]

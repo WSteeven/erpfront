@@ -192,6 +192,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/ubicaciones',
+        name: 'ubicaciones',
+        component: () =>
+          import( 
+            'pages/administracion/ubicaciones/view/UbicacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
 
       /* {
         path: '/nombressssssss-productos',
