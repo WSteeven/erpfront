@@ -22,9 +22,7 @@ import { useRouter } from 'vue-router'
 // import { useForm } from 'vee-validate'
 // import { columnaImportable } from '@/app/shared/importable/domain/importable'
 
-export class ContenedorSimpleMixin<
-  T extends EntidadAuditable
-> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
+export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
   private notificaciones = useNotificaciones()
   private statusEssentialLoading = new StatusEssentialLoading()

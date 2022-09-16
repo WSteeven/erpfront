@@ -1,10 +1,10 @@
 <template>
-    <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" titulo-pagina="Modelos">
-      <template #formulario>
-        <q-form @submit.prevent>
-          <div class="row q-col-gutter-sm q-py-md">
-            <!-- Marca -->
-            <div class="col-12 col-md-6">
+  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" titulo-pagina="Modelos">
+    <template #formulario>
+      <q-form @submit.prevent>
+        <div class="row q-col-gutter-sm q-py-md">
+          <!-- Marca -->
+          <!-- <div class="col-12 col-md-6">
               <label class="q-mb-sm block">Marca</label>
               <q-input v-model="criterioBusquedaMarca" placeholder="=Obligatorio"
                 @update:model-value="(v)=>(criterioBusquedaMarca=v.toUpperCase())" :readonly="disabled"
@@ -17,31 +17,47 @@
                   </div>
                 </template>
               </q-input>
-            </div>
-            <!-- Nombre -->
-            <div class="col-12 col-md-6">
-              <label class="q-mb-sm block">Modelo</label>
-              <q-input v-model="modelo.nombre" placeholder="=Obligatorio" :readonly="disabled"
-                :error="!!v$.nombre.$errors-length"
-                @update:model-value="(v)=>(modelo.nombre=v.toUpperCase())" outlined dense>
-                <template v-slot:error>
-                  <div v-for="error of v$.nombre.$errors" :key="error.$uid">
-                    <div class="error-msg">{{error.$message}}</div>
-                  </div>
-                </template>
-              </q-input>
-            </div>
+            </div> -->
+          {{listadosAuxiliares}}
+          <!-- Marca -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Marca</label>
+            <q-select 
+              v-model="modelo.marca" 
+              :options="listadosAuxiliares.marcas"
+              hint="Agregue elementos desde el panel de categorías" 
+              transition-show="flip-up"
+              transition-hide="flip-down" 
+              options-dense 
+              dense 
+              outlined 
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id" 
+              emit-value 
+              map-options>
+            </q-select>
           </div>
-        </q-form>
-  
-        <essential-selectable-table
-          ref="refListadoSeleccionableMarcas"
-          :configuracion-columnas="configuracionColumnasMarcas"
-          :datos="listadoMarcas"
-          @selected="seleccionarMarca"
-          ></essential-selectable-table>
-      </template>
-    </tab-layout>
-  </template>
+          <!-- Nombre -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Modelo</label>
+            <q-input v-model="modelo.nombre" placeholder="=Obligatorio" :readonly="disabled"
+              :error="!!v$.nombre.$errors-length" @update:model-value="(v)=>(modelo.nombre=v.toUpperCase())" outlined
+              dense>
+              <template v-slot:error>
+                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
+                  <div class="error-msg">{{error.$message}}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+        </div>
+      </q-form>
 
-  <script src="./ModeloPage.ts"></script>
+      <essential-selectable-table ref="refListadoSeleccionableMarcas"
+        :configuracion-columnas="configuracionColumnasMarcas" :datos="listadoMarcas" @selected="seleccionarMarca">
+      </essential-selectable-table>
+    </template>
+  </tab-layout>
+</template>
+
+<script src="./ModeloPage.ts"></script>
