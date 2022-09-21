@@ -1,32 +1,21 @@
-
-import { onUpdated } from 'vue';
-
 <template>
   <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" titulo-pagina="Productos">
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Categoria -->
-          
-          {{'Mis opciones categorias'}}
-          {{opciones.categorias}}
-          <br>
-          {{'Variable listado filtrado'}}
-          {{listadoFiltrado.categorias}}
-
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-6 q-mb-md">
             <label-abrir-modal label="Categoria" @click="modalesProducto.abrirModalEntidad('CategoriaPage')">
             </label-abrir-modal>
             <q-select 
             v-model="producto.categoria"
-            :options="listadoFiltrado.categorias"
+            :options="opciones.categorias"
             hint="Agregue elementos desde el panel de categorías" 
             transition-show="flip-up"
               transition-hide="flip-down" 
               options-dense 
               dense 
               outlined 
-              filled 
               use-input
               input-debounce="0" 
               @filter="filterFn"
@@ -34,7 +23,6 @@ import { onUpdated } from 'vue';
               :option-label="(v) => v.nombre" 
               emit-value 
               map-options 
-              
               >
               <template v-slot:no-option>
                 <q-item>

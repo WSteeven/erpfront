@@ -3,20 +3,21 @@ import { configuracionColumnasProductos } from '../domain/configuracionColumnasP
 import { configuracionColumnasCategorias } from 'pages/bodega/categorias/domain/configuracionColumnasCategorias'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+//Modal para crear nuevas categorias
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { useOrquestadorSelectorCategorias } from '../application/OrquestadorSelectorCategorias'
-import { Producto } from '../domain/Producto'
-import { Categoria } from 'pages/bodega/categorias/domain/Categoria'
-import { ComportamientoModalesProducto } from '../application/ComportamientoModalesProducto'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useOrquestadorSelectorCategorias } from '../application/OrquestadorSelectorCategorias'
+import { Categoria } from 'pages/bodega/categorias/domain/Categoria'
+import { Producto } from '../domain/Producto'
+import { ComportamientoModalesProducto } from '../application/ComportamientoModalesProducto'
 import { ProductoController } from '../infraestructure/ProductoController'
 import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -75,9 +76,7 @@ export default defineComponent({
     onReestablecer(() => (criterioBusquedaCategoria.value = null))
     onConsultado(() => seleccionarCategoria(producto.categoria))
 
-
-    const opciones = ref(listadosAuxiliares)
-    const listadoFiltrado = listadosAuxiliares.categorias
+    const opciones = listadosAuxiliares.categorias
 
     return {
       mixin,
@@ -85,8 +84,9 @@ export default defineComponent({
       disabled,
       accion,
       v$,
-      modalesProducto,
       configuracionColumnas: configuracionColumnasProductos,
+      //modal
+      modalesProducto,
       //Selector
       refListadoSeleccionableCategorias,
       criterioBusquedaCategoria,
@@ -97,28 +97,28 @@ export default defineComponent({
       configuracionColumnasCategorias,
       //listado
       listadosAuxiliares,
-      listadoFiltrado,
       opciones,
+      
+      /**
+       * Función para filtrar el SELECT de categorias,
+       * @param val String, tecla que ingresa el usuario para la busqueda
+       * @param update actualizacion del listado con el filtro
+       * @returns listado  con las coincidencias encontradas
+       */
       filterFn(val, update) {
         if (val === '') {
           update(() => {
-            opciones.value = listadosAuxiliares
-            listadoFiltrado.categorias =listadosAuxiliares.categorias
+            opciones.categorias = listadosAuxiliares.categorias
           })
           return
         }
-        update(()=>{
-          console.log('ANTES categorias: ', opciones.categorias)
-          console.log('ANTES value: ', opciones.value)
+        update(() => {
           const needle = val.toLowerCase()
-          opciones.categorias = listadosAuxiliares.categorias.filter((v)=> v.nombre.toLowerCase().indexOf(needle)>-1)
-          listadoFiltrado.categorias            = listadosAuxiliares.categorias.filter((v)=> v.nombre.toLowerCase().indexOf(needle)>-1)
-          //listadosAuxiliares.categorias            = listadosAuxiliares.categorias.filter((v)=> v.nombre.toLowerCase().indexOf(needle)>-1)
-          console.log('DESPUES categorias: ', opciones.categorias)
-          console.log('DESPUES value: ', opciones.value)
-          
+          opciones.categorias = listadosAuxiliares.categorias.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
         })
-        },
+      },
     }
   },
 })

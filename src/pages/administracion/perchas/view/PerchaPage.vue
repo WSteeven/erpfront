@@ -6,7 +6,31 @@
             <!-- Sucursal -->
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block">Sucursal</label>
-              <q-input v-model="criterioBusquedaSucursal" placeholder="Obligatorio"
+              <q-select 
+                v-model="percha.sucursal" 
+                :options="opciones.sucursales"
+                hint="Agregue elementos desde el panel de sucursales"
+                transition-show="flip-up"
+                transition-hide="flip-down"
+                options-dense 
+                dense
+                outlined 
+                use-input
+                input-debounce="0"
+                @filter="filterFn"
+                :option-label="(item)=> item.lugar"
+                :option-value="(item)=> item.id"
+                emit-value 
+                map-options
+                >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">No hay resultados</q-item-section>
+                  </q-item>
+                </template>
+
+              </q-select>
+              <!-- <q-input v-model="criterioBusquedaSucursal" placeholder="Obligatorio"
                 @update:model-value="(v)=>(criterioBusquedaSucursal=v.toUpperCase())" :readonly="disabled"
                 hint="Presiona Enter para seleccionar una sucursal" @keydown.enter="listarSucursales()"
                 @blur="criterioBusquedaSucursal ===''? limpiarSucursal() : null" autofocus outlined dense
@@ -16,7 +40,7 @@
                     <div class="error-msg">{{error.$message}}</div>
                   </div>
                 </template>
-              </q-input>
+              </q-input> -->
             </div>
             <!-- Nombre -->
             <div class="col-12 col-md-6">
@@ -34,12 +58,12 @@
           </div>
         </q-form>
   
-        <essential-selectable-table
+        <!-- <essential-selectable-table
           ref="refListadoSeleccionableSucursales"
           :configuracion-columnas="configuracionColumnasSucursales"
           :datos="listadoSucursales"
           @selected="seleccionarSucursal"
-          ></essential-selectable-table>
+          ></essential-selectable-table> -->
       </template>
     </tab-layout>
 </template>

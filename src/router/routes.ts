@@ -100,6 +100,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/codigos-clientes',
+        name: 'codigos_clientes',
+        component: () =>
+          import( 
+            'pages/administracion/codigos_clientes_productos/view/CodigoClientePage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/marcas',
         name: 'marcas',
         component: () =>
@@ -123,6 +132,24 @@ const routes: RouteRecordRaw[] = [
         component: () =>
         import(
             'pages/bodega/productos/view/ProductoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/detalles',
+        name: 'detalles',
+        component: () =>
+        import(
+            'pages/bodega/detalles_productos/view/DetalleProductoPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/inventarios',
+        name: 'inventarios',
+        component: () =>
+        import(
+            'pages/bodega/inventario/view/InventarioPage.vue'
           ),
         meta: { requiresAuth: true },
       },
@@ -189,6 +216,24 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import( 
             'pages/administracion/tipos_fibras/view/TipoFibraPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-transacciones',
+        name: 'tipos_transacciones',
+        component: () =>
+          import( 
+            'pages/administracion/tipos_transacciones/view/TipoTransaccionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/subtipos-transacciones',
+        name: 'subtipos_transacciones',
+        component: () =>
+          import( 
+            'pages/administracion/subtipos_transacciones/view/SubtipoTransaccionPage.vue'
           ),
         meta: { requiresAuth: true },
       },

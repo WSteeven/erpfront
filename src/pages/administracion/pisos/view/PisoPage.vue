@@ -3,12 +3,16 @@
         <template #formulario>
             <q-form @submit.prevent>
                 <div class="row q-col-glutter-sm q-py-md">
-                    <!-- Lugar -->
+                    <!-- Fila -->
                     <div class="col-12 col-md-6">
                         <label class="q-mb-sm block">Fila</label>
-                        <q-input v-model="piso.fila" placeholder="Obligatorio" :readonly="disabled"
-                            :error="!!v$.fila.$errors-length"
-                            @update:model-value="(v)=>(piso.fila=v.toUpperCase())" outlined dense>
+                        <q-input 
+                            v-model="piso.fila" 
+                            placeholder="Obligatorio" 
+                            :readonly="disabled"
+                            :error="!!v$.fila.$errors-length" 
+                            @update:model-value="(v)=>(piso.fila=v.toUpperCase())"
+                            outlined dense>
                             <template v-slot:error>
                                 <div v-for="error of v$.fila.$errors" :key="error.$uid">
                                     <div class="error-msg">{{error.$message}}</div>
@@ -16,7 +20,7 @@
                             </template>
                         </q-input>
                     </div>
-                    <!-- Telefono -->
+                    <!-- Columna -->
                     <div class="col-12 col-md-6">
                         <label class="q-mb-sm block">Columna</label>
                         <q-input v-model="piso.columna" placeholder="Obligatorio" :readonly="disabled"

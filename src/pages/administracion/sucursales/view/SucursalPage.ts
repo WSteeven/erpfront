@@ -30,6 +30,7 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, sucursal)
         setValidador(v$.value)
 
+
         return {
             mixin, sucursal, v$, disabled,
             configuracionColumnas: configuracionColumnasSucursales,

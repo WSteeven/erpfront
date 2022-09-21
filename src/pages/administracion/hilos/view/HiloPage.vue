@@ -8,7 +8,7 @@
               <label class="q-mb-sm block">Cantidad de hilos</label>
               <q-input v-model="hilo.nombre" placeholder="Ingresa la cantidad de hilos" :readonly="disabled"
                 :error="!!v$.nombre.$errors-length" @update:model-value="(v)=>(hilo.nombre=v.toUpperCase())" outlined
-                dense>
+                dense type="number">
                 <template v-slot:error>
                   <div v-for="error of v$.nombre.$errors" :key="error.$uid">
                     <div class="error-msg">{{error.$message}}</div>

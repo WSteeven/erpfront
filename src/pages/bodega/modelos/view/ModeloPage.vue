@@ -4,43 +4,38 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Marca -->
-          <!-- <div class="col-12 col-md-6">
-              <label class="q-mb-sm block">Marca</label>
-              <q-input v-model="criterioBusquedaMarca" placeholder="=Obligatorio"
-                @update:model-value="(v)=>(criterioBusquedaMarca=v.toUpperCase())" :readonly="disabled"
-                hint="Presiona Enter para seleccionar una marca" @keydown.enter="listarMarcas()"
-                @blur="criterioBusquedaMarca ===''? limpiarMarca() : null" autofocus outlined dense
-                :error="!!v$.marca.$errors-length">
-                <template v-slot:error>
-                  <div v-for="error of v$.marca.$errors" :key="error.$uid">
-                    <div class="error-msg">{{error.$message}}</div>
-                  </div>
-                </template>
-              </q-input>
-            </div> -->
-          {{listadosAuxiliares}}
-          <!-- Marca -->
-          <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Marca</label>
+          <div class="col-12 col-md-6 q-mb-md">
+            <label-abrir-modal label="Marca" @click="modalesModelo.abrirModalEntidad('MarcaPage')">
+            </label-abrir-modal>
             <q-select 
               v-model="modelo.marca" 
-              :options="listadosAuxiliares.marcas"
-              hint="Agregue elementos desde el panel de categorías" 
+              :options="opciones.marcas"
+              hint="Agregue elementos desde el panel de marcas" 
               transition-show="flip-up"
               transition-hide="flip-down" 
               options-dense 
               dense 
               outlined 
+              use-input
+              input-debounce="0"
+              @filter="filterFn"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id" 
               emit-value 
               map-options>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
             </q-select>
           </div>
           <!-- Nombre -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Modelo</label>
-            <q-input v-model="modelo.nombre" placeholder="=Obligatorio" :readonly="disabled"
+            <q-input v-model="modelo.nombre" placeholder="Obligatorio" :readonly="disabled"
               :error="!!v$.nombre.$errors-length" @update:model-value="(v)=>(modelo.nombre=v.toUpperCase())" outlined
               dense>
               <template v-slot:error>
@@ -52,10 +47,14 @@
           </div>
         </div>
       </q-form>
-
-      <essential-selectable-table ref="refListadoSeleccionableMarcas"
+      
+      <!-- <essential-selectable-table ref="refListadoSeleccionableMarcas"
         :configuracion-columnas="configuracionColumnasMarcas" :datos="listadoMarcas" @selected="seleccionarMarca">
-      </essential-selectable-table>
+      </essential-selectable-table> -->
+    
+    </template>
+    <template #modales>
+      <modales-entidad :comportamiento="modalesModelo"/>
     </template>
   </tab-layout>
 </template>

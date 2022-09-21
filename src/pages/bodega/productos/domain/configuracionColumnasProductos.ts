@@ -3,6 +3,13 @@ import {Producto} from './Producto';
 
 export const configuracionColumnasProductos: ColumnConfig<Producto>[]=[
   {
+    name:'cantidad',
+    field:'cantidad',
+    label:'Cantidad',
+    align: 'left',
+    sortable:true,
+  },
+  {
     name:'nombre',
     field:'nombre',
     label:'Producto',

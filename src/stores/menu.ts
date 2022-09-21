@@ -111,8 +111,13 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Detalles de productos',
+          link: 'detalles',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Inventario',
-          link: 'inventario',
+          link: 'inventarios',
           icon: 'bi-circle',
         },
         {
@@ -218,6 +223,11 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Codigos de productos',
+          link: 'codigos-clientes',    
+          icon: 'bi-circle',
+        },
+        {
           title: 'Hilos',
           link: 'hilos',    
           icon: 'bi-circle',
@@ -225,6 +235,16 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Tipos de Fibras',
           link: 'tipos-fibras',    
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Subtipos de Transacciones',
+          link: 'subtipos-transacciones',    
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Tipos de Transacciones',
+          link: 'tipos-transacciones',    
           icon: 'bi-circle',
         },
         {

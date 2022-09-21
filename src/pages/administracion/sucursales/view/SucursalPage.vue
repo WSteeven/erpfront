@@ -21,7 +21,8 @@
                         <label class="q-mb-sm block">Telefono</label>
                         <q-input v-model="sucursal.telefono" placeholder="Obligatorio" :readonly="disabled"
                             :error="!!v$.telefono.$errors-length"
-                            @update:model-value="(v)=>(sucursal.telefono=v.toUpperCase())" outlined dense>
+                            @update:model-value="(v)=>(sucursal.telefono=v.toUpperCase())" outlined dense 
+                            type="tel" mask="### ### ####" unmasked-value>
                             <template v-slot:error>
                                 <div v-for="error of v$.telefono.$errors" :key="error.$uid">
                                     <div class="error-msg">{{error.$message}}</div>
@@ -34,7 +35,7 @@
                         <label class="q-mb-sm block">Correo</label>
                         <q-input v-model="sucursal.correo" placeholder="Obligatorio" :readonly="disabled"
                             :error="!!v$.correo.$errors-length"
-                            @update:model-value="(v)=>(sucursal.correo=v.toUpperCase())" outlined dense>
+                            @update:model-value="(v)=>(sucursal.correo=v.toLowerCase())" outlined dense type="email">
                             <template v-slot:error>
                                 <div v-for="error of v$.correo.$errors" :key="error.$uid">
                                     <div class="error-msg">{{error.$message}}</div>
