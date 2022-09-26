@@ -41,10 +41,11 @@ export default defineComponent({
         //Reglas de validacion
         const reglas = {
             cantidad: {required},
-            /* condicion:{required},
+            producto: {required},
+            condicion:{required},
             detalle:{required},
-            propietario:{required},
-            sucursal:{required}, */
+            cliente:{required},
+            sucursal:{required},
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -58,6 +59,7 @@ export default defineComponent({
         const opciones_clientes = listadosAuxiliares.clientes
         const opciones_condiciones = listadosAuxiliares.condiciones
         const opciones_sucursales = listadosAuxiliares.sucursales
+        opciones_productos.productos = listadosAuxiliares.productos
 
         return {
             mixin, inventario, disabled, accion, v$,
@@ -68,8 +70,20 @@ export default defineComponent({
             opciones_clientes,
             opciones_condiciones,
             opciones_sucursales,
-            filtroProductos(val){
+            filtroDetalles(val){
                 opciones_detalles.detalles = listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1)
+            },
+            filterProductos(val,update){
+                if(val===''){
+                    update(()=>{
+                        opciones_productos.productos = listadosAuxiliares.productos
+                    })
+                    return
+                }
+                update(()=>{
+                    const needle = val.toLowerCase()
+                    opciones_productos.productos = listadosAuxiliares.productos.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+                })
             },
             filterDetalles(val, update){
                 if(val===''){

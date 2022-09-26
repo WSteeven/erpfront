@@ -32,6 +32,7 @@ export const endpoints = {
   autorizaciones: new Endpoint('autorizaciones/'),
   categorias: new Endpoint('categorias/'),
   condiciones: new Endpoint('condiciones/'),
+  estados_transacciones: new Endpoint('estados/'),
   codigos_clientes: new Endpoint('codigos-clientes/'),
   detalles: new Endpoint('detalles/'),
   inventarios: new Endpoint('inventarios/'),

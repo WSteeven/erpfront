@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
-import { required } from "@vuelidate/validators";
+import { numeric, required, requiredIf } from "@vuelidate/validators";
 import {useVuelidate} from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 
@@ -42,7 +42,18 @@ export default defineComponent({
         const reglas = {
             producto:{required},
             descripcion:{required},
-            modelo:{required}
+            marca:{required},
+            modelo:{required},
+            serial:{
+                requiredIfSerial: requiredIf(function(){ return detalle.tiene_serial? detalle.tiene_serial : false}),
+                requiredIfFibra: requiredIf(function(){return detalle.es_fibra? detalle.es_fibra : false})
+            },
+            tipo_fibra: {requiredIfFibra: requiredIf(function(){return detalle.es_fibra? detalle.es_fibra : false })},
+            hilos: {requiredIfFibra: requiredIf(function(){return detalle.es_fibra? detalle.es_fibra : false })},
+            punta_b:{
+                requiredIfFibra: requiredIf(function(){return detalle.es_fibra? detalle.es_fibra : false}),
+                numerico: numeric
+            },
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -54,8 +65,11 @@ export default defineComponent({
         const opciones_hilos = listadosAuxiliares.hilos
         const opciones_marcas = listadosAuxiliares.marcas
         const opciones_modelos = listadosAuxiliares.modelos
+        opciones_modelos.modelos = listadosAuxiliares.modelos
+        opciones_hilos.hilos = listadosAuxiliares.hilos
         const opciones_fibras = listadosAuxiliares.fibras
         const opciones_productos= listadosAuxiliares.productos
+        opciones_productos.productos= listadosAuxiliares.productos
 
         return {
             mixin, detalle, disabled, accion, v$,
@@ -66,6 +80,7 @@ export default defineComponent({
             opciones_fibras, 
             opciones_modelos, 
             opciones_productos,
+            useVuelidate,
             
             //filtros
             filtroMarcas(val){

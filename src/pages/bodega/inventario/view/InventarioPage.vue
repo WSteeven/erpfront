@@ -8,17 +8,24 @@
                 <label class="q-mb-sm block">Producto</label>
                 <q-select 
                   v-model="inventario.producto"
-                  :options="opciones_productos"
+                  :options="opciones_productos.productos"
                   transition-show="scale"
                   transition-hide="scale"
                   options-dense dense
                   outlined 
-                  behavior="dialog"
-                  @update:model-value="filtroProductos"
+                  :error="!!v$.producto.$errors.length" 
+                  use-input input-debounce="0"
+                  @filter="filterProductos"
+                  @update:model-value="filtroDetalles"
                   :option-label="(item)=> item.nombre"
                   :option-value="(item)=> item.nombre"
                   emit-value 
                   map-options>
+                  <template v-slot:error>
+                    <div v-for="error of v$.producto.$errors" :key="error.$uid">
+                      <div class="error-msg">{{error.$message}}</div>
+                    </div>
+                  </template>
                   <template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
@@ -38,11 +45,18 @@
                   transition-hide="scale"
                   options-dense dense
                   outlined
+                  :error="!!v$.detalle.$errors.length"
+                  error-message="Debes seleccionar un detalle de producto"
                   behavior="dialog"
-                  :option-label="(item)=> item.modelo+'     |       '+item.descripcion+'      |        '+item.serial"
+                  :option-label="(item)=> item.modelo+' &nbsp; | &nbsp; '+item.descripcion+' &nbsp; | &nbsp; '+item.serial"
                   :option-value="(item)=> item.id"
                   emit-value 
                   map-options>
+                  <template v-slot:error>
+                    <div v-for="error of v$.detalle.$errors" :key="error.$uid">
+                      <div class="error-msg">{{error.$message}}</div>
+                    </div>
+                  </template>
                   <template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
@@ -63,10 +77,17 @@
                 options-dense 
                 dense 
                 outlined 
+                :error="!!v$.sucursal.$errors.length"
+                error-message="Debes seleccionar una sucursal"
                 :option-label="(item) => item.lugar"
                 :option-value="(item) => item.id" 
                 emit-value 
                 map-options>
+                <template v-slot:error>
+                  <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
+                    <div class="error-msg">{{error.$message}}</div>
+                  </div>
+                </template>
               </q-select>
             </div>
             <!-- Cliente select -->
@@ -80,10 +101,17 @@
                 options-dense 
                 dense 
                 outlined 
+                :error="!!v$.cliente.$errors.length"
+                error-message="Debes seleccionar el propietario del producto"
                 :option-label="(item) => item.razon_social"
                 :option-value="(item) => item.id" 
                 emit-value 
                 map-options>
+                <template v-slot:error>
+                  <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                    <div class="error-msg">{{error.$message}}</div>
+                  </div>
+                </template>
               </q-select>
             </div>
             <!-- Condicion select-->
@@ -97,10 +125,17 @@
                   options-dense 
                   dense 
                   outlined 
+                  :error="!!v$.condicion.$errors.length"
+                  error-message="Debes seleccionar una condicion del producto"
                   :option-label="(item) => item.nombre"
                   :option-value="(item) => item.id" 
                   emit-value 
                   map-options>
+                  <template v-slot:error>
+                    <div v-for="error of v$.condicion.$errors" :key="error.$uid">
+                      <div class="error-msg">{{error.$message}}</div>
+                    </div>
+                  </template>
                 </q-select>
               </div>
             <!-- Cantidad -->
@@ -113,7 +148,8 @@
                   unmasked-value
                   v-model="inventario.cantidad" 
                   placeholder="Obligatorio" :readonly="disabled"
-                  :error="!!v$.cantidad.$errors-length"
+                  :error="!!v$.cantidad.$errors.length"
+                  error-message="Debes ingresar la cantidad de existencias"
                   @update:model-value="
                     (v)=>(inventario.cantidad=v.toUpperCase())" outlined
                   dense>

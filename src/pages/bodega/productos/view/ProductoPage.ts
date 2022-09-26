@@ -6,8 +6,9 @@ import { useVuelidate } from '@vuelidate/core'
 import { defineComponent } from 'vue'
 
 // Componentes
-import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+//import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import SelectorImagenMultiple from 'components/SelectorImagenMultiple.vue'
 //Modal para crear nuevas categorias
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -26,23 +27,24 @@ import { useQuasar } from 'quasar'
 export default defineComponent({
   components: {
     TabLayout,
-    EssentialSelectableTable,
+    SelectorImagenMultiple,
+    //EssentialSelectableTable,
     LabelAbrirModal,
     ModalesEntidad,
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(Producto, new ProductoController())
-    const { entidad: producto, disabled, accion } = mixin.useReferencias()
+    const { entidad: producto, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { onConsultado, onReestablecer } = mixin.useHooks()
-    const { setValidador } = mixin.useComportamiento()
+    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
-    //Categorias
-    const mixinCategoria = new ContenedorSimpleMixin(
-      Categoria,
+    //Imagenes
+    /* const mixinImagenes = new ContenedorSimpleMixin(
+      Imagen,
       new CategoriaController()
     )
-    const { listadosAuxiliares } = mixinCategoria.useReferencias()
-    const { obtenerListados, cargarVista } = mixinCategoria.useComportamiento()
+    const { entidad: imagen } = mixinImagenes.useReferencias() */
+
 
     //Obtener el listado de las categorias
     cargarVista(() => {

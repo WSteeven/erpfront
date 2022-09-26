@@ -11,11 +11,13 @@
             v-model="producto.categoria"
             :options="opciones.categorias"
             hint="Agregue elementos desde el panel de categorías" 
-            transition-show="flip-up"
-              transition-hide="flip-down" 
+            transition-show="jum-up"
+              transition-hide="jump-down" 
               options-dense 
               dense 
-              outlined 
+              outlined
+              :error="!!v$.categoria.$errors.length"  
+              error-message="Debes seleccionar una categoría"
               use-input
               input-debounce="0" 
               @filter="filterFn"
@@ -24,6 +26,11 @@
               emit-value 
               map-options 
               >
+              <template v-slot:error>
+                <div v-for="error of v$.categoria.$errors" :key="error.$uid">
+                  <div class="error-msg">{{error.$message}}</div>
+                </div>
+              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -40,7 +47,7 @@
               v-model="producto.nombre" 
               placeholder="Obligatorio" 
               :readonly="disabled"
-              :error="!!v$.nombre.$errors-length" 
+              :error="!!v$.nombre.$errors.length" 
               @update:model-value="(v)=>(producto.nombre=v.toUpperCase())" 
               outlined
               dense>
@@ -51,6 +58,13 @@
               </template>
             </q-input>
           </div>
+          <!-- Imagenes -->
+          <!-- <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Imagen</label>
+            <selector-imagen-multiple>
+              :modelValue=""
+            </selector-imagen-multiple>
+          </div> -->
         </div>
       </q-form>
     </template>
@@ -61,4 +75,6 @@
   </tab-layout>
 </template>
 
+
+<!-- import SelectorImagenMultiple from 'components/SelectorImagenMultiple.vue'; -->
 <script src="./ProductoPage.ts"/>

@@ -228,6 +228,11 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Estados de transacciones',
+          link: 'estados-transacciones',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Hilos',
           link: 'hilos',    
           icon: 'bi-circle',

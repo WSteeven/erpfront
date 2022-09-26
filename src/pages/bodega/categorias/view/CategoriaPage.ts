@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasCategorias } from "../domain/configuracionColumnasCategorias";
-import { required } from "@vuelidate/validators";
+import { required, minLength, maxLength } from "@vuelidate/validators";
 import {useVuelidate} from '@vuelidate/core';
 import { defineComponent } from "vue";
 

@@ -175,6 +175,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/estados-transacciones',
+        name: 'estados_transacciones',
+        component: () =>
+          import( 
+            'pages/administracion/estados_transacciones/view/EstadosTransaccionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/hilos',
         name: 'hilos',
         component: () =>
