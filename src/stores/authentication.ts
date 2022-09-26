@@ -3,7 +3,7 @@ import { UserLogin } from 'src/pages/sistema/authentication/login/domain/UserLog
 import { ApiError } from 'shared/error/domain/ApiError'
 import { endpoints } from 'src/config/api'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -14,6 +14,12 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const user = ref()
   const auth = ref(false)
   const permisos = ref()
+  const nombreUsuario = computed(
+    () =>
+      `${user.value.nombres}${
+        user.value.apellidos ? ' ' + user.value.apellidos : ''
+      }`
+  )
 
   // Actions
   const login = async (credentiales: UserLogin): Promise<void> => {
@@ -80,6 +86,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   return {
     user,
     login,
+    nombreUsuario,
     logout,
     permisos,
     can,

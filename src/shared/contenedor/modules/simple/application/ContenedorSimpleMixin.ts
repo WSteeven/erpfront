@@ -1,28 +1,21 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
-// import { ReferenciasSimples } from 'shared/contenedor/modules/simple/domain/referenciasSimples'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Contenedor } from '../../../application/contenedor.mixin'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { HooksSimples } from '../domain/hooksSimples'
 import { acciones } from 'config/utils'
-// import { Catalogos } from '/app/sistema/permisos/permisos'
-import {
-  // descargarArchivo,
-  isAxiosError,
-  notificarMensajesError,
-} from 'shared/utils'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
 import { markRaw, watch } from 'vue'
-// import { Catalogos } from 'src/pages/sistema/permisos/permisos'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
-// import { useForm } from 'vee-validate'
-// import { columnaImportable } from '@/app/shared/importable/domain/importable'
 
-export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
+export class ContenedorSimpleMixin<
+  T extends EntidadAuditable
+> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
   private notificaciones = useNotificaciones()
   private statusEssentialLoading = new StatusEssentialLoading()
@@ -32,12 +25,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     controller: TransaccionSimpleController<T>
   ) {
     super(entidad, controller, markRaw(new Referencias()))
-    this.argsDefault = {}
-    // this.refs.errors = this.myForm.errors
-    // this.argsDefault = {empresa: this.refs.empresaID.value}
-
-    // validaciones para el formulario
-    // this.agregarValidaciones(new ValidarFormulario(this.refs.validador))
+    // this.argsDefault = {}
   }
 
   private async cargarVista(callback: () => Promise<void>): Promise<void> {
@@ -120,10 +108,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.activar()
 
     try {
-      const { result } = await this.controller.listar({
-        ...this.argsDefault,
-        ...params,
-      })
+      const { result } = await this.controller.listar(params)
       if (append) this.refs.listado.value.push(...result)
       else this.refs.listado.value = result
     } catch (error) {
@@ -134,23 +119,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   private async reestablecer() {
-    //preguntar = false) {
-    /* let reestablecer = false
-    if (preguntar) {
-      if (this.seCambioEntidad(this.entidad_copia)) {
-        reestablecer = await this.confirmaciones.confirmarAccion(
-          "Hay cambios sin guardar, Desea continuar?"
-        )
-      }
-    } */
-    // if (reestablecer) {
-    // this.entidad_copia.hydrate(this.entidad_vacia)
     this.entidad.hydrate(this.entidad_vacia)
     this.refs.accion.value = acciones.nuevo
-    this.refs.validador.value.$reset()
+    this.refs.validador.value?.$reset()
     this.hooks.onReestablecer()
-    // nextTick(() => this.refs.validador.value.reset())
-    // }
   }
 
   // Guardar
@@ -180,7 +152,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.agregarElementoListadoActual(response.data.modelo)
         this.entidad.hydrate(response.data.modelo)
         this.hooks.onGuardado()
-        // this.reestablecer()
+        this.reestablecer()
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
@@ -227,6 +199,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         )
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.actualizarElementoListadoActual(modelo)
+        this.reestablecer()
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion

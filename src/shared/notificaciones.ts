@@ -11,12 +11,12 @@ export function useNotificaciones() {
 
   function notificarCorrecto(mensaje: string | string[]) {
     $q.notify({
-      color: 'green-7',
+      color: 'light-green-7',
       textColor: 'white',
       icon: 'bi-check-circle-fill',
       message: 'Correcto',
       caption: obtenerMensaje(mensaje),
-      position: 'top-right',
+      position: 'bottom',
     })
   }
 
@@ -27,7 +27,7 @@ export function useNotificaciones() {
       icon: 'bi-question-diamond-fill',
       message: 'Error',
       caption: obtenerMensaje(mensaje),
-      position: 'top-right',
+      position: 'bottom',
     })
   }
 
@@ -38,7 +38,7 @@ export function useNotificaciones() {
       icon: 'bi-exclamation-triangle-fill',
       message: 'Advertencia',
       caption: obtenerMensaje(mensaje),
-      position: 'top-right',
+      position: 'bottom',
     })
   }
 
@@ -57,7 +57,7 @@ export function useNotificaciones() {
       })
   }
 
-  function prompt(mensaje: string, callback: (data) => void, defaultValue) {
+  function prompt(mensaje: string, callback: (data) => void, defaultValue?) {
     $q.dialog({
       title: 'Confirmación',
       message: mensaje,

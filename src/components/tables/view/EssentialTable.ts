@@ -19,6 +19,10 @@ export default defineComponent({
       type: String,
       default: 'Listado',
     },
+    separador: {
+      type: String,
+      default: 'horizontal',
+    },
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
       required: true,
@@ -26,6 +30,10 @@ export default defineComponent({
     datos: {
       type: Array,
       required: true,
+    },
+    permitirEditarCeldas: {
+      type: Boolean,
+      default: false,
     },
     permitirConsultar: {
       type: Boolean,
@@ -47,7 +55,27 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion2: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    agregarElemento: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
     mostrarBotones: {
+      type: Boolean,
+      default: true,
+    },
+    altoFijo: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarHeader: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarFooter: {
       type: Boolean,
       default: true,
     },

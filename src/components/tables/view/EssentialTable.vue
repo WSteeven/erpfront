@@ -1,36 +1,47 @@
 <template>
-  <!-- :grid="$q.screen.xs" -->
-  <q-table :hide-header="grid" :grid="grid" :columns="configuracionColumnas" :rows="datos" :filter="filter" row-key="id"
-    :visible-columns="visibleColumns" flat bordered virtual-scroll :selection="tipoSeleccion"
-    v-model:selected="selected" :pagination="{ rowsPerPage: 0 }" :rows-per-page-options="[0]" class="bg-white"
-    :class="{ 'alto-fijo': !inFullscreen, 'my-sticky-dynamic': !inFullscreen }">
-    <!-- Header table -->
-    <template v-slot:top="props">
-      <div class="column full-width">
-        <div class="row justify-between items-center q-mb-md">
-          <div :class="{ 'q-mb-md': $q.screen.xs }" class="q-gutter-sm">
-            <q-btn color="primary" no-caps rounded unelevated>
-              <q-icon name="bi-plus" size="xs" class="q-pr-sm"></q-icon>
-              <span>Agregar nuevo registro</span>
-            </q-btn>
+  <q-table :hide-header="grid" :grid="grid || $q.screen.xs" :columns="configuracionColumnas" :rows="datos"
+    :filter="filter" row-key="id" :visible-columns="visibleColumns" :separator="separador" :hide-bottom="!mostrarFooter"
+    flat bordered virtual-scroll :selection="tipoSeleccion" v-model:selected="selected" :pagination="{ rowsPerPage: 0 }"
+    :rows-per-page-options="[0]" class="bg-white" :class="{
+      'alto-fijo': !inFullscreen && altoFijo,
+      'my-sticky-dynamic': !inFullscreen && altoFijo,
+    }">
+    <!-- Editar celdas -->
+    <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
+      <q-td :key="props.col.name" :props="props">
+        {{ props.row[props.col.name] }}
+        <q-popup-edit v-model="props.row[props.col.name]" v-slot="scope" auto-save>
+          <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set" />
+        </q-popup-edit>
+      </q-td>
+    </template>
 
-            <q-btn color="primary" no-caps rounded unelevated outline>
+    <!-- Header table -->
+    <template v-if="mostrarHeader" v-slot:top="props">
+      <!-- <div class="column full-width"> -->
+      <div class="row justify-between items-center full-width q-mb-md">
+        <q-btn v-if="agregarElemento" color="primary" :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+          no-caps unelevated push rounded @click="agregarElemento.accion">
+          <q-icon name="bi-plus" size="xs" class="q-pr-sm"></q-icon>
+          <span>{{ agregarElemento.titulo }}</span>
+        </q-btn>
+
+        <!-- <q-btn color="primary" no-caps rounded unelevated outline>
               <q-icon name="bi-eye" size="xs" class="q-pr-sm"></q-icon>
               <span>Mostrar filtros</span>
-            </q-btn>
-            <!-- <div class="text-bold">{{ 'Listado de ' + titulo }}</div> 
+            </q-btn> -->
+        <!-- <div class="text-bold">{{ 'Listado de ' + titulo }}</div>
             <small>JPCONSTRUCRED</small> -->
-          </div>
-          <!-- <q-space></q-space> -->
+        <!-- <q-space></q-space> -->
 
-          <div class="row q-gutter-sm justify-center">
-            <q-input outlined dense rounded debounce="300" color="primary" v-model="filter"
-              :class="{ 'full-width': $q.screen.xs }">
-              <template v-slot:append>
-                <q-icon name="search"></q-icon>
-              </template>
-            </q-input>
+        <div class="row q-col-gutter-sm justify-between">
+          <q-input outlined dense rounded debounce="300" color="primary" v-model="filter">
+            <template v-slot:append>
+              <q-icon name="search"></q-icon>
+            </template>
+          </q-input>
 
+          <span v-if="mostrarBotones" class="row q-gutter-sm">
             <q-select v-model="visibleColumns" multiple outlined dense rounded options-dense
               :display-value="$q.lang.table.columns" emit-value map-options :options="configuracionColumnas"
               option-value="name" options-cover :class="{ 'full-width': $q.screen.xs }" style="min-width: 150px" />
@@ -60,11 +71,11 @@
             <q-btn flat round dense :icon="
               props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'
             " @click="
-              () => {
-                props.toggleFullscreen()
-                inFullscreen = !props.inFullscreen
-              }
-            " class="q-ml-md">
+                () => {
+                  props.toggleFullscreen()
+                  inFullscreen = !props.inFullscreen
+                }
+              " class="q-ml-md">
               <q-tooltip class="bg-dark">{{
               props.inFullscreen
               ? 'Salir de pantalla completa'
@@ -78,11 +89,11 @@
               grid ? 'Formato de lista' : 'Formato de cuadrícula'
               }}</q-tooltip>
             </q-btn>
-
-          </div>
+          </span>
         </div>
-
-        <!-- Botones exportar 
+      </div>
+      <!-- </div> -->
+      <!-- Botones exportar
         <div v-if="mostrarBotones" class="row q-gutter-sm justify-end">
           <q-btn color="primary" push @click="previsualizarPdf()" no-caps>
             <q-icon name="bi-printer" class="q-pr-sm" size="xs"></q-icon>
@@ -99,26 +110,28 @@
             <div>Mostrar filtros</div>
           </q-btn>
         </div> -->
-      </div>
     </template>
 
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
       <q-td :props="props" class="q-gutter-sm">
         <!-- Consultar -->
-        <q-btn v-if="permitirConsultar" color="indigo-1" round unelevated dense @click="consultar(props.row)">
+        <q-btn v-if="permitirConsultar" color="grey-3" round unelevated dense
+          @click="consultar({ entidad: props.row, posicion: props.rowIndex })">
           <q-icon name="bi-eye" color="primary" size="xs"></q-icon>
           <q-tooltip class="bg-dark"> Consultar </q-tooltip>
         </q-btn>
 
         <!-- Editar -->
-        <q-btn v-if="permitirEditar" color="indigo-1" round unelevated dense @click="editar(props.row)">
+        <q-btn v-if="permitirEditar" color="grey-3" round unelevated dense
+          @click="editar({ entidad: props.row, posicion: props.rowIndex })">
           <q-icon name="bi-pencil" color="primary" size="xs"></q-icon>
           <q-tooltip class="bg-dark"> Editar </q-tooltip>
         </q-btn>
 
         <!-- Eliminar -->
-        <q-btn v-if="permitirEliminar" color="indigo-1" round unelevated dense @click="eliminar(props.row)">
+        <q-btn v-if="permitirEliminar" color="grey-3" round unelevated dense
+          @click="eliminar({ entidad: props.row, posicion: props.rowIndex })">
           <q-icon name="bi-trash" color="primary" size="xs"></q-icon>
           <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
         </q-btn>
@@ -128,12 +141,29 @@
           class="q-px-sm" @click="accion1?.accion(props.row)">
           <q-tooltip class="bg-dark"> {{ accion1.titulo }} </q-tooltip>
         </q-btn>
+
+        <!-- Accion personalizada 2 -->
+        <q-btn v-if="accion2" color="primary" rounded unelevated dense outline no-caps :label="accion2.titulo"
+          class="q-px-sm" @click="accion2?.accion(props.row)">
+          <q-tooltip class="bg-dark"> {{ accion2.titulo }} </q-tooltip>
+        </q-btn>
+      </q-td>
+    </template>
+
+    <template #body-cell-pagado="props">
+      <q-td :props="props" class="">
+        <q-icon v-if="props.value" name="bi-check" color="positive" size="md"></q-icon>
+        <q-icon v-else name="bi-x" color="negative" size="md"></q-icon>
       </q-td>
     </template>
 
     <!-- Botones de acciones Mobile (Grid)  -->
     <template v-slot:item="props">
-      <q-card :class="props.selected ? 'bg-grey-2' : ''" bordered flat class="q-pa-sm q-mb-md full-width">
+      <q-card :class="props.selected ? 'bg-grey-2' : ''" bordered flat class="q-pa-sm q-mb-md full-width"
+        :style="props.selected ? 'transform: scale(0.95);' : ''">
+        <q-card-section>
+          <q-checkbox dense v-model="props.selected" :label="props.row.name" />
+        </q-card-section>
         <q-list dense>
           <q-item v-for="col in props.cols" :key="col.name">
             <!-- Clave -->
@@ -142,7 +172,7 @@
             </q-item-section>
 
             <!-- Valor -->
-            <q-item-section side>
+            <q-item-section caption class="text-right text-grey-7">
               <div v-if="col.name === 'acciones'" :props="props" class="q-gutter-sm">
                 <!-- Consultar -->
                 <q-btn v-if="permitirConsultar" color="indigo-1" round unelevated dense @click="consultar(props.row)">
@@ -151,13 +181,17 @@
                 </q-btn>
 
                 <!-- Editar -->
-                <q-btn v-if="permitirEditar" color="indigo-1" round unelevated dense @click="editar(props.row)">
+                <q-btn v-if="permitirEditar" color="indigo-1" round unelevated dense @click="
+                  editar({ entidad: props.row, posicion: props.rowIndex })
+                ">
                   <q-icon name="bi-pencil" color="primary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
                 </q-btn>
 
                 <!-- Eliminar -->
-                <q-btn v-if="permitirEliminar" color="indigo-1" round unelevated dense @click="eliminar(props.row)">
+                <q-btn v-if="permitirEliminar" color="indigo-1" round unelevated dense @click="
+                  eliminar({ entidad: props.row, posicion: props.rowIndex })
+                ">
                   <q-icon name="bi-trash" color="primary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
                 </q-btn>
@@ -167,9 +201,22 @@
                   class="q-px-sm" @click="accion1?.accion(props.row)">
                   <q-tooltip class="bg-dark">{{ accion1.titulo }} </q-tooltip>
                 </q-btn>
+
+                <!-- Accion personalizada 2 -->
+                <q-btn v-if="accion2" color="primary" rounded unelevated dense outline no-caps :label="accion2.titulo"
+                  class="q-px-sm" @click="accion2?.accion(props.row)">
+                  <q-tooltip class="bg-dark">{{ accion2.titulo }} </q-tooltip>
+                </q-btn>
               </div>
 
-              <q-item-label v-else caption>{{ col.value }}</q-item-label>
+              <!-- <q-item-label v-else caption>{{ col.value }}</q-item-label> -->
+              <q-item-label v-else>
+                <span v-if="col.name === 'pagado'">
+                  <q-icon v-if="col.value" name="bi-check" color="positive" size="md"></q-icon>
+                  <q-icon v-else name="bi-x" color="negative" size="md"></q-icon>
+                </span>
+                <span v-else>{{ col.value }}</span>
+              </q-item-label>
             </q-item-section>
           </q-item>
         </q-list>

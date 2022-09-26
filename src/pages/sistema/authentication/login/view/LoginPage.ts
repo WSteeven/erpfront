@@ -1,5 +1,10 @@
 // Dependencias
 import { computed, defineComponent, reactive, ref } from 'vue'
+import loginJson from 'src/assets/lottie/login5.json'
+
+// Componentes
+import { Vue3Lottie } from 'vue3-lottie'
+import 'vue3-lottie/dist/style.css'
 
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -9,6 +14,9 @@ import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   name: 'LoginPage',
+  components: {
+    LottiePlayer: Vue3Lottie,
+  },
   setup() {
     const loginUser = reactive(new UserLogin())
     loginUser.email = 'mjaramillo@jp.com'
@@ -23,7 +31,9 @@ export default defineComponent({
       try {
         cargando.activar()
         await loginController.login(loginUser)
-        notificaciones.notificarCorrecto('Bienvenido a JPCONSTRUCRED!')
+        notificaciones.notificarCorrecto(
+          'Bienvenido a JPConstrucred!'
+        )
       } catch (error: any) {
         notificaciones.notificarError('No se pudo autenticar')
       } finally {
@@ -38,6 +48,7 @@ export default defineComponent({
     return {
       isPwd: ref(true),
       loginUser,
+      loginJson,
       // computed
       enableLoginButton,
       // functions

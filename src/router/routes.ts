@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'tablero',
-        component: () => import('pages/IndexPage.vue'),
+        component: () => import('pages/tablero/view/TableroPage.vue'),
         meta: { requiresAuth: true },
       },
       {
