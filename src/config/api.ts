@@ -43,6 +43,7 @@ export const endpoints = {
   sucursales: new Endpoint('sucursales/'),
   tipos_fibras: new Endpoint('tipos-fibras/'),
   tipos_transacciones: new Endpoint('tipos-transacciones/'),
+  transacciones: new Endpoint('transacciones/'),
   subtipos_transacciones: new Endpoint('subtipos-transacciones/'),
   perchas: new Endpoint('perchas/'),
   pisos: new Endpoint('pisos/'),

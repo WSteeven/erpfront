@@ -10,6 +10,13 @@ export const configuracionColumnasProductos: ColumnConfig<Producto>[]=[
     sortable:true,
   },
   {
+    name:'codigo',
+    field:'codigo',
+    label:'Código JP',
+    align: 'left',
+    sortable:true,
+  },
+  {
     name:'nombre',
     field:'nombre',
     label:'Producto',
