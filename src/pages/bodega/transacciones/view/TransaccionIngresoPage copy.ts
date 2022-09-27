@@ -22,10 +22,10 @@ import { propietariosElementos } from 'config/utils'
 
 export default defineComponent({
     components:{TabLayout},
-    props: {
+    /* props: {
         tipo: {type:String, required:true}
-    },
-    setup(props){
+    }, */
+    setup(){
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionController())
         const {entidad: transaccion, disabled, accion, listadosAuxiliares}=mixin.useReferencias()
         const {setValidador, obtenerListados, cargarVista, listar}=mixin.useComportamiento()
@@ -35,11 +35,15 @@ export default defineComponent({
                 sucursales: new SucursalController(),
                 tipos:  {
                     controller:new TipoTransaccionController(),
-                    params: { tipo:props.tipo}
-                    // params: { tipo:'INGRESO'}
+                    //params: { tipo:props.tipo}
+                    params: { tipo:'INGRESO'}
                 },
                 subtipos: new SubtipoTransaccionController(),
             })
+        })
+
+        listar({
+            tipo:'INGRESO'
         })
 
         //Reglas de validacion

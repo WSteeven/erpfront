@@ -121,6 +121,21 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Transacciones',
+          link: 'transacciones',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Ingresos',
+          link: 'transacciones-ingresos',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Egresos',
+          link: 'transacciones-egresos',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Ingreso de materiales',
           icon: 'bi-circle',
           children:[

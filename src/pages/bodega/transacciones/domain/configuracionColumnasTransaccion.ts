@@ -38,8 +38,8 @@ export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
         sortable: true,
     },
     {
-        name: 'per_autoriza',
-        field: 'per_autoriza',
+        name: 'autoriza',
+        field: 'autoriza',
         label: 'Autoriza',
         align: 'left',
         sortable: true,

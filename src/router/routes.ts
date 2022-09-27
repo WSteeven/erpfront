@@ -153,6 +153,33 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      /* {
+        path: '/transacciones',
+        name: 'transacciones',
+        component: () =>
+        import(
+            'pages/bodega/transacciones/view/TransaccionPage.vue',
+          ),
+        meta: { requiresAuth: false },
+      }, */
+      {
+        path: '/transacciones-ingresos',
+        name: 'transacciones_ingresos',
+        component: () =>
+        import(
+            'pages/bodega/transacciones/view/TransaccionIngresoPage.vue',
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/transacciones-egresos',
+        name: 'transacciones_egresos',
+        component: () =>
+        import(
+            'pages/bodega/transacciones/view/TransaccionEgresoPage.vue',
+          ),
+        meta: { requiresAuth: false },
+      },
       
       
       //Routes for administracion
