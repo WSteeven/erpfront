@@ -1,5 +1,5 @@
 // Dependencias
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 
 // Componentes
@@ -9,7 +9,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { acciones } from 'config/utils'
-// import { useTareaStore } from 'stores/tarea'
 
 export default defineComponent({
   props: {
@@ -36,6 +35,18 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    permitirConsultar: {
+      type: Boolean,
+      default: true,
+    },
+    permitirEditar: {
+      type: Boolean,
+      default: true,
+    },
+    permitirEliminar: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: { EssentialTable, ButtonSubmits },
   setup(props) {
@@ -47,7 +58,6 @@ export default defineComponent({
 
     const Router = useRouter()
     let listadoCargado = false
-    // const tareaStore = useTareaStore()
 
     const columnas = [
       ...props.configuracionColumnas,
@@ -65,23 +75,26 @@ export default defineComponent({
     }
 
     const seleccionado = ref()
-    tabs.value = 'formulario'
+
+    watchEffect(() => {
+      tabs.value = props.mostrarFormulario ? 'formulario' : 'listado'
+    })
 
     const tituloTabla =
       Router.currentRoute.value.name?.toString().toLowerCase() ?? ''
 
     const accionTabla = {
-      consultar: (data) => {
+      consultar: ({ entidad }) => {
         accion.value = acciones.consultar
-        consultar(data)
+        consultar(entidad)
       },
-      editar: (data) => {
+      editar: ({ entidad }) => {
         accion.value = acciones.editar
-        consultar(data)
+        consultar(entidad)
       },
-      eliminar: (data) => {
+      eliminar: ({ entidad }) => {
         accion.value = acciones.eliminar
-        consultar(data)
+        consultar(entidad)
       },
     }
 
