@@ -134,6 +134,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Egresos',
           link: 'transacciones-egresos',
+          can: store.can('puede.ver.transacciones_egresos'),
           icon: 'bi-circle',
         },
         {

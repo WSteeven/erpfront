@@ -4,5 +4,5 @@
 </template>
 
 <script lang="ts" setup>
-    import TransaccionPage from './TransaccionPage.vue';
+    import TransaccionPage from '../modules/transaccionContent/view/TransaccionPage.vue';
 </script>

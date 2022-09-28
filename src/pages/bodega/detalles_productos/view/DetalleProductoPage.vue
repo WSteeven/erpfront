@@ -40,10 +40,15 @@
           <!-- Marca -->
           <div class="col-12 col-md-6 q-mb-md">
             <label class="q-mb-sm block">Marca</label>
-            <q-select v-model="detalle.marca" :options="opciones_marcas"
+            <q-select v-model="detalle.marca" 
+              :options="opciones_marcas"
               hint="Agregue elementos desde el panel de marcas" transition-show="scale" transition-hide="scale"
-              options-dense dense outlined :error="!!v$.marca.$errors.length" @update:model-value="filtroMarcas"
-              :option-label="(item) => item.nombre" :option-value="(item) => item.nombre" emit-value map-options>
+              options-dense dense outlined 
+              :error="!!v$.marca.$errors.length" 
+              @update:model-value="filtroMarcas"
+              :option-label="(item) => item.nombre" 
+              :option-value="(item) => item.nombre" 
+              emit-value map-options>
               <template v-slot:error>
                 <div v-for="error of v$.modelo.$marca" :key="error.$uid">
                   <div class="error-msg">{{error.$message}}</div>
@@ -56,8 +61,12 @@
             <label class="q-mb-sm block">Modelo</label>
             <q-select v-model="detalle.modelo" :options="opciones_modelos.modelos"
               hint="Agregue elementos desde el panel de modelos" transition-show="scale" transition-hide="scale"
-              options-dense dense outlined :error="!!v$.modelo.$errors.length" :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id" emit-value map-options>
+              options-dense 
+              dense outlined 
+              :error="!!v$.modelo.$errors.length" 
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id" 
+              emit-value map-options>
               <template v-slot:error>
                 <div v-for="error of v$.modelo.$errors" :key="error.$uid">
                   <div class="error-msg">{{error.$message}}</div>
