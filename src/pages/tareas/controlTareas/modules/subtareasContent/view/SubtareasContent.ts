@@ -65,13 +65,23 @@ export default defineComponent({
     if (!tareaStore.tarea.id)
       notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
 
-    function agregarSubtarea() {
-      if (!tareaStore.tarea.id)
-        notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
+    /*    function agregarSubtarea() {
+        }*/
+
+    const agregarSubtarea: CustomActionTable = {
+      titulo: 'Agregar subtarea',
+      accion: () => {
+        if (!tareaStore.tarea.id)
+          notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
+        modales.abrirModalEntidad('SubtareasPage')
+
+        //        const fila = new Actividad()
+        //      actividadesEconomicas.value = [...actividadesEconomicas.value, fila]
+      },
     }
 
     function aplicarFiltro(tabSeleccionado) {
-      console.log(tabSeleccionado)
+      if (tareaStore.tarea.id) listar({ tarea: tareaStore.tarea.id, estado: tabSeleccionado })
     }
 
     return {
