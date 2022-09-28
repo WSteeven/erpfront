@@ -6,7 +6,7 @@
     no-caps
     unelevated
     bordered
-    toggle-color="grey-7"
+    toggle-color="primary"
     color="white"
     text-color="grey-9"
     :options="tabOptions"
@@ -21,6 +21,7 @@
     :permitirEditar="permitirEditar"
     :mostrar-botones="mostrarBotones"
     :accion1="accion1"
+    :agregarElemento="agregarElemento"
     @consultar="emit('consultar')"
     @editar="emit('editar')"
     @eliminar="emit('eliminar')"
