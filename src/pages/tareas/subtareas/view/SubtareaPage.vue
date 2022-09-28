@@ -4,14 +4,8 @@
 
   <q-form @submit.prevent="enviar()">
     <!-- Datos de la subtarea -->
-    <q-expansion-item
-      class="overflow-hidden q-mb-md"
-      style="border-radius: 8px; border: 1px solid #ddd"
-      icon="bi-paperclip"
-      label="Información general"
-      header-class="bg-grey-1"
-      default-opened
-    >
+    <q-expansion-item class="overflow-hidden q-mb-md" style="border-radius: 8px; border: 1px solid #ddd"
+      icon="bi-paperclip" label="Información general" header-class="bg-grey-1" default-opened>
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Tarea -->
         <!-- <div class="col-12 col-md-3">
@@ -40,26 +34,13 @@
         <!-- Subtarea -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Código subtarea</label>
-          <q-input
-            v-model="subtarea.codigo_subtarea"
-            placeholder="Obligatorio"
-            readonly
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="subtarea.codigo_subtarea" placeholder="Obligatorio" readonly outlined dense></q-input>
         </div>
 
         <!-- Detalle de la subtarea -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Detalle / Ruta / Enlace</label>
-          <q-input
-            v-model="subtarea.detalle"
-            outlined
-            dense
-            autogrow
-            autofocus
-            type="textarea"
-          ></q-input>
+          <q-input v-model="subtarea.detalle" outlined dense autogrow autofocus type="textarea"></q-input>
         </div>
 
         <!-- Cliente -->
@@ -71,12 +52,7 @@
         <!-- Grupo -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Grupo</label>
-          <q-input
-            v-model="subtarea.grupo"
-            placeholder="Obligatorio"
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="subtarea.grupo" placeholder="Obligatorio" outlined dense></q-input>
         </div>
 
         <!-- Técnico responsable -->
@@ -87,41 +63,20 @@
 
         <!-- Tipo tarea -->
         <div class="col-12 col-md-3">
-          <label-abrir-modal
-            label="Tipo de tarea"
-            @click="modalesSubtarea.abrirModalEntidad('TipoTareaPage')"
-          ></label-abrir-modal>
-          <q-select
-            v-model="subtarea.tipo_tarea"
-            :options="tiposTareasTelconet"
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            options-dense
-            emit-value
-            map-options
-            dense
-            outlined
-          />
+          <label-abrir-modal label="Tipo de tarea" @click="modalesSubtarea.abrirModalEntidad('TipoTareaPage')">
+          </label-abrir-modal>
+          <q-select v-model="subtarea.tipo_tarea" :options="tiposTareasTelconet" transition-show="flip-up"
+            transition-hide="flip-down" options-dense emit-value map-options dense outlined />
         </div>
 
         <!-- Fecha de solicitud -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha de solicitud</label>
-          <q-input
-            v-model="subtarea.fecha_solicitud"
-            placeholder="Obligatorio"
-            outlined
-            dense
-            mask="date"
-            :rules="['date']"
-          >
+          <q-input v-model="subtarea.fecha_solicitud" placeholder="Obligatorio" outlined dense mask="date"
+            :rules="['date']">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date v-model="subtarea.fecha_solicitud">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
@@ -136,21 +91,10 @@
         <!-- Fecha de inicio -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha de inicio</label>
-          <q-input
-            v-model="subtarea.fecha_inicio"
-            placeholder="Opcional"
-            outlined
-            dense
-            mask="date"
-            :rules="['date']"
-          >
+          <q-input v-model="subtarea.fecha_inicio" placeholder="Opcional" outlined dense mask="date" :rules="['date']">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date v-model="subtarea.fecha_inicio">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
@@ -165,21 +109,11 @@
         <!-- Fecha de vencimiento -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha de finalización</label>
-          <q-input
-            v-model="subtarea.fecha_finalizacion"
-            placeholder="Opcional"
-            outlined
-            dense
-            mask="date"
-            :rules="['date']"
-          >
+          <q-input v-model="subtarea.fecha_finalizacion" placeholder="Opcional" outlined dense mask="date"
+            :rules="['date']">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date v-model="subtarea.fecha_finalizacion">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
@@ -194,23 +128,13 @@
         <!-- Cantidad de días -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Cantidad de días</label>
-          <q-input
-            v-model="subtarea.cantidad_dias"
-            outlined
-            dense
-            readonly
-          ></q-input>
+          <q-input v-model="subtarea.cantidad_dias" outlined dense readonly></q-input>
         </div>
 
         <!-- Coordinador -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Coordinador</label>
-          <q-input
-            v-model="subtarea.coordinador"
-            outlined
-            dense
-            readonly
-          ></q-input>
+          <q-input v-model="subtarea.coordinador" outlined dense readonly></q-input>
         </div>
 
         <!-- Estado actual -->
@@ -222,150 +146,82 @@
         <!-- Fiscalizador -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fiscalizador</label>
-          <q-input
-            v-model="subtarea.fiscalizador"
-            placeholder="Opcional"
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="subtarea.fiscalizador" placeholder="Opcional" outlined dense></q-input>
         </div>
 
         <!-- Ingeniero de soporte -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Ingeniero de soporte</label>
-          <q-input
-            v-model="subtarea.ing_soporte"
-            placeholder="Opcional"
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="subtarea.ing_soporte" placeholder="Opcional" outlined dense></q-input>
         </div>
 
         <!-- Ingeniero de instalacion -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Ingeniero de instalación</label>
-          <q-input
-            v-model="subtarea.ing_instalacion"
-            placeholder="Opcional"
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="subtarea.ing_instalacion" placeholder="Opcional" outlined dense></q-input>
         </div>
 
         <!-- Tipo de instalacion -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Tipo de instalación</label>
-          <q-select
-            v-model="subtarea.tipo_instalacion"
-            :options="tiposInstalaciones"
-            options-dense
-            dense
-            outlined
-          />
+          <q-select v-model="subtarea.tipo_instalacion" :options="tiposInstalaciones" options-dense dense outlined />
         </div>
 
         <!-- Actividad realizada -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Actividad realizada</label>
-          <q-input
-            v-model="subtarea.actividad_realizada"
-            placeholder="Opcional"
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="subtarea.actividad_realizada" placeholder="Opcional" outlined dense></q-input>
         </div>
 
         <!-- Novedades -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Novedades</label>
-          <q-input
-            v-model="subtarea.novedades"
-            placeholder="Opcional"
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="subtarea.novedades" placeholder="Opcional" outlined dense></q-input>
         </div>
       </div>
     </q-expansion-item>
 
     <!-- Ubicacion del cliente -->
-    <q-expansion-item
-      class="overflow-hidden q-mb-md"
-      style="border-radius: 8px; border: 1px solid #ddd"
-      icon="bi-geo-alt"
-      label="Ubicación del cliente"
-      header-class="bg-grey-1"
-    >
+    <q-expansion-item class="overflow-hidden q-mb-md" style="border-radius: 8px; border: 1px solid #ddd"
+      icon="bi-geo-alt" label="Ubicación del cliente" header-class="bg-grey-1">
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Provincia -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Provincias</label>
-          <q-select
-            v-model="subtarea.provincia"
-            :options="provincias"
-            options-dense
-            dense
-            outlined
-          />
+          <q-select v-model="subtarea.provincia" :options="provincias" options-dense dense outlined />
         </div>
 
         <!-- Ciudad -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Ciudades</label>
-          <q-select
-            outlined
-            v-model="subtarea.ciudad"
-            :options="ciudades"
-            options-dense
-            dense
-          />
+          <q-select outlined v-model="subtarea.ciudad" :options="ciudades" options-dense dense />
         </div>
 
         <!-- Parroquia -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Parroquia/Barrio</label>
-          <q-input
-            v-model="subtarea.parroquia"
-            placeholder="Opcional"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
+          <q-input v-model="subtarea.parroquia" placeholder="Opcional" outlined dense
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"></q-input>
         </div>
 
         <!-- Direccion -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Dirección</label>
-          <q-input
-            v-model="subtarea.direccion"
-            placeholder="Opcional"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
+          <q-input v-model="subtarea.direccion" placeholder="Opcional" outlined dense
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"></q-input>
         </div>
 
         <!-- Referencias -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Referencias</label>
-          <q-input
-            v-model="subtarea.referencias"
-            placeholder="Opcional"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          ></q-input>
+          <q-input v-model="subtarea.referencias" placeholder="Opcional" outlined dense
+            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"></q-input>
         </div>
 
         <!-- Georeferencia X -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Georeferencia Y (DMS)</label>
-          <q-input
-            v-model="subtarea.georeferencia_x"
-            placeholder="Opcional"
-            outlined
-            dense
-          >
+          <q-input v-model="subtarea.georeferencia_x" placeholder="Opcional" outlined dense>
             <template #append>
               <q-icon name="bi-arrow-repeat" class="q-mr-sm"></q-icon>
               <div class="text-caption">Convertir a UTM</div>
@@ -376,76 +232,43 @@
         <!-- Georeferencia Y -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Georeferencia Y (DMS)</label>
-          <q-input
-            v-model="subtarea.georeferencia_y"
-            placeholder="Opcional"
-            outlined
-            dense
-          >
+          <q-input v-model="subtarea.georeferencia_y" placeholder="Opcional" outlined dense>
             <template #append>
               <q-icon name="bi-arrow-repeat" class="q-mr-sm"></q-icon>
               <div class="text-caption">Convertir a UTM</div>
             </template>
           </q-input>
         </div>
-      </div></q-expansion-item
-    >
+      </div>
+    </q-expansion-item>
 
     <!-- Asignar técnicos de otros grupos -->
-    <q-expansion-item
-      class="overflow-hidden q-mb-md"
-      style="border-radius: 8px; border: 1px solid #ddd"
-      icon="bi-gear-wide-connected"
-      label="Asignar técnicos de otros grupos"
-      header-class="bg-grey-1"
-    >
+    <q-expansion-item class="overflow-hidden q-mb-md" style="border-radius: 8px; border: 1px solid #ddd"
+      icon="bi-gear-wide-connected" label="Asignar técnicos de otros grupos" header-class="bg-grey-1">
       <!-- Toggle -->
       <div class="row q-col-gutter-sm q-pa-md">
         <div class="col-12">
-          <q-btn-toggle
-            v-model="seleccionBusqueda"
-            spread
-            class="my-custom-toggle"
-            no-caps
-            rounded
-            unelevated
-            toggle-color="grey-7"
-            color="white"
-            text-color="grey-7"
-            :options="[
+          <q-btn-toggle v-model="seleccionBusqueda" spread class="my-custom-toggle" no-caps rounded unelevated
+            toggle-color="grey-7" color="white" text-color="grey-7" :options="[
               { label: 'Buscar un técnico a la vez', value: 'por_tecnico' },
               { label: 'Buscar por grupo', value: 'por_grupo' },
-            ]"
-          />
+            ]" />
         </div>
       </div>
 
       <!-- Busqueda por tecnico -->
-      <div
-        v-if="seleccionBusqueda === 'por_tecnico'"
-        class="row q-col-gutter-sm q-pa-md"
-      >
+      <div v-if="seleccionBusqueda === 'por_tecnico'" class="row q-col-gutter-sm q-pa-md">
         <!-- Busqueda -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Buscar</label>
-          <q-input
-            v-model="busqueda"
-            placeholder="Nombres / Apellidos / Identificación"
-            hint="Ingrese los datos del técnico y presione Enter"
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="busqueda" placeholder="Nombres / Apellidos / Identificación"
+            hint="Ingrese los datos del técnico y presione Enter" outlined dense></q-input>
         </div>
 
         <!-- Tecnico seleccionado -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Técnico seleccionado</label>
-          <q-input
-            v-model="tecnicoSeleccionado"
-            readonly
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="tecnicoSeleccionado" readonly outlined dense></q-input>
         </div>
 
         <div class="col-12 col-md-3 q-pt-md">
@@ -462,14 +285,8 @@
         <!-- Grupo -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Grupo</label>
-          <q-select
-            v-model="busqueda"
-            :options="grupos"
-            hint="Seleccione un grupo y presione en Listar técnicos"
-            options-dense
-            dense
-            outlined
-          />
+          <q-select v-model="busqueda" :options="grupos" hint="Seleccione un grupo y presione en Listar técnicos"
+            options-dense dense outlined />
         </div>
 
         <div class="col-12 col-md-3 q-pt-md">
@@ -482,12 +299,7 @@
         <!-- Tecnico seleccionado -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Técnico seleccionado</label>
-          <q-input
-            v-model="tecnicoSeleccionado"
-            readonly
-            outlined
-            dense
-          ></q-input>
+          <q-input v-model="tecnicoSeleccionado" readonly outlined dense></q-input>
         </div>
 
         <div class="col-12 col-md-3 q-pt-md">
@@ -503,41 +315,19 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Tecnicos temporales -->
         <div class="col-12">
-          <essential-table
-            titulo="técnicos temporales de otros grupos"
-            :configuracionColumnas="columnas"
-            :datos="datos"
-            :mostrarBotones="false"
-            :permitirConsultar="false"
-            :permitirEditar="false"
-            @eliminar="eliminarTecnico"
-          ></essential-table>
+          <essential-table titulo="técnicos temporales de otros grupos" :configuracionColumnas="columnas" :datos="datos"
+            :mostrarBotones="false" :permitirConsultar="false" :permitirEditar="false" @eliminar="eliminarTecnico">
+          </essential-table>
         </div>
       </div>
     </q-expansion-item>
 
     <!-- Botones formulario -->
     <div class="row q-gutter-md justify-end">
-      <q-fab
-        v-model="fab"
-        label="Cambiar estado"
-        icon="keyboard_arrow_up"
-        color="positive"
-        direction="up"
-        padding="none xl"
-      >
-        <q-fab-action
-          color="primary"
-          @click="enviar"
-          hide-icon
-          label="Agendar"
-        />
-        <q-fab-action
-          color="negative"
-          @click="enviar"
-          hide-icon
-          label="Suspender"
-        />
+      <q-fab v-model="fab" label="Cambiar estado" icon="keyboard_arrow_up" color="positive" direction="up"
+        padding="none xl">
+        <q-fab-action color="primary" @click="enviar" hide-icon label="Agendar" />
+        <q-fab-action color="negative" @click="enviar" hide-icon label="Suspender" />
       </q-fab>
 
       <q-btn color="grey-7" no-caps @click="enviar()" push>

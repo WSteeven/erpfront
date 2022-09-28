@@ -1,5 +1,5 @@
 <template>
-  <essential-table
+  <essential-table-tabs
     titulo="subtareas"
     :configuracionColumnas="configuracionColumnas"
     :datos="listado"
@@ -7,7 +7,9 @@
     :permitirConsultar="false"
     :permitirEditar="false"
     :mostrar-botones="false"
-  ></essential-table>
+    :tab-options="tabOptions"
+    @tab-seleccionado="aplicarFiltro"
+  ></essential-table-tabs>
 
   <div class="row justify-end q-gutter-sm q-pt-md flotante">
     <q-btn color="positive" no-caps rounded push @click="agregarSubtarea()">

@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import { MenuOption } from 'shared/menu/MenuOption'
+import { computed, Ref } from 'vue'
 import { useAuthenticationStore } from './authentication'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
   // State
-  const links: MenuOption[] = [
+  const links: Ref<MenuOption[]> = computed(() => [
     {
       header: 'Modulos',
     },
@@ -92,7 +93,7 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Categorías',
-          link: 'categorias',    
+          link: 'categorias',
           icon: 'bi-circle',
         },
         {
@@ -138,7 +139,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           icon: 'bi-circle',
-          children:[
+          children: [
             {
               title: 'Nuevo',
               link: 'nuevo-ingreso',
@@ -159,7 +160,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Salida de materiales',
           icon: 'bi-circle',
-          children:[
+          children: [
             {
               title: 'Nuevo',
               link: 'nuevo-egreso',
@@ -190,7 +191,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-circle',
-          children:[
+          children: [
             {
               title: 'Reporte de ingresos',
               link: 'reporte-ingresos',
@@ -221,7 +222,7 @@ export const useMenuStore = defineStore('menu', () => {
       ],
     },
     {
-      header:'Administración',
+      header: 'Administración',
     },
     {
       title: 'Bodega',
@@ -234,12 +235,12 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Condiciones de productos',
-          link: 'condiciones',    
+          link: 'condiciones',
           icon: 'bi-circle',
         },
         {
           title: 'Codigos de productos',
-          link: 'codigos-clientes',    
+          link: 'codigos-clientes',
           icon: 'bi-circle',
         },
         {
@@ -249,22 +250,22 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Hilos',
-          link: 'hilos',    
+          link: 'hilos',
           icon: 'bi-circle',
         },
         {
           title: 'Tipos de Fibras',
-          link: 'tipos-fibras',    
+          link: 'tipos-fibras',
           icon: 'bi-circle',
         },
         {
           title: 'Subtipos de Transacciones',
-          link: 'subtipos-transacciones',    
+          link: 'subtipos-transacciones',
           icon: 'bi-circle',
         },
         {
           title: 'Tipos de Transacciones',
-          link: 'tipos-transacciones',    
+          link: 'tipos-transacciones',
           icon: 'bi-circle',
         },
         {
@@ -275,7 +276,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           icon: 'bi-circle',
-          children:[
+          children: [
             {
               title: 'Nuevo',
               link: 'nuevo-ingreso',
@@ -339,7 +340,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
-  ]
+  ])
 
   return {
     links,

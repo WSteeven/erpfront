@@ -5,7 +5,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { defineComponent } from 'vue'
 
 // Componentes
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
@@ -15,9 +15,10 @@ import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { ComportamientoModalesSubtareaContent } from '../application/ComportamientoModalesSubtareaContent'
 import { useTareaStore } from 'stores/tarea'
 import { useNotificaciones } from 'shared/notificaciones'
+import { TabOption } from 'components/tables/domain/TabOption'
 
 export default defineComponent({
-  components: { EssentialTable, ModalesEntidad },
+  components: { EssentialTableTabs, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
@@ -40,6 +41,16 @@ export default defineComponent({
       },
     ]
 
+    const tabOptions: TabOption[] = [
+      { label: 'Todo', value: 'todo' },
+      { label: 'Asignado', value: 'asignado' },
+      { label: 'Ejecutando', value: 'ejecutando' },
+      { label: 'Pausado', value: 'pausado' },
+      { label: 'Suspendido', value: 'suspendido' },
+      { label: 'Cancelado', value: 'cancelado' },
+      { label: 'Realizado', value: 'realizado' },
+    ]
+
     const modales = new ComportamientoModalesSubtareaContent()
 
     const botonEditarSubtarea: CustomActionTable = {
@@ -59,6 +70,10 @@ export default defineComponent({
         notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
     }
 
+    function aplicarFiltro(tabSeleccionado) {
+      console.log(tabSeleccionado)
+    }
+
     return {
       configuracionColumnas,
       configuracionColumnasSubtareas,
@@ -66,6 +81,8 @@ export default defineComponent({
       botonEditarSubtarea,
       modales,
       agregarSubtarea,
+      tabOptions,
+      aplicarFiltro,
     }
   },
 })
