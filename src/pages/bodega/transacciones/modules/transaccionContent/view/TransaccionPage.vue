@@ -43,7 +43,7 @@
               dense
               outlined
               @update:model-value="filtroTipos"
-              :option-value="(v) => v.nombre"
+              :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
@@ -123,7 +123,8 @@
           </div>
           <!-- Tiene observacion de autorizacion -->
           <div class="col-12 col-md-3">
-            <q-checkbox class="q-mt-lg q-pt-md"
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_obs_autorizacion"
               label="Tiene observación"
               outlined
@@ -131,7 +132,10 @@
             ></q-checkbox>
           </div>
           <!-- observacion autorizacion -->
-          <div v-if="transaccion.tiene_obs_autorizacion" class="col-12 col-md-3">
+          <div
+            v-if="transaccion.tiene_obs_autorizacion"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               v-model="transaccion.observacion_aut"
@@ -279,7 +283,8 @@
           </div>
           <!-- Tiene observación de estado -->
           <div class="col-12 col-md-3">
-            <q-checkbox class="q-mt-lg q-pt-md"
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_obs_estado"
               label="Tiene observación"
               outlined
@@ -310,10 +315,58 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Configuracion para seleccionar productos -->
+          <!-- Selector de productos -->
+          <div class="row">
+            <label class="q-mb-sm block">Agregar productos</label>
+            <div class="col-12 col-md-10">
+              <q-input
+                v-model="criterioBusquedaProducto"
+                placeholder="Nombre de producto"
+                @update:model-value="
+                  (v) => (criterioBusquedaProducto = v.toUpperCase())
+                "
+                hint="Presiona Enter para seleccionar un producto"
+                @keydown.enter="listarProductos()"
+                @blur="
+                  criterioBusquedaProducto === '' ? limpiarProducto() : null
+                "
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+            <div class="col-md-2">
+              <q-btn @click="listarProductos()">Buscar</q-btn>
+            </div>
+          </div>
+          <!-- Tabla -->
+          <div class="col-12">
+            <essential-table
+              :titulo="tituloTabla"
+              :configuracionColumnas="configuracionColumnasProductosSeleccionados"
+              :datos="transaccion.listadoProductosSeleccionados"
+              :permitirEditar="true"
+              :accion1="botonEditarCantidad"
+              @eliminar="accionTabla.eliminar"
+            ></essential-table>
+          </div>
         </div>
       </q-form>
+
+      <essential-selectable-table
+        ref="refListadoSeleccionableProductos"
+        :configuracion-columnas="configuracionColumnasProductos"
+        :datos="listadoProductos"
+        @selected="seleccionarProducto"
+        tipoSeleccion="multiple"
+      >
+      </essential-selectable-table>
     </template>
   </tab-layout>
 </template>
 
+import EssentialSelectableTable from
+'components/tables/view/EssentialSelectableTable.vue';
 <script src="./TransaccionPage.ts" />

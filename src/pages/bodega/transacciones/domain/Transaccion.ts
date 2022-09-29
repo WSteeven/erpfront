@@ -1,4 +1,6 @@
+import { Producto } from "pages/bodega/productos/domain/Producto";
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { ref, Ref } from "vue";
 
 export class Transaccion extends EntidadAuditable{
     id: number|null
@@ -19,6 +21,9 @@ export class Transaccion extends EntidadAuditable{
     //variables auxiliares
     tiene_obs_autorizacion: boolean
     tiene_obs_estado: boolean
+
+    producto: string|null
+    listadoProductosSeleccionados:any[]
     
     constructor(){
         super()
@@ -40,5 +45,8 @@ export class Transaccion extends EntidadAuditable{
 
         this.tiene_obs_autorizacion=false
         this.tiene_obs_estado=false
+
+        this.producto=null
+        this.listadoProductosSeleccionados=[]
     }
 }
