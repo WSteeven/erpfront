@@ -1,5 +1,4 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
-import {Producto} from 'src/pages/bodega/productos/domain/Producto'
 
 export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[]=[
   {
@@ -23,15 +22,5 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[]=[
     align:'left',
     sortable:true,
   },
-  {
-    name:'cantidades',
-    field:'cantidades',
-    label:'Cantidades',
-    align:'left',
-    sortable:false,
-  },
-  // add other fields of Product class
-  // ...
-
 ]
 

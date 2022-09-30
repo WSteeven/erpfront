@@ -226,9 +226,6 @@ export function getVisibleColumns<T>(
   return columnas
 }
 
-export function getIndexOf(listado: any[], id: number) {
-  return listado.findIndex((item: any) => item.id === id)
-}
 
 export function obtenerFechaActual() {
   const timeStamp = Date.now()

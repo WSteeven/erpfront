@@ -26,23 +26,22 @@ import { AutorizacionController } from 'pages/administracion/autorizaciones/infr
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
 import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/domain/SubtipoTransaccion'
 import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
-import { acciones } from 'config/utils'
-import { Producto } from 'pages/bodega/productos/domain/Producto'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
 export default defineComponent({
     components: { TabLayout, EssentialTable, EssentialSelectableTable },
     props: {
         tipo: { type: String, required: true },
-        mixin:{
-            type: Object as ()=>ContenedorSimpleMixin<any>,
-            required:true
+        mixin: {
+            type: Object as () => ContenedorSimpleMixin<any>,
+            required: true
         },
     },
     setup(props) {
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionController())
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, eliminar, restablecer } = mixin.useComportamiento()
-
-        // const store = useAuthenticationStore()
+        const { setValidador, obtenerListados, cargarVista, restablecer } = mixin.useComportamiento()
+        const { confirmar, prompt } = useNotificaciones()
 
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
@@ -53,7 +52,6 @@ export default defineComponent({
             seleccionar: seleccionarProducto
         } = useOrquestadorSelectorProductos(transaccion, 'productos')
 
-        const productosSeleccionados: Ref<Producto[]> = ref([])
         cargarVista(async () => {
             await obtenerListados({
                 sucursales: new SucursalController(),
@@ -74,27 +72,23 @@ export default defineComponent({
 
         })
 
-        /* const seleccionarItem = (producto:Producto)=>{
-            productosSeleccionados.value.push(producto)
-        } */
         //Reglas de validacion
         const reglas = {
             justificacion: { required },
             sucursal: { required },
+            tipo: { required },
             subtipo: { required },
             lugar_destino: { required },
             autorizacion: { required },
             estado: { required },
             observacion_aut: {
-                requiredIfObsAutorizacion: requiredIf(function () {
-                    return transaccion.tiene_obs_autorizacion ? true : false
-                })
+                requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion ? true : false })
             },
             observacion_est: {
-                requiredIfObsEstado: requiredIf(function () {
-                    return transaccion.tiene_obs_estado ? true : false
-                })
+                requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado ? true : false })
             },
+            //validar que envien datos en el listado
+            listadoProductosSeleccionados: { required }
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -113,25 +107,47 @@ export default defineComponent({
         const opciones_productos = listadosAuxiliares.productos
 
         const fecha = new Date()
-        transaccion.created_at = new Intl.DateTimeFormat('az', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        }).format(fecha)
+        transaccion.created_at = new Intl.DateTimeFormat('az', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(fecha)
+        console.log(transaccion.created_at)
 
-        //Configuracion de la tabla
-        const tituloTabla = 'ninguna'
-        const columnas = {
-            col1: 'nombre',
-            col2: 'colukmn',
-            col3: 'column2'
+
+        function eliminar({ entidad, posicion }) {
+            console.log(entidad)
+            console.log(posicion)
+            confirmar('¿Esta seguro de continuar?',
+                () =>
+                    transaccion.listadoProductosSeleccionados.splice(posicion, 1))
         }
-        const listado = opciones_productos
-        const accionTabla = {
-            eliminar: ({ entidad }) => {
-                accion.value = acciones.eliminar
+        const botonEditarCantidad: CustomActionTable = {
+            titulo: 'Editar cantidad',
+            accion: ({ entidad, posicion }) => {
+                console.log(transaccion.listadoProductosSeleccionados)
+                console.log(posicion)
+                console.log(transaccion.listadoProductosSeleccionados[posicion])
+                prompt(
+                    'Ingresa la cantidad',
+                    (data) => {
+                        transaccion.listadoProductosSeleccionados[posicion].cantidades = data
+                    },
+                    transaccion.listadoProductosSeleccionados[posicion].cantidades
+                )
             },
         }
+        const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
+            {
+                name: 'cantidades',
+                field: 'cantidades',
+                label: 'Cantidades',
+                align: 'left',
+                sortable: false,
+            },
+            {
+                name: 'acciones',
+                field: 'acciones',
+                label: 'Acciones',
+                align: 'center'
+            },
+        ]
 
         return {
             mixin, transaccion, disabled, accion, v$,
@@ -145,10 +161,8 @@ export default defineComponent({
 
             //filtros
             filtroTipos(val) {
-                // console.log('valor recibido', val)
                 opciones_subtipos.subtipos = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
                 transaccion.subtipo = ''
-                // console.log('listado filtrado', opciones_subtipos.subtipos)
                 if (opciones_subtipos.subtipos.length < 1) {
                     transaccion.subtipo = ''
                 }
@@ -156,14 +170,11 @@ export default defineComponent({
                     transaccion.subtipo = opciones_subtipos.subtipos[0]['id']
                 }
             },
-            //usuario autenticado
             // tabla,
-            tituloTabla,
-            columnas,
+            configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
-            productosSeleccionados,
-            // seleccionarItem,
-            accionTabla,
+            botonEditarCantidad,
+            eliminar,
 
             //selector
             refListadoSeleccionableProductos,

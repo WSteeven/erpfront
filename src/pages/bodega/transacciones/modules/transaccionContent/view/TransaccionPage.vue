@@ -1,3 +1,5 @@
+import { readonly } from 'vue';
+
 <template>
   <tab-layout
     :mixin="mixin"
@@ -24,12 +26,29 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input
               v-model="transaccion.created_at"
+              type="date"
               mask="date"
               :rules="['date']"
               :readonly="true"
               outlined
               dense
             />
+          </div>
+          <!-- Fecha límite -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha limite</label>
+            <q-input
+              v-model="transaccion.fecha_limite"
+              type="date"
+              placeholder="Fecha limite"
+              mask="date"
+              :rules="['date']"
+              :readonly="readonly"
+              outlined
+              dense
+              :error="false"
+            >
+            </q-input>
           </div>
           <!-- Select tipo -->
           <div class="col-12 col-md-3 q-mb-md">
@@ -42,12 +61,19 @@
               options-dense
               dense
               outlined
+              :error="!!v$.tipo.$errors.length"
+              error-message="Debes seleccionar un subtipo"
               @update:model-value="filtroTipos"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
+              <template v-slot:error>
+                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -75,11 +101,6 @@
               emit-value
               map-options
             >
-              <template v-slot:error>
-                <div v-for="error of v$.subtipo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -318,38 +339,46 @@
 
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
-          <div class="row">
+          <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
-            <div class="col-12 col-md-10">
-              <q-input
-                v-model="criterioBusquedaProducto"
-                placeholder="Nombre de producto"
-                @update:model-value="
-                  (v) => (criterioBusquedaProducto = v.toUpperCase())
-                "
-                hint="Presiona Enter para seleccionar un producto"
-                @keydown.enter="listarProductos()"
-                @blur="
-                  criterioBusquedaProducto === '' ? limpiarProducto() : null
-                "
-                outlined
-                dense
-              >
-              </q-input>
-            </div>
-            <div class="col-md-2">
-              <q-btn @click="listarProductos()">Buscar</q-btn>
+            <div class="row">
+              <div class="col-12 col-md-10 q-mb-md">
+                <q-input
+                  v-model="criterioBusquedaProducto"
+                  placeholder="Nombre de producto"
+                  @update:model-value="
+                    (v) => (criterioBusquedaProducto = v.toUpperCase())
+                  "
+                  hint="Presiona Enter para seleccionar un producto"
+                  @keydown.enter="listarProductos()"
+                  @blur="
+                    criterioBusquedaProducto === '' ? limpiarProducto() : null
+                  "
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+              <div class="col-12 col-md-2" >
+                <q-btn @click="listarProductos()" icon="search" unelevated color="secondary" class="full-width" style="height: 40px;" no-caps>Buscar</q-btn>
+              </div>
             </div>
           </div>
           <!-- Tabla -->
           <div class="col-12">
+            {{ transaccion.listadoProductosSeleccionados }}
             <essential-table
-              :titulo="tituloTabla"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionados"
+              titulo="Productos Seleccionados"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="transaccion.listadoProductosSeleccionados"
-              :permitirEditar="true"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="true"
+              :mostrarBotones="false"
               :accion1="botonEditarCantidad"
-              @eliminar="accionTabla.eliminar"
+              @eliminar="eliminar"
             ></essential-table>
           </div>
         </div>
@@ -357,10 +386,9 @@
 
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
-        :configuracion-columnas="configuracionColumnasProductos"
+        :configuracion-columnas="configuracionColumnasProductosSeleccionados"
         :datos="listadoProductos"
         @selected="seleccionarProducto"
-        tipoSeleccion="multiple"
       >
       </essential-selectable-table>
     </template>
