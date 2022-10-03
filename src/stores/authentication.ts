@@ -14,6 +14,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   // State
   const user = ref()
   const auth = ref(false)
+  const roles = ref()
   const permisos = ref()
   const token = ref()
   const nombreUsuario = computed(
@@ -49,6 +50,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       const res = await axios.get<any>(axios.getEndpoint(endpoints.api_user))
       setUser(res.data)
       if (auth.value) {
+        await getRoles()
         await getPermisos()
         token.value = res.data.access_token
         LocalStorage.set('token', token.value)
@@ -74,6 +76,15 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     return auth.value
   }
 
+  //Roles
+  const getRoles = async () => {
+    try {
+      const res = await axios.get<any>(axios.getEndpoint(endpoints.roles))
+      roles.value = res.data
+    } catch (error: any) {
+      throw new ApiError(error)
+    }
+  }
   // Permisos
   const getPermisos = async () => {
     try {
@@ -93,6 +104,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     login,
     nombreUsuario,
     logout,
+    roles,
     permisos,
     can,
     getUser,

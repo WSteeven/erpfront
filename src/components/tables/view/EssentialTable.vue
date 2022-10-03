@@ -241,7 +241,7 @@
           no-caps
           :label="accion1.titulo"
           class="q-px-sm"
-          @click="accion1?.accion(props.row)"
+          @click="accion1?.accion({entidad: props.row, posicion: props.rowIndex})"
         >
           <q-tooltip class="bg-dark"> {{ accion1.titulo }} </q-tooltip>
         </q-btn>
@@ -257,7 +257,7 @@
           no-caps
           :label="accion2.titulo"
           class="q-px-sm"
-          @click="accion2?.accion(props.row)"
+          @click="accion2?.accion({entidad: props.row, posicion: props.rowIndex})"
         >
           <q-tooltip class="bg-dark"> {{ accion2.titulo }} </q-tooltip>
         </q-btn>

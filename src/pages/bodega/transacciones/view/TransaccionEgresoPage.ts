@@ -1,5 +1,5 @@
 //Dependencias
-
+import { configuracionColumnasTransacciones } from '../domain/configuracionColumnasTransaccion'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent } from 'vue'
@@ -13,12 +13,9 @@ import { TransaccionController } from '../infraestructure/TransaccionController'
 import { Transaccion } from '../domain/Transaccion'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
-import { configuracionColumnasTransacciones } from '../domain/configuracionColumnasTransaccion'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
 import { SubtipoTransaccionController } from 'pages/administracion/subtipos_transacciones/infraestructure/SubtipoTransaccionController'
-import { TransaccionListados } from '../domain/TransaccionListados'
-import { propietariosElementos } from 'config/utils'
 
 export default defineComponent({
     components:{TabLayout},

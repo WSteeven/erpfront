@@ -13,7 +13,7 @@
         />
 
         <q-toolbar-title></q-toolbar-title>
-
+        <q-btn class="q-mr-md" icon="bi-bell-fill" flat round dense></q-btn>
         <!-- <img :src="nombreUsuarioTag" alt="" class="q-mr-sm d-inline-block" /> -->
         <q-badge color="positive" rounded class="q-mr-sm" />
         <q-btn no-caps flat :label="nombreUsuario">

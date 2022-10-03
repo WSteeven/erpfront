@@ -169,7 +169,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/bodega/transacciones/view/TransaccionIngresoPage.vue',
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/transacciones-egresos',
@@ -178,7 +178,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/bodega/transacciones/view/TransaccionEgresoPage.vue',
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
 
 

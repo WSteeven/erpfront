@@ -5,6 +5,11 @@ import { useAuthenticationStore } from './authentication'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
+
+  function checkRol(rol){
+    return rol=="ADMINISTRATIVO"
+  }
+
   // State
   const links: Ref<MenuOption[]> = computed(() => [
     {
@@ -127,13 +132,15 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title: 'Ingresos',
+          title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
+          can: store.can('puede.ver.transacciones_ingresos'),
           icon: 'bi-circle',
         },
         {
-          title: 'Egresos',
+          title: !(store.roles.filter((v)=>v.indexOf('BODEGA')>-1))?'Pedidos a bodega':'Egreso de materiales',
           link: 'transacciones-egresos',
+          can: store.can('puede.ver.transacciones_egresos'),
           icon: 'bi-circle',
         },
         {
