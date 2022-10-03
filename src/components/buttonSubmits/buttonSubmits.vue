@@ -4,7 +4,7 @@
     <!-- Boton guardar -->
     <q-btn
       form="formulario"
-      v-if="accion === nuevo && mostrarGuardar"
+      v-if="accion === nuevo && permitirGuardar"
       color="primary"
       type="submit"
       no-caps
@@ -18,7 +18,7 @@
     <!-- Boton modificar -->
     <q-btn
       form="formulario"
-      v-if="accion === editar || mostrarModificar"
+      v-if="accion === editar || permitirModificar"
       color="primary"
       type="submit"
       no-caps
@@ -45,7 +45,7 @@
     <!-- Boton cancelar -->
     <!-- data-bs-dismiss="modal" -->
     <q-btn
-      v-if="mostrarCancelar"
+      v-if="permitirCancelar"
       color="negative"
       no-caps
       push
@@ -68,17 +68,17 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    mostrarGuardar: {
+    permitirGuardar: {
       type: Boolean,
       required: false,
       default: true,
     },
-    mostrarModificar: {
+    permitirModificar: {
       type: Boolean,
       required: false,
       default: false,
     },
-    mostrarCancelar: {
+    permitirCancelar: {
       type: Boolean,
       required: false,
       default: true,

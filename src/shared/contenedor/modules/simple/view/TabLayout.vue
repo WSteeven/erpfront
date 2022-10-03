@@ -28,6 +28,7 @@
         <button-submits
           v-if="mostrarButtonSubmits"
           :accion="accion"
+          :mostrarGuardar="puedeCrear"
           @cancelar="reestablecer()"
           @editar="editar(entidad, resetFormularioOnUpdate)"
           @eliminar="eliminar(entidad, cbEliminar)"
@@ -41,6 +42,9 @@
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
+          :permitirConsultar="puedeVer"
+          :permitirEditar="puedeEditar"
+          :permitirEliminar="puedeEliminar"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"

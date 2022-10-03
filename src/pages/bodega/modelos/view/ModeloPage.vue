@@ -5,14 +5,13 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Marca -->
           <div class="col-12 col-md-6 q-mb-md">
-            <label-abrir-modal label="Marca" @click="modalesModelo.abrirModalEntidad('MarcaPage')">
-            </label-abrir-modal>
+            <label class="q-mb-sm block">Marca</label>
             <q-select 
               v-model="modelo.marca" 
               :options="opciones.marcas"
               hint="Agregue elementos desde el panel de marcas" 
-              transition-show="flip-up"
-              transition-hide="flip-down" 
+              transition-show="jump-up"
+              transition-hide="jump-down" 
               options-dense 
               dense 
               outlined 
@@ -47,14 +46,6 @@
           </div>
         </div>
       </q-form>
-      
-      <!-- <essential-selectable-table ref="refListadoSeleccionableMarcas"
-        :configuracion-columnas="configuracionColumnasMarcas" :datos="listadoMarcas" @selected="seleccionarMarca">
-      </essential-selectable-table> -->
-    
-    </template>
-    <template #modales>
-      <modales-entidad :comportamiento="modalesModelo"/>
     </template>
   </tab-layout>
 </template>

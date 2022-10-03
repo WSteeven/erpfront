@@ -1,6 +1,6 @@
 // Dependencias
-import { defineComponent, ref, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 // Componentes
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -9,6 +9,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { acciones } from 'config/utils'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   props: {
@@ -98,6 +99,22 @@ export default defineComponent({
       },
     }
 
+    const router = useRoute()
+    const store = useAuthenticationStore()
+
+    const puedeVer = computed(()=>
+      store.can(`puede.ver.${router.name?.toString()}`)
+    )
+    const puedeCrear = computed(()=>
+      store.can(`puede.crear.${router.name?.toString()}`)
+    )
+    const puedeEditar = computed(()=>
+      store.can(`puede.editar.${router.name?.toString()}`)
+    )
+    const puedeEliminar = computed(()=>
+      store.can(`puede.eliminar.${router.name?.toString()}`)
+    )
+
     return {
       tabs,
       tituloTabla,
@@ -116,6 +133,10 @@ export default defineComponent({
       consultar,
       editar,
       eliminar,
+      puedeVer,
+      puedeCrear,
+      puedeEditar,
+      puedeEliminar,
     }
   },
 })

@@ -113,7 +113,7 @@ export default defineComponent({
 
         async function index() {
             const { response } = await controller.listar()
-            tablero.hydrate(response.data.modelo)
+            tablero.hydrate(response.data.results)
         }
 
         index()
