@@ -6,6 +6,7 @@
     :accion1="botonEditarSubtarea"
     :permitirConsultar="false"
     :permitirEditar="false"
+    :permitirEliminar="false"
     :mostrar-botones="false"
     :tab-options="tabOptions"
     @tab-seleccionado="aplicarFiltro"

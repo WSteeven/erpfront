@@ -94,7 +94,7 @@ const routes: RouteRecordRaw[] = [
         path: '/categorias',
         name: 'categorias',
         component: () =>
-          import( 
+          import(
             'pages/bodega/categorias/view/CategoriaPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -103,7 +103,7 @@ const routes: RouteRecordRaw[] = [
         path: '/codigos-clientes',
         name: 'codigos_clientes',
         component: () =>
-          import( 
+          import(
             'pages/administracion/codigos_clientes_productos/view/CodigoClientePage.vue'
           ),
         meta: { requiresAuth: false },
@@ -112,7 +112,7 @@ const routes: RouteRecordRaw[] = [
         path: '/marcas',
         name: 'marcas',
         component: () =>
-        import(
+          import(
             'pages/bodega/marcas/view/MarcaPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -121,7 +121,7 @@ const routes: RouteRecordRaw[] = [
         path: '/modelos',
         name: 'modelos',
         component: () =>
-        import(
+          import(
             'pages/bodega/modelos/view/ModeloPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -130,7 +130,7 @@ const routes: RouteRecordRaw[] = [
         path: '/productos',
         name: 'productos',
         component: () =>
-        import(
+          import(
             'pages/bodega/productos/view/ProductoPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -139,7 +139,7 @@ const routes: RouteRecordRaw[] = [
         path: '/detalles',
         name: 'detalles',
         component: () =>
-        import(
+          import(
             'pages/bodega/detalles_productos/view/DetalleProductoPage.vue'
           ),
         meta: { requiresAuth: false },
@@ -148,7 +148,7 @@ const routes: RouteRecordRaw[] = [
         path: '/inventarios',
         name: 'inventarios',
         component: () =>
-        import(
+          import(
             'pages/bodega/inventario/view/InventarioPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -166,7 +166,7 @@ const routes: RouteRecordRaw[] = [
         path: '/transacciones-ingresos',
         name: 'transacciones_ingresos',
         component: () =>
-        import(
+          import(
             'pages/bodega/transacciones/view/TransaccionIngresoPage.vue',
           ),
         meta: { requiresAuth: false },
@@ -175,19 +175,19 @@ const routes: RouteRecordRaw[] = [
         path: '/transacciones-egresos',
         name: 'transacciones_egresos',
         component: () =>
-        import(
+          import(
             'pages/bodega/transacciones/view/TransaccionEgresoPage.vue',
           ),
         meta: { requiresAuth: false },
       },
-      
-      
+
+
       //Routes for administracion
       {
         path: '/autorizaciones',
         name: 'autorizaciones',
         component: () =>
-          import( 
+          import(
             'pages/administracion/autorizaciones/view/AutorizacionPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -196,7 +196,7 @@ const routes: RouteRecordRaw[] = [
         path: '/condiciones',
         name: 'condiciones',
         component: () =>
-          import( 
+          import(
             'pages/administracion/condiciones/view/CondicionPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -205,7 +205,7 @@ const routes: RouteRecordRaw[] = [
         path: '/estados-transacciones',
         name: 'estados_transacciones',
         component: () =>
-          import( 
+          import(
             'pages/administracion/estados_transacciones/view/EstadosTransaccionPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -214,7 +214,7 @@ const routes: RouteRecordRaw[] = [
         path: '/hilos',
         name: 'hilos',
         component: () =>
-          import( 
+          import(
             'pages/administracion/hilos/view/HiloPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -223,7 +223,7 @@ const routes: RouteRecordRaw[] = [
         path: '/perchas',
         name: 'perchas',
         component: () =>
-          import( 
+          import(
             'pages/administracion/perchas/view/PerchaPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -232,7 +232,7 @@ const routes: RouteRecordRaw[] = [
         path: '/pisos',
         name: 'pisos',
         component: () =>
-          import( 
+          import(
             'pages/administracion/pisos/view/PisoPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -241,7 +241,7 @@ const routes: RouteRecordRaw[] = [
         path: '/sucursales',
         name: 'sucursales',
         component: () =>
-          import( 
+          import(
             'pages/administracion/sucursales/view/SucursalPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -250,7 +250,7 @@ const routes: RouteRecordRaw[] = [
         path: '/tipos-fibras',
         name: 'tipos_fibras',
         component: () =>
-          import( 
+          import(
             'pages/administracion/tipos_fibras/view/TipoFibraPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -259,7 +259,7 @@ const routes: RouteRecordRaw[] = [
         path: '/tipos-transacciones',
         name: 'tipos_transacciones',
         component: () =>
-          import( 
+          import(
             'pages/administracion/tipos_transacciones/view/TipoTransaccionPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -268,7 +268,7 @@ const routes: RouteRecordRaw[] = [
         path: '/subtipos-transacciones',
         name: 'subtipos_transacciones',
         component: () =>
-          import( 
+          import(
             'pages/administracion/subtipos_transacciones/view/SubtipoTransaccionPage.vue'
           ),
         meta: { requiresAuth: true },
@@ -277,7 +277,7 @@ const routes: RouteRecordRaw[] = [
         path: '/ubicaciones',
         name: 'ubicaciones',
         component: () =>
-          import( 
+          import(
             'pages/administracion/ubicaciones/view/UbicacionPage.vue'
           ),
         meta: { requiresAuth: true },

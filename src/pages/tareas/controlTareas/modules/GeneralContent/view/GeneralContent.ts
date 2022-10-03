@@ -14,6 +14,7 @@ import { endpoints } from 'config/api'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+import flatPickr from 'vue-flatpickr-component';
 
 export default defineComponent({
   props: {
@@ -25,6 +26,7 @@ export default defineComponent({
   components: {
     EssentialSelectableTable,
     ButtonSubmits,
+    flatPickr,
   },
   setup(props) {
     const tareaStore = useTareaStore()

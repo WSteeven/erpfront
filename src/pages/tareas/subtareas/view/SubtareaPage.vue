@@ -4,80 +4,117 @@
 
   <q-form @submit.prevent="enviar()">
     <!-- Datos de la subtarea -->
-    <q-expansion-item class="overflow-hidden q-mb-md" style="border-radius: 8px; border: 1px solid #ddd"
-      icon="bi-paperclip" label="Información general" header-class="bg-grey-1" default-opened>
+    <q-expansion-item
+      class="overflow-hidden q-mb-md"
+      style="border-radius: 8px; border: 1px solid #ddd"
+      icon="bi-paperclip"
+      label="Información general"
+      header-class="bg-grey-1"
+      default-opened
+    >
       <div class="row q-col-gutter-sm q-pa-md">
-        <!-- Tarea -->
-        <!-- <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Código tarea JP</label>
-          <q-input
-            v-model="subtarea.codigo_tarea_jp"
-            readonly
-            outlined
-            dense
-          ></q-input>
-        </div> -->
-
-        <!-- Detalle de la tarea -->
-        <!-- <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Detalle de la tarea</label>
-          <q-input
-            v-model="subtarea.detalle_tarea"
-            outlined
-            dense
-            readonly
-            autogrow
-            type="textarea"
-          ></q-input>
-        </div> -->
-
         <!-- Subtarea -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Código subtarea</label>
-          <q-input v-model="subtarea.codigo_subtarea" placeholder="Obligatorio" readonly outlined dense></q-input>
+          <q-input
+            v-model="subtarea.codigo_subtarea"
+            placeholder="Obligatorio"
+            disable
+            outlined
+            dense
+          ></q-input>
         </div>
 
         <!-- Detalle de la subtarea -->
         <div class="col-12 col-md-6">
-          <label class="q-mb-sm block">Detalle / Ruta / Enlace</label>
-          <q-input v-model="subtarea.detalle" outlined dense autogrow autofocus type="textarea"></q-input>
+          <label class="q-mb-sm block"
+            >Detalle / Ruta / Enlace / Proyecto</label
+          >
+          <q-input
+            v-model="subtarea.detalle"
+            outlined
+            dense
+            autogrow
+            autofocus
+            type="textarea"
+          ></q-input>
         </div>
 
         <!-- Cliente -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Cliente</label>
-          <q-input v-model="subtarea.cliente" readonly outlined dense></q-input>
+          <q-input v-model="subtarea.cliente" disable outlined dense></q-input>
         </div>
 
         <!-- Grupo -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Grupo</label>
-          <q-input v-model="subtarea.grupo" placeholder="Obligatorio" outlined dense></q-input>
+          <label class="q-mb-sm block">Grupo asignado</label>
+          <q-input
+            v-model="subtarea.grupo"
+            placeholder="Obligatorio"
+            outlined
+            dense
+          ></q-input>
         </div>
 
         <!-- Técnico responsable -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Técnico responsable</label>
-          <q-input v-model="subtarea.grupo" readonly outlined dense></q-input>
+          <q-input v-model="subtarea.grupo" disable outlined dense></q-input>
         </div>
 
-        <!-- Tipo tarea -->
+        <!-- Tipo trabajo -->
         <div class="col-12 col-md-3">
-          <label-abrir-modal label="Tipo de tarea" @click="modalesSubtarea.abrirModalEntidad('TipoTareaPage')">
+          <label-abrir-modal
+            label="Tipo de trabajo"
+            @click="modalesSubtarea.abrirModalEntidad('TipoTareaPage')"
+          >
           </label-abrir-modal>
-          <q-select v-model="subtarea.tipo_tarea" :options="tiposTareasTelconet" transition-show="flip-up"
-            transition-hide="flip-down" options-dense emit-value map-options dense outlined />
+          <q-select
+            v-model="subtarea.tipo_tarea"
+            :options="tiposTareasTelconet"
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            options-dense
+            emit-value
+            map-options
+            dense
+            outlined
+          />
         </div>
 
-        <!-- Fecha de solicitud -->
+        <!-- Coordinador -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de solicitud</label>
-          <q-input v-model="subtarea.fecha_solicitud" placeholder="Obligatorio" outlined dense mask="date"
-            :rules="['date']">
+          <label class="q-mb-sm block">Coordinador</label>
+          <q-input
+            v-model="subtarea.coordinador"
+            outlined
+            dense
+            disable
+          ></q-input>
+        </div>
+
+        <!-- Fecha de creacion -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora de creación</label>
+          <q-input v-model="subtarea.fecha_creacion" outlined dense disable>
+          </q-input>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de agendamiento</label>
+          <q-input v-model="subtarea.fecha_agendamiento" outlined dense>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="subtarea.fecha_solicitud">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="subtarea.fecha_agendamiento"
+                    mask="DD-MM-YYYY"
+                  >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -85,190 +122,322 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
+          </q-input>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Hora de agendamiento</label>
+          <flat-pickr
+            v-model="subtarea.hora_agendamiento"
+            :config="{
+              enableTime: true,
+              noCalendar: true,
+              dateFormat: 'H:i',
+            }"
+          />
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de reagendamiento</label>
+          <q-input v-model="subtarea.fecha_reagendamiento" outlined dense>
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="subtarea.fecha_reagendamiento"
+                    mask="DD-MM-YYYY"
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Hora de reagendamiento</label>
+          <flat-pickr
+            v-model="subtarea.hora_reagendamiento"
+            :config="{
+              enableTime: true,
+              noCalendar: true,
+              dateFormat: 'H:i',
+            }"
+          />
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora de asignación</label>
+          <q-input v-model="subtarea.fecha_creacion" outlined dense disable>
           </q-input>
         </div>
 
         <!-- Fecha de inicio -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de inicio</label>
-          <q-input v-model="subtarea.fecha_inicio" placeholder="Opcional" outlined dense mask="date" :rules="['date']">
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="subtarea.fecha_inicio">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
+          <label class="q-mb-sm block">Fecha y hora de inicio de trabajo</label>
+          <q-input v-model="subtarea.fecha_inicio" outlined dense disable>
           </q-input>
         </div>
 
-        <!-- Fecha de vencimiento -->
+        <!-- Fecha de finalizacion -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de finalización</label>
-          <q-input v-model="subtarea.fecha_finalizacion" placeholder="Opcional" outlined dense mask="date"
-            :rules="['date']">
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="subtarea.fecha_finalizacion">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
+          <label class="q-mb-sm block"
+            >Fecha y hora de finalización de trabajo</label
+          >
+          <q-input v-model="subtarea.fecha_finalizacion" outlined dense disable>
           </q-input>
         </div>
 
         <!-- Cantidad de días -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Cantidad de días</label>
-          <q-input v-model="subtarea.cantidad_dias" outlined dense readonly></q-input>
+          <q-input
+            v-model="subtarea.cantidad_dias"
+            outlined
+            dense
+            disable
+          ></q-input>
         </div>
 
-        <!-- Coordinador -->
+        <!-- Fecha y hora de estado realizado -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Coordinador</label>
-          <q-input v-model="subtarea.coordinador" outlined dense readonly></q-input>
-        </div>
-
-        <!-- Estado actual -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Estado actual</label>
-          <q-input v-model="subtarea.estado" outlined dense readonly></q-input>
-        </div>
-
-        <!-- Fiscalizador -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fiscalizador</label>
-          <q-input v-model="subtarea.fiscalizador" placeholder="Opcional" outlined dense></q-input>
-        </div>
-
-        <!-- Ingeniero de soporte -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Ingeniero de soporte</label>
-          <q-input v-model="subtarea.ing_soporte" placeholder="Opcional" outlined dense></q-input>
-        </div>
-
-        <!-- Ingeniero de instalacion -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Ingeniero de instalación</label>
-          <q-input v-model="subtarea.ing_instalacion" placeholder="Opcional" outlined dense></q-input>
-        </div>
-
-        <!-- Tipo de instalacion -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Tipo de instalación</label>
-          <q-select v-model="subtarea.tipo_instalacion" :options="tiposInstalaciones" options-dense dense outlined />
-        </div>
-
-        <!-- Actividad realizada -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Actividad realizada</label>
-          <q-input v-model="subtarea.actividad_realizada" placeholder="Opcional" outlined dense></q-input>
-        </div>
-
-        <!-- Novedades -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Novedades</label>
-          <q-input v-model="subtarea.novedades" placeholder="Opcional" outlined dense></q-input>
-        </div>
-      </div>
-    </q-expansion-item>
-
-    <!-- Ubicacion del cliente -->
-    <q-expansion-item class="overflow-hidden q-mb-md" style="border-radius: 8px; border: 1px solid #ddd"
-      icon="bi-geo-alt" label="Ubicación del cliente" header-class="bg-grey-1">
-      <div class="row q-col-gutter-sm q-pa-md">
-        <!-- Provincia -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Provincias</label>
-          <q-select v-model="subtarea.provincia" :options="provincias" options-dense dense outlined />
-        </div>
-
-        <!-- Ciudad -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Ciudades</label>
-          <q-select outlined v-model="subtarea.ciudad" :options="ciudades" options-dense dense />
-        </div>
-
-        <!-- Parroquia -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Parroquia/Barrio</label>
-          <q-input v-model="subtarea.parroquia" placeholder="Opcional" outlined dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"></q-input>
-        </div>
-
-        <!-- Direccion -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Dirección</label>
-          <q-input v-model="subtarea.direccion" placeholder="Opcional" outlined dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"></q-input>
-        </div>
-
-        <!-- Referencias -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Referencias</label>
-          <q-input v-model="subtarea.referencias" placeholder="Opcional" outlined dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"></q-input>
-        </div>
-
-        <!-- Georeferencia X -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Georeferencia Y (DMS)</label>
-          <q-input v-model="subtarea.georeferencia_x" placeholder="Opcional" outlined dense>
-            <template #append>
-              <q-icon name="bi-arrow-repeat" class="q-mr-sm"></q-icon>
-              <div class="text-caption">Convertir a UTM</div>
-            </template>
+          <label class="q-mb-sm block">Fecha y hora de estado realizado</label>
+          <q-input
+            v-model="subtarea.fecha_hora_estado_realizado"
+            outlined
+            dense
+            disable
+          >
           </q-input>
         </div>
 
-        <!-- Georeferencia Y -->
+        <!-- Fecha y hora de estado suspendido -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Georeferencia Y (DMS)</label>
-          <q-input v-model="subtarea.georeferencia_y" placeholder="Opcional" outlined dense>
-            <template #append>
-              <q-icon name="bi-arrow-repeat" class="q-mr-sm"></q-icon>
-              <div class="text-caption">Convertir a UTM</div>
-            </template>
+          <label class="q-mb-sm block">Fecha y hora de estado suspendido</label>
+          <q-input
+            v-model="subtarea.fecha_hora_estado_suspendido"
+            outlined
+            dense
+            disable
+          >
           </q-input>
+        </div>
+
+        <!-- Causa de la suspencion -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Causa de la suspención</label>
+          <q-input
+            v-model="subtarea.causa_suspencion"
+            placeholder="Opcional"
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Fecha y hora de estado cancelacion -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora de cancelación</label>
+          <q-input
+            v-model="subtarea.fecha_hora_estado_cancelado"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+        </div>
+
+        <!-- Causa de la suspencion -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Causa de la cancelación</label>
+          <q-input
+            v-model="subtarea.causa_cancelacion"
+            placeholder="Opcional"
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Regional -->
+        <!--<div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Regional</label>
+          <q-select
+            v-model="subtarea.regional"
+            :options="regiones"
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            options-dense
+            emit-value
+            map-options
+            dense
+            outlined
+          />
+        </div> -->
+
+        <!-- Atencion -->
+        <!--<div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Atención</label>
+          <q-select
+            v-model="subtarea.atencion"
+            :options="atenciones"
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            options-dense
+            emit-value
+            map-options
+            dense
+            outlined
+          />
+        </div> -->
+
+        <!--<div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Tipo de intervención</label>
+          <q-select
+            v-model="subtarea.tipo_intervencion"
+            :options="tiposIntervenciones"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            use-input
+            input-debounce="0"
+            :option-label="(item) => item.descripcion"
+            :option-value="(item) => item.id"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+      -->
+
+        <!--<div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Causa de intervención</label>
+          <q-select
+            v-model="subtarea.causa_intervencion"
+            :options="causasIntervencion"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            use-input
+            input-debounce="0"
+            :option-label="(item) => item.descripcion"
+            :option-value="(item) => item.descripcion"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+      -->
+
+        <div class="col-12">
+          <label class="q-mb-sm block"
+            >Descripción completa del trabajo a realizar</label
+          >
+          <q-input
+            v-model="subtarea.descripcion_completa"
+            placeholder="Opcional"
+            autogrow
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <div class="col-12">
+          <essential-table
+            titulo="Técnicos del grupo principal"
+            :configuracionColumnas="columnas"
+            :datos="datos"
+            :mostrarBotones="false"
+            :permitirConsultar="false"
+            :permitirEditar="false"
+            :alto-fijo="false"
+            :mostrar-header="false"
+            :mostrar-footer="false"
+            @eliminar="eliminarTecnico"
+          >
+          </essential-table>
         </div>
       </div>
     </q-expansion-item>
 
     <!-- Asignar técnicos de otros grupos -->
-    <q-expansion-item class="overflow-hidden q-mb-md" style="border-radius: 8px; border: 1px solid #ddd"
-      icon="bi-gear-wide-connected" label="Asignar técnicos de otros grupos" header-class="bg-grey-1">
+    <q-expansion-item
+      class="overflow-hidden q-mb-md"
+      style="border-radius: 8px; border: 1px solid #ddd"
+      icon="bi-gear-wide-connected"
+      label="Asignar técnicos de otros grupos"
+      header-class="bg-grey-1"
+    >
       <!-- Toggle -->
       <div class="row q-col-gutter-sm q-pa-md">
         <div class="col-12">
-          <q-btn-toggle v-model="seleccionBusqueda" spread class="my-custom-toggle" no-caps rounded unelevated
-            toggle-color="grey-7" color="white" text-color="grey-7" :options="[
+          <q-btn-toggle
+            v-model="seleccionBusqueda"
+            spread
+            class="my-custom-toggle"
+            no-caps
+            rounded
+            unelevated
+            toggle-color="grey-7"
+            color="white"
+            text-color="grey-7"
+            :options="[
               { label: 'Buscar un técnico a la vez', value: 'por_tecnico' },
               { label: 'Buscar por grupo', value: 'por_grupo' },
-            ]" />
+            ]"
+          />
         </div>
       </div>
 
       <!-- Busqueda por tecnico -->
-      <div v-if="seleccionBusqueda === 'por_tecnico'" class="row q-col-gutter-sm q-pa-md">
+      <div
+        v-if="seleccionBusqueda === 'por_tecnico'"
+        class="row q-col-gutter-sm q-pa-md"
+      >
         <!-- Busqueda -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Buscar</label>
-          <q-input v-model="busqueda" placeholder="Nombres / Apellidos / Identificación"
-            hint="Ingrese los datos del técnico y presione Enter" outlined dense></q-input>
+          <q-input
+            v-model="busqueda"
+            placeholder="Nombres / Apellidos / Identificación"
+            hint="Ingrese los datos del técnico y presione Enter"
+            outlined
+            dense
+          ></q-input>
         </div>
 
         <!-- Tecnico seleccionado -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Técnico seleccionado</label>
-          <q-input v-model="tecnicoSeleccionado" readonly outlined dense></q-input>
+          <q-input
+            v-model="tecnicoSeleccionado"
+            disable
+            outlined
+            dense
+          ></q-input>
         </div>
 
         <div class="col-12 col-md-3 q-pt-md">
@@ -285,8 +454,14 @@
         <!-- Grupo -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Grupo</label>
-          <q-select v-model="busqueda" :options="grupos" hint="Seleccione un grupo y presione en Listar técnicos"
-            options-dense dense outlined />
+          <q-select
+            v-model="busqueda"
+            :options="grupos"
+            hint="Seleccione un grupo y presione en Listar técnicos"
+            options-dense
+            dense
+            outlined
+          />
         </div>
 
         <div class="col-12 col-md-3 q-pt-md">
@@ -299,7 +474,12 @@
         <!-- Tecnico seleccionado -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Técnico seleccionado</label>
-          <q-input v-model="tecnicoSeleccionado" readonly outlined dense></q-input>
+          <q-input
+            v-model="tecnicoSeleccionado"
+            disable
+            outlined
+            dense
+          ></q-input>
         </div>
 
         <div class="col-12 col-md-3 q-pt-md">
@@ -315,8 +495,18 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Tecnicos temporales -->
         <div class="col-12">
-          <essential-table titulo="técnicos temporales de otros grupos" :configuracionColumnas="columnas" :datos="datos"
-            :mostrarBotones="false" :permitirConsultar="false" :permitirEditar="false" @eliminar="eliminarTecnico">
+          <essential-table
+            titulo="Técnicos temporales de otros grupos"
+            :configuracionColumnas="columnas"
+            :datos="datos"
+            :mostrarBotones="false"
+            :permitirConsultar="false"
+            :permitirEditar="false"
+            :alto-fijo="false"
+            :mostrar-header="false"
+            :mostrar-footer="false"
+            @eliminar="eliminarTecnico"
+          >
           </essential-table>
         </div>
       </div>
@@ -324,10 +514,26 @@
 
     <!-- Botones formulario -->
     <div class="row q-gutter-md justify-end">
-      <q-fab v-model="fab" label="Cambiar estado" icon="keyboard_arrow_up" color="positive" direction="up"
-        padding="none xl">
-        <q-fab-action color="primary" @click="enviar" hide-icon label="Agendar" />
-        <q-fab-action color="negative" @click="enviar" hide-icon label="Suspender" />
+      <q-fab
+        v-model="fab"
+        label="Cambiar estado"
+        icon="keyboard_arrow_up"
+        color="positive"
+        direction="up"
+        padding="none xl"
+      >
+        <q-fab-action
+          color="primary"
+          @click="enviar"
+          hide-icon
+          label="Agendar"
+        />
+        <q-fab-action
+          color="negative"
+          @click="enviar"
+          hide-icon
+          label="Suspender"
+        />
       </q-fab>
 
       <q-btn color="grey-7" no-caps @click="enviar()" push>

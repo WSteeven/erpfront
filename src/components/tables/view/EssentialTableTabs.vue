@@ -14,11 +14,12 @@
   />
 
   <essential-table
-    :titulo="titulo"
+    titulo=""
     :configuracionColumnas="configuracionColumnas"
     :datos="datos"
     :permitirConsultar="permitirConsultar"
     :permitirEditar="permitirEditar"
+    :permitirEliminar="permitirEliminar"
     :mostrar-botones="mostrarBotones"
     :accion1="accion1"
     :agregarElemento="agregarElemento"

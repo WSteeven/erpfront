@@ -7,7 +7,7 @@ export const apiConfig = {
 export const endpoints = {
   // autenticacion
   authentication: new Endpoint('sanctum/csrf-cookie', false),
-  login: new Endpoint('login', false),
+  login: new Endpoint('usuarios/login'),
   api_user: new Endpoint('api/user', false),
   reset_password: new Endpoint('reset-password', false),
   perfil_usuario: new Endpoint('user/profile-information', false),
@@ -50,5 +50,5 @@ export const endpoints = {
   perchas: new Endpoint('perchas/'),
   pisos: new Endpoint('pisos/'),
   ubicaciones: new Endpoint('ubicaciones/'),
-  
+
 }

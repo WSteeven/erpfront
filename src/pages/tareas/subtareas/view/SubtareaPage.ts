@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTecnico'
-import { defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, Ref, ref } from 'vue'
 import {
   provincias,
   ciudades,
@@ -8,12 +8,17 @@ import {
   tiposInstalaciones,
   tiposTareasTelconet,
   tiposTareasNedetel,
+  regiones,
+  atenciones,
+  tiposIntervenciones,
+  causaIntervencion,
 } from 'config/utils'
 
 // Componentes
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import flatPickr from 'vue-flatpickr-component';
 
 // Logica y controladores
 import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
@@ -22,7 +27,7 @@ import { Tecnico } from '../domain/Tecnico'
 import { getIndexOf } from 'shared/utils'
 
 export default defineComponent({
-  components: { EssentialTable, LabelAbrirModal, ModalesEntidad },
+  components: { EssentialTable, LabelAbrirModal, ModalesEntidad, flatPickr },
   setup() {
     const tareaStore = useTareaStore()
 
@@ -60,7 +65,6 @@ export default defineComponent({
       //
     }
 
-    console.log('subtrea cargada')
     const subtarea = tareaStore.subtarea
 
     function eliminarTecnico(entidad) {
@@ -69,6 +73,8 @@ export default defineComponent({
     }
 
     const modalesSubtarea = new ComportamientoModalesSubtarea()
+
+    const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
     return {
       subtarea,
@@ -87,6 +93,10 @@ export default defineComponent({
       tiposTareasTelconet,
       tiposTareasNedetel,
       fab: ref(false),
+      regiones,
+      atenciones,
+      tiposIntervenciones,
+      causasIntervencion,
     }
   },
 })

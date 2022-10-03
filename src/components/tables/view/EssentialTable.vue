@@ -1,4 +1,8 @@
 <template>
+  <div v-if="titulo" class="bg-grey-3 q-pa-sm titulo-tabla">
+    {{ titulo }}
+  </div>
+
   <q-table
     :hide-header="grid"
     :grid="grid || $q.screen.xs"
@@ -458,6 +462,13 @@
 
 .custom-border {
   border-radius: 0 0 8px 8px;
+}
+
+.titulo-tabla {
+  border-top: 1px solid $grey-4;
+  border-right: 1px solid $grey-4;
+  border-left: 1px solid $grey-4;
+  border-radius: 4px 4px 0 0;
 }
 </style>
 

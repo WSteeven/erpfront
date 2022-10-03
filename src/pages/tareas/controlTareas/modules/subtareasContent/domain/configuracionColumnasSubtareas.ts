@@ -1,36 +1,53 @@
-export const configuracionColumnasSubtareas = [
-  {
-    name: 'coordinador',
-    field: 'coordinador',
-    label: 'Coordinador',
-    align: 'left',
-    sortable: true,
-  },
+import { ColumnConfig } from "components/tables/domain/ColumnConfig";
+import { Subtarea } from "pages/tareas/subtareas/domain/Subtarea";
+
+export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
   {
     name: 'codigo_subtarea',
     field: 'codigo_subtarea',
-    label: 'Código de subtarea',
+    label: 'Cód. Subtarea',
     align: 'left',
     sortable: true,
   },
   {
-    name: 'tipo_tarea',
-    field: 'tipo_tarea',
-    label: 'Tipo de tarea',
+    name: 'detalle',
+    field: 'detalle',
+    label: 'Detalle / Ruta / Enlace / Proyecto',
     align: 'left',
     sortable: true,
   },
   {
-    name: 'fecha_asignado',
-    field: 'fecha_asignado',
-    label: 'Fecha asignado',
+    name: 'tipo_trabajo',
+    field: 'tipo_trabajo',
+    label: 'Tipo de trabajo',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'servicio',
+    field: 'servicio',
+    label: 'Servicio',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'fecha_asignacion',
+    field: 'fecha_asignacion',
+    label: 'Fecha asignación',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'grupo',
+    field: 'grupo',
+    label: 'Grupo',
     align: 'left',
     sortable: true,
   },
   {
     name: 'estado',
     field: 'estado',
-    label: 'Estado',
+    label: 'Estado actual',
     align: 'left',
     sortable: true,
   },
