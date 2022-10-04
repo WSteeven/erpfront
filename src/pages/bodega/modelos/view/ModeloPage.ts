@@ -5,11 +5,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { defineComponent } from 'vue'
 
 //Componentes
-import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-//modales para crear nuevas marcas
-import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -26,8 +22,7 @@ export default defineComponent({
   components: {
     TabLayout,
     //EssentialSelectableTable,
-    LabelAbrirModal,
-    ModalesEntidad,
+    
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(Modelo, new ModeloController())

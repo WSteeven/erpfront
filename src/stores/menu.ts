@@ -99,16 +99,19 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Categorías',
           link: 'categorias',
+          can: store.can('puede.ver.categorias'),
           icon: 'bi-circle',
         },
         {
           title: 'Marcas',
           link: 'marcas',
+          can: store.can('puede.ver.modelos'),
           icon: 'bi-circle',
         },
         {
           title: 'Modelos',
           link: 'modelos',
+          can: store.can('puede.ver.modelos'),
           icon: 'bi-circle',
         },
         {
