@@ -55,7 +55,7 @@ export default defineComponent({
 
     const botonEditarSubtarea: CustomActionTable = {
       titulo: 'Gestionar',
-      accion: (entidad) => {
+      accion: ({ entidad }) => {
         tareaStore.consultarSubtarea(entidad.id)
         modales.abrirModalEntidad('SubtareasPage')
         // router.replace({ name: 'Subtareas' })

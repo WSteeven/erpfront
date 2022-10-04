@@ -51,16 +51,6 @@
         >
           <subtareas-content></subtareas-content>
         </q-step>
-
-        <!-- Resumen materiales solicitados a bodega -->
-        <!-- <q-step
-          :name="3"
-          title="Resumen de materiales solicitados a bodega"
-          icon="bi-wrench-adjustable"
-          :done="done3"
-        >
-          <resumen-material-solicitado-content></resumen-material-solicitado-content>
-        </q-step> -->
       </q-stepper>
     </template>
   </tab-layout>

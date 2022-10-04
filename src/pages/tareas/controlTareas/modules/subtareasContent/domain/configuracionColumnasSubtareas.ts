@@ -47,7 +47,7 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
   {
     name: 'estado',
     field: 'estado',
-    label: 'Estado actual',
+    label: 'Estado',
     align: 'left',
     sortable: true,
   },

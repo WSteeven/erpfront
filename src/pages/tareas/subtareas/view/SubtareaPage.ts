@@ -15,21 +15,22 @@ import {
 } from 'config/utils'
 
 // Componentes
-import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+//import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+//import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import flatPickr from 'vue-flatpickr-component';
 
 // Logica y controladores
-import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
+//import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
 import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
-import { getIndexOf } from 'shared/utils'
 
 export default defineComponent({
-  components: { EssentialTable, LabelAbrirModal, ModalesEntidad, flatPickr },
+  components: { EssentialTable, flatPickr },
   setup() {
     const tareaStore = useTareaStore()
+
+    const step = ref(1)
 
     const busqueda = ref()
     const tecnicoSeleccionado = ref()
@@ -49,15 +50,20 @@ export default defineComponent({
     const datos: Ref<Tecnico[]> = ref([
       {
         id: 1,
-        nombres: 'LUIS',
-        apellidos: 'TORRES',
+        tecnico: 'LUIS DHDHD',
+        contacto: '0897564321',
         grupo: 'MACHALA',
+        disponibilidad: true,
+        observacion: '',
+
       },
       {
         id: 2,
-        nombres: 'ROBERTO',
-        apellidos: 'CAICEDO',
+        tecnico: 'ROBERTO HGHGGF',
+        contacto: '0897564321',
         grupo: 'SANTO DOMINGO',
+        disponibilidad: true,
+        observacion: '',
       },
     ])
 
@@ -67,16 +73,16 @@ export default defineComponent({
 
     const subtarea = tareaStore.subtarea
 
-    function eliminarTecnico(entidad) {
-      const index = getIndexOf(datos.value, entidad.id)
-      datos.value.splice(index, 1)
+    function eliminarTecnico({ posicion }) {
+      datos.value.splice(posicion, 1)
     }
 
-    const modalesSubtarea = new ComportamientoModalesSubtarea()
+    //const modalesSubtarea = new ComportamientoModalesSubtarea()
 
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
     return {
+      step,
       subtarea,
       seleccionBusqueda,
       columnas,
@@ -86,7 +92,7 @@ export default defineComponent({
       busqueda,
       grupos,
       eliminarTecnico,
-      modalesSubtarea,
+      //modalesSubtarea,
       provincias,
       ciudades,
       tiposInstalaciones,

@@ -2,7 +2,7 @@
 import { configuracionColumnasAsistenciaTecnicos } from '../domain/configuracionColumnasAsistenciaTecnicos'
 import { configuracionColumnasControlAsistencia } from '../domain/configuracionColumnasControlAsistencia'
 import { defineComponent, reactive, ref, Ref } from 'vue'
-import { getIndexOf, obtenerFechaActual } from 'shared/utils'
+import { obtenerFechaActual } from 'shared/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -102,21 +102,21 @@ export default defineComponent({
       },
     ])
 
-    function editar(entidad) {
-      const indice = getIndexOf(asistenciaTecnicos.value, entidad.id)
+    function editar({ posicion }) {
+
       prompt(
         'Ingrese la nueva cantidad',
         (data) => {
-          asistenciaTecnicos.value[indice].asiste = data
+          asistenciaTecnicos.value[posicion].asiste = data
         },
-        asistenciaTecnicos.value[indice].asiste
+        asistenciaTecnicos.value[posicion].asiste
       )
     }
 
-    function eliminar(entidad) {
-      const indice = getIndexOf(asistenciaTecnicos.value, entidad.id)
+    function eliminar({ posicion }) {
+
       confirmar('¿Está seguro de continuar?', () =>
-        asistenciaTecnicos.value.splice(indice, 1)
+        asistenciaTecnicos.value.splice(posicion, 1)
       )
     }
 
@@ -132,14 +132,14 @@ export default defineComponent({
 
     const botonAgregarObservacion: CustomActionTable = {
       titulo: 'Agregar observación',
-      accion: (entidad) => {
-        const indice = getIndexOf(asistenciaTecnicos.value, entidad.id)
+      accion: ({ posicion }) => {
+
         prompt(
           'Ingrese la observación',
           (data) => {
-            asistenciaTecnicos.value[indice].observacion = data
+            asistenciaTecnicos.value[posicion].observacion = data
           },
-          asistenciaTecnicos.value[indice].observacion
+          asistenciaTecnicos.value[posicion].observacion
         )
       },
     }

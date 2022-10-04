@@ -93,12 +93,6 @@
           />
         </div>
 
-        <!-- Coordinador -->
-        <div v-if="tarea.coordinador" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Coordinador</label>
-          <q-input v-model="tarea.coordinador" outlined dense disable></q-input>
-        </div>
-
         <!-- Detalle -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Detalle de la tarea</label>
@@ -114,28 +108,10 @@
           </q-input>
         </div>
 
-        <!-- Es proyecto -->
-        <div class="col-12 col-md-3">
-          <br />
-          <q-checkbox
-            v-model="tarea.es_proyecto"
-            label="Es proyecto"
-            outlined
-            dense
-          ></q-checkbox>
-        </div>
-
-        <!-- Codigo de proyecto -->
-        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Código de proyecto</label>
-          <q-input
-            v-model="tarea.codigo_proyecto"
-            @update:model-value="
-              (v) => (tarea.codigo_proyecto = v.toUpperCase())
-            "
-            outlined
-            dense
-          ></q-input>
+        <!-- Coordinador -->
+        <div v-if="tarea.coordinador" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Coordinador</label>
+          <q-input v-model="tarea.coordinador" outlined dense disable></q-input>
         </div>
 
         <!-- Supervisor -->
@@ -162,7 +138,13 @@
         <!-- Nombre -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Contacto</label>
-          <q-input v-model="tarea.contacto" outlined dense></q-input>
+          <q-input
+            v-model="tarea.contacto"
+            placeholder="Opcional"
+            hint="Presiona Enter para seleccionar un cliente"
+            outlined
+            dense
+          ></q-input>
         </div>
 
         <!-- Id de cliente -->
@@ -171,6 +153,7 @@
           <q-input
             v-model="tarea.id_cliente"
             @update:model-value="(v) => (tarea.id_cliente = v.toUpperCase())"
+            disable
             outlined
             dense
           ></q-input>
@@ -228,7 +211,6 @@
             placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
@@ -240,7 +222,6 @@
             placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 
@@ -252,7 +233,6 @@
             placeholder="Opcional"
             outlined
             dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
           ></q-input>
         </div>
 

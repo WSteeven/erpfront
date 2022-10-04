@@ -2,7 +2,6 @@
 import { configuracionColumnasMaterialesSolicitados } from '../domain/configuracionColumnasMaterialesSolicitados'
 import { configuracionColumnasSolicitudMateriales } from '../domain/configuracionColumnasSolicitudMateriales'
 import { defineComponent, reactive, ref, Ref } from 'vue'
-import { getIndexOf } from 'shared/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -117,21 +116,21 @@ export default defineComponent({
       },
     ])
 
-    function editar(entidad) {
-      const indice = getIndexOf(materialesSolicitados.value, entidad.id)
+    function editar({ posicion }) {
+
       prompt(
         'Ingrese la nueva cantidad',
         (data) => {
-          materialesSolicitados.value[indice].cantidad_solicitada = data
+          materialesSolicitados.value[posicion].cantidad_solicitada = data
         },
-        materialesSolicitados.value[indice].cantidad_solicitada
+        materialesSolicitados.value[posicion].cantidad_solicitada
       )
     }
 
-    function eliminar(entidad) {
-      const indice = getIndexOf(materialesSolicitados.value, entidad.id)
+    function eliminar({ posicion }) {
+
       confirmar('¿Está seguro de continuar?', () =>
-        materialesSolicitados.value.splice(indice, 1)
+        materialesSolicitados.value.splice(posicion, 1)
       )
     }
 

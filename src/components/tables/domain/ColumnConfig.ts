@@ -6,4 +6,5 @@ export interface ColumnConfig<T> {
   sortable?: boolean
   visible?: boolean
   print?: boolean
+  style?: string
 }

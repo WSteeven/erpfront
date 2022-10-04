@@ -18,6 +18,7 @@
     virtual-scroll
     :selection="tipoSeleccion"
     v-model:selected="selected"
+    wrap-cells
     :pagination="{ rowsPerPage: 0 }"
     :rows-per-page-options="[0]"
     class="bg-white custom-border"
@@ -241,7 +242,9 @@
           no-caps
           :label="accion1.titulo"
           class="q-px-sm"
-          @click="accion1?.accion({entidad: props.row, posicion: props.rowIndex})"
+          @click="
+            accion1?.accion({ entidad: props.row, posicion: props.rowIndex })
+          "
         >
           <q-tooltip class="bg-dark"> {{ accion1.titulo }} </q-tooltip>
         </q-btn>
@@ -257,7 +260,9 @@
           no-caps
           :label="accion2.titulo"
           class="q-px-sm"
-          @click="accion2?.accion({entidad: props.row, posicion: props.rowIndex})"
+          @click="
+            accion2?.accion({ entidad: props.row, posicion: props.rowIndex })
+          "
         >
           <q-tooltip class="bg-dark"> {{ accion2.titulo }} </q-tooltip>
         </q-btn>
@@ -273,6 +278,29 @@
           size="md"
         ></q-icon>
         <q-icon v-else name="bi-x" color="negative" size="md"></q-icon>
+      </q-td>
+    </template>
+
+    <template #body-cell-disponibilidad="props">
+      <q-td :props="props" class="">
+        <q-chip v-if="props.value" class="bg-green-2">
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            size="xs"
+            class="q-mr-xs"
+          ></q-icon
+          >Disponible
+        </q-chip>
+        <div v-else>
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            size="xs"
+            class="q-mr-xs"
+          ></q-icon
+          >Disponible
+        </div>
       </q-td>
     </template>
 
