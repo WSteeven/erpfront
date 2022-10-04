@@ -31,6 +31,10 @@ export const endpoints = {
   provincias: new Endpoint('provincias/'),
   ciudades: new Endpoint('ciudades/'),
 
+  //endpoints de RR HH
+  empleados: new Endpoint('empleados/'),
+  allroles: new Endpoint('roles/'),
+
   //endpoints de bodega
   autorizaciones: new Endpoint('autorizaciones/'),
   categorias: new Endpoint('categorias/'),

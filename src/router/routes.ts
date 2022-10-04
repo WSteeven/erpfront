@@ -100,15 +100,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/codigos-clientes',
-        name: 'codigos_clientes',
-        component: () =>
-          import(
-            'pages/administracion/codigos_clientes_productos/view/CodigoClientePage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
         path: '/marcas',
         name: 'marcas',
         component: () =>
@@ -181,6 +172,17 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
 
+      //Routes for Recursos Humanos
+      {
+        path: '/empleados',
+        name: 'empleados',
+        component: () =>
+          import(
+            'pages/recursosHumanos/empleados/view/EmpleadoPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
+
 
       //Routes for administracion
       {
@@ -189,6 +191,15 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/administracion/autorizaciones/view/AutorizacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/codigos-clientes',
+        name: 'codigos_clientes',
+        component: () =>
+          import(
+            'pages/administracion/codigos_clientes_productos/view/CodigoClientePage.vue'
           ),
         meta: { requiresAuth: true },
       },

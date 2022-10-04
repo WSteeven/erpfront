@@ -1,34 +1,37 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" titulo-pagina="Productos">
+  <tab-layout
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    titulo-pagina="Productos"
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Categoria -->
           <div class="col-12 col-md-6 q-mb-md">
-            <label-abrir-modal label="Categoria" @click="modalesProducto.abrirModalEntidad('CategoriaPage')">
-            </label-abrir-modal>
-            <q-select 
-            v-model="producto.categoria"
-            :options="opciones.categorias"
-            hint="Agregue elementos desde el panel de categorías" 
-            transition-show="jum-up"
-              transition-hide="jump-down" 
-              options-dense 
-              dense 
+            <label class="q-mb-sm block">Categoria</label>
+            <q-select
+              v-model="producto.categoria"
+              :options="opciones.categorias"
+              hint="Agregue elementos desde el panel de categorías"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
               outlined
-              :error="!!v$.categoria.$errors.length"  
+              :error="!!v$.categoria.$errors.length"
               error-message="Debes seleccionar una categoría"
               use-input
-              input-debounce="0" 
+              input-debounce="0"
               @filter="filterFn"
-              :option-value="(v)=>v.id"
-              :option-label="(v) => v.nombre" 
-              emit-value 
-              map-options 
-              >
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
               <template v-slot:error>
                 <div v-for="error of v$.categoria.$errors" :key="error.$uid">
-                  <div class="error-msg">{{error.$message}}</div>
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <template v-slot:no-option>
@@ -43,17 +46,18 @@
           <!-- Nombre -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Nombre</label>
-            <q-input 
-              v-model="producto.nombre" 
-              placeholder="Obligatorio" 
+            <q-input
+              v-model="producto.nombre"
+              placeholder="Obligatorio"
               :readonly="disabled"
-              :error="!!v$.nombre.$errors.length" 
-              @update:model-value="(v)=>(producto.nombre=v.toUpperCase())" 
+              :error="!!v$.nombre.$errors.length"
+              @update:model-value="(v) => (producto.nombre = v.toUpperCase())"
               outlined
-              dense>
+              dense
+            >
               <template v-slot:error>
                 <div v-for="error of v$.nombre.$errors" :key="error.$uid">
-                  <div class="error-msg">{{error.$message}}</div>
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
@@ -75,6 +79,5 @@
   </tab-layout>
 </template>
 
-
 <!-- import SelectorImagenMultiple from 'components/SelectorImagenMultiple.vue'; -->
-<script src="./ProductoPage.ts"/>
+<script src="./ProductoPage.ts" />

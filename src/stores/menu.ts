@@ -231,6 +231,19 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    //Modulo Recursos Humanos
+    {
+      title: 'RR HH',
+      icon: 'bi-people',
+      // can: store.can('puede.ver.modulo_recursos_humanos'),
+      children: [
+        {
+          title: 'Empleados',
+          link: 'empleados',
+          icon: 'bi-circle',
+        },
+      ],
+    },
     {
       header: 'Administración',
     },
