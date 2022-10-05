@@ -6,10 +6,20 @@ export class LoginController {
   store = useAuthenticationStore()
   Router = useRouter()
 
-  async login(userLogin: UserLogin): Promise<void> {
+  /* async login(userLogin: UserLogin): Promise<void> {
     return this.store.login(userLogin).then(() => {
       this.Router.replace('/')
     })
+  } */
+
+  async login(userLogin: UserLogin): Promise<any> {
+    try {
+      const response = await this.store.login(userLogin)
+      this.Router.replace('/')
+      return response
+    } catch (error) {
+      throw error
+    }
   }
 
   async logout(): Promise<void> {

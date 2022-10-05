@@ -133,7 +133,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/bodega/detalles_productos/view/DetalleProductoPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/inventarios',
@@ -144,15 +144,6 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
-      /* {
-        path: '/transacciones',
-        name: 'transacciones',
-        component: () =>
-        import(
-            'pages/bodega/transacciones/view/TransaccionPage.vue',
-          ),
-        meta: { requiresAuth: false },
-      }, */
       {
         path: '/transacciones-ingresos',
         name: 'transacciones_ingresos',
