@@ -2,7 +2,7 @@
 import { configuracionColumnasEmpleados } from "../domain/configuracionColumnasEmpleados";
 import { maxLength, minLength, numeric, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -50,9 +50,9 @@ export default defineComponent({
             sucursal: { required },
             jefe: { required },
             email: { required },
-            password: { required },
             fecha_nacimiento: { required },
             roles: { required },
+            estado: {required},
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -64,13 +64,16 @@ export default defineComponent({
         const opciones_roles = listadosAuxiliares.roles
         const opciones_empleados = listadosAuxiliares.empleados
         opciones_empleados.empleados = listadosAuxiliares.empleados
+        const opciones_estados = ['ACTIVO', 'INACTIVO']
         return {
             mixin, empleado, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasEmpleados,
+            isPwd:ref(true),
             //listado 
             opciones_sucursales,
             opciones_roles,
             opciones_empleados,
+            opciones_estados,
 
             //filtro de empleados
             filterJefe(val, update) {

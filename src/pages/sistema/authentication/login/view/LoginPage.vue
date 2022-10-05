@@ -9,15 +9,26 @@
 
     <div class="row items-center">
       <!-- Left side -->
-      <div v-if="!$q.screen.xs && !$q.screen.sm" class="col-12 col-md-8 text-center q-pa-lg">
+      <div
+        v-if="!$q.screen.xs && !$q.screen.sm"
+        class="col-12 col-md-8 text-center q-pa-lg"
+      >
         <div class="imagen d-flex align-items-center justify-content-center">
-          <lottie-player :animationData="loginJson" background="transparent" :speed="1"
-            style="width: 400px; height: 400px" loop autoplay></lottie-player>
+          <lottie-player
+            :animationData="loginJson"
+            background="transparent"
+            :speed="1"
+            style="width: 400px; height: 400px"
+            loop
+            autoplay
+          ></lottie-player>
         </div>
       </div>
 
       <!-- Right side -->
-      <div class="col-12 col-md-4 row items-center justify-center bg-white window-height">
+      <div
+        class="col-12 col-md-4 row items-center justify-center bg-white window-height"
+      >
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-sm">
             <h2>Bienvenidos a BRCE</h2>
@@ -26,16 +37,31 @@
 
           <!-- Correo -->
           <div class="col-12 q-mb-sm">
-            <q-input v-model="loginUser.email" type="email" label="Correo" outlined dense />
+            <q-input
+              v-model="loginUser.email"
+              type="email"
+              label="Correo"
+              outlined
+              dense
+            />
           </div>
 
           <!-- Contraseña -->
           <div class="col-12 q-mb-sm">
-            <q-input v-model="loginUser.password" label="Contraseña" outlined dense :type="isPwd ? 'password' : 'text'"
-              hint="No comparta su contraseña con nadie">
+            <q-input
+              v-model="loginUser.password"
+              label="Contraseña"
+              outlined
+              dense
+              :type="isPwd ? 'password' : 'text'"
+              hint="No comparta su contraseña con nadie"
+            >
               <template v-slot:append>
-                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                  @click="isPwd = !isPwd" />
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
               </template>
             </q-input>
           </div>
@@ -47,8 +73,15 @@
 
           <div class="col-12">
             <!-- Botones -->
-            <q-btn color="primary" label="Iniciar sesión" class="full-width q-mb-sm" :disabled="!enableLoginButton"
-              no-caps unelevated @click="login()">
+            <q-btn
+              color="primary"
+              label="Iniciar sesión"
+              class="full-width q-mb-sm"
+              :disabled="!enableLoginButton"
+              no-caps
+              unelevated
+              @click="login()"
+            >
             </q-btn>
           </div>
         </form>

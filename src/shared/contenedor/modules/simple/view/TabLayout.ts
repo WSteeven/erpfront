@@ -67,6 +67,7 @@ export default defineComponent({
         field: 'acciones',
         label: 'Acciones',
         align: 'center',
+        style: 'width:200px'
       },
     ]
 
@@ -82,7 +83,7 @@ export default defineComponent({
     })
 
     const tituloTabla =
-      Router.currentRoute.value.name?.toString().toLowerCase() ?? ''
+      Router.currentRoute.value.name?.toString().toUpperCase() ?? ''
 
     const accionTabla = {
       consultar: ({ entidad }) => {

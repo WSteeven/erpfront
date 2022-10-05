@@ -35,14 +35,16 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[]=[
         field: 'fecha_nacimiento',
         label: 'Fecha de nacimiento',
         align: 'left',
-        sortable: true
+        sortable: true,
+        style: 'width:100px'
     },
     {
         name: 'jefe',
         field: 'jefe',
         label: 'Jefe',
         align: 'left',
-        sortable: true
+        sortable: true,
+        style: 'width:150px'
     },
     {
         name: 'email',

@@ -28,14 +28,13 @@
         <button-submits
           v-if="mostrarButtonSubmits"
           :accion="accion"
-          :mostrarGuardar="puedeCrear"
+          :permitirGuardar="puedeCrear"
           @cancelar="reestablecer()"
           @editar="editar(entidad, resetFormularioOnUpdate)"
           @eliminar="eliminar(entidad, cbEliminar)"
           @guardar="guardar(entidad)"
-        />
+          />
       </q-tab-panel>
-
       <!-- Listado -->
       <q-tab-panel name="listado" class="q-py-none">
         <essential-table

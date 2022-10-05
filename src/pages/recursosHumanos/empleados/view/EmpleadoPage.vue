@@ -32,21 +32,22 @@
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block">Contraseña</label>
               <q-input
-                type="password"
+                :type="isPwd ? 'password' : 'text'"
                 v-model="empleado.password"
                 placeholder="Obligatorio"
                 :readonly="disabled"
-                :error="!!v$.password.$errors.length"
                 @update:model-value="
                   (v) => (empleado.password = v.toUpperCase())
                 "
                 outlined
                 dense
               >
-                <template v-slot:error>
-                  <div v-for="error of v$.password.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                <template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                  />
                 </template>
               </q-input>
             </div>
@@ -212,11 +213,11 @@
               input-debounce="0"
               @filter="filterJefe"
               :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres+' '+v.apellidos"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
               map-options
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.jefe.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
@@ -244,7 +245,7 @@
               outlined
               :error="!!v$.roles.$errors.length"
               error-message="Debes seleccionar uno o varios roles"
-              :option-value="(v) => v.id"
+              :option-value="(v) => v.name"
               :option-label="(v) => v.name"
               emit-value
               map-options
@@ -263,7 +264,37 @@
               </template>
             </q-select>
           </div>
-          
+          <!-- Estado -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado</label>
+            <q-select
+              v-model="empleado.estado"
+              :options="opciones_estados"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.estado.$errors.length"
+              :option-value="(v) => v"
+              :option-label="(v) => v"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.estado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
         </div>
       </q-form>
     </template>

@@ -6,8 +6,8 @@ import { useAuthenticationStore } from './authentication'
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
 
-  function checkRol(rol){
-    return rol=="ADMINISTRATIVO"
+  function checkRol(rol) {
+    return rol == "ADMINISTRATIVO"
   }
 
   // State
@@ -105,7 +105,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Marcas',
           link: 'marcas',
-          can: store.can('puede.ver.modelos'),
+          can: store.can('puede.ver.marcas'),
           icon: 'bi-circle',
         },
         {
@@ -118,84 +118,30 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Productos',
           link: 'productos',
           icon: 'bi-circle',
+          can: store.can('puede.ver.productos'),
         },
         {
           title: 'Detalles de productos',
           link: 'detalles',
           icon: 'bi-circle',
+          can: store.can('puede.ver.detalles'),
         },
         {
           title: 'Inventario',
           link: 'inventarios',
           icon: 'bi-circle',
-        },
-        {
-          title: 'Transacciones',
-          link: 'transacciones',
-          icon: 'bi-circle',
+          can: store.can('puede.ver.inventarios'),
         },
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones_ingresos'),
+          can: store.can('puede.ver.transacciones'),
           icon: 'bi-circle',
         },
         {
-          title: !(store.roles.filter((v)=>v.indexOf('BODEGA')>-1))?'Pedidos a bodega':'Egreso de materiales',
+          title: !(store.roles.filter((v) => v.indexOf('BODEGA') > -1)) ? 'Pedidos a bodega' : 'Egreso de materiales',
           link: 'transacciones-egresos',
-          can: store.can('puede.ver.transacciones_egresos'),
-          icon: 'bi-circle',
-        },
-        {
-          title: 'Ingreso de materiales',
-          icon: 'bi-circle',
-          children: [
-            {
-              title: 'Nuevo',
-              link: 'nuevo-ingreso',
-              icon: 'bi-dash',
-            },
-            {
-              title: 'Pendientes',
-              link: 'ingresos-pendientes',
-              icon: 'bi-dash',
-            },
-            {
-              title: 'Completados',
-              link: 'ingresos-completados',
-              icon: 'bi-dash',
-            },
-          ]
-        },
-        {
-          title: 'Salida de materiales',
-          icon: 'bi-circle',
-          children: [
-            {
-              title: 'Nuevo',
-              link: 'nuevo-egreso',
-              icon: 'bi-dash',
-            },
-            {
-              title: 'Pendientes',
-              link: 'egresos-pendientes',
-              icon: 'bi-dash',
-            },
-            {
-              title: 'Completados',
-              link: 'egresos-completados',
-              icon: 'bi-dash',
-            },
-          ]
-        },
-        {
-          title: 'Transferencias entre bodegas',
-          link: 'transferencias',
-          icon: 'bi-circle',
-        },
-        {
-          title: 'Liquidaciones',
-          link: 'liquidaciones',
+          can: store.can('puede.ver.transacciones'),
           icon: 'bi-circle',
         },
         {
@@ -235,107 +181,102 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'RR HH',
       icon: 'bi-people',
-      // can: store.can('puede.ver.modulo_recursos_humanos'),
+      can: store.can('puede.ver.modulo_recursos_humanos'),
       children: [
         {
           title: 'Empleados',
           link: 'empleados',
           icon: 'bi-circle',
+          can: store.can('puede.ver.empleados'),
         },
       ],
     },
     {
       header: 'Administración',
+      can: store.can('puede.ver.modulo_administracion'),
     },
     {
       title: 'Bodega',
       icon: 'bi-ui-checks-grid',
+      can: store.can('puede.ver.modulo_administracion'),
       children: [
         {
           title: 'Autorizaciones',
           link: 'autorizaciones',
           icon: 'bi-circle',
+          can: store.can('puede.ver.autorizaciones'),
         },
         {
           title: 'Condiciones de productos',
           link: 'condiciones',
           icon: 'bi-circle',
+          can: store.can('puede.ver.condiciones'),
         },
         {
           title: 'Codigos de productos',
           link: 'codigos-clientes',
           icon: 'bi-circle',
+          can: store.can('puede.ver.codigos_clientes'),
         },
         {
           title: 'Estados de transacciones',
           link: 'estados-transacciones',
           icon: 'bi-circle',
+          can: store.can('puede.ver.estados_transacciones'),
         },
         {
           title: 'Hilos',
           link: 'hilos',
           icon: 'bi-circle',
+          can: store.can('puede.ver.hilos'),
         },
         {
           title: 'Tipos de Fibras',
           link: 'tipos-fibras',
           icon: 'bi-circle',
+          can: store.can('puede.ver.tipos_fibras'),
         },
         {
           title: 'Subtipos de Transacciones',
           link: 'subtipos-transacciones',
+          can: store.can('puede.ver.subtipos_transacciones'),
           icon: 'bi-circle',
         },
         {
           title: 'Tipos de Transacciones',
           link: 'tipos-transacciones',
           icon: 'bi-circle',
+          can: store.can('puede.ver.tipos_transacciones'),
         },
         {
           title: 'Inventario',
           link: 'inventario',
           icon: 'bi-circle',
-        },
-        {
-          title: 'Ingreso de materiales',
-          icon: 'bi-circle',
-          children: [
-            {
-              title: 'Nuevo',
-              link: 'nuevo-ingreso',
-              icon: 'bi-dash',
-            },
-            {
-              title: 'Pendientes',
-              link: 'ingresos-pendientes',
-              icon: 'bi-dash',
-            },
-            {
-              title: 'Completados',
-              link: 'ingresos-completados',
-              icon: 'bi-dash',
-            },
-          ]
+          can: store.can('puede.ver.inventarios'),
         },
         {
           title: 'Perchas',
           link: 'perchas',
           icon: 'bi-circle',
+          can: store.can('puede.ver.perchas'),
         },
         {
           title: 'Pisos',
           link: 'pisos',
           icon: 'bi-circle',
+          can: store.can('puede.ver.pisos'),
         },
         {
           title: 'Sucursales',
           link: 'sucursales',
           icon: 'bi-circle',
+          can: store.can('puede.ver.sucursales'),
         },
         {
           title: 'Ubicaciones',
           link: 'ubicaciones',
           icon: 'bi-circle',
+          can: store.can('puede.ver.ubicaciones'),
         },
       ]
     },

@@ -30,17 +30,18 @@ export default defineComponent({
     const login = async () => {
       try {
         cargando.activar()
-        await loginController.login(loginUser)
-        notificaciones.notificarCorrecto(
-          'Bienvenido a JPConstrucred!'
-        )
+        const response:any = await loginController.login(loginUser)
+        
+        notificaciones.notificarCorrecto(response.data.mensaje)
+        
       } catch (error: any) {
-        notificaciones.notificarError('No se pudo autenticar')
+        notificaciones.notificarError(error.response.data.mensaje)
       } finally {
         cargando.desactivar()
       }
     }
 
+    
     const enableLoginButton = computed(
       () => loginUser.email !== '' && loginUser.password !== ''
     )

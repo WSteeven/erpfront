@@ -24,13 +24,15 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   )
 
   // Actions
-  const login = async (credentiales: UserLogin): Promise<void> => {
+  const login = async (credentiales: UserLogin): Promise<any> => {
     try {
       await axios.get(axios.getEndpoint(endpoints.authentication))
-      await axios.post(axios.getEndpoint(endpoints.login), credentiales)
+      const response = await axios.post(axios.getEndpoint(endpoints.login), credentiales)
       await getUser()
+      return response
     } catch (error: any) {
-      throw new ApiError(error)
+      // throw new ApiError(error)
+      throw error
     }
   }
 
