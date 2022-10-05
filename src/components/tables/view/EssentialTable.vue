@@ -1,5 +1,5 @@
 <template>
-  <div v-if="titulo" class="bg-grey-3 q-pa-sm titulo-tabla">
+  <div v-if="titulo" class="bg-white text-bold q-pa-sm titulo-tabla">
     {{ titulo }}
   </div>
 
@@ -283,7 +283,7 @@
 
     <template #body-cell-disponibilidad="props">
       <q-td :props="props" class="">
-        <q-chip v-if="props.value" class="bg-green-2">
+        <q-chip v-if="props.value" class="bg-green-1">
           <q-icon
             name="bi-circle-fill"
             color="positive"
@@ -292,15 +292,15 @@
           ></q-icon
           >Disponible
         </q-chip>
-        <div v-else>
+        <q-chip v-else class="bg-pink-1">
           <q-icon
             name="bi-circle-fill"
             color="negative"
             size="xs"
             class="q-mr-xs"
           ></q-icon
-          >Disponible
-        </div>
+          >Ocupado
+        </q-chip>
       </q-td>
     </template>
 
