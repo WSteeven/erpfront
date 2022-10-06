@@ -11,8 +11,8 @@
     bordered
     flat
   >
-    <!-- General -->
-    <q-step :name="1" title="1. General" icon="bi-gear" :done="true">
+    <!-- General -->p
+    <q-step :name="1" title="1. General" icon="bi-gear" :done="done1">
       <q-form @submit.prevent="enviar()">
         <!-- Datos de la subtarea -->
         <q-expansion-item
@@ -466,14 +466,14 @@
               <div>Finalizar</div>
             </q-btn>
 
-            <q-btn color="positive" no-caps @click="enviar()" push>
+            <!-- <q-btn color="positive" no-caps @click="enviar()" push>
               <q-icon
                 name="bi-clock-history"
                 size="xs"
                 class="q-mr-sm"
               ></q-icon>
               <div>Reagendar</div>
-            </q-btn>
+            </q-btn> -->
           </div>
         </q-expansion-item>
 
@@ -608,33 +608,6 @@
 
         <!-- Botones formulario -->
         <div class="row q-gutter-md justify-end">
-          <q-fab
-            v-model="fab"
-            label="Cambiar estado"
-            icon="keyboard_arrow_up"
-            color="positive"
-            direction="up"
-            padding="none xl"
-          >
-            <q-fab-action
-              color="primary"
-              @click="enviar"
-              hide-icon
-              label="Agendar"
-            />
-            <q-fab-action
-              color="negative"
-              @click="enviar"
-              hide-icon
-              label="Suspender"
-            />
-          </q-fab>
-
-          <q-btn color="grey-7" no-caps @click="enviar()" push>
-            <q-icon name="bi-clock-history" class="q-mr-sm" size="xs"></q-icon>
-            <div>Historial de estados</div>
-          </q-btn>
-
           <q-btn color="primary" no-caps @click="enviar()" push>
             <q-icon name="bi-x-lg" size="xs" class="q-mr-sm"></q-icon>
             <div>Guardar cambios</div>
@@ -649,7 +622,16 @@
       icon="bi-list-check"
       :done="done2"
     >
-      <!---<subtareas-content></subtareas-content> -->
+      <pausas-realizadas-content></pausas-realizadas-content>
+    </q-step>
+
+    <q-step
+      :name="3"
+      title="3. Control de avance"
+      icon="bi-list-check"
+      :done="done3"
+    >
+      <ControlAvanceContent></ControlAvanceContent>
     </q-step>
   </q-stepper>
   <!-- <modales-entidad :comportamiento="modalesSubtarea" /> -->

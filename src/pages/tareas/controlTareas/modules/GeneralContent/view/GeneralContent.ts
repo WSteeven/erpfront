@@ -4,7 +4,8 @@ import { useOrquestadorSelectorClientes } from '../application/OrquestadorSelect
 import { provincias, ciudades, acciones } from 'config/utils'
 import { defineComponent, watchEffect } from 'vue'
 import { useTareaStore } from 'stores/tarea'
-import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
+//import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
+import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -15,6 +16,8 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import flatPickr from 'vue-flatpickr-component';
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 export default defineComponent({
   props: {
@@ -27,6 +30,8 @@ export default defineComponent({
     EssentialSelectableTable,
     ButtonSubmits,
     flatPickr,
+    LabelAbrirModal,
+    ModalesEntidad,
   },
   setup(props) {
     const tareaStore = useTareaStore()
@@ -78,6 +83,8 @@ export default defineComponent({
       limpiarCliente()
     } */
 
+    const modalesTarea = new ComportamientoModalesTarea()
+
     return {
       tarea,
       provincias,
@@ -87,6 +94,7 @@ export default defineComponent({
       eliminar,
       tareaStore,
       reestablecer,
+      modalesTarea,
       // Selector
       refListadoSeleccionableClientes,
       criterioBusquedaCliente,

@@ -40,9 +40,9 @@ export function useNotificaciones() {
       caption: obtenerMensaje(mensaje),
       message: 'Advertencia',
       position: 'top',
-      closeBtn:false,
-      progress:true,
-      timeout:2000,
+      closeBtn: false,
+      progress: true,
+      timeout: 2000,
       actions: [
         { label: 'X', color: 'white', handler: () => { /* ... */ } }
       ]

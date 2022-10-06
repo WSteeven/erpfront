@@ -103,16 +103,16 @@ export default defineComponent({
     const router = useRoute()
     const store = useAuthenticationStore()
 
-    const puedeVer = computed(()=>
+    const puedeVer = computed(() =>
       store.can(`puede.ver.${router.name?.toString()}`)
     )
-    const puedeCrear = computed(()=>
+    const puedeCrear = computed(() =>
       store.can(`puede.crear.${router.name?.toString()}`)
     )
-    const puedeEditar = computed(()=>
+    const puedeEditar = computed(() =>
       store.can(`puede.editar.${router.name?.toString()}`)
     )
-    const puedeEliminar = computed(()=>
+    const puedeEliminar = computed(() =>
       store.can(`puede.eliminar.${router.name?.toString()}`)
     )
 

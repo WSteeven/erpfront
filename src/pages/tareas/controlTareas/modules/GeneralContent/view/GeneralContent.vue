@@ -137,7 +137,11 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Nombre -->
         <div class="col-12 col-md-6">
-          <label class="q-mb-sm block">Contacto</label>
+          <label-abrir-modal
+            label="Contacto"
+            @click="modalesTarea.abrirModalEntidad('ContactoPage')"
+          >
+          </label-abrir-modal>
           <q-input
             v-model="tarea.contacto"
             placeholder="Opcional"
@@ -278,6 +282,8 @@
     @selected="seleccionarCliente"
   >
   </essential-selectable-table>
+
+  <modales-entidad :comportamiento="modalesTarea" />
 </template>
 
 <script src="./GeneralContent.ts"></script>

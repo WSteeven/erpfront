@@ -19,6 +19,8 @@ import {
 //import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import flatPickr from 'vue-flatpickr-component';
+import PausasRealizadasContent from './PausasRealizadasContent.vue'
+import ControlAvanceContent from 'pages/tareas/subtareas/view/ControlAvanceContent.vue'
 
 // Logica y controladores
 //import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
@@ -26,11 +28,14 @@ import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
 
 export default defineComponent({
-  components: { EssentialTable, flatPickr },
+  components: { EssentialTable, flatPickr, PausasRealizadasContent, ControlAvanceContent },
   setup() {
     const tareaStore = useTareaStore()
 
     const step = ref(1)
+    const done1 = ref(true)
+    const done2 = ref(false)
+    const done3 = ref(false)
 
     const busqueda = ref()
     const tecnicoSeleccionado = ref()
@@ -65,6 +70,14 @@ export default defineComponent({
         disponibilidad: true,
         observacion: '',
       },
+      {
+        id: 3,
+        tecnico: 'CARLA AGUIRRE',
+        contacto: '0897564321',
+        grupo: 'SANTO DOMINGO',
+        disponibilidad: false,
+        observacion: '',
+      },
     ])
 
     function enviar() {
@@ -83,6 +96,9 @@ export default defineComponent({
 
     return {
       step,
+      done1,
+      done2,
+      done3,
       subtarea,
       seleccionBusqueda,
       columnas,
