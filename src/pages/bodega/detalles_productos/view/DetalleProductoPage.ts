@@ -19,6 +19,7 @@ import { MarcaController } from "pages/bodega/marcas/infraestructure/MarcaContro
 import { ModeloController } from "pages/bodega/modelos/infraestructure/ModeloController";
 import { TipoFibraController } from "pages/administracion/tipos_fibras/infraestructure/TipoFibraController";
 import { HiloController } from "pages/administracion/hilos/infraestructure/HiloController";
+import { SpanController } from "pages/administracion/span/infraestructure/SpanController";
 
 export default defineComponent({
     components: {TabLayout},
@@ -33,6 +34,7 @@ export default defineComponent({
                 productos: new ProductoController(),
                 marcas: new MarcaController(),
                 modelos: new ModeloController(),
+                spans: new SpanController(),
                 fibras: new TipoFibraController(),
                 hilos:new HiloController()
             })
@@ -48,9 +50,10 @@ export default defineComponent({
                 requiredIfSerial: requiredIf(function(){ return detalle.tiene_serial? detalle.tiene_serial : false}),
                 requiredIfFibra: requiredIf(function(){return detalle.es_fibra? detalle.es_fibra : false})
             },
+            span: {requiredIfFibra: requiredIf(function(){return detalle.es_fibra? true : false })},
             tipo_fibra: {requiredIfFibra: requiredIf(function(){return detalle.es_fibra? detalle.es_fibra : false })},
             hilos: {requiredIfFibra: requiredIf(function(){return detalle.es_fibra? detalle.es_fibra : false })},
-            punta_b:{
+            punta_final:{
                 requiredIfFibra: requiredIf(function(){return detalle.es_fibra? detalle.es_fibra : false}),
                 numerico: numeric
             },
@@ -67,6 +70,7 @@ export default defineComponent({
         const opciones_modelos = listadosAuxiliares.modelos
         opciones_modelos.modelos = listadosAuxiliares.modelos
         opciones_hilos.hilos = listadosAuxiliares.hilos
+        const opciones_span = listadosAuxiliares.spans
         const opciones_fibras = listadosAuxiliares.fibras
         const opciones_productos= listadosAuxiliares.productos
         opciones_productos.productos= listadosAuxiliares.productos
@@ -77,6 +81,7 @@ export default defineComponent({
             //listados
             opciones_hilos, 
             opciones_marcas, 
+            opciones_span, 
             opciones_fibras, 
             opciones_modelos, 
             opciones_productos,

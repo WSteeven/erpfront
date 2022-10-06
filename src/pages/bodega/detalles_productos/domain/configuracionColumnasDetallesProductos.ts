@@ -52,23 +52,23 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
         sortable: true
     },
     {
-        name: 'punta_a',
-        field: 'punta_a',
-        label: 'punta_a',
+        name: 'punta_inicial',
+        field: 'punta_inicial',
+        label: 'punta_inicial',
         align: 'left',
         sortable: true
     },
     {
-        name: 'punta_b',
-        field: 'punta_b',
-        label: 'punta_b',
+        name: 'punta_final',
+        field: 'punta_final',
+        label: 'punta_final',
         align: 'left',
         sortable: true
     },
     {
-        name: 'punta_corte',
-        field: 'punta_corte',
-        label: 'punta_corte',
+        name: 'custodia',
+        field: 'custodia',
+        label: 'custodia',
         align: 'left',
         sortable: true
     },

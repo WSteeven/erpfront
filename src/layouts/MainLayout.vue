@@ -116,6 +116,9 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 // Componentes
 import EssentialLink from 'components/EssentialLink.vue'
 
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+
 export default defineComponent({
   name: 'MainLayout',
 
@@ -140,8 +143,10 @@ export default defineComponent({
     })
 
     async function logout() {
-      await authenticationStore.logout()
-      Router.replace({ name: 'Login' })
+      await authenticationStore.logout().then(()=>{
+        Router.replace({ name: 'Login' })
+        console.log('Cerraste la sesión')
+      })
     }
 
     return {

@@ -22,12 +22,14 @@ export class LoginController {
     }
   }
 
-  async logout(): Promise<void> {
-    return this.store
-      .logout()
-      .then(() => {
-        this.Router.replace({ name: 'Login' })
-      })
-      .catch((e) => alert(e))
+  async logout(): Promise<any> {
+    
+      this.store.logout()
+      this.Router.replace('/')
+      console.log('Cerraste la sesión')
+      
+      /* .then(() => {
+        // this.Router.replace({ name: 'Login' })
+      }).catch((e) => alert(e)) */
   }
 }

@@ -29,6 +29,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       await axios.get(axios.getEndpoint(endpoints.authentication))
       const response = await axios.post(axios.getEndpoint(endpoints.login), credentiales)
       await getUser()
+      token.value =  response.data.access_token
+      LocalStorage.set('token', token.value)
       return response
     } catch (error: any) {
       // throw new ApiError(error)
@@ -36,10 +38,13 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  async function logout(): Promise<void> {
-    const axios = AxiosHttpRepository.getInstance()
-    await axios.post('/logout')
-    await getUser()
+  async function logout(): Promise<any> {
+    // const axios = AxiosHttpRepository.getInstance()
+    const response = await axios.post(axios.getEndpoint(endpoints.logout))
+    LocalStorage.remove('token')
+    console.log('El token ha sido removido')
+    //await getUser()
+    return response
   }
 
   const setUser = (userData: any) => {
@@ -54,8 +59,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       if (auth.value) {
         await getRoles()
         await getPermisos()
-        token.value = res.data.access_token
-        LocalStorage.set('token', token.value)
       }
     } catch (e) {
       setUser(null)

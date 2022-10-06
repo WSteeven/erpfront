@@ -7,12 +7,13 @@ export class DetalleProducto extends EntidadAuditable{
     modelo:string|null
     serial:string|null
     precio_compra:string|null
+    span:string|null
     tipo_fibra:string|null
     categoria:string|null
     hilos:string|null
-    punta_a:string|null
-    punta_b:string|null
-    punta_corte:string|null
+    punta_inicial:string|null
+    punta_final:string|null
+    custodia:string|null
     //variables auxiliares
     es_fibra:boolean
     tiene_serial:boolean
@@ -26,12 +27,13 @@ export class DetalleProducto extends EntidadAuditable{
         this.modelo=null
         this.serial=null
         this.precio_compra=null
+        this.span=null
         this.tipo_fibra=null
         this.categoria=null
         this.hilos=null
-        this.punta_a=null
-        this.punta_b=null
-        this.punta_corte=null
+        this.punta_inicial=null
+        this.punta_final=null
+        this.custodia=null
         this.es_fibra=false
         this.tiene_serial=false
         this.tiene_precio_compra=false

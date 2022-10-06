@@ -15,7 +15,9 @@ export class AxiosHttpRepository implements HttpRepository {
     this.axiosInst = axios.create({
       baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
       withCredentials: true,
-      headers: {},
+      headers: {
+        'Autorization':'Bearer'
+      },
     })
   } 
 

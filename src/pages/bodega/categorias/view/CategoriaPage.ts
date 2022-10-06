@@ -29,10 +29,6 @@ export default defineComponent({
         setValidador(v$.value)
 
 
-        window.Echo.channel('prueba1').listen('PruebaEvent', (e) => {
-            console.log(e)
-        })
-
 
         return {
             mixin,
