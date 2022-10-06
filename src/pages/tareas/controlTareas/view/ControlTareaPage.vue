@@ -14,11 +14,10 @@
         active-color="primary"
         active-icon="bi-check"
         animated
-        bordered
         flat
       >
         <!-- General -->
-        <q-step :name="1" title="1. General" icon="bi-gear" :done="done1">
+        <q-step :name="1" title="1. Tarea" icon="bi-gear" :done="done1">
           <general-content :mixin="mixin"></general-content>
         </q-step>
 

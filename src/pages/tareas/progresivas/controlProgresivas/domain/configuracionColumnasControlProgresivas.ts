@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { ControlProgresiva } from './ControlProgresiva'
 
-export const configuracionColumnasTiposTareas: ColumnConfig<ControlProgresiva>[] =
+export const configuracionColumnasControlProgresivas: ColumnConfig<ControlProgresiva>[] =
   [
     {
       name: 'numero_poste',

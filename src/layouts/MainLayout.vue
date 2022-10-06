@@ -17,10 +17,7 @@
         <!-- <img :src="nombreUsuarioTag" alt="" class="q-mr-sm d-inline-block" /> -->
         <q-badge color="positive" rounded class="q-mr-sm" />
         <q-btn no-caps flat :label="nombreUsuario">
-          <q-menu
-            anchor="center middle"
-            self="center middle"
-          >
+          <q-menu anchor="center middle" self="center middle">
             <div class="row no-wrap q-pa-md justify-content">
               <div class="column">
                 <div class="text-h6 q-mb-md">Coordinador</div>

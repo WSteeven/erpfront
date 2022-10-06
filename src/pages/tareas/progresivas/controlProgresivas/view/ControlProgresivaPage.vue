@@ -1,26 +1,13 @@
 <template>
   <tab-layout
-  :mixin="mixin"
+    :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTiposTareas"
     :datos="datos"
     tituloPagina="Control de progresivas"
   >
     <template #formulario>
       <q-form @submit.prevent="enviar()">
-        <b>Información de la tarea</b>
         <div class="row q-col-gutter-sm q-py-md">
-          <!-- Tarea JP -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Tarea</label>
-            <q-input
-              v-model="progresiva.codigo_tarea_jp"
-              placeholder="Obligatorio"
-              outlined
-              dense
-              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-            ></q-input>
-          </div>
-
           <!-- Subtarea JP -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Código de subtarea</label>
@@ -29,43 +16,48 @@
               placeholder="Obligatorio"
               outlined
               dense
-              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
             >
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Nombre del proyecto</label>
+          <div class="col-12 col-md-9">
+            <label class="q-mb-sm block"
+              >Detalle / Ruta / Enlace / Proyecto</label
+            >
             <q-input
               v-model="progresiva.nombre_proyecto"
-              readonly
+              disable
               outlined
               dense
             ></q-input>
           </div>
 
-          <!-- Técnico -->
+          <!-- Grupo -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Técnico</label>
+            <label class="q-mb-sm block">Grupo</label>
             <q-input
-              v-model="progresiva.tecnico"
-              placeholder="Obligatorio"
+              v-model="progresiva.grupo"
+              disable
               outlined
               dense
-              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
+            ></q-input>
+          </div>
+
+          <!-- Tecnico responsable -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tecnico responsable</label>
+            <q-input
+              v-model="progresiva.tecnico_responsable"
+              disable
+              outlined
+              dense
             ></q-input>
           </div>
 
           <!-- Fecha de instalación -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de instalación</label>
-            <q-input
-              v-model="progresiva.fecha"
-              outlined
-              dense
-              mask="date"
-              :rules="['date']"
-            >
+            <q-input v-model="progresiva.fecha" outlined dense mask="date">
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -89,28 +81,6 @@
             </q-input>
           </div>
 
-          <!-- Grupo -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Grupo</label>
-            <q-input
-              v-model="progresiva.grupo"
-              readonly
-              outlined
-              dense
-            ></q-input>
-          </div>
-
-          <!-- Tecnico responsable -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Tecnico responsable</label>
-            <q-input
-              v-model="progresiva.tecnico_responsable"
-              readonly
-              outlined
-              dense
-            ></q-input>
-          </div>
-
           <!-- Codigo bobina -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Código de bobina</label>
@@ -119,31 +89,112 @@
               placeholder="Obligatorio"
               outlined
               dense
-              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
             ></q-input>
           </div>
 
           <!-- Marca inicial -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Número de MT inicial</label>
+            <label class="q-mb-sm block">Cantidad de hilos</label>
             <q-input
-              v-model="progresiva.marca_inicial"
+              v-model="progresiva.cantidad_hilos"
               placeholder="Obligatorio"
+              hint="Bobina seleccionada"
+              outlined
+              disable
+              dense
+            ></q-input>
+          </div>
+
+          <!-- Cantidad postes -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cantidad de postes</label>
+            <q-input
+              v-model="progresiva.cantidad_postes"
+              placeholder="Obligatorio"
+              hint="Calculado automáticamente de acuerdo al registro de progresivas"
+              disable
               outlined
               dense
-              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
+            ></q-input>
+          </div>
+
+          <!-- Cantidad pozos -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cantidad de pozos</label>
+            <q-input
+              v-model="progresiva.cantidad_pozos"
+              placeholder="Obligatorio"
+              hint="Calculado automáticamente de acuerdo al registro de progresivas"
+              outlined
+              disable
+              dense
+            ></q-input>
+          </div>
+
+          <!-- Sistema de coordenadas -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Sistema de coordenadas</label>
+            <q-input
+              v-model="progresiva.sistema_coordenadas"
+              placeholder="Obligatorio"
+              hint="Esto afectará a todas las filas del registro de progresivas actual."
+              outlined
+              disable
+              dense
+            ></q-input>
+          </div>
+
+          <!-- Marca inicial -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Progresiva de inicio</label>
+            <q-input
+              v-model="progresiva.progresiva_inicio"
+              placeholder="Obligatorio"
+              hint="Calculado automáticamente de acuerdo al registro de progresivas"
+              disable
+              outlined
+              dense
             ></q-input>
           </div>
 
           <!-- Marca final -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Número de MT final</label>
+            <label class="q-mb-sm block">Progresiva de fin</label>
             <q-input
-              v-model="progresiva.marca_final"
+              v-model="progresiva.progresiva_fin"
               placeholder="Opcional"
+              hint="Calculado automáticamente de acuerdo al registro de progresivas"
+              disable
               outlined
               dense
             ></q-input>
+          </div>
+
+          <!-- Metraje del tendido -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Metraje del tendido</label>
+            <q-input
+              v-model="progresiva.metraje_tendido"
+              placeholder="Opcional"
+              hint="Calculado automáticamente de acuerdo al registro de progresivas"
+              disable
+              outlined
+              dense
+            ></q-input>
+          </div>
+
+          <div class="col-12">
+            <essential-table
+              titulo="Registro de progresivas"
+              :configuracionColumnas="configuracionColumnasControlProgresivas"
+              :datos="progresivas"
+              :alto-fijo="false"
+              :permitirConsultar="false"
+              :mostrar-footer="false"
+              :agregarElemento="agregarActividadRealizada"
+              @eliminar="tablaTrabajoRealizado.eliminar"
+              @editar="tablaTrabajoRealizado.editar"
+            ></essential-table>
           </div>
         </div>
 

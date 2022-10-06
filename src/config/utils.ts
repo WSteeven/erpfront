@@ -1,3 +1,5 @@
+import { TabOption } from "components/tables/domain/TabOption"
+
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
@@ -121,9 +123,24 @@ export const causaIntervencion =
     { categoria: 'SPT', descripcion: 'SPT-REVISION CLIMATIZACION' },
     { categoria: 'SPT', descripcion: 'SPT-REVISION ALARMAS/SEGURIDAD' },
     { categoria: 'SPT', descripcion: 'SPT-REVISION NODO' },
-
-
   ]
+
+export const tabOptions: TabOption[] = [
+  { label: 'Todo', value: 'todo' },
+  { label: 'Asignado', value: 'asignado' },
+  { label: 'Ejecutando', value: 'ejecutando' },
+  { label: 'Pausado', value: 'pausado' },
+  { label: 'Suspendido', value: 'suspendido' },
+  { label: 'Cancelado', value: 'cancelado' },
+  { label: 'Realizado', value: 'realizado' },
+]
+
+export const accionesTabla = {
+  name: 'acciones',
+  field: 'acciones',
+  label: 'Acciones',
+  align: 'center',
+}
 
 
 

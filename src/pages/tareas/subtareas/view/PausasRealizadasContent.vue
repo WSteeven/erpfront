@@ -1,7 +1,6 @@
 <template>
-  <div>Pausas realizadas</div>
   <essential-table
-    titulo="tituloTabla"
+    titulo="Pausas realizadas"
     :configuracionColumnas="(configuracionColumnasPausas as any)"
     :datos="listado"
   ></essential-table>

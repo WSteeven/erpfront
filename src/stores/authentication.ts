@@ -27,8 +27,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const login = async (credentiales: UserLogin): Promise<any> => {
     try {
       await axios.get(axios.getEndpoint(endpoints.authentication))
-      const response = await axios.post(axios.getEndpoint(endpoints.login), credentiales)
+      const response: any = await axios.post(axios.getEndpoint(endpoints.login), credentiales)
       await getUser()
+      token.value = response.data.access_token
+      LocalStorage.set('token', token.value)
       return response
     } catch (error: any) {
       // throw new ApiError(error)
@@ -54,8 +56,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       if (auth.value) {
         await getRoles()
         await getPermisos()
-        token.value = res.data.access_token
-        LocalStorage.set('token', token.value)
       }
     } catch (e) {
       setUser(null)

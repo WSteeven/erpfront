@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Subtarea } from "pages/tareas/subtareas/domain/Subtarea";
+import { ColumnConfig } from "components/tables/domain/ColumnConfig"
+import { Subtarea } from "pages/tareas/subtareas/domain/Subtarea"
 
 export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
   {
@@ -20,13 +20,6 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     name: 'tipo_trabajo',
     field: 'tipo_trabajo',
     label: 'Tipo de trabajo',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'servicio',
-    field: 'servicio',
-    label: 'Servicio',
     align: 'left',
     sortable: true,
   },

@@ -12,7 +12,6 @@
       <q-icon name="attach_file" />
     </template>
   </q-file>
-
   <q-img
     v-show="imagenCodificada"
     :src="imagenCodificada"
@@ -23,29 +22,27 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
-defineProps(['modelValue'])
+const props = defineProps(['modelValue', 'imagen'])
 const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()
-const imagenCodificada = ref()
+const imagenCodificada = computed(() => props.imagen)
 
 const setBase64 = (file: File) => {
   if (file !== null && file !== undefined) {
     const reader = new FileReader()
     reader.readAsDataURL(file)
-    reader.onload = () => {
-      imagenCodificada.value = reader.result
-      emit('update:modelValue', imagenCodificada.value)
-    }
-  } else {
-    imagen.value = file
+    reader.onload = () => emit('update:modelValue', reader.result)
   }
 }
 
+watch(imagenCodificada, () => {
+  if (!imagenCodificada.value) imagen.value = null
+})
+
 function limpiar() {
-  imagenCodificada.value = null
-  emit('update:modelValue', imagenCodificada.value)
+  emit('update:modelValue', null)
 }
 </script>

@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasControlProgresivas'
+import { configuracionColumnasControlProgresivas } from '../domain/configuracionColumnasControlProgresivas'
 import {
   tiposElementos,
   propietariosElementos,
@@ -13,6 +13,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ControlProgresiva } from '../domain/ControlProgresiva'
@@ -26,6 +27,7 @@ export default defineComponent({
     SelectorImagen,
     LabelAbrirModal,
     ModalesEntidad,
+    EssentialTable,
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(
@@ -43,7 +45,7 @@ export default defineComponent({
     progresiva.tecnico_responsable = 'FERNANDO AYORA'
     progresiva.tecnico = 'LUIS VACA'*/
 
-    const datos: any[] = [
+    const progresivas: any[] = [
       {
         id: 1,
         numero_poste: '0001',
@@ -105,9 +107,9 @@ export default defineComponent({
     return {
       mixin,
       progresiva,
-      datos,
+      progresivas,
       enviar,
-      configuracionColumnasTiposTareas,
+      configuracionColumnasControlProgresivas,
       setBase64,
       modalesProgresiva,
       // listados

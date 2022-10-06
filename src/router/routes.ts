@@ -83,6 +83,16 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      // src\pages\tareas\trabajoAsignado\view\TrabajoAsignadoPage.vue
+      {
+        path: '/trabajo-asignado',
+        name: 'trabajo_asignado',
+        component: () =>
+          import(
+            'pages/tareas/trabajoAsignado/view/TrabajoAsignadoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/perfil',
         name: 'perfil',

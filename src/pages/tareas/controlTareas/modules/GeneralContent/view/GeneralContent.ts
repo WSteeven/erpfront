@@ -4,20 +4,22 @@ import { useOrquestadorSelectorClientes } from '../application/OrquestadorSelect
 import { provincias, ciudades, acciones } from 'config/utils'
 import { defineComponent, watchEffect } from 'vue'
 import { useTareaStore } from 'stores/tarea'
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import { endpoints } from 'config/api'
 //import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
-import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
-import { endpoints } from 'config/api'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
 import flatPickr from 'vue-flatpickr-component';
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+
+// Logica y controladores
+import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 
 export default defineComponent({
   props: {

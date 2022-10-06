@@ -20,7 +20,9 @@ import {
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import flatPickr from 'vue-flatpickr-component';
 import PausasRealizadasContent from './PausasRealizadasContent.vue'
-import ControlAvanceContent from 'pages/tareas/subtareas/view/ControlAvanceContent.vue'
+import ControlAvanceContent from '../modules/controlAvance/view/ControlAvanceContent.vue'
+import ImagenAdicionalContent from 'pages/tareas/subtareas/modules/imagenesAdicionales/view/ImagenAdicionalContent.vue'
+import InformacionAdicionalContent from '../modules/informacionAdicional/view/InformacionAdicionalContent.vue'
 
 // Logica y controladores
 //import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
@@ -28,14 +30,9 @@ import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
 
 export default defineComponent({
-  components: { EssentialTable, flatPickr, PausasRealizadasContent, ControlAvanceContent },
+  components: { EssentialTable, flatPickr, PausasRealizadasContent, ControlAvanceContent, ImagenAdicionalContent, InformacionAdicionalContent },
   setup() {
     const tareaStore = useTareaStore()
-
-    const step = ref(1)
-    const done1 = ref(true)
-    const done2 = ref(false)
-    const done3 = ref(false)
 
     const busqueda = ref()
     const tecnicoSeleccionado = ref()
@@ -95,10 +92,12 @@ export default defineComponent({
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
     return {
-      step,
-      done1,
-      done2,
-      done3,
+      step: ref(1),
+      done1: ref(true),
+      done2: ref(false),
+      done3: ref(false),
+      done4: ref(false),
+      done5: ref(false),
       subtarea,
       seleccionBusqueda,
       columnas,
