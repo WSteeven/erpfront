@@ -38,10 +38,11 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  async function logout(): Promise<void> {
-    const axios = AxiosHttpRepository.getInstance()
-    await axios.post('/logout')
+  async function logout(): Promise<any> {
+    const response = await axios.post(axios.getEndpoint(endpoints.logout))
+    LocalStorage.remove('token')
     await getUser()
+    return response
   }
 
   const setUser = (userData: any) => {

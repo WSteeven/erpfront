@@ -15,7 +15,6 @@
               placeholder="Obligatorio"
               outlined
               dense
-              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
             ></q-input>
           </div>
 
@@ -24,10 +23,9 @@
             <label class="q-mb-sm block">Código de tarea Cliente</label>
             <q-input
               v-model="control.codigo_tarea_cliente"
-              readonly
+              disable
               outlined
               dense
-              :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
             ></q-input>
           </div>
 
@@ -38,7 +36,7 @@
               v-model="control.detalle_tarea"
               autogrow
               type="textarea"
-              readonly
+              disable
               outlined
               dense
             ></q-input>
@@ -47,7 +45,7 @@
           <!-- Grupo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Grupo</label>
-            <q-input v-model="control.grupo" readonly outlined dense></q-input>
+            <q-input v-model="control.grupo" outlined dense></q-input>
           </div>
 
           <!-- Tecnico responsable -->
@@ -55,7 +53,7 @@
             <label class="q-mb-sm block">Técnico responsable</label>
             <q-input
               v-model="control.tecnico_responsable"
-              readonly
+              disable
               outlined
               dense
             ></q-input>

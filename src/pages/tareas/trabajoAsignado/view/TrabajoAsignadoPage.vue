@@ -1,5 +1,6 @@
 <template>
   <q-page padding>
+    <div class="text-bold q-mb-md">Trabajo asignado</div>
     <essential-table-tabs
       titulo="subtareas"
       :configuracionColumnas="[

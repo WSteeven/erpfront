@@ -146,6 +146,7 @@
             v-model="tarea.contacto"
             placeholder="Opcional"
             hint="Presiona Enter para seleccionar un cliente"
+            @update:model-value="(v) => (tarea.contacto = v.toUpperCase())"
             outlined
             dense
           ></q-input>
@@ -213,6 +214,7 @@
           <q-input
             v-model="tarea.parroquia"
             placeholder="Opcional"
+            @update:model-value="(v) => (tarea.parroquia = v.toUpperCase())"
             outlined
             dense
           ></q-input>
@@ -224,6 +226,7 @@
           <q-input
             v-model="tarea.direccion"
             placeholder="Opcional"
+            @update:model-value="(v) => (tarea.direccion = v.toUpperCase())"
             outlined
             dense
           ></q-input>
@@ -235,6 +238,7 @@
           <q-input
             v-model="tarea.referencias"
             placeholder="Opcional"
+            @update:model-value="(v) => (tarea.referencias = v.toUpperCase())"
             outlined
             dense
           ></q-input>

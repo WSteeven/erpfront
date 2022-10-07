@@ -4,6 +4,7 @@ import {
   tiposElementos,
   propietariosElementos,
   estadoElementos,
+  accionesTabla,
 } from 'config/utils'
 import { obtenerFechaActual } from 'shared/utils'
 import { defineComponent, reactive } from 'vue'
@@ -19,7 +20,8 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ControlProgresiva } from '../domain/ControlProgresiva'
 import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ControlProgresivaController } from '../domain/ControlProgresivaController'
+import { ControlProgresivaController } from '../infraestructure/ControlProgresivaController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
   components: {
@@ -102,6 +104,21 @@ export default defineComponent({
       }
     }
 
+    const agregarProgresiva: CustomActionTable = {
+      titulo: 'Agregar progresiva',
+      accion: () => {
+        //
+      },
+    }
+
+    function eliminar() {
+      //
+    }
+
+    function editar() {
+      //
+    }
+
     const modalesProgresiva = new ComportamientoModalesProgresiva()
 
     return {
@@ -112,6 +129,10 @@ export default defineComponent({
       configuracionColumnasControlProgresivas,
       setBase64,
       modalesProgresiva,
+      agregarProgresiva,
+      eliminar,
+      editar,
+      accionesTabla,
       // listados
       tiposElementos,
       propietariosElementos,

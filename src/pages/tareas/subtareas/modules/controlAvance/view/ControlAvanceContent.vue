@@ -259,7 +259,7 @@
       ></q-input>
     </div>
 
-    <div class="col-12 col-md-3">
+    <div class="col-12 col-md-3 q-mb-md">
       <label class="q-mb-sm block">Tiempo de espera adicionales</label>
       <q-input
         v-model="controlAvance.tiempo_espera_adicional"
@@ -268,48 +268,60 @@
         dense
       ></q-input>
     </div>
+
+    <div class="col-12 text-center q-mb-md">
+      <q-btn color="primary" no-caps>
+        <q-icon name="bi-plus"></q-icon>
+        Agregar actividad realizada</q-btn
+      >
+    </div>
   </div>
 
-  <div class="q-mb-md">
-    <essential-table
-      titulo="Cronología de trabajo realizado"
-      :configuracionColumnas="columnasTrabajoRealizado"
-      :datos="cronologiaTrabajoRealizado"
-      :alto-fijo="false"
-      :permitirConsultar="false"
-      :mostrar-footer="false"
-      :agregarElemento="agregarActividadRealizada"
-      @eliminar="tablaTrabajoRealizado.eliminar"
-      @editar="tablaTrabajoRealizado.editar"
-    ></essential-table>
-  </div>
+  <div v-if="cronologiaTrabajoRealizado">
+    <div class="q-mb-md">
+      <essential-table
+        titulo="Cronología de trabajo realizado"
+        :configuracionColumnas="columnasTrabajoRealizado"
+        :datos="cronologiaTrabajoRealizado"
+        :alto-fijo="false"
+        :permitirConsultar="false"
+        :mostrar-footer="false"
+        :mostrar-header="false"
+        @eliminar="tablaTrabajoRealizado.eliminar"
+        @editar="tablaTrabajoRealizado.editar"
+      ></essential-table>
+    </div>
+    <!--:agregarElemento="agregarActividadRealizada"-->
 
-  <div class="q-mb-md">
-    <essential-table
-      titulo="Observaciones / Mejoras / Pendientes"
-      :configuracionColumnas="columnasObservacion"
-      :datos="observaciones"
-      :alto-fijo="false"
-      :permitirConsultar="false"
-      :mostrar-footer="false"
-      :agregarElemento="agregarObservacion"
-      @eliminar="tablaObservacion.eliminar"
-      @editar="tablaObservacion.editar"
-    ></essential-table>
-  </div>
+    <div class="q-mb-md">
+      <essential-table
+        titulo="Observaciones / Mejoras / Pendientes"
+        :configuracionColumnas="columnasObservacion"
+        :datos="observaciones"
+        :alto-fijo="false"
+        :permitirConsultar="false"
+        :mostrar-footer="false"
+        :mostrar-header="false"
+        @eliminar="tablaObservacion.eliminar"
+        @editar="tablaObservacion.editar"
+      ></essential-table>
+      <!--:agregarElemento="agregarObservacion" -->
+    </div>
 
-  <div class="q-mb-md">
-    <essential-table
-      titulo="Listado de materiales"
-      :configuracionColumnas="columnasMaterial"
-      :datos="materiales"
-      :alto-fijo="false"
-      :permitirConsultar="false"
-      :mostrar-footer="false"
-      :agregarElemento="agregarMaterial"
-      @eliminar="tablaMateriales.eliminar"
-      @editar="tablaMateriales.editar"
-    ></essential-table>
+    <div class="q-mb-md">
+      <essential-table
+        titulo="Listado de materiales"
+        :configuracionColumnas="columnasMaterial"
+        :datos="materiales"
+        :alto-fijo="false"
+        :permitirConsultar="false"
+        :mostrar-footer="false"
+        :mostrar-header="false"
+        @eliminar="tablaMateriales.eliminar"
+        @editar="tablaMateriales.editar"
+      ></essential-table>
+      <!--:agregarElemento="agregarMaterial"-->
+    </div>
   </div>
 </template>
 

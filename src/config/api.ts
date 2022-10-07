@@ -8,11 +8,11 @@ export const endpoints = {
   // autenticacion
   authentication: new Endpoint('sanctum/csrf-cookie', false),
   login: new Endpoint('usuarios/login'),
-  api_user: new Endpoint('api/user', false),
+  logout: new Endpoint('usuarios/logout'),
+  api_user: new Endpoint('user'),
   reset_password: new Endpoint('reset-password', false),
   perfil_usuario: new Endpoint('user/profile-information', false),
   cambiar_contrasena: new Endpoint('user/password', false),
-  logout: new Endpoint('logout', false),
   roles: new Endpoint('user/roles'),
   permisos: new Endpoint('user/permisos'),
   // acceso a modulos
@@ -48,6 +48,7 @@ export const endpoints = {
   modelos: new Endpoint('modelos/'),
   productos: new Endpoint('productos/'),
   sucursales: new Endpoint('sucursales/'),
+  spans: new Endpoint('spans/'),
   tipos_fibras: new Endpoint('tipos-fibras/'),
   tipos_transacciones: new Endpoint('tipos-transacciones/'),
   transacciones: new Endpoint('transacciones/'),

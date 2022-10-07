@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTecnico'
+import { configuracionColumnasTecnico } from '../domain/configuracionColumnasTecnico'
 import { computed, defineComponent, Ref, ref } from 'vue'
 import {
   provincias,
@@ -40,7 +40,7 @@ export default defineComponent({
     const seleccionBusqueda = ref('por_tecnico')
 
     const columnas = [
-      ...configuracionColumnasTiposTareas,
+      ...configuracionColumnasTecnico,
       {
         name: 'acciones',
         field: 'acciones',

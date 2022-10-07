@@ -45,7 +45,6 @@
                 outlined
                 dense
                 autogrow
-                autofocus
                 type="textarea"
               ></q-input>
             </div>

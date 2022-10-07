@@ -30,4 +30,13 @@ export class LoginController {
       })
       .catch((e) => alert(e))
   }
+
+  /*async logout(): Promise<any> {
+    await this.store.logout()
+    await this.Router.replace('/login')
+    console.log('Cerraste la sesión')*/
+  /* .then(() => {
+    // this.Router.replace({ name: 'Login' })
+  }).catch((e) => alert(e)) */
+  //}
 }

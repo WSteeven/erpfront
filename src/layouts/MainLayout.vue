@@ -3,57 +3,115 @@
     <!-- Navbar -->
     <q-header class="bg-white text-dark">
       <q-toolbar class="row justify-between">
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        <q-btn flat dense round aria-label="Menu" @click="toggleLeftDrawer">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M3 5C3 4.44772 3.44772 4 4 4H16C16.5523 4 17 4.44772 17 5C17 5.55228 16.5523 6 16 6H4C3.44772 6 3 5.55228 3 5Z"
+              fill="#000"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M3 10C3 9.44772 3.44772 9 4 9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H4C3.44772 11 3 10.5523 3 10Z"
+              fill="#000"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M3 15C3 14.4477 3.44772 14 4 14H10C10.5523 14 11 14.4477 11 15C11 15.5523 10.5523 16 10 16H4C3.44772 16 3 15.5523 3 15Z"
+              fill="#000"
+            />
+          </svg>
+        </q-btn>
 
-        <q-toolbar-title></q-toolbar-title>
-        <q-btn class="q-mr-md" icon="bi-bell-fill" flat round dense></q-btn>
+        <!-- <q-toolbar-title></q-toolbar-title> -->
         <!-- <img :src="nombreUsuarioTag" alt="" class="q-mr-sm d-inline-block" /> -->
-        <q-badge color="positive" rounded class="q-mr-sm" />
-        <q-btn no-caps flat :label="nombreUsuario">
-          <q-menu anchor="center middle" self="center middle">
-            <div class="row no-wrap q-pa-md justify-content">
-              <div class="column">
-                <div class="text-h6 q-mb-md">Coordinador</div>
-                <q-item clickable dense :to="{ name: 'Perfil' }">
-                  <q-item-section> Perfil </q-item-section>
+        <span class="q-pl-lg text-bold">
+          <!--<q-badge color="positive" rounded class="q-mr-sm" />-->
+          <!--<q-btn no-caps flat>-->
+          <!--<div class="column q-mr-md text-center">-->
+          {{ nombreUsuario }}
+          <!--<small>Usuario</small>-->
+          <!--<q-icon
+                name="bi-chevron-down"
+                size="xs"
+                class="full-width"
+              ></q-icon> -->
+          <!--</div>-->
+          <!--</q-btn>-->
+        </span>
+
+        <span>
+          <q-btn dense round flat icon="bi-box-seam" class="q-mr-md">
+            <q-badge color="positive" floating transparent> 4 </q-badge>
+            <q-menu transition-show="flip-right" transition-hide="flip-left">
+              <q-list style="min-width: 100px">
+                <q-item clickable>
+                  <q-item-section>Having fun</q-item-section>
                 </q-item>
-                <q-item clickable dense :to="{ name: 'Perfil' }">
-                  <q-item-section> Configuración </q-item-section>
+                <q-item clickable>
+                  <q-item-section>Crazy for transitions</q-item-section>
                 </q-item>
-              </div>
+                <q-separator />
+                <q-item clickable>
+                  <q-item-section>Ver todas las notificaciones</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
 
-              <q-separator vertical inset class="q-mx-lg" />
-
-              <div class="column items-center">
-                <q-avatar size="72px">
-                  <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
-                </q-avatar>
-
-                <div class="text-subtitle1 q-mt-md q-mb-xs">
-                  {{ nombreUsuario }}
+          <q-btn dense round flat icon="bi-three-dots">
+            <q-menu
+              anchor="center middle"
+              self="center middle"
+              transition-show="jump-down"
+              transition-hide="jump-out"
+            >
+              <div class="row no-wrap q-pa-md justify-content">
+                <div class="column">
+                  <div class="text-h6 q-mb-md">Coordinador</div>
+                  <q-item clickable dense :to="{ name: 'Perfil' }">
+                    <q-item-section> Perfil </q-item-section>
+                  </q-item>
+                  <q-item clickable dense :to="{ name: 'Perfil' }">
+                    <q-item-section> Configuración </q-item-section>
+                  </q-item>
                 </div>
 
-                <q-btn
-                  label="Cerrar sesión"
-                  color="primary"
-                  size="sm"
-                  v-close-popup
-                  no-wrap
-                  no-caps
-                  push
-                  @click="logout()"
-                />
+                <q-separator vertical inset class="q-mx-lg" />
+
+                <div class="column items-center">
+                  <q-avatar size="72px">
+                    <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+                  </q-avatar>
+
+                  <div class="text-subtitle1 q-mt-md q-mb-xs">
+                    {{ nombreUsuario }}
+                  </div>
+
+                  <q-btn
+                    label="Cerrar sesión"
+                    color="primary"
+                    size="sm"
+                    v-close-popup
+                    no-wrap
+                    no-caps
+                    push
+                    @click="logout()"
+                  />
+                </div>
               </div>
-            </div>
-          </q-menu>
-        </q-btn>
+            </q-menu>
+          </q-btn>
+        </span>
       </q-toolbar>
     </q-header>
 
@@ -112,6 +170,9 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 
 // Componentes
 import EssentialLink from 'components/EssentialLink.vue'
+
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
 
 export default defineComponent({
   name: 'MainLayout',

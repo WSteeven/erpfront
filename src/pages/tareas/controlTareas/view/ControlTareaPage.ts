@@ -6,7 +6,7 @@ import { defineComponent, ref } from 'vue'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import GeneralContent from 'pages/tareas/controlTareas/modules/GeneralContent/view/GeneralContent.vue'
-import SubtareasContent from 'pages/tareas/controlTareas/modules/subtareasContent/view/SubtareasContent.vue'
+import SubtareasListadoContent from 'pages/tareas/controlTareas/modules/subtareasListadoContent/view/SubtareasListadoContent.vue'
 // import ResumenMaterialSolicitadoContent from 'pages/tareas/controlTareas/modules/resumenMaterialesSolicitados/view/ResumenMaterialSolicitadoContent.vue'
 
 // Logica y controladores
@@ -19,7 +19,7 @@ export default defineComponent({
   components: {
     TabLayout,
     GeneralContent,
-    SubtareasContent,
+    SubtareasListadoContent,
     // ResumenMaterialSolicitadoContent,
   },
   setup() {
@@ -53,6 +53,7 @@ export default defineComponent({
       done1: ref(false),
       done2: ref(false),
       done3: ref(false),
+      done4: ref(false),
     }
   },
 })

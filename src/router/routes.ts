@@ -294,6 +294,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/subtarea-asignada',
+        name: 'subtarea_asignada',
+        component: () =>
+          import(
+            'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
 
       /* {
         path: '/nombressssssss-productos',

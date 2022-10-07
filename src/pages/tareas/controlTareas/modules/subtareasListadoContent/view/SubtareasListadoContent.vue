@@ -31,4 +31,4 @@
 }
 </style>
 
-<script src="./SubtareasContent.ts"></script>
+<script src="./SubtareasListadoContent.ts"></script>

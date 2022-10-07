@@ -1,5 +1,5 @@
 <template>
-  <div padding>
+  <q-page padding>
     <slot name="modales" />
 
     <div class="text-h6 q-my-md q-ml-md">{{ tituloPagina }}</div>
@@ -33,7 +33,7 @@
           @editar="editar(entidad, resetFormularioOnUpdate)"
           @eliminar="eliminar(entidad, cbEliminar)"
           @guardar="guardar(entidad)"
-          />
+        />
       </q-tab-panel>
       <!-- Listado -->
       <q-tab-panel name="listado" class="q-py-none">
@@ -50,7 +50,7 @@
         ></essential-table>
       </q-tab-panel>
     </q-tab-panels>
-  </div>
+  </q-page>
 </template>
 
 <script src="./TabLayout.ts"></script>

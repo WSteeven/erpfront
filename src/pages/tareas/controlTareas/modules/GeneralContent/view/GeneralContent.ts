@@ -42,7 +42,7 @@ export default defineComponent({
     const { guardar, editar, eliminar, reestablecer, setValidador } =
       props.mixin.useComportamiento()
 
-    const { onGuardado, onReestablecer } = props.mixin.useHooks()
+    // const { onGuardado, onReestablecer } = props.mixin.useHooks()
 
     const {
       refListadoSeleccionable: refListadoSeleccionableClientes,

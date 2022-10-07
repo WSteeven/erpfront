@@ -22,6 +22,7 @@ export const configuracionColumnasProductos: ColumnConfig<Producto>[]=[
     label:'Producto',
     align: 'left',
     sortable:true,
+    style: 'width:500px'
   },
   {
     name:'categoria',
