@@ -67,7 +67,7 @@
             <label class="q-mb-sm block">Marca</label>
             <q-select
               v-model="detalle.marca"
-              :options="opciones_marcas"
+              :options="opciones_marcas.marcas"
               hint="Agregue elementos desde el panel de marcas"
               transition-show="scale"
               transition-hide="scale"
@@ -75,7 +75,10 @@
               dense
               outlined
               :error="!!v$.marca.$errors.length"
-              @update:model-value="filtroMarcas"
+              use-input
+              input-debounce="0"
+              @filter="filtroMarcas"
+              @update:model-value="seleccionarModelo"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.nombre"
               emit-value
@@ -101,6 +104,10 @@
               dense
               outlined
               :error="!!v$.modelo.$errors.length"
+              use-input
+              input-debounce="0"
+              @filter="filtroModelos"
+              @update:model-value="seleccionarMarca"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               emit-value

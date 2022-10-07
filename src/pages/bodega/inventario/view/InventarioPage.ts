@@ -27,15 +27,22 @@ export default defineComponent({
         const {entidad: inventario, disabled, accion, listadosAuxiliares}=mixin.useReferencias()
         const {setValidador, obtenerListados, cargarVista}=mixin.useComportamiento()
 
+
+        const opciones_detalles = ref([])
+        const opciones_sucursales = ref([])
+        const opciones_condiciones = ref([])
+        const opciones_clientes = ref([])
         //Obtener los listados
-        cargarVista(()=>{
-            obtenerListados({
+        cargarVista(async ()=>{
+            await obtenerListados({
                 productos: new ProductoController(),
                 detalles: new DetalleProductoController(),
                 clientes: new ClienteController(),
                 condiciones: new CondicionController(),
                 sucursales: new SucursalController(),
             })
+            // inventario.sucursal = listadosAuxiliares.sucursales[0]['lugar']
+            // console.log(listadosAuxiliares.sucursales[0]['id'])
         })
 
         //Reglas de validacion
@@ -55,11 +62,15 @@ export default defineComponent({
 
         //Configurar los listados para los selects
         const opciones_productos = listadosAuxiliares.productos
-        const opciones_detalles = listadosAuxiliares.detalles
-        const opciones_clientes = listadosAuxiliares.clientes
-        const opciones_condiciones = listadosAuxiliares.condiciones
-        const opciones_sucursales = listadosAuxiliares.sucursales
         opciones_productos.productos = listadosAuxiliares.productos
+        
+        // const opciones_detalles = listadosAuxiliares.detalles
+        // opciones_detalles.detalles=listadosAuxiliares.detalles
+        opciones_clientes.value = listadosAuxiliares.clientes
+        opciones_condiciones.value = listadosAuxiliares.condiciones
+        opciones_sucursales.value = listadosAuxiliares.sucursales
+
+        
 
         return {
             mixin, inventario, disabled, accion, v$,
@@ -70,10 +81,18 @@ export default defineComponent({
             opciones_clientes,
             opciones_condiciones,
             opciones_sucursales,
-            filtroDetalles(val){
-                opciones_detalles.detalles = listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1)
+            seleccionarDetalle(val){
+                // console.log(listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1))
+                opciones_detalles.value = listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1)
+                inventario.detalle =''
+                if(opciones_detalles.value.length<1){
+                    inventario.detalle =''
+                }
+                if(opciones_detalles.value.length==1){
+                    inventario.detalle = opciones_detalles.value[0]['id']
+                }
             },
-            filterProductos(val,update){
+            filtroProductos(val,update){
                 if(val===''){
                     update(()=>{
                         opciones_productos.productos = listadosAuxiliares.productos
@@ -88,13 +107,13 @@ export default defineComponent({
             filterDetalles(val, update){
                 if(val===''){
                     update(()=>{
-                        opciones_detalles.detalles = listadosAuxiliares.detalles
+                        opciones_detalles.value = listadosAuxiliares.detalles
                     })
                     return
                 }
                 update(()=>{
                     const needle = val.toLowerCase()
-                    opciones_detalles.detalles = listadosAuxiliares.detalles.filter((v)=>v.descripcion.toLowerCase().indexOf(needle)>-1)
+                    opciones_detalles.value = listadosAuxiliares.detalles.filter((v)=>v.descripcion.toLowerCase().indexOf(needle)>-1)
                 })
             },
         }
