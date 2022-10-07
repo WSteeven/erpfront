@@ -15,8 +15,8 @@
                   outlined 
                   :error="!!v$.producto.$errors.length" 
                   use-input input-debounce="0"
-                  @filter="filterProductos"
-                  @update:model-value="filtroDetalles"
+                  @filter="filtroProductos"
+                  @update:model-value="seleccionarDetalle"
                   :option-label="(item)=> item.nombre"
                   :option-value="(item)=> item.nombre"
                   emit-value 
@@ -40,7 +40,7 @@
                 <label class="q-mb-sm block">Detalle</label>
                 <q-select 
                   v-model="inventario.detalle"
-                  :options="opciones_detalles.detalles"
+                  :options="opciones_detalles"
                   transition-show="scale"
                   transition-hide="scale"
                   options-dense dense
