@@ -83,7 +83,7 @@ export default defineComponent({
     })
 
     const tituloTabla =
-      Router.currentRoute.value.name?.toString().toUpperCase() ?? ''
+      Router.currentRoute.value.name?.toString().replaceAll('_', ' ').toUpperCase() ?? ''
 
     const accionTabla = {
       consultar: ({ entidad }) => {

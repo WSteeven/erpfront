@@ -1,8 +1,10 @@
 // Dependencias
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-// import { useRouter } from 'vue-router'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useTareaStore } from 'stores/tarea'
 import { defineComponent } from 'vue'
+import { tabOptions, accionesTabla } from 'config/utils'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -10,11 +12,9 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ComportamientoModalesSubtareaContent } from '../application/ComportamientoModalesSubtareaContent'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
-import { ComportamientoModalesSubtareaContent } from '../application/ComportamientoModalesSubtareaContent'
-import { useTareaStore } from 'stores/tarea'
-import { useNotificaciones } from 'shared/notificaciones'
 import { TabOption } from 'components/tables/domain/TabOption'
 
 export default defineComponent({
@@ -25,7 +25,6 @@ export default defineComponent({
     const { listado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
-    // const router = useRouter()
     const { notificarAdvertencia } = useNotificaciones()
 
     const tareaStore = useTareaStore()
@@ -33,23 +32,10 @@ export default defineComponent({
 
     const configuracionColumnas = [
       ...configuracionColumnasSubtareas,
-      {
-        name: 'acciones',
-        field: 'acciones',
-        label: 'Acciones',
-        align: 'center',
-      },
+      accionesTabla,
     ]
 
-    const tabOptions: TabOption[] = [
-      { label: 'Todo', value: 'todo' },
-      { label: 'Asignado', value: 'asignado' },
-      { label: 'Ejecutando', value: 'ejecutando' },
-      { label: 'Pausado', value: 'pausado' },
-      { label: 'Suspendido', value: 'suspendido' },
-      { label: 'Cancelado', value: 'cancelado' },
-      { label: 'Realizado', value: 'realizado' },
-    ]
+
 
     const modales = new ComportamientoModalesSubtareaContent()
 
@@ -58,15 +44,11 @@ export default defineComponent({
       accion: ({ entidad }) => {
         tareaStore.consultarSubtarea(entidad.id)
         modales.abrirModalEntidad('SubtareasPage')
-        // router.replace({ name: 'Subtareas' })
       },
     }
 
     if (!tareaStore.tarea.id)
       notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
-
-    /*    function agregarSubtarea() {
-        }*/
 
     const agregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
@@ -75,8 +57,6 @@ export default defineComponent({
           notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
         modales.abrirModalEntidad('SubtareasPage')
 
-        //        const fila = new Actividad()
-        //      actividadesEconomicas.value = [...actividadesEconomicas.value, fila]
       },
     }
 

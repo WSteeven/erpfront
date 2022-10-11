@@ -1,9 +1,10 @@
 // Dependencias
-import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasControlProgresivas'
+import { configuracionColumnasControlProgresivas } from '../domain/configuracionColumnasControlProgresivas'
 import {
   tiposElementos,
   propietariosElementos,
   estadoElementos,
+  accionesTabla,
 } from 'config/utils'
 import { obtenerFechaActual } from 'shared/utils'
 import { defineComponent, reactive } from 'vue'
@@ -13,12 +14,14 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ControlProgresiva } from '../domain/ControlProgresiva'
 import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ControlProgresivaController } from '../domain/ControlProgresivaController'
+import { ControlProgresivaController } from '../infraestructure/ControlProgresivaController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
   components: {
@@ -26,6 +29,7 @@ export default defineComponent({
     SelectorImagen,
     LabelAbrirModal,
     ModalesEntidad,
+    EssentialTable,
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(
@@ -43,7 +47,7 @@ export default defineComponent({
     progresiva.tecnico_responsable = 'FERNANDO AYORA'
     progresiva.tecnico = 'LUIS VACA'*/
 
-    const datos: any[] = [
+    const progresivas: any[] = [
       {
         id: 1,
         numero_poste: '0001',
@@ -100,16 +104,35 @@ export default defineComponent({
       }
     }
 
+    const agregarProgresiva: CustomActionTable = {
+      titulo: 'Agregar progresiva',
+      accion: () => {
+        //
+      },
+    }
+
+    function eliminar() {
+      //
+    }
+
+    function editar() {
+      //
+    }
+
     const modalesProgresiva = new ComportamientoModalesProgresiva()
 
     return {
       mixin,
       progresiva,
-      datos,
+      progresivas,
       enviar,
-      configuracionColumnasTiposTareas,
+      configuracionColumnasControlProgresivas,
       setBase64,
       modalesProgresiva,
+      agregarProgresiva,
+      eliminar,
+      editar,
+      accionesTabla,
       // listados
       tiposElementos,
       propietariosElementos,

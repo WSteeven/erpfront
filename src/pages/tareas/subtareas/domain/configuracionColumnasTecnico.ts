@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Tecnico } from './Tecnico'
 
-export const configuracionColumnasTiposTareas: ColumnConfig<Tecnico>[] = [
+export const configuracionColumnasTecnico: ColumnConfig<Tecnico>[] = [
   {
     name: 'tecnico',
     field: 'tecnico',

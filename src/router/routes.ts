@@ -83,6 +83,16 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      // src\pages\tareas\trabajoAsignado\view\TrabajoAsignadoPage.vue
+      {
+        path: '/trabajo-asignado',
+        name: 'trabajo_asignado',
+        component: () =>
+          import(
+            'pages/tareas/trabajoAsignado/view/TrabajoAsignadoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/perfil',
         name: 'perfil',
@@ -290,6 +300,15 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/administracion/ubicaciones/view/UbicacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/subtarea-asignada',
+        name: 'subtarea_asignada',
+        component: () =>
+          import(
+            'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
           ),
         meta: { requiresAuth: true },
       },

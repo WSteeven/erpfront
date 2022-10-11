@@ -10,7 +10,7 @@
       exact
     >
       <q-item-section v-if="icon" avatar class="q-py-sm">
-        <q-icon :name="icon" size="sm" />
+        <q-icon :name="icon" size="xs" />
       </q-item-section>
 
       <q-item-section>
@@ -28,7 +28,7 @@
     >
       <template #header>
         <q-item-section v-if="icon" avatar class="q-py-sm">
-          <q-icon :name="icon" size="sm" />
+          <q-icon :name="icon" size="xs" />
         </q-item-section>
 
         <q-item-section>

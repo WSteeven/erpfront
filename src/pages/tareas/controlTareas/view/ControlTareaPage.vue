@@ -14,11 +14,10 @@
         active-color="primary"
         active-icon="bi-check"
         animated
-        bordered
         flat
       >
         <!-- General -->
-        <q-step :name="1" title="1. General" icon="bi-gear" :done="done1">
+        <q-step :name="1" title="1. Tarea" icon="bi-gear" :done="done1">
           <general-content :mixin="mixin"></general-content>
         </q-step>
 
@@ -29,7 +28,7 @@
           icon="bi-list-check"
           :done="done2"
         >
-          <subtareas-content></subtareas-content>
+          <subtareas-listado-content></subtareas-listado-content>
         </q-step>
 
         <!-- Almacenamiento en la nube -->
@@ -37,19 +36,19 @@
           :name="3"
           title="3. Almacenamiento en la nube"
           icon="bi-list-check"
-          :done="done2"
+          :done="done3"
         >
-          <subtareas-content></subtareas-content>
+          <subtareas-listado-content></subtareas-listado-content>
         </q-step>
 
-        <!-- Prefactura de la tarea -->
+        <!-- Resumen de trabajo consolidado -->
         <q-step
-          :name="3"
+          :name="4"
           title="4. Resumen de trabajo consolidado"
           icon="bi-list-check"
-          :done="done2"
+          :done="done4"
         >
-          <subtareas-content></subtareas-content>
+          <subtareas-listado-content></subtareas-listado-content>
         </q-step>
       </q-stepper>
     </template>

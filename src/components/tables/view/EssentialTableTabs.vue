@@ -22,6 +22,7 @@
     :permitirEliminar="permitirEliminar"
     :mostrar-botones="mostrarBotones"
     :accion1="accion1"
+    :accion2="accion2"
     :agregarElemento="agregarElemento"
     @consultar="emit('consultar')"
     @editar="emit('editar')"

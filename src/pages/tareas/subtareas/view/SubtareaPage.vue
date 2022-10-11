@@ -8,10 +8,9 @@
     active-color="primary"
     active-icon="bi-check"
     animated
-    bordered
     flat
   >
-    <!-- General -->p
+    <!-- General -->
     <q-step :name="1" title="1. General" icon="bi-gear" :done="done1">
       <q-form @submit.prevent="enviar()">
         <!-- Datos de la subtarea -->
@@ -46,7 +45,6 @@
                 outlined
                 dense
                 autogrow
-                autofocus
                 type="textarea"
               ></q-input>
             </div>
@@ -101,7 +99,7 @@
             </div>
 
             <!-- Servicio -->
-            <div class="col-12 col-md-3">
+            <!--<div class="col-12 col-md-3">
               <label class="q-mb-sm block">Servicio</label>
               <q-select
                 v-model="subtarea.servicio"
@@ -114,7 +112,7 @@
                 dense
                 outlined
               />
-            </div>
+            </div> -->
 
             <!-- Coordinador -->
             <!--<div class="col-12 col-md-3">
@@ -632,6 +630,24 @@
       :done="done3"
     >
       <ControlAvanceContent></ControlAvanceContent>
+    </q-step>
+
+    <q-step
+      :name="4"
+      title="4. Imágenes adicionales"
+      icon="bi-list-check"
+      :done="done4"
+    >
+      <imagen-adicional-content></imagen-adicional-content>
+    </q-step>
+
+    <q-step
+      :name="5"
+      title="5. Información adicional"
+      icon="bi-list-check"
+      :done="done5"
+    >
+      <informacion-adicional-content></informacion-adicional-content>
     </q-step>
   </q-stepper>
   <!-- <modales-entidad :comportamiento="modalesSubtarea" /> -->

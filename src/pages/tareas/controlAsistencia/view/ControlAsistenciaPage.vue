@@ -20,7 +20,7 @@
               v-model="control.codigo_tarea_jp"
               outlined
               dense
-              readonly
+              disable
             ></q-input>
           </div>
 
@@ -37,20 +37,20 @@
               v-model="control.detalle_subtarea"
               outlined
               dense
-              readonly
+              disable
             ></q-input>
           </div>
 
           <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
-            <q-input v-model="control.fecha" outlined dense readonly></q-input>
+            <q-input v-model="control.fecha" outlined dense disable></q-input>
           </div>
 
           <!-- Hora -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora de registro de asistencia</label>
-            <q-input v-model="control.hora" outlined dense readonly></q-input>
+            <q-input v-model="control.hora" outlined dense disable></q-input>
           </div>
 
           <!-- Imagen -->

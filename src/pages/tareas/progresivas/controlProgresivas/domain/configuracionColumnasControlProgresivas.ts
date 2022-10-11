@@ -1,12 +1,12 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { ControlProgresiva } from './ControlProgresiva'
+import { RegistroProgresiva } from './RegistroProgresiva'
 
-export const configuracionColumnasTiposTareas: ColumnConfig<ControlProgresiva>[] =
+export const configuracionColumnasControlProgresivas: ColumnConfig<RegistroProgresiva>[] =
   [
     {
       name: 'numero_poste',
       field: 'numero_poste',
-      label: 'Número',
+      label: 'Núm. Elem',
       align: 'left',
       sortable: true,
     },
@@ -18,27 +18,6 @@ export const configuracionColumnasTiposTareas: ColumnConfig<ControlProgresiva>[]
       sortable: true,
     },
     {
-      name: 'tecnico',
-      field: 'tecnico',
-      label: 'Técnico',
-      align: 'left',
-      sortable: true,
-    },
-    {
-      name: 'codigo_tarea_jp',
-      field: 'codigo_tarea_jp',
-      label: 'Tarea',
-      align: 'left',
-      sortable: true,
-    },
-    {
-      name: 'codigo_subtarea_jp',
-      field: 'codigo_subtarea_jp',
-      label: 'Subtarea',
-      align: 'left',
-      sortable: true,
-    },
-    {
       name: 'propietario_elemento',
       field: 'propietario_elemento',
       label: 'Propietario',
@@ -46,9 +25,23 @@ export const configuracionColumnasTiposTareas: ColumnConfig<ControlProgresiva>[]
       sortable: true,
     },
     {
-      name: 'fecha',
-      field: 'fecha',
-      label: 'Fecha progresiva',
+      name: 'progresiva_entrada',
+      field: 'progresiva_entrada',
+      label: 'Progresiva entrada',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'progresiva_salida',
+      field: 'progresiva_salida',
+      label: 'Progresiva salida',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'reserva',
+      field: 'reserva',
+      label: 'Reserva',
       align: 'left',
       sortable: true,
     },
