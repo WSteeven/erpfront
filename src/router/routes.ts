@@ -83,6 +83,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/control-avance',
+        name: 'control_avance',
+        component: () =>
+          import(
+            'pages/tareas/subtareas/modules/controlAvance/view/ControlAvanceContent.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
       // src\pages\tareas\trabajoAsignado\view\TrabajoAsignadoPage.vue
       {
         path: '/trabajo-asignado',

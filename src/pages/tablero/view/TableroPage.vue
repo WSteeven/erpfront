@@ -3,10 +3,10 @@
     <small class="q-mb-md">Hola {{ store.nombreUsuario }}.</small>
     <div class="text-h6 q-mb-lg">Tablero</div>
 
-    <div class="row q-col-gutter-xs">
+    <div class="row q-col-gutter-sm">
       <!-- Usuarios registrados -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Usuarios registrados</div>
             <q-knob
@@ -26,7 +26,7 @@
 
       <!-- Usuarios conectados -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Usuarios conectados</div>
             <q-knob
@@ -46,7 +46,7 @@
 
       <!-- Usuarios conectados el dia de hoy -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Usuarios conectados el dia de hoy</div>
             <q-knob
@@ -66,7 +66,7 @@
 
       <!-- Usuarios conectados en el mes -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Usuarios conectados en el mes</div>
             <q-knob
@@ -86,7 +86,7 @@
 
       <!-- Facturación de planes pagados -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Usuarios con facturación de planes (pagado)</div>
             <q-knob
@@ -108,7 +108,7 @@
 
       <!-- Facturación de planes no pagados -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Usuarios con facturación de planes (no pagado)</div>
             <q-knob
@@ -130,7 +130,7 @@
 
       <!-- Servicios activos -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Servicios activos</div>
             <q-knob
@@ -150,7 +150,7 @@
 
       <!-- Planes activos -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Planes activos</div>
             <q-knob
@@ -170,7 +170,7 @@
 
       <!-- Pedidos de servicios por atender -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Pedidos de servicios por atender</div>
             <q-knob
@@ -190,7 +190,7 @@
 
       <!-- Reportes generados -->
       <div class="col-12 col-md-3 text-center">
-        <q-card class="rounded full-height">
+        <q-card class="rounded full-height" flat>
           <q-card-section>
             <div>Reportes generados</div>
             <q-knob

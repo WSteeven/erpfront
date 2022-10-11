@@ -1,13 +1,24 @@
 <template>
-  <div v-if="titulo" class="bg-white text-bold q-pa-sm titulo-tabla">
+  <div
+    v-if="titulo"
+    class="row bg-white text-bold q-px-sm q-py-xs titulo-tabla items-center"
+  >
+    <q-icon name="bi-circle-fill" color="grey-4" class="q-mr-sm"></q-icon>
     {{ titulo }}
   </div>
+
+  <EditarTablaModal
+    :configuracionColumnas="configuracionColumnas"
+    :fila="fila"
+    @limpiar="limpiarFila"
+    @guardar="guardarFila"
+  ></EditarTablaModal>
 
   <q-table
     :hide-header="grid"
     :grid="grid || $q.screen.xs"
     :columns="configuracionColumnas"
-    :rows="datos"
+    :rows="listado"
     :filter="filter"
     row-key="id"
     :visible-columns="visibleColumns"
@@ -287,7 +298,6 @@
           <q-icon
             name="bi-circle-fill"
             color="positive"
-            size="xs"
             class="q-mr-xs"
           ></q-icon
           >Disponible
@@ -296,7 +306,6 @@
           <q-icon
             name="bi-circle-fill"
             color="negative"
-            size="xs"
             class="q-mr-xs"
           ></q-icon
           >Ocupado
@@ -337,7 +346,9 @@
                   round
                   unelevated
                   dense
-                  @click="consultar(props.row)"
+                  @click="
+                    consultar({ entidad: props.row, posicion: props.rowIndex })
+                  "
                 >
                   <q-icon name="bi-eye" color="primary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Consultar </q-tooltip>
@@ -384,7 +395,12 @@
                   no-caps
                   :label="accion1.titulo"
                   class="q-px-sm"
-                  @click="accion1?.accion(props.row)"
+                  @click="
+                    accion1?.accion({
+                      entidad: props.row,
+                      posicion: props.rowIndex,
+                    })
+                  "
                 >
                   <q-tooltip class="bg-dark">{{ accion1.titulo }} </q-tooltip>
                 </q-btn>
@@ -400,7 +416,12 @@
                   no-caps
                   :label="accion2.titulo"
                   class="q-px-sm"
-                  @click="accion2?.accion(props.row)"
+                  @click="
+                    accion2?.accion({
+                      entidad: props.row,
+                      posicion: props.rowIndex,
+                    })
+                  "
                 >
                   <q-tooltip class="bg-dark">{{ accion2.titulo }} </q-tooltip>
                 </q-btn>

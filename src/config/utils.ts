@@ -142,5 +142,8 @@ export const accionesTabla = {
   align: 'center',
 }
 
-
+export const tiposTrabajosEstaticos = {
+  tendido: 'TENDIDO',
+  hincado: 'HINCADO',
+}
 

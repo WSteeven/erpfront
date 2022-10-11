@@ -10,12 +10,10 @@ export class StatusEssentialLoading {
   }
 
   activar(): void {
-    console.log('activando')
     this.store.activarCargando()
   }
 
   desactivar(): void {
-    console.log('desactivando')
     this.store.desactivarCargando()
   }
 }

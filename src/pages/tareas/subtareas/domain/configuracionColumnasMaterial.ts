@@ -8,6 +8,7 @@ export const configuracionColumnasMaterial: ColumnConfig<Material>[] = [
     label: 'Producto',
     align: 'left',
     sortable: true,
+    input_type: 'text'
   },
   {
     name: 'medida',
@@ -15,6 +16,7 @@ export const configuracionColumnasMaterial: ColumnConfig<Material>[] = [
     label: 'Medida',
     align: 'left',
     sortable: true,
+    input_type: 'text'
   },
   {
     name: 'cantidad_usada',
@@ -22,5 +24,6 @@ export const configuracionColumnasMaterial: ColumnConfig<Material>[] = [
     label: 'Cantidad usada',
     align: 'left',
     sortable: true,
+    input_type: 'number'
   },
 ]

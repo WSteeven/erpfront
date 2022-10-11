@@ -4,15 +4,17 @@ import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns } from 'shared/utils'
 import { exportFile, useQuasar } from 'quasar'
 import { TipoSeleccion } from 'config/utils'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
+import EditarTablaModal from './EditarTablaModal.vue'
 
 export default defineComponent({
   components: {
     PrevisualizarTablaPdf,
+    EditarTablaModal,
   },
   props: {
     titulo: {
@@ -79,15 +81,33 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    permitirEditarModal: {
+      type: Boolean,
+      default: false,
+    }
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'selected'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
+    const fila = ref()
+    const listado = ref()
+
+    watchEffect(() => {
+      console.log('HOLA')
+      listado.value = props.datos
+    })
 
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
-    const editar = (data: object) => emit('editar', data)
+    const editar = (data: any) => {
+      emit('editar', data)
+
+      if (props.permitirEditarModal) {
+        fila.value = data.entidad
+        filaEditada.value = data.posicion
+      }
+    }
     const eliminar = (data: object) => emit('eliminar', data)
     //const accion1 = (data: object) => emit('accion1', data)
 
@@ -162,6 +182,17 @@ export default defineComponent({
       printTable.abrirVistaPrevia()
     }
 
+    function limpiarFila() {
+      fila.value = null
+    }
+
+    const filaEditada = ref()
+
+    function guardarFila(data) {
+      listado.value.splice(filaEditada.value, 1, data)
+      limpiarFila()
+    }
+
     return {
       grid,
       inFullscreen,
@@ -175,6 +206,10 @@ export default defineComponent({
       seleccionar,
       previsualizarPdf,
       printTable,
+      fila,
+      limpiarFila,
+      guardarFila,
+      listado,
     }
   },
 })
