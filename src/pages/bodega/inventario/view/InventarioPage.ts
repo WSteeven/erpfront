@@ -32,6 +32,7 @@ export default defineComponent({
         const opciones_sucursales = ref([])
         const opciones_condiciones = ref([])
         const opciones_clientes = ref([])
+        
         //Obtener los listados
         cargarVista(async ()=>{
             await obtenerListados({
@@ -41,8 +42,9 @@ export default defineComponent({
                 condiciones: new CondicionController(),
                 sucursales: new SucursalController(),
             })
-            // inventario.sucursal = listadosAuxiliares.sucursales[0]['lugar']
-            // console.log(listadosAuxiliares.sucursales[0]['id'])
+            inventario.cliente_id = listadosAuxiliares.clientes[0]['id']
+            inventario.sucursal_id = listadosAuxiliares.sucursales[0]['id']
+            inventario.condicion = listadosAuxiliares.condiciones[0]['id']
         })
 
         //Reglas de validacion
@@ -50,9 +52,9 @@ export default defineComponent({
             cantidad: {required},
             producto: {required},
             condicion:{required},
-            detalle:{required},
-            cliente:{required},
-            sucursal:{required},
+            detalle_id:{required},
+            cliente_id:{required},
+            sucursal_id:{required},
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -84,12 +86,12 @@ export default defineComponent({
             seleccionarDetalle(val){
                 // console.log(listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1))
                 opciones_detalles.value = listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1)
-                inventario.detalle =''
+                inventario.detalle_id =''
                 if(opciones_detalles.value.length<1){
-                    inventario.detalle =''
+                    inventario.detalle_id =''
                 }
                 if(opciones_detalles.value.length==1){
-                    inventario.detalle = opciones_detalles.value[0]['id']
+                    inventario.detalle_id = opciones_detalles.value[0]['id']
                 }
             },
             filtroProductos(val,update){
