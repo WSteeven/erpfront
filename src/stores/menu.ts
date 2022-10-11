@@ -103,6 +103,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Control de Stock',
+          link: 'categorias',
+          can: store.can('puede.ver.control_stock'),
+          icon: 'bi-circle',
+        },
+        {
           title: 'Marcas',
           link: 'marcas',
           can: store.can('puede.ver.marcas'),

@@ -100,6 +100,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/control-stock',
+        name: 'control_stock',
+        component: () =>
+          import(
+            'pages/bodega/control_stocks/view/ControlStockPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/marcas',
         name: 'marcas',
         component: () =>

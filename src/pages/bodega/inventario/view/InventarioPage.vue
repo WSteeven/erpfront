@@ -39,13 +39,13 @@
             <div class="col-12 col-md-6">
                 <label class="q-mb-sm block">Detalle</label>
                 <q-select 
-                  v-model="inventario.detalle"
+                  v-model="inventario.detalle_id"
                   :options="opciones_detalles"
                   transition-show="scale"
                   transition-hide="scale"
                   options-dense dense
                   outlined
-                  :error="!!v$.detalle.$errors.length"
+                  :error="!!v$.detalle_id.$errors.length"
                   error-message="Debes seleccionar un detalle de producto"
                   behavior="dialog"
                   :option-label="(item)=> item.modelo+' &nbsp; | &nbsp; '+item.descripcion+' &nbsp; | &nbsp; '+item.serial"
@@ -53,7 +53,7 @@
                   emit-value 
                   map-options>
                   <template v-slot:error>
-                    <div v-for="error of v$.detalle.$errors" :key="error.$uid">
+                    <div v-for="error of v$.detalle_id.$errors" :key="error.$uid">
                       <div class="error-msg">{{error.$message}}</div>
                     </div>
                   </template>
@@ -70,21 +70,21 @@
             <div class="col-12 col-md-6 q-mb-md">
               <label class="q-mb-sm block">Sucursal</label>
               <q-select 
-                v-model="inventario.sucursal" 
+                v-model="inventario.sucursal_id" 
                 :options="opciones_sucursales"
                 transition-show="scale"
                 transition-hide="scale" 
                 options-dense 
                 dense 
                 outlined 
-                :error="!!v$.sucursal.$errors.length"
+                :error="!!v$.sucursal_id.$errors.length"
                 error-message="Debes seleccionar una sucursal"
                 :option-label="(item) => item.lugar"
                 :option-value="(item) => item.id" 
                 emit-value 
                 map-options>
                 <template v-slot:error>
-                  <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
+                  <div v-for="error of v$.sucursal_id.$errors" :key="error.$uid">
                     <div class="error-msg">{{error.$message}}</div>
                   </div>
                 </template>
@@ -94,21 +94,21 @@
             <div class="col-12 col-md-6 q-mb-md">
               <label class="q-mb-sm block">Propietario</label>
               <q-select 
-                v-model="inventario.cliente" 
+                v-model="inventario.cliente_id" 
                 :options="opciones_clientes"
                 transition-show="scale"
                 transition-hide="scale" 
                 options-dense 
                 dense 
                 outlined 
-                :error="!!v$.cliente.$errors.length"
+                :error="!!v$.cliente_id.$errors.length"
                 error-message="Debes seleccionar el propietario del producto"
                 :option-label="(item) => item.razon_social"
                 :option-value="(item) => item.id" 
                 emit-value 
                 map-options>
                 <template v-slot:error>
-                  <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                  <div v-for="error of v$.cliente_id.$errors" :key="error.$uid">
                     <div class="error-msg">{{error.$message}}</div>
                   </div>
                 </template>
