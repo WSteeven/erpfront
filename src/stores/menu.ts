@@ -110,7 +110,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Control de Stock',
-          link: 'categorias',
+          link: 'control-stock',
           can: store.can('puede.ver.control_stock'),
           icon: 'bi-circle',
         },
@@ -153,7 +153,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: !(store.roles.filter((v) => v.indexOf('BODEGA') > -1)) ? 'Pedidos a bodega' : 'Egreso de materiales',
           link: 'transacciones-egresos',
-          can: store.can('puede.ver.transacciones'),
+          can: store.can('puede.crear.transacciones'),
           icon: 'bi-circle',
         },
         {

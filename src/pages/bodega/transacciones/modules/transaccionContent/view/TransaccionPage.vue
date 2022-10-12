@@ -15,7 +15,7 @@ import { readonly } from 'vue';
             <q-input
               v-model="transaccion.id"
               placeholder="Obligatorio"
-              :readonly="true"
+              :readonly="disabled"
               outlined
               dense
             >
@@ -26,10 +26,7 @@ import { readonly } from 'vue';
             <label class="q-mb-sm block">Fecha</label>
             <q-input
               v-model="transaccion.created_at"
-              type="date"
-              mask="date"
-              :rules="['date']"
-              :readonly="true"
+              disable
               outlined
               dense
             />
@@ -43,7 +40,7 @@ import { readonly } from 'vue';
               placeholder="Fecha limite"
               mask="date"
               :rules="['date']"
-              :readonly="readonly"
+              :readonly="disabled"
               outlined
               dense
               :error="false"
@@ -61,6 +58,7 @@ import { readonly } from 'vue';
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.tipo.$errors.length"
               error-message="Debes seleccionar un subtipo"
               @update:model-value="filtroTipos"
@@ -88,12 +86,13 @@ import { readonly } from 'vue';
             <label class="q-mb-sm block">Subtipo</label>
             <q-select
               v-model="transaccion.subtipo"
-              :options="opciones_subtipos.subtipos"
+              :options="opciones_subtipos"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.subtipo.$errors.length"
               error-message="Debes seleccionar un subtipo"
               :option-value="(v) => v.id"
@@ -111,7 +110,7 @@ import { readonly } from 'vue';
             </q-select>
           </div>
           <!-- Select autorizacion -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="rolSeleccionado" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="transaccion.autorizacion"
@@ -121,6 +120,7 @@ import { readonly } from 'vue';
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="(v) => v.id"
@@ -143,7 +143,7 @@ import { readonly } from 'vue';
             </q-select>
           </div>
           <!-- Tiene observacion de autorizacion -->
-          <div class="col-12 col-md-3">
+          <div v-if="rolSeleccionado" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_obs_autorizacion"
@@ -184,12 +184,13 @@ import { readonly } from 'vue';
             <label class="q-mb-sm block">Sucursal</label>
             <q-select
               v-model="transaccion.sucursal"
-              :options="opciones_sucursales.sucursales"
+              :options="opciones_sucursales"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               :option-value="(v) => v.id"
@@ -240,7 +241,7 @@ import { readonly } from 'vue';
             <label class="q-mb-sm block">Solicitante</label>
             <q-input
               v-model="transaccion.solicitante"
-              :readonly="true"
+              disable
               outlined
               dense
             >
@@ -271,7 +272,7 @@ import { readonly } from 'vue';
             </q-input>
           </div>
           <!-- Select estado -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="rolSeleccionado" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Estado</label>
             <q-select
               v-model="transaccion.estado"
@@ -281,6 +282,7 @@ import { readonly } from 'vue';
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado para la transacción"
               :option-value="(v) => v.id"
@@ -303,7 +305,7 @@ import { readonly } from 'vue';
             </q-select>
           </div>
           <!-- Tiene observación de estado -->
-          <div class="col-12 col-md-3">
+          <div v-if="rolSeleccionado" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_obs_estado"
@@ -336,7 +338,6 @@ import { readonly } from 'vue';
               </template>
             </q-input>
           </div>
-
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -366,7 +367,6 @@ import { readonly } from 'vue';
           </div>
           <!-- Tabla -->
           <div class="col-12">
-            {{ transaccion.listadoProductosSeleccionados }}
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
