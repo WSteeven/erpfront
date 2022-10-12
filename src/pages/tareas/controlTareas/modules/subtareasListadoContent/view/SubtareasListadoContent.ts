@@ -16,6 +16,7 @@ import { ComportamientoModalesSubtareaContent } from '../application/Comportamie
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { TabOption } from 'components/tables/domain/TabOption'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   components: { EssentialTableTabs, ModalesEntidad },
@@ -26,6 +27,8 @@ export default defineComponent({
     const { listar } = mixin.useComportamiento()
 
     const { notificarAdvertencia } = useNotificaciones()
+
+    const router = useRouter()
 
     const tareaStore = useTareaStore()
     if (tareaStore.tarea.id) listar({ tarea: tareaStore.tarea.id })
@@ -40,10 +43,19 @@ export default defineComponent({
     const modales = new ComportamientoModalesSubtareaContent()
 
     const botonEditarSubtarea: CustomActionTable = {
-      titulo: 'Gestionar',
+      titulo: 'Ver/Editar',
       accion: ({ entidad }) => {
         tareaStore.consultarSubtarea(entidad.id)
         modales.abrirModalEntidad('SubtareasPage')
+      },
+    }
+
+    const verControlAvance: CustomActionTable = {
+      titulo: 'Ver avances',
+      accion: ({ entidad }) => {
+        // router.push({ name: 'gestionar_avances' })
+        // tareaStore.consultarSubtarea(entidad.id)
+        modales.abrirModalEntidad('GestionarAvancesPage')
       },
     }
 
@@ -61,6 +73,7 @@ export default defineComponent({
     }
 
     function aplicarFiltro(tabSeleccionado) {
+      console.log(tabSeleccionado)
       if (tareaStore.tarea.id) listar({ tarea: tareaStore.tarea.id, estado: tabSeleccionado })
     }
 
@@ -73,6 +86,7 @@ export default defineComponent({
       agregarSubtarea,
       tabOptions,
       aplicarFiltro,
+      verControlAvance,
     }
   },
 })

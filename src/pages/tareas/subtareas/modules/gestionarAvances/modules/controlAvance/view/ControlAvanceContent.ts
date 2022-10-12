@@ -1,8 +1,8 @@
 // Dependencias
 import { computed, defineComponent, reactive } from "vue";
-import { configuracionColumnasTrabajoRealizado } from '../../../domain/configuracionColumnasTrabajoRealizado'
-import { configuracionColumnasObservacion } from '../../../domain/configuracionColumnasObservacion'
-import { configuracionColumnasMaterial } from '../../../domain/configuracionColumnasMaterial'
+import { configuracionColumnasTrabajoRealizado } from '../../../../../domain/configuracionColumnasTrabajoRealizado'
+import { configuracionColumnasObservacion } from '../../../../../domain/configuracionColumnasObservacion'
+import { configuracionColumnasMaterial } from '../../../../../domain/configuracionColumnasMaterial'
 import { regiones, atenciones, tiposIntervenciones, causaIntervencion } from 'config/utils'
 
 // Componentes
@@ -11,10 +11,10 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
-import TrabajoRealizado from '../../../domain/TrabajoRealizado'
+import TrabajoRealizado from '../../../../../domain/TrabajoRealizado'
 import { ControlAvance } from "../domain/ControlAvance";
-import Observacion from '../../../domain/Observacion'
-import Material from '../../../domain/Material'
+import Observacion from '../../../../../domain/Observacion'
+import Material from '../../../../../domain/Material'
 
 export default defineComponent({
     components: {
@@ -44,11 +44,13 @@ export default defineComponent({
                 id: 1,
                 hora: '08:15:14',
                 detalle: 'SE REALIZÓ LA PAUSA POR ...',
+                observacion: '',
             },
             {
                 id: 2,
                 hora: '12:36:45',
                 detalle: 'HORA DE ALMUERZO ...',
+                observacion: '',
             },
         ]
 

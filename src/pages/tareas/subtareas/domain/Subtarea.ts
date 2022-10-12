@@ -14,6 +14,9 @@ export class Subtarea extends EntidadAuditable {
   cliente: string | null
   estado: string | null
   es_dependiente: boolean
+  es_ventana: boolean
+  hora_inicio_ventana: string | null
+  hora_fin_ventana: string | null
   // Tiempos
   fecha_asignacion: string | null
   fecha_inicio: string | null
@@ -44,6 +47,9 @@ export class Subtarea extends EntidadAuditable {
     this.codigo_subtarea = null
     this.descripcion_completa = null
     this.es_dependiente = false
+    this.es_ventana = false
+    this.hora_inicio_ventana = null
+    this.hora_fin_ventana = null
     this.subtarea_dependiente = null
     // this.detalle_tarea = null
     this.detalle = null

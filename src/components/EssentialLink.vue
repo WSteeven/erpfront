@@ -9,7 +9,7 @@
       active-class="my-menu-link"
       exact
     >
-      <q-item-section v-if="icon" avatar class="q-py-sm">
+      <q-item-section v-if="icon" avatar>
         <q-icon :name="icon" size="xs" />
       </q-item-section>
 
@@ -27,7 +27,7 @@
       exact
     >
       <template #header>
-        <q-item-section v-if="icon" avatar class="q-py-sm">
+        <q-item-section v-if="icon" avatar>
           <q-icon :name="icon" size="xs" />
         </q-item-section>
 

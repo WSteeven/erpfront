@@ -34,23 +34,23 @@
 
         <!-- <q-toolbar-title></q-toolbar-title> -->
         <!-- <img :src="nombreUsuarioTag" alt="" class="q-mr-sm d-inline-block" /> -->
-        <span class="q-pl-lg text-bold">
-          <!--<q-badge color="positive" rounded class="q-mr-sm" />-->
-          <!--<q-btn no-caps flat>-->
-          <!--<div class="column q-mr-md text-center">-->
+        <!--<span class="q-pl-lg text-bold">
           {{ nombreUsuario }}
-          <!--<small>Usuario</small>-->
-          <!--<q-icon
+        </span> -->
+        <!--<q-badge color="positive" rounded class="q-mr-sm" />-->
+        <!--<q-btn no-caps flat>-->
+        <!--<div class="column q-mr-md text-center">-->
+        <!--<small>Usuario</small>-->
+        <!--<q-icon
                 name="bi-chevron-down"
                 size="xs"
                 class="full-width"
               ></q-icon> -->
-          <!--</div>-->
-          <!--</q-btn>-->
-        </span>
+        <!--</div>-->
+        <!--</q-btn>-->
 
         <span>
-          <q-btn dense round flat icon="bi-box-seam" class="q-mr-md">
+          <q-btn dense round flat icon="bi-bell" class="q-mr-md">
             <q-badge color="positive" floating transparent> 4 </q-badge>
             <q-menu transition-show="flip-right" transition-hide="flip-left">
               <q-list style="min-width: 100px">
@@ -68,7 +68,10 @@
             </q-menu>
           </q-btn>
 
-          <q-btn dense round flat icon="bi-three-dots">
+          <q-btn dense round flat>
+            <q-avatar size="32px">
+              <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+            </q-avatar>
             <q-menu
               anchor="center middle"
               self="center middle"

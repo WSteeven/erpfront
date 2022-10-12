@@ -289,6 +289,7 @@
           :mostrar-footer="false"
           :mostrar-header="false"
           :permitirEditarModal="true"
+          separador="cell"
           @eliminar="tablaTrabajoRealizado.eliminar"
           @editar="tablaTrabajoRealizado.editar"
         ></essential-table>
@@ -320,6 +321,7 @@
           :mostrar-footer="false"
           :mostrar-header="false"
           :permitirEditarModal="true"
+          separador="cell"
           @eliminar="tablaMateriales.eliminar"
           @editar="tablaMateriales.editar"
         ></essential-table>

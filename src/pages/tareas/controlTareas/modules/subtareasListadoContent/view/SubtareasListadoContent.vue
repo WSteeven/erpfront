@@ -1,9 +1,9 @@
 <template>
   <essential-table-tabs
-    titulo="subtareas"
     :configuracionColumnas="configuracionColumnas"
     :datos="listado"
     :accion1="botonEditarSubtarea"
+    :accion2="verControlAvance"
     :permitirConsultar="false"
     :permitirEditar="false"
     :permitirEliminar="false"
@@ -12,13 +12,6 @@
     @tab-seleccionado="aplicarFiltro"
     :agregarElemento="agregarSubtarea"
   ></essential-table-tabs>
-
-  <!-- <div class="row justify-end q-gutter-sm q-pt-md flotante">
-    <q-btn color="positive" no-caps rounded push @click="agregarSubtarea()">
-      <q-icon name="bi-plus" class="q-pr-sm"></q-icon>
-      <div>Agregar nueva subtarea</div>
-    </q-btn>
-  </div> -->
 
   <modales-entidad :comportamiento="modales" />
 </template>

@@ -478,12 +478,12 @@
   /* height or max-height is important */
   height: 410px;
 
-  .q-table__top,
+  /*.q-table__top,
   .q-table__bottom,
-  thead tr:first-child th {
-    /* bg color is important for th; just specify one */
-    background-color: #fff;
-  }
+  thead tr:first-child th {*/
+  /* bg color is important for th; just specify one */
+  //background-color: #fff;
+  //}
 
   thead tr th {
     position: sticky;

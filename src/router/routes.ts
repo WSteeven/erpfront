@@ -7,6 +7,12 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'tablero_personal',
+        component: () => import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '',
         name: 'tablero',
         component: () => import('pages/tablero/view/TableroPage.vue'),
         meta: { requiresAuth: true },
@@ -55,6 +61,15 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/tareas/progresivas/tiposElementos/view/TipoElementoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/gestionar-avances',
+        name: 'gestionar_avances',
+        component: () =>
+          import(
+            'pages/tareas/subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'
           ),
         meta: { requiresAuth: true },
       },

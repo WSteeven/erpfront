@@ -1,8 +1,8 @@
 import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
-import { SubtareaContentModales } from '../domain/SubtareaContentModales'
+import { SubtareaListadoContentModales } from '../domain/SubtareaListadoContentModales'
 
-export class ComportamientoModalesSubtareaContent extends ComportamientoModales<SubtareaContentModales> {
+export class ComportamientoModalesSubtareaContent extends ComportamientoModales<SubtareaListadoContentModales> {
   constructor() {
-    super(new SubtareaContentModales())
+    super(new SubtareaListadoContentModales())
   }
 }

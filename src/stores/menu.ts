@@ -16,9 +16,14 @@ export const useMenuStore = defineStore('menu', () => {
       header: 'Modulos',
     },
     {
+      title: 'Inicio',
+      icon: 'bi-house',
+      link: '/',
+    },
+    {
       title: 'Tablero',
       icon: 'bi-layers-fill',
-      link: '/',
+      link: '/admin',
     },
     {
       title: 'Tareas',

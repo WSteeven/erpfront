@@ -1,5 +1,5 @@
 <template>
-  <q-btn-toggle
+  <!--<q-btn-toggle
     v-model="tabSeleccionado"
     spread
     class="my-custom-toggle"
@@ -11,7 +11,27 @@
     text-color="grey-9"
     :options="tabOptions"
     @click="emit('tab-seleccionado', tabSeleccionado)"
-  />
+  /> -->
+  <q-tabs
+    v-model="tabSeleccionado"
+    no-caps
+    bordered
+    dense
+    :class="{ 'my-custom-toggle': !$q.screen.xs }"
+    align="justify"
+    @click="emit('tab-seleccionado', tabSeleccionado)"
+  >
+    <q-tab
+      v-for="opcion in tabOptions"
+      :key="opcion.label"
+      :label="opcion.label"
+      :name="opcion.value"
+    ></q-tab>
+    <!--<q-tab label="Asignadas (4)" name="asignadas" />
+    <q-tab label="Pendientes de asignar (9)" name="pendientes" />
+    <q-tab label="Ventanas (10)" name="ventanas" />
+    <q-tab label="Proyectos (9)" name="proyectos" /> -->
+  </q-tabs>
 
   <essential-table
     titulo=""
@@ -120,6 +140,10 @@ const emit = defineEmits([
 ])
 
 const tabSeleccionado = ref('todo')
+
+function saludar() {
+  console.log('amix')
+}
 </script>
 
 <style lang="scss" scoped>

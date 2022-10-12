@@ -7,7 +7,6 @@ import { defineComponent, ref } from 'vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import GeneralContent from 'pages/tareas/controlTareas/modules/GeneralContent/view/GeneralContent.vue'
 import SubtareasListadoContent from 'pages/tareas/controlTareas/modules/subtareasListadoContent/view/SubtareasListadoContent.vue'
-// import ResumenMaterialSolicitadoContent from 'pages/tareas/controlTareas/modules/resumenMaterialesSolicitados/view/ResumenMaterialSolicitadoContent.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -20,7 +19,6 @@ export default defineComponent({
     TabLayout,
     GeneralContent,
     SubtareasListadoContent,
-    // ResumenMaterialSolicitadoContent,
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
@@ -37,7 +35,6 @@ export default defineComponent({
     })
 
     onGuardado(() => {
-      console.log(tarea)
       tareaStore.tarea = tarea
       tareaStore.accion = accion
     })
@@ -54,6 +51,7 @@ export default defineComponent({
       done2: ref(false),
       done3: ref(false),
       done4: ref(false),
+      tabSeleccionado: ref('tarea'),
     }
   },
 })

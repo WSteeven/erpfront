@@ -15,22 +15,15 @@ import {
 } from 'config/utils'
 
 // Componentes
-//import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
-//import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import flatPickr from 'vue-flatpickr-component';
-import PausasRealizadasContent from './PausasRealizadasContent.vue'
-import ControlAvanceContent from '../modules/controlAvance/view/ControlAvanceContent.vue'
-import ImagenAdicionalContent from 'pages/tareas/subtareas/modules/imagenesAdicionales/view/ImagenAdicionalContent.vue'
-import InformacionAdicionalContent from '../modules/informacionAdicional/view/InformacionAdicionalContent.vue'
 
 // Logica y controladores
-//import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
 import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
 
 export default defineComponent({
-  components: { EssentialTable, flatPickr, PausasRealizadasContent, ControlAvanceContent, ImagenAdicionalContent, InformacionAdicionalContent },
+  components: { EssentialTable, flatPickr },
   setup() {
     const tareaStore = useTareaStore()
 
@@ -86,8 +79,6 @@ export default defineComponent({
     function eliminarTecnico({ posicion }) {
       datos.value.splice(posicion, 1)
     }
-
-    //const modalesSubtarea = new ComportamientoModalesSubtarea()
 
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 

@@ -3,12 +3,14 @@
     titulo="Pausas realizadas"
     :configuracionColumnas="(configuracionColumnasPausas as any)"
     :datos="listado"
+    separador="cell"
+    :alto-fijo="false"
   ></essential-table>
 </template>
 
 <script lang="ts" setup>
 // Dependencias
-import { configuracionColumnasPausas } from '../domain/configuracionColumnasPausas'
+import { configuracionColumnasPausas } from '../../../../../domain/configuracionColumnasPausas'
 import { Pausa } from 'pages/tareas/subtareas/domain/Pausa'
 
 // Componentes
