@@ -38,6 +38,13 @@ export const configuracionColumnasControlStock: ColumnConfig<ControlStock>[]=[
         sortable: true
     },
     {
+        name: 'actual',
+        field: 'actual',
+        label: 'En inventario',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'estado',
         field: 'estado',
         label: 'estado',

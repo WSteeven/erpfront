@@ -7,6 +7,7 @@ export class ControlStock extends EntidadAuditable {
     cliente_id: number | null
     minimo: string | null
     reorden: string | null
+    actual: string | null
     estado: string | null
 
     constructor() {
@@ -17,6 +18,7 @@ export class ControlStock extends EntidadAuditable {
         this.cliente_id = null
         this.minimo = null
         this.reorden = null
+        this.actual = null
         this.estado = null
     }
 }

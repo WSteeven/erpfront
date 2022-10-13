@@ -1,5 +1,5 @@
 //Dependencias
-import { configuracionColumnasInventario } from "../domain/configuracionColumnasInventario";
+import { configuracionColumnasInventarios } from "../domain/configuracionColumnasInventarios";
 import { required } from "@vuelidate/validators";
 import {useVuelidate} from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
@@ -76,7 +76,7 @@ export default defineComponent({
 
         return {
             mixin, inventario, disabled, accion, v$,
-            configuracionColumnas:configuracionColumnasInventario,
+            configuracionColumnas:configuracionColumnasInventarios,
             //listados
             opciones_productos,
             opciones_detalles,

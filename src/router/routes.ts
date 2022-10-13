@@ -188,6 +188,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/productos-perchas',
+        name: 'productos_perchas',
+        component: () =>
+          import(
+            'pages/bodega/productos_en_perchas/view/ProductosPerchaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/transacciones-ingresos',
         name: 'transacciones_ingresos',
         component: () =>

@@ -1,5 +1,3 @@
-import { readonly } from 'vue';
-
 <template>
   <tab-layout
     :mixin="mixin"
@@ -394,7 +392,4 @@ import { readonly } from 'vue';
     </template>
   </tab-layout>
 </template>
-
-import EssentialSelectableTable from
-'components/tables/view/EssentialSelectableTable.vue';
 <script src="./TransaccionPage.ts" />

@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { Inventario } from "./Inventario";
 
-export const configuracionColumnasInventario: ColumnConfig<Inventario>[]=[
+export const configuracionColumnasInventarios: ColumnConfig<Inventario>[]=[
     {
         name: 'detalle_id',
         field: 'detalle_id',

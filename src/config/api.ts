@@ -48,6 +48,7 @@ export const endpoints = {
   marcas: new Endpoint('marcas/'),
   modelos: new Endpoint('modelos/'),
   productos: new Endpoint('productos/'),
+  productos_perchas: new Endpoint('productos-perchas/'),
   sucursales: new Endpoint('sucursales/'),
   spans: new Endpoint('spans/'),
   tipos_fibras: new Endpoint('tipos-fibras/'),

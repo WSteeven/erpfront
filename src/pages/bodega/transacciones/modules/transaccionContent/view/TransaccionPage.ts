@@ -6,6 +6,7 @@ import { defineComponent, Ref, ref } from 'vue'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
+import { useOrquestadorSelectorDetalles } from 'pages/bodega/transacciones/application/OrquestadorSelectorDetalles'
 import { useOrquestadorSelectorProductos } from 'pages/bodega/transacciones/application/OrquestadorSelectorProductos'
 
 // Componentes
@@ -31,7 +32,6 @@ import { ProductoController } from 'pages/bodega/productos/infraestructure/Produ
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
-import { useOrquestadorSelectorDetalles } from 'pages/bodega/transacciones/application/OrquestadorSelectorDetalles'
 import { useAuthenticationStore } from 'stores/authentication'
 export default defineComponent({
     components: { TabLayout, EssentialTable, EssentialSelectableTable },
