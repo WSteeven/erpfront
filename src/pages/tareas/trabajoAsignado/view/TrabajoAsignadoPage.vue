@@ -17,6 +17,8 @@
       :tab-options="tabOptions"
       @tab-seleccionado="aplicarFiltro"
     ></essential-table-tabs>
+
+    <modales-entidad :comportamiento="modales" :confirmar-cerrar="true" />
   </q-page>
 </template>
 

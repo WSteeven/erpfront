@@ -118,7 +118,7 @@
           </div>
         </div>
 
-        <div class="row q-gutter-xs q-px-md q-mb-md">
+        <!--<div class="row q-gutter-xs q-px-md q-mb-md">
           <div class="col-12">
             <div class="text-bold q-mb-md">Cambiar estado de la subtarea</div>
           </div>
@@ -144,7 +144,7 @@
             <q-icon name="bi-check" size="xs" class="q-mr-sm"></q-icon>
             <div>Realizado</div>
           </q-btn>
-        </div>
+        </div> -->
       </q-expansion-item>
 
       <q-expansion-item

@@ -1,5 +1,10 @@
 <template>
-  <q-dialog v-model="abierto" :maximized="true" :full-width="false">
+  <q-dialog
+    v-model="abierto"
+    :maximized="true"
+    :full-width="false"
+    :persistent="confirmarCerrar"
+  >
     <q-card>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
       <q-toolbar>
@@ -12,11 +17,14 @@
         <q-btn
           flat
           round
+          class="bg-grey-3"
           dense
           icon="close"
-          v-close-popup
           @click="cerrarModalEntidad()"
-        />
+        >
+          <q-tooltip class="bg-dark">Cerrar</q-tooltip>
+        </q-btn>
+        <!--v-close-popup -->
       </q-toolbar>
 
       <q-card-section>

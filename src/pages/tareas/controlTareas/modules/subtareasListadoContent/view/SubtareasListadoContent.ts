@@ -38,8 +38,6 @@ export default defineComponent({
       accionesTabla,
     ]
 
-
-
     const modales = new ComportamientoModalesSubtareaContent()
 
     const botonEditarSubtarea: CustomActionTable = {

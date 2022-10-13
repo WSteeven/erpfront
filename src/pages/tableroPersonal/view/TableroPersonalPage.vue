@@ -10,15 +10,26 @@
 
     <div class="row q-col-gutter-sm">
       <div v-if="store.esCoordinador || store.esTecnicoLider" class="col-12">
-        <q-card class="my-card" bordered>
+        <q-card class="my-card" flat bordered>
           <q-card-section>
-            <div class="text-h6">Subtareas</div>
+            <div class="row justify-between">
+              <div class="text-h6">Subtareas</div>
+              <q-btn
+                v-if="store.esTecnicoLider"
+                color="primary"
+                rounded
+                no-caps
+                push
+                :to="{ name: 'trabajo_asignado' }"
+                >Ver todos los trabajos asignados</q-btn
+              >
+            </div>
           </q-card-section>
 
           <q-tabs v-model="tab" class="primary">
             <q-tab
               v-if="store.esTecnicoLider"
-              label="Asignadas (4)"
+              label="Asignadas recientemente"
               name="asignadas"
             />
             <q-tab
@@ -43,7 +54,7 @@
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="asignadas">
               <div class="col-12 col-md-6 column">
-                <q-btn align="left" flat class="q-mb-md">
+                <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
                     name="bi-check-circle"
                     class="q-mr-md"
@@ -55,14 +66,7 @@
                   </div>
                 </q-btn>
 
-                <div class="row justify-center q-gutter-xs">
-                  <q-btn color="primary" no-caps>Ver</q-btn>
-                  <q-btn color="positive" no-caps>
-                    <q-icon name="bi-play"></q-icon>Iniciar</q-btn
-                  >
-                </div>
-
-                <q-btn align="left" flat class="q-mb-md">
+                <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
                     name="bi-check-circle"
                     class="q-mr-md"
@@ -74,14 +78,7 @@
                   </div>
                 </q-btn>
 
-                <div class="row justify-center q-gutter-xs">
-                  <q-btn color="primary" no-caps>Ver</q-btn>
-                  <q-btn color="positive" no-caps>
-                    <q-icon name="bi-play"></q-icon>Iniciar</q-btn
-                  >
-                </div>
-
-                <q-btn align="left" flat class="q-mb-md">
+                <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
                     name="bi-check-circle"
                     class="q-mr-md"
@@ -92,13 +89,6 @@
                     <small>Tendido circular Palmales</small>
                   </div>
                 </q-btn>
-
-                <div class="row justify-center q-gutter-xs">
-                  <q-btn color="primary" no-caps>Ver</q-btn>
-                  <q-btn color="positive" no-caps>
-                    <q-icon name="bi-play"></q-icon>Iniciar</q-btn
-                  >
-                </div>
               </div>
             </q-tab-panel>
 
@@ -154,7 +144,7 @@
       </div>
 
       <div v-if="store.esCoordinador" class="col-12">
-        <q-card class="my-card" bordered>
+        <q-card class="my-card" bordered flat>
           <q-card-section>
             <div class="q-mb-md row items-top">
               <div class="text-h6 q-mr-md">Tareas</div>
@@ -222,37 +212,29 @@
           </q-card-section>
         </q-card>
       </div>
-
-      <!-- Usuarios registrados -->
-      <!--<div class="col-12 col-md-6 text-center">
-        <q-card class="rounded full-height" flat bordered>
-          <q-card-section>
-            <div>Usuarios registrados</div>
-            <q-knob
-              v-model="tablero.usuarios"
-              readonly
-              show-value
-              size="90px"
-              color="lime"
-              track-color="grey-3"
-              class="text-lime q-ma-md"
-            >
-              <template #default>{{ tablero.usuarios }}</template>
-            </q-knob>
-          </q-card-section>
-        </q-card>
-      </div> -->
     </div>
+
+    <modales-entidad :comportamiento="modales" />
   </q-page>
 </template>
 
 <script lang="ts">
+// Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
 import { defineComponent, reactive, ref } from 'vue'
+
+// Componentes
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+
+// Logica y controladores
+import { ComportamientoModalesTableroPersonal } from '../application/ComportamientoModalesTableroPersonal'
 import { TableroPersonalController } from '../infraestructure/TableroPersonalController'
 import { TableroPersonal } from '../domain/TableroPersonal'
 
 export default defineComponent({
+  components: {
+    ModalesEntidad,
+  },
   setup() {
     const store = useAuthenticationStore()
     const controller = new TableroPersonalController()
@@ -269,6 +251,12 @@ export default defineComponent({
 
     index()
 
+    const modales = new ComportamientoModalesTableroPersonal()
+
+    function verSubtarea() {
+      modales.abrirModalEntidad('SubtareaAsignadaPage')
+    }
+
     return {
       tablero,
       store,
@@ -282,6 +270,8 @@ export default defineComponent({
       ),
       filtrosTareas,
       filtroTarea,
+      modales,
+      verSubtarea,
     }
   },
 })

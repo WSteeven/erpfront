@@ -1,4 +1,5 @@
 // Dependencias
+import { useNotificaciones } from 'shared/notificaciones'
 import { defineComponent, ref } from 'vue'
 
 // Componentes
@@ -10,12 +11,23 @@ export default defineComponent({
       type: Object as () => ComportamientoModales<any>,
       required: true,
     },
+    confirmarCerrar: {
+      type: Boolean,
+      default: false,
+    }
   },
   setup(props) {
     const { componente, titulo, abierto } = props.comportamiento.useModal()
+    const { confirmar } = useNotificaciones()
 
     function cerrarModalEntidad() {
-      abierto.value = false
+      if (props.confirmarCerrar) {
+        confirmar('¿Está seguro de que desea cerrar?', () =>
+          abierto.value = false
+        )
+      } else {
+        abierto.value = false
+      }
     }
 
     const duracion = ref(0)

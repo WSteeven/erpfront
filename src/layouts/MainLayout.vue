@@ -80,7 +80,7 @@
             >
               <div class="row no-wrap q-pa-md justify-content">
                 <div class="column">
-                  <div class="text-h6 q-mb-md">Coordinador</div>
+                  <div class="text-h6 q-mb-md">{{ roles }}</div>
                   <q-item clickable dense :to="{ name: 'Perfil' }">
                     <q-item-section> Perfil </q-item-section>
                   </q-item>
@@ -192,6 +192,8 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
     const Router = useRouter()
 
+    const roles = computed(() => authenticationStore.roles.join(','))
+
     const nombreUsuario = computed(() => {
       const usuario = authenticationStore.user
       if (usuario) {
@@ -213,6 +215,7 @@ export default defineComponent({
       },
       logout,
       nombreUsuario,
+      roles,
     }
   },
 })
