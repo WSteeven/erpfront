@@ -160,6 +160,10 @@
         </transition>
       </router-view>
     </q-page-container>
+    <bottom-menu
+      :menu-visible="menuVisible"
+      @cerrar="toggleLeftDrawer"
+    ></bottom-menu>
   </q-layout>
 </template>
 
@@ -173,9 +177,11 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 
 // Componentes
 import EssentialLink from 'components/EssentialLink.vue'
+import BottomMenu from 'components/bottomMenu/view/BottomMenu.vue'
 
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -183,11 +189,14 @@ export default defineComponent({
   components: {
     EssentialLink,
     EssentialLoading,
+    BottomMenu,
   },
 
   setup() {
     const leftDrawerOpen = ref(false)
     const menu = useMenuStore()
+
+    const menuVisible = ref(false)
 
     const authenticationStore = useAuthenticationStore()
     const Router = useRouter()
@@ -207,15 +216,23 @@ export default defineComponent({
       Router.replace({ name: 'Login' })
     }
 
+    const $q = useQuasar()
+
     return {
       links: menu.links,
       leftDrawerOpen,
       toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value
+        console.log('cerrrada')
+        if (!$q.screen.xs) {
+          leftDrawerOpen.value = !leftDrawerOpen.value
+        } else {
+          menuVisible.value = !menuVisible.value
+        }
       },
       logout,
       nombreUsuario,
       roles,
+      menuVisible,
     }
   },
 })
