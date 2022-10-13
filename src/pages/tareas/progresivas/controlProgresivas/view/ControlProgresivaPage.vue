@@ -7,6 +7,7 @@
   >
     <template #formulario> -->
   <q-page padding>
+    <div class="text-bold">Control de tendidos</div>
     <q-form @submit.prevent="enviar()">
       <div class="row q-col-gutter-sm q-py-md">
         <!-- Subtarea JP -->

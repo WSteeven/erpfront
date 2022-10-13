@@ -474,6 +474,13 @@
 </template>
 
 <style lang="scss">
+.q-table__top,
+.q-table__bottom,
+thead tr:first-child th {
+  /* bg color is important for th; just specify one */
+  background-color: #fff;
+}
+
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 410px;

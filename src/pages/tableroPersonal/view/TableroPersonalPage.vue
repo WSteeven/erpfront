@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="text-center q-py-md">
-      <div class="text-bold q-mb-md">Jueves, 13 de Octubre</div>
+      <div class="text-bold q-mb-md">{{ fecha }}</div>
       <div class="text-h5 q-mb-md">Buenos días, {{ store.nombreUsuario }}.</div>
       <q-chip v-if="store.esCoordinador || store.esTecnicoLider" icon="bi-check"
         ><b class="q-mr-xs">16</b>Trabajos finalizados</q-chip
@@ -222,6 +222,7 @@
 // Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
 import { defineComponent, reactive, ref } from 'vue'
+import { date } from 'quasar'
 
 // Componentes
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -253,6 +254,9 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesTableroPersonal()
 
+    const timeStamp = Date.now()
+    const fecha = date.formatDate(timeStamp, 'dddd, DD MMMM YYYY')
+
     function verSubtarea() {
       modales.abrirModalEntidad('SubtareaAsignadaPage')
     }
@@ -272,6 +276,7 @@ export default defineComponent({
       filtroTarea,
       modales,
       verSubtarea,
+      fecha,
     }
   },
 })
