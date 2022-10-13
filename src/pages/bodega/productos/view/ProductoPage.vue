@@ -12,13 +12,14 @@
             <label class="q-mb-sm block">Categoria</label>
             <q-select
               v-model="producto.categoria"
-              :options="opciones.categorias"
+              :options="opciones"
               hint="Agregue elementos desde el panel de categorías"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.categoria.$errors.length"
               error-message="Debes seleccionar una categoría"
               use-input

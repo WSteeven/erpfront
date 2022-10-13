@@ -3,7 +3,7 @@ import { configuracionColumnasProductos } from '../domain/configuracionColumnasP
 import { configuracionColumnasCategorias } from 'pages/bodega/categorias/domain/configuracionColumnasCategorias'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // Componentes
 //import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -45,6 +45,7 @@ export default defineComponent({
     )
     const { entidad: imagen } = mixinImagenes.useReferencias() */
 
+    const opciones = ref([]);
 
     //Obtener el listado de las categorias
     cargarVista(() => {
@@ -78,7 +79,7 @@ export default defineComponent({
     onReestablecer(() => (criterioBusquedaCategoria.value = null))
     onConsultado(() => seleccionarCategoria(producto.categoria))
 
-    const opciones = listadosAuxiliares.categorias
+    opciones.value = listadosAuxiliares.categorias
 
     return {
       mixin,
@@ -100,7 +101,7 @@ export default defineComponent({
       //listado
       listadosAuxiliares,
       opciones,
-      
+
       /**
        * Función para filtrar el SELECT de categorias,
        * @param val String, tecla que ingresa el usuario para la busqueda
@@ -110,13 +111,13 @@ export default defineComponent({
       filterFn(val, update) {
         if (val === '') {
           update(() => {
-            opciones.categorias = listadosAuxiliares.categorias
+            opciones.value = listadosAuxiliares.categorias
           })
           return
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones.categorias = listadosAuxiliares.categorias.filter(
+          opciones.value = listadosAuxiliares.categorias.filter(
             (v) => v.nombre.toLowerCase().indexOf(needle) > -1
           )
         })

@@ -4,6 +4,7 @@ import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, Ref, ref } from 'vue'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
+import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { useOrquestadorSelectorProductos } from 'pages/bodega/transacciones/application/OrquestadorSelectorProductos'
 
@@ -18,6 +19,7 @@ import { TransaccionController } from '../../../infraestructure/TransaccionContr
 import { Transaccion } from '../../../domain/Transaccion'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
+
 //Controladores para los listados
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
@@ -28,6 +30,9 @@ import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/
 import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { useOrquestadorSelectorDetalles } from 'pages/bodega/transacciones/application/OrquestadorSelectorDetalles'
+import { useAuthenticationStore } from 'stores/authentication'
 export default defineComponent({
     components: { TabLayout, EssentialTable, EssentialSelectableTable },
     props: {
@@ -38,10 +43,18 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionController())
+        const mixin = new ContenedorSimpleMixin(
+            Transaccion,
+            new TransaccionController(),
+        )
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, restablecer } = mixin.useComportamiento()
+        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { confirmar, prompt } = useNotificaciones()
+        const store = useAuthenticationStore()
+
+        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length>0 ? true : false
+        // console.log('xxx',(store.roles.filter((v)=>v==='BODEGA' ||v==='COORDINADOR')).length>0?'es bodega':'no tiene el rol')
+        console.log(rolSeleccionado)
 
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
@@ -50,8 +63,15 @@ export default defineComponent({
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorProductos(transaccion, 'productos')
+        } = useOrquestadorSelectorDetalles(transaccion, 'detalles')
 
+        const opciones_autorizaciones = ref([])
+        const opciones_sucursales = ref([])
+        const opciones_tipos = ref([])
+        const opciones_subtipos = ref([])
+        const opciones_estados = ref([])
+        const opciones_productos = ref([])
+        //obtener los listados
         cargarVista(async () => {
             await obtenerListados({
                 sucursales: new SucursalController(),
@@ -64,12 +84,11 @@ export default defineComponent({
                 autorizaciones: new AutorizacionController(),
                 estados: new EstadosTransaccionController(),
                 productos: new ProductoController(),
+                detalles: new DetalleProductoController(),
             })
             //carga de valores iniciales
-            transaccion.autorizacion = listadosAuxiliares.autorizaciones[0]['id']
-            transaccion.estado = listadosAuxiliares.estados[0]['id']
-
-
+            listadosAuxiliares.autorizaciones.length > 1 ? transaccion.autorizacion = listadosAuxiliares.autorizaciones[0]['id'] : transaccion.autorizacion = ''
+            listadosAuxiliares.estados.length > 1 ? transaccion.estado = listadosAuxiliares.estados[0]['id'] : transaccion.estado = ''
         })
 
         //Reglas de validacion
@@ -79,12 +98,14 @@ export default defineComponent({
             tipo: { required },
             subtipo: { required },
             lugar_destino: { required },
-            autorizacion: { required },
-            estado: { required },
+            autorizacion: { requiredIfRol: requiredIf(rolSeleccionado), },
+            estado: { requiredIfRol: requiredIf(rolSeleccionado),},
             observacion_aut: {
+                requiredIfRol: requiredIf(rolSeleccionado),
                 requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion ? true : false })
             },
             observacion_est: {
+                requiredIfRol: requiredIf(rolSeleccionado),
                 requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado ? true : false })
             },
             //validar que envien datos en el listado
@@ -97,18 +118,16 @@ export default defineComponent({
         setValidador(v$.value)
 
         //Configurar los listados
-        const opciones_sucursales = listadosAuxiliares.sucursales
-        opciones_sucursales.sucursales = listadosAuxiliares.sucursales
-        const opciones_tipos = listadosAuxiliares.tipos
-        const opciones_subtipos = listadosAuxiliares.subtipos
-        opciones_subtipos.subtipos = listadosAuxiliares.subtipos
-        const opciones_autorizaciones = listadosAuxiliares.autorizaciones
-        const opciones_estados = listadosAuxiliares.estados
-        const opciones_productos = listadosAuxiliares.productos
+        opciones_tipos.value = listadosAuxiliares.tipos
+        opciones_estados.value = listadosAuxiliares.estados
+        opciones_subtipos.value = listadosAuxiliares.subtipos
+        opciones_productos.value = listadosAuxiliares.productos
+        opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
 
         const fecha = new Date()
         transaccion.created_at = new Intl.DateTimeFormat('az', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(fecha)
-        console.log(transaccion.created_at)
+        // console.log(transaccion.created_at)
 
 
         function eliminar({ entidad, posicion }) {
@@ -134,24 +153,25 @@ export default defineComponent({
             },
         }
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
-            {
-                name: 'cantidades',
-                field: 'cantidades',
-                label: 'Cantidades',
-                align: 'left',
-                sortable: false,
-            },
-            {
-                name: 'acciones',
-                field: 'acciones',
-                label: 'Acciones',
-                align: 'center'
-            },
+        {
+            name: 'cantidades',
+            field: 'cantidades',
+            label: 'Cantidades',
+            align: 'left',
+            sortable: false,
+        },
+        {
+            name: 'acciones',
+            field: 'acciones',
+            label: 'Acciones',
+            align: 'center'
+        },
         ]
 
         return {
             mixin, transaccion, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasTransacciones,
+            //listados
             opciones_sucursales,
             opciones_tipos,
             opciones_subtipos,
@@ -161,13 +181,13 @@ export default defineComponent({
 
             //filtros
             filtroTipos(val) {
-                opciones_subtipos.subtipos = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
+                opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
                 transaccion.subtipo = ''
-                if (opciones_subtipos.subtipos.length < 1) {
+                if (opciones_subtipos.value.length < 1) {
                     transaccion.subtipo = ''
                 }
-                if (opciones_subtipos.subtipos.length == 1) {
-                    transaccion.subtipo = opciones_subtipos.subtipos[0]['id']
+                if (opciones_subtipos.value.length == 1) {
+                    transaccion.subtipo = opciones_subtipos.value[0]['id']
                 }
             },
             // tabla,
@@ -185,7 +205,8 @@ export default defineComponent({
             seleccionarProducto,
             configuracionColumnasProductos,
 
-
+            //rol
+            rolSeleccionado,
         }
     }
 })

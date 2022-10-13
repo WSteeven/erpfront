@@ -33,42 +33,42 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     {
         name: 'precio_compra',
         field: 'precio_compra',
-        label: 'precio_compra',
+        label: 'P. Compra',
         align: 'left',
         sortable: true
     },
     {
         name: 'tipo_fibra',
         field: 'tipo_fibra',
-        label: 'tipo_fibra',
+        label: 'Tipo F.',
         align: 'left',
         sortable: true
     },
     {
         name: 'hilos',
         field: 'hilos',
-        label: 'hilo',
+        label: 'Hilo',
         align: 'left',
         sortable: true
     },
     {
         name: 'punta_inicial',
         field: 'punta_inicial',
-        label: 'punta_inicial',
+        label: 'P. Inicial',
         align: 'left',
         sortable: true
     },
     {
         name: 'punta_final',
         field: 'punta_final',
-        label: 'punta_final',
+        label: 'P. Final',
         align: 'left',
         sortable: true
     },
     {
         name: 'custodia',
         field: 'custodia',
-        label: 'custodia',
+        label: 'Custodia',
         align: 'left',
         sortable: true
     },
