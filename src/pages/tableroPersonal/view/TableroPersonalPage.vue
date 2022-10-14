@@ -4,7 +4,7 @@
       <div class="text-bold q-mb-md">{{ fecha }}</div>
       <div class="text-h5 q-mb-md">Buenos días, {{ store.nombreUsuario }}.</div>
       <q-chip v-if="store.esCoordinador || store.esTecnicoLider" icon="bi-check"
-        ><b class="q-mr-xs">16</b>Trabajos finalizados</q-chip
+        >16 Trabajos finalizados</q-chip
       >
     </div>
 
@@ -26,26 +26,47 @@
             </div>
           </q-card-section>
 
-          <q-tabs v-model="tab" class="primary">
+          <q-tabs
+            v-model="tab"
+            class="primary"
+            dense
+            narrow-indicator
+            active-color="white"
+            active-bg-color="primary"
+            indicator-color="primary"
+            :class="{ 'my-custom-toggle': !$q.screen.xs }"
+          >
             <q-tab
               v-if="store.esTecnicoLider"
               label="Asignadas recientemente"
               name="asignadas"
+              class="q-mx-xs q-my-md rounded"
+              :class="{ 'shadow-chip borde': $q.screen.xs }"
+              no-caps
             />
             <q-tab
               v-if="store.esCoordinador"
               label="Pendientes de asignar (9)"
               name="pendientes"
+              class="q-mx-xs q-my-md rounded"
+              :class="{ 'shadow-chip borde': $q.screen.xs }"
+              no-caps
             />
             <q-tab
               v-if="store.esCoordinador"
               label="Ventanas (10)"
               name="ventanas"
+              class="q-mx-xs q-my-md rounded"
+              :class="{ 'shadow-chip borde': $q.screen.xs }"
+              no-caps
             />
             <q-tab
               v-if="store.esCoordinador"
               label="Proyectos (9)"
               name="proyectos"
+              class="q-mx-xs q-my-md rounded"
+              :class="{ 'shadow-chip borde': $q.screen.xs }"
+              no-caps
             />
           </q-tabs>
 
@@ -56,9 +77,9 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-check-circle"
+                    name="bi-check-circle-fill"
                     class="q-mr-md"
-                    color="grey-5"
+                    color="primary"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0001_3</div>
@@ -68,9 +89,9 @@
 
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-check-circle"
+                    name="bi-check-circle-fill"
                     class="q-mr-md"
-                    color="grey-5"
+                    color="primary"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0001_4</div>
@@ -80,9 +101,9 @@
 
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-check-circle"
+                    name="bi-check-circle-fill"
                     class="q-mr-md"
-                    color="grey-5"
+                    color="primary"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0001_5</div>
@@ -96,9 +117,10 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-check-circle"
+                    name="bi-check-circle-fill"
                     class="q-mr-md"
-                    color="grey-5"
+                    color="primary"
+                    size="xs"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0001_3</div>
@@ -128,9 +150,9 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-check-circle"
+                    name="bi-check-circle-fill"
                     class="q-mr-md"
-                    color="grey-5"
+                    color="primary"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0001_1</div>
@@ -174,8 +196,8 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-pin-angle"
-                    size="md"
+                    name="bi-diagram-3"
+                    size="sm"
                     class="q-mr-md"
                   ></q-icon>
                   <div class="text-left column">
@@ -186,8 +208,8 @@
 
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-pin-angle"
-                    size="md"
+                    name="bi-diagram-3"
+                    size="sm"
                     class="q-mr-md"
                   ></q-icon>
                   <div class="text-left column">
@@ -198,8 +220,8 @@
 
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-pin-angle"
-                    size="md"
+                    name="bi-diagram-3"
+                    size="sm"
                     class="q-mr-md"
                   ></q-icon>
                   <div class="text-left column">

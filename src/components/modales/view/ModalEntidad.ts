@@ -16,6 +16,7 @@ export default defineComponent({
       default: false,
     }
   },
+  emits: ['seleccionar'],
   setup(props) {
     const { componente, titulo, abierto } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()

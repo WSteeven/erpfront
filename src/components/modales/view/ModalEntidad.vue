@@ -28,7 +28,10 @@
       </q-toolbar>
 
       <q-card-section>
-        <component :is="componente"></component>
+        <component
+          :is="componente"
+          @seleccionar="emit('seleccionar')"
+        ></component>
         <!-- :mostrar-listado="false"></component> -->
       </q-card-section>
     </q-card>

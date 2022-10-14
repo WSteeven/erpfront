@@ -19,6 +19,10 @@ export class ComportamientoModales<T extends ModalesEntidad<T>> {
     this.modales = modales
   }
 
+  getModales() {
+    return this.modales
+  }
+
   useModal(): any {
     const componente = computed(() => this.componenteActual.value?.component)
     const titulo = computed(() => this.componenteActual.value?.titulo)

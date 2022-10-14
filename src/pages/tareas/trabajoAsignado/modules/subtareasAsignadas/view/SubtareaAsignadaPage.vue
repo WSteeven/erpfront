@@ -257,12 +257,12 @@
       </q-expansion-item>
 
       <!-- Botones formulario -->
-      <div class="row q-gutter-md justify-end">
+      <!--<div class="row q-gutter-md justify-end">
         <q-btn color="primary" no-caps :to="{ name: 'trabajo_asignado' }" push>
           <q-icon name="bi-chevron-left" size="xs" class="q-mr-sm"></q-icon>
           <div>Volver</div>
         </q-btn>
-      </div>
+      </div> -->
     </q-form>
   </q-page>
 </template>

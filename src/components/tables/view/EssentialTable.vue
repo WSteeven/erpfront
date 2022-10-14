@@ -61,19 +61,21 @@
     <template v-if="mostrarHeader" v-slot:top="props">
       <!-- <div class="column full-width"> -->
       <div class="row justify-between items-center full-width q-mb-md">
-        <q-btn
-          v-if="agregarElemento"
-          color="primary"
-          :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-          no-caps
-          unelevated
-          push
-          rounded
-          @click="agregarElemento.accion"
-        >
-          <q-icon name="bi-plus" size="xs" class="q-pr-sm"></q-icon>
-          <span>{{ agregarElemento.titulo }}</span>
-        </q-btn>
+        <div class="col-12 col-md-6">
+          <q-btn
+            v-if="agregarElemento"
+            color="primary"
+            class="q-mx-auto"
+            :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+            push
+            rounded
+            no-caps
+            @click="agregarElemento.accion"
+          >
+            <q-icon name="bi-plus" size="xs" class="q-pr-sm"></q-icon>
+            <span>{{ agregarElemento.titulo }}</span>
+          </q-btn>
+        </div>
 
         <!-- <q-btn color="primary" no-caps rounded unelevated outline>
               <q-icon name="bi-eye" size="xs" class="q-pr-sm"></q-icon>
@@ -82,22 +84,12 @@
         <!-- <div class="text-bold">{{ 'Listado de ' + titulo }}</div>
             <small>JPCONSTRUCRED</small> -->
         <!-- <q-space></q-space> -->
-
-        <div class="row q-col-gutter-sm justify-between">
-          <q-input
-            outlined
-            dense
-            rounded
-            debounce="300"
-            color="primary"
-            v-model="filter"
+        <div class="col-12 col-md-6">
+          <div
+            v-if="mostrarBotones"
+            class="row q-gutter-sm justify-end"
+            :class="{ 'no-wrap': !$q.screen.xs }"
           >
-            <template v-slot:append>
-              <q-icon name="search"></q-icon>
-            </template>
-          </q-input>
-
-          <span v-if="mostrarBotones" class="row q-gutter-sm">
             <q-select
               v-model="visibleColumns"
               multiple
@@ -114,6 +106,20 @@
               :class="{ 'full-width': $q.screen.xs }"
               style="min-width: 150px"
             />
+
+            <q-input
+              outlined
+              dense
+              rounded
+              :class="{ 'full-width': $q.screen.xs }"
+              debounce="300"
+              color="primary"
+              v-model="filter"
+            >
+              <template v-slot:append>
+                <q-icon name="search"></q-icon>
+              </template>
+            </q-input>
 
             <!-- Exportar a Excel -->
             <q-btn flat round unelevated dense icon="bi-download">
@@ -177,9 +183,10 @@
                 grid ? 'Formato de lista' : 'Formato de cuadrícula'
               }}</q-tooltip>
             </q-btn>
-          </span>
+          </div>
         </div>
       </div>
+
       <!-- </div> -->
       <!-- Botones exportar
         <div v-if="mostrarBotones" class="row q-gutter-sm justify-end">
@@ -247,9 +254,8 @@
           v-if="accion1"
           color="primary"
           rounded
-          unelevated
           dense
-          outline
+          push
           no-caps
           :label="accion1.titulo"
           class="q-px-sm"
@@ -265,9 +271,8 @@
           v-if="accion2"
           color="primary"
           rounded
-          unelevated
           dense
-          outline
+          push
           no-caps
           :label="accion2.titulo"
           class="q-px-sm"
@@ -322,9 +327,10 @@
         class="q-pa-sm q-mb-md full-width"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
       >
-        <q-card-section>
+        <q-card-section v-if="tipoSeleccion !== 'none'">
           <q-checkbox dense v-model="props.selected" :label="props.row.name" />
         </q-card-section>
+
         <q-list dense>
           <q-item v-for="col in props.cols" :key="col.name">
             <!-- Clave -->
@@ -389,9 +395,8 @@
                   v-if="accion1"
                   color="primary"
                   rounded
-                  unelevated
+                  push
                   dense
-                  outline
                   no-caps
                   :label="accion1.titulo"
                   class="q-px-sm"
@@ -410,9 +415,8 @@
                   v-if="accion2"
                   color="primary"
                   rounded
-                  unelevated
+                  push
                   dense
-                  outline
                   no-caps
                   :label="accion2.titulo"
                   class="q-px-sm"
