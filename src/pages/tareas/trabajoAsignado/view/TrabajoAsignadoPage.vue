@@ -19,6 +19,12 @@
     ></essential-table-tabs>
 
     <modales-entidad :comportamiento="modales" :confirmar-cerrar="true" />
+    <confirmar-dialog
+      :visible="mostrarDialogPlantilla"
+      :comportamiento="modales"
+      @seleccionar="plantillaSeleccionada"
+      @cerrar="mostrarDialogPlantilla = false"
+    ></confirmar-dialog>
   </q-page>
 </template>
 

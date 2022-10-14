@@ -1,22 +1,13 @@
 <template>
-  <!--<q-btn-toggle
-    v-model="tabSeleccionado"
-    spread
-    class="my-custom-toggle"
-    no-caps
-    unelevated
-    bordered
-    toggle-color="primary"
-    color="white"
-    text-color="grey-9"
-    :options="tabOptions"
-    @click="emit('tab-seleccionado', tabSeleccionado)"
-  /> -->
   <q-tabs
     v-model="tabSeleccionado"
     no-caps
     bordered
     dense
+    narrow-indicator
+    active-color="white"
+    active-bg-color="primary"
+    indicator-color="primary"
     :class="{ 'my-custom-toggle': !$q.screen.xs }"
     align="justify"
     @click="emit('tab-seleccionado', tabSeleccionado)"
@@ -26,11 +17,10 @@
       :key="opcion.label"
       :label="opcion.label"
       :name="opcion.value"
+      class="q-mx-xs q-my-md rounded"
+      :class="{ 'shadow-chip borde': $q.screen.xs }"
     ></q-tab>
-    <!--<q-tab label="Asignadas (4)" name="asignadas" />
-    <q-tab label="Pendientes de asignar (9)" name="pendientes" />
-    <q-tab label="Ventanas (10)" name="ventanas" />
-    <q-tab label="Proyectos (9)" name="proyectos" /> -->
+    <!--:class="{ 'bg-grey-3': $q.screen.xs }" -->
   </q-tabs>
 
   <essential-table

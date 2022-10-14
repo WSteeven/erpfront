@@ -23,13 +23,38 @@
         bordered
         dense
         align="center"
-        class="chip"
+        narrow-indicator
+        active-color="white"
+        active-bg-color="primary"
+        indicator-color="primary"
       >
-        <q-tab label="1. Tarea" name="tarea"></q-tab>
-        <q-tab label="2. Subtareas" name="subtareas" />
-        <q-tab label="3. Almacenamiento en la nube" name="almacenamiento" />
-        <q-tab label="4. Resumen de trabajo consolidado" name="resumen" />
+        <q-tab
+          label="1. Tarea"
+          name="tarea"
+          class="q-mx-xs q-my-md rounded"
+          :class="{ 'shadow-chip borde': $q.screen.xs }"
+        ></q-tab>
+        <q-tab
+          label="2. Subtareas"
+          name="subtareas"
+          class="q-mx-xs q-my-md rounded"
+          :class="{ 'shadow-chip borde': $q.screen.xs }"
+        />
+        <q-tab
+          label="3. Almacenamiento en la nube"
+          name="almacenamiento"
+          class="q-mx-xs q-my-md rounded"
+          :class="{ 'shadow-chip borde': $q.screen.xs }"
+        />
+        <q-tab
+          label="4. Resumen de trabajo consolidado"
+          name="resumen"
+          class="q-mx-xs q-my-md rounded"
+          :class="{ 'shadow-chip borde': $q.screen.xs }"
+        />
       </q-tabs>
+
+      <q-separator inset />
 
       <q-tab-panels v-model="tabSeleccionado" animated>
         <q-tab-panel name="tarea">
