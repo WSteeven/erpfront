@@ -48,7 +48,8 @@ export default defineComponent({
             new TransaccionController(),
         )
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { setValidador, obtenerListados, cargarVista, } = mixin.useComportamiento()
+        const {onBeforeGuardar, onBeforeConsultar }=mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
 

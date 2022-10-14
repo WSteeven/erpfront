@@ -10,6 +10,13 @@ export const configuracionColumnasUbicaciones: ColumnConfig<Ubicacion>[]=[
         sortable: true
     },
     {
+        name: 'sucursal',
+        field: 'sucursal',
+        label: 'Sucursal',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'percha',
         field: 'percha',
         label: 'Percha',

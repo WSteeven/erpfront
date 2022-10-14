@@ -58,9 +58,7 @@ export default defineComponent({
 
     //Reglas de validacion
     const reglas = {
-      //codigo: {required},
       percha: { required },
-      piso: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())

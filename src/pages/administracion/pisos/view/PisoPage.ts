@@ -23,7 +23,6 @@ export default defineComponent({
         //Reglas de validacion
         const reglas = {
             fila: {required},
-            columna: {required},
         }
 
         const v$ = useVuelidate(reglas, piso)

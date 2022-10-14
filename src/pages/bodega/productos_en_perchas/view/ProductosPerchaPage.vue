@@ -15,17 +15,32 @@
                 <q-input
                   v-model="criterioBusquedaInventario"
                   placeholder="Producto del inventario"
-                  @update:model-value="(v) => (criterioBusquedaInventario = v.toUpperCase())"
+                  @update:model-value="
+                    (v) => (criterioBusquedaInventario = v.toUpperCase())
+                  "
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="listarInventarios()"
-                  @blur="criterioBusquedaInventario === ''? limpiarInventario(): null"
-                  dense outlined
+                  @blur="
+                    criterioBusquedaInventario === ''
+                      ? limpiarInventario()
+                      : null
+                  "
+                  dense
+                  outlined
                 >
                 </q-input>
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarInventarios()" icon="search" unelevated color="secondary" class="full-width" style="height: 40px" no-caps>Buscar</q-btn>
+                  @click="listarInventarios()"
+                  icon="search"
+                  unelevated
+                  color="secondary"
+                  class="full-width"
+                  style="height: 40px"
+                  no-caps
+                  >Buscar</q-btn
+                >
               </div>
             </div>
           </div>
@@ -47,6 +62,15 @@
               emit-value
               map-options
             >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo }}</q-item-label>
+                    <q-item-label caption
+                      >Piso:{{ scope.opt.piso }} | Percha:{{scope.opt.percha}} | Sucursal:{{scope.opt.sucursal}}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.ubicacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>

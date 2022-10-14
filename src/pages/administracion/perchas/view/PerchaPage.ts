@@ -3,7 +3,7 @@ import { configuracionColumnasPerchas } from '../domain/configuracionColumnasPer
 //import { configuracionColumnasSucursales } from "pages/administracion/sucursales/domain/configuracionColumnasSucursales";
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 //Componentes
 //import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -20,6 +20,7 @@ import { Percha } from '../domain/Percha'
 import { ComportamientoModalesPercha } from '../application/ComportamientoModalesPercha'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
+import { PisoController } from 'pages/administracion/pisos/infraestructure/PisoController'
 
 export default defineComponent({
   components: { TabLayout, LabelAbrirModal, ModalesEntidad },
@@ -35,10 +36,13 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
 
+      const opciones_sucursales = ref([])
+      const opciones_pisos = ref([])
     //Obtener los listados
     cargarVista(() => {
       obtenerListados({
         sucursales: new SucursalController(),
+        pisos:new PisoController(),
       })
     })
 
@@ -53,34 +57,21 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, percha)
     setValidador(v$.value)
 
-    //instanciar el comportamiento del modal
-    const modalesPercha = new ComportamientoModalesPercha()
-
-    /* const {
-            refListadoSeleccionable: refListadoSeleccionableSucursales,
-            criterioBusqueda: criterioBusquedaSucursal,
-            listado: listadoSucursales,
-            listar: listarSucursales,
-            limpiar: limpiarSucursal,
-            seleccionar: seleccionarSucursal,
-        } = useOrquestadorSelectorSucursales(percha, 'sucursales')
-
-        onReestablecer(()=>(criterioBusquedaSucursal.value =null))
-        onConsultado(()=>seleccionarSucursal(percha.sucursal)) */
-
     //asignar el listado a las opciones del select
-    const opciones = listadosAuxiliares.sucursales
+    opciones_sucursales.value = listadosAuxiliares.sucursales
+    opciones_pisos.value = listadosAuxiliares.pisos
 
     return {
+      group: ref([]),
       mixin,
       percha,
       disabled,
       accion,
       v$,
       configuracionColumnas: configuracionColumnasPerchas,
-      //modal y listado
-      modalesPercha,
-      opciones,
+      //listado
+      opciones_sucursales,
+      opciones_pisos,
 
       /**
        * Funcion para filtrar el SELECT de sucursales,
@@ -91,23 +82,15 @@ export default defineComponent({
       filterFn(val, update){
         if(val===''){
             update(()=>{
-                opciones.sucursales = listadosAuxiliares.sucursales
+                opciones_sucursales.value = listadosAuxiliares.sucursales
             })
             return
         }
         update(()=>{
             const needle = val.toLowerCase()
-            opciones.sucursales = listadosAuxiliares.sucursales.filter((v)=>v.lugar.toLowerCase().indexOf(needle)>-1)
+            opciones_sucursales.value = listadosAuxiliares.sucursales.filter((v)=>v.lugar.toLowerCase().indexOf(needle)>-1)
         })
       },
-      //Selector
-      /* refListadoSeleccionableSucursales,
-            criterioBusquedaSucursal,
-            listadoSucursales,
-            listarSucursales,
-            limpiarSucursal,
-            seleccionarSucursal,
-            configuracionColumnasSucursales, */
     }
   },
 })

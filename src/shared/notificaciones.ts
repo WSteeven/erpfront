@@ -11,6 +11,7 @@ export function useNotificaciones() {
 
   function notificarCorrecto(mensaje: string | string[]) {
     $q.notify({
+      html:true,
       color: 'light-green-7',
       textColor: 'white',
       icon: 'bi-check-circle-fill',
@@ -22,6 +23,7 @@ export function useNotificaciones() {
 
   function notificarError(mensaje: string | string[]) {
     $q.notify({
+      html:true,
       color: 'pink-6',
       textColor: 'white',
       icon: 'bi-question-diamond-fill',
@@ -34,6 +36,7 @@ export function useNotificaciones() {
 
   function notificarAdvertencia(mensaje: string | string[]) {
     $q.notify({
+      html:true,
       color: 'amber-8',
       textColor: 'white',
       icon: 'bi-exclamation-triangle-fill',
