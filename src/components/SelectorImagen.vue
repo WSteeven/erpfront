@@ -12,6 +12,7 @@
       <q-icon name="attach_file" />
     </template>
   </q-file>
+
   <q-img
     v-show="imagenCodificada"
     :src="imagenCodificada"

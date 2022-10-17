@@ -105,9 +105,9 @@ export default defineComponent({
     }
 
     const agregarProgresiva: CustomActionTable = {
-      titulo: 'Agregar progresiva',
+      titulo: 'Agregar avance',
       accion: () => {
-        //
+        modales.abrirModalEntidad('RegistroTendidoPage')
       },
     }
 
@@ -119,7 +119,7 @@ export default defineComponent({
       //
     }
 
-    const modalesProgresiva = new ComportamientoModalesProgresiva()
+    const modales = new ComportamientoModalesProgresiva()
 
     return {
       mixin,
@@ -128,7 +128,7 @@ export default defineComponent({
       enviar,
       configuracionColumnasControlProgresivas,
       setBase64,
-      modalesProgresiva,
+      modales,
       agregarProgresiva,
       eliminar,
       editar,

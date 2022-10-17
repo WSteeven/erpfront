@@ -3,19 +3,14 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 // Paginas
-import TipoTareaPage from 'pages/tareas/tiposTareas/view/TipoTareaPage.vue'
-import TipoElementoPage from 'pages/tareas/progresivas/tiposElementos/view/TipoElementoPage.vue'
+import RegistroTendidoPage from 'pages/tareas/progresivas/controlProgresivas/modules/registrosTendidos/view/RegistroTendidoPage.vue'
 
 export class ProgresivaModales {
-  TipoTareaPage: ComponenteModal
-  TipoElementoPage: ComponenteModal
+  RegistroTendidoPage: ComponenteModal
 
   constructor() {
-    this.TipoTareaPage = markRaw(
-      new ComponenteModal('CONSTRUCRED', TipoTareaPage)
-    )
-    this.TipoElementoPage = markRaw(
-      new ComponenteModal('CONSTRUCRED', TipoElementoPage)
+    this.RegistroTendidoPage = markRaw(
+      new ComponenteModal('CONSTRUCRED', RegistroTendidoPage)
     )
   }
 }

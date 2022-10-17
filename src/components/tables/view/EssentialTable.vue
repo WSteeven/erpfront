@@ -90,6 +90,20 @@
             class="row q-gutter-sm justify-end"
             :class="{ 'no-wrap': !$q.screen.xs }"
           >
+            <q-input
+              outlined
+              dense
+              rounded
+              :class="{ 'full-width': $q.screen.xs }"
+              debounce="300"
+              color="primary"
+              v-model="filter"
+            >
+              <template v-slot:append>
+                <q-icon name="search"></q-icon>
+              </template>
+            </q-input>
+
             <q-select
               v-model="visibleColumns"
               multiple
@@ -106,20 +120,6 @@
               :class="{ 'full-width': $q.screen.xs }"
               style="min-width: 150px"
             />
-
-            <q-input
-              outlined
-              dense
-              rounded
-              :class="{ 'full-width': $q.screen.xs }"
-              debounce="300"
-              color="primary"
-              v-model="filter"
-            >
-              <template v-slot:append>
-                <q-icon name="search"></q-icon>
-              </template>
-            </q-input>
 
             <!-- Exportar a Excel -->
             <q-btn flat round unelevated dense icon="bi-download">
