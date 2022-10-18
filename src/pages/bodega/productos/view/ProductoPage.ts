@@ -64,21 +64,6 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, producto)
     setValidador(v$.value)
-
-    const modalesProducto = new ComportamientoModalesProducto()
-
-    const {
-      refListadoSeleccionable: refListadoSeleccionableCategorias,
-      criterioBusqueda: criterioBusquedaCategoria,
-      listado: listadoCategorias,
-      listar: listarCategorias,
-      limpiar: limpiarCategoria,
-      seleccionar: seleccionarCategoria,
-    } = useOrquestadorSelectorCategorias(producto, 'categorias')
-
-    onReestablecer(() => (criterioBusquedaCategoria.value = null))
-    onConsultado(() => seleccionarCategoria(producto.categoria))
-
     opciones.value = listadosAuxiliares.categorias
 
     return {
@@ -88,18 +73,7 @@ export default defineComponent({
       accion,
       v$,
       configuracionColumnas: configuracionColumnasProductos,
-      //modal
-      modalesProducto,
-      //Selector
-      refListadoSeleccionableCategorias,
-      criterioBusquedaCategoria,
-      listadoCategorias,
-      listarCategorias,
-      limpiarCategoria,
-      seleccionarCategoria,
-      configuracionColumnasCategorias,
       //listado
-      listadosAuxiliares,
       opciones,
 
       /**

@@ -12,21 +12,21 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     {
         name: 'descripcion',
         field: 'descripcion',
-        label: 'descripcion',
+        label: 'Descripción',
         align: 'left',
         sortable: true
     },
     {
         name: 'modelo',
         field: 'modelo',
-        label: 'modelo',
+        label: 'Modelo',
         align: 'left',
         sortable: true
     },
     {
         name: 'serial',
         field: 'serial',
-        label: 'serial',
+        label: 'Serial',
         align: 'left',
         sortable: true
     },
@@ -38,20 +38,20 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
         sortable: true
     },
     {
-        name: 'tipo_fibra',
-        field: 'tipo_fibra',
-        label: 'Tipo F.',
+        name: 'computadora',
+        field: 'computadora',
+        label: 'Caracteristicas',
         align: 'left',
         sortable: true
     },
     {
-        name: 'hilos',
-        field: 'hilos',
-        label: 'Hilo',
+        name: 'fibra',
+        field: 'fibra',
+        label: 'Fibra',
         align: 'left',
         sortable: true
     },
-    {
+    /* {
         name: 'punta_inicial',
         field: 'punta_inicial',
         label: 'P. Inicial',
@@ -64,11 +64,18 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
         label: 'P. Final',
         align: 'left',
         sortable: true
+    }, */
+    {
+        name: 'puntas',
+        field: 'puntas',
+        label: 'Detalles Fibra',
+        align: 'left',
+        sortable: true
     },
     {
-        name: 'custodia',
-        field: 'custodia',
-        label: 'Custodia',
+        name: 'adicionales',
+        field: 'adicionales',
+        label: 'Campos adicionales',
         align: 'left',
         sortable: true
     },

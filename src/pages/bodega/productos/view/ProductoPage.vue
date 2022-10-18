@@ -63,22 +63,11 @@
               </template>
             </q-input>
           </div>
-          <!-- Imagenes -->
-          <!-- <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Imagen</label>
-            <selector-imagen-multiple>
-              :modelValue=""
-            </selector-imagen-multiple>
-          </div> -->
         </div>
       </q-form>
-    </template>
-    <!--Modal de creacion de categorias-->
-    <template #modales>
-      <modales-entidad :comportamiento="modalesProducto" />
     </template>
   </tab-layout>
 </template>
 
-<!-- import SelectorImagenMultiple from 'components/SelectorImagenMultiple.vue'; -->
+
 <script src="./ProductoPage.ts" />

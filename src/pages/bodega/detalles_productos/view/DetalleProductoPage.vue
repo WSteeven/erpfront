@@ -8,11 +8,11 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Producto -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Producto</label>
             <q-select
               v-model="detalle.producto"
-              :options="opciones_productos.productos"
+              :options="opciones_productos"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -22,6 +22,7 @@
               use-input
               input-debounce="0"
               @filter="filterProductos"
+              @update:model-value="actualizarCategoria"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               emit-value
@@ -42,7 +43,7 @@
             </q-select>
           </div>
           <!-- Descripcion -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-8">
             <label class="q-mb-sm block">Descripción</label>
             <q-input
               v-model="detalle.descripcion"
@@ -62,12 +63,102 @@
               </template>
             </q-input>
           </div>
+          <!-- Procesador -->
+          <div
+            v-if="detalle.categoria == 'INFORMATICA'"
+            class="col-12 col-md-4 q-mb-md"
+          >
+            <label class="q-mb-sm block">Procesador</label>
+            <q-select
+              v-model="detalle.procesador"
+              :options="opciones_procesadores"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.procesador.$errors.length"
+              use-input
+              input-debounce="0"
+              @filter="filtroProcesadores"
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.procesador.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+          <!-- RAM -->
+          <div
+            v-if="detalle.categoria == 'INFORMATICA'"
+            class="col-12 col-md-4 q-mb-md"
+          >
+            <label class="q-mb-sm block">Ram</label>
+            <q-select
+              v-model="detalle.ram"
+              :options="opciones_rams"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.marca.$errors.length"
+              use-input
+              input-debounce="0"
+              @filter="filtroRams"
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.ram.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+          <!-- Disco -->
+          <div
+            v-if="detalle.categoria == 'INFORMATICA'"
+            class="col-12 col-md-4 q-mb-md"
+          >
+            <label class="q-mb-sm block">Disco</label>
+            <q-select
+              v-model="detalle.disco"
+              :options="opciones_discos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.disco.$errors.length"
+              use-input
+              input-debounce="0"
+              @filter="filtroDiscos"
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.disco.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
           <!-- Marca -->
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Marca</label>
             <q-select
               v-model="detalle.marca"
-              :options="opciones_marcas.marcas"
+              :options="opciones_marcas"
               hint="Agregue elementos desde el panel de marcas"
               transition-show="scale"
               transition-hide="scale"
@@ -85,18 +176,18 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.modelo.$marca" :key="error.$uid">
+                <div v-for="error of v$.marca.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-select>
           </div>
           <!-- Modelo -->
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Modelo</label>
             <q-select
               v-model="detalle.modelo"
-              :options="opciones_modelos.modelos"
+              :options="opciones_modelos"
               hint="Agregue elementos desde el panel de modelos"
               transition-show="scale"
               transition-hide="scale"
@@ -128,7 +219,7 @@
             </q-select>
           </div>
           <!-- Precio compra -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Precio de compra</label>
             <q-input
               type="number"
@@ -166,10 +257,20 @@
               dense
             ></q-checkbox>
           </div>
+          <!-- Es fibra -->
+          <div class="col-12 col-md-3">
+            <br />
+            <q-checkbox
+              v-model="detalle.tiene_adicionales"
+              label="Campos adicionales"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
           <!-- Serial -->
           <div
             v-if="detalle.tiene_serial || detalle.es_fibra"
-            class="col-12 col-md-6"
+            class="col-12 col-md-4"
           >
             <label class="q-mb-sm block">Serial</label>
             <q-input
@@ -188,12 +289,55 @@
               </template>
             </q-input>
           </div>
+          <!-- Campos adicionales -->
+          <!-- Color -->
+          <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
+            <label class="q-mb-sm block">Color</label>
+            <q-input
+              v-model="detalle.color"
+              placeholder="Obligatorio"
+              :readonly="disabled"
+              @update:model-value="(v) => (detalle.color = v.toUpperCase())"
+              outlined
+              dense
+              counter
+            >
+            </q-input>
+          </div>
+          <!-- Talla -->
+          <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
+            <label class="q-mb-sm block">Talla</label>
+            <q-input
+              v-model="detalle.talla"
+              placeholder="Obligatorio"
+              :readonly="disabled"
+              @update:model-value="(v) => (detalle.talla = v.toUpperCase())"
+              outlined
+              dense
+              counter
+            >
+            </q-input>
+          </div>
+          <!-- Capacidad -->
+          <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
+            <label class="q-mb-sm block">Capacidad</label>
+            <q-input
+              v-model="detalle.capacidad"
+              placeholder="Obligatorio"
+              :readonly="disabled"
+              @update:model-value="(v) => (detalle.capacidad = v.toUpperCase())"
+              outlined
+              dense
+              counter
+            >
+            </q-input>
+          </div>
           <!-- Span -->
-          <div v-if="detalle.es_fibra" class="col-12 col-md-6 q-mb-md">
+          <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Span</label>
             <q-select
               v-model="detalle.span"
-              :options="opciones_span"
+              :options="opciones_spans"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -213,7 +357,7 @@
             </q-select>
           </div>
           <!-- Tipo Fibra -->
-          <div v-if="detalle.es_fibra" class="col-12 col-md-6 q-mb-md">
+          <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Tipo de fibra</label>
             <q-select
               v-model="detalle.tipo_fibra"
@@ -238,7 +382,7 @@
             </q-select>
           </div>
           <!-- Hilos -->
-          <div v-if="detalle.es_fibra" class="col-12 col-md-6 q-mb-md">
+          <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Cantidad de hilos</label>
             <q-select
               v-model="detalle.hilos"
@@ -263,7 +407,7 @@
             </q-select>
           </div>
           <!-- Punta A -->
-          <div v-if="detalle.es_fibra" class="col-12 col-md-6">
+          <div v-if="detalle.es_fibra" class="col-12 col-md-4">
             <label class="q-mb-sm block">Punta Inicial (A)</label>
             <q-input
               type="tel"
@@ -273,14 +417,22 @@
               v-model="detalle.punta_inicial"
               placeholder="Opcional"
               :readonly="disabled"
-              @update:model-value="(v) => (detalle.punta_inicial = v.toUpperCase())"
+              :error="!!v$.punta_inicial.$errors.length"
+              @update:model-value="
+                (v) => (detalle.punta_inicial = v.toUpperCase())
+              "
               outlined
               dense
             >
+            <template v-slot:error>
+                <div v-for="error of v$.punta_inicial.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
           <!-- Punta B -->
-          <div v-if="detalle.es_fibra" class="col-12 col-md-6">
+          <div v-if="detalle.es_fibra" class="col-12 col-md-4">
             <label class="q-mb-sm block">Punta Final (B)</label>
             <q-input
               type="tel"
@@ -291,7 +443,9 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.punta_final.$errors.length"
-              @update:model-value="(v) => (detalle.punta_final = v.toUpperCase())"
+              @update:model-value="
+                (v) => (detalle.punta_final = v.toUpperCase())
+              "
               outlined
               dense
             >
@@ -303,7 +457,7 @@
             </q-input>
           </div>
           <!-- Punta al corte -->
-          <div v-if="detalle.es_fibra" class="col-12 col-md-6">
+          <div v-if="detalle.es_fibra" class="col-12 col-md-4">
             <label class="q-mb-sm block">Punta al corte</label>
             <q-input
               type="tel"
@@ -313,9 +467,7 @@
               v-model="detalle.custodia"
               placeholder="Opcional"
               :readonly="disabled"
-              @update:model-value="
-                (v) => (detalle.custodia = v.toUpperCase())
-              "
+              @update:model-value="(v) => (detalle.custodia = v.toUpperCase())"
               outlined
               dense
             >
