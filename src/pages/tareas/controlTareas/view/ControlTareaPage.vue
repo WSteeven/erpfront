@@ -54,7 +54,7 @@
         />
       </q-tabs>
 
-      <q-separator inset />
+      <!--<q-separator inset /> -->
 
       <q-tab-panels v-model="tabSeleccionado" animated>
         <q-tab-panel name="tarea">

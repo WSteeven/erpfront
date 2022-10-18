@@ -59,7 +59,7 @@
           </q-input>
         </div>
 
-        <!-- Fecha y hora de solicitud -->
+        <!-- Fecha de solicitud -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha de solicitud</label>
           <q-input v-model="tarea.fecha_solicitud" outlined dense>

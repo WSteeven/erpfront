@@ -1,8 +1,8 @@
 // Dependencias
-import { configuracionColumnasSubtareas } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/domain/configuracionColumnasSubtareas'
+import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
 import { tabOptions, accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
+//import { useRouter } from 'vue-router'
 
 // Componentes
 import ConfirmarDialog from 'pages/tareas/trabajoAsignado/view/ConfirmarDialog.vue'

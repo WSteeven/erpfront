@@ -47,11 +47,11 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/control-progresivas',
-        name: 'control_progresivas',
+        path: '/control-tendidos',
+        name: 'control_tendidos',
         component: () =>
           import(
-            'pages/tareas/progresivas/controlProgresivas/view/ControlProgresivaPage.vue'
+            'pages/tareas/progresivas/controlProgresivas/view/ControlTendidoPage.vue'
           ),
         meta: { requiresAuth: true },
       },

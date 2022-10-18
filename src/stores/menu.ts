@@ -64,14 +64,14 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title: 'Progresivas',
+          title: 'Tendidos',
           icon: 'bi-circle',
           children: [
             {
-              title: 'Control de progresivas',
-              link: 'control-progresivas',
+              title: 'Control de tendidos',
+              link: 'control-tendidos',
               icon: 'bi-dash',
-              can: store.can('puede.ver.control_progresivas'),
+              can: store.can('puede.ver.control_tendidos'),
             },
             {
               title: 'Tipos de elementos',
