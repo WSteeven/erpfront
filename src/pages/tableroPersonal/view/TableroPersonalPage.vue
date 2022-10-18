@@ -21,7 +21,13 @@
                 no-caps
                 push
                 :to="{ name: 'trabajo_asignado' }"
-                >Ver todos los trabajos asignados</q-btn
+              >
+                <q-icon
+                  name="bi-list-nested"
+                  size="xs"
+                  class="q-mr-sm"
+                ></q-icon>
+                Ver todos los trabajos asignados</q-btn
               >
             </div>
           </q-card-section>
@@ -77,7 +83,7 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-check-circle-fill"
+                    name="bi-app-indicator"
                     class="q-mr-md"
                     color="primary"
                   ></q-icon>
@@ -89,7 +95,7 @@
 
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-check-circle-fill"
+                    name="bi-app-indicator"
                     class="q-mr-md"
                     color="primary"
                   ></q-icon>
@@ -101,7 +107,7 @@
 
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-check-circle-fill"
+                    name="bi-app-indicator"
                     class="q-mr-md"
                     color="primary"
                   ></q-icon>
@@ -117,10 +123,9 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-check-circle-fill"
+                    name="bi-app-indicator"
                     class="q-mr-md"
                     color="primary"
-                    size="xs"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0001_3</div>
@@ -195,11 +200,7 @@
 
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat>
-                  <q-icon
-                    name="bi-diagram-3"
-                    size="sm"
-                    class="q-mr-md"
-                  ></q-icon>
+                  <q-icon name="bi-app-indicator" class="q-mr-md"></q-icon>
                   <div class="text-left column">
                     <div class="block">Tarea JP00001 / 798541</div>
                     <small>Total de subtareas 8</small>
@@ -207,11 +208,7 @@
                 </q-btn>
 
                 <q-btn align="left" flat>
-                  <q-icon
-                    name="bi-diagram-3"
-                    size="sm"
-                    class="q-mr-md"
-                  ></q-icon>
+                  <q-icon name="bi-app-indicator" class="q-mr-md"></q-icon>
                   <div class="text-left column">
                     <div class="block">Tarea JP0002 / 854126</div>
                     <small>Total de subtareas 6</small>
@@ -219,11 +216,7 @@
                 </q-btn>
 
                 <q-btn align="left" flat>
-                  <q-icon
-                    name="bi-diagram-3"
-                    size="sm"
-                    class="q-mr-md"
-                  ></q-icon>
+                  <q-icon name="bi-app-indicator" class="q-mr-md"></q-icon>
                   <div class="text-left column">
                     <div class="block">Tarea JP0003 / ED9865</div>
                     <small>Total de subtareas 3</small>

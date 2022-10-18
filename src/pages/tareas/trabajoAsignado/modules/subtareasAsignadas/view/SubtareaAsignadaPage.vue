@@ -102,6 +102,40 @@
             ></q-input>
           </div>
 
+          <!-- Es ventana -->
+          <div class="col-12 col-md-3">
+            <br />
+            <q-checkbox
+              v-model="subtarea.es_ventana"
+              label="Es ventana de trabajo"
+              outlined
+              dense
+              disable
+            ></q-checkbox>
+          </div>
+
+          <!-- Hora inicio de ventana -->
+          <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Hora inicio de ventana</label>
+            <q-input
+              v-model="subtarea.hora_inicio_ventana"
+              outlined
+              dense
+              disable
+            />
+          </div>
+
+          <!-- Hora fin de ventana -->
+          <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Hora fin de ventana</label>
+            <q-input
+              v-model="subtarea.hora_fin_ventana"
+              outlined
+              dense
+              disable
+            />
+          </div>
+
           <div class="col-12">
             <essential-table
               titulo="Técnicos asignados"
