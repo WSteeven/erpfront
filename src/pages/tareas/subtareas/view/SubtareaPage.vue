@@ -51,34 +51,77 @@
           <!-- Grupo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Grupo asignado</label>
-            <q-input
+            <!--<q-input
               v-model="subtarea.grupo"
               placeholder="Obligatorio"
               outlined
               dense
-            ></q-input>
+            ></q-input> -->
+            <q-select
+              v-model="subtarea.grupo"
+              :options="grupos"
+              @filter="filtrarGrupos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @update:model-value="obtenerResponsable(subtarea.grupo)"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Técnico responsable -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Técnico responsable</label>
-            <q-input v-model="subtarea.grupo" disable outlined dense></q-input>
+            <q-input
+              v-model="subtarea.tecnico_responsable"
+              disable
+              outlined
+              dense
+            ></q-input>
           </div>
 
           <!-- Tipo trabajo -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo de trabajo</label>
             <q-select
               v-model="subtarea.tipo_trabajo"
-              :options="tiposTareasTelconet"
-              transition-show="flip-up"
-              transition-hide="flip-down"
+              :options="tiposTrabajos"
+              @filter="filtrarTiposTrabajos"
+              transition-show="scale"
+              transition-hide="scale"
               options-dense
-              emit-value
-              map-options
               dense
               outlined
-            />
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Fecha de creacion -->
@@ -193,7 +236,7 @@
           <!--  Subtarea de la q depende -->
           <div v-if="subtarea.es_dependiente" class="col-12 col-md-3">
             <label class="q-mb-sm block">Subtarea de la que depende</label>
-            <q-input
+            <!--<q-input
               v-model="subtarea.subtarea_dependiente"
               @update:model-value="
                 (v) => (subtarea.subtarea_dependiente = v.toUpperCase())
@@ -201,10 +244,45 @@
               hint="Presione Enter para filtrar"
               outlined
               dense
-            ></q-input>
+            ></q-input> -->
+            <q-select
+              v-model="subtarea.subtarea_dependiente"
+              :options="subtareas"
+              @filter="filtrarSubtareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.codigo_subtarea"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_subtarea }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.detalle }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
-          <!-- Es dependiente -->
+          <!-- Es ventana -->
           <div class="col-12 col-md-3">
             <br />
             <q-checkbox
@@ -215,6 +293,7 @@
             ></q-checkbox>
           </div>
 
+          <!-- Hora inicio de ventana -->
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora inicio de ventana</label>
             <flat-pickr
@@ -227,6 +306,7 @@
             />
           </div>
 
+          <!-- Hora fin de ventana -->
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora fin de ventana</label>
             <flat-pickr
@@ -239,6 +319,7 @@
             />
           </div>
 
+          <!-- Descripción completa del trabajo a realizar -->
           <div class="col-12">
             <label class="q-mb-sm block"
               >Descripción completa del trabajo a realizar</label
@@ -252,6 +333,7 @@
             ></q-input>
           </div>
 
+          <!-- Técnicos del grupo principal -->
           <div class="col-12">
             <essential-table
               titulo="Técnicos del grupo principal"

@@ -42,13 +42,13 @@ export class Tarea extends EntidadAuditable {
     this.ciudad = null
     this.parroquia = null
     this.referencias = null
-    this.direccion = 'AV. SIEMPRE VIVA'
-    this.georeferencia_x = '000'
-    this.georeferencia_y = '111'
+    this.direccion = null
+    this.georeferencia_x = null
+    this.georeferencia_y = null
     // contacto
-    this.nombre_contacto = 'HOMERO'
-    this.apellidos_contacto = 'SIMPSON'
-    this.telefono_contacto = '123546'
-    this.celular_contacto = '0897564321'
+    this.nombre_contacto = null
+    this.apellidos_contacto = null
+    this.telefono_contacto = null
+    this.celular_contacto = null
   }
 }

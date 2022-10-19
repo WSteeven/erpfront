@@ -2,7 +2,9 @@
   <q-page padding>
     <slot name="modales" />
 
-    <div class="text-h6 q-my-md q-ml-md">{{ tituloPagina }}</div>
+    <div class="text-h6 q-mb-md" :class="{ 'q-ml-md': $q.screen.xs }">
+      {{ tituloPagina }}
+    </div>
 
     <!-- Tabs -->
     <q-tabs v-model="tabs" align="left" narrow-indicator class="q-mb-lg">

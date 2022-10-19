@@ -240,7 +240,7 @@
       <!-- Selector de productos -->
       <div class="col-12">
         <label class="q-mb-sm block">Agregar productos</label>
-        <div class="row">
+        <div class="row q-col-gutter-xs">
           <div class="col-12 col-md-10 q-mb-md">
             <q-input
               v-model="criterioBusquedaProducto"
@@ -283,6 +283,7 @@
           :permitirEditar="false"
           :permitirEliminar="true"
           :mostrarBotones="false"
+          :alto-fijo="false"
           :accion1="botonEditarCantidad"
           @eliminar="eliminar"
         ></essential-table>

@@ -24,6 +24,8 @@ export const endpoints = {
   tipos_elementos: new Endpoint('tipos-elementos/'),
   clientes: new Endpoint('clientes/'),
   progresivas: new Endpoint('progresivas/'),
+  grupos: new Endpoint('grupos/'),
+  contactos: new Endpoint('contactos/'),
   //configuraciones: new Endpoint('configuraciones/'),
   tablero: new Endpoint('tablero/'),
   // ubicacion

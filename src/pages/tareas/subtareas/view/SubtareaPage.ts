@@ -16,15 +16,31 @@ import {
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import flatPickr from 'vue-flatpickr-component';
+import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
 import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { SubtareaController } from '../infraestructure/SubtareaController'
+import { Subtarea } from '../domain/Subtarea'
+import { TipoTareaController } from 'pages/tareas/tiposTareas/infraestructure/TipoTareaController'
+import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   components: { EssentialTable, flatPickr },
   setup() {
+    const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+    const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
+    const { obtenerListados } = mixin.useComportamiento()
+
+    obtenerListados({
+      tiposTrabajos: new TipoTareaController(),
+      subtareas: new SubtareaController(),
+      grupos: new GrupoController(),
+    })
+
     const tareaStore = useTareaStore()
 
     const busqueda = ref()
@@ -74,13 +90,78 @@ export default defineComponent({
       //
     }
 
-    const subtarea = tareaStore.subtarea
+    subtarea.hydrate(tareaStore.subtarea)
 
     function eliminarTecnico({ posicion }) {
       datos.value.splice(posicion, 1)
     }
 
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
+
+    async function obtenerResponsable(grupo_id: number) {
+      console.log('jajajajaj')
+      // Obtener grupo
+      const grupoController = new GrupoController()
+      const { result } = await grupoController.consultar(grupo_id)
+      console.log(result)
+      const responsable = result.empleado_id
+
+      const empleadoController = new EmpleadoController()
+      const { result: tecnicoResponsable } = await empleadoController.consultar(responsable)
+      console.log(tecnicoResponsable)
+      subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
+    }
+
+    // Filtro tipos de trabajos
+    const tiposTrabajos = ref([])
+    function filtrarTiposTrabajos(val, update) {
+      if (val === '') {
+        update(() => {
+          tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // Filtros subtareas
+    const subtareas = ref([])
+    function filtrarSubtareas(val, update) {
+      if (val === '') {
+        update(() => {
+          subtareas.value = listadosAuxiliares.subtareas
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        subtareas.value = listadosAuxiliares.subtareas.filter(
+          (v) => v.codigo_subtarea.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // Filtros grupos
+    const grupos = ref([])
+    function filtrarGrupos(val, update) {
+      if (val === '') {
+        update(() => {
+          grupos.value = listadosAuxiliares.grupos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        grupos.value = listadosAuxiliares.grupos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
 
     return {
       step: ref(1),
@@ -109,6 +190,13 @@ export default defineComponent({
       atenciones,
       tiposIntervenciones,
       causasIntervencion,
+      listadosAuxiliares,
+      filtrarTiposTrabajos,
+      tiposTrabajos,
+      filtrarSubtareas,
+      subtareas,
+      filtrarGrupos,
+      obtenerResponsable,
     }
   },
 })

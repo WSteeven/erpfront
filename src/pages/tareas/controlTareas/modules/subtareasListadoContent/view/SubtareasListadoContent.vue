@@ -9,6 +9,8 @@
     :permitirEliminar="false"
     :mostrar-botones="false"
     :tab-options="tabOptions"
+    :alto-fijo="false"
+    :mostrarFooter="false"
     @tab-seleccionado="aplicarFiltro"
     :agregarElemento="agregarSubtarea"
   ></essential-table-tabs>

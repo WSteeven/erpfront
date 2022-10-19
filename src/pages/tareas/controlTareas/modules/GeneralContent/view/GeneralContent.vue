@@ -144,7 +144,7 @@
           </label-abrir-modal>
           <q-input
             v-model="tarea.contacto"
-            placeholder="Opcional"
+            placeholder="Ingrese el nombre o apellido"
             hint="Presiona Enter para seleccionar un cliente"
             @update:model-value="(v) => (tarea.contacto = v.toUpperCase())"
             outlined
@@ -170,20 +170,6 @@
           <q-input v-model="tarea.celular" outlined dense disable></q-input>
         </div>
 
-        <!-- <div class="col-12">
-          <div class="row justify-end q-gutter-sm">
-            <q-btn color="positive" no-caps rounded push>
-              <q-icon name="bi-collection" size="xs" class="q-pr-sm"></q-icon>
-              <div>Seleccionar contacto</div>
-            </q-btn>
-
-            <q-btn color="positive" no-caps rounded push>
-              <q-icon name="bi-plus" class="q-pr-sm"></q-icon>
-              <div>Registrar nuevo contacto</div>
-            </q-btn>
-          </div>
-        </div> -->
-
         <!-- Provincia -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Provincias</label>
@@ -191,6 +177,7 @@
             v-model="tarea.provincia"
             :options="provincias"
             options-dense
+            disable
             dense
             outlined
           />
@@ -203,6 +190,7 @@
             outlined
             v-model="tarea.ciudad"
             :options="ciudades"
+            disable
             options-dense
             dense
           />
@@ -213,8 +201,8 @@
           <label class="q-mb-sm block">Parroquia/Barrio</label>
           <q-input
             v-model="tarea.parroquia"
-            placeholder="Opcional"
             @update:model-value="(v) => (tarea.parroquia = v.toUpperCase())"
+            disable
             outlined
             dense
           ></q-input>
@@ -225,8 +213,8 @@
           <label class="q-mb-sm block">Dirección</label>
           <q-input
             v-model="tarea.direccion"
-            placeholder="Opcional"
             @update:model-value="(v) => (tarea.direccion = v.toUpperCase())"
+            disable
             outlined
             dense
           ></q-input>
@@ -237,8 +225,8 @@
           <label class="q-mb-sm block">Referencias</label>
           <q-input
             v-model="tarea.referencias"
-            placeholder="Opcional"
             @update:model-value="(v) => (tarea.referencias = v.toUpperCase())"
+            disable
             outlined
             dense
           ></q-input>
@@ -247,12 +235,7 @@
         <!-- Coordenadas -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Coordenadas</label>
-          <q-input
-            v-model="tarea.coordenadas"
-            placeholder="Opcional"
-            outlined
-            dense
-          >
+          <q-input v-model="tarea.coordenadas" disable outlined dense>
           </q-input>
         </div>
       </div>

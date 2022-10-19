@@ -14,7 +14,7 @@
               v-model="producto.categoria"
               :options="opciones"
               hint="Agregue elementos desde el panel de categorías"
-              transition-show="jum-up"
+              transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
               dense
