@@ -80,7 +80,7 @@ export default defineComponent({
                 })
             },
             seleccionarDetalle(val) {
-                opciones_detalles.value = listadosAuxiliares.detalles.filter((v) => v.producto.indexOf(val) > -1)
+                opciones_detalles.value = listadosAuxiliares.detalles.filter((v) => v.producto_id===val)
                 stock.detalle_id = ''
                 if (opciones_detalles.value.length < 1) {
                     stock.detalle_id = ''

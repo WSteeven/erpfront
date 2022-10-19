@@ -12,7 +12,7 @@
             <label class="q-mb-sm block">Producto</label>
             <q-select
               v-model="inventario.producto"
-              :options="opciones_productos.productos"
+              :options="opciones_productos"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -24,7 +24,7 @@
               @filter="filtroProductos"
               @update:model-value="seleccionarDetalle"
               :option-label="(item) => item.nombre"
-              :option-value="(item) => item.nombre"
+              :option-value="(item) => item.id"
               emit-value
               map-options
             >
@@ -55,14 +55,15 @@
               outlined
               :error="!!v$.detalle_id.$errors.length"
               error-message="Debes seleccionar un detalle de producto"
-              behavior="dialog"
               :option-label="
                 (item) =>
-                  item.modelo +
-                  ' &nbsp; | &nbsp; ' +
-                  item.descripcion +
-                  ' &nbsp; | &nbsp; ' +
-                  item.serial
+                  item.id
+                    ? item.modelo +
+                      ' &nbsp; | &nbsp; ' +
+                      item.descripcion +
+                      ' &nbsp; | &nbsp; ' +
+                      item.serial
+                    : null
               "
               :option-value="(item) => item.id"
               emit-value

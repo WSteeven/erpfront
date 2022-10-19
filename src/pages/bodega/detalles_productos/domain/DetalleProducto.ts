@@ -3,6 +3,7 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 export class DetalleProducto extends EntidadAuditable{
     categoria:string|null
     producto:string|null
+    producto_id:number|null
     descripcion:string|null
     marca:string|null
     modelo:string|null
@@ -25,6 +26,10 @@ export class DetalleProducto extends EntidadAuditable{
     puntas:string|null
     adicionales: string|null
 
+    color: string|null
+    talla: string|null
+    capacidad: string|null
+
     //variables auxiliares
     tiene_serial:boolean
     es_computadora:boolean
@@ -35,6 +40,7 @@ export class DetalleProducto extends EntidadAuditable{
     constructor(){
         super()
         this.producto=null
+        this.producto_id=null
         this.descripcion=null
         this.marca=null
         this.modelo=null
@@ -53,6 +59,11 @@ export class DetalleProducto extends EntidadAuditable{
         this.punta_final=null
         this.custodia=null
         this.puntas=null
+        
+        this.color=null
+        this.talla=null
+        this.capacidad=null
+        
         this.adicionales=null
         this.es_computadora=false
         this.es_fibra=false

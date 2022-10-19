@@ -201,7 +201,7 @@
             <label class="q-mb-sm block">Jefe</label>
             <q-select
               v-model="empleado.jefe"
-              :options="opciones_empleados.empleados"
+              :options="opciones_empleados"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
