@@ -34,6 +34,8 @@
     :accion1="accion1"
     :accion2="accion2"
     :agregarElemento="agregarElemento"
+    :alto-fijo="altoFijo"
+    :mostrarFooter="mostrarFooter"
     @consultar="emit('consultar')"
     @editar="emit('editar')"
     @eliminar="emit('eliminar')"

@@ -1,10 +1,10 @@
 <template>
-  <q-page class="bg-grey-2">
+  <q-page class="fondo">
     <div class="row items-center empresa">
       <q-avatar square>
         <img src="~assets/logo.svg" />
       </q-avatar>
-      <span class="q-ml-md text-h5">Buró de Crédito Ecuador</span>
+      <span class="q-ml-md text-h5 text-white">Buró de Crédito Ecuador</span>
     </div>
 
     <div class="row items-center">
@@ -102,5 +102,14 @@ h2 {
   position: fixed;
   top: 16px;
   left: 16px;
+}
+
+.fondo {
+  background: rgb(94, 88, 252);
+  background: linear-gradient(
+    90deg,
+    rgba(94, 88, 252, 1) 0%,
+    rgba(110, 143, 255, 1) 100%
+  );
 }
 </style>

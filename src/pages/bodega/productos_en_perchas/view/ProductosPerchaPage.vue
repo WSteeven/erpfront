@@ -67,7 +67,11 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo }}</q-item-label>
                     <q-item-label caption
-                      >Piso:{{ scope.opt.piso }} | Percha:{{scope.opt.percha}} | Sucursal:{{scope.opt.sucursal}}</q-item-label>
+                      >Piso:{{ scope.opt.piso }} | Percha:{{
+                        scope.opt.percha
+                      }}
+                      | Sucursal:{{ scope.opt.sucursal }}</q-item-label
+                    >
                   </q-item-section>
                 </q-item>
               </template>

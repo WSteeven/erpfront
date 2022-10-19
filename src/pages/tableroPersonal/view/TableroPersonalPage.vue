@@ -187,17 +187,6 @@
 
             <!--<div class="text-subtitle2">Coordinador</div> -->
             <div class="row">
-              <div class="col-12 col-md-6">
-                <q-btn :to="{ name: 'tareas' }" flat no-caps>
-                  <q-icon
-                    name="bi-plus-square-dotted"
-                    size="lg"
-                    class="q-mr-md"
-                  ></q-icon>
-                  Crear tarea
-                </q-btn>
-              </div>
-
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat>
                   <q-icon name="bi-app-indicator" class="q-mr-md"></q-icon>
@@ -221,6 +210,17 @@
                     <div class="block">Tarea JP0003 / ED9865</div>
                     <small>Total de subtareas 3</small>
                   </div>
+                </q-btn>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <q-btn :to="{ name: 'tareas' }" flat no-caps>
+                  <q-icon
+                    name="bi-plus-square-dotted"
+                    size="lg"
+                    class="q-mr-md"
+                  ></q-icon>
+                  Crear tarea
                 </q-btn>
               </div>
             </div>

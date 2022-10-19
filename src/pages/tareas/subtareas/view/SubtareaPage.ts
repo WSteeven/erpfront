@@ -16,15 +16,17 @@ import {
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import flatPickr from 'vue-flatpickr-component';
+import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
 import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { SubtareaController } from '../infraestructure/SubtareaController';
-import { Subtarea } from '../domain/Subtarea';
-import { TipoTareaController } from 'pages/tareas/tiposTareas/infraestructure/TipoTareaController';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { SubtareaController } from '../infraestructure/SubtareaController'
+import { Subtarea } from '../domain/Subtarea'
+import { TipoTareaController } from 'pages/tareas/tiposTareas/infraestructure/TipoTareaController'
+import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   components: { EssentialTable, flatPickr },
@@ -35,7 +37,8 @@ export default defineComponent({
 
     obtenerListados({
       tiposTrabajos: new TipoTareaController(),
-      //grupos: new GrupoController()
+      subtareas: new SubtareaController(),
+      grupos: new GrupoController(),
     })
 
     const tareaStore = useTareaStore()
@@ -95,6 +98,21 @@ export default defineComponent({
 
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
+    async function obtenerResponsable(grupo_id: number) {
+      console.log('jajajajaj')
+      // Obtener grupo
+      const grupoController = new GrupoController()
+      const { result } = await grupoController.consultar(grupo_id)
+      console.log(result)
+      const responsable = result.empleado_id
+
+      const empleadoController = new EmpleadoController()
+      const { result: tecnicoResponsable } = await empleadoController.consultar(responsable)
+      console.log(tecnicoResponsable)
+      subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
+    }
+
+    // Filtro tipos de trabajos
     const tiposTrabajos = ref([])
     function filtrarTiposTrabajos(val, update) {
       if (val === '') {
@@ -106,6 +124,40 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // Filtros subtareas
+    const subtareas = ref([])
+    function filtrarSubtareas(val, update) {
+      if (val === '') {
+        update(() => {
+          subtareas.value = listadosAuxiliares.subtareas
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        subtareas.value = listadosAuxiliares.subtareas.filter(
+          (v) => v.codigo_subtarea.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // Filtros grupos
+    const grupos = ref([])
+    function filtrarGrupos(val, update) {
+      if (val === '') {
+        update(() => {
+          grupos.value = listadosAuxiliares.grupos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        grupos.value = listadosAuxiliares.grupos.filter(
           (v) => v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
@@ -141,6 +193,10 @@ export default defineComponent({
       listadosAuxiliares,
       filtrarTiposTrabajos,
       tiposTrabajos,
+      filtrarSubtareas,
+      subtareas,
+      filtrarGrupos,
+      obtenerResponsable,
     }
   },
 })

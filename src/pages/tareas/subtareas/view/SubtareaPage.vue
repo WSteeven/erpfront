@@ -60,7 +60,7 @@
             <q-select
               v-model="subtarea.grupo"
               :options="grupos"
-              @filter="filtrarTiposTrabajos"
+              @filter="filtrarGrupos"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -72,6 +72,7 @@
               input-debounce="0"
               emit-value
               map-options
+              @update:model-value="obtenerResponsable(subtarea.grupo)"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -86,7 +87,12 @@
           <!-- Técnico responsable -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Técnico responsable</label>
-            <q-input v-model="subtarea.grupo" disable outlined dense></q-input>
+            <q-input
+              v-model="subtarea.tecnico_responsable"
+              disable
+              outlined
+              dense
+            ></q-input>
           </div>
 
           <!-- Tipo trabajo -->
@@ -230,7 +236,7 @@
           <!--  Subtarea de la q depende -->
           <div v-if="subtarea.es_dependiente" class="col-12 col-md-3">
             <label class="q-mb-sm block">Subtarea de la que depende</label>
-            <q-input
+            <!--<q-input
               v-model="subtarea.subtarea_dependiente"
               @update:model-value="
                 (v) => (subtarea.subtarea_dependiente = v.toUpperCase())
@@ -238,7 +244,42 @@
               hint="Presione Enter para filtrar"
               outlined
               dense
-            ></q-input>
+            ></q-input> -->
+            <q-select
+              v-model="subtarea.subtarea_dependiente"
+              :options="subtareas"
+              @filter="filtrarSubtareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.codigo_subtarea"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_subtarea }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.detalle }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Es ventana -->
