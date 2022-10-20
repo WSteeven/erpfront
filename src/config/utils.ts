@@ -147,3 +147,8 @@ export const tiposTrabajosEstaticos = {
   hincado: 'HINCADO',
 }
 
+
+export const accionesActivos ={
+  asignado: 'ASIGNACION',
+  devuelto: 'DEVOLUCION',
+}

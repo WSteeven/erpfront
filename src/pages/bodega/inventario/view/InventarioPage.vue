@@ -57,13 +57,13 @@
               error-message="Debes seleccionar un detalle de producto"
               :option-label="
                 (item) =>
-                  item.id
+                  item.id && item.serial
                     ? item.modelo +
                       ' &nbsp; | &nbsp; ' +
                       item.descripcion +
                       ' &nbsp; | &nbsp; ' +
                       item.serial
-                    : null
+                    : item.id? item.modelo+' | '+item.descripcion:null
               "
               :option-value="(item) => item.id"
               emit-value

@@ -6,7 +6,7 @@ import { exportFile, useQuasar } from 'quasar'
 import { TipoSeleccion } from 'config/utils'
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
-
+import {accionesActivos} from 'config/utils'
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
@@ -210,6 +210,7 @@ export default defineComponent({
       limpiarFila,
       guardarFila,
       listado,
+      accionesActivos,
     }
   },
 })

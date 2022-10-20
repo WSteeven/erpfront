@@ -317,6 +317,27 @@
         </q-chip>
       </q-td>
     </template>
+    
+    <template #body-cell-accion="props">
+      <q-td :props="props" class="">
+        <q-chip v-if="props.value ===accionesActivos['asignado']" class="bg-green-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >Asignado
+        </q-chip>
+        <q-chip v-else class="bg-pink-1" color="red">
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          Devuelto
+        </q-chip>
+      </q-td>
+    </template>
 
     <!-- Botones de acciones Mobile (Grid)  -->
     <template v-slot:item="props">

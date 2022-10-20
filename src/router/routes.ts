@@ -225,6 +225,17 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      
+      //Routes for Activos Fijos
+      {
+        path: '/activos-fijos',
+        name: 'activos_fijos',
+        component: () =>
+          import(
+            'pages/activosFijos/controlActivos/view/ActivoFijoPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
 
 
       //Routes for administracion

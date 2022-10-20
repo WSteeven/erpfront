@@ -3,6 +3,13 @@ import { ActivoFijo } from "./ActivoFijo";
 
 export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[]=[
     {
+        name: 'cantidad',
+        field: 'cantidad',
+        label: 'Cantidad',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'empleado',
         field: 'empleado',
         label: 'Custodio',
@@ -28,26 +35,21 @@ export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[]=[
         field: 'fecha_desde',
         label: 'Desde',
         align: 'left',
-        sortable: true
-    },
-    {
-        name: 'fecha_hasta',
-        field: 'fecha_hasta',
-        label: 'Hasta',
-        align: 'left',
-        sortable: true
+        sortable: true,
+        style: 'width:100px'
     },
     {
         name: 'condicion',
         field: 'condicion',
-        label: 'Estado del producto',
+        label: 'Estado del activo',
         align: 'left',
-        sortable: true
+        sortable: true,
+        // style: 'color: red;' //cada celda es un td
     },
     {
         name: 'observacion',
         field: 'observacion',
-        label: 'observacion',
+        label: 'Observacion',
         align: 'left',
         sortable: true
     },
@@ -58,11 +60,11 @@ export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[]=[
         align: 'left',
         sortable: true
     },
-    {
+    /* {
         name: 'lugar',
         field: 'lugar',
         label: 'lugar',
         align: 'left',
         sortable: true
-    },
+    }, */
 ]

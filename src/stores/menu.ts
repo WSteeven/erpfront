@@ -214,6 +214,20 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    //Modulo Activos Fijos
+    {
+      title: 'Activos fijos',
+      icon: 'bi-list-check',
+      can: store.can('puede.ver.modulo_activos_fijos'),
+      children: [
+        {
+          title: 'Control de activos',
+          link: 'activos-fijos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.activos_fijos'),
+        },
+      ],
+    },
     {
       header: 'Administración',
       can: store.can('puede.ver.modulo_administracion'),
