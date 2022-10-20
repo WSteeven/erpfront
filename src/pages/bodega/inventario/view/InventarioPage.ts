@@ -28,6 +28,7 @@ export default defineComponent({
         const {setValidador, obtenerListados, cargarVista}=mixin.useComportamiento()
 
 
+        const opciones_productos = ref([])
         const opciones_detalles = ref([])
         const opciones_sucursales = ref([])
         const opciones_condiciones = ref([])
@@ -63,8 +64,7 @@ export default defineComponent({
         setValidador(v$.value)
 
         //Configurar los listados para los selects
-        const opciones_productos = listadosAuxiliares.productos
-        opciones_productos.productos = listadosAuxiliares.productos
+        opciones_productos.value = listadosAuxiliares.productos
         
         // const opciones_detalles = listadosAuxiliares.detalles
         // opciones_detalles.detalles=listadosAuxiliares.detalles
@@ -85,7 +85,7 @@ export default defineComponent({
             opciones_sucursales,
             seleccionarDetalle(val){
                 // console.log(listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1))
-                opciones_detalles.value = listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1)
+                opciones_detalles.value = listadosAuxiliares.detalles.filter((v)=>v.producto_id===val)
                 inventario.detalle_id =''
                 if(opciones_detalles.value.length<1){
                     inventario.detalle_id =''
@@ -97,13 +97,13 @@ export default defineComponent({
             filtroProductos(val,update){
                 if(val===''){
                     update(()=>{
-                        opciones_productos.productos = listadosAuxiliares.productos
+                        opciones_productos.value = listadosAuxiliares.productos
                     })
                     return
                 }
                 update(()=>{
                     const needle = val.toLowerCase()
-                    opciones_productos.productos = listadosAuxiliares.productos.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+                    opciones_productos.value = listadosAuxiliares.productos.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
                 })
             },
             filterDetalles(val, update){

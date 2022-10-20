@@ -18,6 +18,7 @@
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.producto.$errors.length"
               use-input
               input-debounce="0"
@@ -77,6 +78,7 @@
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.procesador.$errors.length"
               use-input
               input-debounce="0"
@@ -107,7 +109,8 @@
               options-dense
               dense
               outlined
-              :error="!!v$.marca.$errors.length"
+              :readonly="disabled"
+              :error="!!v$.ram.$errors.length"
               use-input
               input-debounce="0"
               @filter="filtroRams"
@@ -137,6 +140,7 @@
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.disco.$errors.length"
               use-input
               input-debounce="0"
@@ -165,6 +169,7 @@
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.marca.$errors.length"
               use-input
               input-debounce="0"
@@ -194,6 +199,7 @@
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.modelo.$errors.length"
               use-input
               input-debounce="0"
@@ -245,6 +251,7 @@
               label="Tiene serial"
               outlined
               dense
+              :disable="disabled"
             ></q-checkbox>
           </div>
           <!-- Es fibra -->
@@ -255,6 +262,7 @@
               label="Es fibra"
               outlined
               dense
+              :disable="disabled"
             ></q-checkbox>
           </div>
           <!-- Es fibra -->
@@ -265,6 +273,7 @@
               label="Campos adicionales"
               outlined
               dense
+              :disable="disabled"
             ></q-checkbox>
           </div>
           <!-- Serial -->
@@ -298,9 +307,7 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               @update:model-value="(v) => (detalle.color = v.toUpperCase())"
-              outlined
-              dense
-              counter
+              outlined dense
             >
             </q-input>
           </div>
@@ -314,7 +321,6 @@
               @update:model-value="(v) => (detalle.talla = v.toUpperCase())"
               outlined
               dense
-              counter
             >
             </q-input>
           </div>
@@ -328,7 +334,6 @@
               @update:model-value="(v) => (detalle.capacidad = v.toUpperCase())"
               outlined
               dense
-              counter
             >
             </q-input>
           </div>
@@ -343,6 +348,7 @@
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.span.$errors.length"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
@@ -368,6 +374,7 @@
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.tipo_fibra.$errors.length"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
@@ -393,6 +400,7 @@
               options-dense
               dense
               outlined
+              :readonly="disabled"
               :error="!!v$.hilos.$errors.length"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"

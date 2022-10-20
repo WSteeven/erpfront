@@ -34,6 +34,8 @@ export const endpoints = {
   cantones: new Endpoint('cantones/'),
 
   //endpoints de RR HH
+  activos_fijos: new Endpoint('activos_fijos/'),
+  //endpoints de RR HH
   empleados: new Endpoint('empleados/'),
   allroles: new Endpoint('roles/'),
 

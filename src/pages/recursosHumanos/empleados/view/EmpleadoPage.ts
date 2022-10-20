@@ -24,6 +24,9 @@ export default defineComponent({
         const { entidad: empleado, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
 
+        const opciones_sucursales = ref([])
+        const opciones_roles = ref([])
+        const opciones_empleados = ref([])
         cargarVista(() => {
             obtenerListados({
                 sucursales: new SucursalController(),
@@ -60,10 +63,9 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, empleado)
         setValidador(v$.value)
 
-        const opciones_sucursales = listadosAuxiliares.sucursales
-        const opciones_roles = listadosAuxiliares.roles
-        const opciones_empleados = listadosAuxiliares.empleados
-        opciones_empleados.empleados = listadosAuxiliares.empleados
+        opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_roles.value = listadosAuxiliares.roles
+        opciones_empleados.value = listadosAuxiliares.empleados
         const opciones_estados = ['ACTIVO', 'INACTIVO']
         return {
             mixin, empleado, disabled, accion, v$,
@@ -79,13 +81,13 @@ export default defineComponent({
             filterJefe(val, update) {
                 if (val === '') {
                     update(() => {
-                        opciones_empleados.empleados = listadosAuxiliares.empleados
+                        opciones_empleados.value = listadosAuxiliares.empleados
                     })
                     return
                 }
                 update(() => {
                     const needle = val.toLowerCase()
-                    opciones_empleados.empleados = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 ||v.apellidos.toLowerCase().indexOf(needle)>-1)
+                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 ||v.apellidos.toLowerCase().indexOf(needle)>-1)
                 })
             }
 
