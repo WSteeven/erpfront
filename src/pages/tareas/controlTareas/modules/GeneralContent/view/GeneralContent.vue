@@ -38,25 +38,31 @@
         <!-- Cliente principal -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Cliente principal</label>
-          <q-input
-            v-model="criterioBusquedaCliente"
-            placeholder="Obligatorio"
-            @update:model-value="
-              (v) => (criterioBusquedaCliente = v.toUpperCase())
-            "
-            hint="Presiona Enter para seleccionar un cliente"
-            @keydown.enter="listarClientes()"
-            @blur="criterioBusquedaCliente === '' ? limpiarCliente() : null"
-            outlined
+          <q-select
+            v-model="tarea.cliente"
+            :options="clientes"
+            @filter="filtrarClientes"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
             dense
+            outlined
+            :option-label="(item) => item.razon_social"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
           >
-            <!-- :error="!!v$.cliente.$errors.length" -->
-            <!--  <template v-slot:error>
-              <div v-for="error of v$.cliente.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template> -->
-          </q-input>
+            <!-- @update:model-value="obtenerResponsable(subtarea.grupo)" -->
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
 
         <!-- Fecha de solicitud -->
@@ -137,11 +143,11 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Nombre -->
         <div class="col-12 col-md-6">
-          <label-abrir-modal
+          <!--<label-abrir-modal
             label="Contacto"
             @click="modalesTarea.abrirModalEntidad('ContactoPage')"
-          >
-          </label-abrir-modal>
+          > 
+          </label-abrir-modal> 
           <q-input
             v-model="tarea.contacto"
             placeholder="Ingrese el nombre o apellido"
@@ -149,15 +155,40 @@
             @update:model-value="(v) => (tarea.contacto = v.toUpperCase())"
             outlined
             dense
-          ></q-input>
+          ></q-input> -->
+          <label class="q-mb-sm block">Contacto</label>
+          <q-select
+            v-model="tarea.cliente_final"
+            :options="clientesFinales"
+            @filter="filtrarClientesFinales"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            :option-label="(item) => item.nombres + ' ' + item.apellidos"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+            @update:model-value="obtenerClienteFinal(tarea.cliente_final)"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
 
         <!-- Id de cliente -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">ID Cliente</label>
           <q-input
-            v-model="tarea.id_cliente"
-            @update:model-value="(v) => (tarea.id_cliente = v.toUpperCase())"
+            v-model="clienteFinal.id_cliente"
             disable
             outlined
             dense
@@ -167,41 +198,77 @@
         <!-- Celular -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Celular</label>
-          <q-input v-model="tarea.celular" outlined dense disable></q-input>
+          <q-input
+            v-model="clienteFinal.celular"
+            outlined
+            dense
+            disable
+          ></q-input>
         </div>
 
         <!-- Provincia -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Provincias</label>
           <q-select
-            v-model="tarea.provincia"
-            :options="provincias"
+            v-model="clienteFinal.provincia"
+            :options="listadosAuxiliares.provincias"
+            transition-show="scale"
+            transition-hide="scale"
             options-dense
-            disable
             dense
             outlined
-          />
+            disable
+            :option-label="(item) => item.provincia"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
 
         <!-- Ciudad -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Ciudades</label>
+          <label class="q-mb-sm block">Canton</label>
           <q-select
-            outlined
-            v-model="tarea.ciudad"
-            :options="ciudades"
-            disable
+            v-model="clienteFinal.canton"
+            :options="listadosAuxiliares.cantones"
+            transition-show="scale"
+            transition-hide="scale"
             options-dense
             dense
-          />
+            outlined
+            disable
+            :option-label="(item) => item.canton"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
 
         <!-- Parroquia -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Parroquia/Barrio</label>
           <q-input
-            v-model="tarea.parroquia"
-            @update:model-value="(v) => (tarea.parroquia = v.toUpperCase())"
+            v-model="clienteFinal.parroquia"
             disable
             outlined
             dense
@@ -212,8 +279,7 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Dirección</label>
           <q-input
-            v-model="tarea.direccion"
-            @update:model-value="(v) => (tarea.direccion = v.toUpperCase())"
+            v-model="clienteFinal.direccion"
             disable
             outlined
             dense
@@ -224,8 +290,7 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Referencias</label>
           <q-input
-            v-model="tarea.referencias"
-            @update:model-value="(v) => (tarea.referencias = v.toUpperCase())"
+            v-model="clienteFinal.referencias"
             disable
             outlined
             dense
@@ -235,7 +300,7 @@
         <!-- Coordenadas -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Coordenadas</label>
-          <q-input v-model="tarea.coordenadas" disable outlined dense>
+          <q-input v-model="clienteFinal.coordenadas" disable outlined dense>
           </q-input>
         </div>
       </div>

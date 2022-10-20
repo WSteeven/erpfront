@@ -2,24 +2,26 @@
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { useOrquestadorSelectorClientes } from '../application/OrquestadorSelectorClientes'
 import { provincias, ciudades, acciones } from 'config/utils'
-import { defineComponent, watchEffect } from 'vue'
+import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { required } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
-import { endpoints } from 'config/api'
-//import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import flatPickr from 'vue-flatpickr-component';
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
-import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
+import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { ContactoController } from 'pages/tareas/contactos/infraestructure/ContactoController'
+import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
+import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
+import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 
 export default defineComponent({
   props: {
@@ -37,12 +39,20 @@ export default defineComponent({
   },
   setup(props) {
     const tareaStore = useTareaStore()
-    const tarea = tareaStore.tarea
 
-    const { guardar, editar, eliminar, reestablecer, setValidador } =
+    const { entidad: tarea, listadosAuxiliares } = props.mixin.useReferencias()
+    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados } =
       props.mixin.useComportamiento()
 
+    tarea.hydrate(tareaStore.tarea)
     // const { onGuardado, onReestablecer } = props.mixin.useHooks()
+
+    obtenerListados({
+      clientes: new ClienteController(),
+      clientesFinales: new ContactoController(),
+      provincias: new ProvinciaController(),
+      cantones: new CantonController(),
+    })
 
     const {
       refListadoSeleccionable: refListadoSeleccionableClientes,
@@ -59,13 +69,9 @@ export default defineComponent({
       }
     })
 
-    /* async function guardar() {
-
-    } */
     const rules = {
       cliente: { required },
       detalle: { required },
-      solicitante: { required },
     }
 
     const v$ = useVuelidate(rules, tarea)
@@ -87,7 +93,50 @@ export default defineComponent({
 
     const modalesTarea = new ComportamientoModalesTarea()
 
+    // Filtro tipos de trabajos
+    const clientes = ref([])
+    function filtrarClientes(val, update) {
+      if (val === '') {
+        update(() => {
+          clientes.value = listadosAuxiliares.clientes
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        clientes.value = listadosAuxiliares.clientes.filter(
+          (v) => v.razon_social.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // Filtro tipos de clientes finales
+    const clientesFinales = ref([])
+    function filtrarClientesFinales(val, update) {
+      if (val === '') {
+        update(() => {
+          clientesFinales.value = listadosAuxiliares.clientesFinales
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        clientesFinales.value = listadosAuxiliares.clientesFinales.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    const clienteFinal = reactive(new ClienteFinal())
+
+    async function obtenerClienteFinal(clienteFinalId: number) {
+      const clienteFinalController = new ContactoController()
+      const { result } = await clienteFinalController.consultar(clienteFinalId)
+      clienteFinal.hydrate(result)
+    }
+
     return {
+      v$,
       tarea,
       provincias,
       ciudades,
@@ -97,6 +146,13 @@ export default defineComponent({
       tareaStore,
       reestablecer,
       modalesTarea,
+      clientes,
+      filtrarClientes,
+      clientesFinales,
+      filtrarClientesFinales,
+      obtenerClienteFinal,
+      clienteFinal,
+      listadosAuxiliares,
       // Selector
       refListadoSeleccionableClientes,
       criterioBusquedaCliente,

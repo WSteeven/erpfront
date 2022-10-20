@@ -25,13 +25,13 @@ export const endpoints = {
   clientes: new Endpoint('clientes/'),
   progresivas: new Endpoint('progresivas/'),
   grupos: new Endpoint('grupos/'),
-  contactos: new Endpoint('contactos/'),
+  clientes_finales: new Endpoint('clientes-finales/'),
   //configuraciones: new Endpoint('configuraciones/'),
   tablero: new Endpoint('tablero/'),
   // ubicacion
   paises: new Endpoint('paises/'),
   provincias: new Endpoint('provincias/'),
-  ciudades: new Endpoint('ciudades/'),
+  cantones: new Endpoint('cantones/'),
 
   //endpoints de RR HH
   activos_fijos: new Endpoint('activos_fijos/'),

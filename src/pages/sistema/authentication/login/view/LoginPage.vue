@@ -1,10 +1,10 @@
 <template>
-  <q-page class="fondo">
+  <q-page class="bg-grey-2">
     <div class="row items-center empresa">
       <q-avatar square>
         <img src="~assets/logo.svg" />
       </q-avatar>
-      <span class="q-ml-md text-h5 text-white">Buró de Crédito Ecuador</span>
+      <span class="q-ml-md text-h5">Buró de Crédito Ecuador</span>
     </div>
 
     <div class="row items-center">

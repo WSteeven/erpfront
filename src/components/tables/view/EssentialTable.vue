@@ -1,9 +1,15 @@
 <template>
   <div
     v-if="titulo"
-    class="row bg-white text-bold q-px-sm q-py-xs titulo-tabla items-center"
+    class="row bg-white text-bold q-px-sm q-py-xs items-center"
+    :class="{ 'titulo-tabla': !$q.screen.xs, 'justify-center': $q.screen.xs }"
   >
-    <q-icon name="bi-circle-fill" color="grey-4" class="q-mr-sm"></q-icon>
+    <q-icon
+      v-if="!$q.screen.xs"
+      name="bi-circle-fill"
+      color="grey-4"
+      class="q-mr-sm"
+    ></q-icon>
     {{ titulo }}
   </div>
 
@@ -343,9 +349,7 @@
     <template v-slot:item="props">
       <q-card
         :class="props.selected ? 'bg-grey-2' : ''"
-        bordered
-        flat
-        class="q-pa-sm q-mb-md full-width"
+        class="q-pa-sm q-mb-md full-width custom-shadow"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">

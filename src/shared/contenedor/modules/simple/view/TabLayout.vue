@@ -1,20 +1,21 @@
 <template>
   <q-page padding>
-    <slot name="modales" />
-
-    <div class="text-h6 q-mb-md" :class="{ 'q-ml-md': $q.screen.xs }">
-      {{ tituloPagina }}
-    </div>
-
     <!-- Tabs -->
     <q-tabs v-model="tabs" align="left" narrow-indicator class="q-mb-lg">
       <q-tab
         v-if="mostrarFormulario"
         name="formulario"
         label="Formulario"
+        class="text-white"
         no-caps
       />
-      <q-tab v-if="mostrarListado" name="listado" label="Listado" no-caps />
+      <q-tab
+        v-if="mostrarListado"
+        name="listado"
+        label="Listado"
+        class="text-white"
+        no-caps
+      />
     </q-tabs>
 
     <!-- Tab content -->
@@ -23,9 +24,10 @@
       animated
       transition-prev="scale"
       transition-next="scale"
+      class="rounded-3"
     >
       <!-- Formulario -->
-      <q-tab-panel name="formulario" class="q-py-none">
+      <q-tab-panel name="formulario">
         <slot name="formulario" />
         <button-submits
           v-if="mostrarButtonSubmits"
@@ -38,7 +40,7 @@
         />
       </q-tab-panel>
       <!-- Listado -->
-      <q-tab-panel name="listado" class="q-py-none">
+      <q-tab-panel name="listado">
         <essential-table
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
@@ -56,3 +58,20 @@
 </template>
 
 <script src="./TabLayout.ts"></script>
+
+<style lang="scss">
+.rounded-3 {
+  border-radius: 28px;
+}
+/* .fondo-header {
+  background-color: $primary;
+  height: 200px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+}
+
+.onda {
+  background-color: $positive;
+} */
+</style>

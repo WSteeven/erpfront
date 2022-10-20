@@ -1,9 +1,16 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-white text-dark">
+    <q-header class="bg-primary">
       <q-toolbar class="row justify-between">
-        <q-btn flat dense round aria-label="Menu" @click="toggleLeftDrawer">
+        <q-btn
+          flat
+          dense
+          round
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+          class="text-white"
+        >
           <svg
             width="24"
             height="24"
@@ -15,19 +22,19 @@
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M3 5C3 4.44772 3.44772 4 4 4H16C16.5523 4 17 4.44772 17 5C17 5.55228 16.5523 6 16 6H4C3.44772 6 3 5.55228 3 5Z"
-              fill="#000"
+              fill="#fff"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M3 10C3 9.44772 3.44772 9 4 9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H4C3.44772 11 3 10.5523 3 10Z"
-              fill="#000"
+              fill="#fff"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M3 15C3 14.4477 3.44772 14 4 14H10C10.5523 14 11 14.4477 11 15C11 15.5523 10.5523 16 10 16H4C3.44772 16 3 15.5523 3 15Z"
-              fill="#000"
+              fill="#fff"
             />
           </svg>
         </q-btn>
@@ -69,7 +76,7 @@
           </q-btn>
 
           <q-btn dense round flat>
-            <q-avatar size="32px">
+            <q-avatar size="32px" class="double-border">
               <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
             </q-avatar>
             <q-menu
@@ -118,12 +125,30 @@
       </q-toolbar>
     </q-header>
 
+    <!--<div class="custom-header"> -->
+    <div class="fondo-header"></div>
+    <div class="onda">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1000 100"
+        preserveAspectRatio="none"
+      >
+        <path
+          class="elementor-shape-fill"
+          d="M421.9,6.5c22.6-2.5,51.5,0.4,75.5,5.3c23.6,4.9,70.9,23.5,100.5,35.7c75.8,32.2,133.7,44.5,192.6,49.7
+      c23.6,2.1,48.7,3.5,103.4-2.5c54.7-6,106.2-25.6,106.2-25.6V0H0v30.3c0,0,72,32.6,158.4,30.5c39.2-0.7,92.8-6.7,134-22.4
+      c21.2-8.1,52.2-18.2,79.7-24.2C399.3,7.9,411.6,7.5,421.9,6.5z"
+        ></path>
+      </svg>
+    </div>
+    <!--</div> -->
+
     <!-- Drawer -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-grey-2">
+    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-white">
       <!-- Drawer Header -->
       <div class="absolute-top text-center q-pa-md">
         <q-avatar size="58px" class="q-mb-md" square>
-          <img src="src/assets/logo.svg" />
+          <img src="~assets/logo.svg" />
         </q-avatar>
         <div class="text-h5 text-secondary">CONSTRUCRED</div>
       </div>
@@ -150,20 +175,21 @@
     </q-drawer>
 
     <!-- Router -->
-    <q-page-container class="bg-white">
+    <q-page-container class="bg-grey-2">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <div>
             <essential-loading></essential-loading>
             <component :is="Component" />
+            <footer-component></footer-component>
           </div>
         </transition>
       </router-view>
     </q-page-container>
-    <bottom-menu
+    <!-- <bottom-menu
       :menu-visible="menuVisible"
       @cerrar="toggleLeftDrawer"
-    ></bottom-menu>
+    ></bottom-menu> -->
   </q-layout>
 </template>
 
@@ -178,9 +204,8 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 // Componentes
 import EssentialLink from 'components/EssentialLink.vue'
 import BottomMenu from 'components/bottomMenu/view/BottomMenu.vue'
+import FooterComponent from 'components/FooterComponent.vue'
 
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { endpoints } from 'config/api'
 import { useQuasar } from 'quasar'
 
 export default defineComponent({
@@ -190,6 +215,7 @@ export default defineComponent({
     EssentialLink,
     EssentialLoading,
     BottomMenu,
+    FooterComponent,
   },
 
   setup() {
@@ -223,11 +249,11 @@ export default defineComponent({
       leftDrawerOpen,
       toggleLeftDrawer() {
         console.log('cerrrada')
-        if (!$q.screen.xs) {
-          leftDrawerOpen.value = !leftDrawerOpen.value
-        } else {
+        //if (!$q.screen.xs) {
+        leftDrawerOpen.value = !leftDrawerOpen.value
+        /*} else {
           menuVisible.value = !menuVisible.value
-        }
+        }*/
       },
       logout,
       nombreUsuario,
@@ -237,3 +263,47 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss">
+/*.custom-header {
+  display: flex;
+  height: 400px;
+  top: 0;
+  position: fixed;
+}*/
+
+/*.fondo-header {
+  background-color: $negative;
+  height: 100px;
+  position: fixed;
+  top: 0px;
+  z-index: 0;
+  //  margin-top: 500px;
+  //  padding-top: 500px;
+}
+
+.onda {
+  background-color: $positive;
+  position: fixed;
+  top: 0;
+  z-index: 99999;
+}*/
+.fondo-header {
+  background-color: $primary;
+  height: 200px;
+  width: 100%;
+  position: fixed;
+  top: -1;
+  //z-index: -1;
+}
+
+.onda {
+  width: 100%;
+  position: fixed;
+  top: 200px;
+}
+
+.elementor-shape-fill {
+  fill: $primary;
+}
+</style>
