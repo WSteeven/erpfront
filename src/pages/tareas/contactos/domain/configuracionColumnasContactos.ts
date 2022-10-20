@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Contacto } from './Contacto'
+import { ClienteFinal } from './ClienteFinal'
 
-export const configuracionColumnasContactos: ColumnConfig<Contacto>[] = [
+export const configuracionColumnasContactos: ColumnConfig<ClienteFinal>[] = [
     {
         name: 'nombres',
         field: 'nombres',

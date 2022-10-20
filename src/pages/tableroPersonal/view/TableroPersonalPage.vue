@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-center q-py-md">
+    <div class="text-center text-white q-py-md">
       <div class="text-bold q-mb-md">{{ fecha }}</div>
       <div class="text-h5 q-mb-md">Buenos días, {{ store.nombreUsuario }}.</div>
       <q-chip v-if="store.esCoordinador || store.esTecnicoLider" icon="bi-check"
@@ -10,7 +10,7 @@
 
     <div class="row q-col-gutter-sm">
       <div v-if="store.esCoordinador || store.esTecnicoLider" class="col-12">
-        <q-card class="my-card" flat bordered>
+        <q-card class="custom-shadow">
           <q-card-section>
             <div class="row justify-between">
               <div class="text-h6">Subtareas</div>
@@ -171,7 +171,7 @@
       </div>
 
       <div v-if="store.esCoordinador" class="col-12">
-        <q-card class="my-card" bordered flat>
+        <q-card class="custom-shadow">
           <q-card-section>
             <div class="q-mb-md row items-top">
               <div class="text-h6 q-mr-md">Tareas</div>

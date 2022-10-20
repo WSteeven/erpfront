@@ -1,12 +1,12 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
 
-export class Contacto extends EntidadAuditable {
-    identificador: string | null
+export class ClienteFinal extends EntidadAuditable {
+    id_cliente: string | null
     nombres: string | null
     apellidos: string | null
     celular: string | null
     provincia: number | null
-    ciudad: number | null
+    canton: number | null
     parroquia: string | null
     direccion: string | null
     referencias: string | null
@@ -14,12 +14,12 @@ export class Contacto extends EntidadAuditable {
 
     constructor() {
         super()
-        this.identificador = null
+        this.id_cliente = null
         this.nombres = null // responsable
         this.apellidos = null
         this.celular = null
         this.provincia = null
-        this.ciudad = null
+        this.canton = null
         this.parroquia = null
         this.direccion = null
         this.referencias = null

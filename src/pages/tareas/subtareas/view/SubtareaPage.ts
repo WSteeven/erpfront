@@ -4,7 +4,6 @@ import { computed, defineComponent, Ref, ref } from 'vue'
 import {
   provincias,
   ciudades,
-  grupos,
   tiposInstalaciones,
   tiposTareasTelconet,
   tiposTareasNedetel,
@@ -99,16 +98,14 @@ export default defineComponent({
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
     async function obtenerResponsable(grupo_id: number) {
-      console.log('jajajajaj')
       // Obtener grupo
       const grupoController = new GrupoController()
       const { result } = await grupoController.consultar(grupo_id)
-      console.log(result)
       const responsable = result.empleado_id
 
       const empleadoController = new EmpleadoController()
       const { result: tecnicoResponsable } = await empleadoController.consultar(responsable)
-      console.log(tecnicoResponsable)
+
       subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
     }
 
