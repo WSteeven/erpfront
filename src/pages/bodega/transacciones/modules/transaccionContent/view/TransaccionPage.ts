@@ -71,7 +71,6 @@ export default defineComponent({
         const opciones_tipos = ref([])
         const opciones_subtipos = ref([])
         const opciones_estados = ref([])
-        const opciones_productos = ref([])
         //obtener los listados
         cargarVista(async () => {
             await obtenerListados({
@@ -84,7 +83,6 @@ export default defineComponent({
                 subtipos: new SubtipoTransaccionController(),
                 autorizaciones: new AutorizacionController(),
                 estados: new EstadosTransaccionController(),
-                productos: new ProductoController(),
                 detalles: new DetalleProductoController(),
             })
             //carga de valores iniciales
@@ -122,7 +120,6 @@ export default defineComponent({
         opciones_tipos.value = listadosAuxiliares.tipos
         opciones_estados.value = listadosAuxiliares.estados
         opciones_subtipos.value = listadosAuxiliares.subtipos
-        opciones_productos.value = listadosAuxiliares.productos
         opciones_sucursales.value = listadosAuxiliares.sucursales
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
 
@@ -178,7 +175,6 @@ export default defineComponent({
             opciones_subtipos,
             opciones_autorizaciones,
             opciones_estados,
-            opciones_productos,
 
             //filtros
             filtroTipos(val) {
