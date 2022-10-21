@@ -35,7 +35,6 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Producto, new ProductoController())
     const { entidad: producto, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { onConsultado, onReestablecer } = mixin.useHooks()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
     //Imagenes

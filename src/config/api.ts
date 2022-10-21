@@ -34,7 +34,7 @@ export const endpoints = {
   cantones: new Endpoint('cantones/'),
 
   //endpoints de RR HH
-  activos_fijos: new Endpoint('activos_fijos/'),
+  activos_fijos: new Endpoint('activos-fijos/'),
   //endpoints de RR HH
   empleados: new Endpoint('empleados/'),
   allroles: new Endpoint('roles/'),
@@ -61,6 +61,8 @@ export const endpoints = {
   tipos_fibras: new Endpoint('tipos-fibras/'),
   tipos_transacciones: new Endpoint('tipos-transacciones/'),
   transacciones: new Endpoint('transacciones/'),
+  transacciones_egresos: new Endpoint('transacciones-egresos/'),
+  transacciones_ingresos: new Endpoint('transacciones-ingresos/'),
   subtipos_transacciones: new Endpoint('subtipos-transacciones/'),
   perchas: new Endpoint('perchas/'),
   pisos: new Endpoint('pisos/'),
