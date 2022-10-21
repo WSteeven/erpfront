@@ -1,6 +1,4 @@
-import { Producto } from "pages/bodega/productos/domain/Producto";
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { ref, Ref } from "vue";
 
 export class Transaccion extends EntidadAuditable{
     id: number|null

@@ -65,9 +65,9 @@ export default defineComponent({
 
         //Configurar los listados para los selects
         opciones_productos.value = listadosAuxiliares.productos
+        opciones_detalles.value=listadosAuxiliares.detalles
         
         // const opciones_detalles = listadosAuxiliares.detalles
-        // opciones_detalles.detalles=listadosAuxiliares.detalles
         opciones_clientes.value = listadosAuxiliares.clientes
         opciones_condiciones.value = listadosAuxiliares.condiciones
         opciones_sucursales.value = listadosAuxiliares.sucursales

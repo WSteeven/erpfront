@@ -90,6 +90,10 @@ export default defineComponent({
             listadosAuxiliares.estados.length > 1 ? transaccion.estado = listadosAuxiliares.estados[0]['id'] : transaccion.estado = ''
         })
 
+
+        // console.log('check de aut',transaccion.tiene_obs_autorizacion)
+        // console.log('check de est',transaccion.tiene_obs_estado)
+        
         //Reglas de validacion
         const reglas = {
             justificacion: { required },
@@ -100,12 +104,12 @@ export default defineComponent({
             autorizacion: { requiredIfRol: requiredIf(rolSeleccionado), },
             estado: { requiredIfRol: requiredIf(rolSeleccionado),},
             observacion_aut: {
-                requiredIfRol: requiredIf(rolSeleccionado),
-                requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion ? true : false })
+                requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
+                // requiredIfRol: requiredIf(rolSeleccionado),
             },
             observacion_est: {
-                requiredIfRol: requiredIf(rolSeleccionado),
-                requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado ? true : false })
+                // requiredIfRol: requiredIf(rolSeleccionado),
+                requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado })
             },
             //validar que envien datos en el listado
             listadoProductosSeleccionados: { required }
