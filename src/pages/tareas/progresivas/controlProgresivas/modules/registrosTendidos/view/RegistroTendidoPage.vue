@@ -223,7 +223,23 @@
       <!-- Hora -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora</label>
-        <q-input v-model="tendido.hora" type="time" outlined dense></q-input>
+        <q-input v-model="tendido.hora" mask="time" outlined dense>
+          <template v-slot:append>
+            <q-icon name="bi-clock" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-time v-model="tendido.hora" format24h now-btn>
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
 
       <!-- Imagen -->

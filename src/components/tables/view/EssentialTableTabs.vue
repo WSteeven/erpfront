@@ -9,6 +9,7 @@
     active-bg-color="primary"
     indicator-color="primary"
     :class="{ 'my-custom-toggle': !$q.screen.xs }"
+    class="bg-white"
     align="justify"
     @click="emit('tab-seleccionado', tabSeleccionado)"
   >

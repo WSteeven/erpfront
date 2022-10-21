@@ -1,8 +1,7 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
-import { useOrquestadorSelectorClientes } from '../application/OrquestadorSelectorClientes'
-import { provincias, ciudades, acciones } from 'config/utils'
 import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { provincias, ciudades } from 'config/utils'
 import { required } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
@@ -12,16 +11,16 @@ import EssentialSelectableTable from 'components/tables/view/EssentialSelectable
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
-import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
-import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
-import { ContactoController } from 'pages/tareas/contactos/infraestructure/ContactoController'
-import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
+import { ContactoController } from 'pages/tareas/contactos/infraestructure/ContactoController'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
+import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   props: {
@@ -32,41 +31,35 @@ export default defineComponent({
   },
   components: {
     EssentialSelectableTable,
-    ButtonSubmits,
-    flatPickr,
     LabelAbrirModal,
+    ButtonSubmits,
     ModalesEntidad,
   },
   setup(props) {
     const tareaStore = useTareaStore()
 
     const { entidad: tarea, listadosAuxiliares } = props.mixin.useReferencias()
-    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados } =
+    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
 
-    tarea.hydrate(tareaStore.tarea)
+
     // const { onGuardado, onReestablecer } = props.mixin.useHooks()
 
-    obtenerListados({
-      clientes: new ClienteController(),
-      clientesFinales: new ContactoController(),
-      provincias: new ProvinciaController(),
-      cantones: new CantonController(),
-    })
-
-    const {
-      refListadoSeleccionable: refListadoSeleccionableClientes,
-      criterioBusqueda: criterioBusquedaCliente,
-      listado: listadoClientes,
-      listar: listarClientes,
-      limpiar: limpiarCliente,
-      seleccionar: seleccionarCliente,
-    } = useOrquestadorSelectorClientes(tarea, 'clientes')
-
-    watchEffect(() => {
-      if (tarea.id && tarea.cliente) {
-        seleccionarCliente(tarea.cliente)
-      }
+    cargarVista(async () => {
+      await obtenerListados({
+        clientes: new ClienteController(),
+        clientesFinales: new ContactoController(),
+        provincias: new ProvinciaController(),
+        cantones: new CantonController(),
+        supervisores: {
+          controller: new EmpleadoController(),
+          params: { rol: 'COORDINADOR' },
+        }
+      })
+      clientes.value = listadosAuxiliares.clientes
+      clientesFinales.value = listadosAuxiliares.clientesFinales
+      supervisores.value = listadosAuxiliares.supervisores
+      tarea.hydrate(tareaStore.tarea)
     })
 
     const rules = {
@@ -93,8 +86,8 @@ export default defineComponent({
 
     const modalesTarea = new ComportamientoModalesTarea()
 
-    // Filtro tipos de trabajos
-    const clientes = ref([])
+    // Filtro clientes principales
+    const clientes = ref()
     function filtrarClientes(val, update) {
       if (val === '') {
         update(() => {
@@ -111,7 +104,7 @@ export default defineComponent({
     }
 
     // Filtro tipos de clientes finales
-    const clientesFinales = ref([])
+    const clientesFinales = ref()
     function filtrarClientesFinales(val, update) {
       if (val === '') {
         update(() => {
@@ -127,6 +120,23 @@ export default defineComponent({
       })
     }
 
+    // Filtro supervisores
+    const supervisores = ref()
+    function filtrarSupervisores(val, update) {
+      if (val === '') {
+        update(() => {
+          supervisores.value = listadosAuxiliares.supervisores
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        supervisores.value = listadosAuxiliares.supervisores.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
     const clienteFinal = reactive(new ClienteFinal())
 
     async function obtenerClienteFinal(clienteFinalId: number) {
@@ -134,6 +144,13 @@ export default defineComponent({
       const { result } = await clienteFinalController.consultar(clienteFinalId)
       clienteFinal.hydrate(result)
     }
+
+    watchEffect(() => {
+      if (tarea.cliente_final)
+        obtenerClienteFinal(tarea.cliente_final)
+      else
+        clienteFinal.hydrate(new ClienteFinal())
+    })
 
     return {
       v$,
@@ -151,15 +168,11 @@ export default defineComponent({
       clientesFinales,
       filtrarClientesFinales,
       obtenerClienteFinal,
+      supervisores,
+      filtrarSupervisores,
       clienteFinal,
       listadosAuxiliares,
       // Selector
-      refListadoSeleccionableClientes,
-      criterioBusquedaCliente,
-      listadoClientes,
-      listarClientes,
-      limpiarCliente,
-      seleccionarCliente,
       configuracionColumnasClientes,
     }
   },

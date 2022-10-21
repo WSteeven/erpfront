@@ -37,26 +37,9 @@
             ></q-input>
           </div>
 
-          <!-- Cliente -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Cliente</label>
-            <q-input
-              v-model="subtarea.cliente"
-              disable
-              outlined
-              dense
-            ></q-input>
-          </div>
-
           <!-- Grupo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Grupo asignado</label>
-            <!--<q-input
-              v-model="subtarea.grupo"
-              placeholder="Obligatorio"
-              outlined
-              dense
-            ></q-input> -->
             <q-select
               v-model="subtarea.grupo"
               :options="grupos"
@@ -160,13 +143,22 @@
             </q-input>
           </div>
 
+          <!-- Técnico responsable -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cantidad de días</label>
+            <q-input
+              v-model="subtarea.cantidad_dias"
+              disable
+              outlined
+              dense
+            ></q-input>
+          </div>
+
           <!-- Fecha y hora de estado realizado -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block"
-              >Fecha y hora de estado realizado</label
-            >
+            <label class="q-mb-sm block">Fecha y hora realizado</label>
             <q-input
-              v-model="subtarea.fecha_hora_estado_realizado"
+              v-model="subtarea.fecha_hora_realizado"
               outlined
               dense
               disable
@@ -236,15 +228,6 @@
           <!--  Subtarea de la q depende -->
           <div v-if="subtarea.es_dependiente" class="col-12 col-md-3">
             <label class="q-mb-sm block">Subtarea de la que depende</label>
-            <!--<q-input
-              v-model="subtarea.subtarea_dependiente"
-              @update:model-value="
-                (v) => (subtarea.subtarea_dependiente = v.toUpperCase())
-              "
-              hint="Presione Enter para filtrar"
-              outlined
-              dense
-            ></q-input> -->
             <q-select
               v-model="subtarea.subtarea_dependiente"
               :options="subtareas"
@@ -264,7 +247,9 @@
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
-                    <q-item-label>{{ scope.opt.codigo_subtarea }}</q-item-label>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_subtarea
+                    }}</q-item-label>
                     <q-item-label caption
                       >{{ scope.opt.detalle }}
                     </q-item-label>
@@ -296,27 +281,73 @@
           <!-- Hora inicio de ventana -->
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora inicio de ventana</label>
-            <flat-pickr
+            <q-input
               v-model="subtarea.hora_inicio_ventana"
-              :config="{
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: 'H:i',
-              }"
-            />
+              mask="time"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="bi-clock" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-time
+                      v-model="subtarea.hora_inicio_ventana"
+                      format24h
+                      now-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-time>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
           </div>
 
           <!-- Hora fin de ventana -->
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora fin de ventana</label>
-            <flat-pickr
+            <q-input
               v-model="subtarea.hora_fin_ventana"
-              :config="{
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: 'H:i',
-              }"
-            />
+              mask="time"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="bi-clock" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-time
+                      v-model="subtarea.hora_fin_ventana"
+                      format24h
+                      now-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-time>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
           </div>
 
           <!-- Descripción completa del trabajo a realizar -->
@@ -500,6 +531,10 @@
 
       <!-- Botones formulario -->
       <div class="row q-gutter-md justify-end">
+        <q-btn color="primary" no-caps @click="enviar()" push>
+          <q-icon name="bi-x-lg" size="xs" class="q-mr-sm"></q-icon>
+          <div>Guardar</div>
+        </q-btn>
         <q-btn color="primary" no-caps @click="enviar()" push>
           <q-icon name="bi-x-lg" size="xs" class="q-mr-sm"></q-icon>
           <div>Guardar cambios</div>
