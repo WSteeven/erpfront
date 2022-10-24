@@ -39,7 +39,7 @@ export default defineComponent({
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
 
-        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length>0 ? true : false
+        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
         // console.log('xxx',(store.roles.filter((v)=>v==='BODEGA' ||v==='COORDINADOR')).length>0?'es bodega':'no tiene el rol')
         console.log(rolSeleccionado)
 
@@ -64,7 +64,7 @@ export default defineComponent({
                 tipos: {
                     controller: new TipoTransaccionController(),
                     // params: { tipo: props.tipo }
-                    params: { tipo:'INGRESO'}
+                    params: { tipo: 'INGRESO' }
                 },
                 subtipos: new SubtipoTransaccionController(),
                 autorizaciones: new AutorizacionController(),
@@ -79,7 +79,7 @@ export default defineComponent({
 
         // console.log('check de aut',transaccion.tiene_obs_autorizacion)
         // console.log('check de est',transaccion.tiene_obs_estado)
-        
+
         //Reglas de validacion
         const reglas = {
             justificacion: { required },
@@ -88,7 +88,7 @@ export default defineComponent({
             subtipo: { required },
             lugar_destino: { required },
             autorizacion: { requiredIfRol: requiredIf(rolSeleccionado), },
-            estado: { requiredIfRol: requiredIf(rolSeleccionado),},
+            estado: { requiredIfRol: requiredIf(rolSeleccionado), },
             observacion_aut: {
                 requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
                 // requiredIfRol: requiredIf(rolSeleccionado),
