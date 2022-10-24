@@ -18,12 +18,4 @@
   <modales-entidad :comportamiento="modales" />
 </template>
 
-<style>
-.flotante {
-  position: fixed;
-  bottom: 32px;
-  right: 16px;
-}
-</style>
-
 <script src="./SubtareasListadoContent.ts"></script>

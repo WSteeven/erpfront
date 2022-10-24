@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-primary">
+    <q-header class="bg-transparent">
       <q-toolbar class="row justify-between">
         <q-btn
           flat
@@ -129,18 +129,82 @@
     <div class="fondo-header"></div>
     <div class="onda">
       <svg
+        viewBox="0 0 385.76251 37.786678"
+        version="1.1"
+        id="svg5"
+        xml:space="preserve"
+        inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+        sodipodi:docname="HEADER.svg"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 1000 100"
-        preserveAspectRatio="none"
+        xmlns:svg="http://www.w3.org/2000/svg"
       >
-        <path
-          class="elementor-shape-fill"
-          d="M421.9,6.5c22.6-2.5,51.5,0.4,75.5,5.3c23.6,4.9,70.9,23.5,100.5,35.7c75.8,32.2,133.7,44.5,192.6,49.7
-      c23.6,2.1,48.7,3.5,103.4-2.5c54.7-6,106.2-25.6,106.2-25.6V0H0v30.3c0,0,72,32.6,158.4,30.5c39.2-0.7,92.8-6.7,134-22.4
-      c21.2-8.1,52.2-18.2,79.7-24.2C399.3,7.9,411.6,7.5,421.9,6.5z"
-        ></path>
+        <sodipodi:namedview
+          id="namedview7"
+          pagecolor="#ffffff"
+          bordercolor="#000000"
+          borderopacity="0.25"
+          inkscape:showpageshadow="2"
+          inkscape:pageopacity="0.0"
+          inkscape:pagecheckerboard="0"
+          inkscape:deskcolor="#d1d1d1"
+          inkscape:document-units="mm"
+          showgrid="false"
+          inkscape:zoom="0.78127806"
+          inkscape:cx="723.17403"
+          inkscape:cy="80.637104"
+          inkscape:window-width="1920"
+          inkscape:window-height="1057"
+          inkscape:window-x="-8"
+          inkscape:window-y="-8"
+          inkscape:window-maximized="1"
+          inkscape:current-layer="layer1"
+        />
+        <defs id="defs2">
+          <linearGradient inkscape:collect="always" id="linearGradient452">
+            <stop
+              style="stop-color: #4b134f; stop-opacity: 1"
+              offset="0"
+              id="stop448"
+            />
+            <stop
+              style="stop-color: #c94b4b; stop-opacity: 1"
+              offset="1"
+              id="stop450"
+            />
+          </linearGradient>
+          <linearGradient
+            inkscape:collect="always"
+            xlink:href="#linearGradient452"
+            id="linearGradient454"
+            x1="-101.10589"
+            y1="92.927704"
+            x2="283.94427"
+            y2="92.250397"
+            gradientUnits="userSpaceOnUse"
+          />
+        </defs>
+        <g
+          inkscape:label="Capa 1"
+          inkscape:groupmode="layer"
+          id="layer1"
+          transform="translate(101.10589,-73.285741)"
+        >
+          <path
+            style="
+              fill: url(#linearGradient454);
+              stroke-width: 0.264583;
+              fill-opacity: 1;
+            "
+            d="m 207.26599,110.82219 c -7.12131,-0.50286 -18.05993,-1.92665 -25.92916,-3.37499 -16.1698,-2.97607 -29.17894,-7.00675 -50.94637,-15.784979 -19.08329,-7.69579 -30.23147,-11.75846 -36.91406,-13.45241 -8.835117,-2.23959 -21.767046,-3.4596 -30.011449,-2.83132 -15.341297,1.16912 -29.713845,4.57552 -50.006252,11.85185 -14.16638382,5.07969 -26.302684,7.54027 -43.656251,8.85109 -5.52786,0.41755 -19.64336,0.41666 -23.944792,-0.002 -11.93495,-1.16028 -21.980561,-3.09307 -32.543751,-6.26146 -5.233567,-1.56978 -12.074426,-3.96571 -13.692195,-4.79552 l -0.7276,-0.37321 v -5.68175 -5.68175 H 91.77537 284.65662 v 13.31216 13.31216 l -5.09323,1.634289 c -10.44027,3.35002 -20.57717,5.83017 -29.83177,7.29881 -3.13129,0.49692 -14.68099,1.65763 -19.97604,2.00754 -4.66985,0.3086 -17.95122,0.29147 -22.48959,-0.029 z"
+            id="path386"
+          />
+        </g>
       </svg>
     </div>
+
     <!--</div> -->
 
     <!-- Drawer -->
@@ -289,7 +353,18 @@ export default defineComponent({
   z-index: 99999;
 }*/
 .fondo-header {
-  background-color: $primary;
+  background: #c94b4b; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #4b134f,
+    #c94b4b
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #4b134f,
+    #c94b4b
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
   height: 200px;
   width: 100%;
   position: fixed;
@@ -301,9 +376,5 @@ export default defineComponent({
   width: 100%;
   position: fixed;
   top: 200px;
-}
-
-.elementor-shape-fill {
-  fill: $primary;
 }
 </style>

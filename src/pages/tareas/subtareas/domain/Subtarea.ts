@@ -1,27 +1,37 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Subtarea extends EntidadAuditable {
-  coordinador: string | null
-  codigo_tarea_cliente: string | null
   codigo_subtarea: string | null
-  descripcion_completa: string | null
-  subtarea_dependiente: string | null
-  // detalle_tarea: string | null
   detalle: string | null
+  grupo: string | null
   tecnico_responsable: string | null
-  actividad_realizada: string | null
-  novedades: string | null
-  cliente: string | null
-  estado: string | null
+  tipo_trabajo: number | null
+  cliente: number | null
+
+  // Tiempos
+  fecha_hora_creacion: string | null
+  fecha_hora_asignacion: string | null
+  fecha_hora_inicio: string | null
+  fecha_hora_finalizacion: string | null
+  fecha_hora_realizado: string | null
+  fecha_hora_suspendido: string | null
+  causa_suspencion: string | null
+  fecha_hora_cancelacion: string | null
+  cantidad_dias: string | null
+
   es_dependiente: boolean
+  subtarea_dependiente: string | null
+
   es_ventana: boolean
   hora_inicio_ventana: string | null
   hora_fin_ventana: string | null
-  // Tiempos
-  fecha_asignacion: string | null
-  fecha_inicio: string | null
-  fecha_finalizacion: string | null
-  cantidad_dias: string | null // para calculo
+
+  descripcion_completa: string | null
+
+  actividad_realizada: string | null
+  novedades: string | null
+  estado: string | null
+
   // NEDETEL
   fiscalizador: string | null
   ing_soporte: string | null
@@ -34,16 +44,12 @@ export class Subtarea extends EntidadAuditable {
   ticket_phoenix: string | null
   // Foreign keys
   codigo_tarea_jp: string | null
-  tipo_trabajo: number | null
   servicio: number | null
   ubicacion_origen: number | null
   ubicacion_fin: number | null
-  grupo: string | null
 
   constructor() {
     super()
-    this.coordinador = null
-    this.codigo_tarea_cliente = null
     this.codigo_subtarea = null
     this.descripcion_completa = null
     this.es_dependiente = false
@@ -51,17 +57,23 @@ export class Subtarea extends EntidadAuditable {
     this.hora_inicio_ventana = null
     this.hora_fin_ventana = null
     this.subtarea_dependiente = null
-    // this.detalle_tarea = null
+
     this.detalle = null
     this.tecnico_responsable = null
     this.actividad_realizada = null
     this.novedades = null
-    this.cliente = null
     this.estado = null
+    this.cliente = null
+
     // Tiempos
-    this.fecha_asignacion = null
-    this.fecha_inicio = null
-    this.fecha_finalizacion = null
+    this.fecha_hora_creacion = null
+    this.fecha_hora_asignacion = null
+    this.fecha_hora_inicio = null
+    this.fecha_hora_finalizacion = null
+    this.fecha_hora_realizado = null
+    this.fecha_hora_suspendido = null
+    this.causa_suspencion = null
+    this.fecha_hora_cancelacion = null
     this.cantidad_dias = null
     // NEDETEL
     this.fiscalizador = null

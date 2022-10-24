@@ -9,7 +9,7 @@ export class Tarea extends EntidadAuditable {
   hora_solicitud: string | null
   detalle: string | null
   estado: string | null // pendiente
-  coordinador: number | null
+  supervisor: number | null
   es_proyecto: boolean
   codigo_proyecto: string | null
 
@@ -23,7 +23,7 @@ export class Tarea extends EntidadAuditable {
     this.fecha_solicitud = null
     this.detalle = null
     this.estado = null
-    this.coordinador = 1
+    this.supervisor = null
     this.es_proyecto = false
     this.codigo_proyecto = null
   }

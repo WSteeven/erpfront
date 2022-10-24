@@ -10,7 +10,32 @@
           <!-- Cliente -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Cliente</label>
-            <q-input
+            <q-select
+              v-model="tipoTarea.cliente"
+              :options="clientes"
+              @filter="filtrarClientes"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.razon_social"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <!-- @update:model-value="obtenerResponsable(subtarea.grupo)" -->
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <!--<q-input
               v-model="criterioBusquedaCliente"
               placeholder="Obligatorio"
               @update:model-value="
@@ -30,7 +55,7 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </q-input>
+            </q-input> -->
           </div>
 
           <!-- Nombre -->

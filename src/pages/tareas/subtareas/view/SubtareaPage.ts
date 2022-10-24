@@ -18,29 +18,36 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
-import { useTareaStore } from 'stores/tarea'
-import { Tecnico } from '../domain/Tecnico'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { SubtareaController } from '../infraestructure/SubtareaController'
-import { Subtarea } from '../domain/Subtarea'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTareaController } from 'pages/tareas/tiposTareas/infraestructure/TipoTareaController'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { SubtareaController } from '../infraestructure/SubtareaController'
+import { Subtarea } from '../domain/Subtarea'
+import { useTareaStore } from 'stores/tarea'
+import { Tecnico } from '../domain/Tecnico'
 
 export default defineComponent({
   components: { EssentialTable, flatPickr },
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
-    const { obtenerListados } = mixin.useComportamiento()
-
-    obtenerListados({
-      tiposTrabajos: new TipoTareaController(),
-      subtareas: new SubtareaController(),
-      grupos: new GrupoController(),
-    })
+    const { obtenerListados, cargarVista } = mixin.useComportamiento()
 
     const tareaStore = useTareaStore()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        tiposTrabajos: {
+          controller: new TipoTareaController(),
+          params: { cliente: tareaStore.tarea.cliente }
+        },
+        subtareas: new SubtareaController(),
+        grupos: new GrupoController(),
+      })
+
+      subtarea.hydrate(tareaStore.subtarea)
+    })
 
     const busqueda = ref()
     const tecnicoSeleccionado = ref()
@@ -88,8 +95,6 @@ export default defineComponent({
     function enviar() {
       //
     }
-
-    subtarea.hydrate(tareaStore.subtarea)
 
     function eliminarTecnico({ posicion }) {
       datos.value.splice(posicion, 1)

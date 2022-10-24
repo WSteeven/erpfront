@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-grey-2">
+  <q-page class="">
     <div class="row items-center empresa">
       <q-avatar square>
         <img src="~assets/logo.svg" />
@@ -27,7 +27,7 @@
 
       <!-- Right side -->
       <div
-        class="col-12 col-md-4 row items-center justify-center bg-white window-height"
+        class="col-12 col-md-4 row items-center justify-center bg-grey-2 window-height"
       >
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-sm">

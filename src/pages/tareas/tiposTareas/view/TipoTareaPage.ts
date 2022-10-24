@@ -3,7 +3,7 @@ import { configuracionColumnasClientes } from 'pages/sistema/clientes/domain/con
 import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTiposTareas'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -16,6 +16,7 @@ import { TipoTareaController } from '../infraestructure/TipoTareaController'
 import { TipoTarea } from '../domain/TipoTarea'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 
 export default defineComponent({
   components: {
@@ -27,10 +28,17 @@ export default defineComponent({
       TipoTarea,
       new TipoTareaController()
     )
-    const { entidad: tipoTarea, disabled, accion } = mixin.useReferencias()
+    const { entidad: tipoTarea, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { onConsultado, onReestablecer } = mixin.useHooks()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        clientes: new ClienteController(),
+      })
+      clientes.value = listadosAuxiliares.clientes
+    })
 
     const rules = {
       cliente: { required },
@@ -42,17 +50,22 @@ export default defineComponent({
     const v$ = useVuelidate(rules, tipoTarea)
     setValidador(v$.value)
 
-    const {
-      refListadoSeleccionable: refListadoSeleccionableClientes,
-      criterioBusqueda: criterioBusquedaCliente,
-      listado: listadoClientes,
-      listar: listarClientes,
-      limpiar: limpiarCliente,
-      seleccionar: seleccionarCliente,
-    } = useOrquestadorSelectorClientes(tipoTarea, 'clientes')
-
-    onReestablecer(() => (criterioBusquedaCliente.value = null))
-    onConsultado(() => seleccionarCliente(tipoTarea.cliente))
+    // Filtro clientes principales
+    const clientes = ref()
+    function filtrarClientes(val, update) {
+      if (val === '') {
+        update(() => {
+          clientes.value = listadosAuxiliares.clientes
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        clientes.value = listadosAuxiliares.clientes.filter(
+          (v) => v.razon_social.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
 
     return {
       // mixin
@@ -62,14 +75,9 @@ export default defineComponent({
       accion,
       v$,
       configuracionColumnas: configuracionColumnasTiposTareas,
-      // Selector
-      refListadoSeleccionableClientes,
-      criterioBusquedaCliente,
-      listadoClientes,
-      listarClientes,
-      limpiarCliente,
-      seleccionarCliente,
       configuracionColumnasClientes,
+      filtrarClientes,
+      clientes,
     }
   },
 })

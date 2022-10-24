@@ -2,7 +2,7 @@
   <!-- <transition name="fade" mode="out-in"> -->
   <!--  -->
   <section v-show="status.estaCargando.value" class="loading-background">
-    <q-spinner-gears size="4em" color="primary" />
+    <q-spinner-dots size="4em" color="primary" />
   </section>
   <!-- </transition> -->
 </template>

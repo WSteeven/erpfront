@@ -78,7 +78,12 @@
                 >
                   <q-date v-model="tarea.fecha_solicitud" mask="DD-MM-YYYY">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -89,14 +94,28 @@
 
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Hora de solicitud</label>
-          <flat-pickr
-            v-model="tarea.hora_solicitud"
-            :config="{
-              enableTime: true,
-              noCalendar: true,
-              dateFormat: 'H:i',
-            }"
-          />
+          <q-input v-model="tarea.hora_solicitud" mask="time" outlined dense>
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-time v-model="tarea.hora_solicitud" format24h now-btn>
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
 
         <!-- Detalle -->
@@ -114,21 +133,33 @@
           </q-input>
         </div>
 
-        <!-- Coordinador -->
-        <div v-if="tarea.coordinador" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Coordinador</label>
-          <q-input v-model="tarea.coordinador" outlined dense disable></q-input>
-        </div>
-
         <!-- Supervisor -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Supervisor</label>
-          <q-input
+          <q-select
             v-model="tarea.supervisor"
-            @update:model-value="(v) => (tarea.supervisor = v.toUpperCase())"
-            outlined
+            :options="supervisores"
+            @filter="filtrarSupervisor"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
             dense
-          ></q-input>
+            outlined
+            :option-label="(item) => item.nombres + ' ' + item.apellidos"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
       </div>
     </q-expansion-item>
@@ -143,19 +174,6 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Nombre -->
         <div class="col-12 col-md-6">
-          <!--<label-abrir-modal
-            label="Contacto"
-            @click="modalesTarea.abrirModalEntidad('ContactoPage')"
-          > 
-          </label-abrir-modal> 
-          <q-input
-            v-model="tarea.contacto"
-            placeholder="Ingrese el nombre o apellido"
-            hint="Presiona Enter para seleccionar un cliente"
-            @update:model-value="(v) => (tarea.contacto = v.toUpperCase())"
-            outlined
-            dense
-          ></q-input> -->
           <label class="q-mb-sm block">Contacto</label>
           <q-select
             v-model="tarea.cliente_final"
@@ -172,7 +190,6 @@
             input-debounce="0"
             emit-value
             map-options
-            @update:model-value="obtenerClienteFinal(tarea.cliente_final)"
           >
             <template v-slot:no-option>
               <q-item>
