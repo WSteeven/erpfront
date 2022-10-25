@@ -12,11 +12,13 @@ export const useTareaStore = defineStore('tarea', () => {
   // State
   const tarea = reactive(new Tarea())
   const subtarea = reactive(new Subtarea())
-  const accion = ref(acciones.nuevo)
+  // const accion = ref(acciones.nuevo)
+  const subtareaReset = new Subtarea()
+  const accionTarea = acciones.nuevo
+  const accionSubtarea = acciones.nuevo
 
   const statusLoading = new StatusEssentialLoading()
 
-  // const mostrarFormulario = computed(() => Boolean(tarea.value))
   async function consultarSubtarea(id: number) {
     statusLoading.activar()
     const axios = AxiosHttpRepository.getInstance()
@@ -26,12 +28,19 @@ export const useTareaStore = defineStore('tarea', () => {
     statusLoading.desactivar()
   }
 
+  function resetearSubtarea() {
+    subtarea.hydrate(subtareaReset)
+  }
+
   return {
     // State
     tarea,
     subtarea,
+    accionTarea,
+    accionSubtarea,
     consultarSubtarea,
-    accion,
+    // accion,
+    resetearSubtarea,
     // mostrarFormulario,
   }
 })

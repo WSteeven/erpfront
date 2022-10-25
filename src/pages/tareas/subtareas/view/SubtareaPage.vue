@@ -12,11 +12,10 @@
       >
         <div class="row q-col-gutter-sm q-pa-md">
           <!-- Subtarea -->
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.codigo_subtarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Código subtarea</label>
             <q-input
               v-model="subtarea.codigo_subtarea"
-              placeholder="Obligatorio"
               disable
               outlined
               dense
@@ -30,6 +29,7 @@
             >
             <q-input
               v-model="subtarea.detalle"
+              placeholder="Opcional"
               outlined
               dense
               autogrow
@@ -68,7 +68,7 @@
           </div>
 
           <!-- Técnico responsable -->
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.tecnico_responsable" class="col-12 col-md-3">
             <label class="q-mb-sm block">Técnico responsable</label>
             <q-input
               v-model="subtarea.tecnico_responsable"
@@ -108,20 +108,20 @@
           </div>
 
           <!-- Fecha de creacion -->
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_creacion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de creación</label>
             <q-input v-model="subtarea.fecha_creacion" outlined dense disable>
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_asignacion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de asignación</label>
-            <q-input v-model="subtarea.fecha_creacion" outlined dense disable>
+            <q-input v-model="subtarea.fecha_asignacion" outlined dense disable>
             </q-input>
           </div>
 
           <!-- Fecha de inicio -->
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_inicio" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Fecha y hora de inicio de trabajo</label
             >
@@ -130,7 +130,7 @@
           </div>
 
           <!-- Fecha de finalizacion -->
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_finalizacion" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Fecha y hora de finalización de trabajo</label
             >
@@ -144,7 +144,7 @@
           </div>
 
           <!-- Técnico responsable -->
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.cantidad_dias" class="col-12 col-md-3">
             <label class="q-mb-sm block">Cantidad de días</label>
             <q-input
               v-model="subtarea.cantidad_dias"
@@ -155,7 +155,7 @@
           </div>
 
           <!-- Fecha y hora de estado realizado -->
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_hora_realizado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora realizado</label>
             <q-input
               v-model="subtarea.fecha_hora_realizado"
@@ -167,7 +167,10 @@
           </div>
 
           <!-- Fecha y hora de estado suspendido -->
-          <div class="col-12 col-md-3">
+          <div
+            v-if="subtarea.fecha_hora_estado_suspendido"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block"
               >Fecha y hora de estado suspendido</label
             >
@@ -181,7 +184,7 @@
           </div>
 
           <!-- Causa de la suspencion -->
-          <div class="col-12 col-md-3">
+          <div v-if="subtarea.causa_suspencion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Causa de la suspención</label>
             <q-input
               v-model="subtarea.causa_suspencion"
@@ -192,7 +195,10 @@
           </div>
 
           <!-- Fecha y hora de estado cancelacion -->
-          <div class="col-12 col-md-3">
+          <div
+            v-if="subtarea.fecha_hora_estado_cancelado"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Fecha y hora de cancelación</label>
             <q-input
               v-model="subtarea.fecha_hora_estado_cancelado"
@@ -280,7 +286,7 @@
 
           <!-- Hora inicio de ventana -->
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Hora inicio de ventana</label>
+            <label class="q-mb-sm block">Hora inicio de ventana (24H)</label>
             <q-input
               v-model="subtarea.hora_inicio_ventana"
               mask="time"
@@ -316,7 +322,7 @@
 
           <!-- Hora fin de ventana -->
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Hora fin de ventana</label>
+            <label class="q-mb-sm block">Hora fin de ventana (24H)</label>
             <q-input
               v-model="subtarea.hora_fin_ventana"
               mask="time"
@@ -529,17 +535,12 @@
         </div>
       </q-expansion-item>
 
-      <!-- Botones formulario -->
-      <div class="row q-gutter-md justify-end">
-        <q-btn color="primary" no-caps @click="enviar()" push>
-          <q-icon name="bi-x-lg" size="xs" class="q-mr-sm"></q-icon>
-          <div>Guardar</div>
-        </q-btn>
-        <q-btn color="primary" no-caps @click="enviar()" push>
-          <q-icon name="bi-x-lg" size="xs" class="q-mr-sm"></q-icon>
-          <div>Guardar cambios</div>
-        </q-btn>
-      </div>
+      <button-submits
+        :accion="accion"
+        @cancelar="reestablecer()"
+        @editar="editar(entidad)"
+        @guardar="guardar(entidad)"
+      />
     </q-form>
   </q-page>
 </template>

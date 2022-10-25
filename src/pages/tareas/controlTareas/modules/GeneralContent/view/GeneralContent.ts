@@ -53,7 +53,7 @@ export default defineComponent({
         cantones: new CantonController(),
         supervisores: {
           controller: new EmpleadoController(),
-          params: { rol: 'COORDINADOR' },
+          params: {},
         }
       })
       clientes.value = listadosAuxiliares.clientes

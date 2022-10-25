@@ -59,8 +59,8 @@ export default defineComponent({
       accion: () => {
         if (!tareaStore.tarea.id)
           notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
+        tareaStore.resetearSubtarea()
         modales.abrirModalEntidad('SubtareasPage')
-
       },
     }
 

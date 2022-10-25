@@ -129,6 +129,8 @@
     <div class="fondo-header"></div>
     <div class="onda">
       <svg
+        width="385.76251mm"
+        height="37.786678mm"
         viewBox="0 0 385.76251 37.786678"
         version="1.1"
         id="svg5"
@@ -153,7 +155,7 @@
           inkscape:document-units="mm"
           showgrid="false"
           inkscape:zoom="0.78127806"
-          inkscape:cx="723.17403"
+          inkscape:cx="695.01504"
           inkscape:cy="80.637104"
           inkscape:window-width="1920"
           inkscape:window-height="1057"
@@ -165,7 +167,7 @@
         <defs id="defs2">
           <linearGradient inkscape:collect="always" id="linearGradient452">
             <stop
-              style="stop-color: #4b134f; stop-opacity: 1"
+              style="stop-color: #000000; stop-opacity: 1"
               offset="0"
               id="stop448"
             />
@@ -205,16 +207,14 @@
       </svg>
     </div>
 
-    <!--</div> -->
-
     <!-- Drawer -->
     <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-white">
       <!-- Drawer Header -->
-      <div class="absolute-top text-center q-pa-md">
-        <q-avatar size="58px" class="q-mb-md" square>
-          <img src="~assets/logo.svg" />
+      <div class="absolute-top q-pa-xl">
+        <img src="~assets/logo.png" class="full-width" />
+        <!--<q-avatar size="58px" class="q-mb-md" square>
         </q-avatar>
-        <div class="text-h5 text-secondary">CONSTRUCRED</div>
+        <div class="text-h5 text-secondary">CONSTRUCRED</div> -->
       </div>
 
       <!-- Drawer Body -->
@@ -353,23 +353,17 @@ export default defineComponent({
   z-index: 99999;
 }*/
 .fondo-header {
-  background: #c94b4b; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #4b134f,
-    #c94b4b
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #4b134f,
-    #c94b4b
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  /* background: #c94b4b;
+  background: -webkit-linear-gradient(to right, #4b134f, #c94b4b);
+  background: linear-gradient(to right, #4b134f, #c94b4b); */
+  background: #c94b4b;
+  background: -webkit-linear-gradient(to right, #000000, #c94b4b);
+  background: linear-gradient(to right, #000000, #c94b4b);
 
   height: 200px;
   width: 100%;
   position: fixed;
   top: -1;
-  //z-index: -1;
 }
 
 .onda {

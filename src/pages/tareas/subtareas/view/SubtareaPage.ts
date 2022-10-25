@@ -15,6 +15,7 @@ import {
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
@@ -28,13 +29,14 @@ import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
 
 export default defineComponent({
-  components: { EssentialTable, flatPickr },
+  components: { EssentialTable, flatPickr, ButtonSubmits },
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
-    const { obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { obtenerListados, cargarVista, guardar, editar, reestablecer } = mixin.useComportamiento()
 
     const tareaStore = useTareaStore()
+    const accion = tareaStore.accionSubtarea
 
     cargarVista(async () => {
       await obtenerListados({
@@ -112,6 +114,20 @@ export default defineComponent({
       const { result: tecnicoResponsable } = await empleadoController.consultar(responsable)
 
       subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
+
+      obtenerTecnicosGrupo(grupo_id)
+    }
+
+    async function obtenerTecnicosGrupo(grupo_id: number) {
+      // Obtener grupo
+      /* const grupoController = new GrupoController()
+      const { result } = await grupoController.consultar(grupo_id)
+      const responsable = result.empleado_id */
+
+      const empleadoController = new EmpleadoController()
+      const { result } = await empleadoController.listar({ grupo_id: grupo_id })
+      console.log(result)
+      // subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
     }
 
     // Filtro tipos de trabajos
@@ -199,6 +215,8 @@ export default defineComponent({
       subtareas,
       filtrarGrupos,
       obtenerResponsable,
+      guardar, editar, reestablecer,
+      accion,
     }
   },
 })
