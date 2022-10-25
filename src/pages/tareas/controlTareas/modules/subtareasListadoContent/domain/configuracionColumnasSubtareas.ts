@@ -23,7 +23,7 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     align: 'left',
     sortable: true,
   },
-  {
+  /*{
     name: 'fecha_asignacion',
     field: 'fecha_asignacion',
     label: 'Fecha asignación',
@@ -36,7 +36,7 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     label: 'Grupo',
     align: 'left',
     sortable: true,
-  },
+  },*/
   {
     name: 'estado',
     field: 'estado',

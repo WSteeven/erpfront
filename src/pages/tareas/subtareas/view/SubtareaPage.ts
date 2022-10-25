@@ -27,6 +27,7 @@ import { SubtareaController } from '../infraestructure/SubtareaController'
 import { Subtarea } from '../domain/Subtarea'
 import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
+import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
 
 export default defineComponent({
   components: { EssentialTable, flatPickr, ButtonSubmits },
@@ -59,52 +60,38 @@ export default defineComponent({
     const columnas = [
       ...configuracionColumnasTecnico,
       {
+        name: 'observacion',
+        field: 'observacion',
+        label: 'Observación',
+        align: 'left',
+        sortable: true,
+      },
+      /* {
         name: 'acciones',
         field: 'acciones',
         label: 'Acciones',
         align: 'center',
-      },
+      }, */
     ]
 
-    const datos: Ref<Tecnico[]> = ref([
-      {
-        id: 1,
-        tecnico: 'LUIS DHDHD',
-        contacto: '0897564321',
-        grupo: 'MACHALA',
-        disponibilidad: true,
-        observacion: '',
 
-      },
-      {
-        id: 2,
-        tecnico: 'ROBERTO HGHGGF',
-        contacto: '0897564321',
-        grupo: 'SANTO DOMINGO',
-        disponibilidad: true,
-        observacion: '',
-      },
-      {
-        id: 3,
-        tecnico: 'CARLA AGUIRRE',
-        contacto: '0897564321',
-        grupo: 'SANTO DOMINGO',
-        disponibilidad: false,
-        observacion: '',
-      },
-    ])
 
     function enviar() {
       //
     }
 
     function eliminarTecnico({ posicion }) {
-      datos.value.splice(posicion, 1)
+      tecnicosGrupoPrincipal.value.splice(posicion, 1)
     }
 
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
-    async function obtenerResponsable(grupo_id: number) {
+    function obtenerResponsables(grupo_id: number) {
+      obtenerTecnicoResponsable(grupo_id)
+      obtenerTecnicosGrupo(grupo_id)
+    }
+
+    async function obtenerTecnicoResponsable(grupo_id: number) {
       // Obtener grupo
       const grupoController = new GrupoController()
       const { result } = await grupoController.consultar(grupo_id)
@@ -114,20 +101,15 @@ export default defineComponent({
       const { result: tecnicoResponsable } = await empleadoController.consultar(responsable)
 
       subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
-
-      obtenerTecnicosGrupo(grupo_id)
     }
 
-    async function obtenerTecnicosGrupo(grupo_id: number) {
-      // Obtener grupo
-      /* const grupoController = new GrupoController()
-      const { result } = await grupoController.consultar(grupo_id)
-      const responsable = result.empleado_id */
+    const tecnicosGrupoPrincipal = ref()
+    const tecnicosTemporales = ref()
 
+    async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      console.log(result)
-      // subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
+      tecnicosGrupoPrincipal.value = result
     }
 
     // Filtro tipos de trabajos
@@ -181,6 +163,15 @@ export default defineComponent({
       })
     }
 
+    const {
+      refListadoSeleccionable: refListadoSeleccionableTecnicos,
+      criterioBusqueda: criterioBusquedaTecnico,
+      listado: listadoTecnicos,
+      listar: listarTecnicos,
+      limpiar: limpiarTecnico,
+      seleccionar: seleccionarTecnico
+    } = useOrquestadorSelectorTecnicos(subtarea, 'empleados')
+
     return {
       step: ref(1),
       done1: ref(true),
@@ -191,7 +182,6 @@ export default defineComponent({
       subtarea,
       seleccionBusqueda,
       columnas,
-      datos,
       enviar,
       tecnicoSeleccionado,
       busqueda,
@@ -214,9 +204,18 @@ export default defineComponent({
       filtrarSubtareas,
       subtareas,
       filtrarGrupos,
-      obtenerResponsable,
+      obtenerResponsables,
       guardar, editar, reestablecer,
       accion,
+      tecnicosGrupoPrincipal,
+      tecnicosTemporales,
+      // orquestador
+      refListadoSeleccionableTecnicos,
+      criterioBusquedaTecnico,
+      listadoTecnicos,
+      listarTecnicos,
+      limpiarTecnico,
+      seleccionarTecnico,
     }
   },
 })

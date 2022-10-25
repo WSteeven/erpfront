@@ -303,7 +303,7 @@
       </q-td>
     </template>
 
-    <template #body-cell-disponibilidad="props">
+    <template #body-cell-disponible="props">
       <q-td :props="props" class="">
         <q-chip v-if="props.value" class="bg-green-1">
           <q-icon
@@ -323,10 +323,13 @@
         </q-chip>
       </q-td>
     </template>
-    
+
     <template #body-cell-accion="props">
       <q-td :props="props" class="">
-        <q-chip v-if="props.value ===accionesActivos['asignado']" class="bg-green-1">
+        <q-chip
+          v-if="props.value === accionesActivos['asignado']"
+          class="bg-green-1"
+        >
           <q-icon
             name="bi-circle-fill"
             color="positive"
@@ -346,7 +349,10 @@
     </template>
     <template #body-cell-autorizacion="props">
       <q-td :props="props">
-        <q-chip v-if="props.value === autorizacionesTransacciones['aprobado']" class="bg-green-1">
+        <q-chip
+          v-if="props.value === autorizacionesTransacciones['aprobado']"
+          class="bg-green-1"
+        >
           <q-icon
             name="bi-circle-fill"
             color="positive"
@@ -354,7 +360,10 @@
           ></q-icon>
           APROBADO
         </q-chip>
-        <q-chip v-if="props.value === autorizacionesTransacciones['cancelado']" class="bg-red-1">
+        <q-chip
+          v-if="props.value === autorizacionesTransacciones['cancelado']"
+          class="bg-red-1"
+        >
           <q-icon
             name="bi-circle-fill"
             color="negative"
@@ -362,7 +371,10 @@
           ></q-icon>
           CANCELADO
         </q-chip>
-        <q-chip v-if="props.value === autorizacionesTransacciones['pendiente']" class="bg-yellow-1">
+        <q-chip
+          v-if="props.value === autorizacionesTransacciones['pendiente']"
+          class="bg-yellow-1"
+        >
           <q-icon
             name="bi-circle-fill"
             color="warning"
@@ -374,7 +386,10 @@
     </template>
     <template #body-cell-estado="props">
       <q-td :props="props">
-        <q-chip v-if="props.value === estadosTransacciones['completa']" class="bg-green-1">
+        <q-chip
+          v-if="props.value === estadosTransacciones['completa']"
+          class="bg-green-1"
+        >
           <q-icon
             name="bi-circle-fill"
             color="positive"
@@ -382,7 +397,10 @@
           ></q-icon>
           COMPLETA
         </q-chip>
-        <q-chip v-if="props.value === estadosTransacciones['parcial']" class="bg-red-1">
+        <q-chip
+          v-if="props.value === estadosTransacciones['parcial']"
+          class="bg-red-1"
+        >
           <q-icon
             name="bi-circle-fill"
             color="negative"
@@ -390,7 +408,10 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <q-chip v-if="props.value === estadosTransacciones['pendiente']" class="bg-yellow-1">
+        <q-chip
+          v-if="props.value === estadosTransacciones['pendiente']"
+          class="bg-yellow-1"
+        >
           <q-icon
             name="bi-circle-fill"
             color="warning"

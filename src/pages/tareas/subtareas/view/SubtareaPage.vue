@@ -10,6 +10,32 @@
         header-class="bg-grey-1"
         default-opened
       >
+        <q-card class="bg-grey-1 q-ma-sm custom-shadow">
+          <q-card-section>
+            <div class="column items-center">
+              <div class="text-bold q-mb-md">
+                Cambiar el estado de la subtarea
+              </div>
+              <div class="row q-gutter-xs">
+                <q-btn color="negative" no-caps @click="enviar()" push>
+                  <q-icon name="bi-x-lg" class="q-mr-sm" size="xs"></q-icon>
+                  <div>Cancelar subtarea</div>
+                </q-btn>
+
+                <q-btn color="primary" no-caps @click="enviar()" push>
+                  <q-icon name="bi-gear" size="xs" class="q-mr-sm"></q-icon>
+                  <div>Asignar subtarea</div>
+                </q-btn>
+
+                <q-btn color="positive" no-caps @click="enviar()" push>
+                  <q-icon name="bi-check" size="xs" class="q-mr-sm"></q-icon>
+                  <div>Finalizar subtarea</div>
+                </q-btn>
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
+
         <div class="row q-col-gutter-sm q-pa-md">
           <!-- Subtarea -->
           <div v-if="subtarea.codigo_subtarea" class="col-12 col-md-3">
@@ -55,7 +81,7 @@
               input-debounce="0"
               emit-value
               map-options
-              @update:model-value="obtenerResponsable(subtarea.grupo)"
+              @update:model-value="obtenerResponsables(subtarea.grupo)"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -210,7 +236,10 @@
           </div>
 
           <!-- Causa de la suspencion -->
-          <div class="col-12 col-md-3">
+          <div
+            v-if="subtarea.fecha_hora_estado_cancelado"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Causa de la cancelación</label>
             <q-input
               v-model="subtarea.causa_cancelacion"
@@ -274,7 +303,7 @@
           </div>
 
           <!-- Es ventana -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 q-mb-md">
             <br />
             <q-checkbox
               v-model="subtarea.es_ventana"
@@ -371,11 +400,11 @@
           </div>
 
           <!-- Técnicos del grupo principal -->
-          <div class="col-12">
+          <div v-if="tecnicosGrupoPrincipal" class="col-12">
             <essential-table
               titulo="Técnicos del grupo principal"
               :configuracionColumnas="columnas"
-              :datos="datos"
+              :datos="tecnicosGrupoPrincipal"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -386,23 +415,6 @@
             >
             </essential-table>
           </div>
-        </div>
-
-        <div class="row q-gutter-xs q-px-md q-mb-md">
-          <q-btn color="negative" no-caps @click="enviar()" push>
-            <q-icon name="bi-x-lg" class="q-mr-sm" size="xs"></q-icon>
-            <div>Cancelar</div>
-          </q-btn>
-
-          <q-btn color="primary" no-caps @click="enviar()" push>
-            <q-icon name="bi-gear" size="xs" class="q-mr-sm"></q-icon>
-            <div>Asignar</div>
-          </q-btn>
-
-          <q-btn color="positive" no-caps @click="enviar()" push>
-            <q-icon name="bi-check" size="xs" class="q-mr-sm"></q-icon>
-            <div>Finalizar</div>
-          </q-btn>
         </div>
       </q-expansion-item>
 
@@ -424,6 +436,7 @@
               no-caps
               rounded
               unelevated
+              push
               toggle-color="grey-7"
               color="white"
               text-color="grey-7"
@@ -441,33 +454,33 @@
           class="row q-col-gutter-sm q-pa-md"
         >
           <!-- Busqueda -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-10">
             <label class="q-mb-sm block">Buscar</label>
             <q-input
               v-model="busqueda"
-              placeholder="Nombres / Apellidos / Identificación"
+              placeholder="Ingrese Nombres o Apellidos o Identificación"
               hint="Ingrese los datos del técnico y presione Enter"
+              @update:model-value="
+                (v) => (criterioBusquedaTecnico = v.toUpperCase())
+              "
+              @keydown.enter="listarTecnico()"
+              @blur="criterioBusquedaTecnico === '' ? limpiarTecnico() : null"
               outlined
               dense
             ></q-input>
           </div>
 
-          <!-- Tecnico seleccionado -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Técnico seleccionado</label>
-            <q-input
-              v-model="tecnicoSeleccionado"
-              disable
-              outlined
-              dense
-            ></q-input>
-          </div>
-
-          <div class="col-12 col-md-3 q-pt-md">
+          <div class="col-12 col-md-2 q-pt-md">
             <br />
-            <q-btn color="positive" no-caps class="full-width" push>
-              <q-icon name="bi-plus" class="q-pr-sm" size="xs"></q-icon>
-              <div>Agregar al listado</div>
+            <q-btn
+              color="positive"
+              no-caps
+              class="full-width"
+              push
+              @click="listarTecnico()"
+            >
+              <q-icon name="bi-search" class="q-pr-sm" size="xs"></q-icon>
+              <div>Buscar</div>
             </q-btn>
           </div>
         </div>
@@ -475,7 +488,7 @@
         <!-- Busqueda por grupo -->
         <div v-else class="row q-col-gutter-sm q-pa-md">
           <!-- Grupo -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-10">
             <label class="q-mb-sm block">Grupo</label>
             <q-select
               v-model="busqueda"
@@ -487,29 +500,11 @@
             />
           </div>
 
-          <div class="col-12 col-md-3 q-pt-md">
+          <div class="col-12 col-md-2 q-pt-md">
             <br />
             <q-btn color="positive" no-caps class="full-width" push>
+              <q-icon name="bi-search" class="q-pr-sm" size="xs"></q-icon>
               <div>Listar técnicos</div>
-            </q-btn>
-          </div>
-
-          <!-- Tecnico seleccionado -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Técnico seleccionado</label>
-            <q-input
-              v-model="tecnicoSeleccionado"
-              disable
-              outlined
-              dense
-            ></q-input>
-          </div>
-
-          <div class="col-12 col-md-3 q-pt-md">
-            <br />
-            <q-btn color="positive" no-caps class="full-width" push>
-              <q-icon name="bi-plus" class="q-pr-sm" size="xs"></q-icon>
-              <div>Agregar al listado</div>
             </q-btn>
           </div>
         </div>
@@ -549,6 +544,6 @@
 
 <style lang="scss" scoped>
 .my-custom-toggle {
-  border: 1px solid #8d8d8d;
+  border: 1px solid #ccc;
 }
 </style>

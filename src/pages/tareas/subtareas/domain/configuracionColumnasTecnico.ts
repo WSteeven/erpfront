@@ -1,11 +1,26 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { Tecnico } from './Tecnico'
 
-export const configuracionColumnasTecnico: ColumnConfig<Tecnico>[] = [
+export const configuracionColumnasTecnico: ColumnConfig<Empleado>[] = [
   {
-    name: 'tecnico',
-    field: 'tecnico',
-    label: 'Técnico',
+    name: 'nombres',
+    field: 'nombres',
+    label: 'Nombres',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'apellidos',
+    field: 'apellidos',
+    label: 'Apellidos',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'telefono',
+    field: 'telefono',
+    label: 'Teléfono',
     align: 'left',
     sortable: true,
   },
@@ -17,23 +32,9 @@ export const configuracionColumnasTecnico: ColumnConfig<Tecnico>[] = [
     sortable: true,
   },
   {
-    name: 'contacto',
-    field: 'contacto',
-    label: 'Contacto',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'disponibilidad',
-    field: 'disponibilidad',
-    label: 'Disponibilidad',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'observacion',
-    field: 'observacion',
-    label: 'Observación',
+    name: 'disponible',
+    field: 'disponible',
+    label: 'Disponible',
     align: 'left',
     sortable: true,
   },

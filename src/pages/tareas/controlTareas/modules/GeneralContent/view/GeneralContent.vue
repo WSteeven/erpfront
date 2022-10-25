@@ -139,7 +139,7 @@
           <q-select
             v-model="tarea.supervisor"
             :options="supervisores"
-            @filter="filtrarSupervisor"
+            @filter="filtrarSupervisores"
             transition-show="scale"
             transition-hide="scale"
             options-dense

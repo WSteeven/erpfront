@@ -35,6 +35,8 @@ export class Subtarea extends EntidadAuditable {
 
   estado: string | null
 
+  tecnicos_temporales: any[]
+
   constructor() {
     super()
 
@@ -68,5 +70,7 @@ export class Subtarea extends EntidadAuditable {
 
     this.tecnicos_grupo_principal = null
     this.tecnicos_otros_grupos = null
+
+    this.tecnicos_temporales = []
   }
 }

@@ -6,9 +6,10 @@ import { Ref, ref } from "vue"
 import { DetalleProducto } from "pages/bodega/detalles_productos/domain/DetalleProducto"
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
 import { useSelector } from "components/tables/application/selector"
-import { RegistroTendido } from "../domain/RegistrosTendido"
+import { Subtarea } from "../domain/Subtarea"
+import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado"
 
-export function useOrquestadorSelectorDetalles(entidad: RegistroTendido, endpoint: keyof typeof endpoints) {
+export function useOrquestadorSelectorTecnicos(entidad: Subtarea, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()
@@ -18,11 +19,12 @@ export function useOrquestadorSelectorDetalles(entidad: RegistroTendido, endpoin
         listadoSeleccionable: listado,
         endpoint: endpoint,
         limpiar: () => {
+            // entidad.producto = null
             criterioBusqueda.value = null
         },
-        seleccionar: (detalle: DetalleProducto) => {
-            criterioBusqueda.value = detalle.descripcion
-            entidad.listadoProductosSeleccionados = [...entidad.listadoProductosSeleccionados, detalle]
+        seleccionar: (empleado: Empleado) => {
+            criterioBusqueda.value = empleado.nombres ?? ' ' + empleado.apellidos ?? ''
+            entidad.tecnicos_temporales = [...entidad.tecnicos_temporales, empleado]
             limpiar()
         },
     }
