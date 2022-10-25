@@ -158,13 +158,13 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones'),
+          can: store.can('puede.ver.transacciones_ingresos'),
           icon: 'bi-circle',
         },
         {
-          title: !(store.roles.filter((v) => v.indexOf('BODEGA') > -1)) ? 'Pedidos a bodega' : 'Egreso de materiales',
+          title: (store.roles.filter((v) => v.indexOf('BODEGA') > -1)).length > 0 ? 'Egreso de materiales' : 'Pedidos a bodega',
           link: 'transacciones-egresos',
-          can: store.can('puede.crear.transacciones'),
+          can: store.can('puede.ver.transacciones_egresos'),
           icon: 'bi-circle',
         },
         {

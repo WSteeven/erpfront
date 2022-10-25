@@ -152,3 +152,15 @@ export const accionesActivos ={
   asignado: 'ASIGNACION',
   devuelto: 'DEVOLUCION',
 }
+
+export const autorizacionesTransacciones ={
+  pendiente: 'PENDIENTE',
+  aprobado: 'APROBADO',
+  cancelado: 'CANCELADO',
+}
+
+export const estadosTransacciones ={
+  pendiente: 'PENDIENTE',
+  completa: 'COMPLETA',
+  parcial: 'PARCIAL',
+}

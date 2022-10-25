@@ -344,6 +344,62 @@
         </q-chip>
       </q-td>
     </template>
+    <template #body-cell-autorizacion="props">
+      <q-td :props="props">
+        <q-chip v-if="props.value === autorizacionesTransacciones['aprobado']" class="bg-green-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+          APROBADO
+        </q-chip>
+        <q-chip v-if="props.value === autorizacionesTransacciones['cancelado']" class="bg-red-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          CANCELADO
+        </q-chip>
+        <q-chip v-if="props.value === autorizacionesTransacciones['pendiente']" class="bg-yellow-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          PENDIENTE
+        </q-chip>
+      </q-td>
+    </template>
+    <template #body-cell-estado="props">
+      <q-td :props="props">
+        <q-chip v-if="props.value === estadosTransacciones['completa']" class="bg-green-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+          COMPLETA
+        </q-chip>
+        <q-chip v-if="props.value === estadosTransacciones['parcial']" class="bg-red-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          PARCIAL
+        </q-chip>
+        <q-chip v-if="props.value === estadosTransacciones['pendiente']" class="bg-yellow-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          PENDIENTE
+        </q-chip>
+      </q-td>
+    </template>
 
     <!-- Botones de acciones Mobile (Grid)  -->
     <template v-slot:item="props">
