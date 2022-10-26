@@ -29,7 +29,13 @@
     :configuracionColumnas="configuracionColumnas"
     :datos="datos"
     :permitirConsultar="permitirConsultar"
-    :permitirEditar="permitirEditar"
+    :permitirEditar="
+      esBodeguero && tabSeleccionado === 'PENDIENTE'
+        ? permitirEditar
+        : esCoordinador && tabSeleccionado === 'ESPERA'
+        ? true
+        : false
+    "
     :permitirEliminar="permitirEliminar"
     :mostrar-botones="mostrarBotones"
     :accion1="accion1"
@@ -37,10 +43,11 @@
     :agregarElemento="agregarElemento"
     :alto-fijo="altoFijo"
     :mostrarFooter="mostrarFooter"
-    @consultar="emit('consultar')"
-    @editar="emit('editar')"
-    @eliminar="emit('eliminar')"
-    @accion1="emit('accion1')"
+    @consultar="consultar"
+    @editar="editar"
+    @eliminar="eliminar"
+    @accion1="emitAccion1"
+    @accion2="emitAccion2"
   ></essential-table>
 </template>
 
@@ -52,6 +59,7 @@ import EssentialTable from './EssentialTable.vue'
 import { TipoSeleccion } from 'config/utils'
 import { ref } from 'vue'
 import { TabOption } from 'components/tables/domain/TabOption'
+import { useAuthenticationStore } from 'stores/authentication'
 
 defineProps({
   titulo: {
@@ -129,14 +137,20 @@ const emit = defineEmits([
   'editar',
   'eliminar',
   'accion1',
+  'accion2',
   'tab-seleccionado',
 ])
 
-const tabSeleccionado = ref('todo')
+const store = useAuthenticationStore()
+const esBodeguero = store.esBodeguero
+const esCoordinador = store.esCoordinador
+const tabSeleccionado = ref('TODO')
 
-function saludar() {
-  console.log('amix')
-}
+const consultar = (data) => emit('consultar', data)
+const editar = (data) => emit('editar', data)
+const eliminar = (data) => emit('eliminar', data)
+const emitAccion1 = (data) => emit('accion1', data)
+const emitAccion2 = (data) => emit('accion2', data)
 </script>
 
 <style lang="scss" scoped>

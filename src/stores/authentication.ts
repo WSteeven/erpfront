@@ -27,6 +27,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   )
   const esTecnicoLider = computed(() => roles.value ? roles.value.some((rol: string) => rol === 'TECNICO LIDER') : false)
 
+  const esBodeguero = computed(()=>
+      roles.value? roles.value.some((rol:string)=> rol==='BODEGA') : false
+  )
+
   // Actions
   const login = async (credentiales: UserLogin): Promise<any> => {
     try {
@@ -120,5 +124,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     token,
     esCoordinador,
     esTecnicoLider,
+    esBodeguero,
+    
   }
 })

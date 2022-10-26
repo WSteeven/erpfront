@@ -90,12 +90,8 @@
         <!-- <div class="text-bold">{{ 'Listado de ' + titulo }}</div>
             <small>JPCONSTRUCRED</small> -->
         <!-- <q-space></q-space> -->
-        <div class="col-12 col-md-6">
-          <div
-            v-if="mostrarBotones"
-            class="row q-gutter-sm justify-end"
-            :class="{ 'no-wrap': !$q.screen.xs }"
-          >
+        <div class="col-12 col-md-12">
+          <div class="row q-gutter-sm justify-start">
             <q-input
               outlined
               dense
@@ -109,7 +105,12 @@
                 <q-icon name="search"></q-icon>
               </template>
             </q-input>
-
+          </div>
+          <div
+            v-if="mostrarBotones"
+            class="row q-gutter-sm justify-end"
+            :class="{ 'no-wrap': !$q.screen.xs }"
+          >
             <q-select
               v-model="visibleColumns"
               multiple

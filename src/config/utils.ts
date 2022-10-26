@@ -135,6 +135,14 @@ export const tabOptions: TabOption[] = [
   { label: 'Realizado', value: 'realizado' },
 ]
 
+export const tabOptionsTransacciones: TabOption[]=[
+  { label: 'Todo', value: 'TODO' },
+  { label: 'En espera', value: 'ESPERA' },
+  { label: 'Parcial', value: 'PARCIAL' },
+  { label: 'Pendiente', value: 'PENDIENTE' },
+  { label: 'Completa', value: 'COMPLETA' },
+]
+
 export const accionesTabla = {
   name: 'acciones',
   field: 'acciones',
