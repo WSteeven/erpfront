@@ -42,9 +42,6 @@ export default defineComponent({
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
 
-
-    // const { onGuardado, onReestablecer } = props.mixin.useHooks()
-
     cargarVista(async () => {
       await obtenerListados({
         clientes: new ClienteController(),
@@ -69,20 +66,6 @@ export default defineComponent({
 
     const v$ = useVuelidate(rules, tarea)
     setValidador(v$.value)
-
-    /* onGuardado(() => {
-      console.log('guardado')
-      console.log(tarea)
-      tareaStore.tarea = tarea
-    }) */
-
-    // onReestablecer(() => )
-
-    /* function reestablecer() {
-      tareaStore.tarea.hydrate(new Tarea())
-      tareaStore.accion = acciones.nuevo
-      limpiarCliente()
-    } */
 
     const modalesTarea = new ComportamientoModalesTarea()
 

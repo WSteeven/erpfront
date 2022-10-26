@@ -3,9 +3,9 @@ import { Tarea } from '../domain/Tarea'
 
 export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
   {
-    name: 'codigo_tarea_jp',
-    field: 'codigo_tarea_jp',
-    label: 'Código tarea JP',
+    name: 'codigo_tarea',
+    field: 'codigo_tarea',
+    label: 'Código tarea',
     align: 'center',
     sortable: true,
   },

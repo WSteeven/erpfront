@@ -25,6 +25,7 @@
         ></q-tab>
 
         <q-tab
+          v-if="tareaSeleccionada"
           label="2. Subtareas"
           name="subtareas"
           class="q-mx-xs q-my-md rounded"
@@ -32,6 +33,7 @@
         />
 
         <q-tab
+          v-if="tareaSeleccionada"
           label="3. Almacenamiento en la nube"
           name="almacenamiento"
           class="q-mx-xs q-my-md rounded"
@@ -39,6 +41,7 @@
         />
 
         <q-tab
+          v-if="tareaSeleccionada"
           label="4. Resumen de trabajo consolidado"
           name="resumen"
           class="q-mx-xs q-my-md rounded"

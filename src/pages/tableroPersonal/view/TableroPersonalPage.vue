@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-center text-white q-py-md">
+    <div class="text-center q-py-md">
       <div class="text-bold q-mb-md">{{ fecha }}</div>
       <div class="text-h5 q-mb-md">Buenos días, {{ store.nombreUsuario }}.</div>
       <q-chip v-if="store.esCoordinador || store.esTecnicoLider" icon="bi-check"

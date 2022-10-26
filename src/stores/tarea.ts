@@ -12,7 +12,7 @@ export const useTareaStore = defineStore('tarea', () => {
   // State
   const tarea = reactive(new Tarea())
   const subtarea = reactive(new Subtarea())
-  // const accion = ref(acciones.nuevo)
+
   const subtareaReset = new Subtarea()
   const accionTarea = acciones.nuevo
   const accionSubtarea = acciones.nuevo

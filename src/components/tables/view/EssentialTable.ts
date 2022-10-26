@@ -4,7 +4,7 @@ import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns } from 'shared/utils'
 import { exportFile, useQuasar } from 'quasar'
 import { TipoSeleccion } from 'config/utils'
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones } from 'config/utils'
 // Componentes
@@ -61,6 +61,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion3: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
     agregarElemento: {
       type: Object as () => CustomActionTable,
       required: false,
@@ -86,7 +90,7 @@ export default defineComponent({
       default: false,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'selected'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'selected'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)

@@ -126,13 +126,13 @@ export const causaIntervencion =
   ]
 
 export const tabOptions: TabOption[] = [
-  { label: 'Todo', value: 'todo' },
-  { label: 'Asignado', value: 'asignado' },
-  { label: 'Ejecutando', value: 'ejecutando' },
-  { label: 'Pausado', value: 'pausado' },
-  { label: 'Suspendido', value: 'suspendido' },
-  { label: 'Cancelado', value: 'cancelado' },
-  { label: 'Realizado', value: 'realizado' },
+  { label: 'Todo', value: '' },
+  { label: 'Asignado', value: 'ASIGNADO' },
+  { label: 'Ejecutando', value: 'EJECUTANDO' },
+  { label: 'Pausado', value: 'PAUSADO' },
+  { label: 'Suspendido', value: 'SUSPENDIDO' },
+  { label: 'Cancelado', value: 'CANCELADO' },
+  { label: 'Realizado', value: 'REALIZADO' },
 ]
 
 export const accionesTabla = {
@@ -148,19 +148,21 @@ export const tiposTrabajosEstaticos = {
 }
 
 
-export const accionesActivos ={
+export const accionesActivos = {
   asignado: 'ASIGNACION',
   devuelto: 'DEVOLUCION',
 }
 
-export const autorizacionesTransacciones ={
+export const autorizacionesTransacciones = {
   pendiente: 'PENDIENTE',
   aprobado: 'APROBADO',
   cancelado: 'CANCELADO',
 }
 
-export const estadosTransacciones ={
+export const estadosTransacciones = {
   pendiente: 'PENDIENTE',
   completa: 'COMPLETA',
   parcial: 'PARCIAL',
 }
+
+export const sistemasCoordenadas = ['DMS', '']

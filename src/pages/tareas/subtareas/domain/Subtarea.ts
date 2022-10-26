@@ -5,7 +5,7 @@ import { Ref } from 'vue'
 export class Subtarea extends EntidadAuditable {
   codigo_subtarea: string | null
   detalle: string | null
-  grupo: string | null
+  grupo: number | null
   tecnico_responsable: string | null
   tipo_trabajo: number | null
 
@@ -36,6 +36,8 @@ export class Subtarea extends EntidadAuditable {
   estado: string | null
 
   tecnicos_temporales: any[]
+
+  tarea_id: number | null
 
   constructor() {
     super()
@@ -72,5 +74,7 @@ export class Subtarea extends EntidadAuditable {
     this.tecnicos_otros_grupos = null
 
     this.tecnicos_temporales = []
+
+    this.tarea_id = null
   }
 }

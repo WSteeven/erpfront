@@ -7,11 +7,11 @@
   >
     <template #formulario> -->
   <q-page padding>
-    <div class="text-bold">Control de tendidos</div>
+    <div class="text-bold q-mb-lg text-center">Control de tendidos</div>
     <q-form @submit.prevent="enviar()">
       <div class="row q-col-gutter-sm q-py-md">
         <!-- Subtarea JP -->
-        <div class="col-12 col-md-3">
+        <!--<div class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de subtarea</label>
           <q-input
             v-model="progresiva.codigo_subtarea_jp"
@@ -32,7 +32,7 @@
             outlined
             dense
           ></q-input>
-        </div>
+        </div> -->
 
         <!-- Grupo -->
         <!--<div class="col-12 col-md-3">
@@ -99,16 +99,30 @@
 
         <!-- Sistema de coordenadas -->
         <div class="col-12 col-md-3 q-mb-md">
+          <label class="q-mb-sm block">Pagos con tarjeta (*)</label>
+          <q-select
+            v-model="progresiva.sistema_coordenadas"
+            :options="sistemasCoordenadas"
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            options-dense
+            dense
+            outlined
+            emit-value
+            map-options
+          >
+          </q-select>
+        </div>
+        <!--<div class="col-12 col-md-3 q-mb-md">
           <label class="q-mb-sm block">Sistema de coordenadas</label>
           <q-input
             v-model="progresiva.sistema_coordenadas"
             placeholder="DMS"
             hint="Esto afectará a todas las filas del registro de progresivas actual."
             outlined
-            disable
             dense
           ></q-input>
-        </div>
+        </div> -->
 
         <!-- Cantidad postes -->
         <div class="col-12 col-md-3 q-mb-md">

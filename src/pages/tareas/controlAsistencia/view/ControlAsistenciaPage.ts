@@ -136,9 +136,7 @@ export default defineComponent({
 
         prompt(
           'Ingrese la observación',
-          (data) => {
-            asistenciaTecnicos.value[posicion].observacion = data
-          },
+          (data) => asistenciaTecnicos.value[posicion].observacion = data,
           asistenciaTecnicos.value[posicion].observacion
         )
       },

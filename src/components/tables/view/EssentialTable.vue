@@ -288,6 +288,23 @@
         >
           <q-tooltip class="bg-dark"> {{ accion2.titulo }} </q-tooltip>
         </q-btn>
+
+        <!-- Accion personalizada 3 -->
+        <q-btn
+          v-if="accion3"
+          color="primary"
+          rounded
+          dense
+          push
+          no-caps
+          :label="accion3.titulo"
+          class="q-px-sm"
+          @click="
+            accion3?.accion({ entidad: props.row, posicion: props.rowIndex })
+          "
+        >
+          <q-tooltip class="bg-dark"> {{ accion3.titulo }} </q-tooltip>
+        </q-btn>
       </q-td>
     </template>
 
@@ -384,6 +401,7 @@
         </q-chip>
       </q-td>
     </template>
+
     <template #body-cell-estado="props">
       <q-td :props="props">
         <q-chip
@@ -419,6 +437,9 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
+        <div v-else>
+          {{ props.value }}
+        </div>
       </q-td>
     </template>
 
@@ -524,6 +545,26 @@
                   class="q-px-sm"
                   @click="
                     accion2?.accion({
+                      entidad: props.row,
+                      posicion: props.rowIndex,
+                    })
+                  "
+                >
+                  <q-tooltip class="bg-dark">{{ accion2.titulo }} </q-tooltip>
+                </q-btn>
+
+                <!-- Accion personalizada 3 -->
+                <q-btn
+                  v-if="accion3"
+                  color="primary"
+                  rounded
+                  push
+                  dense
+                  no-caps
+                  :label="accion3.titulo"
+                  class="q-px-sm"
+                  @click="
+                    accion3?.accion({
                       entidad: props.row,
                       posicion: props.rowIndex,
                     })

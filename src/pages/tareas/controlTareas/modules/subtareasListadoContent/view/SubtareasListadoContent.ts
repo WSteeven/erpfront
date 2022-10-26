@@ -27,7 +27,7 @@ export default defineComponent({
     const { notificarAdvertencia } = useNotificaciones()
 
     const tareaStore = useTareaStore()
-    if (tareaStore.tarea.id) listar({ tarea: tareaStore.tarea.id })
+    if (tareaStore.tarea.id) listar({ tarea_id: tareaStore.tarea.id })
 
     const configuracionColumnas = [
       ...configuracionColumnasSubtareas,
@@ -37,9 +37,10 @@ export default defineComponent({
     const modales = new ComportamientoModalesSubtareaContent()
 
     const botonEditarSubtarea: CustomActionTable = {
-      titulo: 'Ver/Editar',
-      accion: ({ entidad }) => {
-        tareaStore.consultarSubtarea(entidad.id)
+      titulo: 'Editar',
+      // visible: ({ entidad }) => entidad.estado === '',
+      accion: async ({ entidad }) => {
+        await tareaStore.consultarSubtarea(entidad.id)
         modales.abrirModalEntidad('SubtareasPage')
       },
     }
@@ -48,6 +49,15 @@ export default defineComponent({
       titulo: 'Ver avances',
       accion: ({ entidad }) => {
         modales.abrirModalEntidad('GestionarAvancesPage')
+      },
+    }
+
+    const botonFinalizar: CustomActionTable = {
+      titulo: 'Finalizar',
+      // visible: ({ entidad }) => entidad.estado === '',
+      accion: async ({ entidad }) => {
+        await tareaStore.consultarSubtarea(entidad.id)
+        modales.abrirModalEntidad('SubtareasPage')
       },
     }
 
@@ -60,12 +70,13 @@ export default defineComponent({
         if (!tareaStore.tarea.id)
           notificarAdvertencia('Cree una tarea antes de agregar subtareas.')
         tareaStore.resetearSubtarea()
+        tareaStore.subtarea.tarea_id = tareaStore.tarea.id
         modales.abrirModalEntidad('SubtareasPage')
       },
     }
 
     function aplicarFiltro(tabSeleccionado) {
-      if (tareaStore.tarea.id) listar({ tarea: tareaStore.tarea.id, estado: tabSeleccionado })
+      if (tareaStore.tarea.id) listar({ tarea_id: tareaStore.tarea.id, estado: tabSeleccionado })
     }
 
     return {
@@ -73,6 +84,7 @@ export default defineComponent({
       configuracionColumnasSubtareas,
       listado,
       botonEditarSubtarea,
+      botonFinalizar,
       modales,
       agregarSubtarea,
       tabOptions,

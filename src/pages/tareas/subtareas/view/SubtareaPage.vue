@@ -1,8 +1,27 @@
 <template>
   <q-page padding>
-    <div class="text-bold q-mb-md">Subtarea seleccionada</div>
-    <q-form @submit.prevent="enviar()">
-      <!-- Datos de la subtarea -->
+    <!--<div class="text-bold q-mb-md">Subtarea seleccionada</div> -->
+    <div class="column items-center q-mb-md">
+      <div class="text-bold q-mb-md">Cambiar el estado de la subtarea</div>
+      <div class="row q-gutter-xs">
+        <q-btn color="negative" no-caps @click="enviar()" push>
+          <q-icon name="bi-x-lg" class="q-mr-sm" size="xs"></q-icon>
+          <div>Cancelar subtarea</div>
+        </q-btn>
+
+        <q-btn color="primary" no-caps @click="enviar()" push>
+          <q-icon name="bi-gear" size="xs" class="q-mr-sm"></q-icon>
+          <div>Asignar subtarea</div>
+        </q-btn>
+
+        <q-btn color="positive" no-caps @click="enviar()" push>
+          <q-icon name="bi-check" size="xs" class="q-mr-sm"></q-icon>
+          <div>Finalizar subtarea</div>
+        </q-btn>
+      </div>
+    </div>
+
+    <q-form @submit.prevent>
       <q-expansion-item
         class="overflow-hidden q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
@@ -10,32 +29,6 @@
         header-class="bg-grey-1"
         default-opened
       >
-        <q-card class="bg-grey-1 q-ma-sm custom-shadow">
-          <q-card-section>
-            <div class="column items-center">
-              <div class="text-bold q-mb-md">
-                Cambiar el estado de la subtarea
-              </div>
-              <div class="row q-gutter-xs">
-                <q-btn color="negative" no-caps @click="enviar()" push>
-                  <q-icon name="bi-x-lg" class="q-mr-sm" size="xs"></q-icon>
-                  <div>Cancelar subtarea</div>
-                </q-btn>
-
-                <q-btn color="primary" no-caps @click="enviar()" push>
-                  <q-icon name="bi-gear" size="xs" class="q-mr-sm"></q-icon>
-                  <div>Asignar subtarea</div>
-                </q-btn>
-
-                <q-btn color="positive" no-caps @click="enviar()" push>
-                  <q-icon name="bi-check" size="xs" class="q-mr-sm"></q-icon>
-                  <div>Finalizar subtarea</div>
-                </q-btn>
-              </div>
-            </div>
-          </q-card-section>
-        </q-card>
-
         <div class="row q-col-gutter-sm q-pa-md">
           <!-- Subtarea -->
           <div v-if="subtarea.codigo_subtarea" class="col-12 col-md-3">
@@ -60,7 +53,14 @@
               dense
               autogrow
               type="textarea"
-            ></q-input>
+              :error="!!v$.detalle.$errors.length"
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.detalle.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
 
           <!-- Grupo -->
@@ -81,14 +81,21 @@
               input-debounce="0"
               emit-value
               map-options
-              @update:model-value="obtenerResponsables(subtarea.grupo)"
+              :error="!!v$.grupo.$errors.length"
             >
+              <!--@update:model-value="obtenerResponsables(subtarea.grupo)"-->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
                     No hay resultados
                   </q-item-section>
                 </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
             </q-select>
           </div>
@@ -105,7 +112,7 @@
           </div>
 
           <!-- Tipo trabajo -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tipo de trabajo</label>
             <q-select
               v-model="subtarea.tipo_trabajo"
@@ -122,6 +129,7 @@
               input-debounce="0"
               emit-value
               map-options
+              :error="!!v$.tipo_trabajo.$errors.length"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -130,38 +138,59 @@
                   </q-item-section>
                 </q-item>
               </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.tipo_trabajo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
           <!-- Fecha de creacion -->
-          <div v-if="subtarea.fecha_creacion" class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_hora_creacion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de creación</label>
-            <q-input v-model="subtarea.fecha_creacion" outlined dense disable>
+            <q-input
+              v-model="subtarea.fecha_hora_creacion"
+              outlined
+              dense
+              disable
+            >
             </q-input>
           </div>
 
-          <div v-if="subtarea.fecha_asignacion" class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_hora_asignacion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de asignación</label>
-            <q-input v-model="subtarea.fecha_asignacion" outlined dense disable>
+            <q-input
+              v-model="subtarea.fecha_hora_asignacion"
+              outlined
+              dense
+              disable
+            >
             </q-input>
           </div>
 
           <!-- Fecha de inicio -->
-          <div v-if="subtarea.fecha_inicio" class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_hora_inicio" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Fecha y hora de inicio de trabajo</label
             >
-            <q-input v-model="subtarea.fecha_inicio" outlined dense disable>
+            <q-input
+              v-model="subtarea.fecha_hora_inicio"
+              outlined
+              dense
+              disable
+            >
             </q-input>
           </div>
 
           <!-- Fecha de finalizacion -->
-          <div v-if="subtarea.fecha_finalizacion" class="col-12 col-md-3">
+          <div v-if="subtarea.fecha_hora_finalizacion" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Fecha y hora de finalización de trabajo</label
             >
             <q-input
-              v-model="subtarea.fecha_finalizacion"
+              v-model="subtarea.fecha_hora_finalizacion"
               outlined
               dense
               disable
@@ -193,15 +222,12 @@
           </div>
 
           <!-- Fecha y hora de estado suspendido -->
-          <div
-            v-if="subtarea.fecha_hora_estado_suspendido"
-            class="col-12 col-md-3"
-          >
+          <div v-if="subtarea.fecha_hora_suspendido" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Fecha y hora de estado suspendido</label
             >
             <q-input
-              v-model="subtarea.fecha_hora_estado_suspendido"
+              v-model="subtarea.fecha_hora_suspendido"
               outlined
               dense
               disable
@@ -221,13 +247,10 @@
           </div>
 
           <!-- Fecha y hora de estado cancelacion -->
-          <div
-            v-if="subtarea.fecha_hora_estado_cancelado"
-            class="col-12 col-md-3"
-          >
+          <div v-if="subtarea.fecha_hora_cancelado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de cancelación</label>
             <q-input
-              v-model="subtarea.fecha_hora_estado_cancelado"
+              v-model="subtarea.fecha_hora_cancelado"
               outlined
               dense
               disable
@@ -533,8 +556,8 @@
       <button-submits
         :accion="accion"
         @cancelar="reestablecer()"
-        @editar="editar(entidad)"
-        @guardar="guardar(entidad)"
+        @editar="editar(subtarea)"
+        @guardar="guardar(subtarea)"
       />
     </q-form>
   </q-page>

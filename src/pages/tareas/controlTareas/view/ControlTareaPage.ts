@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasTareas } from '../domain/configuracionColumnasTareas'
 import { useTareaStore } from 'stores/tarea'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import SubtareasListadoContent from 'pages/tareas/controlTareas/modules/subtareasListadoContent/view/SubtareasListadoContent.vue'
@@ -31,12 +31,12 @@ export default defineComponent({
     const tareaStore = useTareaStore()
     onConsultado(() => {
       tareaStore.tarea = tarea
-      tareaStore.accion = accion
+      tareaStore.accionTarea = accion
     })
 
     onGuardado(() => {
       tareaStore.tarea = tarea
-      tareaStore.accion = accion
+      tareaStore.accionTarea = accion
     })
 
     return {
@@ -52,6 +52,7 @@ export default defineComponent({
       done3: ref(false),
       done4: ref(false),
       tabSeleccionado: ref('tarea'),
+      tareaSeleccionada: computed(() => tareaStore.tarea.id)
     }
   },
 })

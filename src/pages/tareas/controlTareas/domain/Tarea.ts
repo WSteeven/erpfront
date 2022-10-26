@@ -1,7 +1,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Tarea extends EntidadAuditable {
-  codigo_tarea_jp: string | null
+  codigo_tarea: string | null
   codigo_tarea_cliente: string | null
   cliente: number | null
   cliente_final: number | null
@@ -15,7 +15,7 @@ export class Tarea extends EntidadAuditable {
 
   constructor() {
     super()
-    this.codigo_tarea_jp = null
+    this.codigo_tarea = null
     this.codigo_tarea_cliente = null
     this.cliente = null
     this.cliente_final = null

@@ -4,6 +4,7 @@
     :datos="listado"
     :accion1="botonEditarSubtarea"
     :accion2="verControlAvance"
+    :accion3="botonFinalizar"
     :permitirConsultar="false"
     :permitirEditar="false"
     :permitirEliminar="false"

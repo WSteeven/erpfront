@@ -25,6 +25,6 @@ const status = new StatusEssentialLoading()
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 5000;
+  z-index: 9999;
 }
 </style>

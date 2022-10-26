@@ -34,6 +34,7 @@
     :mostrar-botones="mostrarBotones"
     :accion1="accion1"
     :accion2="accion2"
+    :accion3="accion3"
     :agregarElemento="agregarElemento"
     :alto-fijo="altoFijo"
     :mostrarFooter="mostrarFooter"
@@ -41,6 +42,7 @@
     @editar="emit('editar')"
     @eliminar="emit('eliminar')"
     @accion1="emit('accion1')"
+    @accion3="emit('accion3')"
   ></essential-table>
 </template>
 
@@ -98,6 +100,10 @@ defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+  accion3: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
   agregarElemento: {
     type: Object as () => CustomActionTable,
     required: false,
@@ -129,14 +135,11 @@ const emit = defineEmits([
   'editar',
   'eliminar',
   'accion1',
+  'accion3',
   'tab-seleccionado',
 ])
 
-const tabSeleccionado = ref('todo')
-
-function saludar() {
-  console.log('amix')
-}
+const tabSeleccionado = ref('TODO')
 </script>
 
 <style lang="scss" scoped>

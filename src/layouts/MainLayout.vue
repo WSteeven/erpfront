@@ -3,14 +3,7 @@
     <!-- Navbar -->
     <q-header class="bg-transparent">
       <q-toolbar class="row justify-between">
-        <q-btn
-          flat
-          dense
-          round
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-          class="text-white"
-        >
+        <q-btn flat dense round aria-label="Menu" @click="toggleLeftDrawer">
           <svg
             width="24"
             height="24"
@@ -22,19 +15,19 @@
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M3 5C3 4.44772 3.44772 4 4 4H16C16.5523 4 17 4.44772 17 5C17 5.55228 16.5523 6 16 6H4C3.44772 6 3 5.55228 3 5Z"
-              fill="#fff"
+              fill="#000"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M3 10C3 9.44772 3.44772 9 4 9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H4C3.44772 11 3 10.5523 3 10Z"
-              fill="#fff"
+              fill="#000"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M3 15C3 14.4477 3.44772 14 4 14H10C10.5523 14 11 14.4477 11 15C11 15.5523 10.5523 16 10 16H4C3.44772 16 3 15.5523 3 15Z"
-              fill="#fff"
+              fill="#000"
             />
           </svg>
         </q-btn>
@@ -57,7 +50,7 @@
         <!--</q-btn>-->
 
         <span>
-          <q-btn dense round flat icon="bi-bell" class="q-mr-md">
+          <q-btn dense round flat icon="bi-bell" class="q-mr-md" color="black">
             <q-badge color="positive" floating transparent> 4 </q-badge>
             <q-menu transition-show="flip-right" transition-hide="flip-left">
               <q-list style="min-width: 100px">
@@ -126,9 +119,9 @@
     </q-header>
 
     <!--<div class="custom-header"> -->
-    <div class="fondo-header"></div>
+    <!-- <div class="fondo-header"></div> -->
     <div class="onda">
-      <svg
+      <!--<svg
         width="385.76251mm"
         height="37.786678mm"
         viewBox="0 0 385.76251 37.786678"
@@ -204,7 +197,7 @@
             id="path386"
           />
         </g>
-      </svg>
+      </svg> -->
     </div>
 
     <!-- Drawer -->
@@ -357,8 +350,8 @@ export default defineComponent({
   background: -webkit-linear-gradient(to right, #4b134f, #c94b4b);
   background: linear-gradient(to right, #4b134f, #c94b4b); */
   background: #c94b4b;
-  background: -webkit-linear-gradient(to right, #000000, #c94b4b);
-  background: linear-gradient(to right, #000000, #c94b4b);
+  background: -webkit-linear-gradient(to right, #710000, transparent);
+  background: linear-gradient(to right, #710000, transparent);
 
   height: 200px;
   width: 100%;

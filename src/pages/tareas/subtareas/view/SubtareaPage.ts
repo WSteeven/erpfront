@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasTecnico } from '../domain/configuracionColumnasTecnico'
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, Ref, ref, watchEffect } from 'vue'
 import {
   provincias,
   ciudades,
@@ -12,6 +12,8 @@ import {
   tiposIntervenciones,
   causaIntervencion,
 } from 'config/utils'
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -34,7 +36,8 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
-    const { obtenerListados, cargarVista, guardar, editar, reestablecer } = mixin.useComportamiento()
+    const { obtenerListados, cargarVista, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
+    const { onBeforeGuardar, onReestablecer } = mixin.useHooks()
 
     const tareaStore = useTareaStore()
     const accion = tareaStore.accionSubtarea
@@ -45,10 +48,16 @@ export default defineComponent({
           controller: new TipoTareaController(),
           params: { cliente: tareaStore.tarea.cliente }
         },
-        subtareas: new SubtareaController(),
+        subtareas: {
+          controller: new SubtareaController(),
+          params: { tarea_id: tareaStore.tarea.id }
+        },
         grupos: new GrupoController(),
       })
 
+      grupos.value = listadosAuxiliares.grupos
+      tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+      subtareas.value = listadosAuxiliares.subtareas
       subtarea.hydrate(tareaStore.subtarea)
     })
 
@@ -73,12 +82,6 @@ export default defineComponent({
         align: 'center',
       }, */
     ]
-
-
-
-    function enviar() {
-      //
-    }
 
     function eliminarTecnico({ posicion }) {
       tecnicosGrupoPrincipal.value.splice(posicion, 1)
@@ -172,17 +175,31 @@ export default defineComponent({
       seleccionar: seleccionarTecnico
     } = useOrquestadorSelectorTecnicos(subtarea, 'empleados')
 
+    const rules = {
+      detalle: { required },
+      grupo: { required },
+      tipo_trabajo: { required },
+    }
+
+    const v$ = useVuelidate(rules, subtarea)
+    setValidador(v$.value)
+
+    onBeforeGuardar(() => {
+      subtarea.tecnicos_grupo_principal = "[2, 3]"
+    })
+
+    onReestablecer(() => tecnicosGrupoPrincipal.value = [])
+
+    watchEffect(() => {
+      if (subtarea.grupo)
+        obtenerResponsables(subtarea.grupo)
+    })
+
     return {
-      step: ref(1),
-      done1: ref(true),
-      done2: ref(false),
-      done3: ref(false),
-      done4: ref(false),
-      done5: ref(false),
+      v$,
       subtarea,
       seleccionBusqueda,
       columnas,
-      enviar,
       tecnicoSeleccionado,
       busqueda,
       grupos,
