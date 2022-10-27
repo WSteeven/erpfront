@@ -9,10 +9,10 @@
     >
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Codigo tarea JP -->
-        <div v-if="tarea.codigo_tarea_jp" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Código de tarea JP</label>
+        <div v-if="tarea.codigo_tarea" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Código de tarea</label>
           <q-input
-            v-model="tarea.codigo_tarea_jp"
+            v-model="tarea.codigo_tarea"
             outlined
             dense
             disable

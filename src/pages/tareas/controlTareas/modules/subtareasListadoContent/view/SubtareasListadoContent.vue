@@ -5,6 +5,8 @@
     :accion1="botonEditarSubtarea"
     :accion2="verControlAvance"
     :accion3="botonFinalizar"
+    :accion4="botonCancelar"
+    :accion5="botonAsignar"
     :permitirConsultar="false"
     :permitirEditar="false"
     :permitirEliminar="false"

@@ -76,17 +76,22 @@
         <!-- Codigo bobina -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de bobina</label>
-          <q-input
+          <q-select
             v-model="progresiva.codigo_bobina"
-            hint="Presione Enter para seleccionar"
-            placeholder="Obligatorio"
-            outlined
+            :options="bobinasSolicitadas"
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            options-dense
             dense
-          ></q-input>
+            outlined
+            emit-value
+            map-options
+          >
+          </q-select>
         </div>
 
         <!-- Marca inicial -->
-        <div class="col-12 col-md-3">
+        <div v-if="progresiva.codigo_bobina" class="col-12 col-md-3">
           <label class="q-mb-sm block">Cantidad de hilos</label>
           <q-input
             v-model="progresiva.cantidad_hilos"
@@ -99,7 +104,7 @@
 
         <!-- Sistema de coordenadas -->
         <div class="col-12 col-md-3 q-mb-md">
-          <label class="q-mb-sm block">Pagos con tarjeta (*)</label>
+          <label class="q-mb-sm block">Sistema de coordenadas</label>
           <q-select
             v-model="progresiva.sistema_coordenadas"
             :options="sistemasCoordenadas"

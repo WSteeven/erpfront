@@ -24,7 +24,7 @@ export default defineComponent({
     const { listado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
-    const { notificarAdvertencia } = useNotificaciones()
+    const { notificarAdvertencia, confirmar } = useNotificaciones()
 
     const tareaStore = useTareaStore()
     if (tareaStore.tarea.id) listar({ tarea_id: tareaStore.tarea.id })
@@ -38,6 +38,7 @@ export default defineComponent({
 
     const botonEditarSubtarea: CustomActionTable = {
       titulo: 'Editar',
+      icono: 'bi-pencil',
       // visible: ({ entidad }) => entidad.estado === '',
       accion: async ({ entidad }) => {
         await tareaStore.consultarSubtarea(entidad.id)
@@ -47,17 +48,42 @@ export default defineComponent({
 
     const verControlAvance: CustomActionTable = {
       titulo: 'Ver avances',
+      icono: 'bi-eye',
       accion: ({ entidad }) => {
         modales.abrirModalEntidad('GestionarAvancesPage')
       },
     }
 
     const botonFinalizar: CustomActionTable = {
-      titulo: 'Finalizar',
-      // visible: ({ entidad }) => entidad.estado === '',
+      titulo: 'Realizado',
+      color: 'positive',
+      visible: (entidad) => entidad.estado !== 'REALIZADO' && entidad.estado !== 'CREADO',
       accion: async ({ entidad }) => {
-        await tareaStore.consultarSubtarea(entidad.id)
-        modales.abrirModalEntidad('SubtareasPage')
+        confirmar('¿Está seguro de marcar como realizada la tarea?', () => console.log('Proceder'))
+        // await tareaStore.consultarSubtarea(entidad.id)
+        // modales.abrirModalEntidad('SubtareasPage')
+      },
+    }
+
+    const botonCancelar: CustomActionTable = {
+      titulo: 'Cancelado',
+      color: 'negative',
+      visible: (entidad) => entidad.estado !== 'REALIZADO' && entidad.estado !== 'EJECUTANDO',
+      accion: async ({ entidad }) => {
+        confirmar('¿Está seguro de cancelar la tarea?', () => console.log('Proceder'))
+        // await tareaStore.consultarSubtarea(entidad.id)
+        // modales.abrirModalEntidad('SubtareasPage')
+      },
+    }
+
+    const botonAsignar: CustomActionTable = {
+      titulo: 'Asignar',
+      color: 'indigo',
+      visible: (entidad) => entidad.estado !== 'REALIZADO' && entidad.estado !== 'EJECUTANDO',
+      accion: async ({ entidad }) => {
+        confirmar('¿Está seguro de asignar la tarea?', () => console.log('Proceder'))
+        // await tareaStore.consultarSubtarea(entidad.id)
+        // modales.abrirModalEntidad('SubtareasPage')
       },
     }
 
@@ -90,6 +116,8 @@ export default defineComponent({
       tabOptions,
       aplicarFiltro,
       verControlAvance,
+      botonCancelar,
+      botonAsignar,
     }
   },
 })

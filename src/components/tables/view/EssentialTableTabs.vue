@@ -21,7 +21,6 @@
       class="q-mx-xs q-my-md rounded"
       :class="{ 'shadow-chip borde': $q.screen.xs }"
     ></q-tab>
-    <!--:class="{ 'bg-grey-3': $q.screen.xs }" -->
   </q-tabs>
 
   <essential-table
@@ -41,6 +40,8 @@
     :accion1="accion1"
     :accion2="accion2"
     :accion3="accion3"
+    :accion4="accion4"
+    :accion5="accion5"
     :agregarElemento="agregarElemento"
     :alto-fijo="altoFijo"
     :mostrarFooter="mostrarFooter"
@@ -49,18 +50,21 @@
     @eliminar="eliminar"
     @accion1="emitAccion1"
     @accion2="emitAccion2"
+    @accion3="emitAccion3"
+    @accion4="emitAccion4"
+    @accion5="emitAccion5"
   ></essential-table>
 </template>
 
 <script lang="ts" setup>
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { CustomActionTable } from '../domain/CustomActionTable'
+import { TabOption } from 'components/tables/domain/TabOption'
+import { useAuthenticationStore } from 'stores/authentication'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import EssentialTable from './EssentialTable.vue'
 import { TipoSeleccion } from 'config/utils'
 import { ref } from 'vue'
-import { TabOption } from 'components/tables/domain/TabOption'
-import { useAuthenticationStore } from 'stores/authentication'
 
 defineProps({
   titulo: {
@@ -111,6 +115,14 @@ defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+  accion4: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  accion5: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
   agregarElemento: {
     type: Object as () => CustomActionTable,
     required: false,
@@ -143,6 +155,9 @@ const emit = defineEmits([
   'eliminar',
   'accion1',
   'accion2',
+  'accion3',
+  'accion4',
+  'accion5',
   'tab-seleccionado',
 ])
 
@@ -156,6 +171,9 @@ const editar = (data) => emit('editar', data)
 const eliminar = (data) => emit('eliminar', data)
 const emitAccion1 = (data) => emit('accion1', data)
 const emitAccion2 = (data) => emit('accion2', data)
+const emitAccion3 = (data) => emit('accion3', data)
+const emitAccion4 = (data) => emit('accion4', data)
+const emitAccion5 = (data) => emit('accion5', data)
 </script>
 
 <style lang="scss" scoped>

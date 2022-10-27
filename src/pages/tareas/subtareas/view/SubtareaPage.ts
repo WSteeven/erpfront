@@ -193,6 +193,10 @@ export default defineComponent({
     watchEffect(() => {
       if (subtarea.grupo)
         obtenerResponsables(subtarea.grupo)
+      else {
+        subtarea.tecnico_responsable = null
+        tecnicosGrupoPrincipal.value = null
+      }
     })
 
     return {

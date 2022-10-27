@@ -135,7 +135,7 @@ export const tabOptions: TabOption[] = [
   { label: 'Realizado', value: 'REALIZADO' },
 ]
 
-export const tabOptionsTransacciones: TabOption[]=[
+export const tabOptionsTransacciones: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'En espera', value: 'ESPERA' },
   { label: 'Parcial', value: 'PARCIAL' },
@@ -148,6 +148,7 @@ export const accionesTabla = {
   field: 'acciones',
   label: 'Acciones',
   align: 'center',
+  style: 'width: 490px;'
 }
 
 export const tiposTrabajosEstaticos = {
@@ -173,4 +174,6 @@ export const estadosTransacciones = {
   parcial: 'PARCIAL',
 }
 
-export const sistemasCoordenadas = ['DMS', '']
+export const sistemasCoordenadas = ['DMS', 'UTM']
+
+export const bobinasSolicitadas = ['DS564', 'DSFDS564']
