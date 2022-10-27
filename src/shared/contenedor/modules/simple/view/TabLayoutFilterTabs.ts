@@ -80,6 +80,7 @@ export default defineComponent({
       listar()
       listadoCargado = true
     }
+    //const tabSeleccionado='TODO'
 
     function aplicarFiltro(tabSeleccionado) {
       listar({ estado: tabSeleccionado })
@@ -128,6 +129,12 @@ export default defineComponent({
       store.can(`puede.eliminar.${router.name?.toString()}`)
     )
 
+    const esBodeguero = store.esBodeguero
+    const esCoordinador = store.esCoordinador
+
+    console.log(esCoordinador,  ' - ', esBodeguero)
+
+
     return {
       tabs,
       tituloTabla,
@@ -151,6 +158,9 @@ export default defineComponent({
       puedeEditar,
       puedeEliminar,
       aplicarFiltro,
+
+      esBodeguero,
+      esCoordinador,
     }
   },
 })

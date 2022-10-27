@@ -2,7 +2,7 @@
   <q-page padding>
     <slot name="modales" />
 
-    <div class="text-h6 q-my-md q-ml-md">{{ tituloPagina }}</div>
+    <!-- <div class="text-white text-h6 q-my-md q-ml-md">{{ tituloPagina }}</div> -->
 
     <!-- Tabs -->
     <q-tabs v-model="tabs" align="left" narrow-indicator class="q-mb-lg">
@@ -10,9 +10,10 @@
         v-if="mostrarFormulario"
         name="formulario"
         label="Formulario"
+        class="text-white"
         no-caps
       />
-      <q-tab v-if="mostrarListado" name="listado" label="Listado" no-caps />
+      <q-tab v-if="mostrarListado" name="listado" label="Listado" class="text-white" no-caps />
     </q-tabs>
 
     <!-- Tab content -->
@@ -21,6 +22,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
+      class="rounded-3"
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario" class="q-py-none">
@@ -36,14 +38,14 @@
         />
       </q-tab-panel>
       <!-- Listado -->
-      <q-tab-panel name="listado" class="q-py-none">
+      <q-tab-panel name="listado">
         <essential-table-tabs
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
-          :permitirConsultar="permitirConsultar"
-          :permitirEditar="permitirEditar"
-          :permitirEliminar="permitirEliminar"
+          :permitirConsultar="puedeVer"
+          :permitirEditar="puedeEditar"
+          :permitirEliminar="puedeEliminar"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
@@ -56,3 +58,8 @@
 </template>
 
 <script src="./TabLayoutFilterTabs.ts"></script>
+<style>
+.rounded-3 {
+  border-radius: 28px;
+}
+</style>

@@ -5,14 +5,14 @@ export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
     {
         name: 'solicitante',
         field: 'solicitante',
-        label: 'solicitante',
+        label: 'Solicitante',
         align: 'left',
         sortable: true,
     },
     {
         name: 'justificacion',
         field: 'justificacion',
-        label: 'Justificacion',
+        label: 'Justificación',
         align: 'left',
         sortable: true,
     },
@@ -47,7 +47,7 @@ export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
     {
         name: 'autorizacion',
         field: 'autorizacion',
-        label: 'autorizacion',
+        label: 'Autorización',
         align: 'left',
         sortable: true,
     },

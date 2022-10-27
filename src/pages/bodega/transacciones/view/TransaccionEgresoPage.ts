@@ -6,11 +6,13 @@ import { defineComponent, ref } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
+import { tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -33,15 +35,16 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/domain/SubtipoTransaccion'
 
 export default defineComponent({
-    components:{TabLayout, EssentialTable, EssentialSelectableTable},
-    setup(){
+    components: { TabLayoutFilterTabs, EssentialTableTabs, EssentialTable, EssentialSelectableTable },
+    setup() {
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-        const {entidad: transaccion, disabled, accion, listadosAuxiliares}=mixin.useReferencias()
-        const {setValidador, obtenerListados, cargarVista, listar}=mixin.useComportamiento()
-        const {confirmar, prompt}=useNotificaciones()
+        const { entidad: transaccion, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
+        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+        // aplicarFiltro('TODO')
+        const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
 
-        const { 
+        const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
             criterioBusqueda: criterioBusquedaProducto,
             listado: listadoProductos,
@@ -50,8 +53,9 @@ export default defineComponent({
             seleccionar: seleccionarProducto
         } = useOrquestadorSelectorDetalles(transaccion, 'detalles')
 
-        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length>0 ? true : false
-        console.log('Rol: ', (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length>0)
+        const esBodeguero = store.esBodeguero
+        const esCoordinador = store.esCoordinador
+        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
@@ -59,34 +63,35 @@ export default defineComponent({
         const opciones_subtipos = ref([])
         const opciones_estados = ref([])
 
-        cargarVista(async ()=>{
+        cargarVista(async () => {
             await obtenerListados({
                 sucursales: new SucursalController(),
-                tipos:  {
-                    controller:new TipoTransaccionController(),
+                tipos: {
+                    controller: new TipoTransaccionController(),
                     //params: { tipo:props.tipo}
-                    params: { tipo:'EGRESO'}
+                    params: { tipo: 'EGRESO' }
                 },
                 subtipos: new SubtipoTransaccionController(),
                 autorizaciones: new AutorizacionController(),
                 estados: new EstadosTransaccionController(),
                 detalles: new DetalleProductoController(),
             })
-            transaccion.autorizacion = listadosAuxiliares.autorizaciones[0]['id']
-            transaccion.estado = listadosAuxiliares.estados[0]['id']
         })
 
 
 
         //Reglas de validacion
-        const reglas={
+        const reglas = {
             justificacion: { required },
             sucursal: { required },
             tipo: { required },
             subtipo: { required },
             lugar_destino: { required },
-            autorizacion: { requiredIfRol: requiredIf(rolSeleccionado), },
-            estado: { requiredIfRol: requiredIf(rolSeleccionado),},
+            autorizacion: {
+                requiredIfCoordinador: requiredIf(esCoordinador),
+                requiredIfRolSeleccionado: requiredIf(rolSeleccionado),
+            },
+            estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
                 requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
                 // requiredIfRol: requiredIf(rolSeleccionado),
@@ -111,22 +116,24 @@ export default defineComponent({
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
         opciones_estados.value = listadosAuxiliares.estados
 
-        const fecha =new Date()
-        transaccion.created_at = new Intl.DateTimeFormat('az',{
-            year:'numeric',
-            month:'2-digit',
-            day:'2-digit'
+        const fecha = new Date()
+        transaccion.created_at = new Intl.DateTimeFormat('az', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
         }).format(fecha)
 
-        function eliminar({entidad, posicion}){
-            confirmar('¿Está seguro de continuar?', 
-            ()=> transaccion.listadoProductosSeleccionados.splice(posicion, 1))
+        function eliminar({ entidad, posicion }) {
+            confirmar('¿Está seguro de continuar?',
+                () => transaccion.listadoProductosSeleccionados.splice(posicion, 1))
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
-            accion: ({entidad, posicion})=>{
-                prompt('Ingresa la cantidad', 
-                (data)=> transaccion.listadoProductosSeleccionados[posicion].cantidades = data)
+            accion: ({ entidad, posicion }) => {
+                prompt('Ingresa la cantidad',
+                    (data) => transaccion.listadoProductosSeleccionados[posicion].cantidades = data,
+                    transaccion.listadoProductosSeleccionados[posicion].cantidades
+                )
             }
         }
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
@@ -143,11 +150,11 @@ export default defineComponent({
             align: 'center',
             sortable: false,
         }
-    ]
+        ]
 
         return {
             mixin, transaccion, disabled, accion, v$,
-            configuracionColumnas:configuracionColumnasTransacciones,
+            configuracionColumnas: configuracionColumnasTransacciones,
             //listados
             opciones_sucursales,
             opciones_tipos,
@@ -156,13 +163,13 @@ export default defineComponent({
             opciones_estados,
 
             //filtros
-            filtroTipos(val){
-                opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v:SubtipoTransaccion)=>v.tipo_transaccion_id===val)
+            filtroTipos(val) {
+                opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
                 transaccion.subtipo = ''
-                if(opciones_subtipos.value.length<1){
+                if (opciones_subtipos.value.length < 1) {
                     transaccion.subtipo = ''
                 }
-                if(opciones_subtipos.value.length===1){
+                if (opciones_subtipos.value.length === 1) {
                     transaccion.subtipo = opciones_subtipos.value[0]['id']
                 }
             },
@@ -184,6 +191,12 @@ export default defineComponent({
 
             //rol
             rolSeleccionado,
+            esBodeguero,
+            esCoordinador,
+
+            //tabs y filtros
+            tabOptionsTransacciones,
+
         }
     }
 })
