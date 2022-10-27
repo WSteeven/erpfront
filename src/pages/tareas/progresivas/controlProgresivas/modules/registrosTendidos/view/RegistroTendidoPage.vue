@@ -311,6 +311,7 @@
       :configuracion-columnas="configuracionColumnasProductosSeleccionados"
       :datos="listadoProductos"
       @selected="seleccionarProducto"
+      tipoSeleccion="single"
     >
     </essential-selectable-table>
   </q-page>

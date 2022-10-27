@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <!--<div class="text-bold q-mb-md">Subtarea seleccionada</div> -->
-    <div class="column items-center q-mb-md">
+    <!--<div class="column items-center q-mb-md">
       <div class="text-bold q-mb-md">Cambiar el estado de la subtarea</div>
       <div class="row q-gutter-xs">
         <q-btn color="negative" no-caps @click="enviar()" push>
@@ -19,7 +19,7 @@
           <div>Finalizar subtarea</div>
         </q-btn>
       </div>
-    </div>
+    </div> -->
 
     <q-form @submit.prevent>
       <q-expansion-item
@@ -81,6 +81,7 @@
               input-debounce="0"
               emit-value
               map-options
+              clearable
               :error="!!v$.grupo.$errors.length"
             >
               <!--@update:model-value="obtenerResponsables(subtarea.grupo)"-->
@@ -511,7 +512,7 @@
         <!-- Busqueda por grupo -->
         <div v-else class="row q-col-gutter-sm q-pa-md">
           <!-- Grupo -->
-          <div class="col-12 col-md-10">
+          <!--<div class="col-12 col-md-10">
             <label class="q-mb-sm block">Grupo</label>
             <q-select
               v-model="busqueda"
@@ -521,6 +522,43 @@
               dense
               outlined
             />
+          </div> -->
+
+          <div class="col-12 col-md-10">
+            <label class="q-mb-sm block">Grupo</label>
+            <q-select
+              v-model="busqueda"
+              :options="grupos"
+              @filter="filtrarGrupos"
+              hint="Seleccione un grupo y presione en Listar técnicos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :error="!!v$.grupo.$errors.length"
+            >
+              <!--@update:model-value="obtenerResponsables(subtarea.grupo)"-->
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
           </div>
 
           <div class="col-12 col-md-2 q-pt-md">

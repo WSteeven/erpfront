@@ -65,6 +65,14 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion4: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion5: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
     agregarElemento: {
       type: Object as () => CustomActionTable,
       required: false,
@@ -90,7 +98,7 @@ export default defineComponent({
       default: false,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'selected'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'selected'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)

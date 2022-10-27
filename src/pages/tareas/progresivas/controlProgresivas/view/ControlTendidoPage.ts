@@ -5,6 +5,8 @@ import {
   propietariosElementos,
   estadoElementos,
   accionesTabla,
+  sistemasCoordenadas,
+  bobinasSolicitadas,
 } from 'config/utils'
 import { obtenerFechaActual } from 'shared/utils'
 import { defineComponent, reactive } from 'vue'
@@ -137,6 +139,8 @@ export default defineComponent({
       tiposElementos,
       propietariosElementos,
       estadoElementos,
+      sistemasCoordenadas,
+      bobinasSolicitadas,
     }
   },
 })
