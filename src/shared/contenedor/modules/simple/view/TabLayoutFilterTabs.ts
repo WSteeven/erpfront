@@ -11,6 +11,7 @@ import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { useAuthenticationStore } from 'stores/authentication'
 import { acciones } from 'config/utils'
 import { TabOption } from 'components/tables/domain/TabOption'
+import { emit } from 'process'
 
 export default defineComponent({
   props: {
@@ -54,8 +55,9 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
-  setup(props) {
+  setup(props, {emit}) {
     const { listar, guardar, editar, eliminar, consultar, reestablecer } =
       props.mixin.useComportamiento()
 
@@ -84,6 +86,7 @@ export default defineComponent({
 
     function aplicarFiltro(tabSeleccionado) {
       listar({ estado: tabSeleccionado })
+      emit('tab-seleccionado', tabSeleccionado)
     }
 
     const seleccionado = ref()
@@ -123,7 +126,7 @@ export default defineComponent({
       store.can(`puede.crear.${router.name?.toString()}`)
     )
     const puedeEditar = computed(() =>
-      store.can(`puede.editar.${router.name?.toString()}`)
+      store.can(`puede.editar.${router.name?.toString()}`) && props.permitirEditar
     )
     const puedeEliminar = computed(() =>
       store.can(`puede.eliminar.${router.name?.toString()}`)
@@ -132,7 +135,7 @@ export default defineComponent({
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
 
-    console.log(esCoordinador,  ' - ', esBodeguero)
+    console.log(esCoordinador, ' - ', esBodeguero)
 
 
     return {

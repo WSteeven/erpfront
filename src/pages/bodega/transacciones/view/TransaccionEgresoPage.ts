@@ -2,7 +2,7 @@
 import { configuracionColumnasTransacciones } from '../domain/configuracionColumnasTransaccion'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
@@ -33,6 +33,7 @@ import { DetalleProductoController } from 'pages/bodega/detalles_productos/infra
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/domain/SubtipoTransaccion'
+import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTableTabs, EssentialTable, EssentialSelectableTable },
@@ -57,11 +58,14 @@ export default defineComponent({
         const esCoordinador = store.esCoordinador
         const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
+        console.log('rol seleccionado: ',rolSeleccionado)
+
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
         const opciones_tipos = ref([])
         const opciones_subtipos = ref([])
         const opciones_estados = ref([])
+        const opciones_subtareas =ref([])
 
         cargarVista(async () => {
             await obtenerListados({
@@ -71,6 +75,7 @@ export default defineComponent({
                     //params: { tipo:props.tipo}
                     params: { tipo: 'EGRESO' }
                 },
+                subtareas: new SubtareaController(),
                 subtipos: new SubtipoTransaccionController(),
                 autorizaciones: new AutorizacionController(),
                 estados: new EstadosTransaccionController(),
@@ -86,10 +91,9 @@ export default defineComponent({
             sucursal: { required },
             tipo: { required },
             subtipo: { required },
-            lugar_destino: { required },
             autorizacion: {
                 requiredIfCoordinador: requiredIf(esCoordinador),
-                requiredIfRolSeleccionado: requiredIf(rolSeleccionado),
+                requiredIfBodeguero: requiredIf(esBodeguero),
             },
             estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
@@ -115,6 +119,7 @@ export default defineComponent({
         opciones_subtipos.value = listadosAuxiliares.subtipos
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
         opciones_estados.value = listadosAuxiliares.estados
+        opciones_subtareas.value = listadosAuxiliares.subtareas
 
         const fecha = new Date()
         transaccion.created_at = new Intl.DateTimeFormat('az', {
@@ -152,6 +157,19 @@ export default defineComponent({
         }
         ]
 
+        let tabSeleccionado = ref()
+
+        // console.log(esCoordinador)
+        let puedeEditar = ref(false)/* computed(() => {
+            console.log(tabSeleccionado.value)
+            return esBodeguero && tabSeleccionado.value === 'PENDIENTE'
+                ? true
+                : esCoordinador && tabSeleccionado.value === 'ESPERA'
+                    ? true
+                    : false
+
+        }) */
+
         return {
             mixin, transaccion, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasTransacciones,
@@ -161,6 +179,7 @@ export default defineComponent({
             opciones_subtipos,
             opciones_autorizaciones,
             opciones_estados,
+            opciones_subtareas,
 
             //filtros
             filtroTipos(val) {
@@ -196,7 +215,21 @@ export default defineComponent({
 
             //tabs y filtros
             tabOptionsTransacciones,
+            puedeEditar,
+            tabSeleccionado,
 
+            tabEs(val) {
+                tabSeleccionado.value = val
+                // console.log(val)
+                // console.log(tabSeleccionado.value)
+                puedeEditar.value = esBodeguero && tabSeleccionado.value === 'PENDIENTE'
+                    ? true
+                    : esCoordinador && tabSeleccionado.value === 'ESPERA'
+                        ? true
+                        : false
+
+                console.log(puedeEditar.value)
+            }
         }
     }
 })

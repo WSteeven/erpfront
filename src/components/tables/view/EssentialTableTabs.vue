@@ -29,13 +29,7 @@
     :configuracionColumnas="configuracionColumnas"
     :datos="datos"
     :permitirConsultar="permitirConsultar"
-    :permitirEditar="
-      esBodeguero && tabSeleccionado === 'PENDIENTE'
-        ? permitirEditar
-        : esCoordinador && tabSeleccionado === 'ESPERA'
-        ? true
-        : false
-    "
+    :permitirEditar="permitirEditar"
     :permitirEliminar="permitirEliminar"
     :mostrar-botones="mostrarBotones"
     :accion1="accion1"

@@ -14,7 +14,7 @@ export class Transaccion extends EntidadAuditable{
     sucursal: number|null
     autoriza: number|null
     atiende: number|null
-    lugar_destino: string|null
+    subtarea: string|null
     created_at: string|null
     //variables auxiliares
     tiene_obs_autorizacion: boolean
@@ -38,7 +38,7 @@ export class Transaccion extends EntidadAuditable{
         this.sucursal=null
         this.autoriza=null
         this.atiende=null
-        this.lugar_destino=null
+        this.subtarea=null
         this.created_at=null
 
         this.tiene_obs_autorizacion=false

@@ -1,9 +1,13 @@
 <template>
+  {{ puedeEditar }}
+  {{ tabSeleccionado }}
   <tab-layout-filter-tabs
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
     :tab-options="tabOptionsTransacciones"
+    @tab-seleccionado="tabEs"
+    :permitirEditar="puedeEditar"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -28,20 +32,30 @@
           <!-- Fecha límite -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha limite</label>
-            <q-input
-              v-model="transaccion.fecha_limite"
-              outlined dense >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="transaccion.fecha_limite" mask="DD-MM-YYYY">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat/>
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
+            <q-input v-model="transaccion.fecha_limite" outlined dense>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="transaccion.fecha_limite"
+                      mask="DD-MM-YYYY"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
             </q-input>
           </div>
           <!-- Select tipo -->
@@ -251,29 +265,39 @@
             <q-input v-model="transaccion.solicitante" disable outlined dense>
             </q-input>
           </div>
-          <!-- Lugar destino -->
+          <!-- Subtarea -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Asignado a</label>
-            <q-input
-              v-model="transaccion.lugar_destino"
-              placeholder="Lugar/Tarea #"
-              :readonly="disabled"
-              :error="!!v$.lugar_destino.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.lugar_destino = v.toUpperCase())
-              "
-              outlined
+            <label class="q-mb-sm block">Subtarea</label>
+            <q-select
+              v-model="transaccion.subtarea"
+              :options="opciones_subtareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
               dense
+              outlined
+              :readonly="disabled"
+              :option-label="(item) => item.codigo_subtarea"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
             >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.lugar_destino.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_subtarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                  </q-item-section>
+                </q-item>
               </template>
-            </q-input>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
           <!-- Select estado -->
           <div

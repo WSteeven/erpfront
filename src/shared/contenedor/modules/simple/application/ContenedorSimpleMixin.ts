@@ -138,6 +138,7 @@ export class ContenedorSimpleMixin<
     }
 
     if (!(await this.refs.validador.value.$validate())) {
+      console.log(this.refs.validador.value.v$)
       return this.notificaciones.notificarAdvertencia('Verifique el formulario')
     }
 

@@ -52,9 +52,9 @@ export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
         sortable: true,
     },
     {
-        name: 'lugar_destino',
-        field: 'lugar_destino',
-        label: 'Lugar Destino',
+        name: 'subtarea',
+        field: 'subtarea',
+        label: 'Subtarea',
         align: 'left',
         sortable: true,
     },

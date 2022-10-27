@@ -10,10 +10,9 @@
         v-if="mostrarFormulario"
         name="formulario"
         label="Formulario"
-        class="text-white"
         no-caps
       />
-      <q-tab v-if="mostrarListado" name="listado" label="Listado" class="text-white" no-caps />
+      <q-tab v-if="mostrarListado" name="listado" label="Listado"  no-caps />
     </q-tabs>
 
     <!-- Tab content -->
