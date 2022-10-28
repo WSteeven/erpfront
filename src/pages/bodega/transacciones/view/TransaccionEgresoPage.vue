@@ -11,7 +11,7 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-md">
+        <div class="row q-col-gutter-sm q-py-xs">
           <!-- N° transaccion -->
           <div v-if="transaccion.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Transacción N°</label>
@@ -25,14 +25,14 @@
             </q-input>
           </div>
           <!-- Fecha de transaccion -->
-          <div class="col-12 col-md-3">
+          <div v-if="transaccion.created_at" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="transaccion.created_at" disable outlined dense />
           </div>
           <!-- Fecha límite -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha limite</label>
-            <q-input v-model="transaccion.fecha_limite" outlined dense>
+            <q-input v-model="transaccion.fecha_limite" placeholder="Opcional" outlined dense>
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -122,7 +122,7 @@
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="rolSeleccionado || transaccion.autorizacion"
+            v-if="transaccion.autorizacion || esVisibleAutorizacion"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -159,9 +159,9 @@
           <!-- Tiene observacion de autorizacion -->
           <div
             v-if="
-              rolSeleccionado ||
+              
               transaccion.tiene_obs_autorizacion ||
-              transaccion.observacion_aut
+              transaccion.observacion_aut || esVisibleAutorizacion
             "
             class="col-12 col-md-3"
           >
@@ -274,10 +274,11 @@
               transition-show="scale"
               transition-hide="scale"
               options-dense
+              clearable 
               dense
               outlined
               :readonly="disabled"
-              :option-label="(item) => item.codigo_subtarea"
+              :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
               emit-value
               map-options
@@ -407,17 +408,16 @@
           </div>
           <!-- Tabla -->
           <div class="col-12">
-            <essential-table
+            <essential-table 
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
-              "
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
               :datos="transaccion.listadoProductosSeleccionados"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="true"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
+              :accion2="botonDespachar"
               @eliminar="eliminar"
             ></essential-table>
           </div>

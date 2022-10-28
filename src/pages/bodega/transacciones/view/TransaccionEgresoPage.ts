@@ -2,7 +2,7 @@
 import { configuracionColumnasTransacciones } from '../domain/configuracionColumnasTransaccion'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
@@ -34,6 +34,9 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/domain/SubtipoTransaccion'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
+import { watch } from 'fs'
+import { InventarioController } from 'pages/bodega/inventario/infraestructure/InventarioController'
+import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTableTabs, EssentialTable, EssentialSelectableTable },
@@ -57,16 +60,16 @@ export default defineComponent({
         const esBodeguero = store.esBodeguero
         const esCoordinador = store.esCoordinador
         const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
-
+        
         console.log('rol seleccionado: ',rolSeleccionado)
-
+        
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
         const opciones_tipos = ref([])
         const opciones_subtipos = ref([])
         const opciones_estados = ref([])
         const opciones_subtareas =ref([])
-
+        
         cargarVista(async () => {
             await obtenerListados({
                 sucursales: new SucursalController(),
@@ -83,8 +86,8 @@ export default defineComponent({
             })
         })
 
-
-
+        let esVisibleAutorizacion= ref(false)
+        
         //Reglas de validacion
         const reglas = {
             justificacion: { required },
@@ -93,7 +96,8 @@ export default defineComponent({
             subtipo: { required },
             autorizacion: {
                 requiredIfCoordinador: requiredIf(esCoordinador),
-                requiredIfBodeguero: requiredIf(esBodeguero),
+                // requiredIfBodeguero: requiredIf(esBodeguero),
+                requiredIfEsVisibleAut: requiredIf(esVisibleAutorizacion)
             },
             estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
@@ -121,12 +125,12 @@ export default defineComponent({
         opciones_estados.value = listadosAuxiliares.estados
         opciones_subtareas.value = listadosAuxiliares.subtareas
 
-        const fecha = new Date()
+       /*  const fecha = new Date()
         transaccion.created_at = new Intl.DateTimeFormat('az', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit'
-        }).format(fecha)
+        }).format(fecha) */
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',
@@ -141,6 +145,15 @@ export default defineComponent({
                 )
             }
         }
+        const botonDespachar: CustomActionTable= {
+            titulo: 'Despachar',
+            accion: ({posicion})=>{
+                inventarios :{
+                    controller: new TipoTransaccionController(),
+                    {params: posicion}  
+                }
+            }
+        }
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
             name: 'cantidades',
             field: 'cantidades',
@@ -152,23 +165,13 @@ export default defineComponent({
             name: 'acciones',
             field: 'acciones',
             label: 'Acciones',
-            align: 'center',
+            align: 'right',
             sortable: false,
         }
         ]
 
         let tabSeleccionado = ref()
-
-        // console.log(esCoordinador)
-        let puedeEditar = ref(false)/* computed(() => {
-            console.log(tabSeleccionado.value)
-            return esBodeguero && tabSeleccionado.value === 'PENDIENTE'
-                ? true
-                : esCoordinador && tabSeleccionado.value === 'ESPERA'
-                    ? true
-                    : false
-
-        }) */
+        let puedeEditar = ref(false)
 
         return {
             mixin, transaccion, disabled, accion, v$,
@@ -181,6 +184,9 @@ export default defineComponent({
             opciones_estados,
             opciones_subtareas,
 
+            //variables auxiliares
+            esVisibleAutorizacion,
+
             //filtros
             filtroTipos(val) {
                 opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
@@ -190,6 +196,11 @@ export default defineComponent({
                 }
                 if (opciones_subtipos.value.length === 1) {
                     transaccion.subtipo = opciones_subtipos.value[0]['id']
+                    if(opciones_subtipos.value[0]['nombre']==='TRANSFERENCIA ENTRE BODEGAS'){
+                        esVisibleAutorizacion.value=true
+                    }else{
+                        esVisibleAutorizacion.value=false
+                    }
                 }
             },
 
@@ -197,6 +208,7 @@ export default defineComponent({
             configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
             botonEditarCantidad,
+            botonDespachar,
             eliminar,
 
             //selector
@@ -229,7 +241,10 @@ export default defineComponent({
                         : false
 
                 console.log(puedeEditar.value)
-            }
+            },
+
+            
+
         }
     }
 })

@@ -511,9 +511,12 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
-        <div v-else>
-          {{ props.value }}
-        </div>
+        <q-chip v-if="props.value === 'ACTIVO'" class="bg-green-1">
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>ACTIVO
+        </q-chip>
+        <q-chip v-if="props.value === 'INACTIVO'" class="bg-red-1">
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>INACTIVO
+        </q-chip>
       </q-td>
     </template>
 
