@@ -30,7 +30,11 @@ export function useOrquestadorSelectorDetalles(entidad: RegistroTendido, endpoin
     const selector = useSelector(singleSelector)
     const listar = () => selector.listar(criterioBusqueda.value)
     const limpiar = () => singleSelector.limpiar()
-    const seleccionar = (id: number) => selector.seleccionar(id)
+    const seleccionar = (id: any) => {
+        console.log('seleccionado')
+        selector.seleccionar(id)
+        console.log(id)
+    }
 
     return {
         refListadoSeleccionable,

@@ -2,6 +2,7 @@
   <q-dialog v-model="abierto" full-width position="top">
     <q-card>
       <q-linear-progress :value="1" color="primary" />
+
       <essential-table
         ref="refTabla"
         :configuracion-columnas="configuracionColumnas"
@@ -75,7 +76,12 @@ export default defineComponent({
     const emitSelected = (itemsSeleccionados: EntidadAuditable[]) => {
       if (itemsSeleccionados.length) {
         if (props.tipoSeleccion === 'single')
-          emit('selected', itemsSeleccionados[0].id)
+          emit('selected', [itemsSeleccionados[0].id])
+        if (props.tipoSeleccion === 'multiple')
+          emit(
+            'selected',
+            itemsSeleccionados.map((item: any) => item.id)
+          )
       }
       ocultar()
     }
