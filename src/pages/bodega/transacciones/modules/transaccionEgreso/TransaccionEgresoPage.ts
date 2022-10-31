@@ -1,47 +1,52 @@
 //Dependencias
-import { configuracionColumnasTransacciones } from '../domain/configuracionColumnasTransaccion'
+import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { configuracionColumnasProductosSeleccionados } from '../modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
-import { useOrquestadorSelectorDetalles } from 'pages/bodega/transacciones/application/OrquestadorSelectorDetalles'
+import { useOrquestadorSelectorDetalles } from '../../application/OrquestadorSelectorDetalles'
+import { tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TransaccionIngresoController } from '../infraestructure/TransaccionIngresoController'
-import { Transaccion } from '../domain/Transaccion'
+import { TransaccionEgresoController } from '../../infraestructure/TransaccionEgresoController'
+import { Transaccion } from '../../domain/Transaccion'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 
-//Controladores para los listados
+//Controladores
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
 import { SubtipoTransaccionController } from 'pages/administracion/subtipos_transacciones/infraestructure/SubtipoTransaccionController'
+import { useNotificaciones } from 'shared/notificaciones'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
-import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/domain/SubtipoTransaccion'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useNotificaciones } from 'shared/notificaciones'
 import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+
 import { useAuthenticationStore } from 'stores/authentication'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/domain/SubtipoTransaccion'
+import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
+import { watch } from 'fs'
+import { InventarioController } from 'pages/bodega/inventario/infraestructure/InventarioController'
+import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
+
 export default defineComponent({
-    components: { TabLayout, EssentialTable, EssentialSelectableTable },
+    components: { TabLayoutFilterTabs, EssentialTableTabs, EssentialTable, EssentialSelectableTable },
     setup() {
-        const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
-        const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, } = mixin.useComportamiento()
+        const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
+        const { entidad: transaccion, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
+        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+        // aplicarFiltro('TODO')
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
-
-        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
-        // console.log('xxx',(store.roles.filter((v)=>v==='BODEGA' ||v==='COORDINADOR')).length>0?'es bodega':'no tiene el rol')
-        console.log(rolSeleccionado)
 
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
@@ -52,43 +57,49 @@ export default defineComponent({
             seleccionar: seleccionarProducto
         } = useOrquestadorSelectorDetalles(transaccion, 'detalles')
 
+        const esBodeguero = store.esBodeguero
+        const esCoordinador = store.esCoordinador
+        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
+        
+        console.log('rol seleccionado: ',rolSeleccionado)
+        
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
         const opciones_tipos = ref([])
         const opciones_subtipos = ref([])
         const opciones_estados = ref([])
-        //obtener los listados
+        const opciones_subtareas =ref([])
+        
         cargarVista(async () => {
             await obtenerListados({
                 sucursales: new SucursalController(),
                 tipos: {
                     controller: new TipoTransaccionController(),
-                    // params: { tipo: props.tipo }
-                    params: { tipo: 'INGRESO' }
+                    //params: { tipo:props.tipo}
+                    params: { tipo: 'EGRESO' }
                 },
+                subtareas: new SubtareaController(),
                 subtipos: new SubtipoTransaccionController(),
                 autorizaciones: new AutorizacionController(),
                 estados: new EstadosTransaccionController(),
                 detalles: new DetalleProductoController(),
             })
-            //carga de valores iniciales
-            listadosAuxiliares.autorizaciones.length > 1 ? transaccion.autorizacion = listadosAuxiliares.autorizaciones[0]['id'] : transaccion.autorizacion = ''
-            listadosAuxiliares.estados.length > 1 ? transaccion.estado = listadosAuxiliares.estados[0]['id'] : transaccion.estado = ''
         })
 
-
-        // console.log('check de aut',transaccion.tiene_obs_autorizacion)
-        // console.log('check de est',transaccion.tiene_obs_estado)
-
+        let esVisibleAutorizacion= ref(false)
+        
         //Reglas de validacion
         const reglas = {
             justificacion: { required },
             sucursal: { required },
             tipo: { required },
             subtipo: { required },
-            lugar_destino: { required },
-            autorizacion: { requiredIfRol: requiredIf(rolSeleccionado), },
-            estado: { requiredIfRol: requiredIf(rolSeleccionado), },
+            autorizacion: {
+                requiredIfCoordinador: requiredIf(esCoordinador),
+                // requiredIfBodeguero: requiredIf(esBodeguero),
+                requiredIfEsVisibleAut: requiredIf(esVisibleAutorizacion)
+            },
+            estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
                 requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
                 // requiredIfRol: requiredIf(rolSeleccionado),
@@ -107,41 +118,43 @@ export default defineComponent({
         setValidador(v$.value)
 
         //Configurar los listados
-        opciones_tipos.value = listadosAuxiliares.tipos
-        opciones_estados.value = listadosAuxiliares.estados
-        // opciones_subtipos.value = listadosAuxiliares.subtipos
         opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_tipos.value = listadosAuxiliares.tipos
+        opciones_subtipos.value = listadosAuxiliares.subtipos
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
+        opciones_estados.value = listadosAuxiliares.estados
+        opciones_subtareas.value = listadosAuxiliares.subtareas
 
-        const fecha = new Date()
-        transaccion.created_at = new Intl.DateTimeFormat('az', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(fecha)
-        // console.log(transaccion.created_at)
-
+       /*  const fecha = new Date()
+        transaccion.created_at = new Intl.DateTimeFormat('az', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).format(fecha) */
 
         function eliminar({ entidad, posicion }) {
-            console.log(entidad)
-            console.log(posicion)
-            confirmar('¿Esta seguro de continuar?',
-                () =>
-                    transaccion.listadoProductosSeleccionados.splice(posicion, 1))
+            confirmar('¿Está seguro de continuar?',
+                () => transaccion.listadoProductosSeleccionados.splice(posicion, 1))
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
             accion: ({ entidad, posicion }) => {
-                console.log(transaccion.listadoProductosSeleccionados)
-                console.log(posicion)
-                console.log(transaccion.listadoProductosSeleccionados[posicion])
-                prompt(
-                    'Ingresa la cantidad',
-                    (data) => {
-                        transaccion.listadoProductosSeleccionados[posicion].cantidades = data
-                    },
+                prompt('Ingresa la cantidad',
+                    (data) => transaccion.listadoProductosSeleccionados[posicion].cantidades = data,
                     transaccion.listadoProductosSeleccionados[posicion].cantidades
                 )
-            },
+            }
         }
-        const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
-        {
+        const botonDespachar: CustomActionTable= {
+            titulo: 'Despachar',
+            accion: ({posicion})=>{
+                inventarios :{
+                    controller: new TipoTransaccionController(),
+                    {params: posicion}  
+                }
+            }
+        }
+        const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
             name: 'cantidades',
             field: 'cantidades',
             label: 'Cantidades',
@@ -152,35 +165,52 @@ export default defineComponent({
             name: 'acciones',
             field: 'acciones',
             label: 'Acciones',
-            align: 'center'
-        },
+            align: 'right',
+            sortable: false,
+        }
         ]
+
+        let tabSeleccionado = ref()
+        let puedeEditar = ref(false)
 
         return {
             mixin, transaccion, disabled, accion, v$,
-            configuracionColumnas: configuracionColumnasTransacciones,
+            configuracionColumnas: configuracionColumnasTransaccionEgreso,
             //listados
             opciones_sucursales,
             opciones_tipos,
             opciones_subtipos,
             opciones_autorizaciones,
             opciones_estados,
+            opciones_subtareas,
+
+            //variables auxiliares
+            esVisibleAutorizacion,
+
 
             //filtros
             filtroTipos(val) {
                 opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
                 transaccion.subtipo = ''
-                if (opciones_subtipos.value.length < 1) {
+                if (opciones_subtipos.value.length > 1) {
                     transaccion.subtipo = ''
+                    esVisibleAutorizacion.value=false
                 }
-                if (opciones_subtipos.value.length == 1) {
+                if (opciones_subtipos.value.length === 1) {
                     transaccion.subtipo = opciones_subtipos.value[0]['id']
+                    if(opciones_subtipos.value[0]['nombre']==='TRANSFERENCIA ENTRE BODEGAS'){
+                        esVisibleAutorizacion.value=true
+                    }else{
+                        esVisibleAutorizacion.value=false
+                    }
                 }
             },
-            // tabla,
+
+            //tabla
             configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
             botonEditarCantidad,
+            botonDespachar,
             eliminar,
 
             //selector
@@ -194,6 +224,29 @@ export default defineComponent({
 
             //rol
             rolSeleccionado,
+            esBodeguero,
+            esCoordinador,
+
+            //tabs y filtros
+            tabOptionsTransacciones,
+            puedeEditar,
+            tabSeleccionado,
+
+            tabEs(val) {
+                tabSeleccionado.value = val
+                // console.log(val)
+                // console.log(tabSeleccionado.value)
+                puedeEditar.value = esBodeguero && tabSeleccionado.value === 'PENDIENTE'
+                    ? true
+                    : esCoordinador && tabSeleccionado.value === 'ESPERA'
+                        ? true
+                        : false
+
+                console.log(puedeEditar.value)
+            },
+
+            
+
         }
     }
 })
