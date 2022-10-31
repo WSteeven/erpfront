@@ -12,6 +12,7 @@ export class Tarea extends EntidadAuditable {
   supervisor: number | null
   es_proyecto: boolean
   codigo_proyecto: string | null
+  tiene_cliente_final: boolean
 
   constructor() {
     super()
@@ -26,5 +27,6 @@ export class Tarea extends EntidadAuditable {
     this.supervisor = null
     this.es_proyecto = false
     this.codigo_proyecto = null
+    this.tiene_cliente_final = false
   }
 }

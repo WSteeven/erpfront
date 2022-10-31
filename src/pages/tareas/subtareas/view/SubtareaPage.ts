@@ -75,12 +75,12 @@ export default defineComponent({
         align: 'left',
         sortable: true,
       },
-      /* {
+      {
         name: 'acciones',
         field: 'acciones',
         label: 'Acciones',
         align: 'center',
-      }, */
+      },
     ]
 
     function eliminarTecnico({ posicion }) {

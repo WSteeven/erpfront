@@ -167,14 +167,157 @@
     <q-expansion-item
       class="overflow-hidden q-mb-md"
       style="border-radius: 8px; border: 1px solid #ddd"
-      label="Cliente final"
+      label="Ubicación de trabajo"
       header-class="bg-grey-1"
       default-opened
     >
+      <!-- Toggle -->
       <div class="row q-col-gutter-sm q-pa-md">
+        <div class="col-12">
+          <q-btn-toggle
+            v-model="ubicacionTrabajo"
+            spread
+            class="my-custom-toggle"
+            no-caps
+            rounded
+            unelevated
+            toggle-color="blue-grey-10"
+            color="white"
+            text-color="blue-grey-10"
+            :options="[
+              {
+                label: 'Agregar ubicación manualmente',
+                value: 'ubicacion_manual',
+              },
+              { label: 'Seleccionar cliente final', value: 'cliente_final' },
+            ]"
+          />
+        </div>
+      </div>
+
+      <div
+        v-if="ubicacionTrabajo === 'ubicacion_manual'"
+        class="row q-col-gutter-sm q-pa-md"
+      >
+        <!-- Provincia -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Provincias</label>
+          <q-select
+            v-model="ubicacionManual.provincia"
+            :options="provincias"
+            @filter="filtrarProvincias"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            :option-label="(item) => item.provincia"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+
+        <!-- Ciudad -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Canton</label>
+          <q-select
+            v-model="ubicacionManual.canton"
+            :options="cantonesPorProvincia"
+            @filter="filtrarCantones"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            :option-label="(item) => item.canton"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+
+        <!-- Parroquia -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Parroquia/Barrio</label>
+          <q-input
+            v-model="ubicacionManual.parroquia"
+            @update:model-value="
+              (v) => (ubicacionManual.parroquia = v.toUpperCase())
+            "
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Direccion -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Dirección</label>
+          <q-input
+            v-model="ubicacionManual.direccion"
+            @update:model-value="
+              (v) => (ubicacionManual.direccion = v.toUpperCase())
+            "
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Referencias -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Referencias</label>
+          <q-input
+            v-model="ubicacionManual.referencias"
+            @update:model-value="
+              (v) => (ubicacionManual.referencias = v.toUpperCase())
+            "
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Coordenadas -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Coordenadas</label>
+          <q-input
+            v-model="ubicacionManual.coordenadas"
+            @update:model-value="
+              (v) => (ubicacionManual.coordenadas = v.toUpperCase())
+            "
+            outlined
+            dense
+          >
+          </q-input>
+        </div>
+      </div>
+
+      <div
+        v-if="ubicacionTrabajo === 'cliente_final'"
+        class="row q-col-gutter-sm q-pa-md"
+      >
         <!-- Nombre -->
         <div class="col-12 col-md-6">
-          <label class="q-mb-sm block">Contacto</label>
+          <label class="q-mb-sm block">Cliente final</label>
           <q-select
             v-model="tarea.cliente_final"
             :options="clientesFinales"
@@ -323,18 +466,6 @@
       </div>
     </q-expansion-item>
 
-    <!-- Botones formulario -->
-    <!-- <div class="row q-gutter-md justify-end">
-      <q-btn color="primary" no-caps @click="enviar()" push>
-        <q-icon name="bi-save" class="q-mr-sm" size="xs"></q-icon>
-        <div>Guardar</div>
-      </q-btn>
-
-      <q-btn color="negative" no-caps @click="enviar()" push>
-        <q-icon name="bi-x-lg" size="xs" class="q-mr-sm"></q-icon>
-        <div>Cancelar</div>
-      </q-btn>
-    </div> -->
     <button-submits
       :accion="tareaStore.accion"
       @cancelar="reestablecer()"

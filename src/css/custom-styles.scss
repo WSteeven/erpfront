@@ -28,11 +28,16 @@
 
 // Estado input
 .q-field--disabled .q-field__inner {
-  background-color: $grey-4;
+  background-color: #474e5933;
 }
 
 .q-field--disabled .q-field__control > div {
   opacity: 1 !important;
+}
+
+// Toggle
+.my-custom-toggle {
+  border: 1px solid $blue-grey-10;
 }
 
 // Custom scrollbar

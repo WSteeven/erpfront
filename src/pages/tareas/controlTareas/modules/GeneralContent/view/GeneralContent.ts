@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { provincias, ciudades } from 'config/utils'
 import { required } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
@@ -21,6 +21,7 @@ import { ClienteController } from 'pages/sistema/clientes/infraestructure/Client
 import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { Canton } from 'pages/sistema/ciudad/domain/Canton'
 
 export default defineComponent({
   props: {
@@ -42,6 +43,9 @@ export default defineComponent({
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
 
+    const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
+    const ubicacionTrabajo = ref(opcionesUbicacion.manual)
+
     cargarVista(async () => {
       await obtenerListados({
         clientes: new ClienteController(),
@@ -56,6 +60,8 @@ export default defineComponent({
       clientes.value = listadosAuxiliares.clientes
       clientesFinales.value = listadosAuxiliares.clientesFinales
       supervisores.value = listadosAuxiliares.supervisores
+      provincias.value = listadosAuxiliares.provincias
+      cantones.value = listadosAuxiliares.cantones
       tarea.hydrate(tareaStore.tarea)
     })
 
@@ -120,7 +126,42 @@ export default defineComponent({
       })
     }
 
+    // Filtro provincias
+    const provincias = ref()
+    function filtrarProvincias(val, update) {
+      if (val === '') {
+        update(() => {
+          provincias.value = listadosAuxiliares.provincias
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        provincias.value = listadosAuxiliares.provincias.filter(
+          (v) => v.provincia.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // Filtro cantones
+    const cantones = ref([])
+    function filtrarCantones(val, update) {
+      if (val === '') {
+        update(() => {
+          cantones.value = listadosAuxiliares.cantones
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        cantones.value = listadosAuxiliares.cantones.filter(
+          (v) => v.canton.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
     const clienteFinal = reactive(new ClienteFinal())
+    const ubicacionManual = reactive(new ClienteFinal())
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ContactoController()
@@ -129,17 +170,25 @@ export default defineComponent({
     }
 
     watchEffect(() => {
-      if (tarea.cliente_final)
+      if (tarea.cliente_final) {
         obtenerClienteFinal(tarea.cliente_final)
-      else
+        ubicacionTrabajo.value = opcionesUbicacion.cliente
+      }
+      else {
         clienteFinal.hydrate(new ClienteFinal())
+        ubicacionTrabajo.value = opcionesUbicacion.manual
+      }
     })
+
+    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === ubicacionManual.provincia))
 
     return {
       v$,
       tarea,
+      // listados
       provincias,
-      ciudades,
+      cantones,
+      cantonesPorProvincia,
       guardar,
       editar,
       eliminar,
@@ -150,13 +199,17 @@ export default defineComponent({
       filtrarClientes,
       clientesFinales,
       filtrarClientesFinales,
+      filtrarProvincias,
+      filtrarCantones,
       obtenerClienteFinal,
       supervisores,
       filtrarSupervisores,
       clienteFinal,
+      ubicacionManual,
       listadosAuxiliares,
       // Selector
       configuracionColumnasClientes,
+      ubicacionTrabajo,
     }
   },
 })

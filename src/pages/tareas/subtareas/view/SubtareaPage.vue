@@ -1,26 +1,5 @@
 <template>
   <q-page padding>
-    <!--<div class="text-bold q-mb-md">Subtarea seleccionada</div> -->
-    <!--<div class="column items-center q-mb-md">
-      <div class="text-bold q-mb-md">Cambiar el estado de la subtarea</div>
-      <div class="row q-gutter-xs">
-        <q-btn color="negative" no-caps @click="enviar()" push>
-          <q-icon name="bi-x-lg" class="q-mr-sm" size="xs"></q-icon>
-          <div>Cancelar subtarea</div>
-        </q-btn>
-
-        <q-btn color="primary" no-caps @click="enviar()" push>
-          <q-icon name="bi-gear" size="xs" class="q-mr-sm"></q-icon>
-          <div>Asignar subtarea</div>
-        </q-btn>
-
-        <q-btn color="positive" no-caps @click="enviar()" push>
-          <q-icon name="bi-check" size="xs" class="q-mr-sm"></q-icon>
-          <div>Finalizar subtarea</div>
-        </q-btn>
-      </div>
-    </div> -->
-
     <q-form @submit.prevent>
       <q-expansion-item
         class="overflow-hidden q-mb-md"
@@ -48,7 +27,8 @@
             >
             <q-input
               v-model="subtarea.detalle"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
+              @update:model-value="(v) => (subtarea.detalle = v.toUpperCase())"
               outlined
               dense
               autogrow
@@ -460,10 +440,9 @@
               no-caps
               rounded
               unelevated
-              push
-              toggle-color="grey-7"
+              toggle-color="blue-grey-10"
               color="white"
-              text-color="grey-7"
+              text-color="blue-grey-10"
               :options="[
                 { label: 'Buscar un técnico a la vez', value: 'por_tecnico' },
                 { label: 'Buscar por grupo', value: 'por_grupo' },
@@ -511,19 +490,6 @@
 
         <!-- Busqueda por grupo -->
         <div v-else class="row q-col-gutter-sm q-pa-md">
-          <!-- Grupo -->
-          <!--<div class="col-12 col-md-10">
-            <label class="q-mb-sm block">Grupo</label>
-            <q-select
-              v-model="busqueda"
-              :options="grupos"
-              hint="Seleccione un grupo y presione en Listar técnicos"
-              options-dense
-              dense
-              outlined
-            />
-          </div> -->
-
           <div class="col-12 col-md-10">
             <label class="q-mb-sm block">Grupo</label>
             <q-select
@@ -544,7 +510,6 @@
               map-options
               :error="!!v$.grupo.$errors.length"
             >
-              <!--@update:model-value="obtenerResponsables(subtarea.grupo)"-->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -602,9 +567,3 @@
 </template>
 
 <script src="./SubtareaPage.ts"></script>
-
-<style lang="scss" scoped>
-.my-custom-toggle {
-  border: 1px solid #ccc;
-}
-</style>

@@ -31,8 +31,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/tipos-tareas',
-        name: 'tipos_tareas',
+        path: '/tipos-trabajos',
+        name: 'tipos_trabajos',
         component: () =>
           import('pages/tareas/tiposTareas/view/TipoTareaPage.vue'),
         meta: { requiresAuth: true },
@@ -225,7 +225,7 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
-      
+
       //Routes for Activos Fijos
       {
         path: '/activos-fijos',

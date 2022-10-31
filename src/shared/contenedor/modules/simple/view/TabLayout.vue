@@ -54,7 +54,7 @@
 
 <style lang="scss">
 .rounded-3 {
-  border-radius: 28px;
+  border-radius: 8px;
 }
 /* .fondo-header {
   background-color: $primary;
