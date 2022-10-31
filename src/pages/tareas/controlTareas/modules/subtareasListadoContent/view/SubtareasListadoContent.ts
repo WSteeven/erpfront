@@ -47,7 +47,7 @@ export default defineComponent({
     }
 
     const verControlAvance: CustomActionTable = {
-      titulo: 'Ver avances',
+      titulo: 'Ver avance',
       icono: 'bi-eye',
       accion: ({ entidad }) => {
         modales.abrirModalEntidad('GestionarAvancesPage')
@@ -60,8 +60,6 @@ export default defineComponent({
       visible: (entidad) => entidad.estado !== 'REALIZADO' && entidad.estado !== 'CREADO',
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de marcar como realizada la tarea?', () => console.log('Proceder'))
-        // await tareaStore.consultarSubtarea(entidad.id)
-        // modales.abrirModalEntidad('SubtareasPage')
       },
     }
 
@@ -71,8 +69,6 @@ export default defineComponent({
       visible: (entidad) => entidad.estado !== 'REALIZADO' && entidad.estado !== 'EJECUTANDO',
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de cancelar la tarea?', () => console.log('Proceder'))
-        // await tareaStore.consultarSubtarea(entidad.id)
-        // modales.abrirModalEntidad('SubtareasPage')
       },
     }
 
@@ -82,8 +78,6 @@ export default defineComponent({
       visible: (entidad) => entidad.estado !== 'REALIZADO' && entidad.estado !== 'EJECUTANDO',
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de asignar la tarea?', () => console.log('Proceder'))
-        // await tareaStore.consultarSubtarea(entidad.id)
-        // modales.abrirModalEntidad('SubtareasPage')
       },
     }
 
