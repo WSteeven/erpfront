@@ -78,7 +78,7 @@
               emit-value
               map-options
             >
-              <template v-slot:error>
+            x|  <template v-slot:error>
                 <div v-for="error of v$.tipo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>

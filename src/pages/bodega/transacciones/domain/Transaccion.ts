@@ -5,6 +5,7 @@ export class Transaccion extends EntidadAuditable{
     autorizacion: number|null
     observacion_aut: string|null
     justificacion: string|null
+    comprobante: string|null
     fecha_limite: string|null
     estado: number|null
     observacion_est: string|null
@@ -14,6 +15,7 @@ export class Transaccion extends EntidadAuditable{
     sucursal: number|null
     autoriza: number|null
     atiende: number|null
+    tarea: string|null
     subtarea: string|null
     created_at: string|null
     //variables auxiliares
@@ -29,6 +31,7 @@ export class Transaccion extends EntidadAuditable{
         this.autorizacion=null
         this.observacion_aut=null
         this.justificacion=null
+        this.comprobante=null
         this.fecha_limite=null
         this.estado=null
         this.observacion_est=null
@@ -38,6 +41,7 @@ export class Transaccion extends EntidadAuditable{
         this.sucursal=null
         this.autoriza=null
         this.atiende=null
+        this.tarea=null
         this.subtarea=null
         this.created_at=null
 

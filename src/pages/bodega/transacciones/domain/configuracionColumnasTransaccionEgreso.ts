@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { Transaccion } from "./Transaccion";
 
-export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
+export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[] = [
     {
         name: 'solicitante',
         field: 'solicitante',
@@ -13,6 +13,13 @@ export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
         name: 'justificacion',
         field: 'justificacion',
         label: 'Justificación',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'comprobante',
+        field: 'comprobante',
+        label: 'Factura',
         align: 'left',
         sortable: true,
     },
