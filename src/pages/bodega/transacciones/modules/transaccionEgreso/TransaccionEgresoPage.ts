@@ -5,7 +5,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { useOrquestadorSelectorDetalles } from '../../application/OrquestadorSelectorDetalles'
+import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
@@ -138,7 +138,7 @@ export default defineComponent({
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
-            accion: ({ entidad, posicion }) => {
+            accion: ({posicion }) => {
                 prompt('Ingresa la cantidad',
                     (data) => transaccion.listadoProductosSeleccionados[posicion].cantidades = data,
                     transaccion.listadoProductosSeleccionados[posicion].cantidades

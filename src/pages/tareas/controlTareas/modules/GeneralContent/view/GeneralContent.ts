@@ -39,7 +39,7 @@ export default defineComponent({
   setup(props) {
     const tareaStore = useTareaStore()
 
-    const { entidad: tarea, listadosAuxiliares } = props.mixin.useReferencias()
+    const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
 
@@ -185,6 +185,7 @@ export default defineComponent({
     return {
       v$,
       tarea,
+      accion,
       // listados
       provincias,
       cantones,

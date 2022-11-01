@@ -49,6 +49,7 @@
             outlined
             :option-label="(item) => item.razon_social"
             :option-value="(item) => item.id"
+            :option-disable="(item) => (item.id === 1 ? true : false)"
             use-input
             input-debounce="0"
             emit-value
@@ -467,7 +468,7 @@
     </q-expansion-item>
 
     <button-submits
-      :accion="tareaStore.accion"
+      :accion="accion"
       @cancelar="reestablecer()"
       @editar="editar(tarea)"
       @eliminar="eliminar(tarea)"

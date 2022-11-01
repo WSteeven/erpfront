@@ -6,18 +6,15 @@ export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)
   const status = new StatusEssentialLoading()
 
-  const listar = async (criterioBusqueda?: string | null, filtrosAdicionales?: JSON) => {
+  const listar = async (criterioBusqueda?: string | null) => {
     const filtros = {
       search: criterioBusqueda,
-      hjhgj: ''
     }
-
-    const nuevoFiltro = Object.assign(filtros, filtrosAdicionales)
 
     if (!criterioBusqueda) delete filtros.search
 
     status.activar()
-    const { response } = await controller.listar(nuevoFiltro)
+    const { response } = await controller.listar(filtros)
     const result = response.data.results
     status.desactivar()
 
@@ -41,10 +38,9 @@ export function useSelector(selector: any) {
     }
   }
 
-  const seleccionar = async (ids: number[]) => {
+  const seleccionar = async (id: number) => {
     status.activar()
-    // const { result: seleccionado } = await controller.consultar(id)
-    const { result: seleccionado } = await controller.listar(ids)
+    const { result: seleccionado } = await controller.consultar(id)
     selector.seleccionar(seleccionado)
     status.desactivar()
   }

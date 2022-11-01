@@ -517,6 +517,16 @@
         <q-chip v-if="props.value === 'INACTIVO'" class="bg-red-1">
           <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>INACTIVO
         </q-chip>
+        <!-- estados de la tabla inventarios -->
+        <q-chip v-if="props.value === estadosInventarios.sin_stock" class="bg-red-1">
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>SIN STOCK
+        </q-chip>
+        <q-chip v-if="props.value === estadosInventarios.transito" class="bg-yellow-1">
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon>TRANSITO
+        </q-chip>
+        <q-chip v-if="props.value === estadosInventarios.inventario" class="bg-green-1">
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>INVENTARIO
+        </q-chip>
       </q-td>
     </template>
 

@@ -43,7 +43,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="inventario">
-          <transaccion-ingreso-content></transaccion-ingreso-content>
+          <transaccion-ingreso-content :mixin="mixin"></transaccion-ingreso-content>
         </q-tab-panel>
 
         <q-tab-panel name="percha">

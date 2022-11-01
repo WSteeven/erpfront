@@ -174,6 +174,12 @@ export const estadosTransacciones = {
   parcial: 'PARCIAL',
 }
 
+export const estadosInventarios = {
+  inventario: 'INVENTARIO',
+  transito: 'TRANSITO',
+  sin_stock: 'SIN STOCK',
+}
+
 export const sistemasCoordenadas = ['DMS', 'UTM']
 
 export const bobinasSolicitadas = ['DS564', 'DSFDS564']
