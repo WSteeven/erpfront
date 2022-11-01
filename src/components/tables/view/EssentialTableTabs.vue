@@ -8,7 +8,7 @@
     active-color="white"
     active-bg-color="primary"
     indicator-color="primary"
-    :class="{ 'my-custom-toggle': !$q.screen.xs }"
+    :class="{ 'borde-header-tabla': !$q.screen.xs }"
     class="bg-white"
     align="justify"
     @click="emit('tab-seleccionado', tabSeleccionado)"
@@ -169,12 +169,3 @@ const emitAccion3 = (data) => emit('accion3', data)
 const emitAccion4 = (data) => emit('accion4', data)
 const emitAccion5 = (data) => emit('accion5', data)
 </script>
-
-<style lang="scss" scoped>
-.my-custom-toggle {
-  border-top: 1px solid #ddd;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  border-radius: 8px 8px 0 0;
-}
-</style>

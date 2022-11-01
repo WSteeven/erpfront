@@ -1,4 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { reactive } from 'vue'
+import { UbicacionTarea } from './UbicacionTarea'
 
 export class Tarea extends EntidadAuditable {
   codigo_tarea: string | null
@@ -13,6 +15,7 @@ export class Tarea extends EntidadAuditable {
   es_proyecto: boolean
   codigo_proyecto: string | null
   tiene_cliente_final: boolean
+  ubicacion_tarea: UbicacionTarea
 
   constructor() {
     super()
@@ -28,5 +31,6 @@ export class Tarea extends EntidadAuditable {
     this.es_proyecto = false
     this.codigo_proyecto = null
     this.tiene_cliente_final = false
+    this.ubicacion_tarea = reactive(new UbicacionTarea())
   }
 }

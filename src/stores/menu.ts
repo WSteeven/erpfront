@@ -46,7 +46,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Tipos de trabajos',
           link: 'tipos-trabajos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.tipos_tareas'),
+          can: store.can('puede.ver.tipos_trabajos'),
         },
         {
           title: 'Control de asistencia',

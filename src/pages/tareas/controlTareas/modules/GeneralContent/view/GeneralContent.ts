@@ -22,6 +22,7 @@ import { ComportamientoModalesTarea } from '../application/ComportamientoModales
 import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Canton } from 'pages/sistema/ciudad/domain/Canton'
+import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
 
 export default defineComponent({
   props: {
@@ -39,7 +40,7 @@ export default defineComponent({
   setup(props) {
     const tareaStore = useTareaStore()
 
-    const { entidad: tarea, listadosAuxiliares } = props.mixin.useReferencias()
+    const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
 
@@ -161,7 +162,7 @@ export default defineComponent({
     }
 
     const clienteFinal = reactive(new ClienteFinal())
-    const ubicacionManual = reactive(new ClienteFinal())
+    // const ubicacionManual = reactive(new UbicacionTarea())
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ContactoController()
@@ -180,11 +181,16 @@ export default defineComponent({
       }
     })
 
-    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === ubicacionManual.provincia))
+    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
+
+    function establecerCliente() {
+      tareaStore.tarea.cliente = tarea.cliente
+    }
 
     return {
       v$,
       tarea,
+      accion,
       // listados
       provincias,
       cantones,
@@ -205,8 +211,9 @@ export default defineComponent({
       supervisores,
       filtrarSupervisores,
       clienteFinal,
-      ubicacionManual,
+      // ubicacionManual,
       listadosAuxiliares,
+      establecerCliente,
       // Selector
       configuracionColumnasClientes,
       ubicacionTrabajo,

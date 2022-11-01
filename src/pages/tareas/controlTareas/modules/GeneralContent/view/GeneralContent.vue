@@ -53,8 +53,8 @@
             input-debounce="0"
             emit-value
             map-options
+            @update:model-value="establecerCliente()"
           >
-            <!-- @update:model-value="obtenerResponsable(subtarea.grupo)" -->
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -92,34 +92,8 @@
           </q-input>
         </div>
 
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Hora de solicitud</label>
-          <q-input v-model="tarea.hora_solicitud" mask="time" outlined dense>
-            <template v-slot:append>
-              <q-icon name="access_time" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-time v-model="tarea.hora_solicitud" format24h now-btn>
-                    <div class="row items-center justify-end">
-                      <q-btn
-                        v-close-popup
-                        label="Cerrar"
-                        color="primary"
-                        flat
-                      />
-                    </div>
-                  </q-time>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-
         <!-- Detalle -->
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-9">
           <label class="q-mb-sm block">Detalle de la tarea</label>
           <q-input
             v-model="tarea.detalle"
@@ -203,7 +177,7 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Provincias</label>
           <q-select
-            v-model="ubicacionManual.provincia"
+            v-model="tarea.ubicacion_tarea.provincia"
             :options="provincias"
             @filter="filtrarProvincias"
             transition-show="scale"
@@ -232,7 +206,7 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Canton</label>
           <q-select
-            v-model="ubicacionManual.canton"
+            v-model="tarea.ubicacion_tarea.canton"
             :options="cantonesPorProvincia"
             @filter="filtrarCantones"
             transition-show="scale"
@@ -261,9 +235,9 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Parroquia/Barrio</label>
           <q-input
-            v-model="ubicacionManual.parroquia"
+            v-model="tarea.ubicacion_tarea.parroquia"
             @update:model-value="
-              (v) => (ubicacionManual.parroquia = v.toUpperCase())
+              (v) => (tarea.ubicacion_tarea.parroquia = v.toUpperCase())
             "
             outlined
             dense
@@ -274,9 +248,9 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Dirección</label>
           <q-input
-            v-model="ubicacionManual.direccion"
+            v-model="tarea.ubicacion_tarea.direccion"
             @update:model-value="
-              (v) => (ubicacionManual.direccion = v.toUpperCase())
+              (v) => (tarea.ubicacion_tarea.direccion = v.toUpperCase())
             "
             outlined
             dense
@@ -287,9 +261,9 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Referencias</label>
           <q-input
-            v-model="ubicacionManual.referencias"
+            v-model="tarea.ubicacion_tarea.referencias"
             @update:model-value="
-              (v) => (ubicacionManual.referencias = v.toUpperCase())
+              (v) => (tarea.ubicacion_tarea.referencias = v.toUpperCase())
             "
             outlined
             dense
@@ -300,9 +274,9 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Coordenadas</label>
           <q-input
-            v-model="ubicacionManual.coordenadas"
+            v-model="tarea.ubicacion_tarea.coordenadas"
             @update:model-value="
-              (v) => (ubicacionManual.coordenadas = v.toUpperCase())
+              (v) => (tarea.ubicacion_tarea.coordenadas = v.toUpperCase())
             "
             outlined
             dense
@@ -467,7 +441,7 @@
     </q-expansion-item>
 
     <button-submits
-      :accion="tareaStore.accion"
+      :accion="accion"
       @cancelar="reestablecer()"
       @editar="editar(tarea)"
       @eliminar="eliminar(tarea)"

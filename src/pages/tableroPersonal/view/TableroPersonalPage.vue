@@ -40,7 +40,7 @@
             active-color="white"
             active-bg-color="primary"
             indicator-color="primary"
-            :class="{ 'my-custom-toggle': !$q.screen.xs }"
+            :class="{ 'borde-header-tabla': !$q.screen.xs }"
           >
             <q-tab
               v-if="store.esTecnicoLider"
