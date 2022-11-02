@@ -156,6 +156,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.productos_perchas'),
         },
         {
+          title: 'Préstamos',
+          link: 'prestamos',
+          can: store.can('puede.ver.prestamos'),
+          icon: 'bi-circle',
+        },
+        {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
           can: store.can('puede.ver.transacciones_ingresos'),

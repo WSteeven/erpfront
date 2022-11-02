@@ -416,17 +416,17 @@
           :permitirEliminar="true"
           :mostrarBotones="false"
           :accion1="botonEditarCantidad"
-          @eliminar="eliminar"
+          @eliminar="eliminarItem"
         ></essential-table>
       </div>
     </div>
 
     <button-submits 
-    :accion="transaccionStore.accion"
+    :accion="accion"
+    @guardar="guardar(transaccion)"
     @cancelar="reestablecer()"
     @editar="editar(transaccion)"
     @eliminar="eliminar(transaccion)"
-    @guardar="guardar(transaccion)"
     />
 
   </q-form>

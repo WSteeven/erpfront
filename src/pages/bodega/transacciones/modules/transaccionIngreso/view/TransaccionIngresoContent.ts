@@ -5,7 +5,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, effect, Ref, ref, watch, watchEffect } from 'vue'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
-import { useOrquestadorSelectorDetalles } from 'pages/bodega/transacciones/application/OrquestadorSelectorDetalles'
+import { useOrquestadorSelectorDetalles } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 
 // Componentes
@@ -35,6 +35,8 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
+import { acciones } from 'config/utils'
+import { ConsultableRepository } from 'shared/controller/infraestructure/ConsultableRepository'
 export default defineComponent({
     props:{
         mixin:{
@@ -48,7 +50,7 @@ export default defineComponent({
         
         // const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = props.mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, guardar, editar, eliminar, reestablecer } = props.mixin.useComportamiento()
+        const { setValidador, obtenerListados, cargarVista, guardar, consultar, editar, eliminar, reestablecer } = props.mixin.useComportamiento()
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
 
