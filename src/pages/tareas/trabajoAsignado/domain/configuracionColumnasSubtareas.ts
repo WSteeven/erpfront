@@ -24,9 +24,9 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
         sortable: true,
     },
     {
-        name: 'fecha_asignacion',
-        field: 'fecha_asignacion',
-        label: 'Fecha asignación',
+        name: 'fecha_hora_asignacion',
+        field: 'fecha_hora_asignacion',
+        label: 'Fecha hora asignación',
         align: 'left',
         sortable: true,
     },

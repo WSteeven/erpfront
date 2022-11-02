@@ -10,6 +10,7 @@
       :datos="listado"
       :accion1="botonVer"
       :accion2="botonIniciar"
+      :accion3="botonContinuar"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"

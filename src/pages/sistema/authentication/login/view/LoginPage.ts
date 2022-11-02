@@ -1,6 +1,6 @@
 // Dependencias
 import { computed, defineComponent, reactive, ref } from 'vue'
-import loginJson from 'src/assets/lottie/login5.json'
+import loginJson from 'src/assets/lottie/login7.json'
 
 // Componentes
 import { Vue3Lottie } from 'vue3-lottie'
@@ -30,10 +30,10 @@ export default defineComponent({
     const login = async () => {
       try {
         cargando.activar()
-        const response:any = await loginController.login(loginUser)
-        
+        const response: any = await loginController.login(loginUser)
+
         notificaciones.notificarCorrecto(response.data.mensaje)
-        
+
       } catch (error: any) {
         notificaciones.notificarError(error.response.data.mensaje)
       } finally {
@@ -41,7 +41,7 @@ export default defineComponent({
       }
     }
 
-    
+
     const enableLoginButton = computed(
       () => loginUser.email !== '' && loginUser.password !== ''
     )

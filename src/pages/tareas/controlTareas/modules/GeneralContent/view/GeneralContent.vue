@@ -156,9 +156,9 @@
             no-caps
             rounded
             unelevated
-            toggle-color="blue-grey-10"
+            toggle-color="primary"
             color="white"
-            text-color="blue-grey-10"
+            text-color="primary"
             :options="[
               {
                 label: 'Agregar ubicación manualmente',

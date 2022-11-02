@@ -3,7 +3,7 @@ import { CustomActionTable } from '../domain/CustomActionTable'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns } from 'shared/utils'
 import { exportFile, useQuasar } from 'quasar'
-import { TipoSeleccion } from 'config/utils'
+import { TipoSeleccion, estadosSubtareas } from 'config/utils'
 import { defineComponent, ref, watchEffect } from 'vue'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios } from 'config/utils'
@@ -225,6 +225,7 @@ export default defineComponent({
       autorizacionesTransacciones,
       estadosTransacciones,
       estadosInventarios,
+      estadosSubtareas,
     }
   },
 })

@@ -253,7 +253,7 @@
               ? accion1.visible(props.row)
               : true)
           "
-          color="primary"
+          :color="accion1.color ?? 'primary'"
           rounded
           dense
           push
@@ -269,7 +269,11 @@
             size="xs"
             class="q-mr-xs"
           ></q-icon>
-          <span>{{ accion1.titulo }}</span>
+          <span>{{
+            typeof accion1.titulo === 'function'
+              ? accion1.titulo(props.row)
+              : accion1.titulo
+          }}</span>
         </q-btn>
 
         <!-- Accion personalizada 2 -->
@@ -280,7 +284,7 @@
               ? accion2.visible(props.row)
               : true)
           "
-          color="primary"
+          :color="accion2.color ?? 'primary'"
           rounded
           dense
           push
@@ -296,7 +300,11 @@
             size="xs"
             class="q-mr-xs"
           ></q-icon>
-          <span>{{ accion2.titulo }}</span>
+          <span>{{
+            typeof accion2.titulo === 'function'
+              ? accion2.titulo(props.row)
+              : accion2.titulo
+          }}</span>
         </q-btn>
 
         <!-- Accion personalizada 3 -->
@@ -323,7 +331,11 @@
             size="xs"
             class="q-mr-xs"
           ></q-icon>
-          <span>{{ accion3.titulo }}</span>
+          <span>{{
+            typeof accion3.titulo === 'function'
+              ? accion3.titulo(props.row)
+              : accion3.titulo
+          }}</span>
         </q-btn>
 
         <!-- Accion personalizada 4 -->
@@ -350,7 +362,11 @@
             size="xs"
             class="q-mr-xs"
           ></q-icon>
-          <span>{{ accion4.titulo }}</span>
+          <span>{{
+            typeof accion4.titulo === 'function'
+              ? accion4.titulo(props.row)
+              : accion4.titulo
+          }}</span>
         </q-btn>
 
         <!-- Accion personalizada 5 -->
@@ -512,20 +528,118 @@
           PENDIENTE
         </q-chip>
         <q-chip v-if="props.value === 'ACTIVO'" class="bg-green-1">
-          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>ACTIVO
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >ACTIVO
         </q-chip>
         <q-chip v-if="props.value === 'INACTIVO'" class="bg-red-1">
-          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>INACTIVO
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon
+          >INACTIVO
         </q-chip>
-        <!-- estados de la tabla inventarios -->
-        <q-chip v-if="props.value === estadosInventarios.sin_stock" class="bg-red-1">
-          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>SIN STOCK
+
+        <!-- Estados de la tabla inventarios -->
+        <q-chip
+          v-if="props.value === estadosInventarios.sin_stock"
+          class="bg-red-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon
+          >SIN STOCK
         </q-chip>
-        <q-chip v-if="props.value === estadosInventarios.transito" class="bg-yellow-1">
-          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon>TRANSITO
+        <q-chip
+          v-if="props.value === estadosInventarios.transito"
+          class="bg-yellow-1"
+        >
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
+          >TRANSITO
         </q-chip>
-        <q-chip v-if="props.value === estadosInventarios.inventario" class="bg-green-1">
-          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>INVENTARIO
+        <q-chip
+          v-if="props.value === estadosInventarios.inventario"
+          class="bg-green-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >INVENTARIO
+        </q-chip>
+
+        <!-- Estados subtareas -->
+        <q-chip
+          v-if="props.value === estadosSubtareas.CREADO"
+          class="bg-yellow-1"
+        >
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
+          >{{ estadosSubtareas.CREADO }}
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosSubtareas.ASIGNADO"
+          class="bg-purple-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="purple-5"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ estadosSubtareas.ASIGNADO }}
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosSubtareas.EJECUTANDO"
+          class="bg-blue-1"
+        >
+          <q-icon name="bi-circle-fill" color="blue" class="q-mr-xs"></q-icon
+          >{{ estadosSubtareas.EJECUTANDO }}
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosSubtareas.PAUSADO"
+          class="bg-red-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ estadosSubtareas.PAUSADO }}
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosSubtareas.SUSPENDIDO"
+          class="bg-yellow-1"
+        >
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
+          >{{ estadosSubtareas.SUSPENDIDO }}
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosSubtareas.CANCELADO"
+          class="bg-green-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ estadosSubtareas.CANCELADO }}
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosSubtareas.REALIZADO"
+          class="bg-green-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ estadosSubtareas.REALIZADO }}
         </q-chip>
       </q-td>
     </template>

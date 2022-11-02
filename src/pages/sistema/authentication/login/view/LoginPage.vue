@@ -4,7 +4,7 @@
       <q-avatar square>
         <img src="~assets/logo.svg" />
       </q-avatar>
-      <span class="q-ml-md text-h5">Buró de Crédito Ecuador</span>
+      <span class="q-ml-md text-h5">CONSTRUCRED</span>
     </div>
 
     <div class="row items-center">
@@ -31,7 +31,7 @@
       >
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-sm">
-            <h2>Bienvenidos a BRCE</h2>
+            <h2>Bienvenidos a JPCONSTRUCRED</h2>
             <span>Inicie sesión con su cuenta</span>
           </div>
 

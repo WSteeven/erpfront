@@ -127,6 +127,7 @@ export const causaIntervencion =
 
 export const tabOptions: TabOption[] = [
   { label: 'Todo', value: '' },
+  { label: 'Creado', value: 'CREADO' },
   { label: 'Asignado', value: 'ASIGNADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },
@@ -183,3 +184,13 @@ export const estadosInventarios = {
 export const sistemasCoordenadas = ['DMS', 'UTM']
 
 export const bobinasSolicitadas = ['DS564', 'DSFDS564']
+
+export const estadosSubtareas = {
+  CREADO: 'CREADO',
+  ASIGNADO: 'ASIGNADO',
+  EJECUTANDO: 'EJECUTANDO',
+  PAUSADO: 'PAUSADO',
+  SUSPENDIDO: 'SUSPENDIDO',
+  CANCELADO: 'CANCELADO',
+  REALIZADO: 'REALIZADO',
+}

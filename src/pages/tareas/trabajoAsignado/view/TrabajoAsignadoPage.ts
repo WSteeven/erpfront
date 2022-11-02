@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
-import { tabOptions, accionesTabla } from 'config/utils'
+import { tabOptions, accionesTabla, estadosSubtareas } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 //import { useRouter } from 'vue-router'
 
@@ -16,6 +16,7 @@ import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/Subta
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { useTareaStore } from 'stores/tarea'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
     components: {
@@ -28,6 +29,7 @@ export default defineComponent({
 
         const { listado } = mixin.useReferencias()
         const { listar } = mixin.useComportamiento()
+        const { confirmar } = useNotificaciones()
 
         const mostrarDialogPlantilla = ref(false)
 
@@ -35,6 +37,7 @@ export default defineComponent({
 
         const botonVer: CustomActionTable = {
             titulo: 'Visualizar',
+            icono: 'bi-eye',
             accion: ({ entidad }) => {
                 // tareaStore.consultarSubtarea(entidad.id)
                 modales.abrirModalEntidad('SubtareaAsignadaPage')
@@ -43,7 +46,20 @@ export default defineComponent({
         }
 
         const botonIniciar: CustomActionTable = {
-            titulo: 'Iniciar/Continuar',
+            titulo: 'Iniciar',
+            icono: 'bi-play',
+            color: 'positive',
+            visible: (entidad) => entidad.estado === estadosSubtareas.ASIGNADO,
+            accion: () => {
+                confirmar('¿Está seguro de iniciar el trabajo?', () => mostrarDialogPlantilla.value = true)
+            }
+        }
+
+        const botonContinuar: CustomActionTable = {
+            titulo: 'Pausar/Continuar',
+            icono: 'bi-play-circle',
+            color: 'indigo',
+            visible: (entidad) => entidad.estado === estadosSubtareas.EJECUTANDO,
             accion: () => mostrarDialogPlantilla.value = true
         }
 
@@ -71,6 +87,7 @@ export default defineComponent({
             modales,
             mostrarDialogPlantilla,
             plantillaSeleccionada,
+            botonContinuar,
         }
     }
 })

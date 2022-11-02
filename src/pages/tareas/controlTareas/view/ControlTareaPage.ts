@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasTareas } from '../domain/configuracionColumnasTareas'
-import { useTareaStore } from 'stores/tarea'
 import { computed, defineComponent, ref } from 'vue'
+import { useTareaStore } from 'stores/tarea'
 
 // Componentes
 import SubtareasListadoContent from 'pages/tareas/controlTareas/modules/subtareasListadoContent/view/SubtareasListadoContent.vue'
@@ -30,7 +30,7 @@ export default defineComponent({
 
     const tareaStore = useTareaStore()
     onConsultado(() => {
-      tareaStore.tarea = tarea
+      tareaStore.tarea.hydrate(tarea)
       //  tareaStore.accionTarea = accion
     })
 

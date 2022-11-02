@@ -16,16 +16,14 @@ export default defineComponent({
       default: false,
     }
   },
-  emits: ['seleccionar'],
+  emits: ['seleccionar', 'accion1'],
   setup(props) {
     const { componente, titulo, abierto } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
 
     function cerrarModalEntidad() {
       if (props.confirmarCerrar) {
-        confirmar('¿Está seguro de que desea cerrar?', () =>
-          abierto.value = false
-        )
+        confirmar('¿Está seguro de que desea cerrar?', () => abierto.value = false)
       } else {
         abierto.value = false
       }

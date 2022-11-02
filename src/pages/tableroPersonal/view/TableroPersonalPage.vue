@@ -76,8 +76,6 @@
             />
           </q-tabs>
 
-          <q-separator />
-
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="asignadas">
               <div class="col-12 col-md-6 column">

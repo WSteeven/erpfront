@@ -13,7 +13,7 @@ export class ComportamientoModales<T extends ModalesEntidad<T>> {
 
   private modal: UnwrapRef<any>
 
-  private abierto = ref(false)
+  public abierto = ref(false)
 
   constructor(modales: T) {
     this.modales = modales
