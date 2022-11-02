@@ -31,7 +31,7 @@ export default defineComponent({
     const tareaStore = useTareaStore()
     onConsultado(() => {
       tareaStore.tarea = tarea
-      tareaStore.accionTarea = accion
+      //  tareaStore.accionTarea = accion
     })
 
     onGuardado(() => {

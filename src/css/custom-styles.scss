@@ -40,6 +40,13 @@
   border: 1px solid $blue-grey-10;
 }
 
+.borde-header-tabla {
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+}
+
 // Custom scrollbar
 body {
   &::-webkit-scrollbar {
