@@ -3,22 +3,29 @@ import { Inventario } from "./Inventario";
 
 export const configuracionColumnasInventarios: ColumnConfig<Inventario>[]=[
     {
-        name: 'detalle',
-        field: 'detalle',
+        name: 'producto',
+        field: 'producto',
         label: 'Producto',
         align: 'left',
         sortable: true
     },
     {
-        name: 'cliente',
-        field: 'cliente',
+        name: 'detalle_id',
+        field: 'detalle_id',
+        label: 'Descripción',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'cliente_id',
+        field: 'cliente_id',
         label: 'Propietario',
         align: 'left',
         sortable: true
     },
     {
-        name: 'sucursal',
-        field: 'sucursal',
+        name: 'sucursal_id',
+        field: 'sucursal_id',
         label: 'Sucursal',
         align: 'left',
         sortable: true

@@ -527,6 +527,11 @@
         <q-chip v-if="props.value === estadosInventarios.inventario" class="bg-green-1">
           <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>INVENTARIO
         </q-chip>
+        
+        <!-- estados de la tabla prestamos temporales -->
+        <q-chip v-if="props.value === 'DEVUELTO'" class="bg-green-1">
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>DEVUELTO
+        </q-chip>
       </q-td>
     </template>
 

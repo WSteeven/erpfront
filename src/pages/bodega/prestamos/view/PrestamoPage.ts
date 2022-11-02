@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasPrestamos } from "../domain/configuracionColumnasPrestamos";
-import { required } from "@vuelidate/validators";
+import { required, requiredIf } from "@vuelidate/validators";
 import {useVuelidate} from '@vuelidate/core';
 import { defineComponent, ref } from "vue";
 
@@ -58,6 +58,12 @@ export default defineComponent({
             fecha_salida:{required},
             solicitante:{required},
             estado:{required},
+            listadoProductos: { required },
+            fecha_devolucion: {
+                requiredIfDevuelto: requiredIf(function(){return prestamo.estado==='DEVUELTO'?true:false;}),
+            },
+            
+            
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -73,16 +79,16 @@ export default defineComponent({
             titulo: 'Editar cantidad',
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
-                    (data) => prestamo.listadoProductos[posicion].cantidad = data,
-                    prestamo.listadoProductos[posicion].cantidad
+                    (data) => prestamo.listadoProductos[posicion].cantidades = data,
+                    prestamo.listadoProductos[posicion].cantidades
                 )
             }
         }
 
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasInventarios, {
-            name: 'cantidad',
-            field: 'cantidad',
-            label: 'Cantidad',
+            name: 'cantidades',
+            field: 'cantidades',
+            label: 'Cantidades',
             align: 'left',
             sortable: false,
         },

@@ -31,9 +31,9 @@ export const configuracionColumnasPrestamos: ColumnConfig<Prestamo>[]=[
         sortable: true
     },
     {
-        name: 'per_entrega',
-        field: 'per_entrega',
-        label: 'Entrega',
+        name: 'per_entrega_recibe',//'per_entrega',
+        field: 'per_entrega_recibe',//'per_entrega',
+        label: 'Entrega/Recibe',
         align: 'left',
         sortable: true
     },
