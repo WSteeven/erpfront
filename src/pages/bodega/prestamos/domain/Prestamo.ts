@@ -6,6 +6,7 @@ export class Prestamo extends EntidadAuditable {
     observacion: string | null
     solicitante: string | null
     per_entrega: string | null
+    per_entrega_recibe: string | null
     per_recibe: string | null
     estado: string | null
 
@@ -19,6 +20,7 @@ export class Prestamo extends EntidadAuditable {
         this.observacion= null
         this.solicitante= null
         this.per_entrega= null
+        this.per_entrega_recibe= null
         this.per_recibe= null
         this.estado= null
         this.producto= null

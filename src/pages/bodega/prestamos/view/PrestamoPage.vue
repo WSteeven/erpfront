@@ -24,7 +24,7 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="prestamo.fecha_salida" mask="DD-MM-YYYY">
+                    <q-date v-model="prestamo.fecha_salida" mask="DD-MM-YYYY" today-btn>
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -50,6 +50,7 @@
             <q-input
               v-model="prestamo.fecha_devolucion"
               :readonly="disabled"
+              :error="!!v$.fecha_devolucion.$errors.length"
               outlined
               dense
             >
@@ -60,7 +61,7 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="prestamo.fecha_salida" mask="DD-MM-YYYY">
+                    <q-date v-model="prestamo.fecha_devolucion" mask="DD-MM-YYYY" today-btn>
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -72,6 +73,11 @@
                     </q-date>
                   </q-popup-proxy>
                 </q-icon>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_devolucion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
             </q-input>
           </div>
