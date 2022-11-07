@@ -38,6 +38,7 @@
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
+          :initialPagination="pagination"
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"

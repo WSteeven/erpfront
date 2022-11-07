@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasInventarios } from "../domain/configuracionColumnasInventarios";
 import { required } from "@vuelidate/validators";
-import {useVuelidate} from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 
 //Componentes
@@ -21,21 +21,25 @@ import { SucursalController } from "pages/administracion/sucursales/infraestruct
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
 
 export default defineComponent({
-    components: {TabLayout},
-    setup(){
+    components: { TabLayout },
+    setup() {
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
-        const {entidad: inventario, disabled, accion, listadosAuxiliares}=mixin.useReferencias()
-        const {setValidador, obtenerListados, cargarVista}=mixin.useComportamiento()
+        const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+        const { setValidador, listar, obtenerListados, cargarVista } = mixin.useComportamiento()
 
+
+        listar({
+            page: 3
+        })
 
         const opciones_productos = ref([])
         const opciones_detalles = ref([])
         const opciones_sucursales = ref([])
         const opciones_condiciones = ref([])
         const opciones_clientes = ref([])
-        
+
         //Obtener los listados
-        cargarVista(async ()=>{
+        cargarVista(async () => {
             await obtenerListados({
                 productos: new ProductoController(),
                 detalles: new DetalleProductoController(),
@@ -50,72 +54,81 @@ export default defineComponent({
 
         //Reglas de validacion
         const reglas = {
-            cantidad: {required},
-            producto: {required},
-            condicion:{required},
-            detalle_id:{required},
-            cliente_id:{required},
-            sucursal_id:{required},
+            cantidad: { required },
+            producto: { required },
+            condicion: { required },
+            detalle_id: { required },
+            cliente_id: { required },
+            sucursal_id: { required },
         }
 
         useNotificacionStore().setQuasar(useQuasar())
 
-        const v$=useVuelidate(reglas, inventario)
+        const v$ = useVuelidate(reglas, inventario)
         setValidador(v$.value)
 
         //Configurar los listados para los selects
         opciones_productos.value = listadosAuxiliares.productos
-        opciones_detalles.value=listadosAuxiliares.detalles
-        
+        opciones_detalles.value = listadosAuxiliares.detalles
+
         // const opciones_detalles = listadosAuxiliares.detalles
         opciones_clientes.value = listadosAuxiliares.clientes
         opciones_condiciones.value = listadosAuxiliares.condiciones
         opciones_sucursales.value = listadosAuxiliares.sucursales
 
-        
 
+        //paginacion
+        const pagination = ref({
+            sortBy: 'desc',
+            descending: false,
+            page: 1,
+            rowsPerPage: 15
+            // rowsNumber: xx if getting data from a server
+        })
+
+        // console.log(mixin['refs'].listado.value)
         return {
-            mixin, inventario, disabled, accion, v$,
-            configuracionColumnas:configuracionColumnasInventarios,
+            mixin, inventario, disabled, accion, v$, pagination,
+            configuracionColumnas: configuracionColumnasInventarios,
             //listados
             opciones_productos,
             opciones_detalles,
             opciones_clientes,
             opciones_condiciones,
             opciones_sucursales,
-            seleccionarDetalle(val){
+            seleccionarDetalle(val) {
                 // console.log(listadosAuxiliares.detalles.filter((v)=>v.producto.indexOf(val)>-1))
-                opciones_detalles.value = listadosAuxiliares.detalles.filter((v)=>v.producto_id===val)
-                inventario.detalle_id =''
-                if(opciones_detalles.value.length<1){
-                    inventario.detalle_id =''
+                opciones_detalles.value = listadosAuxiliares.detalles.filter((v) => v.producto_id === val)
+                inventario.detalle_id = ''
+                if (opciones_detalles.value.length < 1) {
+                    inventario.detalle_id = ''
                 }
-                if(opciones_detalles.value.length==1){
+                if (opciones_detalles.value.length == 1) {
                     inventario.detalle_id = opciones_detalles.value[0]['id']
                 }
             },
-            filtroProductos(val,update){
-                if(val===''){
-                    update(()=>{
+            filtroProductos(val, update) {
+                if (val === '') {
+                    update(() => {
                         opciones_productos.value = listadosAuxiliares.productos
                     })
                     return
                 }
-                update(()=>{
+                update(() => {
                     const needle = val.toLowerCase()
-                    opciones_productos.value = listadosAuxiliares.productos.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+                    opciones_productos.value = listadosAuxiliares.productos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
                 })
             },
-            filterDetalles(val, update){
-                if(val===''){
-                    update(()=>{
+            filterDetalles(val, update) {
+                if (val === '') {
+                    update(() => {
                         opciones_detalles.value = listadosAuxiliares.detalles
                     })
                     return
                 }
-                update(()=>{
+                update(() => {
                     const needle = val.toLowerCase()
-                    opciones_detalles.value = listadosAuxiliares.detalles.filter((v)=>v.descripcion.toLowerCase().indexOf(needle)>-1)
+                    opciones_detalles.value = listadosAuxiliares.detalles.filter((v) => v.descripcion.toLowerCase().indexOf(needle) > -1)
                 })
             },
         }

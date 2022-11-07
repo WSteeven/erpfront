@@ -18,18 +18,36 @@ export function useOrquestadorSelectorItemsInventario(entidad: Prestamo, endpoin
             entidad.id = null,
                 criterioBusqueda.value = null
         },
-        seleccionar: (item: Inventario) => {
+        /* seleccionar: (item: Inventario) => {
+            console.log('item recibido en el seleccionar del orquestador: ', item)
             entidad.producto = item.detalle_id
-                criterioBusqueda.value = item.detalle_id
+            criterioBusqueda.value = item.detalle_id
             entidad.listadoProductos = [...entidad.listadoProductos, item]
             limpiar()
-        },
+        }, */
+        seleccionarMultiple: (items: Inventario[]) => {
+            console.log('item recibido en el seleccionar del orquestador: ', items)
+            entidad.listadoProductos=[...entidad.listadoProductos, ...items]
+            
+            // items.forEach(item => {
+            // });
+        }
     }
 
     const selector = useSelector(singleSelector)
     const listar = () => selector.listar(criterioBusqueda.value)
     const limpiar = () => singleSelector.limpiar()
-    const seleccionar = (id: number) => selector.seleccionar(id)
+    
+    const seleccionar = (entidades: Inventario[]) => {
+        // console.log('seleccionar del selector, recibe un id cuando pudiera recibir todo el objeto... ', entidades)
+        // singleSelector.seleccionar(id)
+        let ids:any=[]
+        ids = entidad.listadoProductos.map((entidad:Inventario)=>entidad.id)
+        // console.log(ids)
+        const datos = entidades.filter((v)=> !ids.includes(v.id))
+        // console.log('datos: ',datos)
+        singleSelector.seleccionarMultiple(datos)
+    }
 
     return {
         refListadoSeleccionable,

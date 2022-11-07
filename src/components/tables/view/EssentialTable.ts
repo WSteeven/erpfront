@@ -4,7 +4,7 @@ import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns } from 'shared/utils'
 import { exportFile, useQuasar } from 'quasar'
 import { TipoSeleccion, estadosSubtareas } from 'config/utils'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios } from 'config/utils'
 // Componentes
@@ -32,6 +32,10 @@ export default defineComponent({
     datos: {
       type: Array,
       required: true,
+    },
+    initialPagination:{
+      type: Array,
+      required:true,
     },
     permitirEditarCeldas: {
       type: Boolean,
@@ -129,8 +133,10 @@ export default defineComponent({
 
     // Observers
     // watch(selected, () => emit('selected', selected.value))
-    const seleccionar = () => emit('selected', selected.value)
-
+    const seleccionar = () => {
+      // console.log('fila seleccionada es: ',selected.value[0])
+      emit('selected', selected.value) 
+    }
     const $q = useQuasar()
 
     function wrapCsvValue(val, formatFn?, row?) {
@@ -203,6 +209,8 @@ export default defineComponent({
       listado.value.splice(filaEditada.value, 1, data)
       limpiarFila()
     }
+
+    console.log(props.initialPagination)
 
     return {
       grid,
