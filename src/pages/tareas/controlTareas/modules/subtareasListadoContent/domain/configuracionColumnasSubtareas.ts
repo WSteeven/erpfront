@@ -29,14 +29,14 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     label: 'Fecha asignación',
     align: 'left',
     sortable: true,
-  },
+  },*/
   {
     name: 'grupo',
     field: 'grupo',
     label: 'Grupo',
     align: 'left',
     sortable: true,
-  },*/
+  },
   {
     name: 'estado',
     field: 'estado',

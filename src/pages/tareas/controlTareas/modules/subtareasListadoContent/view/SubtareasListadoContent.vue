@@ -5,6 +5,7 @@
     :accion1="botonEditarSubtarea"
     :accion2="verControlAvance"
     :accion3="botonFinalizar"
+    :accion4="botonSolicitarMaterial"
     :accion5="botonAsignar"
     :permitirConsultar="false"
     :permitirEditar="false"
@@ -13,6 +14,7 @@
     :tab-options="tabOptions"
     :alto-fijo="false"
     :mostrarFooter="false"
+    tabDefecto="CREADO"
     @tab-seleccionado="aplicarFiltro"
     :agregarElemento="agregarSubtarea"
   ></essential-table-tabs>

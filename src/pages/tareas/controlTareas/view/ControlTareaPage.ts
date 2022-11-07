@@ -29,10 +29,10 @@ export default defineComponent({
     const step = ref(1)
 
     const tareaStore = useTareaStore()
-    onConsultado(() => {
-      tareaStore.tarea.hydrate(tarea)
-      //  tareaStore.accionTarea = accion
-    })
+    // onConsultado(() => {
+    // tareaStore.tarea.hydrate(tarea)
+    //  tareaStore.accionTarea = accion
+    // })
 
     onGuardado(() => {
       tareaStore.tarea = tarea
@@ -52,7 +52,7 @@ export default defineComponent({
       done3: ref(false),
       done4: ref(false),
       tabSeleccionado: ref('tarea'),
-      tareaSeleccionada: computed(() => tareaStore.tarea.id)
+      tareaSeleccionada: computed(() => tarea.id)
     }
   },
 })

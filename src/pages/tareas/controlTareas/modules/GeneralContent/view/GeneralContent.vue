@@ -136,6 +136,29 @@
             </template>
           </q-select>
         </div>
+
+        <div class="col-12 col-md-3">
+          <br />
+          <q-checkbox
+            v-model="tarea.es_proyecto"
+            label="Es proyecto"
+            outlined
+            dense
+          ></q-checkbox>
+        </div>
+
+        <!-- Codigo tarea JP -->
+        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Código de proyecto</label>
+          <q-input
+            v-model="tarea.codigo_proyecto"
+            @update:model-value="
+              (v) => (tarea.codigo_proyecto = v.toUpperCase())
+            "
+            outlined
+            dense
+          ></q-input>
+        </div>
       </div>
     </q-expansion-item>
 
@@ -444,9 +467,9 @@
     <button-submits
       :accion="accion"
       @cancelar="reestablecer()"
-      @editar="editar(tarea)"
+      @editar="editar(tarea, false)"
       @eliminar="eliminar(tarea)"
-      @guardar="guardar(tarea)"
+      @guardar="guardar(tarea, false)"
     />
   </q-form>
 

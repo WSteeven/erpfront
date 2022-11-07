@@ -28,7 +28,7 @@ export default defineComponent({
     const { notificarAdvertencia, confirmar } = useNotificaciones()
 
     const tareaStore = useTareaStore()
-    if (tareaStore.tarea.id) listar({ tarea_id: tareaStore.tarea.id })
+    if (tareaStore.tarea.id) aplicarFiltro('CREADO')
 
     const configuracionColumnas = [
       ...configuracionColumnasSubtareas,
@@ -86,6 +86,20 @@ export default defineComponent({
       },
     }
 
+    //
+    const botonSolicitarMaterial: CustomActionTable = {
+      titulo: 'Solicitar material',
+      icono: 'bi-list',
+      visible: (entidad) => entidad.estado !== estadosSubtareas.REALIZADO,
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de asignar la tarea?', () => {
+          new CambiarEstadoSubtarea().asignar(entidad.id)
+          entidad.estado = estadosSubtareas.ASIGNADO
+          actualizarElemento(posicion, entidad)
+        })
+      },
+    }
+
     function aplicarFiltro(tabSeleccionado) {
       if (tareaStore.tarea.id) listar({ tarea_id: tareaStore.tarea.id, estado: tabSeleccionado })
     }
@@ -106,6 +120,7 @@ export default defineComponent({
       botonFinalizar,
       aplicarFiltro,
       botonAsignar,
+      botonSolicitarMaterial,
       tabOptions,
       listado,
       modales,

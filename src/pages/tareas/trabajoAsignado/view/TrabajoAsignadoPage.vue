@@ -15,8 +15,9 @@
       :permitirEditar="false"
       :permitirEliminar="false"
       :mostrar-botones="false"
-      :tab-options="tabOptions"
+      :tab-options="tabTrabajoAsignado"
       @tab-seleccionado="aplicarFiltro"
+      tab-defecto="ASIGNADO"
     ></essential-table-tabs>
 
     <modales-entidad :comportamiento="modales" :confirmar-cerrar="true" />

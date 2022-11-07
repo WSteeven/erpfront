@@ -126,8 +126,8 @@ export class ContenedorSimpleMixin<
   }
 
   // Guardar
-  private async guardar(data: any) {
-    this.verificarAutenticacion()
+  private async guardar(data: any, resetOnSaved = true) {
+    // this.verificarAutenticacion()
 
     this.hooks.onBeforeGuardar()
 
@@ -153,7 +153,7 @@ export class ContenedorSimpleMixin<
         this.agregarElementoListadoActual(response.data.modelo)
         this.entidad.hydrate(response.data.modelo)
         this.hooks.onGuardado()
-        this.reestablecer()
+        resetOnSaved ?? this.reestablecer()
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
@@ -171,8 +171,8 @@ export class ContenedorSimpleMixin<
   }
 
   // Editar
-  private async editar(data: T) {
-    this.verificarAutenticacion()
+  private async editar(data: T, resetOnUpdated = true) {
+    // this.verificarAutenticacion()
 
     this.hooks.onBeforeModificar()
 
@@ -200,7 +200,8 @@ export class ContenedorSimpleMixin<
         )
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.actualizarElementoListadoActual(modelo)
-        this.reestablecer()
+
+        resetOnUpdated ?? this.reestablecer()
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion

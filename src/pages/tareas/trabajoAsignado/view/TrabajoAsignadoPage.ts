@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
-import { tabOptions, accionesTabla, estadosSubtareas } from 'config/utils'
+import { tabTrabajoAsignado, accionesTabla, estadosSubtareas } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 //import { useRouter } from 'vue-router'
 
@@ -51,7 +51,10 @@ export default defineComponent({
             color: 'positive',
             visible: (entidad) => entidad.estado === estadosSubtareas.ASIGNADO,
             accion: () => {
-                confirmar('¿Está seguro de iniciar el trabajo?', () => mostrarDialogPlantilla.value = true)
+                confirmar('¿Está seguro de iniciar el trabajo?', () =>
+                    // mostrarDialogPlantilla.value = true
+                    modales.abrirModalEntidad('PlantillaGenericaPage')
+                )
             }
         }
 
@@ -67,7 +70,7 @@ export default defineComponent({
             listar({ estado: tabSeleccionado })
         }
 
-        listar()
+        aplicarFiltro('ASIGNADO')
 
         const listadoModales = modales.getModales()
 
@@ -81,7 +84,7 @@ export default defineComponent({
             configuracionColumnasSubtareas,
             botonIniciar,
             botonVer,
-            tabOptions,
+            tabTrabajoAsignado,
             aplicarFiltro,
             accionesTabla,
             modales,

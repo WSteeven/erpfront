@@ -9,17 +9,17 @@ export class AxiosHttpRepository implements HttpRepository {
   private static axiosInst: AxiosInstance
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private constructor() {}
+  private constructor() { }
 
   private static initialize(): void {
     this.axiosInst = axios.create({
       baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
       withCredentials: true,
       headers: {
-        'Autorization':'Bearer'
+        'Autorization': 'Bearer'
       },
     })
-  } 
+  }
 
   public static getInstance(): AxiosHttpRepository {
     if (!this.instance) {

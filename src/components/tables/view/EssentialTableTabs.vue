@@ -54,13 +54,12 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { CustomActionTable } from '../domain/CustomActionTable'
 import { TabOption } from 'components/tables/domain/TabOption'
-import { useAuthenticationStore } from 'stores/authentication'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import EssentialTable from './EssentialTable.vue'
 import { TipoSeleccion } from 'config/utils'
 import { ref } from 'vue'
 
-defineProps({
+const props = defineProps({
   titulo: {
     type: String,
     default: 'Listado',
@@ -141,6 +140,7 @@ defineProps({
     type: Array as () => TabOption[],
     required: true,
   },
+  tabDefecto: String,
 })
 
 const emit = defineEmits([
@@ -155,10 +155,7 @@ const emit = defineEmits([
   'tab-seleccionado',
 ])
 
-const store = useAuthenticationStore()
-const esBodeguero = store.esBodeguero
-const esCoordinador = store.esCoordinador
-const tabSeleccionado = ref('TODO')
+const tabSeleccionado = ref(props.tabDefecto)
 
 const consultar = (data) => emit('consultar', data)
 const editar = (data) => emit('editar', data)

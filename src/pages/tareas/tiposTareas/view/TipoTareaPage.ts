@@ -67,6 +67,10 @@ export default defineComponent({
       })
     }
 
+    function previsualizar(jajaja: string) {
+      console.log(jajaja)
+    }
+
     return {
       // mixin
       mixin,
@@ -78,6 +82,7 @@ export default defineComponent({
       configuracionColumnasClientes,
       filtrarClientes,
       clientes,
+      previsualizar,
     }
   },
 })

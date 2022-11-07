@@ -13,7 +13,7 @@
         <q-card class="custom-shadow">
           <q-card-section>
             <div class="row justify-between">
-              <div class="text-h6">Subtareas</div>
+              <div class="text-bold">Subtareas</div>
               <q-btn
                 v-if="store.esTecnicoLider"
                 color="primary"
@@ -121,9 +121,9 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-app-indicator"
+                    name="bi-check-circle-fill"
                     class="q-mr-md"
-                    color="primary"
+                    color="positive"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0001_3</div>
@@ -171,54 +171,57 @@
       <div v-if="store.esCoordinador" class="col-12">
         <q-card class="custom-shadow">
           <q-card-section>
-            <div class="q-mb-md row items-top">
-              <div class="text-h6 q-mr-md">Tareas</div>
+            <div class="q-mb-md row justify-between">
+              <div class="text-bold">Tareas</div>
 
-              <q-select
-                v-model="filtroTarea"
-                :options="filtrosTareas"
-                options-dense
-                dense
-                borderless
-              />
+              <q-btn
+                :to="{ name: 'tareas' }"
+                color="primary"
+                no-caps
+                rounded
+                push
+              >
+                <q-icon name="bi-plus"></q-icon>
+                Crear tarea
+              </q-btn>
             </div>
 
-            <!--<div class="text-subtitle2">Coordinador</div> -->
             <div class="row">
-              <div class="col-12 col-md-6 column">
+              <div class="col-12 column">
                 <q-btn align="left" flat>
-                  <q-icon name="bi-app-indicator" class="q-mr-md"></q-icon>
+                  <q-icon
+                    name="bi-check-circle-fill"
+                    class="q-mr-md"
+                    color="primary"
+                  ></q-icon>
                   <div class="text-left column">
-                    <div class="block">Tarea JP00001 / 798541</div>
+                    <div class="block">JP00001 / 798541</div>
                     <small>Total de subtareas 8</small>
                   </div>
                 </q-btn>
 
                 <q-btn align="left" flat>
-                  <q-icon name="bi-app-indicator" class="q-mr-md"></q-icon>
+                  <q-icon
+                    name="bi-check-circle-fill"
+                    class="q-mr-md"
+                    color="primary"
+                  ></q-icon>
                   <div class="text-left column">
-                    <div class="block">Tarea JP0002 / 854126</div>
+                    <div class="block">JP0002 / 854126</div>
                     <small>Total de subtareas 6</small>
                   </div>
                 </q-btn>
 
                 <q-btn align="left" flat>
-                  <q-icon name="bi-app-indicator" class="q-mr-md"></q-icon>
+                  <q-icon
+                    name="bi-check-circle-fill"
+                    class="q-mr-md"
+                    color="primary"
+                  ></q-icon>
                   <div class="text-left column">
-                    <div class="block">Tarea JP0003 / ED9865</div>
+                    <div class="block">JP0003 / ED9865</div>
                     <small>Total de subtareas 3</small>
                   </div>
-                </q-btn>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <q-btn :to="{ name: 'tareas' }" flat no-caps>
-                  <q-icon
-                    name="bi-plus-square-dotted"
-                    size="lg"
-                    class="q-mr-md"
-                  ></q-icon>
-                  Crear tarea
                 </q-btn>
               </div>
             </div>

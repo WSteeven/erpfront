@@ -43,6 +43,7 @@ export default defineComponent({
     const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
+    const { onGuardado, onConsultado } = props.mixin.useHooks()
 
     const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
     const ubicacionTrabajo = ref(opcionesUbicacion.manual)
@@ -63,9 +64,10 @@ export default defineComponent({
       supervisores.value = listadosAuxiliares.supervisores
       provincias.value = listadosAuxiliares.provincias
       cantones.value = listadosAuxiliares.cantones
-      tarea.hydrate(tareaStore.tarea)
+      // tarea.hydrate(tareaStore.tarea)
     })
 
+    // Validaciones
     const rules = {
       cliente: { required },
       detalle: { required },
@@ -170,7 +172,16 @@ export default defineComponent({
       clienteFinal.hydrate(result)
     }
 
-    watchEffect(() => {
+    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
+
+    function establecerCliente() {
+      tareaStore.tarea.cliente = tarea.cliente
+    }
+
+    // Hooks
+    onGuardado(() => tareaStore.tarea.hydrate(tarea))
+    onConsultado(() => {
+      tareaStore.tarea.hydrate(tarea)
       if (tarea.cliente_final) {
         obtenerClienteFinal(tarea.cliente_final)
         ubicacionTrabajo.value = opcionesUbicacion.cliente
@@ -181,11 +192,16 @@ export default defineComponent({
       }
     })
 
-    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
-
-    function establecerCliente() {
-      tareaStore.tarea.cliente = tarea.cliente
-    }
+    /* watchEffect(() => {
+      if (tarea.cliente_final) {
+        obtenerClienteFinal(tarea.cliente_final)
+        ubicacionTrabajo.value = opcionesUbicacion.cliente
+      }
+      else {
+        clienteFinal.hydrate(new ClienteFinal())
+        ubicacionTrabajo.value = opcionesUbicacion.manual
+      }
+    }) */
 
     return {
       v$,

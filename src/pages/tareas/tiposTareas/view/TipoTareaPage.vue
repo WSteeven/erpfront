@@ -78,6 +78,144 @@
             </q-input>
           </div>
         </div>
+
+        <div class="row q-col-gutter-sm">
+          <div class="col-12 q-mb-md">Plantilla</div>
+          <div class="col-12 col-md-4 q-mb-md">
+            <q-card class="cursor-pointer" bordered>
+              <q-item tag="label" v-ripple class="q-pa-md">
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="tipoTarea.plantilla"
+                    val="montaje"
+                    color="positive"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-center q-mb-md text-bold"
+                    >Montajes / Tendidos</q-item-label
+                  >
+                  <q-btn
+                    color="primary"
+                    dense
+                    no-caps
+                    rounded
+                    @click="previsualizar('MONTAJE')"
+                    >Previsualizar</q-btn
+                  >
+                </q-item-section>
+              </q-item>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-md-4 q-mb-md">
+            <q-card class="cursor-pointer" bordered>
+              <q-item tag="label" class="q-pa-md">
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="tipoTarea.plantilla"
+                    val="desmontaje"
+                    color="positive"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-center q-mb-md text-bold"
+                    >Desmontajes</q-item-label
+                  >
+                  <q-btn
+                    color="primary"
+                    dense
+                    no-caps
+                    rounded
+                    @click="previsualizar('DESMONTAJE')"
+                    >Previsualizar</q-btn
+                  >
+                </q-item-section>
+              </q-item>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-md-4 q-mb-md">
+            <q-card class="cursor-pointer" bordered>
+              <q-item tag="label" class="q-pa-md">
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="tipoTarea.plantilla"
+                    val="hincado"
+                    color="positive"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-center q-mb-md text-bold"
+                    >Hincados</q-item-label
+                  >
+                  <q-btn
+                    color="primary"
+                    dense
+                    no-caps
+                    rounded
+                    @click="previsualizar('HINCADO')"
+                    >Previsualizar</q-btn
+                  >
+                </q-item-section>
+              </q-item>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-md-4 q-mb-md">
+            <q-card class="cursor-pointer" bordered>
+              <q-item tag="label" class="q-pa-md">
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="tipoTarea.plantilla"
+                    val="recorrido"
+                    color="positive"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-center q-mb-md text-bold"
+                    >Recorridos</q-item-label
+                  >
+                  <q-btn
+                    color="primary"
+                    dense
+                    no-caps
+                    rounded
+                    @click="previsualizar('RECORRIDO')"
+                    >Previsualizar</q-btn
+                  >
+                </q-item-section>
+              </q-item>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-md-4 q-mb-md">
+            <q-card class="cursor-pointer" bordered>
+              <q-item tag="label" class="q-pa-md">
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="tipoTarea.plantilla"
+                    val="otro"
+                    color="positive"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-center q-mb-md text-bold"
+                    >Otros</q-item-label
+                  >
+                  <q-btn
+                    color="primary"
+                    dense
+                    no-caps
+                    rounded
+                    @click="previsualizar('OTRO')"
+                    >Previsualizar</q-btn
+                  >
+                </q-item-section>
+              </q-item>
+            </q-card>
+          </div>
+        </div>
       </q-form>
 
       <essential-selectable-table

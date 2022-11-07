@@ -46,7 +46,7 @@
   >
     <!-- Editar celdas -->
     <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
-      <q-td :key="props.col.name" :props="props">
+      <q-td :key="props.col.name" :props="props" placeholder="fdfdfd">
         {{ props.row[props.col.name] }}
         <q-popup-edit
           v-model="props.row[props.col.name]"
@@ -641,10 +641,15 @@
           ></q-icon
           >{{ estadosSubtareas.REALIZADO }}
         </q-chip>
-        
+
         <!-- estados de la tabla prestamos temporales -->
         <q-chip v-if="props.value === 'DEVUELTO'" class="bg-green-1">
-          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>DEVUELTO
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >DEVUELTO
         </q-chip>
       </q-td>
     </template>

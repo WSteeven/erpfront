@@ -126,8 +126,17 @@ export const causaIntervencion =
   ]
 
 export const tabOptions: TabOption[] = [
-  { label: 'Todo', value: '' },
+  // { label: 'Todo', value: '' },
   { label: 'Creado', value: 'CREADO' },
+  { label: 'Asignado', value: 'ASIGNADO' },
+  { label: 'Ejecutando', value: 'EJECUTANDO' },
+  { label: 'Pausado', value: 'PAUSADO' },
+  { label: 'Suspendido', value: 'SUSPENDIDO' },
+  { label: 'Cancelado', value: 'CANCELADO' },
+  { label: 'Realizado', value: 'REALIZADO' },
+]
+
+export const tabTrabajoAsignado: TabOption[] = [
   { label: 'Asignado', value: 'ASIGNADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },
