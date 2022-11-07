@@ -214,8 +214,13 @@
         ref="refListadoSeleccionableProductos"
         :configuracion-columnas="configuracionColumnasInventarios"
         :datos="listadoProductos"
-        @selected="seleccionarProducto"
+        tipo-seleccion="multiple"
+        @selected="seleccionarProducto" 
       >
+      <!-- en el @selected recibe el item seleccionado desde el modal del essential-selectable-table -->
+      <!-- toca ese item seleccionado enviarlo al componente padre que es el essential-table de más arriba... -->
+      <!-- el item seleccionado se debe agregar al prestamo.listadoProductos para que se muestre como se recibe y ya no se consulte a la bd -->
+
       </essential-selectable-table>
 
     </template>

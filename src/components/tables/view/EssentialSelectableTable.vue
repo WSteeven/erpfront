@@ -75,12 +75,15 @@ export default defineComponent({
 
     const emitSelected = (itemsSeleccionados: EntidadAuditable[]) => {
       if (itemsSeleccionados.length) {
-        if (props.tipoSeleccion === 'single')
-          emit('selected', [itemsSeleccionados[0].id])
+        if (props.tipoSeleccion === 'single') {
+          console.log('Fila seleccionada en el modal: ', itemsSeleccionados[0])
+          emit('selected', itemsSeleccionados[0])
+        }
         if (props.tipoSeleccion === 'multiple')
           emit(
             'selected',
-            itemsSeleccionados.map((item: any) => item.id)
+            // itemsSeleccionados.map((item: any) => item.id)
+            itemsSeleccionados
           )
       }
       ocultar()

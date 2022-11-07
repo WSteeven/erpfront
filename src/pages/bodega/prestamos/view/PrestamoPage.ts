@@ -49,6 +49,17 @@ export default defineComponent({
         cargarVista(async()=>{
             await obtenerListados({
                 empleados: new EmpleadoController(),
+                // empleados: {
+                //     controller: new EmpleadoController(),
+                //     // params:{
+                //     //     id:{
+                //     //         operator:'!=',
+                //     //         value:1
+                //     //     }
+                //     // },
+                //     // fields:{id, detalle, sucursal, etc,}
+                //     // //http://localhost:8000/api/empresas?id[operator]=!=&id[value]=1
+                // },
                 inventarios: new InventarioController(),
 
             })
@@ -142,6 +153,10 @@ export default defineComponent({
             seleccionarProducto,
             configuracionColumnasProductos,
 
+            seleccionarPrueba(data){
+                console.log('Aqui se recibe la fila seleccionada')
+                console.log(data)
+            }
 
         }
     }

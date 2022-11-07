@@ -98,6 +98,12 @@ export default defineComponent({
             }, */
         }
 
+        function limpiarCamposInformatica(){
+            detalle.procesador = ''
+            detalle.ram = ''
+            detalle.disco = ''
+        }
+
         useNotificacionStore().setQuasar(useQuasar())
 
         const v$ = useVuelidate(reglas, detalle)
@@ -117,6 +123,15 @@ export default defineComponent({
         opciones_procesadores.value = listadosAuxiliares.procesadores
         opciones_rams.value = listadosAuxiliares.rams
 
+        //paginacion
+        const pagination = ref({
+            sortBy: 'desc',
+            descending: false,
+            page: 2,
+            rowsPerPage: 10
+            // rowsNumber: xx if getting data from a server
+        })
+
         return {
             mixin, detalle, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasDetallesProductos,
@@ -132,7 +147,8 @@ export default defineComponent({
             opciones_rams,
             useVuelidate,
 
-
+            //pagination
+            pagination,
 
             //filtros
             seleccionarModelo(val) {
@@ -251,6 +267,9 @@ export default defineComponent({
             actualizarCategoria(val) {
                 const producto = listadosAuxiliares.productos.filter((v) => v.id === val)
                 detalle.categoria = producto[0]['categoria']
+                if(producto[0]['categoria']==='INFORMATICA'){
+                    limpiarCamposInformatica()
+                }
             }
         }
     }

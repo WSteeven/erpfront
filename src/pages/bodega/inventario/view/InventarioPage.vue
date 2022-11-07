@@ -2,6 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :pagination="pagination"
     titulo-pagina="Inventario General"
   >
     <template #formulario>

@@ -45,6 +45,8 @@ export function useSelector(selector: any) {
     status.desactivar()
   }
 
+  
+
   return {
     listar,
     seleccionar,

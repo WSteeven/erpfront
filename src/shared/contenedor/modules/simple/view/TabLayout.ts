@@ -17,6 +17,10 @@ export default defineComponent({
       type: Object as () => ContenedorSimpleMixin<any>,
       required: true,
     },
+    pagination:{
+      type: Object,
+      required:true,
+    },
     mostrarButtonSubmits: {
       type: Boolean,
       default: true,
