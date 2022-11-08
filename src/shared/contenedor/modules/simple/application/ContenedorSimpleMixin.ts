@@ -153,7 +153,9 @@ export class ContenedorSimpleMixin<
         this.agregarElementoListadoActual(response.data.modelo)
         this.entidad.hydrate(response.data.modelo)
         this.hooks.onGuardado()
-        resetOnSaved ?? this.reestablecer()
+        if (resetOnSaved) {
+          this.reestablecer()
+        }
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
@@ -201,7 +203,9 @@ export class ContenedorSimpleMixin<
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.actualizarElementoListadoActual(modelo)
 
-        resetOnUpdated ?? this.reestablecer()
+        if (resetOnUpdated) {
+          this.reestablecer()
+        }
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion

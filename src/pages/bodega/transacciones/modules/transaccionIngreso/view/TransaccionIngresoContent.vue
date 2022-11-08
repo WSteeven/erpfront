@@ -431,10 +431,12 @@
 
   </q-form>
 
+  <!-- Modal de seleccion de detalles -->
   <essential-selectable-table
     ref="refListadoSeleccionableProductos"
-    :configuracion-columnas="configuracionColumnasProductosSeleccionados"
+    :configuracion-columnas="configuracionColumnasDetallesProductos"
     :datos="listadoProductos"
+    tipo-seleccion="multiple"
     @selected="seleccionarProducto"
   >
   </essential-selectable-table>

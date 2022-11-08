@@ -35,7 +35,7 @@ export default defineComponent({
     },
     initialPagination:{
       type: Array,
-      required:true,
+      required:false,
     },
     permitirEditarCeldas: {
       type: Boolean,

@@ -19,7 +19,7 @@ export default defineComponent({
     },
     pagination:{
       type: Object,
-      required:true,
+      required:false,
     },
     mostrarButtonSubmits: {
       type: Boolean,
