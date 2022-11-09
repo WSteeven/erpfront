@@ -19,10 +19,16 @@ import { ClienteController } from "pages/sistema/clientes/infraestructure/Client
 import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
+import { number } from "echarts";
 
 export default defineComponent({
     components: { TabLayout },
-    setup() {
+    /* props:{
+        detalle:{type:number, required:false},
+        sucursal:{type:number, required:false},
+        propietario:{type:number, required:false},
+    }, */
+    setup(props) {
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, listar, obtenerListados, cargarVista } = mixin.useComportamiento()

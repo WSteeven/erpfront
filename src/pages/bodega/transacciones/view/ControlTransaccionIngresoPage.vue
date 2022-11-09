@@ -43,7 +43,10 @@
         </q-tab-panel>
 
         <q-tab-panel name="inventario">
-          <transaccion-ingreso-content :mixin="mixin"></transaccion-ingreso-content>
+          <transaccion-ingreso-inventario-content 
+            :items="transaccion.listadoProductosSeleccionados"
+            :transaccion="transaccion"
+          ></transaccion-ingreso-inventario-content>
         </q-tab-panel>
 
         <q-tab-panel name="percha">

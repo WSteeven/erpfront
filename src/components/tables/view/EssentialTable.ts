@@ -210,7 +210,7 @@ export default defineComponent({
       limpiarFila()
     }
 
-    console.log(props.initialPagination)
+    // console.log(props.initialPagination)
 
     return {
       grid,

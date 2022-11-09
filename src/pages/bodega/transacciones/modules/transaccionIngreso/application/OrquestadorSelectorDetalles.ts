@@ -18,7 +18,7 @@ export function useOrquestadorSelectorItemsTransaccion(entidad:Transaccion, endp
                 criterioBusqueda.value = null
         },
         seleccionarMultiple: (items: DetalleProducto[]) => {
-            console.log('item recibido en el seleccionar del orquestador: ', items)
+            // console.log('item recibido en el seleccionar del orquestador: ', items)
             entidad.listadoProductosSeleccionados=[...entidad.listadoProductosSeleccionados, ...items]
             
             // items.forEach(item => {

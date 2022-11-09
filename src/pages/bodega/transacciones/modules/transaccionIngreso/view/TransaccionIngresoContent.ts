@@ -39,25 +39,46 @@ import { acciones } from 'config/utils'
 import { ConsultableRepository } from 'shared/controller/infraestructure/ConsultableRepository'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 export default defineComponent({
-    props:{
-        mixin:{
-            type: Object as ()=>ContenedorSimpleMixin<any>,
-            required:true,
+    props: {
+        mixin: {
+            type: Object as () => ContenedorSimpleMixin<any>,
+            required: true,
         },
     },
     components: { TabLayout, EssentialTable, EssentialSelectableTable, ButtonSubmits },
-    setup(props) {
+    emits: ['creada', 'consultada'],
+    setup(props, {emit}) {
         const transaccionStore = useTransaccionStore()
-        
+
         // const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = props.mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, guardar, consultar, editar, eliminar, reestablecer } = props.mixin.useComportamiento()
+        const { onGuardado, onConsultado } = props.mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
 
         const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
         // console.log('xxx',(store.roles.filter((v)=>v==='BODEGA' ||v==='COORDINADOR')).length>0?'es bodega':'no tiene el rol')
         console.log(rolSeleccionado)
+
+
+        // Hooks
+        onGuardado(() => {
+            console.log('la transaccion creada: ',transaccion)
+            emit('creada', transaccion)
+            // transaccionStore.accionTransaccion.hydrate(transaccion)
+        })
+        onConsultado(() => {
+            console.log('la transaccion consultada: ',transaccion)
+            transaccionStore.transaccion.hydrate(transaccion)
+            if (transaccion.listadoProductosSeleccionados) {
+                emit('consultada', transaccion.listadoProductosSeleccionados)
+            }
+            else {
+                console.log('entro en el else', transaccion.listadoProductosSeleccionados)
+            }
+        })
+
 
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
@@ -134,7 +155,7 @@ export default defineComponent({
         // transaccion.created_at = new Intl.DateTimeFormat('az', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(fecha)
         // console.log(transaccion.created_at)
 
-        
+
         function eliminarItem({ entidad, posicion }) {
             // console.log(entidad)
             // console.log(posicion)
@@ -145,9 +166,6 @@ export default defineComponent({
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
             accion: ({ entidad, posicion }) => {
-                // console.log(transaccion.listadoProductosSeleccionados)
-                // console.log(posicion)
-                // console.log(transaccion.listadoProductosSeleccionados[posicion])
                 prompt(
                     'Ingresa la cantidad',
                     (data) => {
@@ -197,38 +215,38 @@ export default defineComponent({
                 if (opciones_subtipos.value.length > 1) {
                     transaccion.subtipo = ''
                     esVisibleComprobante.value = false
-                    transaccion.comprobante=''
+                    transaccion.comprobante = ''
                 }
                 if (opciones_subtipos.value.length == 1) {
                     transaccion.subtipo = opciones_subtipos.value[0]['id']
-                    if(opciones_subtipos.value[0]['nombre'] === 'COMPRA A PROVEEDOR'){
+                    if (opciones_subtipos.value[0]['nombre'] === 'COMPRA A PROVEEDOR') {
                         esVisibleComprobante.value = true
-                    }else{
-                        transaccion.comprobante=''
+                    } else {
+                        transaccion.comprobante = ''
                         esVisibleComprobante.value = false
                     }
-                    esVisibleSubtarea.value=opciones_subtipos.value[0]['nombre'] === 'FINALIZACION DE TAREA'?true:false
+                    esVisibleSubtarea.value = opciones_subtipos.value[0]['nombre'] === 'FINALIZACION DE TAREA' ? true : false
                 }
             },
 
             filtroSubtipos(val) {
                 esVisibleTarea.value = false
 
-                const opcionSeleccionada = listadosAuxiliares.subtipos.filter((item)=>item.id===val)
+                const opcionSeleccionada = listadosAuxiliares.subtipos.filter((item) => item.id === val)
 
-                esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === 'MATERIALES PARA TAREAS' ?true:false
+                esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === 'MATERIALES PARA TAREAS' ? true : false
 
                 esVisibleSubtarea.value = false
-                esVisibleSubtarea.value=opcionSeleccionada[0]['nombre'] === 'FINALIZACION DE TAREA'?true:false
+                esVisibleSubtarea.value = opcionSeleccionada[0]['nombre'] === 'FINALIZACION DE TAREA' ? true : false
             },
 
-            filtroTareas(val){
-                opciones_subtareas.value = listadosAuxiliares.subtareas.filter((v:Subtarea)=>v.tarea_id===val)
-                transaccion.subtarea=''
-                if(opciones_subtareas.value.length>1){
-                    transaccion.subtarea=''
+            filtroTareas(val) {
+                opciones_subtareas.value = listadosAuxiliares.subtareas.filter((v: Subtarea) => v.tarea_id === val)
+                transaccion.subtarea = ''
+                if (opciones_subtareas.value.length > 1) {
+                    transaccion.subtarea = ''
                 }
-                if(opciones_subtareas.value.length===1){
+                if (opciones_subtareas.value.length === 1) {
                     transaccion.subtarea = opciones_subtareas.value[0]['id']
                 }
             },
@@ -240,7 +258,7 @@ export default defineComponent({
             botonEditarCantidad,
             eliminarItem,
 
-            
+
             //selector
             refListadoSeleccionableProductos,
             criterioBusquedaProducto,
@@ -259,7 +277,7 @@ export default defineComponent({
 
 
             transaccionStore,
-            guardar, editar, eliminar, reestablecer, 
+            guardar, editar, eliminar, reestablecer,
         }
     }
 })
