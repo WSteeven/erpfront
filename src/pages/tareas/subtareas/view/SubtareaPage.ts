@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasTecnico } from '../domain/configuracionColumnasTecnico'
-import { computed, defineComponent, Ref, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import {
   provincias,
   ciudades,
@@ -18,21 +18,20 @@ import { required } from '@vuelidate/validators'
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTareaController } from 'pages/tareas/tiposTareas/infraestructure/TipoTareaController'
+import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
 import { SubtareaController } from '../infraestructure/SubtareaController'
 import { Subtarea } from '../domain/Subtarea'
 import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
-import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
 
 export default defineComponent({
-  components: { EssentialTable, flatPickr, ButtonSubmits },
+  components: { EssentialTable, ButtonSubmits },
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
@@ -185,10 +184,10 @@ export default defineComponent({
     setValidador(v$.value)
 
     onBeforeGuardar(() => {
-      subtarea.tecnicos_grupo_principal = "[2, 3]"
+      subtarea.tecnicos_grupo_principal = tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString() //"[2, 3]"
     })
 
-    onReestablecer(() => tecnicosGrupoPrincipal.value = [])
+    // onReestablecer(() => tecnicosGrupoPrincipal.value = [])
 
     watchEffect(() => {
       if (subtarea.grupo)

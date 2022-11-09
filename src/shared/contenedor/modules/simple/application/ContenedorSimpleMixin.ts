@@ -73,7 +73,7 @@ export class ContenedorSimpleMixin<
 
   // Consultar
   private async consultar(data: T) {
-    this.verificarAutenticacion()
+    //this.verificarAutenticacion()
 
     this.hooks.onBeforeConsultar()
 
@@ -103,19 +103,18 @@ export class ContenedorSimpleMixin<
 
   // Listar
   private async listar(params: any, append: boolean) {
-    this.verificarAutenticacion()
-
-    this.statusEssentialLoading.activar()
-
-    try {
-      const { result } = await this.controller.listar(params)
-      if (append) this.refs.listado.value.push(...result)
-      else this.refs.listado.value = result
-    } catch (error) {
-      this.notificaciones.notificarError('Error al obtener el listado.')
-    }
-
-    this.statusEssentialLoading.desactivar()
+    this.cargarVista(async () => {
+      try {
+        const { result } = await this.controller.listar(params)
+        this.refs.currentPageListado.value = result.current_page
+        this.refs.nextPageUrl.value = result.next_page_url
+        if (append) this.refs.listado.value.push(...result.data)
+        else this.refs.listado.value = result
+      } catch (error) {
+        console.log(error)
+        this.notificaciones.notificarError('Error al obtener el listado.')
+      }
+    })
   }
 
   private async reestablecer() {
@@ -171,7 +170,8 @@ export class ContenedorSimpleMixin<
   }
 
   // Editar
-  private async editar(data: T, resetOnUpdated = true) {
+  //private async editar(data: T, resetOnUpdated = true) {
+  private async editar(resetOnUpdated = true) {
     // this.verificarAutenticacion()
 
     this.hooks.onBeforeModificar()
@@ -195,7 +195,7 @@ export class ContenedorSimpleMixin<
     this.cargarVista(async () => {
       try {
         const { response, result: modelo } = await this.controller.editar(
-          data,
+          this.entidad.createCopy(),
           this.argsDefault
         )
         this.notificaciones.notificarCorrecto(response.data.mensaje)

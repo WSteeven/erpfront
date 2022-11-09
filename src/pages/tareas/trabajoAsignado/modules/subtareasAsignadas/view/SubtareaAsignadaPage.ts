@@ -1,85 +1,81 @@
 // Dependencias
-import { Subtarea } from "pages/tareas/subtareas/domain/Subtarea"
-import { defineComponent, ref } from "vue"
 import { tiposTareasTelconet, provincias, ciudades } from 'config/utils'
+import { Subtarea } from "pages/tareas/subtareas/domain/Subtarea"
+import { defineComponent, ref, watchEffect } from "vue"
 
-// import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTecnico'
 import { configuracionColumnasTecnico } from 'pages/tareas/subtareas/domain/configuracionColumnasTecnico'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { Tecnico } from "pages/tareas/subtareas/domain/Tecnico"
-import { useNotificaciones } from "shared/notificaciones"
+import { useTareaStore } from "stores/tarea"
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
+import { TipoTareaController } from 'pages/tareas/tiposTareas/infraestructure/TipoTareaController'
+import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
     components: { EssentialTable },
     setup() {
-        /* const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
-        const {listado} = mixin.useReferencias()
-        const {listar} = mixin.useComportamiento() */
-        const pausado = ref(false)
-        const { prompt, confirmar } = useNotificaciones()
+        const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+        const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
+        const { cargarVista, obtenerListados } = mixin.useComportamiento()
 
-        const datos: Tecnico[] = [
-            {
-                id: 1,
-                tecnico: 'LUIS DHDHD',
-                contacto: '0897564321',
-                grupo: 'MACHALA',
-                disponibilidad: true,
-                observacion: '',
+        const store = useTareaStore()
 
-            },
-            {
-                id: 2,
-                tecnico: 'ROBERTO HGHGGF',
-                contacto: '0897564321',
-                grupo: 'SANTO DOMINGO',
-                disponibilidad: true,
-                observacion: '',
-            },
-            {
-                id: 3,
-                tecnico: 'CARLA AGUIRRE',
-                contacto: '0897564321',
-                grupo: 'SANTO DOMINGO',
-                disponibilidad: false,
-                observacion: '',
-            },
-        ]
+        const tiposTrabajos = ref([])
+        const grupos = ref([])
+        const subtareas = ref([])
 
-        function suspender() {
-            confirmar("¿Está seguro de marcar el trabajo como suspendido?", () => {
-                //
+        cargarVista(async () => {
+            await obtenerListados({
+                tiposTrabajos: {
+                    controller: new TipoTareaController(),
+                    params: { cliente: store.tarea.cliente }
+                },
+                subtareas: {
+                    controller: new SubtareaController(),
+                    params: { tarea_id: store.tarea.id }
+                },
+                grupos: new GrupoController(),
             })
+
+            grupos.value = listadosAuxiliares.grupos
+            tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+            subtareas.value = listadosAuxiliares.subtareas
+            subtarea.hydrate(store.subtareaAsignada)
+        })
+
+
+        // const subtarea = new Subtarea()
+        //subtarea.hydrate(store.subtareaAsignada)
+        async function obtenerTecnicoResponsable(grupo_id: number) {
+            // Obtener grupo
+            const grupoController = new GrupoController()
+            const { result } = await grupoController.consultar(grupo_id)
+            const responsable = result.empleado_id
+
+            const empleadoController = new EmpleadoController()
+            const { result: tecnicoResponsable } = await empleadoController.consultar(responsable)
+
+            subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
         }
 
-        function realizar() {
-            confirmar("¿Está seguro de marcar el trabajo como realizado?", () => {
-                //
-            })
-        }
+        watchEffect(() => {
+            if (subtarea.grupo)
+                obtenerTecnicoResponsable(subtarea.grupo)
 
-        function pausar() {
-            pausado.value = !pausado.value
-
-            if (pausado.value) {
-                prompt("Ingrese el motivo de la pausa", () => {
-                    //
-                })
-            }
-        }
+        })
 
         return {
-            subtarea: new Subtarea(),
+            subtarea,
             tiposTareasTelconet,
             configuracionColumnasTecnico,
-            datos,
-            suspender,
-            realizar,
             provincias, ciudades,
-            pausado,
-            pausar,
+            tiposTrabajos,
+            grupos,
+            subtareas,
+            obtenerTecnicoResponsable,
         }
     }
 })

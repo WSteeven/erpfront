@@ -9,9 +9,12 @@ import { reactive, ref } from 'vue'
 import { acciones } from 'config/utils'
 
 export const useTareaStore = defineStore('tarea', () => {
-  // State
+  // State - Coordinador
   const tarea = reactive(new Tarea())
   const subtarea = reactive(new Subtarea())
+
+  // Tecnico
+  const subtareaAsignada = reactive(new Subtarea())
 
   const subtareaReset = new Subtarea()
   const accionTarea = acciones.nuevo
@@ -24,8 +27,19 @@ export const useTareaStore = defineStore('tarea', () => {
     const axios = AxiosHttpRepository.getInstance()
     const ruta = axios.getEndpoint(endpoints.subtareas) + id
     const response: AxiosResponse = await axios.get(ruta)
-    subtarea.hydrate(response.data.modelo)
     statusLoading.desactivar()
+    return response.data.modelo
+  }
+
+  async function consultarSubtareaCoordinador(id: number) {
+    const modelo = await consultarSubtarea(id)
+    subtarea.hydrate(modelo)
+  }
+
+  async function consultarSubtareaTecnico(id: number) {
+    const modelo = await consultarSubtarea(id)
+    subtareaAsignada.hydrate(modelo)
+    console.log(modelo)
   }
 
   function resetearSubtarea() {
@@ -36,9 +50,11 @@ export const useTareaStore = defineStore('tarea', () => {
     // State
     tarea,
     subtarea,
+    subtareaAsignada,
     accionTarea,
     accionSubtarea,
-    consultarSubtarea,
+    consultarSubtareaCoordinador,
+    consultarSubtareaTecnico,
     // accion,
     resetearSubtarea,
     // mostrarFormulario,

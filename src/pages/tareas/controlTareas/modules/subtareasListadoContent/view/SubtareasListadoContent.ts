@@ -25,7 +25,7 @@ export default defineComponent({
     const { listado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
-    const { notificarAdvertencia, confirmar } = useNotificaciones()
+    const { confirmar } = useNotificaciones()
 
     const tareaStore = useTareaStore()
     if (tareaStore.tarea.id) aplicarFiltro('CREADO')
@@ -49,9 +49,8 @@ export default defineComponent({
     const botonEditarSubtarea: CustomActionTable = {
       titulo: 'Editar',
       icono: 'bi-pencil',
-      // visible: ({ entidad }) => entidad.estado === '',
       accion: async ({ entidad }) => {
-        await tareaStore.consultarSubtarea(entidad.id)
+        await tareaStore.consultarSubtareaCoordinador(entidad.id)
         modales.abrirModalEntidad('SubtareasPage')
       },
     }
@@ -59,7 +58,7 @@ export default defineComponent({
     const verControlAvance: CustomActionTable = {
       titulo: 'Ver avance',
       icono: 'bi-eye',
-      accion: ({ entidad }) => modales.abrirModalEntidad('GestionarAvancesPage'),
+      accion: () => modales.abrirModalEntidad('GestionarAvancesPage'),
     }
 
     const botonFinalizar: CustomActionTable = {

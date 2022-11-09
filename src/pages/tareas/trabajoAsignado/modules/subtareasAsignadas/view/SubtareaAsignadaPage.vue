@@ -38,27 +38,38 @@
             ></q-input>
           </div>
 
-          <!-- Cliente -->
+          <!-- Grupo -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Cliente</label>
+            <label class="q-mb-sm block">Grupo asignado</label>
+            <q-select
+              v-model="subtarea.grupo"
+              :options="grupos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              disable
+              @update:model-value="(v) => obtenerTecnicoResponsable()"
+            >
+            </q-select>
+          </div>
+
+          <!-- Técnico responsable -->
+          <div v-if="subtarea.tecnico_responsable" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Técnico responsable</label>
             <q-input
-              v-model="subtarea.cliente"
+              v-model="subtarea.tecnico_responsable"
               disable
               outlined
               dense
             ></q-input>
-          </div>
-
-          <!-- Grupo -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Grupo asignado</label>
-            <q-input v-model="subtarea.grupo" disable outlined dense></q-input>
-          </div>
-
-          <!-- Técnico responsable -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Técnico responsable</label>
-            <q-input v-model="subtarea.grupo" disable outlined dense></q-input>
           </div>
 
           <!-- Tipo trabajo -->
@@ -66,27 +77,19 @@
             <label class="q-mb-sm block">Tipo de trabajo</label>
             <q-select
               v-model="subtarea.tipo_trabajo"
-              :options="tiposTareasTelconet"
-              transition-show="flip-up"
-              transition-hide="flip-down"
+              :options="tiposTrabajos"
+              transition-show="scale"
+              transition-hide="scale"
               options-dense
+              dense
+              outlined
               disable
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
               emit-value
               map-options
-              dense
-              outlined
-            />
-          </div>
-
-          <!-- Coordinador -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordinador</label>
-            <q-input
-              v-model="subtarea.coordinador"
-              disable
-              outlined
-              dense
-            ></q-input>
+            >
+            </q-select>
           </div>
 
           <div class="col-12 col-md-9">
@@ -140,7 +143,7 @@
             <essential-table
               titulo="Técnicos asignados"
               :configuracionColumnas="configuracionColumnasTecnico"
-              :datos="datos"
+              :datos="subtarea.tecnicos_grupo_principal ?? []"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -184,7 +187,7 @@
       <q-expansion-item
         class="overflow-hidden q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
-        label="Cliente final"
+        :label="subtarea.cliente ? 'Cliente final' : 'Ubicación manual'"
         header-class="bg-grey-1"
         default-opened
       >
