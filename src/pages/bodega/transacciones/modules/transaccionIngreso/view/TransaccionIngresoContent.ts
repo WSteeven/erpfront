@@ -5,7 +5,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, effect, Ref, ref, watch, watchEffect } from 'vue'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
-import { useOrquestadorSelectorDetalles } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
+import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 
 // Componentes
@@ -37,6 +37,7 @@ import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/Subta
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { acciones } from 'config/utils'
 import { ConsultableRepository } from 'shared/controller/infraestructure/ConsultableRepository'
+import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 export default defineComponent({
     props:{
         mixin:{
@@ -65,7 +66,7 @@ export default defineComponent({
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorDetalles(transaccion, 'detalles')
+        } = useOrquestadorSelectorItemsTransaccion(transaccion, 'detalles')
 
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
@@ -135,8 +136,8 @@ export default defineComponent({
 
         
         function eliminarItem({ entidad, posicion }) {
-            console.log(entidad)
-            console.log(posicion)
+            // console.log(entidad)
+            // console.log(posicion)
             confirmar('¿Esta seguro de continuar?',
                 () =>
                     transaccion.listadoProductosSeleccionados.splice(posicion, 1))
@@ -144,9 +145,9 @@ export default defineComponent({
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
             accion: ({ entidad, posicion }) => {
-                console.log(transaccion.listadoProductosSeleccionados)
-                console.log(posicion)
-                console.log(transaccion.listadoProductosSeleccionados[posicion])
+                // console.log(transaccion.listadoProductosSeleccionados)
+                // console.log(posicion)
+                // console.log(transaccion.listadoProductosSeleccionados[posicion])
                 prompt(
                     'Ingresa la cantidad',
                     (data) => {
@@ -176,6 +177,7 @@ export default defineComponent({
         let esVisibleTarea = ref(false)
         let esVisibleSubtarea = ref(false)
 
+        // console.log(configuracionColumnasDetallesProductos, configuracionColumnasProductosSeleccionadosAccion)
         return {
             transaccion, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasTransaccionIngreso,
@@ -233,10 +235,12 @@ export default defineComponent({
 
             // tabla,
             configuracionColumnasProductosSeleccionadosAccion,
+            configuracionColumnasDetallesProductos,
             configuracionColumnasProductosSeleccionados,
             botonEditarCantidad,
             eliminarItem,
 
+            
             //selector
             refListadoSeleccionableProductos,
             criterioBusquedaProducto,
@@ -244,7 +248,6 @@ export default defineComponent({
             listarProductos,
             limpiarProducto,
             seleccionarProducto,
-            configuracionColumnasProductos,
 
             //rol
             rolSeleccionado,

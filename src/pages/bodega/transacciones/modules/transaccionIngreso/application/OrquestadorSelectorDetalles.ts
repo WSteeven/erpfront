@@ -1,11 +1,10 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { useSelector } from "components/tables/application/selector";
-import { DetalleProducto } from "pages/bodega/detalles_productos/domain/DetalleProducto";
-import { endpoints } from "config/api";
-import { Ref, ref } from "vue";
-import { Transaccion } from "../../../domain/Transaccion";
-
-export function useOrquestadorSelectorDetalles(entidad: Transaccion, endpoint: keyof typeof endpoints) {
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { useSelector } from 'components/tables/application/selector'
+import { endpoints } from 'config/api'
+import { Ref, ref } from 'vue'
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
+export function useOrquestadorSelectorItemsTransaccion(entidad:Transaccion, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()
@@ -18,23 +17,33 @@ export function useOrquestadorSelectorDetalles(entidad: Transaccion, endpoint: k
             entidad.id = null,
                 criterioBusqueda.value = null
         },
-        seleccionar: (detalle: DetalleProducto) => {
-            entidad.producto = detalle.descripcion,
-                criterioBusqueda.value = detalle.descripcion
-            entidad.listadoProductosSeleccionados = [...entidad.listadoProductosSeleccionados, detalle]
-            limpiar()
-        },
+        seleccionarMultiple: (items: DetalleProducto[]) => {
+            console.log('item recibido en el seleccionar del orquestador: ', items)
+            entidad.listadoProductosSeleccionados=[...entidad.listadoProductosSeleccionados, ...items]
+            
+            // items.forEach(item => {
+            // });
+        }
     }
 
     const selector = useSelector(singleSelector)
     const listar = () => selector.listar(criterioBusqueda.value)
     const limpiar = () => singleSelector.limpiar()
-    const seleccionar = (id: number) => selector.seleccionar(id)
+    
+    const seleccionar = (entidades: DetalleProducto[]) => {
+        let ids:any=[]
+        ids = entidad.listadoProductosSeleccionados.map((entidad:DetalleProducto)=>entidad.id)
+        // console.log(ids)
+        const datos = entidades.filter((v)=> !ids.includes(v.id))
+        // console.log('datos: ',datos)
+        singleSelector.seleccionarMultiple(datos)
+    }
 
     return {
         refListadoSeleccionable,
         listado,
         listar, limpiar, seleccionar,
         criterioBusqueda,
+
     }
 }
