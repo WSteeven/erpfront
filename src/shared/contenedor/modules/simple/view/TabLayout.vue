@@ -17,7 +17,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="rounded-3 custom-shadow"
+      class="custom-shadow"
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario">
@@ -42,6 +42,7 @@
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
+          @onScroll="cargarListado"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"

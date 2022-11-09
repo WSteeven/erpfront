@@ -17,16 +17,19 @@
           :datos="cronologiaTrabajoRealizado"
           :alto-fijo="false"
           :permitirConsultar="false"
+          :permitirEliminar="false"
+          :permitirEditar="$q.screen.xs"
+          :permitirEditarCeldas="!$q.screen.xs"
+          :permitirEditarModal="$q.screen.xs"
           :mostrar-footer="false"
-          :permitirEditarModal="true"
           separador="cell"
+          :mostrar-botones="false"
           :agregarElemento="agregarAvance"
           @eliminar="tablaTrabajoRealizado.eliminar"
           @editar="tablaTrabajoRealizado.editar"
           :accion1="materiales"
         ></essential-table>
       </div>
-      <!--:agregarElemento="agregarActividadRealizada"-->
 
       <!--<div class="q-mb-md">
         <essential-table

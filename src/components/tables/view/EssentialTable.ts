@@ -4,7 +4,7 @@ import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns } from 'shared/utils'
 import { exportFile, useQuasar } from 'quasar'
 import { TipoSeleccion, estadosSubtareas } from 'config/utils'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect, nextTick } from 'vue'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios } from 'config/utils'
 // Componentes
@@ -32,10 +32,6 @@ export default defineComponent({
     datos: {
       type: Array,
       required: true,
-    },
-    initialPagination:{
-      type: Array,
-      required:false,
     },
     permitirEditarCeldas: {
       type: Boolean,
@@ -102,7 +98,7 @@ export default defineComponent({
       default: false,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'selected'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'selected', 'onScroll'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -135,7 +131,7 @@ export default defineComponent({
     // watch(selected, () => emit('selected', selected.value))
     const seleccionar = () => {
       // console.log('fila seleccionada es: ',selected.value[0])
-      emit('selected', selected.value) 
+      emit('selected', selected.value)
     }
     const $q = useQuasar()
 
@@ -210,7 +206,13 @@ export default defineComponent({
       limpiarFila()
     }
 
-    // console.log(props.initialPagination)
+    const rows = computed(() => listado.value?.length - 1 ?? 0)
+
+    function onScroll({ to }) {
+      if (to === rows.value) {
+        nextTick(() => emit('onScroll'))
+      }
+    }
 
     return {
       grid,
@@ -234,6 +236,7 @@ export default defineComponent({
       estadosTransacciones,
       estadosInventarios,
       estadosSubtareas,
+      onScroll,
     }
   },
 })

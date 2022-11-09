@@ -30,7 +30,7 @@ export class Subtarea extends EntidadAuditable {
 
   descripcion_completa: string | null
 
-  tecnicos_grupo_principal: Ref<Tecnico> | null
+  tecnicos_grupo_principal: Ref<Tecnico[]> | null
   tecnicos_otros_grupos: Ref<Tecnico> | null
 
   estado: string | null

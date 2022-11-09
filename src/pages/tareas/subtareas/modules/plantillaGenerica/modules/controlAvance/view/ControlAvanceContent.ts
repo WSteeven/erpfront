@@ -1,5 +1,5 @@
 // Dependencias
-import { computed, defineComponent, reactive } from "vue";
+import { computed, defineComponent, reactive, ref, Ref } from "vue";
 import { configuracionColumnasTrabajoRealizado } from '../../../../../domain/configuracionColumnasTrabajoRealizado'
 import { configuracionColumnasObservacion } from '../../../../../domain/configuracionColumnasObservacion'
 import { configuracionColumnasMaterial } from '../../../../../domain/configuracionColumnasMaterial'
@@ -39,20 +39,20 @@ export default defineComponent({
 
         const columnasMaterial = [...configuracionColumnasMaterial, acciones]
 
-        const cronologiaTrabajoRealizado: TrabajoRealizado[] = [
-            {
-                id: 1,
-                hora: '08:15:14',
-                detalle: 'SE REALIZÓ LA PAUSA POR ...',
-                observacion: '',
-            },
-            {
-                id: 2,
-                hora: '12:36:45',
-                detalle: 'HORA DE ALMUERZO ...',
-                observacion: '',
-            },
-        ]
+        const cronologiaTrabajoRealizado: Ref<TrabajoRealizado[]> = ref([])
+        /*{
+            id: 1,
+            hora: '08:15:14',
+            detalle: 'SE REALIZÓ LA PAUSA POR ...',
+            observacion: '',
+        },
+        {
+            id: 2,
+            hora: '12:36:45',
+            detalle: 'HORA DE ALMUERZO ...',
+            observacion: '',
+        },
+    ]*/
 
         const observaciones: Observacion[] = [
             {
@@ -150,10 +150,11 @@ export default defineComponent({
             titulo: 'Agregar avance',
             icono: 'bi-box',
             accion: ({ entidad }) => {
+                // cronologiaTrabajoRealizado.value.push()
                 // tareaStore.consultarSubtarea(entidad.id)
                 // modales.abrirModalEntidad('SubtareaAsignadaPage')
                 // router.push({ name: 'subtarea_asignada' })
-            },
+            }
         }
 
         return {

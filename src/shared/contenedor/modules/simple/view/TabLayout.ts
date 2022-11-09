@@ -17,10 +17,6 @@ export default defineComponent({
       type: Object as () => ContenedorSimpleMixin<any>,
       required: true,
     },
-    pagination:{
-      type: Object,
-      required:false,
-    },
     mostrarButtonSubmits: {
       type: Boolean,
       default: true,
@@ -58,7 +54,7 @@ export default defineComponent({
     const { listar, guardar, editar, eliminar, consultar, reestablecer } =
       props.mixin.useComportamiento()
 
-    const { entidad, listado, accion, filtros, fields, tabs } =
+    const { entidad, listado, accion, filtros, fields, tabs, currentPageListado, nextPageUrl } =
       props.mixin.useReferencias()
 
     const Router = useRouter()
@@ -76,7 +72,7 @@ export default defineComponent({
     ]
 
     if (!listadoCargado) {
-      listar()
+      listar({ page: currentPageListado.value, offset: 48 }, true)
       listadoCargado = true
     }
 
@@ -120,6 +116,11 @@ export default defineComponent({
       store.can(`puede.eliminar.${router.name?.toString()}`)
     )
 
+    function cargarListado() {
+      if (nextPageUrl.value)
+        listar({ page: currentPageListado.value + 1, offset: 48 }, true)
+    }
+
     return {
       tabs,
       tituloTabla,
@@ -142,6 +143,7 @@ export default defineComponent({
       puedeCrear,
       puedeEditar,
       puedeEliminar,
+      cargarListado,
     }
   },
 })

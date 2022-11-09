@@ -184,10 +184,10 @@
             text-color="primary"
             :options="[
               {
-                label: 'Agregar ubicación manualmente',
+                label: 'Ubicación manual',
                 value: 'ubicacion_manual',
               },
-              { label: 'Seleccionar cliente final', value: 'cliente_final' },
+              { label: 'Ubicación de Cliente final', value: 'cliente_final' },
             ]"
           />
         </div>
@@ -331,6 +331,9 @@
             input-debounce="0"
             emit-value
             map-options
+            @update:model-value="
+              (v) => obtenerClienteFinal(tarea.cliente_final)
+            "
           >
             <template v-slot:no-option>
               <q-item>

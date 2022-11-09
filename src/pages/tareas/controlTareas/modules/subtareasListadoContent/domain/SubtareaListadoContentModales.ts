@@ -13,9 +13,9 @@ export class SubtareaListadoContentModales {
   constructor() {
     this.SubtareasPage = markRaw(
       new ComponenteModal('CONSTRUCRED', SubtareasPage)
-    ),
-      this.GestionarAvancesPage = markRaw(
-        new ComponenteModal('CONSTRUCRED', GestionarAvancesPage)
-      )
+    )
+    this.GestionarAvancesPage = markRaw(
+      new ComponenteModal('CONSTRUCRED', GestionarAvancesPage)
+    )
   }
 }

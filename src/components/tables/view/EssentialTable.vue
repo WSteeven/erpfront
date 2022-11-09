@@ -32,8 +32,7 @@
     :hide-bottom="!mostrarFooter"
     flat
     bordered
-    virtual-scroll
-    :pagination="initialPagination"
+    :pagination="{ rowsPerPage: 0 }"
     :selection="tipoSeleccion"
     v-model:selected="selected"
     wrap-cells
@@ -43,54 +42,60 @@
       'alto-fijo': !inFullscreen && altoFijo,
       'my-sticky-dynamic': !inFullscreen && altoFijo,
     }"
+    virtual-scroll
+    :virtual-scroll-item-size="48"
+    :virtual-scroll-sticky-size-start="48"
+    @virtual-scroll="onScroll"
   >
-  
-  <!-- 
+    <!-- 
     :pagination="{ rowsPerPage: 0 }"
+     :virtual-scroll-item-size="48"
+    :virtual-scroll-sticky-size-start="48"
+     @virtual-scroll="onScroll"
    -->
-   <template v-slot:pagination="scope">
-        <q-btn
-          v-if="scope.pagesNumber > 2"
-          icon="first_page"
-          color="grey-8"
-          round
-          dense
-          flat
-          :disable="scope.isFirstPage"
-          @click="scope.firstPage"
-        />
+    <!--<template v-slot:pagination="scope">
+      <q-btn
+        v-if="scope.pagesNumber > 2"
+        icon="first_page"
+        color="grey-8"
+        round
+        dense
+        flat
+        :disable="scope.isFirstPage"
+        @click="scope.firstPage"
+      />
 
-        <q-btn
-          icon="chevron_left"
-          color="grey-8"
-          round
-          dense
-          flat
-          :disable="scope.isFirstPage"
-          @click="scope.prevPage"
-        />
+      <q-btn
+        icon="chevron_left"
+        color="grey-8"
+        round
+        dense
+        flat
+        :disable="scope.isFirstPage"
+        @click="scope.prevPage"
+      />
 
-        <q-btn
-          icon="chevron_right"
-          color="grey-8"
-          round
-          dense
-          flat
-          :disable="scope.isLastPage"
-          @click="scope.nextPage"
-        />
+      <q-btn
+        icon="chevron_right"
+        color="grey-8"
+        round
+        dense
+        flat
+        :disable="scope.isLastPage"
+        @click="scope.nextPage"
+      />
 
-        <q-btn
-          v-if="scope.pagesNumber > 2"
-          icon="last_page"
-          color="grey-8"
-          round
-          dense
-          flat
-          :disable="scope.isLastPage"
-          @click="scope.lastPage"
-        />
-      </template>
+      <q-btn
+        v-if="scope.pagesNumber > 2"
+        icon="last_page"
+        color="grey-8"
+        round
+        dense
+        flat
+        :disable="scope.isLastPage"
+        @click="scope.lastPage"
+      />
+    </template>-->
     <!-- Editar celdas -->
     <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
       <q-td :key="props.col.name" :props="props" placeholder="fdfdfd">
@@ -102,6 +107,7 @@
         >
           <q-input
             v-model="scope.value"
+            placeholder="Ingrese"
             dense
             autofocus
             @keyup.enter="scope.set"
@@ -252,7 +258,7 @@
 
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
-      <q-td :props="props" class="q-gutter-sm text-left">
+      <q-td :props="props" class="q-gutter-sm">
         <!-- Consultar -->
         <q-btn
           v-if="permitirConsultar"

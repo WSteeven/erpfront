@@ -6,6 +6,8 @@ export class Referencias<T> {
   validador: Ref
   filtros: { [key: string]: any }
   listado: Ref<any[]>
+  currentPageListado: Ref<number>
+  nextPageUrl: Ref<string | undefined | null>
   // fields!: Ref<ColumnConfig<T>[]>
   accion: Ref<string>
   disabled: ComputedRef<boolean>
@@ -31,6 +33,8 @@ export class Referencias<T> {
     })
 
     this.listado = ref([])
+    this.currentPageListado = ref(1)
+    this.nextPageUrl = ref()
     this.accion = ref(acciones.nuevo)
 
     // Boolean para desactivar la edicion en formularios

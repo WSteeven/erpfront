@@ -33,15 +33,15 @@ export default defineComponent({
 
         const mostrarDialogPlantilla = ref(false)
 
+        const store = useTareaStore()
         const modales = new ComportamientoModalesTrabajoAsignado()
 
         const botonVer: CustomActionTable = {
             titulo: 'Visualizar',
             icono: 'bi-eye',
-            accion: ({ entidad }) => {
-                // tareaStore.consultarSubtarea(entidad.id)
+            accion: async ({ entidad }) => {
+                await store.consultarSubtareaTecnico(entidad.id)
                 modales.abrirModalEntidad('SubtareaAsignadaPage')
-                // router.push({ name: 'subtarea_asignada' })
             },
         }
 
