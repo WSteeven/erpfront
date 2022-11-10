@@ -28,15 +28,10 @@ export default defineComponent({
         sucursal:{type:number, required:false},
         propietario:{type:number, required:false},
     }, */
-    setup(props) {
+    setup() {
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, listar, obtenerListados, cargarVista } = mixin.useComportamiento()
-
-
-        listar({
-            page: 3
-        })
 
         const opciones_productos = ref([])
         const opciones_detalles = ref([])
@@ -83,18 +78,9 @@ export default defineComponent({
         opciones_sucursales.value = listadosAuxiliares.sucursales
 
 
-        //paginacion
-        const pagination = ref({
-            sortBy: 'desc',
-            descending: false,
-            page: 1,
-            rowsPerPage: 15
-            // rowsNumber: xx if getting data from a server
-        })
-
         // console.log(mixin['refs'].listado.value)
         return {
-            mixin, inventario, disabled, accion, v$, pagination,
+            mixin, inventario, disabled, accion, v$, 
             configuracionColumnas: configuracionColumnasInventarios,
             //listados
             opciones_productos,
