@@ -18,7 +18,6 @@
     @tab-seleccionado="aplicarFiltro"
     :agregarElemento="agregarSubtarea"
   ></essential-table-tabs>
-  <!--:accion4="botonCancelar" -->
 
   <modales-entidad :comportamiento="modales" />
 </template>

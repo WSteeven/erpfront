@@ -173,7 +173,7 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <div class="col-12">
           <q-btn-toggle
-            v-model="ubicacionTrabajo"
+            v-model="tipoUbicacionTrabajo"
             spread
             class="my-custom-toggle"
             no-caps
@@ -192,9 +192,9 @@
           />
         </div>
       </div>
-
+      {{ tipoUbicacionTrabajo }}
       <div
-        v-if="ubicacionTrabajo === 'ubicacion_manual'"
+        v-if="tipoUbicacionTrabajo === 'ubicacion_manual'"
         class="row q-col-gutter-sm q-pa-md"
       >
         <!-- Provincia -->
@@ -310,7 +310,7 @@
       </div>
 
       <div
-        v-if="ubicacionTrabajo === 'cliente_final'"
+        v-if="tipoUbicacionTrabajo === 'cliente_final'"
         class="row q-col-gutter-sm q-pa-md"
       >
         <!-- Nombre -->

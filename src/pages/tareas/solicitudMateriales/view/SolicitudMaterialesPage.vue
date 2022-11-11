@@ -1,9 +1,9 @@
 <template>
   <tab-layout
     :configuracionColumnas="configuracionColumnas"
-    :datos="datos"
     :mostrar-button-submits="false"
     titulo-pagina="Solicitud de materiales a bodega"
+    :mixin="mixin"
   >
     <template #formulario>
       <q-card flat bordered class="q-mb-md">
