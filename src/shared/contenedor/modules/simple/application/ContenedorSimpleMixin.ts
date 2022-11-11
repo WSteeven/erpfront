@@ -172,8 +172,8 @@ export class ContenedorSimpleMixin<
   }
 
   // Editar
-  //private async editar(data: T, resetOnUpdated = true) {
-  private async editar(resetOnUpdated = true) {
+  private async editar(data: T, resetOnUpdated = true) {
+    //private async editar(resetOnUpdated = true) {
     // this.verificarAutenticacion()
 
     this.hooks.onBeforeModificar()
@@ -184,7 +184,7 @@ export class ContenedorSimpleMixin<
       )
     }
 
-    if (!this.seCambioEntidad(this.entidad_copia)) {
+    if (!this.seCambioEntidad(this.entidad_vacia)) {
       return this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
@@ -197,7 +197,7 @@ export class ContenedorSimpleMixin<
     this.cargarVista(async () => {
       try {
         const { response, result: modelo } = await this.controller.editar(
-          this.entidad.createCopy(),
+          data,
           this.argsDefault
         )
         this.notificaciones.notificarCorrecto(response.data.mensaje)
@@ -207,6 +207,7 @@ export class ContenedorSimpleMixin<
           this.reestablecer()
         }
       } catch (error: any) {
+        console.log(error)
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
           notificarMensajesError(mensajes, this.notificaciones)

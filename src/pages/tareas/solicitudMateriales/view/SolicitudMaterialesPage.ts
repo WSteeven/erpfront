@@ -9,20 +9,25 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores
 import { MaterialesSolicitados } from '../domain/MaterialesSolicitados'
-import { SolicitudMateriales } from '../domain/SolicitudMateriales'
+import { SolicitudMaterial } from '../domain/SolicitudMaterial'
 import { useNotificaciones } from 'shared/notificaciones'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { SolicitudMaterialController } from '../infraestructure/SolicitudMaterialController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },
   setup() {
-    const solicitud = reactive(new SolicitudMateriales())
+    const mixin = new ContenedorSimpleMixin(SolicitudMaterial, new SolicitudMaterialController())
+    const { entidad: solicitud } = mixin.useReferencias()
+
+    // const solicitud = reactive(new SolicitudMateriales())
     solicitud.fecha_solicitud = '15/08/2022'
     solicitud.grupo = 'MACHALA'
     solicitud.estado = 'PENDIENTE'
 
     const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
-    const datos: SolicitudMateriales[] = [
+    /* const datos: SolicitudMateriales[] = [
       {
         fecha_solicitud: '15/08/2022',
         grupo: 'MACHALA',
@@ -47,7 +52,7 @@ export default defineComponent({
         detalle_tarea:
           'RUTA MPLS CIRCULAR PALMALES, HINCADO DE POSTE EN RUTA MPLS CIRCULAR PALMALES',
       },
-    ]
+    ] */
 
     const materialesSolicitados: Ref<MaterialesSolicitados[]> = ref([
       {
@@ -153,9 +158,10 @@ export default defineComponent({
     }
 
     return {
+      mixin,
       configuracionColumnas: configuracionColumnasSolicitudMateriales,
       configuracionColumnasMaterialesSolicitadosAccion,
-      datos,
+      // datos,
       materialesSolicitados,
       editar,
       eliminar,

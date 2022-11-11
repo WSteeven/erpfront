@@ -1,7 +1,6 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
-import { provincias, ciudades } from 'config/utils'
 import { required } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
@@ -46,7 +45,7 @@ export default defineComponent({
     const { onGuardado, onConsultado } = props.mixin.useHooks()
 
     const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
-    const ubicacionTrabajo = ref(opcionesUbicacion.manual)
+    const tipoUbicacionTrabajo = ref(opcionesUbicacion.manual)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -76,6 +75,7 @@ export default defineComponent({
     const v$ = useVuelidate(rules, tarea)
     setValidador(v$.value)
 
+    // Modales
     const modalesTarea = new ComportamientoModalesTarea()
 
     // Filtro clientes principales
@@ -163,8 +163,9 @@ export default defineComponent({
       })
     }
 
+    // Informacion de ubicacion
     const clienteFinal = reactive(new ClienteFinal())
-    // const ubicacionManual = reactive(new UbicacionTarea())
+    const ubicacionManual = reactive(new UbicacionTarea())
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ContactoController()
@@ -179,29 +180,37 @@ export default defineComponent({
     }
 
     // Hooks
-    onGuardado(() => tareaStore.tarea.hydrate(tarea))
-    onConsultado(() => {
-      tareaStore.tarea.hydrate(tarea)
+    // onGuardado(() => tareaStore.tarea.hydrate(tarea))
+    /* onConsultado(() => {
+      console.log('dgffdg fdgfdg df')
+      // tareaStore.tarea.hydrate(tarea)
+      //tarea.hydrate(tareaStore.tarea)
       if (tarea.cliente_final) {
         obtenerClienteFinal(tarea.cliente_final)
-        ubicacionTrabajo.value = opcionesUbicacion.cliente
+        tipoUbicacionTrabajo.value = opcionesUbicacion.cliente
       }
       else {
         clienteFinal.hydrate(new ClienteFinal())
-        ubicacionTrabajo.value = opcionesUbicacion.manual
-      }
-    })
-
-    /* watchEffect(() => {
-      if (tarea.cliente_final) {
-        obtenerClienteFinal(tarea.cliente_final)
-        ubicacionTrabajo.value = opcionesUbicacion.cliente
-      }
-      else {
-        clienteFinal.hydrate(new ClienteFinal())
-        ubicacionTrabajo.value = opcionesUbicacion.manual
+        tipoUbicacionTrabajo.value = opcionesUbicacion.manual
       }
     }) */
+
+    // onConsultado(() => console.log('consultado... dentro de genral'))
+    watchEffect(() => {
+      if (tarea.cliente_final) {
+        obtenerClienteFinal(tarea.cliente_final)
+        tipoUbicacionTrabajo.value = opcionesUbicacion.cliente
+        console.log('tiene cliente final')
+      } else {
+        // clienteFinal.hydrate(new ClienteFinal())
+        tipoUbicacionTrabajo.value = opcionesUbicacion.manual
+        console.log('tiene ubicacion manual')
+      }
+
+      /*if (tipoUbicacionTrabajo.value === opcionesUbicacion.cliente) {
+        tarea.ubicacion_tarea = null
+      }*/
+    })
 
     return {
       v$,
@@ -227,12 +236,13 @@ export default defineComponent({
       supervisores,
       filtrarSupervisores,
       clienteFinal,
+      ubicacionManual,
       // ubicacionManual,
       listadosAuxiliares,
       establecerCliente,
       // Selector
       configuracionColumnasClientes,
-      ubicacionTrabajo,
+      tipoUbicacionTrabajo,
     }
   },
 })

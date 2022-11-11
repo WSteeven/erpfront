@@ -17,6 +17,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { useTareaStore } from 'stores/tarea'
 import { useNotificaciones } from 'shared/notificaciones'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
     components: {
@@ -34,6 +35,7 @@ export default defineComponent({
         const mostrarDialogPlantilla = ref(false)
 
         const store = useTareaStore()
+        const authenticationStore = useAuthenticationStore()
         const modales = new ComportamientoModalesTrabajoAsignado()
 
         const botonVer: CustomActionTable = {
@@ -67,7 +69,8 @@ export default defineComponent({
         }
 
         function aplicarFiltro(tabSeleccionado) {
-            listar({ estado: tabSeleccionado })
+            const grupo_id = authenticationStore.user.grupo_id
+            listar({ estado: tabSeleccionado })//, grupo: grupo_id })
         }
 
         aplicarFiltro('ASIGNADO')

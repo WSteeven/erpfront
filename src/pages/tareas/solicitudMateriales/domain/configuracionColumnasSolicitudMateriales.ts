@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { SolicitudMateriales } from './SolicitudMateriales'
+import { SolicitudMaterial } from './SolicitudMaterial'
 
-export const configuracionColumnasSolicitudMateriales: ColumnConfig<SolicitudMateriales>[] =
+export const configuracionColumnasSolicitudMateriales: ColumnConfig<SolicitudMaterial>[] =
   [
     {
       name: 'fecha_solicitud',
