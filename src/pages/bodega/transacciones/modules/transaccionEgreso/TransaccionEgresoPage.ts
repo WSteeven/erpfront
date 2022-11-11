@@ -5,7 +5,8 @@ import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
+import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
+// import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
@@ -44,6 +45,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
         const { entidad: transaccion, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+        const {onConsultado}=mixin.useHooks()
         // aplicarFiltro('TODO')
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
@@ -55,7 +57,7 @@ export default defineComponent({
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorDetalles(transaccion, 'detalles')
+        } = useOrquestadorSelectorItemsTransaccion(transaccion, 'detalles')
 
         const esBodeguero = store.esBodeguero
         const esCoordinador = store.esCoordinador

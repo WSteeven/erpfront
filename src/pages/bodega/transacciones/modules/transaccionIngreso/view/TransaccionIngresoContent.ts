@@ -2,8 +2,7 @@
 import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, effect, Ref, ref, watch, watchEffect } from 'vue'
-import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
+import { defineComponent, ref } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
@@ -16,8 +15,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TransaccionIngresoController } from '../../../infraestructure/TransaccionIngresoController'
-import { Transaccion } from '../../../domain/Transaccion'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 
@@ -35,8 +32,6 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
-import { acciones } from 'config/utils'
-import { ConsultableRepository } from 'shared/controller/infraestructure/ConsultableRepository'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 export default defineComponent({
     props: {

@@ -61,7 +61,7 @@ export default defineComponent({
     const { listar, guardar, editar, eliminar, consultar, reestablecer } =
       props.mixin.useComportamiento()
 
-    const { entidad, listado, accion, filtros, fields, tabs } =
+    const { entidad, listado, accion, filtros, fields, tabs, currentPageListado, nextPageUrl } =
       props.mixin.useReferencias()
 
     const Router = useRouter()
@@ -79,13 +79,13 @@ export default defineComponent({
     ]
 
     if (!listadoCargado) {
-      listar()
+      listar({ page: currentPageListado.value, offset: 48 }, true)
       listadoCargado = true
     }
-    //const tabSeleccionado='TODO'
+    let tabSeleccionado='TODO'
 
     function aplicarFiltro(tabSeleccionado) {
-      listar({ estado: tabSeleccionado })
+      listar({page: currentPageListado.value, offset: 48, estado: tabSeleccionado}, true)
       emit('tab-seleccionado', tabSeleccionado)
     }
 
@@ -135,8 +135,12 @@ export default defineComponent({
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
 
-    console.log(esCoordinador, ' - ', esBodeguero)
+    // console.log(esCoordinador, ' - ', esBodeguero)
 
+    function cargarListado() {
+      if (nextPageUrl.value)
+        listar({ page: currentPageListado.value + 1, offset: 48, estado: tabSeleccionado }, true)
+    }
 
     return {
       tabs,
