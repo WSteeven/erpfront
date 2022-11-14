@@ -7,6 +7,33 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <!-- Sucursal select -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Sucursal</label>
+            <q-select
+              v-model="sucursal"
+              :options="opciones_sucursales"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              @update:model-value="SucursalSeleccionada"
+              error-message="Debes seleccionar una sucursal"
+              :option-label="(item) => item.lugar"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Inventario select -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Inventario</label>
@@ -19,7 +46,7 @@
                     (v) => (criterioBusquedaInventario = v.toUpperCase())
                   "
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarInventarios()"
+                  @keydown.enter="listarInventarios({sucursal: sucursal})"
                   @blur="
                     criterioBusquedaInventario === ''
                       ? limpiarInventario()
@@ -32,7 +59,7 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarInventarios()"
+                  @click="listarInventarios({sucursal: sucursal})"
                   icon="search"
                   unelevated
                   color="secondary"

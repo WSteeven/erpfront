@@ -16,6 +16,7 @@ import { ProductosEnPerchaController } from "../infraestructure/ProductosEnPerch
 import { InventarioController } from "pages/bodega/inventario/infraestructure/InventarioController";
 import { UbicacionController } from "pages/administracion/ubicaciones/infraestructure/UbicacionController";
 import { useOrquestadorSelectorInventario } from "../application/OrquestadorSelectorInventario";
+import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 
 
 export default defineComponent({
@@ -24,6 +25,8 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(ProductoEnPercha, new ProductosEnPerchaController())
         const { entidad: producto_percha, disabled, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento();
+
+        let sucursal = ref()
 
         //configuracion del orquestador
         const {
@@ -44,19 +47,45 @@ export default defineComponent({
         setValidador(v$.value)
 
         const opciones_ubicaciones = ref([])
+        const opciones_sucursales = ref([])
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
                 ubicaciones: new UbicacionController(),
+                sucursales: new SucursalController(),
             })
         })
         opciones_ubicaciones.value = listadosAuxiliares.ubicaciones
+        opciones_sucursales.value = listadosAuxiliares.sucursales
+
+        function updateSucursal(val:number){
+            cargarVista(async()=>{
+                await obtenerListados({
+                    ubicaciones: {
+                        controller:new UbicacionController(),
+                        params:{
+                            sucursal:sucursal.value
+                        },
+                    },
+                })
+                opciones_ubicaciones.value = listadosAuxiliares.ubicaciones
+            })
+
+            // opciones_ubicaciones.value = listadosAuxiliares.ubicaciones.filter((v)=>v.sucursal===val)
+            console.log('valor a emitir', sucursal.value)
+            console.log('valor dentro del metodo', val)
+        }
+        // listarInventarios({sucursal: sucursal.value})
 
         return {
             mixin, producto_percha, v$, disabled,
             configuracionColumnas: configuracionColumnasProductosEnPerchas,
             //listados
             opciones_ubicaciones,
+            opciones_sucursales,
+            
+            //variable para el filtrado
+            sucursal,
 
             //selector
             refListadoSeleccionableInventarios,
@@ -66,6 +95,11 @@ export default defineComponent({
             limpiarInventario,
             seleccionarInventario,
             configuracionColumnasInventarios,
+
+            //filtro de SucursalSeleccionada
+            SucursalSeleccionada(val){
+                updateSucursal(val)
+            },
         }
     }
 })

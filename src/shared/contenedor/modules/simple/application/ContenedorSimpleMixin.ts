@@ -109,7 +109,7 @@ export class ContenedorSimpleMixin<
         this.refs.currentPageListado.value = result.current_page
         this.refs.nextPageUrl.value = result.next_page_url
         if (append) this.refs.listado.value.push(...result.data)
-        else this.refs.listado.value = result
+        else this.refs.listado.value = result.data
       } catch (error) {
         console.log(error)
         this.notificaciones.notificarError('Error al obtener el listado.')

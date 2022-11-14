@@ -6,12 +6,19 @@ export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)
   const status = new StatusEssentialLoading()
 
-  const listar = async (criterioBusqueda?: string | null) => {
+  const listar = async (criterioBusqueda?: string | null, params?:any) => {
     const filtros = {
       search: criterioBusqueda,
     }
 
     if (!criterioBusqueda) delete filtros.search
+    if(params){
+      // Object.assign(filtros, params)
+      status.activar()
+      const {response} =await controller.listar(params)
+      const result=response.data.results
+      status.desactivar()
+    }
 
     status.activar()
     const { response } = await controller.listar(filtros)

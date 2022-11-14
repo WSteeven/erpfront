@@ -26,7 +26,7 @@ export function useOrquestadorSelectorInventario(entidad: ProductoEnPercha, endp
     }
 
     const selector = useSelector(singleSelector)
-    const listar = () => selector.listar(criterioBusqueda.value)
+    const listar = (params) => selector.listar(criterioBusqueda.value, params)
     const limpiar = () => singleSelector.limpiar()
     const seleccionar = (id: number) => selector.seleccionar(id)
 

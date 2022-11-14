@@ -33,10 +33,10 @@
     flat
     bordered
     :pagination="{ rowsPerPage: 0 }"
+    :rows-per-page-options="[0]"
     :selection="tipoSeleccion"
     v-model:selected="selected"
     wrap-cells
-    :rows-per-page-options="[0]"
     class="bg-white custom-border"
     :class="{
       'alto-fijo': !inFullscreen && altoFijo,

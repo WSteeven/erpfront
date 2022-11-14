@@ -72,7 +72,7 @@ export default defineComponent({
     ]
 
     if (!listadoCargado) {
-      listar({ page: currentPageListado.value, offset: 48 }, true)
+      listar({ page: currentPageListado.value, offset: 48 })
       listadoCargado = true
     }
 

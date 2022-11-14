@@ -85,7 +85,7 @@ export default defineComponent({
     let tabSeleccionado='TODO'
 
     function aplicarFiltro(tabSeleccionado) {
-      listar({page: currentPageListado.value, offset: 48, estado: tabSeleccionado}, true)
+      listar({page: currentPageListado.value, offset: 48, estado: tabSeleccionado}, false)
       emit('tab-seleccionado', tabSeleccionado)
     }
 
@@ -165,6 +165,8 @@ export default defineComponent({
       puedeEditar,
       puedeEliminar,
       aplicarFiltro,
+      //cargar listado
+      cargarListado,
 
       esBodeguero,
       esCoordinador,
