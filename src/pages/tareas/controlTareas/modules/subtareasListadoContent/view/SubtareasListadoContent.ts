@@ -2,7 +2,7 @@
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
-import { tabOptions, accionesTabla, estadosSubtareas } from 'config/utils'
+import { tabOptions, accionesTabla, estadosSubtareas, acciones } from 'config/utils'
 import { useTareaStore } from 'stores/tarea'
 import { defineComponent } from 'vue'
 
@@ -42,6 +42,7 @@ export default defineComponent({
       accion: () => {
         tareaStore.resetearSubtarea()
         tareaStore.subtarea.tarea_id = tareaStore.tarea.id
+        tareaStore.accionSubtarea = acciones.nuevo
         modales.abrirModalEntidad('SubtareasPage')
       },
     }
@@ -50,6 +51,7 @@ export default defineComponent({
       titulo: 'Editar',
       icono: 'bi-pencil',
       accion: async ({ entidad }) => {
+        tareaStore.accionSubtarea = acciones.editar
         await tareaStore.consultarSubtareaCoordinador(entidad.id)
         modales.abrirModalEntidad('SubtareasPage')
       },

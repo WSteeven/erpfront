@@ -102,7 +102,7 @@ export class ContenedorSimpleMixin<
   }
 
   // Listar
-  private async listar(params: any, append: boolean) {
+  private async listar(params: any, append = false) {
     this.cargarVista(async () => {
       try {
         const { result } = await this.controller.listar(params)
