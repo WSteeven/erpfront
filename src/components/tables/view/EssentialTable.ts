@@ -208,9 +208,18 @@ export default defineComponent({
 
     const rows = computed(() => listado.value?.length - 1 ?? 0)
 
+    const loading = ref(false)
+
     function onScroll({ to }) {
-      if (to === rows.value) {
-        nextTick(() => emit('onScroll'))
+      if (!loading.value && to === rows.value) {
+        loading.value = true
+
+        setTimeout(() => {
+          nextTick(() => {
+            loading.value = false
+            emit('onScroll')
+          })
+        }, 500)
       }
     }
 
@@ -237,6 +246,7 @@ export default defineComponent({
       estadosInventarios,
       estadosSubtareas,
       onScroll,
+      loading,
     }
   },
 })

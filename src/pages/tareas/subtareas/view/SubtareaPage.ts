@@ -36,7 +36,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
     const { obtenerListados, cargarVista, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
-    const { onBeforeGuardar, onReestablecer } = mixin.useHooks()
+    const { onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
 
     const tareaStore = useTareaStore()
     const accion = tareaStore.accionSubtarea
@@ -184,6 +184,10 @@ export default defineComponent({
     setValidador(v$.value)
 
     onBeforeGuardar(() => {
+      subtarea.tecnicos_grupo_principal = tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString() //"[2, 3]"
+    })
+
+    onBeforeModificar(() => {
       subtarea.tecnicos_grupo_principal = tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString() //"[2, 3]"
     })
 
