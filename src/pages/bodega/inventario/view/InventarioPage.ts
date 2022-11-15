@@ -3,6 +3,7 @@ import { configuracionColumnasInventarios } from "../domain/configuracionColumna
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
+import { useDetalleStore } from "stores/detalle";
 
 //Componentes
 import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
@@ -20,6 +21,7 @@ import { CondicionController } from "pages/administracion/condiciones/infraestru
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
 import { number } from "echarts";
+import { useTransaccionIngresoStore } from "stores/transaccionIngreso";
 
 export default defineComponent({
     components: { TabLayout },
@@ -31,7 +33,24 @@ export default defineComponent({
     setup() {
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, listar, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+
+        const transaccionStore = useTransaccionIngresoStore()
+        const detalleStore = useDetalleStore()
+        if(transaccionStore.transaccion.id){
+            console.log('La transaccion en el inventario: ',transaccionStore.transaccion)
+            if(detalleStore.detalle.id){
+                console.log('El detalle en el inventario es: ', detalleStore.detalle)
+                inventario.producto=detalleStore.detalle.producto
+                inventario.detalle_id=detalleStore.detalle.id
+                const elementoEncontrado=transaccionStore.transaccion.listadoProductosSeleccionados.filter((v)=>v.id===detalleStore.detalle.id)
+                console.log('El elemento ews;: ',elementoEncontrado)
+                console.log('La cantidad del elemento es: ',elementoEncontrado[0]['cantidades'])
+                inventario.cantidad=elementoEncontrado[0]['cantidades']
+                console.log('sucursal de la transaccion en el inventario, ', transaccionStore.transaccion.sucursal)
+                inventario.sucursal_id = transaccionStore.transaccion.sucursal
+            }
+        }
 
         const opciones_productos = ref([])
         const opciones_detalles = ref([])
@@ -48,9 +67,9 @@ export default defineComponent({
                 condiciones: new CondicionController(),
                 sucursales: new SucursalController(),
             })
-            inventario.cliente_id = listadosAuxiliares.clientes[0]['id']
-            inventario.sucursal_id = listadosAuxiliares.sucursales[0]['id']
-            inventario.condicion = listadosAuxiliares.condiciones[0]['id']
+            // inventario.cliente_id = listadosAuxiliares.clientes[0]['id']
+            // inventario.sucursal_id = listadosAuxiliares.sucursales[0]['id']
+            // inventario.condicion = listadosAuxiliares.condiciones[0]['id']
         })
 
         //Reglas de validacion

@@ -430,7 +430,6 @@
     />
 
   </q-form>
-
   <!-- Modal de seleccion de detalles -->
   <essential-selectable-table
     ref="refListadoSeleccionableProductos"

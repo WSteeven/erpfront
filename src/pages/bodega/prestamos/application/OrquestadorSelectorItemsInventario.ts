@@ -1,5 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { useSelector } from 'components/tables/application/selector'
+import { useSelector } from 'components/tables/application/selectorListado'
 import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
 import { endpoints } from 'config/api'
 import { Ref, ref } from 'vue'
@@ -35,7 +35,7 @@ export function useOrquestadorSelectorItemsInventario(entidad: Prestamo, endpoin
     }
 
     const selector = useSelector(singleSelector)
-    const listar = () => selector.listar(criterioBusqueda.value)
+    const listar = (params) => selector.listar(criterioBusqueda.value, params)
     const limpiar = () => singleSelector.limpiar()
     
     const seleccionar = (entidades: Inventario[]) => {

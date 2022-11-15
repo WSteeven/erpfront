@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasPrestamos } from "../domain/configuracionColumnasPrestamos";
-import { required, requiredIf } from "@vuelidate/validators";
+import { helpers, required, requiredIf } from "@vuelidate/validators";
 import {useVuelidate} from '@vuelidate/core';
 import { defineComponent, ref } from "vue";
 
@@ -33,7 +33,8 @@ export default defineComponent({
         const {entidad:prestamo, disabled, listadosAuxiliares}= mixin.useReferencias()
         const {setValidador, cargarVista, obtenerListados}=mixin.useComportamiento()
         const {confirmar, prompt} = useNotificaciones()
-
+        
+        let sucursal = ref()
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
             criterioBusqueda:criterioBusquedaProducto,
@@ -44,7 +45,6 @@ export default defineComponent({
         }=useOrquestadorSelectorItemsInventario(prestamo, 'inventarios')
 
 
-        let sucursal
         const opciones_empleados = ref([])
         const opciones_sucursales = ref([])
         //Obtener los listados
@@ -61,7 +61,12 @@ export default defineComponent({
             fecha_salida:{required},
             solicitante:{required},
             estado:{required},
-            listadoProductos: { required },
+            listadoProductos: { 
+                $each: helpers.forEach({
+                    cantidades:{required}
+                }),
+                required ,
+            },
             fecha_devolucion: {
                 requiredIfDevuelto: requiredIf(function(){return prestamo.estado==='DEVUELTO'?true:false;}),
             },
@@ -109,6 +114,10 @@ export default defineComponent({
         const estados = ['PENDIENTE','DEVUELTO']
 
 
+        function updateSucursal(){
+            prestamo.listadoProductos=[]
+        }
+
         return {
             mixin, prestamo, v$, disabled, 
             configuracionColumnas: configuracionColumnasPrestamos,
@@ -118,6 +127,7 @@ export default defineComponent({
             opciones_sucursales,
             estados,
 
+            
             //filtros
             filtroEmpleados(val, update) {
                 if (val === '') {
@@ -131,10 +141,15 @@ export default defineComponent({
                     opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle)>-1)
                 })
             },
+            empleadoSeleccionado(val){
+                sucursal.value = opciones_empleados.value[0]['sucursal']
+                // console.log(sucursal.value)
+                const sucursalEncontrada = listadosAuxiliares.sucursales.filter((v)=>v.lugar===sucursal.value)
+                sucursal.value=sucursalEncontrada[0]['id']
+            },
             //sucursal seleccionada
             SucursalSeleccionada(val){
-                //aqui va la logica de filtros cuando se selecciona una sucursal u otra
-                vvvvvv
+                updateSucursal()
             },
 
             //tabla
@@ -142,7 +157,7 @@ export default defineComponent({
             configuracionColumnasProductosSeleccionadosAccion,
             botonEditarCantidad,
             eliminarItem,
-
+            
             //selector
             refListadoSeleccionableProductos,
             criterioBusquedaProducto,
@@ -151,6 +166,9 @@ export default defineComponent({
             limpiarProducto,
             seleccionarProducto,
             configuracionColumnasProductos,
+            
+            //variable para el filtrado
+            sucursal,
 
             seleccionarPrueba(data){
                 console.log('Aqui se recibe la fila seleccionada')

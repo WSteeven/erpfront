@@ -22,8 +22,7 @@ export const useTareaStore = defineStore('tarea', () => {
 
   const statusLoading = new StatusEssentialLoading()
 
-  async function
-    consultarSubtarea(id: number) {
+  async function consultarSubtarea(id: number) {
     statusLoading.activar()
     const axios = AxiosHttpRepository.getInstance()
     const ruta = axios.getEndpoint(endpoints.subtareas) + id

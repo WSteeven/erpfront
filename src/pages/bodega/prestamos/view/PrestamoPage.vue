@@ -95,6 +95,7 @@
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
+              @update:model-value="empleadoSeleccionado"
               :readonly="disabled"
               :error="!!v$.solicitante.$errors.length"
               error-message="Debes seleccionar un empleado"
@@ -135,7 +136,7 @@
               :error="!!v$.solicitante.$errors.length"
               error-message="Debes seleccionar un empleado"
               :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.lugar"
               emit-value
               map-options
             >
@@ -206,7 +207,7 @@
                     (v) => (criterioBusquedaProducto = v.toUpperCase())
                   "
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarProductos()"
+                  @keydown.enter="listarProductos({sucursal:sucursal})"
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
                   "
@@ -217,7 +218,7 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos()"
+                  @click="listarProductos({sucursal:sucursal})"
                   icon="search"
                   unelevated
                   color="secondary"

@@ -1,5 +1,5 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { useSelector } from "components/tables/application/selector";
+import { useSelector } from "components/tables/application/selectorListado";
 import { Inventario } from "pages/bodega/inventario/domain/Inventario";
 import { endpoints } from "config/api";
 import { Ref, ref } from "vue";
