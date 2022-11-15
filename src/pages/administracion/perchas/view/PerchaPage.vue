@@ -14,8 +14,8 @@
               v-model="percha.sucursal"
               :options="opciones_sucursales"
               hint="Agregue elementos desde el panel de sucursales"
-              transition-show="flip-up"
-              transition-hide="flip-down"
+              transition-show="jump-up"
+              transition-hide="jump-down"
               options-dense
               dense
               outlined

@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasProductosEnPerchas } from "../domain/configuracionColumnasProductosEnPerchas";
-import { required } from "@vuelidate/validators";
+import { minValue, required } from "@vuelidate/validators";
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
@@ -25,6 +25,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(ProductoEnPercha, new ProductosEnPerchaController())
         const { entidad: producto_percha, disabled, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento();
+        const {onGuardado, onReestablecer}=mixin.useHooks()
 
         let sucursal = ref()
 
@@ -41,7 +42,10 @@ export default defineComponent({
         const reglas = {
             inventario: { required },
             ubicacion: { required },
-            stock: { required },
+            stock: {
+                required,
+                minimo: minValue(1),
+            },
         }
         const v$ = useVuelidate(reglas, producto_percha)
         setValidador(v$.value)
@@ -58,13 +62,19 @@ export default defineComponent({
         opciones_ubicaciones.value = listadosAuxiliares.ubicaciones
         opciones_sucursales.value = listadosAuxiliares.sucursales
 
-        function updateSucursal(val:number){
-            cargarVista(async()=>{
+        onGuardado(()=>{
+            sucursal.value=''
+        })
+        onReestablecer(()=>{
+            sucursal.value=''
+        })
+        function updateSucursal(val: number) {
+            cargarVista(async () => {
                 await obtenerListados({
                     ubicaciones: {
-                        controller:new UbicacionController(),
-                        params:{
-                            sucursal:sucursal.value
+                        controller: new UbicacionController(),
+                        params: {
+                            sucursal: sucursal.value
                         },
                     },
                 })
@@ -72,8 +82,8 @@ export default defineComponent({
             })
 
             // opciones_ubicaciones.value = listadosAuxiliares.ubicaciones.filter((v)=>v.sucursal===val)
-            console.log('valor a emitir', sucursal.value)
-            console.log('valor dentro del metodo', val)
+            // console.log('valor a emitir', sucursal.value)
+            // console.log('valor dentro del metodo', val)
         }
         // listarInventarios({sucursal: sucursal.value})
 
@@ -83,7 +93,7 @@ export default defineComponent({
             //listados
             opciones_ubicaciones,
             opciones_sucursales,
-            
+
             //variable para el filtrado
             sucursal,
 
@@ -97,7 +107,7 @@ export default defineComponent({
             configuracionColumnasInventarios,
 
             //filtro de SucursalSeleccionada
-            SucursalSeleccionada(val){
+            SucursalSeleccionada(val) {
                 updateSucursal(val)
             },
         }

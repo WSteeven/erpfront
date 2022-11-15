@@ -19,8 +19,10 @@ export function useOrquestadorSelectorInventario(entidad: ProductoEnPercha, endp
             criterioBusqueda.value = null
         },
         seleccionar: (inventario: Inventario) => {
-            entidad.inventario = inventario.id
-            criterioBusqueda.value = inventario.producto
+            console.log(inventario[0]['id'])
+            console.log(inventario[0]['producto'])
+            entidad.inventario = inventario[0]['id']
+            criterioBusqueda.value = inventario[0]['producto']
             console.log(criterioBusqueda.value)
         },
     }
@@ -28,8 +30,9 @@ export function useOrquestadorSelectorInventario(entidad: ProductoEnPercha, endp
     const selector = useSelector(singleSelector)
     const listar = (params) => selector.listar(criterioBusqueda.value, params)
     const limpiar = () => singleSelector.limpiar()
-    const seleccionar = (id: number) => selector.seleccionar(id)
-
+    const seleccionar = (item: Inventario) => {
+        singleSelector.seleccionar(item)
+    }
     return {
         refListadoSeleccionable,
         listado,

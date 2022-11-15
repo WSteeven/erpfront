@@ -1,6 +1,7 @@
 import { SelectorController } from '../infraestructure/SelectorController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { ref } from 'vue'
 
 export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)
@@ -10,20 +11,21 @@ export function useSelector(selector: any) {
     const filtros = {
       search: criterioBusqueda,
     }
-
+    let result
     if (!criterioBusqueda) delete filtros.search
     if(params){
       // Object.assign(filtros, params)
       status.activar()
       const {response} =await controller.listar(params)
-      const result=response.data.results
+      result=response.data.results
+      status.desactivar()
+    }else{
+      status.activar()
+      const { response } = await controller.listar(filtros)
+      result = response.data.results
       status.desactivar()
     }
 
-    status.activar()
-    const { response } = await controller.listar(filtros)
-    const result = response.data.results
-    status.desactivar()
 
     if (result.length === 0) {
       const { notificarAdvertencia } = useNotificaciones()

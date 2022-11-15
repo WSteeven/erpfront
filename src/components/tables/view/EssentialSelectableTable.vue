@@ -76,8 +76,8 @@ export default defineComponent({
     const emitSelected = (itemsSeleccionados: EntidadAuditable[]) => {
       if (itemsSeleccionados.length) {
         if (props.tipoSeleccion === 'single') {
-          // console.log('Fila seleccionada en el modal: ', itemsSeleccionados[0])
-          emit('selected', itemsSeleccionados[0])
+          console.log('Fila seleccionada en el modal: ', itemsSeleccionados)
+          emit('selected', itemsSeleccionados)
         }
         if (props.tipoSeleccion === 'multiple'){
         // console.log('Datos seleccionados y emitidos: ',itemsSeleccionados)

@@ -24,6 +24,7 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { useOrquestadorSelectorItemsInventario } from "../application/OrquestadorSelectorItemsInventario";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
+import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 
 export default defineComponent({
     components: {TabLayout, EssentialTable, EssentialSelectableTable},
@@ -43,24 +44,15 @@ export default defineComponent({
         }=useOrquestadorSelectorItemsInventario(prestamo, 'inventarios')
 
 
-
+        let sucursal
         const opciones_empleados = ref([])
+        const opciones_sucursales = ref([])
         //Obtener los listados
         cargarVista(async()=>{
             await obtenerListados({
                 empleados: new EmpleadoController(),
-                // empleados: {
-                //     controller: new EmpleadoController(),
-                //     // params:{
-                //     //     id:{
-                //     //         operator:'!=',
-                //     //         value:1
-                //     //     }
-                //     // },
-                //     // fields:{id, detalle, sucursal, etc,}
-                //     // //http://localhost:8000/api/empresas?id[operator]=!=&id[value]=1
-                // },
-                inventarios: new InventarioController(),
+                sucursales: new SucursalController(),
+                // inventarios: new InventarioController(),
 
             })
         })
@@ -113,6 +105,7 @@ export default defineComponent({
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
+        opciones_sucursales.value = listadosAuxiliares.sucursales
         const estados = ['PENDIENTE','DEVUELTO']
 
 
@@ -122,6 +115,7 @@ export default defineComponent({
 
             //listados
             opciones_empleados,
+            opciones_sucursales,
             estados,
 
             //filtros
@@ -136,6 +130,11 @@ export default defineComponent({
                     const needle = val.toLowerCase()
                     opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle)>-1)
                 })
+            },
+            //sucursal seleccionada
+            SucursalSeleccionada(val){
+                //aqui va la logica de filtros cuando se selecciona una sucursal u otra
+                vvvvvv
             },
 
             //tabla

@@ -124,12 +124,18 @@
               v-model="producto_percha.stock"
               placeholder="Obligatorio"
               :readonly="disabled"
+              :error="!!v$.stock.$errors.length"
               @update:model-value="
                 (v) => (producto_percha.stock = v.toUpperCase())
               "
               outlined
               dense
             >
+            <template v-slot:error>
+              <div v-for="error of v$.stock.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
             </q-input>
           </div>
         </div>
