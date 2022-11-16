@@ -41,47 +41,35 @@ export default defineComponent({
         },
     },
     components: { TabLayout, EssentialTable, EssentialSelectableTable, ButtonSubmits },
-    emits: ['creada', 'consultada'],
+    // emits: ['creada', 'consultada'],
     setup(props, { emit }) {
         const transaccionStore = useTransaccionIngresoStore()
 
         // const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = props.mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, guardar, consultar, editar, eliminar, reestablecer } = props.mixin.useComportamiento()
+        const { setValidador, obtenerListados, cargarVista, guardar, editar, eliminar, reestablecer } = props.mixin.useComportamiento()
         const { onGuardado, onConsultado, } = props.mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
 
         const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
-        // console.log('xxx',(store.roles.filter((v)=>v==='BODEGA' ||v==='COORDINADOR')).length>0?'es bodega':'no tiene el rol')
-        // console.log(rolSeleccionado)
-
+       
 
         // Hooks
         onGuardado(async () => {
             console.log('la transaccion creada: ', transaccion)
             console.log(transaccion.id)
             await transaccionStore.cargarTransaccion(transaccion.id)
-            // transaccionStore.consultarTransaccion(transaccion.id)
             console.log('aqqaqaqaqaqaqaqaqa:', transaccionStore.transaccion.listadoProductosSeleccionados)
             transaccion.listadoProductosSeleccionados = transaccionStore.transaccion.listadoProductosSeleccionados
-        
-            // emit('creada', transaccion.listadoProductosSeleccionados)
-            // transaccionStore.accionTransaccion.hydrate(transaccion)
         })
         onConsultado(() => {
-            console.log('la transaccion consultada: ', transaccion)
-            console.log('tipo',transaccion.tipo)
-            console.log('subtipo',transaccion.subtipo)
+            // console.log('la transaccion consultada: ', transaccion)
+            // console.log('tipo',transaccion.tipo)
+            // console.log('subtipo',transaccion.subtipo)
             opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v)=>v.id===transaccion.subtipo)
-            console.log(opciones_subtipos.value)
+            // console.log(opciones_subtipos.value)
             transaccionStore.transaccion.hydrate(transaccion)
-            /* if (transaccion.listadoProductosSeleccionados) {
-                emit('consultada', transaccion.listadoProductosSeleccionados)
-            }
-            else {
-                console.log('entro en el else', transaccion.listadoProductosSeleccionados)
-            } */
         })
 
 

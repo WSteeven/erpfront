@@ -43,8 +43,8 @@
       'my-sticky-dynamic': !inFullscreen && altoFijo,
     }"
     virtual-scroll
-    :virtual-scroll-item-size="48"
-    :virtual-scroll-sticky-size-start="48"
+    :virtual-scroll-item-size="offset"
+    :virtual-scroll-sticky-size-start="offset"
     @virtual-scroll="onScroll"
   >
     <!-- 
@@ -303,7 +303,10 @@
           v-if="
             accion1 &&
             (accion1.hasOwnProperty('visible')
-              ? accion1.visible(props.row)
+              ? accion1.visible({
+                  entidad: props.row,
+                  posicion: props.rowIndex,
+                })
               : true)
           "
           :color="accion1.color ?? 'primary'"
@@ -318,7 +321,11 @@
         >
           <q-icon
             v-if="accion1.icono"
-            :name="accion1.icono"
+            :name="
+              typeof accion1.icono === 'function'
+                ? accion1.icono(props.row)
+                : accion1.icono
+            "
             size="xs"
             class="q-mr-xs"
           ></q-icon>
@@ -334,7 +341,10 @@
           v-if="
             accion2 &&
             (accion2.hasOwnProperty('visible')
-              ? accion2.visible(props.row)
+              ? accion2.visible({
+                  entidad: props.row,
+                  posicion: props.rowIndex,
+                })
               : true)
           "
           :color="accion2.color ?? 'primary'"
@@ -365,7 +375,10 @@
           v-if="
             accion3 &&
             (accion3.hasOwnProperty('visible')
-              ? accion3.visible(props.row)
+              ? accion3.visible({
+                  entidad: props.row,
+                  posicion: props.rowIndex,
+                })
               : true)
           "
           :color="accion3.color ?? 'primary'"
@@ -396,7 +409,10 @@
           v-if="
             accion4 &&
             (accion4.hasOwnProperty('visible')
-              ? accion4.visible(props.row)
+              ? accion4.visible({
+                  entidad: props.row,
+                  posicion: props.rowIndex,
+                })
               : true)
           "
           :color="accion4.color ?? 'primary'"
@@ -427,7 +443,10 @@
           v-if="
             accion5 &&
             (accion5.hasOwnProperty('visible')
-              ? accion5.visible(props.row)
+              ? accion5.visible({
+                  entidad: props.row,
+                  posicion: props.rowIndex,
+                })
               : true)
           "
           :color="accion5.color ?? 'primary'"

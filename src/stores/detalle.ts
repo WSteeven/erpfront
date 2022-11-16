@@ -10,6 +10,7 @@ import { acciones } from 'config/utils';
 export const useDetalleStore = defineStore('detalle', ()=>{
     //State
     const detalle = reactive(new DetalleProducto())
+    let estaInventario=true
 
     const accionDetalle = acciones.nuevo
     const detalleReset = new DetalleProducto()
@@ -33,6 +34,7 @@ export const useDetalleStore = defineStore('detalle', ()=>{
         const modelo = await consultarDetalle(id)
         // console.log('modelo obtenido: ',modelo)
         detalle.hydrate(modelo)
+        estaInventario=true
     }
 
     function resetearDetalle(){
@@ -43,5 +45,6 @@ export const useDetalleStore = defineStore('detalle', ()=>{
         cargarDetalle,
         resetearDetalle,
         accionDetalle,
+        estaInventario,
     }
 })

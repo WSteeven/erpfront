@@ -13,9 +13,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
 
-export class ContenedorSimpleMixin<
-  T extends EntidadAuditable
-> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
+export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
   private notificaciones = useNotificaciones()
   private statusEssentialLoading = new StatusEssentialLoading()

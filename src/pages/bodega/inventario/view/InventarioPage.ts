@@ -22,6 +22,7 @@ import { SucursalController } from "pages/administracion/sucursales/infraestruct
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
 import { number } from "echarts";
 import { useTransaccionIngresoStore } from "stores/transaccionIngreso";
+import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
 
 export default defineComponent({
     components: { TabLayout },
@@ -34,8 +35,10 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const {onGuardado, onBeforeGuardar}=mixin.useHooks()
 
         const transaccionStore = useTransaccionIngresoStore()
+        const detalleProductoTransaccionStore = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
         if(transaccionStore.transaccion.id){
             console.log('La transaccion en el inventario: ',transaccionStore.transaccion)
@@ -51,6 +54,24 @@ export default defineComponent({
                 inventario.sucursal_id = transaccionStore.transaccion.sucursal
             }
         }
+
+        let cantidad=ref(0)
+        onBeforeGuardar(()=>{
+            cantidad.value = inventario.cantidad
+        })
+        onGuardado(async ()=>{
+            // detalleStore.estaInventario=false
+            console.log('Transaccion store en inventario:', transaccionStore.transaccion)
+            console.log('detalle es,', detalleStore.detalle)
+            // await detalleProductoTransaccionStore.cargarDetalle(8)
+            // console.log('QUE ES ESO???? ','?transaccion_id='+transaccionStore.transaccion.id+'&detalle_id='+detalleStore.detalle.id)
+            await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id='+transaccionStore.transaccion.id+'&detalle_id='+detalleStore.detalle.id)
+            console.log('DETALLE TRANSACCION es,', detalleProductoTransaccionStore.detalle)
+            detalleProductoTransaccionStore.detalle.cantidad_final=cantidad.value
+            await detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
+            console.log('el detalle actualizado es: ', detalleProductoTransaccionStore.detalle)
+            console.log('se guardó en el inventario:', inventario)
+        })
 
         const opciones_productos = ref([])
         const opciones_detalles = ref([])
