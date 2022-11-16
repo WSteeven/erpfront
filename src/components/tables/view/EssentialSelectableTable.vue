@@ -69,25 +69,12 @@ export default defineComponent({
      * @param itemSeleccionado Si la búsqueda devuelve un elemento, se autoselecciona
      */
     const seleccionar = (itemSeleccionado?: any) => {
-      if (itemSeleccionado) return emit('selected', itemSeleccionado.id)
+      if (itemSeleccionado) return emit('selected', itemSeleccionado)
       refTabla.value.seleccionar()
     }
 
     const emitSelected = (itemsSeleccionados: EntidadAuditable[]) => {
-      if (itemsSeleccionados.length) {
-        if (props.tipoSeleccion === 'single') {
-          console.log('Fila seleccionada en el modal: ', itemsSeleccionados)
-          emit('selected', itemsSeleccionados)
-        }
-        if (props.tipoSeleccion === 'multiple'){
-        // console.log('Datos seleccionados y emitidos: ',itemsSeleccionados)
-          emit(
-            'selected',
-            // itemsSeleccionados.map((item: any) => item.id)
-            itemsSeleccionados
-          )
-        }
-      }
+      if (itemsSeleccionados.length) emit('selected', itemsSeleccionados)
       ocultar()
     }
 

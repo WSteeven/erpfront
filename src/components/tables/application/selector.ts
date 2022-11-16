@@ -7,19 +7,19 @@ export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)
   const status = new StatusEssentialLoading()
 
-  const listar = async (criterioBusqueda?: string | null, params?:any) => {
+  const listar = async (criterioBusqueda?: string | null, params?: any) => {
     const filtros = {
       search: criterioBusqueda,
     }
     let result
     if (!criterioBusqueda) delete filtros.search
-    if(params){
+    if (params) {
       // Object.assign(filtros, params)
       status.activar()
-      const {response} =await controller.listar(params)
-      result=response.data.results
+      const { response } = await controller.listar(params)
+      result = response.data.results
       status.desactivar()
-    }else{
+    } else {
       status.activar()
       const { response } = await controller.listar(filtros)
       result = response.data.results
@@ -36,7 +36,7 @@ export function useSelector(selector: any) {
 
     // si se obtiene un solo elemento, se auto selecciona
     if (result.length === 1) {
-      selector.refListadoSeleccionable.value.seleccionar(result[0])
+      selector.refListadoSeleccionable.value.seleccionar(result) // seleccion multiple verificar si funciona para seleccion simple
       return
     }
 
@@ -54,7 +54,7 @@ export function useSelector(selector: any) {
     status.desactivar()
   }
 
-  
+
 
   return {
     listar,

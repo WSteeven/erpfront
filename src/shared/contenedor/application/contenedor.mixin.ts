@@ -7,6 +7,8 @@ import { Referencias } from '../domain/Referencias/referencias'
 import { listadoAuxiliar } from '../domain/listable'
 import { compararObjetos } from 'shared/utils'
 import { reactive, UnwrapRef } from 'vue'
+import { Validador } from 'shared/validadores/domain/Validador'
+import { useNotificaciones } from 'shared/notificaciones'
 // Componentes
 
 export abstract class Contenedor<
@@ -19,11 +21,12 @@ export abstract class Contenedor<
   protected readonly entidad: UnwrapRef<T>
   protected readonly entidad_vacia: UnwrapRef<T>
   protected readonly entidad_copia: UnwrapRef<T>
+  protected readonly notificaciones = useNotificaciones()
   // protected readonly utils = new Utils()
   // protected readonly modal = useBvModal()
   protected argsDefault: any
   protected readonly controller: C
-  // private validaciones: Validador[] = []
+  private validaciones: Validador[] = []
 
   constructor(entidad: Instanciable, controller: C, refs: R) {
     this.controller = controller
@@ -39,34 +42,38 @@ export abstract class Contenedor<
    * Veririfica que todas las validaciones devuelvan true.
    * @returns true, cuando todas las validaciones esten correctas
    */
-  /* async ejecutarValidaciones() {
+  async ejecutarValidaciones() {
+    console.log('verificando validaciones ...')
     try {
       for (const validacion of this.validaciones) {
-        if (!(await validacion.validar())) return false
+        console.log(await validacion)
+        if (!(await validacion.validar())) return
+        //return await validacion.validar()
       }
     } catch (error) {
       if (error instanceof Error) {
         this.notificaciones.notificarAdvertencia(error.message)
+        //console.log('validalo x favor: ' + error.message)
       }
       return false
     }
     return true
-  } */
+  }
 
-  // operaciones de la lista
 
   /**
    *Agrega un elemento validador, que se ejecutará cuando se requiera guardar o editar
    * @param {Validador} validadores una, o varias instancias que implemente la interfaz.
    */
-  /* agregarValidaciones(...validadores: Validador[]) {
+  agregarValidaciones(...validadores: Validador[]) {
     this.validaciones.push(...validadores)
   }
 
   limpiarValidaciones() {
     this.validaciones.splice(1, this.validaciones.length - 1)
-  } */
+  }
 
+  // Operaciones de la lista
   protected indexElementoEnLista(id: number | null): number {
     return this.refs.listado.value.findIndex(
       (elemento: T) => elemento.id === id
@@ -160,10 +167,6 @@ export abstract class Contenedor<
    * @returns true, cuando se haya cambiado algun parametro de la entidad.
    */
   protected seCambioEntidad(entidad_vacia: UnwrapRef<T>): boolean {
-    console.log("Original")
-    console.log(entidad_vacia)
-    console.log("Editado")
-    console.log(this.entidad)
     return compararObjetos(entidad_vacia, this.entidad)
   }
 

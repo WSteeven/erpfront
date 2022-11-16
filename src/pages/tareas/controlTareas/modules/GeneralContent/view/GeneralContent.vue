@@ -192,7 +192,7 @@
           />
         </div>
       </div>
-      {{ tipoUbicacionTrabajo }}
+
       <div
         v-if="tipoUbicacionTrabajo === 'ubicacion_manual'"
         class="row q-col-gutter-sm q-pa-md"

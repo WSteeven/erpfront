@@ -31,6 +31,7 @@
         <component
           :is="componente"
           @seleccionar="emit('seleccionar')"
+          @cerrar-modal="cerrarModalEntidad()"
         ></component>
         <!-- :mostrar-listado="false"></component> -->
       </q-card-section>

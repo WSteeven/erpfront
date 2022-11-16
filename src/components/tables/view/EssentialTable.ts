@@ -1,12 +1,15 @@
+// Dependencias
+import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios } from 'config/utils'
+import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
+import { computed, defineComponent, ref, watchEffect, nextTick } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { CustomActionTable } from '../domain/CustomActionTable'
+import { TipoSeleccion, estadosSubtareas } from 'config/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns } from 'shared/utils'
 import { exportFile, useQuasar } from 'quasar'
-import { TipoSeleccion, estadosSubtareas } from 'config/utils'
-import { computed, defineComponent, ref, watchEffect, nextTick } from 'vue'
-import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
-import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios } from 'config/utils'
+import { offset } from 'config/utils_tablas'
+
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
@@ -247,6 +250,7 @@ export default defineComponent({
       estadosSubtareas,
       onScroll,
       loading,
+      offset,
     }
   },
 })

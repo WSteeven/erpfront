@@ -12,7 +12,6 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TareaController } from '../infraestructure/TareaController'
 import { Tarea } from '../domain/Tarea'
-import { UbicacionTarea } from '../domain/UbicacionTarea'
 
 export default defineComponent({
   name: 'TareaPage',
@@ -30,10 +29,6 @@ export default defineComponent({
     const step = ref(1)
 
     const tareaStore = useTareaStore()
-    // onConsultado(() => {
-    // tareaStore.tarea.hydrate(tarea)
-    //  tareaStore.accionTarea = accion
-    // })
 
     onBeforeModificar(() => {
       tarea.ubicacion_tarea = JSON.stringify(tarea.ubicacion_tarea)
@@ -51,18 +46,6 @@ export default defineComponent({
     onConsultado(() => {
       tarea.ubicacion_tarea = JSON.parse(tarea.ubicacion_tarea)
       tareaStore.tarea.hydrate(tarea)
-
-      // tarea.ubicacion_tarea = JSON.parse(tarea.ubicacion_tarea)
-      // ubicacionTrabajo.value = opcionesUbicacion.manual
-
-      // tarea.hydrate(tareaStore.tarea)
-      /* if (tarea.cliente_final) {
-        obtenerClienteFinal(tarea.cliente_final)
-        ubicacionTrabajo.value = opcionesUbicacion.cliente
-      } else {
-        clienteFinal.hydrate(new ClienteFinal())
-        ubicacionTrabajo.value = opcionesUbicacion.manual
-      } */
     })
 
     return {

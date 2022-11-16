@@ -32,6 +32,7 @@
               outlined
               dense
               autogrow
+              :disable="disable"
               type="textarea"
               :error="!!v$.detalle.$errors.length"
             >
@@ -55,6 +56,7 @@
               options-dense
               dense
               outlined
+              @update:model-value="obtenerResponsables(subtarea.grupo)"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               use-input
@@ -62,6 +64,7 @@
               emit-value
               map-options
               clearable
+              :disable="disable"
               :error="!!v$.grupo.$errors.length"
             >
               <!--@update:model-value="obtenerResponsables(subtarea.grupo)"-->
@@ -110,6 +113,7 @@
               input-debounce="0"
               emit-value
               map-options
+              :disable="disable"
               :error="!!v$.tipo_trabajo.$errors.length"
             >
               <template v-slot:no-option>
@@ -184,8 +188,8 @@
             <label class="q-mb-sm block">Cantidad de días</label>
             <q-input
               v-model="subtarea.cantidad_dias"
-              disable
               outlined
+              disable
               dense
             ></q-input>
           </div>
@@ -259,6 +263,7 @@
             <q-checkbox
               v-model="subtarea.es_dependiente"
               label="Es dependiente"
+              :disable="disable"
               outlined
               dense
             ></q-checkbox>
@@ -280,6 +285,7 @@
               :option-value="(item) => item.id"
               use-input
               input-debounce="0"
+              :disable="disable"
               emit-value
               map-options
             >
@@ -312,6 +318,7 @@
             <q-checkbox
               v-model="subtarea.es_ventana"
               label="Es ventana de trabajo"
+              :disable="disable"
               outlined
               dense
             ></q-checkbox>
@@ -322,6 +329,7 @@
             <label class="q-mb-sm block">Hora inicio de ventana (24H)</label>
             <q-input
               v-model="subtarea.hora_inicio_ventana"
+              :disable="disable"
               mask="time"
               outlined
               dense
@@ -358,6 +366,7 @@
             <label class="q-mb-sm block">Hora fin de ventana (24H)</label>
             <q-input
               v-model="subtarea.hora_fin_ventana"
+              :disable="disable"
               mask="time"
               outlined
               dense
@@ -397,6 +406,7 @@
             <q-input
               v-model="subtarea.descripcion_completa"
               placeholder="Opcional"
+              :disable="disable"
               autogrow
               outlined
               dense
@@ -404,19 +414,21 @@
           </div>
 
           <!-- Técnicos del grupo principal -->
-          <div v-if="tecnicosGrupoPrincipal" class="col-12">
+          <div v-if="subtarea.tecnicos_grupo_principal" class="col-12">
             <essential-table
               titulo="Técnicos del grupo principal"
               :configuracionColumnas="columnas"
-              :datos="tecnicosGrupoPrincipal"
+              :datos="subtarea.tecnicos_grupo_principal"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
+              :permitirEliminar="!disable"
               :alto-fijo="false"
               :mostrar-header="false"
               :mostrar-footer="false"
               @eliminar="eliminarTecnico"
             >
+              <!--:datos="tecnicosGrupoPrincipal"-->
             </essential-table>
           </div>
         </div>
@@ -443,6 +455,7 @@
               toggle-color="blue-grey-10"
               color="white"
               text-color="blue-grey-10"
+              :disable="disable"
               :options="[
                 { label: 'Buscar un técnico a la vez', value: 'por_tecnico' },
                 { label: 'Buscar por grupo', value: 'por_grupo' },
@@ -466,8 +479,10 @@
               @update:model-value="
                 (v) => (criterioBusquedaTecnico = v.toUpperCase())
               "
-              @keydown.enter="listarTecnico()"
+              @keydown.enter="listarTecnicos()"
               @blur="criterioBusquedaTecnico === '' ? limpiarTecnico() : null"
+              type="search"
+              :disable="disable"
               outlined
               dense
             ></q-input>
@@ -477,10 +492,11 @@
             <br />
             <q-btn
               color="positive"
-              no-caps
               class="full-width"
+              :disable="disable"
+              no-caps
               push
-              @click="listarTecnico()"
+              @click="listarTecnicos()"
             >
               <q-icon name="bi-search" class="q-pr-sm" size="xs"></q-icon>
               <div>Buscar</div>
@@ -504,6 +520,7 @@
               outlined
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
+              :disable="disable"
               use-input
               input-debounce="0"
               emit-value
@@ -528,7 +545,13 @@
 
           <div class="col-12 col-md-2 q-pt-md">
             <br />
-            <q-btn color="positive" no-caps class="full-width" push>
+            <q-btn
+              color="positive"
+              class="full-width"
+              :disable="disable"
+              no-caps
+              push
+            >
               <q-icon name="bi-search" class="q-pr-sm" size="xs"></q-icon>
               <div>Listar técnicos</div>
             </q-btn>
@@ -542,14 +565,15 @@
             <essential-table
               titulo="Técnicos temporales de otros grupos"
               :configuracionColumnas="columnas"
-              :datos="datos"
+              :datos="subtarea.tecnicos_temporales"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
+              :permitirEliminar="!disable"
               :alto-fijo="false"
               :mostrar-header="false"
               :mostrar-footer="false"
-              @eliminar="eliminarTecnico"
+              @eliminar="eliminarTecnicoTemporal"
             >
             </essential-table>
           </div>
@@ -558,11 +582,19 @@
 
       <button-submits
         :accion="accion"
-        @cancelar="reestablecer()"
-        @editar="editar(subtarea)"
-        @guardar="guardar(subtarea)"
+        @cancelar="reestablecerDatos()"
+        @editar="editarDatos(subtarea)"
+        @guardar="guardarDatos(subtarea)"
       />
     </q-form>
+
+    <essential-selectable-table
+      ref="refListadoSeleccionableTecnicos"
+      :configuracion-columnas="configuracionColumnasTecnico"
+      :datos="listadoTecnicos"
+      tipo-seleccion="multiple"
+      @selected="seleccionarTecnico"
+    ></essential-selectable-table>
   </q-page>
 </template>
 

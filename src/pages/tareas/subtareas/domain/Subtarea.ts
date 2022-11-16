@@ -30,7 +30,7 @@ export class Subtarea extends EntidadAuditable {
 
   descripcion_completa: string | null
 
-  tecnicos_grupo_principal: Ref<Tecnico[]> | null
+  tecnicos_grupo_principal: any[] //Ref<Tecnico[]>
   tecnicos_otros_grupos: Ref<Tecnico> | null
 
   estado: string | null
@@ -70,7 +70,7 @@ export class Subtarea extends EntidadAuditable {
 
     this.descripcion_completa = null
 
-    this.tecnicos_grupo_principal = null
+    this.tecnicos_grupo_principal = []
     this.tecnicos_otros_grupos = null
 
     this.tecnicos_temporales = []

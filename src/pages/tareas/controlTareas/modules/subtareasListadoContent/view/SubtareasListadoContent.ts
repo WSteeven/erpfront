@@ -1,10 +1,11 @@
 // Dependencias
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
+import { tabOptions, accionesTabla, estadosSubtareas, acciones } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
-import { tabOptions, accionesTabla, estadosSubtareas, acciones } from 'config/utils'
 import { useTareaStore } from 'stores/tarea'
-import { defineComponent } from 'vue'
+import { offset } from 'config/utils_tablas'
+import { computed, defineComponent, watch } from 'vue'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -16,18 +17,21 @@ import { ComportamientoModalesSubtareaContent } from '../application/Comportamie
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
+import { useSubtareaListadoStore } from 'stores/subtareaListado'
 
 export default defineComponent({
   components: { EssentialTableTabs, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
-    const { listado } = mixin.useReferencias()
+    const { listado, currentPageListado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
     const { confirmar } = useNotificaciones()
 
     const tareaStore = useTareaStore()
+    const subtareaListadoStore = useSubtareaListadoStore()
+
     if (tareaStore.tarea.id) aplicarFiltro('CREADO')
 
     const configuracionColumnas = [
@@ -40,33 +44,39 @@ export default defineComponent({
     const agregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
       accion: () => {
-        tareaStore.resetearSubtarea()
+        // tareaStore.resetearSubtarea()
+        subtareaListadoStore.idSubtareaSeleccionada = null
         tareaStore.subtarea.tarea_id = tareaStore.tarea.id
         tareaStore.accionSubtarea = acciones.nuevo
         modales.abrirModalEntidad('SubtareasPage')
+        subtareaListadoStore.nuevoElementoInsertado = false
       },
     }
 
     const botonEditarSubtarea: CustomActionTable = {
-      titulo: 'Editar',
-      icono: 'bi-pencil',
-      accion: async ({ entidad }) => {
-        tareaStore.accionSubtarea = acciones.editar
-        await tareaStore.consultarSubtareaCoordinador(entidad.id)
+      titulo: (entidad) => entidad.estado === estadosSubtareas.CREADO ? 'Editar' : 'Visualizar',
+      icono: (entidad) => entidad.estado === estadosSubtareas.CREADO ? 'bi-pencil' : 'bi-eye',
+      accion: async ({ entidad, posicion }) => {
+        /*if (entidad.estado === estadosSubtareas.) 
+        tareaStore.accionSubtarea = acciones.editar*/
         modales.abrirModalEntidad('SubtareasPage')
+        subtareaListadoStore.posicionSubtareaSeleccionada = posicion
+        subtareaListadoStore.idSubtareaSeleccionada = entidad.id
+        // await tareaStore.consultarSubtareaCoordinador(entidad.id)
       },
     }
 
-    const verControlAvance: CustomActionTable = {
-      titulo: 'Ver avance',
-      icono: 'bi-eye',
+    const botonControlAvance: CustomActionTable = {
+      titulo: 'Ver avances',
+      icono: 'bi-journal-text',
+      visible: ({ entidad }) => entidad.estado !== estadosSubtareas.CREADO,
       accion: () => modales.abrirModalEntidad('GestionarAvancesPage'),
     }
 
     const botonFinalizar: CustomActionTable = {
       titulo: 'Realizado',
       color: 'positive',
-      visible: (entidad) => entidad.estado !== 'REALIZADO' && entidad.estado !== 'CREADO',
+      visible: ({ entidad }) => entidad.estado !== estadosSubtareas.REALIZADO && entidad.estado !== estadosSubtareas.CREADO && entidad.estado !== estadosSubtareas.ASIGNADO,
       accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como realizada la tarea?', () => {
         new CambiarEstadoSubtarea().realizar(entidad.id)
         entidad.estado = estadosSubtareas.REALIZADO
@@ -77,7 +87,7 @@ export default defineComponent({
     const botonAsignar: CustomActionTable = {
       titulo: 'Asignar',
       color: 'indigo',
-      visible: (entidad) => entidad.estado !== estadosSubtareas.REALIZADO && entidad.estado !== estadosSubtareas.EJECUTANDO && entidad.estado !== estadosSubtareas.ASIGNADO,
+      visible: ({ entidad }) => entidad.estado !== estadosSubtareas.REALIZADO && entidad.estado !== estadosSubtareas.EJECUTANDO && entidad.estado !== estadosSubtareas.ASIGNADO,
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de asignar la tarea?', () => {
           new CambiarEstadoSubtarea().asignar(entidad.id)
@@ -91,7 +101,7 @@ export default defineComponent({
     const botonSolicitarMaterial: CustomActionTable = {
       titulo: 'Solicitar material',
       icono: 'bi-list',
-      visible: (entidad) => entidad.estado !== estadosSubtareas.REALIZADO,
+      visible: ({ entidad }) => entidad.estado !== estadosSubtareas.REALIZADO,
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de asignar la tarea?', () => {
           new CambiarEstadoSubtarea().asignar(entidad.id)
@@ -102,7 +112,8 @@ export default defineComponent({
     }
 
     function aplicarFiltro(tabSeleccionado) {
-      if (tareaStore.tarea.id) listar({ tarea_id: tareaStore.tarea.id, estado: tabSeleccionado })
+      subtareaListadoStore.filtroEstadoSeleccionado = tabSeleccionado
+      if (tareaStore.tarea.id) listar({ page: currentPageListado.value++, offset, tarea_id: tareaStore.tarea.id, estado: tabSeleccionado })
     }
 
     function actualizarElemento(posicion: number, entidad: any): void {
@@ -112,11 +123,25 @@ export default defineComponent({
       }
     }
 
+    const subtareaEditada = computed(() => subtareaListadoStore.subtareaEditada)
+    /*watch(subtareaEditada, () => {
+      if (subtareaEditada) {
+
+      }
+    })*/
+
+    const nuevoElementoInsertado = computed(() => subtareaListadoStore.nuevoElementoInsertado)
+    watch(nuevoElementoInsertado, () => {
+      if (nuevoElementoInsertado) {
+        aplicarFiltro(subtareaListadoStore.filtroEstadoSeleccionado)
+      }
+    })
+
     return {
       configuracionColumnasSubtareas,
       configuracionColumnas,
       botonEditarSubtarea,
-      verControlAvance,
+      botonControlAvance,
       agregarSubtarea,
       botonFinalizar,
       aplicarFiltro,

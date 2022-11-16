@@ -1,23 +1,21 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { Contenedor } from '../../../application/contenedor.mixin'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { HooksSimples } from '../domain/hooksSimples'
 import { acciones } from 'config/utils'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
-import { markRaw, watch } from 'vue'
-import { useNotificaciones } from 'shared/notificaciones'
-import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
+import { markRaw, watch } from 'vue'
 
 export class ContenedorSimpleMixin<
   T extends EntidadAuditable
 > extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
-  private notificaciones = useNotificaciones()
   private statusEssentialLoading = new StatusEssentialLoading()
 
   constructor(
@@ -25,7 +23,6 @@ export class ContenedorSimpleMixin<
     controller: TransaccionSimpleController<T>
   ) {
     super(entidad, controller, markRaw(new Referencias()))
-    // this.argsDefault = {}
   }
 
   private async cargarVista(callback: () => Promise<void>): Promise<void> {
@@ -73,7 +70,6 @@ export class ContenedorSimpleMixin<
 
   // Consultar
   private async consultar(data: T) {
-    //this.verificarAutenticacion()
 
     this.hooks.onBeforeConsultar()
 
@@ -88,6 +84,7 @@ export class ContenedorSimpleMixin<
         data.id,
         this.argsDefault
       )
+
       this.entidad.hydrate(result)
       this.entidad_copia.hydrate(this.entidad)
       this.refs.tabs.value = 'formulario'
@@ -111,7 +108,6 @@ export class ContenedorSimpleMixin<
         if (append) this.refs.listado.value.push(...result.data)
         else this.refs.listado.value = result.data
       } catch (error) {
-        console.log(error)
         this.notificaciones.notificarError('Error al obtener el listado.')
       }
     })
@@ -126,20 +122,20 @@ export class ContenedorSimpleMixin<
 
   // Guardar
   private async guardar(data: any, resetOnSaved = true) {
-    // this.verificarAutenticacion()
-
-    this.hooks.onBeforeGuardar()
 
     if (!this.seCambioEntidad(this.entidad_vacia)) {
-      return this.notificaciones.notificarAdvertencia(
+      this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
+      throw new Error('No se ha efectuado ningun cambio')
     }
 
-    if (!(await this.refs.validador.value.$validate())) {
-      console.log(this.refs.validador.value.v$)
-      return this.notificaciones.notificarAdvertencia('Verifique el formulario')
+    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+      this.notificaciones.notificarAdvertencia('Verifique el formulario')
+      throw new Error('Verifique el formulario')
     }
+
+    this.hooks.onBeforeGuardar()
 
     this.cargarVista(async () => {
       try {
@@ -152,14 +148,15 @@ export class ContenedorSimpleMixin<
         this.agregarElementoListadoActual(response.data.modelo)
         this.entidad.hydrate(response.data.modelo)
         this.hooks.onGuardado()
-        if (resetOnSaved) {
-          this.reestablecer()
-        }
+        if (resetOnSaved) this.reestablecer()
+
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)
         }
+        // console.log('ocurrio un error')
+        // throw error //new Error('Verifique el formulario')
       }
     })
 
@@ -176,8 +173,6 @@ export class ContenedorSimpleMixin<
     //private async editar(resetOnUpdated = true) {
     // this.verificarAutenticacion()
 
-    this.hooks.onBeforeModificar()
-
     if (this.entidad.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'
@@ -190,9 +185,16 @@ export class ContenedorSimpleMixin<
       )
     }
 
-    if (!(await this.refs.validador.value.$validate())) {
+    /* if (!(await this.refs.validador.value.$validate())) {
       return this.notificaciones.notificarAdvertencia('Verifique el formulario')
+    } */
+
+    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+      this.notificaciones.notificarAdvertencia('Verifique el formulario')
+      throw new Error('Verifique el formulario')
     }
+
+    this.hooks.onBeforeModificar()
 
     this.cargarVista(async () => {
       try {
@@ -207,7 +209,6 @@ export class ContenedorSimpleMixin<
           this.reestablecer()
         }
       } catch (error: any) {
-        console.log(error)
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
           notificarMensajesError(mensajes, this.notificaciones)
