@@ -38,6 +38,9 @@ import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/Subta
 import { watch } from 'fs'
 import { InventarioController } from 'pages/bodega/inventario/infraestructure/InventarioController'
 import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
+import { isTemplateNode } from '@vue/compiler-core'
+import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTableTabs, EssentialTable, EssentialSelectableTable },
@@ -45,7 +48,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
         const { entidad: transaccion, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const {onConsultado}=mixin.useHooks()
+        const { onConsultado } = mixin.useHooks()
         // aplicarFiltro('TODO')
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
@@ -62,16 +65,17 @@ export default defineComponent({
         const esBodeguero = store.esBodeguero
         const esCoordinador = store.esCoordinador
         const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
-        
-        console.log('rol seleccionado: ',rolSeleccionado)
-        
+
+        console.log('rol seleccionado: ', rolSeleccionado)
+
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
         const opciones_tipos = ref([])
         const opciones_subtipos = ref([])
         const opciones_estados = ref([])
-        const opciones_subtareas =ref([])
-        
+        const opciones_tareas = ref([])
+        const opciones_subtareas = ref([])
+
         cargarVista(async () => {
             await obtenerListados({
                 sucursales: new SucursalController(),
@@ -80,6 +84,7 @@ export default defineComponent({
                     //params: { tipo:props.tipo}
                     params: { tipo: 'EGRESO' }
                 },
+                tareas: new TareaController(),
                 subtareas: new SubtareaController(),
                 subtipos: new SubtipoTransaccionController(),
                 autorizaciones: new AutorizacionController(),
@@ -88,8 +93,8 @@ export default defineComponent({
             })
         })
 
-        let esVisibleAutorizacion= ref(false)
-        
+        let esVisibleAutorizacion = ref(false)
+
         //Reglas de validacion
         const reglas = {
             justificacion: { required },
@@ -125,14 +130,15 @@ export default defineComponent({
         opciones_subtipos.value = listadosAuxiliares.subtipos
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
         opciones_estados.value = listadosAuxiliares.estados
+        opciones_tareas.value = listadosAuxiliares.tareas
         opciones_subtareas.value = listadosAuxiliares.subtareas
 
-       /*  const fecha = new Date()
-        transaccion.created_at = new Intl.DateTimeFormat('az', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        }).format(fecha) */
+        /*  const fecha = new Date()
+         transaccion.created_at = new Intl.DateTimeFormat('az', {
+             year: 'numeric',
+             month: '2-digit',
+             day: '2-digit'
+         }).format(fecha) */
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',
@@ -140,22 +146,24 @@ export default defineComponent({
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
-            accion: ({posicion }) => {
+            accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
                     (data) => transaccion.listadoProductosSeleccionados[posicion].cantidades = data,
                     transaccion.listadoProductosSeleccionados[posicion].cantidades
                 )
             }
         }
-        const botonDespachar: CustomActionTable= {
+        const botonDespachar: CustomActionTable = {
             titulo: 'Despachar',
-            accion: ({posicion})=>{
-                inventarios :{
+            accion: ({ posicion }) => {
+                inventarios: {
                     controller: new TipoTransaccionController(),
-                    {params: posicion}  
+                        { params: posicion }
                 }
-            }
+            },
+            visible:({entidad, posicion})=> esBodeguero
         }
+        console.log('es bodeguero?',esBodeguero)
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
             name: 'cantidades',
             field: 'cantidades',
@@ -174,6 +182,9 @@ export default defineComponent({
 
         let tabSeleccionado = ref()
         let puedeEditar = ref(false)
+        let esVisibleTarea = ref(false)
+        let esVisibleSubtarea = ref(false)
+
 
         return {
             mixin, transaccion, disabled, accion, v$,
@@ -184,29 +195,55 @@ export default defineComponent({
             opciones_subtipos,
             opciones_autorizaciones,
             opciones_estados,
+            opciones_tareas,
             opciones_subtareas,
 
             //variables auxiliares
             esVisibleAutorizacion,
+            esVisibleTarea,
+            esVisibleSubtarea,
 
 
             //filtros
             filtroTipos(val) {
+                const tipoSeleccionado = listadosAuxiliares.tipos.filter((v)=>v.id===val)
+                if(tipoSeleccionado[0]['nombre']==='DEVOLUCION DE TAREA'||tipoSeleccionado[0]['nombre']==='DESPACHO DE TAREA'){
+                    esVisibleTarea.value=true
+                    esVisibleSubtarea.value=true
+                }else{
+                    esVisibleTarea.value=false
+                    esVisibleSubtarea.value=false
+                }
                 opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
                 transaccion.subtipo = ''
                 if (opciones_subtipos.value.length > 1) {
                     transaccion.subtipo = ''
-                    esVisibleAutorizacion.value=false
+                    esVisibleAutorizacion.value = false
                 }
                 if (opciones_subtipos.value.length === 1) {
                     transaccion.subtipo = opciones_subtipos.value[0]['id']
-                    if(opciones_subtipos.value[0]['nombre']==='TRANSFERENCIA ENTRE BODEGAS'){
-                        esVisibleAutorizacion.value=true
-                    }else{
-                        esVisibleAutorizacion.value=false
+                    if (opciones_subtipos.value[0]['nombre'] === 'TRANSFERENCIA ENTRE BODEGAS') {
+                        esVisibleAutorizacion.value = true
+                    } else {
+                        esVisibleAutorizacion.value = false
                     }
                 }
             },
+            filtroSubtipos(val) {
+                esVisibleTarea.value = false
+                const opcionSeleccionada = listadosAuxiliares.subtipos.filter((item) => item.id === val)
+                esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === 'MATERIALES PARA TAREAS' ? true : false
+                esVisibleSubtarea.value = false
+                esVisibleSubtarea.value = opcionSeleccionada[0]['nombre'] === 'DESPACHO DE TAREA' ? true : false
+            },
+
+            filtroTareas(val) {
+                opciones_subtareas.value = listadosAuxiliares.subtareas.filter((v: Subtarea) => v.tarea_id === val)
+                transaccion.subtarea = ''
+                if (opciones_subtareas.value.length > 1) transaccion.subtarea = ''
+                if (opciones_subtareas.value.length === 1) transaccion.subtarea = opciones_subtareas.value[0]['id']
+            },
+
 
             //tabla
             configuracionColumnasProductosSeleccionadosAccion,
@@ -247,7 +284,7 @@ export default defineComponent({
                 console.log(puedeEditar.value)
             },
 
-            
+
 
         }
     }

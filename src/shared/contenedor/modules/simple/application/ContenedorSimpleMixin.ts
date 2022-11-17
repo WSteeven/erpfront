@@ -12,9 +12,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
 import { markRaw, watch } from 'vue'
 
-export class ContenedorSimpleMixin<
-  T extends EntidadAuditable
-> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
+export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
   private statusEssentialLoading = new StatusEssentialLoading()
 

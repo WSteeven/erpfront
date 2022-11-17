@@ -32,7 +32,12 @@
           <!-- Fecha límite -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha limite</label>
-            <q-input v-model="transaccion.fecha_limite" placeholder="Opcional" outlined dense>
+            <q-input
+              v-model="transaccion.fecha_limite"
+              placeholder="Opcional"
+              outlined
+              dense
+            >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -78,7 +83,7 @@
               emit-value
               map-options
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.tipo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
@@ -103,6 +108,7 @@
               options-dense
               dense
               outlined
+              @update:model-value="filtroSubtipos"
               :readonly="disabled"
               :error="!!v$.subtipo.$errors.length"
               error-message="Debes seleccionar un subtipo"
@@ -159,9 +165,9 @@
           <!-- Tiene observacion de autorizacion -->
           <div
             v-if="
-              
               transaccion.tiene_obs_autorizacion ||
-              transaccion.observacion_aut || esVisibleAutorizacion
+              transaccion.observacion_aut ||
+              esVisibleAutorizacion
             "
             class="col-12 col-md-3"
           >
@@ -265,8 +271,40 @@
             <q-input v-model="transaccion.solicitante" disable outlined dense>
             </q-input>
           </div>
+          <!-- Tarea -->
+          <div
+            v-if="esVisibleTarea || esVisibleSubtarea"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Tarea</label>
+            <q-select
+              v-model="transaccion.tarea"
+              :options="opciones_tareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              clearable
+              hint="Tarea #"
+              dense
+              outlined
+              :readonly="disabled"
+              @update:model-value="filtroTareas"
+              :option-label="(item) => item.detalle"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Subtarea -->
-          <div class="col-12 col-md-3">
+          <div v-if="esVisibleSubtarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Subtarea</label>
             <q-select
               v-model="transaccion.subtarea"
@@ -274,7 +312,7 @@
               transition-show="scale"
               transition-hide="scale"
               options-dense
-              clearable 
+              clearable
               dense
               outlined
               :readonly="disabled"
@@ -408,9 +446,11 @@
           </div>
           <!-- Tabla -->
           <div class="col-12">
-            <essential-table 
+            <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="transaccion.listadoProductosSeleccionados"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -424,10 +464,12 @@
         </div>
       </q-form>
 
+      <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
         :configuracion-columnas="configuracionColumnasProductosSeleccionados"
         :datos="listadoProductos"
+        tipo-seleccion="multiple"
         @selected="seleccionarProducto"
       >
       </essential-selectable-table>

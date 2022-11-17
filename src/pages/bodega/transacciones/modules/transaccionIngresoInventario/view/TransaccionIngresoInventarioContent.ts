@@ -16,6 +16,8 @@ import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { ComportamientoModalesTransaccionIngreso } from "../application/ComportamientoModalesTransaccionIngreso";
 import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
 import { DetalleProducto } from "pages/bodega/detalles_productos/domain/DetalleProducto";
+import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
+
 
 
 
@@ -33,9 +35,12 @@ export default defineComponent({
     components: { EssentialTable, ModalesEntidad },
     setup(props) {
         const listado = props.items
-        // console.log('items recibidos en variable listado', listado)
+        console.log('items recibidos en variable listado', listado)
 
         const transaccionStore = useTransaccionIngresoStore()
+        const detalleTransaccionIngreso = useDetalleTransaccionStore()
+        const detalleStore = useDetalleStore()
+        console.log('cdcdvsdcvsdcs', detalleStore.estaInventario)
 
         if (transaccionStore.transaccion.id) {
             // console.log('La transaccion del Store es: ', transaccionStore.transaccion)
@@ -45,17 +50,18 @@ export default defineComponent({
         }
 
         const modales = new ComportamientoModalesTransaccionIngreso()
+        let id_aux = ref(0)
 
         const botonInventario: CustomActionTable = {
             titulo: 'Inventariar',
-            visible: ({entidad})=> entidad.variable==true?true:false,//modificar esta parte 
-            accion: async ({ entidad }) => {
+            // visible: ({entidad})=> entidad.variable==true?true:false,//modificar esta parte 
+            accion: async ({ entidad, posicion }) => {
                 console.log('La entidad recibida es', entidad)
-                const detalleStore = useDetalleStore()
+                console.log('La posicion recibida es', posicion)
                 console.log(detalleStore.detalle)
                 // detalleStore.detalle = reactive(new DetalleProducto())
                 await detalleStore.cargarDetalle(entidad.id)
-                // console.log(detalleStore.detalle)
+                console.log('El detalle está en inventario?: ', detalleStore.estaInventario)
                 // await transaccionStore.asignarDetalle(entidad.id)
                 // await transaccionStore.consultarDetalleProducto(entidad.id)
                 // transaccionStore.detalle.id=entidad.id
@@ -64,7 +70,30 @@ export default defineComponent({
                 // transaccionStore.detalle.id=entidad.id
 
                 modales.abrirModalEntidad('InventarioPage')
+                detalleStore.estaInventario=false
+                const id=detalleStore.detalle.id
+                id_aux.value=id!
+                /* setTimeout(()=>{
+                    listado.splice(posicion,1)
+                }, 1000) */
             },
+            visible:({entidad,posicion})=>{
+                console.log('entidad en visible',entidad)
+                console.log('posiciion en visible',posicion)
+                console.log('el detalle en BD',detalleTransaccionIngreso.detalle)
+                console.log(entidad.despachado, entidad.cantidades)
+                console.log('comprobacion',entidad.despachado===entidad.cantidades)
+                return entidad.despachado===entidad.cantidades?false:true
+                // return true
+            },
+           /*  visible: ({entidad, pos}) =>{
+                console.log('entidad', entidad)
+                console.log('pos', pos)
+                console.log('es visible', id_aux.value, detalleStore.estaInventario)
+                console.log('qwerty', detalleStore.detalle.id)
+                return true
+                // return (id_aux.value!==0 && id_aux.value===detalleStore.detalle.id && detalleStore.estaInventario)??detalleStore.estaInventario
+            } */
         }
 
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
