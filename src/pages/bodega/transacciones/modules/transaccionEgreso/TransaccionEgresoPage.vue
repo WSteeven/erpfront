@@ -18,7 +18,7 @@
             <q-input
               v-model="transaccion.id"
               placeholder="Obligatorio"
-              :readonly="disabled"
+              :readonly="disabled||soloLectura"
               outlined
               dense
             >
@@ -35,6 +35,7 @@
             <q-input
               v-model="transaccion.fecha_limite"
               placeholder="Opcional"
+              :readonly="disabled||soloLectura"
               outlined
               dense
             >
@@ -74,7 +75,7 @@
               options-dense
               dense
               outlined
-              :readonly="disabled"
+              :readonly="disabled||soloLectura"
               :error="!!v$.tipo.$errors.length"
               error-message="Debes seleccionar un subtipo"
               @update:model-value="filtroTipos"
@@ -109,7 +110,7 @@
               dense
               outlined
               @update:model-value="filtroSubtipos"
-              :readonly="disabled"
+              :readonly="disabled||soloLectura"
               :error="!!v$.subtipo.$errors.length"
               error-message="Debes seleccionar un subtipo"
               :option-value="(v) => v.id"
@@ -128,7 +129,7 @@
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="transaccion.autorizacion || esVisibleAutorizacion"
+            v-if="transaccion.autorizacion || esVisibleAutorizacion||esCoordinador"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -140,7 +141,7 @@
               options-dense
               dense
               outlined
-              :readonly="disabled"
+              :readonly="disabled||(soloLectura&&!esCoordinador)"
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="(v) => v.id"
@@ -190,7 +191,7 @@
             <q-input
               v-model="transaccion.observacion_aut"
               placeholder="Obligatorio"
-              :readonly="disabled"
+              :readonly="disabled||soloLectura"
               :error="!!v$.observacion_aut.$errors.length"
               @update:model-value="
                 (v) => (transaccion.observacion_aut = v.toUpperCase())
@@ -219,7 +220,7 @@
               options-dense
               dense
               outlined
-              :readonly="disabled"
+              :readonly="disabled||soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               :option-value="(v) => v.id"
@@ -247,7 +248,7 @@
             <q-input
               v-model="transaccion.justificacion"
               placeholder="Obligatorio"
-              :readonly="disabled"
+              :readonly="disabled||soloLectura"
               :error="!!v$.justificacion.$errors.length"
               @update:model-value="
                 (v) => (transaccion.justificacion = v.toUpperCase())
@@ -287,7 +288,7 @@
               hint="Tarea #"
               dense
               outlined
-              :readonly="disabled"
+              :readonly="disabled||soloLectura"
               @update:model-value="filtroTareas"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
@@ -315,7 +316,7 @@
               clearable
               dense
               outlined
-              :readonly="disabled"
+              :readonly="disabled||soloLectura"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
               emit-value
@@ -352,7 +353,7 @@
               options-dense
               dense
               outlined
-              :readonly="disabled"
+              :readonly="disabled||(soloLectura&&!esBodeguero)"
               :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado para la transacción"
               :option-value="(v) => v.id"
@@ -454,10 +455,11 @@
               :datos="transaccion.listadoProductosSeleccionados"
               :permitirConsultar="false"
               :permitirEditar="false"
-              :permitirEliminar="true"
+              :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonDespachar"
+              :accion3="botonEliminar"
               @eliminar="eliminar"
             ></essential-table>
           </div>
