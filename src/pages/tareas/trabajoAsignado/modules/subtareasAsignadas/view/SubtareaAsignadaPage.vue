@@ -56,20 +56,8 @@
               emit-value
               map-options
               disable
-              @update:model-value="(v) => obtenerTecnicoResponsable()"
             >
             </q-select>
-          </div>
-
-          <!-- Técnico responsable -->
-          <div v-if="subtarea.tecnico_responsable" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Técnico responsable</label>
-            <q-input
-              v-model="subtarea.tecnico_responsable"
-              disable
-              outlined
-              dense
-            ></q-input>
           </div>
 
           <!-- Tipo trabajo -->

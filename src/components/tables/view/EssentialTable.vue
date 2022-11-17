@@ -47,55 +47,6 @@
     :virtual-scroll-sticky-size-start="offset"
     @virtual-scroll="onScroll"
   >
-    <!-- 
-    :pagination="{ rowsPerPage: 0 }"
-     :virtual-scroll-item-size="48"
-    :virtual-scroll-sticky-size-start="48"
-     @virtual-scroll="onScroll"
-   -->
-    <!--<template v-slot:pagination="scope">
-      <q-btn
-        v-if="scope.pagesNumber > 2"
-        icon="first_page"
-        color="grey-8"
-        round
-        dense
-        flat
-        :disable="scope.isFirstPage"
-        @click="scope.firstPage"
-      />
-
-      <q-btn
-        icon="chevron_left"
-        color="grey-8"
-        round
-        dense
-        flat
-        :disable="scope.isFirstPage"
-        @click="scope.prevPage"
-      />
-
-      <q-btn
-        icon="chevron_right"
-        color="grey-8"
-        round
-        dense
-        flat
-        :disable="scope.isLastPage"
-        @click="scope.nextPage"
-      />
-
-      <q-btn
-        v-if="scope.pagesNumber > 2"
-        icon="last_page"
-        color="grey-8"
-        round
-        dense
-        flat
-        :disable="scope.isLastPage"
-        @click="scope.lastPage"
-      />
-    </template>-->
     <!-- Editar celdas -->
     <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
       <q-td :key="props.col.name" :props="props" placeholder="fdfdfd">
@@ -258,7 +209,7 @@
 
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
-      <q-td :props="props" class="q-gutter-sm">
+      <q-td v-if="!$q.screen.xs" :props="props" class="q-gutter-sm">
         <!-- Consultar -->
         <q-btn
           v-if="permitirConsultar"
@@ -298,176 +249,121 @@
           <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
         </q-btn>
 
-        <!-- Accion personalizada 1 -->
-        <q-btn
-          v-if="
-            accion1 &&
-            (accion1.hasOwnProperty('visible')
-              ? accion1.visible({
-                  entidad: props.row,
-                  posicion: props.rowIndex,
-                })
-              : true)
-          "
-          :color="accion1.color ?? 'primary'"
-          rounded
-          dense
-          push
-          no-caps
-          class="q-px-sm"
-          @click="
-            accion1?.accion({ entidad: props.row, posicion: props.rowIndex })
-          "
-        >
-          <q-icon
-            v-if="accion1.icono"
-            :name="
-              typeof accion1.icono === 'function'
-                ? accion1.icono(props.row)
-                : accion1.icono
-            "
-            size="xs"
-            class="q-mr-xs"
-          ></q-icon>
-          <span>{{
-            typeof accion1.titulo === 'function'
-              ? accion1.titulo(props.row)
-              : accion1.titulo
-          }}</span>
-        </q-btn>
-
-        <!-- Accion personalizada 2 -->
-        <q-btn
-          v-if="
-            accion2 &&
-            (accion2.hasOwnProperty('visible')
-              ? accion2.visible({
-                  entidad: props.row,
-                  posicion: props.rowIndex,
-                })
-              : true)
-          "
-          :color="accion2.color ?? 'primary'"
-          rounded
-          dense
-          push
-          no-caps
-          class="q-px-sm"
-          @click="
-            accion2?.accion({ entidad: props.row, posicion: props.rowIndex })
-          "
-        >
-          <q-icon
-            v-if="accion2.icono"
-            :name="accion2.icono"
-            size="xs"
-            class="q-mr-xs"
-          ></q-icon>
-          <span>{{
-            typeof accion2.titulo === 'function'
-              ? accion2.titulo(props.row)
-              : accion2.titulo
-          }}</span>
-        </q-btn>
-
-        <!-- Accion personalizada 3 -->
-        <q-btn
-          v-if="
-            accion3 &&
-            (accion3.hasOwnProperty('visible')
-              ? accion3.visible({
-                  entidad: props.row,
-                  posicion: props.rowIndex,
-                })
-              : true)
-          "
-          :color="accion3.color ?? 'primary'"
-          rounded
-          dense
-          push
-          no-caps
-          class="q-px-sm"
-          @click="
-            accion3?.accion({ entidad: props.row, posicion: props.rowIndex })
-          "
-        >
-          <q-icon
-            v-if="accion3.icono"
-            :name="accion3.icono"
-            size="xs"
-            class="q-mr-xs"
-          ></q-icon>
-          <span>{{
-            typeof accion3.titulo === 'function'
-              ? accion3.titulo(props.row)
-              : accion3.titulo
-          }}</span>
-        </q-btn>
-
-        <!-- Accion personalizada 4 -->
-        <q-btn
-          v-if="
-            accion4 &&
-            (accion4.hasOwnProperty('visible')
-              ? accion4.visible({
-                  entidad: props.row,
-                  posicion: props.rowIndex,
-                })
-              : true)
-          "
-          :color="accion4.color ?? 'primary'"
-          rounded
-          dense
-          push
-          no-caps
-          class="q-px-sm"
-          @click="
-            accion4?.accion({ entidad: props.row, posicion: props.rowIndex })
-          "
-        >
-          <q-icon
-            v-if="accion4.icono"
-            :name="accion4.icono"
-            size="xs"
-            class="q-mr-xs"
-          ></q-icon>
-          <span>{{
-            typeof accion4.titulo === 'function'
-              ? accion4.titulo(props.row)
-              : accion4.titulo
-          }}</span>
-        </q-btn>
-
-        <!-- Accion personalizada 5 -->
-        <q-btn
-          v-if="
-            accion5 &&
-            (accion5.hasOwnProperty('visible')
-              ? accion5.visible({
-                  entidad: props.row,
-                  posicion: props.rowIndex,
-                })
-              : true)
-          "
-          :color="accion5.color ?? 'primary'"
-          rounded
-          dense
-          push
-          no-caps
-          class="q-px-sm"
-          @click="
-            accion5?.accion({ entidad: props.row, posicion: props.rowIndex })
-          "
-        >
-          <q-icon
-            v-if="accion5.icono"
-            :name="accion5.icono"
-            size="xs"
-            class="q-mr-xs"
-          ></q-icon>
-          <span>{{ accion5.titulo }}</span>
-        </q-btn>
+        <!-- custom botons -->
+        <CustomButtons
+          :accion1="accion1"
+          :accion2="accion2"
+          :accion3="accion3"
+          :accion4="accion4"
+          :accion5="accion5"
+          :propsTable="props"
+        ></CustomButtons>
       </q-td>
+    </template>
+
+    <!-- Botones de acciones Mobile (Grid)  -->
+    <template v-slot:item="props">
+      <q-card
+        v-if="$q.screen.xs"
+        :class="props.selected ? 'bg-grey-2' : ''"
+        class="q-pa-sm q-mb-md full-width custom-shadow"
+        :style="props.selected ? 'transform: scale(0.95);' : ''"
+      >
+        <q-card-section v-if="tipoSeleccion !== 'none'">
+          <q-checkbox dense v-model="props.selected" :label="props.row.name" />
+        </q-card-section>
+
+        <q-list dense>
+          <q-item v-for="col in props.cols" :key="col.name">
+            <!-- Clave -->
+            <q-item-section>
+              <q-item-label>{{ col.label }}</q-item-label>
+            </q-item-section>
+
+            <!-- Valor -->
+            <q-item-section caption class="text-right text-grey-7">
+              <div
+                v-if="col.name === 'acciones'"
+                :props="props"
+                class="q-gutter-sm"
+              >
+                <!-- Consultar -->
+                <q-btn
+                  v-if="permitirConsultar"
+                  color="indigo-1"
+                  round
+                  unelevated
+                  dense
+                  @click="
+                    consultar({ entidad: props.row, posicion: props.rowIndex })
+                  "
+                >
+                  <q-icon name="bi-eye" color="primary" size="xs"></q-icon>
+                  <q-tooltip class="bg-dark"> Consultar </q-tooltip>
+                </q-btn>
+
+                <!-- Editar -->
+                <q-btn
+                  v-if="permitirEditar"
+                  color="indigo-1"
+                  round
+                  unelevated
+                  dense
+                  @click="
+                    editar({ entidad: props.row, posicion: props.rowIndex })
+                  "
+                >
+                  <q-icon name="bi-pencil" color="primary" size="xs"></q-icon>
+                  <q-tooltip class="bg-dark"> Editar </q-tooltip>
+                </q-btn>
+
+                <!-- Eliminar -->
+                <q-btn
+                  v-if="permitirEliminar"
+                  color="indigo-1"
+                  round
+                  unelevated
+                  dense
+                  @click="
+                    eliminar({ entidad: props.row, posicion: props.rowIndex })
+                  "
+                >
+                  <q-icon name="bi-trash" color="primary" size="xs"></q-icon>
+                  <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
+                </q-btn>
+
+                <CustomButtons
+                  :accion1="accion1"
+                  :accion2="accion2"
+                  :accion3="accion3"
+                  :accion4="accion4"
+                  :accion5="accion5"
+                  :propsTable="props"
+                ></CustomButtons>
+              </div>
+
+              <!-- <q-item-label v-else caption>{{ col.value }}</q-item-label> -->
+              <q-item-label v-else>
+                <span v-if="col.name === 'pagado'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check"
+                    color="positive"
+                    size="md"
+                  ></q-icon>
+                  <q-icon
+                    v-else
+                    name="bi-x"
+                    color="negative"
+                    size="md"
+                  ></q-icon>
+                </span>
+                <span v-else>{{ col.value }}</span>
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-card>
     </template>
 
     <template #body-cell-pagado="props">
@@ -724,161 +620,6 @@
           >DEVUELTO
         </q-chip>
       </q-td>
-    </template>
-
-    <!-- Botones de acciones Mobile (Grid)  -->
-    <template v-slot:item="props">
-      <q-card
-        :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-pa-sm q-mb-md full-width custom-shadow"
-        :style="props.selected ? 'transform: scale(0.95);' : ''"
-      >
-        <q-card-section v-if="tipoSeleccion !== 'none'">
-          <q-checkbox dense v-model="props.selected" :label="props.row.name" />
-        </q-card-section>
-
-        <q-list dense>
-          <q-item v-for="col in props.cols" :key="col.name">
-            <!-- Clave -->
-            <q-item-section>
-              <q-item-label>{{ col.label }}</q-item-label>
-            </q-item-section>
-
-            <!-- Valor -->
-            <q-item-section caption class="text-right text-grey-7">
-              <div
-                v-if="col.name === 'acciones'"
-                :props="props"
-                class="q-gutter-sm"
-              >
-                <!-- Consultar -->
-                <q-btn
-                  v-if="permitirConsultar"
-                  color="indigo-1"
-                  round
-                  unelevated
-                  dense
-                  @click="
-                    consultar({ entidad: props.row, posicion: props.rowIndex })
-                  "
-                >
-                  <q-icon name="bi-eye" color="primary" size="xs"></q-icon>
-                  <q-tooltip class="bg-dark"> Consultar </q-tooltip>
-                </q-btn>
-
-                <!-- Editar -->
-                <q-btn
-                  v-if="permitirEditar"
-                  color="indigo-1"
-                  round
-                  unelevated
-                  dense
-                  @click="
-                    editar({ entidad: props.row, posicion: props.rowIndex })
-                  "
-                >
-                  <q-icon name="bi-pencil" color="primary" size="xs"></q-icon>
-                  <q-tooltip class="bg-dark"> Editar </q-tooltip>
-                </q-btn>
-
-                <!-- Eliminar -->
-                <q-btn
-                  v-if="permitirEliminar"
-                  color="indigo-1"
-                  round
-                  unelevated
-                  dense
-                  @click="
-                    eliminar({ entidad: props.row, posicion: props.rowIndex })
-                  "
-                >
-                  <q-icon name="bi-trash" color="primary" size="xs"></q-icon>
-                  <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
-                </q-btn>
-
-                <!-- Accion personalizada 1 -->
-                <q-btn
-                  v-if="accion1"
-                  color="primary"
-                  rounded
-                  push
-                  dense
-                  no-caps
-                  :label="accion1.titulo"
-                  class="q-px-sm"
-                  @click="
-                    accion1?.accion({
-                      entidad: props.row,
-                      posicion: props.rowIndex,
-                    })
-                  "
-                >
-                  <q-tooltip class="bg-dark">{{ accion1.titulo }} </q-tooltip>
-                </q-btn>
-
-                <!-- Accion personalizada 2 -->
-                <q-btn
-                  v-if="accion2"
-                  color="primary"
-                  rounded
-                  push
-                  dense
-                  no-caps
-                  :label="accion2.titulo"
-                  class="q-px-sm"
-                  @click="
-                    accion2?.accion({
-                      entidad: props.row,
-                      posicion: props.rowIndex,
-                    })
-                  "
-                >
-                  <q-tooltip class="bg-dark">{{ accion2.titulo }} </q-tooltip>
-                </q-btn>
-
-                <!-- Accion personalizada 3 -->
-                <q-btn
-                  v-if="accion3"
-                  color="primary"
-                  rounded
-                  push
-                  dense
-                  no-caps
-                  :label="accion3.titulo"
-                  class="q-px-sm"
-                  @click="
-                    accion3?.accion({
-                      entidad: props.row,
-                      posicion: props.rowIndex,
-                    })
-                  "
-                >
-                  <q-tooltip class="bg-dark">{{ accion2.titulo }} </q-tooltip>
-                </q-btn>
-              </div>
-
-              <!-- <q-item-label v-else caption>{{ col.value }}</q-item-label> -->
-              <q-item-label v-else>
-                <span v-if="col.name === 'pagado'">
-                  <q-icon
-                    v-if="col.value"
-                    name="bi-check"
-                    color="positive"
-                    size="md"
-                  ></q-icon>
-                  <q-icon
-                    v-else
-                    name="bi-x"
-                    color="negative"
-                    size="md"
-                  ></q-icon>
-                </span>
-                <span v-else>{{ col.value }}</span>
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-card>
     </template>
 
     <!-- <template v-slot:body="props">

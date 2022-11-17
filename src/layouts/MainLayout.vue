@@ -50,7 +50,7 @@
         <!--</q-btn>-->
 
         <span>
-          <q-btn dense round flat icon="bi-box" class="q-mr-md" color="black">
+          <q-btn dense round flat icon="bi-bell" class="q-mr-md" color="black">
             <q-badge color="positive" floating transparent> 4 </q-badge>
             <q-menu transition-show="flip-right" transition-hide="flip-left">
               <q-list style="min-width: 100px">
@@ -203,8 +203,8 @@
     <!-- Drawer -->
     <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-white">
       <!-- Drawer Header -->
-      <div class="absolute-top q-pa-xl">
-        <img src="~assets/logo.png" class="full-width" />
+      <div class="absolute-top q-pa-lg">
+        <img src="~assets/logo.jpeg" class="q-mx-auto block" height="116" />
         <!--<q-avatar size="58px" class="q-mb-md" square>
         </q-avatar>
         <div class="text-h5 text-secondary">CONSTRUCRED</div> -->

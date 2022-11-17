@@ -203,3 +203,8 @@ export const estadosSubtareas = {
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
 }
+
+export const rolesAdmitidos = {
+  tecnico_lider: 'TECNICO LIDER',
+  coordinador: 'COORDINADOR',
+}

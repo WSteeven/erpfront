@@ -2,7 +2,6 @@
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
 import { tabTrabajoAsignado, accionesTabla, estadosSubtareas } from 'config/utils'
 import { defineComponent, ref } from 'vue'
-//import { useRouter } from 'vue-router'
 
 // Componentes
 import ConfirmarDialog from 'pages/tareas/trabajoAsignado/view/ConfirmarDialog.vue'
@@ -28,7 +27,7 @@ export default defineComponent({
     setup() {
         const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
-        const { listado } = mixin.useReferencias()
+        const { listado, currentPageListado, offset } = mixin.useReferencias()
         const { listar } = mixin.useComportamiento()
         const { confirmar } = useNotificaciones()
 
@@ -42,7 +41,8 @@ export default defineComponent({
             titulo: 'Visualizar',
             icono: 'bi-eye',
             accion: async ({ entidad }) => {
-                await store.consultarSubtareaTecnico(entidad.id)
+                // await store.consultarSubtareaTecnico(entidad.id)
+                store.idSubtareaAsignada = entidad.id
                 modales.abrirModalEntidad('SubtareaAsignadaPage')
             },
         }
@@ -51,7 +51,7 @@ export default defineComponent({
             titulo: 'Iniciar',
             icono: 'bi-play',
             color: 'positive',
-            visible: (entidad) => entidad.estado === estadosSubtareas.ASIGNADO,
+            visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO,
             accion: () => {
                 confirmar('¿Está seguro de iniciar el trabajo?', () =>
                     // mostrarDialogPlantilla.value = true
@@ -64,13 +64,14 @@ export default defineComponent({
             titulo: 'Pausar/Continuar',
             icono: 'bi-play-circle',
             color: 'indigo',
-            visible: (entidad) => entidad.estado === estadosSubtareas.EJECUTANDO,
+            visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
             accion: () => mostrarDialogPlantilla.value = true
         }
 
         function aplicarFiltro(tabSeleccionado) {
             const grupo_id = authenticationStore.user.grupo_id
-            listar({ estado: tabSeleccionado })//, grupo: grupo_id })
+            // listar({ estado: tabSeleccionado })//, grupo: grupo_id })
+            listar({ page: currentPageListado.value++, offset, grupo_id: grupo_id, estado: tabSeleccionado })
         }
 
         aplicarFiltro('ASIGNADO')

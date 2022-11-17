@@ -38,4 +38,11 @@ export const configuracionColumnasTecnico: ColumnConfig<Empleado>[] = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'roles',
+    field: 'roles',
+    label: 'Rol',
+    align: 'left',
+    sortable: true,
+  },
 ]

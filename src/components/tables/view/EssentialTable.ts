@@ -13,11 +13,13 @@ import { offset } from 'config/utils_tablas'
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
+import CustomButtons from './CustomButtonsTable.vue'
 
 export default defineComponent({
   components: {
     PrevisualizarTablaPdf,
     EditarTablaModal,
+    CustomButtons,
   },
   props: {
     titulo: {

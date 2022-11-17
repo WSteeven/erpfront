@@ -15,6 +15,7 @@ export class Empleado extends EntidadAuditable {
     roles: string | null
     grupo: number | null
     disponible: boolean
+    es_lider: boolean
 
     constructor() {
         super()
@@ -31,5 +32,6 @@ export class Empleado extends EntidadAuditable {
         this.roles = null
         this.grupo = null
         this.disponible = true
+        this.es_lider = false
     }
 }

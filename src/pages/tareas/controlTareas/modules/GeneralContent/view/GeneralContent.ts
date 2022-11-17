@@ -20,7 +20,7 @@ import { ClienteController } from 'pages/sistema/clientes/infraestructure/Client
 import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { Canton } from 'pages/sistema/ciudad/domain/Canton'
+// import { Canton } from 'pages/sistema/ciudad/domain/Canton'
 import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
 
 export default defineComponent({
@@ -195,21 +195,17 @@ export default defineComponent({
       }
     }) */
 
-    // onConsultado(() => console.log('consultado... dentro de genral'))
     watchEffect(() => {
       if (tarea.cliente_final) {
         obtenerClienteFinal(tarea.cliente_final)
         tipoUbicacionTrabajo.value = opcionesUbicacion.cliente
-        // console.log('tiene cliente final')
       } else {
-        // clienteFinal.hydrate(new ClienteFinal())
         tipoUbicacionTrabajo.value = opcionesUbicacion.manual
-        // console.log('tiene ubicacion manual')
       }
+    })
 
-      /*if (tipoUbicacionTrabajo.value === opcionesUbicacion.cliente) {
-        tarea.ubicacion_tarea = null
-      }*/
+    onConsultado(() => {
+      if (!tarea.ubicacion_tarea) tarea.ubicacion_tarea = new UbicacionTarea()
     })
 
     return {

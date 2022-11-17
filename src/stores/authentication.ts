@@ -22,13 +22,20 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
       }`
   )
-  const esCoordinador = computed(() =>
-    roles.value ? roles.value.some((rol: string) => rol === 'COORDINADOR') : false
-  )
-  const esTecnicoLider = computed(() => roles.value ? roles.value.some((rol: string) => rol === 'TECNICO LIDER') : false)
 
-  const esBodeguero = computed(()=>
-      roles.value? roles.value.some((rol:string)=> rol==='BODEGA') : false
+  /* const esCoordinador1 = computed(() =>
+    roles.value ? roles.value.some((rol: string) => rol === 'COORDINADOR') : false
+  ) */
+
+  const esCoordinador = computed(() => extraerRol('COORDINADOR'))
+  const esTecnicoLider = computed(() => extraerRol('TECNICO LIDER'))
+
+  function extraerRol(rolConsultar: string) {
+    return roles.value?.some((rol: string) => rol === rolConsultar)
+  }
+
+  const esBodeguero = computed(() =>
+    roles.value ? roles.value.some((rol: string) => rol === 'BODEGA') : false
   )
 
   // Actions
@@ -125,6 +132,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esCoordinador,
     esTecnicoLider,
     esBodeguero,
-    
+
   }
 })

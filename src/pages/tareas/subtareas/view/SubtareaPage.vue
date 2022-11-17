@@ -84,17 +84,6 @@
             </q-select>
           </div>
 
-          <!-- Técnico responsable -->
-          <div v-if="subtarea.tecnico_responsable" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Técnico responsable</label>
-            <q-input
-              v-model="subtarea.tecnico_responsable"
-              disable
-              outlined
-              dense
-            ></q-input>
-          </div>
-
           <!-- Tipo trabajo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tipo de trabajo</label>
@@ -422,11 +411,11 @@
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
-              :permitirEliminar="!disable"
+              :permitirEliminar="false"
               :alto-fijo="false"
               :mostrar-header="false"
               :mostrar-footer="false"
-              @eliminar="eliminarTecnico"
+              :accion1="eliminarTecnico"
             >
               <!--:datos="tecnicosGrupoPrincipal"-->
             </essential-table>
@@ -452,9 +441,9 @@
               no-caps
               rounded
               unelevated
-              toggle-color="blue-grey-10"
+              toggle-color="primary"
               color="white"
-              text-color="blue-grey-10"
+              text-color="primary"
               :disable="disable"
               :options="[
                 { label: 'Buscar un técnico a la vez', value: 'por_tecnico' },
