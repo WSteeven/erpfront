@@ -1,6 +1,6 @@
 // Dependencias
 import { useNotificaciones } from 'shared/notificaciones'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import { ComportamientoModales } from '../application/ComportamientoModales'
@@ -40,9 +40,9 @@ export default defineComponent({
     return {
       componente,
       titulo,
-      abierto,
       cerrarModalEntidad,
       duracion,
+      abierto,
     }
   },
 })

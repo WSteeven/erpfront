@@ -200,11 +200,11 @@ export default defineComponent({
       if (tarea.cliente_final) {
         obtenerClienteFinal(tarea.cliente_final)
         tipoUbicacionTrabajo.value = opcionesUbicacion.cliente
-        console.log('tiene cliente final')
+        // console.log('tiene cliente final')
       } else {
         // clienteFinal.hydrate(new ClienteFinal())
         tipoUbicacionTrabajo.value = opcionesUbicacion.manual
-        console.log('tiene ubicacion manual')
+        // console.log('tiene ubicacion manual')
       }
 
       /*if (tipoUbicacionTrabajo.value === opcionesUbicacion.cliente) {
