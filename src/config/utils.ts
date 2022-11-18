@@ -207,4 +207,5 @@ export const estadosSubtareas = {
 export const rolesAdmitidos = {
   tecnico_lider: 'TECNICO LIDER',
   coordinador: 'COORDINADOR',
+  fiscalizador: 'FISCALIZADOR',
 }

@@ -70,7 +70,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       const res = await axios.get<any>(axios.getEndpoint(endpoints.api_user))
       setUser(res.data)
       if (auth.value) {
-        await getRoles()
+        // await getRoles()
         await getPermisos()
       }
     } catch (e) {
@@ -95,14 +95,14 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   //Roles
-  const getRoles = async () => {
+  /* const getRoles = async () => {
     try {
       const res = await axios.get<any>(axios.getEndpoint(endpoints.roles))
       roles.value = res.data
     } catch (error: any) {
       throw new ApiError(error)
     }
-  }
+  } */
   // Permisos
   const getPermisos = async () => {
     try {

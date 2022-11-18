@@ -55,6 +55,7 @@
             emit-value
             map-options
             @update:model-value="establecerCliente()"
+            :error="!!v$.cliente.$errors.length"
           >
             <template v-slot:no-option>
               <q-item>
@@ -62,6 +63,12 @@
                   No hay resultados
                 </q-item-section>
               </q-item>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
             </template>
           </q-select>
         </div>
@@ -104,7 +111,13 @@
             dense
             autogrow
             type="textarea"
+            :error="!!v$.detalle.$errors.length"
           >
+            <template v-slot:error>
+              <div v-for="error of v$.detalle.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
         </div>
 
@@ -484,7 +497,7 @@
   >
   </essential-selectable-table>
 
-  <modales-entidad :comportamiento="modalesTarea" />
+  <!--<modales-entidad :comportamiento="modalesTarea" /> -->
 </template>
 
 <script src="./GeneralContent.ts"></script>

@@ -30,13 +30,13 @@ export default defineComponent({
 
     const tareaStore = useTareaStore()
 
-    onBeforeModificar(() => {
+    /* onBeforeModificar(() => {
       tarea.ubicacion_tarea = JSON.stringify(tarea.ubicacion_tarea)
-    })
+    }) */
 
-    onBeforeGuardar(() => {
-      tarea.ubicacion_tarea = JSON.stringify(tarea.ubicacion_tarea)
-    })
+    /* onBeforeGuardar(() => {
+      // tarea.ubicacion_tarea = JSON.stringify(tarea.ubicacion_tarea)
+    }) */
 
     onGuardado(() => {
       tareaStore.tarea = tarea
@@ -44,7 +44,7 @@ export default defineComponent({
     })
 
     onConsultado(() => {
-      tarea.ubicacion_tarea = JSON.parse(tarea.ubicacion_tarea)
+      //tarea.ubicacion_tarea = JSON.parse(tarea.ubicacion_tarea)
       tareaStore.tarea.hydrate(tarea)
     })
 
