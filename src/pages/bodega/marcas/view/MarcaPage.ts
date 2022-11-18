@@ -17,9 +17,8 @@ export default defineComponent({
     setup(){
         const mixin = new ContenedorSimpleMixin(Marca, new MarcaController())
         const {entidad: marca, disabled} = mixin.useReferencias()
-        const {setValidador, listar, consultar} = mixin.useComportamiento()
+        const {setValidador} = mixin.useComportamiento()
         
-        listar();
         //Reglas de validacion
         const reglas = {
             nombre: {required}

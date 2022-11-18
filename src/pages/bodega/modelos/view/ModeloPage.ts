@@ -9,11 +9,8 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { useOrquestadorSelectorMarcas } from '../application/OrquestadorSelectorMarcas'
 import { MarcaController } from 'pages/bodega/marcas/infraestructure/MarcaController'
 import { ModeloController } from '../infraestructure/ModeloController'
-import { ComportamientoModalesModelos } from '../application/ComportamientoModalesModelos'
-import { Marca } from 'pages/bodega/marcas/domain/Marca'
 import { Modelo } from '../domain/Modelo'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -49,21 +46,6 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, modelo)
     setValidador(v$.value)
 
-    //instanciar el comportamiento del modal
-    const modalesModelo = new ComportamientoModalesModelos()
-
-    //selector del orquestador
-    /* const {
-      refListadoSeleccionable: refListadoSeleccionableMarcas,
-      criterioBusqueda: criterioBusquedaMarca,
-      listado: listadoMarcas,
-      listar: listarMarcas,
-      limpiar: limpiarMarca,
-      seleccionar: seleccionarMarca,
-    } = useOrquestadorSelectorMarcas(modelo, 'marcas')
-
-    onReestablecer(() => (criterioBusquedaMarca.value = null))
-    onConsultado(() => seleccionarMarca(modelo.marca)) */
 
     //aqui va el listado
     const opciones = listadosAuxiliares.marcas 
@@ -75,17 +57,6 @@ export default defineComponent({
       accion,
       v$,
       configuracionColumnas: configuracionColumnasModelos,
-      //modal
-      modalesModelo,
-      //selector
-      /* refListadoSeleccionableMarcas,
-      criterioBusquedaMarca,
-      listadoMarcas,
-      listarMarcas,
-      limpiarMarca,
-      seleccionarMarca, 
-      configuracionColumnasMarcas,
-      */
       //listado
       listadosAuxiliares,
       opciones,

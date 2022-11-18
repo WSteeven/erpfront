@@ -73,7 +73,8 @@ export default defineComponent({
         const usuarioLogueado = store.user
         const esBodeguero = store.esBodeguero
         const esCoordinador = store.esCoordinador
-        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
+        // const rolSeleccionado = ref(false)
+        const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
         console.log('rol seleccionado: ', rolSeleccionado)
 
@@ -134,7 +135,10 @@ export default defineComponent({
                     params: { tipo: 'EGRESO' }
                 },
                 tareas: new TareaController(),
-                subtareas: new SubtareaController(),
+                subtareas: {
+                    controller: new SubtareaController(),
+                    params:{estado:['ASIGNADO', 'EJECUTADO', 'PAUSADO']}
+                },
                 subtipos: new SubtipoTransaccionController(),
                 autorizaciones: new AutorizacionController(),
                 estados: new EstadosTransaccionController(),
