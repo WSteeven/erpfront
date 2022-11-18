@@ -38,7 +38,7 @@ export default defineComponent({
     const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
-    const { onGuardado, onConsultado } = props.mixin.useHooks()
+    const { onGuardado, onBeforeModificar } = props.mixin.useHooks()
 
     const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
     const tipoUbicacionTrabajo = ref(opcionesUbicacion.manual)
@@ -174,22 +174,6 @@ export default defineComponent({
       tareaStore.tarea.cliente = tarea.cliente
     }
 
-    // Hooks
-    // onGuardado(() => tareaStore.tarea.hydrate(tarea))
-    /* onConsultado(() => {
-      console.log('dgffdg fdgfdg df')
-      // tareaStore.tarea.hydrate(tarea)
-      //tarea.hydrate(tareaStore.tarea)
-      if (tarea.cliente_final) {
-        obtenerClienteFinal(tarea.cliente_final)
-        tipoUbicacionTrabajo.value = opcionesUbicacion.cliente
-      }
-      else {
-        clienteFinal.hydrate(new ClienteFinal())
-        tipoUbicacionTrabajo.value = opcionesUbicacion.manual
-      }
-    }) */
-
     watchEffect(() => {
       if (tarea.cliente_final) {
         obtenerClienteFinal(tarea.cliente_final)
@@ -200,9 +184,17 @@ export default defineComponent({
     })
 
     onGuardado(() => accion.value = acciones.editar)
-    onConsultado(() => {
-      if (!tarea.ubicacion_tarea) tarea.ubicacion_tarea = new UbicacionTarea()
+
+    onBeforeModificar(() => {
+      if (tipoUbicacionTrabajo.value === 'ubicacion_manual') {
+        tarea.cliente_final = null
+        clienteFinal.hydrate(new ClienteFinal())
+      } else {
+        tarea.ubicacion_tarea = new UbicacionTarea()
+      }
     })
+
+
 
     return {
       v$,

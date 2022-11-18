@@ -14,7 +14,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   // State
   const user = ref()
   const auth = ref(false)
-  const roles = ref()
   const permisos = ref()
   const token = ref()
   const nombreUsuario = computed(
@@ -29,14 +28,11 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   const esCoordinador = computed(() => extraerRol('COORDINADOR'))
   const esTecnicoLider = computed(() => extraerRol('TECNICO LIDER'))
+  const esBodeguero = computed(() => extraerRol('BODEGA'))
 
   function extraerRol(rolConsultar: string) {
-    return roles.value?.some((rol: string) => rol === rolConsultar)
+    return auth.value ? user.value.rol?.some((rol: string) => rol === rolConsultar) : null
   }
-
-  const esBodeguero = computed(() =>
-    roles.value ? roles.value.some((rol: string) => rol === 'BODEGA') : false
-  )
 
   // Actions
   const login = async (credentiales: UserLogin): Promise<any> => {
@@ -122,7 +118,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     login,
     nombreUsuario,
     logout,
-    roles,
     permisos,
     can,
     getUser,

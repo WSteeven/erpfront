@@ -554,15 +554,15 @@
             <essential-table
               titulo="Técnicos temporales de otros grupos"
               :configuracionColumnas="columnas"
-              :datos="subtarea.tecnicos_temporales"
+              :datos="subtarea.tecnicos_otros_grupos"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
-              :permitirEliminar="!disable"
+              :permitirEliminar="false"
               :alto-fijo="false"
               :mostrar-header="false"
               :mostrar-footer="false"
-              @eliminar="eliminarTecnicoTemporal"
+              :accion1="eliminarTecnicoOtroGrupo"
             >
             </essential-table>
           </div>

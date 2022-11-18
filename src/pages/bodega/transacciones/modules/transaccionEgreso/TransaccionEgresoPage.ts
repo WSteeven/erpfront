@@ -58,7 +58,7 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const transaccionStore = useTransaccionStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
-        const detalle =useDetalleStore()
+        const detalle = useDetalleStore()
 
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
@@ -73,7 +73,7 @@ export default defineComponent({
         const usuarioLogueado = store.user
         const esBodeguero = store.esBodeguero
         const esCoordinador = store.esCoordinador
-        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
+        const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
         console.log('rol seleccionado: ', rolSeleccionado)
 
@@ -105,12 +105,12 @@ export default defineComponent({
                 // console.log('entro en el else del hook consultado', soloLectura.value)
             }
             if (accion.value === acciones.editar && esBodeguero) {//cuando presiona editar
-                soloLectura.value=true
+                soloLectura.value = true
                 puedeDespacharMaterial.value = true
             }
 
             if (accion.value === acciones.consultar) {//cuando presiona consultar
-                soloLectura.value=false
+                soloLectura.value = false
                 puedeEditarCantidad.value = false
                 puedeDespacharMaterial.value = false
             }
@@ -169,7 +169,7 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, transaccion)
         setValidador(v$.value)
 
-        
+
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados

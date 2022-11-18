@@ -12,6 +12,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TareaController } from '../infraestructure/TareaController'
 import { Tarea } from '../domain/Tarea'
+import { UbicacionTarea } from '../domain/UbicacionTarea'
 
 export default defineComponent({
   name: 'TareaPage',
@@ -46,6 +47,7 @@ export default defineComponent({
     onConsultado(() => {
       //tarea.ubicacion_tarea = JSON.parse(tarea.ubicacion_tarea)
       tareaStore.tarea.hydrate(tarea)
+      if (!tarea.ubicacion_tarea) tarea.ubicacion_tarea = new UbicacionTarea()
     })
 
     return {

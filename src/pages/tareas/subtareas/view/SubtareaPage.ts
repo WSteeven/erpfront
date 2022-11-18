@@ -9,8 +9,8 @@ import {
   tiposTareasNedetel,
   regiones,
   atenciones,
-  tiposIntervenciones,
-  causaIntervencion,
+  /*tiposIntervenciones,
+  causaIntervencion,*/
   estadosSubtareas,
   rolesAdmitidos,
   acciones,
@@ -94,33 +94,20 @@ export default defineComponent({
       accion: ({ posicion }) => subtarea.tecnicos_grupo_principal.splice(posicion, 1),
     }
 
-    function eliminarTecnicoTemporal({ posicion }) {
-      subtarea.tecnicos_temporales.splice(posicion, 1)
+    const eliminarTecnicoOtroGrupo: CustomActionTable = {
+      titulo: 'Quitar',
+      icono: 'bi-x',
+      color: 'negative',
+      visible: () => ([acciones.editar, acciones.nuevo].includes(accion)),
+      accion: ({ posicion }) => subtarea.tecnicos_otros_grupos.splice(posicion, 1),
     }
 
-    const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
+    // const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
     function obtenerResponsables(grupo_id: number) {
-      if (grupo_id)
-        obtenerTecnicosGrupo(grupo_id)
-      else
-        subtarea.tecnicos_grupo_principal = []
+      if (grupo_id) obtenerTecnicosGrupo(grupo_id)
+      else subtarea.tecnicos_grupo_principal = []
     }
-
-    /* async function obtenerTecnicoResponsable(grupo_id: number) {
-      // Obtener grupo
-      const grupoController = new GrupoController()
-      const { result } = await grupoController.consultar(grupo_id)
-      const responsable = result.empleado_id
-
-      const empleadoController = new EmpleadoController()
-      const { result: tecnicoResponsable } = await empleadoController.consultar(responsable)
-
-      subtarea.tecnico_responsable = tecnicoResponsable.nombres + ' ' + tecnicoResponsable.apellidos
-    } */
-
-    // const tecnicosGrupoPrincipal = ref()
-    // const tecnicosTemporales = ref()
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
@@ -190,11 +177,13 @@ export default defineComponent({
 
     onBeforeGuardar(() => {
       subtarea.tecnicos_grupo_principal = subtarea.tecnicos_grupo_principal.map((tecnico: Tecnico) => tecnico.id).toString()
+      subtarea.tecnicos_otros_grupos = subtarea.tecnicos_otros_grupos.map((tecnico: Tecnico) => tecnico.id).toString()
       subtarea.tarea_id = tareaStore.tarea.id
     })
 
     onBeforeModificar(() => {
       subtarea.tecnicos_grupo_principal = subtarea.tecnicos_grupo_principal.map((tecnico: Tecnico) => tecnico.id).toString()
+      subtarea.tecnicos_otros_grupos = subtarea.tecnicos_otros_grupos.map((tecnico: Tecnico) => tecnico.id).toString()
     })
 
     async function guardarDatos(subtarea: Subtarea) {
@@ -243,7 +232,7 @@ export default defineComponent({
       busqueda,
       grupos,
       eliminarTecnico,
-      eliminarTecnicoTemporal,
+      eliminarTecnicoOtroGrupo,
       //modalesSubtarea,
       provincias,
       ciudades,
@@ -253,8 +242,8 @@ export default defineComponent({
       fab: ref(false),
       regiones,
       atenciones,
-      tiposIntervenciones,
-      causasIntervencion,
+      /*tiposIntervenciones,
+      causasIntervencion,*/
       listadosAuxiliares,
       filtrarTiposTrabajos,
       tiposTrabajos,

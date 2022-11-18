@@ -26,7 +26,7 @@ export function useOrquestadorSelectorTecnicos(entidad: Subtarea, endpoint: keyo
             limpiar()
         }, */
         seleccionarMultiple: (items: Empleado[]) => {
-            entidad.tecnicos_temporales = [...entidad.tecnicos_temporales, ...items]
+            entidad.tecnicos_otros_grupos = [...entidad.tecnicos_otros_grupos, ...items]
         }
     }
 
@@ -38,7 +38,7 @@ export function useOrquestadorSelectorTecnicos(entidad: Subtarea, endpoint: keyo
     const seleccionar = (entidades: Empleado[]) => {
         console.log(entidades)
         let ids: any = []
-        ids = entidad.tecnicos_temporales.map((entidad: Empleado) => entidad.id)
+        ids = entidad.tecnicos_otros_grupos.map((entidad: Empleado) => entidad.id)
         const datos = entidades.filter((v) => !ids.includes(v.id))
         singleSelector.seleccionarMultiple(datos)
     }
