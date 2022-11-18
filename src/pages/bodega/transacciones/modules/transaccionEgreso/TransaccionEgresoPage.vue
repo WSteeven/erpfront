@@ -11,7 +11,7 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-xs">
+        <div class="row q-col-gutter-sm q-py-lg">
           <!-- N° transaccion -->
           <div v-if="transaccion.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Transacción N°</label>

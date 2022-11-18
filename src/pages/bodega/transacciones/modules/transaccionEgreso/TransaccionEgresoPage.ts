@@ -75,6 +75,7 @@ export default defineComponent({
 
         onConsultado(() => {
             console.log('Usuario Logueado', usuarioLogueado.id)
+            console.log('Accion solicitada', accion.value)
             console.log('Solicitante de la transaccion', transaccion.solicitante_id)
             if (usuarioLogueado.id === transaccion.solicitante_id) {
                 soloLectura.value = false
@@ -82,6 +83,7 @@ export default defineComponent({
                 esCoordinador? puedeEditarCantidad.value=true:puedeEditarCantidad.value=false
             } else {
                 soloLectura.value = true
+                esBodeguero?puedeEditarCantidad.value=false:puedeEditarCantidad.value=true
                 console.log('entro en el else del hook consultado', soloLectura.value)
             }
             // console.log('Usuario es: ',store.user)
@@ -188,7 +190,7 @@ export default defineComponent({
             accion: ({ entidad, posicion }) => {
                 eliminar({ entidad, posicion })
             },
-            visible: () => esCoordinador || !soloLectura
+            visible: () => puedeEditarCantidad.value
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
