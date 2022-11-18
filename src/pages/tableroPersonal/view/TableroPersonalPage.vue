@@ -3,7 +3,9 @@
     <div class="text-center q-py-md">
       <div class="text-bold q-mb-md">{{ fecha }}</div>
       <div class="text-h5 q-mb-md">Buenos días, {{ store.nombreUsuario }}.</div>
-      <div class="text-h6 q-mb-md">Grupo, {{ store.user.grupo }}.</div>
+      <div v-if="store.user.grupo" class="text-h6 q-mb-md">
+        Grupo, {{ store.user.grupo }}.
+      </div>
 
       <q-chip v-if="store.esCoordinador || store.esTecnicoLider" icon="bi-check"
         >16 Trabajos finalizados</q-chip

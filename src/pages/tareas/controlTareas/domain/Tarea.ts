@@ -7,7 +7,6 @@ export class Tarea extends EntidadAuditable {
   cliente: number | null
   cliente_final: number | null
   fecha_solicitud: string | null
-  hora_solicitud: string | null
   detalle: string | null
   supervisor: number | null
   es_proyecto: boolean
@@ -21,7 +20,6 @@ export class Tarea extends EntidadAuditable {
     this.codigo_tarea_cliente = null
     this.cliente = null
     this.cliente_final = null
-    this.hora_solicitud = null
     this.fecha_solicitud = null
     this.detalle = null
     this.supervisor = null

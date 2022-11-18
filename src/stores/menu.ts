@@ -168,7 +168,7 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title: (store.roles.filter((v) => v.indexOf('BODEGA') > -1)).length > 0 ? 'Egreso de materiales' : 'Pedidos a bodega',
+          title: (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1)).length > 0 ? 'Egreso de materiales' : 'Pedidos a bodega',
           link: 'transacciones-egresos',
           can: store.can('puede.ver.transacciones_egresos'),
           icon: 'bi-circle',

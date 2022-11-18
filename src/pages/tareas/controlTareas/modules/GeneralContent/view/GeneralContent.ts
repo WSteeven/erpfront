@@ -1,27 +1,25 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { acciones, rolesAdmitidos } from 'config/utils'
 import { required } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ContactoController } from 'pages/tareas/contactos/infraestructure/ContactoController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
-import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-// import { Canton } from 'pages/sistema/ciudad/domain/Canton'
 import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
+import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
 
 export default defineComponent({
   props: {
@@ -32,9 +30,7 @@ export default defineComponent({
   },
   components: {
     EssentialSelectableTable,
-    LabelAbrirModal,
     ButtonSubmits,
-    ModalesEntidad,
   },
   setup(props) {
     const tareaStore = useTareaStore()
@@ -55,7 +51,7 @@ export default defineComponent({
         cantones: new CantonController(),
         supervisores: {
           controller: new EmpleadoController(),
-          params: { rol: 'COORDINADOR' },
+          params: { rol: rolesAdmitidos.fiscalizador },
         }
       })
       clientes.value = listadosAuxiliares.clientes
@@ -63,7 +59,6 @@ export default defineComponent({
       supervisores.value = listadosAuxiliares.supervisores
       provincias.value = listadosAuxiliares.provincias
       cantones.value = listadosAuxiliares.cantones
-      // tarea.hydrate(tareaStore.tarea)
     })
 
     // Validaciones
@@ -204,6 +199,7 @@ export default defineComponent({
       }
     })
 
+    onGuardado(() => accion.value = acciones.editar)
     onConsultado(() => {
       if (!tarea.ubicacion_tarea) tarea.ubicacion_tarea = new UbicacionTarea()
     })
