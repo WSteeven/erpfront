@@ -7,7 +7,7 @@ import { configuracionColumnasProductosSeleccionados } from '../transaccionConte
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 // import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
-import { tabOptionsTransacciones } from 'config/utils'
+import { acciones, tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
@@ -41,17 +41,24 @@ import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
 import { isTemplateNode } from '@vue/compiler-core'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useTransaccionStore } from 'stores/transaccion'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
+import { useDetalleStore } from 'stores/detalle'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTableTabs, EssentialTable, EssentialSelectableTable },
     setup() {
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-        const { entidad: transaccion, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const { onConsultado, onBeforeConsultar, onBeforeModificar } = mixin.useHooks()
-        // aplicarFiltro('TODO')
+        const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { onConsultado, onReestablecer } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
+        //stores
         const store = useAuthenticationStore()
+        const transaccionStore = useTransaccionStore()
+        const detalleTransaccionStore = useDetalleTransaccionStore()
+        const detalle =useDetalleStore()
 
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
@@ -72,41 +79,43 @@ export default defineComponent({
 
         let soloLectura = ref(false)
         let puedeEditarCantidad = ref(true)
+        let puedeDespacharMaterial = ref(false)
+
+        onReestablecer(() => {
+            puedeEditarCantidad.value = true
+            soloLectura.value = false
+        })
 
         onConsultado(() => {
-            console.log('Usuario Logueado', usuarioLogueado.id)
-            console.log('Accion solicitada', accion.value)
-            console.log('Solicitante de la transaccion', transaccion.solicitante_id)
+            console.log('Transaccion', transaccion)
+            // console.log('Usuario Logueado', usuarioLogueado.id)
+            // console.log('Accion solicitada', accion.value)
+            // console.log('Solicitante de la transaccion', transaccion.solicitante_id)
+            if (transaccion.per_retira) {
+                transaccion.retira_tercero = true
+                // console.log('Valor de retira un tercero: ', transaccion.retira_tercero)
+            }
             if (usuarioLogueado.id === transaccion.solicitante_id) {
                 soloLectura.value = false
-                console.log('entro en el if del hook consultado', soloLectura.value)
-                esCoordinador? puedeEditarCantidad.value=true:puedeEditarCantidad.value=false
+                // console.log('entro en el if del hook consultado', soloLectura.value)
+                esCoordinador ? puedeEditarCantidad.value = true : puedeEditarCantidad.value = false
             } else {
                 soloLectura.value = true
-                esBodeguero?puedeEditarCantidad.value=false:puedeEditarCantidad.value=true
-                console.log('entro en el else del hook consultado', soloLectura.value)
+                esBodeguero ? puedeEditarCantidad.value = false : puedeEditarCantidad.value = true
+                // console.log('entro en el else del hook consultado', soloLectura.value)
             }
-            // console.log('Usuario es: ',store.user)
-            /* if (!soloLectura.value) {
-                puedeEditarCantidad.value=false
-            } */            // console.log('el disabled es: ',disabled.value)
-        })
-        /* onBeforeConsultar(()=>{
-            console.log('hook emitido despues de consultar')
-            console.log('el disabled es: ', disabled.value)
-            disabled.value=true
-            console.log('el disabled modificado es: ', disabled.value)
-        }) */
-        onBeforeModificar(() => {
-            console.log('hook de beforemodificar')
-            if (usuarioLogueado.id === transaccion.solicitante) {
-                console.log('Es el mismo usuario')
-            } else {
-                console.log('Else linea 84, disabled es:', disabled.value)
-                disabled.value = true
+            if (accion.value === acciones.editar && esBodeguero) {//cuando presiona editar
+                soloLectura.value=true
+                puedeDespacharMaterial.value = true
             }
-        })
 
+            if (accion.value === acciones.consultar) {//cuando presiona consultar
+                soloLectura.value=false
+                puedeEditarCantidad.value = false
+                puedeDespacharMaterial.value = false
+            }
+        })
+        const opciones_empleados = ref([])
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
         const opciones_tipos = ref([])
@@ -117,6 +126,7 @@ export default defineComponent({
 
         cargarVista(async () => {
             await obtenerListados({
+                empleados: new EmpleadoController(),
                 sucursales: new SucursalController(),
                 tipos: {
                     controller: new TipoTransaccionController(),
@@ -142,20 +152,16 @@ export default defineComponent({
             subtipo: { required },
             autorizacion: {
                 requiredIfCoordinador: requiredIf(esCoordinador),
-                // requiredIfBodeguer: requiredIf(esBodeguero),
                 requiredIfEsVisibleAut: requiredIf(esVisibleAutorizacion)
             },
             estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
                 requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
-                // requiredIfRol: requiredIf(rolSeleccionado),
             },
             observacion_est: {
-                // requiredIfRol: requiredIf(rolSeleccionado),
                 requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado })
             },
-            //validar que envien datos en el listado
-            listadoProductosSeleccionados: { required }
+            listadoProductosSeleccionados: { required }//validar que envien datos en el listado
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -163,7 +169,10 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, transaccion)
         setValidador(v$.value)
 
+        
+
         //Configurar los listados
+        opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = listadosAuxiliares.sucursales
         opciones_tipos.value = listadosAuxiliares.tipos
         opciones_subtipos.value = listadosAuxiliares.subtipos
@@ -171,13 +180,6 @@ export default defineComponent({
         opciones_estados.value = listadosAuxiliares.estados
         opciones_tareas.value = listadosAuxiliares.tareas
         opciones_subtareas.value = listadosAuxiliares.subtareas
-
-        /*  const fecha = new Date()
-         transaccion.created_at = new Intl.DateTimeFormat('az', {
-             year: 'numeric',
-             month: '2-digit',
-             day: '2-digit'
-         }).format(fecha) */
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',
@@ -193,7 +195,8 @@ export default defineComponent({
             visible: () => puedeEditarCantidad.value
         }
         const botonEditarCantidad: CustomActionTable = {
-            titulo: 'Editar cantidad',
+            titulo: 'Cantidad',
+            icono: 'bi-pencil',
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
                     (data) => transaccion.listadoProductosSeleccionados[posicion].cantidades = data,
@@ -201,22 +204,16 @@ export default defineComponent({
                 )
             },
             visible: () => puedeEditarCantidad.value
-            // visible: () => !esBodeguero || soloLectura.value || puedeEditarCantidad.value
-            // visible:()=>!esBodeguero||soloLectura.value
         }
         const botonDespachar: CustomActionTable = {
             titulo: 'Despachar',
             accion: ({ entidad, posicion }) => {
                 console.log('La entidad es', entidad)
                 console.log('La posicion es', posicion)
-                inventarios: {
-                    controller: new TipoTransaccionController(),
-                        { params: posicion }
-                }
             },
-            visible: ({ entidad, posicion }) => esBodeguero
+            visible: ({ entidad, posicion }) => puedeDespacharMaterial.value
         }
-        console.log('es bodeguero?', esBodeguero)
+        // console.log('es bodeguero?', esBodeguero)
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
             name: 'cantidades',
             field: 'cantidades',
@@ -243,6 +240,7 @@ export default defineComponent({
             mixin, transaccion, disabled, accion, v$, soloLectura,
             configuracionColumnas: configuracionColumnasTransaccionEgreso,
             //listados
+            opciones_empleados,
             opciones_sucursales,
             opciones_tipos,
             opciones_subtipos,
@@ -296,6 +294,23 @@ export default defineComponent({
                 if (opciones_subtareas.value.length > 1) transaccion.subtarea = ''
                 if (opciones_subtareas.value.length === 1) transaccion.subtarea = opciones_subtareas.value[0]['id']
             },
+            filtroEmpleados(val, update) {
+                if (val === '') {
+                    update(() => {
+                        opciones_empleados.value = listadosAuxiliares.empleados
+                    })
+                    return
+                }
+                update(() => {
+                    const needle = val.toLowerCase()
+                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+                })
+            },
+            retiraOtro(val, evt) {
+                if (!val) {
+                    transaccion.per_retira = store.user.id
+                }
+            },
 
 
             //tabla
@@ -327,15 +342,12 @@ export default defineComponent({
 
             tabEs(val) {
                 tabSeleccionado.value = val
-                // console.log(val)
-                // console.log(tabSeleccionado.value)
                 puedeEditar.value = (esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (esBodeguero && tabSeleccionado.value === 'PARCIAL')
                     ? true
                     : esCoordinador && tabSeleccionado.value === 'ESPERA'
                         ? true
                         : false
 
-                // console.log(puedeEditar.value)
             },
 
 

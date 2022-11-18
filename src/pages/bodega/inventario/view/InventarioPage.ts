@@ -21,7 +21,7 @@ import { CondicionController } from "pages/administracion/condiciones/infraestru
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
 import { number } from "echarts";
-import { useTransaccionIngresoStore } from "stores/transaccionIngreso";
+import { useTransaccionIngresoStore } from "stores/transaccion";
 import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
 
 export default defineComponent({

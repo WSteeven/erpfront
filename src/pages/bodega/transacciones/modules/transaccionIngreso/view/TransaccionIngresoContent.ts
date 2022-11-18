@@ -5,7 +5,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
-import { useTransaccionIngresoStore } from 'stores/transaccionIngreso'
+import { useTransaccionStore } from 'stores/transaccion'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -43,7 +43,7 @@ export default defineComponent({
     components: { TabLayout, EssentialTable, EssentialSelectableTable, ButtonSubmits },
     // emits: ['creada', 'consultada'],
     setup(props, { emit }) {
-        const transaccionStore = useTransaccionIngresoStore()
+        const transaccionStore = useTransaccionStore()
 
         // const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = props.mixin.useReferencias()

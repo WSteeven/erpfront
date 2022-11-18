@@ -3,7 +3,7 @@ import { configuracionColumnasProductosSeleccionados } from "../../transaccionCo
 import { defineComponent, reactive, ref, Ref } from "vue";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from '@vuelidate/core'
-import { useTransaccionIngresoStore } from "stores/transaccionIngreso";
+import { useTransaccionIngresoStore } from "stores/transaccion";
 import { useDetalleStore } from "stores/detalle";
 
 //Componentes 
