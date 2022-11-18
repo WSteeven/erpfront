@@ -7,7 +7,7 @@ import { defineStore } from "pinia";
 import { reactive } from "vue";
 import { acciones } from "config/utils";
 
-export const useTransaccionIngresoStore = defineStore("transaccion", () => {
+export const useTransaccionStore = defineStore("transaccion", () => {
     //State
     const transaccion = reactive(new Transaccion()) //la transaccion
     const transaccionReset = new Transaccion()

@@ -18,7 +18,7 @@
             <q-input
               v-model="transaccion.id"
               placeholder="Obligatorio"
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               outlined
               dense
             >
@@ -35,7 +35,7 @@
             <q-input
               v-model="transaccion.fecha_limite"
               placeholder="Opcional"
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               outlined
               dense
             >
@@ -75,7 +75,7 @@
               options-dense
               dense
               outlined
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               :error="!!v$.tipo.$errors.length"
               error-message="Debes seleccionar un subtipo"
               @update:model-value="filtroTipos"
@@ -110,7 +110,7 @@
               dense
               outlined
               @update:model-value="filtroSubtipos"
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               :error="!!v$.subtipo.$errors.length"
               error-message="Debes seleccionar un subtipo"
               :option-value="(v) => v.id"
@@ -129,7 +129,9 @@
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="transaccion.autorizacion || esVisibleAutorizacion||esCoordinador"
+            v-if="
+              transaccion.autorizacion || esVisibleAutorizacion || esCoordinador
+            "
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -141,7 +143,7 @@
               options-dense
               dense
               outlined
-              :readonly="disabled||(soloLectura&&!esCoordinador)"
+              :readonly="disabled || (soloLectura && !esCoordinador)"
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="(v) => v.id"
@@ -176,6 +178,7 @@
               class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_obs_autorizacion"
               label="Tiene observación"
+              :disable="disabled || soloLectura"
               outlined
               dense
             ></q-checkbox>
@@ -189,9 +192,9 @@
           >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
-              v-model="transaccion.observacion_aut"
+              v-model="transaccion.obs_autorizacion"
               placeholder="Obligatorio"
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               :error="!!v$.observacion_aut.$errors.length"
               @update:model-value="
                 (v) => (transaccion.observacion_aut = v.toUpperCase())
@@ -220,7 +223,7 @@
               options-dense
               dense
               outlined
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               :option-value="(v) => v.id"
@@ -246,9 +249,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Justificación</label>
             <q-input
+            type="textarea"
+            autogrow
               v-model="transaccion.justificacion"
               placeholder="Obligatorio"
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               :error="!!v$.justificacion.$errors.length"
               @update:model-value="
                 (v) => (transaccion.justificacion = v.toUpperCase())
@@ -288,7 +293,7 @@
               hint="Tarea #"
               dense
               outlined
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               @update:model-value="filtroTareas"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
@@ -299,6 +304,50 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
                     <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Retira un tercero -->
+          <div
+            v-if="transaccion.per_retira || accion === 'NUEVO'"
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="transaccion.retira_tercero"
+              @update:model-value="retiraOtro"
+              label="¿Retira otra persona?"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Persona que retira -->
+          <div v-if="transaccion.retira_tercero" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Persona que retira</label>
+            <q-select
+              v-model="transaccion.per_retira"
+              :options="opciones_empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroEmpleados"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
                   </q-item-section>
                 </q-item>
               </template>
@@ -316,7 +365,7 @@
               clearable
               dense
               outlined
-              :readonly="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
               emit-value
@@ -353,7 +402,7 @@
               options-dense
               dense
               outlined
-              :readonly="disabled||(soloLectura&&!esBodeguero)"
+              :readonly="disabled || (soloLectura && !esBodeguero)"
               :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado para la transacción"
               :option-value="(v) => v.id"
@@ -381,6 +430,7 @@
               class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_obs_estado"
               label="Tiene observación"
+              :disable="disabled || soloLectura"
               outlined
               dense
             ></q-checkbox>
@@ -389,7 +439,7 @@
           <div v-if="transaccion.tiene_obs_estado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
-              v-model="transaccion.observacion_est"
+              v-model="transaccion.obs_estado"
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
