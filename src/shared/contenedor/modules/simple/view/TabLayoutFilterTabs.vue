@@ -21,7 +21,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="rounded-3"
+      class="custom-shadow"
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario" class="q-py-none">
