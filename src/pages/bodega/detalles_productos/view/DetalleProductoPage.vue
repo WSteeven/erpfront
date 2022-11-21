@@ -23,7 +23,7 @@
               :error="!!v$.producto.$errors.length"
               use-input
               input-debounce="0"
-              @filter="filterProductos"
+              @filter="filtroProductos"
               @update:model-value="actualizarCategoria"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
@@ -177,7 +177,7 @@
               @filter="filtroMarcas"
               @update:model-value="seleccionarModelo"
               :option-label="(item) => item.nombre"
-              :option-value="(item) => item.nombre"
+              :option-value="(item) => item.id"
               emit-value
               map-options
             >
