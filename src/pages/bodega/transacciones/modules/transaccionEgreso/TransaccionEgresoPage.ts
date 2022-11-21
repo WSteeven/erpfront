@@ -134,7 +134,10 @@ export default defineComponent({
                     params: { tipo: 'EGRESO' }
                 },
                 tareas: new TareaController(),
-                subtareas: new SubtareaController(),
+                subtareas: {
+                    controller: new SubtareaController(),
+                    params: { estado: ['ASIGNADO', 'EJECUTADO', 'PAUSADO'] }
+                },
                 subtipos: new SubtipoTransaccionController(),
                 autorizaciones: new AutorizacionController(),
                 estados: new EstadosTransaccionController(),

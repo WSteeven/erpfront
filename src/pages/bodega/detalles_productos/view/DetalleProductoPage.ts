@@ -45,16 +45,44 @@ export default defineComponent({
         //Obtener los listados
         cargarVista(() => {
             obtenerListados({
-                productos: new ProductoController(),
-                marcas: new MarcaController(),
-                modelos: new ModeloController(),
-                spans: new SpanController(),
-                fibras: new TipoFibraController(),
-                hilos: new HiloController(),
-
-                rams: new RamController(),
-                discos: new DiscoController(),
-                procesadores: new ProcesadorController(),
+                productos: {
+                    controller: new ProductoController(),
+                    params: {
+                        // campos: 'id,nombre,categoria_id' 
+                    },
+                },
+                marcas: {
+                    controller: new MarcaController(),
+                    params: { campos: 'id,nombre' }
+                },
+                modelos: {
+                    controller: new ModeloController(),
+                    params: { campos: 'id,nombre,marca_id' }
+                },
+                spans: {
+                    controller: new SpanController(),
+                    params: { campos: 'id,nombre' }
+                },
+                fibras: {
+                    controller: new TipoFibraController(),
+                    params: { campos: 'id,nombre' }
+                },
+                hilos: {
+                    controller: new HiloController(),
+                    params: { campos: 'id,nombre' }
+                },
+                rams: {
+                    controller: new RamController(),
+                    params: { campos: 'id,nombre' }
+                },
+                discos: {
+                    controller: new DiscoController(),
+                    params: { campos: 'id,nombre' }
+                },
+                procesadores: {
+                    controller: new ProcesadorController(),
+                    params: { campos: 'id,nombre' }
+                },
             })
         })
 
@@ -98,7 +126,7 @@ export default defineComponent({
             }, */
         }
 
-        function limpiarCamposInformatica(){
+        function limpiarCamposInformatica() {
             detalle.procesador = ''
             detalle.ram = ''
             detalle.disco = ''
@@ -152,9 +180,9 @@ export default defineComponent({
 
             //filtros
             seleccionarModelo(val) {
-                opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.marca.indexOf(val) > -1)
-                // console.log('seleccionar modelo: ', val)
-                // console.log(opciones_modelos.value)
+                console.log('seleccionar modelo: ', val)
+                opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.marca_id===val)
+                console.log(opciones_modelos.value)
                 detalle.modelo = ''
                 if (opciones_modelos.value.length < 1) {
                     detalle.modelo = ''
@@ -251,7 +279,7 @@ export default defineComponent({
                 })
             },
 
-            filterProductos(val, update) {
+            filtroProductos(val, update) {
                 if (val === '') {
                     update(() => {
                         opciones_productos.value = listadosAuxiliares.productos
@@ -267,7 +295,7 @@ export default defineComponent({
             actualizarCategoria(val) {
                 const producto = listadosAuxiliares.productos.filter((v) => v.id === val)
                 detalle.categoria = producto[0]['categoria']
-                if(producto[0]['categoria']==='INFORMATICA'){
+                if (producto[0]['categoria'] === 'INFORMATICA') {
                     limpiarCamposInformatica()
                 }
             }

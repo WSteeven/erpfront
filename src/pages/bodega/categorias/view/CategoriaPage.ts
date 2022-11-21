@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasCategorias } from "../domain/configuracionColumnasCategorias";
-import { required, minLength, maxLength } from "@vuelidate/validators";
+import { required } from "@vuelidate/validators";
 import { useVuelidate } from '@vuelidate/core';
 import { defineComponent } from "vue";
 
@@ -17,9 +17,8 @@ export default defineComponent({
     setup() {
         const mixin = new ContenedorSimpleMixin(Categoria, new CategoriaController())
         const { entidad: categoria, disabled } = mixin.useReferencias()
-        const { setValidador, listar, consultar } = mixin.useComportamiento()
+        const { setValidador } = mixin.useComportamiento()
 
-        listar();
         //Reglas de validacion
         const reglas = {
             nombre: { required }

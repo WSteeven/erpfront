@@ -122,7 +122,14 @@
             />
 
             <!-- Exportar a Excel -->
-            <q-btn flat round unelevated dense icon="bi-download">
+            <q-btn
+              flat
+              round
+              unelevated
+              dense
+              icon="bi-download"
+              @click="exportTable"
+            >
               <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
                 'Exportar a Excel'
               }}</q-tooltip>
