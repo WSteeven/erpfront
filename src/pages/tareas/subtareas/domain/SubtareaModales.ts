@@ -3,7 +3,7 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 // Paginas
-import TipoTareaPage from 'pages/tareas/tiposTareas/view/TipoTareaPage.vue'
+import TipoTareaPage from 'pages/tareas/tiposTareas/view/TipoTrabajoPage.vue'
 
 export class SubtareaModales {
   TipoTareaPage: ComponenteModal

@@ -7,6 +7,7 @@
     dense
     push
     no-caps
+    no-wrap
     class="q-px-sm"
     @click="ejecutarAccion(accion1)"
   >
@@ -27,6 +28,7 @@
     dense
     push
     no-caps
+    no-wrap
     class="q-px-sm"
     @click="ejecutarAccion(accion2)"
   >
@@ -47,6 +49,7 @@
     dense
     push
     no-caps
+    no-wrap
     class="q-px-sm"
     @click="ejecutarAccion(accion3)"
   >
@@ -67,6 +70,7 @@
     dense
     push
     no-caps
+    no-wrap
     class="q-px-sm"
     @click="ejecutarAccion(accion4)"
   >
@@ -87,6 +91,7 @@
     dense
     push
     no-caps
+    no-wrap
     class="q-px-sm"
     @click="ejecutarAccion(accion5)"
   >

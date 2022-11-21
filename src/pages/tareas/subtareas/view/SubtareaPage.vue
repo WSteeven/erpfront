@@ -313,6 +313,32 @@
             ></q-checkbox>
           </div>
 
+          <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha de ventana</label>
+            <q-input v-model="subtarea.fecha_ventana" outlined dense>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date v-model="subtarea.fecha_ventana" mask="DD-MM-YYYY">
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+
           <!-- Hora inicio de ventana -->
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora inicio de ventana (24H)</label>

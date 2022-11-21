@@ -105,6 +105,12 @@
             ></q-checkbox>
           </div>
 
+          <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha de ventana</label>
+            <q-input v-model="subtarea.fecha_ventana" outlined dense disable>
+            </q-input>
+          </div>
+
           <!-- Hora inicio de ventana -->
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora inicio de ventana</label>
@@ -131,7 +137,12 @@
             <essential-table
               titulo="Técnicos asignados"
               :configuracionColumnas="configuracionColumnasTecnico"
-              :datos="subtarea.tecnicos_grupo_principal ?? []"
+              :datos="
+                [
+                  ...subtarea.tecnicos_grupo_principal,
+                  ...subtarea.tecnicos_otros_grupos,
+                ] ?? []
+              "
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -142,60 +153,179 @@
             </essential-table>
           </div>
         </div>
-
-        <!--<div class="row q-gutter-xs q-px-md q-mb-md">
-          <div class="col-12">
-            <div class="text-bold q-mb-md">Cambiar estado de la subtarea</div>
-          </div>
-
-          <q-btn color="negative" no-caps @click="suspender()" push>
-            <q-icon name="bi-x-lg" class="q-mr-sm" size="xs"></q-icon>
-            <div>Suspender</div>
-          </q-btn>
-
-          <q-btn color="primary" no-caps @click="pausar()" push>
-            <q-icon
-              v-if="!pausado"
-              name="bi-pause"
-              size="xs"
-              class="q-mr-sm"
-            ></q-icon>
-            <q-icon v-else name="bi-play" size="xs" class="q-mr-sm"></q-icon>
-            <span v-if="!pausado">Pausar</span>
-            <span v-else>Reanudar</span>
-          </q-btn>
-
-          <q-btn color="positive" no-caps @click="realizar()" push>
-            <q-icon name="bi-check" size="xs" class="q-mr-sm"></q-icon>
-            <div>Realizado</div>
-          </q-btn>
-        </div> -->
       </q-expansion-item>
 
       <q-expansion-item
         class="overflow-hidden q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
-        :label="subtarea.cliente ? 'Cliente final' : 'Ubicación manual'"
+        label="Ubicación del trabajo"
         header-class="bg-grey-1"
         default-opened
       >
-        <div class="row q-col-gutter-sm q-pa-md">
-          <!-- Nombre -->
-          <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Contacto</label>
-            <q-input
-              v-model="subtarea.contacto"
+        <div
+          v-if="tipoUbicacionTrabajo === 'ubicacion_manual'"
+          class="row q-col-gutter-sm q-pa-md"
+        >
+          <!-- Provincia -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Provincias</label>
+            <q-select
+              v-model="subtarea.ubicacion_tarea.provincia"
+              :options="provincias"
+              @filter="filtrarProvincias"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.provincia"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
               disable
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Ciudad -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Canton</label>
+            <q-select
+              v-model="subtarea.ubicacion_tarea.canton"
+              :options="cantonesPorProvincia"
+              @filter="filtrarCantones"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.canton"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              disable
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Parroquia -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Parroquia/Barrio</label>
+            <q-input
+              v-model="subtarea.ubicacion_tarea.parroquia"
+              @update:model-value="
+                (v) => (subtarea.ubicacion_tarea.parroquia = v.toUpperCase())
+              "
               outlined
               dense
+              disable
             ></q-input>
+          </div>
+
+          <!-- Direccion -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Dirección</label>
+            <q-input
+              v-model="subtarea.ubicacion_tarea.direccion"
+              @update:model-value="
+                (v) => (subtarea.ubicacion_tarea.direccion = v.toUpperCase())
+              "
+              outlined
+              dense
+              disable
+            ></q-input>
+          </div>
+
+          <!-- Referencias -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Referencias</label>
+            <q-input
+              v-model="subtarea.ubicacion_tarea.referencias"
+              @update:model-value="
+                (v) => (subtarea.ubicacion_tarea.referencias = v.toUpperCase())
+              "
+              outlined
+              dense
+              disable
+            ></q-input>
+          </div>
+
+          <!-- Coordenadas -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Coordenadas</label>
+            <q-input
+              v-model="subtarea.ubicacion_tarea.coordenadas"
+              @update:model-value="
+                (v) => (subtarea.ubicacion_tarea.coordenadas = v.toUpperCase())
+              "
+              outlined
+              dense
+              disable
+            >
+            </q-input>
+          </div>
+        </div>
+
+        <div
+          v-if="tipoUbicacionTrabajo === 'cliente_final'"
+          class="row q-col-gutter-sm q-pa-md"
+        >
+          <!-- Nombre -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Cliente final</label>
+            <q-select
+              v-model="subtarea.cliente_final"
+              :options="clientesFinales"
+              @filter="filtrarClientesFinales"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombres + ' ' + item.apellidos"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @update:model-value="
+                (v) => obtenerClienteFinal(subtarea.cliente_final)
+              "
+              disable
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Id de cliente -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">ID Cliente</label>
             <q-input
-              v-model="subtarea.id_cliente"
+              v-model="clienteFinal.id_cliente"
               disable
               outlined
               dense
@@ -206,10 +336,10 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Celular</label>
             <q-input
-              v-model="subtarea.celular"
-              disable
+              v-model="clienteFinal.celular"
               outlined
               dense
+              disable
             ></q-input>
           </div>
 
@@ -217,33 +347,65 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Provincias</label>
             <q-select
-              v-model="subtarea.provincia"
-              :options="provincias"
-              disable
+              v-model="clienteFinal.provincia"
+              :options="listadosAuxiliares.provincias"
+              transition-show="scale"
+              transition-hide="scale"
               options-dense
               dense
               outlined
-            />
+              disable
+              :option-label="(item) => item.provincia"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Ciudad -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Ciudades</label>
+            <label class="q-mb-sm block">Canton</label>
             <q-select
-              outlined
-              v-model="subtarea.ciudad"
-              :options="ciudades"
-              disable
+              v-model="clienteFinal.canton"
+              :options="listadosAuxiliares.cantones"
+              transition-show="scale"
+              transition-hide="scale"
               options-dense
               dense
-            />
+              outlined
+              disable
+              :option-label="(item) => item.canton"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Parroquia -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Parroquia/Barrio</label>
             <q-input
-              v-model="subtarea.parroquia"
+              v-model="clienteFinal.parroquia"
               disable
               outlined
               dense
@@ -254,7 +416,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Dirección</label>
             <q-input
-              v-model="subtarea.direccion"
+              v-model="clienteFinal.direccion"
               disable
               outlined
               dense
@@ -265,7 +427,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Referencias</label>
             <q-input
-              v-model="subtarea.referencias"
+              v-model="clienteFinal.referencias"
               disable
               outlined
               dense
@@ -275,19 +437,11 @@
           <!-- Coordenadas -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Coordenadas</label>
-            <q-input v-model="subtarea.coordenadas" disable outlined dense>
+            <q-input v-model="clienteFinal.coordenadas" disable outlined dense>
             </q-input>
           </div>
         </div>
       </q-expansion-item>
-
-      <!-- Botones formulario -->
-      <!--<div class="row q-gutter-md justify-end">
-        <q-btn color="primary" no-caps :to="{ name: 'trabajo_asignado' }" push>
-          <q-icon name="bi-chevron-left" size="xs" class="q-mr-sm"></q-icon>
-          <div>Volver</div>
-        </q-btn>
-      </div> -->
     </q-form>
   </q-page>
 </template>

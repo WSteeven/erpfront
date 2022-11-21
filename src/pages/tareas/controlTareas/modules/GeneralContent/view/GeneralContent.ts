@@ -20,6 +20,7 @@ import { ClienteController } from 'pages/sistema/clientes/infraestructure/Client
 import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
 import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
+import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 
 export default defineComponent({
   props: {
@@ -38,7 +39,7 @@ export default defineComponent({
     const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
-    const { onGuardado, onBeforeModificar } = props.mixin.useHooks()
+    const { onGuardado, onBeforeModificar, onReestablecer } = props.mixin.useHooks()
 
     const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
     const tipoUbicacionTrabajo = ref(opcionesUbicacion.manual)
@@ -55,8 +56,8 @@ export default defineComponent({
         }
       })
       clientes.value = listadosAuxiliares.clientes
-      clientesFinales.value = listadosAuxiliares.clientesFinales
       supervisores.value = listadosAuxiliares.supervisores
+      clientesFinales.value = listadosAuxiliares.clientesFinales
       provincias.value = listadosAuxiliares.provincias
       cantones.value = listadosAuxiliares.cantones
     })
@@ -160,7 +161,6 @@ export default defineComponent({
 
     // Informacion de ubicacion
     const clienteFinal = reactive(new ClienteFinal())
-    const ubicacionManual = reactive(new UbicacionTarea())
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ContactoController()
@@ -183,7 +183,10 @@ export default defineComponent({
       }
     })
 
-    onGuardado(() => accion.value = acciones.editar)
+    onGuardado(() => {
+      accion.value = acciones.editar
+      tareaStore.tarea.hydrate(tarea)
+    })
 
     onBeforeModificar(() => {
       if (tipoUbicacionTrabajo.value === 'ubicacion_manual') {
@@ -194,7 +197,12 @@ export default defineComponent({
       }
     })
 
-
+    onReestablecer(() => {
+      clienteFinal.hydrate(new ClienteFinal())
+      tarea.cliente_final = null
+      tarea.ubicacion_tarea = new UbicacionTarea()
+      // tareaStore.tarea.hydrate(new Tarea())
+    })
 
     return {
       v$,
@@ -220,7 +228,6 @@ export default defineComponent({
       supervisores,
       filtrarSupervisores,
       clienteFinal,
-      ubicacionManual,
       // ubicacionManual,
       listadosAuxiliares,
       establecerCliente,

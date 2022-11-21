@@ -65,7 +65,7 @@
               v-model="tipoTarea.nombre"
               placeholder="Obligatorio"
               @update:model-value="(v) => (tipoTarea.nombre = v.toUpperCase())"
-              :readonly="disabled"
+              :disable="disabled"
               outlined
               dense
               :error="!!v$.nombre.$errors.length"
@@ -228,4 +228,4 @@
   </tab-layout>
 </template>
 
-<script src="./TipoTareaPage.ts"></script>
+<script src="./TipoTrabajoPage.ts"></script>

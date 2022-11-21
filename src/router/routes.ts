@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
         path: '/tipos-trabajos',
         name: 'tipos_trabajos',
         component: () =>
-          import('pages/tareas/tiposTareas/view/TipoTareaPage.vue'),
+          import('pages/tareas/tiposTareas/view/TipoTrabajoPage.vue'),
         meta: { requiresAuth: true },
       },
       {

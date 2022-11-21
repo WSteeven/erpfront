@@ -1,5 +1,5 @@
 import { endpoints } from "config/api";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
+import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository"
 
 export class CambiarEstadoSubtarea {
     axios: AxiosHttpRepository
@@ -9,20 +9,29 @@ export class CambiarEstadoSubtarea {
     }
 
     asignar(subtareaId: number) {
-        try {
-            const ruta = this.axios.getEndpoint(endpoints.subtareas) + 'asignar/' + subtareaId
-            this.axios.post(ruta)
-            console.log('Asignado')
-        } catch (e: any) {
-            //
-        }
+        this.solicitud('asignar', subtareaId)
+    }
+
+    ejecutar(subtareaId: number) {
+        this.solicitud('ejecutar', subtareaId)
     }
 
     realizar(subtareaId: number) {
+        this.solicitud('realizar', subtareaId)
+    }
+
+    pausar(subtareaId: number, mensaje: string) {
+        this.solicitud('pausar', subtareaId, { motivo: mensaje })
+    }
+
+    reanudar(subtareaId: number) {
+        this.solicitud('reanudar', subtareaId)
+    }
+
+    solicitud(accion, subtarea, data?) {
         try {
-            const ruta = this.axios.getEndpoint(endpoints.subtareas) + 'realizar/' + subtareaId
-            this.axios.post(ruta)
-            console.log('Realizado')
+            const ruta = this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + subtarea
+            this.axios.post(ruta, data)
         } catch (e: any) {
             //
         }

@@ -3,9 +3,9 @@ import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasS
 import { tabOptions, accionesTabla, estadosSubtareas, acciones } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
+import { computed, defineComponent, watch } from 'vue'
 import { useTareaStore } from 'stores/tarea'
 import { offset } from 'config/utils_tablas'
-import { computed, defineComponent, watch } from 'vue'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -44,7 +44,6 @@ export default defineComponent({
     const agregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
       accion: () => {
-        // tareaStore.resetearSubtarea()
         subtareaListadoStore.idSubtareaSeleccionada = null
         tareaStore.subtarea.tarea_id = tareaStore.tarea.id
         tareaStore.accionSubtarea = acciones.nuevo
@@ -57,28 +56,28 @@ export default defineComponent({
       titulo: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'Editar' : 'Visualizar',
       icono: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'bi-pencil' : 'bi-eye',
       accion: async ({ entidad, posicion }) => {
-        //if (entidad.estado === estadosSubtareas.CREADO)
         tareaStore.accionSubtarea = entidad.estado === estadosSubtareas.CREADO ? acciones.editar : acciones.consultar
 
         modales.abrirModalEntidad('SubtareasPage')
         subtareaListadoStore.posicionSubtareaSeleccionada = posicion
         subtareaListadoStore.idSubtareaSeleccionada = entidad.id
-        // await tareaStore.consultarSubtareaCoordinador(entidad.id)
       },
     }
 
     const botonControlAvance: CustomActionTable = {
       titulo: 'Ver avances',
       icono: 'bi-journal-text',
-      visible: ({ entidad }) => entidad.estado !== estadosSubtareas.CREADO,
+      color: 'indigo',
+      visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
       accion: () => modales.abrirModalEntidad('GestionarAvancesPage'),
     }
 
     const botonFinalizar: CustomActionTable = {
       titulo: 'Realizado',
       color: 'positive',
-      visible: ({ entidad }) => entidad.estado !== estadosSubtareas.REALIZADO && entidad.estado !== estadosSubtareas.CREADO && entidad.estado !== estadosSubtareas.ASIGNADO,
-      accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como realizada la tarea?', () => {
+      icono: 'bi-check',
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
+      accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como realizada la subtarea?', () => {
         new CambiarEstadoSubtarea().realizar(entidad.id)
         entidad.estado = estadosSubtareas.REALIZADO
         actualizarElemento(posicion, entidad)
@@ -88,9 +87,9 @@ export default defineComponent({
     const botonAsignar: CustomActionTable = {
       titulo: 'Asignar',
       color: 'indigo',
-      visible: ({ entidad }) => entidad.estado !== estadosSubtareas.REALIZADO && entidad.estado !== estadosSubtareas.EJECUTANDO && entidad.estado !== estadosSubtareas.ASIGNADO,
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO,
       accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de asignar la tarea?', () => {
+        confirmar('¿Está seguro de asignar la subtarea?', () => {
           new CambiarEstadoSubtarea().asignar(entidad.id)
           entidad.estado = estadosSubtareas.ASIGNADO
           actualizarElemento(posicion, entidad)
@@ -103,7 +102,7 @@ export default defineComponent({
       icono: 'bi-list',
       visible: ({ entidad }) => entidad.estado !== estadosSubtareas.REALIZADO,
       accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de asignar la tarea?', () => {
+        confirmar('¿Está seguro de asignar la subtarea?', () => {
           new CambiarEstadoSubtarea().asignar(entidad.id)
           entidad.estado = estadosSubtareas.ASIGNADO
           actualizarElemento(posicion, entidad)

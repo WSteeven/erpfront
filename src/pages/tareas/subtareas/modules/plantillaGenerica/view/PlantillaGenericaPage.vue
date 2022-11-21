@@ -1,5 +1,5 @@
 <template>
-  <div class="text-bold q-my-md q-ml-md">Plantilla genérica</div>
+  <!--<div class="text-bold q-my-md q-ml-md">Plantilla genérica</div>-->
   <q-stepper
     v-model="step"
     header-nav
@@ -15,32 +15,32 @@
       icon="bi-list-check"
       :done="done1"
     >
-      <ControlAvanceContent></ControlAvanceContent>
+      <ControlAvanceGenericoContent></ControlAvanceGenericoContent>
     </q-step>
 
-    <q-step
+    <!--<q-step
       :name="2"
       title="2. Pausas realizadas"
       icon="bi-list-check"
       :done="done2"
     >
       <pausas-realizadas-content></pausas-realizadas-content>
-    </q-step>
+    </q-step> -->
 
     <q-step
-      :name="3"
-      title="3. Imágenes adicionales"
+      :name="2"
+      title="2. Imágenes adicionales"
       icon="bi-list-check"
-      :done="done3"
+      :done="done2"
     >
       <imagen-adicional-content></imagen-adicional-content>
     </q-step>
 
     <q-step
-      :name="4"
-      title="4. Información adicional"
+      :name="3"
+      title="3. Información adicional"
       icon="bi-list-check"
-      :done="done4"
+      :done="done3"
     >
       <informacion-adicional-content></informacion-adicional-content>
     </q-step>

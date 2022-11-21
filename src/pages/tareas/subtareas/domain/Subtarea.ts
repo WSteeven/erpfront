@@ -1,6 +1,5 @@
+import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { Tecnico } from './Tecnico'
-import { Ref } from 'vue'
 
 export class Subtarea extends EntidadAuditable {
   codigo_subtarea: string | null
@@ -37,6 +36,10 @@ export class Subtarea extends EntidadAuditable {
 
   tarea_id: number | null
 
+  ubicacion_tarea: UbicacionTarea
+  cliente_final: number | null
+  fecha_ventana: string | null
+
   constructor() {
     super()
 
@@ -72,5 +75,9 @@ export class Subtarea extends EntidadAuditable {
     this.tecnicos_otros_grupos = []
 
     this.tarea_id = null
+
+    this.ubicacion_tarea = new UbicacionTarea()
+    this.cliente_final = null
+    this.fecha_ventana = null
   }
 }

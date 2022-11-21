@@ -578,11 +578,11 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosSubtareas.PAUSADO"
-          class="bg-red-1"
+          class="bg-indigo-1"
         >
           <q-icon
             name="bi-circle-fill"
-            color="negative"
+            color="indigo-5"
             class="q-mr-xs"
           ></q-icon
           >{{ estadosSubtareas.PAUSADO }}

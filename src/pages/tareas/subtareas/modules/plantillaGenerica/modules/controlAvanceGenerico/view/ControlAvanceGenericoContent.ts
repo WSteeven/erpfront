@@ -6,20 +6,21 @@ import { configuracionColumnasMaterial } from '../../../../../domain/configuraci
 import { regiones, atenciones, tiposIntervenciones, causaIntervencion } from 'config/utils'
 
 // Componentes
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import flatPickr from 'vue-flatpickr-component'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import TrabajoRealizado from '../../../../../domain/TrabajoRealizado'
 import { ControlAvance } from "../domain/ControlAvance";
 import Observacion from '../../../../../domain/Observacion'
 import Material from '../../../../../domain/Material'
+import { ComportamientoModalesControlAvanceGenericoContent } from "../application/ComportamientoModalesControlAvanceGenericoContent";
 
 export default defineComponent({
     components: {
         EssentialTable,
-        flatPickr,
+        ModalesEntidad,
     },
     setup() {
         const controlAvance = reactive(new ControlAvance())
@@ -39,7 +40,9 @@ export default defineComponent({
 
         const columnasMaterial = [...configuracionColumnasMaterial, acciones]
 
-        const cronologiaTrabajoRealizado: Ref<TrabajoRealizado[]> = ref([])
+        const actividadesRealizadas: Ref<TrabajoRealizado[]> = ref([])
+        actividadesRealizadas.value.push(new TrabajoRealizado())
+        actividadesRealizadas.value.push(new TrabajoRealizado())
         /*{
             id: 1,
             hora: '08:15:14',
@@ -137,17 +140,18 @@ export default defineComponent({
         const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === controlAvance.tipo_intervencion))
 
         const materiales: CustomActionTable = {
-            titulo: 'Materiales',
+            titulo: 'Seleccionar materiales',
             icono: 'bi-list',
+            color: 'indigo',
             accion: ({ entidad }) => {
                 // tareaStore.consultarSubtarea(entidad.id)
-                // modales.abrirModalEntidad('SubtareaAsignadaPage')
+                modales.abrirModalEntidad('MaterialOcupadoPage')
                 // router.push({ name: 'subtarea_asignada' })
             },
         }
 
         const agregarAvance: CustomActionTable = {
-            titulo: 'Agregar avance',
+            titulo: 'Agregar actividad',
             icono: 'bi-box',
             accion: ({ entidad }) => {
                 // cronologiaTrabajoRealizado.value.push()
@@ -157,6 +161,8 @@ export default defineComponent({
             }
         }
 
+        const modales = new ComportamientoModalesControlAvanceGenericoContent()
+
         return {
             controlAvance,
             causasIntervencion,
@@ -165,7 +171,7 @@ export default defineComponent({
             columnasObservacion,
             columnasMaterial,
             // listados
-            cronologiaTrabajoRealizado,
+            actividadesRealizadas,
             observaciones,
             materiales,
             // acciones tabla
@@ -180,6 +186,7 @@ export default defineComponent({
             regiones,
             atenciones,
             tiposIntervenciones,
+            modales,
         }
     }
 })

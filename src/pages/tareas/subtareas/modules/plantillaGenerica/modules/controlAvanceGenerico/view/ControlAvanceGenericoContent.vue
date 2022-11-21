@@ -9,29 +9,28 @@
       </div>
     </div> -->
 
-    <div v-if="cronologiaTrabajoRealizado">
-      <div class="q-mb-md">
-        <essential-table
-          titulo="Cronología de trabajo realizado"
-          :configuracionColumnas="columnasTrabajoRealizado"
-          :datos="cronologiaTrabajoRealizado"
-          :alto-fijo="false"
-          :permitirConsultar="false"
-          :permitirEliminar="false"
-          :permitirEditar="$q.screen.xs"
-          :permitirEditarCeldas="!$q.screen.xs"
-          :permitirEditarModal="$q.screen.xs"
-          :mostrar-footer="false"
-          separador="cell"
-          :mostrar-botones="false"
-          :agregarElemento="agregarAvance"
-          @eliminar="tablaTrabajoRealizado.eliminar"
-          @editar="tablaTrabajoRealizado.editar"
-          :accion1="materiales"
-        ></essential-table>
-      </div>
+    <div class="q-mb-md">
+      <essential-table
+        titulo="Actividades realizadas"
+        :configuracionColumnas="columnasTrabajoRealizado"
+        :datos="actividadesRealizadas"
+        :alto-fijo="false"
+        :permitirConsultar="false"
+        :permitirEliminar="false"
+        :permitirEditar="$q.screen.xs"
+        :permitirEditarCeldas="!$q.screen.xs"
+        :permitirEditarModal="$q.screen.xs"
+        :mostrar-footer="false"
+        separador="cell"
+        :mostrar-botones="false"
+        :agregarElemento="agregarAvance"
+        @eliminar="tablaTrabajoRealizado.eliminar"
+        @editar="tablaTrabajoRealizado.editar"
+        :accion1="materiales"
+      ></essential-table>
+    </div>
 
-      <!--<div class="q-mb-md">
+    <!--<div class="q-mb-md">
         <essential-table
           titulo="Observaciones / Mejoras / Pendientes"
           :configuracionColumnas="columnasObservacion"
@@ -46,7 +45,7 @@
         ></essential-table>
       </div> -->
 
-      <div class="q-mb-md">
+    <!--<div class="q-mb-md">
         <essential-table
           titulo="Suma total de materiales ocupados"
           :configuracionColumnas="columnasMaterial"
@@ -60,18 +59,18 @@
           @eliminar="tablaMateriales.eliminar"
           @editar="tablaMateriales.editar"
         ></essential-table>
-        <!--:agregarElemento="agregarMaterial"-->
-      </div>
-    </div>
+      </div> -->
+    <!--:agregarElemento="agregarMaterial"-->
 
     <!-- Botones formulario -->
-    <div class="row q-gutter-md justify-end">
+    <!--<div class="row q-gutter-md justify-end">
       <q-btn color="primary" no-caps :to="{ name: 'trabajo_asignado' }" push>
         <q-icon name="bi-chevron-left" size="xs" class="q-mr-sm"></q-icon>
         <div>Volver</div>
       </q-btn>
-    </div>
+    </div> -->
+    <modales-entidad :comportamiento="modales" />
   </q-page>
 </template>
 
-<script src="./ControlAvanceContent.ts"></script>
+<script src="./ControlAvanceGenericoContent.ts"></script>

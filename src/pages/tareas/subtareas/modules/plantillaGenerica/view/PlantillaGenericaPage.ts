@@ -1,5 +1,7 @@
 // Dependencias
+import { configuracionColumnasTecnico } from 'pages/tareas/subtareas/domain/configuracionColumnasTecnico'
 import { computed, defineComponent, Ref, ref } from 'vue'
+import { useTareaStore } from 'stores/tarea'
 import {
     provincias,
     ciudades,
@@ -14,20 +16,17 @@ import {
 } from 'config/utils'
 
 // Componentes
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import flatPickr from 'vue-flatpickr-component';
-import PausasRealizadasContent from '../modules/pausasRealizadas/view/PausasRealizadasContent.vue'
-import ControlAvanceContent from '../modules/controlAvance/view/ControlAvanceContent.vue'
-import ImagenAdicionalContent from '../modules/imagenesAdicionales/view/ImagenAdicionalContent.vue'
 import InformacionAdicionalContent from '../modules/informacionAdicional/view/InformacionAdicionalContent.vue'
+import ImagenAdicionalContent from '../modules/imagenesAdicionales/view/ImagenAdicionalContent.vue'
+import PausasRealizadasContent from '../modules/pausasRealizadas/view/PausasRealizadasContent.vue'
+import ControlAvanceGenericoContent from '../modules/controlAvanceGenerico/view/ControlAvanceGenericoContent.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { useTareaStore } from 'stores/tarea'
-import { Tecnico } from 'pages/tareas/subtareas/domain/Tecnico';
-import { configuracionColumnasTecnico } from 'pages/tareas/subtareas/domain/configuracionColumnasTecnico';
+import { Tecnico } from 'pages/tareas/subtareas/domain/Tecnico'
 
 export default defineComponent({
-    components: { EssentialTable, flatPickr, PausasRealizadasContent, ControlAvanceContent, ImagenAdicionalContent, InformacionAdicionalContent },
+    components: { EssentialTable, PausasRealizadasContent, ControlAvanceGenericoContent, ImagenAdicionalContent, InformacionAdicionalContent },
     setup() {
         const tareaStore = useTareaStore()
 
@@ -46,7 +45,7 @@ export default defineComponent({
             },
         ]
 
-        const datos: Ref<Tecnico[]> = ref([
+        const datos: Ref<any[]> = ref([
             {
                 id: 1,
                 tecnico: 'LUIS DHDHD',
@@ -86,7 +85,7 @@ export default defineComponent({
 
         //const modalesSubtarea = new ComportamientoModalesSubtarea()
 
-        const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
+        // const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
         return {
             step: ref(1),
@@ -114,7 +113,7 @@ export default defineComponent({
             regiones,
             atenciones,
             tiposIntervenciones,
-            causasIntervencion,
+            // causasIntervencion,
         }
     },
 })
