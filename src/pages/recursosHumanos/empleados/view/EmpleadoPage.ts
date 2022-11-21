@@ -55,7 +55,7 @@ export default defineComponent({
             email: { required },
             fecha_nacimiento: { required },
             roles: { required },
-            estado: {required},
+            estado: { required },
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -66,11 +66,14 @@ export default defineComponent({
         opciones_sucursales.value = listadosAuxiliares.sucursales
         opciones_roles.value = listadosAuxiliares.roles
         opciones_empleados.value = listadosAuxiliares.empleados
-        const opciones_estados = ['ACTIVO', 'INACTIVO']
+        const opciones_estados = [
+            { value: 1, label: 'ACTIVO' },
+            { value: 0, label: 'INACTIVO' }
+        ]
         return {
             mixin, empleado, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasEmpleados,
-            isPwd:ref(true),
+            isPwd: ref(true),
             //listado 
             opciones_sucursales,
             opciones_roles,
@@ -87,7 +90,7 @@ export default defineComponent({
                 }
                 update(() => {
                     const needle = val.toLowerCase()
-                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 ||v.apellidos.toLowerCase().indexOf(needle)>-1)
+                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
                 })
             }
 

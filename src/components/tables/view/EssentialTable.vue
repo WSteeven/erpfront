@@ -502,7 +502,7 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
-        <q-chip v-if="props.value === 'ACTIVO'" class="bg-green-1">
+        <q-chip v-if="props.value === 1" class="bg-green-1">
           <q-icon
             name="bi-circle-fill"
             color="positive"
@@ -510,7 +510,7 @@
           ></q-icon
           >ACTIVO
         </q-chip>
-        <q-chip v-if="props.value === 'INACTIVO'" class="bg-red-1">
+        <q-chip v-if="props.value === 0" class="bg-red-1">
           <q-icon
             name="bi-circle-fill"
             color="negative"

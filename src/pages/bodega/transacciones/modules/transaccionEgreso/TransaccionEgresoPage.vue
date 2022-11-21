@@ -8,6 +8,7 @@
     :tab-options="tabOptionsTransacciones"
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
+    :accion1="botonDespachar"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -249,8 +250,8 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Justificación</label>
             <q-input
-            type="textarea"
-            autogrow
+              type="textarea"
+              autogrow
               v-model="transaccion.justificacion"
               placeholder="Obligatorio"
               :readonly="disabled || soloLectura"
@@ -527,5 +528,8 @@
       </essential-selectable-table>
     </template>
   </tab-layout-filter-tabs>
+
+  <!-- Modales -->
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

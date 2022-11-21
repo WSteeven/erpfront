@@ -21,7 +21,7 @@ import { CondicionController } from "pages/administracion/condiciones/infraestru
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
 import { number } from "echarts";
-import { useTransaccionIngresoStore } from "stores/transaccion";
+import { useTransaccionStore } from "stores/transaccion";
 import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
 
 export default defineComponent({
@@ -37,7 +37,7 @@ export default defineComponent({
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const {onGuardado, onBeforeGuardar}=mixin.useHooks()
 
-        const transaccionStore = useTransaccionIngresoStore()
+        const transaccionStore = useTransaccionStore()
         const detalleProductoTransaccionStore = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
         if(transaccionStore.transaccion.id){
@@ -55,7 +55,7 @@ export default defineComponent({
             }
         }
 
-        let cantidad=ref(0)
+        const cantidad=ref(0)
         onBeforeGuardar(()=>{
             cantidad.value = inventario.cantidad
         })

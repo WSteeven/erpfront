@@ -52,17 +52,17 @@ export default defineComponent({
         const { confirmar, prompt } = useNotificaciones()
         const store = useAuthenticationStore()
 
-        const rolSeleccionado = (store.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
+        const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
        
 
         // Hooks
-        onGuardado(async () => {
+        /* onGuardado(async () => {
             console.log('la transaccion creada: ', transaccion)
             console.log(transaccion.id)
             await transaccionStore.cargarTransaccion(transaccion.id)
             console.log('aqqaqaqaqaqaqaqaqa:', transaccionStore.transaccion.listadoProductosSeleccionados)
             transaccion.listadoProductosSeleccionados = transaccionStore.transaccion.listadoProductosSeleccionados
-        })
+        }) */
         onConsultado(() => {
             // console.log('la transaccion consultada: ', transaccion)
             // console.log('tipo',transaccion.tipo)

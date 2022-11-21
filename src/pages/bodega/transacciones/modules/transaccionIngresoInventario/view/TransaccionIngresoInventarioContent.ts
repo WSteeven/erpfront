@@ -1,9 +1,7 @@
 //Dependencias
 import { configuracionColumnasProductosSeleccionados } from "../../transaccionContent/domain/configuracionColumnasProductosSeleccionados";
-import { defineComponent, reactive, ref, Ref } from "vue";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from '@vuelidate/core'
-import { useTransaccionIngresoStore } from "stores/transaccion";
+import { defineComponent, ref } from "vue";
+import { useTransaccionStore } from "stores/transaccion";
 import { useDetalleStore } from "stores/detalle";
 
 //Componentes 
@@ -15,10 +13,7 @@ import { DetalleProductoTransaccion } from "../../detalle_producto_transaccion/d
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { ComportamientoModalesTransaccionIngreso } from "../application/ComportamientoModalesTransaccionIngreso";
 import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { DetalleProducto } from "pages/bodega/detalles_productos/domain/DetalleProducto";
 import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
-
-
 
 
 export default defineComponent({
@@ -37,7 +32,7 @@ export default defineComponent({
         const listado = props.items
         console.log('items recibidos en variable listado', listado)
 
-        const transaccionStore = useTransaccionIngresoStore()
+        const transaccionStore = useTransaccionStore()
         const detalleTransaccionIngreso = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
         console.log('cdcdvsdcvsdcs', detalleStore.estaInventario)
@@ -70,30 +65,30 @@ export default defineComponent({
                 // transaccionStore.detalle.id=entidad.id
 
                 modales.abrirModalEntidad('InventarioPage')
-                detalleStore.estaInventario=false
-                const id=detalleStore.detalle.id
-                id_aux.value=id!
+                detalleStore.estaInventario = false
+                const id = detalleStore.detalle.id
+                id_aux.value = id!
                 /* setTimeout(()=>{
                     listado.splice(posicion,1)
                 }, 1000) */
             },
-            visible:({entidad,posicion})=>{
-                console.log('entidad en visible',entidad)
-                console.log('posiciion en visible',posicion)
-                console.log('el detalle en BD',detalleTransaccionIngreso.detalle)
+            visible: ({ entidad, posicion }) => {
+                console.log('entidad en visible', entidad)
+                console.log('posiciion en visible', posicion)
+                console.log('el detalle en BD', detalleTransaccionIngreso.detalle)
                 console.log(entidad.despachado, entidad.cantidades)
-                console.log('comprobacion',entidad.despachado===entidad.cantidades)
-                return entidad.despachado===entidad.cantidades?false:true
+                console.log('comprobacion', entidad.despachado === entidad.cantidades)
+                return entidad.despachado === entidad.cantidades ? false : true
                 // return true
             },
-           /*  visible: ({entidad, pos}) =>{
-                console.log('entidad', entidad)
-                console.log('pos', pos)
-                console.log('es visible', id_aux.value, detalleStore.estaInventario)
-                console.log('qwerty', detalleStore.detalle.id)
-                return true
-                // return (id_aux.value!==0 && id_aux.value===detalleStore.detalle.id && detalleStore.estaInventario)??detalleStore.estaInventario
-            } */
+            /*  visible: ({entidad, pos}) =>{
+                 console.log('entidad', entidad)
+                 console.log('pos', pos)
+                 console.log('es visible', id_aux.value, detalleStore.estaInventario)
+                 console.log('qwerty', detalleStore.detalle.id)
+                 return true
+                 // return (id_aux.value!==0 && id_aux.value===detalleStore.detalle.id && detalleStore.estaInventario)??detalleStore.estaInventario
+             } */
         }
 
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
