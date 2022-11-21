@@ -276,8 +276,8 @@
               dense
               outlined
               :error="!!v$.estado.$errors.length"
-              :option-value="(v) => v"
-              :option-label="(v) => v"
+              :option-value="(v) => v.value"
+              :option-label="(v) => v.label"
               emit-value
               map-options
             >

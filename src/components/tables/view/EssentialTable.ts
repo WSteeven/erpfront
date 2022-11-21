@@ -135,7 +135,7 @@ export default defineComponent({
     // Observers
     // watch(selected, () => emit('selected', selected.value))
     const seleccionar = () => {
-      // console.log('fila seleccionada es: ',selected.value[0])
+      console.log('fila seleccionada es: ',selected.value)
       emit('selected', selected.value)
     }
     const $q = useQuasar()
@@ -253,6 +253,7 @@ export default defineComponent({
       onScroll,
       loading,
       offset,
+      altoFijo: props.altoFijo,
     }
   },
 })

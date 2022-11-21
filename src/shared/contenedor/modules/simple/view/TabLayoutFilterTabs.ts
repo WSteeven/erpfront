@@ -12,6 +12,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { acciones } from 'config/utils'
 import { TabOption } from 'components/tables/domain/TabOption'
 import { emit } from 'process'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
   props: {
@@ -54,6 +55,10 @@ export default defineComponent({
       type: Array as () => TabOption[],
       required: true,
     },
+    accion1: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
@@ -66,6 +71,9 @@ export default defineComponent({
 
     const Router = useRouter()
     let listadoCargado = false
+
+    const accionPersonalizada = props.accion1
+    // console.log('accion recibida:',accionPersonalizada)
 
     const columnas = [
       ...props.configuracionColumnas,
@@ -167,6 +175,8 @@ export default defineComponent({
       aplicarFiltro,
       //cargar listado
       cargarListado,
+
+      accionPersonalizada,
 
       esBodeguero,
       esCoordinador,

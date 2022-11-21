@@ -2,8 +2,6 @@
   <q-page padding>
     <slot name="modales" />
 
-    <!-- <div class="text-white text-h6 q-my-md q-ml-md">{{ tituloPagina }}</div> -->
-
     <!-- Tabs -->
     <q-tabs v-model="tabs" align="left" narrow-indicator class="q-mb-lg">
       <q-tab
@@ -45,6 +43,7 @@
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
+          :accion1="accionPersonalizada"
           @onScroll="cargarListado"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
