@@ -35,17 +35,19 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
         // await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id='+transaccionStore.transaccion.id+'&detalle_id='+detalleStore.detalle.id)
-        const ruta = axios.getEndpoint(endpoints.inventarios)+'buscar/?detalle_id='+detalle_id+'&sucursal_id='+sucursal_id+'&cliente_id='+cliente_id
+        // const ruta = 'api/inventarios/buscar/?detalle_id='+detalle_id+'&sucursal_id='+sucursal_id+'&cliente_id='+cliente_id
+        const ruta = 'api/buscarDetalleInventario/?detalle_id='+detalle_id+'&sucursal_id='+sucursal_id+'&cliente_id='+cliente_id
         console.log('Ruta a consultar: ', ruta)
         const response:AxiosResponse=await axios.get(ruta)
         statusLoading.desactivar()
-        console.log('datos obtenidos:', response.data)
+        console.log('datos obtenidos:', response.data.results)
         return response.data.results
     }
 
-    async function cargarElementoId(detalle_id:number, sucursal_id:number, cliente_id:number) {
-        const modelo = await buscarId(detalle_id, sucursal_id, cliente_id)
-        console.log('Funcion cargar elemento: ', modelo)
+    async function cargarElementosId(detalle_id:number, sucursal_id:number, cliente_id:number) {
+        const results = await buscarId(detalle_id, sucursal_id, cliente_id)
+        console.log('Funcion cargar elemento: ', results)
+        return results
     }
 
     function resetearInventario(){
@@ -58,7 +60,7 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         accionInventario, 
         cargarItem,
         resetearInventario,
-        cargarElementoId,
+        cargarElementosId,
         
 
     }

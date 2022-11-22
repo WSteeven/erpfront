@@ -208,7 +208,7 @@ export default defineComponent({
                 modales.abrirModalEntidad('DespacharPage')
             },
             // visible: ({ entidad, posicion }) => puedeDespacharMaterial.value
-            visible: ({ entidad, posicion }) => puedeEditar.value
+            visible: ({ entidad, posicion }) => puedeEditar.value && esBodeguero
         // }
         }
          console.log('es bodeguero?', esBodeguero)
