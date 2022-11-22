@@ -51,7 +51,7 @@ export default defineComponent({
             titulo: 'Iniciar',
             icono: 'bi-play',
             color: 'positive',
-            visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO,
+            visible: ({ entidad }) => [estadosSubtareas.ASIGNADO, estadosSubtareas.SUSPENDIDO].includes(entidad.estado),
             accion: async ({ entidad, posicion }) => {
                 confirmar('¿Está seguro de iniciar el trabajo?', () => {
                     new CambiarEstadoSubtarea().ejecutar(entidad.id)
@@ -104,6 +104,20 @@ export default defineComponent({
             }
         }
 
+        const botonSuspender: CustomActionTable = {
+            titulo: 'Suspender',
+            icono: 'bi-x-diamond',
+            color: 'negative',
+            visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO && entidad.es_primera_asignacion,
+            accion: async ({ entidad, posicion }) => {
+                confirmar('¿Está seguro de suspender el trabajo?', () => {
+                    new CambiarEstadoSubtarea().suspender(entidad.id)
+                    entidad.estado = estadosSubtareas.SUSPENDIDO
+                    actualizarElemento(posicion, entidad)
+                })
+            }
+        }
+
         function actualizarElemento(posicion: number, entidad: any): void {
             if (posicion >= 0) {
                 listado.value.splice(posicion, 1, entidad);
@@ -139,6 +153,7 @@ export default defineComponent({
             botonPausar,
             botonReanudar,
             botonFormulario,
+            botonSuspender,
         }
     }
 })

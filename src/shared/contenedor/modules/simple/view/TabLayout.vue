@@ -17,7 +17,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="custom-shadow"
+      :class="{ 'custom-shadow': !$q.screen.xs }"
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario">

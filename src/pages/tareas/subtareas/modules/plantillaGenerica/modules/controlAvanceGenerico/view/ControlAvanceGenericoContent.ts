@@ -41,8 +41,7 @@ export default defineComponent({
         const columnasMaterial = [...configuracionColumnasMaterial, acciones]
 
         const actividadesRealizadas: Ref<TrabajoRealizado[]> = ref([])
-        actividadesRealizadas.value.push(new TrabajoRealizado())
-        actividadesRealizadas.value.push(new TrabajoRealizado())
+
         /*{
             id: 1,
             hora: '08:15:14',
@@ -116,10 +115,10 @@ export default defineComponent({
             },
         }
 
-        const agregarActividadRealizada: CustomActionTable = {
-            titulo: 'Agregar actividad realizada',
+        const agregarActividad: CustomActionTable = {
+            titulo: 'Agregar actividad',
             accion: () => {
-                //
+                actividadesRealizadas.value.push(new TrabajoRealizado())
             },
         }
 
@@ -178,7 +177,7 @@ export default defineComponent({
             tablaTrabajoRealizado,
             tablaObservacion,
             tablaMateriales,
-            agregarActividadRealizada,
+            agregarActividad,
             agregarObservacion,
             agregarMaterial,
             agregarAvance,

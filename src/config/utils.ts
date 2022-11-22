@@ -137,6 +137,7 @@ export const tabOptions: TabOption[] = [
 ]
 
 export const tabTrabajoAsignado: TabOption[] = [
+  { label: 'Todo', value: '' },
   { label: 'Asignado', value: 'ASIGNADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },

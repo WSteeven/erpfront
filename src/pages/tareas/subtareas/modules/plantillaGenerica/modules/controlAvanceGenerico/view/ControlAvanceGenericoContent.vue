@@ -23,7 +23,7 @@
         :mostrar-footer="false"
         separador="cell"
         :mostrar-botones="false"
-        :agregarElemento="agregarAvance"
+        :agregarElemento="agregarActividad"
         @eliminar="tablaTrabajoRealizado.eliminar"
         @editar="tablaTrabajoRealizado.editar"
         :accion1="materiales"

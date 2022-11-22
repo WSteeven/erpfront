@@ -8,7 +8,9 @@
     active-color="white"
     active-bg-color="primary"
     indicator-color="primary"
-    :class="{ 'borde-header-tabla': !$q.screen.xs }"
+    :class="{
+      'borde-header-tabla': !$q.screen.xs,
+    }"
     class="bg-white"
     align="justify"
     @click="emit('tab-seleccionado', tabSeleccionado)"
@@ -18,8 +20,8 @@
       :key="opcion.label"
       :label="opcion.label"
       :name="opcion.value"
-      class="q-mx-xs q-my-md rounded"
-      :class="{ 'shadow-chip borde': $q.screen.xs }"
+      class=""
+      :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
     ></q-tab>
   </q-tabs>
 
@@ -36,6 +38,7 @@
     :accion3="accion3"
     :accion4="accion4"
     :accion5="accion5"
+    :accion6="accion6"
     :agregarElemento="agregarElemento"
     :alto-fijo="altoFijo"
     :mostrarFooter="mostrarFooter"
@@ -47,6 +50,7 @@
     @accion3="emitAccion3"
     @accion4="emitAccion4"
     @accion5="emitAccion5"
+    @accion6="emitAccion6"
   ></essential-table>
 </template>
 
@@ -116,6 +120,10 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+  accion6: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
   agregarElemento: {
     type: Object as () => CustomActionTable,
     required: false,
@@ -152,6 +160,7 @@ const emit = defineEmits([
   'accion3',
   'accion4',
   'accion5',
+  'accion6',
   'tab-seleccionado',
 ])
 
@@ -165,4 +174,5 @@ const emitAccion2 = (data) => emit('accion2', data)
 const emitAccion3 = (data) => emit('accion3', data)
 const emitAccion4 = (data) => emit('accion4', data)
 const emitAccion5 = (data) => emit('accion5', data)
+const emitAccion6 = (data) => emit('accion6', data)
 </script>

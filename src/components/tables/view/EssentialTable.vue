@@ -122,7 +122,7 @@
             />
 
             <!-- Exportar a Excel -->
-            <q-btn
+            <!--<q-btn
               flat
               round
               unelevated
@@ -133,14 +133,14 @@
               <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
                 'Exportar a Excel'
               }}</q-tooltip>
-            </q-btn>
+            </q-btn> -->
 
             <!-- Importar desde Excel -->
-            <q-btn flat round dense icon="bi-upload">
+            <!--<q-btn flat round dense icon="bi-upload">
               <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
                 'Importar desde Excel'
               }}</q-tooltip>
-            </q-btn>
+            </q-btn> -->
 
             <!-- Imprimir -->
             <q-btn
@@ -263,6 +263,7 @@
           :accion3="accion3"
           :accion4="accion4"
           :accion5="accion5"
+          :accion6="accion6"
           :propsTable="props"
         ></CustomButtons>
       </q-td>
@@ -589,20 +590,16 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosSubtareas.SUSPENDIDO"
-          class="bg-yellow-1"
+          class="bg-red-1"
         >
-          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
+          <q-icon name="bi-circle-fill" color="red" class="q-mr-xs"></q-icon
           >{{ estadosSubtareas.SUSPENDIDO }}
         </q-chip>
         <q-chip
           v-if="props.value === estadosSubtareas.CANCELADO"
-          class="bg-green-1"
+          class="bg-red-2"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
+          <q-icon name="bi-circle-fill" color="red" class="q-mr-xs"></q-icon
           >{{ estadosSubtareas.CANCELADO }}
         </q-chip>
         <q-chip
