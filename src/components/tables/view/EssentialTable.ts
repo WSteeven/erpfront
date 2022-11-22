@@ -78,6 +78,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion6: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
     agregarElemento: {
       type: Object as () => CustomActionTable,
       required: false,
@@ -135,7 +139,7 @@ export default defineComponent({
     // Observers
     // watch(selected, () => emit('selected', selected.value))
     const seleccionar = () => {
-      console.log('fila seleccionada es: ',selected.value)
+      console.log('fila seleccionada es: ', selected.value)
       emit('selected', selected.value)
     }
     const $q = useQuasar()

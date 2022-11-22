@@ -39,6 +39,7 @@ export class Subtarea extends EntidadAuditable {
   ubicacion_tarea: UbicacionTarea
   cliente_final: number | null
   fecha_ventana: string | null
+  es_primera_asignacion: boolean
 
   constructor() {
     super()
@@ -79,5 +80,6 @@ export class Subtarea extends EntidadAuditable {
     this.ubicacion_tarea = new UbicacionTarea()
     this.cliente_final = null
     this.fecha_ventana = null
+    this.es_primera_asignacion = false
   }
 }

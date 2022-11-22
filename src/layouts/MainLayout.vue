@@ -51,7 +51,7 @@
 
         <span>
           <q-btn dense round flat icon="bi-bell" class="q-mr-md" color="black">
-            <q-badge color="positive" floating transparent> 4 </q-badge>
+            <q-badge color="accent" floating> 4 </q-badge>
             <q-menu transition-show="flip-right" transition-hide="flip-left">
               <q-list style="min-width: 100px">
                 <q-item clickable>
@@ -201,10 +201,14 @@
     </div>
 
     <!-- Drawer -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-white">
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      class="bg-white borde-drawe"
+    >
       <!-- Drawer Header -->
-      <div class="absolute-top q-pa-lg">
-        <img src="~assets/logo.jpeg" class="q-mx-auto block" height="116" />
+      <div class="absolute-top q-px-lg">
+        <img src="~assets/logo2.svg" class="q-mx-auto block" />
         <!--<q-avatar size="58px" class="q-mb-md" square>
         </q-avatar>
         <div class="text-h5 text-secondary">CONSTRUCRED</div> -->
@@ -232,7 +236,7 @@
     </q-drawer>
 
     <!-- Router -->
-    <q-page-container class="bg-grey-2">
+    <q-page-container :class="{ 'bg-grey-2': !$q.screen.xs }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <div>

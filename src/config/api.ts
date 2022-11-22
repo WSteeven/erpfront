@@ -18,6 +18,7 @@ export const endpoints = {
   // acceso a modulos
   tareas: new Endpoint('tareas/'),
   subtareas: new Endpoint('subtareas/'),
+  pausas_subtareas: new Endpoint('subtareas/pausas'),
   tipos_tareas: new Endpoint('tipos-tareas/'),
   control_asistencias: new Endpoint('control-asistencias/'),
   control_cambios: new Endpoint('control-cambios/'),

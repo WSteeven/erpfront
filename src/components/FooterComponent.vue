@@ -1,7 +1,7 @@
 <template>
   <small class="q-pa-xs q-pl-md footer">
     <strong>Copyright © 2023</strong>. Todos los derechos reservados por
-    <strong>Jean Pazmiño</strong>.
+    <strong>JPCONSTRUCRED</strong>.
   </small>
 </template>
 
@@ -10,5 +10,6 @@
   position: fixed;
   bottom: 0;
   width: 100%;
+  z-index: -1;
 }
 </style>

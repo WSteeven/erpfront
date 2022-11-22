@@ -65,11 +65,14 @@ export default defineComponent({
     }
 
     const botonControlAvance: CustomActionTable = {
-      titulo: 'Ver avances',
+      titulo: 'Control de avances',
       icono: 'bi-journal-text',
       color: 'indigo',
-      visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
-      accion: () => modales.abrirModalEntidad('GestionarAvancesPage'),
+      visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO, estadosSubtareas.PAUSADO].includes(entidad.estado),
+      accion: ({ entidad }) => {
+        subtareaListadoStore.idSubtareaSeleccionada = entidad.id
+        modales.abrirModalEntidad('GestionarAvancesPage')
+      }
     }
 
     const botonFinalizar: CustomActionTable = {

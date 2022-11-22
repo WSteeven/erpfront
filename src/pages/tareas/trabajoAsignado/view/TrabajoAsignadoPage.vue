@@ -13,6 +13,7 @@
       :accion3="botonFormulario"
       :accion4="botonPausar"
       :accion5="botonReanudar"
+      :accion6="botonSuspender"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
