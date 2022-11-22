@@ -33,12 +33,12 @@
         />
       </q-tab-panel>
       <!-- Listado -->
+      <!-- :initialPagination="pagination" -->
       <q-tab-panel name="listado">
         <essential-table
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
-          :initialPagination="pagination"
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"

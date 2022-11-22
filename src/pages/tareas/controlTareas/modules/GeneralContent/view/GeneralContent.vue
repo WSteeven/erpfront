@@ -489,13 +489,13 @@
     />
   </q-form>
 
-  <essential-selectable-table
+  <!-- <essential-selectable-table
     ref="refListadoSeleccionableClientes"
     :configuracion-columnas="configuracionColumnasClientes"
     :datos="listadoClientes"
     @selected="seleccionarCliente"
   >
-  </essential-selectable-table>
+  </essential-selectable-table> -->
 
   <!--<modales-entidad :comportamiento="modalesTarea" /> -->
 </template>

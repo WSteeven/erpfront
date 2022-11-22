@@ -132,7 +132,7 @@ export default defineComponent({
 
     const nuevoElementoInsertado = computed(() => subtareaListadoStore.nuevoElementoInsertado)
     watch(nuevoElementoInsertado, () => {
-      if (nuevoElementoInsertado) {
+      if (nuevoElementoInsertado.value) {
         aplicarFiltro(subtareaListadoStore.filtroEstadoSeleccionado)
       }
     })
