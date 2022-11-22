@@ -4,7 +4,7 @@ import { Movimiento } from "pages/bodega/movimientos/domain/Movimiento";
 import { endpoints } from "config/api";
 import { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { acciones } from "config/utils";
 
 export const useMovimientoStore=defineStore('movimiento', ()=>{
@@ -13,6 +13,7 @@ export const useMovimientoStore=defineStore('movimiento', ()=>{
     const movimientoReset = new Movimiento()
 
     const accionMovimiento = acciones.nuevo
+    const cerrarModal = ref(false)
     
     const statusLoading = new StatusEssentialLoading()
 
@@ -38,6 +39,8 @@ export const useMovimientoStore=defineStore('movimiento', ()=>{
         const ruta = axios.getEndpoint(endpoints.movimientos)
         const response:AxiosResponse = await axios.post(ruta, movimientos)
         statusLoading.desactivar()
+        console.log('response es: ',response)
+        cerrarModal.value=response.data.status===200?true:false
         console.log('mensaje recibido',response.data.mensaje)
         return response.data.modelo
     }
@@ -60,5 +63,6 @@ export const useMovimientoStore=defineStore('movimiento', ()=>{
         cargarMovimiento,
         enviarMovimiento,
         resetearMovimiento,   
+        cerrarModal,
     }
 })

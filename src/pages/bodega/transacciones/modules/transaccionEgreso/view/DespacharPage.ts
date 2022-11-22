@@ -10,7 +10,7 @@ import { required } from "@vuelidate/validators";
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from "components/tables/view/EssentialTable.vue";
 
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
 import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
 import { useDetalleStore } from "stores/detalle";
@@ -28,9 +28,11 @@ import { ClienteController } from "pages/sistema/clientes/infraestructure/Client
 import useVuelidate from "@vuelidate/core";
 import { useInventarioStore } from "stores/inventario";
 import { useMovimientoStore } from "stores/movimiento";
+import { emit } from "process";
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable },
-    setup() {
+    emits:['cerrar-modal'],
+    setup(props, {emit}) {
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
         const { cargarVista, setValidador, obtenerListados } = mixin.useComportamiento()
         const { entidad: transaccion, listadosAuxiliares } = mixin.useReferencias()
@@ -72,7 +74,8 @@ export default defineComponent({
         let resultadosInventario = ref([])
         let selected = ref([])
         let selected2 = ref([])
-        let step=ref(1)
+        let step = ref(1)
+        let detalle_id = ref(0)
 
         async function listarItems(id) {
             resultadosInventario.value = await inventarioStore.cargarElementosId(id, transaccionStore.transaccion.sucursal!, cliente.value)
@@ -83,11 +86,21 @@ export default defineComponent({
             resultadosInventario.
         }) */
 
+        watch(detalle_id, async (newDetalle) => {
+            await detalleStore.cargarDetalle(+newDetalle)
+            detalle_id = (detalleStore.detalle.id)!
+        })
+
+        function cerrarModal(){
+            emit('cerrar-modal')
+        }
+
         return {
             buscarProductoEnInventario(details) {
                 if (details.added) {//Si se selecciono un item, realizar la busqueda
                     console.log("se seleccionó", details.rows)
                     console.log("se seleccionó", details.rows[0]['id'])
+                    detalle_id = details.rows[0]['id']
                     listarItems(details.rows[0]['id'])
                 }
             },
@@ -100,10 +113,20 @@ export default defineComponent({
 
             //stepper
             step,
-            
-            onComplete(){
+
+            detalle_id,
+            onComplete() {
                 console.log('Completado!', selected2.value)
-                movimientoStore.enviarMovimiento(selected2.value)
+                const movimiento = {
+                    'inventario_id': selected2.value[0]['id'],
+                    'transaccion_id': transaccionStore.transaccion.id,
+                    'cantidad': selected2.value[0]['cantidad'],
+                    'precio_unitario': detalle_id,
+                }
+                movimientoStore.enviarMovimiento(movimiento)
+                
+                // movimientoStore.cerrarModal??modales.cerrarModalEntidad()
+                cerrarModal()
             },
 
             //Stores

@@ -1,6 +1,6 @@
 <template>
-  {{ puedeEditar }}
-  {{ tabSeleccionado }}
+<!--   {{ puedeEditar }}
+  {{ tabSeleccionado }} -->
   <tab-layout-filter-tabs
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
