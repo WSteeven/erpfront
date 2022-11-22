@@ -1,6 +1,9 @@
 import { configuracionColumnasProductos } from "pages/bodega/productos/domain/configuracionColumnasProductos";
 import { configuracionColumnasProductosSeleccionados } from "../../transaccionContent/domain/configuracionColumnasProductosSeleccionados";
 import { configuracionColumnasListadoProductosSeleccionados } from "../../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados";
+import { configuracionColumnasItemsEncontradosInventario } from "../../transaccionContent/domain/configuracionColumnasItemsEncontradosInventario";
+import { configuracionColumnasMovimientos } from "pages/bodega/movimientos/domain/configuracionColumnasMovimientos";
+import { configuracionColumnasItemsMovimiento } from "../../transaccionContent/domain/configuracionColumnasItemsMovimiento";
 import { required } from "@vuelidate/validators";
 
 //componentes
@@ -24,8 +27,6 @@ import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestruct
 import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
 import useVuelidate from "@vuelidate/core";
 import { useInventarioStore } from "stores/inventario";
-
-
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable },
     setup() {
@@ -67,17 +68,40 @@ export default defineComponent({
         opciones_estados.value = listadosAuxiliares.estados
         opciones_clientes.value = listadosAuxiliares.clientes
 
+        let resultadosInventario = ref([])
+        let selected = ref([])
+        let selected2 = ref([])
+        let step=ref(1)
+
         async function listarItems(id) {
-            await inventarioStore.cargarElementoId(id, transaccionStore.transaccion.sucursal!, cliente.value)
-            console.log('item es:', inventarioStore.inventario)
+            resultadosInventario.value = await inventarioStore.cargarElementosId(id, transaccionStore.transaccion.sucursal!, cliente.value)
+            console.log('resultadosInventario:', resultadosInventario.value)
         }
+        // console.log(transaccionStore.transaccion.listadoProductosSeleccionados)
+        /* watch(resultadosInventario, async(newValue, oldValue)=>{
+            resultadosInventario.
+        }) */
 
         return {
             buscarProductoEnInventario(details) {
                 if (details.added) {//Si se selecciono un item, realizar la busqueda
+                    console.log("se seleccionó", details.rows)
                     console.log("se seleccionó", details.rows[0]['id'])
                     listarItems(details.rows[0]['id'])
                 }
+            },
+            //resultados encontrados
+            resultadosInventario,
+            configuracionColumnasItemsEncontradosInventario,
+            //configuracion columnas
+            configuracionColumnasMovimientos,
+            configuracionColumnasItemsMovimiento,
+
+            //stepper
+            step,
+            
+            onComplete(){
+                if(step.value===2) console.log('Completado!')
             },
 
             //Stores
@@ -90,9 +114,6 @@ export default defineComponent({
             // configuracionColumnasProductosSeleccionados,
             configuracionColumnasListadoProductosSeleccionados,
 
-            selected: ref([]),
-            cliente,
-
             //listados
             opciones_tipos,
             opciones_subtipos,
@@ -102,9 +123,14 @@ export default defineComponent({
             opciones_estados,
             opciones_clientes,
 
-            clienteSeleccionado(val){
+            clienteSeleccionado(val) {
                 console.log('El cliente es: ', cliente.value)
+                selected2.value.splice(0)// = ref([])
+                resultadosInventario.value.splice(0)
             },
+            selected,
+            selected2,
+            cliente,
         }
     }
 })
