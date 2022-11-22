@@ -27,6 +27,7 @@ import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestruct
 import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
 import useVuelidate from "@vuelidate/core";
 import { useInventarioStore } from "stores/inventario";
+import { useMovimientoStore } from "stores/movimiento";
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable },
     setup() {
@@ -38,7 +39,7 @@ export default defineComponent({
         const detalleTransaccionStore = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
         const inventarioStore = useInventarioStore()
-
+        const movimientoStore = useMovimientoStore()
 
         const cliente = ref(1)
 
@@ -101,7 +102,8 @@ export default defineComponent({
             step,
             
             onComplete(){
-                if(step.value===2) console.log('Completado!')
+                console.log('Completado!', selected2.value)
+                movimientoStore.enviarMovimiento(selected2.value)
             },
 
             //Stores

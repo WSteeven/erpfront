@@ -159,7 +159,7 @@
           </div>
     </div>
     <!-- fin de encabezado -->
-    <q-stepper v-model="step" ref="stepper" color="primary" header-nav animated @click="onComplete">
+    <q-stepper v-model="step" ref="stepper" color="primary" header-nav animated>
       <q-step
         :name="1"
         title="Selecciona los items del inventario"
@@ -235,7 +235,7 @@
       > -->
       <template v-slot:navigation>
         <q-stepper-navigation>
-          <q-btn v-if="$refs.stepper.next"
+          <q-btn v-if="step!==2"
             @click="$refs.stepper.next()"
             color="primary"
             :label="step === 2 ? 'Finish' : 'Continue'"
