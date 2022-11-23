@@ -2,7 +2,7 @@
 import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
 import { numeric, required, requiredIf } from "@vuelidate/validators";
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 
 //Componentes
 import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
@@ -45,12 +45,7 @@ export default defineComponent({
         //Obtener los listados
         cargarVista(() => {
             obtenerListados({
-                productos: {
-                    controller: new ProductoController(),
-                    params: {
-                        // campos: 'id,nombre,categoria_id' 
-                    },
-                },
+                productos: new ProductoController(),
                 marcas: {
                     controller: new MarcaController(),
                     params: { campos: 'id,nombre' }
@@ -111,25 +106,17 @@ export default defineComponent({
             procesador: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
             ram: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
             disco: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
-
-            /* color: {
-                // requiredIfAdicionales: requiredIf(function () { return detalle.tiene_adicionales }),
-                requiredIfContiene: requiredIf(function () { return detalle.color.length > 0 ? true : false })
-            },
-            talla: {
-                // requiredIfAdicionales: requiredIf(function () { return detalle.tiene_adicionales }),
-                requiredIfContiene: requiredIf(function () { return detalle.talla.length > 0 ? true : false })
-            },
-            capacidad: {
-                // requiredIfAdicionales: requiredIf(function () { return detalle.tiene_adicionales }),
-                requiredIfContiene: requiredIf(function () { return detalle.capacidad.length > 0 ? true : false })
-            }, */
         }
 
         function limpiarCamposInformatica() {
             detalle.procesador = ''
             detalle.ram = ''
             detalle.disco = ''
+        }
+        function limpiarCamposAdicionales() {
+            detalle.color = ''
+            detalle.talla = ''
+            detalle.tipo = ''
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -159,6 +146,21 @@ export default defineComponent({
             rowsPerPage: 10
             // rowsNumber: xx if getting data from a server
         })
+        const opciones_tipos = ['HOMBRE', 'MUJER'];
+
+        const categoria_var = ref('')
+
+        watch(categoria_var, ()=> {
+            limpiarCamposInformatica()
+            limpiarCamposAdicionales()
+            // console.log(oldValue)
+            // console.log(newValue)
+            console.log(detalle.categoria)
+            console.log(categoria_var.value)
+            if(detalle.categoria==='EPP'){
+                detalle.tiene_adicionales=true
+            }
+        })
 
         return {
             mixin, detalle, disabled, accion, v$,
@@ -173,6 +175,7 @@ export default defineComponent({
             opciones_discos,
             opciones_procesadores,
             opciones_rams,
+            opciones_tipos,
             useVuelidate,
 
             //pagination
@@ -181,13 +184,13 @@ export default defineComponent({
             //filtros
             seleccionarModelo(val) {
                 console.log('seleccionar modelo: ', val)
-                opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.marca_id===val)
+                opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.marca_id === val)
                 console.log(opciones_modelos.value)
                 detalle.modelo = ''
                 if (opciones_modelos.value.length < 1) {
                     detalle.modelo = ''
                 }
-                if (opciones_modelos.value.length == 1) {
+                if (opciones_modelos.value.length === 1) {
                     detalle.modelo = opciones_modelos.value[0]['id']
                 }
             },
@@ -207,25 +210,11 @@ export default defineComponent({
             },
 
             seleccionarMarca(val) {
-                // console.log('valor recibido antes de todo','dexson')
-                console.log(val)
-                if (val === '') {
-                    opciones_modelos.value = listadosAuxiliares.modelos
-                    // console.log('valor recibido primer if', val)
-                    const encontrado = listadosAuxiliares.modelos.filter((v) => v.id === val)
-                    // console.log('encontrado', encontrado)
-
-                    return
-                }
-                // update(()=>{
-                // console.log('valor recibido', val)
+                console.log('seleccionar marca: ', val)
                 const encontrado = listadosAuxiliares.modelos.filter((v) => v.id === val)
-                // console.log('encontrado', encontrado)
                 if (encontrado.length > 0) {
-                    // console.log('encontrado en el if')
-                    // console.log(listadosAuxiliares.marcas.filter((v) => v.id === encontrado.id))
-                    opciones_marcas.value = listadosAuxiliares.marcas.filter((v) => v.nombre === encontrado[0]['marca'])
-                    detalle.marca = encontrado[0]['marca']
+                    opciones_marcas.value = listadosAuxiliares.marcas.filter((v) => v.id === encontrado[0]['marca_id'])
+                    detalle.marca = encontrado[0]['marca_id']
                 }
                 // })
             },
@@ -294,10 +283,14 @@ export default defineComponent({
 
             actualizarCategoria(val) {
                 const producto = listadosAuxiliares.productos.filter((v) => v.id === val)
+                categoria_var.value = producto[0]['categoria']
                 detalle.categoria = producto[0]['categoria']
-                if (producto[0]['categoria'] === 'INFORMATICA') {
+                /* if (producto[0]['categoria'] === 'INFORMATICA') {
                     limpiarCamposInformatica()
                 }
+                if (producto[0]['categoria'] === 'EPP') {
+                    limpiarCamposInformatica()
+                } */
             }
         }
     }

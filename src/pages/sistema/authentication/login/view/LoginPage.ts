@@ -19,7 +19,7 @@ export default defineComponent({
   },
   setup() {
     const loginUser = reactive(new UserLogin())
-    loginUser.email = 'mjaramillo@jp.com'
+    loginUser.name = 'MJARAMILLO'
     loginUser.password = 'password'
 
     const loginController = new LoginController()
@@ -43,7 +43,7 @@ export default defineComponent({
 
 
     const enableLoginButton = computed(
-      () => loginUser.email !== '' && loginUser.password !== ''
+      () => loginUser.name !== '' && loginUser.password !== ''
     )
 
     return {

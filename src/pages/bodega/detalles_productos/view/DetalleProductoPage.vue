@@ -273,6 +273,7 @@
               v-model="detalle.tiene_adicionales"
               label="Campos adicionales"
               outlined
+              
               dense
               :disable="disabled"
             ></q-checkbox>
@@ -325,10 +326,33 @@
             >
             </q-input>
           </div>
-          <!-- Capacidad -->
+          <!-- Tipo -->
           <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
-            <label class="q-mb-sm block">Capacidad</label>
-            <q-input
+            <label class="q-mb-sm block">Tipo</label>
+            <q-select
+              v-model="detalle.tipo"
+              :options="opciones_tipos"
+              hint="Selecciona un tipo"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :readonly="disabled"
+              :option-label="(item) => item"
+              :option-value="(item) => item"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <!-- <q-input
               v-model="detalle.capacidad"
               placeholder="Obligatorio"
               :readonly="disabled"
@@ -336,7 +360,7 @@
               outlined
               dense
             >
-            </q-input>
+            </q-input> -->
           </div>
           <!-- Span -->
           <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">

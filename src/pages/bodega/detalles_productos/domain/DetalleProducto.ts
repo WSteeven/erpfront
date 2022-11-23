@@ -28,7 +28,7 @@ export class DetalleProducto extends EntidadAuditable{
 
     color: string|null
     talla: string|null
-    capacidad: string|null
+    tipo: string|null
 
     //variables auxiliares
     tiene_serial:boolean
@@ -62,7 +62,7 @@ export class DetalleProducto extends EntidadAuditable{
         
         this.color=null
         this.talla=null
-        this.capacidad=null
+        this.tipo=null
         
         this.adicionales=null
         this.es_computadora=false

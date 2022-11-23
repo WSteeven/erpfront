@@ -53,6 +53,7 @@ export default defineComponent({
             sucursal: { required },
             jefe: { required },
             email: { required },
+            usuario: { required },
             fecha_nacimiento: { required },
             roles: { required },
             estado: { required },

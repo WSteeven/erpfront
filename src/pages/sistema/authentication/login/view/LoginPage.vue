@@ -35,12 +35,12 @@
             <span>Inicie sesión con su cuenta</span>
           </div>
 
-          <!-- Correo -->
+          <!-- Usuario -->
           <div class="col-12 q-mb-sm">
             <q-input
-              v-model="loginUser.email"
-              type="email"
-              label="Correo"
+              v-model="loginUser.name"
+              label="Usuario"
+              @update:model-value="(v)=>(loginUser.name=v.toUpperCase())"
               outlined
               dense
             />
