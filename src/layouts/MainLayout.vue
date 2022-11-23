@@ -208,7 +208,7 @@
     >
       <!-- Drawer Header -->
       <div class="absolute-top q-px-lg">
-        <img src="~assets/logo2.svg" class="q-mx-auto block" />
+        <img src="~assets/logo.svg" class="q-mx-auto block" />
         <!--<q-avatar size="58px" class="q-mb-md" square>
         </q-avatar>
         <div class="text-h5 text-secondary">CONSTRUCRED</div> -->

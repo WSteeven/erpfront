@@ -1,21 +1,20 @@
 // Dependencias
-import { computed, defineComponent, reactive, ref, Ref } from "vue";
 import { configuracionColumnasTrabajoRealizado } from '../../../../../domain/configuracionColumnasTrabajoRealizado'
 import { configuracionColumnasObservacion } from '../../../../../domain/configuracionColumnasObservacion'
 import { configuracionColumnasMaterial } from '../../../../../domain/configuracionColumnasMaterial'
 import { regiones, atenciones, tiposIntervenciones, causaIntervencion } from 'config/utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { computed, defineComponent, reactive, ref, Ref } from 'vue'
 
 // Componentes
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
+import { ComportamientoModalesControlAvanceGenericoContent } from "../application/ComportamientoModalesControlAvanceGenericoContent"
 import TrabajoRealizado from '../../../../../domain/TrabajoRealizado'
-import { ControlAvance } from "../domain/ControlAvance";
 import Observacion from '../../../../../domain/Observacion'
-import Material from '../../../../../domain/Material'
-import { ComportamientoModalesControlAvanceGenericoContent } from "../application/ComportamientoModalesControlAvanceGenericoContent";
+import { ControlAvance } from '../domain/ControlAvance'
 
 export default defineComponent({
     components: {

@@ -159,7 +159,7 @@ export const accionesTabla = {
   field: 'acciones',
   label: 'Acciones',
   align: 'center',
-  style: 'width: 490px;'
+  style: 'width: 500px;'
 }
 
 export const tiposTrabajosEstaticos = {

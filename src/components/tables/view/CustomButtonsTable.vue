@@ -1,6 +1,6 @@
 <template>
   <!-- Accion 1-->
-  <div
+  <span
     class="row"
     :class="{
       'q-gutter-x-sm': !$q.screen.xs,
@@ -131,7 +131,7 @@
       ></q-icon>
       <span>{{ extraerTitulo(accion6) }}</span>
     </q-btn>
-  </div>
+  </span>
 </template>
 
 <script lang="ts" setup>

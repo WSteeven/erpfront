@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="abierto" :maximized="true" :full-width="false" top>
+  <q-dialog v-model="abiertoC" :maximized="true" :full-width="false" top>
     <q-card>
       <q-toolbar>
         <q-avatar square>
@@ -25,7 +25,7 @@
             :key="field.field"
             class="col-12 col-md-3"
           >
-            <label>{{ field.label }}</label>
+            <label class="block q-mb-sm">{{ field.label }}</label>
             <q-input
               v-model="field.valor"
               :type="field.input_type"
@@ -67,6 +67,7 @@ const props = defineProps({
     type: Object as () => EntidadAuditable,
     required: false,
   },
+  abierto: Boolean,
 })
 
 const emit = defineEmits(['limpiar', 'guardar'])
@@ -78,13 +79,31 @@ const fields = computed(() =>
         label: fila.label,
         field: fila.field,
         input_type: fila.input_type ?? 'text',
+        editable: fila.editable ?? true,
+        valor: props.fila ? props.fila[fila.field] : '',
+      })
+    })
+    .filter((fila) => fila.field !== 'acciones' && fila.editable)
+)
+
+/* const fields = ref()
+const fila = computed()
+watch(props.fila, () => {
+  props.configuracionColumnas
+    .map((fila: ColumnConfig<any>) => {
+      return reactive({
+        label: fila.label,
+        field: fila.field,
+        input_type: fila.input_type ?? 'text',
         valor: props.fila ? props.fila[fila.field] : '',
       })
     })
     .filter((fila) => fila.field !== 'acciones')
-)
+}) */
 
-const abierto = computed(() => !!props.fila)
+// const abierto = computed(() => !!props.fila)
+// const abierto = ref(false)
+const abiertoC = computed(() => props.abierto)
 
 function guardar() {
   var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
@@ -92,7 +111,12 @@ function guardar() {
   emit('guardar', newObj)
 }
 
+/* function abrirModalEntidad() {
+  abierto.value = true
+} */
+
 function cerrarModalEntidad() {
   emit('limpiar')
+  // abierto.value = false
 }
 </script>

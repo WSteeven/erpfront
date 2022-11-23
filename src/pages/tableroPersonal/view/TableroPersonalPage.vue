@@ -85,7 +85,7 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-app-indicator"
+                    name="bi-ui-checks"
                     class="q-mr-md"
                     color="primary"
                   ></q-icon>
@@ -97,7 +97,7 @@
 
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-app-indicator"
+                    name="bi-ui-checks"
                     class="q-mr-md"
                     color="primary"
                   ></q-icon>
@@ -109,7 +109,7 @@
 
                 <q-btn align="left" flat class="q-mb-md" @click="verSubtarea()">
                   <q-icon
-                    name="bi-app-indicator"
+                    name="bi-ui-checks"
                     class="q-mr-md"
                     color="primary"
                   ></q-icon>
@@ -125,7 +125,7 @@
               <div class="col-12 col-md-6 column">
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-check-circle-fill"
+                    name="bi-ui-checks"
                     class="q-mr-md"
                     color="positive"
                   ></q-icon>
@@ -194,9 +194,9 @@
               <div class="col-12 column">
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-check-circle-fill"
+                    name="bi-check-square-fill"
                     class="q-mr-md"
-                    color="primary"
+                    color="positive"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP00001 / 798541</div>
@@ -206,9 +206,9 @@
 
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-check-circle-fill"
+                    name="bi-check-square-fill"
                     class="q-mr-md"
-                    color="primary"
+                    color="positive"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0002 / 854126</div>
@@ -218,9 +218,9 @@
 
                 <q-btn align="left" flat>
                   <q-icon
-                    name="bi-check-circle-fill"
+                    name="bi-check-square-fill"
                     class="q-mr-md"
-                    color="primary"
+                    color="positive"
                   ></q-icon>
                   <div class="text-left column">
                     <div class="block">JP0003 / ED9865</div>

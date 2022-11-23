@@ -10,4 +10,5 @@ export interface ColumnConfig<T> {
   print?: boolean
   style?: string
   input_type?: tipos
+  editable?: boolean
 }

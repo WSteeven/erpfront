@@ -1,8 +1,9 @@
 // Dependencias
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios } from 'config/utils'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
-import { computed, defineComponent, ref, watchEffect, nextTick } from 'vue'
+import { computed, defineComponent, ref, watchEffect, nextTick, reactive } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
 import { TipoSeleccion, estadosSubtareas } from 'config/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
@@ -22,6 +23,10 @@ export default defineComponent({
     CustomButtons,
   },
   props: {
+    entidad: {
+      type: Object as () => Instanciable,
+      required: false,
+    },
     titulo: {
       type: String,
       default: 'Listado',
@@ -111,7 +116,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
-    const fila = ref()
+    const fila = props.entidad ? ref(new props.entidad()) : null
     const listado = ref()
 
     watchEffect(() => {
@@ -121,15 +126,18 @@ export default defineComponent({
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
     const editar = (data: any) => {
+      const { entidad, posicion } = data
+
       emit('editar', data)
 
-      if (props.permitirEditarModal) {
-        fila.value = data.entidad
-        filaEditada.value = data.posicion
+      if (props.permitirEditarModal && props.entidad) {
+        fila.value = reactive(new props.entidad())
+        fila.value.hydrate(entidad)
+        posicionFila.value = posicion
+        abrirModal()
       }
     }
     const eliminar = (data: object) => emit('eliminar', data)
-    //const accion1 = (data: object) => emit('accion1', data)
 
     // Variables
     const filter = ref(null)
@@ -137,9 +145,7 @@ export default defineComponent({
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
 
     // Observers
-    // watch(selected, () => emit('selected', selected.value))
     const seleccionar = () => {
-      console.log('fila seleccionada es: ', selected.value)
       emit('selected', selected.value)
     }
     const $q = useQuasar()
@@ -205,14 +211,15 @@ export default defineComponent({
     }
 
     function limpiarFila() {
-      fila.value = null
+      if (props.entidad) fila.value.hydrate(new props.entidad())
     }
 
-    const filaEditada = ref()
+    const posicionFila = ref()
 
     function guardarFila(data) {
-      listado.value.splice(filaEditada.value, 1, data)
-      limpiarFila()
+      fila.value.hydrate(data)
+      listado.value.splice(posicionFila.value, 1, fila.value)
+      cerrarModa()
     }
 
     const rows = computed(() => listado.value?.length - 1 ?? 0)
@@ -232,7 +239,22 @@ export default defineComponent({
       }
     }
 
+    const abierto = ref(false)
+
+    function abrirModal() {
+      abierto.value = true
+    }
+
+    function cerrarModa() {
+      abierto.value = false
+    }
+
+    /*function abrir() {
+      
+    }*/
+
     return {
+      abierto,
       grid,
       inFullscreen,
       editar,
@@ -258,6 +280,7 @@ export default defineComponent({
       loading,
       offset,
       altoFijo: props.altoFijo,
+      abrirModal,
     }
   },
 })

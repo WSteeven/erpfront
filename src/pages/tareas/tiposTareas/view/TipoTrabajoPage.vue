@@ -1,7 +1,7 @@
 <template>
   <tab-layout
     :mixin="mixin"
-    :configuracionColumnas="configuracionColumnas"
+    :configuracionColumnas="configuracionColumnasTiposTareas"
     titulo-pagina="Tipo de tareas"
   >
     <template #formulario>
@@ -77,9 +77,66 @@
               </template>
             </q-input>
           </div>
+
+          <div class="col-12 col-md-6">
+            <br />
+            <q-checkbox
+              v-model="tipoTarea.requiere_imagenes"
+              label="Requiere imágenes adicionales"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <br />
+            <q-checkbox
+              v-model="tipoTarea.requiere_campos_adicionales"
+              label="Requiere información adicional"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
         </div>
 
-        <div class="row q-col-gutter-sm">
+        <div v-if="tipoTarea.requiere_imagenes" class="q-mb-md">
+          <essential-table
+            titulo="Imágenes adicionales"
+            :configuracionColumnas="configuracionColumnasImagenes"
+            :datos="tipoTarea.imagenes_adicionales"
+            :alto-fijo="false"
+            :permitirConsultar="false"
+            :permitirEditarModal="true"
+            :mostrar-footer="false"
+            separador="cell"
+            :mostrar-botones="false"
+            :agregarElemento="agregarImagenAdicional"
+            :accion1="botonHabilitarFormulario"
+            :accion2="botonDeshabilitarFormulario"
+            @eliminar="eliminarImagenAdicional"
+            :entidad="ImagenesAdicionales"
+          ></essential-table>
+        </div>
+
+        <essential-table
+          v-if="tipoTarea.requiere_campos_adicionales"
+          titulo="Información adicional"
+          :configuracionColumnas="configuracionColumnasCampos"
+          :datos="tipoTarea.campos_adicionales"
+          :alto-fijo="false"
+          :permitirConsultar="false"
+          :permitirEditarModal="true"
+          :mostrar-footer="false"
+          separador="cell"
+          :mostrar-botones="false"
+          :agregarElemento="agregarCampoAdicional"
+          :accion1="botonActivarCampo"
+          :accion2="botonDesactivarCampo"
+          @eliminar="eliminarCampoAdicional"
+          :entidad="CamposAdicionales"
+        ></essential-table>
+
+        <!--<div class="row q-col-gutter-sm">
           <div class="col-12 q-mb-md">Plantilla</div>
           <div class="col-12 col-md-4 q-mb-md">
             <q-card class="cursor-pointer" bordered>
@@ -215,7 +272,7 @@
               </q-item>
             </q-card>
           </div>
-        </div>
+        </div> -->
       </q-form>
 
       <essential-selectable-table
