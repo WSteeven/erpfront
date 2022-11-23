@@ -3,13 +3,32 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Empleados"
-  >
+    >
     <template #formulario>
       <q-form @submit.prevent>
         <q-card flat bordered class="q-mb-md">
           <div class="row q-col-gutter-sm q-pa-md">
+            <!-- usuario -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Usuario</label>
+              <q-input
+                v-model="empleado.usuario"
+                placeholder="Obligatorio"
+                :readonly="disabled"
+                :error="!!v$.usuario.$errors.length"
+                @update:model-value="(v) => (empleado.usuario = v.toUpperCase())"
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.usuario.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-input>
+            </div>
             <!-- correo -->
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Correo</label>
               <q-input
                 type="email"
@@ -29,7 +48,7 @@
               </q-input>
             </div>
             <!-- Contraseña -->
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Contraseña</label>
               <q-input
                 :type="isPwd ? 'password' : 'text'"

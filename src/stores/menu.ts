@@ -164,7 +164,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones_ingresos'),
+          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v)=>v.indexOf('BODEGA')>-1)).length>0,
           icon: 'bi-circle',
         },
         {
