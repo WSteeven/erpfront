@@ -39,10 +39,26 @@ export default defineComponent({
         //Obtener listados 
         cargarVista(async () => {
             await obtenerListados({
-                sucursales: new SucursalController(),
-                productos: new ProductoController(),
-                detalles: new DetalleProductoController(),
-                clientes: new ClienteController(),
+                sucursales: {
+                    controller: new SucursalController(),
+                    params: { campos: 'id,lugar' },
+                },
+                productos: {
+                    controller: new ProductoController(),
+                    params: { campos: 'id,nombre' },
+                },
+                detalles: {
+                    controller: new DetalleProductoController(),
+                    params: { campos: 'id,producto_id,descripcion,modelo_id,serial' },
+                },
+                clientes: {
+                    controller: new ClienteController(),
+                    params: {
+                        campos: 'id,empresa_id',
+                        requiere_bodega: 1,
+                        estado: 1,
+                    },
+                },
             })
         })
 
@@ -80,7 +96,7 @@ export default defineComponent({
                 })
             },
             seleccionarDetalle(val) {
-                opciones_detalles.value = listadosAuxiliares.detalles.filter((v) => v.producto_id===val)
+                opciones_detalles.value = listadosAuxiliares.detalles.filter((v) => v.producto_id === val)
                 stock.detalle_id = ''
                 if (opciones_detalles.value.length < 1) {
                     stock.detalle_id = ''

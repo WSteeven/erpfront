@@ -292,12 +292,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tipos_transacciones'),
         },
         {
-          title: 'Inventario',
-          link: 'inventario',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.inventarios'),
-        },
-        {
           title: 'Perchas',
           link: 'perchas',
           icon: 'bi-circle',

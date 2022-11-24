@@ -185,6 +185,12 @@ export const estadosTransacciones = {
   parcial: 'PARCIAL',
 }
 
+export const estadosControlStock = {
+  suficiente: "STOCK SUFICIENTE",
+  reorden: "PROXIMO A AGOTARSE",
+  minimo: "DEBAJO DEL MINIMO",
+}
+
 export const estadosInventarios = {
   inventario: 'INVENTARIO',
   transito: 'TRANSITO',

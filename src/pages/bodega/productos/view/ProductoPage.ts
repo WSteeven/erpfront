@@ -49,7 +49,10 @@ export default defineComponent({
     //Obtener el listado de las categorias
     cargarVista(() => {
       obtenerListados({
-        categorias: new CategoriaController(),
+        categorias: {
+          controller:new CategoriaController(),
+          params:{campos:'id,nombre'},
+        }
       })
     })
 

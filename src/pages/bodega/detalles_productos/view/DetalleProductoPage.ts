@@ -45,7 +45,10 @@ export default defineComponent({
         //Obtener los listados
         cargarVista(() => {
             obtenerListados({
-                productos: new ProductoController(),
+                productos: {
+                    controller: new ProductoController(),
+                    params: { campos: 'id,nombre,categoria_id' }
+                },
                 marcas: {
                     controller: new MarcaController(),
                     params: { campos: 'id,nombre' }
@@ -150,15 +153,15 @@ export default defineComponent({
 
         const categoria_var = ref('')
 
-        watch(categoria_var, ()=> {
+        watch(categoria_var, () => {
             limpiarCamposInformatica()
             limpiarCamposAdicionales()
             // console.log(oldValue)
             // console.log(newValue)
             console.log(detalle.categoria)
             console.log(categoria_var.value)
-            if(detalle.categoria==='EPP'){
-                detalle.tiene_adicionales=true
+            if (detalle.categoria === 'EPP') {
+                detalle.tiene_adicionales = true
             }
         })
 

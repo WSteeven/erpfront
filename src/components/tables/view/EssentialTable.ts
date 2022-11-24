@@ -1,5 +1,5 @@
 // Dependencias
-import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios } from 'config/utils'
+import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock } from 'config/utils'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 import { computed, defineComponent, ref, watchEffect, nextTick, reactive } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
@@ -275,6 +275,7 @@ export default defineComponent({
       autorizacionesTransacciones,
       estadosTransacciones,
       estadosInventarios,
+      estadosControlStock,
       estadosSubtareas,
       onScroll,
       loading,

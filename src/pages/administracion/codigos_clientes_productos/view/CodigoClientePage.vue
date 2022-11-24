@@ -8,7 +8,7 @@
                 <label class="q-mb-sm block">Producto</label>
                 <q-select 
                   v-model="codigo_cliente.producto"
-                  :options="opciones_productos.productos"
+                  :options="opciones_productos"
                   transition-show="scale"
                   transition-hide="scale"
                   options-dense 
@@ -16,7 +16,7 @@
                   outlined  
                   use-input
                   input-debounce="0"
-                  @filter="filterFn"
+                  @filter="filtrarProductos"
                   :option-label="(item)=> item.nombre"
                   :option-value="(item)=> item.id"
                   emit-value 
@@ -35,18 +35,27 @@
               <label class="q-mb-sm block">Cliente</label>
               <q-select 
                 v-model="codigo_cliente.cliente" 
-                :options="opciones_clientes.clientes"
+                :options="opciones_clientes"
                 transition-show="scale"
                 transition-hide="scale" 
                 options-dense 
                 dense 
                 outlined 
+                use-input
+                input-debounce="0"
+                @filter="filtrarClientes"
                 :option-label="(item) => item.razon_social"
                 :option-value="(item) => item.id" 
                 :option-disable="(item) =>item.id===1"
                 emit-value 
                 map-options>
-                
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
               </q-select>
             </div>
             <!-- Codigo -->

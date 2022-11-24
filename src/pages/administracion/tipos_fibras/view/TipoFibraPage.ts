@@ -17,9 +17,9 @@ export default defineComponent({
     setup(){
         const mixin = new ContenedorSimpleMixin(TipoFibra, new TipoFibraController())
         const {entidad: tipoFibra, disabled} = mixin.useReferencias()
-        const {setValidador, listar} = mixin.useComportamiento()
+        const {setValidador} = mixin.useComportamiento()
 
-        listar();
+        // listar();
         //Reglas de validacion 
         const reglas={
             nombre: {required}

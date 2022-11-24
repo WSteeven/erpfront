@@ -55,8 +55,11 @@ export default defineComponent({
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
-                ubicaciones: new UbicacionController(),
-                sucursales: new SucursalController(),
+                // ubicaciones: new UbicacionController(),
+                sucursales: {
+                    controller: new SucursalController(),
+                    params: { campos: 'id,lugar' },
+                },
             })
         })
         opciones_ubicaciones.value = listadosAuxiliares.ubicaciones

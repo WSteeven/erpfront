@@ -2,7 +2,7 @@
 import { configuracionColumnasModelos } from '../domain/configuracionColumnasModelos'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 //Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -19,19 +19,22 @@ export default defineComponent({
   components: {
     TabLayout,
     //EssentialSelectableTable,
-    
+
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(Modelo, new ModeloController())
     const { entidad: modelo, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
-    
 
+    const opciones = ref([])
     //obtener el listado de todas las marcas
     cargarVista(() => {
       obtenerListados({
-        marcas: new MarcaController(),
+        marcas: {
+          controller: new MarcaController(),
+          params: { campos: 'id,nombre' },
+        },
       })
     })
 
@@ -48,7 +51,7 @@ export default defineComponent({
 
 
     //aqui va el listado
-    const opciones = listadosAuxiliares.marcas 
+    opciones.value = listadosAuxiliares.marcas
 
     return {
       mixin,
@@ -70,13 +73,13 @@ export default defineComponent({
       filterFn(val, update) {
         if (val === '') {
           update(() => {
-            opciones.marcas = listadosAuxiliares.marcas
+            opciones.value = listadosAuxiliares.marcas
           })
           return
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones.marcas = listadosAuxiliares.marcas.filter(
+          opciones.value= listadosAuxiliares.marcas.filter(
             (v) => v.nombre.toLowerCase().indexOf(needle) > -1
           )
         })

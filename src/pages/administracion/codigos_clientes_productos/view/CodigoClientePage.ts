@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasCodigosClientes } from "../domain/configuracionColumnasCodigosClientes";
 import { required } from "@vuelidate/validators";
-import {useVuelidate} from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 
 
@@ -18,25 +18,37 @@ import { ProductoController } from "pages/bodega/productos/infraestructure/Produ
 import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
 
 export default defineComponent({
-    components: {TabLayout},
-    setup(){
+    components: { TabLayout },
+    setup() {
         const mixin = new ContenedorSimpleMixin(CodigoCliente, new CodigoClienteController())
-        const {entidad:codigo_cliente, disabled, accion, listadosAuxiliares} = mixin.useReferencias()
-        const {setValidador, obtenerListados, cargarVista} = mixin.useComportamiento()
+        const { entidad: codigo_cliente, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
+        const opciones_productos = ref([])
+        const opciones_clientes = ref([])
         //Obtener los listados
-        cargarVista(()=>{
+        cargarVista(() => {
             obtenerListados({
-                productos: new ProductoController(),
-                clientes: new ClienteController()
+                productos: {
+                    controller: new ProductoController(),
+                    params: { campos: 'id,nombre' },
+                },
+                clientes: {
+                    controller: new ClienteController(),
+                    params: {
+                        campos: 'id,empresa_id',
+                        requiere_bodega: 1,
+                        estado: 1,
+                    },
+                }
             })
         })
 
         //Reglas de validacion
         const reglas = {
-            codigo:{required},
-            cliente:{required},
-            producto:{required}
+            codigo: { required },
+            cliente: { required },
+            producto: { required }
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -45,27 +57,40 @@ export default defineComponent({
         setValidador(v$.value)
 
         //Configurar el listado
-        const opciones_productos = listadosAuxiliares.productos
-        const opciones_clientes = listadosAuxiliares
+         opciones_productos.value = listadosAuxiliares.productos
+         opciones_clientes.value = listadosAuxiliares.clientes
 
         return {
             mixin, codigo_cliente, disabled, accion, v$,
-            configuracionColumnas:configuracionColumnasCodigosClientes,
+            configuracionColumnas: configuracionColumnasCodigosClientes,
             //listado
             opciones_productos,
             opciones_clientes,
 
-            filterFn(val, update){
-                if(val===''){
-                    update(()=>{
-                        opciones_productos.productos = listadosAuxiliares.productos
+            filtrarProductos(val, update) {
+                if (val === '') {
+                    update(() => {
+                        opciones_productos.value = listadosAuxiliares.productos
                     })
-                    return 
+                    return
                 }
-                update(()=>{
+                update(() => {
                     const needle = val.toLowerCase()
-                    opciones_productos.productos = listadosAuxiliares.productos.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
-                    console.log(opciones_productos.productos)
+                    opciones_productos.value = listadosAuxiliares.productos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+                    // console.log(opciones_productos.productos)
+                })
+            },
+            filtrarClientes(val, update) {
+                if (val === '') {
+                    update(() => {
+                        opciones_clientes.value = listadosAuxiliares.clientes
+                    })
+                    return
+                }
+                update(() => {
+                    const needle = val.toLowerCase()
+                    opciones_clientes.value = listadosAuxiliares.clientes.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
+                    // console.log(opciones_productos.productos)
                 })
             },
         }

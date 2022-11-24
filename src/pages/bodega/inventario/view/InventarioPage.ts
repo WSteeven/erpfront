@@ -35,39 +35,39 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const {onGuardado, onBeforeGuardar}=mixin.useHooks()
+        const { onGuardado, onBeforeGuardar } = mixin.useHooks()
 
         const transaccionStore = useTransaccionStore()
         const detalleProductoTransaccionStore = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
-        if(transaccionStore.transaccion.id){
-            console.log('La transaccion en el inventario: ',transaccionStore.transaccion)
-            if(detalleStore.detalle.id){
+        if (transaccionStore.transaccion.id) {
+            console.log('La transaccion en el inventario: ', transaccionStore.transaccion)
+            if (detalleStore.detalle.id) {
                 console.log('El detalle en el inventario es: ', detalleStore.detalle)
-                inventario.producto=detalleStore.detalle.producto
-                inventario.detalle_id=detalleStore.detalle.id
-                const elementoEncontrado=transaccionStore.transaccion.listadoProductosSeleccionados.filter((v)=>v.id===detalleStore.detalle.id)
-                console.log('El elemento ews;: ',elementoEncontrado)
-                console.log('La cantidad del elemento es: ',elementoEncontrado[0]['cantidades'])
-                inventario.cantidad=elementoEncontrado[0]['cantidades']
+                inventario.producto = detalleStore.detalle.producto
+                inventario.detalle_id = detalleStore.detalle.id
+                const elementoEncontrado = transaccionStore.transaccion.listadoProductosSeleccionados.filter((v) => v.id === detalleStore.detalle.id)
+                console.log('El elemento ews;: ', elementoEncontrado)
+                console.log('La cantidad del elemento es: ', elementoEncontrado[0]['cantidades'])
+                inventario.cantidad = elementoEncontrado[0]['cantidades']
                 console.log('sucursal de la transaccion en el inventario, ', transaccionStore.transaccion.sucursal)
                 inventario.sucursal_id = transaccionStore.transaccion.sucursal
             }
         }
 
-        const cantidad=ref(0)
-        onBeforeGuardar(()=>{
+        const cantidad = ref(0)
+        onBeforeGuardar(() => {
             cantidad.value = inventario.cantidad
         })
-        onGuardado(async ()=>{
+        onGuardado(async () => {
             // detalleStore.estaInventario=false
             console.log('Transaccion store en inventario:', transaccionStore.transaccion)
             console.log('detalle es,', detalleStore.detalle)
             // await detalleProductoTransaccionStore.cargarDetalle(8)
             // console.log('QUE ES ESO???? ','?transaccion_id='+transaccionStore.transaccion.id+'&detalle_id='+detalleStore.detalle.id)
-            await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id='+transaccionStore.transaccion.id+'&detalle_id='+detalleStore.detalle.id)
+            await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + detalleStore.detalle.id)
             console.log('DETALLE TRANSACCION es,', detalleProductoTransaccionStore.detalle)
-            detalleProductoTransaccionStore.detalle.cantidad_final=cantidad.value
+            detalleProductoTransaccionStore.detalle.cantidad_final = cantidad.value
             await detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
             console.log('el detalle actualizado es: ', detalleProductoTransaccionStore.detalle)
             console.log('se guardó en el inventario:', inventario)
@@ -82,11 +82,30 @@ export default defineComponent({
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
-                productos: new ProductoController(),
-                detalles: new DetalleProductoController(),
-                clientes: new ClienteController(),
-                condiciones: new CondicionController(),
-                sucursales: new SucursalController(),
+                productos: {
+                    controller: new ProductoController(),
+                    params: { campos: 'id,nombre' },
+                },
+                detalles: {
+                    controller: new DetalleProductoController(),
+                    params: { campos: 'id,producto_id,descripcion,modelo_id,serial' },
+                },
+                clientes: {
+                    controller: new ClienteController(),
+                    params: {
+                        campos: 'id,empresa_id',
+                        requiere_bodega: 1,
+                        estado: 1,
+                    },
+                },
+                condiciones: {
+                    controller: new CondicionController(),
+                    params: { campos: 'id,nombre' },
+                },
+                sucursales: {
+                    controller: new SucursalController(),
+                    params: { campos: 'id,lugar' },
+                },
             })
             // inventario.cliente_id = listadosAuxiliares.clientes[0]['id']
             // inventario.sucursal_id = listadosAuxiliares.sucursales[0]['id']
@@ -111,8 +130,6 @@ export default defineComponent({
         //Configurar los listados para los selects
         opciones_productos.value = listadosAuxiliares.productos
         opciones_detalles.value = listadosAuxiliares.detalles
-
-        // const opciones_detalles = listadosAuxiliares.detalles
         opciones_clientes.value = listadosAuxiliares.clientes
         opciones_condiciones.value = listadosAuxiliares.condiciones
         opciones_sucursales.value = listadosAuxiliares.sucursales
@@ -120,7 +137,7 @@ export default defineComponent({
 
         // console.log(mixin['refs'].listado.value)
         return {
-            mixin, inventario, disabled, accion, v$, 
+            mixin, inventario, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasInventarios,
             //listados
             opciones_productos,
@@ -151,7 +168,7 @@ export default defineComponent({
                     opciones_productos.value = listadosAuxiliares.productos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
                 })
             },
-            filterDetalles(val, update) {
+            /* filterDetalles(val, update) {
                 if (val === '') {
                     update(() => {
                         opciones_detalles.value = listadosAuxiliares.detalles
@@ -162,7 +179,7 @@ export default defineComponent({
                     const needle = val.toLowerCase()
                     opciones_detalles.value = listadosAuxiliares.detalles.filter((v) => v.descripcion.toLowerCase().indexOf(needle) > -1)
                 })
-            },
+            }, */
         }
     }
 })

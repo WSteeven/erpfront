@@ -26,23 +26,21 @@ export default defineComponent({
   components: { TabLayout, LabelAbrirModal, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Percha, new PerchaController())
-    const {
-      entidad: percha,
-      disabled,
-      accion,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { onConsultado, onReestablecer } = mixin.useHooks()
+    const {entidad: percha,disabled,accion,listadosAuxiliares} = mixin.useReferencias()
+    
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
 
       const opciones_sucursales = ref([])
-      const opciones_pisos = ref([])
+      // const opciones_pisos = ref([])
     //Obtener los listados
     cargarVista(() => {
       obtenerListados({
-        sucursales: new SucursalController(),
-        pisos:new PisoController(),
+        sucursales: {
+          controller: new SucursalController(),
+          params: { campos: 'id,lugar' },
+      },
+        // pisos:new PisoController(),
       })
     })
 
@@ -59,7 +57,7 @@ export default defineComponent({
 
     //asignar el listado a las opciones del select
     opciones_sucursales.value = listadosAuxiliares.sucursales
-    opciones_pisos.value = listadosAuxiliares.pisos
+    // opciones_pisos.value = listadosAuxiliares.pisos
 
     return {
       group: ref([]),
@@ -71,7 +69,7 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasPerchas,
       //listado
       opciones_sucursales,
-      opciones_pisos,
+      // opciones_pisos,
 
       /**
        * Funcion para filtrar el SELECT de sucursales,

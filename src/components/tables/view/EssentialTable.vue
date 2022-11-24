@@ -555,6 +555,36 @@
           ></q-icon
           >INVENTARIO
         </q-chip>
+        <!-- Estados de la tabla control de stock -->
+        <q-chip
+          v-if="props.value === estadosControlStock.minimo"
+          class="bg-red-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ estadosControlStock.minimo }}
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosControlStock.reorden"
+          class="bg-yellow-1"
+        >
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
+          >{{ estadosControlStock.reorden }}
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosControlStock.suficiente"
+          class="bg-green-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ estadosControlStock.suficiente }}
+        </q-chip>
 
         <!-- Estados subtareas -->
         <q-chip

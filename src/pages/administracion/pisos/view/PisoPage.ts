@@ -17,9 +17,8 @@ export default defineComponent({
     setup(){
         const mixin = new ContenedorSimpleMixin(Piso, new PisoController())
         const {entidad: piso, disabled} = mixin.useReferencias()
-        const {setValidador, listar} = mixin.useComportamiento()
+        const {setValidador} = mixin.useComportamiento()
 
-        listar()
         //Reglas de validacion
         const reglas = {
             fila: {required},

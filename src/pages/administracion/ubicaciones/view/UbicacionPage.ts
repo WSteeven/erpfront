@@ -52,7 +52,10 @@ export default defineComponent({
     cargarVista(() => {
       obtenerListados({
         perchas: new PerchaController(),
-        pisos: new PisoController(),
+        pisos: {
+          controller: new PisoController(),
+          params: { campos: 'id,fila,columna' }
+        },
       })
     })
 
@@ -69,37 +72,9 @@ export default defineComponent({
     //instanciar el comportamiento del modal
     const modalesUbicacion = new ComportamientoModalesUbicacion()
 
-    /* 
-        //perchas
-        const {
-            refListadoSeleccionable: refListadoSeleccionablePerchas,
-            criterioBusqueda: criterioBusquedaPercha,
-            listado: listadoPerchas,
-            listar: listarPerchas,
-            limpiar: limpiarPercha,
-            seleccionar: seleccionarPercha,
-        } = useOrquestadorSelectorPerchas(ubicacion, 'perchas')
-
-        onReestablecer(()=>(criterioBusquedaPercha.value=null))
-        onConsultado(()=>seleccionarPercha(ubicacion.percha))
- 
-        //pisos
-        const {
-            refListadoSeleccionable: refListadoSeleccionablePisos,
-            criterioBusqueda: criterioBusquedaPiso,
-            listado: listadoPisos,
-            listar: listarPisos,
-            limpiar: limpiarPiso,
-            seleccionar: seleccionarPiso,
-        } = useOrquestadorSelectorPisos(ubicacion, 'pisos')
-
-        onReestablecer(()=>(criterioBusquedaPiso.value=null))
-        onConsultado(()=>seleccionarPiso(ubicacion.piso)) */
-
     //asignar el listado a las opciones de los selects
     const opciones = listadosAuxiliares.perchas
-    /* const opciones_perchas = listadosAuxiliares.perchas
-        const opciones_pisos = listadosAuxiliares.pisos */
+
     return {
       mixin,
       ubicacion,
@@ -123,7 +98,7 @@ export default defineComponent({
         update(() => {
           const needle = val.toLowerCase()
           opciones.perchas = listadosAuxiliares.perchas.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1 || v.sucursal.toLowerCase().indexOf(needle)>-1
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1 || v.sucursal.toLowerCase().indexOf(needle) > -1
           )
         })
       },
@@ -137,7 +112,7 @@ export default defineComponent({
         update(() => {
           const needle = val.toLowerCase()
           opciones.pisos = listadosAuxiliares.pisos.filter(
-            (v) => v.fila.toLowerCase().indexOf(needle) > -1 || v.columna.toLowerCase().indexOf(needle)>-1
+            (v) => v.fila.toLowerCase().indexOf(needle) > -1 || v.columna.toLowerCase().indexOf(needle) > -1
           )
         })
       },

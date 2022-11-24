@@ -17,9 +17,8 @@ export default defineComponent({
     setup(){
         const mixin = new ContenedorSimpleMixin(Sucursal, new SucursalController())
         const {entidad: sucursal, disabled} = mixin.useReferencias()
-        const {setValidador, listar} = mixin.useComportamiento()
+        const {setValidador} = mixin.useComportamiento()
 
-        listar()
         //Reglas de validacion
         const reglas = {
             lugar: {required},

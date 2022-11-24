@@ -8,7 +8,7 @@
             <label class="q-mb-sm block">Marca</label>
             <q-select 
               v-model="modelo.marca" 
-              :options="opciones.marcas"
+              :options="opciones"
               hint="Agregue elementos desde el panel de marcas" 
               transition-show="jump-up"
               transition-hide="jump-down" 
