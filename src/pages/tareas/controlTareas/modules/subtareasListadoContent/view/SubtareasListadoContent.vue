@@ -6,6 +6,8 @@
     :accion2="botonControlAvance"
     :accion3="botonAsignar"
     :accion4="botonFinalizar"
+    :accion5="botonCancelar"
+    :accion6="botonReagendar"
     :permitirConsultar="false"
     :permitirEditar="false"
     :permitirEliminar="false"

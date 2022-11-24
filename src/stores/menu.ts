@@ -27,7 +27,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Tareas',
-      icon: 'bi-paperclip',
+      icon: 'bi-ui-checks',
       can: store.can('puede.ver.modulo_tareas'),
       children: [
         {
@@ -104,7 +104,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Bodega',
-      icon: 'bi-ui-checks-grid',
+      icon: 'bi-building',
       can: store.can('puede.ver.modulo_bodega'),
       children: [
         {
@@ -164,7 +164,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v)=>v.indexOf('BODEGA')>-1)).length>0,
+          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1)).length > 0,
           icon: 'bi-circle',
         },
         {

@@ -14,8 +14,8 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 // import { useOrquestadorSelectorClientes } from '../application/OrquestadorSelectorClientes'
-import { TipoTareaController } from '../infraestructure/TipoTareaController'
-import { TipoTarea } from '../domain/TipoTarea'
+import { TipoTrabajoController } from '../infraestructure/TipoTrabajoController'
+import { TipoTrabajo } from '../domain/TipoTrabajo'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
@@ -32,11 +32,11 @@ export default defineComponent({
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      TipoTarea,
-      new TipoTareaController()
+      TipoTrabajo,
+      new TipoTrabajoController()
     )
     const { entidad: tipoTarea, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { onBeforeGuardar } = mixin.useHooks()
+    const { onBeforeGuardar, onConsultado, onBeforeModificar } = mixin.useHooks()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
 
@@ -146,8 +146,8 @@ export default defineComponent({
 
     function actualizarElementoImagen(posicion: number, entidad: any): void {
       if (posicion >= 0) {
-        tipoTarea.imagenes_adicionales.splice(posicion, 1, entidad);
-        tipoTarea.imagenes_adicionales = [...tipoTarea.imagenes_adicionales];
+        tipoTarea.imagenes_adicionales.splice(posicion, 1, entidad)
+        tipoTarea.imagenes_adicionales = [...tipoTarea.imagenes_adicionales]
       }
     }
 
@@ -159,9 +159,20 @@ export default defineComponent({
     }
 
     onBeforeGuardar(() => {
-      //
       tipoTarea.imagenes_adicionales = JSON.stringify(tipoTarea.imagenes_adicionales)
       tipoTarea.campos_adicionales = JSON.stringify(tipoTarea.campos_adicionales)
+    })
+
+    onBeforeModificar(() => {
+      tipoTarea.imagenes_adicionales = JSON.stringify(tipoTarea.imagenes_adicionales)
+      tipoTarea.campos_adicionales = JSON.stringify(tipoTarea.campos_adicionales)
+    })
+
+    onConsultado(() => {
+      tipoTarea.imagenes_adicionales = tipoTarea.imagenes_adicionales ? JSON.parse(tipoTarea.imagenes_adicionales) : []
+      tipoTarea.campos_adicionales = tipoTarea.campos_adicionales ? JSON.parse(tipoTarea.campos_adicionales) : []
+      tipoTarea.requiere_imagenes = !!tipoTarea.imagenes_adicionales.length
+      tipoTarea.requiere_campos_adicionales = !!tipoTarea.campos_adicionales.length
     })
 
 

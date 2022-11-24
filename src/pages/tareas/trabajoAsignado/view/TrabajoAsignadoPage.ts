@@ -18,6 +18,7 @@ import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useTareaStore } from 'stores/tarea'
+import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController copy'
 
 export default defineComponent({
     components: {
@@ -51,7 +52,7 @@ export default defineComponent({
             titulo: 'Iniciar',
             icono: 'bi-play',
             color: 'positive',
-            visible: ({ entidad }) => [estadosSubtareas.ASIGNADO, estadosSubtareas.SUSPENDIDO].includes(entidad.estado),
+            visible: ({ entidad }) => [estadosSubtareas.ASIGNADO].includes(entidad.estado) || (entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion),
             accion: async ({ entidad, posicion }) => {
                 confirmar('¿Está seguro de iniciar el trabajo?', () => {
                     new CambiarEstadoSubtarea().ejecutar(entidad.id)
@@ -125,9 +126,17 @@ export default defineComponent({
             }
         }
 
-        function aplicarFiltro(tabSeleccionado) {
-            const grupo_id = authenticationStore.user.grupo_id
-            listar({ page: currentPageListado.value++, offset, grupo_id: grupo_id, estado: tabSeleccionado })
+        const subtareaAsignada = new SubtareaAsignadaController()
+        let estadoSeleccionado = ''
+
+        async function aplicarFiltro(tabSeleccionado) {
+            if (tabSeleccionado !== estadoSeleccionado) {
+                currentPageListado.value = 1
+                const grupo_id = authenticationStore.user.grupo_id
+                const { result } = await subtareaAsignada.listar({ page: currentPageListado.value++, offset: 48, grupo_id: grupo_id, estado: tabSeleccionado })
+                listado.value = result.data
+                estadoSeleccionado = tabSeleccionado
+            }
         }
 
         aplicarFiltro('ASIGNADO')

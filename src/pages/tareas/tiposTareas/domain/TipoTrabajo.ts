@@ -1,6 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class TipoTarea extends EntidadAuditable {
+export class TipoTrabajo extends EntidadAuditable {
   cliente: number | null
   nombre: string | null
   plantilla: string | null

@@ -201,11 +201,7 @@
     </div>
 
     <!-- Drawer -->
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      class="bg-white borde-drawe"
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-white">
       <!-- Drawer Header -->
       <div class="absolute-top q-px-lg">
         <img src="~assets/logo.svg" class="q-mx-auto block" />

@@ -10,7 +10,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TipoTareaController } from 'pages/tareas/tiposTareas/infraestructure/TipoTareaController'
+import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
 import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
@@ -39,7 +39,7 @@ export default defineComponent({
         cargarVista(async () => {
             await obtenerListados({
                 tiposTrabajos: {
-                    controller: new TipoTareaController(),
+                    controller: new TipoTrabajoController(),
                     params: { cliente: store.tarea.cliente }
                 },
                 subtareas: {
@@ -124,7 +124,6 @@ export default defineComponent({
         consultar({ id: store.idSubtareaAsignada })
 
         onConsultado(() => {
-            console.log(subtarea)
             if (subtarea.cliente_final) {
                 obtenerClienteFinal(subtarea.cliente_final)
                 tipoUbicacionTrabajo.value = opcionesUbicacion.cliente

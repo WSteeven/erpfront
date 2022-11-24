@@ -42,7 +42,7 @@ export default defineComponent({
     const modales = new ComportamientoModalesSubtareaContent()
 
     const agregarSubtarea: CustomActionTable = {
-      titulo: 'Agregar subtarea',
+      titulo: 'Crear una subtarea',
       accion: () => {
         subtareaListadoStore.idSubtareaSeleccionada = null
         tareaStore.subtarea.tarea_id = tareaStore.tarea.id
@@ -113,6 +113,30 @@ export default defineComponent({
       },
     }
 
+    const botonCancelar: CustomActionTable = {
+      titulo: 'Cancelar',
+      color: 'negative',
+      icono: 'bi-x-octagon',
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion,
+      accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de cancelar la subtarea?', () => {
+        new CambiarEstadoSubtarea().realizar(entidad.id)
+        entidad.estado = estadosSubtareas.REALIZADO
+        actualizarElemento(posicion, entidad)
+      }),
+    }
+
+    const botonReagendar: CustomActionTable = {
+      titulo: 'Reagendar',
+      color: 'info',
+      icono: 'bi-calendar-check',
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion,
+      accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
+        new CambiarEstadoSubtarea().realizar(entidad.id)
+        entidad.estado = estadosSubtareas.REALIZADO
+        actualizarElemento(posicion, entidad)
+      }),
+    }
+
     function aplicarFiltro(tabSeleccionado) {
       console.log(tabSeleccionado)
       subtareaListadoStore.filtroEstadoSeleccionado = tabSeleccionado
@@ -153,6 +177,8 @@ export default defineComponent({
       tabOptions,
       listado,
       modales,
+      botonCancelar,
+      botonReagendar,
     }
   },
 })

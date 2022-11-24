@@ -2,7 +2,7 @@
   <q-page padding>
     <div class="text-center q-py-md">
       <div class="text-bold q-mb-md">{{ fecha }}</div>
-      <div class="text-h5 q-mb-md">Buenos días, {{ store.nombreUsuario }}.</div>
+      <div class="text-h5 q-mb-md">Bienvenido, {{ store.nombreUsuario }}.</div>
       <div v-if="store.user.grupo" class="text-h6 q-mb-md">
         Grupo, {{ store.user.grupo }}.
       </div>
@@ -16,8 +16,13 @@
       <div v-if="store.esCoordinador || store.esTecnicoLider" class="col-12">
         <q-card class="custom-shadow">
           <q-card-section>
-            <div class="row justify-between">
-              <div class="text-bold">Subtareas</div>
+            <div class="row justify-between items-center">
+              <div
+                class="text-bold"
+                :class="{ 'text-center full-width q-mb-md': $q.screen.xs }"
+              >
+                Subtareas asignadas
+              </div>
               <q-btn
                 v-if="store.esTecnicoLider"
                 color="primary"
@@ -25,12 +30,9 @@
                 no-caps
                 push
                 :to="{ name: 'trabajo_asignado' }"
+                :class="{ 'q-mx-auto q-mb-md': $q.screen.xs }"
               >
-                <q-icon
-                  name="bi-list-nested"
-                  size="xs"
-                  class="q-mr-sm"
-                ></q-icon>
+                <q-icon name="bi-ui-checks" size="xs" class="q-mr-sm"></q-icon>
                 Ver todos los trabajos asignados</q-btn
               >
             </div>
@@ -42,8 +44,8 @@
             dense
             narrow-indicator
             active-color="white"
-            active-bg-color="primary"
-            indicator-color="primary"
+            active-bg-color="secondary"
+            indicator-color="secondary"
             :class="{ 'borde-header-tabla': !$q.screen.xs }"
           >
             <q-tab

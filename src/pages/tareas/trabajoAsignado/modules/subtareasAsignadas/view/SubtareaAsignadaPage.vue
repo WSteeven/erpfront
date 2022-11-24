@@ -5,7 +5,6 @@
       <q-expansion-item
         class="overflow-hidden q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
-        icon="bi-paperclip"
         label="Información general"
         header-class="bg-grey-1"
         default-opened
