@@ -3,7 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Empleados"
-    >
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <q-card flat bordered class="q-mb-md">
@@ -16,7 +16,9 @@
                 placeholder="Obligatorio"
                 :readonly="disabled"
                 :error="!!v$.usuario.$errors.length"
-                @update:model-value="(v) => (empleado.usuario = v.toUpperCase())"
+                @update:model-value="
+                  (v) => (empleado.usuario = v.toUpperCase())
+                "
                 outlined
                 dense
               >
@@ -230,7 +232,7 @@
               error-message="Debes seleccionar un jefe"
               use-input
               input-debounce="0"
-              @filter="filterJefe"
+              @filter="filtroEmpleados"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
@@ -260,7 +262,7 @@
               transition-hide="jump-down"
               options-dense
               multiple
-              dense
+              dense use-chips
               outlined
               :error="!!v$.roles.$errors.length"
               error-message="Debes seleccionar uno o varios roles"
@@ -269,6 +271,22 @@
               emit-value
               map-options
             >
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.name }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.name" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.roles.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>

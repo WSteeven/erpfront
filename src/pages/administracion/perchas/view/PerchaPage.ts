@@ -26,20 +26,17 @@ export default defineComponent({
   components: { TabLayout, LabelAbrirModal, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Percha, new PerchaController())
-    const {entidad: percha,disabled,accion,listadosAuxiliares} = mixin.useReferencias()
-    
-    const { setValidador, obtenerListados, cargarVista } =
-      mixin.useComportamiento()
+    const { entidad: percha, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } =mixin.useComportamiento()
 
-      const opciones_sucursales = ref([])
-      // const opciones_pisos = ref([])
+    const opciones_sucursales = ref([])
     //Obtener los listados
     cargarVista(() => {
       obtenerListados({
         sucursales: {
           controller: new SucursalController(),
           params: { campos: 'id,lugar' },
-      },
+        },
         // pisos:new PisoController(),
       })
     })
@@ -77,16 +74,16 @@ export default defineComponent({
        * @param update actualizacion del listado con el filtro
        * @returns listado  con las coincidencias encontradas
        */
-      filterFn(val, update){
-        if(val===''){
-            update(()=>{
-                opciones_sucursales.value = listadosAuxiliares.sucursales
-            })
-            return
+      filtrarSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = listadosAuxiliares.sucursales
+          })
+          return
         }
-        update(()=>{
-            const needle = val.toLowerCase()
-            opciones_sucursales.value = listadosAuxiliares.sucursales.filter((v)=>v.lugar.toLowerCase().indexOf(needle)>-1)
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = listadosAuxiliares.sucursales.filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
         })
       },
     }

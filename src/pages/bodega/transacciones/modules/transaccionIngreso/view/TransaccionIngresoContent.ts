@@ -33,6 +33,7 @@ import { TareaController } from 'pages/tareas/controlTareas/infraestructure/Tare
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
+import { estadosSubtareas } from 'config/utils'
 export default defineComponent({
     props: {
         mixin: {
@@ -93,17 +94,44 @@ export default defineComponent({
         //obtener los listados
         cargarVista(async () => {
             await obtenerListados({
-                sucursales: new SucursalController(),
+                sucursales: {
+                    controller: new SucursalController(),
+                    params: { campos: 'id,lugar' },
+                },
                 tipos: {
                     controller: new TipoTransaccionController(),
                     params: { tipo: 'INGRESO' }
                 },
-                tareas: new TareaController(),
-                subtareas: new SubtareaController(),
+                tareas: {
+                    controller: new TareaController(),
+                    params: { campos: 'id,codigo_tarea,detalle' }
+                },
+                subtareas: {
+                    controller: new SubtareaController(),
+                    params: {
+                        campos: 'id,codigo_subtarea,detalle',
+                        estados: [estadosSubtareas.ASIGNADO, estadosSubtareas.EJECUTANDO, estadosSubtareas.PAUSADO]
+                    }
+                },
                 subtipos: new SubtipoTransaccionController(),
-                autorizaciones: new AutorizacionController(),
-                estados: new EstadosTransaccionController(),
-                detalles: new DetalleProductoController(),
+                autorizaciones: {
+                    controller: new AutorizacionController(),
+                    params: {
+                        campos: 'id,nombre'
+                    }
+                },
+                estados: {
+                    controller: new EstadosTransaccionController(),
+                    params: {
+                        campos: 'id,nombre'
+                    }
+                },
+                detalles: {
+                    controller: new DetalleProductoController(),
+                    params: {
+                        campos: 'id,producto_id,descripcion,modelo_id,serial'
+                    }
+                },
             })
         })
 

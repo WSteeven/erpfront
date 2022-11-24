@@ -7,13 +7,13 @@ import { configuracionColumnasProductosSeleccionados } from '../transaccionConte
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 // import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
-import { acciones, tabOptionsTransacciones } from 'config/utils'
+import { acciones, estadosSubtareas, tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad  from 'components/modales/view/ModalEntidad.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -57,7 +57,7 @@ export default defineComponent({
         const transaccionStore = useTransaccionStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
         const detalle = useDetalleStore()
-        
+
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
             criterioBusqueda: criterioBusquedaProducto,
@@ -72,20 +72,20 @@ export default defineComponent({
         const esBodeguero = store.esBodeguero
         const esCoordinador = store.esCoordinador
         const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
-        
+
         console.log('rol seleccionado: ', rolSeleccionado)
-        
+
         let soloLectura = ref(false)
         let puedeEditarCantidad = ref(true)
         let puedeDespacharMaterial = ref(false)
         let esVisibleAutorizacion = ref(false)
-        
+
         let tabSeleccionado = ref()
         let puedeEditar = ref(false)
         let esVisibleTarea = ref(false)
         let esVisibleSubtarea = ref(false)
-        
-        const modales =new ComportamientoModalesTransaccionEgreso()
+
+        const modales = new ComportamientoModalesTransaccionEgreso()
         // const modales =new ComportamientoModalesTransaccionIngreso()
 
         const opciones_empleados = ref([])
@@ -99,21 +99,51 @@ export default defineComponent({
 
         cargarVista(async () => {
             await obtenerListados({
-                empleados: new EmpleadoController(),
-                sucursales: new SucursalController(),
+                empleados: {
+                    controller: new EmpleadoController(),
+                    params: {
+                        campos: 'id,nombres,apellidos',
+                        estado: 1
+                    }
+                },
+                sucursales: {
+                    controller: new SucursalController(),
+                    params: { campos: 'id,lugar' },
+                },
                 tipos: {
                     controller: new TipoTransaccionController(),
                     params: { tipo: 'EGRESO' }
                 },
-                tareas: new TareaController(),
+                tareas: {
+                    controller: new TareaController(),
+                    params: { campos: 'id,codigo_tarea,detalle' }
+                },
                 subtareas: {
                     controller: new SubtareaController(),
-                    params: { estado: ['ASIGNADO', 'EJECUTADO', 'PAUSADO'] }
+                    params: {
+                        campos: 'id,codigo_subtarea,detalle',
+                        estados: [estadosSubtareas.ASIGNADO, estadosSubtareas.EJECUTANDO, estadosSubtareas.PAUSADO]
+                    }
                 },
                 subtipos: new SubtipoTransaccionController(),
-                autorizaciones: new AutorizacionController(),
-                estados: new EstadosTransaccionController(),
-                detalles: new DetalleProductoController(),
+                autorizaciones: {
+                    controller: new AutorizacionController(),
+                    params: {
+                        campos: 'id,nombre'
+                    }
+                },
+                estados: {
+                    controller: new EstadosTransaccionController(),
+                    params: {
+                        campos: 'id,nombre'
+                    }
+                },
+                detalles: {
+                    controller: new DetalleProductoController(),
+                    params: {
+                        campos: 'id,producto_id,descripcion,modelo_id,serial'
+                    }
+                },
             })
         })
 
@@ -174,7 +204,7 @@ export default defineComponent({
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',
-            () => transaccion.listadoProductosSeleccionados.splice(posicion, 1))
+                () => transaccion.listadoProductosSeleccionados.splice(posicion, 1))
         }
         const botonEliminar: CustomActionTable = {
             titulo: 'Quitar',
@@ -192,13 +222,13 @@ export default defineComponent({
                 prompt('Ingresa la cantidad',
                     (data) => transaccion.listadoProductosSeleccionados[posicion].cantidades = data,
                     transaccion.listadoProductosSeleccionados[posicion].cantidades
-                    )
-                },
-                visible: () => puedeEditarCantidad.value
-            }
+                )
+            },
+            visible: () => puedeEditarCantidad.value
+        }
         const botonDespachar: CustomActionTable = {
             titulo: 'Despachar',
-            accion: async({ entidad, posicion }) => {
+            accion: async ({ entidad, posicion }) => {
                 console.log('La entidad es', entidad)
                 console.log('La posicion es', posicion)
                 await transaccionStore.cargarTransaccion(entidad.id)
@@ -209,9 +239,9 @@ export default defineComponent({
             },
             // visible: ({ entidad, posicion }) => puedeDespacharMaterial.value
             visible: ({ entidad, posicion }) => puedeEditar.value && esBodeguero
-        // }
+            // }
         }
-         console.log('es bodeguero?', esBodeguero)
+        console.log('es bodeguero?', esBodeguero)
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
             name: 'cantidades',
             field: 'cantidades',
@@ -228,7 +258,7 @@ export default defineComponent({
         }
         ]
 
-        
+
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = listadosAuxiliares.sucursales

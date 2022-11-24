@@ -21,7 +21,7 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filterFn"
+              @filter="filtrarSucursales"
               :option-label="(item) => item.lugar"
               :option-value="(item) => item.id"
               emit-value

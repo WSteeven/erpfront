@@ -63,7 +63,9 @@
                       item.descripcion +
                       ' &nbsp; | &nbsp; ' +
                       item.serial
-                    : item.id? item.modelo+' | '+item.descripcion:null
+                    : item.id
+                    ? item.modelo + ' | ' + item.descripcion
+                    : null
               "
               :option-value="(item) => item.id"
               emit-value
@@ -185,7 +187,7 @@
             </q-input>
           </div>
           <!-- Prestados -->
-          <div class="col-12 col-md-6">
+          <!-- <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Prestados</label>
             <q-input
               type="number"
@@ -201,7 +203,7 @@
               dense
             >
             </q-input>
-          </div>
+          </div> -->
         </div>
       </q-form>
     </template>

@@ -29,9 +29,21 @@ export default defineComponent({
         const opciones_empleados = ref([])
         cargarVista(() => {
             obtenerListados({
-                sucursales: new SucursalController(),
-                roles: new RolController(),
-                empleados: new EmpleadoController(),
+                sucursales: {
+                    controller: new SucursalController(),
+                    params: { campos: 'id,lugar' },
+                },
+                roles: {
+                    controller:new RolController(),
+                    params: {campos:'id,name'}
+                },
+                empleados: {
+                    controller:new EmpleadoController(),
+                    params: {
+                        campos:'id,nombres,apellidos',
+                        estado:1
+                    }
+                },
             })
         })
 
@@ -82,7 +94,7 @@ export default defineComponent({
             opciones_estados,
 
             //filtro de empleados
-            filterJefe(val, update) {
+            filtroEmpleados(val, update) {
                 if (val === '') {
                     update(() => {
                         opciones_empleados.value = listadosAuxiliares.empleados

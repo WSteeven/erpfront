@@ -6,9 +6,9 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-glutter-sm q-py-md">
+        <div class="row q-col-gutter-sm q-py-md">
           <!-- Fila -->
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Fila</label>
             <q-input
               v-model="piso.fila"
@@ -27,7 +27,7 @@
             </q-input>
           </div>
           <!-- Columna -->
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Columna</label>
             <q-input
               v-model="piso.columna"
