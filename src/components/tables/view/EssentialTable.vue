@@ -64,12 +64,12 @@
           'justify-center': $q.screen.xs,
         }"
       >
-        <!--<q-icon
+        <q-icon
           v-if="!$q.screen.xs"
-          name="bi-circle-fill"
-          color="grey-4"
+          name="bi-list"
+          color="grey-10"
           class="q-mr-sm"
-        ></q-icon> -->
+        ></q-icon>
         {{ titulo }}
       </div>
       <!-- <div class="column full-width"> -->

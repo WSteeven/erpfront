@@ -1,7 +1,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { useSelector } from 'components/tables/application/selector'
 import { Cliente } from 'pages/sistema/clientes/domain/Cliente'
-import { TipoTarea } from '../domain/TipoTarea'
+import { TipoTarea } from '../domain/TipoTrabajo'
 import { endpoints } from 'config/api'
 import { Ref, ref } from 'vue'
 

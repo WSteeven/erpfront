@@ -118,24 +118,24 @@
           ></essential-table>
         </div>
 
-        <essential-table
-          v-if="tipoTarea.requiere_campos_adicionales"
-          titulo="Información adicional"
-          :configuracionColumnas="configuracionColumnasCampos"
-          :datos="tipoTarea.campos_adicionales"
-          :alto-fijo="false"
-          :permitirConsultar="false"
-          :permitirEditarModal="true"
-          :mostrar-footer="false"
-          separador="cell"
-          :mostrar-botones="false"
-          :agregarElemento="agregarCampoAdicional"
-          :accion1="botonActivarCampo"
-          :accion2="botonDesactivarCampo"
-          @eliminar="eliminarCampoAdicional"
-          :entidad="CamposAdicionales"
-        ></essential-table>
-
+        <div v-if="tipoTarea.requiere_campos_adicionales" class="q-mb-md">
+          <essential-table
+            titulo="Información adicional"
+            :configuracionColumnas="configuracionColumnasCampos"
+            :datos="tipoTarea.campos_adicionales"
+            :alto-fijo="false"
+            :permitirConsultar="false"
+            :permitirEditarModal="true"
+            :mostrar-footer="false"
+            separador="cell"
+            :mostrar-botones="false"
+            :agregarElemento="agregarCampoAdicional"
+            :accion1="botonActivarCampo"
+            :accion2="botonDesactivarCampo"
+            @eliminar="eliminarCampoAdicional"
+            :entidad="CamposAdicionales"
+          ></essential-table>
+        </div>
         <!--<div class="row q-col-gutter-sm">
           <div class="col-12 q-mb-md">Plantilla</div>
           <div class="col-12 col-md-4 q-mb-md">

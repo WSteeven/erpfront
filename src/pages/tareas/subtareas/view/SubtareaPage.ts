@@ -27,7 +27,6 @@ import EssentialSelectableTable from 'components/tables/view/EssentialSelectable
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ValidarTecnicosGrupoPrincipal } from '../application/validaciones/ValidarTecnicosGrupoPrincipal'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { TipoTareaController } from 'pages/tareas/tiposTareas/infraestructure/TipoTareaController'
 import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -36,6 +35,7 @@ import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { Subtarea } from '../domain/Subtarea'
 import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
+import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 
 export default defineComponent({
   components: { EssentialTable, ButtonSubmits, EssentialSelectableTable },
@@ -54,7 +54,7 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         tiposTrabajos: {
-          controller: new TipoTareaController(),
+          controller: new TipoTrabajoController(),
           params: { cliente: tareaStore.tarea.cliente }
         },
         subtareas: {
