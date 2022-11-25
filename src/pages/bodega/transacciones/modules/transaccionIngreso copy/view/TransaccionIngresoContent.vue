@@ -47,7 +47,7 @@
       </div>
 
       <!-- Select tipo -->
-      <div class="col-12 col-md-3 q-mb-md">
+      <!-- <div class="col-12 col-md-3 q-mb-md">
         <label class="q-mb-sm block">Tipo</label>
         <q-select
           v-model="transaccion.tipo"
@@ -59,7 +59,7 @@
           outlined
           :readonly="disabled"
           :error="!!v$.tipo.$errors.length"
-          error-message="Debes seleccionar un subtipo"
+          error-message="Debes seleccionar un tipo"
           @update:model-value="filtroTipos"
           :option-value="(v) => v.id"
           :option-label="(v) => v.nombre"
@@ -79,10 +79,10 @@
             </q-item>
           </template>
         </q-select>
-      </div>
-      <!-- Select subtipo -->
+      </div> -->
+      <!-- Select motivo -->
       <div class="col-12 col-md-3 q-mb-md">
-        <label class="q-mb-sm block">Subtipo</label>
+        <label class="q-mb-sm block">Motivo</label>
         <q-select
           v-model="transaccion.motivo"
           :options="opciones_motivos"
@@ -369,6 +369,39 @@
           </template>
         </q-input>
       </div>
+      <!-- Select clientes -->
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Cliente</label>
+        <q-select
+          v-model="transaccion.cliente"
+          :options="opciones_clientes"
+          transition-show="jum-up"
+          transition-hide="jump-down"
+          options-dense
+          dense
+          outlined
+          :readonly="disabled"
+          :error="!!v$.cliente.$errors.length"
+          error-message="Debes seleccionar un cliente"
+          :option-value="(item) => item.id"
+          :option-label="(item) => item.razon_social"
+          emit-value
+          map-options
+        >
+          <template v-slot:error>
+            <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                No hay resultados
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
       <!-- Configuracion para seleccionar productos -->
       <!-- Selector de productos -->
       <div class="col-12 col-md-12">
@@ -421,14 +454,13 @@
       </div>
     </div>
 
-    <button-submits 
-    :accion="accion"
-    @guardar="guardar(transaccion)"
-    @cancelar="reestablecer()"
-    @editar="editar(transaccion)"
-    @eliminar="eliminar(transaccion)"
+    <button-submits
+      :accion="accion"
+      @guardar="guardar(transaccion)"
+      @cancelar="reestablecer()"
+      @editar="editar(transaccion)"
+      @eliminar="eliminar(transaccion)"
     />
-
   </q-form>
   <!-- Modal de seleccion de detalles -->
   <essential-selectable-table

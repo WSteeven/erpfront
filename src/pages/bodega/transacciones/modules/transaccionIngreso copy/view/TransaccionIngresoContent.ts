@@ -33,7 +33,8 @@ import { TareaController } from 'pages/tareas/controlTareas/infraestructure/Tare
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { estadosSubtareas } from 'config/utils'
+import { estadosSubtareas, motivos } from 'config/utils'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 export default defineComponent({
     props: {
         mixin: {
@@ -43,18 +44,21 @@ export default defineComponent({
     },
     components: { TabLayout, EssentialTable, EssentialSelectableTable, ButtonSubmits },
     // emits: ['creada', 'consultada'],
-    setup(props, { emit }) {
+    setup(props) {
         const transaccionStore = useTransaccionStore()
 
         // const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = props.mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, guardar, editar, eliminar, reestablecer } = props.mixin.useComportamiento()
-        const { onGuardado, onConsultado, } = props.mixin.useHooks()
+        const { onConsultado } = props.mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
+
+        //stores
+        useNotificacionStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
 
         const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
-       
+
 
         // Hooks
         /* onGuardado(async () => {
@@ -64,16 +68,15 @@ export default defineComponent({
             console.log('aqqaqaqaqaqaqaqaqa:', transaccionStore.transaccion.listadoProductosSeleccionados)
             transaccion.listadoProductosSeleccionados = transaccionStore.transaccion.listadoProductosSeleccionados
         }) */
-        onConsultado(() => {
+        /* onConsultado(() => {
             // console.log('la transaccion consultada: ', transaccion)
             // console.log('tipo',transaccion.tipo)
             // console.log('subtipo',transaccion.subtipo)
-            opciones_motivos.value = listadosAuxiliares.motivos.filter((v)=>v.id===transaccion.motivo)
             // console.log(opciones_subtipos.value)
-            transaccionStore.transaccion.hydrate(transaccion)
-        })
 
-
+            // opciones_motivos.value = listadosAuxiliares.motivos.filter((v)=>v.id===transaccion.motivo)
+            // transaccionStore.transaccion.hydrate(transaccion)
+        }) */
 
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
@@ -86,85 +89,47 @@ export default defineComponent({
 
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
-        const opciones_tipos = ref([])
         const opciones_motivos = ref([])
         const opciones_estados = ref([])
         const opciones_tareas = ref([])
-        const opciones_subtareas = ref([])
+        const opciones_clientes = ref([])
+
         //obtener los listados
         cargarVista(async () => {
             await obtenerListados({
-                sucursales: {
-                    controller: new SucursalController(),
-                    params: { campos: 'id,lugar' },
-                },
-                tipos: {
-                    controller: new TipoTransaccionController(),
-                    params: { tipo: 'INGRESO' }
-                },
-                tareas: {
-                    controller: new TareaController(),
-                    params: { campos: 'id,codigo_tarea,detalle' }
-                },
-                subtareas: {
-                    controller: new SubtareaController(),
+                sucursales: { controller: new SucursalController(), params: { campos: 'id,lugar' } },
+                tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,detalle' } },
+                motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 1 } },
+                autorizaciones: { controller: new AutorizacionController(), params: { campos: 'id,nombre' } },
+                estados: { controller: new EstadosTransaccionController(), params: { campos: 'id,nombre' } },
+                detalles: { controller: new DetalleProductoController(), params: { campos: 'id,producto_id,descripcion,modelo_id,serial' } },
+                clientes: {
+                    controller: new ClienteController(),
                     params: {
-                        campos: 'id,codigo_subtarea,detalle',
-                        estados: [estadosSubtareas.ASIGNADO, estadosSubtareas.EJECUTANDO, estadosSubtareas.PAUSADO]
-                    }
-                },
-                motivos: new MotivoController(),
-                autorizaciones: {
-                    controller: new AutorizacionController(),
-                    params: {
-                        campos: 'id,nombre'
-                    }
-                },
-                estados: {
-                    controller: new EstadosTransaccionController(),
-                    params: {
-                        campos: 'id,nombre'
-                    }
-                },
-                detalles: {
-                    controller: new DetalleProductoController(),
-                    params: {
-                        campos: 'id,producto_id,descripcion,modelo_id,serial'
-                    }
+                        campos: 'id,empresa_id',
+                        requiere_bodega: 1,
+                        estado: 1,
+                    },
                 },
             })
+            //configurar los select definidos al inicio 
+            transaccion.cliente = listadosAuxiliares.clientes[0]['id']
         })
 
         //Reglas de validacion
         const reglas = {
             justificacion: { required },
             sucursal: { required },
-            tipo: { required },
+            // tipo: { required },
             motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
             estado: { requiredIfRol: requiredIf(rolSeleccionado), },
-            observacion_est: {
-                requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado })
-            },
-            listadoProductosSeleccionados: { required }
+            observacion_est: { requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado }) },
+            listadoProductosSeleccionados: { required },
+            cliente:{required}
         }
-
-        useNotificacionStore().setQuasar(useQuasar())
 
         const v$ = useVuelidate(reglas, transaccion)
         setValidador(v$.value)
-
-        //Configurar los listados
-        opciones_tipos.value = listadosAuxiliares.tipos
-        opciones_estados.value = listadosAuxiliares.estados
-        opciones_motivos.value = listadosAuxiliares.subtipos
-        opciones_sucursales.value = listadosAuxiliares.sucursales
-        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-        opciones_tareas.value = listadosAuxiliares.tareas
-        opciones_subtareas.value = listadosAuxiliares.subtareas
-
-        // const fecha = new Date()
-        // transaccion.created_at = new Intl.DateTimeFormat('az', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(fecha)
-        // console.log(transaccion.created_at)
 
         function eliminarItem({ entidad, posicion }) {
             confirmar('¿Esta seguro de continuar?',
@@ -178,8 +143,8 @@ export default defineComponent({
                     'Ingresa la cantidad',
                     (data) => {
                         transaccion.listadoProductosSeleccionados[posicion].cantidades = data
-                        transaccion.listadoProductosSeleccionados[posicion].estaInventario=false
-                        transaccion.listadoProductosSeleccionados[posicion].estaPercha=false
+                        transaccion.listadoProductosSeleccionados[posicion].estaInventario = false
+                        transaccion.listadoProductosSeleccionados[posicion].estaPercha = false
                     },
                     transaccion.listadoProductosSeleccionados[posicion].cantidades
                 )
@@ -201,63 +166,53 @@ export default defineComponent({
         },
         ]
 
+        //flags
         let esVisibleComprobante = ref(false)
         let esVisibleTarea = ref(false)
-        let esVisibleSubtarea = ref(false)
+
+        //Configurar los listados
+        // opciones_tipos.value = listadosAuxiliares.tipos
+        opciones_estados.value = listadosAuxiliares.estados
+        opciones_motivos.value = listadosAuxiliares.motivos
+        opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
+        opciones_tareas.value = listadosAuxiliares.tareas
+        opciones_clientes.value = listadosAuxiliares.clientes
 
         return {
+            mixin: props.mixin,
             transaccion, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasTransaccionIngreso,
+
             //listados
             opciones_sucursales,
-            opciones_tipos,
             opciones_motivos,
             opciones_autorizaciones,
             opciones_estados,
             opciones_tareas,
-            opciones_subtareas,
+            opciones_clientes,
 
-            //filtros
-            filtroTipos(val) {
-                opciones_motivos.value = listadosAuxiliares.subtipos.filter((v: Motivo) => v.tipo_transaccion_id === val)
-                transaccion.subtipo = ''
-                if (opciones_motivos.value.length > 1) {
-                    transaccion.subtipo = ''
-                    esVisibleComprobante.value = false
-                    transaccion.comprobante = ''
-                }
-                if (opciones_motivos.value.length == 1) {
-                    transaccion.subtipo =opciones_motivos.value[0]['id']
-                    if (opciones_motivos.value[0]['nombre'] === 'COMPRA A PROVEEDOR') {
-                        esVisibleComprobante.value = true
-                    } else {
-                        transaccion.comprobante = ''
-                        esVisibleComprobante.value = false
-                    }
-                    esVisibleSubtarea.value = opciones_motivos.value[0]['nombre'] === 'FINALIZACION DE TAREA' ? true : false
-                }
-            },
 
             filtroMotivos(val) {
                 esVisibleTarea.value = false
 
-                const opcionSeleccionada = listadosAuxiliares.subtipos.filter((item) => item.id === val)
+                const opcionSeleccionada = listadosAuxiliares.motivos.filter((v) => v.id === val)
+                esVisibleComprobante.value = opcionSeleccionada[0]['nombre'] === motivos.compraProveedor ? true : false
+                esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === motivos.mercaderiaClienteTarea || opcionSeleccionada[0]['nombre'] === motivos.devolucionTarea ? true : false
 
-                esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === 'MATERIALES PARA TAREAS' ? true : false
-
-                esVisibleSubtarea.value = false
-                esVisibleSubtarea.value = opcionSeleccionada[0]['nombre'] === 'FINALIZACION DE TAREA' ? true : false
+                // esVisibleSubtarea.value = false
+                // esVisibleSubtarea.value = opcionSeleccionada[0]['nombre'] === 'FINALIZACION DE TAREA' ? true : false
             },
 
             filtroTareas(val) {
-                opciones_subtareas.value = listadosAuxiliares.subtareas.filter((v: Subtarea) => v.tarea_id === val)
-                transaccion.subtarea = ''
-                if (opciones_subtareas.value.length > 1) {
-                    transaccion.subtarea = ''
-                }
-                if (opciones_subtareas.value.length === 1) {
-                    transaccion.subtarea = opciones_subtareas.value[0]['id']
-                }
+                // opciones_subtareas.value = listadosAuxiliares.subtareas.filter((v: Subtarea) => v.tarea_id === val)
+                // transaccion.subtarea = ''
+                // if (opciones_subtareas.value.length > 1) {
+                //     transaccion.subtarea = ''
+                // }
+                // if (opciones_subtareas.value.length === 1) {
+                //     transaccion.subtarea = opciones_subtareas.value[0]['id']
+                // }
             },
 
             // tabla,
@@ -282,8 +237,6 @@ export default defineComponent({
             //variables auxiliares
             esVisibleComprobante,
             esVisibleTarea,
-            esVisibleSubtarea,
-
 
             transaccionStore,
             guardar, editar, eliminar, reestablecer,

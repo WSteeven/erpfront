@@ -1,6 +1,4 @@
 <template>
-  <!--   {{ puedeEditar }}
-  {{ tabSeleccionado }} -->
   <tab-layout-filter-tabs
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
@@ -8,19 +6,17 @@
     :tab-options="tabOptionsTransacciones"
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
-    :accion1="botonDespachar"
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-lg">
+        <div class="row q-col-gutter-sm q-py-md">
           <!-- N° transaccion -->
           <div v-if="transaccion.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Transacción N°</label>
             <q-input
               v-model="transaccion.id"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :readonly="disabled"
               outlined
               dense
             >
@@ -31,28 +27,13 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="transaccion.created_at" disable outlined dense />
           </div>
-          <!-- Requiere Fecha -->
-          <div v-if="false" class="col-12 col-md-3">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="requiereFecha"
-              label="¿Fecha límite?"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
           <!-- Fecha límite -->
-          <div
-            v-if="transaccion.fecha_limite || accion === acciones.nuevo"
-            class="col-12 col-md-3"
-          >
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Fecha limite</label>
             <q-input
               v-model="transaccion.fecha_limite"
-              placeholder="Opcional"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              placeholder="Fecha limite"
+              :readonly="disabled"
               outlined
               dense
             >
@@ -81,43 +62,43 @@
               </template>
             </q-input>
           </div>
+
           <!-- Select tipo -->
-          <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Tipo</label>
-            <q-select
-              v-model="transaccion.tipo"
-              :options="opciones_tipos"
-              transition-show="jum-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :error="!!v$.tipo.$errors.length"
-              error-message="Debes seleccionar un tipo"
-              @update:model-value="filtroTipos"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
+          <!-- <div class="col-12 col-md-3 q-mb-md">
+        <label class="q-mb-sm block">Tipo</label>
+        <q-select
+          v-model="transaccion.tipo"
+          :options="opciones_tipos"
+          transition-show="jum-up"
+          transition-hide="jump-down"
+          options-dense
+          dense
+          outlined
+          :readonly="disabled"
+          :error="!!v$.tipo.$errors.length"
+          error-message="Debes seleccionar un tipo"
+          @update:model-value="filtroTipos"
+          :option-value="(v) => v.id"
+          :option-label="(v) => v.nombre"
+          emit-value
+          map-options
+        >
+          <template v-slot:error>
+            <div v-for="error of v$.tipo.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                No hay resultados
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div> -->
           <!-- Select motivo -->
-          <div v-if="esBodeguero" class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
             <q-select
               v-model="transaccion.motivo"
@@ -128,7 +109,7 @@
               dense
               outlined
               @update:model-value="filtroMotivos"
-              :readonly="disabled || soloLectura"
+              :readonly="disabled"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar un motivo"
               :option-value="(v) => v.id"
@@ -145,93 +126,91 @@
               </template>
             </q-select>
           </div>
-          <!-- Select autorizacion -->
-          <div
-            v-if="
-              transaccion.autorizacion || esVisibleAutorizacion || esCoordinador
-            "
-            class="col-12 col-md-3 q-mb-md"
-          >
-            <label class="q-mb-sm block">Autorizacion</label>
-            <q-select
-              v-model="transaccion.autorizacion"
-              :options="opciones_autorizaciones"
-              transition-show="jum-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
-              :error="!!v$.autorizacion.$errors.length"
-              error-message="Debes seleccionar una autorizacion"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <!-- Tiene observacion de autorizacion -->
-          <div
-            v-if="
-              transaccion.tiene_obs_autorizacion ||
-              transaccion.observacion_aut ||
-              esVisibleAutorizacion
-            "
-            class="col-12 col-md-3"
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="transaccion.tiene_obs_autorizacion"
-              label="Tiene observación"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <!-- observacion autorizacion -->
-          <div
-            v-if="
-              transaccion.tiene_obs_autorizacion || transaccion.observacion_aut
-            "
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Observacion</label>
+          <!-- Comprobante/Factura -->
+          <div v-if="esVisibleComprobante" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">N° Factura/Comprobante</label>
             <q-input
-              v-model="transaccion.obs_autorizacion"
+              v-model="transaccion.comprobante"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :error="!!v$.observacion_aut.$errors.length"
+              :readonly="disabled"
               @update:model-value="
                 (v) => (transaccion.observacion_aut = v.toUpperCase())
               "
               outlined
               dense
             >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-input>
           </div>
+          <!-- Select autorizacion -->
+          <!-- <div v-if="rolSeleccionado" class="col-12 col-md-3 q-mb-md">
+              <label class="q-mb-sm block">Autorizacion</label>
+              <q-select
+                v-model="transaccion.autorizacion"
+                :options="opciones_autorizaciones"
+                transition-show="jum-up"
+                transition-hide="jump-down"
+                options-dense
+                dense
+                outlined
+                :readonly="disabled"
+                :error="!!v$.autorizacion.$errors.length"
+                error-message="Debes seleccionar una autorizacion"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            !-- Tiene observacion de autorizacion --
+            <div v-if="rolSeleccionado" class="col-12 col-md-3">
+              <q-checkbox
+                class="q-mt-lg q-pt-md"
+                v-model="transaccion.tiene_obs_autorizacion"
+                label="Tiene observación"
+                outlined
+                dense
+              ></q-checkbox>
+            </div>
+            !-- observacion autorizacion --
+            <div
+              v-if="transaccion.tiene_obs_autorizacion"
+              class="col-12 col-md-3"
+            >
+              <label class="q-mb-sm block">Observacion</label>
+              <q-input
+                v-model="transaccion.observacion_aut"
+                placeholder="Obligatorio"
+                :readonly="disabled"
+                :error="!!v$.observacion_aut.$errors.length"
+                @update:model-value="
+                  (v) => (transaccion.observacion_aut = v.toUpperCase())
+                "
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.observacion_aut.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-input>
+            </div> -->
           <!-- Select sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
@@ -243,8 +222,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :readonly="disabled"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               :option-value="(v) => v.id"
@@ -270,12 +248,9 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Justificación</label>
             <q-input
-              type="textarea"
-              autogrow
               v-model="transaccion.justificacion"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :readonly="disabled"
               :error="!!v$.justificacion.$errors.length"
               @update:model-value="
                 (v) => (transaccion.justificacion = v.toUpperCase())
@@ -315,7 +290,7 @@
               hint="Tarea #"
               dense
               outlined
-              :readonly="disabled || soloLectura"
+              :readonly="disabled"
               @update:model-value="filtroTareas"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
@@ -331,91 +306,29 @@
               </template>
             </q-select>
           </div>
-          <!-- Retira un tercero -->
-          <div
-            v-if="transaccion.per_retira || accion === 'NUEVO'"
-            class="col-12 col-md-3"
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="transaccion.retira_tercero"
-              @update:model-value="retiraOtro"
-              label="¿Retira otra persona?"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <!-- Persona que retira -->
-          <div v-if="transaccion.retira_tercero" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Persona que retira</label>
-            <q-select
-              v-model="transaccion.per_retira"
-              :options="opciones_empleados"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              use-input
-              input-debounce="0"
-              @filter="filtroEmpleados"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
           <!-- Subtarea -->
           <div v-if="esVisibleSubtarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Subtarea</label>
             <q-select
               v-model="transaccion.subtarea"
               :options="opciones_subtareas"
-              transition-show="scale"
-              transition-hide="scale"
+              transition-show="jum-up"
+              transition-hide="jum-up"
               options-dense
               clearable
+              hint="Subtarea #"
               dense
               outlined
-              :readonly="disabled || soloLectura"
+              :readonly="disabled"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
               emit-value
               map-options
             >
-              <template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps">
-                  <q-item-section>
-                    <q-item-label>{{ scope.opt.codigo_subtarea }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
             </q-select>
           </div>
           <!-- Select estado -->
-          <div
-            v-if="rolSeleccionado && esBodeguero"
-            class="col-12 col-md-3 q-mb-md"
-          >
+          <div v-if="rolSeleccionado" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Estado</label>
             <q-select
               v-model="transaccion.estado"
@@ -425,11 +338,12 @@
               options-dense
               dense
               outlined
-              :readonly="disabled || (soloLectura && !esBodeguero)"
+              :readonly="disabled"
               :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado para la transacción"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="(item) => item.id"
+              :option-label="(item) => item.nombre"
+              :option-disable="(item) => (item.id === 1 ? true : false)"
               emit-value
               map-options
             >
@@ -448,12 +362,11 @@
             </q-select>
           </div>
           <!-- Tiene observación de estado -->
-          <div v-if="rolSeleccionado && esBodeguero" class="col-12 col-md-3">
+          <div v-if="rolSeleccionado" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_obs_estado"
               label="Tiene observación"
-              :disable="disabled || soloLectura"
               outlined
               dense
             ></q-checkbox>
@@ -462,7 +375,7 @@
           <div v-if="transaccion.tiene_obs_estado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
-              v-model="transaccion.obs_estado"
+              v-model="transaccion.observacion_est"
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
@@ -481,6 +394,39 @@
                 </div>
               </template>
             </q-input>
+          </div>
+          <!-- Select clientes -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cliente</label>
+            <q-select
+              v-model="transaccion.cliente"
+              :options="opciones_clientes"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :readonly="disabled"
+              :error="!!v$.cliente.$errors.length"
+              error-message="Debes seleccionar un cliente"
+              :option-value="(item) => item.id"
+              :option-label="(item) => item.razon_social"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
@@ -528,21 +474,26 @@
               :datos="transaccion.listadoProductosSeleccionados"
               :permitirConsultar="false"
               :permitirEditar="false"
-              :permitirEliminar="false"
+              :permitirEliminar="true"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
-              :accion2="botonDespachar"
-              :accion3="botonEliminar"
-              @eliminar="eliminar"
+              @eliminar="eliminarItem"
             ></essential-table>
           </div>
         </div>
-      </q-form>
 
+        <!-- <button-submits
+          :accion="accion"
+          @guardar="guardar(transaccion)"
+          @cancelar="reestablecer()"
+          @editar="editar(transaccion)"
+          @eliminar="eliminar(transaccion)"
+        /> -->
+      </q-form>
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
-        :configuracion-columnas="configuracionColumnasProductosSeleccionados"
+        :configuracion-columnas="configuracionColumnasDetallesProductos"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
@@ -552,6 +503,6 @@
   </tab-layout-filter-tabs>
 
   <!-- Modales -->
-  <modales-entidad :comportamiento="modales"></modales-entidad>
+
 </template>
-<script src="./TransaccionEgresoPage.ts" />
+<script src="./TransaccionIngresoPage.ts" />

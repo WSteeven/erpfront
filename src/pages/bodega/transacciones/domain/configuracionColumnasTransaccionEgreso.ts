@@ -31,9 +31,9 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         sortable: true,
     },
     {
-        name: 'subtipo',
-        field: 'subtipo',
-        label: 'Tipo',
+        name: 'motivo',
+        field: 'motivo',
+        label: 'Motivo',
         align: 'left',
         sortable: true,
     },
@@ -58,13 +58,13 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         align: 'left',
         sortable: true,
     },
-    {
+    /* {
         name: 'subtarea',
         field: 'subtarea',
         label: 'Subtarea',
         align: 'left',
         sortable: true,
-    },
+    }, */
     {
         name: 'estado',
         field: 'estado',
