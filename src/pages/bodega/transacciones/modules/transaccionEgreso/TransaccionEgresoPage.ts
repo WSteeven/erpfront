@@ -2,7 +2,7 @@
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
@@ -33,7 +33,6 @@ import { DetalleProductoController } from 'pages/bodega/detalles_productos/infra
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
@@ -84,6 +83,7 @@ export default defineComponent({
         let puedeEditar = ref(false)
         let esVisibleTarea = ref(false)
         let esVisibleSubtarea = ref(false)
+        let requiereFecha = ref(false) //para mostrar u ocultar fecha limite
 
         const modales = new ComportamientoModalesTransaccionEgreso()
         // const modales =new ComportamientoModalesTransaccionIngreso()
@@ -97,6 +97,22 @@ export default defineComponent({
         const opciones_tareas = ref([])
         const opciones_subtareas = ref([])
 
+        function transformarOpcionesTipos() {
+            // console.log('llamaste a la funcion')
+            if (!esBodeguero) {
+                opciones_tipos.value.forEach(element => {
+                    // console.log(element.nombre)
+                    if (element.nombre === 'INGRESO') {
+                        // console.log('devolucion')
+                        element.nombre = 'DEVOLUCION'
+                    }
+                    if (element.nombre === 'EGRESO') {
+                        // console.log('solicitud')
+                        element.nombre = 'SOLICITUD'
+                    }
+                });
+            }
+        }
         cargarVista(async () => {
             await obtenerListados({
                 empleados: {
@@ -145,6 +161,7 @@ export default defineComponent({
                     }
                 },
             })
+            transformarOpcionesTipos()
         })
 
         //hooks
@@ -183,7 +200,7 @@ export default defineComponent({
             justificacion: { required },
             sucursal: { required },
             tipo: { required },
-            subtipo: { required },
+            motivo: { requiredIfBodeguero: requiredIf(esBodeguero) },
             autorizacion: {
                 requiredIfCoordinador: requiredIf(esCoordinador),
                 requiredIfEsVisibleAut: requiredIf(esVisibleAutorizacion)
@@ -268,25 +285,12 @@ export default defineComponent({
         opciones_estados.value = listadosAuxiliares.estados
         opciones_tareas.value = listadosAuxiliares.tareas
         opciones_subtareas.value = listadosAuxiliares.subtareas
-        console.log('datos sin transformar', opciones_tipos.value)
-        function transformarOpcionesTipos() {
-            console.log('llamaste a la funcion')
-            opciones_tipos.value.forEach(element => console.log(element));
-            /* if (!esBodeguero) {
-                var arrNuevo = opciones_tipos.value.map((v) => {
-                    if(v.nombre==='INGRESO'){
-                        console.log('estoy dentro del if')
-                        return 'DEVOLUCION'
-                    }
-                })
-                console.log("arrNuevo", arrNuevo)
-            } */
-        }
-        transformarOpcionesTipos()//ejecuta la funcion de transformar
-        console.log('datos transformados', opciones_tipos.value)
+
+
         return {
             mixin, transaccion, disabled, accion, v$, soloLectura,
             configuracionColumnas: configuracionColumnasTransaccionEgreso,
+            acciones,
             //listados
             opciones_empleados,
             opciones_sucursales,
@@ -301,6 +305,7 @@ export default defineComponent({
             esVisibleAutorizacion,
             esVisibleTarea,
             esVisibleSubtarea,
+            requiereFecha,
 
             //modales
             modales,
@@ -308,34 +313,18 @@ export default defineComponent({
             //filtros
             filtroTipos(val) {
                 const tipoSeleccionado = listadosAuxiliares.tipos.filter((v) => v.id === val)
-                if (tipoSeleccionado[0]['nombre'] === 'DEVOLUCION DE TAREA' || tipoSeleccionado[0]['nombre'] === 'DESPACHO DE TAREA') {
-                    esVisibleTarea.value = true
-                    esVisibleSubtarea.value = true
-                } else {
-                    esVisibleTarea.value = false
-                    esVisibleSubtarea.value = false
-                }
-                opciones_motivos.value = listadosAuxiliares.subtipos.filter((v: Motivo) => v.tipo_transaccion_id === val)
-                transaccion.subtipo = ''
-                if (opciones_motivos.value.length > 1) {
-                    transaccion.subtipo = ''
-                    esVisibleAutorizacion.value = false
-                }
-                if (opciones_motivos.value.length === 1) {
-                    transaccion.subtipo = opciones_motivos.value[0]['id']
-                    if (opciones_motivos.value[0]['nombre'] === 'TRANSFERENCIA ENTRE BODEGAS') {
-                        esVisibleAutorizacion.value = true
-                    } else {
-                        esVisibleAutorizacion.value = false
-                    }
-                }
+                opciones_motivos.value = listadosAuxiliares.motivos.filter((v)=>v.tipo_transaccion_id===val)
+                transaccion.motivos = ''
+                if (opciones_motivos.value.length > 1) transaccion.motivo = ''
+                if (opciones_motivos.value.length === 1) transaccion.motivo = opciones_motivos.value[0]['id']
             },
-            filtroSubtipos(val) {
-                esVisibleTarea.value = false
+            filtroMotivos(val) {
+                console.log('filtro motivos',val)
+                /* esVisibleTarea.value = false
                 const opcionSeleccionada = listadosAuxiliares.subtipos.filter((item) => item.id === val)
                 esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === 'MATERIALES PARA TAREAS' ? true : false
                 esVisibleSubtarea.value = false
-                esVisibleSubtarea.value = opcionSeleccionada[0]['nombre'] === 'DESPACHO DE TAREA' ? true : false
+                esVisibleSubtarea.value = opcionSeleccionada[0]['nombre'] === 'DESPACHO DE TAREA' ? true : false */
             },
 
             filtroTareas(val) {

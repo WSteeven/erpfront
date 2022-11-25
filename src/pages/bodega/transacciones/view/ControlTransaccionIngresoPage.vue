@@ -29,12 +29,12 @@
           class="q-mx-xs q-my-md rounded"
           :class="{ 'shadow-chip borde': $q.screen.xs }"
         />
-        <q-tab
+        <!-- <q-tab
           label="3. Perchar"
           name="percha"
           class="q-mx-xs q-my-md rounded"
           :class="{ 'shadow-chip borde': $q.screen.xs }"
-        />
+        /> -->
       </q-tabs>
 
       <q-tab-panels v-model="tabSeleccionado" animated>
@@ -49,9 +49,9 @@
           ></transaccion-ingreso-inventario-content>
         </q-tab-panel>
 
-        <q-tab-panel name="percha">
+        <!-- <q-tab-panel name="percha">
           <transaccion-ingreso-content></transaccion-ingreso-content>
-        </q-tab-panel>
+        </q-tab-panel> -->
       </q-tab-panels>
     </template>
   </tab-layout>
