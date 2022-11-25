@@ -32,6 +32,10 @@ export class CambiarEstadoSubtarea {
         this.solicitud('suspender', subtareaId)
     }
 
+    cancelar(subtareaId: number) {
+        this.solicitud('cancelar', subtareaId)
+    }
+
     solicitud(accion, subtarea, data?) {
         try {
             const ruta = this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + subtarea

@@ -632,9 +632,13 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosSubtareas.CANCELADO"
-          class="bg-red-2"
+          class="bg-red-1 text-red"
         >
-          <q-icon name="bi-circle-fill" color="red" class="q-mr-xs"></q-icon
+          <q-icon
+            name="bi-exclamation-octagon-fill"
+            color="red"
+            class="q-mr-xs"
+          ></q-icon
           >{{ estadosSubtareas.CANCELADO }}
         </q-chip>
         <q-chip

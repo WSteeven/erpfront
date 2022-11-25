@@ -19,6 +19,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useTareaStore } from 'stores/tarea'
 import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController copy'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 export default defineComponent({
     components: {
@@ -36,6 +37,8 @@ export default defineComponent({
         const mostrarDialogPlantilla = ref(false)
 
         const store = useTareaStore()
+        const trabajoAsignadoStore = useTrabajoAsignadoStore()
+
         const authenticationStore = useAuthenticationStore()
         const modales = new ComportamientoModalesTrabajoAsignado()
 
@@ -99,7 +102,9 @@ export default defineComponent({
             visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
             accion: async ({ entidad, posicion }) => {
                 confirmar('¿Está seguro de abrir el formulario?', () => {
-                    mostrarDialogPlantilla.value = true
+                    //mostrarDialogPlantilla.value = true
+                    // console.log(entidad.tipo_trabajo)
+                    trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
                     modales.abrirModalEntidad('PlantillaGenericaPage')
                 })
             }
@@ -163,6 +168,7 @@ export default defineComponent({
             botonReanudar,
             botonFormulario,
             botonSuspender,
+            trabajoAsignadoStore,
         }
     }
 })
