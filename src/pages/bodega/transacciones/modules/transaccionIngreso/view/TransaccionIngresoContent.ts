@@ -21,10 +21,10 @@ import { useQuasar } from 'quasar'
 //Controladores para los listados
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
-import { SubtipoTransaccionController } from 'pages/administracion/subtipos_transacciones/infraestructure/SubtipoTransaccionController'
+import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
-import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/domain/SubtipoTransaccion'
+import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
@@ -68,7 +68,7 @@ export default defineComponent({
             // console.log('la transaccion consultada: ', transaccion)
             // console.log('tipo',transaccion.tipo)
             // console.log('subtipo',transaccion.subtipo)
-            opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v)=>v.id===transaccion.subtipo)
+            opciones_motivos.value = listadosAuxiliares.motivos.filter((v)=>v.id===transaccion.motivo)
             // console.log(opciones_subtipos.value)
             transaccionStore.transaccion.hydrate(transaccion)
         })
@@ -87,7 +87,7 @@ export default defineComponent({
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
         const opciones_tipos = ref([])
-        const opciones_subtipos = ref([])
+        const opciones_motivos = ref([])
         const opciones_estados = ref([])
         const opciones_tareas = ref([])
         const opciones_subtareas = ref([])
@@ -113,7 +113,7 @@ export default defineComponent({
                         estados: [estadosSubtareas.ASIGNADO, estadosSubtareas.EJECUTANDO, estadosSubtareas.PAUSADO]
                     }
                 },
-                subtipos: new SubtipoTransaccionController(),
+                motivos: new MotivoController(),
                 autorizaciones: {
                     controller: new AutorizacionController(),
                     params: {
@@ -140,7 +140,7 @@ export default defineComponent({
             justificacion: { required },
             sucursal: { required },
             tipo: { required },
-            subtipo: { required },
+            motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
             estado: { requiredIfRol: requiredIf(rolSeleccionado), },
             observacion_est: {
                 requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado })
@@ -156,7 +156,7 @@ export default defineComponent({
         //Configurar los listados
         opciones_tipos.value = listadosAuxiliares.tipos
         opciones_estados.value = listadosAuxiliares.estados
-        opciones_subtipos.value = listadosAuxiliares.subtipos
+        opciones_motivos.value = listadosAuxiliares.subtipos
         opciones_sucursales.value = listadosAuxiliares.sucursales
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
         opciones_tareas.value = listadosAuxiliares.tareas
@@ -211,7 +211,7 @@ export default defineComponent({
             //listados
             opciones_sucursales,
             opciones_tipos,
-            opciones_subtipos,
+            opciones_motivos,
             opciones_autorizaciones,
             opciones_estados,
             opciones_tareas,
@@ -219,26 +219,26 @@ export default defineComponent({
 
             //filtros
             filtroTipos(val) {
-                opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
+                opciones_motivos.value = listadosAuxiliares.subtipos.filter((v: Motivo) => v.tipo_transaccion_id === val)
                 transaccion.subtipo = ''
-                if (opciones_subtipos.value.length > 1) {
+                if (opciones_motivos.value.length > 1) {
                     transaccion.subtipo = ''
                     esVisibleComprobante.value = false
                     transaccion.comprobante = ''
                 }
-                if (opciones_subtipos.value.length == 1) {
-                    transaccion.subtipo = opciones_subtipos.value[0]['id']
-                    if (opciones_subtipos.value[0]['nombre'] === 'COMPRA A PROVEEDOR') {
+                if (opciones_motivos.value.length == 1) {
+                    transaccion.subtipo =opciones_motivos.value[0]['id']
+                    if (opciones_motivos.value[0]['nombre'] === 'COMPRA A PROVEEDOR') {
                         esVisibleComprobante.value = true
                     } else {
                         transaccion.comprobante = ''
                         esVisibleComprobante.value = false
                     }
-                    esVisibleSubtarea.value = opciones_subtipos.value[0]['nombre'] === 'FINALIZACION DE TAREA' ? true : false
+                    esVisibleSubtarea.value = opciones_motivos.value[0]['nombre'] === 'FINALIZACION DE TAREA' ? true : false
                 }
             },
 
-            filtroSubtipos(val) {
+            filtroMotivos(val) {
                 esVisibleTarea.value = false
 
                 const opcionSeleccionada = listadosAuxiliares.subtipos.filter((item) => item.id === val)

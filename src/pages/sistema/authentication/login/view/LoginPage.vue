@@ -43,6 +43,7 @@
               @update:model-value="(v)=>(loginUser.name=v.toUpperCase())"
               outlined
               dense
+              @keyup.enter="login()"
             />
           </div>
 
@@ -55,6 +56,7 @@
               dense
               :type="isPwd ? 'password' : 'text'"
               hint="No comparta su contraseña con nadie"
+              @keyup.enter="login()"
             >
               <template v-slot:append>
                 <q-icon

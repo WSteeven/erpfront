@@ -24,7 +24,7 @@ export default defineComponent({
         //Reglas de validacion
         const reglas = {
             nombre:{required},
-            tipo:{required},
+            // tipo:{required},
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -32,12 +32,12 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, tipo_transaccion)
         setValidador(v$.value)
 
-        const tipos = ['INGRESO', 'EGRESO']
+        // const tipos = ['INGRESO', 'EGRESO']
 
         return {
             mixin, tipo_transaccion, disabled, accion, v$, 
             configuracionColumnas: configuracionColumnasTiposTransacciones,
-            tipos,
+            // tipos,
         }
     }
 })

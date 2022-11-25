@@ -25,7 +25,7 @@ import { useQuasar } from 'quasar'
 //Controladores
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
-import { SubtipoTransaccionController } from 'pages/administracion/subtipos_transacciones/infraestructure/SubtipoTransaccionController'
+import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
@@ -33,7 +33,7 @@ import { DetalleProductoController } from 'pages/bodega/detalles_productos/infra
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { SubtipoTransaccion } from 'pages/administracion/subtipos_transacciones/domain/SubtipoTransaccion'
+import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
@@ -92,7 +92,7 @@ export default defineComponent({
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
         const opciones_tipos = ref([])
-        const opciones_subtipos = ref([])
+        const opciones_motivos = ref([])
         const opciones_estados = ref([])
         const opciones_tareas = ref([])
         const opciones_subtareas = ref([])
@@ -125,7 +125,7 @@ export default defineComponent({
                         estados: [estadosSubtareas.ASIGNADO, estadosSubtareas.EJECUTANDO, estadosSubtareas.PAUSADO]
                     }
                 },
-                subtipos: new SubtipoTransaccionController(),
+                motivos: new MotivoController(),
                 autorizaciones: {
                     controller: new AutorizacionController(),
                     params: {
@@ -263,11 +263,27 @@ export default defineComponent({
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = listadosAuxiliares.sucursales
         opciones_tipos.value = listadosAuxiliares.tipos
-        opciones_subtipos.value = listadosAuxiliares.subtipos
+        opciones_motivos.value = listadosAuxiliares.motivos
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
         opciones_estados.value = listadosAuxiliares.estados
         opciones_tareas.value = listadosAuxiliares.tareas
         opciones_subtareas.value = listadosAuxiliares.subtareas
+        console.log('datos sin transformar', opciones_tipos.value)
+        function transformarOpcionesTipos() {
+            console.log('llamaste a la funcion')
+            opciones_tipos.value.forEach(element => console.log(element));
+            /* if (!esBodeguero) {
+                var arrNuevo = opciones_tipos.value.map((v) => {
+                    if(v.nombre==='INGRESO'){
+                        console.log('estoy dentro del if')
+                        return 'DEVOLUCION'
+                    }
+                })
+                console.log("arrNuevo", arrNuevo)
+            } */
+        }
+        transformarOpcionesTipos()//ejecuta la funcion de transformar
+        console.log('datos transformados', opciones_tipos.value)
         return {
             mixin, transaccion, disabled, accion, v$, soloLectura,
             configuracionColumnas: configuracionColumnasTransaccionEgreso,
@@ -275,7 +291,7 @@ export default defineComponent({
             opciones_empleados,
             opciones_sucursales,
             opciones_tipos,
-            opciones_subtipos,
+            opciones_motivos,
             opciones_autorizaciones,
             opciones_estados,
             opciones_tareas,
@@ -299,15 +315,15 @@ export default defineComponent({
                     esVisibleTarea.value = false
                     esVisibleSubtarea.value = false
                 }
-                opciones_subtipos.value = listadosAuxiliares.subtipos.filter((v: SubtipoTransaccion) => v.tipo_transaccion_id === val)
+                opciones_motivos.value = listadosAuxiliares.subtipos.filter((v: Motivo) => v.tipo_transaccion_id === val)
                 transaccion.subtipo = ''
-                if (opciones_subtipos.value.length > 1) {
+                if (opciones_motivos.value.length > 1) {
                     transaccion.subtipo = ''
                     esVisibleAutorizacion.value = false
                 }
-                if (opciones_subtipos.value.length === 1) {
-                    transaccion.subtipo = opciones_subtipos.value[0]['id']
-                    if (opciones_subtipos.value[0]['nombre'] === 'TRANSFERENCIA ENTRE BODEGAS') {
+                if (opciones_motivos.value.length === 1) {
+                    transaccion.subtipo = opciones_motivos.value[0]['id']
+                    if (opciones_motivos.value[0]['nombre'] === 'TRANSFERENCIA ENTRE BODEGAS') {
                         esVisibleAutorizacion.value = true
                     } else {
                         esVisibleAutorizacion.value = false

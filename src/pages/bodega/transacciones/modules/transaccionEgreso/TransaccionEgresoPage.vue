@@ -1,5 +1,5 @@
 <template>
-<!--   {{ puedeEditar }}
+  <!--   {{ puedeEditar }}
   {{ tabSeleccionado }} -->
   <tab-layout-filter-tabs
     :mixin="mixin"
@@ -79,12 +79,14 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.tipo.$errors.length"
               error-message="Debes seleccionar un subtipo"
-              @update:model-value="filtroTipos"
+              @update:model-value="filtroTiposss"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
+              <!-- :option-label="v => 'nombre' in v ==='INGRESO' && esBodeguero? v.nombre :'nombre' in v ==='EGRESO' && esBodeguero?v.nombre: '- Solicitud-'" -->
+              <!-- :option-label="(v) => v.nombre" -->
               <template v-slot:error>
                 <div v-for="error of v$.tipo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>

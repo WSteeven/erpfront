@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { SubtipoTransaccion } from "./SubtipoTransaccion";
+import { Motivo } from "./Motivo";
 
-export const configuracionColumnasSubtiposTransacciones: ColumnConfig<SubtipoTransaccion>[]=[
+export const configuracionColumnasMotivos: ColumnConfig<Motivo>[]=[
     {
         name: 'nombre',
         field: 'nombre',
@@ -12,7 +12,7 @@ export const configuracionColumnasSubtiposTransacciones: ColumnConfig<SubtipoTra
     {
         name: 'tipo_transaccion',
         field: 'tipo_transaccion',
-        label: 'Subtipo',
+        label: 'Tipo',
         align: 'left',
         sortable: true
     }

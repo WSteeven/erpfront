@@ -280,9 +280,9 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tipos_fibras'),
         },
         {
-          title: 'Subtipos de Transacciones',
-          link: 'subtipos-transacciones',
-          can: store.can('puede.ver.subtipos_transacciones'),
+          title: 'Motivos',
+          link: 'motivos',
+          can: store.can('puede.ver.motivos'),
           icon: 'bi-circle',
         },
         {

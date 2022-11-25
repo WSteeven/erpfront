@@ -9,11 +9,11 @@ export const configuracionColumnasTiposTransacciones: ColumnConfig<TipoTransacci
         align: 'left',
         sortable: true
     },
-    {
-        name: 'tipo',
-        field: 'tipo',
-        label: 'Tipo',
-        align: 'left',
-        sortable: true
-    }
+    // {
+    //     name: 'tipo',
+    //     field: 'tipo',
+    //     label: 'Tipo',
+    //     align: 'left',
+    //     sortable: true
+    // }
 ]

@@ -339,11 +339,11 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/subtipos-transacciones',
-        name: 'subtipos_transacciones',
+        path: '/motivos',
+        name: 'motivos',
         component: () =>
           import(
-            'pages/administracion/subtipos_transacciones/view/SubtipoTransaccionPage.vue'
+            'pages/administracion/motivos/view/MotivoPage.vue'
           ),
         meta: { requiresAuth: true },
       },

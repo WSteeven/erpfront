@@ -12,13 +12,13 @@ export class Transaccion extends EntidadAuditable{
     solicitante: number|null
     solicitante_id: number|null
     tipo: number|null
-    subtipo: number|null
+    motivo: number|null
     sucursal: number|null
     autoriza: number|null
     atiende: number|null
     per_retira: number|null
     tarea: string|null
-    subtarea: string|null
+    cliente: string|null
     created_at: string|null
     //variables auxiliares
     tiene_obs_autorizacion: boolean
@@ -41,13 +41,13 @@ export class Transaccion extends EntidadAuditable{
         this.solicitante=null
         this.solicitante_id=null
         this.tipo=null
-        this.subtipo=null
+        this.motivo=null
         this.sucursal=null
         this.autoriza=null
         this.atiende=null
         this.per_retira=null
         this.tarea=null
-        this.subtarea=null
+        this.cliente=null
         this.created_at=null
 
         this.tiene_obs_autorizacion=false

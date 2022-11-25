@@ -4,7 +4,7 @@
         <q-form @submit.prevent>
           <div class="row q-col-gutter-sm q-py-md">
             <!-- Tipo -->
-            <div class="col-12 col-md-6">
+            <!-- <div class="col-12 col-md-6">
               <label class="q-mb-sm block">Tipo</label>
               <q-select 
                 v-model="tipo_transaccion.tipo" 
@@ -26,7 +26,7 @@
                 </template>
 
               </q-select>
-            </div>
+            </div> -->
             <!-- Nombre -->
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block">Nombre</label>

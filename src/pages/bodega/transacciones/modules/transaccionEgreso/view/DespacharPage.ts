@@ -19,7 +19,7 @@ import { TipoTransaccion } from "pages/administracion/tipos_transacciones/domain
 import { TipoTransaccionController } from "pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController";
 import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
 import { TransaccionEgresoController } from "pages/bodega/transacciones/infraestructure/TransaccionEgresoController";
-import { SubtipoTransaccionController } from "pages/administracion/subtipos_transacciones/infraestructure/SubtipoTransaccionController";
+import { MotivoController } from "pages/administracion/motivos/infraestructure/MotivoController";
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { AutorizacionController } from "pages/administracion/autorizaciones/infraestructure/AutorizacionController";
 import { EstadosTransaccionController } from "pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController";
@@ -56,7 +56,7 @@ export default defineComponent({
             obtenerListados({
                 empleados: new EmpleadoController(),
                 tipos: new TipoTransaccionController(),
-                subtipos: new SubtipoTransaccionController(),
+                motivos: new MotivoController(),
                 sucursales: new SucursalController(),
                 autorizaciones: new AutorizacionController(),
                 estados: new EstadosTransaccionController(),

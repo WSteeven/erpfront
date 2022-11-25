@@ -84,17 +84,17 @@
       <div class="col-12 col-md-3 q-mb-md">
         <label class="q-mb-sm block">Subtipo</label>
         <q-select
-          v-model="transaccion.subtipo"
-          :options="opciones_subtipos"
+          v-model="transaccion.motivo"
+          :options="opciones_motivos"
           transition-show="jum-up"
           transition-hide="jump-down"
           options-dense
           dense
           outlined
-          @update:model-value="filtroSubtipos"
+          @update:model-value="filtroMotivos"
           :readonly="disabled"
-          :error="!!v$.subtipo.$errors.length"
-          error-message="Debes seleccionar un subtipo"
+          :error="!!v$.motivo.$errors.length"
+          error-message="Debes seleccionar un motivo"
           :option-value="(v) => v.id"
           :option-label="(v) => v.nombre"
           emit-value
