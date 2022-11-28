@@ -1,5 +1,4 @@
 import { configuracionColumnasProductos } from "pages/bodega/productos/domain/configuracionColumnasProductos";
-import { configuracionColumnasProductosSeleccionados } from "../../transaccionContent/domain/configuracionColumnasProductosSeleccionados";
 import { configuracionColumnasListadoProductosSeleccionados } from "../../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados";
 import { configuracionColumnasItemsEncontradosInventario } from "../../transaccionContent/domain/configuracionColumnasItemsEncontradosInventario";
 import { configuracionColumnasMovimientos } from "pages/bodega/movimientos/domain/configuracionColumnasMovimientos";
@@ -15,7 +14,6 @@ import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
 import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
 import { useDetalleStore } from "stores/detalle";
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { TipoTransaccion } from "pages/administracion/tipos_transacciones/domain/TipoTransaccion";
 import { TipoTransaccionController } from "pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController";
 import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
 import { TransaccionEgresoController } from "pages/bodega/transacciones/infraestructure/TransaccionEgresoController";
@@ -35,7 +33,7 @@ export default defineComponent({
     setup(props, {emit}) {
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
         const { cargarVista, setValidador, obtenerListados } = mixin.useComportamiento()
-        const { entidad: transaccion, listadosAuxiliares } = mixin.useReferencias()
+        const { entidad: transaccion, listadosAuxiliares, refs } = mixin.useReferencias()
         //Stores
         const transaccionStore = useTransaccionEgresoStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
@@ -43,17 +41,17 @@ export default defineComponent({
         const inventarioStore = useInventarioStore()
         const movimientoStore = useMovimientoStore()
 
-        const cliente = ref(1)
-
+        transaccion.hydrate(transaccionStore.transaccion) //cargar la transaccion con la del store
+        
         const opciones_tipos = ref([])
-        const opciones_subtipos = ref([])
+        const opciones_motivos = ref([])
         const opciones_sucursales = ref([])
         const opciones_empleados = ref([])
         const opciones_autorizaciones = ref([])
         const opciones_estados = ref([])
         const opciones_clientes = ref([])
-        cargarVista(() => {
-            obtenerListados({
+        cargarVista(async() => {
+            await obtenerListados({
                 empleados: new EmpleadoController(),
                 tipos: new TipoTransaccionController(),
                 motivos: new MotivoController(),
@@ -62,9 +60,11 @@ export default defineComponent({
                 estados: new EstadosTransaccionController(),
                 clientes: new ClienteController(),
             })
+            console.log(listadosAuxiliares.clientes[0]['id'])
+            transaccion.cliente = listadosAuxiliares.clientes[0]['id']
         })
         opciones_tipos.value = listadosAuxiliares.tipos
-        opciones_subtipos.value = listadosAuxiliares.subtipos
+        opciones_motivos.value = listadosAuxiliares.motivos
         opciones_sucursales.value = listadosAuxiliares.sucursales
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
@@ -77,8 +77,17 @@ export default defineComponent({
         let step = ref(1)
         let detalle_id = ref(0)
 
+
+
+        const reglas ={
+            motivo :{required},
+            cliente :{required},
+        }
+        const v$ = useVuelidate(reglas, transaccion)
+        setValidador(v$.value)
+
         async function listarItems(id) {
-            resultadosInventario.value = await inventarioStore.cargarElementosId(id, transaccionStore.transaccion.sucursal!, cliente.value)
+            resultadosInventario.value = await inventarioStore.cargarElementosId(id, transaccionStore.transaccion.sucursal!, transaccion.cliente)
             console.log('resultadosInventario:', resultadosInventario.value)
         }
         // console.log(transaccionStore.transaccion.listadoProductosSeleccionados)
@@ -91,12 +100,29 @@ export default defineComponent({
             detalle_id = (detalleStore.detalle.id)!
         })
 
+        /* watch(selected2, ()=>{
+            selected2.value.forEach((element, index) => {
+                element.cantidad = selected.value[0]['cantidades']
+            });
+            console.log('selected2 en el watch',selected2.value)
+            console.log('en el watch',selected.value[0]['cantidades'])
+        }) */
+        function reemplazarCantidad(){
+            selected2.value.forEach((element,index)=>{
+                if(element.detalle_id==selected.value[0]['id']){
+                    element.cantidad= selected.value[0]['cantidades']
+                }
+            })
+        }
+
         function cerrarModal(){
             emit('cerrar-modal')
         }
 
         return {
+            v$,
             buscarProductoEnInventario(details) {
+                // setValidador(v$.value)
                 if (details.added) {//Si se selecciono un item, realizar la busqueda
                     console.log("se seleccionó", details.rows)
                     console.log("se seleccionó", details.rows[0]['id'])
@@ -130,7 +156,7 @@ export default defineComponent({
             },
 
             //Stores
-            transaccion: transaccionStore.transaccion,
+            transaccion,
             detalleStore,
             detalleTransaccionStore,
 
@@ -141,7 +167,7 @@ export default defineComponent({
 
             //listados
             opciones_tipos,
-            opciones_subtipos,
+            opciones_motivos,
             opciones_empleados,
             opciones_sucursales,
             opciones_autorizaciones,
@@ -149,13 +175,26 @@ export default defineComponent({
             opciones_clientes,
 
             clienteSeleccionado(val) {
-                console.log('El cliente es: ', cliente.value)
+                console.log('El cliente es: ', transaccion.cliente.value)
                 selected2.value.splice(0)// = ref([])
-                resultadosInventario.value.splice(0)
+                //resultadosInventario.value.splice(0)
             },
             selected,
             selected2,
-            cliente,
+
+            mostrarEnConsola(details){
+                if (details.added) {//Si se selecciono un item, realizar la busqueda
+                    console.log("se seleccionó", details.rows)
+                    console.log("id se seleccionó", details.rows[0]['id'])
+                    console.log('details modificado en cantidad',details.rows[0]['cantidad']=selected.value[0]['cantidades'])
+                    console.log('details modificado en todo',details.rows)
+                    console.log("La cantidad del details seleccionado es", details.rows[0]['cantidad'])
+                    console.log("La cantidad del selected2 es", selected2.value)
+                    console.log("La cantidad del select1 es", selected.value[0]['cantidades'])
+                    
+                    
+                }
+            },
         }
     }
 })

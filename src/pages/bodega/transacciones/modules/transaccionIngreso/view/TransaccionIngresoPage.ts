@@ -7,12 +7,14 @@ import { configuracionColumnasProductosSeleccionados } from '../../transaccionCo
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
+import { acciones } from 'config/utils'
+import {html2pdf} from 'html2pdf.js'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -31,28 +33,33 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
-import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
-import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { estadosSubtareas, motivos, tabOptionsTransacciones } from 'config/utils'
+import { motivos, tabOptionsTransaccionesIngresos } from 'config/utils'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
 import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { ComportamientoModalesTransaccionIngreso } from '../../transaccionIngresoInventario/application/ComportamientoModalesTransaccionIngreso'
+import { useDetalleStore } from 'stores/detalle'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
+import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 export default defineComponent({
-    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable },
+    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
     // emits: ['creada', 'consultada'],
     setup() {
-        const transaccionStore = useTransaccionStore()
 
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
         const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
-        const { onConsultado, onReestablecer } = mixin.useHooks()
+        const { onConsultado, onReestablecer, onBeforeModificar } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
 
         //stores
         useNotificacionStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
+        const transaccionStore = useTransaccionStore()
+        const detalleTransaccionStore = useDetalleTransaccionStore()
+        const detalleStore = useDetalleStore()
 
         const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
@@ -65,17 +72,23 @@ export default defineComponent({
             console.log('aqqaqaqaqaqaqaqaqa:', transaccionStore.transaccion.listadoProductosSeleccionados)
             transaccion.listadoProductosSeleccionados = transaccionStore.transaccion.listadoProductosSeleccionados
         }) */
-        /* onConsultado(() => {
-            // console.log('la transaccion consultada: ', transaccion)
-            // console.log('tipo',transaccion.tipo)
-            // console.log('subtipo',transaccion.subtipo)
-            // console.log(opciones_subtipos.value)
-
-            // opciones_motivos.value = listadosAuxiliares.motivos.filter((v)=>v.id===transaccion.motivo)
-            // transaccionStore.transaccion.hydrate(transaccion)
+        /* onBeforeModificar(()=>{
+            console.log('Pasó por aquí: beforeModificar')
+            transaccion.solicitante =transaccion.solicitante_id
         }) */
+        onConsultado(() => {
+            transaccion.solicitante = transaccion.solicitante_id
+            console.log('la accion actual es: ', accion.value)
+            // opciones_motivos.value = listadosAuxiliares.motivos.filter((v)=>v.id===transaccion.motivo)
+            transaccionStore.transaccion.hydrate(transaccion)
+        })
         onReestablecer(() => {
             transaccion.cliente = listadosAuxiliares.clientes[0]['id']
+            transaccion.condicion = ''
+
+            //reestablecer valores de las banderas
+            esVisibleComprobante.value = false
+
         })
 
 
@@ -106,6 +119,8 @@ export default defineComponent({
         const opciones_estados = ref([])
         const opciones_tareas = ref([])
         const opciones_clientes = ref([])
+        const opciones_empleados = ref([])
+        const opciones_condiciones = ref([])
 
         //obtener los listados
         cargarVista(async () => {
@@ -124,6 +139,14 @@ export default defineComponent({
                         estado: 1,
                     },
                 },
+                empleados: {
+                    controller: new EmpleadoController(),
+                    params: {
+                        campos: 'id,nombres,apellidos',
+                        estado: 1
+                    }
+                },
+                condiciones: new CondicionController(),
             })
             //configurar los select definidos al inicio 
             transaccion.cliente = listadosAuxiliares.clientes[0]['id']
@@ -133,21 +156,51 @@ export default defineComponent({
         const reglas = {
             justificacion: { required },
             sucursal: { required },
-            // tipo: { required },
             motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
-            estado: { requiredIfRol: requiredIf(rolSeleccionado), },
+            estado: { requiredIfRol: requiredIf(accion === acciones.editar), },
             observacion_est: { requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado }) },
             listadoProductosSeleccionados: { required },
-            cliente: { required }
+            cliente: { required },
+            condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
         }
 
         const v$ = useVuelidate(reglas, transaccion)
         setValidador(v$.value)
 
+
+        const modales = new ComportamientoModalesTransaccionIngreso()
+        const botonInventario: CustomActionTable = {
+            titulo: 'Inventariar',
+            accion: async ({ entidad, posicion }) => {
+                console.log(detalleStore.detalle)
+                await detalleStore.cargarDetalle(entidad.id)
+
+                modales.abrirModalEntidad('InventarioPage')
+            },
+            visible: ({ entidad, posicion }) => {
+                console.log('xxxx', entidad)
+                console.log(entidad.despachado, entidad.cantidades)
+                if (detalleTransaccionStore.detalle.transaccion_id === transaccionStore.transaccion.id && detalleTransaccionStore.detalle.detalle_id === entidad.id) {
+                    console.log('comprobacion', detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_inicial)
+                    return detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_final
+                }
+                return entidad.despachado !== entidad.cantidades
+            },
+        }
+
+
         function eliminarItem({ entidad, posicion }) {
             confirmar('¿Esta seguro de continuar?',
-                () =>
-                    transaccion.listadoProductosSeleccionados.splice(posicion, 1))
+                () => transaccion.listadoProductosSeleccionados.splice(posicion, 1))
+        }
+        const botonEliminar: CustomActionTable = {
+            titulo: 'Quitar',
+            color: 'negative',
+            icono: 'bi-x',
+            accion: ({ entidad, posicion }) => {
+                eliminarItem({ entidad, posicion })
+            },
+            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
@@ -162,6 +215,36 @@ export default defineComponent({
                     transaccion.listadoProductosSeleccionados[posicion].cantidades
                 )
             },
+            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+        }
+        const botonImprimir: CustomActionTable = {
+            titulo: 'Imprimir',
+            color: 'secondary',
+            icono: 'bi-printer',
+            accion: async ({ entidad, posicion }) => {
+                // await transaccionStore.imprimirIngreso(entidad.id)
+                //aqui se imprime
+                html2pdf(document.getElementById('transaccionIngresoPage.vue'),{
+                    margin:1,
+                    filename:'transaccion.pdf'
+                })
+            },
+            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+        }
+        const botonDespachar: CustomActionTable = {
+            titulo: 'Despachar',
+            accion: async ({ entidad, posicion }) => {
+                console.log('La entidad es', entidad)
+                console.log('La posicion es', posicion)
+                await transaccionStore.cargarTransaccion(entidad.id)
+                console.log('La transaccion del store', transaccionStore.transaccion)
+
+                //aqui va toda la logica de los despachos de material
+                // modales.abrirModalEntidad('DespacharPage')
+            },
+            // visible: ({ entidad, posicion }) => puedeDespacharMaterial.value
+            // visible: ({ entidad, posicion }) => puedeEditar.value && esBodeguero
+            // }
         }
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
@@ -188,6 +271,8 @@ export default defineComponent({
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
         opciones_tareas.value = listadosAuxiliares.tareas
         opciones_clientes.value = listadosAuxiliares.clientes
+        opciones_empleados.value = listadosAuxiliares.empleados
+        opciones_condiciones.value = listadosAuxiliares.condiciones
 
         return {
             mixin, transaccion, disabled, accion, v$, soloLectura,
@@ -200,7 +285,13 @@ export default defineComponent({
             opciones_estados,
             opciones_tareas,
             opciones_clientes,
+            opciones_empleados,
+            opciones_condiciones,
 
+            //modal
+            modales,
+
+            acciones,
 
             filtroMotivos(val) {
                 esVisibleTarea.value = false
@@ -208,27 +299,22 @@ export default defineComponent({
                 const opcionSeleccionada = listadosAuxiliares.motivos.filter((v) => v.id === val)
                 esVisibleComprobante.value = opcionSeleccionada[0]['nombre'] === motivos.compraProveedor ? true : false
                 esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === motivos.mercaderiaClienteTarea || opcionSeleccionada[0]['nombre'] === motivos.devolucionTarea ? true : false
-
-                // esVisibleSubtarea.value = false
-                // esVisibleSubtarea.value = opcionSeleccionada[0]['nombre'] === 'FINALIZACION DE TAREA' ? true : false
             },
 
-            filtroTareas(val) {
-                // opciones_subtareas.value = listadosAuxiliares.subtareas.filter((v: Subtarea) => v.tarea_id === val)
-                // transaccion.subtarea = ''
-                // if (opciones_subtareas.value.length > 1) {
-                //     transaccion.subtarea = ''
-                // }
-                // if (opciones_subtareas.value.length === 1) {
-                //     transaccion.subtarea = opciones_subtareas.value[0]['id']
-                // }
+            checkMasivo(val, evt) {//checkbox de ingreso masivo
+                if (!val) {
+                    transaccion.condicion = ''
+                }
             },
 
             // tabla,
             configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasDetallesProductos,
             configuracionColumnasProductosSeleccionados,
+            botonInventario,
+            botonEliminar,
             botonEditarCantidad,
+            botonImprimir,
             eliminarItem,
 
 
@@ -251,11 +337,26 @@ export default defineComponent({
             transaccionStore,
             guardar, editar, eliminar, reestablecer,
 
+            esBodeguero: store.esBodeguero,
+            esCoordinador: store.esCoordinador,
 
             //tabs y filtros
-            tabOptionsTransacciones,
+            tabOptionsTransaccionesIngresos,
             puedeEditar,
             tabSeleccionado,
+
+            filtroEmpleados(val, update) {
+                if (val === '') {
+                    update(() => {
+                        opciones_empleados.value = listadosAuxiliares.empleados
+                    })
+                    return
+                }
+                update(() => {
+                    const needle = val.toLowerCase()
+                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+                })
+            },
 
             tabEs(val) {
                 tabSeleccionado.value = val

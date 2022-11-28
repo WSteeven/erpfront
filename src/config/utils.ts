@@ -146,11 +146,17 @@ export const tabTrabajoAsignado: TabOption[] = [
   { label: 'Realizado', value: 'REALIZADO' },
 ]
 
+export const tabOptionsTransaccionesIngresos: TabOption[] = [
+  { label: 'Todo', value: 'TODO' },
+  { label: 'Pendiente', value: 'PENDIENTE' },
+  { label: 'Parcial', value: 'PARCIAL' },
+  { label: 'Completa', value: 'COMPLETA' },
+]
 export const tabOptionsTransacciones: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'En espera', value: 'ESPERA' },
-  { label: 'Parcial', value: 'PARCIAL' },
   { label: 'Pendiente', value: 'PENDIENTE' },
+  { label: 'Parcial', value: 'PARCIAL' },
   { label: 'Completa', value: 'COMPLETA' },
 ]
 

@@ -33,20 +33,27 @@
         >
         </q-select>
       </div>
-      <!-- subtipo -->
+      <!-- motivo --> 
       <div class="col-12 col-md-2">
-        <strong><label class="q-mb-sm block">Subtipo</label> </strong>
+        <strong><label class="q-mb-sm block">Motivo</label> </strong>
         <q-select
-          v-model="transaccion.subtipo"
-          :options="opciones_subtipos"
+          v-model="transaccion.motivo"
+          :options="opciones_motivos"
           :option-label="(v) => v.nombre"
           :option-value="(v) => v.id"
+          :error="!!v$.motivo.$silentErrors.length"
+          error-message="Debes seleccionar el motivo de la transacción"
           emit-value
           map-options
-          dense
+          dense filled
           borderless
-          readonly
-        />
+        >
+        <template v-slot:error>
+          <div v-for="error of v$.motivo.$silentErrors" :key="error.$uid">
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+      </q-select>
       </div>
       <!-- Solicitante -->
       <div class="col-12 col-md-2">
@@ -123,12 +130,14 @@
         />
       </div>
       <!-- Cliente -->
+      {{transaccion.cliente}}
       <div class="col-12 col-md-2">
         <strong><label class="q-mb-sm block">Cliente</label></strong>
         <q-select
-          v-model="cliente"
+          v-model="transaccion.cliente"
           :options="opciones_clientes"
           error-message="Debes seleccionar el propietario de los materiales"
+          :error="!!v$.cliente.$silentErrors.length"
           :option-label="(v) => v.razon_social"
           :option-value="(v) => v.id"
           @update:model-value="clienteSeleccionado"
@@ -138,7 +147,11 @@
           dense
           filled
           options-dense
-        >
+        ><template v-slot:error>
+          <div v-for="error of v$.cliente.$silentErrors" :key="error.$uid">
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
         </q-select>
       </div>
       <!-- Listado del pedido -->
@@ -156,6 +169,7 @@
               v-model:selected="selected"
               @selection="buscarProductoEnInventario"
             />
+            <div class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div>
           </div>
     </div>
     <!-- fin de encabezado -->
@@ -184,6 +198,7 @@
               selection="multiple"
               dense
               v-model:selected="selected2"
+              @selection="mostrarEnConsola"
             />
             <!-- <div class="q-mt-md">Selected: {{ JSON.stringify(selected2) }}</div> -->
             Cantidad de items: {{ selected2.length }}
@@ -214,15 +229,15 @@
               <q-td key="cantidad" :props="props">
                 {{ props.row.cantidad }}
                 <q-popup-edit v-model="props.row.cantidad" title="Update cantidad" buttons v-slot="scope">
-                  <q-input type="number" v-model="scope.value" dense autofocus />
+                  <q-input type="text" mask="####" v-model="scope.value" dense autofocus />
                 </q-popup-edit>
               </q-td>
-              <q-td key="precio_unitario" :props="props">
+              <!-- <q-td key="precio_unitario" :props="props">
                 {{ props.row.precio_unitario }}
-                <q-popup-edit v-model="props.row.precio_unitario" title="Update Precio de venta" v-slot="scope">
+                <q-popup-edit v-model="props.row.precio_unitario" title="Update Precio de venta" buttons v-slot="scope">
                   <q-input type="number" v-model="scope.value" dense autofocus/>
                 </q-popup-edit>
-              </q-td>
+              </q-td> -->
             </q-tr>
           </template>
         </q-table>
@@ -238,7 +253,7 @@
           <q-btn v-if="step!==2"
             @click="$refs.stepper.next()"
             color="primary"
-            :label="step === 2 ? 'Finish' : 'Continue'"
+            :label="step === 2 ? 'Finish' : 'Continuar'"
           />
           <q-btn v-if="step===2" color="primary" @click="onComplete()" label="Finalizar"/>
           <q-btn
@@ -246,7 +261,7 @@
             flat
             color="primary"
             @click="$refs.stepper.previous()"
-            label="Back"
+            label="Atrás"
             class="q-ml-sm"
           />
         </q-stepper-navigation>

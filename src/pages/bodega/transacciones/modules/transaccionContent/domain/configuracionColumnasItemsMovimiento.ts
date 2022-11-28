@@ -36,11 +36,11 @@ export const configuracionColumnasItemsMovimiento:ColumnConfig<any>[]=[
         align: 'left',
         sortable: true
     },
-    {
+    /* {
         name: 'precio_unitario',
         field: 'precio_unitario',
         label: 'Precio U',
         align: 'left',
         sortable: true
-    },
+    }, */
 ]

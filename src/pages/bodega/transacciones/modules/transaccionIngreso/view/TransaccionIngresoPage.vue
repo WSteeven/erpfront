@@ -3,9 +3,10 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
-    :tab-options="tabOptionsTransacciones"
+    :tab-options="tabOptionsTransaccionesIngresos"
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
+    :accion1="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -28,7 +29,7 @@
             <q-input v-model="transaccion.created_at" disable outlined dense />
           </div>
           <!-- Fecha límite -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="false" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Fecha limite</label>
             <q-input
               v-model="transaccion.fecha_limite"
@@ -62,41 +63,6 @@
               </template>
             </q-input>
           </div>
-
-          <!-- Select tipo -->
-          <!-- <div class="col-12 col-md-3 q-mb-md">
-        <label class="q-mb-sm block">Tipo</label>
-        <q-select
-          v-model="transaccion.tipo"
-          :options="opciones_tipos"
-          transition-show="jum-up"
-          transition-hide="jump-down"
-          options-dense
-          dense
-          outlined
-          :readonly="disabled"
-          :error="!!v$.tipo.$errors.length"
-          error-message="Debes seleccionar un tipo"
-          @update:model-value="filtroTipos"
-          :option-value="(v) => v.id"
-          :option-label="(v) => v.nombre"
-          emit-value
-          map-options
-        >
-          <template v-slot:error>
-            <div v-for="error of v$.tipo.$errors" :key="error.$uid">
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                No hay resultados
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div> -->
           <!-- Select motivo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
@@ -141,76 +107,6 @@
             >
             </q-input>
           </div>
-          <!-- Select autorizacion -->
-          <!-- <div v-if="rolSeleccionado" class="col-12 col-md-3 q-mb-md">
-              <label class="q-mb-sm block">Autorizacion</label>
-              <q-select
-                v-model="transaccion.autorizacion"
-                :options="opciones_autorizaciones"
-                transition-show="jum-up"
-                transition-hide="jump-down"
-                options-dense
-                dense
-                outlined
-                :readonly="disabled"
-                :error="!!v$.autorizacion.$errors.length"
-                error-message="Debes seleccionar una autorizacion"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
-                emit-value
-                map-options
-              >
-                <template v-slot:error>
-                  <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-            !-- Tiene observacion de autorizacion --
-            <div v-if="rolSeleccionado" class="col-12 col-md-3">
-              <q-checkbox
-                class="q-mt-lg q-pt-md"
-                v-model="transaccion.tiene_obs_autorizacion"
-                label="Tiene observación"
-                outlined
-                dense
-              ></q-checkbox>
-            </div>
-            !-- observacion autorizacion --
-            <div
-              v-if="transaccion.tiene_obs_autorizacion"
-              class="col-12 col-md-3"
-            >
-              <label class="q-mb-sm block">Observacion</label>
-              <q-input
-                v-model="transaccion.observacion_aut"
-                placeholder="Obligatorio"
-                :readonly="disabled"
-                :error="!!v$.observacion_aut.$errors.length"
-                @update:model-value="
-                  (v) => (transaccion.observacion_aut = v.toUpperCase())
-                "
-                outlined
-                dense
-              >
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.observacion_aut.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-input>
-            </div> -->
           <!-- Select sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
@@ -269,10 +165,36 @@
             </q-input>
           </div>
           <!-- Solicitante -->
-          <div v-if="transaccion.solicitante" class="col-12 col-md-3">
+          <div
+            v-if="transaccion.solicitante || esBodeguero"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Solicitante</label>
-            <q-input v-model="transaccion.solicitante" disable outlined dense>
-            </q-input>
+            <q-select
+              v-model="transaccion.solicitante"
+              :options="opciones_empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroEmpleados"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
           <!-- Tarea -->
           <div
@@ -328,7 +250,10 @@
             </q-select>
           </div>
           <!-- Select estado -->
-          <div v-if="rolSeleccionado" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="accion === acciones.consultar || accion === acciones.editar"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">Estado</label>
             <q-select
               v-model="transaccion.estado"
@@ -343,10 +268,10 @@
               error-message="Debes seleccionar un estado para la transacción"
               :option-value="(item) => item.id"
               :option-label="(item) => item.nombre"
-              :option-disable="(item) => (item.id === 1 ? true : false)"
               emit-value
               map-options
             >
+              <!-- :option-disable="(item) => (item.id === 1 ? true : false)" -->
               <template v-slot:error>
                 <div v-for="error of v$.estado.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
@@ -368,6 +293,7 @@
               v-model="transaccion.tiene_obs_estado"
               label="Tiene observación"
               outlined
+              :disable="disabled"
               dense
             ></q-checkbox>
           </div>
@@ -428,6 +354,50 @@
               </template>
             </q-select>
           </div>
+          <!-- check ingreso masivo -->
+          <div class="col-12 col-md-3">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="transaccion.ingreso_masivo"
+              @update:model-value="checkMasivo"
+              label="¿Ingreso masivo?"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Select condiciones -->
+          <div v-if="transaccion.ingreso_masivo" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Condiciones</label>
+            <q-select
+              v-model="transaccion.condicion"
+              :options="opciones_condiciones"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :readonly="disabled"
+              :error="!!v$.condicion.$errors.length"
+              error-message="Debes seleccionar una condición"
+              :option-value="(item) => item.id"
+              :option-label="(item) => item.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.condicion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -474,9 +444,11 @@
               :datos="transaccion.listadoProductosSeleccionados"
               :permitirConsultar="false"
               :permitirEditar="false"
-              :permitirEliminar="true"
+              :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
+              :accion2="botonEliminar"
+              :accion3="botonInventario"
               @eliminar="eliminarItem"
             ></essential-table>
           </div>
@@ -503,6 +475,6 @@
   </tab-layout-filter-tabs>
 
   <!-- Modales -->
-
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./TransaccionIngresoPage.ts" />

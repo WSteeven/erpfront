@@ -128,7 +128,7 @@
               dense
               outlined
               @update:model-value="filtroMotivos"
-              :readonly="disabled || soloLectura"
+              :readonly="disabled || (soloLectura && esBodeguero)"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar un motivo"
               :option-value="(v) => v.id"
@@ -531,8 +531,7 @@
               :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
-              :accion2="botonDespachar"
-              :accion3="botonEliminar"
+              :accion2="botonEliminar"
               @eliminar="eliminar"
             ></essential-table>
           </div>

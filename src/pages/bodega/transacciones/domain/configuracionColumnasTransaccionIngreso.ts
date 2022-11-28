@@ -23,13 +23,13 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         align: 'left',
         sortable: true,
     },
-    {
+    /* {
         name: 'fecha_limite',
         field: 'fecha_limite',
         label: 'Fecha límite',
         align: 'left',
         sortable: true,
-    },
+    }, */
     {
         name: 'motivo',
         field: 'motivo',
@@ -58,13 +58,13 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         align: 'left',
         sortable: true,
     },
-    {
+    /* {
         name: 'autorizacion',
         field: 'autorizacion',
         label: 'Autorización',
         align: 'left',
         sortable: true,
-    },
+    }, */
     /* {
         name: 'tipo',
         field: 'tipo',

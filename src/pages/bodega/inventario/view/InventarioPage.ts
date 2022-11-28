@@ -31,7 +31,8 @@ export default defineComponent({
         sucursal:{type:number, required:false},
         propietario:{type:number, required:false},
     }, */
-    setup() {
+    emits:['cerrar-modal'],
+    setup(props, {emit}) {
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
@@ -46,6 +47,7 @@ export default defineComponent({
                 console.log('El detalle en el inventario es: ', detalleStore.detalle)
                 inventario.producto = detalleStore.detalle.producto
                 inventario.detalle_id = detalleStore.detalle.id
+                inventario.cliente_id=transaccionStore.transaccion.cliente
                 const elementoEncontrado = transaccionStore.transaccion.listadoProductosSeleccionados.filter((v) => v.id === detalleStore.detalle.id)
                 console.log('El elemento ews;: ', elementoEncontrado)
                 console.log('La cantidad del elemento es: ', elementoEncontrado[0]['cantidades'])
@@ -71,6 +73,8 @@ export default defineComponent({
             await detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
             console.log('el detalle actualizado es: ', detalleProductoTransaccionStore.detalle)
             console.log('se guardó en el inventario:', inventario)
+            
+            emit('cerrar-modal')
         })
 
         const opciones_productos = ref([])
