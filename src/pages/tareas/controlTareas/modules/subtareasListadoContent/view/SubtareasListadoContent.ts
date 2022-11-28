@@ -120,7 +120,7 @@ export default defineComponent({
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion,
       accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de cancelar la subtarea?', () => {
         new CambiarEstadoSubtarea().realizar(entidad.id)
-        entidad.estado = estadosSubtareas.REALIZADO
+        entidad.estado = estadosSubtareas.CANCELADO
         actualizarElemento(posicion, entidad)
       }),
     }
