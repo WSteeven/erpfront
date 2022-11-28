@@ -156,8 +156,6 @@ export default defineComponent({
         watch(categoria_var, () => {
             limpiarCamposInformatica()
             limpiarCamposAdicionales()
-            // console.log(oldValue)
-            // console.log(newValue)
             console.log(detalle.categoria)
             console.log(categoria_var.value)
             if (detalle.categoria === 'EPP') {

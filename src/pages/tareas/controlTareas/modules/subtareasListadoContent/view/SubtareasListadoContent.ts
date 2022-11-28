@@ -31,6 +31,7 @@ export default defineComponent({
 
     const tareaStore = useTareaStore()
     const subtareaListadoStore = useSubtareaListadoStore()
+    const estado = computed(() => tareaStore.tarea.estado)
 
     if (tareaStore.tarea.id) aplicarFiltro('CREADO')
 
@@ -118,10 +119,17 @@ export default defineComponent({
       color: 'negative',
       icono: 'bi-x-octagon',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion,
-      accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de cancelar la subtarea?', () => {
-        new CambiarEstadoSubtarea().realizar(entidad.id)
-        entidad.estado = estadosSubtareas.CANCELADO
-        actualizarElemento(posicion, entidad)
+      accion: async ({ entidad }) => confirmar(['¿Está seguro de cancelar definitivamente la subtarea?', 'Esta acción también cancelará la tarea raíz.'], () => {
+        new CambiarEstadoSubtarea().cancelar(entidad.id)
+        //entidad.estado = estadosSubtareas.CANCELADO
+        // actualizarElemento(posicion, entidad)
+        //listado.value = listado.value.map((subtarea: Subtarea) => {
+        //return subtarea//.estado = estadosSubtareas.CANCELADO)
+        //}
+        listado.value = listado.value.map((subtarea: Subtarea) => {
+          subtarea.estado = estadosSubtareas.CANCELADO
+          return subtarea
+        })
       }),
     }
 
@@ -179,6 +187,8 @@ export default defineComponent({
       modales,
       botonCancelar,
       botonReagendar,
+      estado,
+      estadosSubtareas,
     }
   },
 })

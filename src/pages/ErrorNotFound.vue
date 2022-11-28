@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="fullscreen text-white text-center q-pa-md flex flex-center fondo-gradiente"
-  >
+  <div class="fullscreen text-grey-8 text-center q-pa-md flex flex-center">
     <div>
       <div style="font-size: 30vh">404</div>
 
@@ -11,8 +9,7 @@
 
       <q-btn
         class="q-mt-xl"
-        color="white"
-        text-color="secondary"
+        color="grey-8"
         unelevated
         to="/"
         label="Ver tablero"

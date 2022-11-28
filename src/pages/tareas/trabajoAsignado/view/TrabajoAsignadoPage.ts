@@ -19,6 +19,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useTareaStore } from 'stores/tarea'
 import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController copy'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 export default defineComponent({
   components: {

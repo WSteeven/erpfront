@@ -167,7 +167,27 @@ export const tiposTrabajosEstaticos = {
   hincado: 'HINCADO',
 }
 
-
+export const motivos = {
+  venta: 'VENTA',
+  compraProveedor: 'COMPRA A PROVEEDOR',
+  mercaderiaClienteTarea: 'MERCADERIA DE CLIENTE PARA TAREA',
+  devolucionFinalizacionLaboral: 'DEVOLUCION POR FINALIZACION LABORAL',
+  devolucionTarea: 'DEVOLUCION DE TAREA',
+  stockInicial: 'STOCK INICIAL',
+  despachoTarea: 'DESPACHO DE TAREA',
+  despacho: 'DESPACHO',
+  devolucionAlProveedor: 'DEVOLUCION AL PROVEEDOR',
+  reposicion: 'REPOSICION',
+  transferenciaBodegas: 'TRANSFERENCIA ENTRE BODEGAS',
+  ingresoLiquidacionMateriales: 'INGRESO POR LIQUIDACION DE MATERIALES',
+  egresoLiquidacionMateriales: 'EGRESO POR LIQUIDACION DE MATERIALES',
+  ingresoAjusteRegularizacion: 'AJUSTE DE INGRESO POR REGULARIZACION',
+  egresoAjusteRegularizacion: 'AJUSTE DE EGRESO POR REGULARIZACION',
+  mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
+  devolucionGarantia: 'DEVOLUCION POR GARANTIA',
+  devolucionDanio: 'DEVOLUCION POR DAÑO',
+  despachoGarantia: 'DESPACHO POR GARANTIA',
+}
 export const accionesActivos = {
   asignado: 'ASIGNACION',
   devuelto: 'DEVOLUCION',

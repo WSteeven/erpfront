@@ -11,7 +11,7 @@ export function useNotificaciones() {
 
   function notificarCorrecto(mensaje: string | string[]) {
     $q.notify({
-      html:true,
+      html: true,
       color: 'light-green-7',
       textColor: 'white',
       icon: 'bi-check-circle-fill',
@@ -23,7 +23,7 @@ export function useNotificaciones() {
 
   function notificarError(mensaje: string | string[]) {
     $q.notify({
-      html:true,
+      html: true,
       color: 'pink-6',
       textColor: 'white',
       icon: 'bi-question-diamond-fill',
@@ -36,13 +36,13 @@ export function useNotificaciones() {
 
   function notificarAdvertencia(mensaje: string | string[]) {
     $q.notify({
-      html:true,
+      html: true,
       color: 'amber-8',
       textColor: 'white',
       icon: 'bi-exclamation-triangle-fill',
       caption: obtenerMensaje(mensaje),
       message: 'Advertencia',
-      position: 'top',
+      position: 'bottom',
       closeBtn: false,
       progress: true,
       timeout: 2000,
@@ -54,6 +54,7 @@ export function useNotificaciones() {
 
   function confirmar(mensaje: string | string[], callback: () => void) {
     $q.dialog({
+      html: true,
       title: 'Confirmación',
       message: obtenerMensaje(mensaje),
       cancel: true,
@@ -69,6 +70,7 @@ export function useNotificaciones() {
 
   function prompt(mensaje: string, callback: (data) => void, defaultValue?) {
     $q.dialog({
+      html: true,
       title: 'Confirmación',
       message: mensaje,
       prompt: {

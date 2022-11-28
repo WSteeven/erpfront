@@ -3,7 +3,7 @@ import { configuracionColumnasTransaccionIngreso } from "../domain/configuracion
 import {defineComponent, ref} from 'vue'
 
 //Componentes
-import TransaccionIngresoContent from "../modules/transaccionIngreso/view/TransaccionIngresoContent.vue";
+import TransaccionIngresoContent from "../modules/transaccionIngreso/view/TransaccionIngresoPage.vue";
 import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
 import TransaccionIngresoInventarioContent from "../modules/transaccionIngresoInventario/view/TransaccionIngresoInventarioContent.vue";
 
@@ -18,12 +18,10 @@ export default defineComponent({
     components:{TabLayout, TransaccionIngresoContent, TransaccionIngresoInventarioContent},
     setup(){
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
-        const {entidad: transaccion, disabled, accion}=mixin.useReferencias()
+        const {entidad: transaccion}=mixin.useReferencias()
 
         const step=ref(1)
 
-        
-        
         return{
             mixin,
             transaccion,

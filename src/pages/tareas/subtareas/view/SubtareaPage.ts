@@ -9,8 +9,6 @@ import {
   tiposTareasNedetel,
   regiones,
   atenciones,
-  /*tiposIntervenciones,
-  causaIntervencion,*/
   estadosSubtareas,
   rolesAdmitidos,
   acciones,

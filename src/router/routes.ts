@@ -210,7 +210,8 @@ const routes: RouteRecordRaw[] = [
         name: 'transacciones_ingresos',
         component: () =>
           import(
-            'pages/bodega/transacciones/view/ControlTransaccionIngresoPage.vue',
+            'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoPage.vue',
+            // 'pages/bodega/transacciones/mod/view/ControlTransaccionIngresoPage.vue',
           ),
         meta: { requiresAuth: true },
       },

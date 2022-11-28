@@ -1,6 +1,9 @@
 <template>
   <q-page padding>
-    <div class="text-bold q-mb-md">Trabajo asignado</div>
+    <div class="text-bold q-mb-md">
+      <q-icon name="bi-ui-checks" class="q-mr-sm"></q-icon>
+      Trabajo asignado
+    </div>
     <essential-table-tabs
       titulo="subtareas"
       :configuracionColumnas="[
