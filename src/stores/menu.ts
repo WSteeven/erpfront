@@ -17,7 +17,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Inicio',
-      icon: 'bi-house',
+      icon: 'bi-house-fill',
       link: '/',
     },
     {
@@ -33,35 +33,35 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Trabajo asignado',
           link: 'trabajo-asignado',
-          icon: 'bi-circle',
+          icon: 'bi-circle-fill',
           can: store.can('puede.ver.trabajo_asignado'),
         },
         {
           title: 'Control de tareas',
           link: 'tareas',
-          icon: 'bi-circle',
+          icon: 'bi-circle-fill',
           can: store.can('puede.ver.tareas'),
         },
         {
           title: 'Tipos de trabajos',
           link: 'tipos-trabajos',
-          icon: 'bi-circle',
+          icon: 'bi-circle-fill',
           can: store.can('puede.ver.tipos_trabajos'),
         },
         {
           title: 'Control de asistencia',
           link: 'control-asistencia',
-          icon: 'bi-circle',
+          icon: 'bi-circle-fill',
         },
         {
           title: 'Solicitud de materiales a bodega',
           link: 'solicitud-materiales',
-          icon: 'bi-circle',
+          icon: 'bi-circle-fill',
         },
         {
           title: 'Devolución de materiales a bodega',
           link: 'solicitud-materiales',
-          icon: 'bi-circle',
+          icon: 'bi-circle-fill',
         },
         {
           title: 'Tendidos',

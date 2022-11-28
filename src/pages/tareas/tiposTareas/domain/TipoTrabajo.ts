@@ -1,4 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { CamposAdicionales } from './CamposAdicionales'
+import { ImagenesAdicionales } from './ImagenesAdicionales'
 
 export class TipoTrabajo extends EntidadAuditable {
   cliente: number | null
@@ -6,8 +8,8 @@ export class TipoTrabajo extends EntidadAuditable {
   plantilla: string | null
   requiere_imagenes: boolean
   requiere_campos_adicionales: boolean
-  imagenes_adicionales: []
-  campos_adicionales: []
+  imagenes_adicionales: ImagenesAdicionales[]
+  campos_adicionales: CamposAdicionales[]
 
   constructor() {
     super()

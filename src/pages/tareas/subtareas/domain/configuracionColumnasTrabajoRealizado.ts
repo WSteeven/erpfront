@@ -10,10 +10,11 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizad
     align: 'left',
     input_type: 'text',
     sortable: true,
+    editable: false,
   },
   {
-    name: 'detalle',
-    field: 'detalle',
+    name: 'actividad',
+    field: 'actividad',
     label: 'Actividad realizada',
     align: 'left',
     input_type: 'text',

@@ -1,4 +1,5 @@
 // Dependencias
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useNotificaciones } from 'shared/notificaciones'
 import { computed, defineComponent, ref } from 'vue'
 
@@ -14,7 +15,11 @@ export default defineComponent({
     confirmarCerrar: {
       type: Boolean,
       default: false,
-    }
+    },
+    mixin: {
+      type: Object as () => ContenedorSimpleMixin<any>,
+      required: false,
+    },
   },
   emits: ['seleccionar', 'accion1'],
   setup(props) {

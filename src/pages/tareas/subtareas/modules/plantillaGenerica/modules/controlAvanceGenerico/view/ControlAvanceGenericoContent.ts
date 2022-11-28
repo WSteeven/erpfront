@@ -66,46 +66,8 @@ export default defineComponent({
             },
         ]
 
-        /* const materiales: Material[] = [
-            {
-                id: 1,
-                producto: 'VARILLA DE ANCLAJE',
-                medida: 'UNIDAD',
-                cantidad_usada: 1,
-            },
-            {
-                id: 2,
-                producto: 'CABLE TENSOR',
-                medida: 'METRO',
-                cantidad_usada: 2,
-            },
-            {
-                id: 3,
-                producto: 'GRILLETES',
-                medida: 'UNIDAD',
-                cantidad_usada: 2,
-            },
-        ]*/
 
-        const tablaTrabajoRealizado = {
-            eliminar: () => {
-                //
-            },
-            editar: () => {
-                //
-            },
-        }
-
-        const tablaObservacion = {
-            eliminar: () => {
-                //
-            },
-            editar: () => {
-                //
-            },
-        }
-
-        const tablaMateriales = {
+        const tablaActividadRealizada = {
             eliminar: () => {
                 //
             },
@@ -162,6 +124,7 @@ export default defineComponent({
         const modales = new ComportamientoModalesControlAvanceGenericoContent()
 
         return {
+            TrabajoRealizado,
             controlAvance,
             causasIntervencion,
             // columnas
@@ -173,9 +136,7 @@ export default defineComponent({
             observaciones,
             materiales,
             // acciones tabla
-            tablaTrabajoRealizado,
-            tablaObservacion,
-            tablaMateriales,
+            tablaActividadRealizada,
             agregarActividad,
             agregarObservacion,
             agregarMaterial,

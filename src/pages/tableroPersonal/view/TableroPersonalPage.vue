@@ -7,14 +7,17 @@
         Grupo, {{ store.user.grupo }}.
       </div>
 
-      <q-chip v-if="store.esCoordinador || store.esTecnicoLider" icon="bi-check"
+      <q-chip
+        v-if="store.esCoordinador || store.esTecnicoLider"
+        icon="bi-check"
+        color="white"
         >16 Trabajos finalizados</q-chip
       >
     </div>
 
     <div class="row q-col-gutter-sm">
       <div v-if="store.esCoordinador || store.esTecnicoLider" class="col-12">
-        <q-card class="custom-shadow">
+        <q-card class="custom-shadow rounded">
           <q-card-section>
             <div class="row justify-between items-center">
               <div
@@ -175,7 +178,7 @@
       </div>
 
       <div v-if="store.esCoordinador" class="col-12">
-        <q-card class="custom-shadow">
+        <q-card class="custom-shadow rounded">
           <q-card-section>
             <div class="q-mb-md row justify-between">
               <div class="text-bold">Tareas</div>

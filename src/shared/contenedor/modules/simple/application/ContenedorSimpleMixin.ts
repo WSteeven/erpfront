@@ -144,14 +144,15 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.agregarElementoListadoActual(response.data.modelo)
-        // this.entidad.hydrate(response.data.modelo)
+        this.entidad.hydrate(response.data.modelo)
+
         if (resetOnSaved) {
           this.reestablecer()
-        } else {
+        } /*else {
           console.log(response.data.modelo.id)
           this.entidad.id = response.data.modelo.id //hydrate({ id: response.data.modelo.id })
           console.log(this.entidad)
-        }
+        } */
 
         this.hooks.onGuardado()
 
@@ -209,6 +210,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         )
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.actualizarElementoListadoActual(modelo)
+        this.entidad.hydrate(response.data.modelo)
 
         if (resetOnUpdated) {
           this.reestablecer()

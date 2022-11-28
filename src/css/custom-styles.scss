@@ -1,13 +1,22 @@
+.bg-fondo {
+  background-color: #efeff7;
+}
+
+.bg-drawer {
+  background-color: #c2c2cf;
+}
+
 .q-card,
 .q-menu {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
+
 .mini-texto {
   font-size: 10px;
 }
 
 .custom-shadow {
-  box-shadow: 0px 10px 80px -10px rgba(44, 54, 92, 0.2);
+  box-shadow: 0px 10px 80px -10px rgba(44, 54, 140, 0.2);
 }
 
 .shadow-chip {

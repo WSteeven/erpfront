@@ -10,7 +10,7 @@
       exact
     >
       <q-item-section v-if="icon" avatar>
-        <q-icon :name="icon" size="xs" />
+        <q-icon :name="icon" size="xs" class="color-icono" />
       </q-item-section>
 
       <q-item-section>
@@ -28,7 +28,7 @@
     >
       <template #header>
         <q-item-section v-if="icon" avatar>
-          <q-icon :name="icon" size="xs" />
+          <q-icon :name="icon" size="xs" class="color-icono" />
         </q-item-section>
 
         <q-item-section>
@@ -82,15 +82,19 @@ export default defineComponent({
 
 <style lang="scss">
 .my-menu-link {
-  background: rgba($primary, 0.1);
-  border-right: 3px solid $primary;
+  background: rgba(#efeff7, 1);
+  //border-right: 3px solid $primary;
 
   i {
-    color: $primary;
+    color: rgb(39, 84, 198);
   }
 
   .q-item__label {
     font-weight: bold;
   }
+}
+
+.color-icono {
+  color: #575b6e;
 }
 </style>

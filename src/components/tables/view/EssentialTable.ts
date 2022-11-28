@@ -135,6 +135,7 @@ export default defineComponent({
         fila.value.hydrate(entidad)
         posicionFila.value = posicion
         abrirModal()
+        console.log('..abriendo modal')
       }
     }
     const eliminar = (data: object) => emit('eliminar', data)

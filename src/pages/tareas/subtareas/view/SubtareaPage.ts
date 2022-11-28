@@ -36,6 +36,12 @@ import { Tecnico } from '../domain/Tecnico'
 import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 
 export default defineComponent({
+  props: {
+    mixin: {
+      type: Object as () => ContenedorSimpleMixin<any>,
+      required: true,
+    },
+  },
   components: { EssentialTable, ButtonSubmits, EssentialSelectableTable },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -43,6 +49,8 @@ export default defineComponent({
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
+
+    const { listado } = props.mixin.useReferencias()
 
     const tareaStore = useTareaStore()
     const subtareaListadoStore = useSubtareaListadoStore()
@@ -186,15 +194,24 @@ export default defineComponent({
 
     async function guardarDatos(subtarea: Subtarea) {
       try {
-        await guardar(subtarea)
+        await guardar(subtarea, false)
+
+        listado.value = [...listado.value, subtarea]
+
         emit('cerrar-modal')
-        subtareaListadoStore.nuevoElementoInsertado = true
+        // subtareaListadoStore.nuevoElementoInsertado = true
       } catch (e) { }
     }
 
     async function editarDatos(subtarea: Subtarea) {
       try {
-        await editar(subtarea)
+        await editar(subtarea, false)
+
+        const indexElemento = subtareaListadoStore.posicionSubtareaSeleccionada
+
+        listado.value.splice(indexElemento, 1, subtarea)
+        listado.value = [...listado.value]
+
         emit('cerrar-modal')
       } catch (e) { }
     }

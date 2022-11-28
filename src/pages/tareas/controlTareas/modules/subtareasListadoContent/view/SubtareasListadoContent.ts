@@ -166,13 +166,14 @@ export default defineComponent({
     })*/
 
     const nuevoElementoInsertado = computed(() => subtareaListadoStore.nuevoElementoInsertado)
-    watch(nuevoElementoInsertado, () => {
+    /*watch(nuevoElementoInsertado, () => {
       if (nuevoElementoInsertado.value) {
         aplicarFiltro(subtareaListadoStore.filtroEstadoSeleccionado)
       }
-    })
+    })*/
 
     return {
+      mixin,
       configuracionColumnasSubtareas,
       configuracionColumnas,
       botonEditarSubtarea,

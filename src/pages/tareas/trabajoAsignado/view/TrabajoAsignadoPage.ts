@@ -36,7 +36,7 @@ export default defineComponent({
 
     const mostrarDialogPlantilla = ref(false)
 
-    const store = useTareaStore()
+    const store = useTrabajoAsignadoStore()
     const authenticationStore = useAuthenticationStore()
     const modales = new ComportamientoModalesTrabajoAsignado()
 
@@ -44,7 +44,7 @@ export default defineComponent({
       titulo: 'Visualizar',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
-        store.idSubtareaAsignada = entidad.id
+        store.idSubtareaSeleccionada = entidad.id
         modales.abrirModalEntidad('SubtareaAsignadaPage')
       },
     }
@@ -100,7 +100,8 @@ export default defineComponent({
       visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
-          mostrarDialogPlantilla.value = true
+          //mostrarDialogPlantilla.value = true
+          store.idSubtareaSeleccionada = entidad.id
           modales.abrirModalEntidad('PlantillaGenericaPage')
         })
       }
