@@ -3,15 +3,14 @@ import { markRaw } from "vue";
 
 //paginas
 import DespacharPage from "../view/DespacharPage.vue"
-import TransaccionEgresoImprimirPage from "../view/TransaccionEgresoImprimirPage.vue";
 import InventarioPage from "pages/bodega/inventario/view/InventarioPage";
 
 export class TransaccionEgresoModales {
     DespacharPage: ComponenteModal
-    TransaccionEgresoImprimirPage: ComponenteModal
+    // InventarioPage: ComponenteModal
 
     constructor() {
         this.DespacharPage = markRaw(new ComponenteModal('CONSTRUCRED', DespacharPage))
-        this.TransaccionEgresoImprimirPage = markRaw(new ComponenteModal('CONSTRUCRED', TransaccionEgresoImprimirPage))
+        // this.InventarioPage = markRaw(new ComponenteModal('CONSTRUCRED', InventarioPage))
     }
 }

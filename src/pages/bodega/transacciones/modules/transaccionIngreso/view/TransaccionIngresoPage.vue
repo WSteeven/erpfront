@@ -361,6 +361,7 @@
               v-model="transaccion.ingreso_masivo"
               @update:model-value="checkMasivo"
               label="¿Ingreso masivo?"
+              :disable="disabled"
               outlined
               dense
             ></q-checkbox>
@@ -448,19 +449,11 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
-              :accion3="botonInventario"
+              :accion3="botonInventarios"
               @eliminar="eliminarItem"
             ></essential-table>
           </div>
         </div>
-
-        <!-- <button-submits
-          :accion="accion"
-          @guardar="guardar(transaccion)"
-          @cancelar="reestablecer()"
-          @editar="editar(transaccion)"
-          @eliminar="eliminar(transaccion)"
-        /> -->
       </q-form>
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table

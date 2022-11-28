@@ -4,13 +4,14 @@ import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
 import { endpoints } from "config/api";
 import { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { acciones } from "config/utils";
 
 export const useTransaccionStore = defineStore("transaccion", () => {
     //State
     const transaccion = reactive(new Transaccion()) //la transaccion
     const transaccionReset = new Transaccion()
+    const idTransaccion = ref()
     
 
     const accionTransaccion = acciones.nuevo
@@ -38,8 +39,9 @@ export const useTransaccionStore = defineStore("transaccion", () => {
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.transacciones_ingresos)+'imprimir/'+id
         console.log('ruta desde donde se imprime',ruta)
-        const response: AxiosResponse = await axios.get(ruta, responseType:'blob')
+        // const response: AxiosResponse = await axios.get(ruta, responseType:'blob')
     }
+
 
     function resetearTransaccion(){
         transaccion.hydrate(transaccionReset)
@@ -52,6 +54,7 @@ export const useTransaccionStore = defineStore("transaccion", () => {
         cargarTransaccion,
         resetearTransaccion,
         imprimirIngreso,
+        idTransaccion,
 
     }
 })

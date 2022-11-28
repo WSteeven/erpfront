@@ -145,7 +145,7 @@ export default defineComponent({
                 console.log('Completado!', selected2.value)
                 const movimiento = {
                     'inventario_id': selected2.value[0]['id'],
-                    'transaccion_id': transaccionStore.transaccion.id,
+                    'detalle_producto_transaccion_id': detalleTransaccionStore.detalle.id,
                     'cantidad': selected2.value[0]['cantidad'],
                     'precio_unitario': detalle_id,
                 }

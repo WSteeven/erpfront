@@ -41,6 +41,7 @@ import { useTransaccionStore } from 'stores/transaccion'
 import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
 import { useDetalleStore } from 'stores/detalle'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesTransaccionEgreso'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -96,6 +97,7 @@ export default defineComponent({
         const opciones_estados = ref([])
         const opciones_tareas = ref([])
         const opciones_subtareas = ref([])
+        const opciones_clientes = ref([])
 
         function transformarOpcionesTipos() {
             // console.log('llamaste a la funcion')
@@ -141,7 +143,7 @@ export default defineComponent({
                         estados: [estadosSubtareas.ASIGNADO, estadosSubtareas.EJECUTANDO, estadosSubtareas.PAUSADO]
                     }
                 },
-                motivos: new MotivoController(),
+                motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
                 autorizaciones: {
                     controller: new AutorizacionController(),
                     params: {
@@ -159,6 +161,14 @@ export default defineComponent({
                     params: {
                         campos: 'id,producto_id,descripcion,modelo_id,serial'
                     }
+                },
+                clientes: {
+                    controller: new ClienteController(),
+                    params: {
+                        campos: 'id,empresa_id',
+                        requiere_bodega: 1,
+                        estado: 1,
+                    },
                 },
             })
             transformarOpcionesTipos()
@@ -200,7 +210,9 @@ export default defineComponent({
             justificacion: { required },
             sucursal: { required },
             tipo: { required },
+            cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
             motivo: { requiredIfBodeguero: requiredIf(esBodeguero) },
+            tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
             autorizacion: {
                 requiredIfCoordinador: requiredIf(esCoordinador),
                 requiredIfEsVisibleAut: requiredIf(esVisibleAutorizacion)
@@ -249,6 +261,7 @@ export default defineComponent({
                 console.log('La entidad es', entidad)
                 console.log('La posicion es', posicion)
                 await transaccionStore.cargarTransaccion(entidad.id)
+                await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id='+transaccionStore.transaccion.id+'&detalle_id='+entidad.id)
                 console.log('La transaccion del store', transaccionStore.transaccion)
 
                 //aqui va toda la logica de los despachos de material
@@ -258,6 +271,21 @@ export default defineComponent({
             visible: ({ entidad, posicion }) => puedeEditar.value && esBodeguero
             // }
         }
+
+        const botonImprimir: CustomActionTable = {
+            titulo: 'Imprimir',
+            color: 'secondary',
+            icono: 'bi-printer',
+            accion: ({ entidad, posicion }) => {
+                transaccionStore.idTransaccion = entidad.id
+
+                modales.abrirModalEntidad("TransaccionEgresoImprimirPage")
+                // imprimir()
+            },
+            //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+        }
+
+
         console.log('es bodeguero?', esBodeguero)
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
             name: 'cantidades',
@@ -285,6 +313,7 @@ export default defineComponent({
         opciones_estados.value = listadosAuxiliares.estados
         opciones_tareas.value = listadosAuxiliares.tareas
         opciones_subtareas.value = listadosAuxiliares.subtareas
+        opciones_clientes.value = listadosAuxiliares.clientes
 
 
         return {
@@ -300,6 +329,7 @@ export default defineComponent({
             opciones_estados,
             opciones_tareas,
             opciones_subtareas,
+            opciones_clientes,
 
             //variables auxiliares
             esVisibleAutorizacion,
@@ -313,13 +343,13 @@ export default defineComponent({
             //filtros
             filtroTipos(val) {
                 const tipoSeleccionado = listadosAuxiliares.tipos.filter((v) => v.id === val)
-                opciones_motivos.value = listadosAuxiliares.motivos.filter((v)=>v.tipo_transaccion_id===val)
+                opciones_motivos.value = listadosAuxiliares.motivos.filter((v) => v.tipo_transaccion_id === val)
                 transaccion.motivos = ''
                 if (opciones_motivos.value.length > 1) transaccion.motivo = ''
                 if (opciones_motivos.value.length === 1) transaccion.motivo = opciones_motivos.value[0]['id']
             },
             filtroMotivos(val) {
-                console.log('filtro motivos',val)
+                console.log('filtro motivos', val)
                 /* esVisibleTarea.value = false
                 const opcionSeleccionada = listadosAuxiliares.subtipos.filter((item) => item.id === val)
                 esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === 'MATERIALES PARA TAREAS' ? true : false

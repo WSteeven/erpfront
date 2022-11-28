@@ -25,6 +25,7 @@ export class Transaccion extends EntidadAuditable{
     tiene_obs_estado: boolean
     retira_tercero:boolean
     ingreso_masivo:boolean
+    es_tarea:boolean
 
     producto: string|null
     listadoProductosSeleccionados:any[]
@@ -55,6 +56,7 @@ export class Transaccion extends EntidadAuditable{
         this.tiene_obs_estado=false
         this.retira_tercero=false
         this.ingreso_masivo=false
+        this.es_tarea=false
 
         this.producto=null
         this.listadoProductosSeleccionados=[]

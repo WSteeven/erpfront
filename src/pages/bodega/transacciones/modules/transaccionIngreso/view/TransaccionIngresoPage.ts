@@ -8,7 +8,7 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 import { acciones } from 'config/utils'
-import {html2pdf} from 'html2pdf.js'
+import { html2pdf } from 'html2pdf.js'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
@@ -221,15 +221,13 @@ export default defineComponent({
             titulo: 'Imprimir',
             color: 'secondary',
             icono: 'bi-printer',
-            accion: async ({ entidad, posicion }) => {
-                // await transaccionStore.imprimirIngreso(entidad.id)
-                //aqui se imprime
-                html2pdf(document.getElementById('transaccionIngresoPage.vue'),{
-                    margin:1,
-                    filename:'transaccion.pdf'
-                })
+            accion: ({ entidad, posicion }) => {
+                transaccionStore.idTransaccion = entidad.id
+
+                modales.abrirModalEntidad("TransaccionIngresoImprimirPage")
+                // imprimir()
             },
-            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+            //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
         const botonDespachar: CustomActionTable = {
             titulo: 'Despachar',
@@ -246,6 +244,7 @@ export default defineComponent({
             // visible: ({ entidad, posicion }) => puedeEditar.value && esBodeguero
             // }
         }
+
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
             name: 'cantidades',

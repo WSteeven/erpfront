@@ -58,7 +58,29 @@
       <!-- Solicitante -->
       <div class="col-12 col-md-2">
         <strong><label class="q-mb-sm block">Solicitante</label></strong>
-        <q-input v-model="transaccion.solicitante" readonly borderless dense />
+        <q-select
+              v-model="transaccion.solicitante"
+              :options="opciones_empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              
+              borderless
+              readonly
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
       </div>
       <!-- autorizacion -->
       <div class="col-12 col-md-2">
