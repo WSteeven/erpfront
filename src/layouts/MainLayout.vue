@@ -51,7 +51,7 @@
 
         <span>
           <q-btn dense round flat icon="bi-bell" class="q-mr-md" color="black">
-            <q-badge color="accent" floating> 4 </q-badge>
+            <q-badge color="primary" floating> 4 </q-badge>
             <q-menu transition-show="flip-right" transition-hide="flip-left">
               <q-list style="min-width: 100px">
                 <q-item clickable>
@@ -201,7 +201,7 @@
     </div>
 
     <!-- Drawer -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-white">
+    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-drawer">
       <!-- Drawer Header -->
       <div class="absolute-top q-px-lg">
         <img src="~assets/logo.svg" class="q-mx-auto block" />
@@ -214,9 +214,12 @@
       <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px">
         <q-list>
           <div v-for="item in links" :key="item.title">
-            <q-item-label v-if="item.hasOwnProperty('header')" header>{{
-              item.header
-            }}</q-item-label>
+            <q-item-label
+              v-if="item.hasOwnProperty('header')"
+              header
+              class="text-dark text-bold"
+              >{{ item.header }}</q-item-label
+            >
             <!-- <EssentialLink v-else v-bind="item" /> -->
             <EssentialLink
               v-else
@@ -232,7 +235,7 @@
     </q-drawer>
 
     <!-- Router -->
-    <q-page-container :class="{ 'bg-grey-2': !$q.screen.xs }">
+    <q-page-container :class="{ 'bg-fondo': !$q.screen.xs }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <div>

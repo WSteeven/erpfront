@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasTecnico } from 'pages/tareas/subtareas/domain/configuracionColumnasTecnico'
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { defineComponent, Ref, ref } from 'vue'
 import { useTareaStore } from 'stores/tarea'
 import {
     provincias,
@@ -12,14 +12,13 @@ import {
     regiones,
     atenciones,
     tiposIntervenciones,
-    causaIntervencion,
 } from 'config/utils'
 
 // Componentes
+import ControlAvanceGenericoContent from '../modules/controlAvanceGenerico/view/ControlAvanceGenericoContent.vue'
 import InformacionAdicionalContent from '../modules/informacionAdicional/view/InformacionAdicionalContent.vue'
 import ImagenAdicionalContent from '../modules/imagenesAdicionales/view/ImagenAdicionalContent.vue'
 import PausasRealizadasContent from '../modules/pausasRealizadas/view/PausasRealizadasContent.vue'
-import ControlAvanceGenericoContent from '../modules/controlAvanceGenerico/view/ControlAvanceGenericoContent.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
@@ -82,10 +81,6 @@ export default defineComponent({
         function eliminarTecnico({ posicion }) {
             datos.value.splice(posicion, 1)
         }
-
-        //const modalesSubtarea = new ComportamientoModalesSubtarea()
-
-        // const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
         return {
             step: ref(1),

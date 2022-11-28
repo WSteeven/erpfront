@@ -1,5 +1,6 @@
+import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 export const useTrabajoAsignadoStore = defineStore('trabajoAsignado', () => {
   // const posicionSubtareaSeleccionada = ref()
@@ -7,6 +8,8 @@ export const useTrabajoAsignadoStore = defineStore('trabajoAsignado', () => {
   // const filtroEstadoSeleccionado = ref()
   // const subtareaEditada = ref(false)
   const idSubtareaSeleccionada = ref()
+  const idTipoTrabajoSubtarea = ref()
+  const subtarea = reactive(new Subtarea())
 
   return {
     /*posicionSubtareaSeleccionada,
@@ -14,5 +17,7 @@ export const useTrabajoAsignadoStore = defineStore('trabajoAsignado', () => {
     nuevoElementoInsertado,
     subtareaEditada,*/
     idSubtareaSeleccionada,
+    idTipoTrabajoSubtarea,
+    subtarea,
   }
 })

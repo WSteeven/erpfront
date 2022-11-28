@@ -27,9 +27,10 @@
         <!--v-close-popup -->
       </q-toolbar>
 
-      <q-card-section>
+      <q-card-section class="bg-fondo">
         <component
           :is="componente"
+          :mixin="mixin"
           @seleccionar="emit('seleccionar')"
           @cerrar-modal="cerrarModalEntidad()"
         ></component>

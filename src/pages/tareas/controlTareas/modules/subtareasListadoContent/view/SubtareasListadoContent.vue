@@ -52,7 +52,7 @@
   >
   <!--:accion3="botonSolicitarMaterial"-->
 
-  <modales-entidad :comportamiento="modales" />
+  <modales-entidad :comportamiento="modales" :mixin="mixin" />
 </template>
 
 <script src="./SubtareasListadoContent.ts"></script>

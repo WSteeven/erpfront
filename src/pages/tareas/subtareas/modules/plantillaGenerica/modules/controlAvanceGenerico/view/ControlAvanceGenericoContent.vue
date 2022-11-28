@@ -17,17 +17,16 @@
         :alto-fijo="false"
         :permitirConsultar="false"
         :permitirEliminar="false"
-        :permitirEditar="$q.screen.xs"
-        :permitirEditarCeldas="!$q.screen.xs"
-        :permitirEditarModal="$q.screen.xs"
+        :permitirEditarModal="true"
         :mostrar-footer="false"
         separador="cell"
         :mostrar-botones="false"
         :agregarElemento="agregarActividad"
-        @eliminar="tablaTrabajoRealizado.eliminar"
-        @editar="tablaTrabajoRealizado.editar"
+        @eliminar="tablaActividadRealizada.eliminar"
         :accion1="materiales"
+        :entidad="TrabajoRealizado"
       ></essential-table>
+      <!--@editar="tablaTrabajoRealizado.editar"-->
     </div>
 
     <!--<div class="q-mb-md">

@@ -2,7 +2,7 @@
   <q-page padding>
     <q-form @submit.prevent>
       <q-expansion-item
-        class="overflow-hidden q-mb-md"
+        class="overflow-hidden bg-white q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
         label="Información general"
         header-class="bg-grey-1"
@@ -451,7 +451,7 @@
 
       <!-- Asignar técnicos de otros grupos -->
       <q-expansion-item
-        class="overflow-hidden q-mb-md"
+        class="overflow-hidden bg-white q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
         label="Asignar técnicos de otros grupos"
         header-class="bg-grey-1"

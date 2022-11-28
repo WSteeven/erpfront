@@ -12,7 +12,7 @@
     <q-step
       :name="1"
       title="1. Control de avance"
-      icon="bi-list-check"
+      icon="bi-circle"
       :done="done1"
     >
       <ControlAvanceGenericoContent></ControlAvanceGenericoContent>
@@ -30,7 +30,7 @@
     <q-step
       :name="2"
       title="2. Imágenes adicionales"
-      icon="bi-list-check"
+      icon="bi-circle"
       :done="done2"
     >
       <imagen-adicional-content></imagen-adicional-content>
@@ -39,7 +39,7 @@
     <q-step
       :name="3"
       title="3. Información adicional"
-      icon="bi-list-check"
+      icon="bi-circle"
       :done="done3"
     >
       <informacion-adicional-content></informacion-adicional-content>

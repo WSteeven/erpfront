@@ -6,8 +6,8 @@
     dense
     narrow-indicator
     active-color="white"
-    active-bg-color="accent"
-    indicator-color="accent"
+    active-bg-color="secondary"
+    indicator-color="secondary"
     :class="{
       'borde-header-tabla': !$q.screen.xs,
     }"

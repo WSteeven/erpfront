@@ -17,6 +17,7 @@ import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
 import { ContactoController } from 'pages/tareas/contactos/infraestructure/ContactoController'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 export default defineComponent({
     components: { EssentialTable },
@@ -27,6 +28,7 @@ export default defineComponent({
         const { onConsultado } = mixin.useHooks()
 
         const store = useTareaStore()
+        const trabajoAsignadoStore = useTrabajoAsignadoStore()
 
         const tiposTrabajos = ref([])
         const grupos = ref([])
@@ -121,7 +123,7 @@ export default defineComponent({
         }
 
         //if (store.idSubtareaAsignada) 
-        consultar({ id: store.idSubtareaAsignada })
+        consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
 
         onConsultado(() => {
             if (subtarea.cliente_final) {
