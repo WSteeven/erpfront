@@ -1,47 +1,47 @@
-import { endpoints } from "config/api";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository"
+import { endpoints } from 'config/api';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 
 export class CambiarEstadoSubtarea {
-    axios: AxiosHttpRepository
+  axios: AxiosHttpRepository
 
-    constructor() {
-        this.axios = AxiosHttpRepository.getInstance()
-    }
+  constructor() {
+    this.axios = AxiosHttpRepository.getInstance()
+  }
 
-    asignar(subtareaId: number) {
-        this.solicitud('asignar', subtareaId)
-    }
+  asignar(subtareaId: number) {
+    this.solicitud('asignar', subtareaId)
+  }
 
-    ejecutar(subtareaId: number) {
-        this.solicitud('ejecutar', subtareaId)
-    }
+  ejecutar(subtareaId: number) {
+    this.solicitud('ejecutar', subtareaId)
+  }
 
-    realizar(subtareaId: number) {
-        this.solicitud('realizar', subtareaId)
-    }
+  realizar(subtareaId: number) {
+    this.solicitud('realizar', subtareaId)
+  }
 
-    pausar(subtareaId: number, mensaje: string) {
-        this.solicitud('pausar', subtareaId, { motivo: mensaje })
-    }
+  pausar(subtareaId: number, mensaje: string) {
+    this.solicitud('pausar', subtareaId, { motivo: mensaje })
+  }
 
-    reanudar(subtareaId: number) {
-        this.solicitud('reanudar', subtareaId)
-    }
+  reanudar(subtareaId: number) {
+    this.solicitud('reanudar', subtareaId)
+  }
 
-    suspender(subtareaId: number) {
-        this.solicitud('suspender', subtareaId)
-    }
+  suspender(subtareaId: number, mensaje: string) {
+    this.solicitud('suspender', subtareaId, { motivo: mensaje })
+  }
 
-    cancelar(subtareaId: number) {
-        this.solicitud('cancelar', subtareaId)
-    }
+  cancelar(subtareaId: number) {
+    this.solicitud('cancelar', subtareaId)
+  }
 
-    solicitud(accion, subtarea, data?) {
-        try {
-            const ruta = this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + subtarea
-            this.axios.post(ruta, data)
-        } catch (e: any) {
-            //
-        }
+  solicitud(accion, subtarea, data?) {
+    try {
+      const ruta = this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + subtarea
+      this.axios.post(ruta, data)
+    } catch (e: any) {
+      //
     }
+  }
 }
