@@ -11,6 +11,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
 import { LoginController } from '../infraestructure/LoginController'
 import { useNotificaciones } from 'shared/notificaciones'
+import { isAxiosError } from 'shared/utils'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -35,7 +36,9 @@ export default defineComponent({
         notificaciones.notificarCorrecto(response.data.mensaje)
 
       } catch (error: any) {
-        notificaciones.notificarError(error.response.data.mensaje)
+        /*if (!isAxiosError(error)) {
+          notificaciones.notificarError(error.response.data.mensaje)
+        }*/
       } finally {
         cargando.desactivar()
       }

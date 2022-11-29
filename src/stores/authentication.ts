@@ -42,7 +42,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       await getUser()
       token.value = response.data.access_token
       LocalStorage.set('token', token.value)
-      return response
+      return user.value
     } catch (error: any) {
       // throw new ApiError(error)
       throw error
@@ -127,6 +127,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esCoordinador,
     esTecnicoLider,
     esBodeguero,
-
+    extraerRol,
   }
 })

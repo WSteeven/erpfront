@@ -19,6 +19,13 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Inicio',
       icon: 'bi-house-fill',
       link: '/',
+      can: !store.can('puede.ver.trabajo_asignado'),
+    },
+    {
+      title: 'Trabajo asignado',
+      link: 'trabajo-asignado',
+      icon: 'bi-ui-checks',
+      can: store.can('puede.ver.trabajo_asignado'),
     },
     {
       title: 'Tablero',
@@ -30,38 +37,38 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-ui-checks',
       can: store.can('puede.ver.modulo_tareas'),
       children: [
-        {
+        /*{
           title: 'Trabajo asignado',
           link: 'trabajo-asignado',
           icon: 'bi-circle-fill',
           can: store.can('puede.ver.trabajo_asignado'),
-        },
+        },*/
         {
           title: 'Control de tareas',
           link: 'tareas',
-          icon: 'bi-circle-fill',
+          icon: 'bi-circle',
           can: store.can('puede.ver.tareas'),
         },
         {
           title: 'Tipos de trabajos',
           link: 'tipos-trabajos',
-          icon: 'bi-circle-fill',
+          icon: 'bi-circle',
           can: store.can('puede.ver.tipos_trabajos'),
         },
         {
           title: 'Control de asistencia',
           link: 'control-asistencia',
-          icon: 'bi-circle-fill',
+          icon: 'bi-circle',
         },
         {
           title: 'Solicitud de materiales a bodega',
           link: 'solicitud-materiales',
-          icon: 'bi-circle-fill',
+          icon: 'bi-circle',
         },
         {
           title: 'Devolución de materiales a bodega',
           link: 'solicitud-materiales',
-          icon: 'bi-circle-fill',
+          icon: 'bi-circle',
         },
         {
           title: 'Tendidos',

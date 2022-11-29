@@ -15,7 +15,11 @@ export class LoginController {
   async login(userLogin: UserLogin): Promise<any> {
     try {
       const response = await this.store.login(userLogin)
-      this.Router.replace('/')
+      if (this.store.extraerRol('TECNICO LIDER')) {
+        this.Router.replace({ name: 'trabajo_asignado' })
+      } else {
+        this.Router.replace('/')
+      }
       return response
     } catch (error) {
       throw error

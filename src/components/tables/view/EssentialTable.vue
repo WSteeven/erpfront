@@ -220,7 +220,7 @@
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
       <q-td v-if="!$q.screen.xs" :props="props">
-        <div class="row q-gutter-x-sm">
+        <div class="row q-gutter-x-sm justify-center">
           <!-- Consultar -->
           <q-btn
             v-if="permitirConsultar"

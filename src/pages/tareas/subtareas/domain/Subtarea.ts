@@ -11,7 +11,7 @@ export class Subtarea extends EntidadAuditable {
   // Tiempos
   fecha_hora_creacion: string | null
   fecha_hora_asignacion: string | null
-  fecha_hora_inicio: string | null
+  fecha_hora_ejecucion: string | null
   fecha_hora_finalizacion: string | null
   cantidad_dias: string | null
   fecha_hora_realizado: string | null
@@ -54,7 +54,7 @@ export class Subtarea extends EntidadAuditable {
     // Tiempos
     this.fecha_hora_creacion = null
     this.fecha_hora_asignacion = null
-    this.fecha_hora_inicio = null
+    this.fecha_hora_ejecucion = null
     this.fecha_hora_finalizacion = null
     this.cantidad_dias = null
     this.fecha_hora_realizado = null

@@ -2,6 +2,7 @@
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
 import { tabTrabajoAsignado, accionesTabla, estadosSubtareas } from 'config/utils'
 import { defineComponent, ref } from 'vue'
+import { date } from 'quasar'
 
 // Componentes
 import ConfirmarDialog from 'pages/tareas/trabajoAsignado/view/ConfirmarDialog.vue'
@@ -10,16 +11,15 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { CambiarEstadoSubtarea } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/application/CambiarEstadoSubtarea'
+import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController copy'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { useTareaStore } from 'stores/tarea'
-import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController copy'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 export default defineComponent({
   components: {
@@ -31,7 +31,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
     const { listado, currentPageListado, offset } = mixin.useReferencias()
-    const { listar } = mixin.useComportamiento()
+    // const { listar } = mixin.useComportamiento()
     const { confirmar, prompt } = useNotificaciones()
 
     const mostrarDialogPlantilla = ref(false)
@@ -167,6 +167,8 @@ export default defineComponent({
       botonReanudar,
       botonFormulario,
       botonSuspender,
+      fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
+      authenticationStore,
     }
   }
 })

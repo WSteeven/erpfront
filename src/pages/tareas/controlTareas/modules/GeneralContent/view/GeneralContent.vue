@@ -21,18 +21,28 @@
 
         <!-- Numero tarea cliente -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Código de tarea Cliente</label>
+          <label class="q-mb-sm block">Código de tarea cliente</label>
           <q-input
             v-model="tarea.codigo_tarea_cliente"
-            placeholder="Opcional"
+            placeholder="Obligatorio"
             @update:model-value="
               (v) => (tarea.codigo_tarea_cliente = v.toUpperCase())
             "
             hint="Ticket, OT, Tarea"
+            :error="!!v$.codigo_tarea_cliente.$errors.length"
             outlined
             dense
             autofocus
-          ></q-input>
+          >
+            <template v-slot:error>
+              <div
+                v-for="error of v$.codigo_tarea_cliente.$errors"
+                :key="error.$uid"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
         </div>
 
         <!-- Cliente principal -->
@@ -75,7 +85,7 @@
 
         <!-- Fecha de solicitud -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de solicitud</label>
+          <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
           <q-input v-model="tarea.fecha_solicitud" outlined dense>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -164,7 +174,7 @@
           ></q-checkbox>
         </div>
 
-        <!-- Codigo tarea JP -->
+        <!-- Codigo de proyecto -->
         <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de proyecto</label>
           <q-input
@@ -172,6 +182,77 @@
             @update:model-value="
               (v) => (tarea.codigo_proyecto = v.toUpperCase())
             "
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Fecha de inicio proyecto -->
+        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha inicio de proyecto</label>
+          <q-input v-model="tarea.fecha_inicio_proyecto" outlined dense>
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="tarea.fecha_inicio_proyecto"
+                    mask="DD-MM-YYYY"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+
+        <!-- Fecha de fin proyecto -->
+        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha fin de proyecto</label>
+          <q-input v-model="tarea.fecha_fin_proyecto" outlined dense>
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="tarea.fecha_fin_proyecto"
+                    mask="DD-MM-YYYY"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+
+        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Costo total proyecto</label>
+          <q-input
+            v-model="tarea.costo_total_proyecto"
             outlined
             dense
           ></q-input>
@@ -489,7 +570,7 @@
       @cancelar="reestablecer()"
       @editar="editar(tarea, false)"
       @eliminar="eliminar(tarea)"
-      @guardar="guardar(tarea, false)"
+      @guardar="guardar(tarea)"
     />
   </q-form>
 

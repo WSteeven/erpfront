@@ -7,12 +7,12 @@
         Grupo, {{ store.user.grupo }}.
       </div>
 
-      <q-chip
+      <!--<q-chip
         v-if="store.esCoordinador || store.esTecnicoLider"
         icon="bi-check"
         color="white"
         >16 Trabajos finalizados</q-chip
-      >
+      > -->
     </div>
 
     <div class="row q-col-gutter-sm">
@@ -75,14 +75,14 @@
               :class="{ 'shadow-chip borde': $q.screen.xs }"
               no-caps
             />
-            <q-tab
+            <!--<q-tab
               v-if="store.esCoordinador"
               label="Proyectos (9)"
               name="proyectos"
               class="q-mx-xs q-my-md rounded"
               :class="{ 'shadow-chip borde': $q.screen.xs }"
               no-caps
-            />
+            /> -->
           </q-tabs>
 
           <q-tab-panels v-model="tab" animated>
@@ -127,7 +127,11 @@
             </q-tab-panel>
 
             <q-tab-panel name="pendientes">
-              <div class="col-12 col-md-6 column">
+              <div
+                v-for="subtarea in subtareasPorAsignar"
+                :key="subtarea.id"
+                class="col-12 col-md-6 column"
+              >
                 <q-btn align="left" flat>
                   <q-icon
                     name="bi-ui-checks"
@@ -135,8 +139,8 @@
                     color="positive"
                   ></q-icon>
                   <div class="text-left column">
-                    <div class="block">JP0001_3</div>
-                    <small>Tendido circular Palmales</small>
+                    <div class="block">{{ subtarea.codigo_subtarea }}</div>
+                    <small>{{ subtarea.detalle }}</small>
                   </div>
                 </q-btn>
               </div>
@@ -243,66 +247,4 @@
   </q-page>
 </template>
 
-<script lang="ts">
-// Dependencias
-import { useAuthenticationStore } from 'stores/authentication'
-import { defineComponent, reactive, ref } from 'vue'
-import { date } from 'quasar'
-
-// Componentes
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
-
-// Logica y controladores
-import { ComportamientoModalesTableroPersonal } from '../application/ComportamientoModalesTableroPersonal'
-import { TableroPersonalController } from '../infraestructure/TableroPersonalController'
-import { TableroPersonal } from '../domain/TableroPersonal'
-
-export default defineComponent({
-  components: {
-    ModalesEntidad,
-  },
-  setup() {
-    const store = useAuthenticationStore()
-    const controller = new TableroPersonalController()
-    const tablero = reactive(new TableroPersonal())
-    const usuarios = 20
-
-    const filtrosTareas = ['Recientes', 'sdsd']
-    const filtroTarea = ref('Recientes')
-
-    async function index() {
-      const { response } = await controller.listar()
-      tablero.hydrate(response.data.results)
-    }
-
-    index()
-
-    const modales = new ComportamientoModalesTableroPersonal()
-
-    const timeStamp = Date.now()
-    const fecha = date.formatDate(timeStamp, 'dddd, DD MMMM YYYY')
-
-    function verSubtarea() {
-      modales.abrirModalEntidad('SubtareaAsignadaPage')
-    }
-
-    return {
-      tablero,
-      store,
-      usuarios,
-      tab: ref(
-        store.esTecnicoLider
-          ? 'asignadas'
-          : store.esCoordinador
-          ? 'pendientes'
-          : ''
-      ),
-      filtrosTareas,
-      filtroTarea,
-      modales,
-      verSubtarea,
-      fecha,
-    }
-  },
-})
-</script>
+<script src="./TableroPersonalPage.ts"></script>
