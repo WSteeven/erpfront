@@ -3,7 +3,7 @@
     <q-form @submit.prevent="enviar()">
       <!-- Datos de la subtarea -->
       <q-expansion-item
-        class="overflow-hidden q-mb-md"
+        class="overflow-hidden bg-white q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
         label="Información general"
         header-class="bg-grey-1"
@@ -155,7 +155,7 @@
       </q-expansion-item>
 
       <q-expansion-item
-        class="overflow-hidden q-mb-md"
+        class="overflow-hidden bg-white q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
         label="Ubicación del trabajo"
         header-class="bg-grey-1"

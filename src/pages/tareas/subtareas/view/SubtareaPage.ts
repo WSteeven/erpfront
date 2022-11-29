@@ -1,5 +1,7 @@
 // Dependencias
 import { configuracionColumnasTecnico } from '../domain/configuracionColumnasTecnico'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { computed, defineComponent, ref } from 'vue'
 import {
   provincias,
@@ -13,8 +15,9 @@ import {
   rolesAdmitidos,
   acciones,
 } from 'config/utils'
-import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+import { useTareaStore } from 'stores/tarea'
+import useVuelidate from '@vuelidate/core'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -25,15 +28,12 @@ import EssentialSelectableTable from 'components/tables/view/EssentialSelectable
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ValidarTecnicosGrupoPrincipal } from '../application/validaciones/ValidarTecnicosGrupoPrincipal'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { SubtareaController } from '../infraestructure/SubtareaController'
-import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { Subtarea } from '../domain/Subtarea'
-import { useTareaStore } from 'stores/tarea'
 import { Tecnico } from '../domain/Tecnico'
-import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 
 export default defineComponent({
   props: {
@@ -48,7 +48,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
-    const { onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
+    const { onBeforeGuardar, onBeforeModificar, onConsultado } = mixin.useHooks()
 
     const { listado } = props.mixin.useReferencias()
 
@@ -56,6 +56,9 @@ export default defineComponent({
     const subtareaListadoStore = useSubtareaListadoStore()
     const accion = tareaStore.accionSubtarea
     const disable = computed(() => (subtarea.estado !== estadosSubtareas.CREADO && subtarea.estado !== null))
+
+    const tecnicosOtrosGrupos = ref([])
+    const tecnicosGrupoPrincipal = ref([])
 
     cargarVista(async () => {
       await obtenerListados({
@@ -97,7 +100,7 @@ export default defineComponent({
       icono: 'bi-x',
       color: 'negative',
       visible: ({ entidad }) => entidad.roles !== rolesAdmitidos.tecnico_lider && ([acciones.editar, acciones.nuevo].includes(accion)),
-      accion: ({ posicion }) => subtarea.tecnicos_grupo_principal.splice(posicion, 1),
+      accion: ({ posicion }) => tecnicosGrupoPrincipal.value.splice(posicion, 1),
     }
 
     const eliminarTecnicoOtroGrupo: CustomActionTable = {
@@ -105,20 +108,18 @@ export default defineComponent({
       icono: 'bi-x',
       color: 'negative',
       visible: () => ([acciones.editar, acciones.nuevo].includes(accion)),
-      accion: ({ posicion }) => subtarea.tecnicos_otros_grupos.splice(posicion, 1),
+      accion: ({ posicion }) => tecnicosOtrosGrupos.value.splice(posicion, 1),
     }
-
-    // const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
     function obtenerResponsables(grupo_id: number) {
       if (grupo_id) obtenerTecnicosGrupo(grupo_id)
-      else subtarea.tecnicos_grupo_principal = []
+      else tecnicosGrupoPrincipal.value = []
     }
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      subtarea.tecnicos_grupo_principal = result
+      tecnicosGrupoPrincipal.value = result
     }
 
     // Filtro tipos de trabajos
@@ -179,17 +180,22 @@ export default defineComponent({
       listar: listarTecnicos,
       limpiar: limpiarTecnico,
       seleccionar: seleccionarTecnico
-    } = useOrquestadorSelectorTecnicos(subtarea, 'empleados')
+    } = useOrquestadorSelectorTecnicos(tecnicosOtrosGrupos, 'empleados')
 
     onBeforeGuardar(() => {
-      subtarea.tecnicos_grupo_principal = subtarea.tecnicos_grupo_principal.map((tecnico: Tecnico) => tecnico.id).toString()
-      subtarea.tecnicos_otros_grupos = subtarea.tecnicos_otros_grupos.map((tecnico: Tecnico) => tecnico.id).toString()
+      subtarea.tecnicos_grupo_principal = tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString()
+      subtarea.tecnicos_otros_grupos = tecnicosOtrosGrupos.value.map((tecnico: Tecnico) => tecnico.id).toString()
       subtarea.tarea_id = tareaStore.tarea.id
     })
 
     onBeforeModificar(() => {
-      subtarea.tecnicos_grupo_principal = subtarea.tecnicos_grupo_principal.map((tecnico: Tecnico) => tecnico.id).toString()
-      subtarea.tecnicos_otros_grupos = subtarea.tecnicos_otros_grupos.map((tecnico: Tecnico) => tecnico.id).toString()
+      subtarea.tecnicos_grupo_principal = tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString()
+      subtarea.tecnicos_otros_grupos = tecnicosOtrosGrupos.value.map((tecnico: Tecnico) => tecnico.id).toString()
+    })
+
+    onConsultado(() => {
+      tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
+      tecnicosOtrosGrupos.value = subtarea.tecnicos_otros_grupos
     })
 
     async function guardarDatos(subtarea: Subtarea) {
@@ -199,7 +205,6 @@ export default defineComponent({
         listado.value = [...listado.value, subtarea]
 
         emit('cerrar-modal')
-        // subtareaListadoStore.nuevoElementoInsertado = true
       } catch (e) { }
     }
 
@@ -248,7 +253,8 @@ export default defineComponent({
       grupos,
       eliminarTecnico,
       eliminarTecnicoOtroGrupo,
-      //modalesSubtarea,
+      tecnicosGrupoPrincipal,
+      tecnicosOtrosGrupos,
       provincias,
       ciudades,
       tiposInstalaciones,
@@ -257,8 +263,6 @@ export default defineComponent({
       fab: ref(false),
       regiones,
       atenciones,
-      /*tiposIntervenciones,
-      causasIntervencion,*/
       listadosAuxiliares,
       filtrarTiposTrabajos,
       tiposTrabajos,
@@ -268,8 +272,6 @@ export default defineComponent({
       obtenerResponsables,
       guardarDatos, editarDatos, reestablecerDatos,
       accion,
-      // tecnicosGrupoPrincipal,
-      // tecnicosTemporales,
       disable,
       configuracionColumnasTecnico,
       // orquestador

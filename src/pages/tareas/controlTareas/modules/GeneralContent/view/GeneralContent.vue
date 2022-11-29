@@ -84,7 +84,11 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="tarea.fecha_solicitud" mask="DD-MM-YYYY">
+                  <q-date
+                    v-model="tarea.fecha_solicitud"
+                    mask="DD-MM-YYYY"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn
                         v-close-popup

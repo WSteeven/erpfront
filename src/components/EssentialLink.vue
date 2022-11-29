@@ -83,7 +83,7 @@ export default defineComponent({
 <style lang="scss">
 .my-menu-link {
   background: rgba(#efeff7, 1);
-  //border-right: 3px solid $primary;
+  border-right: 3px solid $primary;
 
   i {
     color: rgb(39, 84, 198);

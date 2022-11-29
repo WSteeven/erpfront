@@ -274,13 +274,6 @@
           </div>
         </div> -->
       </q-form>
-
-      <essential-selectable-table
-        ref="refListadoSeleccionableClientes"
-        :configuracion-columnas="configuracionColumnasClientes"
-        :datos="listadoClientes"
-        @selected="seleccionarCliente"
-      ></essential-selectable-table>
     </template>
   </tab-layout>
 </template>

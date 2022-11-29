@@ -201,7 +201,7 @@
     </div>
 
     <!-- Drawer -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-drawer">
+    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-white">
       <!-- Drawer Header -->
       <div class="absolute-top q-px-lg">
         <img src="~assets/logo.svg" class="q-mx-auto block" />
@@ -235,7 +235,7 @@
     </q-drawer>
 
     <!-- Router -->
-    <q-page-container :class="{ 'bg-fondo': !$q.screen.xs }">
+    <q-page-container :class="{ 'bg-grey-2': !$q.screen.xs }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <div>

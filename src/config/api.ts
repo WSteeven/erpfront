@@ -74,5 +74,5 @@ export const endpoints = {
   pisos: new Endpoint('pisos/'),
   ubicaciones: new Endpoint('ubicaciones/'),
   imagenes_adicionales: new Endpoint('imagenes-adicionales/'),
-  materiales_pedidos: new Endpoint('transacciones-egreso/'),
+  materiales_pedidos: new Endpoint('transacciones-egresos/materiales/'),
 }

@@ -1,33 +1,30 @@
 // Dependencias
 import { configuracionColumnasImagenesAdicionales } from '../domain/configuracionColumnasImagenesAdicionales'
-import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTiposTareas'
 import { configuracionColumnasCamposAdicionales } from '../domain/configuracionColumnasCamposAdicionales'
+import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTiposTareas'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificacionStore } from 'stores/notificacion'
 import { required } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
+import { accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
+import useVuelidate from '@vuelidate/core'
+import { useQuasar } from 'quasar'
 
 // Componentes
-import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-// import { useOrquestadorSelectorClientes } from '../application/OrquestadorSelectorClientes'
-import { TipoTrabajoController } from '../infraestructure/TipoTrabajoController'
-import { TipoTrabajo } from '../domain/TipoTrabajo'
-import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { TipoTrabajoController } from '../infraestructure/TipoTrabajoController'
 import { ImagenesAdicionales } from '../domain/ImagenesAdicionales'
 import { CamposAdicionales } from '../domain/CamposAdicionales'
-import { accionesTabla } from 'config/utils'
+import { TipoTrabajo } from '../domain/TipoTrabajo'
 
 export default defineComponent({
   components: {
     TabLayout,
-    EssentialSelectableTable,
     EssentialTable,
   },
   setup() {
@@ -192,13 +189,14 @@ export default defineComponent({
       agregarImagenAdicional,
       botonHabilitarFormulario,
       botonDeshabilitarFormulario,
-      ImagenesAdicionales,
-      CamposAdicionales,
       eliminarImagenAdicional,
       agregarCampoAdicional,
       eliminarCampoAdicional,
       botonActivarCampo,
       botonDesactivarCampo,
+      // Instanciables
+      ImagenesAdicionales,
+      CamposAdicionales,
     }
   },
 })

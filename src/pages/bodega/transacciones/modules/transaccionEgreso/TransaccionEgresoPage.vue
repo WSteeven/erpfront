@@ -66,6 +66,7 @@
                     <q-date
                       v-model="transaccion.fecha_limite"
                       mask="DD-MM-YYYY"
+                      today-btn
                     >
                       <div class="row items-center justify-end">
                         <q-btn
@@ -525,7 +526,7 @@
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
-            <div class="row">
+            <div class="row q-col-gutter-x-xs">
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaProducto"
@@ -548,7 +549,7 @@
                   @click="listarProductos()"
                   icon="search"
                   unelevated
-                  color="secondary"
+                  color="primary"
                   class="full-width"
                   style="height: 40px"
                   no-caps

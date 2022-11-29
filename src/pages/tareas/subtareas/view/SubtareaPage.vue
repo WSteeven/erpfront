@@ -433,7 +433,7 @@
             <essential-table
               titulo="Técnicos del grupo principal"
               :configuracionColumnas="columnas"
-              :datos="subtarea.tecnicos_grupo_principal"
+              :datos="tecnicosGrupoPrincipal"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -580,7 +580,7 @@
             <essential-table
               titulo="Técnicos temporales de otros grupos"
               :configuracionColumnas="columnas"
-              :datos="subtarea.tecnicos_otros_grupos"
+              :datos="tecnicosOtrosGrupos"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
