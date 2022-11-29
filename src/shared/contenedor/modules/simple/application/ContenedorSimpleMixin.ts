@@ -119,7 +119,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   // Guardar
-  private async guardar(data: any, resetOnSaved = true) {
+  private async guardar(data: any, resetOnSaved = true,) {
 
     if (!this.seCambioEntidad(this.entidad_vacia)) {
       this.notificaciones.notificarAdvertencia(

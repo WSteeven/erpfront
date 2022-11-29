@@ -1,9 +1,17 @@
 <template>
   <q-page padding>
-    <div class="text-bold q-mb-md">
-      <q-icon name="bi-ui-checks" class="q-mr-sm"></q-icon>
-      Trabajo asignado
+    <div class="text-center q-pb-md">
+      <div class="text-bold q-mb-md">{{ fecha }}</div>
+      <div class="text-h5 q-mb-md">
+        Bienvenido, {{ authenticationStore.nombreUsuario }}
+      </div>
+      <div v-if="authenticationStore.user?.grupo" class="text-h6 q-mb-md">
+        Grupo, {{ authenticationStore.user.grupo }}
+      </div>
+
+      <div class="text-bold q-mb-md">Trabajo asignado</div>
     </div>
+
     <essential-table-tabs
       titulo="subtareas"
       :configuracionColumnas="[
