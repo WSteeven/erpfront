@@ -331,7 +331,6 @@
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.es_tarea"
-              @update:model-value="retiraOtroaaaa"
               label="¿Es material para tarea?"
               :disable="disabled || soloLectura"
               outlined
@@ -354,6 +353,7 @@
               hint="Tarea #"
               dense
               outlined
+              :disable="soloLectura"
               :readonly="disabled || soloLectura"
               @update:model-value="filtroTareas"
               :option-label="(item) => item.detalle"
@@ -426,6 +426,7 @@
               options-dense
               dense
               outlined
+              :disable="transaccion.es_tarea"
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"

@@ -103,15 +103,8 @@ export default defineComponent({
             // console.log('llamaste a la funcion')
             if (!esBodeguero) {
                 opciones_tipos.value.forEach(element => {
-                    // console.log(element.nombre)
-                    if (element.nombre === 'INGRESO') {
-                        // console.log('devolucion')
-                        element.nombre = 'DEVOLUCION'
-                    }
-                    if (element.nombre === 'EGRESO') {
-                        // console.log('solicitud')
-                        element.nombre = 'SOLICITUD'
-                    }
+                    if (element.nombre === 'INGRESO') {element.nombre = 'DEVOLUCION'}
+                    if (element.nombre === 'EGRESO') {element.nombre = 'SOLICITUD'}
                 });
             }
         }
@@ -134,7 +127,7 @@ export default defineComponent({
                 },
                 tareas: {
                     controller: new TareaController(),
-                    params: { campos: 'id,codigo_tarea,detalle' }
+                    params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
                 },
                 subtareas: {
                     controller: new SubtareaController(),
@@ -261,7 +254,7 @@ export default defineComponent({
                 console.log('La entidad es', entidad)
                 console.log('La posicion es', posicion)
                 await transaccionStore.cargarTransaccion(entidad.id)
-                await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id='+transaccionStore.transaccion.id+'&detalle_id='+entidad.id)
+                await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.id)
                 console.log('La transaccion del store', transaccionStore.transaccion)
 
                 //aqui va toda la logica de los despachos de material
@@ -358,10 +351,9 @@ export default defineComponent({
             },
 
             filtroTareas(val) {
-                opciones_subtareas.value = listadosAuxiliares.subtareas.filter((v: Subtarea) => v.tarea_id === val)
-                transaccion.subtarea = ''
-                if (opciones_subtareas.value.length > 1) transaccion.subtarea = ''
-                if (opciones_subtareas.value.length === 1) transaccion.subtarea = opciones_subtareas.value[0]['id']
+                const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
+                console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
+                transaccion.cliente = opcion_encontrada[0]['cliente_id']
             },
             filtroEmpleados(val, update) {
                 if (val === '') {
