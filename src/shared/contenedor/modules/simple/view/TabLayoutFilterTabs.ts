@@ -59,6 +59,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion2: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
@@ -177,6 +181,7 @@ export default defineComponent({
       cargarListado,
 
       accionPersonalizada,
+      accion2: props.accion2,
 
       esBodeguero,
       esCoordinador,

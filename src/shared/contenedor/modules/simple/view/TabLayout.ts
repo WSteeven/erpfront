@@ -10,6 +10,7 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { acciones } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
   props: {
@@ -47,6 +48,10 @@ export default defineComponent({
     permitirEliminar: {
       type: Boolean,
       default: true,
+    },
+    accion1: {
+      type: Object as () => CustomActionTable,
+      required: false,
     },
   },
   components: { EssentialTable, ButtonSubmits },
@@ -110,7 +115,7 @@ export default defineComponent({
       store.can(`puede.crear.${router.name?.toString()}`)
     )
     const puedeEditar = computed(() =>
-      store.can(`puede.editar.${router.name?.toString()}`)
+      store.can(`puede.editar.${router.name?.toString()}`) &&props.permitirEditar
     )
     const puedeEliminar = computed(() =>
       store.can(`puede.eliminar.${router.name?.toString()}`)
@@ -144,6 +149,9 @@ export default defineComponent({
       puedeEditar,
       puedeEliminar,
       cargarListado,
+
+      //acciones personalizadas
+      accion1: props.accion1
     }
   },
 })

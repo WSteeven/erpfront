@@ -44,6 +44,7 @@
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
           :accion1="accionPersonalizada"
+          :accion2="accion2"
           @onScroll="cargarListado"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"

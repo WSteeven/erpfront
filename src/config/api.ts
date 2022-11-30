@@ -49,6 +49,7 @@ export const endpoints = {
   control_stocks: new Endpoint('control-stocks/'),
   codigos_clientes: new Endpoint('codigos-clientes/'),
   detalles: new Endpoint('detalles/'),
+  devoluciones: new Endpoint('devoluciones/'),
   detalle_producto_transaccion: new Endpoint('detalles-productos-transacciones/'),
   discos: new Endpoint('discos/'),
   rams: new Endpoint('rams/'),

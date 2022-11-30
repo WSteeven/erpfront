@@ -387,6 +387,7 @@ export default defineComponent({
             criterioBusquedaProducto,
             listadoProductos,
             listarProductos,
+            
             limpiarProducto,
             seleccionarProducto,
             configuracionColumnasProductos,

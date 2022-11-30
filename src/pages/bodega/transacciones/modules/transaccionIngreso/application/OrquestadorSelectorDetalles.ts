@@ -20,9 +20,6 @@ export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, end
         seleccionarMultiple: (items: DetalleProducto[]) => {
             // console.log('item recibido en el seleccionar del orquestador: ', items)
             entidad.listadoProductosSeleccionados = [...entidad.listadoProductosSeleccionados, ...items]
-
-            // items.forEach(item => {
-            // });
         }
     }
 

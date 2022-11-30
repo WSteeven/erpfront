@@ -148,7 +148,7 @@
           <q-separator size="2px" color="black" />
           <p v-if="transaccion.solicitante">{{ transaccion.solicitante }}</p>
           <p v-if="transaccion.solicitante">
-            C.I.{{ empleado.identificacion }}
+            <!-- C.I.{{ empleado.identificacion }} -->
           </p>
         </div>
       </div>

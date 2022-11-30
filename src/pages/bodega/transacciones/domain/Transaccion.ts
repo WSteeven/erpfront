@@ -10,7 +10,7 @@ export class Transaccion extends EntidadAuditable{
     estado: number|null
     obs_estado: string|null
     solicitante: number|null
-    // solicitante_id: number|null
+    solicitante_id: number|null
     tipo: number|null
     motivo: number|null
     sucursal: number|null
@@ -37,7 +37,7 @@ export class Transaccion extends EntidadAuditable{
         this.justificacion=null
         this.comprobante=null
         this.fecha_limite=null
-        // this.solicitante_id=null
+        this.solicitante_id=null
         this.solicitante=null
         this.motivo=null
         this.tarea=null

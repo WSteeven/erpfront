@@ -197,11 +197,11 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/prestamos',
-        name: 'prestamos',
+        path: '/devoluciones',
+        name: 'devoluciones',
         component: () =>
           import(
-            'pages/bodega/prestamos/view/PrestamoPage.vue',
+            'pages/bodega/devoluciones/view/DevolucionPage.vue',
           ),
         meta: { requiresAuth: true },
       },

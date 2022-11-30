@@ -152,6 +152,10 @@ export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Parcial', value: 'PARCIAL' },
   { label: 'Completa', value: 'COMPLETA' },
 ]
+export const tabOptionsDevoluciones: TabOption[] = [
+  { label: 'Creadas', value: 'CREADA' },
+  { label: 'Anuladas', value: 'ANULADA' },
+]
 export const tabOptionsTransacciones: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'En espera', value: 'ESPERA' },
@@ -227,6 +231,10 @@ export const sistemasCoordenadas = ['DMS', 'UTM']
 
 export const bobinasSolicitadas = ['DS564', 'DSFDS564']
 
+export const estadosDevoluciones = {
+  CREADA:'CREADA',
+  ANULADA:'ANULADA',
+}
 export const estadosSubtareas = {
   CREADO: 'CREADO',
   ASIGNADO: 'ASIGNADO',

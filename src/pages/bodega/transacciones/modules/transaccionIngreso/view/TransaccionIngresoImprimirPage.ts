@@ -66,6 +66,8 @@ export default defineComponent({
         cargarVista(async () => {
 
             await consultarTransaccion()
+            console.log(transaccion)
+            console.log(transaccionStore.transaccion)
             const response = await new EmpleadoController().consultar(transaccion.solicitante_id)
             // console.log(response.response.data.modelo)
             empleado.value = response.response.data.modelo
