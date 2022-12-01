@@ -45,8 +45,8 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         sortable: true,
     },
     {
-        name: 'autoriza',
-        field: 'autoriza',
+        name: 'per_autoriza',
+        field: 'per_autoriza',
         label: 'Autoriza',
         align: 'left',
         sortable: true,

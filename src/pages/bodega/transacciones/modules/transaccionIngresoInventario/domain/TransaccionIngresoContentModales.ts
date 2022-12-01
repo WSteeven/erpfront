@@ -4,10 +4,12 @@ import { markRaw } from "vue";
 //paginas
 import InventarioPage from "pages/bodega/inventario/view/InventarioPage.vue";
 import TransaccionIngresoImprimirPage from "../../transaccionIngreso/view/TransaccionIngresoImprimirPage.vue";
+import TransaccionIngresoInventariarPage from "../../transaccionIngreso/view/TransaccionIngresoInventariarPage.vue";
 
 export class TransaccionIngresoContentModales{
     InventarioPage:ComponenteModal
     TransaccionIngresoImprimirPage:ComponenteModal
+    TransaccionIngresoInventariarPage:ComponenteModal
 
     constructor(){
         this.InventarioPage= markRaw(
@@ -16,6 +18,10 @@ export class TransaccionIngresoContentModales{
 
         this.TransaccionIngresoImprimirPage= markRaw(
             new ComponenteModal('CONSTRUCRED', TransaccionIngresoImprimirPage)
+        )
+
+        this.TransaccionIngresoInventariarPage = markRaw(
+            new ComponenteModal('CONSTRUCRED', TransaccionIngresoInventariarPage)
         )
     }
 }

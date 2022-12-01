@@ -1,10 +1,17 @@
 <template>
-  <q-btn class="justify-end" @click="imprimir2()">Imprimir</q-btn>
+  <q-btn class="justify-end" @click="imprimir">Imprimir</q-btn>
   <div id="imprimase" ref="refPDF" class="q-px-md">
-    <div class="q-pa-md">
-      <h4 class="text-center q-mb-sm">
-        COMPROBANTE DE DEVOLUCION DE MATERIALES
-      </h4>
+    <div class="q-pa-sm">
+      <div class="row">
+        <div class="col col-3">
+          <img src="~assets/logo.svg" width="200" height="200"/>
+        </div>
+        <div class="col">
+          <h4 class="text-left q-mb-sm">
+            COMPROBANTE DE DEVOLUCION DE MATERIALES
+          </h4>
+        </div>
+      </div>
       <q-separator></q-separator>
       <div class="row q-col-gutter-sm q-py-lg">
         <!-- N° devolucion -->
@@ -138,3 +145,10 @@
 </template>
 
 <script src="./ImprimirDevolucionPage.ts" />
+
+<style>
+  /* .fondo{
+    background-image: url('assets/logo.svg');
+    color: 'ffffff';
+  } */
+</style>

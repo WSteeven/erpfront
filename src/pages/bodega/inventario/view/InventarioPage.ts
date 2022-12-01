@@ -31,8 +31,11 @@ export default defineComponent({
         sucursal:{type:number, required:false},
         propietario:{type:number, required:false},
     }, */
-    emits:['cerrar-modal'],
-    setup(props, {emit}) {
+    props: {
+
+    },
+    emits: ['cerrar-modal'],
+    setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
@@ -42,14 +45,14 @@ export default defineComponent({
         const detalleProductoTransaccionStore = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
         if (transaccionStore.transaccion.id) {
-            console.log('La transaccion en el inventario: ', transaccionStore.transaccion)
+            console.log('La transaccion en el inventario TS: ', transaccionStore.transaccion)
             if (detalleStore.detalle.id) {
-                console.log('El detalle en el inventario es: ', detalleStore.detalle)
+                console.log('El detalle en el inventario TS es: ', detalleStore.detalle)
                 inventario.producto = detalleStore.detalle.producto
                 inventario.detalle_id = detalleStore.detalle.id
-                inventario.cliente_id=transaccionStore.transaccion.cliente
-                const elementoEncontrado = transaccionStore.transaccion.listadoProductosSeleccionados.filter((v) => v.id === detalleStore.detalle.id)
-                console.log('El elemento ews;: ', elementoEncontrado)
+                inventario.cliente_id = transaccionStore.transaccion.cliente
+                const elementoEncontrado = transaccionStore.transaccion.listadoProductosTransaccion.filter((v) => v.id === detalleStore.detalle.id)
+                console.log('El elemento es: ', elementoEncontrado)
                 console.log('La cantidad del elemento es: ', elementoEncontrado[0]['cantidades'])
                 inventario.cantidad = elementoEncontrado[0]['cantidades']
                 console.log('sucursal de la transaccion en el inventario, ', transaccionStore.transaccion.sucursal)
@@ -67,13 +70,12 @@ export default defineComponent({
             console.log('detalle es,', detalleStore.detalle)
             // await detalleProductoTransaccionStore.cargarDetalle(8)
             // console.log('QUE ES ESO???? ','?transaccion_id='+transaccionStore.transaccion.id+'&detalle_id='+detalleStore.detalle.id)
-            await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + detalleStore.detalle.id)
-            console.log('DETALLE TRANSACCION es,', detalleProductoTransaccionStore.detalle)
-            detalleProductoTransaccionStore.detalle.cantidad_final = cantidad.value
-            await detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
-            console.log('el detalle actualizado es: ', detalleProductoTransaccionStore.detalle)
-            console.log('se guardó en el inventario:', inventario)
-            
+            // await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + detalleStore.detalle.id)
+            // console.log('DETALLE TRANSACCION es,', detalleProductoTransaccionStore.detalle)
+            // detalleProductoTransaccionStore.detalle.cantidad_final = cantidad.value
+            // await detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
+            // console.log('el detalle actualizado es: ', detalleProductoTransaccionStore.detalle)
+            // console.log('se guardó en el inventario:', inventario)
             emit('cerrar-modal')
         })
 
@@ -114,6 +116,7 @@ export default defineComponent({
             // inventario.cliente_id = listadosAuxiliares.clientes[0]['id']
             // inventario.sucursal_id = listadosAuxiliares.sucursales[0]['id']
             // inventario.condicion = listadosAuxiliares.condiciones[0]['id']
+            console.log('El inventario es: ', inventario)
         })
 
         //Reglas de validacion

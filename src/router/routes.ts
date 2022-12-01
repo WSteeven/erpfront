@@ -206,6 +206,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/transacciones-ingresos/ingresar/',
+        name: 'transacciones_ingresos_inventario',
+        component: () =>
+          import(
+            'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoInventariarPage.vue',
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/transacciones-ingresos',
         name: 'transacciones_ingresos',
         component: () =>

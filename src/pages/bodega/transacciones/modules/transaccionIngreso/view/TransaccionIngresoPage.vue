@@ -7,6 +7,7 @@
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
     :accion1="botonImprimir"
+    :accion2="botonEditarInventario"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -442,14 +443,14 @@
               :configuracionColumnas="
                 configuracionColumnasProductosSeleccionadosAccion
               "
-              :datos="transaccion.listadoProductosSeleccionados"
+              :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
-              :accion3="botonInventarios"
+              :accion3="botonInventario"
               @eliminar="eliminarItem"
             ></essential-table>
           </div>

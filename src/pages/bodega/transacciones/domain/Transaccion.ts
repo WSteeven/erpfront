@@ -29,7 +29,7 @@ export class Transaccion extends EntidadAuditable{
     es_tarea:boolean
 
     // producto: string|null
-    listadoProductosSeleccionados:any[]
+    listadoProductosTransaccion:any[]
     
     constructor(){
         super()
@@ -60,6 +60,6 @@ export class Transaccion extends EntidadAuditable{
         this.es_tarea=false
 
         // this.producto=null
-        this.listadoProductosSeleccionados=[]
+        this.listadoProductosTransaccion=[]
     }
 }

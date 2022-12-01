@@ -38,9 +38,9 @@ export default defineComponent({
         function imprimir2() {
             // var doc = new jsPDF()
             var doc = new jsPDF({
-                orientation:'landscape',
-                unit:'in',
-                format:'a5'
+                orientation: 'landscape',
+                unit: 'in',
+                format: 'a5'
             });
             // const contenido = refPDF.value
             const contenido = document.getElementById('imprimase')
@@ -48,7 +48,7 @@ export default defineComponent({
 
             doc.html(contenido!, {
                 callback: function (doc) {
-                    
+
                     doc.save();
                 },
                 margin: 0.3,
@@ -80,7 +80,7 @@ export default defineComponent({
                         quality: 0.98,
                     },
                     html2canvas: {
-                        scale: 3,
+                        scale: 4,
                         letterRendering: true,
                     },
                     jsPDF: {

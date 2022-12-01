@@ -208,16 +208,18 @@ export default defineComponent({
             tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
             autorizacion: {
                 requiredIfCoordinador: requiredIf(esCoordinador),
-                requiredIfEsVisibleAut: requiredIf(esVisibleAutorizacion)
+                requiredIfEsVisibleAut: requiredIf(false)
             },
             estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
-                requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
+                requiredIfObsAutorizacion: requiredIf(false)
+                // requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
             },
             observacion_est: {
-                requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado })
+                requiredIfObsEstado: requiredIf(false)
+                // requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado })
             },
-            listadoProductosSeleccionados: { required }//validar que envien datos en el listado
+            listadoProductosTransaccion: { required }//validar que envien datos en el listado
         }
         const v$ = useVuelidate(reglas, transaccion)
         setValidador(v$.value)
@@ -226,7 +228,7 @@ export default defineComponent({
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',
-                () => transaccion.listadoProductosSeleccionados.splice(posicion, 1))
+                () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
         }
         const botonEliminar: CustomActionTable = {
             titulo: 'Quitar',
@@ -242,8 +244,8 @@ export default defineComponent({
             icono: 'bi-pencil',
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
-                    (data) => transaccion.listadoProductosSeleccionados[posicion].cantidades = data,
-                    transaccion.listadoProductosSeleccionados[posicion].cantidades
+                    (data) => transaccion.listadoProductosTransaccion[posicion].cantidades = data,
+                    transaccion.listadoProductosTransaccion[posicion].cantidades
                 )
             },
             visible: () => puedeEditarCantidad.value
@@ -254,7 +256,7 @@ export default defineComponent({
                 console.log('La entidad es', entidad)
                 console.log('La posicion es', posicion)
                 await transaccionStore.cargarTransaccion(entidad.id)
-                await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.id)
+                await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.listadoProductosTransaccion[posicion]['id'])
                 console.log('La transaccion del store', transaccionStore.transaccion)
 
                 //aqui va toda la logica de los despachos de material
@@ -343,11 +345,6 @@ export default defineComponent({
             },
             filtroMotivos(val) {
                 console.log('filtro motivos', val)
-                /* esVisibleTarea.value = false
-                const opcionSeleccionada = listadosAuxiliares.subtipos.filter((item) => item.id === val)
-                esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === 'MATERIALES PARA TAREAS' ? true : false
-                esVisibleSubtarea.value = false
-                esVisibleSubtarea.value = opcionSeleccionada[0]['nombre'] === 'DESPACHO DE TAREA' ? true : false */
             },
 
             filtroTareas(val) {

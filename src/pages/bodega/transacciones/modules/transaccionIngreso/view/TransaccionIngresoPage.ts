@@ -42,6 +42,7 @@ import { ComportamientoModalesTransaccionIngreso } from '../../transaccionIngres
 import { useDetalleStore } from 'stores/detalle'
 import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
+import { useLink, useRouter } from 'vue-router'
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
     // emits: ['creada', 'consultada'],
@@ -55,6 +56,7 @@ export default defineComponent({
 
         //stores
         useNotificacionStore().setQuasar(useQuasar())
+        const Router = useRouter()
         const store = useAuthenticationStore()
         const transaccionStore = useTransaccionStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
@@ -63,18 +65,6 @@ export default defineComponent({
         const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
 
-        // Hooks
-        /* onGuardado(async () => {
-            console.log('la transaccion creada: ', transaccion)
-            console.log(transaccion.id)
-            await transaccionStore.cargarTransaccion(transaccion.id)
-            console.log('aqqaqaqaqaqaqaqaqa:', transaccionStore.transaccion.listadoProductosSeleccionados)
-            transaccion.listadoProductosSeleccionados = transaccionStore.transaccion.listadoProductosSeleccionados
-        }) */
-        /* onBeforeModificar(()=>{
-            console.log('Pasó por aquí: beforeModificar')
-            transaccion.solicitante =transaccion.solicitante_id
-        }) */
         onConsultado(() => {
             transaccion.solicitante = transaccion.solicitante_id
             console.log('la accion actual es: ', accion.value)
@@ -102,7 +92,7 @@ export default defineComponent({
 
         //flags
         let soloLectura = ref(false)
-        let puedeEditarCantidad = ref(true)
+        let estaInventariando = ref(true)
         let puedeDespacharMaterial = ref(false)
         let esVisibleAutorizacion = ref(false)
         let esVisibleComprobante = ref(false)
@@ -158,7 +148,7 @@ export default defineComponent({
             motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
             estado: { requiredIfRol: requiredIf(accion === acciones.editar), },
             observacion_est: { requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado }) },
-            listadoProductosSeleccionados: { required },
+            listadoProductosTransaccion: { required },
             cliente: { required },
             condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
         }
@@ -171,14 +161,16 @@ export default defineComponent({
         const botonInventario: CustomActionTable = {
             titulo: 'Inventariar',
             accion: async ({ entidad, posicion }) => {
+                
                 console.log(detalleStore.detalle)
+
                 await detalleStore.cargarDetalle(entidad.id)
 
                 modales.abrirModalEntidad('InventarioPage')
             },
             visible: ({ entidad, posicion }) => {
-                console.log('xxxx', entidad)
-                console.log(entidad.despachado, entidad.cantidades)
+                // console.log('xxxx', entidad)
+                // console.log(entidad.despachado, entidad.cantidades)
                 if (detalleTransaccionStore.detalle.transaccion_id === transaccionStore.transaccion.id && detalleTransaccionStore.detalle.detalle_id === entidad.id) {
                     console.log('comprobacion', detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_inicial)
                     return detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_final
@@ -190,7 +182,7 @@ export default defineComponent({
 
         function eliminarItem({ entidad, posicion }) {
             confirmar('¿Esta seguro de continuar?',
-                () => transaccion.listadoProductosSeleccionados.splice(posicion, 1))
+                () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
         }
         const botonEliminar: CustomActionTable = {
             titulo: 'Quitar',
@@ -199,7 +191,7 @@ export default defineComponent({
             accion: ({ entidad, posicion }) => {
                 eliminarItem({ entidad, posicion })
             },
-            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar||!estaInventariando.value
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
@@ -207,14 +199,14 @@ export default defineComponent({
                 prompt(
                     'Ingresa la cantidad',
                     (data) => {
-                        transaccion.listadoProductosSeleccionados[posicion].cantidades = data
-                        transaccion.listadoProductosSeleccionados[posicion].estaInventario = false
-                        transaccion.listadoProductosSeleccionados[posicion].estaPercha = false
+                        transaccion.listadoProductosTransaccion[posicion].cantidades = data
+                        transaccion.listadoProductosTransaccion[posicion].estaInventario = false
+                        transaccion.listadoProductosTransaccion[posicion].estaPercha = false
                     },
-                    transaccion.listadoProductosSeleccionados[posicion].cantidades
+                    transaccion.listadoProductosTransaccion[posicion].cantidades
                 )
             },
-            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar ||!estaInventariando.value
         }
         const botonImprimir: CustomActionTable = {
             titulo: 'Imprimir',
@@ -227,6 +219,17 @@ export default defineComponent({
                 // imprimir()
             },
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+        }
+        const botonEditarInventario:CustomActionTable={
+            titulo:'Despachar',
+            accion:({entidad, posicion})=>{
+                estaInventariando.value=true
+                // console.log('entidad', entidad)
+                transaccionStore.idTransaccion=entidad.id
+                console.log('Presionaste el boton de editarInventario')
+                modales.abrirModalEntidad('TransaccionIngresoInventariarPage')
+                // Router.replace({name:'transacciones_ingresos_inventario'})
+            }
         }
         const botonDespachar: CustomActionTable = {
             titulo: 'Despachar',
@@ -313,6 +316,8 @@ export default defineComponent({
             botonEliminar,
             botonEditarCantidad,
             botonImprimir,
+            botonDespachar,
+            botonEditarInventario,
             eliminarItem,
 
 

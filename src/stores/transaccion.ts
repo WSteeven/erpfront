@@ -41,6 +41,12 @@ export const useTransaccionStore = defineStore("transaccion", () => {
         console.log('ruta desde donde se imprime',ruta)
         // const response: AxiosResponse = await axios.get(ruta, responseType:'blob')
     }
+    async function showPreview() {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.transacciones_ingresos)+'show-preview/'+idTransaccion.value
+        const response: AxiosResponse = await axios.get(ruta)
+        transaccion.hydrate(response.data.modelo)
+    }
 
 
     function resetearTransaccion(){
@@ -55,6 +61,7 @@ export const useTransaccionStore = defineStore("transaccion", () => {
         resetearTransaccion,
         imprimirIngreso,
         idTransaccion,
+        showPreview,
 
     }
 })

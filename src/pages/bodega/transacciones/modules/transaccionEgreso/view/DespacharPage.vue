@@ -182,7 +182,7 @@
               flat
               title="Listado"
               class="bg-white custom-border"
-              :rows="transaccion.listadoProductosSeleccionados"
+              :rows="transaccion.listadoProductosTransaccion"
               :columns="configuracionColumnasListadoProductosSeleccionados"
               row-key="id"
               selection="single"
@@ -201,7 +201,7 @@
         title="Selecciona los items del inventario"
         icon="settings"
         :error="
-          transaccion.listadoProductosSeleccionados.length > selected2.length
+          transaccion.listadoProductosTransaccion.length > selected2.length
         "
         :done="step > 1"
       >

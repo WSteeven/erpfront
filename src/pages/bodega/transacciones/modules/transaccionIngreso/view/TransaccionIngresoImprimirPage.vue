@@ -124,7 +124,7 @@
             bordered
             title="Listado de materiales ingresados"
             class="bg-white custom-border"
-            :rows="transaccion.listadoProductosSeleccionados"
+            :rows="transaccion.listadoProductosTransaccion"
             :columns="configuracionColumnasListadoProductosSeleccionados"
             row-key="id"
             separator="horizontal"
@@ -147,7 +147,7 @@
           <q-separator size="2px" color="black" />
           <p v-if="transaccion.solicitante">{{ transaccion.solicitante }}</p>
           <p v-if="transaccion.solicitante">
-            <!-- C.I.{{ empleado.identificacion }} -->
+            C.I.{{ empleado.identificacion }}
           </p>
         </div>
       </div>

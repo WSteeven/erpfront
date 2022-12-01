@@ -18,8 +18,7 @@ export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, end
                 criterioBusqueda.value = null
         },
         seleccionarMultiple: (items: DetalleProducto[]) => {
-            // console.log('item recibido en el seleccionar del orquestador: ', items)
-            entidad.listadoProductosSeleccionados = [...entidad.listadoProductosSeleccionados, ...items]
+            entidad.listadoProductosTransaccion = [...entidad.listadoProductosTransaccion, ...items]
         }
     }
 
@@ -29,10 +28,8 @@ export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, end
 
     const seleccionar = (entidades: DetalleProducto[]) => {
         let ids: any = []
-        ids = entidad.listadoProductosSeleccionados.map((entidad: DetalleProducto) => entidad.id)
-        // console.log(ids)
+        ids = entidad.listadoProductosTransaccion.map((entidad: DetalleProducto) => entidad.id)
         const datos = entidades.filter((v) => !ids.includes(v.id))
-        // console.log('datos: ',datos)
         singleSelector.seleccionarMultiple(datos)
     }
 

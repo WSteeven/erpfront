@@ -1,0 +1,189 @@
+//Dependencias
+import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
+import { required, requiredIf } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
+import { defineComponent, ref } from 'vue'
+import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+import { useTransaccionStore } from 'stores/transaccion'
+import { acciones } from 'config/utils'
+
+// Componentes
+import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
+
+//Logica y controladores
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+
+//Controladores para los listados
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useAuthenticationStore } from 'stores/authentication'
+import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
+import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController'
+import { ComportamientoModalesTransaccionIngreso } from '../../transaccionIngresoInventario/application/ComportamientoModalesTransaccionIngreso'
+import { useDetalleStore } from 'stores/detalle'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
+export default defineComponent({
+    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
+    // emits: ['creada', 'consultada'],
+    setup() {
+
+        const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
+        const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+        const { cargarVista, setValidador } = mixin.useComportamiento()
+        const { onConsultado, onReestablecer } = mixin.useHooks()
+        const { confirmar, prompt } = useNotificaciones()
+
+        //stores
+        useNotificacionStore().setQuasar(useQuasar())
+        const store = useAuthenticationStore()
+        const transaccionStore = useTransaccionStore()
+        const detalleTransaccionStore = useDetalleTransaccionStore()
+        const detalleStore = useDetalleStore()
+
+        const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
+
+        
+        onConsultado(() => {
+            transaccion.solicitante = transaccion.solicitante_id
+            transaccionStore.transaccion.hydrate(transaccion)
+        })
+        onReestablecer(() => {
+            transaccion.cliente = listadosAuxiliares.clientes[0]['id']
+            transaccion.condicion = ''
+
+            //reestablecer valores de las banderas
+            esVisibleComprobante.value = false
+
+        })
+
+        //flags
+        let soloLectura = ref(false)
+        let estaInventariando = ref(true)
+        let esVisibleComprobante = ref(false)
+        let esVisibleTarea = ref(false)
+
+        //obtener los listados
+        cargarVista(async () => {
+            await transaccionStore.showPreview()
+            transaccion.hydrate(transaccionStore.transaccion)
+        })
+
+        //Reglas de validacion
+        const reglas = {
+            justificacion: { required },
+            sucursal: { required },
+            motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
+            estado: { requiredIfRol: requiredIf(accion === acciones.editar), },
+            observacion_est: { requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado }) },
+            listadoProductosTransaccion: { required },
+            cliente: { required },
+            condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
+        }
+
+        const v$ = useVuelidate(reglas, transaccion)
+        setValidador(v$.value)
+
+
+        const modales = new ComportamientoModalesTransaccionIngreso()
+        const botonInventario: CustomActionTable = {
+            titulo: 'Inventariar',
+            accion: async ({ entidad, posicion }) => {
+                console.log('boton inventariar')
+                // console.log('entidad',entidad)
+                // console.log('posicion',posicion)
+                await detalleStore.cargarDetalle(entidad.detalle_id)
+                // console.log(detalleStore.detalle)
+
+                modales.abrirModalEntidad('InventarioPage')
+            },
+            visible: ({ entidad, posicion }) => {
+                // console.log('xxxx', entidad)
+                // console.log(entidad.despachado, entidad.cantidades)
+                if (detalleTransaccionStore.detalle.transaccion_id === transaccionStore.transaccion.id && detalleTransaccionStore.detalle.detalle_id === entidad.id) {
+                    console.log('comprobacion', detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_inicial)
+                    return detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_final
+                }
+                return entidad.despachado !== entidad.cantidades
+            },
+        }
+
+
+        function eliminarItem({ entidad, posicion }) {
+            confirmar('¿Esta seguro de continuar?',
+                () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
+        }        
+        const botonImprimir: CustomActionTable = {
+            titulo: 'Imprimir',
+            color: 'secondary',
+            icono: 'bi-printer',
+            accion: ({ entidad, posicion }) => {
+                transaccionStore.idTransaccion = entidad.id
+
+                modales.abrirModalEntidad("TransaccionIngresoImprimirPage")
+                // imprimir()
+            },
+            //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+        }
+        const botonEditarInventario:CustomActionTable={
+            titulo:'Despachar',
+            accion:({entidad, posicion})=>{
+                estaInventariando.value=true
+            }
+        }
+
+        const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
+        {
+            name: 'cantidades',
+            field: 'cantidades',
+            label: 'Cantidades',
+            align: 'left',
+            sortable: false,
+        },
+        {
+            name: 'acciones',
+            field: 'acciones',
+            label: 'Acciones',
+            align: 'center'
+        },
+        ]
+
+
+        return {
+            mixin, transaccion, disabled, accion, v$, soloLectura,
+            configuracionColumnas: configuracionColumnasTransaccionIngreso,
+
+            //modal
+            modales,
+
+            acciones,
+
+            
+            // tabla,
+            configuracionColumnasProductosSeleccionadosAccion,
+            configuracionColumnasDetallesProductos,
+            configuracionColumnasProductosSeleccionados,
+            botonInventario,
+            botonImprimir,
+            botonEditarInventario,
+            eliminarItem,
+
+
+        
+
+            //rol
+            rolSeleccionado,
+
+            //variables auxiliares
+            esVisibleComprobante,
+            esVisibleTarea,
+
+            transaccionStore,
+        }
+    }
+})

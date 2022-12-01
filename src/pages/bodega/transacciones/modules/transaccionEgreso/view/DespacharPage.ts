@@ -34,6 +34,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
         const { cargarVista, setValidador, obtenerListados } = mixin.useComportamiento()
         const { entidad: transaccion, listadosAuxiliares, refs } = mixin.useReferencias()
+        
         //Stores
         const transaccionStore = useTransaccionEgresoStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
@@ -142,13 +143,15 @@ export default defineComponent({
 
             detalle_id,
             onComplete() {
-                console.log('Completado!', selected2.value)
+                console.log('Completado!!!!', selected2.value)
                 const movimiento = {
                     'inventario_id': selected2.value[0]['id'],
                     'detalle_producto_transaccion_id': detalleTransaccionStore.detalle.id,
                     'cantidad': selected2.value[0]['cantidad'],
-                    'precio_unitario': detalle_id,
+                    'detalle_id': detalle_id,
+                    'precio_unitario': detalleStore.detalle.precio_compra,
                 }
+                console.log('los argumentos que se envían son: ',movimiento)
                 movimientoStore.enviarMovimiento(movimiento)
                 
                 // movimientoStore.cerrarModal??modales.cerrarModalEntidad()

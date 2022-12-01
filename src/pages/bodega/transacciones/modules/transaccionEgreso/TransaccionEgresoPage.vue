@@ -559,6 +559,7 @@
               </div>
             </div>
           </div>
+          {{v$.$errors}}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -566,7 +567,7 @@
               :configuracionColumnas="
                 configuracionColumnasProductosSeleccionadosAccion
               "
-              :datos="transaccion.listadoProductosSeleccionados"
+              :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
