@@ -22,5 +22,12 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'cantidad',
+    field: 'cantidad',
+    label: 'Cantidad',
+    align: 'left',
+    sortable: true,
+  },
 ]
 

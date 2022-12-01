@@ -93,7 +93,6 @@
             >
           </div>
         </div>
-
         <!-- Estado -->
         <div class="col-12 col-md-2 items-baseline">
           <div class="row">

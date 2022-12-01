@@ -217,6 +217,7 @@
           </div>
         </div>
       </q-form>
+      <div id="imprimase"> hola que tal </div><!-- borrar esto -->
 
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
@@ -228,8 +229,7 @@
       ></essential-selectable-table>
     </template>
   </tab-layout-filter-tabs>
-
-    <imprimir-devolucion-page :mixin="mixin"></imprimir-devolucion-page>
-
+  <!-- Modales -->
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./DevolucionPage.ts"></script>

@@ -10,14 +10,12 @@ import { useOrquestadorSelectorDetalles } from "../application/OrquestadorSelect
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from "components/tables/view/EssentialTable.vue";
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ImprimirDevolucionPage from "./ImprimirDevolucionPage";
+import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { DevolucionController } from "../infraestructure/DevolucionController";
 import { Devolucion } from "../domain/Devolucion";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
 
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
@@ -31,17 +29,24 @@ import { acciones, estadosDevoluciones, tabOptionsDevoluciones } from "config/ut
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { endpoints } from "config/api";
 import html2pdf from 'html2pdf.js'
-import { AxiosResponse } from "axios";
+import { ComportamientoModalesDevoluciones } from "../application/ComportamientoModalesDevolucion";
+import { useDevolucionStore } from "stores/devolucion";
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ImprimirDevolucionPage },
+    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad},
 
     setup() {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
         const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado, currentPageListado } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const { onConsultado, onReestablecer } = mixin.useHooks()
+        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { onReestablecer } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
+        
+        //stores
+        const devolucionStore = useDevolucionStore()
+
+        //modales
+        const modales = new ComportamientoModalesDevoluciones()
 
         //orquestador
         const {
@@ -57,6 +62,7 @@ export default defineComponent({
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
+
 
 
         onReestablecer(() => {
@@ -147,10 +153,9 @@ export default defineComponent({
             color: 'secondary',
             icono: 'bi-printer',
             accion: ({ entidad, posicion }) => {
-                // transaccionStore.idTransaccion = entidad.id
-
-                // modales.abrirModalEntidad("TransaccionIngresoImprimirPage")
-                imprimir()
+                devolucionStore.idDevolucion=entidad.id
+                modales.abrirModalEntidad("ImprimirDevolucionPage")
+                // imprimir()
             },
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
@@ -228,6 +233,9 @@ export default defineComponent({
             botonEliminar,
             botonAnular,
             botonImprimir,
+
+            //modal
+            modales,
 
             //flags
             soloLectura,
