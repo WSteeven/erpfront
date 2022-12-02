@@ -83,7 +83,7 @@
             </q-input>
           </div>
           <!-- Select tipo -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <!-- <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo</label>
             <q-select
               v-model="transaccion.tipo"
@@ -116,7 +116,7 @@
                 </q-item>
               </template>
             </q-select>
-          </div>
+          </div> -->
           <!-- Select motivo -->
           <div v-if="esBodeguero" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>

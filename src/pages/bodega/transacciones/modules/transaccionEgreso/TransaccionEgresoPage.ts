@@ -202,7 +202,7 @@ export default defineComponent({
         const reglas = {
             justificacion: { required },
             sucursal: { required },
-            tipo: { required },
+            // tipo: { required },
             cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
             motivo: { requiredIfBodeguero: requiredIf(esBodeguero) },
             tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },

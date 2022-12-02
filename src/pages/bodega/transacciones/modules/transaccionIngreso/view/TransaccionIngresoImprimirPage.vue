@@ -2,8 +2,10 @@
   <!-- encabezado -->
   <q-btn class="justify-end" @click="imprimir()">Imprimir</q-btn>
   <div ref="refPDF" class="q-px-md">
+    <page>
+    <!-- <page_header> Sistema </page_header> -->
     <div class="q-pa-md">
-      <h4 class="text-center q-mb-sm">COMPROBANTE DE {{ transaccion.tipo }}</h4>
+      <h5 class="text-center q-mb-sm">COMPROBANTE DE INGRESO</h5>
       <q-separator></q-separator>
       <div class="row q-col-gutter-sm q-py-lg">
         <!-- N° transaccion -->
@@ -51,7 +53,9 @@
         <!-- motivo -->
         <div class="col-12 col-md-6">
           <div class="row">
-            <label class="q-mb-sm block">Tipo de {{transaccion.tipo}}: &nbsp;</label>
+            <label class="q-mb-sm block"
+              >Tipo de {{ transaccion.tipo }}: &nbsp;</label
+            >
             <strong
               ><label class="q-mb-sm block">{{
                 transaccion.motivo
@@ -171,6 +175,8 @@
         </p>
       </div>
     </div>
+    <!-- <page_footer> Pie de página </page_footer> -->
+  </page>
   </div>
 </template>
 

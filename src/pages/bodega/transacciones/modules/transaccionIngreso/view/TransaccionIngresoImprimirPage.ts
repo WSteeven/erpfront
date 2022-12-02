@@ -86,15 +86,16 @@ export default defineComponent({
                         quality: 0.98,
                     },
                     html2canvas: {
-                        scale: 3,
+                        scale: 4,
                         letterRendering: true,
                     },
                     jsPDF: {
                         unit: 'in',
-                        format: 'a4',
+                        format: 'a5',
                         orientation: 'landscape',
                     },
                 })
+                .output()
                 .from(contenido)
                 .save()
                 .catch((err) => console.log(err))
