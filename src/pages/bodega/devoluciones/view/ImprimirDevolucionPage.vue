@@ -1,10 +1,10 @@
 <template>
-  <q-btn class="justify-end" @click="imprimir">Imprimir</q-btn>
+  <q-btn class="justify-end" @click="pdfMakeImprimir">Imprimir</q-btn>
   <div id="imprimase" ref="refPDF" class="q-px-md">
     <div class="q-pa-sm">
       <div class="row">
         <div class="col col-3">
-          <img src="~assets/logo.svg" width="200" height="200"/>
+          <img src="~assets/logo.svg" width="200" height="200" />
         </div>
         <div class="col">
           <h4 class="text-left q-mb-sm">
@@ -109,7 +109,7 @@
           <br /><br /><br /><br />
           <q-separator size="2px" color="black" />
           <div class="col justify-center">
-            <strong>RECIBE &nbsp;</strong> 
+            <strong>RECIBE &nbsp;</strong>
             <div class="row">
               <div class="col"><strong>BODEGUERO:</strong></div>
               <div class="col"></div>
@@ -145,9 +145,8 @@
 </template>
 
 <script src="./ImprimirDevolucionPage.ts" />
-
 <style>
-  /* .fondo{
+/* .fondo{
     background-image: url('assets/logo.svg');
     color: 'ffffff';
   } */

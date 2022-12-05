@@ -14,6 +14,12 @@ import { useAuthenticationStore } from 'stores/authentication';
 //pdf
 import { jsPDFAPI } from 'jspdf';
 import { jsPDF } from 'jspdf';
+//pdfmake
+import * as pdfMake from 'pdfmake/build/pdfmake'
+import * as pdfFonts from 'pdfmake/build/vfs_fonts'
+
+
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
 
 export default defineComponent({
@@ -34,6 +40,52 @@ export default defineComponent({
             console.log(devolucionStore.devolucion)
         })
 
+        function pdfMakeImprimir() {
+            var docDefinition = {
+                pageSize: 'A5',
+                pageOrientation: 'landscape',
+                pageMargins: [10, 10, 10, 10],
+                info: {
+                    title: 'Comprobante de devolución',
+                    author: 'Wilson Cordova'
+                },
+                content: 'This is an sample PDF printed with pdfMake'
+            }
+            var dd = {
+                watermark: { text: 'BODEGA JPCONSTRUCRED', opacity: 0.1, bold: true, italics: false },
+                pageSize: 'A5',
+                pageOrientation: 'landscape',
+                content: [
+                    { text: 'COMPROBANTE DE DEVOLUCIÓN', style: 'header' },
+                    { text: '', style: 'hr' },
+                    { text: `Transaccion N° ${devolucionStore.devolucion.id}` , style:'resultStyle' },
+                    'Some long text of variable length ...',
+                    { text: '2 Headline', headlineLevel: 1 },
+                    'Some long text of variable length ...',
+                    { text: '3 Headline', headlineLevel: 1 },
+                    'Some long text of variable length ...',
+                ],
+                styles: {
+                    header: {
+                        fontSize: 18,
+                        bold: true,
+                        alignment: 'center'
+                    },
+                    defaultStyle: {
+                        fontSize: 10,
+                        bold: false
+                      },
+                    resultStyle: {
+                        fontSize: 10,
+                        bold: true
+                    },
+                },
+                pageBreakBefore: function (currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+                    return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
+                }
+            }
+            pdfMake.createPdf(dd).open()
+        }
 
         function imprimir2() {
             // var doc = new jsPDF()
@@ -105,6 +157,7 @@ export default defineComponent({
             imprimir,
             imprimir2,
             refPDF,
+            pdfMakeImprimir,
 
             hoy,
             meses,

@@ -3,7 +3,7 @@
     <q-btn class="justify-end" @click="imprimir()">Imprimir</q-btn>
     <div ref="refPDF" class="q-px-md">
       <div class="q-pa-md">
-        <h4 class="text-center q-mb-sm">COMPROBANTE DE {{ transaccion.tipo }}</h4>
+        <h4 class="text-center q-mb-sm">COMPROBANTE DE EGRESO</h4>
         <q-separator></q-separator>
         <div class="row q-col-gutter-sm q-py-lg">
           <!-- N° transaccion -->
@@ -51,7 +51,7 @@
           <!-- motivo -->
           <div class="col-12 col-md-6">
             <div class="row">
-              <label class="q-mb-sm block">Tipo de {{transaccion.tipo.toLowerCase()}}: &nbsp;</label>
+              <label class="q-mb-sm block">Tipo de transacción: &nbsp;</label>
               <strong
                 ><label class="q-mb-sm block">{{
                   transaccion.motivo
@@ -125,7 +125,7 @@
               bordered
               title="Listado de materiales ingresados"
               class="bg-white custom-border"
-              :rows="transaccion.listadoProductosSeleccionados"
+              :rows="transaccion.listadoProductosTransaccion"
               :columns="configuracionColumnasListadoProductosSeleccionados"
               row-key="id"
               separator="horizontal"

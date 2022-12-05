@@ -23,9 +23,9 @@ export const configuracionColumnasListadoProductosSeleccionados: ColumnConfig<an
     sortable: true,
   },
   {
-    name: 'cantidades',
-    field: 'cantidades',
-    label: 'Cantidades',
+    name: 'cantidad',
+    field: 'cantidad',
+    label: 'Cantidad',
     align: 'left',
     sortable: false,
   },
