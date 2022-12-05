@@ -8,6 +8,47 @@
       default-opened
     >
       <div class="row q-col-gutter-sm q-pa-md">
+        <div class="col-12 col-md-3">
+          <br />
+          <q-checkbox
+            v-model="tarea.pertenece_a_proyecto"
+            label="Pertenece a un proyecto"
+            outlined
+            dense
+          ></q-checkbox>
+        </div>
+
+        <!-- Codigo de proyecto -->
+        <div v-if="tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Código de proyecto</label>
+          <q-select
+            v-model="tarea.codigo_proyecto"
+            :options="proyectos"
+            @filter="filtrarProyectos"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            :option-label="(item) => item.nombre"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+      </div>
+
+      <div class="row q-col-gutter-sm q-pa-md">
         <!-- Codigo tarea JP -->
         <div v-if="tarea.codigo_tarea" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de tarea</label>
@@ -20,7 +61,7 @@
         </div>
 
         <!-- Numero tarea cliente -->
-        <div class="col-12 col-md-3">
+        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de tarea cliente</label>
           <q-input
             v-model="tarea.codigo_tarea_cliente"
@@ -46,7 +87,7 @@
         </div>
 
         <!-- Cliente principal -->
-        <div class="col-12 col-md-6">
+        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-6">
           <label class="q-mb-sm block">Cliente principal</label>
           <q-select
             v-model="tarea.cliente"
@@ -83,60 +124,8 @@
           </q-select>
         </div>
 
-        <!-- Fecha de solicitud -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
-          <q-input v-model="tarea.fecha_solicitud" outlined dense>
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date
-                    v-model="tarea.fecha_solicitud"
-                    mask="DD-MM-YYYY"
-                    today-btn
-                  >
-                    <div class="row items-center justify-end">
-                      <q-btn
-                        v-close-popup
-                        label="Cerrar"
-                        color="primary"
-                        flat
-                      />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-
-        <!-- Detalle -->
-        <div class="col-12 col-md-9">
-          <label class="q-mb-sm block">Detalle de la tarea</label>
-          <q-input
-            v-model="tarea.detalle"
-            placeholder="Obligatorio"
-            @update:model-value="(v) => (tarea.detalle = v.toUpperCase())"
-            outlined
-            dense
-            autogrow
-            type="textarea"
-            :error="!!v$.detalle.$errors.length"
-          >
-            <template v-slot:error>
-              <div v-for="error of v$.detalle.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-input>
-        </div>
-
         <!-- Supervisor -->
-        <div class="col-12 col-md-3">
+        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
           <label class="q-mb-sm block">Supervisor</label>
           <q-select
             v-model="tarea.supervisor"
@@ -164,33 +153,10 @@
           </q-select>
         </div>
 
-        <div class="col-12 col-md-3">
-          <br />
-          <q-checkbox
-            v-model="tarea.es_proyecto"
-            label="Es proyecto"
-            outlined
-            dense
-          ></q-checkbox>
-        </div>
-
-        <!-- Codigo de proyecto -->
-        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Código de proyecto</label>
-          <q-input
-            v-model="tarea.codigo_proyecto"
-            @update:model-value="
-              (v) => (tarea.codigo_proyecto = v.toUpperCase())
-            "
-            outlined
-            dense
-          ></q-input>
-        </div>
-
-        <!-- Fecha de inicio proyecto -->
-        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha inicio de proyecto</label>
-          <q-input v-model="tarea.fecha_inicio_proyecto" outlined dense>
+        <!-- Fecha de solicitud -->
+        <!--<div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
+          <q-input v-model="tarea.fecha_solicitud" outlined dense>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
@@ -199,7 +165,7 @@
                   transition-hide="scale"
                 >
                   <q-date
-                    v-model="tarea.fecha_inicio_proyecto"
+                    v-model="tarea.fecha_solicitud"
                     mask="DD-MM-YYYY"
                     today-btn
                   >
@@ -216,51 +182,33 @@
               </q-icon>
             </template>
           </q-input>
-        </div>
+        </div> -->
 
-        <!-- Fecha de fin proyecto -->
-        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha fin de proyecto</label>
-          <q-input v-model="tarea.fecha_fin_proyecto" outlined dense>
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date
-                    v-model="tarea.fecha_fin_proyecto"
-                    mask="DD-MM-YYYY"
-                    today-btn
-                  >
-                    <div class="row items-center justify-end">
-                      <q-btn
-                        v-close-popup
-                        label="Cerrar"
-                        color="primary"
-                        flat
-                      />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-
-        <div v-if="tarea.es_proyecto" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Costo total proyecto</label>
+        <!-- Detalle -->
+        <div class="col-12 col-md-9">
+          <label class="q-mb-sm block">Detalle de la tarea</label>
           <q-input
-            v-model="tarea.costo_total_proyecto"
+            v-model="tarea.detalle"
+            placeholder="Obligatorio"
+            @update:model-value="(v) => (tarea.detalle = v.toUpperCase())"
             outlined
             dense
-          ></q-input>
+            autogrow
+            type="textarea"
+            :error="!!v$.detalle.$errors.length"
+          >
+            <template v-slot:error>
+              <div v-for="error of v$.detalle.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
         </div>
       </div>
     </q-expansion-item>
 
     <q-expansion-item
+      v-if="!tarea.pertenece_a_proyecto"
       class="overflow-hidden q-mb-md"
       style="border-radius: 8px; border: 1px solid #ddd"
       label="Ubicación de trabajo"

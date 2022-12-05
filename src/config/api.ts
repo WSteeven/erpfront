@@ -16,6 +16,7 @@ export const endpoints = {
   roles: new Endpoint('user/roles'),
   permisos: new Endpoint('user/permisos'),
   // acceso a modulos
+  proyectos: new Endpoint('proyectos/'),
   tareas: new Endpoint('tareas/'),
   subtareas: new Endpoint('subtareas/'),
   subtareas_asignadas: new Endpoint('subtareas-asignadas/'),

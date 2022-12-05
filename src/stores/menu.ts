@@ -44,6 +44,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.trabajo_asignado'),
         },*/
         {
+          title: 'Proyectos',
+          link: 'proyectos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.proyectos'),
+        },
+        {
           title: 'Control de tareas',
           link: 'tareas',
           icon: 'bi-circle',

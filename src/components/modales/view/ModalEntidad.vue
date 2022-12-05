@@ -27,7 +27,7 @@
         <!--v-close-popup -->
       </q-toolbar>
 
-      <q-card-section class="bg-fondo">
+      <q-card-section>
         <component
           :is="componente"
           :mixin="mixin"

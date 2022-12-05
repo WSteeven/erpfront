@@ -21,6 +21,7 @@ import { ComportamientoModalesTarea } from '../application/ComportamientoModales
 import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
 import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
+import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 
 export default defineComponent({
   props: {
@@ -50,6 +51,7 @@ export default defineComponent({
         clientesFinales: new ContactoController(),
         provincias: new ProvinciaController(),
         cantones: new CantonController(),
+        proyectos: new ProyectoController(),
         supervisores: {
           controller: new EmpleadoController(),
           params: { rol: rolesAdmitidos.fiscalizador },
@@ -60,6 +62,7 @@ export default defineComponent({
       clientesFinales.value = listadosAuxiliares.clientesFinales
       provincias.value = listadosAuxiliares.provincias
       cantones.value = listadosAuxiliares.cantones
+      proyectos.value = listadosAuxiliares.proyectos
     })
 
     // Validaciones
@@ -160,6 +163,23 @@ export default defineComponent({
       })
     }
 
+    // Filtro proyectos
+    const proyectos = ref([])
+    function filtrarProyectos(val, update) {
+      if (val === '') {
+        update(() => {
+          proyectos.value = listadosAuxiliares.proyectos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        proyectos.value = listadosAuxiliares.proyectos.filter(
+          (v) => v.proyectos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
     // Informacion de ubicacion
     const clienteFinal = reactive(new ClienteFinal())
 
@@ -248,9 +268,11 @@ export default defineComponent({
       filtrarClientesFinales,
       filtrarProvincias,
       filtrarCantones,
+      filtrarSupervisores,
+      filtrarProyectos,
       obtenerClienteFinal,
       supervisores,
-      filtrarSupervisores,
+      proyectos,
       clienteFinal,
       // ubicacionManual,
       listadosAuxiliares,
