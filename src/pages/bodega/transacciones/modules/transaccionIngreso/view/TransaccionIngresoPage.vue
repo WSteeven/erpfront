@@ -93,6 +93,39 @@
               </template>
             </q-select>
           </div>
+          <!-- Tiene devolución -->
+          <div
+            v-if="accion === 'NUEVO' || transaccion.tiene_devolucion"
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="transaccion.tiene_devolucion"
+              label="¿Hay devolución?"
+              @update:model-value="checkDevolucion"
+              outlined
+              :disable="disabled"
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Devolución -->
+          <div
+            v-if="transaccion.tiene_devolucion"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">N° devolución</label>
+            <q-input
+              type="number"
+              v-model="transaccion.devolucion"
+              placeholder="Opcional"
+              hint="Ingresa un numero de devolución y presiona Enter"
+              @keyup.enter="llenarTransaccion"
+              :readonly="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Comprobante/Factura -->
           <div v-if="esVisibleComprobante" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° Factura/Comprobante</label>
@@ -369,7 +402,7 @@
           </div>
           <!-- Select condiciones -->
           <div v-if="transaccion.ingreso_masivo" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Condiciones</label>
+            <label class="q-mb-sm block">Estado de los productos</label>
             <q-select
               v-model="transaccion.condicion"
               :options="opciones_condiciones"

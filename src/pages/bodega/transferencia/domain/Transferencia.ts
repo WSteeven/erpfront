@@ -1,6 +1,6 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
-export class Transaccion extends EntidadAuditable{
+export class Transferencia extends EntidadAuditable{
     id: number|null
     autorizacion: number|null
     obs_autorizacion: string|null

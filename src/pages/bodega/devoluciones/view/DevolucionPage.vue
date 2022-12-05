@@ -128,9 +128,6 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-
-          {{ disabled }}-
-          {{ soloLectura }}
           <div
             v-if="esVisibleTarea || devolucion.es_tarea"
             class="col-12 col-md-3"

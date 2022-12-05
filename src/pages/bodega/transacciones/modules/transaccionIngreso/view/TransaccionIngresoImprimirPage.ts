@@ -74,9 +74,9 @@ export default defineComponent({
 
         })
 
-        const refPDF = ref()
+        const refPDFIngreso = ref()
         function imprimir() {
-            const contenido = refPDF.value
+            const contenido = refPDFIngreso.value
             html2pdf()
                 .set({
                     margin: 0.3,
@@ -145,7 +145,7 @@ export default defineComponent({
             empleado,
             obtenerEmpleadoSolicitante,
             imprimir,
-            refPDF,
+            refPDFIngreso,
 
 
 

@@ -70,6 +70,7 @@ export const endpoints = {
   transacciones: new Endpoint('transacciones/'),
   transacciones_egresos: new Endpoint('transacciones-egresos/'),
   transacciones_ingresos: new Endpoint('transacciones-ingresos/'),
+  transferencias: new Endpoint('transferencias/'),
   subtipos_transacciones: new Endpoint('subtipos-transacciones/'),
   perchas: new Endpoint('perchas/'),
   pisos: new Endpoint('pisos/'),

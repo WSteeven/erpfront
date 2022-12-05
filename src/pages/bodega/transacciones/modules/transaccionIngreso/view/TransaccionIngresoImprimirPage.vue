@@ -1,8 +1,7 @@
 <template>
   <!-- encabezado -->
-  <q-btn class="justify-end" @click="imprimir()">Imprimir</q-btn>
-  <div ref="refPDF" class="q-px-md">
-    <page>
+  <q-btn class="justify-end" @click="imprimir">Imprimir</q-btn>
+  <div ref="refPDFIngreso">
     <!-- <page_header> Sistema </page_header> -->
     <div class="q-pa-md">
       <h5 class="text-center q-mb-sm">COMPROBANTE DE INGRESO</h5>
@@ -134,8 +133,6 @@
             separator="horizontal"
             hide-bottom
             dense
-            v-model:selected="selected"
-            @selection="buscarProductoEnInventario"
           />
         </div>
 
@@ -149,10 +146,10 @@
         <div class="col-4 col-md-4 text-center">
           <br /><br /><br /><br />
           <q-separator size="2px" color="black" />
-          <p v-if="transaccion.solicitante">{{ transaccion.solicitante }}</p>
+          <!-- <p v-if="transaccion.solicitante">{{ transaccion.solicitante }}</p>
           <p v-if="transaccion.solicitante">
             C.I.{{ empleado.identificacion }}
-          </p>
+          </p> -->
         </div>
       </div>
 
@@ -176,7 +173,6 @@
       </div>
     </div>
     <!-- <page_footer> Pie de página </page_footer> -->
-  </page>
   </div>
 </template>
 

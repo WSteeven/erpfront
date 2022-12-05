@@ -244,8 +244,8 @@ export default defineComponent({
             icono: 'bi-pencil',
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
-                    (data) => transaccion.listadoProductosTransaccion[posicion].cantidades = data,
-                    transaccion.listadoProductosTransaccion[posicion].cantidades
+                    (data) => transaccion.listadoProductosTransaccion[posicion].cantidad = data,
+                    transaccion.listadoProductosTransaccion[posicion].cantidad
                 )
             },
             visible: () => puedeEditarCantidad.value
@@ -283,9 +283,9 @@ export default defineComponent({
 
         console.log('es bodeguero?', esBodeguero)
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
-            name: 'cantidades',
-            field: 'cantidades',
-            label: 'Cantidades',
+            name: 'cantidad',
+            field: 'cantidad',
+            label: 'Cantidad',
             align: 'left',
             sortable: false,
         },
@@ -377,6 +377,7 @@ export default defineComponent({
             botonEditarCantidad,
             botonDespachar,
             botonEliminar,
+            botonImprimir,
             eliminar,
 
             //selector

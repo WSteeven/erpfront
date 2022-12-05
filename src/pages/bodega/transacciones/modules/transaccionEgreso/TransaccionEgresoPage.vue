@@ -9,6 +9,7 @@
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
     :accion1="botonDespachar"
+    :accion2="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
