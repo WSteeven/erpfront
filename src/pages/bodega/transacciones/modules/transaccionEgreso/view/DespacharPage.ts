@@ -144,15 +144,19 @@ export default defineComponent({
             detalle_id,
             onComplete() {
                 console.log('Completado!!!!', selected2.value)
-                const movimiento = {
-                    'inventario_id': selected2.value[0]['id'],
-                    'detalle_producto_transaccion_id': detalleTransaccionStore.detalle.id,
-                    'cantidad': selected2.value[0]['cantidad'],
-                    'detalle_id': detalle_id,
-                    'precio_unitario': detalleStore.detalle.precio_compra,
-                }
-                console.log('los argumentos que se envían son: ',movimiento)
-                movimientoStore.enviarMovimiento(movimiento)
+                selected2.value.forEach((v)=>{
+                    console.log(v.cantidad, v.id)
+                    const movimiento = {
+                        'inventario_id': v.id,
+                        'detalle_producto_transaccion_id': detalleTransaccionStore.detalle.id,
+                        'cantidad': v.cantidad,
+                        'detalle_id': detalle_id,
+                        'precio_unitario': detalleStore.detalle.precio_compra,
+                    }
+                    console.log('los argumentos que se envían son: ',movimiento)
+                    movimientoStore.enviarMovimiento(movimiento)
+
+                })
                 
                 // movimientoStore.cerrarModal??modales.cerrarModalEntidad()
                 cerrarModal()

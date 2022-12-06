@@ -46,11 +46,18 @@ export default defineComponent({
                 pageSize: 'A5',
                 pageOrientation: 'landscape',
                 pageMargins: [10, 10, 10, 10],
+                header: 'Sistema de bodega',
+                footer: {
+                    columns: [
+                        'Left part',
+                        { text: 'Right part', alignment: 'right' }
+                    ]
+                },
 
                 content: [
                     { text: 'COMPROBANTE DE DEVOLUCIÓN', style: 'header' },
                     { text: '', style: 'hr' },
-                    { text: `Transaccion N° ${devolucionStore.devolucion.id}`, style: 'resultStyle', },{text:'otro texto'},
+                    { text: `Transaccion N° ${devolucionStore.devolucion.id}`, style: 'resultStyle', }, { text: 'otro texto' },
                     'Some long text of variable length ...',
                     { text: '2 Headline', headlineLevel: 1 },
                     'Some long text of variable length ...',
@@ -76,7 +83,30 @@ export default defineComponent({
                     return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
                 }
             }
-            pdfMake.createPdf(docDefinition).open()
+
+            var dd = {
+                header: 'simple text',
+              
+                footer: {
+                  columns: [
+                    'Left part',
+                    { text: 'Right part', alignment: 'right' }
+                  ]
+                },
+              
+                content: [
+                    { text: 'COMPROBANTE DE DEVOLUCIÓN', style: 'header' },
+                    { text: '', style: 'hr' },
+                    { text: `Transaccion N° ${devolucionStore.devolucion.id}`, style: 'resultStyle', }, { text: 'otro texto' },
+                    'Some long text of variable length ...',
+                    { text: '2 Headline', headlineLevel: 1 },
+                    'Some long text of variable length ...',
+                    { text: '3 Headline', headlineLevel: 1 },
+                    'Some long text of variable length ...',
+                ]
+              };
+
+            pdfMake.createPdf(dd).open()
         }
 
         function imprimir2() {

@@ -318,7 +318,7 @@
             <label class="q-mb-sm block">Talla</label>
             <q-input
               v-model="detalle.talla"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :readonly="disabled"
               @update:model-value="(v) => (detalle.talla = v.toUpperCase())"
               outlined

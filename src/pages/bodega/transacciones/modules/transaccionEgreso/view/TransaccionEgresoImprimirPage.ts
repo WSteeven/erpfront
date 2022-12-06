@@ -78,7 +78,7 @@ export default defineComponent({
             html2pdf()
                 .set({
                     margin: 0.3,
-                    filename: 'reporte.pdf',
+                    filename: 'egreso_'+hoy.getTime()+'.pdf',
                     image: {
                         type: 'jpeg',
                         quality: 0.98,
