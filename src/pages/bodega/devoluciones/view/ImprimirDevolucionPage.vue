@@ -1,5 +1,5 @@
 <template>
-  <q-btn class="justify-end" @click="pdfMakeImprimir">Imprimir</q-btn>
+  <q-btn class="justify-end" @click="imprimir">Imprimir</q-btn>
   <div id="imprimase" ref="refPDF" class="q-px-md">
     <div class="q-pa-sm">
       <div class="row">

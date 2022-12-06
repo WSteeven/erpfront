@@ -32,8 +32,17 @@ import html2pdf from 'html2pdf.js'
 import { ComportamientoModalesDevoluciones } from "../application/ComportamientoModalesDevolucion";
 import { useDevolucionStore } from "stores/devolucion";
 
+//pdfmake
+import * as pdfMake from 'pdfmake/build/pdfmake'
+import * as pdfFonts from 'pdfmake/build/vfs_fonts'
+import { useAuthenticationStore } from "stores/authentication";
+
+
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
+
+
 export default defineComponent({
-    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad},
+    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
 
     setup() {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
@@ -41,9 +50,10 @@ export default defineComponent({
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
-        
+
         //stores
         const devolucionStore = useDevolucionStore()
+        const store = useAuthenticationStore()
 
         //modales
         const modales = new ComportamientoModalesDevoluciones()
@@ -136,7 +146,7 @@ export default defineComponent({
             titulo: 'Anular',
             icono: 'bi-x',
             accion: ({ entidad, posicion }) => {
-                confirmar('Está seguro de anular la devolución?', ()=>{
+                confirmar('Está seguro de anular la devolución?', () => {
                     anularDevolucion(entidad.id)
                     entidad.estado = estadosDevoluciones.ANULADA
                     actualizarElemento(posicion, entidad)
@@ -144,52 +154,223 @@ export default defineComponent({
                 console.log('entidad', entidad)
                 console.log('posicion', posicion)
             },
-            visible:()=> {
-                return tabSeleccionado.value=='CREADA'?true:false
+            visible: () => {
+                return tabSeleccionado.value == 'CREADA' ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
             titulo: 'Imprimir',
             color: 'secondary',
             icono: 'bi-printer',
-            accion: ({ entidad, posicion }) => {
-                devolucionStore.idDevolucion=entidad.id
-                modales.abrirModalEntidad("ImprimirDevolucionPage")
-                // imprimir()
+            accion: async ({ entidad, posicion }) => {
+                devolucionStore.idDevolucion = entidad.id
+                // modales.abrirModalEntidad("ImprimirDevolucionPage")
+                await devolucionStore.showPreview()
+                console.log(devolucionStore.devolucion.listadoProductos)
+                console.log(devolucionStore.devolucion.listadoProductos.flatMap((v) => v))
+                pdfMakeImprimir()
+
+
+
             },
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
+        function buildTableBody(data, columns) {
+            var body = []
+            const columnas = ['Id', 'Producto', 'Descripción', 'Categoría', 'Cantidad']
+            body.push(columnas)
 
-        const refPDF = ref()
-        function imprimir() {
-            const contenido = refPDF.value
-            html2pdf()
-                .set({
-                    margin: 0.3,
-                    filename: 'reporte.pdf',
-                    image: {
-                        type: 'jpeg',
-                        quality: 0.98,
+            data.forEach(function (row) {
+                var dataRow = []
+                console.log(row)
+                columns.forEach(function (column) {
+                    dataRow.push(row[column])
+                });
+                body.push(dataRow)
+            });
+            return body
+        }
+        function table(data, columns) {
+            return {
+                table: {
+                    headerRows: 1,
+                    body: buildTableBody(data, columns)
+                }
+            }
+        }
+
+        function pdfMakeImprimir() {
+            pdfMake.tableLayouts = {
+                listadoLayout: {
+                    hLineWidth: function (i, node) {
+                        if (i === 0 || i === node.table.body.length) {
+                            return 0;
+                        }
+                        return (i === node.table.headerRows) ? 2 : 1;
                     },
-                    html2canvas: {
-                        scale: 3,
-                        letterRendering: true,
+                    vLineWidth: function (i) {
+                        return 0;
                     },
-                    jsPDF: {
-                        unit: 'in',
-                        format: 'a4',
-                        orientation: 'landscape',
+                    hLineColor: function (i) {
+                        return i === 1 ? 'black' : '#aaa';
                     },
-                })
-                .from(contenido)
-                .save()
-                .catch((err) => console.log(err))
+                    paddingLeft: function (i) {
+                        return i === 0 ? 0 : 8;
+                    },
+                    paddingRight: function (i, node) {
+                        return (i === node.table.widths.length - 1) ? 0 : 8;
+                    }
+                }
+            }
+            var docDefinition = {
+                watermark: { text: 'BODEGA JPCONSTRUCRED', opacity: 0.1, bold: true, italics: false },
+                pageSize: 'A5',
+                pageOrientation: 'landscape',
+                pageMargins: [10, 10, 10, 10],
+
+                content: [
+                    { text: 'COMPROBANTE DE DEVOLUCIÓN', style: 'header' },
+                    { text: '', style: 'hr' },
+                    {
+                        text: [
+                            { text: 'Transaccion N° ', style: 'defaultStyle' },
+                            { text: `${devolucionStore.devolucion.id}`, style: 'resultStyle', }
+                        ],
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                text: [
+                                    { text: 'Transaccion N° ', style: 'defaultStyle' },
+                                    { text: `${devolucionStore.devolucion.id}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: '*',
+                                text: [
+                                    { text: 'Fecha: ', style: 'defaultStyle' },
+                                    { text: `${devolucionStore.devolucion.created_at}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // fixed width
+                                width: '*',
+                                text: [
+                                    { text: 'Solicitante: ', style: 'defaultStyle' },
+                                    { text: `${devolucionStore.devolucion.solicitante}`, style: 'resultStyle', }
+                                ]
+                            },
+                        ],
+                        // optional space between columns
+                        columnGap: 10
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                text: [
+                                    { text: 'Sucursal: ', style: 'defaultStyle' },
+                                    { text: `${devolucionStore.devolucion.sucursal}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: '*',
+                                text: [
+                                    { text: 'Justificación: ', style: 'defaultStyle' },
+                                    { text: `${devolucionStore.devolucion.justificacion}`, style: 'resultStyle', }
+                                ]
+                            },
+                        ],
+                        // optional space between columns
+                        columnGap: 10
+                    },
+                    {
+                        text: [
+                            { text: 'Tarea: ', style: 'defaultStyle' },
+                            { text: `${devolucionStore.devolucion.tarea}`, style: 'resultStyle', }
+                        ]
+                    },
+                    {
+                        text: [
+                            { text: 'Listado: ', style: 'defaultStyle' },
+                            { text: `${devolucionStore.devolucion.listadoProductos[0]['descripcion']}`, style: 'resultStyle', }
+                        ]
+                    },
+                    table(devolucionStore.devolucion.listadoProductos, ['id', 'producto', 'descripcion', 'categoria', 'cantidad']),
+
+                    // 'Some long text of variable length ...',
+                    // { text: '2 Headline', headlineLevel: 1 },
+                    // 'Some long text of variable length ...',
+                    // { text: '3 Headline', headlineLevel: 1 },
+                    // 'Some long text of variable length ...',
+                    '',
+                    '',
+                    '',
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                text: [
+                                    { text: 'ENTREGA ', style: 'resultStyle', align: 'center' },
+                                    { text: `${devolucionStore.devolucion.solicitante}`, style: 'resultStyle', },
+                                    {
+                                        text: [
+                                            { text: 'C.I:', style: 'resultStyle' },
+                                            { text: `${store.user.identificacion}`, style: 'resultStyle', }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: '*',
+                                text: [
+                                    { text: 'RECIBE ', style: 'resultStyle', align: 'center' },
+                                    { text: 'BODEGUERO:', style: 'resultStyle', },
+                                    { text: 'C.I:', style: 'resultStyle', }
+                                ]
+                            },
+                        ],
+                        // optional space between columns
+                        columnGap: 10
+                    }
+                ],
+                styles: {
+                    header: {
+                        fontSize: 18,
+                        bold: true,
+                        alignment: 'center'
+                    },
+                    defaultStyle: {
+                        fontSize: 10,
+                        bold: false
+                    },
+                    resultStyle: {
+                        fontSize: 10,
+                        bold: true
+                    },
+                },
+                pageBreakBefore: function (currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+                    return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
+                }
+            }
+
+            pdfMake.createPdf(docDefinition).open()
         }
 
         async function anularDevolucion(id: number) {
             try {
                 const axios = AxiosHttpRepository.getInstance()
-                const ruta = axios.getEndpoint(endpoints.devoluciones) + 'anular/' +id
+                const ruta = axios.getEndpoint(endpoints.devoluciones) + 'anular/' + id
                 axios.post(ruta);
             } catch (e: any) {
                 console.log('Entró al catch de anular devolución: ', e)
@@ -198,10 +379,10 @@ export default defineComponent({
         }
         function actualizarElemento(posicion: number, entidad: any): void {
             if (posicion >= 0) {
-              listado.value.splice(posicion, 1, entidad);
-              listado.value = [...listado.value];
+                listado.value.splice(posicion, 1, entidad);
+                listado.value = [...listado.value];
             }
-          }
+        }
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados

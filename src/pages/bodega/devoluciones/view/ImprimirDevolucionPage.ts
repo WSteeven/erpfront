@@ -42,23 +42,15 @@ export default defineComponent({
 
         function pdfMakeImprimir() {
             var docDefinition = {
-                pageSize: 'A5',
-                pageOrientation: 'landscape',
-                pageMargins: [10, 10, 10, 10],
-                info: {
-                    title: 'Comprobante de devolución',
-                    author: 'Wilson Cordova'
-                },
-                content: 'This is an sample PDF printed with pdfMake'
-            }
-            var dd = {
                 watermark: { text: 'BODEGA JPCONSTRUCRED', opacity: 0.1, bold: true, italics: false },
                 pageSize: 'A5',
                 pageOrientation: 'landscape',
+                pageMargins: [10, 10, 10, 10],
+
                 content: [
                     { text: 'COMPROBANTE DE DEVOLUCIÓN', style: 'header' },
                     { text: '', style: 'hr' },
-                    { text: `Transaccion N° ${devolucionStore.devolucion.id}` , style:'resultStyle' },
+                    { text: `Transaccion N° ${devolucionStore.devolucion.id}`, style: 'resultStyle', },{text:'otro texto'},
                     'Some long text of variable length ...',
                     { text: '2 Headline', headlineLevel: 1 },
                     'Some long text of variable length ...',
@@ -74,7 +66,7 @@ export default defineComponent({
                     defaultStyle: {
                         fontSize: 10,
                         bold: false
-                      },
+                    },
                     resultStyle: {
                         fontSize: 10,
                         bold: true
@@ -84,7 +76,7 @@ export default defineComponent({
                     return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
                 }
             }
-            pdfMake.createPdf(dd).open()
+            pdfMake.createPdf(docDefinition).open()
         }
 
         function imprimir2() {
