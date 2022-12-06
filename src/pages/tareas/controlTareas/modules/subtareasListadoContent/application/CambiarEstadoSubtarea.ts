@@ -1,4 +1,6 @@
-import { endpoints } from 'config/api';
+import { AxiosResponse } from 'axios'
+import { endpoints } from 'config/api'
+import { ApiError } from 'shared/error/domain/ApiError'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 
 export class CambiarEstadoSubtarea {
@@ -8,40 +10,46 @@ export class CambiarEstadoSubtarea {
     this.axios = AxiosHttpRepository.getInstance()
   }
 
-  asignar(subtareaId: number) {
-    this.solicitud('asignar', subtareaId)
+  async asignar(subtareaId: number) {
+    return this.solicitud('asignar', subtareaId)
   }
 
-  ejecutar(subtareaId: number) {
-    this.solicitud('ejecutar', subtareaId)
+  async ejecutar(subtareaId: number) {
+    return this.solicitud('ejecutar', subtareaId)
   }
 
-  realizar(subtareaId: number) {
-    this.solicitud('realizar', subtareaId)
+  async realizar(subtareaId: number) {
+    return this.solicitud('realizar', subtareaId)
   }
 
-  pausar(subtareaId: number, mensaje: string) {
-    this.solicitud('pausar', subtareaId, { motivo: mensaje })
+  async pausar(subtareaId: number, mensaje: string) {
+    return this.solicitud('pausar', subtareaId, { motivo: mensaje })
   }
 
-  reanudar(subtareaId: number) {
-    this.solicitud('reanudar', subtareaId)
+  async reanudar(subtareaId: number) {
+    return this.solicitud('reanudar', subtareaId)
   }
 
-  suspender(subtareaId: number, mensaje: string) {
-    this.solicitud('suspender', subtareaId, { motivo: mensaje })
+  async suspender(subtareaId: number, mensaje: string) {
+    return this.solicitud('suspender', subtareaId, { motivo: mensaje })
   }
 
-  cancelar(subtareaId: number) {
-    this.solicitud('cancelar', subtareaId)
+  async cancelar(subtareaId: number) {
+    return this.solicitud('cancelar', subtareaId)
   }
 
-  solicitud(accion, subtarea, data?) {
+  async solicitud(accion, tarea, data?) {
     try {
-      const ruta = this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + subtarea
-      this.axios.post(ruta, data)
+      const ruta =
+        this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + tarea
+      const response: AxiosResponse = await this.axios.post(ruta, data)
+
+      return {
+        response,
+        result: response.data.modelo,
+      }
     } catch (e: any) {
-      //
+      throw new ApiError(e)
     }
   }
 }

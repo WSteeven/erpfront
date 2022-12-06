@@ -235,6 +235,37 @@
             </q-select>
           </div>
 
+          <!-- Fecha de solicitud -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
+            <q-input v-model="proyecto.fecha_solicitud" outlined dense>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="proyecto.fecha_solicitud"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Costo total proyecto</label>
             <q-input

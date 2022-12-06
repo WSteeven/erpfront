@@ -43,7 +43,7 @@ export default defineComponent({
     const { onGuardado, onBeforeModificar, onReestablecer, onConsultado } = props.mixin.useHooks()
 
     const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
-    const tipoUbicacionTrabajo = ref()
+    const tipoUbicacionTrabajo = ref(opcionesUbicacion.cliente)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -198,19 +198,18 @@ export default defineComponent({
 
     watchEffect(async () => {
       if (tarea.cliente_final) {
-        tipoUbicacionTrabajo.value = 'cliente_final'
+        // tipoUbicacionTrabajo.value = 'cliente_final'
         const res = await obtenerClienteFinal(tarea.cliente_final)
         clienteFinal.hydrate(res)
-      }
-      else
-        tipoUbicacionTrabajo.value = opcionesUbicacion.manual
-      /*if (tarea.cliente_final) {
-        obtenerClienteFinal(tarea.cliente_final)
-        tipoUbicacionTrabajo.value = opcionesUbicacion.cliente
-      } else {
-        tipoUbicacionTrabajo.value = opcionesUbicacion.manual
-      }*/
+      } /*else
+        tipoUbicacionTrabajo.value = opcionesUbicacion.manual*/
     })
+    /*if (tarea.cliente_final) {
+      obtenerClienteFinal(tarea.cliente_final)
+      tipoUbicacionTrabajo.value = opcionesUbicacion.cliente
+    } else {
+      tipoUbicacionTrabajo.value = opcionesUbicacion.manual
+    }*/
 
     onGuardado(() => {
       //accion.value = acciones.editar
@@ -218,33 +217,35 @@ export default defineComponent({
     })
 
     onConsultado(async () => {
+      tareaStore.tarea.hydrate(tarea)
       //tipoUbicacionTrabajo.value = 'hfhffhjhgfjh' //opcionesUbicacion.cliente
       //console.log(tipoUbicacionTrabajo.value)
-      if (tarea.cliente_final) {
-        /*const res = await obtenerClienteFinal(tarea.cliente_final)
-        clienteFinal.hydrate(res)
-        console.log(res)*/
+      /*const res = await obtenerClienteFinal(tarea.cliente_final)
+      clienteFinal.hydrate(res)
+      console.log(res)*/
 
+      /*if (tarea.cliente_final) {
         tarea.ubicacion_tarea = new UbicacionTarea()
         console.log('Tiene cliente final')
-      } /*else {
+      } */
+      /*else {
         tipoUbicacionTrabajo.value = opcionesUbicacion.manual
       }*/
     })
 
     onBeforeModificar(() => {
-      if (tipoUbicacionTrabajo.value === 'ubicacion_manual') {
+      /* if (tipoUbicacionTrabajo.value === 'ubicacion_manual') {
         tarea.cliente_final = null
         clienteFinal.hydrate(new ClienteFinal())
       } else {
         tarea.ubicacion_tarea = new UbicacionTarea()
-      }
+      } */
     })
 
     onReestablecer(() => {
-      clienteFinal.hydrate(new ClienteFinal())
+      /* clienteFinal.hydrate(new ClienteFinal())
       tarea.cliente_final = null
-      tarea.ubicacion_tarea = new UbicacionTarea()
+      tarea.ubicacion_tarea = new UbicacionTarea()*/
       // tareaStore.tarea.hydrate(new Tarea())
     })
 

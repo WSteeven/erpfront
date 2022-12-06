@@ -268,6 +268,7 @@
             :accion4="accion4"
             :accion5="accion5"
             :accion6="accion6"
+            :accion7="accion7"
             :propsTable="props"
           ></CustomButtons>
         </div>

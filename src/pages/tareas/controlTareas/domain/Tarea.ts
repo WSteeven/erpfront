@@ -13,6 +13,7 @@ export class Tarea extends EntidadAuditable {
   codigo_proyecto: string | null
   ubicacion_tarea: UbicacionTarea
   estado: string | null
+  tiene_cliente_final: boolean
 
   constructor() {
     super()
@@ -27,5 +28,6 @@ export class Tarea extends EntidadAuditable {
     this.codigo_proyecto = null
     this.ubicacion_tarea = new UbicacionTarea()
     this.estado = null
+    this.tiene_cliente_final = false
   }
 }

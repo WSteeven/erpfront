@@ -27,7 +27,7 @@ export default defineComponent({
     const { listado, currentPageListado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
-    const { confirmar } = useNotificaciones()
+    const { confirmar, notificarCorrecto } = useNotificaciones()
 
     const tareaStore = useTareaStore()
     const subtareaListadoStore = useSubtareaListadoStore()
@@ -46,10 +46,9 @@ export default defineComponent({
       titulo: 'Crear una subtarea',
       accion: () => {
         subtareaListadoStore.idSubtareaSeleccionada = null
-        tareaStore.subtarea.tarea_id = tareaStore.tarea.id
         tareaStore.accionSubtarea = acciones.nuevo
         modales.abrirModalEntidad('SubtareasPage')
-        subtareaListadoStore.nuevoElementoInsertado = false
+        //tareaStore.subtarea.tarea_id = tareaStore.tarea.id
       },
     }
 
@@ -91,12 +90,15 @@ export default defineComponent({
     const botonAsignar: CustomActionTable = {
       titulo: 'Asignar',
       color: 'indigo',
+      icono: 'bi-person',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO,
-      accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de asignar la subtarea?', () => {
-          new CambiarEstadoSubtarea().asignar(entidad.id)
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de asignar la subtarea?', async () => {
+          const { result } = await new CambiarEstadoSubtarea().asignar(entidad.id)
           entidad.estado = estadosSubtareas.ASIGNADO
+          entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
           actualizarElemento(posicion, entidad)
+          notificarCorrecto('Subtarea asignada correctamente!')
         })
       },
     }
@@ -118,18 +120,13 @@ export default defineComponent({
       titulo: 'Cancelar',
       color: 'negative',
       icono: 'bi-x-octagon',
-      visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion,
-      accion: async ({ entidad }) => confirmar(['¿Está seguro de cancelar definitivamente la subtarea?', 'Esta acción también cancelará la tarea raíz.'], () => {
-        new CambiarEstadoSubtarea().cancelar(entidad.id)
-        //entidad.estado = estadosSubtareas.CANCELADO
-        // actualizarElemento(posicion, entidad)
-        //listado.value = listado.value.map((subtarea: Subtarea) => {
-        //return subtarea//.estado = estadosSubtareas.CANCELADO)
-        //}
-        listado.value = listado.value.map((subtarea: Subtarea) => {
-          subtarea.estado = estadosSubtareas.CANCELADO
-          return subtarea
-        })
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO,
+      accion: async ({ entidad, posicion }) => confirmar(['¿Está seguro de cancelar definitivamente la subtarea?'], async () => {
+        const { result } = await new CambiarEstadoSubtarea().cancelar(entidad.id)
+        entidad.estado = estadosSubtareas.CANCELADO
+        entidad.fecha_hora_cancelacion = result.fecha_hora_cancelacion
+        actualizarElemento(posicion, entidad)
+        notificarCorrecto('Subtarea cancelada correctamente!')
       }),
     }
 
@@ -137,7 +134,19 @@ export default defineComponent({
       titulo: 'Reagendar',
       color: 'info',
       icono: 'bi-calendar-check',
-      visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion,
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO,
+      accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
+        new CambiarEstadoSubtarea().realizar(entidad.id)
+        entidad.estado = estadosSubtareas.REALIZADO
+        actualizarElemento(posicion, entidad)
+      }),
+    }
+
+    const botonSubirArchivos: CustomActionTable = {
+      titulo: 'Archivos',
+      color: 'info',
+      icono: 'bi-folder',
+      visible: ({ entidad }) => true, //[estadosSubtareas.CREADO, estadosSubtareas.ASIGNADO].includes(entidad.estado),
       accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
         new CambiarEstadoSubtarea().realizar(entidad.id)
         entidad.estado = estadosSubtareas.REALIZADO
@@ -178,6 +187,7 @@ export default defineComponent({
       configuracionColumnas,
       botonEditarSubtarea,
       botonControlAvance,
+      botonSubirArchivos,
       agregarSubtarea,
       botonFinalizar,
       aplicarFiltro,

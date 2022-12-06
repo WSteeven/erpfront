@@ -111,12 +111,13 @@ export default defineComponent({
       titulo: 'Suspender',
       icono: 'bi-x-diamond',
       color: 'negative',
-      visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO && entidad.es_primera_asignacion,
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO,
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de suspender el trabajo?', () => {
-          prompt('Ingrese el motivo de la suspención', (data) => {
-            new CambiarEstadoSubtarea().suspender(entidad.id, data)
+          prompt('Ingrese el motivo de la suspención', async (data) => {
+            const { result } = await new CambiarEstadoSubtarea().suspender(entidad.id, data)
             entidad.estado = estadosSubtareas.SUSPENDIDO
+            entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
             actualizarElemento(posicion, entidad)
           })
         })

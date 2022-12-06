@@ -595,6 +595,56 @@
         </div>
       </q-expansion-item>
 
+      <!-- #default="{ dropZoneActive }" -->
+      <!--<div class="row">
+        <div class="col-12 text-bold q-pa-md">Compartir archivos</div>
+
+        <div class="col-12">
+          <q-uploader
+            url="http://localhost:4444/upload"
+            label="Compartir archivos"
+            multiple
+            batch
+            style="width: 100%"
+            :method="cargarArchivos"
+          />
+        </div>
+      </div> -->
+
+      <!--<div class="col-12 borde-dashed">
+          <DropZone class="drop-area" @files-dropped="addFiles">
+            <label for="file-input" class="label-drop-area">
+              <span v-if="dropZoneActive">
+                <span>Soltar aquí</span>
+                <span class="smaller">para agregarlo</span>
+              </span>
+              <span v-else>
+                <span>Arrastra tus archivos aquí</span>
+                <span class="smaller">
+                  o <strong><em>haz click aquí</em></strong> para seleccionar
+                  archivos
+                </span>
+              </span>
+
+              <input
+                type="file"
+                id="file-input"
+                multiple
+                @change="onInputChange"
+              />
+            </label>
+            <ul class="image-list" v-show="files.length">
+              <FilePreview
+                v-for="file of files"
+                :key="file.id"
+                :file="file"
+                tag="li"
+                @remove="removeFile"
+              />
+            </ul>
+          </DropZone>
+        </div> -->
+
       <button-submits
         :accion="accion"
         @cancelar="reestablecerDatos()"
@@ -614,3 +664,69 @@
 </template>
 
 <script src="./SubtareaPage.ts"></script>
+
+<style lang="scss" scoped>
+.borde-dashed {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+}
+
+.drop-area {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 50px;
+  transition: 0.2s ease;
+  &[data-active='true'] {
+    background: #eee;
+  }
+}
+
+.label-drop-area {
+  font-size: 36px;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  span {
+    display: block;
+  }
+  input[type='file']:not(:focus-visible) {
+    // Visually Hidden Styles taken from Bootstrap 5
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+  .smaller {
+    font-size: 16px;
+  }
+}
+
+.image-list {
+  display: flex;
+  list-style: none;
+  flex-wrap: wrap;
+  padding: 0;
+}
+/* .upload-button {
+    display: block;
+    appearance: none;
+    border: 0;
+    border-radius: 50px;
+    padding: 0.75rem 3rem;
+    margin: 1rem auto;
+    font-size: 1.25rem;
+    font-weight: bold;
+    background: #369;
+    color: #fff;
+    text-transform: uppercase;
+} */
+button {
+  cursor: pointer;
+}
+</style>

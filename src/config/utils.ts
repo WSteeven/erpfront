@@ -137,13 +137,13 @@ export const tabOptions: TabOption[] = [
 ]
 
 export const tabTrabajoAsignado: TabOption[] = [
-  { label: 'Todo', value: '' },
+  //{ label: 'Todo', value: '' },
   { label: 'Asignado', value: 'ASIGNADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },
-  { label: 'Suspendido', value: 'SUSPENDIDO' },
-  { label: 'Cancelado', value: 'CANCELADO' },
   { label: 'Realizado', value: 'REALIZADO' },
+  /*{ label: 'Suspendido', value: 'SUSPENDIDO' },
+  { label: 'Cancelado', value: 'CANCELADO' },*/
 ]
 
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
@@ -232,8 +232,8 @@ export const sistemasCoordenadas = ['DMS', 'UTM']
 export const bobinasSolicitadas = ['DS564', 'DSFDS564']
 
 export const estadosDevoluciones = {
-  CREADA:'CREADA',
-  ANULADA:'ANULADA',
+  CREADA: 'CREADA',
+  ANULADA: 'ANULADA',
 }
 export const estadosSubtareas = {
   CREADO: 'CREADO',

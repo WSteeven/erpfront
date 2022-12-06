@@ -17,35 +17,6 @@
             dense
           ></q-checkbox>
         </div>
-
-        <!-- Codigo de proyecto -->
-        <div v-if="tarea.pertenece_a_proyecto" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Código de proyecto</label>
-          <q-select
-            v-model="tarea.codigo_proyecto"
-            :options="proyectos"
-            @filter="filtrarProyectos"
-            transition-show="scale"
-            transition-hide="scale"
-            options-dense
-            dense
-            outlined
-            :option-label="(item) => item.nombre"
-            :option-value="(item) => item.id"
-            use-input
-            input-debounce="0"
-            emit-value
-            map-options
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
       </div>
 
       <div class="row q-col-gutter-sm q-pa-md">
@@ -154,7 +125,7 @@
         </div>
 
         <!-- Fecha de solicitud -->
-        <!--<div class="col-12 col-md-3">
+        <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
           <q-input v-model="tarea.fecha_solicitud" outlined dense>
             <template v-slot:append>
@@ -182,7 +153,7 @@
               </q-icon>
             </template>
           </q-input>
-        </div> -->
+        </div>
 
         <!-- Detalle -->
         <div class="col-12 col-md-9">
@@ -204,11 +175,50 @@
             </template>
           </q-input>
         </div>
+
+        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+          <br />
+          <q-checkbox
+            v-model="tarea.tiene_cliente_final"
+            label="Trabajo para cliente final"
+            outlined
+            dense
+          ></q-checkbox>
+        </div>
+
+        <!-- Codigo de proyecto -->
+        <div v-if="tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Código de proyecto</label>
+          <q-select
+            v-model="tarea.codigo_proyecto"
+            :options="proyectos"
+            @filter="filtrarProyectos"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            :option-label="(item) => item.nombre"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
       </div>
     </q-expansion-item>
 
     <q-expansion-item
-      v-if="!tarea.pertenece_a_proyecto"
+      v-if="!tarea.pertenece_a_proyecto && tarea.tiene_cliente_final"
       class="overflow-hidden q-mb-md"
       style="border-radius: 8px; border: 1px solid #ddd"
       label="Ubicación de trabajo"
@@ -229,21 +239,20 @@
             color="white"
             text-color="primary"
             :options="[
-              {
-                label: 'Ubicación manual',
-                value: 'ubicacion_manual',
-              },
-              { label: 'Ubicación de Cliente final', value: 'cliente_final' },
+              { label: 'Trabajo para cliente final', value: 'cliente_final' },
             ]"
           />
         </div>
+        <!-- {
+                label: 'Ubicación',
+                value: 'ubicacion_manual',
+              }, -->
       </div>
-
+      <!--
       <div
         v-if="tipoUbicacionTrabajo === 'ubicacion_manual'"
         class="row q-col-gutter-sm q-pa-md"
       >
-        <!-- Provincia -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Provincias</label>
           <q-select
@@ -272,7 +281,6 @@
           </q-select>
         </div>
 
-        <!-- Ciudad -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Canton</label>
           <q-select
@@ -301,7 +309,6 @@
           </q-select>
         </div>
 
-        <!-- Parroquia -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Parroquia/Barrio</label>
           <q-input
@@ -314,7 +321,6 @@
           ></q-input>
         </div>
 
-        <!-- Direccion -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Dirección</label>
           <q-input
@@ -327,7 +333,6 @@
           ></q-input>
         </div>
 
-        <!-- Referencias -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Referencias</label>
           <q-input
@@ -340,7 +345,6 @@
           ></q-input>
         </div>
 
-        <!-- Coordenadas -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Coordenadas</label>
           <q-input
@@ -354,7 +358,7 @@
           </q-input>
         </div>
       </div>
-
+    -->
       <div
         v-if="tipoUbicacionTrabajo === 'cliente_final'"
         class="row q-col-gutter-sm q-pa-md"
@@ -518,7 +522,7 @@
       @cancelar="reestablecer()"
       @editar="editar(tarea, false)"
       @eliminar="eliminar(tarea)"
-      @guardar="guardar(tarea)"
+      @guardar="guardar(tarea, false)"
     />
   </q-form>
 
