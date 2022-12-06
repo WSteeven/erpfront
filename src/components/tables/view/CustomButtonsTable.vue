@@ -131,6 +131,27 @@
       ></q-icon>
       <span>{{ extraerTitulo(accion6) }}</span>
     </q-btn>
+
+    <!-- Accion 7 -->
+    <q-btn
+      v-if="extraerVisible(accion7)"
+      :color="accion7?.color ?? 'primary'"
+      rounded
+      dense
+      push
+      no-caps
+      no-wrap
+      class="q-px-sm"
+      @click="ejecutarAccion(accion7)"
+    >
+      <q-icon
+        v-if="accion7?.icono"
+        :name="extraerIcono(accion7) ?? ''"
+        size="xs"
+        class="q-mr-xs"
+      ></q-icon>
+      <span>{{ extraerTitulo(accion7) }}</span>
+    </q-btn>
   </span>
 </template>
 
@@ -164,6 +185,10 @@ const props = defineProps({
     required: false,
   },
   accion6: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  accion7: {
     type: Object as () => CustomActionTable,
     required: false,
   },

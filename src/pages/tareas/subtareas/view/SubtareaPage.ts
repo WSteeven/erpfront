@@ -18,11 +18,14 @@ import {
 import { required } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
+import useFileList from "components/dropzone/application/fileList"
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import Dropzone from 'components/dropzone/view/DropZone.vue'
+import FilePreview from 'components/dropzone/view/FilePreview.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -42,7 +45,7 @@ export default defineComponent({
       required: true,
     },
   },
-  components: { EssentialTable, ButtonSubmits, EssentialSelectableTable },
+  components: { EssentialTable, ButtonSubmits, EssentialSelectableTable, FilePreview, Dropzone },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
@@ -78,6 +81,7 @@ export default defineComponent({
       subtareas.value = listadosAuxiliares.subtareas
     })
 
+    // Carga de la subtarea
     if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
 
     const busqueda = ref()
@@ -205,6 +209,7 @@ export default defineComponent({
         listado.value = [...listado.value, subtarea]
 
         emit('cerrar-modal')
+
       } catch (e) { }
     }
 
@@ -242,6 +247,13 @@ export default defineComponent({
     mixin.agregarValidaciones(
       validarTecnicosGrupoPrincipal
     )
+
+    const { files, addFiles, removeFile } = useFileList()
+
+    function cargarArchivos(files) {
+      console.log(files)
+      subtarea.archivos = files
+    }
 
     return {
       v$,
@@ -281,6 +293,9 @@ export default defineComponent({
       listarTecnicos,
       limpiarTecnico,
       seleccionarTecnico,
+      // ---
+      files, addFiles, removeFile,
+      cargarArchivos,
     }
   },
 })

@@ -65,13 +65,13 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     align: 'left',
     sortable: true,
   },
-  {
+  /*{
     name: 'causa_suspencion',
     field: 'causa_suspencion',
     label: 'Causa de suspención',
     align: 'left',
     sortable: true,
-  },
+  },*/
   {
     name: 'grupo',
     field: 'grupo',

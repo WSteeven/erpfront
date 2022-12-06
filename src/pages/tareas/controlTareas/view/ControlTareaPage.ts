@@ -11,7 +11,6 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TareaController } from '../infraestructure/TareaController'
-import { UbicacionTarea } from '../domain/UbicacionTarea'
 import { Tarea } from '../domain/Tarea'
 
 export default defineComponent({
@@ -25,30 +24,8 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
 
     const { entidad: tarea, disabled, accion } = mixin.useReferencias()
-    const { onConsultado } = mixin.useHooks()
 
     const step = ref(1)
-
-    const tareaStore = useTareaStore()
-
-    /* onBeforeModificar(() => {
-      tarea.ubicacion_tarea = JSON.stringify(tarea.ubicacion_tarea)
-    }) */
-
-    /* onBeforeGuardar(() => {
-      // tarea.ubicacion_tarea = JSON.stringify(tarea.ubicacion_tarea)
-    }) */
-
-    /* onGuardado(() => {
-      tareaStore.tarea.hydrate(tarea)
-      tareaStore.accionTarea = accion
-    }) */
-
-    onConsultado(() => {
-      //tarea.ubicacion_tarea = JSON.parse(tarea.ubicacion_tarea)
-      tareaStore.tarea.hydrate(tarea)
-      if (!tarea.ubicacion_tarea) tarea.ubicacion_tarea = new UbicacionTarea()
-    })
 
     return {
       mixin,

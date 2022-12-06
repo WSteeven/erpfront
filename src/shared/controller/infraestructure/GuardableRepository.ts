@@ -13,7 +13,8 @@ export class GuardableRepository<T> {
   async guardar(entidad: T, params?: any) {
     try {
       const ruta = this.httpRepository.getEndpoint(this.endpoint, params)
-      const response: any = await this.httpRepository.post(ruta, entidad)
+      //const response: any = await this.httpRepository.post(ruta, entidad)
+      const response: any = await this.httpRepository.post(ruta, this.encapsularFormData(entidad))
       return {
         response,
         result: response.data.modelo,
@@ -21,5 +22,16 @@ export class GuardableRepository<T> {
     } catch (error: any) {
       throw new ApiError(error)
     }
+  }
+
+  encapsularFormData(entidad: any) {
+    const formData = new FormData()
+    for (const key in entidad) {
+      if (entidad[key]) {
+        formData.append(key, entidad[key])
+      }
+    }
+
+    return formData
   }
 }
