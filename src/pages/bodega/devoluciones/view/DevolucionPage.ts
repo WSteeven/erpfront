@@ -47,7 +47,7 @@ export default defineComponent({
 
     setup() {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
-        const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado, currentPageListado } = mixin.useReferencias()
+        const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
@@ -84,7 +84,7 @@ export default defineComponent({
         const opciones_sucursales = ref([])
         const opciones_tareas = ref([])
         //Obtener los listados
-        /* cargarVista(async () => {
+        cargarVista(async () => {
             await obtenerListados({
                 empleados: {
                     controller: new EmpleadoController(),
@@ -102,7 +102,7 @@ export default defineComponent({
                     params: { campos: 'id,lugar' },
                 },
             })
-        }) */
+        })
 
         //reglas de validacion
         const reglas = {
