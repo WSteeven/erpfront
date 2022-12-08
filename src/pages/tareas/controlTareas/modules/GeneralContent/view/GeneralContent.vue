@@ -8,11 +8,21 @@
       default-opened
     >
       <div class="row q-col-gutter-sm q-pa-md">
-        <div class="col-12 col-md-3">
+        <div v-if="!tarea.tiene_cliente_final" class="col-12 col-md-3">
           <br />
           <q-checkbox
             v-model="tarea.pertenece_a_proyecto"
             label="Pertenece a un proyecto"
+            outlined
+            dense
+          ></q-checkbox>
+        </div>
+
+        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+          <br />
+          <q-checkbox
+            v-model="tarea.tiene_cliente_final"
+            label="Trabajo para cliente final"
             outlined
             dense
           ></q-checkbox>
@@ -125,7 +135,7 @@
         </div>
 
         <!-- Fecha de solicitud -->
-        <div class="col-12 col-md-3">
+        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
           <q-input v-model="tarea.fecha_solicitud" outlined dense>
             <template v-slot:append>
@@ -155,37 +165,6 @@
           </q-input>
         </div>
 
-        <!-- Detalle -->
-        <div class="col-12 col-md-9">
-          <label class="q-mb-sm block">Detalle de la tarea</label>
-          <q-input
-            v-model="tarea.detalle"
-            placeholder="Obligatorio"
-            @update:model-value="(v) => (tarea.detalle = v.toUpperCase())"
-            outlined
-            dense
-            autogrow
-            type="textarea"
-            :error="!!v$.detalle.$errors.length"
-          >
-            <template v-slot:error>
-              <div v-for="error of v$.detalle.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-input>
-        </div>
-
-        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
-          <br />
-          <q-checkbox
-            v-model="tarea.tiene_cliente_final"
-            label="Trabajo para cliente final"
-            outlined
-            dense
-          ></q-checkbox>
-        </div>
-
         <!-- Codigo de proyecto -->
         <div v-if="tarea.pertenece_a_proyecto" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de proyecto</label>
@@ -213,6 +192,27 @@
               </q-item>
             </template>
           </q-select>
+        </div>
+
+        <!-- Detalle -->
+        <div class="col-12 col-md-6">
+          <label class="q-mb-sm block">Detalle de la tarea</label>
+          <q-input
+            v-model="tarea.detalle"
+            placeholder="Obligatorio"
+            @update:model-value="(v) => (tarea.detalle = v.toUpperCase())"
+            outlined
+            dense
+            autogrow
+            type="textarea"
+            :error="!!v$.detalle.$errors.length"
+          >
+            <template v-slot:error>
+              <div v-for="error of v$.detalle.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
         </div>
       </div>
     </q-expansion-item>

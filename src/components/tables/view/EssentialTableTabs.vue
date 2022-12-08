@@ -26,7 +26,7 @@
   </q-tabs>
 
   <essential-table
-    titulo=""
+    :titulo="titulo"
     :configuracionColumnas="configuracionColumnas"
     :datos="datos"
     :permitirConsultar="permitirConsultar"

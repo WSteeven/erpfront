@@ -13,7 +13,7 @@
     </div>
 
     <essential-table-tabs
-      titulo="subtareas"
+      titulo="Trabajo asignado"
       :configuracionColumnas="[
         ...configuracionColumnasSubtareas,
         accionesTabla,

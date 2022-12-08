@@ -4,13 +4,13 @@ import { useRoute, useRouter } from 'vue-router'
 
 // Componentes
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import { acciones } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { acciones } from 'config/utils'
 
 export default defineComponent({
   props: {
@@ -53,6 +53,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    full: {
+      type: Boolean,
+      default: false,
+    }
   },
   components: { EssentialTable, ButtonSubmits },
   setup(props) {
@@ -115,7 +119,7 @@ export default defineComponent({
       store.can(`puede.crear.${router.name?.toString()}`)
     )
     const puedeEditar = computed(() =>
-      store.can(`puede.editar.${router.name?.toString()}`) &&props.permitirEditar
+      store.can(`puede.editar.${router.name?.toString()}`) && props.permitirEditar
     )
     const puedeEliminar = computed(() =>
       store.can(`puede.eliminar.${router.name?.toString()}`)

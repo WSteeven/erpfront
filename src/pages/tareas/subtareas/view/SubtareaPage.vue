@@ -44,8 +44,30 @@
             </q-input>
           </div>
 
+          <!-- Asignar trabajo -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Asignar trabajo</label>
+            <q-btn-toggle
+              v-model="modoAsignacion"
+              spread
+              class="my-custom-toggle"
+              no-caps
+              unelevated
+              toggle-color="primary"
+              color="white"
+              text-color="primary"
+              :options="[
+                { label: 'Por grupo', value: 'por_grupo' },
+                { label: 'Por trabajador', value: 'por_trabajador' },
+              ]"
+            />
+          </div>
+
           <!-- Grupo -->
-          <div class="col-12 col-md-3">
+          <div
+            v-if="modoAsignacion === opcionesModoAsignacion.por_grupo"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Grupo asignado</label>
             <q-select
               v-model="subtarea.grupo"
@@ -323,7 +345,11 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="subtarea.fecha_ventana" mask="DD-MM-YYYY">
+                    <q-date
+                      v-model="subtarea.fecha_ventana"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -429,7 +455,13 @@
           </div>
 
           <!-- Técnicos del grupo principal -->
-          <div v-if="subtarea.tecnicos_grupo_principal" class="col-12">
+          <div
+            v-if="
+              subtarea.tecnicos_grupo_principal &&
+              modoAsignacion === opcionesModoAsignacion.por_grupo
+            "
+            class="col-12"
+          >
             <essential-table
               titulo="Técnicos del grupo principal"
               :configuracionColumnas="columnas"
@@ -439,9 +471,10 @@
               :permitirEditar="false"
               :permitirEliminar="false"
               :alto-fijo="false"
-              :mostrar-header="false"
+              :mostrar-header="true"
               :mostrar-footer="false"
               :accion1="eliminarTecnico"
+              :accion2="asignarNuevoTecnicoLider"
             >
               <!--:datos="tecnicosGrupoPrincipal"-->
             </essential-table>
@@ -453,13 +486,13 @@
       <q-expansion-item
         class="overflow-hidden bg-white q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
-        label="Asignar técnicos de otros grupos"
+        label="Asignar trabajadores"
         header-class="bg-grey-1"
         default-opened
       >
         <!-- Toggle -->
         <div class="row q-col-gutter-sm q-pa-md">
-          <div class="col-12">
+          <!--<div class="col-12">
             <q-btn-toggle
               v-model="seleccionBusqueda"
               spread
@@ -476,7 +509,7 @@
                 { label: 'Buscar por grupo', value: 'por_grupo' },
               ]"
             />
-          </div>
+          </div> -->
         </div>
 
         <!-- Busqueda por tecnico -->
@@ -595,56 +628,6 @@
         </div>
       </q-expansion-item>
 
-      <!-- #default="{ dropZoneActive }" -->
-      <!--<div class="row">
-        <div class="col-12 text-bold q-pa-md">Compartir archivos</div>
-
-        <div class="col-12">
-          <q-uploader
-            url="http://localhost:4444/upload"
-            label="Compartir archivos"
-            multiple
-            batch
-            style="width: 100%"
-            :method="cargarArchivos"
-          />
-        </div>
-      </div> -->
-
-      <!--<div class="col-12 borde-dashed">
-          <DropZone class="drop-area" @files-dropped="addFiles">
-            <label for="file-input" class="label-drop-area">
-              <span v-if="dropZoneActive">
-                <span>Soltar aquí</span>
-                <span class="smaller">para agregarlo</span>
-              </span>
-              <span v-else>
-                <span>Arrastra tus archivos aquí</span>
-                <span class="smaller">
-                  o <strong><em>haz click aquí</em></strong> para seleccionar
-                  archivos
-                </span>
-              </span>
-
-              <input
-                type="file"
-                id="file-input"
-                multiple
-                @change="onInputChange"
-              />
-            </label>
-            <ul class="image-list" v-show="files.length">
-              <FilePreview
-                v-for="file of files"
-                :key="file.id"
-                :file="file"
-                tag="li"
-                @remove="removeFile"
-              />
-            </ul>
-          </DropZone>
-        </div> -->
-
       <button-submits
         :accion="accion"
         @cancelar="reestablecerDatos()"
@@ -664,69 +647,3 @@
 </template>
 
 <script src="./SubtareaPage.ts"></script>
-
-<style lang="scss" scoped>
-.borde-dashed {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-}
-
-.drop-area {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 50px;
-  transition: 0.2s ease;
-  &[data-active='true'] {
-    background: #eee;
-  }
-}
-
-.label-drop-area {
-  font-size: 36px;
-  cursor: pointer;
-  display: block;
-  text-align: center;
-  span {
-    display: block;
-  }
-  input[type='file']:not(:focus-visible) {
-    // Visually Hidden Styles taken from Bootstrap 5
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-  }
-  .smaller {
-    font-size: 16px;
-  }
-}
-
-.image-list {
-  display: flex;
-  list-style: none;
-  flex-wrap: wrap;
-  padding: 0;
-}
-/* .upload-button {
-    display: block;
-    appearance: none;
-    border: 0;
-    border-radius: 50px;
-    padding: 0.75rem 3rem;
-    margin: 1rem auto;
-    font-size: 1.25rem;
-    font-weight: bold;
-    background: #369;
-    color: #fff;
-    text-transform: uppercase;
-} */
-button {
-  cursor: pointer;
-}
-</style>

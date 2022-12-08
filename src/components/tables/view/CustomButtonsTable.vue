@@ -3,7 +3,7 @@
   <span
     class="row"
     :class="{
-      'q-gutter-x-sm': !$q.screen.xs,
+      'q-gutter-sm': !$q.screen.xs,
       'justify-end q-gutter-y-sm': $q.screen.xs,
     }"
   >

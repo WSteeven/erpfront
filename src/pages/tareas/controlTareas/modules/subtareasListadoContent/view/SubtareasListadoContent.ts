@@ -3,7 +3,7 @@ import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasS
 import { tabOptions, accionesTabla, estadosSubtareas, acciones } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, watch } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useTareaStore } from 'stores/tarea'
 import { offset } from 'config/utils_tablas'
 
@@ -48,7 +48,6 @@ export default defineComponent({
         subtareaListadoStore.idSubtareaSeleccionada = null
         tareaStore.accionSubtarea = acciones.nuevo
         modales.abrirModalEntidad('SubtareasPage')
-        //tareaStore.subtarea.tarea_id = tareaStore.tarea.id
       },
     }
 
@@ -144,14 +143,12 @@ export default defineComponent({
 
     const botonSubirArchivos: CustomActionTable = {
       titulo: 'Archivos',
-      color: 'info',
+      color: 'secondary',
       icono: 'bi-folder',
-      visible: ({ entidad }) => true, //[estadosSubtareas.CREADO, estadosSubtareas.ASIGNADO].includes(entidad.estado),
-      accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
-        new CambiarEstadoSubtarea().realizar(entidad.id)
-        entidad.estado = estadosSubtareas.REALIZADO
-        actualizarElemento(posicion, entidad)
-      }),
+      visible: () => true,
+      accion: async ({ entidad, posicion }) => {
+        modales.abrirModalEntidad('GestorArchivoSubtareaPage')
+      }
     }
 
     function aplicarFiltro(tabSeleccionado) {
@@ -166,20 +163,6 @@ export default defineComponent({
         listado.value = [...listado.value];
       }
     }
-
-    const subtareaEditada = computed(() => subtareaListadoStore.subtareaEditada)
-    /*watch(subtareaEditada, () => {
-      if (subtareaEditada) {
-
-      }
-    })*/
-
-    const nuevoElementoInsertado = computed(() => subtareaListadoStore.nuevoElementoInsertado)
-    /*watch(nuevoElementoInsertado, () => {
-      if (nuevoElementoInsertado.value) {
-        aplicarFiltro(subtareaListadoStore.filtroEstadoSeleccionado)
-      }
-    })*/
 
     return {
       mixin,
