@@ -4,6 +4,7 @@
     :mostrar-button-submits="false"
     :configuracionColumnas="configuracionColumnas"
     tituloPagina="Control de tareas"
+    :full="true"
   >
     <template #formulario>
       <q-tabs
@@ -11,50 +12,35 @@
         no-caps
         bordered
         dense
-        align="center"
+        align="justify"
         narrow-indicator
-        active-color="white"
-        active-bg-color="primary"
+        active-color="primary"
         indicator-color="primary"
+        class="full-width block bg-grey-2"
       >
-        <q-tab
-          label="1. Tarea"
-          name="tarea"
-          class="q-mx-xs q-my-md rounded"
-          :class="{ 'shadow-chip borde': $q.screen.xs }"
-        ></q-tab>
+        <q-tab label="1. Tarea" name="tarea"></q-tab>
 
-        <q-tab
-          v-if="tareaSeleccionada"
-          label="2. Subtareas"
-          name="subtareas"
-          class="q-mx-xs q-my-md rounded"
-          :class="{ 'shadow-chip borde': $q.screen.xs }"
-        />
+        <q-tab v-if="tareaSeleccionada" label="2. Subtareas" name="subtareas" />
 
-        <q-tab
+        <!--<q-tab
           v-if="tareaSeleccionada"
           label="3. Almacenamiento en la nube"
           name="almacenamiento"
-          class="q-mx-xs q-my-md rounded"
-          :class="{ 'shadow-chip borde': $q.screen.xs }"
         />
 
         <q-tab
           v-if="tareaSeleccionada"
           label="4. Resumen de trabajo consolidado"
           name="resumen"
-          class="q-mx-xs q-my-md rounded"
-          :class="{ 'shadow-chip borde': $q.screen.xs }"
-        />
+        /> -->
       </q-tabs>
 
-      <q-tab-panels v-model="tabSeleccionado" animated>
+      <q-tab-panels v-model="tabSeleccionado" animated class="">
         <q-tab-panel name="tarea">
           <general-content :mixin="mixin"></general-content>
         </q-tab-panel>
 
-        <q-tab-panel name="subtareas">
+        <q-tab-panel name="subtareas" class="q-pa-none bg-grey-2">
           <subtareas-listado-content></subtareas-listado-content>
         </q-tab-panel>
 

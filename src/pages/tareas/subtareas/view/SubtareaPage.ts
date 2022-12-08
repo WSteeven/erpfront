@@ -99,11 +99,23 @@ export default defineComponent({
       },
     ]
 
+    function esLider(entidad) {
+      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesAdmitidos.tecnico_lider)
+    }
+
     const eliminarTecnico: CustomActionTable = {
       titulo: 'Quitar',
       icono: 'bi-x',
       color: 'negative',
-      visible: ({ entidad }) => entidad.roles !== rolesAdmitidos.tecnico_lider && ([acciones.editar, acciones.nuevo].includes(accion)),
+      visible: ({ entidad }) => !esLider(entidad) && ([acciones.editar, acciones.nuevo].includes(accion)),
+      accion: ({ posicion }) => tecnicosGrupoPrincipal.value.splice(posicion, 1),
+    }
+
+    const asignarNuevoTecnicoLider: CustomActionTable = {
+      titulo: 'Asignar reemplazo',
+      icono: 'bi-arrow-left-right',
+      color: 'primary',
+      visible: ({ entidad }) => esLider(entidad),// && ([acciones.editar, acciones.nuevo].includes(accion)),
       accion: ({ posicion }) => tecnicosGrupoPrincipal.value.splice(posicion, 1),
     }
 
@@ -255,6 +267,8 @@ export default defineComponent({
       subtarea.archivos = files
     }
 
+    const opcionesModoAsignacion = { por_grupo: 'por_grupo', por_trabajador: 'por_trabajador' }
+
     return {
       v$,
       subtarea,
@@ -264,6 +278,7 @@ export default defineComponent({
       busqueda,
       grupos,
       eliminarTecnico,
+      asignarNuevoTecnicoLider,
       eliminarTecnicoOtroGrupo,
       tecnicosGrupoPrincipal,
       tecnicosOtrosGrupos,
@@ -286,6 +301,8 @@ export default defineComponent({
       accion,
       disable,
       configuracionColumnasTecnico,
+      modoAsignacion: ref(opcionesModoAsignacion.por_grupo),
+      opcionesModoAsignacion,
       // orquestador
       refListadoSeleccionableTecnicos,
       criterioBusquedaTecnico,

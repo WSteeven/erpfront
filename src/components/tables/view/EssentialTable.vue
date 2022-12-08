@@ -58,7 +58,7 @@
     <template v-if="mostrarHeader" v-slot:top="props">
       <div
         v-if="titulo"
-        class="row bg-white text-bold q-mb-lg items-center"
+        class="row bg-white text-bold q-mb-lg items-center justify-center block"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
@@ -280,7 +280,9 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-pa-sm q-mb-md full-width custom-shadow"
+        class="q-py-xs q-mb-sm full-width"
+        bordered
+        flat
         :style="props.selected ? 'transform: scale(0.95);' : ''"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">
@@ -436,6 +438,7 @@
         </q-chip>
       </q-td>
     </template>
+
     <template #body-cell-autorizacion="props">
       <q-td :props="props">
         <q-chip

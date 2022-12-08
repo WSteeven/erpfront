@@ -235,7 +235,7 @@
     </q-drawer>
 
     <!-- Router -->
-    <q-page-container :class="{ 'bg-grey-2': !$q.screen.xs }">
+    <q-page-container :class="{ 'bg-grey-3': true }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <div>
