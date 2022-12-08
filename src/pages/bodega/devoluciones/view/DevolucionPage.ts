@@ -176,42 +176,34 @@ export default defineComponent({
             },
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
-        function buildTableBody(data, columns) {
+        function buildTableBody(data, columns, columnas) {
             var body = []
-            const columnas = ['Id', 'Producto', 'Descripción', 'Categoría', 'Cantidad']
+            // const columnas = ['Id', 'Producto', 'Descripción', 'Categoría', 'Cantidad']
             body.push(columnas)
 
             data.forEach(function (row) {
                 var dataRow = []
-                console.log(row)
                 columns.forEach(function (column) {
                     dataRow.push(row[column])
                 });
                 body.push(dataRow)
             });
+
             return body
         }
-        function table(data, columns) {
+        function table(data, columns, encabezados) {
+            // const columnas =['Producto', 'Descripción', 'Categoría', 'Cantidad']
             return {
+                // style:'tableExample',
+                layout: 'lightHorizontalLines',
                 table: {
                     headerRows: 1,
-                    body: buildTableBody(data, columns)
+                    body: buildTableBody(data, columns, encabezados),
+                    
                 }
             }
         }
 
-        function base64Encode() {
-            //read binary data
-            var bitmap = fs.readFileSync('assets/logoJP.png')
-            var imagen = fs.readFileSync('./logoJP.png');
-            return bitmap.toString('base64')
-            // return imagen
-        }
-        var base64String = ''
-        function base64Imagen() {
-            var reader = new FileReader()
-
-        }
         const f = new Date();
 
         function pdfMakeImprimir() {
@@ -246,22 +238,107 @@ export default defineComponent({
                 },
             }
             var docDefinition = {
+                styles: {
+                    header: {
+                        fontSize: 16,
+                        bold: true,
+                        alignment: 'center'
+                    },
+                    defaultStyle: {
+                        fontSize: 10,
+                        bold: false
+                    },
+                    resultStyle: {
+                        fontSize: 10,
+                        bold: true
+                    },
+                },
+                background: {
+                    image: logoBN,
+                    margin: [50, 50, 50, 50],
+                    opacity: 0.1
+                },
+                pageSize: 'A5',
+                pageOrientation: 'landscape',
                 content: [
                     // if you don't need styles, you can use a simple string to define a paragraph
                     'This is a standard paragraph, using default style',
 
                     // using a { text: '...' } object lets you set styling properties
                     { text: 'This paragraph will have a bigger font', fontSize: 15 },
-
-                    // if you set the value of text to an array instead of a string, you'll be able
-                    // to style any part individually
                     {
-                        text: [
-                            'This paragraph is defined as an array of elements to make it possible to ',
-                            { text: 'restyle part of it and make it bigger ', fontSize: 15 },
-                            'than the rest.'
+                        canvas: [
+                            {
+                                type: 'line',
+                                x1: 0, y1: 5,
+                                x2: 510, y2: 5,
+                                lineWidth: 1,
+                            },
+                        ], margin: [0, 0, 0, 20]
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                text: [
+                                    { text: 'Transaccion N° ', style: 'defaultStyle' },
+                                    { text: `${devolucionStore.devolucion.id}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: '*',
+                                text: [
+                                    { text: 'Fecha: ', style: 'defaultStyle' },
+                                    { text: `${devolucionStore.devolucion.created_at}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // fixed width
+                                width: '*',
+                                text: [
+                                    { text: 'Solicitante: ', style: 'defaultStyle' },
+                                    { text: `${devolucionStore.devolucion.solicitante}`, style: 'resultStyle', }
+                                ]
+                            },
+                        ],
+
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${devolucionStore.devolucion.sucursal}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${devolucionStore.devolucion.justificacion}`, style: 'resultStyle', }
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        columns: [
+                            {
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
+                                    { width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle', }
+                                ]
+                            }
                         ]
-                    }
+                    },
+
                 ]
             }
 
@@ -345,40 +422,42 @@ export default defineComponent({
                                 ]
                             },
                         ],
-                        // optional space between columns
-                        columnGap: 10
+
                     },
                     {
                         columns: [
                             {
                                 // auto-sized columns have their widths based on their content
                                 width: '*',
-                                text: [
-                                    { text: 'Sucursal: ', style: 'defaultStyle' },
-                                    { text: `${devolucionStore.devolucion.sucursal}`, style: 'resultStyle', }
+                                columns: [
+                                    { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${devolucionStore.devolucion.sucursal}`, style: 'resultStyle', }
                                 ]
                             },
                             {
                                 // star-sized columns fill the remaining space
                                 // if there's more than one star-column, available width is divided equally
-                                width: '*',
-                                text: [
-                                    { text: 'Justificación: ', style: 'defaultStyle' },
-                                    { text: `${devolucionStore.devolucion.justificacion}`, style: 'resultStyle', }
-                                ]
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${devolucionStore.devolucion.justificacion}`, style: 'resultStyle', }
+                                ],
                             },
                         ],
-                        // optional space between columns
-                        columnGap: 10
                     },
                     {
                         columns: [
-                            { width: 'auto', text: 'Tarea: ', style: 'defaultStyle' },
-                            { width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle', }
+                            {
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
+                                    { width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle', }
+                                ]
+                            }
                         ]
                     },
 
-                    table(devolucionStore.devolucion.listadoProductos, ['id', 'producto', 'descripcion', 'categoria', 'cantidad']),
+                    table(devolucionStore.devolucion.listadoProductos, ['producto', 'descripcion', 'categoria', 'cantidad'], ['Producto', 'Descripción', 'Categoría', 'Cantidad']),
 
                     // 'Some long text of variable length ...',
                     // { text: '2 Headline', headlineLevel: 1 },
@@ -414,29 +493,30 @@ export default defineComponent({
                         columns: [
                             {
                                 // auto-sized columns have their widths based on their content
-                                width: '*',
+                                // width: '*',
                                 text: [
-                                    { text: 'ENTREGA \n', style: 'resultStyle', align: 'center', decoration: 'overline' },
-                                    { text: `${devolucionStore.devolucion.solicitante}\n`, style: 'resultStyle', },
+                                    { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center', decoration: 'overline' },
+                                    { text: `${devolucionStore.devolucion.solicitante}\n`, style: 'resultStyle',alignment: 'center', },
                                     {
                                         text: [
-                                            { text: 'C.I: ', style: 'resultStyle' },
+                                            { text: 'C.I: ', style: 'resultStyle' ,alignment: 'center',},
                                             { text: `${store.user.identificacion}`, style: 'resultStyle', }
-                                        ]
+                                        ],
+                                        alignment: 'center',
                                     }
                                 ]
                             },
                             {
-                                width: '*',
+                                // width: '*',
                                 text: [
-                                    { text: 'RECIBE \n', style: 'resultStyle', align: 'center', decoration: 'overline' },
+                                    { text: 'RECIBE \n', style: 'resultStyle', alignment: 'center', decoration: 'overline' },
                                     { text: 'BODEGUERO: \n', style: 'resultStyle', },
-                                    { text: 'C.I: \n', style: 'resultStyle', }
+                                    { text: 'C.I: \n', style: 'resultStyle',margin: [60,0,0,0], }
                                 ]
                             },
                         ],
                         // optional space between columns
-                        columnGap: 10
+                        columnGap: 140
                     },
                 ],
                 styles: {
