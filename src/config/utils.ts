@@ -156,6 +156,10 @@ export const tabOptionsDevoluciones: TabOption[] = [
   { label: 'Creadas', value: 'CREADA' },
   { label: 'Anuladas', value: 'ANULADA' },
 ]
+export const tabOptionsTraspasos: TabOption[] = [
+  { label: 'Pendientes', value: '0' },
+  { label: 'Devueltas', value: '1' },
+]
 export const tabOptionsTransacciones: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'En espera', value: 'ESPERA' },
@@ -226,6 +230,8 @@ export const estadosInventarios = {
   transito: 'TRANSITO',
   sin_stock: 'SIN STOCK',
 }
+
+export const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 export const sistemasCoordenadas = ['DMS', 'UTM']
 

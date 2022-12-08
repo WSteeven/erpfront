@@ -4,7 +4,6 @@ import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
-import { useNotificaciones } from './notificaciones'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -235,4 +234,30 @@ export function obtenerFechaActual() {
 
 export function obtenerMensajesError() {
   //
+}
+
+/**
+ * Build the body table with elements of an array.
+ * columns y columnas deben tener la misma longitud de datos.
+ *
+ * @param data - el listado de productos que se mostrarán en la tabla
+ * @param columns - las posición para el recorrido del array
+ * @param columnas - los encabezados de la tabla
+ *
+ * @returns The cuerpo de la tabla para la impresión
+ */
+export function buildTableBody(data, columns, columnas) {
+  const body = []
+  // const columnas = ['Id', 'Producto', 'Descripción', 'Categoría', 'Cantidad']
+  body.push(columnas)
+
+  data.forEach(function (row) {
+      const dataRow = []
+      columns.forEach(function (column) {
+          dataRow.push(row[column])
+      });
+      body.push(dataRow)
+  });
+
+  return body
 }

@@ -187,6 +187,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Traspasos',
+          link: 'traspasos',
+          can: store.can('puede.ver.traspasos'),
+          icon: 'bi-circle',
+        },
+        {
           title: 'Reportes',
           icon: 'bi-circle',
           children: [

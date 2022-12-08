@@ -1,11 +1,11 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { useSelector } from "components/tables/application/selectorListado";
+import { useSelector } from "components/tables/application/selector";
 import { endpoints } from "config/api";
 import { Ref, ref } from "vue";
-import { ProductoEnPercha } from "../domain/ProductoEnPercha";
+import { Traspaso } from "../domain/Traspaso";
 import { Inventario } from "pages/bodega/inventario/domain/Inventario";
 
-export function useOrquestadorSelectorInventario(entidad: ProductoEnPercha, endpoint: keyof typeof endpoints) {
+export function useOrquestadorSelectorItems(entidad:Traspaso, endpoint:keyof typeof endpoints){
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()
@@ -15,28 +15,33 @@ export function useOrquestadorSelectorInventario(entidad: ProductoEnPercha, endp
         listadoSeleccionable: listado,
         endpoint: endpoint,
         limpiar: () => {
-            entidad.inventario = null
-            criterioBusqueda.value = null
+            entidad.id = null,
+                criterioBusqueda.value = null
         },
-        seleccionar: (inventario: Inventario) => {
-            // console.log(inventario[0]['id'])
-            // console.log(inventario[0]['producto'])
-            entidad.inventario = inventario[0]['id']
-            criterioBusqueda.value = inventario[0]['producto']
-            // console.log(criterioBusqueda.value)
-        },
+        seleccionar: (items: Inventario[]) => {
+            console.log(items)
+            entidad.listadoProductos = [...entidad.listadoProductos, ...items]
+        }
     }
 
     const selector = useSelector(singleSelector)
     const listar = (params) => selector.listar(criterioBusqueda.value, params)
     const limpiar = () => singleSelector.limpiar()
-    const seleccionar = (item: Inventario) => {
-        singleSelector.seleccionar(item)
+
+    const seleccionar = (items: Inventario[]) => {
+        let ids: any = []
+        ids = entidad.listadoProductos.map((entidad: Inventario) => entidad.id)
+        const datos = items.filter((v) => !ids.includes(v.id))
+
+        singleSelector.seleccionar(datos)
     }
+
     return {
         refListadoSeleccionable,
         listado,
         listar, limpiar, seleccionar,
         criterioBusqueda,
+
     }
+
 }

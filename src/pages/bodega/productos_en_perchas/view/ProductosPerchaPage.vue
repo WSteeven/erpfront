@@ -35,10 +35,10 @@
             </q-select>
           </div>
           <!-- Inventario select -->
-          <div class="col-12 col-md-12">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Inventario</label>
             <div class="row">
-              <div class="col-12 col-md-10 q-mb-md">
+              <div class="col-12 col-md-8 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaInventario"
                   placeholder="Producto del inventario"
@@ -46,7 +46,7 @@
                     (v) => (criterioBusquedaInventario = v.toUpperCase())
                   "
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarInventarios({sucursal: sucursal})"
+                  @keydown.enter="listarInventarios({sucursal_id: sucursal})"
                   @blur="
                     criterioBusquedaInventario === ''
                       ? limpiarInventario()
@@ -57,9 +57,9 @@
                 >
                 </q-input>
               </div>
-              <div class="col-12 col-md-2">
+              <div class="col-12 col-md-4">
                 <q-btn
-                  @click="listarInventarios({sucursal: sucursal})"
+                  @click="listarInventarios({sucursal_id: sucursal})"
                   icon="search"
                   unelevated
                   color="secondary"

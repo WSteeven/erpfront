@@ -240,6 +240,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/traspasos',
+        name: 'traspasos',
+        component: () =>
+          import(
+            'pages/bodega/traspasos/view/TraspasoPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
 
       //Routes for Recursos Humanos
       {

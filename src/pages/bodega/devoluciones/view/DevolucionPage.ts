@@ -25,7 +25,7 @@ import { configuracionColumnasProductosSeleccionados } from "../domain/configura
 import { configuracionColumnasDetallesModal } from "../domain/configuracionColumnasDetallesModal";
 import { useNotificaciones } from "shared/notificaciones";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, estadosDevoluciones, logoBN, logoColor, tabOptionsDevoluciones } from "config/utils";
+import { acciones, estadosDevoluciones, logoBN, logoColor, meses, tabOptionsDevoluciones } from "config/utils";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { endpoints } from "config/api";
 import html2pdf from 'html2pdf.js'
@@ -38,6 +38,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { useAuthenticationStore } from "stores/authentication";
 import * as fs from 'fs'
 import { LoginController } from "pages/sistema/authentication/login/infraestructure/LoginController";
+import { buildTableBody } from "shared/utils";
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -145,6 +146,7 @@ export default defineComponent({
         }
         const botonAnular: CustomActionTable = {
             titulo: 'Anular',
+            color:'negative',
             icono: 'bi-x',
             accion: ({ entidad, posicion }) => {
                 confirmar('Está seguro de anular la devolución?', () => {
@@ -174,23 +176,9 @@ export default defineComponent({
 
 
             },
-            //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+            visible: () => tabSeleccionado.value == 'CREADA' ? true : false
         }
-        function buildTableBody(data, columns, columnas) {
-            var body = []
-            // const columnas = ['Id', 'Producto', 'Descripción', 'Categoría', 'Cantidad']
-            body.push(columnas)
-
-            data.forEach(function (row) {
-                var dataRow = []
-                columns.forEach(function (column) {
-                    dataRow.push(row[column])
-                });
-                body.push(dataRow)
-            });
-
-            return body
-        }
+        //construccion de la tabla para imprimir
         function table(data, columns, encabezados) {
             // const columnas =['Producto', 'Descripción', 'Categoría', 'Cantidad']
             return {
@@ -254,7 +242,7 @@ export default defineComponent({
                     },
                 },
                 background: {
-                    image: logoBN,
+                    image: logoColor,
                     margin: [50, 50, 50, 50],
                     opacity: 0.1
                 },
@@ -538,7 +526,6 @@ export default defineComponent({
 
             pdfMake.createPdf(dd).open()
         }
-        if (devolucionStore.devolucion.tarea) console.log('Si hay tarea')
 
         async function anularDevolucion(id: number) {
             try {
@@ -556,7 +543,7 @@ export default defineComponent({
                 listado.value = [...listado.value];
             }
         }
-        const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados

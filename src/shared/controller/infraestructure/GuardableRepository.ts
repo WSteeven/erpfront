@@ -13,8 +13,8 @@ export class GuardableRepository<T> {
   async guardar(entidad: T, params?: any) {
     try {
       const ruta = this.httpRepository.getEndpoint(this.endpoint, params)
-      //const response: any = await this.httpRepository.post(ruta, entidad)
-      const response: any = await this.httpRepository.post(ruta, this.encapsularFormData(entidad))
+      const response: any = await this.httpRepository.post(ruta, entidad)
+      // const response: any = await this.httpRepository.post(ruta, this.encapsularFormData(entidad))
       return {
         response,
         result: response.data.modelo,
