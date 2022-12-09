@@ -3,6 +3,7 @@ import { configuracionColumnasTraspasos } from "../domain/configuracionColumnasT
 import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
 import { configuracionColumnasItemsSeleccionados } from "../domain/configuracionColumnasItemsSeleccionados";
 import { configuracionColumnasItemsSeleccionadosDevolver } from "../domain/configuracionColumnasItemsSeleccionadosDevolver";
+import { configuracionColumnasItemsSeleccionadosDevuelto } from "../domain/configuracionColumnasItemsSeleccionadosDevuelto";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
@@ -55,6 +56,7 @@ export default defineComponent({
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
+        let puedeEditar = ref(false)
 
         onReestablecer(() => {
             soloLectura.value = false
@@ -137,12 +139,12 @@ export default defineComponent({
             }
         }
         const botonDevolver: CustomActionTable = {
-            titulo: 'Devolver',
-            icono: ' bi-reply-fill',
+            titulo: 'Devolucion',
+            icono: 'bi-pencil',
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
-                    (data) => traspaso.listadoProductos[posicion].devolver = data,
-                    traspaso.listadoProductos[posicion].devolver
+                    (data) => traspaso.listadoProductos[posicion].devolucion = data,
+                    traspaso.listadoProductos[posicion].devolucion
                 )
             },
             visible: () => {
@@ -189,6 +191,7 @@ export default defineComponent({
 
             //tabla
             configuracionColumnasItemsSeleccionadosDevolver,
+            configuracionColumnasItemsSeleccionadosDevuelto,
             configuracionColumnasItemsSeleccionados,
             botonEditarCantidad,
             botonEliminar,
@@ -197,12 +200,14 @@ export default defineComponent({
 
             //flags
             soloLectura,
+            puedeEditar,
             //Tabs 
             tabOptionsTraspasos,
             tabSeleccionado,
 
             tabEs(val) {
                 tabSeleccionado.value = val
+                puedeEditar.value = val==0?true:false
             },
 
             //Filtros

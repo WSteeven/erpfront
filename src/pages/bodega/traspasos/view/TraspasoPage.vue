@@ -1,11 +1,12 @@
 <template>
+  {{ puedeEditar }}
   <tab-layout-filter-tabs
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Traspasos"
     :tab-options="tabOptionsTraspasos"
     @tab-seleccionado="tabEs"
-    :permitirEditar="true"
+    :permitirEditar="puedeEditar"
     :accion2="botonImprimir"
   >
     <template #formulario>
@@ -75,7 +76,10 @@
             </q-select>
           </div>
           <!-- Es para una tarea -->
-          <div class="col-12 col-md-3">
+          <div
+            v-if="traspaso.es_tarea || accion === acciones.nuevo"
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="traspaso.es_tarea"
@@ -190,6 +194,25 @@
               </template>
             </q-select>
           </div>
+          <div v-if="traspaso.estado" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado</label>
+            <q-select
+              v-model="traspaso.estado"
+              :options="opciones_estados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombre"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+            </q-select>
+          </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -198,6 +221,7 @@
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaProducto"
+                  :disable="disabled || soloLectura"
                   placeholder="Nombre de producto"
                   @update:model-value="
                     (v) => (criterioBusquedaProducto = v.toUpperCase())
@@ -225,6 +249,7 @@
                       cliente_id: traspaso.desde_cliente,
                     })
                   "
+                  :disable="disabled || soloLectura"
                   icon="search"
                   unelevated
                   color="primary"
@@ -243,6 +268,8 @@
               :configuracionColumnas="
                 accion === acciones.nuevo
                   ? configuracionColumnasItemsSeleccionados
+                  : accion === acciones.consultar
+                  ? configuracionColumnasItemsSeleccionadosDevuelto
                   : configuracionColumnasItemsSeleccionadosDevolver
               "
               :datos="traspaso.listadoProductos"
