@@ -14,18 +14,19 @@ import {
   estadosSubtareas,
   rolesAdmitidos,
   acciones,
+  opcionesModoAsignacionTrabajo,
 } from 'config/utils'
-import { required } from '@vuelidate/validators'
+import useFileList from "components/dropzone/application/fileList"
+import { required, requiredIf } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
-import useFileList from "components/dropzone/application/fileList"
 
 // Componentes
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import Dropzone from 'components/dropzone/view/DropZone.vue'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import FilePreview from 'components/dropzone/view/FilePreview.vue'
+import Dropzone from 'components/dropzone/view/DropZone.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -37,6 +38,8 @@ import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoContro
 import { SubtareaController } from '../infraestructure/SubtareaController'
 import { Subtarea } from '../domain/Subtarea'
 import { Tecnico } from '../domain/Tecnico'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   props: {
@@ -60,8 +63,11 @@ export default defineComponent({
     const accion = tareaStore.accionSubtarea
     const disable = computed(() => (subtarea.estado !== estadosSubtareas.CREADO && subtarea.estado !== null))
 
-    const tecnicosOtrosGrupos = ref([])
+    // const tecnicosOtrosGrupos = ref([])
     const tecnicosGrupoPrincipal = ref([])
+
+    const notificacionStore = useNotificacionStore()
+    notificacionStore.setQuasar(useQuasar())
 
     cargarVista(async () => {
       await obtenerListados({
@@ -119,13 +125,13 @@ export default defineComponent({
       accion: ({ posicion }) => tecnicosGrupoPrincipal.value.splice(posicion, 1),
     }
 
-    const eliminarTecnicoOtroGrupo: CustomActionTable = {
+    /* const eliminarTecnicoOtroGrupo: CustomActionTable = {
       titulo: 'Quitar',
       icono: 'bi-x',
       color: 'negative',
       visible: () => ([acciones.editar, acciones.nuevo].includes(accion)),
       accion: ({ posicion }) => tecnicosOtrosGrupos.value.splice(posicion, 1),
-    }
+    } */
 
     function obtenerResponsables(grupo_id: number) {
       if (grupo_id) obtenerTecnicosGrupo(grupo_id)
@@ -196,23 +202,27 @@ export default defineComponent({
       listar: listarTecnicos,
       limpiar: limpiarTecnico,
       seleccionar: seleccionarTecnico
-    } = useOrquestadorSelectorTecnicos(tecnicosOtrosGrupos, 'empleados')
+    } = useOrquestadorSelectorTecnicos(tecnicosGrupoPrincipal, 'empleados')
 
     onBeforeGuardar(() => {
-      subtarea.tecnicos_grupo_principal = tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString()
-      subtarea.tecnicos_otros_grupos = tecnicosOtrosGrupos.value.map((tecnico: Tecnico) => tecnico.id).toString()
+      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString())
+      // subtarea.tecnicos_otros_grupos = validarString(tecnicosOtrosGrupos.value.map((tecnico: Tecnico) => tecnico.id).toString())
       subtarea.tarea_id = tareaStore.tarea.id
     })
 
     onBeforeModificar(() => {
-      subtarea.tecnicos_grupo_principal = tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString()
-      subtarea.tecnicos_otros_grupos = tecnicosOtrosGrupos.value.map((tecnico: Tecnico) => tecnico.id).toString()
+      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Tecnico) => tecnico.id).toString())
+      // subtarea.tecnicos_otros_grupos = validarString(tecnicosOtrosGrupos.value.map((tecnico: Tecnico) => tecnico.id).toString())
     })
 
     onConsultado(() => {
       tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
-      tecnicosOtrosGrupos.value = subtarea.tecnicos_otros_grupos
+      // tecnicosOtrosGrupos.value = subtarea.tecnicos_otros_grupos
     })
+
+    function validarString(listado: string) {
+      return listado !== '' ? listado : null
+    }
 
     async function guardarDatos(subtarea: Subtarea) {
       try {
@@ -246,15 +256,16 @@ export default defineComponent({
     // Validaciones simples
     const rules = {
       detalle: { required },
-      grupo: { required },
+      grupo: { requiredIfGrupo: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
       tipo_trabajo: { required },
+      descripcion_completa: { required },
     }
 
     const v$ = useVuelidate(rules, subtarea)
     setValidador(v$.value)
 
     // Validaciones completas
-    const validarTecnicosGrupoPrincipal = new ValidarTecnicosGrupoPrincipal(subtarea)
+    const validarTecnicosGrupoPrincipal = new ValidarTecnicosGrupoPrincipal(tecnicosGrupoPrincipal)
 
     mixin.agregarValidaciones(
       validarTecnicosGrupoPrincipal
@@ -267,8 +278,6 @@ export default defineComponent({
       subtarea.archivos = files
     }
 
-    const opcionesModoAsignacion = { por_grupo: 'por_grupo', por_trabajador: 'por_trabajador' }
-
     return {
       v$,
       subtarea,
@@ -279,9 +288,9 @@ export default defineComponent({
       grupos,
       eliminarTecnico,
       asignarNuevoTecnicoLider,
-      eliminarTecnicoOtroGrupo,
+      // eliminarTecnicoOtroGrupo,
       tecnicosGrupoPrincipal,
-      tecnicosOtrosGrupos,
+      //tecnicosOtrosGrupos,
       provincias,
       ciudades,
       tiposInstalaciones,
@@ -301,8 +310,6 @@ export default defineComponent({
       accion,
       disable,
       configuracionColumnasTecnico,
-      modoAsignacion: ref(opcionesModoAsignacion.por_grupo),
-      opcionesModoAsignacion,
       // orquestador
       refListadoSeleccionableTecnicos,
       criterioBusquedaTecnico,
@@ -313,6 +320,7 @@ export default defineComponent({
       // ---
       files, addFiles, removeFile,
       cargarArchivos,
+      opcionesModoAsignacionTrabajo,
     }
   },
 })

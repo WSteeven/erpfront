@@ -136,12 +136,7 @@
             <essential-table
               titulo="Técnicos asignados"
               :configuracionColumnas="configuracionColumnasTecnico"
-              :datos="
-                [
-                  ...subtarea.tecnicos_grupo_principal,
-                  ...subtarea.tecnicos_otros_grupos,
-                ] ?? []
-              "
+              :datos="subtarea.tecnicos_grupo_principal"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -161,11 +156,10 @@
         header-class="bg-grey-1"
         default-opened
       >
-        <div
+        <!-- <div
           v-if="tipoUbicacionTrabajo === 'ubicacion_manual'"
           class="row q-col-gutter-sm q-pa-md"
         >
-          <!-- Provincia -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Provincias</label>
             <q-select
@@ -195,7 +189,6 @@
             </q-select>
           </div>
 
-          <!-- Ciudad -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Canton</label>
             <q-select
@@ -225,7 +218,6 @@
             </q-select>
           </div>
 
-          <!-- Parroquia -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Parroquia/Barrio</label>
             <q-input
@@ -239,7 +231,6 @@
             ></q-input>
           </div>
 
-          <!-- Direccion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Dirección</label>
             <q-input
@@ -253,7 +244,6 @@
             ></q-input>
           </div>
 
-          <!-- Referencias -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Referencias</label>
             <q-input
@@ -267,7 +257,6 @@
             ></q-input>
           </div>
 
-          <!-- Coordenadas -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Coordenadas</label>
             <q-input
@@ -281,12 +270,9 @@
             >
             </q-input>
           </div>
-        </div>
+        </div> -->
 
-        <div
-          v-if="tipoUbicacionTrabajo === 'cliente_final'"
-          class="row q-col-gutter-sm q-pa-md"
-        >
+        <div class="row q-col-gutter-sm q-pa-md">
           <!-- Nombre -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Cliente final</label>
@@ -441,6 +427,26 @@
           </div>
         </div>
       </q-expansion-item>
+
+      <div class="col-12">
+        <div class="text-bold q-mb-md">
+          <q-icon name="bi-folder" size="xs" class="q-mr-xs"></q-icon>
+          Archivos compartidos
+        </div>
+        <essential-table
+          titulo="Archivos compartidos para el trabajo"
+          :configuracionColumnas="columnasGestor"
+          :datos="archivos"
+          :alto-fijo="false"
+          :permitirEliminar="false"
+          :permitirConsultar="false"
+          :permitirEditar="false"
+          :mostrar-header="false"
+          :mostrar-footer="false"
+          :mostrar-botones="false"
+          :accion1="botonDescargar"
+        ></essential-table>
+      </div>
     </q-form>
   </q-page>
 </template>

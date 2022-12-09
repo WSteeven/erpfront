@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasTecnico } from 'pages/tareas/subtareas/domain/configuracionColumnasTecnico'
-import { tiposTareasTelconet, provincias, ciudades } from 'config/utils'
+import { tiposTareasTelconet, provincias, ciudades, accionesTabla } from 'config/utils'
 import { Subtarea } from "pages/tareas/subtareas/domain/Subtarea"
 import { useTareaStore } from "stores/tarea"
 import { computed, defineComponent, reactive, ref } from "vue"
@@ -18,6 +18,8 @@ import { ContactoController } from 'pages/tareas/contactos/infraestructure/Conta
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { configuracionColumnasGestorArchivo } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/domain/configuracionColumnasGestorArchivo'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
     components: { EssentialTable },
@@ -134,10 +136,28 @@ export default defineComponent({
             }
         })
 
+        // Archivos
+        const archivos = [
+            {
+                nombre: 'Ruta asignada.kmz',
+                tamanio_bytes: '12mb',
+            }
+        ]
+
+        const botonDescargar: CustomActionTable = {
+            titulo: 'Descargar',
+            icono: 'bi-download',
+            color: 'positive',
+            accion: ({ entidad }) => {
+                //
+            },
+        }
+
         return {
             subtarea,
             tiposTareasTelconet,
             configuracionColumnasTecnico,
+            columnasGestor: [...configuracionColumnasGestorArchivo, accionesTabla],
             provincias, ciudades,
             tiposTrabajos,
             grupos,
@@ -150,6 +170,8 @@ export default defineComponent({
             listadosAuxiliares,
             cantonesPorProvincia,
             clientesFinales,
+            archivos,
+            botonDescargar,
         }
     }
 })

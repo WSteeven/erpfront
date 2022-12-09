@@ -31,6 +31,20 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
         sortable: true,
     },
     {
+        name: 'fecha_hora_ejecucion',
+        field: 'fecha_hora_ejecucion',
+        label: 'Fecha hora ejecución',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'fecha_hora_realizado',
+        field: 'fecha_hora_realizado',
+        label: 'Fecha hora realizado',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'estado',
         field: 'estado',
         label: 'Estado',

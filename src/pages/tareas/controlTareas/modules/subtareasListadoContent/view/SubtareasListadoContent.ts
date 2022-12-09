@@ -143,8 +143,8 @@ export default defineComponent({
 
     const botonSubirArchivos: CustomActionTable = {
       titulo: 'Archivos',
-      color: 'secondary',
-      icono: 'bi-folder',
+      color: 'yellow-9',
+      icono: 'bi-folder-fill',
       visible: () => true,
       accion: async ({ entidad, posicion }) => {
         modales.abrirModalEntidad('GestorArchivoSubtareaPage')

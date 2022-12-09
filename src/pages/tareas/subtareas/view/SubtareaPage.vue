@@ -48,27 +48,37 @@
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Asignar trabajo</label>
             <q-btn-toggle
-              v-model="modoAsignacion"
+              v-model="subtarea.modo_asignacion_trabajo"
               spread
               class="my-custom-toggle"
               no-caps
               unelevated
+              :disable="disable"
               toggle-color="primary"
               color="white"
               text-color="primary"
               :options="[
-                { label: 'Por grupo', value: 'por_grupo' },
-                { label: 'Por trabajador', value: 'por_trabajador' },
+                {
+                  label: 'Por grupo técnico',
+                  value: opcionesModoAsignacionTrabajo.por_grupo,
+                },
+                {
+                  label: 'Por empleado',
+                  value: opcionesModoAsignacionTrabajo.por_trabajador,
+                },
               ]"
             />
           </div>
 
           <!-- Grupo -->
           <div
-            v-if="modoAsignacion === opcionesModoAsignacion.por_grupo"
+            v-if="
+              subtarea.modo_asignacion_trabajo ===
+              opcionesModoAsignacionTrabajo.por_grupo
+            "
             class="col-12 col-md-3"
           >
-            <label class="q-mb-sm block">Grupo asignado</label>
+            <label class="q-mb-sm block">Grupo técnico asignado</label>
             <q-select
               v-model="subtarea.grupo"
               :options="grupos"
@@ -108,7 +118,7 @@
 
           <!-- Tipo trabajo -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Tipo de trabajo</label>
+            <label class="q-mb-sm block">Tipo de trabajo a realizar</label>
             <q-select
               v-model="subtarea.tipo_trabajo"
               :options="tiposTrabajos"
@@ -236,8 +246,10 @@
             <label class="q-mb-sm block">Causa de la suspención</label>
             <q-input
               v-model="subtarea.causa_suspencion"
-              placeholder="Opcional"
+              disable
               outlined
+              type="textarea"
+              autogrow
               dense
             ></q-input>
           </div>
@@ -446,24 +458,66 @@
             >
             <q-input
               v-model="subtarea.descripcion_completa"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               :disable="disable"
               autogrow
               outlined
               dense
-            ></q-input>
+              :error="!!v$.descripcion_completa.$errors.length"
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.descripcion_completa.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
 
           <!-- Técnicos del grupo principal -->
-          <div
-            v-if="
-              subtarea.tecnicos_grupo_principal &&
-              modoAsignacion === opcionesModoAsignacion.por_grupo
-            "
-            class="col-12"
-          >
+          <div class="col-12">
+            <div class="row q-col-gutter-sm q-mb-md">
+              <!-- Busqueda -->
+              <div class="col-12 col-md-10">
+                <label class="q-mb-sm block">Buscar empleado</label>
+                <q-input
+                  v-model="busqueda"
+                  placeholder="Ingrese Nombres o Apellidos o Identificación"
+                  hint="Ingrese los datos del técnico y presione Enter"
+                  @update:model-value="
+                    (v) => (criterioBusquedaTecnico = v.toUpperCase())
+                  "
+                  @keydown.enter="listarTecnicos()"
+                  @blur="
+                    criterioBusquedaTecnico === '' ? limpiarTecnico() : null
+                  "
+                  type="search"
+                  :disable="disable"
+                  outlined
+                  dense
+                ></q-input>
+              </div>
+
+              <div class="col-12 col-md-2 q-pt-md">
+                <br />
+                <q-btn
+                  color="positive"
+                  class="full-width"
+                  :disable="disable"
+                  no-caps
+                  push
+                  @click="listarTecnicos()"
+                >
+                  <q-icon name="bi-search" class="q-pr-sm" size="xs"></q-icon>
+                  <div>Buscar</div>
+                </q-btn>
+              </div>
+            </div>
+
             <essential-table
-              titulo="Técnicos del grupo principal"
+              titulo="Empleados asignados"
               :configuracionColumnas="columnas"
               :datos="tecnicosGrupoPrincipal"
               :mostrarBotones="false"
@@ -483,16 +537,15 @@
       </q-expansion-item>
 
       <!-- Asignar técnicos de otros grupos -->
-      <q-expansion-item
+      <!--<q-expansion-item
         class="overflow-hidden bg-white q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
-        label="Asignar trabajadores"
+        label="Asignar empleados encargados"
         header-class="bg-grey-1"
         default-opened
-      >
-        <!-- Toggle -->
-        <div class="row q-col-gutter-sm q-pa-md">
-          <!--<div class="col-12">
+      > -->
+      <!--iv class="row q-col-gutter-sm q-pa-md"> -->
+      <!--<div class="col-12">
             <q-btn-toggle
               v-model="seleccionBusqueda"
               spread
@@ -510,50 +563,10 @@
               ]"
             />
           </div> -->
-        </div>
+      <!--</div> -->
 
-        <!-- Busqueda por tecnico -->
-        <div
-          v-if="seleccionBusqueda === 'por_tecnico'"
-          class="row q-col-gutter-sm q-pa-md"
-        >
-          <!-- Busqueda -->
-          <div class="col-12 col-md-10">
-            <label class="q-mb-sm block">Buscar</label>
-            <q-input
-              v-model="busqueda"
-              placeholder="Ingrese Nombres o Apellidos o Identificación"
-              hint="Ingrese los datos del técnico y presione Enter"
-              @update:model-value="
-                (v) => (criterioBusquedaTecnico = v.toUpperCase())
-              "
-              @keydown.enter="listarTecnicos()"
-              @blur="criterioBusquedaTecnico === '' ? limpiarTecnico() : null"
-              type="search"
-              :disable="disable"
-              outlined
-              dense
-            ></q-input>
-          </div>
-
-          <div class="col-12 col-md-2 q-pt-md">
-            <br />
-            <q-btn
-              color="positive"
-              class="full-width"
-              :disable="disable"
-              no-caps
-              push
-              @click="listarTecnicos()"
-            >
-              <q-icon name="bi-search" class="q-pr-sm" size="xs"></q-icon>
-              <div>Buscar</div>
-            </q-btn>
-          </div>
-        </div>
-
-        <!-- Busqueda por grupo -->
-        <div v-else class="row q-col-gutter-sm q-pa-md">
+      <!-- Busqueda por grupo -->
+      <!-- <div class="row q-col-gutter-sm q-pa-md">
           <div class="col-12 col-md-10">
             <label class="q-mb-sm block">Grupo</label>
             <q-select
@@ -604,11 +617,11 @@
               <div>Listar técnicos</div>
             </q-btn>
           </div>
-        </div>
+        </div> -->
 
-        <!-- Listado -->
-        <div class="row q-col-gutter-sm q-pa-md">
-          <!-- Tecnicos temporales -->
+      <!-- Listado -->
+      <!-- Tecnicos temporales -->
+      <!-- <div class="row q-col-gutter-sm q-pa-md">
           <div class="col-12">
             <essential-table
               titulo="Técnicos temporales de otros grupos"
@@ -625,8 +638,8 @@
             >
             </essential-table>
           </div>
-        </div>
-      </q-expansion-item>
+        </div> -->
+      <!--</q-expansion-item> -->
 
       <button-submits
         :accion="accion"

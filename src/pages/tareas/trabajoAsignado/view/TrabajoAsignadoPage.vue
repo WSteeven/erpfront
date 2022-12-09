@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page :padding="!$q.screen.xs">
     <div class="text-center q-pb-md">
       <div class="text-bold q-mb-md">{{ fecha }}</div>
       <div class="text-h5 q-mb-md">
@@ -8,12 +8,10 @@
       <div v-if="authenticationStore.user?.grupo" class="text-h6 q-mb-md">
         Grupo, {{ authenticationStore.user.grupo }}
       </div>
-
-      <div class="text-bold q-mb-md">Trabajo asignado</div>
     </div>
 
     <essential-table-tabs
-      titulo="Trabajo asignado"
+      titulo=""
       :configuracionColumnas="[
         ...configuracionColumnasSubtareas,
         accionesTabla,
@@ -25,6 +23,7 @@
       :accion4="botonPausar"
       :accion5="botonReanudar"
       :accion6="botonSuspender"
+      :accion7="botonRealizar"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"

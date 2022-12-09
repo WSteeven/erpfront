@@ -15,7 +15,7 @@ export class TrabajoAsignadoModales {
 
     constructor() {
         this.SubtareaAsignadaPage = markRaw(
-            new ComponenteModal('CONSTRUCRED', SubtareaAsignadaPage)
+            new ComponenteModal('Detalles del trabajo', SubtareaAsignadaPage)
         )
         this.RecopilacionInformacion = markRaw(
             new ComponenteModal('CONSTRUCRED', RecopilacionInformacion)

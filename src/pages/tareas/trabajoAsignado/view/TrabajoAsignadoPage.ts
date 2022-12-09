@@ -30,9 +30,8 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
-    const { listado, currentPageListado, offset } = mixin.useReferencias()
-    // const { listar } = mixin.useComportamiento()
-    const { confirmar, prompt } = useNotificaciones()
+    const { listado, currentPageListado } = mixin.useReferencias()
+    const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
     const mostrarDialogPlantilla = ref(false)
 
@@ -54,10 +53,11 @@ export default defineComponent({
       icono: 'bi-play',
       color: 'positive',
       visible: ({ entidad }) => [estadosSubtareas.ASIGNADO].includes(entidad.estado) || (entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion),
-      accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de iniciar el trabajo?', () => {
-          new CambiarEstadoSubtarea().ejecutar(entidad.id)
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de iniciar el trabajo?', async () => {
+          const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
           entidad.estado = estadosSubtareas.EJECUTANDO
+          entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
           actualizarElemento(posicion, entidad)
         })
       }
@@ -98,9 +98,8 @@ export default defineComponent({
       icono: 'bi-journal-text',
       color: 'indigo',
       visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
-          //mostrarDialogPlantilla.value = true
           store.idSubtareaSeleccionada = entidad.id
           modales.abrirModalEntidad('PlantillaGenericaPage')
         })
@@ -124,6 +123,22 @@ export default defineComponent({
       },
     }
 
+    const botonRealizar: CustomActionTable = {
+      titulo: 'Realizado',
+      icono: 'bi-check-circle',
+      color: 'positive',
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de que completó el trabajo?', async () => {
+          const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id)
+          entidad.estado = estadosSubtareas.REALIZADO
+          entidad.fecha_hora_realizado = result.fecha_hora_realizado
+          actualizarElemento(posicion, entidad)
+          notificarCorrecto('El trabajo ha sido marcado como realizado!')
+        })
+      }
+    }
+
     function actualizarElemento(posicion: number, entidad: any): void {
       if (posicion >= 0) {
         listado.value.splice(posicion, 1, entidad);
@@ -137,8 +152,7 @@ export default defineComponent({
     async function aplicarFiltro(tabSeleccionado) {
       if (tabSeleccionado !== estadoSeleccionado) {
         currentPageListado.value = 1
-        const grupo_id = authenticationStore.user.grupo_id
-        const { result } = await subtareaAsignada.listar({ page: currentPageListado.value++, offset: 48, grupo_id: grupo_id, estado: tabSeleccionado })
+        const { result } = await subtareaAsignada.listar({ page: currentPageListado.value++, offset: 48, estado: tabSeleccionado }) //grupo_id: grupo_id, 
         listado.value = result.data
         estadoSeleccionado = tabSeleccionado
       }
@@ -168,6 +182,7 @@ export default defineComponent({
       botonReanudar,
       botonFormulario,
       botonSuspender,
+      botonRealizar,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
       authenticationStore,
     }

@@ -128,13 +128,13 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       throw new Error('No se ha efectuado ningun cambio')
     }
 
-    this.hooks.onBeforeGuardar()
 
     if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
     }
 
+    this.hooks.onBeforeGuardar()
 
     this.cargarVista(async () => {
       try {
