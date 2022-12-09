@@ -5,7 +5,7 @@
     titulo-pagina="Traspasos"
     :tab-options="tabOptionsTraspasos"
     @tab-seleccionado="tabEs"
-    :permitirEditar="false"
+    :permitirEditar="true"
     :accion2="botonImprimir"
   >
     <template #formulario>
@@ -203,7 +203,12 @@
                     (v) => (criterioBusquedaProducto = v.toUpperCase())
                   "
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarProductos({sucursal_id:traspaso.sucursal, cliente_id:traspaso.desde_cliente})"
+                  @keydown.enter="
+                    listarProductos({
+                      sucursal_id: traspaso.sucursal,
+                      cliente_id: traspaso.desde_cliente,
+                    })
+                  "
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
                   "
@@ -214,7 +219,12 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos({sucursal_id:traspaso.sucursal, cliente_id:traspaso.desde_cliente})"
+                  @click="
+                    listarProductos({
+                      sucursal_id: traspaso.sucursal,
+                      cliente_id: traspaso.desde_cliente,
+                    })
+                  "
                   icon="search"
                   unelevated
                   color="primary"
@@ -230,7 +240,11 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasItemsSeleccionados"
+              :configuracionColumnas="
+                accion === acciones.nuevo
+                  ? configuracionColumnasItemsSeleccionados
+                  : configuracionColumnasItemsSeleccionadosDevolver
+              "
               :datos="traspaso.listadoProductos"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -238,6 +252,7 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
+              :accion3="botonDevolver"
               :mostrarFooter="true"
             ></essential-table>
           </div>

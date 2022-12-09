@@ -1,6 +1,9 @@
 //Dependencias
 import { configuracionColumnasTraspasos } from "../domain/configuracionColumnasTraspasos";
-import { required} from "@vuelidate/validators";
+import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
+import { configuracionColumnasItemsSeleccionados } from "../domain/configuracionColumnasItemsSeleccionados";
+import { configuracionColumnasItemsSeleccionadosDevolver } from "../domain/configuracionColumnasItemsSeleccionadosDevolver";
+import { required } from "@vuelidate/validators";
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 import { useOrquestadorSelectorItems } from "../application/OrquestadorSelectorInventario";
@@ -23,8 +26,6 @@ import { ClienteController } from "pages/sistema/clientes/infraestructure/Client
 import { EstadosTransaccionController } from "pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { acciones, tabOptionsTraspasos } from "config/utils";
-import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
-import { configuracionColumnasItemsSeleccionados } from "../domain/configuracionColumnasItemsSeleccionados";
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -33,12 +34,12 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Traspaso, new TraspasoController())
         const { entidad: traspaso, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onReestablecer,onBeforeGuardar } = mixin.useHooks()
+        const { onReestablecer, onBeforeGuardar } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
 
         //stores
         const store = useAuthenticationStore()
-        const {notificarError, notificarAdvertencia} = useNotificaciones()
+        const { notificarError, notificarAdvertencia } = useNotificaciones()
 
         //orquestador
         const {
@@ -58,14 +59,14 @@ export default defineComponent({
         onReestablecer(() => {
             soloLectura.value = false
         })
-        onBeforeGuardar(()=>{
-            if(traspaso.desde_cliente===traspaso.hasta_cliente){
+        onBeforeGuardar(() => {
+            if (traspaso.desde_cliente === traspaso.hasta_cliente) {
                 notificarError('¡No se puede hacer traspasos en un mismo cliente!')
             }
-            v$.value.listadoProductos.$errors.forEach(error => 
+            v$.value.listadoProductos.$errors.forEach(error =>
                 // console.log(error.$message)
                 notificarAdvertencia('Debe agregar al menos un producto al listado')
-                );
+            );
         })
 
         const opciones_clientes = ref([])
@@ -119,7 +120,7 @@ export default defineComponent({
                 eliminar({ entidad, posicion })
             },
             visible: () => {
-                return accion.value == acciones.consultar ? false : true
+                return accion.value == acciones.nuevo ? true : false
             }
         }
         const botonEditarCantidad: CustomActionTable = {
@@ -132,7 +133,20 @@ export default defineComponent({
                 )
             },
             visible: () => {
-                return accion.value == acciones.consultar ? false : true
+                return accion.value == acciones.nuevo ? true : false
+            }
+        }
+        const botonDevolver: CustomActionTable = {
+            titulo: 'Devolver',
+            icono: ' bi-reply-fill',
+            accion: ({ posicion }) => {
+                prompt('Ingresa la cantidad',
+                    (data) => traspaso.listadoProductos[posicion].devolver = data,
+                    traspaso.listadoProductos[posicion].devolver
+                )
+            },
+            visible: () => {
+                return accion.value == acciones.editar ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
@@ -157,6 +171,7 @@ export default defineComponent({
         return {
             mixin, traspaso, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasTraspasos,
+            acciones,
             //listados
             opciones_clientes,
             opciones_estados,
@@ -173,10 +188,12 @@ export default defineComponent({
             configuracionColumnasItems: configuracionColumnasInventarios,
 
             //tabla
+            configuracionColumnasItemsSeleccionadosDevolver,
             configuracionColumnasItemsSeleccionados,
             botonEditarCantidad,
             botonEliminar,
             botonImprimir,
+            botonDevolver,
 
             //flags
             soloLectura,
@@ -184,13 +201,13 @@ export default defineComponent({
             tabOptionsTraspasos,
             tabSeleccionado,
 
-            tabEs(val){
+            tabEs(val) {
                 tabSeleccionado.value = val
             },
 
             //Filtros
-            filtroTareas(val){
-                const opcionSeleccionada = listadosAuxiliares.tareas.filter((v)=>v.id===val)
+            filtroTareas(val) {
+                const opcionSeleccionada = listadosAuxiliares.tareas.filter((v) => v.id === val)
                 console.log(opcionSeleccionada)
                 traspaso.hasta_cliente = opcionSeleccionada[0]['cliente_id']
 
