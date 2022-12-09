@@ -1,4 +1,4 @@
-import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
+import { opcionesModoAsignacionTrabajo } from 'config/utils'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Subtarea extends EntidadAuditable {
@@ -43,6 +43,9 @@ export class Subtarea extends EntidadAuditable {
 
   archivos: any
 
+  // Mostrar / ocultar
+  modo_asignacion_trabajo: string
+
   constructor() {
     super()
 
@@ -85,5 +88,8 @@ export class Subtarea extends EntidadAuditable {
     this.es_primera_asignacion = false
 
     this.archivos = null
+
+    // Mostrar / ocultar
+    this.modo_asignacion_trabajo = opcionesModoAsignacionTrabajo.por_grupo
   }
 }

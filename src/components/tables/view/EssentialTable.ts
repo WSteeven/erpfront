@@ -15,12 +15,14 @@ import { offset } from 'config/utils_tablas'
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
 import CustomButtons from './CustomButtonsTable.vue'
+import EstadosSubtareas from './EstadosSubtareas.vue'
 
 export default defineComponent({
   components: {
     PrevisualizarTablaPdf,
     EditarTablaModal,
     CustomButtons,
+    EstadosSubtareas,
   },
   props: {
     entidad: {

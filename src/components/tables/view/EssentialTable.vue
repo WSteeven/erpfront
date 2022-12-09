@@ -280,9 +280,7 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs q-mb-sm full-width"
-        bordered
-        flat
+        class="q-py-xs custom-shadow q-mb-sm full-width"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">
@@ -354,6 +352,8 @@
                   :accion3="accion3"
                   :accion4="accion4"
                   :accion5="accion5"
+                  :accion6="accion6"
+                  :accion7="accion7"
                   :propsTable="props"
                 ></CustomButtons>
               </div>
@@ -374,6 +374,10 @@
                     size="md"
                   ></q-icon>
                 </span>
+                <estados-subtareas
+                  v-if="col.name === 'estado'"
+                  :propsTable="col"
+                />
                 <span v-else>{{ col.value }}</span>
               </q-item-label>
             </q-item-section>
@@ -590,72 +594,7 @@
           >{{ estadosControlStock.suficiente }}
         </q-chip>
 
-        <!-- Estados subtareas -->
-        <q-chip
-          v-if="props.value === estadosSubtareas.CREADO"
-          class="bg-yellow-1"
-        >
-          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
-          >{{ estadosSubtareas.CREADO }}
-        </q-chip>
-        <q-chip
-          v-if="props.value === estadosSubtareas.ASIGNADO"
-          class="bg-purple-1"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="purple-5"
-            class="q-mr-xs"
-          ></q-icon
-          >{{ estadosSubtareas.ASIGNADO }}
-        </q-chip>
-        <q-chip
-          v-if="props.value === estadosSubtareas.EJECUTANDO"
-          class="bg-blue-1"
-        >
-          <q-icon name="bi-circle-fill" color="blue" class="q-mr-xs"></q-icon
-          >{{ estadosSubtareas.EJECUTANDO }}
-        </q-chip>
-        <q-chip
-          v-if="props.value === estadosSubtareas.PAUSADO"
-          class="bg-indigo-1"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="indigo-5"
-            class="q-mr-xs"
-          ></q-icon
-          >{{ estadosSubtareas.PAUSADO }}
-        </q-chip>
-        <q-chip
-          v-if="props.value === estadosSubtareas.SUSPENDIDO"
-          class="bg-red-1"
-        >
-          <q-icon name="bi-circle-fill" color="red" class="q-mr-xs"></q-icon
-          >{{ estadosSubtareas.SUSPENDIDO }}
-        </q-chip>
-        <q-chip
-          v-if="props.value === estadosSubtareas.CANCELADO"
-          class="bg-red-1 text-red"
-        >
-          <q-icon
-            name="bi-exclamation-octagon-fill"
-            color="red"
-            class="q-mr-xs"
-          ></q-icon
-          >{{ estadosSubtareas.CANCELADO }}
-        </q-chip>
-        <q-chip
-          v-if="props.value === estadosSubtareas.REALIZADO"
-          class="bg-green-1"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
-          >{{ estadosSubtareas.REALIZADO }}
-        </q-chip>
+        <estados-subtareas :propsTable="props" />
 
         <!-- estados de la tabla prestamos temporales -->
         <q-chip v-if="props.value === 'DEVUELTO'" class="bg-green-1">

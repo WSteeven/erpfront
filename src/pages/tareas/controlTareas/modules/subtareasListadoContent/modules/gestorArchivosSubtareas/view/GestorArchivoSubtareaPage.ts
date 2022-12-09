@@ -22,7 +22,7 @@ export default defineComponent({
                 tamanio_bytes: '16mb',
             },
             {
-                nombre: 'Archivo KMZ 1.docx',
+                nombre: 'Ruta asignada.kmz',
                 tamanio_bytes: '12mb',
             }
         ]

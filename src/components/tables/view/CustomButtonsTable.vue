@@ -1,8 +1,9 @@
 <template>
   <!-- Accion 1-->
   <span
-    class="row"
     :class="{
+      row: !$q.screen.xs,
+      column: $q.screen.xs,
       'q-gutter-sm': !$q.screen.xs,
       'justify-end q-gutter-y-sm': $q.screen.xs,
     }"
