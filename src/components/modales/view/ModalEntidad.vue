@@ -30,7 +30,7 @@
       <q-card-section>
         <component
           :is="componente"
-          :mixin="mixin"
+          :mixinModal="mixin"
           @seleccionar="emit('seleccionar')"
           @cerrar-modal="cerrarModalEntidad()"
         ></component>
@@ -39,5 +39,4 @@
     </q-card>
   </q-dialog>
 </template>
-
 <script src="./ModalEntidad.ts"></script>

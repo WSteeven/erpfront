@@ -68,14 +68,14 @@ export function useNotificaciones() {
       })
   }
 
-  function prompt(mensaje: string, callback: (data) => void, defaultValue?) {
+  function prompt(mensaje: string,  callback: (data) => void, type?:string, defaultValue?) {
     $q.dialog({
       html: true,
       title: 'Confirmación',
       message: mensaje,
       prompt: {
         model: defaultValue,
-        type: 'text', // optional
+        type: type, // optional
       },
       cancel: true,
       persistent: true,

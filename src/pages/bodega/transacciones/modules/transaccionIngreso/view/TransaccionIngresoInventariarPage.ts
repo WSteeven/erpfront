@@ -48,7 +48,7 @@ export default defineComponent({
 
         const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
-        
+
         onConsultado(() => {
             transaccion.solicitante = transaccion.solicitante_id
             transaccionStore.transaccion.hydrate(transaccion)
@@ -75,7 +75,7 @@ export default defineComponent({
         })
 
         //Reglas de validacion
-        const reglas = {
+        /* const reglas = {
             justificacion: { required },
             sucursal: { required },
             motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
@@ -87,60 +87,35 @@ export default defineComponent({
         }
 
         const v$ = useVuelidate(reglas, transaccion)
-        setValidador(v$.value)
+        setValidador(v$.value) */
 
 
         const modales = new ComportamientoModalesTransaccionIngreso()
         const botonInventario: CustomActionTable = {
-            titulo: 'Inventariar',
+            titulo: 'Inventariarqqqq',
             accion: async ({ entidad, posicion }) => {
                 console.log('boton inventariar')
-                // console.log('entidad',entidad)
-                // console.log('posicion',posicion)
                 await detalleStore.cargarDetalle(entidad.detalle_id)
-                // console.log(detalleStore.detalle)
 
-                modales.abrirModalEntidad('InventarioPage')
+                // modales.abrirModalEntidad('InventarioPage')
+                modales.abrirModalEntidad('InventariarPage')
             },
-            visible: ({ entidad, posicion }) => {
-                // console.log('xxxx', entidad)
-                // console.log(entidad.despachado, entidad.cantidades)
+            /* visible: ({ entidad, posicion }) => {
                 if (detalleTransaccionStore.detalle.transaccion_id === transaccionStore.transaccion.id && detalleTransaccionStore.detalle.detalle_id === entidad.id) {
                     console.log('comprobacion', detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_inicial)
                     return detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_final
                 }
                 return entidad.despachado !== entidad.cantidades
-            },
+            }, */
         }
 
 
-        function eliminarItem({ entidad, posicion }) {
-            confirmar('¿Esta seguro de continuar?',
-                () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
-        }        
-        const botonImprimir: CustomActionTable = {
-            titulo: 'Imprimir',
-            color: 'secondary',
-            icono: 'bi-printer',
-            accion: ({ entidad, posicion }) => {
-                transaccionStore.idTransaccion = entidad.id
 
-                modales.abrirModalEntidad("TransaccionIngresoImprimirPage")
-                // imprimir()
-            },
-            //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
-        }
-        const botonEditarInventario:CustomActionTable={
-            titulo:'Despachar',
-            accion:({entidad, posicion})=>{
-                estaInventariando.value=true
-            }
-        }
 
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
-            name: 'cantidades',
-            field: 'cantidades',
+            name: 'cantidad',
+            field: 'cantidad',
             label: 'Cantidades',
             align: 'left',
             sortable: false,
@@ -155,7 +130,7 @@ export default defineComponent({
 
 
         return {
-            mixin, transaccion, disabled, accion, v$, soloLectura,
+            mixin, transaccion, disabled, accion, soloLectura,
             configuracionColumnas: configuracionColumnasTransaccionIngreso,
 
             //modal
@@ -163,18 +138,17 @@ export default defineComponent({
 
             acciones,
 
-            
+
             // tabla,
             configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasDetallesProductos,
             configuracionColumnasProductosSeleccionados,
             botonInventario,
-            botonImprimir,
-            botonEditarInventario,
-            eliminarItem,
+            // botonImprimir,
+            // botonEditarInventario,
 
 
-        
+
 
             //rol
             rolSeleccionado,

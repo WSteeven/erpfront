@@ -7,7 +7,7 @@ import { configuracionColumnasProductosSeleccionados } from '../../transaccionCo
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
-import {useDevolucionStore} from 'stores/devolucion'
+import { useDevolucionStore } from 'stores/devolucion'
 import { acciones } from 'config/utils'
 
 // Componentes
@@ -153,14 +153,14 @@ export default defineComponent({
             condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
         }
 
-        async function llenarTransaccion(){
+        async function llenarTransaccion() {
             await devolucionStore.cargarDevolucion(transaccion.devolucion)
             transaccion.justificacion = devolucionStore.devolucion.justificacion
             transaccion.solicitante = devolucionStore.devolucion.solicitante
             transaccion.sucursal = devolucionStore.devolucion.sucursal
             transaccion.listadoProductosTransaccion = devolucionStore.devolucion.listadoProductos
         }
-        function limpiarTransaccion(){
+        function limpiarTransaccion() {
             transaccion.devolucion = ''
             transaccion.justificacion = ''
             transaccion.solicitante = ''
@@ -173,10 +173,11 @@ export default defineComponent({
 
 
         const modales = new ComportamientoModalesTransaccionIngreso()
+
         const botonInventario: CustomActionTable = {
             titulo: 'Inventariar',
             accion: async ({ entidad }) => {
-                
+
                 console.log(detalleStore.detalle)
 
                 await detalleStore.cargarDetalle(entidad.id)
@@ -184,13 +185,12 @@ export default defineComponent({
                 modales.abrirModalEntidad('InventarioPage')
             },
             visible: ({ entidad }) => {
-                // console.log('xxxx', entidad)
-                // console.log(entidad.despachado, entidad.cantidades)
-                if (detalleTransaccionStore.detalle.transaccion_id === transaccionStore.transaccion.id && detalleTransaccionStore.detalle.detalle_id === entidad.id) {
+                /* if (detalleTransaccionStore.detalle.transaccion_id === transaccionStore.transaccion.id && detalleTransaccionStore.detalle.detalle_id === entidad.id) {
                     console.log('comprobacion', detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_inicial)
                     return detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_final
-                }
-                return entidad.despachado !== entidad.cantidades
+                } */
+                // return entidad.despachado !== entidad.cantidades
+                return false
             },
         }
 
@@ -203,19 +203,20 @@ export default defineComponent({
             titulo: 'Quitar',
             color: 'negative',
             icono: 'bi-x',
-            accion: ({  posicion }) => {
+            accion: ({ posicion }) => {
                 eliminarItem({ posicion })
             },
-            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar||!estaInventariando.value
+            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar || !estaInventariando.value
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
-            accion: ({  posicion }) => {
+            accion: ({ posicion }) => {
                 prompt(
                     'Ingresa la cantidad',
                     (data) => {
                         transaccion.listadoProductosTransaccion[posicion].cantidad = data
                     },
+                    'number',
                     transaccion.listadoProductosTransaccion[posicion].cantidad
                 )
             },
@@ -227,24 +228,32 @@ export default defineComponent({
             icono: 'bi-printer',
             accion: ({ entidad }) => {
                 transaccionStore.idTransaccion = entidad.id
-
-                modales.abrirModalEntidad('TransaccionIngresoImprimirPage')
+                console.log('Presionaste el boton IMPRIMIR')
+                // modales.abrirModalEntidad('TransaccionIngresoImprimirPage')
                 // imprimir()
             },
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
-        const botonEditarInventario:CustomActionTable={
-            titulo:'Despachar',
-            accion:({entidad})=>{
-                estaInventariando.value=true
+        const botonEditarInventario: CustomActionTable={
+            titulo:'Ingresar',
+            accion:({entidad, posicion})=>{
+                console.log('Presionaste el boton de inventariar')
+                transaccionStore.idTransaccion = entidad.id
+                modales.abrirModalEntidad('TransaccionIngresoInventariarPage')
+            }
+        }
+        /* const botonEditarInventario: CustomActionTable = {
+            titulo: 'Despachar',
+            accion: ({ entidad }) => {
+                estaInventariando.value = true
                 // console.log('entidad', entidad)
-                transaccionStore.idTransaccion=entidad.id
+                transaccionStore.idTransaccion = entidad.id
                 console.log('Presionaste el boton de editarInventario')
                 modales.abrirModalEntidad('TransaccionIngresoInventariarPage')
                 // Router.replace({name:'transacciones_ingresos_inventario'})
             }
-        }
-        const botonDespachar: CustomActionTable = {
+        } */
+        /* const botonDespachar: CustomActionTable = {
             titulo: 'Despachar',
             accion: async ({ entidad, posicion }) => {
                 console.log('La entidad es', entidad)
@@ -259,7 +268,7 @@ export default defineComponent({
             // visible: ({ entidad, posicion }) => puedeEditar.value && esBodeguero
             // }
         }
-
+ */
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
             name: 'cantidad',
@@ -287,6 +296,7 @@ export default defineComponent({
         opciones_clientes.value = listadosAuxiliares.clientes
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_condiciones.value = listadosAuxiliares.condiciones
+
 
         return {
             mixin, transaccion, disabled, accion, v$, soloLectura,
@@ -320,9 +330,9 @@ export default defineComponent({
                     transaccion.condicion = ''
                 }
             },
-            checkDevolucion(val, evt){
-                console.log('Devolucion: ',val)
-                if(!val) {
+            checkDevolucion(val, evt) {
+                console.log('Devolucion: ', val)
+                if (!val) {
                     limpiarTransaccion()
                 }
             },
@@ -335,7 +345,7 @@ export default defineComponent({
             botonEliminar,
             botonEditarCantidad,
             botonImprimir,
-            botonDespachar,
+            // botonDespachar,
             botonEditarInventario,
             eliminarItem,
 

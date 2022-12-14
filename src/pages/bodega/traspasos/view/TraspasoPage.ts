@@ -146,12 +146,13 @@ export default defineComponent({
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
                     (data) => traspaso.listadoProductos[posicion].cantidades = data,
-                    traspaso.listadoProductos[posicion].cantidades
+                    traspaso.listadoProductos[posicion].cantidades,
+                    'number',
                 )
             },
-            visible: () => {
+            /* visible: () => {
                 return accion.value == acciones.nuevo ? true : false
-            }
+            } */
         }
         const botonDevolver: CustomActionTable = {
             titulo: 'Devolucion',
@@ -159,7 +160,7 @@ export default defineComponent({
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
                     (data) => traspaso.listadoProductos[posicion].devolucion = data,
-                    traspaso.listadoProductos[posicion].devolucion
+                    traspaso.listadoProductos[posicion].devolucion,
                 )
             },
             visible: ({ entidad, posicion }) => {
@@ -179,9 +180,10 @@ export default defineComponent({
                 console.log('entidad en el boton imprimir', entidad)
                 pdfMakeImprimir(entidad)
             },
-            visible: () => tabSeleccionado.value == '1' ? true : false
+            // visible: () => tabSeleccionado.value == '1' ? true : false
         }
 
+        
         function table(data, columns, encabezados) {
             return {
                 layout: 'listadoLayout',
@@ -326,6 +328,28 @@ export default defineComponent({
                             },
                         ],
                     },
+
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Desde: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${traspaso.desde_cliente}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Hasta: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${traspaso.hasta_cliente}`, style: 'resultStyle', }
+                                ],
+                            },
+                        ],
+                    },
                     {
                         columns: [
                             {
@@ -334,15 +358,41 @@ export default defineComponent({
                                     { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
                                     { width: 'auto', text: ` ${traspaso.tarea}`, style: 'resultStyle', }
                                 ]
-                            }
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Estado: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${traspaso.estado}`, style: 'resultStyle', }
+                                ],
+                            },
                         ]
                     },
 
-                    table(traspaso.listadoProductos,
-                        ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
+                    /* 
+                    ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
+                    */
+                    table(traspaso.listadoProductos,
+                        ['producto', 'detalle_id', 'condicion', 'cantidades', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'Devuelto']),
 
-                    { text: '\n\n\n\n' },
+                    { text: '\n\n' },
+
+                    // aqui debe ir el listado de devoluciones realizadas
+
+                    /* { text: 'Listado de devoluciones' },
+                    function () {
+                        {
+                            text: traspaso.listadoDevoluciones.forEach((element) => {
+                                `${element.id}`
+                            })
+                        }
+                    }, */
+
+                    { text: '\n\n' },
                     {
                         columns: [
                             {
@@ -468,7 +518,6 @@ export default defineComponent({
             //Filtros
             filtroTareas(val) {
                 const opcionSeleccionada = listadosAuxiliares.tareas.filter((v) => v.id === val)
-                console.log(opcionSeleccionada)
                 traspaso.hasta_cliente = opcionSeleccionada[0]['cliente_id']
 
             }

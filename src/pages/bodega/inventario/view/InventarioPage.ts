@@ -20,7 +20,6 @@ import { ClienteController } from "pages/sistema/clientes/infraestructure/Client
 import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
-import { number } from "echarts";
 import { useTransaccionStore } from "stores/transaccion";
 import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
 
@@ -53,7 +52,7 @@ export default defineComponent({
                 inventario.cliente_id = transaccionStore.transaccion.cliente
                 const elementoEncontrado = transaccionStore.transaccion.listadoProductosTransaccion.filter((v) => v.id === detalleStore.detalle.id)
                 console.log('El elemento es: ', elementoEncontrado)
-                console.log('La cantidad del elemento es: ', elementoEncontrado[0]['cantidades'])
+                console.log('La cantidad del elemento es: ', elementoEncontrado[0]['cantidad'])
                 inventario.cantidad = elementoEncontrado[0]['cantidades']
                 console.log('sucursal de la transaccion en el inventario, ', transaccionStore.transaccion.sucursal)
                 inventario.sucursal_id = transaccionStore.transaccion.sucursal
@@ -113,9 +112,6 @@ export default defineComponent({
                     params: { campos: 'id,lugar' },
                 },
             })
-            // inventario.cliente_id = listadosAuxiliares.clientes[0]['id']
-            // inventario.sucursal_id = listadosAuxiliares.sucursales[0]['id']
-            // inventario.condicion = listadosAuxiliares.condiciones[0]['id']
             console.log('El inventario es: ', inventario)
         })
 
@@ -142,7 +138,7 @@ export default defineComponent({
         opciones_sucursales.value = listadosAuxiliares.sucursales
 
 
-        // console.log(mixin['refs'].listado.value)
+        console.log('el mixin', mixin)
         return {
             mixin, inventario, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasInventarios,
