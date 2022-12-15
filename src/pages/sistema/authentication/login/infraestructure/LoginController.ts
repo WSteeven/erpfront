@@ -1,6 +1,7 @@
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { UserLogin } from '../domain/UserLogin'
 import { useRouter } from 'vue-router'
+import { rolesAdmitidos } from 'config/utils'
 
 export class LoginController {
   store = useAuthenticationStore()
@@ -15,7 +16,7 @@ export class LoginController {
   async login(userLogin: UserLogin): Promise<any> {
     try {
       const response = await this.store.login(userLogin)
-      if (this.store.extraerRol('TECNICO LIDER')) {
+      if (this.store.extraerRol(rolesAdmitidos.tecnico_lider) || this.store.extraerRol(rolesAdmitidos.tecnico_secretario)) {
         this.Router.replace({ name: 'trabajo_asignado' })
       } else {
         this.Router.replace('/')

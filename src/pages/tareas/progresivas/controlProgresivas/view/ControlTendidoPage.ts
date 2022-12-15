@@ -107,7 +107,8 @@ export default defineComponent({
     }
 
     const agregarProgresiva: CustomActionTable = {
-      titulo: 'Agregar avance',
+      titulo: 'Agregar',
+      icono: 'bi-plus',
       accion: () => {
         modales.abrirModalEntidad('RegistroTendidoPage')
       },

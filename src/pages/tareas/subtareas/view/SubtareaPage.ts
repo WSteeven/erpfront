@@ -3,7 +3,7 @@ import { isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray 
 import { configuracionColumnasTecnico } from '../domain/configuracionColumnasTecnico'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, Ref, ref, watch } from 'vue'
 import {
   provincias,
   ciudades,
@@ -16,6 +16,8 @@ import {
   rolesAdmitidos,
   acciones,
   opcionesModoAsignacionTrabajo,
+  tiposIntervenciones,
+  causaIntervencion,
 } from 'config/utils'
 import useFileList from "components/dropzone/application/fileList"
 import { required, requiredIf } from '@vuelidate/validators'
@@ -302,18 +304,16 @@ export default defineComponent({
 
     onBeforeGuardar(() => {
       subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
-      // subtarea.tecnicos_otros_grupos = validarString(tecnicosOtrosGrupos.value.map((tecnico: Tecnico) => tecnico.id).toString())
       subtarea.tarea_id = tareaStore.tarea.id
     })
 
     onBeforeModificar(() => {
       subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
-      // subtarea.tecnicos_otros_grupos = validarString(tecnicosOtrosGrupos.value.map((tecnico: Tecnico) => tecnico.id).toString())
+
     })
 
     onConsultado(() => {
       tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
-      // tecnicosOtrosGrupos.value = subtarea.tecnicos_otros_grupos
     })
 
     function validarString(listado: string) {
@@ -338,7 +338,6 @@ export default defineComponent({
         const indexElemento = subtareaListadoStore.posicionSubtareaSeleccionada
 
         listado.value.splice(indexElemento, 1, subtarea)
-        // listado.value = [...listado.value]
 
         emit('cerrar-modal')
       } catch (e) { }
@@ -374,10 +373,17 @@ export default defineComponent({
       subtarea.archivos = files
     }
 
-    function verificarModoAsignacion() {
-      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador)
-        tecnicosGrupoPrincipal.value = []
-    }
+    watch(tecnicosGrupoPrincipal, () => {
+      tecnicosGrupoPrincipal.value = tecnicosGrupoPrincipal.value.map((empleado: Empleado) => {
+        const tecnico = new Empleado()
+        tecnico.hydrate(empleado)
+
+        const roles = stringToArray(tecnico.roles ?? '')
+        tecnico.roles = quitarItemDeArray(roles, rolesAdmitidos.empleado).join(',')
+
+        return tecnico
+      })
+    })
 
     return {
       // Referencias
@@ -393,6 +399,7 @@ export default defineComponent({
       eliminarTecnico,
       asignarNuevoTecnicoLider,
       designarNuevoSecretario,
+      listadosAuxiliares,
       // asignarNuevoTecnicoLider,
       // eliminarTecnicoOtroGrupo,
       tecnicosGrupoPrincipal,
@@ -403,9 +410,11 @@ export default defineComponent({
       tiposTareasTelconet,
       tiposTareasNedetel,
       fab: ref(false),
+      // listados predefinidos
       regiones,
       atenciones,
-      listadosAuxiliares,
+      tiposIntervenciones,
+      causaIntervencion,
       filtrarTiposTrabajos,
       tiposTrabajos,
       filtrarSubtareas,
@@ -430,6 +439,7 @@ export default defineComponent({
       opcionesModoAsignacionTrabajo,
       cancelarDesignacion,
       entidadSeleccionada,
+
     }
   },
 })

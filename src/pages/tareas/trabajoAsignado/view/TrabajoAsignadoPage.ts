@@ -11,7 +11,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { CambiarEstadoSubtarea } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/application/CambiarEstadoSubtarea'
-import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController copy'
+import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
@@ -30,7 +30,7 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
-    const { listado, currentPageListado } = mixin.useReferencias()
+    const { listado } = mixin.useReferencias()
     const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
     const mostrarDialogPlantilla = ref(false)
@@ -104,7 +104,7 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
           store.idSubtareaSeleccionada = entidad.id
-          modales.abrirModalEntidad('PlantillaGenericaPage')
+          modales.abrirModalEntidad('SeleccionFormularioPage')
         })
       }
     }
@@ -155,9 +155,8 @@ export default defineComponent({
 
     async function aplicarFiltro(tabSeleccionado) {
       if (tabSeleccionado !== estadoSeleccionado) {
-        currentPageListado.value = 1
         const { result } = await subtareaAsignada.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id, 
-        listado.value = result.data
+        listado.value = result
         estadoSeleccionado = tabSeleccionado
       }
     }

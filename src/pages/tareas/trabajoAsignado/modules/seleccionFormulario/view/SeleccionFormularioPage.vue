@@ -47,7 +47,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 function saludar() {
-  //console.log('hola =)')
-  router.push({ name: 'control_progresivas' })
+  console.log('hola =)')
+  router.push({ name: 'control_tendidos' })
 }
 </script>

@@ -225,6 +225,7 @@ export default defineComponent({
 
     onConsultado(async () => {
       tareaStore.tarea.hydrate(tarea)
+      tarea.tiene_cliente_final = !!tarea.cliente_final
     })
     //tareaStore.tarea.hydrate(tarea)
     //tipoUbicacionTrabajo.value = 'hfhffhjhgfjh' //opcionesUbicacion.cliente

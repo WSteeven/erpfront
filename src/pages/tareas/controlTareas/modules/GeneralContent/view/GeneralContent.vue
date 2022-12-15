@@ -226,7 +226,7 @@
       default-opened
     >
       <!-- Toggle -->
-      <div class="row q-col-gutter-sm q-pa-md">
+      <!-- <div class="row q-col-gutter-sm q-pa-md">
         <div class="col-12">
           <q-btn-toggle
             v-model="tipoUbicacionTrabajo"
@@ -243,11 +243,11 @@
             ]"
           />
         </div>
-        <!-- {
+      </div> -->
+      <!-- {
                 label: 'Ubicación',
                 value: 'ubicacion_manual',
               }, -->
-      </div>
       <!--
       <div
         v-if="tipoUbicacionTrabajo === 'ubicacion_manual'"

@@ -14,6 +14,17 @@
         />
       </div>
 
+      <!-- Numero elemento -->
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Número del elemento</label>
+        <q-input
+          v-model="tendido.numero_poste"
+          placeholder="Opcional"
+          outlined
+          dense
+        ></q-input>
+      </div>
+
       <!-- Propietario del elemento -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Propietario del elemento</label>
@@ -28,20 +39,9 @@
         </q-select>
       </div>
 
-      <!-- Numero elemento -->
-      <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Número del elemento</label>
-        <q-input
-          v-model="tendido.numero_poste"
-          placeholder="Opcional"
-          outlined
-          dense
-        ></q-input>
-      </div>
-
       <!-- Codigo elemento -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Código del elemento</label>
+        <label class="q-mb-sm block">Código y numeración de poste o pozo</label>
         <q-input
           v-model="tendido.codigo_poste"
           placeholder="Opcional"

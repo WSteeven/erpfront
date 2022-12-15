@@ -159,6 +159,61 @@
             </q-select>
           </div>
 
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Atención (INTERURBANO/URBANO)</label>
+            <q-select
+              v-model="subtarea.atencion"
+              :options="atenciones"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              emit-value
+              map-options
+              clearable
+            >
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Tipo de intervención</label>
+            <q-select
+              v-model="subtarea.tipo_intervencion"
+              :options="tiposIntervenciones"
+              :option-label="(item) => item.descripcion"
+              :option-value="(item) => item.descripcion"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              emit-value
+              map-options
+              clearable
+            >
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Causa de intervención</label>
+            <q-select
+              v-model="subtarea.causa_intervencion"
+              :options="causaIntervencion"
+              :option-label="(item) => item.descripcion"
+              :option-value="(item) => item.descripcion"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              emit-value
+              map-options
+              clearable
+            >
+            </q-select>
+          </div>
+
           <!-- Fecha de creacion -->
           <div v-if="subtarea.fecha_hora_creacion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de creación</label>
