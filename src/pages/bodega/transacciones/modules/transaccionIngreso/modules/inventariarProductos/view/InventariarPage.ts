@@ -4,6 +4,9 @@ import { required } from "@vuelidate/validators";
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 
+//Componentes
+import buttonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+
 //Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { InventarioController } from "pages/bodega/inventario/infraestructure/InventarioController";
@@ -20,29 +23,32 @@ import { DetalleProductoController } from "pages/bodega/detalles_productos/infra
 import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
+import { emit } from "process";
+import { acciones } from "config/utils";
 
 //Controladores para los selects que no se deben usar
 
 export default defineComponent({
-
-
-    setup() {
+    components: { buttonSubmits },
+    emits: ['cerrar-modal'],
+    setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { guardar, setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { onGuardado,onBeforeGuardar , onConsultado} = mixin.useHooks()
 
         const transaccionStore = useTransaccionStore()
         const detalleProductoTransaccionStore = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
 
-        const opcion_producto:any= ref([])
-        const opcion_detalle :any= ref([])
+        const opcion_producto: any = ref([])
+        const opcion_detalle: any = ref([])
         const opcion_sucursal = ref([])
-        const opcion_cliente :any= ref([])
+        const opcion_cliente: any = ref([])
         const opcion_condicion = ref([])
 
         //Obtener los listados
-        cargarVista(async() => {
+        cargarVista(async () => {
             await obtenerListados({
                 condiciones: new CondicionController(),
                 sucursales: {
@@ -51,33 +57,43 @@ export default defineComponent({
                         lugar: transaccionStore.transaccion.sucursal
                     }
                 },
-                // productos: new ProductoController().consultar(detalleStore.detalle.producto_id!),
-                // detalles: new DetalleProductoController().consultar(detalleStore.detalle.id!),
-                // clientes: await new ClienteController().consultar(transaccionStore.transaccion.cliente_id!),
             })
-            cargarClientes()
             cargarProducto()
-            
-            
-            
-            
+            inventario.sucursal_id = await opcion_sucursal.value[0]['id']
+            inventario.condicion = await opcion_condicion.value[0]['id']
+            inventario.cantidad = detalleStore.cantidad
 
-            // opcion_detalle.value.push(detalleStore.detalle)
+            // console.log('!!!!',detalleProductoTransaccionStore)
         })
 
-        async function cargarClientes(){
-            const response = await new ClienteController().consultar(transaccionStore.transaccion.cliente_id!)
-            
-            opcion_cliente.value.push(response.result)
-        }
         async function cargarProducto() {
-            const response = await new ProductoController().consultar(detalleStore.detalle.producto_id!)
-            // opcion_producto = ref([])
-            opcion_producto.value.push(response.result)
-            const response2 = await new DetalleProductoController().consultar(detalleStore.detalle.producto_id!)
+            const response = await new ClienteController().consultar(transaccionStore.transaccion.cliente_id!)
+            opcion_cliente.value.push(response.result)
+            inventario.cliente_id = response.result.id
+            const response2 = await new DetalleProductoController().consultar(detalleStore.detalle.id!)
             opcion_detalle.value.push(response2.result)
-            
+            inventario.detalle_id = response2.result.id
+            const response3 = await new ProductoController().consultar(detalleStore.detalle.producto_id!)
+            opcion_producto.value.push(response3.result)
+            inventario.producto = response3.result.id
+
         }
+
+        onConsultado(()=>{
+            console.log('accion', accion)
+            console.log('acciones', acciones)
+        })
+
+        onBeforeGuardar(()=>{
+            // console.log('before',inventario.cantidad)
+            detalleProductoTransaccionStore.detalle.cantidad_final = inventario.cantidad
+        })
+
+        onGuardado(() => {
+            console.log('inventario guardado es',inventario)
+            detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
+            emit('cerrar-modal')
+        })
 
         const reglas = {
             cantidad: { required },
@@ -108,8 +124,9 @@ export default defineComponent({
             opcion_sucursal,
             opcion_cliente,
             opcion_condicion,
-            ts: transaccionStore.transaccion
+            ts: transaccionStore.transaccion,
 
+            guardar,
 
 
         }

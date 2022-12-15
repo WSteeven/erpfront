@@ -1,11 +1,6 @@
 <template>
   <q-form @submit.prevent>
     <div class="row q-col-gutter-sm q-py-md">
-
-      
-      {{opcion_detalle}}
-      
-
       <!-- Producto select -->
       <div class="col-12 col-md-6">
         <label class="q-mb-sm block">Producto</label>
@@ -181,25 +176,8 @@
           </template>
         </q-input>
       </div>
-      <!-- Prestados -->
-      <!-- <div class="col-12 col-md-6">
-              <label class="q-mb-sm block">Prestados</label>
-              <q-input
-                type="number"
-                mask="###"
-                unmasked-value
-                v-model="inventario.prestados"
-                placeholder="Opcional"
-                :readonly="disabled"
-                @update:model-value="
-                  (v) => (inventario.prestados = v.toUpperCase())
-                "
-                outlined
-                dense
-              >
-              </q-input>
-            </div> -->
     </div>
+    <button-submits :accion="accion" @guardar="guardar(inventario, false)" />
   </q-form>
 </template>
 <script src="./InventariarPage.ts"></script>

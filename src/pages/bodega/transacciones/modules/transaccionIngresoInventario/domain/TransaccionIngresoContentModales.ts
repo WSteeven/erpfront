@@ -19,7 +19,7 @@ export class TransaccionIngresoContentModales{
         )
 
         this.InventariarPage= markRaw(
-            new ComponenteModal('CONSTRUCRED', InventariarPage)
+            new ComponenteModal('SELECCIONA EL ESTADO Y LA CANTIDAD PARA INGRESAR AL INVENTARIO', InventariarPage)
         )
 
         this.TransaccionIngresoImprimirPage= markRaw(

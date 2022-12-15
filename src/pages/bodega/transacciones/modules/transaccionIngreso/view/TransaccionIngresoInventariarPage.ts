@@ -3,7 +3,10 @@ import { configuracionColumnasTransaccionIngreso } from '../../../domain/configu
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
-import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+// import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasProductosSeleccionadosDevolver } from '../domain/configuracionColumnasProductosSeleccionadosDevolver'
+import { configuracionColumnasProductosSeleccionadosDevuelto } from '../domain/configuracionColumnasProductosSeleccionadosDevuelto'
 import { useTransaccionStore } from 'stores/transaccion'
 import { acciones } from 'config/utils'
 
@@ -50,6 +53,8 @@ export default defineComponent({
 
 
         onConsultado(() => {
+            console.log('accion', accion.value)
+            console.log('acciones', acciones)
             transaccion.solicitante = transaccion.solicitante_id
             transaccionStore.transaccion.hydrate(transaccion)
         })
@@ -85,34 +90,38 @@ export default defineComponent({
             cliente: { required },
             condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
         }
-
+        
         const v$ = useVuelidate(reglas, transaccion)
         setValidador(v$.value) */
 
 
         const modales = new ComportamientoModalesTransaccionIngreso()
         const botonInventario: CustomActionTable = {
-            titulo: 'Inventariarqqqq',
+            titulo: 'Inventariar',
             accion: async ({ entidad, posicion }) => {
-                console.log('boton inventariar')
+                // console.log('boton inventariar')
+                // console.log('accion', accion)
+                // console.log('acciones', acciones)
+                console.log(entidad.cantidad, entidad.devuelto)
                 await detalleStore.cargarDetalle(entidad.detalle_id)
+                detalleStore.cantidad = entidad.cantidad
+                await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.id)
 
                 // modales.abrirModalEntidad('InventarioPage')
                 modales.abrirModalEntidad('InventariarPage')
             },
-            /* visible: ({ entidad, posicion }) => {
-                if (detalleTransaccionStore.detalle.transaccion_id === transaccionStore.transaccion.id && detalleTransaccionStore.detalle.detalle_id === entidad.id) {
-                    console.log('comprobacion', detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_inicial)
-                    return detalleTransaccionStore.detalle.cantidad_inicial !== detalleTransaccionStore.detalle.cantidad_final
-                }
-                return entidad.despachado !== entidad.cantidades
-            }, */
+            visible: ({ entidad, posicion }) => {
+                console.log(entidad, posicion)
+                console.log(entidad.cantidad, entidad.devuelto)
+                console.log(entidad.cantidad != entidad.devuelto)
+                return entidad.cantidad != entidad.devuelto ? true : false
+            },
         }
 
 
 
 
-        const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
+        /* const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
             name: 'cantidad',
             field: 'cantidad',
@@ -126,7 +135,7 @@ export default defineComponent({
             label: 'Acciones',
             align: 'center'
         },
-        ]
+        ] */
 
 
         return {
@@ -140,9 +149,11 @@ export default defineComponent({
 
 
             // tabla,
-            configuracionColumnasProductosSeleccionadosAccion,
+            // configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasDetallesProductos,
             configuracionColumnasProductosSeleccionados,
+            configuracionColumnasProductosSeleccionadosDevolver,
+            configuracionColumnasProductosSeleccionadosDevuelto,
             botonInventario,
             // botonImprimir,
             // botonEditarInventario,

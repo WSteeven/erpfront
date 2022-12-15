@@ -147,12 +147,11 @@ export default defineComponent({
                 prompt('Ingresa la cantidad',
                     (data) => traspaso.listadoProductos[posicion].cantidades = data,
                     traspaso.listadoProductos[posicion].cantidades,
-                    'number',
                 )
             },
-            /* visible: () => {
+            visible: () => {
                 return accion.value == acciones.nuevo ? true : false
-            } */
+            }
         }
         const botonDevolver: CustomActionTable = {
             titulo: 'Devolucion',
@@ -165,7 +164,9 @@ export default defineComponent({
             },
             visible: ({ entidad, posicion }) => {
                 // console.log('entidad....', entidad)
+                console.log(entidad.cantidades, entidad.devuelto)
                 console.log(entidad.cantidades != entidad.devuelto)
+
                 return accion.value == acciones.editar && entidad.cantidades != entidad.devuelto ? true : false
             }
         }

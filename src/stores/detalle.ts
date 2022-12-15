@@ -10,6 +10,7 @@ import { acciones } from 'config/utils';
 export const useDetalleStore = defineStore('detalle', ()=>{
     //State
     const detalle = reactive(new DetalleProducto())
+    let cantidad
     let estaInventario=true
 
     const accionDetalle = acciones.nuevo
@@ -46,5 +47,7 @@ export const useDetalleStore = defineStore('detalle', ()=>{
         resetearDetalle,
         accionDetalle,
         estaInventario,
+        cantidad,
+        
     }
 })

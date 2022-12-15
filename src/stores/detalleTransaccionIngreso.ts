@@ -55,7 +55,7 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', ()=
     async function actualizarDetalle(id:number, data:any) {
         console.log('pasó por actualizar')
         const modelo = await editarDetalle(id, data)
-        console.log('si se actualizó')
+        console.log('si se actualizó', modelo)
         detalle.hydrate(modelo)
     }
     function resetearDetalle(){

@@ -20,42 +20,42 @@
     <!-- Fecha límite -->
     <div v-if="false" class="col-12 col-md-3 q-mb-md">
       <label class="q-mb-sm block">Fecha limite</label>
-      <p>{{transaccion.fecha_limite}}</p>
+      <p>{{ transaccion.fecha_limite }}</p>
     </div>
     <!-- Select motivo -->
     <div class="col-12 col-md-3 q-mb-md">
       <label class="q-mb-sm block">Motivo</label>
-      <p>{{transaccion.motivo}}</p>
+      <p>{{ transaccion.motivo }}</p>
     </div>
     <!-- Comprobante/Factura -->
     <div v-if="esVisibleComprobante" class="col-12 col-md-3 q-mb-md">
       <label class="q-mb-sm block">N° Factura/Comprobante</label>
-      <p>{{transaccion.comprobante}}</p>
+      <p>{{ transaccion.comprobante }}</p>
     </div>
     <!-- Select sucursal -->
     <div class="col-12 col-md-3 q-mb-md">
       <label class="q-mb-sm block">Sucursal</label>
-      <p>{{transaccion.sucursal}}</p>
+      <p>{{ transaccion.sucursal }}</p>
     </div>
     <!-- Justificacion -->
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Justificación</label>
-      <p>{{transaccion.justificacion}}</p>
+      <p>{{ transaccion.justificacion }}</p>
     </div>
     <!-- Solicitante -->
     <div v-if="transaccion.solicitante || esBodeguero" class="col-12 col-md-3">
       <label class="q-mb-sm block">Solicitante</label>
-      <p>{{transaccion.solicitante}}</p>
+      <p>{{ transaccion.solicitante }}</p>
     </div>
     <!-- Tarea -->
     <div v-if="esVisibleTarea || esVisibleSubtarea" class="col-12 col-md-3">
       <label class="q-mb-sm block">Tarea</label>
-      <p>{{transaccion.tarea}}</p>
+      <p>{{ transaccion.tarea }}</p>
     </div>
     <!-- Subtarea -->
     <div v-if="esVisibleSubtarea" class="col-12 col-md-3">
       <label class="q-mb-sm block">Subtarea</label>
-      <p>{{transaccion.subtarea}}</p>
+      <p>{{ transaccion.subtarea }}</p>
     </div>
     <!-- Select estado -->
     <div
@@ -63,7 +63,7 @@
       class="col-12 col-md-3 q-mb-md"
     >
       <label class="q-mb-sm block">Estado</label>
-      <p>{{transaccion.estado}}</p>
+      <p>{{ transaccion.estado }}</p>
     </div>
     <!-- Tiene observación de estado -->
     <div v-if="rolSeleccionado" class="col-12 col-md-3">
@@ -79,12 +79,12 @@
     <!-- observacion estado -->
     <div v-if="transaccion.tiene_obs_estado" class="col-12 col-md-3">
       <label class="q-mb-sm block">Observacion</label>
-      <p>{{transaccion.obs_estado}}</p>
+      <p>{{ transaccion.obs_estado }}</p>
     </div>
     <!-- Select clientes -->
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Cliente</label>
-      <p>{{transaccion.cliente}}</p>
+      <p>{{ transaccion.cliente }}</p>
     </div>
     <!-- check ingreso masivo -->
     <div class="col-12 col-md-3">
@@ -101,14 +101,14 @@
     <!-- Select condiciones -->
     <div v-if="transaccion.ingreso_masivo" class="col-12 col-md-3">
       <label class="q-mb-sm block">Condiciones</label>
-      <p>{{transaccion.condicion}}</p>
+      <p>{{ transaccion.condicion }}</p>
     </div>
     <!-- Tabla -->
     <div class="col-12">
       <essential-table
         titulo="Productos Seleccionados"
         :configuracionColumnas="
-          configuracionColumnasProductosSeleccionadosAccion
+          configuracionColumnasProductosSeleccionadosDevuelto
         "
         :datos="transaccion.listadoProductosTransaccion"
         :permitirConsultar="false"
@@ -121,6 +121,6 @@
   </div>
 
   <!-- Modales -->
-  <modales-entidad :comportamiento="modales" ></modales-entidad>
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./TransaccionIngresoInventariarPage.ts" />
