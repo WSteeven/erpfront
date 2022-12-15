@@ -35,22 +35,49 @@ export default defineComponent({
         const detalleProductoTransaccionStore = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
 
-        const opcion_producto = ref([])
-        const opcion_detalle = ref([])
-        const opciones_sucursal = ref([])
-        const opcion_cliente = ref([])
+        const opcion_producto:any= ref([])
+        const opcion_detalle :any= ref([])
+        const opcion_sucursal = ref([])
+        const opcion_cliente :any= ref([])
         const opcion_condicion = ref([])
 
         //Obtener los listados
         cargarVista(async() => {
             await obtenerListados({
-                productos: new ProductoController().consultar(detalleStore.detalle.producto_id!),
-                detalles: new DetalleProductoController().consultar(detalleStore.detalle.id!),
-                clientes: new ClienteController().consultar(transaccionStore.transaccion.cliente!),
-                sucursales: new SucursalController().consultar(transaccionStore.transaccion.sucursal!),
                 condiciones: new CondicionController(),
+                sucursales: {
+                    controller: new SucursalController(),
+                    params: {
+                        lugar: transaccionStore.transaccion.sucursal
+                    }
+                },
+                // productos: new ProductoController().consultar(detalleStore.detalle.producto_id!),
+                // detalles: new DetalleProductoController().consultar(detalleStore.detalle.id!),
+                // clientes: await new ClienteController().consultar(transaccionStore.transaccion.cliente_id!),
             })
+            cargarClientes()
+            cargarProducto()
+            
+            
+            
+            
+
+            // opcion_detalle.value.push(detalleStore.detalle)
         })
+
+        async function cargarClientes(){
+            const response = await new ClienteController().consultar(transaccionStore.transaccion.cliente_id!)
+            
+            opcion_cliente.value.push(response.result)
+        }
+        async function cargarProducto() {
+            const response = await new ProductoController().consultar(detalleStore.detalle.producto_id!)
+            // opcion_producto = ref([])
+            opcion_producto.value.push(response.result)
+            const response2 = await new DetalleProductoController().consultar(detalleStore.detalle.producto_id!)
+            opcion_detalle.value.push(response2.result)
+            
+        }
 
         const reglas = {
             cantidad: { required },
@@ -66,11 +93,11 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, inventario)
         setValidador(v$.value)
 
-        opcion_producto.value = listadosAuxiliares.productos
-        opcion_detalle.value = listadosAuxiliares.detalles
-        opciones_sucursal.value = listadosAuxiliares.clientes
-        opcion_cliente.value = listadosAuxiliares.condiciones
-        opcion_condicion.value = listadosAuxiliares.sucursales
+        // opcion_producto.value = listadosAuxiliares.productos
+        // opcion_detalle.value = listadosAuxiliares.detalles
+        opcion_sucursal.value = listadosAuxiliares.sucursales
+        // opcion_cliente.value = listadosAuxiliares.clientes
+        opcion_condicion.value = listadosAuxiliares.condiciones
 
         return {
             inventario, disabled, accion, v$,
@@ -78,9 +105,10 @@ export default defineComponent({
             //listados
             opcion_producto,
             opcion_detalle,
-            opciones_sucursal,
+            opcion_sucursal,
             opcion_cliente,
             opcion_condicion,
+            ts: transaccionStore.transaccion
 
 
 

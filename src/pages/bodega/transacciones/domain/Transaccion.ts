@@ -20,6 +20,7 @@ export class Transaccion extends EntidadAuditable{
     per_retira: number|null
     tarea: string|null
     cliente: number|null
+    cliente_id: number|null
     created_at: string|null
     
     //variables auxiliares
@@ -51,6 +52,7 @@ export class Transaccion extends EntidadAuditable{
         this.obs_estado=null
         this.sucursal=null
         this.cliente=null
+        this.cliente_id=null
         this.per_autoriza=null
         this.per_atiende=null
         this.per_retira=null
