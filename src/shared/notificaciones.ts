@@ -37,7 +37,7 @@ export function useNotificaciones() {
   function notificarAdvertencia(mensaje: string | string[]) {
     $q.notify({
       html: true,
-      color: 'amber-8',
+      color: 'amber-9',
       textColor: 'white',
       icon: 'bi-exclamation-triangle-fill',
       caption: obtenerMensaje(mensaje),

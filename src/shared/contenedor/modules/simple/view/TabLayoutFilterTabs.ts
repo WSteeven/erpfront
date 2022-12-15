@@ -66,7 +66,7 @@ export default defineComponent({
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const { listar, guardar, editar, eliminar, consultar, reestablecer } =
       props.mixin.useComportamiento()
 
@@ -91,13 +91,13 @@ export default defineComponent({
     ]
 
     if (!listadoCargado) {
-      listar({ page: currentPageListado.value, offset: 48 }, true)
+      listar()
       listadoCargado = true
     }
-    let tabSeleccionado='TODO'
+    let tabSeleccionado = 'TODO'
 
     function aplicarFiltro(tabSeleccionado) {
-      listar({page: currentPageListado.value, offset: 48, estado: tabSeleccionado}, false)
+      listar({ estado: tabSeleccionado }, false)
       emit('tab-seleccionado', tabSeleccionado)
     }
 
@@ -151,7 +151,7 @@ export default defineComponent({
 
     function cargarListado() {
       if (nextPageUrl.value)
-        listar({ page: currentPageListado.value + 1, offset: 48, estado: tabSeleccionado }, true)
+        listar({ estado: tabSeleccionado })
     }
 
     return {

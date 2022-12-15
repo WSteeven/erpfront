@@ -16,10 +16,10 @@
     :mostrar-botones="false"
     :tab-options="tabOptions"
     :alto-fijo="false"
-    :mostrarFooter="false"
+    :mostrarFooter="true"
     tabDefecto="CREADO"
     @tab-seleccionado="aplicarFiltro"
-    :agregarElemento="agregarSubtarea"
+    :accion1Header="agregarSubtarea"
   ></essential-table-tabs>
 
   <modales-entidad :comportamiento="modales" :mixin="mixin" />

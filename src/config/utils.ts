@@ -14,9 +14,8 @@ export const provincias = ['EL ORO', 'AZUAY', 'CAÑAR', 'CARCHI']
 export const ciudades = ['MACHALA', 'PASAJE', 'SANTA ROSA']
 export const tiposElementos = [
   'POSTE',
-  'CAJA',
+  'POZO',
   'AMERICANO',
-  'RADIO BASE',
   'NODO',
 ]
 export const propietariosElementos = [
@@ -54,6 +53,7 @@ export const regiones = ['R1', 'R2', 'R3', 'R4']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
+// Emergencias
 export const tiposIntervenciones = [
   { id: 'CF', descripcion: 'CORTE FIBRA' },
   { id: 'MTTO', descripcion: 'MANTENIMIENTO' },
@@ -252,7 +252,9 @@ export const estadosSubtareas = {
 }
 
 export const rolesAdmitidos = {
-  tecnico_lider: 'TECNICO LIDER',
+  empleado: 'EMPLEADO',
+  tecnico_lider: 'TECNICO JEFE CUADRILLA',
+  tecnico_secretario: 'TECNICO SECRETARIO',
   coordinador: 'COORDINADOR',
   fiscalizador: 'FISCALIZADOR',
 }

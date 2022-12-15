@@ -40,7 +40,9 @@
     :accion5="accion5"
     :accion6="accion6"
     :accion7="accion7"
-    :agregarElemento="agregarElemento"
+    :accion1Header="accion1Header"
+    :accion2Header="accion2Header"
+    :accion3Header="accion3Header"
     :alto-fijo="altoFijo"
     :mostrarFooter="mostrarFooter"
     @consultar="consultar"
@@ -130,7 +132,15 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
-  agregarElemento: {
+  accion1Header: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  accion2Header: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  accion3Header: {
     type: Object as () => CustomActionTable,
     required: false,
   },

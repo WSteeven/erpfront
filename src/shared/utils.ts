@@ -262,12 +262,21 @@ export function buildTableBody(data, columns, columnas) {
   body.push(columnas)
 
   data.forEach(function (row) {
-      const dataRow = []
-      columns.forEach(function (column) {
-          dataRow.push(row[column])
-      });
-      body.push(dataRow)
+    const dataRow = []
+    columns.forEach(function (column) {
+      dataRow.push(row[column])
+    });
+    body.push(dataRow)
   });
 
   return body
+}
+
+export function stringToArray(listado: string) {
+  const array = listado.split(',')
+  return array.map((item) => item.trim())
+}
+
+export function quitarItemDeArray(listado: any[], elemento: string) {
+  return listado.filter((item) => item !== elemento)
 }

@@ -11,7 +11,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { CambiarEstadoSubtarea } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/application/CambiarEstadoSubtarea'
-import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController copy'
+import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
@@ -30,7 +30,7 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
-    const { listado, currentPageListado } = mixin.useReferencias()
+    const { listado } = mixin.useReferencias()
     const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
     const mostrarDialogPlantilla = ref(false)
@@ -58,6 +58,7 @@ export default defineComponent({
           const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
           entidad.estado = estadosSubtareas.EJECUTANDO
           entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
+          notificarCorrecto('Trabajo iniciado exitosamente!')
           actualizarElemento(posicion, entidad)
         })
       }
@@ -73,6 +74,7 @@ export default defineComponent({
           prompt('Ingrese el motivo de la pausa', (data) => {
             new CambiarEstadoSubtarea().pausar(entidad.id, data)
             entidad.estado = estadosSubtareas.PAUSADO
+            notificarCorrecto('Trabajo pausado exitosamente!')
             actualizarElemento(posicion, entidad)
           })
         })
@@ -88,6 +90,7 @@ export default defineComponent({
         confirmar('¿Está seguro de reanudar el trabajo?', () => {
           new CambiarEstadoSubtarea().reanudar(entidad.id)
           entidad.estado = estadosSubtareas.EJECUTANDO
+          notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
           actualizarElemento(posicion, entidad)
         })
       }
@@ -101,7 +104,7 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
           store.idSubtareaSeleccionada = entidad.id
-          modales.abrirModalEntidad('PlantillaGenericaPage')
+          modales.abrirModalEntidad('SeleccionFormularioPage')
         })
       }
     }
@@ -117,6 +120,7 @@ export default defineComponent({
             const { result } = await new CambiarEstadoSubtarea().suspender(entidad.id, data)
             entidad.estado = estadosSubtareas.SUSPENDIDO
             entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
+            notificarCorrecto('Trabajo suspendido exitosamente!')
             actualizarElemento(posicion, entidad)
           })
         })
@@ -134,7 +138,7 @@ export default defineComponent({
           entidad.estado = estadosSubtareas.REALIZADO
           entidad.fecha_hora_realizado = result.fecha_hora_realizado
           actualizarElemento(posicion, entidad)
-          notificarCorrecto('El trabajo ha sido marcado como realizado!')
+          notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
         })
       }
     }
@@ -151,9 +155,8 @@ export default defineComponent({
 
     async function aplicarFiltro(tabSeleccionado) {
       if (tabSeleccionado !== estadoSeleccionado) {
-        currentPageListado.value = 1
-        const { result } = await subtareaAsignada.listar({ page: currentPageListado.value++, offset: 48, estado: tabSeleccionado }) //grupo_id: grupo_id, 
-        listado.value = result.data
+        const { result } = await subtareaAsignada.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id, 
+        listado.value = result
         estadoSeleccionado = tabSeleccionado
       }
     }

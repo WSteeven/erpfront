@@ -21,7 +21,7 @@
         :mostrar-footer="false"
         separador="cell"
         :mostrar-botones="false"
-        :agregarElemento="agregarActividad"
+        :accion1Header="agregarActividad"
         @eliminar="tablaActividadRealizada.eliminar"
         :accion1="materiales"
         :entidad="TrabajoRealizado"
@@ -59,7 +59,7 @@
           @editar="tablaMateriales.editar"
         ></essential-table>
       </div> -->
-    <!--:agregarElemento="agregarMaterial"-->
+    <!--:accion1Header="agregarMaterial"-->
 
     <!-- Botones formulario -->
     <!--<div class="row q-gutter-md justify-end">

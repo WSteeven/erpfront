@@ -10,7 +10,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
-import { markRaw, watch } from 'vue'
+import { markRaw, watch, watchEffect } from 'vue'
 
 export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
@@ -94,6 +94,15 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         stop()
       }
     })
+
+    /* const stop = watchEffect(() => {
+      console.log('dentrode  watch consultar')
+      if (this.entidad.id !== null) {
+        this.hooks.onConsultado()
+        console.log('ha sido consultado mixin')
+        stop()
+      }
+    })*/
   }
 
   // Listar
@@ -101,10 +110,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.cargarVista(async () => {
       try {
         const { result } = await this.controller.listar(params)
-        this.refs.currentPageListado.value = result.current_page
-        this.refs.nextPageUrl.value = result.next_page_url
-        if (append) this.refs.listado.value.push(...result.data)
-        else this.refs.listado.value = result.data
+        /* this.refs.currentPageListado.value = result.current_page
+        this.refs.nextPageUrl.value = result.next_page_url */
+        if (append) this.refs.listado.value.push(...result)
+        else this.refs.listado.value = result
       } catch (error) {
         this.notificaciones.notificarError('Error al obtener el listado.')
       }
@@ -149,37 +158,32 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
         if (resetOnSaved) {
           this.reestablecer()
-        } /*else {
-          console.log(response.data.modelo.id)
-          this.entidad.id = response.data.modelo.id //hydrate({ id: response.data.modelo.id })
-          console.log(this.entidad)
-        } */
+        }
 
-        this.hooks.onGuardado()
+        // this.hooks.onGuardado()
+        console.log(this.entidad)
+
+
+        const stop = watchEffect(() => {
+          // console.log('dentrode  watch')
+          if (this.entidad.id !== null) {
+            this.hooks.onGuardado()
+            // console.log('ha sido guardado mixin')
+            stop()
+          }
+        })
 
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)
         }
-        // console.log('ocurrio un error')
-        // throw error //new Error('Verifique el formulario')
       }
     })
-
-    /* const stop = watch(this.entidad, () => {
-      if (this.entidad.id !== null) {
-        this.hooks.onGuardado()
-        stop()
-      }
-    }) */
   }
 
   // Editar
   private async editar(data: T, resetOnUpdated = true) {
-    //private async editar(resetOnUpdated = true) {
-    // this.verificarAutenticacion()
-
     if (this.entidad.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'
@@ -193,15 +197,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
 
     this.hooks.onBeforeModificar()
-    /* if (!(await this.refs.validador.value.$validate())) {
-      return this.notificaciones.notificarAdvertencia('Verifique el formulario')
-    } */
 
     if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
     }
-
 
     this.cargarVista(async () => {
       try {
@@ -209,6 +209,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           data,
           this.argsDefault
         )
+
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.actualizarElementoListadoActual(modelo)
         this.entidad.hydrate(response.data.modelo)
@@ -216,6 +217,9 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         if (resetOnUpdated) {
           this.reestablecer()
         }
+
+        this.hooks.onModificado()
+
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
@@ -226,7 +230,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }
     })
 
-    this.hooks.onModificado()
   }
 
   // Eliminar

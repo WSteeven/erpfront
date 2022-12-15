@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
-import { acciones, rolesAdmitidos } from 'config/utils'
 import { required } from '@vuelidate/validators'
+import { acciones, rolesAdmitidos } from 'config/utils'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
@@ -16,12 +16,12 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ContactoController } from 'pages/tareas/contactos/infraestructure/ContactoController'
+import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
-import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
+// import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
 import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
-import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 
 export default defineComponent({
   props: {
@@ -38,9 +38,9 @@ export default defineComponent({
     const tareaStore = useTareaStore()
 
     const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
-    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
+    const { consultar, guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
-    const { onGuardado, onBeforeModificar, onReestablecer, onConsultado } = props.mixin.useHooks()
+    const { onGuardado, onBeforeModificar, onReestablecer, onConsultado, onModificado } = props.mixin.useHooks()
 
     const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
     const tipoUbicacionTrabajo = ref(opcionesUbicacion.cliente)
@@ -57,6 +57,7 @@ export default defineComponent({
           params: { rol: rolesAdmitidos.fiscalizador },
         }
       })
+
       clientes.value = listadosAuxiliares.clientes
       supervisores.value = listadosAuxiliares.supervisores
       clientesFinales.value = listadosAuxiliares.clientesFinales
@@ -212,42 +213,51 @@ export default defineComponent({
     }*/
 
     onGuardado(() => {
-      //accion.value = acciones.editar
-      //tareaStore.tarea.hydrate(tarea)
+      /*console.log('ha sido guardado')*/
+      accion.value = acciones.editar
+      consultar(tarea)
+    })
+
+    onModificado(() => {
+      accion.value = acciones.editar
+      consultar(tarea)
     })
 
     onConsultado(async () => {
       tareaStore.tarea.hydrate(tarea)
-      //tipoUbicacionTrabajo.value = 'hfhffhjhgfjh' //opcionesUbicacion.cliente
-      //console.log(tipoUbicacionTrabajo.value)
-      /*const res = await obtenerClienteFinal(tarea.cliente_final)
-      clienteFinal.hydrate(res)
-      console.log(res)*/
-
-      /*if (tarea.cliente_final) {
-        tarea.ubicacion_tarea = new UbicacionTarea()
-        console.log('Tiene cliente final')
-      } */
-      /*else {
-        tipoUbicacionTrabajo.value = opcionesUbicacion.manual
-      }*/
+      tarea.tiene_cliente_final = !!tarea.cliente_final
     })
+    //tareaStore.tarea.hydrate(tarea)
+    //tipoUbicacionTrabajo.value = 'hfhffhjhgfjh' //opcionesUbicacion.cliente
+    //console.log(tipoUbicacionTrabajo.value)
+    /* const res = await obtenerClienteFinal(tarea.cliente_final)
+    clienteFinal.hydrate(res)
+    console.log(res) */
 
-    onBeforeModificar(() => {
-      /* if (tipoUbicacionTrabajo.value === 'ubicacion_manual') {
-        tarea.cliente_final = null
-        clienteFinal.hydrate(new ClienteFinal())
-      } else {
-        tarea.ubicacion_tarea = new UbicacionTarea()
-      } */
-    })
+    /*if (tarea.cliente_final) {
+      tarea.ubicacion_tarea = new UbicacionTarea()
+      console.log('Tiene cliente final')
+    } */
+    /*else {
+      tipoUbicacionTrabajo.value = opcionesUbicacion.manual
+    }*/
+    //})
 
-    onReestablecer(() => {
-      /* clienteFinal.hydrate(new ClienteFinal())
+    // onBeforeModificar(() => {
+    /* if (tipoUbicacionTrabajo.value === 'ubicacion_manual') {
       tarea.cliente_final = null
-      tarea.ubicacion_tarea = new UbicacionTarea()*/
-      // tareaStore.tarea.hydrate(new Tarea())
-    })
+      clienteFinal.hydrate(new ClienteFinal())
+    } else {
+      tarea.ubicacion_tarea = new UbicacionTarea()
+    } */
+    // })
+
+    // onReestablecer(() => {
+    /* clienteFinal.hydrate(new ClienteFinal())
+    tarea.cliente_final = null
+    tarea.ubicacion_tarea = new UbicacionTarea()*/
+    // tareaStore.tarea.hydrate(new Tarea())
+    //})
 
     return {
       v$,

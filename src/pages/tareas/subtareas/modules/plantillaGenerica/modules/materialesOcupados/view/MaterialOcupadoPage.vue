@@ -17,7 +17,7 @@
       @eliminar="eliminarMaterial"
       :entidad="ControlMaterialSubtarea"
     ></essential-table>
-    <!-- :agregarElemento="agregarMaterial" -->
+    <!-- :accion1Header="agregarMaterial" -->
     <div class="row justify-end q-gutter-sm q-pt-md">
       <!-- Boton guardar -->
       <q-btn color="primary" type="submit" no-caps push @click="guardar()">
