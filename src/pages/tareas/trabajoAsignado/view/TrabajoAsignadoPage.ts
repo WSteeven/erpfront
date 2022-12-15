@@ -58,6 +58,7 @@ export default defineComponent({
           const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
           entidad.estado = estadosSubtareas.EJECUTANDO
           entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
+          notificarCorrecto('Trabajo iniciado exitosamente!')
           actualizarElemento(posicion, entidad)
         })
       }
@@ -73,6 +74,7 @@ export default defineComponent({
           prompt('Ingrese el motivo de la pausa', (data) => {
             new CambiarEstadoSubtarea().pausar(entidad.id, data)
             entidad.estado = estadosSubtareas.PAUSADO
+            notificarCorrecto('Trabajo pausado exitosamente!')
             actualizarElemento(posicion, entidad)
           })
         })
@@ -88,6 +90,7 @@ export default defineComponent({
         confirmar('¿Está seguro de reanudar el trabajo?', () => {
           new CambiarEstadoSubtarea().reanudar(entidad.id)
           entidad.estado = estadosSubtareas.EJECUTANDO
+          notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
           actualizarElemento(posicion, entidad)
         })
       }
@@ -117,6 +120,7 @@ export default defineComponent({
             const { result } = await new CambiarEstadoSubtarea().suspender(entidad.id, data)
             entidad.estado = estadosSubtareas.SUSPENDIDO
             entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
+            notificarCorrecto('Trabajo suspendido exitosamente!')
             actualizarElemento(posicion, entidad)
           })
         })
@@ -134,7 +138,7 @@ export default defineComponent({
           entidad.estado = estadosSubtareas.REALIZADO
           entidad.fecha_hora_realizado = result.fecha_hora_realizado
           actualizarElemento(posicion, entidad)
-          notificarCorrecto('El trabajo ha sido marcado como realizado!')
+          notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
         })
       }
     }
@@ -152,7 +156,7 @@ export default defineComponent({
     async function aplicarFiltro(tabSeleccionado) {
       if (tabSeleccionado !== estadoSeleccionado) {
         currentPageListado.value = 1
-        const { result } = await subtareaAsignada.listar({ page: currentPageListado.value++, offset: 48, estado: tabSeleccionado }) //grupo_id: grupo_id, 
+        const { result } = await subtareaAsignada.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id, 
         listado.value = result.data
         estadoSeleccionado = tabSeleccionado
       }

@@ -30,7 +30,7 @@
       <q-card-section>
         <component
           :is="componente"
-          :mixin="mixin"
+          :mixin-modal="mixin"
           @seleccionar="emit('seleccionar')"
           @cerrar-modal="cerrarModalEntidad()"
         ></component>

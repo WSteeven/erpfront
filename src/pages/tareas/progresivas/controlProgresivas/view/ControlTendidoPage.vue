@@ -200,7 +200,7 @@
             :alto-fijo="false"
             :permitirConsultar="false"
             :mostrar-footer="false"
-            :agregarElemento="agregarProgresiva"
+            :accion1Header="agregarProgresiva"
             @eliminar="eliminar"
             @editar="editar"
           ></essential-table>

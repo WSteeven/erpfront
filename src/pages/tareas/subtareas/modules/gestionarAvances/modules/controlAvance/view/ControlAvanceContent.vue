@@ -294,7 +294,7 @@
           @editar="tablaTrabajoRealizado.editar"
         ></essential-table>
       </div>
-      <!--:agregarElemento="agregarActividadRealizada"-->
+      <!--:accion1Header="agregarActividadRealizada"-->
 
       <!--<div class="q-mb-md">
         <essential-table
@@ -325,7 +325,7 @@
           @eliminar="tablaMateriales.eliminar"
           @editar="tablaMateriales.editar"
         ></essential-table>
-        <!--:agregarElemento="agregarMaterial"-->
+        <!--:accion1Header="agregarMaterial"-->
       </div>
     </div>
 

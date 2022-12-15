@@ -57,6 +57,12 @@
               toggle-color="primary"
               color="white"
               text-color="primary"
+              @update:model-value="
+                () => {
+                  tecnicosGrupoPrincipal = []
+                  subtarea.grupo = null
+                }
+              "
               :options="[
                 {
                   label: 'Por grupo técnico',
@@ -481,7 +487,7 @@
             <div class="row q-col-gutter-sm q-mb-md">
               <!-- Busqueda -->
               <div class="col-12 col-md-10">
-                <label class="q-mb-sm block">Buscar empleado</label>
+                <label class="q-mb-sm block">Agregar más empleados</label>
                 <q-input
                   v-model="busqueda"
                   placeholder="Ingrese Nombres o Apellidos o Identificación"
@@ -517,9 +523,13 @@
             </div>
 
             <essential-table
+              ref="refEmpleadosAsignados"
               titulo="Empleados asignados"
               :configuracionColumnas="columnas"
               :datos="tecnicosGrupoPrincipal"
+              :accion1Header="asignarNuevoTecnicoLider"
+              :accion2Header="designarNuevoSecretario"
+              :accion3Header="cancelarDesignacion"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -527,119 +537,14 @@
               :alto-fijo="false"
               :mostrar-header="true"
               :mostrar-footer="false"
+              :tipo-seleccion="tipoSeleccion"
               :accion1="eliminarTecnico"
-              :accion2="asignarNuevoTecnicoLider"
+              @selected="entidadSeleccionada"
             >
-              <!--:datos="tecnicosGrupoPrincipal"-->
             </essential-table>
           </div>
         </div>
       </q-expansion-item>
-
-      <!-- Asignar técnicos de otros grupos -->
-      <!--<q-expansion-item
-        class="overflow-hidden bg-white q-mb-md"
-        style="border-radius: 8px; border: 1px solid #ddd"
-        label="Asignar empleados encargados"
-        header-class="bg-grey-1"
-        default-opened
-      > -->
-      <!--iv class="row q-col-gutter-sm q-pa-md"> -->
-      <!--<div class="col-12">
-            <q-btn-toggle
-              v-model="seleccionBusqueda"
-              spread
-              class="my-custom-toggle"
-              no-caps
-              rounded
-              unelevated
-              toggle-color="primary"
-              color="white"
-              text-color="primary"
-              :disable="disable"
-              :options="[
-                { label: 'Buscar un técnico a la vez', value: 'por_tecnico' },
-                { label: 'Buscar por grupo', value: 'por_grupo' },
-              ]"
-            />
-          </div> -->
-      <!--</div> -->
-
-      <!-- Busqueda por grupo -->
-      <!-- <div class="row q-col-gutter-sm q-pa-md">
-          <div class="col-12 col-md-10">
-            <label class="q-mb-sm block">Grupo</label>
-            <q-select
-              v-model="busqueda"
-              :options="grupos"
-              @filter="filtrarGrupos"
-              hint="Seleccione un grupo y presione en Listar técnicos"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
-              :disable="disable"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              :error="!!v$.grupo.$errors.length"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-
-              <template v-slot:error>
-                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-select>
-          </div>
-
-          <div class="col-12 col-md-2 q-pt-md">
-            <br />
-            <q-btn
-              color="positive"
-              class="full-width"
-              :disable="disable"
-              no-caps
-              push
-            >
-              <q-icon name="bi-search" class="q-pr-sm" size="xs"></q-icon>
-              <div>Listar técnicos</div>
-            </q-btn>
-          </div>
-        </div> -->
-
-      <!-- Listado -->
-      <!-- Tecnicos temporales -->
-      <!-- <div class="row q-col-gutter-sm q-pa-md">
-          <div class="col-12">
-            <essential-table
-              titulo="Técnicos temporales de otros grupos"
-              :configuracionColumnas="columnas"
-              :datos="tecnicosOtrosGrupos"
-              :mostrarBotones="false"
-              :permitirConsultar="false"
-              :permitirEditar="false"
-              :permitirEliminar="false"
-              :alto-fijo="false"
-              :mostrar-header="false"
-              :mostrar-footer="false"
-              :accion1="eliminarTecnicoOtroGrupo"
-            >
-            </essential-table>
-          </div>
-        </div> -->
-      <!--</q-expansion-item> -->
 
       <button-submits
         :accion="accion"

@@ -32,6 +32,14 @@ export const configuracionColumnasTecnico: ColumnConfig<Empleado>[] = [
     sortable: true,
   },
   {
+    name: 'grupo_id',
+    field: 'grupo_id',
+    label: 'Grupo ID',
+    align: 'left',
+    sortable: true,
+    visible: false,
+  },
+  {
     name: 'disponible',
     field: 'disponible',
     label: 'Disponible',

@@ -19,8 +19,6 @@
     :hide-bottom="!mostrarFooter"
     flat
     bordered
-    :pagination="{ rowsPerPage: 0 }"
-    :rows-per-page-options="[0]"
     :selection="tipoSeleccion"
     v-model:selected="selected"
     wrap-cells
@@ -33,7 +31,53 @@
     :virtual-scroll-item-size="offset"
     :virtual-scroll-sticky-size-start="offset"
     @virtual-scroll="onScroll"
+    :pagination="pagination"
   >
+    <!-- :pagination="{ rowsPerPage: 0 }" 
+    :rows-per-page-options="[0]" -->
+    <template v-slot:pagination="scope">
+      <q-btn
+        v-if="scope.pagesNumber > 2"
+        icon="first_page"
+        color="grey-8"
+        round
+        dense
+        flat
+        :disable="scope.isFirstPage"
+        @click="scope.firstPage"
+      />
+
+      <q-btn
+        icon="chevron_left"
+        color="grey-8"
+        round
+        dense
+        flat
+        :disable="scope.isFirstPage"
+        @click="scope.prevPage"
+      />
+
+      <q-btn
+        icon="chevron_right"
+        color="grey-8"
+        round
+        dense
+        flat
+        :disable="scope.isLastPage"
+        @click="scope.nextPage"
+      />
+
+      <q-btn
+        v-if="scope.pagesNumber > 2"
+        icon="last_page"
+        color="grey-8"
+        round
+        dense
+        flat
+        :disable="scope.isLastPage"
+        @click="scope.lastPage"
+      />
+    </template>
     <!-- Editar celdas -->
     <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
       <q-td :key="props.col.name" :props="props">
@@ -74,18 +118,61 @@
       </div>
       <!-- <div class="column full-width"> -->
       <div class="row justify-between items-center full-width q-mb-md">
-        <q-btn
-          v-if="agregarElemento"
-          color="primary"
-          :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-          push
-          rounded
-          no-caps
-          @click="agregarElemento.accion"
-        >
-          <q-icon name="bi-plus" size="xs" class="q-pr-sm"></q-icon>
-          <span>{{ agregarElemento.titulo }}</span>
-        </q-btn>
+        <span class="q-gutter-x-xs">
+          <!-- Boton 1 Header -->
+          <q-btn
+            v-if="extraerVisible(accion1Header, props)"
+            :color="accion1Header?.color ?? 'primary'"
+            :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+            push
+            rounded
+            no-caps
+            @click="accion1Header.accion"
+          >
+            <q-icon
+              :name="extraerIcono(accion1Header) ?? ''"
+              size="xs"
+              class="q-pr-sm"
+            ></q-icon>
+            <span>{{ accion1Header.titulo }}</span>
+          </q-btn>
+
+          <!-- Boton 2 Header -->
+          <q-btn
+            v-if="extraerVisible(accion2Header, props)"
+            :color="accion2Header?.color ?? 'primary'"
+            :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+            push
+            rounded
+            no-caps
+            @click="accion2Header.accion"
+          >
+            <q-icon
+              :name="extraerIcono(accion2Header) ?? ''"
+              size="xs"
+              class="q-pr-sm"
+            ></q-icon>
+            <span>{{ accion2Header.titulo }}</span>
+          </q-btn>
+
+          <!-- Boton 2 Header -->
+          <q-btn
+            v-if="extraerVisible(accion3Header, props)"
+            :color="accion3Header?.color ?? 'primary'"
+            :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+            push
+            rounded
+            no-caps
+            @click="accion3Header.accion"
+          >
+            <q-icon
+              :name="extraerIcono(accion3Header) ?? ''"
+              size="xs"
+              class="q-pr-sm"
+            ></q-icon>
+            <span>{{ accion3Header.titulo }}</span>
+          </q-btn>
+        </span>
 
         <div class="row q-col-gutter-sm">
           <q-input
@@ -261,16 +348,18 @@
           </q-btn>
 
           <!-- custom botons -->
-          <CustomButtons
-            :accion1="accion1"
-            :accion2="accion2"
-            :accion3="accion3"
-            :accion4="accion4"
-            :accion5="accion5"
-            :accion6="accion6"
-            :accion7="accion7"
-            :propsTable="props"
-          ></CustomButtons>
+          <span>
+            <CustomButtons
+              :accion1="accion1"
+              :accion2="accion2"
+              :accion3="accion3"
+              :accion4="accion4"
+              :accion5="accion5"
+              :accion6="accion6"
+              :accion7="accion7"
+              :propsTable="props"
+            ></CustomButtons>
+          </span>
         </div>
       </q-td>
     </template>

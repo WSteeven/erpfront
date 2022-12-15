@@ -79,4 +79,6 @@ export const endpoints = {
   ubicaciones: new Endpoint('ubicaciones/'),
   imagenes_adicionales: new Endpoint('imagenes-adicionales/'),
   materiales_pedidos: new Endpoint('transacciones-egresos/materiales/'),
+  intercambiar_jefe_cuadrilla: new Endpoint('intercambiar-jefe-cuadrilla/'),
+  intercambiar_secretario_cuadrilla: new Endpoint('intercambiar-secretario-cuadrilla/')
 }

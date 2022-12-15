@@ -81,7 +81,7 @@ export default defineComponent({
     ]
 
     if (!listadoCargado) {
-      listar({ page: currentPageListado.value, offset: 48 })
+      listar()
       listadoCargado = true
     }
 
@@ -127,7 +127,7 @@ export default defineComponent({
 
     function cargarListado() {
       if (nextPageUrl.value)
-        listar({ page: currentPageListado.value + 1, offset: 48 }, true)
+        listar()
     }
 
     return {

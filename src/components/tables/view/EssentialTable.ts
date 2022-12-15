@@ -93,7 +93,15 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
-    agregarElemento: {
+    accion1Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion2Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion3Header: {
       type: Object as () => CustomActionTable,
       required: false,
     },
@@ -125,9 +133,7 @@ export default defineComponent({
     const fila = props.entidad ? ref(new props.entidad()) : null
     const listado = ref()
 
-    watchEffect(() => {
-      listado.value = props.datos
-    })
+    watchEffect(() => listado.value = props.datos)
 
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
@@ -141,7 +147,7 @@ export default defineComponent({
         fila.value.hydrate(entidad)
         posicionFila.value = posicion
         abrirModal()
-        console.log('..abriendo modal')
+        // console.log('..abriendo modal')
       }
     }
     const eliminar = (data: object) => emit('eliminar', data)
@@ -256,9 +262,38 @@ export default defineComponent({
       abierto.value = false
     }
 
-    /*function abrir() {
+    function extraerVisible(accion: CustomActionTable, propsTable: any): boolean {
+      if (accion && accion.visible && accion.hasOwnProperty('visible')) {
+        return accion.visible({
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex,
+        })
+      } else {
+        return accion !== undefined ?? false
+      }
+    }
 
-    }*/
+    function extraerIcono(accion: CustomActionTable, propsTable: any) {
+      return typeof accion?.icono === 'function'
+        ? accion.icono({
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex,
+        })
+        : accion?.icono
+    }
+
+    const pagination = ref({
+      sortBy: 'desc',
+      descending: false,
+      page: 1,
+      rowsPerPage: 10,
+      // rowsNumber: xx if getting data from a server
+    })
+
+    const pagesNumber = computed(() => {
+      return Math.ceil(listado.value.length / pagination.value.rowsPerPage)
+    })
+
 
     return {
       abierto,
@@ -288,6 +323,10 @@ export default defineComponent({
       loading,
       offset,
       abrirModal,
+      extraerVisible,
+      extraerIcono,
+      pagesNumber,
+      pagination,
     }
   },
 })

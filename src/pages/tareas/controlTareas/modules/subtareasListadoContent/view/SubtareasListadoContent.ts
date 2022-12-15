@@ -154,7 +154,7 @@ export default defineComponent({
     function aplicarFiltro(tabSeleccionado) {
       console.log(tabSeleccionado)
       subtareaListadoStore.filtroEstadoSeleccionado = tabSeleccionado
-      if (tareaStore.tarea.id) listar({ page: currentPageListado.value++, offset, tarea_id: tareaStore.tarea.id, estado: tabSeleccionado })
+      if (tareaStore.tarea.id) listar({ tarea_id: tareaStore.tarea.id, estado: tabSeleccionado })
     }
 
     function actualizarElemento(posicion: number, entidad: any): void {
