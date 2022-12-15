@@ -39,5 +39,4 @@
     </q-card>
   </q-dialog>
 </template>
-
 <script src="./ModalEntidad.ts"></script>

@@ -121,6 +121,6 @@
   </div>
 
   <!-- Modales -->
-  <modales-entidad :comportamiento="modales"></modales-entidad>
+  <modales-entidad :comportamiento="modales" ></modales-entidad>
 </template>
 <script src="./TransaccionIngresoInventariarPage.ts" />

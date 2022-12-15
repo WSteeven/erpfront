@@ -1,6 +1,6 @@
 <template>
   <!-- encabezado -->
-  <q-btn class="justify-end" @click="imprimir">Imprimir</q-btn>
+  <q-btn class="justify-end" @click="imprimir()">Imprimir</q-btn>
   <div ref="refPDFIngreso">
     <!-- <page_header> Sistema </page_header> -->
     <div class="q-pa-md">

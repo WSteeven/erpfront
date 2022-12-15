@@ -13,7 +13,7 @@ export class Traspaso extends EntidadAuditable {
     listadoProductos:any[]
 
     //variables auxiliares
-    es_tarea:string|null
+    es_tarea:boolean|null
 
     constructor(){
         super()
@@ -29,6 +29,6 @@ export class Traspaso extends EntidadAuditable {
         this.listadoProductos=[]
 
         //aux
-        this.es_tarea=null
+        this.es_tarea=false
     }
 }

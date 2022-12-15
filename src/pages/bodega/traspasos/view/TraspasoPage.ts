@@ -26,7 +26,16 @@ import { SucursalController } from "pages/administracion/sucursales/infraestruct
 import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
 import { EstadosTransaccionController } from "pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, tabOptionsTraspasos } from "config/utils";
+import { acciones, logoBN, logoColor, meses, tabOptionsTraspasos } from "config/utils";
+
+
+//pdfmake
+import * as pdfMake from 'pdfmake/build/pdfmake'
+import * as pdfFonts from 'pdfmake/build/vfs_fonts'
+import { buildTableBody } from "shared/utils";
+
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
+
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -35,7 +44,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Traspaso, new TraspasoController())
         const { entidad: traspaso, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onReestablecer, onBeforeGuardar } = mixin.useHooks()
+        const { onReestablecer, onBeforeGuardar, onConsultado } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
 
         //stores
@@ -57,7 +66,13 @@ export default defineComponent({
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
         let puedeEditar = ref(false)
+        let entidad_aux = ref()
 
+        onConsultado(() => {
+            if (accion.value === acciones.editar) {
+                soloLectura.value = true
+            }
+        })
         onReestablecer(() => {
             soloLectura.value = false
         })
@@ -131,12 +146,13 @@ export default defineComponent({
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
                     (data) => traspaso.listadoProductos[posicion].cantidades = data,
-                    traspaso.listadoProductos[posicion].cantidades
+                    traspaso.listadoProductos[posicion].cantidades,
+                    'number',
                 )
             },
-            visible: () => {
+            /* visible: () => {
                 return accion.value == acciones.nuevo ? true : false
-            }
+            } */
         }
         const botonDevolver: CustomActionTable = {
             titulo: 'Devolucion',
@@ -144,11 +160,13 @@ export default defineComponent({
             accion: ({ posicion }) => {
                 prompt('Ingresa la cantidad',
                     (data) => traspaso.listadoProductos[posicion].devolucion = data,
-                    traspaso.listadoProductos[posicion].devolucion
+                    traspaso.listadoProductos[posicion].devolucion,
                 )
             },
-            visible: () => {
-                return accion.value == acciones.editar ? true : false
+            visible: ({ entidad, posicion }) => {
+                // console.log('entidad....', entidad)
+                console.log(entidad.cantidades != entidad.devuelto)
+                return accion.value == acciones.editar && entidad.cantidades != entidad.devuelto ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
@@ -159,10 +177,296 @@ export default defineComponent({
                 // devolucionStore.idDevolucion = entidad.id
                 // modales.abrirModalEntidad("ImprimirDevolucionPage")
                 // await devolucionStore.showPreview()
-                // pdfMakeImprimir()
+                console.log('entidad en el boton imprimir', entidad)
+                pdfMakeImprimir(entidad)
             },
-            visible: () => tabSeleccionado.value == 'CREADA' ? true : false
+            // visible: () => tabSeleccionado.value == '1' ? true : false
         }
+
+        
+        function table(data, columns, encabezados) {
+            return {
+                layout: 'listadoLayout',
+                table: {
+                    headerRows: 1,
+                    body: buildTableBody(data, columns, encabezados)
+                }
+            }
+        }
+
+        const f = new Date()
+        function pdfMakeImprimir(traspaso) {
+            pdfMake.tableLayouts = {
+                listadoLayout: {
+                    hLineWidth: function (i, node) {
+                        if (i === 0 || i === node.table.body.length) {
+                            return 0;
+                        }
+                        return (i === node.table.headerRows) ? 2 : 1;
+                    },
+                    vLineWidth: function (i) {
+                        return 0;
+                    },
+                    hLineColor: function (i) {
+                        return i === 1 ? 'black' : '#aaa';
+                    },
+                    paddingLeft: function (i) {
+                        return i === 0 ? 0 : 8;
+                    },
+                    paddingRight: function (i, node) {
+                        return (i === node.table.widths.length - 1) ? 0 : 8;
+                    }
+                },
+                lineaLayout: {
+                    hLineWidth: function (i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 0 : 2;
+                    },
+                    vLineWidth: function (i, node) {
+                        return 0;
+                    },
+                },
+            }
+
+            var docDefinition = {
+                info: {
+                    title: `Traspaso ${traspaso.id}`,
+                    author: `${store.user.nombres} ${store.user.apellidos}`,
+                },
+                background: {
+                    image: logoBN,
+                    margin: [50, 80, 50, 50],
+                    opacity: 0.1
+                },
+                pageSize: 'A5',
+                pageOrientation: 'landscape',
+                header: {
+                    columns: [
+                        {
+                            image: logoColor,
+                            width: 70,
+                            height: 40,
+                            margin: [5, 2]
+                        },
+                        { text: 'COMPROBANTE DE TRASPASO ENTRE CLIENTES', width: 'auto', style: 'header', margin: [85, 20] },
+                        { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 2, 5] }
+                    ]
+                },
+                footer: function (currentPage, pageCount) {
+                    return [
+                        {
+                            columns: [
+                                {
+                                    width: '*',
+                                    text: currentPage.toString() + ' de ' + pageCount,
+                                    margin: [10, 10]
+                                },
+                                { qr: `Traspaso N° ${traspaso.id}\n Generado por ${store.user.nombres} ${store.user.apellidos}, el ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}, ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
+                                // { text: 'pie de pagina', alignment: 'right', margin: [5, 2] }
+                            ]
+                        }
+                    ]
+                },
+                content: [
+                    {
+                        canvas: [
+                            {
+                                type: 'line',
+                                x1: 0, y1: 5,
+                                x2: 510, y2: 5,
+                                lineWidth: 1,
+                            },
+                        ], margin: [0, 0, 0, 20]
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                text: [
+                                    { text: 'Transaccion N° ', style: 'defaultStyle' },
+                                    { text: `${traspaso.id}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: '*',
+                                text: [
+                                    { text: 'Fecha: ', style: 'defaultStyle' },
+                                    { text: `${traspaso.created_at}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // fixed width
+                                width: '*',
+                                text: [
+                                    { text: 'Solicitante: ', style: 'defaultStyle' },
+                                    { text: `${traspaso.solicitante}`, style: 'resultStyle', }
+                                ]
+                            },
+                        ],
+
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${traspaso.sucursal}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${traspaso.justificacion}`, style: 'resultStyle', }
+                                ],
+                            },
+                        ],
+                    },
+
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Desde: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${traspaso.desde_cliente}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Hasta: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${traspaso.hasta_cliente}`, style: 'resultStyle', }
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        columns: [
+                            {
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
+                                    { width: 'auto', text: ` ${traspaso.tarea}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Estado: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${traspaso.estado}`, style: 'resultStyle', }
+                                ],
+                            },
+                        ]
+                    },
+
+                    /* 
+                    ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
+                        ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
+                    */
+                    table(traspaso.listadoProductos,
+                        ['producto', 'detalle_id', 'condicion', 'cantidades', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'Devuelto']),
+
+                    { text: '\n\n' },
+
+                    // aqui debe ir el listado de devoluciones realizadas
+
+                    /* { text: 'Listado de devoluciones' },
+                    function () {
+                        {
+                            text: traspaso.listadoDevoluciones.forEach((element) => {
+                                `${element.id}`
+                            })
+                        }
+                    }, */
+
+                    { text: '\n\n' },
+                    {
+                        columns: [
+                            {
+                                layout: 'lineaLayout',
+                                width: '*',
+                                table: {
+                                    widths: ['*'],
+                                    body: [[" "], [" "]]
+                                },
+                                margin: [0, 0, 60, 0]
+                            },
+                            {
+                                layout: 'lineaLayout',
+                                width: '*',
+                                table: {
+                                    widths: ['*'],
+                                    body: [[" "], [" "]]
+                                },
+                                margin: [60, 0, 0, 0]
+                            }
+
+                        ],
+                        columnGap: 10
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                // width: '*',
+                                text: [
+                                    { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center' },
+                                    { text: `${traspaso.solicitante}\n`, style: 'resultStyle', alignment: 'center' },
+                                    {
+                                        text: [
+                                            { text: 'C.I: ', style: 'resultStyle', alignment: 'center' },
+                                            { text: `${store.user.identificacion}`, style: 'resultStyle' }
+                                        ],
+                                        alignment: 'center',
+                                    }
+                                ]
+                            },
+                            {
+                                // width: '*',
+                                text: [
+                                    { text: 'RECIBE \n', style: 'resultStyle', alignment: 'center' },
+                                    { text: 'BODEGUERO: \n', style: 'resultStyle', },
+                                    { text: 'C.I: \n', style: 'resultStyle', margin: [60, 0, 0, 0], }
+                                ]
+                            },
+                        ],
+                        // optional space between columns
+                        columnGap: 140
+                    },
+                ],
+                styles: {
+                    header: {
+                        fontSize: 16,
+                        bold: true,
+                        alignment: 'center'
+                    },
+                    defaultStyle: {
+                        fontSize: 10,
+                        bold: false
+                    },
+                    resultStyle: {
+                        fontSize: 10,
+                        bold: true
+                    },
+                },
+            }
+            pdfMake.createPdf(docDefinition).open()
+        }
+
+
 
         //configurar los listados
         opciones_clientes.value = listadosAuxiliares.clientes
@@ -206,14 +510,14 @@ export default defineComponent({
             tabSeleccionado,
 
             tabEs(val) {
+                console.log(val)
                 tabSeleccionado.value = val
-                puedeEditar.value = val==0?true:false
+                puedeEditar.value = val == 0 ? true : false
             },
 
             //Filtros
             filtroTareas(val) {
                 const opcionSeleccionada = listadosAuxiliares.tareas.filter((v) => v.id === val)
-                console.log(opcionSeleccionada)
                 traspaso.hasta_cliente = opcionSeleccionada[0]['cliente_id']
 
             }

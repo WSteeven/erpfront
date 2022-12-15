@@ -259,7 +259,6 @@ export function formatBytes(bytes, decimals = 2) {
  */
 export function buildTableBody(data, columns, columnas) {
   const body = []
-  // const columnas = ['Id', 'Producto', 'Descripción', 'Categoría', 'Cantidad']
   body.push(columnas)
 
   data.forEach(function (row) {
