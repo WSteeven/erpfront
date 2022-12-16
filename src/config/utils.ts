@@ -18,16 +18,18 @@ export const tiposElementos = [
   'AMERICANO',
   'NODO',
 ]
+export const tiposTension = ['BAJA TENSIÓN', 'MEDIA TENSIÓN', 'ALTA TENSIÓN', 'DATOS']
 export const propietariosElementos = [
-  'NO POSEE',
-  'TELCONET',
-  'CONECEL',
-  'OTECEL',
   'CNEL',
-  'CAJA',
-  'EMPRESA ELECTRICA QUITO',
   'CNT',
+  'CONCEL',
+  'OTECEL',
+  'TELCONET',
   'NEDETEL',
+  'SETEL',
+  'PRIVADO',
+  'EERRS',
+  'CENTRO SUR'
 ]
 
 export const estadoElementos = ['BUENO', 'MALO']

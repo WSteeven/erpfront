@@ -7,14 +7,18 @@ export class RegistroTendido extends EntidadAuditable {
     codigo_elemento: string | null
     progresiva_entrada: string | null
     progresiva_salida: string | null
-    latitud: string | null
-    longitud: string | null
+    coordenada_del_elemento: string | null
+    coordenada_poste_anclaje1: string | null
+    coordenada_poste_anclaje2: string | null
+    // latitud: string | null
+    // longitud: string | null
     estado_elemento: string | null
     tiene_transformador: boolean
     cantidad_transformadores: number | null
     americano: boolean
     tiene_retenidas: boolean
     cantidad_retenidas: number | null
+    instalo_manga: boolean
     instalo_reserva: boolean
     cantidad_reservas: number | null
     observaciones: string | null
@@ -22,6 +26,7 @@ export class RegistroTendido extends EntidadAuditable {
     hora: string | null
     imagen: string | null
     listadoProductosSeleccionados: any[]
+    coordenada_cruce_americano: string | null
 
     constructor() {
         super()
@@ -31,14 +36,18 @@ export class RegistroTendido extends EntidadAuditable {
         this.codigo_elemento = null
         this.progresiva_entrada = null
         this.progresiva_salida = null
-        this.latitud = null
-        this.longitud = null
+        this.coordenada_del_elemento = 'Latitud: -3.258954, Longitud: -79.949056'
+        this.coordenada_poste_anclaje1 = 'Latitud: -3.258954, Longitud: -79.949056'
+        this.coordenada_poste_anclaje2 = 'Latitud: -3.258954, Longitud: -79.949056'
+        // this.latitud = null
+        // this.longitud = null
         this.estado_elemento = null
         this.tiene_transformador = false
         this.cantidad_transformadores = null
         this.americano = false
         this.tiene_retenidas = false
         this.cantidad_retenidas = null
+        this.instalo_manga = false
         this.instalo_reserva = false
         this.cantidad_reservas = null
         this.observaciones = null
@@ -46,5 +55,6 @@ export class RegistroTendido extends EntidadAuditable {
         this.hora = null
         this.imagen = null
         this.listadoProductosSeleccionados = []
+        this.coordenada_cruce_americano = 'Latitud: -3.258954, Longitud: -79.949056'
     }
 }

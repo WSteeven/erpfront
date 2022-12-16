@@ -129,7 +129,7 @@ export default defineComponent({
 
     const botonRealizar: CustomActionTable = {
       titulo: 'Realizado',
-      icono: 'bi-check-circle',
+      icono: 'bi-check',
       color: 'positive',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
       accion: ({ entidad, posicion }) => {
