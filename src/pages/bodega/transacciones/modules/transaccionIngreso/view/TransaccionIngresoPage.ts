@@ -8,7 +8,7 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 import { useDevolucionStore } from 'stores/devolucion'
-import { acciones } from 'config/utils'
+import { acciones, logoBN, logoColor, meses } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
@@ -47,6 +47,8 @@ import { useRouter } from 'vue-router'
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from "shared/utils";
+
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
 
 export default defineComponent({
@@ -269,11 +271,15 @@ export default defineComponent({
             titulo: 'Imprimir',
             color: 'secondary',
             icono: 'bi-printer',
-            accion: ({ entidad }) => {
+            accion: async({ entidad }) => {
                 transaccionStore.idTransaccion = entidad.id
+                await transaccionStore.showPreview()
+                // await transaccionStore.cargarTransaccion(entidad.id)
                 console.log('Presionaste el boton IMPRIMIR')
-                // modales.abrirModalEntidad('TransaccionIngresoImprimirPage')
-                // imprimir()
+
+                transaccion.hydrate(transaccionStore.transaccion)
+                // console.log(transaccion, transaccionStore)
+                pdfMakeImprimir()
             },
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
@@ -322,7 +328,7 @@ export default defineComponent({
 
             var docDefinition = {
                 info: {
-                    title: `Traspaso ${traspaso.id}`,
+                    title: `Transacción N° ${transaccion.id}`,
                     author: `${store.user.nombres} ${store.user.apellidos}`,
                 },
                 background: {
@@ -340,8 +346,8 @@ export default defineComponent({
                             height: 40,
                             margin: [5, 2]
                         },
-                        { text: 'COMPROBANTE DE TRASPASO ENTRE CLIENTES', width: 'auto', style: 'header', margin: [85, 20] },
-                        { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 2, 5] }
+                        { text: 'COMPROBANTE DE INGRESO', width: 'auto', style: 'header', margin: [85, 20] },
+                        { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
                     ]
                 },
                 footer: function (currentPage, pageCount) {
@@ -353,7 +359,7 @@ export default defineComponent({
                                     text: currentPage.toString() + ' de ' + pageCount,
                                     margin: [10, 10]
                                 },
-                                { qr: `Traspaso N° ${traspaso.id}\n Generado por ${store.user.nombres} ${store.user.apellidos}, el ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}, ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
+                                { qr: `Transacción N° ${transaccion.id}\n Generado por ${store.user.nombres} ${store.user.apellidos}, el ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}, ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
                                 // { text: 'pie de pagina', alignment: 'right', margin: [5, 2] }
                             ]
                         }
@@ -377,7 +383,7 @@ export default defineComponent({
                                 width: '*',
                                 text: [
                                     { text: 'Transaccion N° ', style: 'defaultStyle' },
-                                    { text: `${traspaso.id}`, style: 'resultStyle', }
+                                    { text: `${transaccion.id}`, style: 'resultStyle', }
                                 ]
                             },
                             {
@@ -386,7 +392,7 @@ export default defineComponent({
                                 width: '*',
                                 text: [
                                     { text: 'Fecha: ', style: 'defaultStyle' },
-                                    { text: `${traspaso.created_at}`, style: 'resultStyle', }
+                                    { text: `${transaccion.created_at}`, style: 'resultStyle', }
                                 ]
                             },
                             {
@@ -394,7 +400,7 @@ export default defineComponent({
                                 width: '*',
                                 text: [
                                     { text: 'Solicitante: ', style: 'defaultStyle' },
-                                    { text: `${traspaso.solicitante}`, style: 'resultStyle', }
+                                    { text: `${transaccion.solicitante}`, style: 'resultStyle', }
                                 ]
                             },
                         ],
@@ -407,7 +413,7 @@ export default defineComponent({
                                 width: '*',
                                 columns: [
                                     { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${traspaso.sucursal}`, style: 'resultStyle', }
+                                    { width: 'auto', text: `${transaccion.sucursal}`, style: 'resultStyle', }
                                 ]
                             },
                             {
@@ -416,29 +422,7 @@ export default defineComponent({
                                 width: 'auto',
                                 columns: [
                                     { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${traspaso.justificacion}`, style: 'resultStyle', }
-                                ],
-                            },
-                        ],
-                    },
-
-                    {
-                        columns: [
-                            {
-                                // auto-sized columns have their widths based on their content
-                                width: '*',
-                                columns: [
-                                    { width: 'auto', text: 'Desde: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${traspaso.desde_cliente}`, style: 'resultStyle', }
-                                ]
-                            },
-                            {
-                                // star-sized columns fill the remaining space
-                                // if there's more than one star-column, available width is divided equally
-                                width: 'auto',
-                                columns: [
-                                    { width: 'auto', text: 'Hasta: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${traspaso.hasta_cliente}`, style: 'resultStyle', }
+                                    { width: 'auto', text: `${transaccion.justificacion}`, style: 'resultStyle', }
                                 ],
                             },
                         ],
@@ -449,7 +433,7 @@ export default defineComponent({
                                 width: '*',
                                 columns: [
                                     { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                                    { width: 'auto', text: ` ${traspaso.tarea}`, style: 'resultStyle', }
+                                    { width: 'auto', text: ` ${transaccion.tarea}`, style: 'resultStyle', }
                                 ]
                             },
                             {
@@ -458,19 +442,20 @@ export default defineComponent({
                                 width: 'auto',
                                 columns: [
                                     { width: 'auto', text: 'Estado: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${traspaso.estado}`, style: 'resultStyle', }
+                                    { width: 'auto', text: `${transaccion.estado}`, style: 'resultStyle', }
                                 ],
                             },
                         ]
                     },
+                    { text: '\n' },
 
                     /* 
                     ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
                     */
-                    table(traspaso.listadoProductos,
-                        ['producto', 'detalle_id', 'condicion', 'cantidades', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'Devuelto']),
+                    table(transaccion.listadoProductosTransaccion,
+                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
 
                     { text: '\n\n' },
 
@@ -517,7 +502,7 @@ export default defineComponent({
                                 // width: '*',
                                 text: [
                                     { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center' },
-                                    { text: `${traspaso.solicitante}\n`, style: 'resultStyle', alignment: 'center' },
+                                    { text: `${transaccion.solicitante}\n`, style: 'resultStyle', alignment: 'center' },
                                     {
                                         text: [
                                             { text: 'C.I: ', style: 'resultStyle', alignment: 'center' },

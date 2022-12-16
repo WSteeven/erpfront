@@ -7,7 +7,7 @@ import { configuracionColumnasProductosSeleccionados } from '../transaccionConte
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 // import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
-import { acciones, estadosSubtareas, tabOptionsTransacciones } from 'config/utils'
+import { acciones, estadosSubtareas, logoBN, logoColor, meses, tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
@@ -42,6 +42,14 @@ import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
 import { useDetalleStore } from 'stores/detalle'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesTransaccionEgreso'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+
+//pdfmake
+import * as pdfMake from 'pdfmake/build/pdfmake'
+import * as pdfFonts from 'pdfmake/build/vfs_fonts'
+import { buildTableBody } from "shared/utils";
+
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
+
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -99,7 +107,7 @@ export default defineComponent({
         const opciones_subtareas = ref([])
         const opciones_clientes = ref([])
 
-        function transformarOpcionesTipos() {
+        /* function transformarOpcionesTipos() {
             // console.log('llamaste a la funcion')
             if (!esBodeguero) {
                 opciones_tipos.value.forEach(element => {
@@ -107,7 +115,7 @@ export default defineComponent({
                     if (element.nombre === 'EGRESO') {element.nombre = 'SOLICITUD'}
                 });
             }
-        }
+        } */
         cargarVista(async () => {
             await obtenerListados({
                 empleados: {
@@ -129,13 +137,13 @@ export default defineComponent({
                     controller: new TareaController(),
                     params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
                 },
-                subtareas: {
+                /* subtareas: {
                     controller: new SubtareaController(),
                     params: {
                         campos: 'id,codigo_subtarea,detalle',
                         estados: [estadosSubtareas.ASIGNADO, estadosSubtareas.EJECUTANDO, estadosSubtareas.PAUSADO]
                     }
-                },
+                }, */
                 motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
                 autorizaciones: {
                     controller: new AutorizacionController(),
@@ -164,7 +172,7 @@ export default defineComponent({
                     },
                 },
             })
-            transformarOpcionesTipos()
+            // transformarOpcionesTipos()
         })
 
         //hooks
@@ -267,21 +275,341 @@ export default defineComponent({
             // }
         }
 
+        const empleadoRetira = ref()
         const botonImprimir: CustomActionTable = {
             titulo: 'Imprimir',
             color: 'secondary',
             icono: 'bi-printer',
-            accion: ({ entidad, posicion }) => {
+            accion: async ({ entidad, posicion }) => {
                 transaccionStore.idTransaccion = entidad.id
-
-                modales.abrirModalEntidad("TransaccionEgresoImprimirPage")
-                // imprimir()
+                await transaccionStore.showPreview()
+                transaccion.hydrate(transaccionStore.transaccion)
+                const response = await new EmpleadoController().consultar(transaccion.per_retira_id)
+                empleadoRetira.value = response.response.data.modelo
+                console.log(transaccion)
+                console.log(empleadoRetira)
+                // modales.abrirModalEntidad("TransaccionEgresoImprimirPage")
+                pdfMakeImprimir()
             },
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
 
+        function table(data, columns, encabezados) {
+            return {
+                layout: 'listadoLayout',
+                table: {
+                    headerRows: 1,
+                    body: buildTableBody(data, columns, encabezados)
+                }
+            }
+        }
+        const f = new Date()
+        function pdfMakeImprimir() {
+            pdfMake.tableLayouts = {
+                listadoLayout: {
+                    hLineWidth: function (i, node) {
+                        if (i === 0 || i === node.table.body.length) {
+                            return 0;
+                        }
+                        return (i === node.table.headerRows) ? 2 : 1;
+                    },
+                    vLineWidth: function (i) {
+                        return 0;
+                    },
+                    hLineColor: function (i) {
+                        return i === 1 ? 'black' : '#aaa';
+                    },
+                    paddingLeft: function (i) {
+                        return i === 0 ? 0 : 8;
+                    },
+                    paddingRight: function (i, node) {
+                        return (i === node.table.widths.length - 1) ? 0 : 8;
+                    }
+                },
+                lineaLayout: {
+                    hLineWidth: function (i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 0 : 2;
+                    },
+                    vLineWidth: function (i, node) {
+                        return 0;
+                    },
+                },
+            }
 
-        console.log('es bodeguero?', esBodeguero)
+            var docDefinition = {
+                info: {
+                    title: `Transacción N° ${transaccion.id}`,
+                    author: `${store.user.nombres} ${store.user.apellidos}`,
+                },
+                background: {
+                    image: logoBN,
+                    margin: [50, 80, 50, 50],
+                    opacity: 0.1
+                },
+                pageSize: 'A5',
+                pageOrientation: 'landscape',
+                /* header:function() {
+                    return [
+                        {
+                            columns: [
+                                {
+                                    image: logoColor,
+                                    width: 70,
+                                    height: 40,
+                                    margin: [5, 2]
+                                },
+                                { text: 'COMPROBANTE DE EGRESO', width: 'auto', style: 'header', margin: [85, 20] },
+                                { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
+                            ]
+                        },
+                        {
+                            canvas: [
+                                {
+                                    type: 'line',
+                                    x1: 0, y1: 5,
+                                    x2: 510, y2: 5,
+                                    lineWidth: 1,
+                                },
+                            ], margin: [0, 0, 0, 20]
+                        },
+                    ]
+                }, */
+                header: function () {
+                    return [
+                        {
+                            text:'some textr'
+                        },
+                        { canvas: [{ 
+                            type: 'line', 
+                            x1: 10, y1: 10, 
+                            x2: 585, y2: 10, 
+                        lineWidth: 1 }] },
+                        { canvas: [{ 
+                            type: 'line', 
+                            x1: 10, y1: 18, 
+                            x2: 585, y2: 18, 
+                        lineWidth: 1 }] },
+                        { canvas: [{ 
+                            type: 'line', 
+                            x1: 10, y1: 20, 
+                            x2: 585, y2: 20, 
+                        lineWidth: 1 }] }
+                    ];
+                },
+                footer: function (currentPage, pageCount) {
+                    return [
+                        {
+                            columns: [
+                                {
+                                    width: '*',
+                                    text: currentPage.toString() + ' de ' + pageCount,
+                                    margin: [10, 10]
+                                },
+                                { qr: `Transacción N° ${transaccion.id}\n Generado por ${store.user.nombres} ${store.user.apellidos}, el ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}, ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
+                                // { text: 'pie de pagina', alignment: 'right', margin: [5, 2] }
+                            ]
+                        }
+                    ]
+                },
+                content: [
+                    /* {
+                        canvas: [
+                            {
+                                type: 'line',
+                                x1: 0, y1: 5,
+                                x2: 510, y2: 5,
+                                lineWidth: 1,
+                            },
+                        ], margin: [0, 0, 0, 20]
+                    }, */
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                text: [
+                                    { text: 'Transaccion N° ', style: 'defaultStyle' },
+                                    { text: `${transaccion.id}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: '*',
+                                text: [
+                                    { text: 'Fecha: ', style: 'defaultStyle' },
+                                    { text: `${transaccion.created_at}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // fixed width
+                                width: '*',
+                                text: [
+                                    { text: 'Solicitante: ', style: 'defaultStyle' },
+                                    { text: `${transaccion.solicitante}`, style: 'resultStyle', }
+                                ]
+                            },
+                        ],
+
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${transaccion.sucursal}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${transaccion.justificacion}`, style: 'resultStyle', }
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        columns: [
+                            {
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
+                                    { width: 'auto', text: ` ${transaccion.tarea}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                // star-sized columns fill the remaining space
+                                // if there's more than one star-column, available width is divided equally
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Estado: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${transaccion.estado}`, style: 'resultStyle', }
+                                ],
+                            },
+                        ]
+                    },
+                    { text: '\n' },
+
+                    /* 
+                    ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
+                        ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
+                    */
+                    table(transaccion.listadoProductosTransaccion,
+                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
+                    table(transaccion.listadoProductosTransaccion,
+                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
+                    table(transaccion.listadoProductosTransaccion,
+                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
+                    table(transaccion.listadoProductosTransaccion,
+                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
+                    table(transaccion.listadoProductosTransaccion,
+                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
+                    table(transaccion.listadoProductosTransaccion,
+                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
+                    table(transaccion.listadoProductosTransaccion,
+                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
+
+                    { text: '\n\n' },
+
+                    // aqui debe ir el listado de devoluciones realizadas
+
+                    /* { text: 'Listado de devoluciones' },
+                    function () {
+                        {
+                            text: traspaso.listadoDevoluciones.forEach((element) => {
+                                `${element.id}`
+                            })
+                        }
+                    }, */
+
+                    { text: '\n\n' },
+                    {
+                        columns: [
+                            {
+                                layout: 'lineaLayout',
+                                width: '*',
+                                table: {
+                                    widths: ['*'],
+                                    body: [[" "], [" "]]
+                                },
+                                margin: [0, 0, 60, 0]
+                            },
+                            {
+                                layout: 'lineaLayout',
+                                width: '*',
+                                table: {
+                                    widths: ['*'],
+                                    body: [[" "], [" "]]
+                                },
+                                margin: [60, 0, 0, 0]
+                            }
+
+                        ],
+                        columnGap: 10
+                    },
+                    {
+                        columns: [
+                            {
+                                // auto-sized columns have their widths based on their content
+                                // width: '*',
+                                text: [
+                                    { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center' },
+                                    { text: `${transaccion.solicitante}\n`, style: 'resultStyle', alignment: 'center' },
+                                    {
+                                        text: [
+                                            { text: 'C.I: ', style: 'resultStyle', alignment: 'center' },
+                                            { text: `${store.user.identificacion}`, style: 'resultStyle' }
+                                        ],
+                                        alignment: 'center',
+                                    }
+                                ]
+                            },
+                            {
+                                // width: '*',
+                                text: [
+                                    { text: 'RECIBE \n', style: 'resultStyle', alignment: 'center' },
+                                    { text: `${transaccion.per_retira} \n`, style: 'resultStyle', alignment: 'center' },
+                                    { text: `C.I: ${empleadoRetira.value.identificacion}\n`, style: 'resultStyle', margin: [60, 0, 0, 0], alignment: 'center' }
+                                ]
+                            },
+                        ],
+                        // optional space between columns
+                        columnGap: 140
+                    },
+                ],
+                styles: {
+                    header: {
+                        fontSize: 16,
+                        bold: true,
+                        alignment: 'center'
+                    },
+                    defaultStyle: {
+                        fontSize: 10,
+                        bold: false
+                    },
+                    resultStyle: {
+                        fontSize: 10,
+                        bold: true
+                    },
+                },
+            }
+            pdfMake.createPdf(docDefinition).open()
+        }
+
+
+        // console.log('es bodeguero?', esBodeguero)
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
             name: 'cantidad',
             field: 'cantidad',
@@ -385,7 +713,7 @@ export default defineComponent({
             criterioBusquedaProducto,
             listadoProductos,
             listarProductos,
-            
+
             limpiarProducto,
             seleccionarProducto,
             configuracionColumnasProductos,

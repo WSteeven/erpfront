@@ -60,7 +60,6 @@ export default defineComponent({
 
 
 
-        const obtenerEmpleadoSolicitante = ref([])
         const empleado = ref()
 
         cargarVista(async () => {
@@ -140,7 +139,6 @@ export default defineComponent({
             meses,
 
             empleado,
-            obtenerEmpleadoSolicitante,
             imprimir,
             refPDF,
 
