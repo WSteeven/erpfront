@@ -107,7 +107,7 @@
 
         <!-- Supervisor -->
         <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Supervisor</label>
+          <label class="q-mb-sm block">Supervisor JP</label>
           <q-select
             v-model="tarea.supervisor"
             :options="supervisores"
@@ -116,6 +116,7 @@
             transition-hide="scale"
             options-dense
             dense
+            clearable
             outlined
             :option-label="(item) => item.nombres + ' ' + item.apellidos"
             :option-value="(item) => item.id"

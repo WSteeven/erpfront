@@ -4,11 +4,25 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
   {
     name: 'producto',
     field: 'producto',
-    label: 'Producto',
+    label: 'Detalle del material',
     align: 'left',
     sortable: true,
   },
   {
+    name: 'stock_inicial',
+    field: 'stock_inicial',
+    label: 'Stock inicial ',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'utilizado',
+    field: 'utilizado',
+    label: 'Utilizado ',
+    align: 'left',
+    sortable: false,
+  },
+  /*{
     name: 'descripcion',
     field: 'descripcion',
     label: 'Descripción',
@@ -21,6 +35,6 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Categoria',
     align: 'left',
     sortable: true,
-  },
+  },*/
 ]
 

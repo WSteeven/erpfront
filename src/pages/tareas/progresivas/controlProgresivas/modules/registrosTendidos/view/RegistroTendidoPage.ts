@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { tiposElementos, propietariosElementos, estadoElementos } from 'config/utils'
+import { tiposElementos, propietariosElementos, estadoElementos, tiposTension } from 'config/utils'
 import { required } from '@vuelidate/validators'
-import { defineComponent, reactive } from "vue"
+import { defineComponent, onMounted, reactive } from "vue"
 import useVuelidate from '@vuelidate/core'
 import { configuracionColumnasProductosSeleccionados } from 'pages/bodega/transacciones/modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 
@@ -45,13 +45,6 @@ export default defineComponent({
 
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
-            name: 'cantidades',
-            field: 'cantidades',
-            label: 'Cantidades',
-            align: 'left',
-            sortable: false,
-        },
-        {
             name: 'acciones',
             field: 'acciones',
             label: 'Acciones',
@@ -68,7 +61,8 @@ export default defineComponent({
         }
 
         const botonEditarCantidad: CustomActionTable = {
-            titulo: 'Editar cantidad',
+            titulo: 'Cantidad utilizada',
+            icono: 'bi-pencil',
             accion: ({ entidad, posicion }) => {
                 prompt(
                     'Ingresa la cantidad',
@@ -80,11 +74,63 @@ export default defineComponent({
             },
         }
 
+        onMounted(() => {
+            const materiales = [
+                {
+                    producto: 'HERRAJE FIBRA ÓPTICA TIPO A / BASE CON DOBLE',
+                    stock_inicial: 120,
+                    utilizado: 2,
+                },
+                {
+                    producto: 'ABRAZADERA TIPO A 7"',
+                    stock_inicial: 250,
+                    utilizado: null,
+                },
+                {
+                    producto: 'HERRAJE B CÓNICO',
+                    stock_inicial: 120,
+                    utilizado: null,
+                },
+                {
+                    producto: 'HERRAJE TIPO A (BASE DE ARGOLLA)',
+                    stock_inicial: 250,
+                    utilizado: null,
+                },
+                {
+                    producto: 'ABRAZADERA SIMPLE TIPO a',
+                    stock_inicial: 120,
+                    utilizado: 12,
+                },
+                {
+                    producto: 'HERRAJE DISPERSIÓN',
+                    stock_inicial: 250,
+                    utilizado: 4,
+                },
+                {
+                    producto: 'BRAZO TIPO A 1.20 MT',
+                    stock_inicial: 120,
+                    utilizado: null,
+                },
+                {
+                    producto: 'PREFORMADO AMARILLO',
+                    stock_inicial: 250,
+                    utilizado: 12,
+                },
+                {
+                    producto: 'GUARDACABO',
+                    stock_inicial: 82,
+                    utilizado: 30,
+                }
+            ]
+            tendido.listadoProductosSeleccionados = [...materiales]
+        })
+
         return {
             tendido,
             tiposElementos,
             propietariosElementos,
             estadoElementos,
+            tiposTension,
             v$,
             configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,

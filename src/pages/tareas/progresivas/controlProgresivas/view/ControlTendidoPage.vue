@@ -110,7 +110,7 @@
             </div>
 
             <!-- Sistema de coordenadas -->
-            <div class="col-12 col-md-3 q-mb-md">
+            <!--<div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Sistema de coordenadas</label>
               <q-select
                 v-model="progresiva.sistema_coordenadas"
@@ -124,7 +124,7 @@
                 map-options
               >
               </q-select>
-            </div>
+            </div> -->
             <!--<div class="col-12 col-md-3 q-mb-md">
           <label class="q-mb-sm block">Sistema de coordenadas</label>
           <q-input

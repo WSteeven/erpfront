@@ -10,7 +10,7 @@ export class ProgresivaModales {
 
   constructor() {
     this.RegistroTendidoPage = markRaw(
-      new ComponenteModal('CONSTRUCRED', RegistroTendidoPage)
+      new ComponenteModal('Agregar elemento', RegistroTendidoPage)
     )
   }
 }
