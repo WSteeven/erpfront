@@ -1,7 +1,7 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
 
 export const apiConfig = {
-  URL_BALSE: process.env.VUE_APP_API_URL,
+  URL_BALSE: 'http://localhost:8000',
 }
 
 export const endpoints = {

@@ -12,7 +12,7 @@
 
     <div v-if="quiero_subir_archivos" class="col-12 q-mb-md">
       <q-uploader
-        url="http://localhost:4444/upload"
+        url=""
         label="Selecciona o arrastra tus archivos aquí"
         multiple
         style="width: 100%"
@@ -21,6 +21,7 @@
         text-color="dark"
         color="grey-2"
         class="bg-grey-2"
+        :factory="factoryFn"
       />
     </div>
 

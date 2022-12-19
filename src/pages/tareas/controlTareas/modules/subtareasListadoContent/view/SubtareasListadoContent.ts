@@ -147,6 +147,7 @@ export default defineComponent({
       icono: 'bi-folder-fill',
       visible: () => true,
       accion: async ({ entidad, posicion }) => {
+        subtareaListadoStore.idSubtareaSeleccionada = entidad.id
         modales.abrirModalEntidad('GestorArchivoSubtareaPage')
       }
     }
