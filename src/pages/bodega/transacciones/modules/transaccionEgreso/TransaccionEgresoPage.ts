@@ -1,11 +1,12 @@
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
-import { required, requiredIf } from '@vuelidate/validators'
+import { required, alphaNum, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
+import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 // import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { acciones, estadosSubtareas, logoBN, logoColor, meses, tabOptionsTransacciones } from 'config/utils'
 
@@ -208,7 +209,7 @@ export default defineComponent({
 
         //Reglas de validacion
         const reglas = {
-            justificacion: { required },
+            justificacion: { required, alphaNum },
             sucursal: { required },
             // tipo: { required },
             cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
@@ -287,7 +288,7 @@ export default defineComponent({
                 const response = await new EmpleadoController().consultar(transaccion.per_retira_id)
                 empleadoRetira.value = response.response.data.modelo
                 console.log(transaccion)
-                console.log(empleadoRetira)
+                // console.log(empleadoRetira)
                 // modales.abrirModalEntidad("TransaccionEgresoImprimirPage")
                 pdfMakeImprimir()
             },
@@ -348,53 +349,18 @@ export default defineComponent({
                 },
                 pageSize: 'A5',
                 pageOrientation: 'landscape',
-                /* header:function() {
-                    return [
+                header:
+                {
+                    columns: [
                         {
-                            columns: [
-                                {
-                                    image: logoColor,
-                                    width: 70,
-                                    height: 40,
-                                    margin: [5, 2]
-                                },
-                                { text: 'COMPROBANTE DE EGRESO', width: 'auto', style: 'header', margin: [85, 20] },
-                                { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
-                            ]
+                            image: logoColor,
+                            width: 70,
+                            height: 40,
+                            margin: [5, 2]
                         },
-                        {
-                            canvas: [
-                                {
-                                    type: 'line',
-                                    x1: 0, y1: 5,
-                                    x2: 510, y2: 5,
-                                    lineWidth: 1,
-                                },
-                            ], margin: [0, 0, 0, 20]
-                        },
-                    ]
-                }, */
-                header: function () {
-                    return [
-                        {
-                            text:'some textr'
-                        },
-                        { canvas: [{ 
-                            type: 'line', 
-                            x1: 10, y1: 10, 
-                            x2: 585, y2: 10, 
-                        lineWidth: 1 }] },
-                        { canvas: [{ 
-                            type: 'line', 
-                            x1: 10, y1: 18, 
-                            x2: 585, y2: 18, 
-                        lineWidth: 1 }] },
-                        { canvas: [{ 
-                            type: 'line', 
-                            x1: 10, y1: 20, 
-                            x2: 585, y2: 20, 
-                        lineWidth: 1 }] }
-                    ];
+                        { text: 'COMPROBANTE DE EGRESO', width: 'auto', style: 'header', margin: [85, 20] },
+                        { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
+                    ],
                 },
                 footer: function (currentPage, pageCount) {
                     return [
@@ -412,7 +378,7 @@ export default defineComponent({
                     ]
                 },
                 content: [
-                    /* {
+                    {
                         canvas: [
                             {
                                 type: 'line',
@@ -421,7 +387,7 @@ export default defineComponent({
                                 lineWidth: 1,
                             },
                         ], margin: [0, 0, 0, 20]
-                    }, */
+                    },
                     {
                         columns: [
                             {
@@ -500,26 +466,8 @@ export default defineComponent({
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
                     */
                     table(transaccion.listadoProductosTransaccion,
-                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
-                    table(transaccion.listadoProductosTransaccion,
-                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
-                    table(transaccion.listadoProductosTransaccion,
-                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
-                    table(transaccion.listadoProductosTransaccion,
-                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
-                    table(transaccion.listadoProductosTransaccion,
-                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
-                    table(transaccion.listadoProductosTransaccion,
-                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
-                    table(transaccion.listadoProductosTransaccion,
-                        ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
+                        ['producto', 'descripcion', 'categoria', 'cantidad'],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad']),
 
                     { text: '\n\n' },
 
@@ -702,6 +650,7 @@ export default defineComponent({
             //tabla
             configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
+            configuracionColumnasDetallesProductos,
             botonEditarCantidad,
             botonDespachar,
             botonEliminar,
