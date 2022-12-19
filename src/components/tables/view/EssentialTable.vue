@@ -8,6 +8,7 @@
   ></EditarTablaModal>
 
   <q-table
+    ref="referencia"
     :hide-header="grid"
     :grid="grid || $q.screen.xs"
     :columns="configuracionColumnas"
@@ -174,21 +175,22 @@
           </q-btn>
         </span>
 
-        <div class="row q-col-gutter-sm">
-          <q-input
-            outlined
-            dense
-            rounded
-            :class="{ 'full-width': $q.screen.xs }"
-            debounce="300"
-            color="primary"
-            v-model="filter"
-          >
-            <template v-slot:append>
-              <q-icon name="search"></q-icon>
-            </template>
-          </q-input>
+        <q-input
+          outlined
+          dense
+          rounded
+          class="full-width q-mb-md"
+          placeholder="Buscar"
+          debounce="300"
+          color="primary"
+          v-model="filter"
+        >
+          <template v-slot:append>
+            <q-icon name="search"></q-icon>
+          </template>
+        </q-input>
 
+        <div class="row q-col-gutter-sm">
           <div
             v-if="mostrarBotones"
             class="row q-gutter-sm justify-end"
@@ -473,6 +475,12 @@
           </q-item>
         </q-list>
       </q-card>
+    </template>
+
+    <template #body-cell-tamanio_bytes="props">
+      <q-td :props="props">
+        {{ formatBytes(props.value) }}
+      </q-td>
     </template>
 
     <template #body-cell-pagado="props">

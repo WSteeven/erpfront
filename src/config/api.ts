@@ -5,7 +5,7 @@ export const apiConfig = {
 }
 
 export const endpoints = {
-  // autenticacion
+  // Autenticacion
   authentication: new Endpoint('sanctum/csrf-cookie', false),
   login: new Endpoint('usuarios/login'),
   logout: new Endpoint('usuarios/logout'),
@@ -15,34 +15,19 @@ export const endpoints = {
   cambiar_contrasena: new Endpoint('user/password', false),
   roles: new Endpoint('user/roles'),
   permisos: new Endpoint('user/permisos'),
-  // acceso a modulos
-  proyectos: new Endpoint('proyectos/'),
-  tareas: new Endpoint('tareas/'),
-  subtareas: new Endpoint('subtareas/'),
-  subtareas_asignadas: new Endpoint('subtareas-asignadas/'),
-  pausas_subtareas: new Endpoint('subtareas/pausas'),
-  tipos_trabajos: new Endpoint('tipos-trabajos/'),
-  control_asistencias: new Endpoint('control-asistencias/'),
-  control_cambios: new Endpoint('control-cambios/'),
-  tipos_elementos: new Endpoint('tipos-elementos/'),
-  clientes: new Endpoint('clientes/'),
-  progresivas: new Endpoint('progresivas/'),
-  grupos: new Endpoint('grupos/'),
-  clientes_finales: new Endpoint('clientes-finales/'),
   //configuraciones: new Endpoint('configuraciones/'),
   tablero: new Endpoint('tablero/'),
-  // ubicacion
+  // Ubicacion
   paises: new Endpoint('paises/'),
   provincias: new Endpoint('provincias/'),
   cantones: new Endpoint('cantones/'),
 
-  //endpoints de RR HH
+  // Modulo de RR HH
   activos_fijos: new Endpoint('activos-fijos/'),
-  //endpoints de RR HH
   empleados: new Endpoint('empleados/'),
   allroles: new Endpoint('roles/'),
 
-  //endpoints de bodega
+  // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones/'),
   categorias: new Endpoint('categorias/'),
   condiciones: new Endpoint('condiciones/'),
@@ -79,6 +64,22 @@ export const endpoints = {
   ubicaciones: new Endpoint('ubicaciones/'),
   imagenes_adicionales: new Endpoint('imagenes-adicionales/'),
   materiales_pedidos: new Endpoint('transacciones-egresos/materiales/'),
+
+  // Modulo de tareas
+  proyectos: new Endpoint('proyectos/'),
+  tareas: new Endpoint('tareas/'),
+  subtareas: new Endpoint('subtareas/'),
+  subtareas_asignadas: new Endpoint('subtareas-asignadas/'),
+  pausas_subtareas: new Endpoint('subtareas/pausas'),
+  tipos_trabajos: new Endpoint('tipos-trabajos/'),
+  control_asistencias: new Endpoint('control-asistencias/'),
+  control_cambios: new Endpoint('control-cambios/'),
+  tipos_elementos: new Endpoint('tipos-elementos/'),
+  clientes: new Endpoint('clientes/'),
+  grupos: new Endpoint('grupos/'),
+  clientes_finales: new Endpoint('clientes-finales/'),
+  progresivas: new Endpoint('progresivas/'),
   intercambiar_jefe_cuadrilla: new Endpoint('intercambiar-jefe-cuadrilla/'),
-  intercambiar_secretario_cuadrilla: new Endpoint('intercambiar-secretario-cuadrilla/')
+  intercambiar_secretario_cuadrilla: new Endpoint('intercambiar-secretario-cuadrilla/'),
+  archivos_subtareas: new Endpoint('archivos-subtareas/'),
 }

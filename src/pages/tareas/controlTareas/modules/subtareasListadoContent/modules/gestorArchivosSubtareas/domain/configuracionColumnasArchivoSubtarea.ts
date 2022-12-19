@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Archivo } from './Archivo'
 
-export const configuracionColumnasGestorArchivo: ColumnConfig<Archivo>[] = [
+export const configuracionColumnasArchivoSubtarea: ColumnConfig<Archivo>[] = [
     {
         name: 'nombre',
         field: 'nombre',

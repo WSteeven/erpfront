@@ -554,7 +554,7 @@
                   @blur="
                     criterioBusquedaTecnico === '' ? limpiarTecnico() : null
                   "
-                  type="search"
+                  clearable
                   :disable="disable"
                   outlined
                   dense
@@ -578,6 +578,7 @@
             </div>
 
             <essential-table
+              v-if="tecnicosGrupoPrincipal.length"
               ref="refEmpleadosAsignados"
               titulo="Empleados asignados"
               :configuracionColumnas="columnas"

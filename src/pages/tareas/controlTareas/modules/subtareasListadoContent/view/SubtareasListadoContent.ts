@@ -5,7 +5,6 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { computed, defineComponent } from 'vue'
 import { useTareaStore } from 'stores/tarea'
-import { offset } from 'config/utils_tablas'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -24,7 +23,7 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
-    const { listado, currentPageListado } = mixin.useReferencias()
+    const { listado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
     const { confirmar, notificarCorrecto } = useNotificaciones()
@@ -44,6 +43,7 @@ export default defineComponent({
 
     const agregarSubtarea: CustomActionTable = {
       titulo: 'Crear una subtarea',
+      icono: 'bi-plus',
       accion: () => {
         subtareaListadoStore.idSubtareaSeleccionada = null
         tareaStore.accionSubtarea = acciones.nuevo
@@ -148,7 +148,8 @@ export default defineComponent({
       visible: () => true,
       accion: async ({ entidad, posicion }) => {
         subtareaListadoStore.idSubtareaSeleccionada = entidad.id
-        modales.abrirModalEntidad('GestorArchivoSubtareaPage')
+        subtareaListadoStore.posicionSubtareaSeleccionada = posicion
+        modales.abrirModalEntidad('ArchivoSubtarea')
       }
     }
 

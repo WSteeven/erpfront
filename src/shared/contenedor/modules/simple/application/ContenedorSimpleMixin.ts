@@ -198,7 +198,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     this.hooks.onBeforeModificar()
 
-    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+    if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
     }
@@ -234,7 +234,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   // Eliminar
   private async eliminar(data: T, callback?: () => void) {
-    this.verificarAutenticacion()
+    // this.verificarAutenticacion()
 
     this.notificaciones.confirmar('Esta seguro que desea eliminar?', () => {
       if (data.id === null) {

@@ -1,13 +1,13 @@
 // Dependencias
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock } from 'config/utils'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
-import { computed, defineComponent, ref, watchEffect, nextTick, reactive } from 'vue'
+import { computed, defineComponent, ref, watchEffect, nextTick, reactive, Ref } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
 import { TipoSeleccion, estadosSubtareas } from 'config/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
-import { getVisibleColumns } from 'shared/utils'
+import { getVisibleColumns, formatBytes } from 'shared/utils'
 import { exportFile, useQuasar } from 'quasar'
 import { offset } from 'config/utils_tablas'
 
@@ -25,6 +25,7 @@ export default defineComponent({
     EstadosSubtareas,
   },
   props: {
+    referencia: Object as () => Ref,
     entidad: {
       type: Object as () => Instanciable,
       required: false,
@@ -327,6 +328,7 @@ export default defineComponent({
       extraerIcono,
       pagesNumber,
       pagination,
+      formatBytes,
     }
   },
 })

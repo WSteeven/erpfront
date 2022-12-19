@@ -8,8 +8,12 @@
       "shared/*": ["src/shared/*"],
       "components/*": ["src/components/*"],
       "stores/*": ["src/stores/*"],
+      "sistema/*": ["src/pages/sistema/*"],
       "pages/*": ["src/pages/*"],
-      "sistema/*": ["src/pages/sistema/*"]
+      "tareas/*": ["src/pages/tareas/*"],
+      "controlTareas/*": ["src/pages/tareas/controlTareas/*"],
+      "subtareas/*": ["src/pages/tareas/subtareas/*"],
+      "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"]
     }
   }
 }

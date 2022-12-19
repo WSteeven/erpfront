@@ -12,6 +12,7 @@
 
     <div v-if="quiero_subir_archivos" class="col-12 q-mb-md">
       <q-uploader
+        ref="refGestor"
         url=""
         label="Selecciona o arrastra tus archivos aquí"
         multiple
@@ -25,50 +26,22 @@
       />
     </div>
 
-    <div class="col-12">
+    <div v-if="listado.length" class="col-12">
       <essential-table
         titulo="Archivos compartidos hasta el momento"
         :configuracionColumnas="columnas"
-        :datos="archivos"
+        :datos="listado"
         :alto-fijo="false"
         :permitirConsultar="false"
         :permitirEditar="false"
         :mostrar-footer="false"
         :mostrar-botones="false"
+        @eliminar="botonEliminar"
         :accion1="botonAgregarComentario"
         :accion2="botonDescargar"
       ></essential-table>
     </div>
-
-    <!--<table class="table table-hover align-middle w-100">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Propietario</th>
-          <th class="text-nowrap">Tamaño de archivo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(archivo, index) in archivos"
-          :key="index"
-          class="cursor-pointer item-file-folder"
-        >
-          <td>
-            <i
-              class="fs-4 me-2"
-              :class="'bi-filetype-' + extraerExtension(archivo.nombre ?? '')"
-            ></i>
-            {{ archivo.nombre }}
-          </td>
-          <td>{{ usuarioPropietario }}</td>
-          <td>
-            {{ formatBytes(archivo.tamanio_bytes) }}
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
   </q-page>
 </template>
 
-<script src="./GestorArchivoSubtareaPage.ts"></script>
+<script src="./ArchivoSubtareaPage.ts"></script>

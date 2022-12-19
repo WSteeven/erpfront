@@ -1,25 +1,28 @@
 // Dependencias
-import { configuracionColumnasTecnico } from 'pages/tareas/subtareas/domain/configuracionColumnasTecnico'
-import { tiposTareasTelconet, provincias, ciudades, accionesTabla } from 'config/utils'
-import { Subtarea } from "pages/tareas/subtareas/domain/Subtarea"
-import { useTareaStore } from "stores/tarea"
+import { configuracionColumnasArchivoSubtarea } from 'controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/domain/configuracionColumnasArchivoSubtarea'
+import { configuracionColumnasTecnico } from 'subtareas/domain/configuracionColumnasTecnico'
+import { tiposTareasTelconet, ciudades, accionesTabla } from 'config/utils'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { computed, defineComponent, reactive, ref } from "vue"
+import { useTareaStore } from "stores/tarea"
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
-import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
-import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
-import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
-import { ContactoController } from 'pages/tareas/contactos/infraestructure/ContactoController'
-import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
-import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { configuracionColumnasGestorArchivo } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/domain/configuracionColumnasGestorArchivo'
+import { TipoTrabajoController } from 'tiposTrabajos/infraestructure/TipoTrabajoController'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
+import { ContactoController } from 'tareas/contactos/infraestructure/ContactoController'
+import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
+import { GrupoController } from 'tareas/grupos/infraestructure/GrupoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { ClienteFinal } from 'tareas/contactos/domain/ClienteFinal'
+import { Subtarea } from 'subtareas/domain/Subtarea'
+import { ArchivoSubtareaController } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/infraestructure/ArchivoSubtareaController'
+import { useSubtareaListadoStore } from 'stores/subtareaListado'
+import { descargarArchivoUrl } from 'shared/utils'
 
 export default defineComponent({
     components: { EssentialTable },
@@ -30,6 +33,7 @@ export default defineComponent({
         const { onConsultado } = mixin.useHooks()
 
         const store = useTareaStore()
+
         const trabajoAsignadoStore = useTrabajoAsignadoStore()
 
         const tiposTrabajos = ref([])
@@ -39,6 +43,13 @@ export default defineComponent({
         const clienteFinal = reactive(new ClienteFinal())
         const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
         const tipoUbicacionTrabajo = ref(opcionesUbicacion.manual)
+
+        const archivos = ref()
+        async function obtenerArchivos() {
+            const { result } = await new ArchivoSubtareaController().listar({ subtarea: trabajoAsignadoStore.idSubtareaSeleccionada })
+            archivos.value = result
+        }
+        obtenerArchivos()
 
         cargarVista(async () => {
             await obtenerListados({
@@ -136,20 +147,12 @@ export default defineComponent({
             }
         })
 
-        // Archivos
-        const archivos = [
-            {
-                nombre: 'Ruta asignada.kmz',
-                tamanio_bytes: '12mb',
-            }
-        ]
-
         const botonDescargar: CustomActionTable = {
             titulo: 'Descargar',
             icono: 'bi-download',
             color: 'positive',
             accion: ({ entidad }) => {
-                //
+                descargarArchivoUrl(entidad.ruta)
             },
         }
 
@@ -157,7 +160,7 @@ export default defineComponent({
             subtarea,
             tiposTareasTelconet,
             configuracionColumnasTecnico,
-            columnasGestor: [...configuracionColumnasGestorArchivo, accionesTabla],
+            columnasGestor: [...configuracionColumnasArchivoSubtarea, accionesTabla],
             provincias, ciudades,
             tiposTrabajos,
             grupos,

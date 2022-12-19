@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { apiConfig } from 'config/api'
 import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
@@ -42,6 +43,16 @@ export function descargarArchivo(
   )
   link.setAttribute('download', `${titulo}.${formato}`)
   document.body.appendChild(link)
+  link.click()
+  link.remove()
+}
+
+export function descargarArchivoUrl(
+  url: string,
+): void {
+  const link = document.createElement('a')
+  link.href = apiConfig.URL_BALSE + url
+  link.target = '_blank'
   link.click()
   link.remove()
 }
