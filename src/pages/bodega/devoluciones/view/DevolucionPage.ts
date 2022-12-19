@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasDevoluciones } from "../domain/configuracionColumnasDevoluciones";
-import { required, requiredIf } from "@vuelidate/validators";
+import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 import { useOrquestadorSelectorDetalles } from "../application/OrquestadorSelectorDetalles";
@@ -146,7 +146,7 @@ export default defineComponent({
         }
         const botonAnular: CustomActionTable = {
             titulo: 'Anular',
-            color:'negative',
+            color: 'negative',
             icono: 'bi-x',
             accion: ({ entidad, posicion }) => {
                 confirmar('Está seguro de anular la devolución?', () => {
@@ -187,7 +187,7 @@ export default defineComponent({
                 table: {
                     headerRows: 1,
                     body: buildTableBody(data, columns, encabezados),
-                    
+
                 }
             }
         }
@@ -433,17 +433,26 @@ export default defineComponent({
                             },
                         ],
                     },
-                    {
+                    comprobarTarea(),
+                    { text: '\n' },
+                    /* {
                         columns: [
                             {
                                 width: '*',
                                 columns: [
                                     { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                                    { width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle', }
+                                    {
+                                        width: 'auto', text: function () {
+                                            if (devolucionStore.devolucion.tarea) {
+                                                return [` ${devolucionStore.devolucion.tarea}`]
+                                            } else
+                                                return ['no hay tarea']
+                                        }, style: 'resultStyle',
+                                    }
                                 ]
                             }
                         ]
-                    },
+                    }, */
 
                     table(devolucionStore.devolucion.listadoProductos, ['producto', 'descripcion', 'categoria', 'cantidad'], ['Producto', 'Descripción', 'Categoría', 'Cantidad']),
 
@@ -484,10 +493,10 @@ export default defineComponent({
                                 // width: '*',
                                 text: [
                                     { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center', decoration: 'overline' },
-                                    { text: `${devolucionStore.devolucion.solicitante}\n`, style: 'resultStyle',alignment: 'center', },
+                                    { text: `${devolucionStore.devolucion.solicitante}\n`, style: 'resultStyle', alignment: 'center', },
                                     {
                                         text: [
-                                            { text: 'C.I: ', style: 'resultStyle' ,alignment: 'center',},
+                                            { text: 'C.I: ', style: 'resultStyle', alignment: 'center', },
                                             { text: `${store.user.identificacion}`, style: 'resultStyle', }
                                         ],
                                         alignment: 'center',
@@ -499,7 +508,7 @@ export default defineComponent({
                                 text: [
                                     { text: 'RECIBE \n', style: 'resultStyle', alignment: 'center', decoration: 'overline' },
                                     { text: 'BODEGUERO: \n', style: 'resultStyle', },
-                                    { text: 'C.I: \n', style: 'resultStyle',margin: [60,0,0,0], }
+                                    { text: 'C.I: \n', style: 'resultStyle', margin: [60, 0, 0, 0], }
                                 ]
                             },
                         ],
@@ -523,9 +532,26 @@ export default defineComponent({
                     },
                 },
             };
-
             pdfMake.createPdf(dd).open()
         }
+
+        function comprobarTarea() {
+
+            if (devolucionStore.devolucion.tarea !== null) {
+                return {
+                    columns: [
+                        {
+                            width: '*',
+                            columns: [
+                                { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
+                                {width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle'}
+                            ]
+                        }
+                    ],
+                }
+            }
+        }
+
 
         async function anularDevolucion(id: number) {
             try {
@@ -543,7 +569,7 @@ export default defineComponent({
                 listado.value = [...listado.value];
             }
         }
-        
+
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados

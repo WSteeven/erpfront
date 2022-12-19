@@ -214,7 +214,6 @@
           </div>
         </div>
       </q-form>
-      <div id="imprimase"> hola que tal </div><!-- borrar esto -->
 
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table

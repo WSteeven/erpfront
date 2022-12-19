@@ -279,6 +279,7 @@
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :error="!!v$.justificacion.$errors.length"
+              lazy-rules
               @update:model-value="
                 (v) => (transaccion.justificacion = v.toUpperCase())
               "
@@ -584,7 +585,7 @@
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
-        :configuracion-columnas="configuracionColumnasProductosSeleccionados"
+        :configuracion-columnas="configuracionColumnasDetallesProductos"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
