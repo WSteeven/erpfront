@@ -117,193 +117,141 @@
         ></q-icon>
         {{ titulo }}
       </div>
-      <!-- <div class="column full-width"> -->
-      <div class="row justify-between items-center full-width q-mb-md">
-        <span class="q-gutter-x-xs">
-          <!-- Boton 1 Header -->
-          <q-btn
-            v-if="extraerVisible(accion1Header, props)"
-            :color="accion1Header?.color ?? 'primary'"
-            :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-            push
-            rounded
-            no-caps
-            @click="accion1Header.accion"
-          >
-            <q-icon
-              :name="extraerIcono(accion1Header) ?? ''"
-              size="xs"
-              class="q-pr-sm"
-            ></q-icon>
-            <span>{{ accion1Header.titulo }}</span>
-          </q-btn>
 
-          <!-- Boton 2 Header -->
-          <q-btn
-            v-if="extraerVisible(accion2Header, props)"
-            :color="accion2Header?.color ?? 'primary'"
-            :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-            push
-            rounded
-            no-caps
-            @click="accion2Header.accion"
-          >
-            <q-icon
-              :name="extraerIcono(accion2Header) ?? ''"
-              size="xs"
-              class="q-pr-sm"
-            ></q-icon>
-            <span>{{ accion2Header.titulo }}</span>
-          </q-btn>
-
-          <!-- Boton 2 Header -->
-          <q-btn
-            v-if="extraerVisible(accion3Header, props)"
-            :color="accion3Header?.color ?? 'primary'"
-            :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-            push
-            rounded
-            no-caps
-            @click="accion3Header.accion"
-          >
-            <q-icon
-              :name="extraerIcono(accion3Header) ?? ''"
-              size="xs"
-              class="q-pr-sm"
-            ></q-icon>
-            <span>{{ accion3Header.titulo }}</span>
-          </q-btn>
-        </span>
-
+      <div class="row full-width q-mb-md">
         <q-input
+          v-model="filter"
           outlined
           dense
           rounded
-          class="full-width q-mb-md"
-          placeholder="Buscar"
+          clearable
+          class="full-width"
+          placeholder="Buscar..."
           debounce="300"
           color="primary"
-          v-model="filter"
         >
           <template v-slot:append>
             <q-icon name="search"></q-icon>
           </template>
         </q-input>
-
-        <div class="row q-col-gutter-sm">
-          <div
-            v-if="mostrarBotones"
-            class="row q-gutter-sm justify-end"
-            :class="{ 'no-wrap': !$q.screen.xs }"
-          >
-            <q-select
-              v-model="visibleColumns"
-              multiple
-              outlined
-              dense
-              rounded
-              options-dense
-              :display-value="$q.lang.table.columns"
-              emit-value
-              map-options
-              :options="configuracionColumnas"
-              option-value="name"
-              options-cover
-              :class="{ 'full-width': $q.screen.xs }"
-              style="min-width: 150px"
-            />
-
-            <!-- Exportar a Excel -->
-            <!--<q-btn
-              flat
-              round
-              unelevated
-              dense
-              icon="bi-download"
-              @click="exportTable"
-            >
-              <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-                'Exportar a Excel'
-              }}</q-tooltip>
-            </q-btn> -->
-
-            <!-- Importar desde Excel -->
-            <!--<q-btn flat round dense icon="bi-upload">
-              <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-                'Importar desde Excel'
-              }}</q-tooltip>
-            </q-btn> -->
-
-            <!-- Imprimir -->
-            <q-btn
-              flat
-              round
-              dense
-              icon="bi-printer"
-              @click="previsualizarPdf()"
-            >
-              <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-                'Imprimir PDF'
-              }}</q-tooltip>
-            </q-btn>
-
-            <!-- Maximizar - Minimizar -->
-            <q-btn
-              flat
-              round
-              dense
-              :icon="
-                props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'
-              "
-              @click="
-                () => {
-                  props.toggleFullscreen()
-                  inFullscreen = !props.inFullscreen
-                }
-              "
-              class="q-ml-md"
-            >
-              <q-tooltip class="bg-dark">{{
-                props.inFullscreen
-                  ? 'Salir de pantalla completa'
-                  : 'Abrir en pantalla completa'
-              }}</q-tooltip>
-            </q-btn>
-
-            <!-- Grid - List -->
-            <q-btn
-              flat
-              round
-              dense
-              :icon="grid ? 'bi-list' : 'bi-grid-3x3'"
-              @click="grid = !grid"
-            >
-              <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-                grid ? 'Formato de lista' : 'Formato de cuadrícula'
-              }}</q-tooltip>
-            </q-btn>
-          </div>
-        </div>
       </div>
 
-      <!-- </div> -->
-      <!-- Botones exportar
-        <div v-if="mostrarBotones" class="row q-gutter-sm justify-end">
-          <q-btn color="primary" push @click="previsualizarPdf()" no-caps>
-            <q-icon name="bi-printer" class="q-pr-sm" size="xs"></q-icon>
-            <div>Imprimir PDF</div>
-          </q-btn>
+      <!-- Botones Header -->
+      <div class="row full-width">
+        <!-- Boton 1 Header -->
+        <q-btn
+          v-if="extraerVisible(accion1Header, props)"
+          :color="accion1Header?.color ?? 'primary'"
+          :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+          push
+          rounded
+          no-caps
+          @click="accion1Header.accion"
+        >
+          <q-icon
+            :name="extraerIcono(accion1Header) ?? ''"
+            size="xs"
+            class="q-pr-sm"
+          ></q-icon>
+          <span>{{ accion1Header.titulo }}</span>
+        </q-btn>
 
-          <q-btn color="primary" no-caps push @click="exportTable()">
-            <q-icon name="bi-file-spreadsheet" class="q-pr-sm" size="xs"></q-icon>
-            <div>Exportar Excel</div>
-          </q-btn>
+        <!-- Boton 2 Header -->
+        <q-btn
+          v-if="extraerVisible(accion2Header, props)"
+          :color="accion2Header?.color ?? 'primary'"
+          :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+          push
+          rounded
+          no-caps
+          @click="accion2Header.accion"
+        >
+          <q-icon
+            :name="extraerIcono(accion2Header) ?? ''"
+            size="xs"
+            class="q-pr-sm"
+          ></q-icon>
+          <span>{{ accion2Header.titulo }}</span>
+        </q-btn>
 
-          <q-btn color="primary" push @click="exportTable()" no-caps>
-            <q-icon name="bi-eye" class="q-pr-sm" size="xs"></q-icon>
-            <div>Mostrar filtros</div>
-          </q-btn>
-        </div> -->
+        <!-- Boton 3 Header -->
+        <q-btn
+          v-if="extraerVisible(accion3Header, props)"
+          :color="accion3Header?.color ?? 'primary'"
+          :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+          push
+          rounded
+          no-caps
+          @click="accion3Header.accion"
+        >
+          <q-icon
+            :name="extraerIcono(accion3Header) ?? ''"
+            size="xs"
+            class="q-pr-sm"
+          ></q-icon>
+          <span>{{ accion3Header.titulo }}</span>
+        </q-btn>
+      </div>
+
+      <!--<div class="row q-col-gutter-sm"> -->
+      <!-- <div
+        v-if="mostrarBotones"
+        class="row q-col-gutter-sm"
+        :class="{ 'no-wrap': !$q.screen.xs }"
+      >
+        <q-select
+          v-model="visibleColumns"
+          multiple
+          outlined
+          dense
+          rounded
+          options-dense
+          :display-value="$q.lang.table.columns"
+          emit-value
+          map-options
+          :options="configuracionColumnas"
+          option-value="name"
+          options-cover
+        />
+
+        <q-btn flat round dense icon="bi-printer" @click="previsualizarPdf()">
+          <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
+            'Imprimir PDF'
+          }}</q-tooltip>
+        </q-btn>
+
+        <q-btn
+          flat
+          round
+          dense
+          :icon="props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'"
+          @click="
+            () => {
+              props.toggleFullscreen()
+              inFullscreen = !props.inFullscreen
+            }
+          "
+          class="q-ml-md"
+        >
+          <q-tooltip class="bg-dark">{{
+            props.inFullscreen
+              ? 'Salir de pantalla completa'
+              : 'Abrir en pantalla completa'
+          }}</q-tooltip>
+        </q-btn>
+
+        <q-btn
+          flat
+          round
+          dense
+          :icon="grid ? 'bi-list' : 'bi-grid-3x3'"
+          @click="grid = !grid"
+        >
+          <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
+            grid ? 'Formato de lista' : 'Formato de cuadrícula'
+          }}</q-tooltip>
+        </q-btn>
+      </div> -->
     </template>
 
     <!-- Botones de acciones Desktop -->

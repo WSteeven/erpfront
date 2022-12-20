@@ -1,20 +1,20 @@
 // Dependencias
+import { configuracionColumnasProductosSeleccionados } from 'pages/bodega/transacciones/modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { tiposElementos, propietariosElementos, estadoElementos, tiposTension } from 'config/utils'
-import { required } from '@vuelidate/validators'
 import { defineComponent, onMounted, reactive } from "vue"
+import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import { configuracionColumnasProductosSeleccionados } from 'pages/bodega/transacciones/modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 
 // Componentes
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
-import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 
 // Logica y controladores
-import { RegistroTendido } from "../domain/RegistrosTendido"
 import { useOrquestadorSelectorDetalles } from "../application/OrquestadorSelectorDetalles"
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { RegistroTendido } from "../domain/RegistrosTendido"
 import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
@@ -49,8 +49,7 @@ export default defineComponent({
             field: 'acciones',
             label: 'Acciones',
             align: 'center'
-        },
-        ]
+        }]
 
         const { confirmar, prompt } = useNotificaciones()
 

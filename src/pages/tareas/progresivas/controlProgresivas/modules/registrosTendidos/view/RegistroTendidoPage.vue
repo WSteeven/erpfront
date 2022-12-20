@@ -39,6 +39,7 @@
         <q-input
           v-model="tendido.numero_poste"
           placeholder="Obligatorio"
+          type="number"
           outlined
           dense
         ></q-input>
@@ -87,6 +88,7 @@
         <q-input
           v-model="tendido.progresiva_entrada"
           placeholder="Obligatorio"
+          type="number"
           outlined
           dense
         ></q-input>
@@ -98,6 +100,7 @@
         <q-input
           v-model="tendido.progresiva_salida"
           placeholder="Obligatorio"
+          type="number"
           outlined
           dense
         ></q-input>
@@ -164,6 +167,7 @@
         <q-input
           v-model="tendido.cantidad_transformadores"
           placeholder="Obligatorio"
+          type="number"
           outlined
           dense
         ></q-input>
@@ -186,6 +190,7 @@
         <q-select
           v-model="tendido.tension"
           :options="tiposTension"
+          clearable
           options-dense
           dense
           outlined

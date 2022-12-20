@@ -98,7 +98,7 @@ export default defineComponent({
 
 		const botonFormulario: CustomActionTable = {
 			titulo: 'Formulario',
-			icono: 'bi-journal-text',
+			icono: 'bi-card-text',
 			color: 'indigo',
 			visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
 			accion: async ({ entidad }) => {
