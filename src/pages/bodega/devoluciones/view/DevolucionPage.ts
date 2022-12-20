@@ -38,7 +38,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { useAuthenticationStore } from "stores/authentication";
 import * as fs from 'fs'
 import { LoginController } from "pages/sistema/authentication/login/infraestructure/LoginController";
-import { buildTableBody } from "shared/utils";
+import { buildTableBody, notificarMensajesError } from "shared/utils";
+import { CambiarEstadoDevolucion } from "../application/CambiarEstadoDevolucion";
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -51,7 +52,7 @@ export default defineComponent({
         const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer } = mixin.useHooks()
-        const { confirmar, prompt } = useNotificaciones()
+        const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         //stores
         const devolucionStore = useDevolucionStore()
@@ -149,10 +150,16 @@ export default defineComponent({
             color: 'negative',
             icono: 'bi-x',
             accion: ({ entidad, posicion }) => {
-                confirmar('Está seguro de anular la devolución?', () => {
-                    anularDevolucion(entidad.id)
-                    entidad.estado = estadosDevoluciones.ANULADA
-                    actualizarElemento(posicion, entidad)
+                confirmar('¿Está seguro de anular la devolución?', () => {
+                    prompt('Ingrese el motivo de la anulación', async (data) => {
+                        try{
+                            const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
+                            notificarCorrecto('Devolución anulada exitosamente!')
+                            actualizarElemento(posicion, entidad)
+                        }catch(e:any){
+                            notificarError(e)
+                        }
+                    })
                 })
                 console.log('entidad', entidad)
                 console.log('posicion', posicion)
@@ -352,7 +359,7 @@ export default defineComponent({
                             margin: [5, 2]
                         },
                         { text: 'COMPROBANTE DE DEVOLUCIÓN', width: 'auto', style: 'header', margin: [85, 20] },
-                        { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 2, 5] }
+                        { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
                     ]
                 },
                 footer: function (currentPage, pageCount) {
@@ -492,7 +499,7 @@ export default defineComponent({
                                 // auto-sized columns have their widths based on their content
                                 // width: '*',
                                 text: [
-                                    { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center', decoration: 'overline' },
+                                    { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center' },
                                     { text: `${devolucionStore.devolucion.solicitante}\n`, style: 'resultStyle', alignment: 'center', },
                                     {
                                         text: [
@@ -506,7 +513,7 @@ export default defineComponent({
                             {
                                 // width: '*',
                                 text: [
-                                    { text: 'RECIBE \n', style: 'resultStyle', alignment: 'center', decoration: 'overline' },
+                                    { text: 'RECIBE \n', style: 'resultStyle', alignment: 'center' },
                                     { text: 'BODEGUERO: \n', style: 'resultStyle', },
                                     { text: 'C.I: \n', style: 'resultStyle', margin: [60, 0, 0, 0], }
                                 ]
@@ -536,7 +543,6 @@ export default defineComponent({
         }
 
         function comprobarTarea() {
-
             if (devolucionStore.devolucion.tarea !== null) {
                 return {
                     columns: [
@@ -544,7 +550,7 @@ export default defineComponent({
                             width: '*',
                             columns: [
                                 { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                                {width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle'}
+                                { width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle' }
                             ]
                         }
                     ],
@@ -552,17 +558,6 @@ export default defineComponent({
             }
         }
 
-
-        async function anularDevolucion(id: number) {
-            try {
-                const axios = AxiosHttpRepository.getInstance()
-                const ruta = axios.getEndpoint(endpoints.devoluciones) + 'anular/' + id
-                axios.post(ruta);
-            } catch (e: any) {
-                console.log('Entró al catch de anular devolución: ', e)
-            }
-            // listar()
-        }
         function actualizarElemento(posicion: number, entidad: any): void {
             if (posicion >= 0) {
                 listado.value.splice(posicion, 1, entidad);
