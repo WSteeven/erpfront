@@ -1,5 +1,6 @@
 import { useQuasar } from 'quasar'
 import { useNotificacionStore } from 'stores/notificacion'
+import { validarEmail } from './utils'
 
 export function useNotificaciones() {
   const $q = useNotificacionStore().$q ?? useQuasar()
