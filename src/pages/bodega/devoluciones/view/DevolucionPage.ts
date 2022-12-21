@@ -157,7 +157,7 @@ export default defineComponent({
                             notificarCorrecto('Devolución anulada exitosamente!')
                             actualizarElemento(posicion, entidad)
                         }catch(e:any){
-                            notificarError(e)
+                            notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
                         }
                     })
                 })

@@ -15,7 +15,6 @@ export class CambiarEstadoDevolucion {
     }
 
     async solicitud(accion, id, data?) {
-
         const ruta = this.axios.getEndpoint(endpoints.devoluciones) + accion + id
         const response: AxiosResponse = await this.axios.post(ruta, data)
         console.log(response)
