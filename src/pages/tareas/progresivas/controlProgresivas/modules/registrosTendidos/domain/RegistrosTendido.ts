@@ -36,9 +36,9 @@ export class RegistroTendido extends EntidadAuditable {
         this.codigo_elemento = null
         this.progresiva_entrada = null
         this.progresiva_salida = null
-        this.coordenada_del_elemento = 'Latitud: -3.258954, Longitud: -79.949056'
-        this.coordenada_poste_anclaje1 = 'Latitud: -3.258954, Longitud: -79.949056'
-        this.coordenada_poste_anclaje2 = 'Latitud: -3.258954, Longitud: -79.949056'
+        this.coordenada_del_elemento = null
+        this.coordenada_poste_anclaje1 = null
+        this.coordenada_poste_anclaje2 = null
         // this.latitud = null
         // this.longitud = null
         this.estado_elemento = null
@@ -55,6 +55,6 @@ export class RegistroTendido extends EntidadAuditable {
         this.hora = null
         this.imagen = null
         this.listadoProductosSeleccionados = []
-        this.coordenada_cruce_americano = 'Latitud: -3.258954, Longitud: -79.949056'
+        this.coordenada_cruce_americano = null
     }
 }

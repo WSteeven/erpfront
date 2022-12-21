@@ -2,6 +2,43 @@
   background-color: #efeff7;
 }
 
+// Tabs
+.bg-tabs {
+  background: rgb(46, 76, 129);
+  background: linear-gradient(
+    180deg,
+    rgba(46, 76, 129, 1) 0%,
+    rgba(30, 50, 84, 1) 100%
+  );
+}
+
+.rounded-tabs {
+  border-radius: 16px 16px 0 0;
+}
+
+.position-tabpanel {
+  position: relative;
+  top: 0px;
+}
+
+.chip {
+  background-color: #fff;
+  color: $secondary;
+  border-radius: 16px 4px 0 0;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
+}
+
+.chip-opaque {
+  background-color: #ffffff66;
+  color: $secondary;
+  border-radius: 16px 4px 0 0;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
+}
+
+.rounded-tabpanel {
+  border-radius: 0 16px 16px 16px;
+}
+
 .bg-drawer {
   background-color: #c2c2cf;
 }
@@ -16,7 +53,7 @@
 }
 
 .custom-shadow {
-  box-shadow: 0px 10px 60px -10px rgba(44, 54, 40, 0.2);
+  // box-shadow: 0px 10px 60px -10px rgba(44, 54, 40, 0.2);
 }
 
 .shadow-chip {

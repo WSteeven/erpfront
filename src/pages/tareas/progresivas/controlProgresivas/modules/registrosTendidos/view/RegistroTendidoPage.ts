@@ -2,7 +2,7 @@
 import { configuracionColumnasProductosSeleccionados } from 'pages/bodega/transacciones/modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { tiposElementos, propietariosElementos, estadoElementos, tiposTension } from 'config/utils'
-import { defineComponent, onMounted, reactive } from "vue"
+import { defineComponent, onMounted, reactive, ref } from "vue"
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 
@@ -16,6 +16,7 @@ import { useOrquestadorSelectorDetalles } from "../application/OrquestadorSelect
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { RegistroTendido } from "../domain/RegistrosTendido"
 import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
     components: {
@@ -63,13 +64,17 @@ export default defineComponent({
             titulo: 'Cantidad utilizada',
             icono: 'bi-pencil',
             accion: ({ entidad, posicion }) => {
-                prompt(
-                    'Ingresa la cantidad',
-                    (data) => {
+                const data: CustomActionPrompt = {
+                    titulo: 'Confirma',
+                    mensaje: 'Ingresa la cantidad',
+                    defecto: tendido.listadoProductosSeleccionados[posicion].cantidades,
+                    entidad: entidad,
+                    accion: (data) => {
                         tendido.listadoProductosSeleccionados[posicion].cantidades = data
                     },
-                    tendido.listadoProductosSeleccionados[posicion].cantidades
-                )
+                }
+
+                prompt(data)
             },
         }
 
@@ -124,6 +129,45 @@ export default defineComponent({
             tendido.listadoProductosSeleccionados = [...materiales]
         })
 
+        function obtenerUbicacion(onUbicacionConcedida) {
+
+            const onErrorDeUbicacion = err => {
+                console.log("Error obteniendo ubicación: ", err)
+            }
+
+            const opcionesDeSolicitud = {
+                enableHighAccuracy: true, // Alta precisión
+                maximumAge: 0, // No queremos caché
+                timeout: 5000 // Esperar solo 5 segundos
+            }
+
+            navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud)
+        }
+
+        function ubicacionCoordenadaElemento() {
+            obtenerUbicacion((ubicacion) => {
+                tendido.coordenada_del_elemento = `Latitud: ${ubicacion.coords.latitude}, Longitud: ${ubicacion.coords.longitude}`
+            })
+        }
+
+        function ubicacionCoordenadaAmericano() {
+            obtenerUbicacion((ubicacion) => {
+                tendido.coordenada_cruce_americano = `Latitud: ${ubicacion.coords.latitude}, Longitud: ${ubicacion.coords.longitude}`
+            })
+        }
+
+        function ubicacionCoordenadaPosteAnclaje1() {
+            obtenerUbicacion((ubicacion) => {
+                tendido.coordenada_poste_anclaje1 = `Latitud: ${ubicacion.coords.latitude}, Longitud: ${ubicacion.coords.longitude}`
+            })
+        }
+
+        function ubicacionCoordenadaPosteAnclaje2() {
+            obtenerUbicacion((ubicacion) => {
+                tendido.coordenada_poste_anclaje2 = `Latitud: ${ubicacion.coords.latitude}, Longitud: ${ubicacion.coords.longitude}`
+            })
+        }
+
         return {
             tendido,
             tiposElementos,
@@ -135,6 +179,11 @@ export default defineComponent({
             configuracionColumnasProductosSeleccionados,
             eliminar,
             botonEditarCantidad,
+            obtenerUbicacion,
+            ubicacionCoordenadaElemento,
+            ubicacionCoordenadaAmericano,
+            ubicacionCoordenadaPosteAnclaje1,
+            ubicacionCoordenadaPosteAnclaje2,
             //selector
             refListadoSeleccionableProductos,
             criterioBusquedaProducto,

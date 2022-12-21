@@ -209,7 +209,7 @@ export default defineComponent({
 
         //Reglas de validacion
         const reglas = {
-            justificacion: { required, alphaNum },
+            justificacion: { required },
             sucursal: { required },
             // tipo: { required },
             cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },

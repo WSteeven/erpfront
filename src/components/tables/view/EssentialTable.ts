@@ -16,6 +16,7 @@ import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.
 import EditarTablaModal from './EditarTablaModal.vue'
 import CustomButtons from './CustomButtonsTable.vue'
 import EstadosSubtareas from './EstadosSubtareas.vue'
+import BotonesPaginacion from './BotonesPaginacion.vue'
 
 export default defineComponent({
   components: {
@@ -23,6 +24,7 @@ export default defineComponent({
     EditarTablaModal,
     CustomButtons,
     EstadosSubtareas,
+    BotonesPaginacion,
   },
   props: {
     referencia: Object as () => Ref,

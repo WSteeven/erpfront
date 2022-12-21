@@ -3,14 +3,27 @@
     <slot name="modales" />
 
     <!-- Tabs -->
-    <q-tabs v-model="tabs" align="left" narrow-indicator class="q-mb-lg">
+    <q-tabs
+      v-model="tabs"
+      align="left"
+      active-class="chip"
+      indicator-color="transparent"
+      dense
+    >
       <q-tab
         v-if="mostrarFormulario"
         name="formulario"
         label="Formulario"
+        :class="{ 'chip-opaque': tabs !== 'formulario' }"
         no-caps
       />
-      <q-tab v-if="mostrarListado" name="listado" label="Listado"  no-caps />
+      <q-tab
+        v-if="mostrarListado"
+        name="listado"
+        label="Listado"
+        :class="{ 'chip-opaque': tabs !== 'listado' }"
+        no-caps
+      />
     </q-tabs>
 
     <!-- Tab content -->
@@ -19,10 +32,11 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="custom-shadow"
+      class="position-tabpanel"
+      :class="{ 'custom-shadow rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->
-      <q-tab-panel name="formulario" class="q-py-none">
+      <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
         <slot name="formulario" />
         <button-submits
           v-if="mostrarButtonSubmits"

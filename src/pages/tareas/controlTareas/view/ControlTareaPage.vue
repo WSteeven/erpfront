@@ -16,7 +16,7 @@
         narrow-indicator
         active-color="primary"
         indicator-color="primary"
-        class="full-width block bg-grey-2"
+        class="full-width block"
       >
         <q-tab label="1. Tarea" name="tarea"></q-tab>
 
@@ -57,10 +57,3 @@
 </template>
 
 <script src="./ControlTareaPage.ts"></script>
-
-<style>
-.chip {
-  background-color: #eee;
-  border-radius: 8px;
-}
-</style>

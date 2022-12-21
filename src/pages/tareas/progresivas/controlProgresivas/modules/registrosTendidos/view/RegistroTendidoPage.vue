@@ -13,7 +13,11 @@
           autogrow
         >
           <template #after>
-            <q-btn color="positive" no-caps>
+            <q-btn
+              color="positive"
+              no-caps
+              @click="ubicacionCoordenadaElemento()"
+            >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
             >
@@ -299,7 +303,11 @@
           autogrow
         >
           <template #after>
-            <q-btn color="positive" no-caps>
+            <q-btn
+              color="positive"
+              no-caps
+              @click="ubicacionCoordenadaAmericano()"
+            >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
             >
@@ -327,7 +335,11 @@
           autogrow
         >
           <template #after>
-            <q-btn color="positive" no-caps>
+            <q-btn
+              color="positive"
+              no-caps
+              @click="ubicacionCoordenadaPosteAnclaje1()"
+            >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
             >
@@ -355,7 +367,11 @@
           autogrow
         >
           <template #after>
-            <q-btn color="positive" no-caps>
+            <q-btn
+              color="positive"
+              no-caps
+              @click="ubicacionCoordenadaPosteAnclaje2()"
+            >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
             >

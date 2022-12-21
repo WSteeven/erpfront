@@ -1,3 +1,4 @@
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useQuasar } from 'quasar'
 import { useNotificacionStore } from 'stores/notificacion'
 import { validarEmail } from './utils'
@@ -69,7 +70,7 @@ export function useNotificaciones() {
       })
   }
 
-  function prompt(mensaje: string, callback: (data) => void, defaultValue = '', type = 'text') {
+  function prompt2(mensaje: string, callback: (data) => void, defaultValue = '', type = 'text') {
     $q.dialog({
       html: true,
       title: 'Confirmación',
@@ -88,6 +89,28 @@ export function useNotificaciones() {
         // console.log('>>>> Cancel')
       })
   }
+
+  function prompt(data: CustomActionPrompt) {
+    $q.dialog({
+      html: true,
+      title: data.titulo ?? 'Confirmación',
+      message: data.mensaje,
+      prompt: {
+        model: data.defecto,
+        type: data.tipo ?? 'text', // optional
+        isValid: val => val <= data.entidad.cantidad,
+      },
+      cancel: true,
+      persistent: true,
+    })
+      .onOk((data) => {
+        data.accion(data)
+      })
+      .onCancel(() => {
+        // console.log('>>>> Cancel')
+      })
+  }
+
 
   return {
     // Notificaciones
