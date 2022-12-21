@@ -1,9 +1,9 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/domain/configuracionColumnasArchivoSubtarea'
 import { configuracionColumnasTecnico } from 'subtareas/domain/configuracionColumnasTecnico'
-import { tiposTareasTelconet, ciudades, accionesTabla } from 'config/utils'
+import { tiposTareasTelconet, ciudades, accionesTabla, rolesAdmitidos } from 'config/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { computed, defineComponent, reactive, ref } from "vue"
+import { computed, defineComponent, reactive, ref, watch } from "vue"
 import { useTareaStore } from "stores/tarea"
 
 // Componentes
@@ -22,7 +22,8 @@ import { ClienteFinal } from 'tareas/contactos/domain/ClienteFinal'
 import { Subtarea } from 'subtareas/domain/Subtarea'
 import { ArchivoSubtareaController } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/infraestructure/ArchivoSubtareaController'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
-import { descargarArchivoUrl } from 'shared/utils'
+import { descargarArchivoUrl, quitarItemDeArray, stringToArray } from 'shared/utils'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
     components: { EssentialTable },
@@ -44,7 +45,7 @@ export default defineComponent({
         const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
         const tipoUbicacionTrabajo = ref(opcionesUbicacion.manual)
 
-        const archivos = ref()
+        const archivos = ref([])
         async function obtenerArchivos() {
             const { result } = await new ArchivoSubtareaController().listar({ subtarea: trabajoAsignadoStore.idSubtareaSeleccionada })
             archivos.value = result
@@ -145,6 +146,16 @@ export default defineComponent({
             } else {
                 tipoUbicacionTrabajo.value = opcionesUbicacion.manual
             }
+
+            subtarea.tecnicos_grupo_principal = subtarea.tecnicos_grupo_principal.map((empleado: Empleado) => {
+                const tecnico = new Empleado()
+                tecnico.hydrate(empleado)
+
+                const roles = stringToArray(tecnico.roles ?? '')
+                tecnico.roles = quitarItemDeArray(roles, rolesAdmitidos.empleado).join(',')
+
+                return tecnico
+            })
         })
 
         const botonDescargar: CustomActionTable = {

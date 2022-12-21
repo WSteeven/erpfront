@@ -166,9 +166,7 @@ export default defineComponent({
       icono: 'bi-arrow-left-right',
       color: 'positive',
       visible: () => asignarSecretario.value,
-      accion: async ({ entidad }) => {
-        refEmpleadosAsignados.value.seleccionar()
-      },
+      accion: () => refEmpleadosAsignados.value.seleccionar()
     }
 
     const cancelarDesignacion: CustomActionTable = {
@@ -176,7 +174,7 @@ export default defineComponent({
       icono: 'bi-x',
       color: 'negative',
       visible: () => asignarJefe.value || asignarSecretario.value,
-      accion: async () => {
+      accion: () => {
         asignarJefe.value = false
         asignarSecretario.value = false
       },
@@ -400,10 +398,7 @@ export default defineComponent({
       asignarNuevoTecnicoLider,
       designarNuevoSecretario,
       listadosAuxiliares,
-      // asignarNuevoTecnicoLider,
-      // eliminarTecnicoOtroGrupo,
       tecnicosGrupoPrincipal,
-      //tecnicosOtrosGrupos,
       provincias,
       ciudades,
       tiposInstalaciones,

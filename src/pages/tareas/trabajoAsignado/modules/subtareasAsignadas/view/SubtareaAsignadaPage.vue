@@ -428,7 +428,7 @@
         </div>
       </q-expansion-item>
 
-      <div class="col-12">
+      <div v-if="archivos.length" class="col-12">
         <div class="text-bold q-mb-md">
           <q-icon name="bi-folder" size="xs" class="q-mr-xs"></q-icon>
           Archivos compartidos
