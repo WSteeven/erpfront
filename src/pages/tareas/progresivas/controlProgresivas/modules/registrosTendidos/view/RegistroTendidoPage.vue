@@ -3,26 +3,46 @@
     <b>Detalles del elemento</b>
     <div class="row q-col-gutter-sm q-py-md">
       <!-- Coordenada elemento -->
-      <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Cooordenada del elemento</label>
-        <q-input
-          v-model="tendido.coordenada_del_elemento"
-          outlined
-          dense
-          disable
-          autogrow
-        >
-          <template #after>
+      <div class="col-12 col-md-6">
+        <label class="q-mb-sm block">Cooordenadas del elemento</label>
+        <div class="row q-col-gutter-xs">
+          <q-input
+            v-model="tendido.coordenada_del_elemento_longitud"
+            class="col-md-4"
+            :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            hint="Longitud"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+
+          <q-input
+            v-model="tendido.coordenada_del_elemento_latitud"
+            class="col-md-4"
+            hint="Latitud"
+            :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+
+          <span
+            class="col-md-4"
+            :class="{ 'full-width text-center q-mb-xs': $q.screen.xs }"
+          >
             <q-btn
               color="positive"
               no-caps
+              :class="{ 'q-mb-xs': $q.screen.xs }"
               @click="ubicacionCoordenadaElemento()"
             >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
             >
-          </template>
-        </q-input>
+          </span>
+        </div>
       </div>
 
       <!-- Tipo elemento -->
@@ -291,31 +311,10 @@
         <label class="q-mb-sm block">Propietario</label>
         <q-input v-model="tendido.propietario" outlined dense></q-input>
       </div>
+    </div>
 
-      <!-- Coordenada cruce americano -->
-      <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Cooordenada del cruce americano</label>
-        <q-input
-          v-model="tendido.coordenada_cruce_americano"
-          outlined
-          dense
-          disable
-          autogrow
-        >
-          <template #after>
-            <q-btn
-              color="positive"
-              no-caps
-              @click="ubicacionCoordenadaAmericano()"
-            >
-              <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
-              Actualizar ubicación</q-btn
-            >
-          </template>
-        </q-input>
-      </div>
-
-      <!-- Imagen -->
+    <div v-if="tendido.americano" class="row q-col-gutter-sm q-py-md">
+      <!-- Foto americano -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del cruce americano</label>
         <selector-imagen
@@ -324,30 +323,51 @@
         ></selector-imagen>
       </div>
 
-      <!-- Coordenada poste 1 -->
-      <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Cooordenada del poste de anclaje 1</label>
-        <q-input
-          v-model="tendido.coordenada_poste_anclaje1"
-          outlined
-          dense
-          disable
-          autogrow
-        >
-          <template #after>
+      <div class="col-12 col-md-6">
+        <label class="q-mb-sm block">Cooordenada del cruce americano</label>
+        <div class="row q-col-gutter-xs">
+          <q-input
+            v-model="tendido.coordenada_cruce_americano_longitud"
+            class="col-md-4"
+            :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            hint="Longitud"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+
+          <q-input
+            v-model="tendido.coordenada_cruce_americano_latitud"
+            class="col-md-4"
+            hint="Latitud"
+            :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+
+          <span
+            class="col-md-4"
+            :class="{ 'full-width text-center q-mb-xs': $q.screen.xs }"
+          >
             <q-btn
               color="positive"
               no-caps
-              @click="ubicacionCoordenadaPosteAnclaje1()"
+              :class="{ 'q-mb-xs': $q.screen.xs }"
+              @click="ubicacionCoordenadaAmericano()"
             >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
             >
-          </template>
-        </q-input>
+          </span>
+        </div>
       </div>
+    </div>
 
-      <!-- Imagen -->
+    <!-- Poste anclaje 1 -->
+    <div v-if="tendido.americano" class="row q-col-gutter-sm q-py-md">
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del poste de anclaje 1</label>
         <selector-imagen
@@ -356,29 +376,50 @@
         ></selector-imagen>
       </div>
 
-      <!-- Coordenada poste 2 -->
-      <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Cooordenada del poste de anclaje 2</label>
-        <q-input
-          v-model="tendido.coordenada_poste_anclaje2"
-          outlined
-          dense
-          disable
-          autogrow
-        >
-          <template #after>
+      <div class="col-12 col-md-6">
+        <label class="q-mb-sm block">Cooordenadas del poste de anclaje 1</label>
+        <div class="row q-col-gutter-xs">
+          <q-input
+            v-model="tendido.coordenada_poste_anclaje1_longitud"
+            class="col-md-4"
+            :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            hint="Longitud"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+
+          <q-input
+            v-model="tendido.coordenada_poste_anclaje1_latitud"
+            class="col-md-4"
+            hint="Latitud"
+            :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+
+          <span
+            class="col-md-4"
+            :class="{ 'full-width text-center q-mb-xs': $q.screen.xs }"
+          >
             <q-btn
               color="positive"
               no-caps
-              @click="ubicacionCoordenadaPosteAnclaje2()"
+              :class="{ 'q-mb-xs': $q.screen.xs }"
+              @click="ubicacionCoordenadaPosteAnclaje1()"
             >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
             >
-          </template>
-        </q-input>
+          </span>
+        </div>
       </div>
+    </div>
 
+    <div v-if="tendido.americano" class="row q-col-gutter-sm q-py-md">
       <!-- Imagen -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del poste de anclaje 2</label>
@@ -387,43 +428,51 @@
           @update:modelValue="(data) => (tendido.imagen_poste_anclaje2 = data)"
         ></selector-imagen>
       </div>
+
+      <div class="col-12 col-md-6">
+        <label class="q-mb-sm block">Cooordenadas del poste de anclaje 2</label>
+        <div class="row q-col-gutter-xs">
+          <q-input
+            v-model="tendido.coordenada_poste_anclaje2_longitud"
+            class="col-md-4"
+            :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            hint="Longitud"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+
+          <q-input
+            v-model="tendido.coordenada_poste_anclaje2_latitud"
+            class="col-md-4"
+            hint="Latitud"
+            :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+
+          <span
+            class="col-md-4"
+            :class="{ 'full-width text-center q-mb-xs': $q.screen.xs }"
+          >
+            <q-btn
+              color="positive"
+              no-caps
+              :class="{ 'q-mb-xs': $q.screen.xs }"
+              @click="ubicacionCoordenadaPosteAnclaje2()"
+            >
+              <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
+              Actualizar ubicación</q-btn
+            >
+          </span>
+        </div>
+      </div>
     </div>
 
-    <div class="row">
-      <!-- Selector de productos -->
-      <!--<div class="col-12">
-        <label class="q-mb-sm block">Agregar productos</label>
-        <div class="row q-col-gutter-xs">
-          <div class="col-12 col-md-10 q-mb-md">
-            <q-input
-              v-model="criterioBusquedaProducto"
-              placeholder="Nombre de producto"
-              @update:model-value="
-                (v) => (criterioBusquedaProducto = v.toUpperCase())
-              "
-              hint="Presiona Enter para seleccionar un producto"
-              @keydown.enter="listarProductos()"
-              @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-          <div class="col-12 col-md-2">
-            <q-btn
-              @click="listarProductos()"
-              icon="search"
-              color="secondary"
-              class="full-width"
-              style="height: 40px"
-              unelevated
-              no-caps
-              >Buscar</q-btn
-            >
-          </div>
-        </div>
-      </div> -->
-
+    <div class="row q-mb-md">
       <!-- Tabla -->
       <div class="col-12">
         <essential-table
@@ -431,7 +480,7 @@
           :configuracionColumnas="
             configuracionColumnasProductosSeleccionadosAccion
           "
-          :datos="tendido.listadoProductosSeleccionados"
+          :datos="materiales"
           :permitirConsultar="false"
           :permitirEditar="false"
           :permitirEliminar="false"
@@ -441,6 +490,13 @@
           @eliminar="eliminar"
         ></essential-table>
       </div>
+    </div>
+
+    <div class="row justify-end">
+      <q-btn color="primary" class="block" no-caps>
+        <q-icon name="bi-save" size="xs" class="q-mr-xs"></q-icon>
+        Guardar</q-btn
+      >
     </div>
 
     <essential-selectable-table

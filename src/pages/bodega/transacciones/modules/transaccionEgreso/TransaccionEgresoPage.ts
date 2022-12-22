@@ -48,6 +48,7 @@ import { ClienteController } from 'pages/sistema/clientes/infraestructure/Client
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from "shared/utils";
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -252,10 +253,17 @@ export default defineComponent({
             titulo: 'Cantidad',
             icono: 'bi-pencil',
             accion: ({ posicion }) => {
-                prompt('Ingresa la cantidad',
-                    (data) => transaccion.listadoProductosTransaccion[posicion].cantidad = data,
-                    transaccion.listadoProductosTransaccion[posicion].cantidad
-                )
+                const config: CustomActionPrompt = {
+                    titulo: 'Confirmación',
+                    mensaje: 'Ingresa la cantidad',
+                    defecto: transaccion.listadoProductosTransaccion[posicion].cantidad,
+                    tipo: 'number',
+                    accion: (data) => {
+                        transaccion.listadoProductosTransaccion[posicion].cantidad = data
+                    },
+                }
+
+                prompt(config)
             },
             visible: () => puedeEditarCantidad.value
         }

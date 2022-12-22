@@ -2,39 +2,25 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
 
 export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = [
   {
-    name: 'producto',
-    field: 'producto',
+    name: 'detalle',
+    field: 'detalle',
     label: 'Detalle del material',
     align: 'left',
     sortable: true,
   },
   {
-    name: 'stock_inicial',
-    field: 'stock_inicial',
-    label: 'Stock inicial ',
+    name: 'cantidad_despachada',
+    field: 'cantidad_despachada',
+    label: 'Cantidad disponible',
     align: 'left',
     sortable: false,
   },
   {
-    name: 'utilizado',
-    field: 'utilizado',
-    label: 'Utilizado ',
+    name: 'cantidad_utilizada',
+    field: 'cantidad_utilizada',
+    label: 'Cantidad utilizada',
     align: 'left',
     sortable: false,
   },
-  /*{
-    name: 'descripcion',
-    field: 'descripcion',
-    label: 'Descripción',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'categoria',
-    field: 'categoria',
-    label: 'Categoria',
-    align: 'left',
-    sortable: true,
-  },*/
 ]
 

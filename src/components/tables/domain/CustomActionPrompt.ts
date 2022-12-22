@@ -1,6 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
-
-// type funcion = (param) => void
+type funcion = (param) => void
 
 export interface CustomActionPrompt {
   titulo: string,
@@ -8,6 +6,6 @@ export interface CustomActionPrompt {
   accion: (param) => void
   defecto?: string
   tipo?: string
-  entidad?: any
+  validacion?: funcion
 }
 

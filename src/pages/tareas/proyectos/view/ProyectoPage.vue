@@ -236,7 +236,7 @@
           </div>
 
           <!-- Fecha de solicitud -->
-          <div class="col-12 col-md-3">
+          <!--<div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
             <q-input v-model="proyecto.fecha_solicitud" outlined dense>
               <template v-slot:append>
@@ -264,7 +264,7 @@
                 </q-icon>
               </template>
             </q-input>
-          </div>
+          </div> -->
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Costo total proyecto</label>

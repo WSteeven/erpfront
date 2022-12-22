@@ -82,4 +82,6 @@ export const endpoints = {
   intercambiar_jefe_cuadrilla: new Endpoint('intercambiar-jefe-cuadrilla/'),
   intercambiar_secretario_cuadrilla: new Endpoint('intercambiar-secretario-cuadrilla/'),
   archivos_subtareas: new Endpoint('archivos-subtareas/'),
+  materiales_despachados: new Endpoint('transacciones-egresos/materiales-despachados/'),
+  materiales_despachados_sin_bobina: new Endpoint('transacciones-egresos/materiales-despachados-sin-bobina/'),
 }

@@ -7,11 +7,19 @@ export class RegistroTendido extends EntidadAuditable {
     codigo_elemento: string | null
     progresiva_entrada: string | null
     progresiva_salida: string | null
-    coordenada_del_elemento: string | null
-    coordenada_poste_anclaje1: string | null
-    coordenada_poste_anclaje2: string | null
-    // latitud: string | null
-    // longitud: string | null
+    // Coordenadas del elemento
+    coordenada_del_elemento_latitud: string | null
+    coordenada_del_elemento_longitud: string | null
+    // Coordenadas del cruce americano
+    coordenada_cruce_americano_longitud: string | null
+    coordenada_cruce_americano_latitud: string | null
+    // Coordenadas del poste de anclaje 1
+    coordenada_poste_anclaje1_longitud: string | null
+    coordenada_poste_anclaje1_latitud: string | null
+    // Coordenadas del poste de anclaje 2
+    coordenada_poste_anclaje2_longitud: string | null
+    coordenada_poste_anclaje2_latitud: string | null
+
     estado_elemento: string | null
     tiene_transformador: boolean
     cantidad_transformadores: number | null
@@ -26,7 +34,6 @@ export class RegistroTendido extends EntidadAuditable {
     hora: string | null
     imagen: string | null
     listadoProductosSeleccionados: any[]
-    coordenada_cruce_americano: string | null
 
     constructor() {
         super()
@@ -36,11 +43,14 @@ export class RegistroTendido extends EntidadAuditable {
         this.codigo_elemento = null
         this.progresiva_entrada = null
         this.progresiva_salida = null
-        this.coordenada_del_elemento = null
-        this.coordenada_poste_anclaje1 = null
-        this.coordenada_poste_anclaje2 = null
-        // this.latitud = null
-        // this.longitud = null
+        this.coordenada_del_elemento_latitud = null
+        this.coordenada_del_elemento_longitud = null
+        this.coordenada_cruce_americano_longitud = null
+        this.coordenada_cruce_americano_latitud = null
+        this.coordenada_poste_anclaje1_longitud = null
+        this.coordenada_poste_anclaje1_latitud = null
+        this.coordenada_poste_anclaje2_longitud = null
+        this.coordenada_poste_anclaje2_latitud = null
         this.estado_elemento = null
         this.tiene_transformador = false
         this.cantidad_transformadores = null
@@ -55,6 +65,5 @@ export class RegistroTendido extends EntidadAuditable {
         this.hora = null
         this.imagen = null
         this.listadoProductosSeleccionados = []
-        this.coordenada_cruce_americano = null
     }
 }

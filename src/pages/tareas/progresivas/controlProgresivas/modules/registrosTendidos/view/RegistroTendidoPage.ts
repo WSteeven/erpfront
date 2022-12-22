@@ -17,6 +17,10 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { RegistroTendido } from "../domain/RegistrosTendido"
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { number } from 'echarts'
 
 export default defineComponent({
     components: {
@@ -64,70 +68,18 @@ export default defineComponent({
             titulo: 'Cantidad utilizada',
             icono: 'bi-pencil',
             accion: ({ entidad, posicion }) => {
-                const data: CustomActionPrompt = {
-                    titulo: 'Confirma',
+                const config: CustomActionPrompt = {
+                    titulo: 'Confirmación',
                     mensaje: 'Ingresa la cantidad',
-                    defecto: tendido.listadoProductosSeleccionados[posicion].cantidades,
-                    entidad: entidad,
-                    accion: (data) => {
-                        tendido.listadoProductosSeleccionados[posicion].cantidades = data
-                    },
+                    defecto: materiales.value[posicion].cantidad_utilizada,
+                    tipo: 'number',
+                    validacion: (val) => val > 0 && val <= entidad.cantidad_despachada,
+                    accion: (data) => materiales.value[posicion].cantidad_utilizada = data
                 }
 
-                prompt(data)
+                prompt(config)
             },
         }
-
-        onMounted(() => {
-            const materiales = [
-                {
-                    producto: 'HERRAJE FIBRA ÓPTICA TIPO A / BASE CON DOBLE',
-                    stock_inicial: 120,
-                    utilizado: 2,
-                },
-                {
-                    producto: 'ABRAZADERA TIPO A 7"',
-                    stock_inicial: 250,
-                    utilizado: null,
-                },
-                {
-                    producto: 'HERRAJE B CÓNICO',
-                    stock_inicial: 120,
-                    utilizado: null,
-                },
-                {
-                    producto: 'HERRAJE TIPO A (BASE DE ARGOLLA)',
-                    stock_inicial: 250,
-                    utilizado: null,
-                },
-                {
-                    producto: 'ABRAZADERA SIMPLE TIPO a',
-                    stock_inicial: 120,
-                    utilizado: 12,
-                },
-                {
-                    producto: 'HERRAJE DISPERSIÓN',
-                    stock_inicial: 250,
-                    utilizado: 4,
-                },
-                {
-                    producto: 'BRAZO TIPO A 1.20 MT',
-                    stock_inicial: 120,
-                    utilizado: null,
-                },
-                {
-                    producto: 'PREFORMADO AMARILLO',
-                    stock_inicial: 250,
-                    utilizado: 12,
-                },
-                {
-                    producto: 'GUARDACABO',
-                    stock_inicial: 82,
-                    utilizado: 30,
-                }
-            ]
-            tendido.listadoProductosSeleccionados = [...materiales]
-        })
 
         function obtenerUbicacion(onUbicacionConcedida) {
 
@@ -146,27 +98,43 @@ export default defineComponent({
 
         function ubicacionCoordenadaElemento() {
             obtenerUbicacion((ubicacion) => {
-                tendido.coordenada_del_elemento = `Latitud: ${ubicacion.coords.latitude}, Longitud: ${ubicacion.coords.longitude}`
+                tendido.coordenada_del_elemento_latitud = ubicacion.coords.latitude
+                tendido.coordenada_del_elemento_longitud = ubicacion.coords.longitude
             })
         }
 
         function ubicacionCoordenadaAmericano() {
             obtenerUbicacion((ubicacion) => {
-                tendido.coordenada_cruce_americano = `Latitud: ${ubicacion.coords.latitude}, Longitud: ${ubicacion.coords.longitude}`
+                tendido.coordenada_cruce_americano_latitud = ubicacion.coords.latitude
+                tendido.coordenada_cruce_americano_longitud = ubicacion.coords.longitude
             })
         }
 
         function ubicacionCoordenadaPosteAnclaje1() {
             obtenerUbicacion((ubicacion) => {
-                tendido.coordenada_poste_anclaje1 = `Latitud: ${ubicacion.coords.latitude}, Longitud: ${ubicacion.coords.longitude}`
+                tendido.coordenada_poste_anclaje1_latitud = ubicacion.coords.latitude
+                tendido.coordenada_poste_anclaje1_longitud = ubicacion.coords.longitude
             })
         }
 
         function ubicacionCoordenadaPosteAnclaje2() {
             obtenerUbicacion((ubicacion) => {
-                tendido.coordenada_poste_anclaje2 = `Latitud: ${ubicacion.coords.latitude}, Longitud: ${ubicacion.coords.longitude}`
+                tendido.coordenada_poste_anclaje2_latitud = ubicacion.coords.latitude
+                tendido.coordenada_poste_anclaje2_longitud = ubicacion.coords.longitude
             })
         }
+
+
+        const materiales = ref()
+        async function obtenerMateriales() {
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina) + '2'
+            const response: AxiosResponse = await axios.get(ruta)
+            console.log(response)
+            materiales.value = response.data.results
+        }
+
+        obtenerMateriales()
 
         return {
             tendido,
@@ -175,6 +143,7 @@ export default defineComponent({
             estadoElementos,
             tiposTension,
             v$,
+            materiales,
             configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
             eliminar,

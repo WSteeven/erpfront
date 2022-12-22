@@ -90,21 +90,22 @@ export function useNotificaciones() {
       })
   }
 
-  function prompt(data: CustomActionPrompt) {
+  function prompt(config: CustomActionPrompt) {
     $q.dialog({
       html: true,
-      title: data.titulo ?? 'Confirmación',
-      message: data.mensaje,
+      title: config.titulo ?? 'Confirmación',
+      message: config.mensaje,
       prompt: {
-        model: data.defecto,
-        type: data.tipo ?? 'text', // optional
-        isValid: val => val <= data.entidad.cantidad,
+        model: config.defecto,
+        type: config.tipo ?? 'text', // optional
+        isValid: val => config.validacion ? config.validacion(val) : true, //val => val <= data.entidad.cantidad,
       },
       cancel: true,
       persistent: true,
     })
       .onOk((data) => {
-        data.accion(data)
+        config.accion(data)
+        console.log('dentro d not: ' + data)
       })
       .onCancel(() => {
         // console.log('>>>> Cancel')
