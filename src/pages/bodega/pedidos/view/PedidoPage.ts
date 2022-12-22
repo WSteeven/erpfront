@@ -1,9 +1,9 @@
 //Dependencias
-import { configuracionColumnasDevoluciones } from "../domain/configuracionColumnasDevoluciones";
+import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos';
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
-import { useOrquestadorSelectorDetalles } from "../application/OrquestadorSelectorDetalles";
+import { useOrquestadorSelectorDetalles } from 'pages/bodega/devoluciones/application/OrquestadorSelectorDetalles';
 
 //Componentes
 // import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
@@ -14,8 +14,8 @@ import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { DevolucionController } from "../infraestructure/DevolucionController";
-import { Devolucion } from "../domain/Devolucion";
+import { PedidoController } from '../infraestructura/PedidoController';
+import { Pedido } from '../domain/Pedido';
 
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
@@ -25,11 +25,11 @@ import { configuracionColumnasProductosSeleccionados } from "../domain/configura
 import { configuracionColumnasDetallesModal } from "../domain/configuracionColumnasDetallesModal";
 import { useNotificaciones } from "shared/notificaciones";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, estadosDevoluciones, logoBN, logoColor, meses, tabOptionsDevoluciones } from "config/utils";
+import { acciones, estadosDevoluciones, logoBN, logoColor, meses, tabOptionsPedidos } from "config/utils";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { endpoints } from "config/api";
 import html2pdf from 'html2pdf.js'
-import { ComportamientoModalesDevoluciones } from "../application/ComportamientoModalesDevolucion";
+// import { ComportamientoModalesDevoluciones } from "../application/ComportamientoModalesDevolucion";
 import { useDevolucionStore } from "stores/devolucion";
 
 //pdfmake
@@ -37,11 +37,8 @@ import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { useAuthenticationStore } from "stores/authentication";
 import * as fs from 'fs'
-import { LoginController } from "pages/sistema/authentication/login/infraestructure/LoginController";
 import { buildTableBody, notificarMensajesError } from "shared/utils";
-import { CambiarEstadoDevolucion } from "../application/CambiarEstadoDevolucion";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { Entidad } from "shared/entidad/domain/entidad";
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -50,8 +47,8 @@ export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
 
     setup() {
-        const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
-        const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+        const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
+        const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
@@ -61,7 +58,7 @@ export default defineComponent({
         const store = useAuthenticationStore()
 
         //modales
-        const modales = new ComportamientoModalesDevoluciones()
+        // const modales = new ComportamientoModalesDevoluciones()
 
         //orquestador
         const {
@@ -71,12 +68,13 @@ export default defineComponent({
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorDetalles(devolucion, 'detalles')
+        } = useOrquestadorSelectorDetalles(pedido, 'detalles')
 
         //flags
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
+        let requiereFecha = ref(false)
 
 
 
@@ -113,15 +111,15 @@ export default defineComponent({
             justificacion: { required },
             // solicitante:{required},
             sucursal: { required },
-            tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea) },
+            tarea: { requiredIfTarea: requiredIf(pedido.es_tarea) },
         }
 
-        const v$ = useVuelidate(reglas, devolucion)
+        const v$ = useVuelidate(reglas, pedido)
         setValidador(v$.value)
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',
-                () => devolucion.listadoProductos.splice(posicion, 1))
+                () => pedido.listadoProductos.splice(posicion, 1))
         }
         const botonEliminar: CustomActionTable = {
             titulo: 'Quitar',
@@ -137,12 +135,12 @@ export default defineComponent({
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Cantidad',
             icono: 'bi-pencil',
-            accion: ({ entidad, posicion }) => {
-                const data: CustomActionPrompt = {
+            accion: ({ posicion }) => {
+                const data: CustomActionPrompt={
                     titulo: 'Modifica',
                     mensaje: 'Ingresa la cantidad',
-                    defecto: devolucion.listadoProductos[posicion].cantidad,
-                    accion: (data) => devolucion.listadoProductos[posicion].cantidad = data,
+                    defecto: pedido.listadoProductos[posicion].cantidad,
+                    accion: (data)=>pedido.listadoProductos[posicion].cantidad = data,
                 }
                 prompt(data)
             },
@@ -150,35 +148,7 @@ export default defineComponent({
                 return accion.value == acciones.consultar ? false : true
             }
         }
-        const botonAnular: CustomActionTable = {
-            titulo: 'Anular',
-            color: 'negative',
-            icono: 'bi-x',
-            accion: ({ entidad, posicion }) => {
-                confirmar('¿Está seguro de anular la devolución?', () => {
-                    const data: CustomActionPrompt = {
-                        titulo: 'Motivo',
-                        mensaje: 'Ingresa el motivo de la anulación',
-                        accion: async (data) => {
-                            try {
-                                const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
-                                notificarCorrecto('Devolución anulada exitosamente!')
-                                actualizarElemento(posicion, entidad)
-                            } catch (e: any) {
-                                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
-                            }
-                        }
-                    }
-
-                    prompt(data)
-                })
-                console.log('entidad', entidad)
-                console.log('posicion', posicion)
-            },
-            visible: () => {
-                return tabSeleccionado.value == 'CREADA' ? true : false
-            }
-        }
+        
         const botonImprimir: CustomActionTable = {
             titulo: 'Imprimir',
             color: 'secondary',
@@ -583,8 +553,8 @@ export default defineComponent({
         opciones_tareas.value = listadosAuxiliares.tareas
 
         return {
-            mixin, devolucion, disabled, accion, v$,
-            configuracionColumnas: configuracionColumnasDevoluciones,
+            mixin, pedido, disabled, accion, v$,
+            configuracionColumnas: configuracionColumnasPedidos,
             //listados
             opciones_empleados,
             opciones_tareas,
@@ -605,18 +575,18 @@ export default defineComponent({
             configuracionColumnasProductosSeleccionados,
             botonEditarCantidad,
             botonEliminar,
-            botonAnular,
             botonImprimir,
 
             //modal
-            modales,
+            // modales,
 
             //flags
             soloLectura,
             esVisibleTarea,
+            requiereFecha,
 
             //Tabs
-            tabOptionsDevoluciones,
+            tabOptionsPedidos,
             tabSeleccionado,
 
             tabEs(val) {
@@ -626,11 +596,6 @@ export default defineComponent({
             },
 
             //Filtros
-            filtroTareas(val) {
-                // const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
-                // console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
-                // devolucion.cliente = opcion_encontrada[0]['cliente_id']
-            },
             filtroEmpleados(val, update) {
                 if (val === '') {
                     update(() => {

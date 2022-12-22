@@ -175,6 +175,13 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Pedidos',
+          link: 'pedidos',
+          can: store.can('puede.ver.pedidos'),
+          icon: 'bi-circle',
+        },
+
+        {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
           can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1)).length > 0,

@@ -1,0 +1,38 @@
+import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+
+export class Pedido extends EntidadAuditable {
+    justificacion: string | null
+    fecha_limite: string | null
+    observacion_aut: string | null
+    observacion_est: string | null
+    solicitante: number | null
+    autorizacion: number | null
+    per_autoriza: number | null
+    tarea: number| null
+    sucursal: number | null
+    estado: number | null
+
+    listadoProductos: any[]
+
+    //variables auxiliares
+    es_tarea:boolean|null
+
+    constructor() {
+        super()
+        this.justificacion= null
+        this.fecha_limite= null
+        this.observacion_aut= null
+        this.observacion_est= null
+        this.solicitante= null
+        this.autorizacion= null
+        this.per_autoriza= null
+        this.tarea= null
+        this.sucursal= null
+        this.estado= null
+
+        this.listadoProductos=[]
+
+        //variables auxiliares
+        this.es_tarea=false
+    }
+}
