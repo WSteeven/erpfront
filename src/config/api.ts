@@ -45,6 +45,7 @@ export const endpoints = {
   modelos: new Endpoint('modelos/'),
   movimientos: new Endpoint('movimientos-productos/'),
   motivos: new Endpoint('motivos/'),
+  pedidos: new Endpoint('pedidos/'),
   procesadores: new Endpoint('procesadores/'),
   prestamos: new Endpoint('prestamos/'),
   productos: new Endpoint('productos/'),

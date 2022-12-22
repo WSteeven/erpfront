@@ -188,6 +188,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/pedidos',
+        name: 'pedidos',
+        component: () =>
+          import(
+            'pages/bodega/pedidos/view/PedidoPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/devoluciones',
         name: 'devoluciones',
         component: () =>
