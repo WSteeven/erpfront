@@ -16,6 +16,8 @@ export class Pedido extends EntidadAuditable {
 
     //variables auxiliares
     es_tarea:boolean|null
+    tiene_observacion_aut:boolean|null
+    tiene_observacion_est:boolean|null
 
     constructor() {
         super()
@@ -34,5 +36,7 @@ export class Pedido extends EntidadAuditable {
 
         //variables auxiliares
         this.es_tarea=false
+        this.tiene_observacion_aut=false
+        this.tiene_observacion_est=false
     }
 }

@@ -3,7 +3,7 @@ import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPed
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
-import { useOrquestadorSelectorDetalles } from 'pages/bodega/devoluciones/application/OrquestadorSelectorDetalles';
+import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles';
 
 //Componentes
 // import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
@@ -25,7 +25,7 @@ import { configuracionColumnasProductosSeleccionados } from "../domain/configura
 import { configuracionColumnasDetallesModal } from "../domain/configuracionColumnasDetallesModal";
 import { useNotificaciones } from "shared/notificaciones";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, estadosDevoluciones, logoBN, logoColor, meses, tabOptionsPedidos } from "config/utils";
+import { acciones, estadosDevoluciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPedidos } from "config/utils";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { endpoints } from "config/api";
 import html2pdf from 'html2pdf.js'
@@ -39,6 +39,8 @@ import { useAuthenticationStore } from "stores/authentication";
 import * as fs from 'fs'
 import { buildTableBody, notificarMensajesError } from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController';
+import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -50,7 +52,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
         const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onReestablecer } = mixin.useHooks()
+        const { onReestablecer, onConsultado } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         //stores
@@ -75,16 +77,28 @@ export default defineComponent({
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
         let requiereFecha = ref(false)
+        let puedeEditar = ref(false)
+
+        const esCoordinador = store.esCoordinador
+        const esBodeguero = store.esBodeguero
 
 
 
         onReestablecer(() => {
             soloLectura.value = false
         })
+        onConsultado(() => {
+            console.log(accion.value)
+            if (accion.value === acciones.editar && esCoordinador) {
+                soloLectura.value = true
+            }
+        })
 
         const opciones_empleados = ref([])
         const opciones_sucursales = ref([])
         const opciones_tareas = ref([])
+        const opciones_autorizaciones = ref([])
+        const opciones_estados = ref([])
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
@@ -103,13 +117,22 @@ export default defineComponent({
                     controller: new SucursalController(),
                     params: { campos: 'id,lugar' },
                 },
+                autorizaciones: {
+                    controller: new AutorizacionController(),
+                    params: { campos: 'id,nombre' },
+                },
+                estados: {
+                    controller: new EstadosTransaccionController(),
+                    params: { campos: 'id,nombre' },
+                },
             })
         })
 
         //reglas de validacion
         const reglas = {
             justificacion: { required },
-            // solicitante:{required},
+            autorizacion: { requiredIfCoordinador: requiredIf(esCoordinador) },
+            observacion_aut: { requiredIfCoordinador: requiredIf(pedido.tiene_obs_autorizacion) },
             sucursal: { required },
             tarea: { requiredIfTarea: requiredIf(pedido.es_tarea) },
         }
@@ -136,11 +159,11 @@ export default defineComponent({
             titulo: 'Cantidad',
             icono: 'bi-pencil',
             accion: ({ posicion }) => {
-                const data: CustomActionPrompt={
+                const data: CustomActionPrompt = {
                     titulo: 'Modifica',
                     mensaje: 'Ingresa la cantidad',
                     defecto: pedido.listadoProductos[posicion].cantidad,
-                    accion: (data)=>pedido.listadoProductos[posicion].cantidad = data,
+                    accion: (data) => pedido.listadoProductos[posicion].cantidad = data,
                 }
                 prompt(data)
             },
@@ -148,7 +171,7 @@ export default defineComponent({
                 return accion.value == acciones.consultar ? false : true
             }
         }
-        
+
         const botonImprimir: CustomActionTable = {
             titulo: 'Imprimir',
             color: 'secondary',
@@ -551,6 +574,8 @@ export default defineComponent({
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = listadosAuxiliares.sucursales
         opciones_tareas.value = listadosAuxiliares.tareas
+        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
+        opciones_estados.value = listadosAuxiliares.estados
 
         return {
             mixin, pedido, disabled, accion, v$,
@@ -559,6 +584,8 @@ export default defineComponent({
             opciones_empleados,
             opciones_tareas,
             opciones_sucursales,
+            opciones_estados,
+            opciones_autorizaciones,
 
             //selector
             refListado,
@@ -588,11 +615,18 @@ export default defineComponent({
             //Tabs
             tabOptionsPedidos,
             tabSeleccionado,
+            puedeEditar,
+            esCoordinador, esBodeguero,
 
             tabEs(val) {
-                console.log(tabSeleccionado.value)
-                console.log(val)
+                // console.log(tabSeleccionado.value)
+                // console.log(val)
                 tabSeleccionado.value = val
+                puedeEditar.value = (esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (esBodeguero && tabSeleccionado.value === 'PARCIAL')
+                    ? true
+                    : esCoordinador && tabSeleccionado.value === 'PENDIENTE'
+                        ? true
+                        : false
             },
 
             //Filtros

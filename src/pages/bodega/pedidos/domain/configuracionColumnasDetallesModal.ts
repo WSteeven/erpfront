@@ -29,13 +29,13 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
     //     align: 'left',
     //     sortable: true
     // },
-    {
-        name: 'computadora',
-        field: 'computadora',
-        label: 'Caracteristicas',
-        align: 'left',
-        sortable: true
-    },
+    // {
+    //     name: 'computadora',
+    //     field: 'computadora',
+    //     label: 'Caracteristicas',
+    //     align: 'left',
+    //     sortable: true
+    // },
     {
         name: 'fibra',
         field: 'fibra',
