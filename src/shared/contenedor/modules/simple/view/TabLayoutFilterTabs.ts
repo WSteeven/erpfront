@@ -11,7 +11,6 @@ import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { useAuthenticationStore } from 'stores/authentication'
 import { acciones } from 'config/utils'
 import { TabOption } from 'components/tables/domain/TabOption'
-import { emit } from 'process'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
@@ -63,6 +62,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    full: {
+      type: Boolean,
+      default: false,
+    }
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
@@ -94,7 +97,7 @@ export default defineComponent({
       listar()
       listadoCargado = true
     }
-    let tabSeleccionado = 'TODO'
+    const tabSeleccionado = 'TODO'
 
     function aplicarFiltro(tabSeleccionado) {
       listar({ estado: tabSeleccionado }, false)

@@ -20,174 +20,190 @@ import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
-	components: {
-		EssentialTableTabs,
-		ModalesEntidad,
-		ConfirmarDialog,
-	},
-	setup() {
-		const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+  components: {
+    EssentialTableTabs,
+    ModalesEntidad,
+    ConfirmarDialog,
+  },
+  setup() {
+    const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
-		const { listado } = mixin.useReferencias()
-		const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
+    const { listado } = mixin.useReferencias()
+    const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
-		const mostrarDialogPlantilla = ref(false)
+    const mostrarDialogPlantilla = ref(false)
 
-		const store = useTrabajoAsignadoStore()
-		const authenticationStore = useAuthenticationStore()
-		const modales = new ComportamientoModalesTrabajoAsignado()
+    const store = useTrabajoAsignadoStore()
+    const authenticationStore = useAuthenticationStore()
+    const modales = new ComportamientoModalesTrabajoAsignado()
 
-		const botonVer: CustomActionTable = {
-			titulo: 'Visualizar',
-			icono: 'bi-eye',
-			accion: async ({ entidad }) => {
-				store.idSubtareaSeleccionada = entidad.id
-				modales.abrirModalEntidad('SubtareaAsignadaPage')
-			},
-		}
+    const botonVer: CustomActionTable = {
+      titulo: 'Visualizar',
+      icono: 'bi-eye',
+      accion: async ({ entidad }) => {
+        store.idSubtareaSeleccionada = entidad.id
+        modales.abrirModalEntidad('SubtareaAsignadaPage')
+      },
+    }
 
-		const botonIniciar: CustomActionTable = {
-			titulo: 'Iniciar',
-			icono: 'bi-play',
-			color: 'positive',
-			visible: ({ entidad }) => [estadosSubtareas.ASIGNADO].includes(entidad.estado) || (entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion),
-			accion: ({ entidad, posicion }) => {
-				confirmar('¿Está seguro de iniciar el trabajo?', async () => {
-					const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
-					entidad.estado = estadosSubtareas.EJECUTANDO
-					entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
-					notificarCorrecto('Trabajo iniciado exitosamente!')
-					actualizarElemento(posicion, entidad)
-				})
-			}
-		}
+    const botonIniciar: CustomActionTable = {
+      titulo: 'Iniciar',
+      icono: 'bi-play',
+      color: 'positive',
+      visible: ({ entidad }) => [estadosSubtareas.ASIGNADO].includes(entidad.estado) || (entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion),
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de iniciar el trabajo?', async () => {
+          const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
+          entidad.estado = estadosSubtareas.EJECUTANDO
+          entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
+          notificarCorrecto('Trabajo iniciado exitosamente!')
+          actualizarElemento(posicion, entidad)
+        })
+      }
+    }
 
-		const botonPausar: CustomActionTable = {
-			titulo: 'Pausar',
-			icono: 'bi-pause',
-			color: 'positive',
-			visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
-			accion: async ({ entidad, posicion }) => {
-				confirmar('¿Está seguro de pausar la subtarea?', () => {
-					prompt('Ingrese el motivo de la pausa', (data) => {
-						new CambiarEstadoSubtarea().pausar(entidad.id, data)
-						entidad.estado = estadosSubtareas.PAUSADO
-						notificarCorrecto('Trabajo pausado exitosamente!')
-						actualizarElemento(posicion, entidad)
-					})
-				})
-			},
-		}
+    const botonPausar: CustomActionTable = {
+      titulo: 'Pausar',
+      icono: 'bi-pause',
+      color: 'positive',
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de pausar la subtarea?', () => {
+          const config: CustomActionPrompt = {
+            mensaje: 'Ingrese el motivo de la pausa',
+            accion: (data) => {
+              new CambiarEstadoSubtarea().pausar(entidad.id, data)
+              entidad.estado = estadosSubtareas.PAUSADO
+              notificarCorrecto('Trabajo pausado exitosamente!')
+              actualizarElemento(posicion, entidad)
+            }
+          }
 
-		const botonReanudar: CustomActionTable = {
-			titulo: 'Reanudar',
-			icono: 'bi-play',
-			color: 'positive',
-			visible: ({ entidad }) => entidad.estado === estadosSubtareas.PAUSADO,
-			accion: async ({ entidad, posicion }) => {
-				confirmar('¿Está seguro de reanudar el trabajo?', () => {
-					new CambiarEstadoSubtarea().reanudar(entidad.id)
-					entidad.estado = estadosSubtareas.EJECUTANDO
-					notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
-					actualizarElemento(posicion, entidad)
-				})
-			}
-		}
+          prompt(config)
+        })
+      },
+    }
 
-		const botonFormulario: CustomActionTable = {
-			titulo: 'Formulario',
-			icono: 'bi-card-text',
-			color: 'indigo',
-			visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
-			accion: async ({ entidad }) => {
-				confirmar('¿Está seguro de abrir el formulario?', () => {
-					store.idSubtareaSeleccionada = entidad.id
-					modales.abrirModalEntidad('SeleccionFormularioPage')
-				})
-			}
-		}
+    const botonReanudar: CustomActionTable = {
+      titulo: 'Reanudar',
+      icono: 'bi-play',
+      color: 'positive',
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.PAUSADO,
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de reanudar el trabajo?', () => {
+          new CambiarEstadoSubtarea().reanudar(entidad.id)
+          entidad.estado = estadosSubtareas.EJECUTANDO
+          notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
+          actualizarElemento(posicion, entidad)
+        })
+      }
+    }
 
-		const botonSuspender: CustomActionTable = {
-			titulo: 'Suspender',
-			icono: 'bi-x-diamond',
-			color: 'negative',
-			visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO,
-			accion: async ({ entidad, posicion }) => {
-				confirmar('¿Está seguro de suspender el trabajo?', () => {
-					prompt('Ingrese el motivo de la suspención', async (data) => {
-						const { result } = await new CambiarEstadoSubtarea().suspender(entidad.id, data)
-						entidad.estado = estadosSubtareas.SUSPENDIDO
-						entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
-						notificarCorrecto('Trabajo suspendido exitosamente!')
-						actualizarElemento(posicion, entidad)
-					})
-				})
-			},
-		}
+    const router = useRouter()
 
-		const botonRealizar: CustomActionTable = {
-			titulo: 'Realizado',
-			icono: 'bi-check',
-			color: 'positive',
-			visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
-			accion: ({ entidad, posicion }) => {
-				confirmar('¿Está seguro de que completó el trabajo?', async () => {
-					const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id)
-					entidad.estado = estadosSubtareas.REALIZADO
-					entidad.fecha_hora_realizado = result.fecha_hora_realizado
-					actualizarElemento(posicion, entidad)
-					notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
-				})
-			}
-		}
+    const botonFormulario: CustomActionTable = {
+      titulo: 'Formulario',
+      icono: 'bi-body-text',
+      color: 'secondary',
+      visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
+      accion: async ({ entidad }) => {
+        confirmar('¿Está seguro de abrir el formulario?', () => {
+          store.idSubtareaSeleccionada = entidad.id
+          // modales.abrirModalEntidad('SeleccionFormularioPage')
+          // modales.abrirModalEntidad('ControlTendido')
+          router.push({ name: 'control_tendidos' })
+        })
+      }
+    }
 
-		function actualizarElemento(posicion: number, entidad: any): void {
-			if (posicion >= 0) {
-				listado.value.splice(posicion, 1, entidad);
-				listado.value = [...listado.value];
-			}
-		}
+    const botonSuspender: CustomActionTable = {
+      titulo: 'Suspender',
+      icono: 'bi-x-diamond',
+      color: 'negative',
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO,
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de suspender el trabajo?', () => {
+          const config: CustomActionPrompt = {
+            mensaje: 'Ingrese el motivo de la suspención',
+            accion: async (data) => {
+              const { result } = await new CambiarEstadoSubtarea().suspender(entidad.id, data)
+              entidad.estado = estadosSubtareas.SUSPENDIDO
+              entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
+              notificarCorrecto('Trabajo suspendido exitosamente!')
+              actualizarElemento(posicion, entidad)
+            }
+          }
 
-		const subtareaAsignada = new SubtareaAsignadaController()
-		let estadoSeleccionado = ''
+          prompt(config)
+        })
+      },
+    }
 
-		async function aplicarFiltro(tabSeleccionado) {
-			if (tabSeleccionado !== estadoSeleccionado) {
-				const { result } = await subtareaAsignada.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id,
-				listado.value = result
-				estadoSeleccionado = tabSeleccionado
-			}
-		}
+    const botonRealizar: CustomActionTable = {
+      titulo: 'Realizado',
+      icono: 'bi-check',
+      color: 'positive',
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de que completó el trabajo?', async () => {
+          const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id)
+          entidad.estado = estadosSubtareas.REALIZADO
+          entidad.fecha_hora_realizado = result.fecha_hora_realizado
+          actualizarElemento(posicion, entidad)
+          notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
+        })
+      }
+    }
 
-		aplicarFiltro('ASIGNADO')
+    function actualizarElemento(posicion: number, entidad: any): void {
+      if (posicion >= 0) {
+        listado.value.splice(posicion, 1, entidad);
+        listado.value = [...listado.value];
+      }
+    }
 
-		const listadoModales = modales.getModales()
+    const subtareaAsignada = new SubtareaAsignadaController()
+    let estadoSeleccionado = ''
 
-		function plantillaSeleccionada(plantilla: keyof typeof listadoModales) {
-			mostrarDialogPlantilla.value = false
-			modales.abrirModalEntidad(plantilla)
-		}
+    async function aplicarFiltro(tabSeleccionado) {
+      if (tabSeleccionado !== estadoSeleccionado) {
+        const { result } = await subtareaAsignada.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id,
+        listado.value = result
+        estadoSeleccionado = tabSeleccionado
+      }
+    }
 
-		return {
-			listado,
-			configuracionColumnasSubtareas,
-			botonIniciar,
-			botonVer,
-			tabTrabajoAsignado,
-			aplicarFiltro,
-			accionesTabla,
-			modales,
-			mostrarDialogPlantilla,
-			plantillaSeleccionada,
-			botonPausar,
-			botonReanudar,
-			botonFormulario,
-			botonSuspender,
-			botonRealizar,
-			fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
-			authenticationStore,
-		}
-	}
+    aplicarFiltro('ASIGNADO')
+
+    const listadoModales = modales.getModales()
+
+    function plantillaSeleccionada(plantilla: keyof typeof listadoModales) {
+      mostrarDialogPlantilla.value = false
+      modales.abrirModalEntidad(plantilla)
+    }
+
+    return {
+      listado,
+      configuracionColumnasSubtareas,
+      botonIniciar,
+      botonVer,
+      tabTrabajoAsignado,
+      aplicarFiltro,
+      accionesTabla,
+      modales,
+      mostrarDialogPlantilla,
+      plantillaSeleccionada,
+      botonPausar,
+      botonReanudar,
+      botonFormulario,
+      botonSuspender,
+      botonRealizar,
+      fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
+      authenticationStore,
+    }
+  }
 })

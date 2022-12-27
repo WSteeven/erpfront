@@ -561,7 +561,7 @@
               </div>
             </div>
           </div>
-          {{v$.$errors}}
+          {{ v$.$errors }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -592,9 +592,9 @@
       >
       </essential-selectable-table>
     </template>
-  </tab-layout-filter-tabs>
 
-  <!-- Modales -->
-  <modales-entidad :comportamiento="modales"></modales-entidad>
+    <!-- Modales -->
+    <modales-entidad :comportamiento="modales"></modales-entidad>
+  </tab-layout-filter-tabs>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

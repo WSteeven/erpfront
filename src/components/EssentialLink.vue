@@ -86,7 +86,7 @@ export default defineComponent({
   border-right: 3px solid $primary;
 
   i {
-    color: rgb(39, 84, 198);
+    color: $primary;
   }
 
   .q-item__label {

@@ -34,7 +34,7 @@
     @virtual-scroll="onScroll"
     :pagination="pagination"
   >
-    <!-- :pagination="{ rowsPerPage: 0 }" 
+    <!-- :pagination="{ rowsPerPage: 0 }"
     :rows-per-page-options="[0]" -->
     <template v-slot:pagination="scope">
       <botones-paginacion :scope="scope"></botones-paginacion>
@@ -221,39 +221,39 @@
           <!-- Consultar -->
           <q-btn
             v-if="permitirConsultar"
-            color="grey-3"
+            color="indigo-1"
             round
             push
             dense
             @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-eye" color="primary" size="xs"></q-icon>
+            <q-icon name="bi-eye" color="secondary" size="xs"></q-icon>
             <q-tooltip class="bg-dark"> Consultar </q-tooltip>
           </q-btn>
 
           <!-- Editar -->
           <q-btn
             v-if="permitirEditar"
-            color="grey-3"
+            color="indigo-1"
             round
             push
             dense
             @click="editar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-pencil" color="primary" size="xs"></q-icon>
+            <q-icon name="bi-pencil" color="secondary" size="xs"></q-icon>
             <q-tooltip class="bg-dark"> Editar </q-tooltip>
           </q-btn>
 
           <!-- Eliminar -->
           <q-btn
             v-if="permitirEliminar"
-            color="grey-3"
+            color="indigo-1"
             round
             push
             dense
             @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-trash" color="primary" size="xs"></q-icon>
+            <q-icon name="bi-trash" color="secondary" size="xs"></q-icon>
             <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
           </q-btn>
 
@@ -305,13 +305,13 @@
                   v-if="permitirConsultar"
                   color="indigo-1"
                   round
-                  unelevated
+                  push
                   dense
                   @click="
                     consultar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-eye" color="primary" size="xs"></q-icon>
+                  <q-icon name="bi-eye" color="secondary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Consultar </q-tooltip>
                 </q-btn>
 
@@ -320,13 +320,13 @@
                   v-if="permitirEditar"
                   color="indigo-1"
                   round
-                  unelevated
+                  push
                   dense
                   @click="
                     editar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-pencil" color="primary" size="xs"></q-icon>
+                  <q-icon name="bi-pencil" color="secondary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
                 </q-btn>
 
@@ -335,13 +335,13 @@
                   v-if="permitirEliminar"
                   color="indigo-1"
                   round
-                  unelevated
+                  push
                   dense
                   @click="
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-trash" color="primary" size="xs"></q-icon>
+                  <q-icon name="bi-trash" color="secondary" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
                 </q-btn>
 

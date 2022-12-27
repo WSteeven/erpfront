@@ -1,7 +1,7 @@
 type funcion = (param) => void
 
 export interface CustomActionPrompt {
-  titulo: string,
+  titulo?: string,
   mensaje: string
   accion: (param) => void
   defecto?: string

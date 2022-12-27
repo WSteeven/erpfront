@@ -1,12 +1,12 @@
 <template>
   <q-page :padding="!$q.screen.xs">
-    <div class="text-center q-pb-md">
-      <div class="text-bold q-mb-md">{{ fecha }}</div>
-      <div class="text-h5 q-mb-md">
-        Bienvenido, {{ authenticationStore.nombreUsuario }}
+    <div class="text-center text-grey-10 q-pb-md">
+      <div class="q-mb-md">{{ fecha }}</div>
+      <div class="q-mb-md">
+        Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>
       </div>
-      <div v-if="authenticationStore.user?.grupo" class="text-h6 q-mb-md">
-        Grupo, {{ authenticationStore.user.grupo }}
+      <div v-if="authenticationStore.user?.grupo" class="q-mb-md">
+        Grupo, <strong>{{ authenticationStore.user.grupo }}</strong>
       </div>
     </div>
 

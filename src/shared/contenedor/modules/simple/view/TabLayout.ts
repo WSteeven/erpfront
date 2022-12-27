@@ -155,7 +155,7 @@ export default defineComponent({
       cargarListado,
 
       //acciones personalizadas
-      accion1: props.accion1
+      // accion1: props.accion1
     }
   },
 })

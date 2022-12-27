@@ -44,6 +44,7 @@ export default defineComponent({
     const agregarSubtarea: CustomActionTable = {
       titulo: 'Crear una subtarea',
       icono: 'bi-plus',
+      color: 'secondary',
       accion: () => {
         subtareaListadoStore.idSubtareaSeleccionada = null
         tareaStore.accionSubtarea = acciones.nuevo

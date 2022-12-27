@@ -200,7 +200,7 @@
       <!-- Americano -->
       <div class="col-12 col-md-3">
         <q-checkbox
-          v-model="tendido.americano"
+          v-model="tendido.tiene_americano"
           label="Americano"
           class="q-pt-lg"
           outlined
@@ -302,7 +302,7 @@
       </div> -->
     </div>
 
-    <div v-if="tendido.americano" class="row q-col-gutter-sm q-py-md">
+    <div v-if="tendido.tiene_americano" class="row q-col-gutter-sm q-py-md">
       <div class="col-12">
         <div class="block text-bold q-mb-md">Americano</div>
       </div>
@@ -313,7 +313,7 @@
       </div>
     </div>
 
-    <div v-if="tendido.americano" class="row q-col-gutter-sm q-py-md">
+    <div v-if="tendido.tiene_americano" class="row q-col-gutter-sm q-py-md">
       <!-- Foto americano -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del cruce americano</label>
@@ -323,7 +323,7 @@
         ></selector-imagen>
       </div>
 
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-9">
         <label class="q-mb-sm block">Cooordenada del cruce americano</label>
         <div class="row q-col-gutter-xs">
           <q-input
@@ -367,7 +367,7 @@
     </div>
 
     <!-- Poste anclaje 1 -->
-    <div v-if="tendido.americano" class="row q-col-gutter-sm q-py-md">
+    <div v-if="tendido.tiene_americano" class="row q-col-gutter-sm q-py-md">
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del poste de anclaje 1</label>
         <selector-imagen
@@ -376,7 +376,7 @@
         ></selector-imagen>
       </div>
 
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-9">
         <label class="q-mb-sm block">Cooordenadas del poste de anclaje 1</label>
         <div class="row q-col-gutter-xs">
           <q-input
@@ -419,7 +419,7 @@
       </div>
     </div>
 
-    <div v-if="tendido.americano" class="row q-col-gutter-sm q-py-md">
+    <div v-if="tendido.tiene_americano" class="row q-col-gutter-sm q-py-md">
       <!-- Imagen -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del poste de anclaje 2</label>
@@ -429,7 +429,7 @@
         ></selector-imagen>
       </div>
 
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-9">
         <label class="q-mb-sm block">Cooordenadas del poste de anclaje 2</label>
         <div class="row q-col-gutter-xs">
           <q-input
@@ -492,12 +492,12 @@
       </div>
     </div>
 
-    <div class="row justify-end">
-      <q-btn color="primary" class="block" no-caps>
+    <!-- <div class="row justify-end">
+      <q-btn color="primary" no-caps>
         <q-icon name="bi-save" size="xs" class="q-mr-xs"></q-icon>
         Guardar</q-btn
       >
-    </div>
+    </div> -->
 
     <essential-selectable-table
       ref="refListadoSeleccionableProductos"
@@ -507,6 +507,28 @@
       tipoSeleccion="multiple"
     >
     </essential-selectable-table>
+
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-fab
+        icon="add"
+        direction="up"
+        vertical-actions-align="right"
+        color="primary"
+        label="Acciones"
+        padding="sm lg"
+      >
+        <q-fab-action
+          color="negative"
+          :to="{ name: 'trabajo_asignado' }"
+          padding="sm md"
+        >
+          <q-icon name="bi-x" size="xs" class="q-mr-sm"></q-icon>Cancelar
+        </q-fab-action>
+        <q-fab-action color="positive" @click="guardar" padding="sm md">
+          <q-icon name="bi-save" size="xs" class="q-mr-sm"></q-icon>Guardar
+        </q-fab-action>
+      </q-fab>
+    </q-page-sticky>
   </q-page>
 </template>
 

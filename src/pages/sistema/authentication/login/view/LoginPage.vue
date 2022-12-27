@@ -1,11 +1,12 @@
 <template>
   <q-page class="bg-grey-2">
-    <div class="row items-center empresa">
+    <!-- <div class="row items-center empresa">
       <q-avatar square>
         <img src="~assets/logo.svg" />
       </q-avatar>
-      <span class="q-ml-md text-h5">CONSTRUCRED</span>
-    </div>
+      <span class="text-primary q-ml-md text-h5">JPCONSTRUC</span
+      ><span class="text-accent text-h5">RED</span>
+    </div> -->
 
     <div class="row items-center">
       <!-- Left side -->
@@ -14,21 +15,33 @@
         class="col-12 col-md-8 text-center q-pa-lg"
       >
         <div class="imagen d-flex align-items-center justify-content-center">
-          <lottie-player
+          <!-- <lottie-player
             :animationData="loginJson"
             background="transparent"
             :speed="1"
             style="width: 400px; height: 400px"
             loop
             autoplay
-          ></lottie-player>
+          ></lottie-player> -->
+          <q-avatar square size="400px">
+            <img src="~assets/logo.svg" />
+          </q-avatar>
         </div>
       </div>
 
       <!-- Right side -->
       <div
-        class="col-12 col-md-4 row items-center justify-center bg-white window-height"
+        class="col-12 col-md-4 column items-center justify-center bg-white window-height"
       >
+        <q-avatar
+          v-if="$q.screen.xs"
+          square
+          size="120px"
+          class="q-mx-auto block q-mb-md"
+        >
+          <img src="~assets/logo.svg" />
+        </q-avatar>
+
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-sm">
             <h2>Bienvenidos a JPCONSTRUCRED</h2>
@@ -40,7 +53,7 @@
             <q-input
               v-model="loginUser.name"
               label="Usuario"
-              @update:model-value="(v)=>(loginUser.name=v.toUpperCase())"
+              @update:model-value="(v) => (loginUser.name = v.toUpperCase())"
               outlined
               dense
               @keyup.enter="login()"

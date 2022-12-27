@@ -8,8 +8,7 @@ import {
   sistemasCoordenadas,
   bobinasSolicitadas,
 } from 'config/utils'
-import { obtenerFechaActual } from 'shared/utils'
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -19,11 +18,14 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ControlProgresiva } from '../domain/ControlProgresiva'
+import { Tendido } from '../domain/Tendido'
 import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ControlProgresivaController } from '../infraestructure/ControlProgresivaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { useRouter } from 'vue-router'
+import { BobinaController } from '../infraestructure/BobinaController'
 
 export default defineComponent({
   components: {
@@ -35,21 +37,25 @@ export default defineComponent({
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      ControlProgresiva,
+      Tendido,
       new ControlProgresivaController()
     )
 
-    const { entidad: progresiva, disabled, accion } = mixin.useReferencias()
+    const { entidad: progresiva, listadosAuxiliares } = mixin.useReferencias()
+    const { guardar, consultar, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { onBeforeGuardar, onConsultado } = mixin.useHooks()
 
-    /*progresiva.codigo_tarea_jp = 'JP000001'
-    progresiva.codigo_subtarea_jp = 'JP000001_1'
-    progresiva.fecha = obtenerFechaActual()
-    progresiva.nombre_proyecto = 'FTTH SARACAY'
-    progresiva.grupo = 'MACHALA'
-    progresiva.tecnico_responsable = 'FERNANDO AYORA'
-    progresiva.tecnico = 'LUIS VACA'*/
+    cargarVista(async () => {
+      await obtenerListados({
+        bobinas: new BobinaController(),
+      })
+    })
 
-    const progresivas: any[] = [
+    const trabajoAsignadoStore = useTrabajoAsignadoStore()
+
+    const elementos = ref([])
+
+    /* const progresivas: any[] = [
       {
         id: 1,
         numero_poste: '0001',
@@ -90,7 +96,7 @@ export default defineComponent({
         propietario_elemento: 'CNEL',
         fecha: '25/08/2019',
       },
-    ]
+    ] */
 
     function enviar() {
       console.log(progresiva)
@@ -107,8 +113,9 @@ export default defineComponent({
     }
 
     const agregarProgresiva: CustomActionTable = {
-      titulo: 'Agregar',
+      titulo: 'Agregar nuevo elemento',
       icono: 'bi-plus',
+      color: 'secondary',
       accion: () => {
         modales.abrirModalEntidad('RegistroTendidoPage')
       },
@@ -122,12 +129,35 @@ export default defineComponent({
       //
     }
 
+    onBeforeGuardar(() => {
+      progresiva.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
+    })
+
     const modales = new ComportamientoModalesProgresiva()
+
+    const router = useRouter()
+
+    if (trabajoAsignadoStore.idSubtareaSeleccionada) {
+      consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
+    } else {
+      router.replace({ name: 'trabajo_asignado' })
+    }
+
+    onConsultado(() => {
+      // console.log('CONSULTADO!!')
+      if (!progresiva.id) {
+        console.log('Sigues con valor nulo')
+      } else {
+        console.log('ya tienes valor en el ID')
+      }
+    })
 
     return {
       mixin,
+      listadosAuxiliares,
+      guardar,
       progresiva,
-      progresivas,
+      elementos,
       enviar,
       configuracionColumnasControlProgresivas,
       setBase64,

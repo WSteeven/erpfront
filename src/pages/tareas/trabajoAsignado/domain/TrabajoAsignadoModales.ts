@@ -5,27 +5,27 @@ import { markRaw } from 'vue'
 // Paginas
 import SubtareaAsignadaPage from 'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
 // import RecopilacionInformacion from 'pages/tareas/trabajoAsignado/modules/recopilacionInformacion/view/SeleccionFormularioPage.vue'
-import ControlProgresivas from 'pages/tareas/progresivas/controlProgresivas/view/ControlTendidoPage.vue'
+import ControlTendido from 'pages/tareas/progresivas/controlProgresivas/view/ControlTendidoPage.vue'
 import SeleccionFormularioPage from 'pages/tareas/trabajoAsignado/modules/seleccionFormulario/view/SeleccionFormularioPage.vue'
 export class TrabajoAsignadoModales {
-    SubtareaAsignadaPage: ComponenteModal
-    // RecopilacionInformacion: ComponenteModal
-    ControlProgresivas: ComponenteModal
-    SeleccionFormularioPage: ComponenteModal
+  SubtareaAsignadaPage: ComponenteModal
+  // RecopilacionInformacion: ComponenteModal
+  ControlTendido: ComponenteModal
+  SeleccionFormularioPage: ComponenteModal
 
-    constructor() {
-        this.SubtareaAsignadaPage = markRaw(
-            new ComponenteModal('Detalles del trabajo', SubtareaAsignadaPage)
-        )
-        /*this.RecopilacionInformacion = markRaw(
-            new ComponenteModal('CONSTRUCRED', RecopilacionInformacion)
-        )*/
-        this.ControlProgresivas = markRaw(
-            new ComponenteModal('CONSTRUCRED', ControlProgresivas)
-        )
+  constructor() {
+    this.SubtareaAsignadaPage = markRaw(
+      new ComponenteModal('Detalles del trabajo', SubtareaAsignadaPage)
+    )
+    /*this.RecopilacionInformacion = markRaw(
+        new ComponenteModal('CONSTRUCRED', RecopilacionInformacion)
+    )*/
+    this.ControlTendido = markRaw(
+      new ComponenteModal('CONSTRUCRED', ControlTendido)
+    )
 
-        this.SeleccionFormularioPage = markRaw(
-            new ComponenteModal('Ingreso de información', SeleccionFormularioPage)
-        )
-    }
+    this.SeleccionFormularioPage = markRaw(
+      new ComponenteModal('Ingreso de información', SeleccionFormularioPage)
+    )
+  }
 }

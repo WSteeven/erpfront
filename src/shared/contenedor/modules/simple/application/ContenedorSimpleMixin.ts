@@ -78,22 +78,34 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         )
       }
 
-      const { result } = await this.controller.consultar(
-        data.id,
-        this.argsDefault
-      )
+      try {
+        const { result } = await this.controller.consultar(
+          data.id,
+          this.argsDefault
+        )
 
-      this.entidad.hydrate(result)
-      this.entidad_copia.hydrate(this.entidad)
-      this.refs.tabs.value = 'formulario'
+        this.entidad.hydrate(result)
+        this.entidad_copia.hydrate(this.entidad)
+        this.refs.tabs.value = 'formulario'
+
+      } catch (error) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, this.notificaciones)
+        }
+      } finally {
+        this.hooks.onConsultado()
+
+      }
+
     })
 
-    const stop = watch(this.entidad, () => {
+    /*const stop = watch(this.entidad, () => {
       if (this.entidad.id !== null) {
         this.hooks.onConsultado()
         stop()
       }
-    })
+    })*/
 
     /* const stop = watchEffect(() => {
       console.log('dentrode  watch consultar')
@@ -130,15 +142,15 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // Guardar
   private async guardar(data: any, resetOnSaved = true,) {
 
-    if (!this.seCambioEntidad(this.entidad_vacia)) {
-      this.notificaciones.notificarAdvertencia(
-        'No se ha efectuado ningun cambio'
-      )
-      throw new Error('No se ha efectuado ningun cambio')
-    }
+    /*  if (!this.seCambioEntidad(this.entidad_vacia)) {
+       this.notificaciones.notificarAdvertencia(
+         'No se ha efectuado ningun cambio'
+       )
+       throw new Error('No se ha efectuado ningun cambio')
+     } */
 
 
-    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+    if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
     }

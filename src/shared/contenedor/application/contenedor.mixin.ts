@@ -133,7 +133,8 @@ export abstract class Contenedor<
 
       // obtiene las peticiones de listado de cada controlador
       if (controlador) {
-        requests.push(controlador.listar({ ...this.argsDefault, ...args }))
+        // requests.push(controlador.listar({ ...this.argsDefault, ...args }))
+        requests.push(controlador.listar()) //{ ...this.argsDefault, ...args }))
       } else {
         requests.push(
           new Promise<any[]>((resolve) => resolve(configListado as any))
