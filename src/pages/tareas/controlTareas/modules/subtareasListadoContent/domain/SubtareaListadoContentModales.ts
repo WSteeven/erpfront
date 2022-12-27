@@ -3,9 +3,9 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 // Paginas
-import SubtareasPage from 'pages/tareas/subtareas/view/SubtareaPage.vue'
-import GestionarAvancesPage from 'pages/tareas/subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'
 import ArchivoSubtarea from 'pages/tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/view/ArchivoSubtareaPage.vue'
+import GestionarAvancesPage from 'subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'
+import SubtareasPage from 'subtareas/view/SubtareaPage.vue'
 
 export class SubtareaListadoContentModales {
   SubtareasPage: ComponenteModal

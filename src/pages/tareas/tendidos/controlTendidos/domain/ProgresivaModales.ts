@@ -3,7 +3,7 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 // Paginas
-import RegistroTendidoPage from 'pages/tareas/progresivas/controlProgresivas/modules/registrosTendidos/view/RegistroTendidoPage.vue'
+import RegistroTendidoPage from 'tareas/tendidos/controlTendidos/modules/registrosTendidos/view/RegistroTendidoPage.vue'
 
 export class ProgresivaModales {
   RegistroTendidoPage: ComponenteModal

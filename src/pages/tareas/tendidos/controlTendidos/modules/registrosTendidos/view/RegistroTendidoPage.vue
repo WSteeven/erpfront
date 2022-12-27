@@ -11,10 +11,19 @@
             class="col-md-4"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
             hint="Longitud"
+            :error="!!v$.coordenada_del_elemento_longitud.$errors.length"
             outlined
             dense
             disable
           >
+            <template v-slot:error>
+              <div
+                v-for="error of v$.coordenada_del_elemento_longitud.$errors"
+                :key="error.$uid"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
 
           <q-input
@@ -22,10 +31,19 @@
             class="col-md-4"
             hint="Latitud"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
+            :error="!!v$.coordenada_del_elemento_latitud.$errors.length"
             outlined
             dense
             disable
           >
+            <template v-slot:error>
+              <div
+                v-for="error of v$.coordenada_del_elemento_latitud.$errors"
+                :key="error.$uid"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
 
           <span
@@ -51,33 +69,54 @@
         <q-select
           v-model="tendido.tipo_elemento"
           :options="tiposElementos"
+          :error="!!v$.tipo_elemento.$errors.length"
           options-dense
           dense
           outlined
-        />
+        >
+          <template v-slot:error>
+            <div v-for="error of v$.tipo_elemento.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+        </q-select>
       </div>
 
       <!-- Numero elemento -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Número del elemento</label>
         <q-input
-          v-model="tendido.numero_poste"
+          v-model="tendido.numero_elemento"
           placeholder="Obligatorio"
           type="number"
+          :error="!!v$.numero_elemento.$errors.length"
           outlined
           dense
-        ></q-input>
+        >
+          <template v-slot:error>
+            <div v-for="error of v$.numero_elemento.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+        </q-input>
       </div>
 
       <!-- Codigo elemento -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Código y numeración de poste o pozo</label>
         <q-input
-          v-model="tendido.codigo_poste"
+          v-model="tendido.codigo_elemento"
           placeholder="Obligatorio"
+          :error="!!v$.codigo_elemento.$errors.length"
           outlined
           dense
-        ></q-input>
+        >
+          <template v-slot:error>
+            <div v-for="error of v$.codigo_elemento.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+        </q-input>
       </div>
 
       <!-- Propietario del elemento -->
@@ -91,6 +130,14 @@
           dense
           outlined
         >
+          <template v-slot:error>
+            <div
+              v-for="error of v$.propietario_elemento.$errors"
+              :key="error.$uid"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
         </q-select>
       </div>
 
@@ -100,10 +147,17 @@
         <q-select
           v-model="tendido.estado_elemento"
           :options="estadoElementos"
+          :error="!!v$.estado_elemento.$errors.length"
           options-dense
           dense
           outlined
-        />
+        >
+          <template v-slot:error>
+            <div v-for="error of v$.estado_elemento.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+        </q-select>
       </div>
 
       <!-- Progresiva de entrada -->
@@ -112,10 +166,20 @@
         <q-input
           v-model="tendido.progresiva_entrada"
           placeholder="Obligatorio"
+          :error="!!v$.progresiva_entrada.$errors.length"
           type="number"
           outlined
           dense
-        ></q-input>
+        >
+          <template v-slot:error>
+            <div
+              v-for="error of v$.progresiva_entrada.$errors"
+              :key="error.$uid"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+        </q-input>
       </div>
 
       <!-- Progresiva de salida -->
@@ -124,10 +188,20 @@
         <q-input
           v-model="tendido.progresiva_salida"
           placeholder="Obligatorio"
+          :error="!!v$.progresiva_salida.$errors.length"
           type="number"
           outlined
           dense
-        ></q-input>
+        >
+          <template v-slot:error>
+            <div
+              v-for="error of v$.progresiva_salida.$errors"
+              :key="error.$uid"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+        </q-input>
       </div>
 
       <!-- Se instalo manga -->
@@ -156,7 +230,7 @@
       <div v-if="tendido.instalo_reserva" class="col-12 col-md-3">
         <label class="q-mb-sm block">Reservas (metros)</label>
         <q-input
-          v-model="tendido.cantidad_reservas"
+          v-model="tendido.cantidad_reserva"
           placeholder="Obligatorio"
           type="number"
           min="0"
@@ -208,7 +282,7 @@
         ></q-checkbox>
       </div>
 
-      <!-- Tipo elemento -->
+      <!-- Tension -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Tensión</label>
         <q-select
@@ -499,15 +573,6 @@
       >
     </div> -->
 
-    <essential-selectable-table
-      ref="refListadoSeleccionableProductos"
-      :configuracion-columnas="configuracionColumnasProductosSeleccionados"
-      :datos="listadoProductos"
-      @selected="seleccionarProducto"
-      tipoSeleccion="multiple"
-    >
-    </essential-selectable-table>
-
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-fab
         icon="add"
@@ -517,14 +582,26 @@
         label="Acciones"
         padding="sm lg"
       >
-        <q-fab-action
-          color="negative"
-          :to="{ name: 'trabajo_asignado' }"
-          padding="sm md"
-        >
+        <q-fab-action color="negative" @click="cerrar()" padding="sm md">
           <q-icon name="bi-x" size="xs" class="q-mr-sm"></q-icon>Cancelar
         </q-fab-action>
-        <q-fab-action color="positive" @click="guardar" padding="sm md">
+
+        <q-fab-action
+          v-if="accion === acciones.editar"
+          color="positive"
+          @click="editarDatos(tendido)"
+          padding="sm md"
+        >
+          <q-icon name="bi-save" size="xs" class="q-mr-sm"></q-icon>Guardar
+          cambios
+        </q-fab-action>
+
+        <q-fab-action
+          v-if="accion === acciones.nuevo"
+          color="positive"
+          @click="guardarDatos(tendido)"
+          padding="sm md"
+        >
           <q-icon name="bi-save" size="xs" class="q-mr-sm"></q-icon>Guardar
         </q-fab-action>
       </q-fab>

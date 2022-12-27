@@ -12,7 +12,7 @@
       "pages/*": ["src/pages/*"],
       "tareas/*": ["src/pages/tareas/*"],
       "controlTareas/*": ["src/pages/tareas/controlTareas/*"],
-      "subtareas/*": ["src/pages/tareas/subtareas/*"],
+      "subtareas/*": ["src/pages/tareas/controlTareas/modules/subtareas/*"],
       "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"]
     }
   }

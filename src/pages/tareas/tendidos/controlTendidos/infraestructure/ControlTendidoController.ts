@@ -2,7 +2,7 @@ import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/in
 import { Tendido } from '../domain/Tendido'
 import { endpoints } from 'config/api'
 
-export class ControlProgresivaController extends TransaccionSimpleController<Tendido> {
+export class ControlTendidoController extends TransaccionSimpleController<Tendido> {
   constructor() {
     super(endpoints.tendidos)
   }

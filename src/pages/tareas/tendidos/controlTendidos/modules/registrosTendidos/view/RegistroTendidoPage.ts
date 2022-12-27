@@ -1,51 +1,62 @@
 // Dependencias
 import { configuracionColumnasProductosSeleccionados } from 'pages/bodega/transacciones/modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { tiposElementos, propietariosElementos, estadoElementos, tiposTension } from 'config/utils'
-import { defineComponent, reactive, ref } from 'vue'
+import { tiposElementos, propietariosElementos, estadoElementos, tiposTension, acciones } from 'config/utils'
+import { useTendidoStore } from 'stores/tendido'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+import { defineComponent, ref } from 'vue'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
 
 // Componentes
-import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
-import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { RegistroTendido } from '../domain/RegistroTendido'
-import { useNotificaciones } from 'shared/notificaciones'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { endpoints } from 'config/api'
-import { AxiosResponse } from 'axios'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { RegistroTendido } from '../domain/RegistroTendido'
 
 export default defineComponent({
+  props: {
+    mixinModal: {
+      type: Object as () => ContenedorSimpleMixin<any>,
+      required: true,
+    },
+  },
+  emits: ['cerrar-modal'],
   components: {
     SelectorImagen,
     EssentialTable,
-    EssentialSelectableTable,
   },
-  setup() {
-    const tendido = reactive(new RegistroTendido())
+  setup(props, { emit }) {
+    const { guardar, editar, setValidador } = props.mixinModal.useComportamiento()
+    const { entidad: tendido } = props.mixinModal.useReferencias()
+    const { onBeforeGuardar } = props.mixinModal.useHooks()
+
+    const tendidoStore = useTendidoStore()
+    const accion = tendidoStore.accion
 
     // Reglas de validacion
     const reglas = {
-      imagen: { required },
+      coordenada_del_elemento_latitud: { required },
+      coordenada_del_elemento_longitud: { required },
+      // imagen: { required },
       propietario_elemento: { required },
+      numero_elemento: { required },
+      codigo_elemento: { required },
+      estado_elemento: { required },
+      tipo_elemento: { required },
+      progresiva_entrada: { required },
+      progresiva_salida: { required },
     }
 
     const v$ = useVuelidate(reglas, tendido)
-
-    const {
-      refListadoSeleccionable: refListadoSeleccionableProductos,
-      criterioBusqueda: criterioBusquedaProducto,
-      listado: listadoProductos,
-      listar: listarProductos,
-      limpiar: limpiarProducto,
-      seleccionar: seleccionarProducto
-    } = useOrquestadorSelectorDetalles(tendido, 'detalles')
+    setValidador(v$.value)
 
     const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
     {
@@ -79,6 +90,25 @@ export default defineComponent({
 
         prompt(config)
       },
+    }
+
+    async function guardarDatos(entidad: RegistroTendido) {
+      try {
+        await guardar(entidad, false)
+        emit('cerrar-modal')
+      } catch (e) { }
+    }
+
+
+    async function editarDatos(entidad: RegistroTendido) {
+      try {
+        await editar(entidad, false)
+        emit('cerrar-modal')
+      } catch (e) { }
+    }
+
+    function cerrar() {
+      emit('cerrar-modal')
     }
 
     function obtenerUbicacion(onUbicacionConcedida) {
@@ -136,13 +166,22 @@ export default defineComponent({
 
     obtenerMateriales()
 
+    onBeforeGuardar(() => {
+      tendido.tendido = tendidoStore.idTendido
+    })
+
     return {
       tendido,
+      guardarDatos,
+      editarDatos,
+      cerrar,
       tiposElementos,
       propietariosElementos,
       estadoElementos,
       tiposTension,
       v$,
+      accion,
+      acciones,
       materiales,
       configuracionColumnasProductosSeleccionadosAccion,
       configuracionColumnasProductosSeleccionados,
@@ -153,13 +192,6 @@ export default defineComponent({
       ubicacionCoordenadaAmericano,
       ubicacionCoordenadaPosteAnclaje1,
       ubicacionCoordenadaPosteAnclaje2,
-      //selector
-      refListadoSeleccionableProductos,
-      criterioBusquedaProducto,
-      listadoProductos,
-      listarProductos,
-      limpiarProducto,
-      seleccionarProducto,
       configuracionColumnasProductos,
     }
   }

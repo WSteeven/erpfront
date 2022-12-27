@@ -11,12 +11,12 @@
 <script lang="ts" setup>
 // Dependencias
 import { configuracionColumnasPausas } from '../../../../../domain/configuracionColumnasPausas'
-import { Pausa } from 'pages/tareas/subtareas/domain/Pausa'
+// import { Pausa } from 'pages/tareas/subtareas/domain/Pausa'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
-import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
+import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import { ref } from 'vue'

@@ -11,6 +11,7 @@ export class Tendido extends EntidadAuditable {
   progresiva_inicio: number | null
   progresiva_fin: number | null
   metraje_tendido: number | null
+  fecha: string | null
 
   constructor() {
     super()
@@ -25,5 +26,6 @@ export class Tendido extends EntidadAuditable {
     this.progresiva_inicio = 2500
     this.progresiva_fin = 150
     this.metraje_tendido = 2350
+    this.fecha = null
   }
 }

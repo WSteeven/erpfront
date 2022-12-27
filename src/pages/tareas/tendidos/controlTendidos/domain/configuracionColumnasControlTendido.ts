@@ -1,11 +1,11 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { RegistroProgresiva } from './RegistroProgresiva'
+import { RegistroTendido } from '../modules/registrosTendidos/domain/RegistroTendido'
 
-export const configuracionColumnasControlProgresivas: ColumnConfig<RegistroProgresiva>[] =
+export const configuracionColumnasControlTendido: ColumnConfig<RegistroTendido>[] =
   [
     {
-      name: 'numero_poste',
-      field: 'numero_poste',
+      name: 'numero_elemento',
+      field: 'numero_elemento',
       label: 'Núm. Elem',
       align: 'left',
       sortable: true,
@@ -39,9 +39,9 @@ export const configuracionColumnasControlProgresivas: ColumnConfig<RegistroProgr
       sortable: true,
     },
     {
-      name: 'reserva',
-      field: 'reserva',
-      label: 'Reserva',
+      name: 'cantidad_reserva',
+      field: 'cantidad_reserva',
+      label: 'Reserva (m)',
       align: 'left',
       sortable: true,
     },

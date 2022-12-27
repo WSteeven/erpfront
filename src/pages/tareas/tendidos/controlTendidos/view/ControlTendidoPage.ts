@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasControlProgresivas } from '../domain/configuracionColumnasControlProgresivas'
+import { configuracionColumnasControlTendido } from '../domain/configuracionColumnasControlTendido'
 import {
   tiposElementos,
   propietariosElementos,
@@ -7,25 +7,31 @@ import {
   accionesTabla,
   sistemasCoordenadas,
   bobinasSolicitadas,
+  acciones,
 } from 'config/utils'
+import { useTendidoStore } from 'stores/tendido'
 import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { required } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
-import { Tendido } from '../domain/Tendido'
-import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
+import { RegistroTendidoController } from '../modules/registrosTendidos/infraestructure/RegistroTendidoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ControlProgresivaController } from '../infraestructure/ControlProgresivaController'
+import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
+import { ControlTendidoController } from '../infraestructure/ControlTendidoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { useRouter } from 'vue-router'
 import { BobinaController } from '../infraestructure/BobinaController'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { Tendido } from '../domain/Tendido'
+import { RegistroTendido } from '../modules/registrosTendidos/domain/RegistroTendido'
 
 export default defineComponent({
   components: {
@@ -38,69 +44,30 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(
       Tendido,
-      new ControlProgresivaController()
+      new ControlTendidoController()
     )
 
     const { entidad: progresiva, listadosAuxiliares } = mixin.useReferencias()
-    const { guardar, consultar, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { guardar, consultar, cargarVista, obtenerListados, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado } = mixin.useHooks()
+
+    const tendidoStore = useTendidoStore()
+
+    // Mixin 
+    const mixinRegistroTendido = new ContenedorSimpleMixin(RegistroTendido, new RegistroTendidoController())
+    const { listado: listadoRegistrosTendidos } = mixinRegistroTendido.useReferencias()
+    const { listar: listarRegistrosTendidos } = mixinRegistroTendido.useComportamiento()
+
+    listarRegistrosTendidos()
 
     cargarVista(async () => {
       await obtenerListados({
         bobinas: new BobinaController(),
+        // elementos: new RegistroTendidoController(),
       })
     })
 
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
-
-    const elementos = ref([])
-
-    /* const progresivas: any[] = [
-      {
-        id: 1,
-        numero_poste: '0001',
-        tipo_elemento: 'POSTE',
-        tecnico: 'JUAN PINCAY',
-        codigo_tarea_jp: '4',
-        codigo_subtarea_jp: 'QUEVEDO-SANTO DOMINGO',
-        propietario_elemento: 'TELCONET',
-        fecha: '27/05/2019',
-      },
-      {
-        id: 2,
-        numero_poste: '0001',
-        tipo_elemento: 'POSTE',
-        tecnico: 'DANIEL G',
-        codigo_tarea_jp: '5',
-        codigo_subtarea_jp: 'SARACAY-LA AVANZADA',
-        propietario_elemento: 'CNEL',
-        fecha: '23/08/2019',
-      },
-      {
-        id: 3,
-        numero_poste: '0001',
-        tipo_elemento: 'POSTE',
-        tecnico: 'FRANCISCO FERNÁNDEZ',
-        codigo_tarea_jp: '6',
-        codigo_subtarea_jp: 'BALSAS-PIÑAS',
-        propietario_elemento: 'CNEL',
-        fecha: '04/09/2019',
-      },
-      {
-        id: 4,
-        numero_poste: '0001',
-        tipo_elemento: 'POSTE',
-        tecnico: 'DANIEL G',
-        codigo_tarea_jp: '7',
-        codigo_subtarea_jp: 'SARACAY-BALSAS',
-        propietario_elemento: 'CNEL',
-        fecha: '25/08/2019',
-      },
-    ] */
-
-    function enviar() {
-      console.log(progresiva)
-    }
 
     const setBase64 = (file: File) => {
       if (file !== null && file !== undefined) {
@@ -118,20 +85,23 @@ export default defineComponent({
       color: 'secondary',
       accion: () => {
         modales.abrirModalEntidad('RegistroTendidoPage')
+        tendidoStore.idTendido = progresiva.id
       },
     }
 
-    function eliminar() {
-      //
+    function consultarRegistro() {
+      modales.abrirModalEntidad('RegistroTendidoPage')
+      tendidoStore.idTendido = progresiva.id
+      tendidoStore.accion = acciones.consultar
     }
 
-    function editar() {
-      //
+    function editarRegistro() {
+      modales.abrirModalEntidad('RegistroTendidoPage')
+      tendidoStore.idTendido = progresiva.id
+      tendidoStore.accion = acciones.editar
     }
 
-    onBeforeGuardar(() => {
-      progresiva.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-    })
+    onBeforeGuardar(() => progresiva.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada)
 
     const modales = new ComportamientoModalesProgresiva()
 
@@ -143,28 +113,29 @@ export default defineComponent({
       router.replace({ name: 'trabajo_asignado' })
     }
 
-    onConsultado(() => {
-      // console.log('CONSULTADO!!')
-      if (!progresiva.id) {
-        console.log('Sigues con valor nulo')
-      } else {
-        console.log('ya tienes valor en el ID')
-      }
-    })
+    // Reglas de validacion
+    const reglas = {
+      bobina: { required },
+    }
+
+    const v$ = useVuelidate(reglas, progresiva)
+    setValidador(v$.value)
 
     return {
+      v$,
       mixin,
+      mixinRegistroTendido,
       listadosAuxiliares,
       guardar,
       progresiva,
-      elementos,
-      enviar,
-      configuracionColumnasControlProgresivas,
+      // mixin 2
+      listadoRegistrosTendidos,
+      configuracionColumnasControlTendido,
       setBase64,
       modales,
       agregarProgresiva,
-      eliminar,
-      editar,
+      consultarRegistro,
+      editarRegistro,
       accionesTabla,
       // listados
       tiposElementos,

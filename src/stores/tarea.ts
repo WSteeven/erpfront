@@ -1,7 +1,7 @@
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
+import { Subtarea } from 'subtareas/domain/Subtarea'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'

@@ -1,5 +1,7 @@
 // Dependencias
+import { configuracionColumnasTecnico } from 'subtareas/domain/configuracionColumnasTecnico'
 import { computed, defineComponent, Ref, ref } from 'vue'
+import { useTareaStore } from 'stores/tarea'
 import {
     provincias,
     ciudades,
@@ -22,9 +24,7 @@ import ImagenAdicionalContent from '../modules/imagenesAdicionales/view/ImagenAd
 import InformacionAdicionalContent from '../modules/informacionAdicional/view/InformacionAdicionalContent.vue'
 
 // Logica y controladores
-import { useTareaStore } from 'stores/tarea'
-import { Tecnico } from 'pages/tareas/subtareas/domain/Tecnico';
-import { configuracionColumnasTecnico } from 'pages/tareas/subtareas/domain/configuracionColumnasTecnico';
+import { Tecnico } from 'subtareas/domain/Tecnico'
 
 export default defineComponent({
     components: { EssentialTable, flatPickr, PausasRealizadasContent, ControlAvanceContent, ImagenAdicionalContent, InformacionAdicionalContent },

@@ -58,7 +58,7 @@ const routes: RouteRecordRaw[] = [
         name: 'control_tendidos',
         component: () =>
           import(
-            'pages/tareas/progresivas/controlProgresivas/view/ControlTendidoPage.vue'
+            'tareas/tendidos/controlTendidos/view/ControlTendidoPage.vue'
           ),
         meta: { requiresAuth: true },
       },

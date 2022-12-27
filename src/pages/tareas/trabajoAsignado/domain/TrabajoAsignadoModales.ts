@@ -5,7 +5,7 @@ import { markRaw } from 'vue'
 // Paginas
 import SubtareaAsignadaPage from 'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
 // import RecopilacionInformacion from 'pages/tareas/trabajoAsignado/modules/recopilacionInformacion/view/SeleccionFormularioPage.vue'
-import ControlTendido from 'pages/tareas/progresivas/controlProgresivas/view/ControlTendidoPage.vue'
+import ControlTendido from 'tareas/tendidos/controlTendidos/view/ControlTendidoPage.vue'
 import SeleccionFormularioPage from 'pages/tareas/trabajoAsignado/modules/seleccionFormulario/view/SeleccionFormularioPage.vue'
 export class TrabajoAsignadoModales {
   SubtareaAsignadaPage: ComponenteModal

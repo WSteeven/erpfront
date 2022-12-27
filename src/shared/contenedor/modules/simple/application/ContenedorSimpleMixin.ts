@@ -142,15 +142,15 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // Guardar
   private async guardar(data: any, resetOnSaved = true,) {
 
-    /*  if (!this.seCambioEntidad(this.entidad_vacia)) {
-       this.notificaciones.notificarAdvertencia(
-         'No se ha efectuado ningun cambio'
-       )
-       throw new Error('No se ha efectuado ningun cambio')
-     } */
+    if (!this.seCambioEntidad(this.entidad_vacia)) {
+      this.notificaciones.notificarAdvertencia(
+        'No se ha efectuado ningun cambio'
+      )
+      throw new Error('No se ha efectuado ningun cambio')
+    }
 
 
-    if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
     }

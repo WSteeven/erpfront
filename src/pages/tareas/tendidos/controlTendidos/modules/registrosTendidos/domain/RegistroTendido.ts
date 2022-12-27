@@ -28,7 +28,7 @@ export class RegistroTendido extends EntidadAuditable {
   cantidad_retenidas: number | null
   instalo_manga: boolean
   instalo_reserva: boolean
-  cantidad_reservas: number | null
+  cantidad_reserva: number | null
   observaciones: string | null
   fecha: string | null
   hora: string | null
@@ -59,7 +59,7 @@ export class RegistroTendido extends EntidadAuditable {
     this.cantidad_retenidas = null
     this.instalo_manga = false
     this.instalo_reserva = false
-    this.cantidad_reservas = null
+    this.cantidad_reserva = null
     this.observaciones = null
     this.fecha = null
     this.hora = null

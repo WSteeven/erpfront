@@ -1,15 +1,17 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/domain/configuracionColumnasArchivoSubtarea'
-import { configuracionColumnasTecnico } from 'subtareas/domain/configuracionColumnasTecnico'
+import { configuracionColumnasTecnico } from 'tareas/controlTareas/modules/subtareas/domain/configuracionColumnasTecnico'
 import { tiposTareasTelconet, ciudades, accionesTabla, rolesAdmitidos } from 'config/utils'
+import { descargarArchivoUrl, quitarItemDeArray, stringToArray } from 'shared/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { computed, defineComponent, reactive, ref, watch } from "vue"
+import { computed, defineComponent, reactive, ref } from "vue"
 import { useTareaStore } from "stores/tarea"
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
+import { ArchivoSubtareaController } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/infraestructure/ArchivoSubtareaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoTrabajoController } from 'tiposTrabajos/infraestructure/TipoTrabajoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
@@ -18,12 +20,9 @@ import { ContactoController } from 'tareas/contactos/infraestructure/ContactoCon
 import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { GrupoController } from 'tareas/grupos/infraestructure/GrupoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ClienteFinal } from 'tareas/contactos/domain/ClienteFinal'
 import { Subtarea } from 'subtareas/domain/Subtarea'
-import { ArchivoSubtareaController } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/infraestructure/ArchivoSubtareaController'
-import { useSubtareaListadoStore } from 'stores/subtareaListado'
-import { descargarArchivoUrl, quitarItemDeArray, stringToArray } from 'shared/utils'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
     components: { EssentialTable },
