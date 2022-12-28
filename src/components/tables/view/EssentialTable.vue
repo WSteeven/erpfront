@@ -30,14 +30,13 @@
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
-    :virtual-scroll-sticky-size-start="offset"
     @virtual-scroll="onScroll"
     :pagination="pagination"
   >
     <!-- :pagination="{ rowsPerPage: 0 }"
     :rows-per-page-options="[0]" -->
-    <template v-slot:pagination="scope">
-      <botones-paginacion :scope="scope"></botones-paginacion>
+    <template #pagination="scope">
+      <botones-paginacion :scope="scope"> </botones-paginacion>
     </template>
 
     <!-- Editar celdas -->
@@ -279,7 +278,7 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs custom-shadow q-mb-sm full-width"
+        class="q-py-xs custom-shadow q-mb-md full-width"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">

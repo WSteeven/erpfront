@@ -1,31 +1,50 @@
 <template>
-  <q-dialog v-model="abierto" full-width position="top">
-    <q-card>
+  <q-dialog
+    v-model="abierto"
+    full-width
+    :position="$q.screen.xs ? 'standard' : 'top'"
+    :maximized="$q.screen.xs"
+  >
+    <q-card class="alto-completo2">
       <q-linear-progress :value="1" color="primary" />
 
-      <essential-table
-        ref="refTabla"
-        :configuracion-columnas="configuracionColumnas"
-        :datos="datos"
-        :mostrar-botones="false"
-        :tipoSeleccion="tipoSeleccion"
-        @selected="emitSelected"
-      ></essential-table>
+      <q-card-section style="height: 89vh" class="scroll">
+        <essential-table
+          ref="refTabla"
+          :configuracion-columnas="configuracionColumnas"
+          :datos="datos"
+          :mostrar-botones="false"
+          :tipoSeleccion="tipoSeleccion"
+          @selected="emitSelected"
+        ></essential-table>
+      </q-card-section>
 
-      <div class="modal-footer">
-        <div class="row justify-end q-pa-md q-gutter-md">
-          <q-btn color="primary" no-caps push @click="seleccionar()">
-            <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-            <span>Seleccionar</span>
-          </q-btn>
+      <q-card-actions class="column q-gutter-xs blur">
+        <q-btn
+          color="primary"
+          class="full-width"
+          no-caps
+          push
+          @click="seleccionar()"
+        >
+          <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+          <span>Seleccionar</span>
+        </q-btn>
 
-          <q-btn color="negative" no-caps push @click="ocultar()">
-            <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-            <span>Cancelar</span>
-          </q-btn>
-        </div>
-      </div>
+        <q-btn
+          color="negative"
+          class="full-width"
+          no-caps
+          push
+          @click="ocultar()"
+        >
+          <q-icon name="bi-x-lg" size="xs" class="q-pr-sm"></q-icon>
+          <span>Cancelar</span>
+        </q-btn>
+      </q-card-actions>
     </q-card>
+
+    <!--</div> -->
   </q-dialog>
 </template>
 
@@ -89,3 +108,22 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scope>
+.modal-footer {
+  background-color: #fff;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  padding: 8px;
+  border-radius: 16px;
+  height: 100vh;
+  display: flex;
+  align-items: flex-end;
+}
+
+.alto-completo {
+  // height: 100vh;
+  background-color: yellow;
+}
+</style>

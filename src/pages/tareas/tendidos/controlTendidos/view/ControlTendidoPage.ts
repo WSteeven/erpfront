@@ -55,15 +55,15 @@ export default defineComponent({
 
     // Mixin 
     const mixinRegistroTendido = new ContenedorSimpleMixin(RegistroTendido, new RegistroTendidoController())
-    const { listado: listadoRegistrosTendidos } = mixinRegistroTendido.useReferencias()
+    const { entidad: registroTendido, listado: listadoRegistrosTendidos } = mixinRegistroTendido.useReferencias()
     const { listar: listarRegistrosTendidos } = mixinRegistroTendido.useComportamiento()
+    const entidadReset = new RegistroTendido()
 
     listarRegistrosTendidos()
 
     cargarVista(async () => {
       await obtenerListados({
         bobinas: new BobinaController(),
-        // elementos: new RegistroTendidoController(),
       })
     })
 
@@ -86,19 +86,23 @@ export default defineComponent({
       accion: () => {
         modales.abrirModalEntidad('RegistroTendidoPage')
         tendidoStore.idTendido = progresiva.id
+        registroTendido.hydrate(entidadReset)
+        tendidoStore.idRegistroTendido = null
       },
     }
 
-    function consultarRegistro() {
+    function consultarRegistro({ entidad }) {
       modales.abrirModalEntidad('RegistroTendidoPage')
       tendidoStore.idTendido = progresiva.id
       tendidoStore.accion = acciones.consultar
+      tendidoStore.idRegistroTendido = entidad.id
     }
 
-    function editarRegistro() {
+    function editarRegistro({ entidad }) {
       modales.abrirModalEntidad('RegistroTendidoPage')
       tendidoStore.idTendido = progresiva.id
       tendidoStore.accion = acciones.editar
+      tendidoStore.idRegistroTendido = entidad.id
     }
 
     onBeforeGuardar(() => progresiva.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada)

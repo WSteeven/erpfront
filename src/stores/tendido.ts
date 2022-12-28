@@ -5,9 +5,11 @@ import { ref } from 'vue'
 export const useTendidoStore = defineStore('tendido', () => {
   const idTendido = ref()
   const accion = ref(acciones.nuevo)
+  const idRegistroTendido = ref()
 
   return {
     idTendido,
+    idRegistroTendido,
     accion,
   }
 })

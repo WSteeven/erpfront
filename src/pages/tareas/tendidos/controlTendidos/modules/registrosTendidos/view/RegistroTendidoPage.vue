@@ -7,7 +7,7 @@
         <label class="q-mb-sm block">Cooordenadas del elemento</label>
         <div class="row q-col-gutter-xs">
           <q-input
-            v-model="tendido.coordenada_del_elemento_longitud"
+            v-model="registroTendido.coordenada_del_elemento_longitud"
             class="col-md-4"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
             hint="Longitud"
@@ -27,7 +27,7 @@
           </q-input>
 
           <q-input
-            v-model="tendido.coordenada_del_elemento_latitud"
+            v-model="registroTendido.coordenada_del_elemento_latitud"
             class="col-md-4"
             hint="Latitud"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
@@ -55,6 +55,7 @@
               no-caps
               :class="{ 'q-mb-xs': $q.screen.xs }"
               @click="ubicacionCoordenadaElemento()"
+              :disable="disabled"
             >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
@@ -67,12 +68,13 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Tipo de elemento</label>
         <q-select
-          v-model="tendido.tipo_elemento"
+          v-model="registroTendido.tipo_elemento"
           :options="tiposElementos"
           :error="!!v$.tipo_elemento.$errors.length"
           options-dense
           dense
           outlined
+          :disable="disabled"
         >
           <template v-slot:error>
             <div v-for="error of v$.tipo_elemento.$errors" :key="error.$uid">
@@ -86,10 +88,11 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Número del elemento</label>
         <q-input
-          v-model="tendido.numero_elemento"
+          v-model="registroTendido.numero_elemento"
           placeholder="Obligatorio"
           type="number"
           :error="!!v$.numero_elemento.$errors.length"
+          :disable="disabled"
           outlined
           dense
         >
@@ -105,9 +108,10 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Código y numeración de poste o pozo</label>
         <q-input
-          v-model="tendido.codigo_elemento"
+          v-model="registroTendido.codigo_elemento"
           placeholder="Obligatorio"
           :error="!!v$.codigo_elemento.$errors.length"
+          :disable="disabled"
           outlined
           dense
         >
@@ -123,9 +127,10 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Propietario del elemento</label>
         <q-select
-          v-model="tendido.propietario_elemento"
+          v-model="registroTendido.propietario_elemento"
           :options="propietariosElementos"
           :error="!!v$.propietario_elemento.$errors.length"
+          :disable="disabled"
           options-dense
           dense
           outlined
@@ -145,9 +150,10 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Estado del elemento</label>
         <q-select
-          v-model="tendido.estado_elemento"
+          v-model="registroTendido.estado_elemento"
           :options="estadoElementos"
           :error="!!v$.estado_elemento.$errors.length"
+          :disable="disabled"
           options-dense
           dense
           outlined
@@ -164,9 +170,10 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Progresiva de entrada</label>
         <q-input
-          v-model="tendido.progresiva_entrada"
+          v-model="registroTendido.progresiva_entrada"
           placeholder="Obligatorio"
           :error="!!v$.progresiva_entrada.$errors.length"
+          :disable="disabled"
           type="number"
           outlined
           dense
@@ -186,9 +193,10 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Progresiva de salida</label>
         <q-input
-          v-model="tendido.progresiva_salida"
+          v-model="registroTendido.progresiva_salida"
           placeholder="Obligatorio"
           :error="!!v$.progresiva_salida.$errors.length"
+          :disable="disabled"
           type="number"
           outlined
           dense
@@ -207,8 +215,9 @@
       <!-- Se instalo manga -->
       <div class="col-12 col-md-3">
         <q-checkbox
-          v-model="tendido.instalo_manga"
+          v-model="registroTendido.instalo_manga"
           label="Se instaló manga"
+          :disable="disabled"
           class="q-pt-lg"
           outlined
           dense
@@ -218,8 +227,9 @@
       <!-- Se instalo reserva -->
       <div class="col-12 col-md-3">
         <q-checkbox
-          v-model="tendido.instalo_reserva"
+          v-model="registroTendido.instalo_reserva"
           label="Se instaló reserva"
+          :disable="disabled"
           class="q-pt-lg"
           outlined
           dense
@@ -227,11 +237,12 @@
       </div>
 
       <!-- Cantidad reservas -->
-      <div v-if="tendido.instalo_reserva" class="col-12 col-md-3">
+      <div v-if="registroTendido.instalo_reserva" class="col-12 col-md-3">
         <label class="q-mb-sm block">Reservas (metros)</label>
         <q-input
-          v-model="tendido.cantidad_reserva"
+          v-model="registroTendido.cantidad_reserva"
           placeholder="Obligatorio"
+          :disable="disabled"
           type="number"
           min="0"
           outlined
@@ -243,16 +254,18 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del poste</label>
         <selector-imagen
-          :imagen="tendido.imagen"
-          @update:modelValue="(data) => (tendido.imagen = data)"
+          :imagen="registroTendido.imagen"
+          @update:modelValue="(data) => (registroTendido.imagen = data)"
+          :disable="disabled"
         ></selector-imagen>
       </div>
 
       <!-- Poste tiene transformador -->
       <div class="col-12 col-md-3">
         <q-checkbox
-          v-model="tendido.tiene_transformador"
+          v-model="registroTendido.tiene_transformador"
           label="Poste tiene transformador"
+          :disable="disabled"
           class="q-pt-lg"
           outlined
           dense
@@ -260,11 +273,12 @@
       </div>
 
       <!-- Cantidad transformadores -->
-      <div v-if="tendido.tiene_transformador" class="col-12 col-md-3">
+      <div v-if="registroTendido.tiene_transformador" class="col-12 col-md-3">
         <label class="q-mb-sm block">Cantidad transformadores</label>
         <q-input
-          v-model="tendido.cantidad_transformadores"
+          v-model="registroTendido.cantidad_transformadores"
           placeholder="Obligatorio"
+          :disable="disabled"
           type="number"
           outlined
           dense
@@ -274,8 +288,9 @@
       <!-- Americano -->
       <div class="col-12 col-md-3">
         <q-checkbox
-          v-model="tendido.tiene_americano"
+          v-model="registroTendido.tiene_americano"
           label="Americano"
+          :disable="disabled"
           class="q-pt-lg"
           outlined
           dense
@@ -286,8 +301,9 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Tensión</label>
         <q-select
-          v-model="tendido.tension"
+          v-model="registroTendido.tension"
           :options="tiposTension"
+          :disable="disabled"
           clearable
           options-dense
           dense
@@ -298,8 +314,9 @@
       <!-- Poste tiene retenidas -->
       <div class="col-12 col-md-3">
         <q-checkbox
-          v-model="tendido.tiene_retenidas"
+          v-model="registroTendido.tiene_retenidas"
           label="Poste tiene retenidas"
+          :disable="disabled"
           class="q-pt-lg"
           outlined
           dense
@@ -307,12 +324,13 @@
       </div>
 
       <!-- Cantidad retenidas -->
-      <div v-if="tendido.tiene_retenidas" class="col-12 col-md-3">
+      <div v-if="registroTendido.tiene_retenidas" class="col-12 col-md-3">
         <label class="q-mb-sm block">Cantidad retenidas</label>
         <q-input
-          v-model="tendido.cantidad_retenidas"
+          v-model="registroTendido.cantidad_retenidas"
           type="number"
           placeholder="Obligatorio"
+          :disable="disabled"
           min="0"
           outlined
           dense
@@ -323,8 +341,9 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Observaciones</label>
         <q-input
-          v-model="tendido.observaciones"
+          v-model="registroTendido.observaciones"
           type="textarea"
+          :disable="disabled"
           autogrow
           outlined
           dense
@@ -334,7 +353,7 @@
       <!-- Fecha -->
       <!--<div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha</label>
-        <q-input v-model="tendido.fecha" outlined dense>
+        <q-input v-model="registroTendido.fecha" outlined dense>
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy
@@ -342,7 +361,7 @@
                 transition-show="scale"
                 transition-hide="scale"
               >
-                <q-date v-model="tendido.fecha" mask="DD-MM-YYYY">
+                <q-date v-model="registroTendido.fecha" mask="DD-MM-YYYY">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -356,7 +375,7 @@
       <!-- Hora -->
       <!--<div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora</label>
-        <q-input v-model="tendido.hora" mask="time" outlined dense>
+        <q-input v-model="registroTendido.hora" mask="time" outlined dense>
           <template v-slot:append>
             <q-icon name="bi-clock" class="cursor-pointer">
               <q-popup-proxy
@@ -364,7 +383,7 @@
                 transition-show="scale"
                 transition-hide="scale"
               >
-                <q-time v-model="tendido.hora" format24h now-btn>
+                <q-time v-model="registroTendido.hora" format24h now-btn>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Cerrar" color="primary" flat />
                   </div>
@@ -376,24 +395,38 @@
       </div> -->
     </div>
 
-    <div v-if="tendido.tiene_americano" class="row q-col-gutter-sm q-py-md">
+    <div
+      v-if="registroTendido.tiene_americano"
+      class="row q-col-gutter-sm q-py-md"
+    >
       <div class="col-12">
         <div class="block text-bold q-mb-md">Americano</div>
       </div>
 
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Propietario</label>
-        <q-input v-model="tendido.propietario" outlined dense></q-input>
+        <q-input
+          v-model="registroTendido.propietario"
+          :disable="disabled"
+          outlined
+          dense
+        ></q-input>
       </div>
     </div>
 
-    <div v-if="tendido.tiene_americano" class="row q-col-gutter-sm q-py-md">
+    <div
+      v-if="registroTendido.tiene_americano"
+      class="row q-col-gutter-sm q-py-md"
+    >
       <!-- Foto americano -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del cruce americano</label>
         <selector-imagen
-          :imagen="tendido.imagen_cruce_americano"
-          @update:modelValue="(data) => (tendido.imagen_cruce_americano = data)"
+          :imagen="registroTendido.imagen_cruce_americano"
+          @update:modelValue="
+            (data) => (registroTendido.imagen_cruce_americano = data)
+          "
+          :disable="disabled"
         ></selector-imagen>
       </div>
 
@@ -401,7 +434,7 @@
         <label class="q-mb-sm block">Cooordenada del cruce americano</label>
         <div class="row q-col-gutter-xs">
           <q-input
-            v-model="tendido.coordenada_cruce_americano_longitud"
+            v-model="registroTendido.coordenada_cruce_americano_longitud"
             class="col-md-4"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
             hint="Longitud"
@@ -412,7 +445,7 @@
           </q-input>
 
           <q-input
-            v-model="tendido.coordenada_cruce_americano_latitud"
+            v-model="registroTendido.coordenada_cruce_americano_latitud"
             class="col-md-4"
             hint="Latitud"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
@@ -431,6 +464,7 @@
               no-caps
               :class="{ 'q-mb-xs': $q.screen.xs }"
               @click="ubicacionCoordenadaAmericano()"
+              :disable="disabled"
             >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
@@ -441,12 +475,18 @@
     </div>
 
     <!-- Poste anclaje 1 -->
-    <div v-if="tendido.tiene_americano" class="row q-col-gutter-sm q-py-md">
+    <div
+      v-if="registroTendido.tiene_americano"
+      class="row q-col-gutter-sm q-py-md"
+    >
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del poste de anclaje 1</label>
         <selector-imagen
-          :imagen="tendido.imagen_poste_anclaje1"
-          @update:modelValue="(data) => (tendido.imagen_poste_anclaje1 = data)"
+          :imagen="registroTendido.imagen_poste_anclaje1"
+          @update:modelValue="
+            (data) => (registroTendido.imagen_poste_anclaje1 = data)
+          "
+          :disable="disabled"
         ></selector-imagen>
       </div>
 
@@ -454,7 +494,7 @@
         <label class="q-mb-sm block">Cooordenadas del poste de anclaje 1</label>
         <div class="row q-col-gutter-xs">
           <q-input
-            v-model="tendido.coordenada_poste_anclaje1_longitud"
+            v-model="registroTendido.coordenada_poste_anclaje1_longitud"
             class="col-md-4"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
             hint="Longitud"
@@ -465,7 +505,7 @@
           </q-input>
 
           <q-input
-            v-model="tendido.coordenada_poste_anclaje1_latitud"
+            v-model="registroTendido.coordenada_poste_anclaje1_latitud"
             class="col-md-4"
             hint="Latitud"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
@@ -484,6 +524,7 @@
               no-caps
               :class="{ 'q-mb-xs': $q.screen.xs }"
               @click="ubicacionCoordenadaPosteAnclaje1()"
+              :disable="disabled"
             >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
@@ -493,13 +534,19 @@
       </div>
     </div>
 
-    <div v-if="tendido.tiene_americano" class="row q-col-gutter-sm q-py-md">
+    <div
+      v-if="registroTendido.tiene_americano"
+      class="row q-col-gutter-sm q-py-md"
+    >
       <!-- Imagen -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del poste de anclaje 2</label>
         <selector-imagen
-          :imagen="tendido.imagen_poste_anclaje2"
-          @update:modelValue="(data) => (tendido.imagen_poste_anclaje2 = data)"
+          :imagen="registroTendido.imagen_poste_anclaje2"
+          @update:modelValue="
+            (data) => (registroTendido.imagen_poste_anclaje2 = data)
+          "
+          :disable="disabled"
         ></selector-imagen>
       </div>
 
@@ -507,7 +554,7 @@
         <label class="q-mb-sm block">Cooordenadas del poste de anclaje 2</label>
         <div class="row q-col-gutter-xs">
           <q-input
-            v-model="tendido.coordenada_poste_anclaje2_longitud"
+            v-model="registroTendido.coordenada_poste_anclaje2_longitud"
             class="col-md-4"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
             hint="Longitud"
@@ -518,7 +565,7 @@
           </q-input>
 
           <q-input
-            v-model="tendido.coordenada_poste_anclaje2_latitud"
+            v-model="registroTendido.coordenada_poste_anclaje2_latitud"
             class="col-md-4"
             hint="Latitud"
             :class="{ 'full-width q-mb-xs': $q.screen.xs }"
@@ -537,6 +584,7 @@
               no-caps
               :class="{ 'q-mb-xs': $q.screen.xs }"
               @click="ubicacionCoordenadaPosteAnclaje2()"
+              :disable="disabled"
             >
               <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
               Actualizar ubicación</q-btn
@@ -545,15 +593,13 @@
         </div>
       </div>
     </div>
-
+    {{ materiales }}
     <div class="row q-mb-md">
       <!-- Tabla -->
       <div class="col-12">
         <essential-table
           titulo="Materiales utilizados"
-          :configuracionColumnas="
-            configuracionColumnasProductosSeleccionadosAccion
-          "
+          :configuracionColumnas="configuracionColumnasMaterialOcupadoAccion"
           :datos="materiales"
           :permitirConsultar="false"
           :permitirEditar="false"
@@ -565,13 +611,6 @@
         ></essential-table>
       </div>
     </div>
-
-    <!-- <div class="row justify-end">
-      <q-btn color="primary" no-caps>
-        <q-icon name="bi-save" size="xs" class="q-mr-xs"></q-icon>
-        Guardar</q-btn
-      >
-    </div> -->
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-fab
@@ -589,7 +628,7 @@
         <q-fab-action
           v-if="accion === acciones.editar"
           color="positive"
-          @click="editarDatos(tendido)"
+          @click="editarDatos(registroTendido)"
           padding="sm md"
         >
           <q-icon name="bi-save" size="xs" class="q-mr-sm"></q-icon>Guardar
@@ -599,7 +638,7 @@
         <q-fab-action
           v-if="accion === acciones.nuevo"
           color="positive"
-          @click="guardarDatos(tendido)"
+          @click="guardarDatos(registroTendido)"
           padding="sm md"
         >
           <q-icon name="bi-save" size="xs" class="q-mr-sm"></q-icon>Guardar

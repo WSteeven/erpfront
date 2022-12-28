@@ -55,7 +55,7 @@
 
           <!-- Imagen -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Imagen</label>
+            <label class="q-mb-sm block">Foto de evidencia</label>
             <selector-imagen
               :modelValue="control.imagen"
               @update:modelValue="(data) => (control.imagen = data)"
@@ -66,7 +66,7 @@
 
       <div class="q-gutter-md column">
         <essential-table
-          titulo="técnicos"
+          titulo="Listado de trabajadores"
           :configuracionColumnas="
             configuracionColumnasMaterialesSolicitadosAccion
           "

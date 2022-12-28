@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasProductosSeleccionados } from 'pages/bodega/transacciones/modules/transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasMaterialOcupado } from '../domain/configuracionColumnasMaterialOcupado'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { tiposElementos, propietariosElementos, estadoElementos, tiposTension, acciones } from 'config/utils'
 import { useTendidoStore } from 'stores/tendido'
@@ -34,12 +34,14 @@ export default defineComponent({
     EssentialTable,
   },
   setup(props, { emit }) {
-    const { guardar, editar, setValidador } = props.mixinModal.useComportamiento()
-    const { entidad: tendido } = props.mixinModal.useReferencias()
+    const { guardar, editar, consultar, setValidador } = props.mixinModal.useComportamiento()
+    const { entidad: registroTendido, disabled, accion } = props.mixinModal.useReferencias()
     const { onBeforeGuardar } = props.mixinModal.useHooks()
 
     const tendidoStore = useTendidoStore()
-    const accion = tendidoStore.accion
+    accion.value = tendidoStore.accion
+
+    if (tendidoStore.idRegistroTendido) consultar({ id: tendidoStore.idRegistroTendido })
 
     // Reglas de validacion
     const reglas = {
@@ -55,10 +57,10 @@ export default defineComponent({
       progresiva_salida: { required },
     }
 
-    const v$ = useVuelidate(reglas, tendido)
+    const v$ = useVuelidate(reglas, registroTendido)
     setValidador(v$.value)
 
-    const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
+    const configuracionColumnasMaterialOcupadoAccion = [...configuracionColumnasMaterialOcupado,
     {
       name: 'acciones',
       field: 'acciones',
@@ -71,7 +73,7 @@ export default defineComponent({
     function eliminar({ posicion }) {
       confirmar('¿Esta seguro de continuar?',
         () =>
-          tendido.listadoProductosSeleccionados.splice(posicion, 1))
+          registroTendido.listadoProductosSeleccionados.splice(posicion, 1))
     }
 
     const botonEditarCantidad: CustomActionTable = {
@@ -128,29 +130,29 @@ export default defineComponent({
 
     function ubicacionCoordenadaElemento() {
       obtenerUbicacion((ubicacion) => {
-        tendido.coordenada_del_elemento_latitud = ubicacion.coords.latitude
-        tendido.coordenada_del_elemento_longitud = ubicacion.coords.longitude
+        registroTendido.coordenada_del_elemento_latitud = ubicacion.coords.latitude
+        registroTendido.coordenada_del_elemento_longitud = ubicacion.coords.longitude
       })
     }
 
     function ubicacionCoordenadaAmericano() {
       obtenerUbicacion((ubicacion) => {
-        tendido.coordenada_cruce_americano_latitud = ubicacion.coords.latitude
-        tendido.coordenada_cruce_americano_longitud = ubicacion.coords.longitude
+        registroTendido.coordenada_cruce_americano_latitud = ubicacion.coords.latitude
+        registroTendido.coordenada_cruce_americano_longitud = ubicacion.coords.longitude
       })
     }
 
     function ubicacionCoordenadaPosteAnclaje1() {
       obtenerUbicacion((ubicacion) => {
-        tendido.coordenada_poste_anclaje1_latitud = ubicacion.coords.latitude
-        tendido.coordenada_poste_anclaje1_longitud = ubicacion.coords.longitude
+        registroTendido.coordenada_poste_anclaje1_latitud = ubicacion.coords.latitude
+        registroTendido.coordenada_poste_anclaje1_longitud = ubicacion.coords.longitude
       })
     }
 
     function ubicacionCoordenadaPosteAnclaje2() {
       obtenerUbicacion((ubicacion) => {
-        tendido.coordenada_poste_anclaje2_latitud = ubicacion.coords.latitude
-        tendido.coordenada_poste_anclaje2_longitud = ubicacion.coords.longitude
+        registroTendido.coordenada_poste_anclaje2_latitud = ubicacion.coords.latitude
+        registroTendido.coordenada_poste_anclaje2_longitud = ubicacion.coords.longitude
       })
     }
 
@@ -167,11 +169,20 @@ export default defineComponent({
     obtenerMateriales()
 
     onBeforeGuardar(() => {
-      tendido.tendido = tendidoStore.idTendido
+      registroTendido.tendido = tendidoStore.idTendido
+
+      registroTendido.materiales_ocupados = filtrarMaterialesOcupados()
+      console.log(registroTendido.materiales_ocupados)
+      console.log('onBeforeGuardar')
     })
 
+    function filtrarMaterialesOcupados() {
+      return materiales.value.filter((material: any) => material.cantidad_utilizada !== null)
+    }
+
     return {
-      tendido,
+      disabled,
+      registroTendido,
       guardarDatos,
       editarDatos,
       cerrar,
@@ -183,8 +194,7 @@ export default defineComponent({
       accion,
       acciones,
       materiales,
-      configuracionColumnasProductosSeleccionadosAccion,
-      configuracionColumnasProductosSeleccionados,
+      configuracionColumnasMaterialOcupadoAccion,
       eliminar,
       botonEditarCantidad,
       obtenerUbicacion,

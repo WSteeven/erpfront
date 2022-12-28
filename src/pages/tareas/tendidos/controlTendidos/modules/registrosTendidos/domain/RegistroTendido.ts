@@ -33,7 +33,8 @@ export class RegistroTendido extends EntidadAuditable {
   fecha: string | null
   hora: string | null
   imagen: string | null
-  listadoProductosSeleccionados: any[]
+  materiales_ocupados: any[]
+  tension: string | null
 
   constructor() {
     super()
@@ -64,6 +65,7 @@ export class RegistroTendido extends EntidadAuditable {
     this.fecha = null
     this.hora = null
     this.imagen = null
-    this.listadoProductosSeleccionados = []
+    this.materiales_ocupados = []
+    this.tension = null
   }
 }

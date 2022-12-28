@@ -7,6 +7,7 @@
     clearable
     @update:model-value="setBase64"
     @clear="limpiar()"
+    :disable="disable"
   >
     <template v-slot:prepend>
       <q-icon name="attach_file" />
@@ -25,7 +26,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps(['modelValue', 'imagen'])
+const props = defineProps(['modelValue', 'imagen', 'disable'])
 const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()

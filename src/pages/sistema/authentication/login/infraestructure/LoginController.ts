@@ -1,18 +1,12 @@
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { UserLogin } from '../domain/UserLogin'
-import { useRouter } from 'vue-router'
 import { rolesAdmitidos } from 'config/utils'
+import { useRouter } from 'vue-router'
 import { watch, computed } from 'vue'
 
 export class LoginController {
   store = useAuthenticationStore()
   Router = useRouter()
-
-  /* async login(userLogin: UserLogin): Promise<void> {
-    return this.store.login(userLogin).then(() => {
-      this.Router.replace('/')
-    })
-  } */
 
   async login(userLogin: UserLogin): Promise<any> {
     try {
@@ -41,14 +35,4 @@ export class LoginController {
       }
     })
   }
-
-
-  /*async logout(): Promise<any> {
-    await this.store.logout()
-    await this.Router.replace('/login')
-    console.log('Cerraste la sesión')*/
-  /* .then(() => {
-    // this.Router.replace({ name: 'Login' })
-  }).catch((e) => alert(e)) */
-  //}
 }
