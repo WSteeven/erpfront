@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/domain/configuracionColumnasArchivoSubtarea'
 import { configuracionColumnasTecnico } from 'tareas/controlTareas/modules/subtareas/domain/configuracionColumnasTecnico'
-import { tiposTareasTelconet, ciudades, accionesTabla, rolesAdmitidos } from 'config/utils'
+import { tiposTareasTelconet, accionesTabla, rolesAdmitidos } from 'config/utils'
 import { descargarArchivoUrl, quitarItemDeArray, stringToArray } from 'shared/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { computed, defineComponent, reactive, ref } from "vue"
@@ -171,7 +171,6 @@ export default defineComponent({
             tiposTareasTelconet,
             configuracionColumnasTecnico,
             columnasGestor: [...configuracionColumnasArchivoSubtarea, accionesTabla],
-            provincias, ciudades,
             tiposTrabajos,
             grupos,
             subtareas,

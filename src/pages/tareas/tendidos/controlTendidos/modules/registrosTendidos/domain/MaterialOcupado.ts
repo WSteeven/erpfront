@@ -1,14 +1,16 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class MaterialOcupado extends EntidadAuditable {
+  detalle_producto_id: number | null
   detalle: string | null
-  cantidad_despachada: number | null
+  stock_actual: number | null
   cantidad_utilizada: number | null
 
   constructor() {
     super()
+    this.detalle_producto_id = null
     this.detalle = null
-    this.cantidad_despachada = null
+    this.stock_actual = null
     this.cantidad_utilizada = null
   }
 }

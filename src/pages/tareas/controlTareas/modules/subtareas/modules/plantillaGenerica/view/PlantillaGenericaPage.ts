@@ -3,8 +3,6 @@ import { configuracionColumnasTecnico } from 'pages/tareas/subtareas/domain/conf
 import { defineComponent, Ref, ref } from 'vue'
 import { useTareaStore } from 'stores/tarea'
 import {
-    provincias,
-    ciudades,
     grupos,
     tiposInstalaciones,
     tiposTareasTelconet,
@@ -99,8 +97,6 @@ export default defineComponent({
             grupos,
             eliminarTecnico,
             //modalesSubtarea,
-            provincias,
-            ciudades,
             tiposInstalaciones,
             tiposTareasTelconet,
             tiposTareasNedetel,

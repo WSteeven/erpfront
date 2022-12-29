@@ -5,8 +5,6 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { computed, defineComponent, Ref, ref, watch } from 'vue'
 import {
-  provincias,
-  ciudades,
   tiposInstalaciones,
   tiposTareasTelconet,
   tiposTareasNedetel,
@@ -94,7 +92,10 @@ export default defineComponent({
           controller: new SubtareaController(),
           params: { tarea_id: tareaStore.tarea.id }
         },
-        grupos: new GrupoController(),
+        grupos: {
+          controller: new GrupoController(),
+          params: { campos: 'id,nombre' }
+        }
       })
 
       grupos.value = listadosAuxiliares.grupos
@@ -399,8 +400,6 @@ export default defineComponent({
       designarNuevoSecretario,
       listadosAuxiliares,
       tecnicosGrupoPrincipal,
-      provincias,
-      ciudades,
       tiposInstalaciones,
       tiposTareasTelconet,
       tiposTareasNedetel,

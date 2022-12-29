@@ -33,6 +33,14 @@ import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { Tendido } from '../domain/Tendido'
 import { RegistroTendido } from '../modules/registrosTendidos/domain/RegistroTendido'
 
+// PDFmake
+import * as pdfMake from 'pdfmake/build/pdfmake'
+import * as pdfFonts from 'pdfmake/build/vfs_fonts'
+import { buildTableBody } from "shared/utils";
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
+
 export default defineComponent({
   components: {
     TabLayout,

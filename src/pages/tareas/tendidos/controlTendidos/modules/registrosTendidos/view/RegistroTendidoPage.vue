@@ -53,6 +53,7 @@
             <q-btn
               color="positive"
               no-caps
+              no-wrap
               :class="{ 'q-mb-xs': $q.screen.xs }"
               @click="ubicacionCoordenadaElemento()"
               :disable="disabled"
@@ -593,7 +594,7 @@
         </div>
       </div>
     </div>
-    {{ materiales }}
+
     <div class="row q-mb-md">
       <!-- Tabla -->
       <div class="col-12">

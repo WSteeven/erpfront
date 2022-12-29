@@ -29,7 +29,7 @@
           <label class="q-mb-sm block">Provincias</label>
           <q-select
             v-model="contacto.provincia"
-            :options="provincias"
+            :options="listadosAuxiliares.provincias"
             options-dense
             dense
             outlined
@@ -42,7 +42,7 @@
           <q-select
             outlined
             v-model="contacto.ciudad"
-            :options="ciudades"
+            :options="listadosAuxiliares.ciudades"
             options-dense
             dense
           />

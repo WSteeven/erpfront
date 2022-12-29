@@ -129,7 +129,6 @@
                 :datos="listadoRegistrosTendidos"
                 :alto-fijo="false"
                 :permitirEliminar="false"
-                :mostrar-footer="false"
                 :accion1Header="agregarProgresiva"
                 @consultar="consultarRegistro"
                 @editar="editarRegistro"

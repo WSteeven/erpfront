@@ -3,6 +3,7 @@ import { configuracionColumnasMaterialOcupado } from '../domain/configuracionCol
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { tiposElementos, propietariosElementos, estadoElementos, tiposTension, acciones } from 'config/utils'
 import { useTendidoStore } from 'stores/tendido'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
@@ -39,6 +40,7 @@ export default defineComponent({
     const { onBeforeGuardar } = props.mixinModal.useHooks()
 
     const tendidoStore = useTendidoStore()
+    const trabajoAsignadoStore = useTrabajoAsignadoStore()
     accion.value = tendidoStore.accion
 
     if (tendidoStore.idRegistroTendido) consultar({ id: tendidoStore.idRegistroTendido })
@@ -86,7 +88,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           defecto: materiales.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => val > 0 && val <= entidad.cantidad_despachada,
+          validacion: (val) => val >= 0 && val <= entidad.stock_actual,
           accion: (data) => materiales.value[posicion].cantidad_utilizada = data
         }
 
@@ -170,14 +172,12 @@ export default defineComponent({
 
     onBeforeGuardar(() => {
       registroTendido.tendido = tendidoStore.idTendido
-
       registroTendido.materiales_ocupados = filtrarMaterialesOcupados()
-      console.log(registroTendido.materiales_ocupados)
-      console.log('onBeforeGuardar')
+      registroTendido.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
     })
 
     function filtrarMaterialesOcupados() {
-      return materiales.value.filter((material: any) => material.cantidad_utilizada !== null)
+      return materiales.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada') && material.cantidad_utilizada > 0)
     }
 
     return {

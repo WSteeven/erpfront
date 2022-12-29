@@ -10,8 +10,8 @@ export const configuracionColumnasMaterialOcupado: ColumnConfig<MaterialOcupado>
     sortable: true,
   },
   {
-    name: 'cantidad_despachada',
-    field: 'cantidad_despachada',
+    name: 'stock_actual',
+    field: 'stock_actual',
     label: 'Cantidad disponible',
     align: 'left',
     sortable: false,

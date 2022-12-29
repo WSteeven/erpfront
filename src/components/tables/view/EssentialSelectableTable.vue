@@ -5,7 +5,7 @@
     :position="$q.screen.xs ? 'standard' : 'top'"
     :maximized="$q.screen.xs"
   >
-    <q-card class="alto-completo2">
+    <q-card>
       <q-linear-progress :value="1" color="primary" />
 
       <q-card-section style="height: 89vh" class="scroll">
@@ -19,10 +19,13 @@
         ></essential-table>
       </q-card-section>
 
-      <q-card-actions class="column q-gutter-xs blur">
+      <q-card-actions
+        class="q-gutter-xs"
+        :class="{ 'justify-end': !$q.screen.xs }"
+      >
         <q-btn
           color="primary"
-          class="full-width"
+          :class="{ 'full-width': $q.screen.xs }"
           no-caps
           push
           @click="seleccionar()"
@@ -33,7 +36,7 @@
 
         <q-btn
           color="negative"
-          class="full-width"
+          :class="{ 'full-width': $q.screen.xs }"
           no-caps
           push
           @click="ocultar()"
@@ -108,22 +111,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss" scope>
-.modal-footer {
-  background-color: #fff;
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  padding: 8px;
-  border-radius: 16px;
-  height: 100vh;
-  display: flex;
-  align-items: flex-end;
-}
-
-.alto-completo {
-  // height: 100vh;
-  background-color: yellow;
-}
-</style>

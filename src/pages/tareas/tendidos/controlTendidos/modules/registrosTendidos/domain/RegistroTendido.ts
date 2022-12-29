@@ -35,6 +35,7 @@ export class RegistroTendido extends EntidadAuditable {
   imagen: string | null
   materiales_ocupados: any[]
   tension: string | null
+  subtarea: number | null
 
   constructor() {
     super()
@@ -67,5 +68,6 @@ export class RegistroTendido extends EntidadAuditable {
     this.imagen = null
     this.materiales_ocupados = []
     this.tension = null
+    this.subtarea = null
   }
 }
