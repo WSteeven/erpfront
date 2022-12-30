@@ -1,11 +1,9 @@
 // Dependencias
-import { configuracionColumnasAsistenciaTecnicos } from '../domain/configuracionColumnasAsistenciaTecnicos'
-import { configuracionColumnasControlAsistencia } from '../domain/configuracionColumnasControlAsistencia'
-import { obtenerFechaHoraActual } from 'shared/utils'
+import { configuracionColumnasControlAsistencia } from '../domain/configuracionColumnasReporte'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { tiposJornadas } from 'config/utils'
-import { defineComponent } from 'vue'
+import { defineComponent, reactive } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -15,34 +13,28 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ControlAsistenciaController } from '../infraestructure/ControlAsistenciaController'
+import { ReporteControlMaterialController } from '../infraestructure/ReporteControlMaterialController'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { ControlAsistencia } from '../domain/ControlAsistencia'
+import { FiltroReporteMaterial } from '../domain/FiltroReporteMaterial'
 import { useNotificaciones } from 'shared/notificaciones'
-import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
+import { ReporteControlMaterial } from '../domain/ReporteControlMaterial'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      ControlAsistencia,
-      new ControlAsistenciaController()
+      ReporteControlMaterial,
+      new ReporteControlMaterialController()
     )
 
-    const { entidad: control, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, setValidador } = mixin.useComportamiento()
+    const { listadosAuxiliares, listado } = mixin.useReferencias()
+    const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
-        empleados: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos,grupo',
-            estado: 1,
-          }
-        },
         tareas: {
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
@@ -54,9 +46,9 @@ export default defineComponent({
       })
     })
 
-    const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
+    const filtroReporteMaterial = reactive(new FiltroReporteMaterial())
 
-    control.fecha_hora = obtenerFechaHoraActual()
+    const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
     function editar({ entidad }) {
       const config: CustomActionPrompt = {
@@ -75,19 +67,8 @@ export default defineComponent({
       )
     }
 
-    const configuracionColumnasMaterialesSolicitadosAccion = [
-      ...configuracionColumnasAsistenciaTecnicos,
-      {
-        name: 'acciones',
-        field: 'acciones',
-        label: 'Acciones',
-        align: 'center',
-      },
-    ]
-
     const botonAgregarObservacion: CustomActionTable = {
       titulo: 'Agregar observación',
-      color: 'secondary',
       icono: 'bi-pencil',
       accion: ({ entidad }) => {
         const config: CustomActionPrompt = {
@@ -100,28 +81,26 @@ export default defineComponent({
       },
     }
 
-    //reglas de validacion
+    // Reglas de validacion
     const reglas = {
       tarea: { required },
-      jornada: { required },
       grupo: { required },
+      fecha: { required },
     }
 
-    const v$ = useVuelidate(reglas, control)
-    setValidador(v$.value)
+    const v$ = useVuelidate(reglas, filtroReporteMaterial)
 
     return {
       v$,
       mixin,
+      listar,
+      listado,
+      filtroReporteMaterial,
       listadosAuxiliares,
-      configuracionColumnas: configuracionColumnasControlAsistencia,
-      configuracionColumnasMaterialesSolicitadosAccion,
+      configuracionColumnasControlAsistencia,
       editar,
       eliminar,
       botonAgregarObservacion,
-      control,
-      disabled,
-      accion,
       tiposJornadas,
     }
   },

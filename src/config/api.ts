@@ -88,4 +88,5 @@ export const endpoints = {
   materiales_despachados_con_bobina: new Endpoint('transacciones-egresos/materiales-despachados-con-bobina/'),
   bobinas_grupo_tarea: new Endpoint('bobinas-grupo-tarea/'),
   registros_tendidos: new Endpoint('registros-tendidos/'),
+  reportes_control_materiales: new Endpoint('reportes-control-materiales'),
 }
