@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-bold q-mb-lg">Control de material</div>
+    <div class="text-bold q-mb-lg">Control de material diario</div>
     <q-card flat bordered class="q-mb-md">
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Tarea -->
@@ -18,6 +18,7 @@
             :option-value="(item) => item.id"
             emit-value
             map-options
+            :error="!!v$.tarea.$errors.length"
             ><template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
@@ -25,6 +26,12 @@
                   <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
                 </q-item-section>
               </q-item>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.tarea.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
             </template>
           </q-select>
         </div>
@@ -66,7 +73,12 @@
         <!-- Fecha -->
         <div class="col-12 col-md-5">
           <label class="q-mb-sm block">Fecha</label>
-          <q-input v-model="filtroReporteMaterial.fecha" outlined dense>
+          <q-input
+            v-model="filtroReporteMaterial.fecha"
+            outlined
+            dense
+            :error="!!v$.fecha.$errors.length"
+          >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
@@ -92,13 +104,19 @@
               </q-icon>
             </template>
 
+            <template v-slot:error>
+              <div v-for="error of v$.fecha.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+
             <template #after>
               <q-btn
                 color="positive"
                 push
                 no-caps
                 class="full-width"
-                @click="listar(filtroReporteMaterial)"
+                @click="consultarReporte()"
               >
                 <q-icon name="bi-search" class="q-mr-xs" size="xs"></q-icon>
                 Consultar reporte</q-btn
@@ -125,7 +143,7 @@
     ></essential-table>
 
     <div v-if="listado.length" class="row justify-end q-gutter-sm q-pt-md">
-      <q-btn color="primary" no-caps push @click="imprimir()">
+      <q-btn color="primary" no-caps push @click="pdfMakeImprimir()">
         <q-icon name="bi-printer" size="xs" class="q-pr-sm"></q-icon>
         <span>Imprimir</span>
       </q-btn>

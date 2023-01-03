@@ -124,6 +124,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         const { result } = await this.controller.listar(params)
         /* this.refs.currentPageListado.value = result.current_page
         this.refs.nextPageUrl.value = result.next_page_url */
+        if (result.length == 0) this.notificaciones.notificarCorrecto('Sin elementos')
+
         if (append) this.refs.listado.value.push(...result)
         else this.refs.listado.value = result
       } catch (error) {

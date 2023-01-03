@@ -13,7 +13,7 @@ export const configuracionColumnasControlAsistencia: ColumnConfig<ReporteControl
     {
       name: 'detalle_material',
       field: 'detalle_material',
-      label: 'Detalle material',
+      label: 'Detalle del material',
       align: 'left',
       sortable: true,
     },

@@ -201,7 +201,7 @@
 
           <!-- Coordinador -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordinador</label>
+            <label class="q-mb-sm block">Supervisor</label>
             <q-select
               v-model="proyecto.coordinador"
               :options="coordinadores"
@@ -266,7 +266,7 @@
             </q-input>
           </div> -->
 
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Costo total proyecto</label>
             <q-input
               v-model="proyecto.costo"
@@ -280,7 +280,7 @@
                 </div>
               </template>
             </q-input>
-          </div>
+          </div> -->
         </div>
       </q-form>
     </template>

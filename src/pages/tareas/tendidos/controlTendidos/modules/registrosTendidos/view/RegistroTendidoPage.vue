@@ -613,39 +613,35 @@
       </div>
     </div>
 
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-fab
-        icon="add"
-        direction="up"
-        vertical-actions-align="right"
+    <div class="row justify-end q-gutter-sm q-pt-md">
+      <!-- Boton guardar -->
+      <q-btn
+        v-if="accion === acciones.nuevo"
         color="primary"
-        label="Acciones"
-        padding="sm lg"
+        no-caps
+        push
+        @click="guardarDatos(registroTendido)"
       >
-        <q-fab-action color="negative" @click="cerrar()" padding="sm md">
-          <q-icon name="bi-x" size="xs" class="q-mr-sm"></q-icon>Cancelar
-        </q-fab-action>
+        <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+        <span>Guardar</span>
+      </q-btn>
 
-        <q-fab-action
-          v-if="accion === acciones.editar"
-          color="positive"
-          @click="editarDatos(registroTendido)"
-          padding="sm md"
-        >
-          <q-icon name="bi-save" size="xs" class="q-mr-sm"></q-icon>Guardar
-          cambios
-        </q-fab-action>
+      <q-btn color="negative" no-caps push @click="cerrar()">
+        <q-icon name="bi-x-lg" size="xs" class="q-pr-sm"></q-icon>
+        <span>Cancelar</span>
+      </q-btn>
 
-        <q-fab-action
-          v-if="accion === acciones.nuevo"
-          color="positive"
-          @click="guardarDatos(registroTendido)"
-          padding="sm md"
-        >
-          <q-icon name="bi-save" size="xs" class="q-mr-sm"></q-icon>Guardar
-        </q-fab-action>
-      </q-fab>
-    </q-page-sticky>
+      <q-btn
+        v-if="accion === acciones.editar"
+        color="primary"
+        no-caps
+        push
+        @click="editarDatos(registroTendido)"
+      >
+        <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+        <span>Guardar cambios</span>
+      </q-btn>
+    </div>
   </q-page>
 </template>
 
