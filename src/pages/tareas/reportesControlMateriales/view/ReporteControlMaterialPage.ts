@@ -121,7 +121,7 @@ export default defineComponent({
         },
         background: {
           image: logoBN,
-          margin: [50, 80, 50, 50],
+          margin: [50, 250, 50, 50],
           opacity: 0.1
         },
         pageSize: 'A4',
@@ -220,30 +220,6 @@ export default defineComponent({
           { text: '\n\n' },
 
           { text: '\n\n' },
-          {
-            columns: [
-              {
-                layout: 'lineaLayout',
-                width: '*',
-                table: {
-                  widths: ['*'],
-                  body: [[" "], [" "]]
-                },
-                margin: [0, 0, 60, 0]
-              },
-              {
-                layout: 'lineaLayout',
-                width: '*',
-                table: {
-                  widths: ['*'],
-                  body: [[" "], [" "]]
-                },
-                margin: [60, 0, 0, 0]
-              }
-
-            ],
-            columnGap: 10
-          },
         ],
         styles: {
           header: {

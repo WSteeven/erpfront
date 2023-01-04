@@ -137,9 +137,6 @@
       :permitirEditar="false"
       :mostrarBotones="false"
       :alto-fijo="false"
-      :accion1="botonAgregarObservacion"
-      @editar="editar"
-      @eliminar="eliminar"
     ></essential-table>
 
     <div v-if="listado.length" class="row justify-end q-gutter-sm q-pt-md">

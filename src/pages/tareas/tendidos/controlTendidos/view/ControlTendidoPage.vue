@@ -53,7 +53,11 @@
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Cantidad de postes</label>
               <q-input
-                v-model="progresiva.cantidad_postes"
+                v-model="
+                  listadoRegistrosTendidos.filter(
+                    (item) => item.tipo_elemento === 'POSTE'
+                  ).length
+                "
                 hint="Calculado automáticamente"
                 disable
                 outlined
@@ -139,35 +143,33 @@
       </q-card-section>
     </q-card>
 
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-fab
-        icon="add"
-        direction="up"
-        vertical-actions-align="right"
-        color="primary"
-        label="Acciones"
-        padding="sm lg"
-      >
-        <q-fab-action
-          color="secondary"
-          :to="{ name: 'trabajo_asignado' }"
-          padding="sm md"
-        >
-          <q-icon name="bi-chevron-left" size="xs" class="q-mr-sm"></q-icon
-          >Volver a trabajo asignado
-        </q-fab-action>
+    <div class="row justify-end q-gutter-sm q-pt-md">
+      <q-btn color="grey-8" no-caps push :to="{ name: 'trabajo_asignado' }">
+        <q-icon name="bi-chevron-left" size="xs" class="q-pr-sm"></q-icon>
+        <span>Volver a la pantalla principal</span>
+      </q-btn>
 
-        <q-fab-action
-          v-if="!progresiva.id"
-          color="positive"
-          @click="guardar(progresiva, false)"
-          padding="sm md"
-        >
-          <q-icon name="bi-play-circle" size="xs" class="q-mr-sm"></q-icon
-          >Empezar a agregar elementos
-        </q-fab-action>
-      </q-fab>
-    </q-page-sticky>
+      <q-btn
+        v-if="!progresiva.id"
+        color="positive"
+        @click="guardar(progresiva, false)"
+        no-caps
+      >
+        <q-icon name="bi-play-circle" size="xs" class="q-mr-sm"></q-icon>Empezar
+        a agregar elementos
+      </q-btn>
+
+      <q-btn
+        v-if="progresiva.id"
+        color="positive"
+        no-caps
+        push
+        @click="pdfMakeImprimir()"
+      >
+        <q-icon name="bi-printer" size="xs" class="q-pr-sm"></q-icon>
+        <span>Imprimir</span>
+      </q-btn>
+    </div>
 
     <modales-entidad :comportamiento="modales" :mixin="mixinRegistroTendido" />
   </q-page>

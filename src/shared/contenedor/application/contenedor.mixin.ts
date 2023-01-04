@@ -43,10 +43,10 @@ export abstract class Contenedor<
    * @returns true, cuando todas las validaciones esten correctas
    */
   async ejecutarValidaciones() {
-    console.log('verificando validaciones ...')
+    // console.log('verificando validaciones ...')
     try {
       for (const validacion of this.validaciones) {
-        console.log(await validacion)
+        // console.log(await validacion)
         if (!(await validacion.validar())) return
         //return await validacion.validar()
       }
@@ -133,8 +133,8 @@ export abstract class Contenedor<
 
       // obtiene las peticiones de listado de cada controlador
       if (controlador) {
-        // requests.push(controlador.listar({ ...this.argsDefault, ...args }))
-        requests.push(controlador.listar()) //{ ...this.argsDefault, ...args }))
+        requests.push(controlador.listar({ ...this.argsDefault, ...args }))
+        // requests.push(controlador.listar()) //{ ...this.argsDefault, ...args }))
       } else {
         requests.push(
           new Promise<any[]>((resolve) => resolve(configListado as any))

@@ -162,7 +162,7 @@ export default defineComponent({
     const materiales: any = ref([])
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina) + '2'
+      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: 2, grupo: 1 })
       const response: AxiosResponse = await axios.get(ruta)
       console.log(response)
       materiales.value = response.data.results
