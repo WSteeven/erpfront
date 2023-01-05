@@ -19,13 +19,13 @@ export class Tendido extends EntidadAuditable {
     this.marca_inicial = null
     this.marca_final = null
     this.subtarea = null
-    this.bobina = 1
-    this.cantidad_hilos = 48
-    this.cantidad_postes = 18
-    this.cantidad_pozos = 0
-    this.progresiva_inicio = 2500
-    this.progresiva_fin = 150
-    this.metraje_tendido = 2350
+    this.bobina = null
+    this.cantidad_hilos = null
+    this.cantidad_postes = null
+    this.cantidad_pozos = null
+    this.progresiva_inicio = null
+    this.progresiva_fin = null
+    this.metraje_tendido = null
     this.fecha = null
   }
 }

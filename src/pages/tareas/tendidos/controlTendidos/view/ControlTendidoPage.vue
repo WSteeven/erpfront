@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-bold q-mb-lg">Tendido de Fibra óptica</div>
+    <div class="text-bold q-mb-lg">Tendido de Fibra Óptica</div>
     <q-card>
       <q-card-section>
         <q-form @submit.prevent="enviar()">
@@ -69,7 +69,11 @@
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Cantidad de pozos</label>
               <q-input
-                v-model="progresiva.cantidad_pozos"
+                v-model="
+                  listadoRegistrosTendidos.filter(
+                    (item) => item.tipo_elemento === 'POZO'
+                  ).length
+                "
                 hint="Calculado automáticamente"
                 outlined
                 disable
@@ -81,7 +85,7 @@
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Marca inicial</label>
               <q-input
-                v-model="progresiva.progresiva_inicio"
+                v-model="marcaInicial"
                 hint="Calculado automáticamente"
                 disable
                 outlined
@@ -93,7 +97,7 @@
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Marca final</label>
               <q-input
-                v-model="progresiva.progresiva_fin"
+                v-model="marcaFinal"
                 hint="Calculado automáticamente"
                 disable
                 outlined
@@ -105,7 +109,7 @@
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Metraje del tendido</label>
               <q-input
-                v-model="progresiva.metraje_tendido"
+                v-model="metrajeTendido"
                 hint="Calculado automáticamente"
                 disable
                 outlined

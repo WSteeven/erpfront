@@ -17,19 +17,16 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ControlAsistenciaController } from '../infraestructure/ControlAsistenciaController'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ControlAsistencia } from '../domain/ControlAsistencia'
 import { useNotificaciones } from 'shared/notificaciones'
-import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      ControlAsistencia,
-      new ControlAsistenciaController()
-    )
+    const mixin = new ContenedorSimpleMixin(ControlAsistencia, new ControlAsistenciaController())
 
     const { entidad: control, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } = mixin.useComportamiento()
@@ -39,7 +36,7 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos,grupo',
+            campos: 'id,nombres,apellidos,grupo_id',
             estado: 1,
           }
         },

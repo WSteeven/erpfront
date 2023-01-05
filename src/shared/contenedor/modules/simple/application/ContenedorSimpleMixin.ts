@@ -174,18 +174,18 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           this.reestablecer()
         }
 
-        // this.hooks.onGuardado()
+        this.hooks.onGuardado()
         console.log(this.entidad)
 
 
-        const stop = watchEffect(() => {
+        /* const stop = watchEffect(() => {
           // console.log('dentrode  watch')
           if (this.entidad.id !== null) {
             this.hooks.onGuardado()
             // console.log('ha sido guardado mixin')
             stop()
           }
-        })
+        }) */
 
       } catch (error: any) {
         if (isAxiosError(error)) {

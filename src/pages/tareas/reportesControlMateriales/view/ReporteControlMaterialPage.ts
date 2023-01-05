@@ -1,9 +1,9 @@
 // Dependencias
 import { configuracionColumnasControlAsistencia } from '../domain/configuracionColumnasReporte'
-import { required } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
 import { tiposJornadas, logoBN, logoColor } from 'config/utils'
+import { required } from '@vuelidate/validators'
 import { defineComponent, reactive } from 'vue'
+import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -12,15 +12,11 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-// import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ReporteControlMaterialController } from '../infraestructure/ReporteControlMaterialController'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { FiltroReporteMaterial } from '../domain/FiltroReporteMaterial'
-import { useNotificaciones } from 'shared/notificaciones'
 import { ReporteControlMaterial } from '../domain/ReporteControlMaterial'
+import { FiltroReporteMaterial } from '../domain/FiltroReporteMaterial'
 
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
@@ -54,8 +50,6 @@ export default defineComponent({
 
     const filtroReporteMaterial = reactive(new FiltroReporteMaterial())
 
-    // const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
-
     // Reglas de validacion
     const reglas = {
       tarea: { required },
@@ -64,7 +58,6 @@ export default defineComponent({
     }
 
     const v$ = useVuelidate(reglas, filtroReporteMaterial)
-    // setValidador(v$)
 
     async function consultarReporte() {
       if (await v$.value.$validate())
@@ -116,7 +109,7 @@ export default defineComponent({
 
       var docDefinition = {
         info: {
-          title: `Fecha`,
+          title: `Reporte de material diario`,
           author: `Juan Cuesta`,
         },
         background: {

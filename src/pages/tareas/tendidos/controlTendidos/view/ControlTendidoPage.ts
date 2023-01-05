@@ -101,6 +101,7 @@ export default defineComponent({
         tendidoStore.idTendido = progresiva.id
         registroTendido.hydrate(entidadReset)
         tendidoStore.idRegistroTendido = null
+        tendidoStore.accion = acciones.nuevo
       },
     }
 
@@ -150,6 +151,7 @@ export default defineComponent({
     }
 
     const f = new Date()
+
     function pdfMakeImprimir() {
       pdfMake.tableLayouts = {
         listadoLayout: {
@@ -370,6 +372,10 @@ export default defineComponent({
       progresiva.cantidad_hilos = obtenerElemento(progresiva.bobina).cantidad_hilos
     })
 
+    const marcaInicial = computed(() => listadoRegistrosTendidos.value.length ? listadoRegistrosTendidos.value[0].progresiva_entrada : 0)
+    const marcaFinal = computed(() => listadoRegistrosTendidos.value.length ? listadoRegistrosTendidos.value[listadoRegistrosTendidos.value.length - 1].progresiva_salida : 0)
+    const metrajeTendido = computed(() => marcaInicial.value - marcaFinal.value)
+
     return {
       v$,
       mixin,
@@ -388,6 +394,9 @@ export default defineComponent({
       accionesTabla,
       pdfMakeImprimir,
       obtenerElemento,
+      marcaInicial,
+      marcaFinal,
+      metrajeTendido,
       // listados
       tiposElementos,
       propietariosElementos,

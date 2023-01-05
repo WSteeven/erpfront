@@ -37,7 +37,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { guardar, editar, consultar, setValidador } = props.mixinModal.useComportamiento()
     const { entidad: registroTendido, disabled, accion } = props.mixinModal.useReferencias()
-    const { onBeforeGuardar } = props.mixinModal.useHooks()
+    const { onBeforeGuardar, onConsultado } = props.mixinModal.useHooks()
 
     const tendidoStore = useTendidoStore()
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
@@ -160,15 +160,56 @@ export default defineComponent({
 
 
     const materiales: any = ref([])
+
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: 2, grupo: 1 })
       const response: AxiosResponse = await axios.get(ruta)
-      console.log(response)
       materiales.value = response.data.results
     }
 
-    obtenerMateriales()
+    /* const materialesOcupados = [ // 37-10 / 45-21 / 31-14 / 23-8 /  
+      {
+        detalle_producto_id: 37,
+        cantidad_utilizada: 10,
+      },
+      {
+        detalle_producto_id: 23,
+        cantidad_utilizada: 8,
+      },
+      {
+        detalle_producto_id: 31,
+        cantidad_utilizada: 14,
+      },
+      {
+        detalle_producto_id: 45,
+        cantidad_utilizada: 21,
+      },
+    ] */
+
+    function ajustarCantidadesUtilizadas() {
+      const materialesOcupados = registroTendido.materiales_ocupados
+      console.log(materialesOcupados[0])
+
+      for (let i = 0; i < materiales.value.length; i++) {
+        const indexOcupado = obtenerIndice(materialesOcupados, materiales.value[i].detalle_producto_id)
+        if (indexOcupado >= 0) {
+          materiales.value[i].cantidad_utilizada = materialesOcupados[indexOcupado].cantidad_utilizada
+        }
+      }
+    }
+
+    function obtenerIndice(listadoBuscar, id) {
+      return listadoBuscar.findIndex((item) => item.detalle_producto_id === id)
+    }
+
+    if (accion.value === acciones.nuevo) obtenerMateriales()
+
+    // Hooks
+    onConsultado(() => {
+      // console.log('consultado')
+      obtenerMateriales().then(() => ajustarCantidadesUtilizadas())
+    })
 
     onBeforeGuardar(() => {
       registroTendido.tendido = tendidoStore.idTendido

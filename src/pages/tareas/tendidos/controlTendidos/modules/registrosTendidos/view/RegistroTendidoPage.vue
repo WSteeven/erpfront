@@ -626,11 +626,6 @@
         <span>Guardar</span>
       </q-btn>
 
-      <q-btn color="negative" no-caps push @click="cerrar()">
-        <q-icon name="bi-x-lg" size="xs" class="q-pr-sm"></q-icon>
-        <span>Cancelar</span>
-      </q-btn>
-
       <q-btn
         v-if="accion === acciones.editar"
         color="primary"
@@ -640,6 +635,11 @@
       >
         <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
         <span>Guardar cambios</span>
+      </q-btn>
+
+      <q-btn color="negative" no-caps push @click="cerrar()">
+        <q-icon name="bi-x-lg" size="xs" class="q-pr-sm"></q-icon>
+        <span>Cancelar</span>
       </q-btn>
     </div>
   </q-page>
