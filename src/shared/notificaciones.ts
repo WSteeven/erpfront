@@ -104,8 +104,8 @@ export function useNotificaciones() {
       persistent: true,
     })
       .onOk((data) => {
-        config.accion(data)
-        console.log('dentro d not: ' + data)
+        config.accion(config.tipo === 'number' ? parseInt(data) : data)
+        // console.log('dentro d not: ' + data)
       })
       .onCancel(() => {
         // console.log('>>>> Cancel')

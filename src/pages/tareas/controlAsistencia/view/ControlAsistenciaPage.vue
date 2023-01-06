@@ -7,55 +7,102 @@
     <template #formulario>
       <q-card flat bordered class="q-mb-md">
         <div class="row q-col-gutter-sm q-pa-md">
-          <!-- Código tarea JP -->
+          <!-- Tarea -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Código tarea JP</label>
-            <q-input v-model="control.codigo_tarea_jp" outlined dense></q-input>
-          </div>
-
-          <!-- Detalle tarea -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Detalle de tarea</label>
-            <q-input
-              v-model="control.codigo_tarea_jp"
-              outlined
+            <label class="q-mb-sm block">Tarea</label>
+            <q-select
+              v-model="control.tarea"
+              :options="listadosAuxiliares.tareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              clearable
               dense
-              disable
-            ></q-input>
-          </div>
-
-          <!-- Código subtarea -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Código de subtarea</label>
-            <q-input v-model="control.codigo_subtarea" outlined dense></q-input>
-          </div>
-
-          <!-- Detalle subtarea -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Detalle de subtarea</label>
-            <q-input
-              v-model="control.detalle_subtarea"
               outlined
+              :option-label="(item) => item.detalle"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Grupo</label>
+            <q-select
+              v-model="control.grupo"
+              :options="listadosAuxiliares.grupos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
               dense
-              disable
-            ></q-input>
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              clearable
+              :error="!!v$.grupo.$errors.length"
+            >
+              <!--@update:model-value="obtenerResponsables(subtarea.grupo)"-->
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
           </div>
 
           <!-- Fecha -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha</label>
-            <q-input v-model="control.fecha" outlined dense disable></q-input>
+            <label class="q-mb-sm block">Fecha y hora de asistencia</label>
+            <q-input
+              v-model="control.fecha_hora"
+              outlined
+              dense
+              disable
+            ></q-input>
           </div>
 
-          <!-- Hora -->
+          <!-- Jornada -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Hora de registro de asistencia</label>
-            <q-input v-model="control.hora" outlined dense disable></q-input>
+            <label class="q-mb-sm block">Jornada</label>
+            <q-select
+              v-model="control.jornada"
+              :options="tiposJornadas"
+              :error="!!v$.jornada.$errors.length"
+              options-dense
+              dense
+              outlined
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.jornada.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
           </div>
 
           <!-- Imagen -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Imagen</label>
+            <label class="q-mb-sm block">Foto de evidencia</label>
             <selector-imagen
               :modelValue="control.imagen"
               @update:modelValue="(data) => (control.imagen = data)"
@@ -66,14 +113,14 @@
 
       <div class="q-gutter-md column">
         <essential-table
-          titulo="técnicos"
+          titulo="Listado de trabajadores"
           :configuracionColumnas="
             configuracionColumnasMaterialesSolicitadosAccion
           "
-          :datos="asistenciaTecnicos"
+          :datos="listadosAuxiliares.empleados"
           :permitirConsultar="false"
-          :permitirEliminar="true"
-          :permitirEditar="true"
+          :permitirEliminar="false"
+          :permitirEditar="false"
           :mostrarBotones="false"
           :accion1="botonAgregarObservacion"
           tipoSeleccion="multiple"

@@ -1,7 +1,6 @@
 // Dependencias
 import { configuracionColumnasTareas } from '../domain/configuracionColumnasTareas'
 import { computed, defineComponent, ref } from 'vue'
-// import { useTareaStore } from 'stores/tarea'
 
 // Componentes
 import SubtareasListadoContent from 'pages/tareas/controlTareas/modules/subtareasListadoContent/view/SubtareasListadoContent.vue'

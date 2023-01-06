@@ -58,7 +58,7 @@ const routes: RouteRecordRaw[] = [
         name: 'control_tendidos',
         component: () =>
           import(
-            'pages/tareas/progresivas/controlProgresivas/view/ControlTendidoPage.vue'
+            'tareas/tendidos/controlTendidos/view/ControlTendidoPage.vue'
           ),
         meta: { requiresAuth: true },
       },
@@ -74,38 +74,43 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/gestionar-avances',
         name: 'gestionar_avances',
-        component: () => import('pages/tareas/subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'),
+        component: () => import('tareas/subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/control-diario-materiales',
         name: 'control_diario_materiales',
-        component: () => import('pages/tareas/controlDiarioMateriales/view/ControlDiarioMaterialPage.vue'),
+        component: () => import('tareas/controlDiarioMateriales/view/ControlDiarioMaterialPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/control-cambios',
         name: 'control_cambios',
-        component: () => import('pages/tareas/controlCambios/view/ControlCambioPage.vue'),
+        component: () => import('tareas/controlCambios/view/ControlCambioPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/control-asistencia',
         name: 'control_asistencia',
-        component: () => import('pages/tareas/controlAsistencia/view/ControlAsistenciaPage.vue'),
+        component: () => import('tareas/controlAsistencia/view/ControlAsistenciaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/control-avance',
         name: 'control_avance',
-        component: () => import('pages/tareas/subtareas/modules/gestionarAvances/modules/controlAvance/view/ControlAvanceContent.vue'),
+        component: () => import('subtareas/modules/gestionarAvances/modules/controlAvance/view/ControlAvanceContent.vue'),
         meta: { requiresAuth: true },
       },
-      // src\pages\tareas\trabajoAsignado\view\TrabajoAsignadoPage.vue
       {
         path: '/trabajo-asignado',
         name: 'trabajo_asignado',
-        component: () => import('pages/tareas/trabajoAsignado/view/TrabajoAsignadoPage.vue'),
+        component: () => import('tareas/trabajoAsignado/view/TrabajoAsignadoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reportes-control-materiales',
+        name: 'reportes_control_materiales',
+        component: () => import('tareas/reportesControlMateriales/view/ReporteControlMaterialPage.vue'),
         meta: { requiresAuth: true },
       },
       {

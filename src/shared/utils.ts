@@ -243,6 +243,14 @@ export function obtenerFechaActual() {
   return formattedString
 }
 
+export function obtenerFechaActualTexto() {
+  return date.formatDate(Date.now(), 'dddd, DD MMMM YYYY')
+}
+
+export function obtenerFechaHoraActual() {
+  return date.formatDate(Date.now(), 'DD-MM-YYYY HH:mm:ss')
+}
+
 export function obtenerMensajesError() {
   //
 }

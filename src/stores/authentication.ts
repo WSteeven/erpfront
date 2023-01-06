@@ -110,7 +110,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   function can(permiso: string) {
-    return permisos.value.indexOf(permiso) !== -1
+    return permisos.value?.indexOf(permiso) !== -1
   }
 
   return {

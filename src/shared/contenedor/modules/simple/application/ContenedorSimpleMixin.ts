@@ -124,6 +124,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         const { result } = await this.controller.listar(params)
         /* this.refs.currentPageListado.value = result.current_page
         this.refs.nextPageUrl.value = result.next_page_url */
+        if (result.length == 0) this.notificaciones.notificarCorrecto('Sin elementos')
+
         if (append) this.refs.listado.value.push(...result)
         else this.refs.listado.value = result
       } catch (error) {
@@ -142,15 +144,15 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // Guardar
   private async guardar(data: any, resetOnSaved = true,) {
 
-    /*  if (!this.seCambioEntidad(this.entidad_vacia)) {
-       this.notificaciones.notificarAdvertencia(
-         'No se ha efectuado ningun cambio'
-       )
-       throw new Error('No se ha efectuado ningun cambio')
-     } */
+    if (!this.seCambioEntidad(this.entidad_vacia)) {
+      this.notificaciones.notificarAdvertencia(
+        'No se ha efectuado ningun cambio'
+      )
+      throw new Error('No se ha efectuado ningun cambio')
+    }
 
 
-    if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
     }
@@ -172,18 +174,18 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           this.reestablecer()
         }
 
-        // this.hooks.onGuardado()
+        this.hooks.onGuardado()
         console.log(this.entidad)
 
 
-        const stop = watchEffect(() => {
+        /* const stop = watchEffect(() => {
           // console.log('dentrode  watch')
           if (this.entidad.id !== null) {
             this.hooks.onGuardado()
             // console.log('ha sido guardado mixin')
             stop()
           }
-        })
+        }) */
 
       } catch (error: any) {
         if (isAxiosError(error)) {

@@ -84,6 +84,9 @@ export const endpoints = {
   intercambiar_secretario_cuadrilla: new Endpoint('intercambiar-secretario-cuadrilla/'),
   archivos_subtareas: new Endpoint('archivos-subtareas/'),
   materiales_despachados: new Endpoint('transacciones-egresos/materiales-despachados/'),
-  materiales_despachados_sin_bobina: new Endpoint('transacciones-egresos/materiales-despachados-sin-bobina/'),
-  materiales_despachados_con_bobina: new Endpoint('transacciones-egresos/materiales-despachados-con-bobina/'),
+  materiales_despachados_sin_bobina: new Endpoint('materiales-grupo-tarea/'),
+  // materiales_despachados_con_bobina: new Endpoint('transacciones-egresos/materiales-despachados-con-bobina/'),
+  bobinas_grupo_tarea: new Endpoint('bobinas-grupo-tarea/'),
+  registros_tendidos: new Endpoint('registros-tendidos/'),
+  reportes_control_materiales: new Endpoint('reportes-control-materiales'),
 }

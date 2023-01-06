@@ -13,10 +13,10 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ComportamientoModalesSubtareaContent } from '../application/ComportamientoModalesSubtareaContent'
-import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
+import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
-import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
+import { Subtarea } from 'subtareas/domain/Subtarea'
 
 export default defineComponent({
   components: { EssentialTableTabs, ModalesEntidad },

@@ -26,15 +26,15 @@ import { ClienteController } from "pages/sistema/clientes/infraestructure/Client
 import useVuelidate from "@vuelidate/core";
 import { useInventarioStore } from "stores/inventario";
 import { useMovimientoStore } from "stores/movimiento";
-import { emit } from "process";
+
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable },
-    emits:['cerrar-modal'],
-    setup(props, {emit}) {
+    emits: ['cerrar-modal'],
+    setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
         const { cargarVista, setValidador, obtenerListados } = mixin.useComportamiento()
         const { entidad: transaccion, listadosAuxiliares, refs } = mixin.useReferencias()
-        
+
         //Stores
         const transaccionStore = useTransaccionEgresoStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
@@ -43,7 +43,7 @@ export default defineComponent({
         const movimientoStore = useMovimientoStore()
 
         transaccion.hydrate(transaccionStore.transaccion) //cargar la transaccion con la del store
-        
+
         const opciones_tipos = ref([])
         const opciones_motivos = ref([])
         const opciones_sucursales = ref([])
@@ -51,7 +51,7 @@ export default defineComponent({
         const opciones_autorizaciones = ref([])
         const opciones_estados = ref([])
         const opciones_clientes = ref([])
-        cargarVista(async() => {
+        cargarVista(async () => {
             await obtenerListados({
                 empleados: new EmpleadoController(),
                 tipos: new TipoTransaccionController(),
@@ -80,9 +80,9 @@ export default defineComponent({
 
 
 
-        const reglas ={
-            motivo :{required},
-            cliente :{required},
+        const reglas = {
+            motivo: { required },
+            cliente: { required },
         }
         const v$ = useVuelidate(reglas, transaccion)
         setValidador(v$.value)
@@ -108,15 +108,15 @@ export default defineComponent({
             console.log('selected2 en el watch',selected2.value)
             console.log('en el watch',selected.value[0]['cantidades'])
         }) */
-        function reemplazarCantidad(){
-            selected2.value.forEach((element,index)=>{
-                if(element.detalle_id==selected.value[0]['id']){
-                    element.cantidad= selected.value[0]['cantidades']
+        function reemplazarCantidad() {
+            selected2.value.forEach((element, index) => {
+                if (element.detalle_id == selected.value[0]['id']) {
+                    element.cantidad = selected.value[0]['cantidades']
                 }
             })
         }
 
-        function cerrarModal(){
+        function cerrarModal() {
             emit('cerrar-modal')
         }
 
@@ -144,7 +144,7 @@ export default defineComponent({
             detalle_id,
             onComplete() {
                 console.log('Completado!!!!', selected2.value)
-                selected2.value.forEach((v)=>{
+                selected2.value.forEach((v) => {
                     console.log(v.cantidad, v.id)
                     const movimiento = {
                         'inventario_id': v.id,
@@ -153,11 +153,11 @@ export default defineComponent({
                         'detalle_id': detalle_id,
                         'precio_unitario': detalleStore.detalle.precio_compra,
                     }
-                    console.log('los argumentos que se envían son: ',movimiento)
+                    console.log('los argumentos que se envían son: ', movimiento)
                     movimientoStore.enviarMovimiento(movimiento)
 
                 })
-                
+
                 // movimientoStore.cerrarModal??modales.cerrarModalEntidad()
                 cerrarModal()
             },
@@ -189,17 +189,17 @@ export default defineComponent({
             selected,
             selected2,
 
-            mostrarEnConsola(details){
+            mostrarEnConsola(details) {
                 if (details.added) {//Si se selecciono un item, realizar la busqueda
                     console.log("se seleccionó", details.rows)
                     console.log("id se seleccionó", details.rows[0]['id'])
-                    console.log('details modificado en cantidad',details.rows[0]['cantidad']=selected.value[0]['cantidades'])
-                    console.log('details modificado en todo',details.rows)
+                    console.log('details modificado en cantidad', details.rows[0]['cantidad'] = selected.value[0]['cantidades'])
+                    console.log('details modificado en todo', details.rows)
                     console.log("La cantidad del details seleccionado es", details.rows[0]['cantidad'])
                     console.log("La cantidad del selected2 es", selected2.value)
                     console.log("La cantidad del select1 es", selected.value[0]['cantidades'])
-                    
-                    
+
+
                 }
             },
         }

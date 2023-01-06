@@ -28,6 +28,17 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.trabajo_asignado'),
     },
     {
+      title: 'Reportes control de materiales',
+      link: 'reportes-control-materiales',
+      icon: 'bi-table',
+      can: store.can('puede.ver.reportes_control_materiales'),
+    },
+    {
+      title: 'Control de asistencia',
+      link: 'control-asistencia',
+      icon: 'bi-person-check',
+    },
+    {
       title: 'Tablero',
       icon: 'bi-layers-fill',
       link: '/admin',
@@ -60,11 +71,6 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'tipos-trabajos',
           icon: 'bi-circle',
           can: store.can('puede.ver.tipos_trabajos'),
-        },
-        {
-          title: 'Control de asistencia',
-          link: 'control-asistencia',
-          icon: 'bi-circle',
         },
         {
           title: 'Solicitud de materiales a bodega',

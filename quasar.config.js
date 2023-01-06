@@ -92,7 +92,10 @@ module.exports = configure(function (/* ctx */) {
         tareas: path.join(__dirname, './src/pages/tareas'),
         sistema: path.join(__dirname, './src/pages/sistema'),
         controlTareas: path.join(__dirname, './src/pages/tareas/controlTareas'),
-        subtareas: path.join(__dirname, './src/pages/tareas/subtareas'),
+        subtareas: path.join(
+          __dirname,
+          './src/pages/tareas/controlTareas/modules/subtareas'
+        ),
         tiposTrabajos: path.join(__dirname, './src/pages/tareas/tiposTareas'),
       },
     },
