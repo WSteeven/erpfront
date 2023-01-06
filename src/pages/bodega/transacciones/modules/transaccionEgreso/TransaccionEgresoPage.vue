@@ -186,6 +186,39 @@
               </template>
             </q-select>
           </div>
+          <!-- Tiene pedido -->
+          <div
+            v-if="accion === 'NUEVO' || transaccion.tiene_pedido"
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="transaccion.tiene_pedido"
+              label="¿Hay pedido?"
+              @update:model-value="checkPedido"
+              outlined
+              :disable="disabled"
+              dense
+            />
+          </div>
+          <!-- Pedido -->
+          <div
+            v-if="transaccion.tiene_pedido"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">N° pedido</label>
+            <q-input
+              type="number"
+              v-model="transaccion.pedido"
+              placeholder="Opcional"
+              hint="Ingresa un numero de pedido y presiona Enter"
+              @keyup.enter="llenarTransaccion"
+              :readonly="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Tiene observacion de autorizacion -->
           <div
             v-if="

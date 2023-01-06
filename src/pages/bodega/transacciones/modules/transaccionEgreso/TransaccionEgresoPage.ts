@@ -49,6 +49,7 @@ import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { usePedidoStore } from 'stores/pedido'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -67,6 +68,7 @@ export default defineComponent({
         const transaccionStore = useTransaccionStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
         const detalle = useDetalleStore()
+        const pedidoStore = usePedidoStore()
 
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
@@ -563,7 +565,21 @@ export default defineComponent({
             }
             pdfMake.createPdf(docDefinition).open()
         }
+        async function llenarTransaccion() {
+            await pedidoStore.cargarPedido(transaccion.pedido)
+            transaccion.justificacion = pedidoStore.pedido.justificacion
+            transaccion.solicitante = pedidoStore.pedido.solicitante
+            transaccion.sucursal = pedidoStore.pedido.sucursal
+            transaccion.listadoProductosTransaccion = pedidoStore.pedido.listadoProductos
+        }
 
+        function limpiarTransaccion() {
+            transaccion.devolucion = ''
+            transaccion.justificacion = ''
+            transaccion.solicitante = ''
+            transaccion.sucursal = ''
+            transaccion.listadoProductosTransaccion = []
+        }
 
         // console.log('es bodeguero?', esBodeguero)
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
@@ -654,6 +670,13 @@ export default defineComponent({
                 }
             },
 
+            checkPedido(val, evt){
+                console.log('Pedido', val)
+                if(!val){
+                    limpiarTransaccion()
+                }
+            },
+
 
             //tabla
             configuracionColumnasProductosSeleccionadosAccion,
@@ -679,6 +702,9 @@ export default defineComponent({
             rolSeleccionado,
             esBodeguero,
             esCoordinador,
+
+            llenarTransaccion,
+            limpiarTransaccion,
 
             //tabs y filtros
             tabOptionsTransacciones,

@@ -209,7 +209,7 @@
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="pedido.autorizacion || esVisibleAutorizacion || esCoordinador"
+            v-if="pedido.autorizacion || esCoordinador"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -245,10 +245,7 @@
             </q-select>
           </div>
           <!-- Tiene observacion de autorizacion -->
-          <div
-            v-if="esCoordinador"
-            class="col-12 col-md-3"
-          >
+          <div v-if="esCoordinador" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.tiene_observacion_aut"
@@ -260,13 +257,12 @@
           </div>
           <!-- observacion autorizacion -->
           <div
-            v-if="
-              pedido.tiene_observacion_aut || pedido.observacion_aut
-            "
+            v-if="pedido.tiene_observacion_aut || pedido.observacion_aut"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
+              autogrow
               v-model="pedido.observacion_aut"
               placeholder="Obligatorio"
               :disable="disabled || (soloLectura && !esCoordinador)"
@@ -296,6 +292,7 @@
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaProducto"
+                  :disable="disabled || (soloLectura && !esCoordinador)"
                   placeholder="Nombre de producto"
                   @update:model-value="
                     (v) => (criterioBusquedaProducto = v.toUpperCase())
@@ -318,6 +315,7 @@
                   color="primary"
                   class="full-width"
                   style="height: 40px"
+                  :disable="disabled || (soloLectura && !esCoordinador)"
                   no-caps
                   >Buscar</q-btn
                 >
