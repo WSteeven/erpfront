@@ -10,11 +10,11 @@ import {
   acciones,
 } from 'config/utils'
 import { useTendidoStore } from 'stores/tendido'
-import { computed, defineComponent, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, defineComponent, onMounted, watch } from 'vue'
 import { required } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
 import { logoBN, logoColor } from 'config/utils'
+import useVuelidate from '@vuelidate/core'
+import { useRouter } from 'vue-router'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -28,16 +28,16 @@ import { RegistroTendidoController } from '../modules/registrosTendidos/infraest
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
 import { ControlTendidoController } from '../infraestructure/ControlTendidoController'
+import { RegistroTendido } from '../modules/registrosTendidos/domain/RegistroTendido'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { BobinaController } from '../infraestructure/BobinaController'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { Tendido } from '../domain/Tendido'
-import { RegistroTendido } from '../modules/registrosTendidos/domain/RegistroTendido'
 
 // PDFmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import { buildTableBody } from "shared/utils";
+import { buildTableBody } from 'shared/utils';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
 export default defineComponent({
@@ -49,6 +49,7 @@ export default defineComponent({
     EssentialTable,
   },
   setup() {
+    // Mixin tendido
     const mixin = new ContenedorSimpleMixin(
       Tendido,
       new ControlTendidoController()
@@ -56,17 +57,28 @@ export default defineComponent({
 
     const { entidad: progresiva, listadosAuxiliares } = mixin.useReferencias()
     const { guardar, consultar, cargarVista, obtenerListados, setValidador } = mixin.useComportamiento()
-    const { onBeforeGuardar } = mixin.useHooks()
+    const { onBeforeGuardar, onConsultado } = mixin.useHooks()
 
+    // Stores
+    const trabajoAsignadoStore = useTrabajoAsignadoStore()
     const tendidoStore = useTendidoStore()
 
-    // Mixin 
+    // Mixin
     const mixinRegistroTendido = new ContenedorSimpleMixin(RegistroTendido, new RegistroTendidoController())
     const { entidad: registroTendido, listado: listadoRegistrosTendidos } = mixinRegistroTendido.useReferencias()
     const { listar: listarRegistrosTendidos } = mixinRegistroTendido.useComportamiento()
     const entidadReset = new RegistroTendido()
 
-    listarRegistrosTendidos()
+    const router = useRouter()
+
+    onMounted(() => {
+      // Consultar control tendido
+      if (trabajoAsignadoStore.idSubtareaSeleccionada) {
+        consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
+      } else {
+        router.replace({ name: 'trabajo_asignado' })
+      }
+    })
 
     cargarVista(async () => {
       await obtenerListados({
@@ -79,8 +91,6 @@ export default defineComponent({
         },
       })
     })
-
-    const trabajoAsignadoStore = useTrabajoAsignadoStore()
 
     const setBase64 = (file: File) => {
       if (file !== null && file !== undefined) {
@@ -119,17 +129,20 @@ export default defineComponent({
       tendidoStore.idRegistroTendido = entidad.id
     }
 
+    function verResumen() {
+      modales.abrirModalEntidad('ResumenTendidoPage')
+    }
+
+    // Hooks
+    onConsultado(() =>
+      listarRegistrosTendidos({
+        tendido: progresiva.id
+      })
+    )
+
     onBeforeGuardar(() => progresiva.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada)
 
     const modales = new ComportamientoModalesProgresiva()
-
-    const router = useRouter()
-
-    if (trabajoAsignadoStore.idSubtareaSeleccionada) {
-      consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
-    } else {
-      router.replace({ name: 'trabajo_asignado' })
-    }
 
     // Reglas de validacion
     const reglas = {
@@ -184,10 +197,10 @@ export default defineComponent({
         },
       }
 
-      var docDefinition = {
+      const docDefinition = {
         info: {
-          title: `Control de tendidos`,
-          author: `Juan Cuesta`,
+          title: 'Control de tendidos',
+          author: 'Juan Cuesta',
         },
         background: {
           image: logoBN,
@@ -217,7 +230,7 @@ export default defineComponent({
                   text: currentPage.toString() + ' de ' + pageCount,
                   margin: [10, 10]
                 },
-                { qr: `Transacción N° 1\n Generado por Juan Cuesta`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
+                { qr: 'Transacción N° 1\n Generado por Juan Cuesta', fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
               ]
             }
           ]
@@ -239,21 +252,21 @@ export default defineComponent({
                 width: '*',
                 text: [
                   { text: 'Nombre del proyecto: ', style: 'defaultStyle' },
-                  { text: `Circular Palmales`, style: 'resultStyle', }
+                  { text: 'Circular Palmales', style: 'resultStyle', }
                 ]
               },
               {
                 width: '*',
                 text: [
                   { text: 'Código de bobina: ', style: 'defaultStyle' },
-                  { text: `B45455`, style: 'resultStyle', }
+                  { text: 'B45455', style: 'resultStyle', }
                 ]
               },
               {
                 width: '*',
                 text: [
                   { text: 'Cantidad de hilos: ', style: 'defaultStyle' },
-                  { text: `48`, style: 'resultStyle', }
+                  { text: '48', style: 'resultStyle', }
                 ]
               },
             ],
@@ -265,21 +278,21 @@ export default defineComponent({
                 width: '*',
                 text: [
                   { text: 'Enlace: ', style: 'defaultStyle' },
-                  { text: `FTTH Cuenca`, style: 'resultStyle', }
+                  { text: 'FTTH Cuenca', style: 'resultStyle', }
                 ]
               },
               {
                 width: '*',
                 text: [
                   { text: 'Número de MT inicial: ', style: 'defaultStyle' },
-                  { text: `5441`, style: 'resultStyle', }
+                  { text: '5441', style: 'resultStyle', }
                 ]
               },
               {
                 width: '*',
                 text: [
                   { text: 'Responsable: ', style: 'defaultStyle' },
-                  { text: `Jaime Pilay`, style: 'resultStyle', }
+                  { text: 'Jaime Pilay', style: 'resultStyle', }
                 ]
               },
             ],
@@ -290,21 +303,21 @@ export default defineComponent({
                 width: '*',
                 text: [
                   { text: 'Fecha de instalación: ', style: 'defaultStyle' },
-                  { text: `27/05/2022`, style: 'resultStyle', }
+                  { text: '27/05/2022', style: 'resultStyle', }
                 ]
               },
               {
                 width: '*',
                 text: [
                   { text: 'Número de MT final: ', style: 'defaultStyle' },
-                  { text: `1400`, style: 'resultStyle', }
+                  { text: '1400', style: 'resultStyle', }
                 ]
               },
               {
                 width: '*',
                 text: [
                   { text: '', style: 'defaultStyle' },
-                  { text: ``, style: 'resultStyle', }
+                  { text: '', style: 'resultStyle', }
                 ]
               },
             ],
@@ -315,21 +328,21 @@ export default defineComponent({
                 width: '*',
                 text: [
                   { text: 'Cantidad de FO instalada: ', style: 'defaultStyle' },
-                  { text: `2403`, style: 'resultStyle', }
+                  { text: '2403', style: 'resultStyle', }
                 ]
               },
               {
                 width: '*',
                 text: [
                   { text: 'Tarea N°: ', style: 'defaultStyle' },
-                  { text: `565545`, style: 'resultStyle', }
+                  { text: '565545', style: 'resultStyle', }
                 ]
               },
               {
                 width: '*',
                 text: [
                   { text: '', style: 'defaultStyle' },
-                  { text: ``, style: 'resultStyle', }
+                  { text: '', style: 'resultStyle', }
                 ]
               },
             ],
@@ -383,6 +396,7 @@ export default defineComponent({
       listadosAuxiliares,
       guardar,
       progresiva,
+      verResumen,
       // mixin 2
       listadoRegistrosTendidos,
       configuracionColumnasControlTendido,

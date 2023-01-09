@@ -89,4 +89,5 @@ export const endpoints = {
   bobinas_grupo_tarea: new Endpoint('bobinas-grupo-tarea/'),
   registros_tendidos: new Endpoint('registros-tendidos/'),
   reportes_control_materiales: new Endpoint('reportes-control-materiales'),
+  resumen_tendidos: new Endpoint('resumen-tendidos'),
 }

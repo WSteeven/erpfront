@@ -594,7 +594,7 @@
         </div>
       </div>
     </div>
-    {{ materiales }}
+
     <div class="row q-mb-md">
       <!-- Tabla -->
       <div class="col-12">

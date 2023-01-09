@@ -46,8 +46,6 @@
         </q-btn>
       </q-card-actions>
     </q-card>
-
-    <!--</div> -->
   </q-dialog>
 </template>
 

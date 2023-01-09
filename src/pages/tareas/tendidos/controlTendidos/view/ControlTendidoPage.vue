@@ -40,7 +40,7 @@
 
             <!-- Marca inicial -->
             <div v-if="progresiva.bobina" class="col-12 col-md-3">
-              <label class="q-mb-sm block">Cantidad de hilos</label>
+              <label class="q-mb-sm block">Cantidad de hilos de la FO</label>
               <q-input
                 v-model="progresiva.cantidad_hilos"
                 outlined
@@ -126,8 +126,10 @@
                 dense
               ></q-input>
             </div>
+          </div>
 
-            <div v-if="progresiva.id" class="col-12">
+          <div v-if="progresiva.id" class="row q-mb-xl">
+            <div class="col-12">
               <essential-table
                 titulo="Registro de avances"
                 :configuracionColumnas="[
@@ -143,37 +145,63 @@
               ></essential-table>
             </div>
           </div>
+
+          <div class="row justify-end q-gutter-xs">
+            <q-btn
+              color="secondary"
+              class="col-12 col-md-3"
+              no-caps
+              push
+              flat
+              :to="{ name: 'trabajo_asignado' }"
+              rounded
+              no-wrap
+            >
+              <q-icon name="bi-chevron-left" size="xs" class="q-pr-sm"></q-icon>
+              <span>Volver a la pantalla principal</span>
+            </q-btn>
+
+            <q-btn
+              v-if="!progresiva.id"
+              class="col-12 col-md-3"
+              color="positive"
+              @click="guardar(progresiva, false)"
+              no-caps
+              no-wrap
+              rounded
+              push
+            >
+              <q-icon name="bi-play-fill" size="xs" class="q-pr-sm"></q-icon>
+              Agregar elementos
+            </q-btn>
+
+            <!-- <q-btn
+              v-if="progresiva.id"
+              color="positive"
+              class="col-12 col-md-3"
+              no-caps
+              push
+              @click="pdfMakeImprimir()"
+            >
+              <q-icon name="bi-printer" size="xs" class="q-pr-sm"></q-icon>
+              <span>Imprimir</span>
+            </q-btn> -->
+
+            <q-btn
+              v-if="progresiva.id"
+              color="positive"
+              class="col-12 col-md-3"
+              no-caps
+              push
+              @click="verResumen()"
+            >
+              <q-icon name="bi-table" size="xs" class="q-pr-sm"></q-icon>
+              <span>Ver resumen</span>
+            </q-btn>
+          </div>
         </q-form>
       </q-card-section>
     </q-card>
-
-    <div class="row justify-end q-gutter-sm q-pt-md">
-      <q-btn color="grey-8" no-caps push :to="{ name: 'trabajo_asignado' }">
-        <q-icon name="bi-chevron-left" size="xs" class="q-pr-sm"></q-icon>
-        <span>Volver a la pantalla principal</span>
-      </q-btn>
-
-      <q-btn
-        v-if="!progresiva.id"
-        color="positive"
-        @click="guardar(progresiva, false)"
-        no-caps
-      >
-        <q-icon name="bi-play-circle" size="xs" class="q-mr-sm"></q-icon>Empezar
-        a agregar elementos
-      </q-btn>
-
-      <q-btn
-        v-if="progresiva.id"
-        color="positive"
-        no-caps
-        push
-        @click="pdfMakeImprimir()"
-      >
-        <q-icon name="bi-printer" size="xs" class="q-pr-sm"></q-icon>
-        <span>Imprimir</span>
-      </q-btn>
-    </div>
 
     <modales-entidad :comportamiento="modales" :mixin="mixinRegistroTendido" />
   </q-page>

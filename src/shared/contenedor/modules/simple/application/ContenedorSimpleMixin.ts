@@ -95,9 +95,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         }
       } finally {
         this.hooks.onConsultado()
-
       }
-
     })
 
     /*const stop = watch(this.entidad, () => {
@@ -121,10 +119,12 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   private async listar(params: any, append = false) {
     this.cargarVista(async () => {
       try {
+        console.log('listar...')
+        console.log(params)
         const { result } = await this.controller.listar(params)
         /* this.refs.currentPageListado.value = result.current_page
         this.refs.nextPageUrl.value = result.next_page_url */
-        if (result.length == 0) this.notificaciones.notificarCorrecto('Sin elementos')
+        if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
 
         if (append) this.refs.listado.value.push(...result)
         else this.refs.listado.value = result

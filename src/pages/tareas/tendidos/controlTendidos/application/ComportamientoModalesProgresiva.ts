@@ -1,8 +1,8 @@
 import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
-import { ProgresivaModales } from '../domain/ProgresivaModales'
+import { TendidoModales } from '../domain/TendidoModales'
 
-export class ComportamientoModalesProgresiva extends ComportamientoModales<ProgresivaModales> {
+export class ComportamientoModalesProgresiva extends ComportamientoModales<TendidoModales> {
   constructor() {
-    super(new ProgresivaModales())
+    super(new TendidoModales())
   }
 }
