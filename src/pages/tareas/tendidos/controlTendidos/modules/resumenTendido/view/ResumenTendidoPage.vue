@@ -42,20 +42,37 @@
         <label class="q-mb-sm block">Cantidad de hilos de la FO</label>
         <label class="q-mb-sm block text-bold">12</label>
       </div>
+
+      <div class="col-12 col-md-3 q-mb-md">
+        <label class="q-mb-sm block">Cantidad de postes</label>
+        <label class="q-mb-sm block text-bold">6</label>
+      </div>
+
+      <div class="col-12 col-md-3 q-mb-md">
+        <label class="q-mb-sm block">Cantidad de pozos</label>
+        <label class="q-mb-sm block text-bold">4</label>
+      </div>
+
+      <div class="col-12 col-md-3 q-mb-md">
+        <label class="q-mb-sm block">Enlace</label>
+        <label class="q-mb-sm block text-bold">Ruta FFTH CUENCA</label>
+      </div>
     </div>
 
     <essential-table
       titulo="Resumen"
-      :configuracionColumnas="configuracionColumnasResumenTendido"
-      :datos="materiales"
+      :configuracionColumnas="columnas"
+      :datos="listado"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
       :mostrarBotones="false"
       :alto-fijo="false"
       separador="cell"
-      :accion1="botonEditarCantidad"
-      @eliminar="eliminar"
+      :accion1="botonVerImagen"
+      :accion2="botonVerCruceAmericano"
+      :accion3="botonVerPosteAnclaje1"
+      :accion4="botonVerPosteAnclaje1"
     ></essential-table>
 
     <div class="row justify-end q-gutter-sm q-pt-md">

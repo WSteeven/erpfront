@@ -390,6 +390,17 @@
       </q-td>
     </template>
 
+    <template #body-cell-instalo_manga="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
     <template #body-cell-pagado="props">
       <q-td :props="props" class="">
         <q-icon

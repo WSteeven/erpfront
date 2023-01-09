@@ -36,6 +36,7 @@ export class ResumenTendido extends EntidadAuditable {
   materiales_ocupados: any[]
   tension: string | null
   subtarea: number | null
+  created_at: string | null
 
   constructor() {
     super()
@@ -69,5 +70,6 @@ export class ResumenTendido extends EntidadAuditable {
     this.materiales_ocupados = []
     this.tension = null
     this.subtarea = null
+    this.created_at = null
   }
 }

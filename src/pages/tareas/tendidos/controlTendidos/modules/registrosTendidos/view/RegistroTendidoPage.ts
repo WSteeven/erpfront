@@ -82,6 +82,7 @@ export default defineComponent({
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil',
       color: 'secondary',
+      visible: () => accion.value !== acciones.consultar,
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
