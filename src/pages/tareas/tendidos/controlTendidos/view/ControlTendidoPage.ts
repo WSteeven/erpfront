@@ -117,6 +117,7 @@ export default defineComponent({
 
     function consultarRegistro({ entidad }) {
       modales.abrirModalEntidad('RegistroTendidoPage')
+      registroTendido.hydrate(entidadReset)
       tendidoStore.idTendido = progresiva.id
       tendidoStore.accion = acciones.consultar
       tendidoStore.idRegistroTendido = entidad.id
@@ -124,6 +125,7 @@ export default defineComponent({
 
     function editarRegistro({ entidad }) {
       modales.abrirModalEntidad('RegistroTendidoPage')
+      registroTendido.hydrate(entidadReset)
       tendidoStore.idTendido = progresiva.id
       tendidoStore.accion = acciones.editar
       tendidoStore.idRegistroTendido = entidad.id
