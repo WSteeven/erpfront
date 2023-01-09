@@ -163,7 +163,7 @@ export default defineComponent({
         }
 
         async function llenarTransaccion() {
-            await devolucionStore.cargarDevolucion(transaccion.devolucion)
+            await devolucionStore.cargarDevolucion(transaccion.devolucion, '?estado=CREADA')
             transaccion.justificacion = devolucionStore.devolucion.justificacion
             transaccion.solicitante = devolucionStore.devolucion.solicitante
             transaccion.sucursal = devolucionStore.devolucion.sucursal

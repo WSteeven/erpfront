@@ -570,6 +570,7 @@ export default defineComponent({
             transaccion.justificacion = pedidoStore.pedido.justificacion
             transaccion.solicitante = pedidoStore.pedido.solicitante
             transaccion.sucursal = pedidoStore.pedido.sucursal
+            transaccion.tarea = pedidoStore.pedido.tarea
             transaccion.listadoProductosTransaccion = pedidoStore.pedido.listadoProductos
         }
 

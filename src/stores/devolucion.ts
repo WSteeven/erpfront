@@ -23,19 +23,19 @@ export const useDevolucionStore = defineStore('devolucion', () => {
 
     const statusLoading = new StatusEssentialLoading()
 
-    async function consultar(id: number) {
+    async function consultar(id: number, params?:any) {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.devoluciones) + id
+        const ruta = axios.getEndpoint(endpoints.devoluciones) + id+'&'+params
         const response: AxiosResponse = await axios.get(ruta)
         console.log('Respuesta obtenida: ', response)
 
         return response.data.modelo
     }
 
-    async function cargarDevolucion(id: number) {
+    async function cargarDevolucion(id: number, params?:any) {
         try {
             statusLoading.activar()
-            const modelo = await consultar(id)
+            const modelo = await consultar(id, params)
             devolucion.hydrate(modelo)
         } catch (e) {
             notificarError('Registro no encontrado')
