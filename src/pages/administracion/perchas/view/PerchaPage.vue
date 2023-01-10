@@ -44,7 +44,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.nombre.$errors - length"
-              @update:model-value="(v) => (percha.nombre = v.toUpperCase())"
               outlined
               dense
             >

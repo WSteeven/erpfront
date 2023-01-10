@@ -52,9 +52,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.descripcion.$errors.length"
-              @update:model-value="
-                (v) => (detalle.descripcion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -236,9 +233,6 @@
               v-model="detalle.precio_compra"
               placeholder="Obligatorio"
               :readonly="disabled"
-              @update:model-value="
-                (v) => (detalle.precio_compra = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -289,7 +283,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.serial.$errors.length"
-              @update:model-value="(v) => (detalle.serial = v.toUpperCase())"
               outlined
               dense
             >
@@ -308,7 +301,6 @@
               v-model="detalle.color"
               placeholder="Obligatorio"
               :readonly="disabled"
-              @update:model-value="(v) => (detalle.color = v.toUpperCase())"
               outlined dense
             >
             </q-input>
@@ -320,7 +312,6 @@
               v-model="detalle.talla"
               placeholder="Opcional"
               :readonly="disabled"
-              @update:model-value="(v) => (detalle.talla = v.toUpperCase())"
               outlined
               dense
             >
@@ -352,15 +343,6 @@
                 </q-item>
               </template>
             </q-select>
-            <!-- <q-input
-              v-model="detalle.capacidad"
-              placeholder="Obligatorio"
-              :readonly="disabled"
-              @update:model-value="(v) => (detalle.capacidad = v.toUpperCase())"
-              outlined
-              dense
-            >
-            </q-input> -->
           </div>
           <!-- Span -->
           <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">
@@ -451,9 +433,6 @@
               placeholder="Opcional"
               :readonly="disabled"
               :error="!!v$.punta_inicial.$errors.length"
-              @update:model-value="
-                (v) => (detalle.punta_inicial = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -476,9 +455,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.punta_final.$errors.length"
-              @update:model-value="
-                (v) => (detalle.punta_final = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -500,7 +476,6 @@
               v-model="detalle.custodia"
               placeholder="Opcional"
               :readonly="disabled"
-              @update:model-value="(v) => (detalle.custodia = v.toUpperCase())"
               outlined
               dense
             >

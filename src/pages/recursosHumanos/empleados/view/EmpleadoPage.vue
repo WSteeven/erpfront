@@ -16,9 +16,6 @@
                 placeholder="Obligatorio"
                 :readonly="disabled"
                 :error="!!v$.usuario.$errors.length"
-                @update:model-value="
-                  (v) => (empleado.usuario = v.toUpperCase())
-                "
                 outlined
                 dense
               >
@@ -57,9 +54,6 @@
                 v-model="empleado.password"
                 placeholder="Obligatorio"
                 :readonly="disabled"
-                @update:model-value="
-                  (v) => (empleado.password = v.toUpperCase())
-                "
                 outlined
                 dense
               >
@@ -83,9 +77,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.identificacion.$errors.length"
-              @update:model-value="
-                (v) => (empleado.identificacion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -107,7 +98,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.nombres.$errors.length"
-              @update:model-value="(v) => (empleado.nombres = v.toUpperCase())"
               outlined
               dense
             >
@@ -126,9 +116,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.apellidos.$errors.length"
-              @update:model-value="
-                (v) => (empleado.apellidos = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -148,7 +135,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.telefono.$errors.length"
-              @update:model-value="(v) => (empleado.telefono = v.toUpperCase())"
               outlined
               dense
             >
@@ -169,9 +155,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.fecha_nacimiento.$errors.length"
-              @update:model-value="
-                (v) => (empleado.fecha_nacimiento = v.toUpperCase())
-              "
               outlined
               dense
             >

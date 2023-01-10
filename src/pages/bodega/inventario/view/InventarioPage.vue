@@ -173,9 +173,6 @@
               :readonly="disabled"
               :error="!!v$.cantidad.$errors.length"
               error-message="Debes ingresar la cantidad de existencias"
-              @update:model-value="
-                (v) => (inventario.cantidad = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -186,24 +183,6 @@
               </template>
             </q-input>
           </div>
-          <!-- Prestados -->
-          <!-- <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Prestados</label>
-            <q-input
-              type="number"
-              mask="###"
-              unmasked-value
-              v-model="inventario.prestados"
-              placeholder="Opcional"
-              :readonly="disabled"
-              @update:model-value="
-                (v) => (inventario.prestados = v.toUpperCase())
-              "
-              outlined
-              dense
-            >
-            </q-input>
-          </div> -->
         </div>
       </q-form>
     </template>

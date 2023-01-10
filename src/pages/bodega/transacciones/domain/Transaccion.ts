@@ -31,6 +31,7 @@ export class Transaccion extends EntidadAuditable{
     ingreso_masivo:boolean
     es_tarea:boolean
     tiene_devolucion:boolean
+    tiene_pedido:boolean
 
     // producto: string|null
     listadoProductosTransaccion:any[]
@@ -66,6 +67,7 @@ export class Transaccion extends EntidadAuditable{
         this.ingreso_masivo=false
         this.es_tarea=false
         this.tiene_devolucion=false
+        this.tiene_pedido=false
 
         // this.producto=null
         this.listadoProductosTransaccion=[]

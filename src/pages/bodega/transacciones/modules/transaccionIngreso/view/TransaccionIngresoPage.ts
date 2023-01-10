@@ -39,7 +39,7 @@ import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraes
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ComportamientoModalesTransaccionIngreso } from '../../transaccionIngresoInventario/application/ComportamientoModalesTransaccionIngreso'
 import { useDetalleStore } from 'stores/detalle'
-import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { useRouter } from 'vue-router'
 
@@ -47,6 +47,7 @@ import { useRouter } from 'vue-router'
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from "shared/utils";
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -162,8 +163,11 @@ export default defineComponent({
             condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
         }
 
-        async function llenarTransaccion() {
-            await devolucionStore.cargarDevolucion(transaccion.devolucion, '?estado=CREADA')
+        async function llenarTransaccion(id:number) {
+            limpiarTransaccion()
+            await devolucionStore.cargarDevolucion(id)
+            console.log(devolucionStore.devolucion)
+            transaccion.devolucion = devolucionStore.devolucion.id
             transaccion.justificacion = devolucionStore.devolucion.justificacion
             transaccion.solicitante = devolucionStore.devolucion.solicitante
             transaccion.sucursal = devolucionStore.devolucion.sucursal
@@ -220,14 +224,16 @@ export default defineComponent({
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
             accion: ({ posicion }) => {
-                prompt(
-                    'Ingresa la cantidad',
-                    (data) => {
+                const config: CustomActionPrompt={
+                    titulo:'Confirmación',
+                    mensaje:'Ingresa la cantidad',
+                    defecto: transaccion.listadoProductosTransaccion[posicion].cantidad,
+                    tipo:'number',
+                    accion: (data) => {
                         transaccion.listadoProductosTransaccion[posicion].cantidad = data
                     },
-                    'number',
-                    transaccion.listadoProductosTransaccion[posicion].cantidad
-                )
+                }
+                prompt(config)
             },
             visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar ||!estaInventariando.value
         }

@@ -30,7 +30,6 @@ import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpReposi
 import { endpoints } from "config/api";
 import html2pdf from 'html2pdf.js'
 // import { ComportamientoModalesDevoluciones } from "../application/ComportamientoModalesDevolucion";
-import { useDevolucionStore } from "stores/devolucion";
 
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
@@ -41,6 +40,8 @@ import { buildTableBody, notificarMensajesError } from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController';
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController';
+import { usePedidoStore } from 'stores/pedido';
+import { getPackedSettings } from 'http2';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -56,7 +57,7 @@ export default defineComponent({
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         //stores
-        const devolucionStore = useDevolucionStore()
+        const pedidoStore = usePedidoStore()
         const store = useAuthenticationStore()
 
         //modales
@@ -172,22 +173,22 @@ export default defineComponent({
             }
         }
 
+
+
         const botonImprimir: CustomActionTable = {
             titulo: 'Imprimir',
             color: 'secondary',
             icono: 'bi-printer',
             accion: async ({ entidad, posicion }) => {
-                devolucionStore.idDevolucion = entidad.id
+                pedidoStore.idPedido = entidad.id
                 // modales.abrirModalEntidad("ImprimirDevolucionPage")
-                await devolucionStore.showPreview()
-                console.log(devolucionStore.devolucion.listadoProductos)
-                console.log(devolucionStore.devolucion.listadoProductos.flatMap((v) => v))
+                await pedidoStore.showPreview()
+                console.log(pedidoStore.pedido)
+                console.log(pedidoStore.pedido.listadoProductos)
+                console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
                 pdfMakeImprimir()
-
-
-
             },
-            visible: () => tabSeleccionado.value == 'CREADA' ? true : false
+            visible: () => tabSeleccionado.value == 'APROBADO' ? true : false
         }
         //construccion de la tabla para imprimir
         function table(data, columns, encabezados) {
@@ -236,115 +237,10 @@ export default defineComponent({
                     },
                 },
             }
-            var docDefinition = {
-                styles: {
-                    header: {
-                        fontSize: 16,
-                        bold: true,
-                        alignment: 'center'
-                    },
-                    defaultStyle: {
-                        fontSize: 10,
-                        bold: false
-                    },
-                    resultStyle: {
-                        fontSize: 10,
-                        bold: true
-                    },
-                },
-                background: {
-                    image: logoColor,
-                    margin: [50, 50, 50, 50],
-                    opacity: 0.1
-                },
-                pageSize: 'A5',
-                pageOrientation: 'landscape',
-                content: [
-                    // if you don't need styles, you can use a simple string to define a paragraph
-                    'This is a standard paragraph, using default style',
-
-                    // using a { text: '...' } object lets you set styling properties
-                    { text: 'This paragraph will have a bigger font', fontSize: 15 },
-                    {
-                        canvas: [
-                            {
-                                type: 'line',
-                                x1: 0, y1: 5,
-                                x2: 510, y2: 5,
-                                lineWidth: 1,
-                            },
-                        ], margin: [0, 0, 0, 20]
-                    },
-                    {
-                        columns: [
-                            {
-                                // auto-sized columns have their widths based on their content
-                                width: '*',
-                                text: [
-                                    { text: 'Transaccion N° ', style: 'defaultStyle' },
-                                    { text: `${devolucionStore.devolucion.id}`, style: 'resultStyle', }
-                                ]
-                            },
-                            {
-                                // star-sized columns fill the remaining space
-                                // if there's more than one star-column, available width is divided equally
-                                width: '*',
-                                text: [
-                                    { text: 'Fecha: ', style: 'defaultStyle' },
-                                    { text: `${devolucionStore.devolucion.created_at}`, style: 'resultStyle', }
-                                ]
-                            },
-                            {
-                                // fixed width
-                                width: '*',
-                                text: [
-                                    { text: 'Solicitante: ', style: 'defaultStyle' },
-                                    { text: `${devolucionStore.devolucion.solicitante}`, style: 'resultStyle', }
-                                ]
-                            },
-                        ],
-
-                    },
-                    {
-                        columns: [
-                            {
-                                // auto-sized columns have their widths based on their content
-                                width: '*',
-                                columns: [
-                                    { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${devolucionStore.devolucion.sucursal}`, style: 'resultStyle', }
-                                ]
-                            },
-                            {
-                                // star-sized columns fill the remaining space
-                                // if there's more than one star-column, available width is divided equally
-                                width: 'auto',
-                                columns: [
-                                    { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${devolucionStore.devolucion.justificacion}`, style: 'resultStyle', }
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        columns: [
-                            {
-                                width: '*',
-                                columns: [
-                                    { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                                    { width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle', }
-                                ]
-                            }
-                        ]
-                    },
-
-                ]
-            }
-
             var dd = {
                 // watermark: { text: 'BODEGA JPCONSTRUCRED', opacity: 0.1, bold: true, italics: false },
                 info: {
-                    title: `Devolucion ${devolucionStore.devolucion.id}`,
+                    title: `Pedido ${pedidoStore.pedido.id}`,
                     author: `${store.user.nombres} ${store.user.apellidos}`,
                 },
                 background: {
@@ -362,7 +258,7 @@ export default defineComponent({
                             height: 40,
                             margin: [5, 2]
                         },
-                        { text: 'COMPROBANTE DE DEVOLUCIÓN', width: 'auto', style: 'header', margin: [85, 20] },
+                        { text: 'COMPROBANTE DE PEDIDO', width: 'auto', style: 'header', margin: [85, 20] },
                         { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
                     ]
                 },
@@ -375,7 +271,7 @@ export default defineComponent({
                                     text: currentPage.toString() + ' de ' + pageCount,
                                     margin: [10, 10]
                                 },
-                                { qr: `Devolución N° ${devolucionStore.devolucion.id}\n Generado por ${store.user.nombres} ${store.user.apellidos}, el ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}, ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
+                                { qr: `Pedido N° ${pedidoStore.pedido.id}\n Generado por ${store.user.nombres} ${store.user.apellidos}, el ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}, ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
                                 // { text: 'pie de pagina', alignment: 'right', margin: [5, 2] }
                             ]
                         }
@@ -400,7 +296,7 @@ export default defineComponent({
                                 width: '*',
                                 text: [
                                     { text: 'Transaccion N° ', style: 'defaultStyle' },
-                                    { text: `${devolucionStore.devolucion.id}`, style: 'resultStyle', }
+                                    { text: `${pedidoStore.pedido.id}`, style: 'resultStyle', }
                                 ]
                             },
                             {
@@ -409,7 +305,7 @@ export default defineComponent({
                                 width: '*',
                                 text: [
                                     { text: 'Fecha: ', style: 'defaultStyle' },
-                                    { text: `${devolucionStore.devolucion.created_at}`, style: 'resultStyle', }
+                                    { text: `${pedidoStore.pedido.created_at}`, style: 'resultStyle', }
                                 ]
                             },
                             {
@@ -417,7 +313,7 @@ export default defineComponent({
                                 width: '*',
                                 text: [
                                     { text: 'Solicitante: ', style: 'defaultStyle' },
-                                    { text: `${devolucionStore.devolucion.solicitante}`, style: 'resultStyle', }
+                                    { text: `${pedidoStore.pedido.solicitante}`, style: 'resultStyle', }
                                 ]
                             },
                         ],
@@ -430,7 +326,7 @@ export default defineComponent({
                                 width: '*',
                                 columns: [
                                     { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${devolucionStore.devolucion.sucursal}`, style: 'resultStyle', }
+                                    { width: 'auto', text: `${pedidoStore.pedido.sucursal}`, style: 'resultStyle', }
                                 ]
                             },
                             {
@@ -439,10 +335,28 @@ export default defineComponent({
                                 width: 'auto',
                                 columns: [
                                     { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${devolucionStore.devolucion.justificacion}`, style: 'resultStyle', }
+                                    { width: 'auto', text: `${pedidoStore.pedido.justificacion}`, style: 'resultStyle', }
                                 ],
                             },
                         ],
+                    },
+                    {
+                        columns: [
+                            {
+                                width: '*',
+                                columns: [
+                                    { width: 'auto', text: 'Autorizado por: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${pedidoStore.pedido.per_autoriza}`, style: 'resultStyle', }
+                                ]
+                            },
+                            {
+                                width: 'auto',
+                                columns: [
+                                    { width: 'auto', text: 'Estado: ', style: 'defaultStyle' },
+                                    { width: 'auto', text: `${pedidoStore.pedido.estado}`, style: 'resultStyle', }
+                                ]
+                            }
+                        ]
                     },
                     comprobarTarea(),
                     { text: '\n' },
@@ -465,7 +379,7 @@ export default defineComponent({
                         ]
                     }, */
 
-                    table(devolucionStore.devolucion.listadoProductos, ['producto', 'descripcion', 'categoria', 'cantidad'], ['Producto', 'Descripción', 'Categoría', 'Cantidad']),
+                    table(pedidoStore.pedido.listadoProductos, ['producto', 'descripcion', 'categoria', 'cantidad'], ['Producto', 'Descripción', 'Categoría', 'Cantidad']),
 
                     // 'Some long text of variable length ...',
                     // { text: '2 Headline', headlineLevel: 1 },
@@ -504,7 +418,7 @@ export default defineComponent({
                                 // width: '*',
                                 text: [
                                     { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center' },
-                                    { text: `${devolucionStore.devolucion.solicitante}\n`, style: 'resultStyle', alignment: 'center', },
+                                    { text: `${pedidoStore.pedido.solicitante}\n`, style: 'resultStyle', alignment: 'center', },
                                     {
                                         text: [
                                             { text: 'C.I: ', style: 'resultStyle', alignment: 'center', },
@@ -547,14 +461,14 @@ export default defineComponent({
         }
 
         function comprobarTarea() {
-            if (devolucionStore.devolucion.tarea !== null) {
+            if (pedidoStore.pedido.tarea !== null) {
                 return {
                     columns: [
                         {
                             width: '*',
                             columns: [
                                 { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                                { width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle' }
+                                { width: 'auto', text: ` ${pedidoStore.pedido.tarea}`, style: 'resultStyle' }
                             ]
                         }
                     ],

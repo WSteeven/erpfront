@@ -165,7 +165,6 @@
           :readonly="disabled"
           :error="!!v$.cantidad.$errors.length"
           error-message="Debes ingresar la cantidad de existencias"
-          @update:model-value="(v) => (inventario.cantidad = v.toUpperCase())"
           outlined
           dense
         >

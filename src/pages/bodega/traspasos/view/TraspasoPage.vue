@@ -40,9 +40,6 @@
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              @update:model-value="
-                (v) => (traspaso.justificacion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -223,9 +220,6 @@
                   v-model="criterioBusquedaProducto"
                   :disable="disabled || soloLectura"
                   placeholder="Nombre de producto"
-                  @update:model-value="
-                    (v) => (criterioBusquedaProducto = v.toUpperCase())
-                  "
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
                     listarProductos({

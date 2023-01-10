@@ -23,8 +23,9 @@ export const usePedidoStore = defineStore('pedido', ()=>{
         const ruta = axios.getEndpoint(endpoints.pedidos)+id
         const response: AxiosResponse = await axios.get(ruta)
         console.log('Respuesta obtenida en store de pedido: ', response)
-
-        return response.data.modelo
+        if(response.data.modelo.autorizacion===2){
+            return response.data.modelo
+        }
     }
 
     async function cargarPedido(id:number) {
@@ -34,6 +35,7 @@ export const usePedidoStore = defineStore('pedido', ()=>{
             pedido.hydrate(modelo)
         }catch(e){
             notificarError('Pedido no encontrado')
+            pedido.hydrate(pedidoReset)
         }finally{
             statusLoading.desactivar()
         }

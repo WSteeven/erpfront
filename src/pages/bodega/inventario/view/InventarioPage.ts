@@ -21,7 +21,7 @@ import { CondicionController } from "pages/administracion/condiciones/infraestru
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
 import { useTransaccionStore } from "stores/transaccion";
-import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
+import { useDetalleTransaccionStore } from "stores/detalleTransaccion";
 
 export default defineComponent({
     components: { TabLayout },

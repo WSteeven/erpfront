@@ -24,7 +24,11 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="prestamo.fecha_salida" mask="DD-MM-YYYY" today-btn>
+                    <q-date
+                      v-model="prestamo.fecha_salida"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -61,7 +65,11 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="prestamo.fecha_devolucion" mask="DD-MM-YYYY" today-btn>
+                    <q-date
+                      v-model="prestamo.fecha_devolucion"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -75,7 +83,10 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.fecha_devolucion.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.fecha_devolucion.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -161,9 +172,6 @@
               v-model="prestamo.observacion"
               placeholder="Opcional"
               :readonly="disabled"
-              @update:model-value="
-                (v) => (prestamo.observacion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -203,11 +211,8 @@
                 <q-input
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
-                  @update:model-value="
-                    (v) => (criterioBusquedaProducto = v.toUpperCase())
-                  "
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarProductos({sucursal:sucursal})"
+                  @keydown.enter="listarProductos({ sucursal: sucursal })"
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
                   "
@@ -218,7 +223,7 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos({sucursal:sucursal})"
+                  @click="listarProductos({ sucursal: sucursal })"
                   icon="search"
                   unelevated
                   color="secondary"
@@ -232,9 +237,11 @@
           </div>
           <!-- Tabla -->
           <div class="col-12">
-            <essential-table 
+            <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="prestamo.listadoProductos"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -252,14 +259,12 @@
         :configuracion-columnas="configuracionColumnasInventarios"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
-        @selected="seleccionarProducto" 
+        @selected="seleccionarProducto"
       >
-      <!-- en el @selected recibe el item seleccionado desde el modal del essential-selectable-table -->
-      <!-- toca ese item seleccionado enviarlo al componente padre que es el essential-table de más arriba... -->
-      <!-- el item seleccionado se debe agregar al prestamo.listadoProductos para que se muestre como se recibe y ya no se consulte a la bd -->
-
+        <!-- en el @selected recibe el item seleccionado desde el modal del essential-selectable-table -->
+        <!-- toca ese item seleccionado enviarlo al componente padre que es el essential-table de más arriba... -->
+        <!-- el item seleccionado se debe agregar al prestamo.listadoProductos para que se muestre como se recibe y ya no se consulte a la bd -->
       </essential-selectable-table>
-
     </template>
   </tab-layout>
 </template>

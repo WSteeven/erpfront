@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
-import { required, alphaNum, requiredIf } from '@vuelidate/validators'
+import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
@@ -34,12 +34,10 @@ import { DetalleProductoController } from 'pages/bodega/detalles_productos/infra
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { SubtareaController } from 'pages/tareas/subtareas/infraestructure/SubtareaController'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
-import { Subtarea } from 'pages/tareas/subtareas/domain/Subtarea'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useTransaccionStore } from 'stores/transaccion'
-import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
 import { useDetalleStore } from 'stores/detalle'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesTransaccionEgreso'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
@@ -272,13 +270,15 @@ export default defineComponent({
         const botonDespachar: CustomActionTable = {
             titulo: 'Despachar',
             accion: async ({ entidad, posicion }) => {
-                console.log('La entidad es', entidad)
-                console.log('La posicion es', posicion)
+                // console.log('La entidad es', entidad)
+                // console.log('La posicion es', posicion)
+                transaccionStore.idTransaccion = entidad.id
                 await transaccionStore.cargarTransaccion(entidad.id)
                 await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.listadoProductosTransaccion[posicion]['id'])
-                console.log('La transaccion del store', transaccionStore.transaccion)
+                // console.log('La transaccion del store', transaccionStore.transaccion)
 
                 //aqui va toda la logica de los despachos de material
+                await transaccionStore.showPreview()
                 modales.abrirModalEntidad('DespacharPage')
             },
             // visible: ({ entidad, posicion }) => puedeDespacharMaterial.value
@@ -565,20 +565,30 @@ export default defineComponent({
             }
             pdfMake.createPdf(docDefinition).open()
         }
-        async function llenarTransaccion() {
-            await pedidoStore.cargarPedido(transaccion.pedido)
+        async function llenarTransaccion(id:number) {
+            limpiarTransaccion()
+            await pedidoStore.cargarPedido(id)
+            console.log(pedidoStore.pedido)
+            transaccion.pedido = pedidoStore.pedido.id
             transaccion.justificacion = pedidoStore.pedido.justificacion
             transaccion.solicitante = pedidoStore.pedido.solicitante
             transaccion.sucursal = pedidoStore.pedido.sucursal
-            transaccion.tarea = pedidoStore.pedido.tarea
+            if(pedidoStore.pedido.tarea){
+                transaccion.es_tarea = true
+                transaccion.tarea = pedidoStore.pedido.tarea
+                filtroTareas(transaccion.tarea)
+            }
             transaccion.listadoProductosTransaccion = pedidoStore.pedido.listadoProductos
         }
 
         function limpiarTransaccion() {
-            transaccion.devolucion = ''
+            transaccion.pedido = ''
             transaccion.justificacion = ''
             transaccion.solicitante = ''
             transaccion.sucursal = ''
+            transaccion.tarea = ''
+            transaccion.es_tarea = false
+            transaccion.cliente = ''
             transaccion.listadoProductosTransaccion = []
         }
 
@@ -611,7 +621,11 @@ export default defineComponent({
         opciones_subtareas.value = listadosAuxiliares.subtareas
         opciones_clientes.value = listadosAuxiliares.clientes
 
-
+        function filtroTareas(val) {
+            const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
+            console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
+            transaccion.cliente = opcion_encontrada[0]['cliente_id']
+        }
         return {
             mixin, transaccion, disabled, accion, v$, soloLectura,
             configuracionColumnas: configuracionColumnasTransaccionEgreso,
@@ -637,6 +651,7 @@ export default defineComponent({
             modales,
 
             //filtros
+            filtroTareas,
             filtroTipos(val) {
                 const tipoSeleccionado = listadosAuxiliares.tipos.filter((v) => v.id === val)
                 opciones_motivos.value = listadosAuxiliares.motivos.filter((v) => v.tipo_transaccion_id === val)
@@ -648,11 +663,6 @@ export default defineComponent({
                 console.log('filtro motivos', val)
             },
 
-            filtroTareas(val) {
-                const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
-                console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
-                transaccion.cliente = opcion_encontrada[0]['cliente_id']
-            },
             filtroEmpleados(val, update) {
                 if (val === '') {
                     update(() => {
@@ -671,9 +681,9 @@ export default defineComponent({
                 }
             },
 
-            checkPedido(val, evt){
+            checkPedido(val, evt) {
                 console.log('Pedido', val)
-                if(!val){
+                if (!val) {
                     limpiarTransaccion()
                 }
             },

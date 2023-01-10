@@ -7,22 +7,22 @@ import InventariarPage from "../../transaccionIngreso/modules/inventariarProduct
 import TransaccionIngresoImprimirPage from "../../transaccionIngreso/view/TransaccionIngresoImprimirPage.vue";
 import TransaccionIngresoInventariarPage from "../../transaccionIngreso/view/TransaccionIngresoInventariarPage.vue";
 
-export class TransaccionIngresoContentModales{
-    InventarioPage:ComponenteModal
-    InventariarPage:ComponenteModal
-    TransaccionIngresoImprimirPage:ComponenteModal
-    TransaccionIngresoInventariarPage:ComponenteModal
+export class TransaccionIngresoContentModales {
+    InventarioPage: ComponenteModal
+    InventariarPage: ComponenteModal
+    TransaccionIngresoImprimirPage: ComponenteModal
+    TransaccionIngresoInventariarPage: ComponenteModal
 
-    constructor(){
-        this.InventarioPage= markRaw(
+    constructor() {
+        this.InventarioPage = markRaw(
             new ComponenteModal('CONSTRUCRED', InventarioPage)
         )
 
-        this.InventariarPage= markRaw(
+        this.InventariarPage = markRaw(
             new ComponenteModal('SELECCIONA EL ESTADO Y LA CANTIDAD PARA INGRESAR AL INVENTARIO', InventariarPage)
         )
 
-        this.TransaccionIngresoImprimirPage= markRaw(
+        this.TransaccionIngresoImprimirPage = markRaw(
             new ComponenteModal('CONSTRUCRED', TransaccionIngresoImprimirPage)
         )
 
