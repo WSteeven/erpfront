@@ -1,5 +1,5 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig"
-import { Subtarea } from "pages/tareas/subtareas/domain/Subtarea"
+import { Subtarea } from "../../subtareas/domain/Subtarea"
 
 export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
   {
@@ -78,6 +78,36 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     label: 'Grupo',
     align: 'left',
     sortable: true,
+  },
+  {
+    name: 'es_ventana',
+    field: 'es_ventana',
+    label: 'Es ventana',
+    align: 'left',
+  },
+  {
+    name: 'fecha_ventana',
+    field: 'fecha_ventana',
+    label: 'Fecha de ventana',
+    align: 'left',
+  },
+  {
+    name: 'hora_inicio_ventana',
+    field: 'hora_inicio_ventana',
+    label: 'Hora inicio de ventana',
+    align: 'left',
+  },
+  {
+    name: 'hora_fin_ventana',
+    field: 'hora_fin_ventana',
+    label: 'Hora fin de ventana',
+    align: 'left',
+  },
+  {
+    name: 'subtarea_dependiente',
+    field: 'subtarea_dependiente',
+    label: 'Depende de',
+    align: 'left',
   },
   {
     name: 'estado',

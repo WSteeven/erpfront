@@ -2,74 +2,79 @@
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { tiposElementos, propietariosElementos, estadoElementos, tiposTension, acciones } from 'config/utils'
 import { configuracionColumnasResumenTendido } from '../domain/configuracionColumnasResumenTendido'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useTendidoStore } from 'stores/tendido'
 import { defineComponent, ref } from 'vue'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
+// import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
+// import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
+import { RegistroTendidoController } from '../../registrosTendidos/infraestructure/RegistroTendidoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useNotificaciones } from 'shared/notificaciones'
-import { ResumenTendido } from '../domain/ResumenTendido'
 import { RegistroTendido } from '../../registrosTendidos/domain/RegistroTendido'
-import { RegistroTendidoController } from '../../registrosTendidos/infraestructure/RegistroTendidoController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+// import { useNotificaciones } from 'shared/notificaciones'
+// import { ResumenTendido } from '../domain/ResumenTendido'
 
 export default defineComponent({
   emits: ['cerrar-modal'],
-  components: { EssentialTable },
+  components: {
+    EssentialTable,
+  },
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(RegistroTendido, new RegistroTendidoController())
     const { listado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
-    const trabajoAsignadoStore = useTrabajoAsignadoStore()
+    // const trabajoAsignadoStore = useTrabajoAsignadoStore()
     const tendidoStore = useTendidoStore()
 
     // if (tendidoStore.idRegistroTendido) consultar({ id: tendidoStore.idRegistroTendido })
-    listar({ tendido: 1 })
+    listar({ tendido: tendidoStore.idTendido })
 
     // const { confirmar, prompt } = useNotificaciones()
 
     const botonVerImagen: CustomActionTable = {
       titulo: 'Ver elemento',
-      icono: 'bi-card-image',
+      icono: 'bi-image',
       color: 'primary',
-      accion: ({ entidad, posicion }) => {
-        //
+      accion: ({ entidad }) => {
+        window.open(entidad.imagen_elemento, '_blank')
       },
     }
 
     const botonVerCruceAmericano: CustomActionTable = {
       titulo: 'Ver cruce americano',
-      icono: 'bi-card-image',
+      icono: 'bi-image-fill',
       color: 'secondary',
-      accion: ({ entidad, posicion }) => {
-        //
+      visible: ({ entidad }) => entidad.imagen_cruce_americano,
+      accion: ({ entidad }) => {
+        window.open(entidad.imagen_cruce_americano, '_blank')
       },
     }
 
     const botonVerPosteAnclaje1: CustomActionTable = {
       titulo: 'Ver poste anclaje 1',
-      icono: 'bi-card-image',
+      icono: 'bi-image-fill',
       color: 'secondary',
-      accion: ({ entidad, posicion }) => {
-        //
+      visible: ({ entidad }) => entidad.imagen_poste_anclaje1,
+      accion: ({ entidad }) => {
+        window.open(entidad.imagen_poste_anclaje1, '_blank')
       },
     }
 
     const botonVerPosteAnclaje2: CustomActionTable = {
       titulo: 'Ver poste anclaje 2',
-      icono: 'bi-card-image',
+      icono: 'bi-image-fill',
       color: 'secondary',
-      accion: ({ entidad, posicion }) => {
-        //
+      visible: ({ entidad }) => entidad.imagen_poste_anclaje2,
+      accion: ({ entidad }) => {
+        window.open(entidad.imagen_poste_anclaje2, '_blank')
       },
     }
 

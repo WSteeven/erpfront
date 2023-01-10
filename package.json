@@ -24,7 +24,8 @@
     "vue": "^3.0.0",
     "vue-flatpickr-component": "^9.0.6",
     "vue-router": "^4.0.0",
-    "vue3-lottie": "^2.3.0"
+    "vue3-lottie": "^2.3.0",
+    "vue3-xlsx": "^1.1.2"
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.0.0",

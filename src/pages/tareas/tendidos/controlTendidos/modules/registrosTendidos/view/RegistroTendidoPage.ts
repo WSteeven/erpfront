@@ -44,12 +44,13 @@ export default defineComponent({
     accion.value = tendidoStore.accion
 
     if (tendidoStore.idRegistroTendido) consultar({ id: tendidoStore.idRegistroTendido })
+    else registroTendido.numero_elemento = tendidoStore.numeroElemento
 
     // Reglas de validacion
     const reglas = {
       coordenada_del_elemento_latitud: { required },
       coordenada_del_elemento_longitud: { required },
-      // imagen: { required },
+      imagen_elemento: { required },
       propietario_elemento: { required },
       numero_elemento: { required },
       codigo_elemento: { required },

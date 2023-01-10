@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect, watch } from 'vue'
 import { required } from '@vuelidate/validators'
 import { acciones, rolesAdmitidos } from 'config/utils'
 import { useTareaStore } from 'stores/tarea'
@@ -258,8 +258,20 @@ export default defineComponent({
     tarea.ubicacion_tarea = new UbicacionTarea()*/
     // tareaStore.tarea.hydrate(new Tarea())
     //})
+    function activarPerteneceProyecto() {
+      if (!tarea.cliente_final) tarea.pertenece_a_proyecto = true
+    }
+
+    function activarClienteFinal() {
+      if (!tarea.pertenece_a_proyecto) tarea.tiene_cliente_final = true
+    }
+
+    watch(computed(() => tarea.pertenece_a_proyecto), () => activarClienteFinal())
+    watch(computed(() => tarea.cliente_final), () => activarPerteneceProyecto())
 
     return {
+      activarClienteFinal,
+      model: ref('pertenece_proyecto'),
       v$,
       tarea,
       accion,

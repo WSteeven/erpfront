@@ -4,6 +4,7 @@ export class RegistroTendido extends EntidadAuditable {
   numero_elemento: string | null
   tipo_elemento: string | null
   propietario_elemento: string | null
+  propietario_americano: string | null
   codigo_elemento: string | null
   estado_elemento: string | null
   progresiva_entrada: string | null
@@ -37,7 +38,7 @@ export class RegistroTendido extends EntidadAuditable {
   subtarea: number | null
 
   // Imagenes
-  imagen: string | null
+  imagen_elemento: string | null
   imagen_cruce_americano: string | null
   imagen_poste_anclaje1: string | null
   imagen_poste_anclaje2: string | null
@@ -46,6 +47,7 @@ export class RegistroTendido extends EntidadAuditable {
     super()
     this.tipo_elemento = null
     this.propietario_elemento = null
+    this.propietario_americano = null
     this.numero_elemento = null
     this.codigo_elemento = null
     this.progresiva_entrada = null
@@ -73,7 +75,7 @@ export class RegistroTendido extends EntidadAuditable {
     this.materiales_ocupados = []
     this.tension = null
     this.subtarea = null
-    this.imagen = null
+    this.imagen_elemento = null
     this.imagen_cruce_americano = null
     this.imagen_poste_anclaje1 = null
     this.imagen_poste_anclaje2 = null

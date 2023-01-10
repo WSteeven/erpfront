@@ -17,6 +17,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ArchivoSubtareaController } from '../infraestructure/ArchivoSubtareaController'
 import { Archivo } from '../domain/Archivo'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 
 export default defineComponent({
@@ -44,15 +45,17 @@ export default defineComponent({
       icono: 'bi-chat-square-text',
       color: 'secondary',
       accion: ({ entidad }) => {
-        prompt(
-          'Ingrese el comentario',
-          (data) => {
+        const config: CustomActionPrompt = {
+          mensaje: 'Ingrese el comentario',
+          defecto: entidad.comentario,
+          accion: (data) => {
             entidad.comentario = data
             archivo.hydrate(entidad)
             editar(archivo)
-          },
-          entidad.comentario,
-        )
+          }
+        }
+
+        prompt(config)
       },
     }
 

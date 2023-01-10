@@ -257,7 +257,7 @@
           </q-btn>
 
           <!-- custom botons -->
-          <span>
+          <span class="row full-width justify-left">
             <CustomButtons
               :accion1="accion1"
               :accion2="accion2"
@@ -390,7 +390,19 @@
       </q-td>
     </template>
 
+    <!-- Resumen tendido -->
     <template #body-cell-instalo_manga="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
+    <template #body-cell-es_ventana="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

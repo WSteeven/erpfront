@@ -175,18 +175,6 @@
               Agregar elementos
             </q-btn>
 
-            <!-- <q-btn
-              v-if="progresiva.id"
-              color="positive"
-              class="col-12 col-md-3"
-              no-caps
-              push
-              @click="pdfMakeImprimir()"
-            >
-              <q-icon name="bi-printer" size="xs" class="q-pr-sm"></q-icon>
-              <span>Imprimir</span>
-            </q-btn> -->
-
             <q-btn
               v-if="progresiva.id"
               color="positive"

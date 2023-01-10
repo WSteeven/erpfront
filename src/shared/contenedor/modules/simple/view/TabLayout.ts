@@ -113,7 +113,7 @@ export default defineComponent({
     const store = useAuthenticationStore()
 
     const puedeVer = computed(() =>
-      store.can(`puede.ver.${router.name?.toString()}`)
+      store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
     )
     const puedeCrear = computed(() =>
       store.can(`puede.crear.${router.name?.toString()}`)
@@ -122,7 +122,7 @@ export default defineComponent({
       store.can(`puede.editar.${router.name?.toString()}`) && props.permitirEditar
     )
     const puedeEliminar = computed(() =>
-      store.can(`puede.eliminar.${router.name?.toString()}`)
+      store.can(`puede.eliminar.${router.name?.toString()}`) && props.permitirEliminar
     )
 
     function cargarListado() {

@@ -8,9 +8,14 @@
     @update:model-value="setBase64"
     @clear="limpiar()"
     :disable="disable"
+    :error="error"
   >
-    <template v-slot:prepend>
+    <template #prepend>
       <q-icon name="attach_file" />
+    </template>
+
+    <template v-slot:error>
+      <slot name="error"></slot>
     </template>
   </q-file>
 
@@ -21,12 +26,21 @@
     fit="cover"
   >
   </q-img>
+
+  <small v-if="imagenCodificada" class="block text-center q-py-sm">
+    <a
+      class="text-positive text-decoration-none"
+      :href="imagenCodificada"
+      target="_blank"
+      >Ver en pantalla completa</a
+    >
+  </small>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps(['modelValue', 'imagen', 'disable'])
+const props = defineProps(['modelValue', 'imagen', 'disable', 'error'])
 const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()

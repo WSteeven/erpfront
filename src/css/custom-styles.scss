@@ -73,6 +73,10 @@
 }
 
 // Estado input
+.q-field .q-field__inner {
+  text-transform: uppercase;
+}
+
 .q-field--disabled .q-field__inner {
   background-color: #474e5933;
 }
@@ -83,7 +87,7 @@
 
 // Toggle
 .my-custom-toggle {
-  border: 1px solid $primary;
+  border: 1px solid $positive;
 }
 
 .borde-header-tabla {

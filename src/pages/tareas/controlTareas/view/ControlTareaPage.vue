@@ -5,6 +5,8 @@
     :configuracionColumnas="configuracionColumnas"
     tituloPagina="Control de tareas"
     :full="true"
+    :permitirConsultar="false"
+    :permitirEliminar="false"
   >
     <template #formulario>
       <q-tabs

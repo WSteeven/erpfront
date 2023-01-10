@@ -53,7 +53,6 @@
             <q-input
               v-model="loginUser.name"
               label="Usuario"
-              @update:model-value="(v) => (loginUser.name = v.toUpperCase())"
               outlined
               dense
               @keyup.enter="login()"

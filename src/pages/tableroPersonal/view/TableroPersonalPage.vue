@@ -15,7 +15,7 @@
       > -->
     </div>
 
-    <div class="row q-col-gutter-sm">
+    <!--<div class="row q-col-gutter-sm">
       <div v-if="store.esCoordinador || store.esTecnicoLider" class="col-12">
         <q-card class="custom-shadow rounded">
           <q-card-section>
@@ -75,14 +75,6 @@
               :class="{ 'shadow-chip borde': $q.screen.xs }"
               no-caps
             />
-            <!--<q-tab
-              v-if="store.esCoordinador"
-              label="Proyectos (9)"
-              name="proyectos"
-              class="q-mx-xs q-my-md rounded"
-              :class="{ 'shadow-chip borde': $q.screen.xs }"
-              no-caps
-            /> -->
           </q-tabs>
 
           <q-tab-panels v-model="tab" animated>
@@ -241,7 +233,7 @@
           </q-card-section>
         </q-card>
       </div>
-    </div>
+    </div> -->
 
     <modales-entidad :comportamiento="modales" />
   </q-page>

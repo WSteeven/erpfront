@@ -1,5 +1,6 @@
 <template>
   <q-page padding>
+    <!--
     <div class="row">
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Nombre del proyecto</label>
@@ -58,9 +59,9 @@
         <label class="q-mb-sm block text-bold">Ruta FFTH CUENCA</label>
       </div>
     </div>
-
+  -->
     <essential-table
-      titulo="Resumen"
+      titulo="Tabla de resumen"
       :configuracionColumnas="columnas"
       :datos="listado"
       :permitirConsultar="false"
@@ -72,7 +73,7 @@
       :accion1="botonVerImagen"
       :accion2="botonVerCruceAmericano"
       :accion3="botonVerPosteAnclaje1"
-      :accion4="botonVerPosteAnclaje1"
+      :accion4="botonVerPosteAnclaje2"
     ></essential-table>
 
     <div class="row justify-end q-gutter-sm q-pt-md">

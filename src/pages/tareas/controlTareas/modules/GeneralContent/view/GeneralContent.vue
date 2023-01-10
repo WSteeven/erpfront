@@ -8,7 +8,23 @@
       default-opened
     >
       <div class="row q-col-gutter-sm q-pa-md">
-        <div v-if="!tarea.tiene_cliente_final" class="col-12 col-md-3">
+        <!--<div class="col-12">
+          <q-btn-toggle
+            v-model="model"
+            class="my-custom-toggle"
+            spread
+            no-caps
+            toggle-color="positive"
+            rounded
+            unelevated
+            :options="[
+              { label: 'Pertenece a un proyecto', value: 'pertenece_proyecto' },
+              { label: 'Trabajo para cliente final', value: 'cliente_final' },
+            ]"
+          />
+        </div> -->
+
+        <div v-show="!tarea.tiene_cliente_final" class="col-12 col-md-3">
           <br />
           <q-checkbox
             v-model="tarea.pertenece_a_proyecto"
@@ -18,11 +34,17 @@
           ></q-checkbox>
         </div>
 
-        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+        <div v-show="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
           <br />
           <q-checkbox
             v-model="tarea.tiene_cliente_final"
             label="Trabajo para cliente final"
+            @blur="
+              () =>
+                !tarea.tiene_cliente_final
+                  ? (tarea.pertenece_a_proyecto = true)
+                  : null
+            "
             outlined
             dense
           ></q-checkbox>
@@ -47,9 +69,6 @@
           <q-input
             v-model="tarea.codigo_tarea_cliente"
             placeholder="Obligatorio"
-            @update:model-value="
-              (v) => (tarea.codigo_tarea_cliente = v.toUpperCase())
-            "
             hint="Ticket, OT, Tarea"
             :error="!!v$.codigo_tarea_cliente.$errors.length"
             outlined

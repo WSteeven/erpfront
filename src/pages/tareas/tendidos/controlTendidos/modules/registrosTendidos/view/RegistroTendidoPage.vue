@@ -251,14 +251,23 @@
         ></q-input>
       </div>
 
-      <!-- Imagen -->
+      <!-- Imagen elemento -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fotografía del poste</label>
         <selector-imagen
-          :imagen="registroTendido.imagen"
-          @update:modelValue="(data) => (registroTendido.imagen = data)"
+          :imagen="registroTendido.imagen_elemento"
+          @update:modelValue="
+            (data) => (registroTendido.imagen_elemento = data)
+          "
           :disable="disabled"
-        ></selector-imagen>
+          :error="!!v$.imagen_elemento.$errors.length"
+        >
+          <template #error>
+            <div v-for="error of v$.imagen_elemento.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+        </selector-imagen>
       </div>
 
       <!-- Poste tiene transformador -->
@@ -350,50 +359,6 @@
           dense
         ></q-input>
       </div>
-
-      <!-- Fecha -->
-      <!--<div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Fecha</label>
-        <q-input v-model="registroTendido.fecha" outlined dense>
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date v-model="registroTendido.fecha" mask="DD-MM-YYYY">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </div> -->
-
-      <!-- Hora -->
-      <!--<div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Hora</label>
-        <q-input v-model="registroTendido.hora" mask="time" outlined dense>
-          <template v-slot:append>
-            <q-icon name="bi-clock" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-time v-model="registroTendido.hora" format24h now-btn>
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </div> -->
     </div>
 
     <div
@@ -407,7 +372,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Propietario</label>
         <q-input
-          v-model="registroTendido.propietario"
+          v-model="registroTendido.propietario_americano"
           :disable="disabled"
           outlined
           dense
