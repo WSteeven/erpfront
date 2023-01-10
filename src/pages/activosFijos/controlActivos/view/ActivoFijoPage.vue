@@ -24,7 +24,6 @@
               use-input
               input-debounce="0"
               @filter="filtroProductos"
-              @update:model-value="seleccionarDetalle"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -98,9 +97,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.fecha_desde.$errors.length"
-              @update:model-value="
-                (v) => (activo.fecha_desde = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -120,7 +116,6 @@
               v-model="activo.cantidad"
               placeholder="1"
               :readonly="disabled"
-              @update:model-value="(v) => (activo.cantidad = v.toUpperCase())"
               outlined
               dense
             >
@@ -269,9 +264,6 @@
               v-model="activo.observacion"
               placeholder="Opcional"
               :readonly="disabled"
-              @update:model-value="
-                (v) => (activo.observacion = v.toUpperCase())
-              "
               outlined
               dense
             >

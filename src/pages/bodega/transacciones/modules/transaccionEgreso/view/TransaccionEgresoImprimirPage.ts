@@ -11,7 +11,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue';
 
 import { defineComponent, reactive, ref, watch } from 'vue';
 import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
-import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso';
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion';
 import { useDetalleStore } from 'stores/detalle';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController';

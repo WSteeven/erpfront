@@ -118,9 +118,6 @@
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :error="!!v$.justificacion.$errors.length"
-              @update:model-value="
-                (v) => (pedido.justificacion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -192,7 +189,6 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              @update:model-value="filtroTareas"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
               emit-value
@@ -268,9 +264,6 @@
               :disable="disabled || (soloLectura && !esCoordinador)"
               :readonly="disabled || (soloLectura && !esCoordinador)"
               :error="!!v$.observacion_aut.$errors.length"
-              @update:model-value="
-                (v) => (pedido.observacion_aut = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -294,9 +287,6 @@
                   v-model="criterioBusquedaProducto"
                   :disable="disabled || (soloLectura && !esCoordinador)"
                   placeholder="Nombre de producto"
-                  @update:model-value="
-                    (v) => (criterioBusquedaProducto = v.toUpperCase())
-                  "
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="listarProductos()"
                   @blur="

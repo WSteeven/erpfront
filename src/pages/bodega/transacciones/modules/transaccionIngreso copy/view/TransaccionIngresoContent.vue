@@ -116,84 +116,11 @@
           v-model="transaccion.comprobante"
           placeholder="Obligatorio"
           :readonly="disabled"
-          @update:model-value="
-            (v) => (transaccion.observacion_aut = v.toUpperCase())
-          "
           outlined
           dense
         >
         </q-input>
       </div>
-      <!-- Select autorizacion -->
-      <!-- <div v-if="rolSeleccionado" class="col-12 col-md-3 q-mb-md">
-              <label class="q-mb-sm block">Autorizacion</label>
-              <q-select
-                v-model="transaccion.autorizacion"
-                :options="opciones_autorizaciones"
-                transition-show="jum-up"
-                transition-hide="jump-down"
-                options-dense
-                dense
-                outlined
-                :readonly="disabled"
-                :error="!!v$.autorizacion.$errors.length"
-                error-message="Debes seleccionar una autorizacion"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
-                emit-value
-                map-options
-              >
-                <template v-slot:error>
-                  <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-            !-- Tiene observacion de autorizacion --
-            <div v-if="rolSeleccionado" class="col-12 col-md-3">
-              <q-checkbox
-                class="q-mt-lg q-pt-md"
-                v-model="transaccion.tiene_obs_autorizacion"
-                label="Tiene observación"
-                outlined
-                dense
-              ></q-checkbox>
-            </div>
-            !-- observacion autorizacion --
-            <div
-              v-if="transaccion.tiene_obs_autorizacion"
-              class="col-12 col-md-3"
-            >
-              <label class="q-mb-sm block">Observacion</label>
-              <q-input
-                v-model="transaccion.observacion_aut"
-                placeholder="Obligatorio"
-                :readonly="disabled"
-                :error="!!v$.observacion_aut.$errors.length"
-                @update:model-value="
-                  (v) => (transaccion.observacion_aut = v.toUpperCase())
-                "
-                outlined
-                dense
-              >
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.observacion_aut.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-input>
-            </div> -->
       <!-- Select sucursal -->
       <div class="col-12 col-md-3 q-mb-md">
         <label class="q-mb-sm block">Sucursal</label>
@@ -235,9 +162,6 @@
           placeholder="Obligatorio"
           :readonly="disabled"
           :error="!!v$.justificacion.$errors.length"
-          @update:model-value="
-            (v) => (transaccion.justificacion = v.toUpperCase())
-          "
           outlined
           dense
         >
@@ -356,9 +280,6 @@
           placeholder="Obligatorio"
           :readonly="disabled"
           :error="!!v$.observacion_est.$errors.length"
-          @update:model-value="
-            (v) => (transaccion.observacion_est = v.toUpperCase())
-          "
           outlined
           dense
         >
@@ -411,9 +332,6 @@
             <q-input
               v-model="criterioBusquedaProducto"
               placeholder="Nombre de producto"
-              @update:model-value="
-                (v) => (criterioBusquedaProducto = v.toUpperCase())
-              "
               hint="Presiona Enter para seleccionar un producto"
               @keydown.enter="listarProductos()"
               @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"

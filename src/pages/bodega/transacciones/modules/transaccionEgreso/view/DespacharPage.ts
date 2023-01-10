@@ -11,7 +11,7 @@ import EssentialTable from "components/tables/view/EssentialTable.vue";
 
 import { defineComponent, reactive, ref, watch } from "vue";
 import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
-import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
+import { useDetalleTransaccionStore } from "stores/detalleTransaccion";
 import { useDetalleStore } from "stores/detalle";
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { TipoTransaccionController } from "pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController";
@@ -42,35 +42,26 @@ export default defineComponent({
         const inventarioStore = useInventarioStore()
         const movimientoStore = useMovimientoStore()
 
-        transaccion.hydrate(transaccionStore.transaccion) //cargar la transaccion con la del store
 
-        const opciones_tipos = ref([])
-        const opciones_motivos = ref([])
-        const opciones_sucursales = ref([])
-        const opciones_empleados = ref([])
-        const opciones_autorizaciones = ref([])
-        const opciones_estados = ref([])
-        const opciones_clientes = ref([])
+        // const opciones_tipos = ref([])
+        // const opciones_motivos = ref([])
+        // const opciones_sucursales = ref([])
+        // const opciones_empleados = ref([])
+        // const opciones_autorizaciones = ref([])
+        // const opciones_estados = ref([])
+        // const opciones_clientes = ref([])
         cargarVista(async () => {
-            await obtenerListados({
-                empleados: new EmpleadoController(),
-                tipos: new TipoTransaccionController(),
-                motivos: new MotivoController(),
-                sucursales: new SucursalController(),
-                autorizaciones: new AutorizacionController(),
-                estados: new EstadosTransaccionController(),
-                clientes: new ClienteController(),
-            })
-            console.log(listadosAuxiliares.clientes[0]['id'])
-            transaccion.cliente = listadosAuxiliares.clientes[0]['id']
+            await transaccion.hydrate(transaccionStore.transaccion) //cargar la transaccion con la del store
+            console.log(transaccionStore.transaccion)
+            console.log(transaccion)
         })
-        opciones_tipos.value = listadosAuxiliares.tipos
-        opciones_motivos.value = listadosAuxiliares.motivos
-        opciones_sucursales.value = listadosAuxiliares.sucursales
-        opciones_empleados.value = listadosAuxiliares.empleados
-        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-        opciones_estados.value = listadosAuxiliares.estados
-        opciones_clientes.value = listadosAuxiliares.clientes
+        // opciones_tipos.value = listadosAuxiliares.tipos
+        // opciones_motivos.value = listadosAuxiliares.motivos
+        // opciones_sucursales.value = listadosAuxiliares.sucursales
+        // opciones_empleados.value = listadosAuxiliares.empleados
+        // opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
+        // opciones_estados.value = listadosAuxiliares.estados
+        // opciones_clientes.value = listadosAuxiliares.clientes
 
         let resultadosInventario = ref([])
         let selected = ref([])
@@ -173,13 +164,13 @@ export default defineComponent({
             configuracionColumnasListadoProductosSeleccionados,
 
             //listados
-            opciones_tipos,
-            opciones_motivos,
-            opciones_empleados,
-            opciones_sucursales,
-            opciones_autorizaciones,
-            opciones_estados,
-            opciones_clientes,
+            // opciones_tipos,
+            // opciones_motivos,
+            // opciones_empleados,
+            // opciones_sucursales,
+            // opciones_autorizaciones,
+            // opciones_estados,
+            // opciones_clientes,
 
             clienteSeleccionado(val) {
                 console.log('El cliente es: ', transaccion.cliente.value)

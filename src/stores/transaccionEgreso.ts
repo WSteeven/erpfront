@@ -4,14 +4,14 @@ import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
 import { endpoints } from "config/api";
 import { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { acciones } from "config/utils";
 
 export const useTransaccionEgresoStore = defineStore("transaccion", () => {
     //State
     const transaccion = reactive(new Transaccion()) //la transaccion
     const transaccionReset = new Transaccion()
-    
+    const idTransaccion = ref()
 
     const accionTransaccion = acciones.nuevo
 
@@ -34,6 +34,13 @@ export const useTransaccionEgresoStore = defineStore("transaccion", () => {
         transaccion.hydrate(modelo)
     }
 
+    async function showPreview() {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.transacciones_egresos)+'show-preview/'+idTransaccion.value
+        const response: AxiosResponse = await axios.get(ruta)
+        transaccion.hydrate(response.data.modelo)
+    }
+
     function resetearTransaccion(){
         transaccion.hydrate(transaccionReset)
     }
@@ -44,6 +51,8 @@ export const useTransaccionEgresoStore = defineStore("transaccion", () => {
         accionTransaccion,
         cargarTransaccion,
         resetearTransaccion,
+        idTransaccion,
+        showPreview,
 
     }
 })

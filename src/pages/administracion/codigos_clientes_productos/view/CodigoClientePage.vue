@@ -63,7 +63,7 @@
               <label class="q-mb-sm block">Codigo</label>
               <q-input v-model="codigo_cliente.codigo" placeholder="Obligatorio" :readonly="disabled"
                 :error="!!v$.codigo.$errors-length" 
-                @update:model-value="(v)=>(codigo_cliente.codigo=v.toUpperCase())" outlined
+                outlined
                 dense>
                 <template v-slot:error>
                   <div v-for="error of v$.codigo.$errors" :key="error.$uid">

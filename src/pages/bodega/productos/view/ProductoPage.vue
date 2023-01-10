@@ -52,7 +52,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.nombre.$errors.length"
-              @update:model-value="(v) => (producto.nombre = v.toUpperCase())"
               outlined
               dense
             >

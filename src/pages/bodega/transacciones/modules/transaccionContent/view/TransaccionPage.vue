@@ -22,12 +22,7 @@
           <!-- Fecha de transaccion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
-            <q-input
-              v-model="transaccion.created_at"
-              disable
-              outlined
-              dense
-            />
+            <q-input v-model="transaccion.created_at" disable outlined dense />
           </div>
           <!-- Fecha límite -->
           <div class="col-12 col-md-3">
@@ -161,9 +156,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.observacion_aut.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.observacion_aut = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -218,9 +210,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.justificacion.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.justificacion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -237,12 +226,7 @@
           <!-- Solicitante -->
           <div v-if="transaccion.solicitante" class="col-12 col-md-3">
             <label class="q-mb-sm block">Solicitante</label>
-            <q-input
-              v-model="transaccion.solicitante"
-              disable
-              outlined
-              dense
-            >
+            <q-input v-model="transaccion.solicitante" disable outlined dense>
             </q-input>
           </div>
           <!-- Lugar destino -->
@@ -253,9 +237,6 @@
               placeholder="Lugar/Tarea #"
               :readonly="disabled"
               :error="!!v$.lugar_destino.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.lugar_destino = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -320,9 +301,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.observacion_est = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -345,9 +323,6 @@
                 <q-input
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
-                  @update:model-value="
-                    (v) => (criterioBusquedaProducto = v.toUpperCase())
-                  "
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="listarProductos()"
                   @blur="
@@ -358,8 +333,17 @@
                 >
                 </q-input>
               </div>
-              <div class="col-12 col-md-2" >
-                <q-btn @click="listarProductos()" icon="search" unelevated color="secondary" class="full-width" style="height: 40px;" no-caps>Buscar</q-btn>
+              <div class="col-12 col-md-2">
+                <q-btn
+                  @click="listarProductos()"
+                  icon="search"
+                  unelevated
+                  color="secondary"
+                  class="full-width"
+                  style="height: 40px"
+                  no-caps
+                  >Buscar</q-btn
+                >
               </div>
             </div>
           </div>

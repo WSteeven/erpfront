@@ -11,6 +11,7 @@ export class Pedido extends EntidadAuditable {
     tarea: number| null
     sucursal: number | null
     estado: number | null
+    created_at: string|null
 
     listadoProductos: any[]
 
@@ -31,6 +32,7 @@ export class Pedido extends EntidadAuditable {
         this.tarea= null
         this.sucursal= null
         this.estado= null
+        this.created_at= null
 
         this.listadoProductos=[]
 

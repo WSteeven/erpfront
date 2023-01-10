@@ -68,9 +68,6 @@
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :error="!!v$.justificacion.$errors.length"
-              @update:model-value="
-                (v) => (devolucion.justificacion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -169,9 +166,6 @@
                 <q-input
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
-                  @update:model-value="
-                    (v) => (criterioBusquedaProducto = v.toUpperCase())
-                  "
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="listarProductos()"
                   @blur="

@@ -83,41 +83,6 @@
               </template>
             </q-input>
           </div>
-          <!-- Select tipo -->
-          <!-- <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Tipo</label>
-            <q-select
-              v-model="transaccion.tipo"
-              :options="opciones_tipos"
-              transition-show="jum-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :error="!!v$.tipo.$errors.length"
-              error-message="Debes seleccionar un tipo"
-              @update:model-value="filtroTipos"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div> -->
           <!-- Select motivo -->
           <div v-if="esBodeguero" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
@@ -202,17 +167,14 @@
             />
           </div>
           <!-- Pedido -->
-          <div
-            v-if="transaccion.tiene_pedido"
-            class="col-12 col-md-3 q-mb-md"
-          >
+          <div v-if="transaccion.tiene_pedido" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° pedido</label>
             <q-input
               type="number"
               v-model="transaccion.pedido"
               placeholder="Opcional"
               hint="Ingresa un numero de pedido y presiona Enter"
-              @keyup.enter="llenarTransaccion"
+              @keyup.enter="llenarTransaccion(transaccion.pedido)"
               :readonly="disabled"
               outlined
               dense
@@ -251,9 +213,6 @@
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :error="!!v$.observacion_aut.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.observacion_aut = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -313,9 +272,6 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.justificacion.$errors.length"
               lazy-rules
-              @update:model-value="
-                (v) => (transaccion.justificacion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -542,9 +498,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.observacion_est = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -567,10 +520,8 @@
                 <q-input
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
-                  @update:model-value="
-                    (v) => (criterioBusquedaProducto = v.toUpperCase())
-                  "
                   hint="Presiona Enter para seleccionar un producto"
+                  :disable="disabled || soloLectura"
                   @keydown.enter="listarProductos()"
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
@@ -585,6 +536,7 @@
                   @click="listarProductos()"
                   icon="search"
                   unelevated
+                  :disable="disabled || soloLectura"
                   color="primary"
                   class="full-width"
                   style="height: 40px"
@@ -594,7 +546,6 @@
               </div>
             </div>
           </div>
-          {{ v$.$errors }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -625,9 +576,8 @@
       >
       </essential-selectable-table>
     </template>
-
-    <!-- Modales -->
-    <modales-entidad :comportamiento="modales"></modales-entidad>
   </tab-layout-filter-tabs>
+  <!-- Modales -->
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

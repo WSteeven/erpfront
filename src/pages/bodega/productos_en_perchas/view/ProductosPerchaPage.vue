@@ -42,11 +42,8 @@
                 <q-input
                   v-model="criterioBusquedaInventario"
                   placeholder="Producto del inventario"
-                  @update:model-value="
-                    (v) => (criterioBusquedaInventario = v.toUpperCase())
-                  "
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarInventarios({sucursal_id: sucursal})"
+                  @keydown.enter="listarInventarios({ sucursal_id: sucursal })"
                   @blur="
                     criterioBusquedaInventario === ''
                       ? limpiarInventario()
@@ -59,7 +56,7 @@
               </div>
               <div class="col-12 col-md-4">
                 <q-btn
-                  @click="listarInventarios({sucursal_id: sucursal})"
+                  @click="listarInventarios({ sucursal_id: sucursal })"
                   icon="search"
                   unelevated
                   color="secondary"
@@ -125,17 +122,14 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.stock.$errors.length"
-              @update:model-value="
-                (v) => (producto_percha.stock = v.toUpperCase())
-              "
               outlined
               dense
             >
-            <template v-slot:error>
-              <div v-for="error of v$.stock.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
+              <template v-slot:error>
+                <div v-for="error of v$.stock.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
         </div>

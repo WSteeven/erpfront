@@ -30,7 +30,7 @@ import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
 import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController'
 import { ComportamientoModalesTransaccionIngreso } from '../../transaccionIngresoInventario/application/ComportamientoModalesTransaccionIngreso'
 import { useDetalleStore } from 'stores/detalle'
-import { useDetalleTransaccionStore } from 'stores/detalleTransaccionIngreso'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
     // emits: ['creada', 'consultada'],
@@ -97,7 +97,7 @@ export default defineComponent({
 
         const modales = new ComportamientoModalesTransaccionIngreso()
         const botonInventario: CustomActionTable = {
-            titulo: 'Inventariar',
+            titulo: 'Inventariarxxx',
             accion: async ({ entidad, posicion }) => {
                 // console.log('boton inventariar')
                 // console.log('accion', accion)

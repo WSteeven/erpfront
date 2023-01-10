@@ -13,7 +13,7 @@ import { DetalleProductoTransaccion } from "../../detalle_producto_transaccion/d
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { ComportamientoModalesTransaccionIngreso } from "../application/ComportamientoModalesTransaccionIngreso";
 import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
+import { useDetalleTransaccionStore } from "stores/detalleTransaccion";
 
 
 export default defineComponent({

@@ -7,7 +7,7 @@
                         <label class="q-mb-sm block">Condicion del producto</label>
                         <q-input v-model="condicion.nombre" placeholder="Obligatorio" :readonly="disabled"
                             :error="!!v$.nombre.$errors-length"
-                            @update:model-value="(v)=>(condicion.nombre=v.toUpperCase())" outlined dense>
+                            outlined dense>
                             <template v-slot:error>
                                 <div v-for="error of v$.nombre.$errors" :key="error.$uid">
                                     <div class="error-msg">{{error.$message}}</div>

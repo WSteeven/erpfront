@@ -119,7 +119,7 @@
               v-model="transaccion.devolucion"
               placeholder="Opcional"
               hint="Ingresa un numero de devolución y presiona Enter"
-              @keyup.enter="llenarTransaccion"
+              @keyup.enter="llenarTransaccion(transaccion.devolucion)"
               :readonly="disabled"
               outlined
               dense
@@ -133,9 +133,6 @@
               v-model="transaccion.comprobante"
               placeholder="Obligatorio"
               :readonly="disabled"
-              @update:model-value="
-                (v) => (transaccion.observacion_aut = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -182,9 +179,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.justificacion.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.justificacion = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -339,9 +333,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
-              @update:model-value="
-                (v) => (transaccion.observacion_est = v.toUpperCase())
-              "
               outlined
               dense
             >
@@ -442,9 +433,6 @@
                 <q-input
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
-                  @update:model-value="
-                    (v) => (criterioBusquedaProducto = v.toUpperCase())
-                  "
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="listarProductos()"
                   @blur="

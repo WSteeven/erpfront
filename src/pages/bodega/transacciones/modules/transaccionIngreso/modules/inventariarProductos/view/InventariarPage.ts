@@ -17,7 +17,7 @@ import { useQuasar } from "quasar";
 //Stores
 import { useDetalleStore } from "stores/detalle";
 import { useTransaccionStore } from "stores/transaccion";
-import { useDetalleTransaccionStore } from "stores/detalleTransaccionIngreso";
+import { useDetalleTransaccionStore } from "stores/detalleTransaccion";
 import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
 import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController";
 import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";

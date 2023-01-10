@@ -15,7 +15,6 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.fila.$errors.length"
-              @update:model-value="(v) => (piso.fila = v.toUpperCase())"
               outlined
               dense
             >
@@ -33,7 +32,6 @@
               v-model="piso.columna"
               placeholder="Opcional"
               :readonly="disabled"
-              @update:model-value="(v) => (piso.columna = v.toUpperCase())"
               outlined
               dense
             >
