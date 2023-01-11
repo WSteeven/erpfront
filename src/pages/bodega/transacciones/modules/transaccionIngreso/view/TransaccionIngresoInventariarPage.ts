@@ -97,7 +97,7 @@ export default defineComponent({
 
         const modales = new ComportamientoModalesTransaccionIngreso()
         const botonInventario: CustomActionTable = {
-            titulo: 'Inventariarxxx',
+            titulo: 'Inventariar',
             accion: async ({ entidad, posicion }) => {
                 // console.log('boton inventariar')
                 // console.log('accion', accion)

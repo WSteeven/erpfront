@@ -244,7 +244,8 @@ export default defineComponent({
                 console.log('Presionaste el boton de inventariar')
                 transaccionStore.idTransaccion = entidad.id
                 modales.abrirModalEntidad('TransaccionIngresoInventariarPage')
-            }
+            },
+            visible:()=>tabSeleccionado.value=='PENDIENTE'||tabSeleccionado.value=='PARCIAL'
         }
         /* const botonEditarInventario: CustomActionTable = {
             titulo: 'Despachar',

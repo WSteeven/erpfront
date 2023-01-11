@@ -29,13 +29,19 @@ import { acciones } from "config/utils";
 //Controladores para los selects que no se deben usar
 
 export default defineComponent({
+    props: {
+        mixinModal: {
+            type: Object as () => ContenedorSimpleMixin<any>,
+            required: true,
+        }
+    },
     components: { buttonSubmits },
     emits: ['cerrar-modal'],
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { guardar, setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onGuardado,onBeforeGuardar , onConsultado} = mixin.useHooks()
+        const { onGuardado, onBeforeGuardar, onConsultado } = mixin.useHooks()
 
         const transaccionStore = useTransaccionStore()
         const detalleProductoTransaccionStore = useDetalleTransaccionStore()
@@ -47,6 +53,8 @@ export default defineComponent({
         const opcion_cliente: any = ref([])
         const opcion_condicion = ref([])
 
+        const {listado} = props.mixinModal.useReferencias()
+        
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
@@ -79,19 +87,20 @@ export default defineComponent({
 
         }
 
-        onConsultado(()=>{
+        onConsultado(() => {
             console.log('accion', accion)
             console.log('acciones', acciones)
         })
 
-        onBeforeGuardar(()=>{
+        onBeforeGuardar(() => {
             // console.log('before',inventario.cantidad)
             detalleProductoTransaccionStore.detalle.cantidad_final = inventario.cantidad
         })
 
         onGuardado(() => {
-            console.log('inventario guardado es',inventario)
+            console.log('inventario guardado es', inventario)
             detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
+
             emit('cerrar-modal')
         })
 
