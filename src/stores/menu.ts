@@ -72,7 +72,7 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.tipos_trabajos'),
         },
-        {
+        /* {
           title: 'Solicitud de materiales a bodega',
           link: 'solicitud-materiales',
           icon: 'bi-circle',
@@ -81,8 +81,8 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Devolución de materiales a bodega',
           link: 'solicitud-materiales',
           icon: 'bi-circle',
-        },
-        {
+        }, */
+        /* {
           title: 'Tendidos',
           icon: 'bi-circle',
           children: [
@@ -103,8 +103,8 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-dash',
             },
           ],
-        },
-        {
+        }, */
+        /* {
           title: 'Informes',
           link: 'informes',
           icon: 'bi-circle',
@@ -113,11 +113,16 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Control diario de materiales',
           link: 'control-diario-materiales',
           icon: 'bi-circle',
-        },
+        }, */
         {
           title: 'Control de cambios',
           link: 'control-cambios',
           icon: 'bi-circle',
+        },
+        {
+          title: 'Clientes finales',
+          link: 'clientes-finales',
+          icon: 'bi-people-fill',
         },
       ],
     },
@@ -190,7 +195,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v =='BODEGA')),
+          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v == 'BODEGA')),
           icon: 'bi-circle',
         },
         {

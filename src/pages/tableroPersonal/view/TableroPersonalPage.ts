@@ -9,8 +9,8 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 // Logica y controladores
 import { ComportamientoModalesTableroPersonal } from '../application/ComportamientoModalesTableroPersonal'
 import { TableroPersonalController } from '../infraestructure/TableroPersonalController'
-import { TableroPersonal } from '../domain/TableroPersonal'
 import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
+import { TableroPersonal } from '../domain/TableroPersonal'
 
 export default defineComponent({
     components: {

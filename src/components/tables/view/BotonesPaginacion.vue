@@ -16,7 +16,7 @@
       color="secondary"
       dense
       class="q-mr-xs"
-      :flat="scope.isFirstPage"
+      flat
       :disable="scope.isFirstPage"
       @click="scope.prevPage"
     />
@@ -25,7 +25,7 @@
       icon="chevron_right"
       color="secondary"
       dense
-      :flat="scope.isLastPage"
+      flat
       :disable="scope.isLastPage"
       @click="scope.nextPage"
     />

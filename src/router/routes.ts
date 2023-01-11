@@ -90,6 +90,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/clientes-finales',
+        name: 'clientes_finales',
+        component: () => import('tareas/clientesFinales/view/ClienteFinalPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/control-asistencia',
         name: 'control_asistencia',
         component: () => import('tareas/controlAsistencia/view/ControlAsistenciaPage.vue'),

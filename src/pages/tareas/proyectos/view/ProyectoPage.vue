@@ -14,6 +14,7 @@
               v-model="proyecto.cliente"
               :options="clientes"
               @filter="filtrarClientes"
+              :disable="disabled"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -49,6 +50,7 @@
             <q-input
               v-model="proyecto.codigo_proyecto"
               :error="!!v$.codigo_proyecto.$errors.length"
+              :disable="disabled"
               outlined
               dense
             >
@@ -68,6 +70,7 @@
             <q-input
               v-model="proyecto.nombre"
               :error="!!v$.nombre.$errors.length"
+              :disable="disabled"
               outlined
               dense
             >
@@ -85,6 +88,7 @@
             <q-input
               v-model="proyecto.fecha_inicio"
               :error="!!v$.fecha_inicio.$errors.length"
+              :disable="disabled"
               outlined
               dense
             >
@@ -126,9 +130,10 @@
             <label class="q-mb-sm block">Fecha de fin de proyecto</label>
             <q-input
               v-model="proyecto.fecha_fin"
+              :error="!!v$.fecha_fin.$errors.length"
+              :disable="disabled"
               outlined
               dense
-              :error="!!v$.fecha_fin.$errors.length"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -170,6 +175,7 @@
               v-model="proyecto.canton"
               :options="cantones"
               @filter="filtrarCantones"
+              :disable="disabled"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -201,11 +207,12 @@
 
           <!-- Coordinador -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Supervisor</label>
+            <label class="q-mb-sm block">Coordinador</label>
             <q-select
               v-model="proyecto.coordinador"
               :options="coordinadores"
               @filter="filtrarCoordinadores"
+              :disable="disabled"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -234,53 +241,6 @@
               </template>
             </q-select>
           </div>
-
-          <!-- Fecha de solicitud -->
-          <!--<div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
-            <q-input v-model="proyecto.fecha_solicitud" outlined dense>
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="proyecto.fecha_solicitud"
-                      mask="DD-MM-YYYY"
-                      today-btn
-                    >
-                      <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div> -->
-
-          <!-- <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Costo total proyecto</label>
-            <q-input
-              v-model="proyecto.costo"
-              outlined
-              dense
-              :error="!!v$.costo.$errors.length"
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.costo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div> -->
         </div>
       </q-form>
     </template>

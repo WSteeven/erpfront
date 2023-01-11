@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
-import { computed, defineComponent, reactive, ref, watchEffect, watch } from 'vue'
-import { required } from '@vuelidate/validators'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { acciones, rolesAdmitidos } from 'config/utils'
+import { required } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
@@ -15,13 +15,10 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
-import { ContactoController } from 'pages/tareas/contactos/infraestructure/ContactoController'
 import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
-import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
-// import { UbicacionTarea } from 'pages/tareas/controlTareas/domain/UbicacionTarea'
-import { ClienteFinal } from 'pages/tareas/contactos/domain/ClienteFinal'
-import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
+import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
+import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
 
 export default defineComponent({
   props: {
@@ -40,27 +37,27 @@ export default defineComponent({
     const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
     const { consultar, guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
-    const { onGuardado, onBeforeModificar, onReestablecer, onConsultado, onModificado } = props.mixin.useHooks()
-
-    const opcionesUbicacion = { manual: 'ubicacion_manual', cliente: 'cliente_final' }
-    const tipoUbicacionTrabajo = ref(opcionesUbicacion.cliente)
+    const { onGuardado, onConsultado, onModificado } = props.mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
         clientes: new ClienteController(),
-        clientesFinales: new ContactoController(),
         provincias: new ProvinciaController(),
         cantones: new CantonController(),
         proyectos: new ProyectoController(),
         supervisores: {
           controller: new EmpleadoController(),
           params: { rol: rolesAdmitidos.fiscalizador },
-        }
+        },
+        coordinadores: {
+          controller: new EmpleadoController(),
+          params: { rol: rolesAdmitidos.coordinador },
+        },
       })
 
       clientes.value = listadosAuxiliares.clientes
       supervisores.value = listadosAuxiliares.supervisores
-      clientesFinales.value = listadosAuxiliares.clientesFinales
+      coordinadores.value = listadosAuxiliares.coordinadores
       provincias.value = listadosAuxiliares.provincias
       cantones.value = listadosAuxiliares.cantones
       proyectos.value = listadosAuxiliares.proyectos
@@ -75,9 +72,6 @@ export default defineComponent({
 
     const v$ = useVuelidate(rules, tarea)
     setValidador(v$.value)
-
-    // Modales
-    const modalesTarea = new ComportamientoModalesTarea()
 
     // Filtro clientes principales
     const clientes = ref()
@@ -98,16 +92,17 @@ export default defineComponent({
 
     // Filtro tipos de clientes finales
     const clientesFinales = ref()
+    const clientesFinalesSource = ref()
     function filtrarClientesFinales(val, update) {
       if (val === '') {
         update(() => {
-          clientesFinales.value = listadosAuxiliares.clientesFinales
+          clientesFinales.value = clientesFinalesSource.value
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        clientesFinales.value = listadosAuxiliares.clientesFinales.filter(
+        clientesFinales.value = clientesFinalesSource.value.filter(
           (v) => v.nombres.toLowerCase().indexOf(needle) > -1
         )
       })
@@ -125,6 +120,23 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         supervisores.value = listadosAuxiliares.supervisores.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // Filtro supervisores
+    const coordinadores = ref()
+    function filtrarCoordinadores(val, update) {
+      if (val === '') {
+        update(() => {
+          coordinadores.value = listadosAuxiliares.coordinadores
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        coordinadores.value = listadosAuxiliares.coordinadores.filter(
           (v) => v.nombres.toLowerCase().indexOf(needle) > -1
         )
       })
@@ -185,9 +197,8 @@ export default defineComponent({
     const clienteFinal = reactive(new ClienteFinal())
 
     async function obtenerClienteFinal(clienteFinalId: number) {
-      const clienteFinalController = new ContactoController()
+      const clienteFinalController = new ClienteFinalController()
       const { result } = await clienteFinalController.consultar(clienteFinalId)
-      //clienteFinal.hydrate(result)
       return result
     }
 
@@ -197,23 +208,7 @@ export default defineComponent({
       tareaStore.tarea.cliente = tarea.cliente
     }
 
-    watchEffect(async () => {
-      if (tarea.cliente_final) {
-        // tipoUbicacionTrabajo.value = 'cliente_final'
-        const res = await obtenerClienteFinal(tarea.cliente_final)
-        clienteFinal.hydrate(res)
-      } /*else
-        tipoUbicacionTrabajo.value = opcionesUbicacion.manual*/
-    })
-    /*if (tarea.cliente_final) {
-      obtenerClienteFinal(tarea.cliente_final)
-      tipoUbicacionTrabajo.value = opcionesUbicacion.cliente
-    } else {
-      tipoUbicacionTrabajo.value = opcionesUbicacion.manual
-    }*/
-
     onGuardado(() => {
-      /*console.log('ha sido guardado')*/
       accion.value = acciones.editar
       consultar(tarea)
     })
@@ -227,51 +222,24 @@ export default defineComponent({
       tareaStore.tarea.hydrate(tarea)
       tarea.tiene_cliente_final = !!tarea.cliente_final
     })
-    //tareaStore.tarea.hydrate(tarea)
-    //tipoUbicacionTrabajo.value = 'hfhffhjhgfjh' //opcionesUbicacion.cliente
-    //console.log(tipoUbicacionTrabajo.value)
-    /* const res = await obtenerClienteFinal(tarea.cliente_final)
-    clienteFinal.hydrate(res)
-    console.log(res) */
 
-    /*if (tarea.cliente_final) {
-      tarea.ubicacion_tarea = new UbicacionTarea()
-      console.log('Tiene cliente final')
-    } */
-    /*else {
-      tipoUbicacionTrabajo.value = opcionesUbicacion.manual
-    }*/
-    //})
+    const model = ref('PARA_PROYECTO')
+    const paraProyecto = computed(() => model.value === 'PARA_PROYECTO')
+    const paraClienteFinal = computed(() => model.value === 'PARA_CLIENTE_FINAL')
 
-    // onBeforeModificar(() => {
-    /* if (tipoUbicacionTrabajo.value === 'ubicacion_manual') {
-      tarea.cliente_final = null
-      clienteFinal.hydrate(new ClienteFinal())
-    } else {
-      tarea.ubicacion_tarea = new UbicacionTarea()
-    } */
-    // })
+    const controller = new ClienteFinalController()
+    watchEffect(async () => {
+      clientesFinalesSource.value = await (await controller.listar({ cliente: tarea.cliente })).result
+    })
 
-    // onReestablecer(() => {
-    /* clienteFinal.hydrate(new ClienteFinal())
-    tarea.cliente_final = null
-    tarea.ubicacion_tarea = new UbicacionTarea()*/
-    // tareaStore.tarea.hydrate(new Tarea())
-    //})
-    function activarPerteneceProyecto() {
-      if (!tarea.cliente_final) tarea.pertenece_a_proyecto = true
-    }
-
-    function activarClienteFinal() {
-      if (!tarea.pertenece_a_proyecto) tarea.tiene_cliente_final = true
-    }
-
-    watch(computed(() => tarea.pertenece_a_proyecto), () => activarClienteFinal())
-    watch(computed(() => tarea.cliente_final), () => activarPerteneceProyecto())
+    watchEffect(async () => {
+      if (tarea.cliente_final) {
+        const res = await obtenerClienteFinal(tarea.cliente_final)
+        clienteFinal.hydrate(res)
+      }
+    })
 
     return {
-      activarClienteFinal,
-      model: ref('pertenece_proyecto'),
       v$,
       tarea,
       accion,
@@ -284,7 +252,6 @@ export default defineComponent({
       eliminar,
       tareaStore,
       reestablecer,
-      modalesTarea,
       clientes,
       filtrarClientes,
       clientesFinales,
@@ -295,14 +262,18 @@ export default defineComponent({
       filtrarProyectos,
       obtenerClienteFinal,
       supervisores,
+      coordinadores,
+      filtrarCoordinadores,
       proyectos,
       clienteFinal,
+      model,
+      paraProyecto,
+      paraClienteFinal,
       // ubicacionManual,
       listadosAuxiliares,
       establecerCliente,
       // Selector
       configuracionColumnasClientes,
-      tipoUbicacionTrabajo,
     }
   },
 })

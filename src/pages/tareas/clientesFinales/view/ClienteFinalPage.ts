@@ -1,8 +1,9 @@
 // Dependencias
-import { configuracionColumnasProyecto } from '../domain/configuracionColumnasProyectos'
+import { configuracionColumnasClienteFinal } from '../domain/configuracionColumnasClienteFinal'
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from '@vuelidate/validators'
-import { defineComponent, ref } from 'vue'
+import { rolesAdmitidos } from 'config/utils'
+import { computed, defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 
@@ -12,12 +13,12 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
-import { ProyectoController } from '../infraestructure/ProyectoController'
-import { Proyecto } from '../domain/Proyecto'
-import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { rolesAdmitidos } from 'config/utils'
+import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { ClienteFinalController } from '../infraestructure/ClienteFinalController'
+import { ClienteFinal } from '../domain/ClienteFinal'
+import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
 
 export default defineComponent({
   components: {
@@ -26,40 +27,40 @@ export default defineComponent({
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      Proyecto,
-      new ProyectoController()
+      ClienteFinal,
+      new ClienteFinalController()
     )
-    const { entidad: proyecto, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: clienteFinal, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
         clientes: new ClienteController(),
+        provincias: new ProvinciaController(),
         cantones: new CantonController(),
-        coordinadores: {
-          controller: new EmpleadoController(),
-          params: { rol: rolesAdmitidos.coordinador },
-        },
       })
       clientes.value = listadosAuxiliares.clientes
       cantones.value = listadosAuxiliares.cantones
-      coordinadores.value = listadosAuxiliares.coordinadores
+      provincias.value = listadosAuxiliares.provincias
     })
 
     const rules = {
       cliente: { required },
-      codigo_proyecto: { required },
-      fecha_inicio: { required },
-      fecha_fin: { required },
-      nombre: { required },
+      id_cliente_final: { required },
+      nombres: { required },
+      apellidos: { required },
+      celular: { required },
+      provincia: { required },
       canton: { required },
-      coordinador: { required },
+      parroquia: { required },
+      direccion: { required },
+      referencia: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())
 
-    const v$ = useVuelidate(rules, proyecto)
+    const v$ = useVuelidate(rules, clienteFinal)
     setValidador(v$.value)
 
     // Filtro clientes principales
@@ -75,6 +76,23 @@ export default defineComponent({
         const needle = val.toLowerCase()
         clientes.value = listadosAuxiliares.clientes.filter(
           (v) => v.razon_social.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // Filtro provincias
+    const provincias = ref()
+    function filtrarProvincias(val, update) {
+      if (val === '') {
+        update(() => {
+          provincias.value = listadosAuxiliares.provincias
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        provincias.value = listadosAuxiliares.provincias.filter(
+          (v) => v.provincia.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -96,37 +114,23 @@ export default defineComponent({
       })
     }
 
-    // Filtro coordinadores
-    const coordinadores = ref()
-    function filtrarCoordinadores(val, update) {
-      if (val === '') {
-        update(() => {
-          coordinadores.value = listadosAuxiliares.coordinadores
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        coordinadores.value = listadosAuxiliares.coordinadores.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === clienteFinal.provincia))
 
     return {
       // mixin
       mixin,
-      proyecto,
+      clienteFinal,
       disabled,
       accion,
+      listadosAuxiliares,
       v$,
-      configuracionColumnasProyecto,
+      configuracionColumnasClienteFinal,
       clientes,
       cantones,
-      coordinadores,
       filtrarClientes,
       filtrarCantones,
-      filtrarCoordinadores,
+      filtrarProvincias,
+      cantonesPorProvincia,
     }
   },
 })
