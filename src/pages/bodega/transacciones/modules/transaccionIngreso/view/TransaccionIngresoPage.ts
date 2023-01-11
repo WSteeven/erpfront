@@ -241,7 +241,7 @@ export default defineComponent({
         const botonEditarInventario: CustomActionTable={
             titulo:'Ingresar',
             accion:({entidad, posicion})=>{
-                console.log('Presionaste el boton de inventariar')
+                // console.log('Presionaste el boton de inventariar')
                 transaccionStore.idTransaccion = entidad.id
                 modales.abrirModalEntidad('TransaccionIngresoInventariarPage')
             },

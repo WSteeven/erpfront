@@ -176,7 +176,7 @@
         </q-input>
       </div>
     </div>
-    <button-submits :accion="accion" @guardar="guardar(inventario, false)" />
+    <button-submits :accion="accion" @guardar="guardarRegistro(inventario)" />
   </q-form>
 </template>
 <script src="./InventariarPage.ts"></script>

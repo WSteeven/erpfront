@@ -33,6 +33,7 @@ import { acciones, logoBN, logoColor, meses, tabOptionsTraspasos } from "config/
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from "shared/utils";
+import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -144,10 +145,14 @@ export default defineComponent({
             titulo: 'Cantidad',
             icono: 'bi-pencil',
             accion: ({ posicion }) => {
-                prompt('Ingresa la cantidad',
-                    (data) => traspaso.listadoProductos[posicion].cantidades = data,
-                    traspaso.listadoProductos[posicion].cantidades,
-                )
+                const config: CustomActionPrompt={
+                    titulo:'Confirmación',
+                    mensaje: 'Ingresa la cantidad',
+                    defecto: traspaso.listadoProductos[posicion].cantidades,
+                    tipo: 'number',
+                    accion: (data) => traspaso.listadoProductos[posicion].cantidades = data,
+                }
+                prompt(config)
             },
             visible: () => {
                 return accion.value == acciones.nuevo ? true : false
@@ -157,10 +162,14 @@ export default defineComponent({
             titulo: 'Devolucion',
             icono: 'bi-pencil',
             accion: ({ posicion }) => {
-                prompt('Ingresa la cantidad',
-                    (data) => traspaso.listadoProductos[posicion].devolucion = data,
-                    traspaso.listadoProductos[posicion].devolucion,
-                )
+                const config: CustomActionPrompt={
+                    titulo: 'Confirmación',
+                    mensaje:'Ingresa la cantidad',
+                    defecto: traspaso.listadoProductos[posicion].devolucion,
+                    tipo: 'number',
+                    accion: (data) => traspaso.listadoProductos[posicion].devolucion = data,
+                }
+                prompt(config)
             },
             visible: ({ entidad, posicion }) => {
                 // console.log('entidad....', entidad)

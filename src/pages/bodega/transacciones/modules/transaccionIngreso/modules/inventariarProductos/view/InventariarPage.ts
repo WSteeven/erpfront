@@ -25,6 +25,7 @@ import { SucursalController } from "pages/administracion/sucursales/infraestruct
 import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
 import { emit } from "process";
 import { acciones } from "config/utils";
+import { useNotificaciones } from "shared/notificaciones";
 
 //Controladores para los selects que no se deben usar
 
@@ -52,8 +53,10 @@ export default defineComponent({
         const opcion_sucursal = ref([])
         const opcion_cliente: any = ref([])
         const opcion_condicion = ref([])
+        
+        const {notificarError}=useNotificaciones()
 
-        const {listado} = props.mixinModal.useReferencias()
+        const {entidad: transaccion, listado }=props.mixinModal.useReferencias()
         
         //Obtener los listados
         cargarVista(async () => {
@@ -96,14 +99,48 @@ export default defineComponent({
             // console.log('before',inventario.cantidad)
             detalleProductoTransaccionStore.detalle.cantidad_final = inventario.cantidad
         })
+        async function guardarRegistro(entidad){
+            try{
+                await detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
+                console.log('inventario guardado es', inventario)
+                console.log('---------------------')
+                //en esta parte enviar la cantidad actualizada a la transaccion
+                console.log(transaccion, detalleProductoTransaccionStore.detalle)
+                const registroEncontrado = transaccion.listadoProductosTransaccion.filter((v)=>v.id===detalleProductoTransaccionStore.detalle.detalle_id)
+                registroEncontrado[0].despachado = detalleProductoTransaccionStore.detalle.cantidad_final
+                registroEncontrado[0].devuelto = detalleProductoTransaccionStore.detalle.cantidad_final
+                console.log('detalle-posicion', detalleProductoTransaccionStore.posicion)
+                console.log('registro a modificar',registroEncontrado)
+                console.log(transaccion.listadoProductosTransaccion)
+                // actualizarElementoListado(detalleProductoTransaccionStore.posicion, registroEncontrado[0])
+                await guardar(entidad, false)
+                emit('cerrar-modal')    
+            }catch(e){
+                notificarError('HUBO UN ERROR'+e)
+            }
+        }
 
-        onGuardado(() => {
+        /* onGuardado(async () => {
             console.log('inventario guardado es', inventario)
-            detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
-
+            console.log('---------------------')
+            //en esta parte enviar la cantidad actualizada a la transaccion
+            console.log(transaccion, detalleProductoTransaccionStore.detalle)
+            const registroEncontrado = transaccion.listadoProductosTransaccion.filter((v)=>v.id===detalleProductoTransaccionStore.detalle.detalle_id)
+            registroEncontrado[0].despachado = detalleProductoTransaccionStore.detalle.cantidad_final
+            registroEncontrado[0].devuelto = detalleProductoTransaccionStore.detalle.cantidad_final
+            console.log('detalle-posicion', detalleProductoTransaccionStore.posicion)
+            console.log('registro a modificar',registroEncontrado)
+            console.log(transaccion.listadoProductosTransaccion)
+            // actualizarElementoListado(detalleProductoTransaccionStore.posicion, registroEncontrado[0])
             emit('cerrar-modal')
-        })
-
+        }) */
+        function actualizarElementoListado(posicion: number, entidad: any): void {
+            if (posicion >= 0) {
+              transaccion.listadoProductosTransaccion.value.splice(posicion, 1, entidad);
+              transaccion.listadoProductosTransaccion.value = [...transaccion.listadoProductosTransaccion.value];
+            }
+            console.log('La posicion del elemento del listado de la transaccion es ', detalleProductoTransaccionStore.posicion)
+          }
         const reglas = {
             cantidad: { required },
             producto: { required },
@@ -135,7 +172,7 @@ export default defineComponent({
             opcion_condicion,
             ts: transaccionStore.transaccion,
 
-            guardar,
+            guardarRegistro,
 
 
         }

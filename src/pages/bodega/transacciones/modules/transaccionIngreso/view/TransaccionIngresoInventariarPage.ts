@@ -37,7 +37,7 @@ export default defineComponent({
     setup() {
 
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
-        const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+        const { entidad: transaccion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { cargarVista, setValidador } = mixin.useComportamiento()
         const { onConsultado, onReestablecer } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
@@ -46,7 +46,7 @@ export default defineComponent({
         useNotificacionStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
         const transaccionStore = useTransaccionStore()
-        const detalleTransaccionStore = useDetalleTransaccionStore()
+        const detalleProductoTransaccionStore = useDetalleTransaccionStore()
         const detalleStore = useDetalleStore()
 
         const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
@@ -79,20 +79,6 @@ export default defineComponent({
             transaccion.hydrate(transaccionStore.transaccion)
         })
 
-        //Reglas de validacion
-        /* const reglas = {
-            justificacion: { required },
-            sucursal: { required },
-            motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
-            estado: { requiredIfRol: requiredIf(accion === acciones.editar), },
-            observacion_est: { requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado }) },
-            listadoProductosTransaccion: { required },
-            cliente: { required },
-            condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
-        }
-        
-        const v$ = useVuelidate(reglas, transaccion)
-        setValidador(v$.value) */
 
 
         const modales = new ComportamientoModalesTransaccionIngreso()
@@ -105,10 +91,11 @@ export default defineComponent({
                 console.log(entidad.cantidad, entidad.devuelto)
                 await detalleStore.cargarDetalle(entidad.detalle_id)
                 detalleStore.cantidad = entidad.cantidad
-                await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.id)
-
+                await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.id)
+                detalleProductoTransaccionStore.posicion = posicion
                 // modales.abrirModalEntidad('InventarioPage')
                 modales.abrirModalEntidad('InventariarPage')
+                // transaccion.hydrate()
             },
             visible: ({ entidad, posicion }) => {
                 console.log(entidad, posicion)
@@ -117,25 +104,6 @@ export default defineComponent({
                 return entidad.cantidad != entidad.devuelto ? true : false
             },
         }
-
-
-
-
-        /* const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
-        {
-            name: 'cantidad',
-            field: 'cantidad',
-            label: 'Cantidades',
-            align: 'left',
-            sortable: false,
-        },
-        {
-            name: 'acciones',
-            field: 'acciones',
-            label: 'Acciones',
-            align: 'center'
-        },
-        ] */
 
 
         return {

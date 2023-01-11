@@ -4,8 +4,10 @@ import { DetalleProductoTransaccion } from 'pages/bodega/transacciones/modules/d
 import { endpoints } from 'config/api';
 import { AxiosResponse } from 'axios';
 import { defineStore } from 'pinia';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { acciones } from 'config/utils';
+import { useNotificaciones } from 'shared/notificaciones';
+import { notificarMensajesError } from 'shared/utils';
 
 export const useDetalleTransaccionStore = defineStore('detalle_transaccion', ()=>{
     //State
@@ -13,8 +15,10 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', ()=
 
     const accionDetalle = acciones.nuevo
     const detalleReset = new DetalleProductoTransaccion()
-
+    const posicion = ref()
     const statusLoading = new StatusEssentialLoading()
+
+    const {notificarError} = useNotificaciones()
 
     async function consultarDetalle(id:number) {
         statusLoading.activar()
@@ -54,9 +58,14 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', ()=
     }
     async function actualizarDetalle(id:number, data:any) {
         console.log('pasó por actualizar')
-        const modelo = await editarDetalle(id, data)
-        console.log('si se actualizó', modelo)
-        detalle.hydrate(modelo)
+        try{
+            const modelo = await editarDetalle(id, data)
+            console.log('si se actualizó', modelo)
+            detalle.hydrate(modelo)
+        }catch(e){
+            notificarError('ERROR'+e)
+            detalle.hydrate(detalleReset)
+        }
     }
     function resetearDetalle(){
         detalle.hydrate(detalleReset)
@@ -69,6 +78,7 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', ()=
         actualizarDetalle,
         resetearDetalle,
         accionDetalle,
+        posicion,
     }
 
 
