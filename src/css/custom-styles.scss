@@ -72,22 +72,9 @@
   text-shadow: 1px 1px 4px #00000055;
 }
 
-// Estado input
-.q-field .q-field__inner {
-  text-transform: uppercase;
-}
-
-.q-field--disabled .q-field__inner {
-  background-color: #474e5933;
-}
-
-.q-field--disabled .q-field__control > div {
-  opacity: 1 !important;
-}
-
 // Toggle
 .my-custom-toggle {
-  border: 1px solid $positive;
+  border: 1px solid $blue-grey;
 }
 
 .borde-header-tabla {

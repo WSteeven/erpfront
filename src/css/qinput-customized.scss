@@ -1,0 +1,16 @@
+.q-field .q-field__inner {
+  text-transform: uppercase;
+}
+
+.q-field__messages,
+.q-placeholder {
+  text-transform: capitalize;
+}
+
+.q-field--disabled .q-field__inner {
+  background-color: #474e5933;
+}
+
+.q-field--disabled .q-field__control > div {
+  opacity: 1 !important;
+}

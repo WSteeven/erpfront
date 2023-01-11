@@ -155,7 +155,7 @@ export default defineComponent({
       }
     }
 
-    onBeforeGuardar(() => {
+    /* onBeforeGuardar(() => {
       tipoTarea.imagenes_adicionales = JSON.stringify(tipoTarea.imagenes_adicionales)
       tipoTarea.campos_adicionales = JSON.stringify(tipoTarea.campos_adicionales)
     })
@@ -170,7 +170,7 @@ export default defineComponent({
       tipoTarea.campos_adicionales = tipoTarea.campos_adicionales ? JSON.parse(tipoTarea.campos_adicionales) : []
       tipoTarea.requiere_imagenes = !!tipoTarea.imagenes_adicionales.length
       tipoTarea.requiere_campos_adicionales = !!tipoTarea.campos_adicionales.length
-    })
+    }) */
 
 
     return {

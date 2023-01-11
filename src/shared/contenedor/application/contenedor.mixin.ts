@@ -136,18 +136,22 @@ export abstract class Contenedor<
         requests.push(controlador.listar({ ...this.argsDefault, ...args }))
         // requests.push(controlador.listar()) //{ ...this.argsDefault, ...args }))
       } else {
+        console.log('solo array')
         requests.push(
           new Promise<any[]>((resolve) => resolve(configListado as any))
         )
       }
 
+      // this.refs.listadosAuxiliares[key] = new Set([])
       // asigna por defecto listado vacio para evitar errores de template
       this.refs.listadosAuxiliares[key] = []
+      // window.set(this.refs.listadosAuxiliares, key, [])
     }
 
     // Ejecuta la lista de peticiones
     return Promise.allSettled(requests).then((results) => {
       results.forEach((elem, index) => {
+        console.log('index')
         // Asigna los valores a la referencia si se completo la peticion
         if (elem.status === 'fulfilled') {
           const key = hashValues[index]

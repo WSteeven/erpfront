@@ -26,7 +26,6 @@
               emit-value
               map-options
             >
-              <!-- @update:model-value="obtenerResponsable(subtarea.grupo)" -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -35,27 +34,6 @@
                 </q-item>
               </template>
             </q-select>
-            <!--<q-input
-              v-model="criterioBusquedaCliente"
-              placeholder="Obligatorio"
-              @update:model-value="
-                (v) => (criterioBusquedaCliente = v.toUpperCase())
-              "
-              :readonly="disabled"
-              hint="Presiona Enter para seleccionar un cliente"
-              @keydown.enter="listarClientes()"
-              @blur="criterioBusquedaCliente === '' ? limpiarCliente() : null"
-              autofocus
-              outlined
-              dense
-              :error="!!v$.cliente.$errors.length"
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input> -->
           </div>
 
           <!-- Nombre -->
@@ -78,7 +56,7 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6">
+          <!--<div class="col-12 col-md-6">
             <br />
             <q-checkbox
               v-model="tipoTarea.requiere_imagenes"
@@ -96,10 +74,10 @@
               outlined
               dense
             ></q-checkbox>
-          </div>
+          </div> -->
         </div>
 
-        <div v-if="tipoTarea.requiere_imagenes" class="q-mb-md">
+        <!--<div v-if="tipoTarea.requiere_imagenes" class="q-mb-md">
           <essential-table
             titulo="Imágenes adicionales"
             :configuracionColumnas="configuracionColumnasImagenes"
@@ -135,143 +113,6 @@
             @eliminar="eliminarCampoAdicional"
             :entidad="CamposAdicionales"
           ></essential-table>
-        </div>
-        <!--<div class="row q-col-gutter-sm">
-          <div class="col-12 q-mb-md">Plantilla</div>
-          <div class="col-12 col-md-4 q-mb-md">
-            <q-card class="cursor-pointer" bordered>
-              <q-item tag="label" v-ripple class="q-pa-md">
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="tipoTarea.plantilla"
-                    val="montaje"
-                    color="positive"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="text-center q-mb-md text-bold"
-                    >Montajes / Tendidos</q-item-label
-                  >
-                  <q-btn
-                    color="primary"
-                    dense
-                    no-caps
-                    rounded
-                    @click="previsualizar('MONTAJE')"
-                    >Previsualizar</q-btn
-                  >
-                </q-item-section>
-              </q-item>
-            </q-card>
-          </div>
-
-          <div class="col-12 col-md-4 q-mb-md">
-            <q-card class="cursor-pointer" bordered>
-              <q-item tag="label" class="q-pa-md">
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="tipoTarea.plantilla"
-                    val="desmontaje"
-                    color="positive"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="text-center q-mb-md text-bold"
-                    >Desmontajes</q-item-label
-                  >
-                  <q-btn
-                    color="primary"
-                    dense
-                    no-caps
-                    rounded
-                    @click="previsualizar('DESMONTAJE')"
-                    >Previsualizar</q-btn
-                  >
-                </q-item-section>
-              </q-item>
-            </q-card>
-          </div>
-
-          <div class="col-12 col-md-4 q-mb-md">
-            <q-card class="cursor-pointer" bordered>
-              <q-item tag="label" class="q-pa-md">
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="tipoTarea.plantilla"
-                    val="hincado"
-                    color="positive"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="text-center q-mb-md text-bold"
-                    >Hincados</q-item-label
-                  >
-                  <q-btn
-                    color="primary"
-                    dense
-                    no-caps
-                    rounded
-                    @click="previsualizar('HINCADO')"
-                    >Previsualizar</q-btn
-                  >
-                </q-item-section>
-              </q-item>
-            </q-card>
-          </div>
-
-          <div class="col-12 col-md-4 q-mb-md">
-            <q-card class="cursor-pointer" bordered>
-              <q-item tag="label" class="q-pa-md">
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="tipoTarea.plantilla"
-                    val="recorrido"
-                    color="positive"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="text-center q-mb-md text-bold"
-                    >Recorridos</q-item-label
-                  >
-                  <q-btn
-                    color="primary"
-                    dense
-                    no-caps
-                    rounded
-                    @click="previsualizar('RECORRIDO')"
-                    >Previsualizar</q-btn
-                  >
-                </q-item-section>
-              </q-item>
-            </q-card>
-          </div>
-
-          <div class="col-12 col-md-4 q-mb-md">
-            <q-card class="cursor-pointer" bordered>
-              <q-item tag="label" class="q-pa-md">
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="tipoTarea.plantilla"
-                    val="otro"
-                    color="positive"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="text-center q-mb-md text-bold"
-                    >Otros</q-item-label
-                  >
-                  <q-btn
-                    color="primary"
-                    dense
-                    no-caps
-                    rounded
-                    @click="previsualizar('OTRO')"
-                    >Previsualizar</q-btn
-                  >
-                </q-item-section>
-              </q-item>
-            </q-card>
-          </div>
         </div> -->
       </q-form>
     </template>

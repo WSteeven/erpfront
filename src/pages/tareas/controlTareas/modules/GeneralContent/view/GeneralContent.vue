@@ -8,46 +8,23 @@
       default-opened
     >
       <div class="row q-col-gutter-sm q-pa-md">
-        <!--<div class="col-12">
+        <div class="col-12">
           <q-btn-toggle
             v-model="model"
             class="my-custom-toggle"
             spread
             no-caps
-            toggle-color="positive"
             rounded
+            toggle-color="secondary"
             unelevated
             :options="[
-              { label: 'Pertenece a un proyecto', value: 'pertenece_proyecto' },
-              { label: 'Trabajo para cliente final', value: 'cliente_final' },
+              { label: 'Tarea para un proyecto', value: 'PARA_PROYECTO' },
+              {
+                label: 'Tarea para cliente final',
+                value: 'PARA_CLIENTE_FINAL',
+              },
             ]"
           />
-        </div> -->
-
-        <div v-show="!tarea.tiene_cliente_final" class="col-12 col-md-3">
-          <br />
-          <q-checkbox
-            v-model="tarea.pertenece_a_proyecto"
-            label="Pertenece a un proyecto"
-            outlined
-            dense
-          ></q-checkbox>
-        </div>
-
-        <div v-show="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
-          <br />
-          <q-checkbox
-            v-model="tarea.tiene_cliente_final"
-            label="Trabajo para cliente final"
-            @blur="
-              () =>
-                !tarea.tiene_cliente_final
-                  ? (tarea.pertenece_a_proyecto = true)
-                  : null
-            "
-            outlined
-            dense
-          ></q-checkbox>
         </div>
       </div>
 
@@ -64,7 +41,7 @@
         </div>
 
         <!-- Numero tarea cliente -->
-        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+        <div v-if="paraClienteFinal" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de tarea cliente</label>
           <q-input
             v-model="tarea.codigo_tarea_cliente"
@@ -87,7 +64,7 @@
         </div>
 
         <!-- Cliente principal -->
-        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-6">
+        <div v-if="paraClienteFinal" class="col-12 col-md-6">
           <label class="q-mb-sm block">Cliente principal</label>
           <q-select
             v-model="tarea.cliente"
@@ -125,7 +102,7 @@
         </div>
 
         <!-- Supervisor -->
-        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+        <div v-if="paraClienteFinal" class="col-12 col-md-3">
           <label class="q-mb-sm block">Supervisor JP</label>
           <q-select
             v-model="tarea.supervisor"
@@ -154,8 +131,38 @@
           </q-select>
         </div>
 
+        <!-- Coordinador -->
+        <div v-if="paraClienteFinal" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Coordinador</label>
+          <q-select
+            v-model="tarea.coordinador"
+            :options="coordinadores"
+            @filter="filtrarCoordinadores"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            clearable
+            outlined
+            :option-label="(item) => item.nombres + ' ' + item.apellidos"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+
         <!-- Fecha de solicitud -->
-        <div v-if="!tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+        <div v-if="paraClienteFinal" class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
           <q-input v-model="tarea.fecha_solicitud" outlined dense>
             <template v-slot:append>
@@ -186,10 +193,10 @@
         </div>
 
         <!-- Codigo de proyecto -->
-        <div v-if="tarea.pertenece_a_proyecto" class="col-12 col-md-3">
+        <div v-if="paraProyecto" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de proyecto</label>
           <q-select
-            v-model="tarea.codigo_proyecto"
+            v-model="tarea.proyecto"
             :options="proyectos"
             @filter="filtrarProyectos"
             transition-show="scale"
@@ -238,151 +245,14 @@
     </q-expansion-item>
 
     <q-expansion-item
-      v-if="!tarea.pertenece_a_proyecto && tarea.tiene_cliente_final"
+      v-if="paraClienteFinal"
       class="overflow-hidden q-mb-md"
       style="border-radius: 8px; border: 1px solid #ddd"
       label="Ubicación de trabajo"
       header-class="bg-grey-1"
       default-opened
     >
-      <!-- Toggle -->
-      <!-- <div class="row q-col-gutter-sm q-pa-md">
-        <div class="col-12">
-          <q-btn-toggle
-            v-model="tipoUbicacionTrabajo"
-            spread
-            class="my-custom-toggle"
-            no-caps
-            rounded
-            unelevated
-            toggle-color="primary"
-            color="white"
-            text-color="primary"
-            :options="[
-              { label: 'Trabajo para cliente final', value: 'cliente_final' },
-            ]"
-          />
-        </div>
-      </div> -->
-      <!-- {
-                label: 'Ubicación',
-                value: 'ubicacion_manual',
-              }, -->
-      <!--
-      <div
-        v-if="tipoUbicacionTrabajo === 'ubicacion_manual'"
-        class="row q-col-gutter-sm q-pa-md"
-      >
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Provincias</label>
-          <q-select
-            v-model="tarea.ubicacion_tarea.provincia"
-            :options="provincias"
-            @filter="filtrarProvincias"
-            transition-show="scale"
-            transition-hide="scale"
-            options-dense
-            dense
-            outlined
-            :option-label="(item) => item.provincia"
-            :option-value="(item) => item.id"
-            use-input
-            input-debounce="0"
-            emit-value
-            map-options
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Canton</label>
-          <q-select
-            v-model="tarea.ubicacion_tarea.canton"
-            :options="cantonesPorProvincia"
-            @filter="filtrarCantones"
-            transition-show="scale"
-            transition-hide="scale"
-            options-dense
-            dense
-            outlined
-            :option-label="(item) => item.canton"
-            :option-value="(item) => item.id"
-            use-input
-            input-debounce="0"
-            emit-value
-            map-options
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Parroquia/Barrio</label>
-          <q-input
-            v-model="tarea.ubicacion_tarea.parroquia"
-            @update:model-value="
-              (v) => (tarea.ubicacion_tarea.parroquia = v.toUpperCase())
-            "
-            outlined
-            dense
-          ></q-input>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Dirección</label>
-          <q-input
-            v-model="tarea.ubicacion_tarea.direccion"
-            @update:model-value="
-              (v) => (tarea.ubicacion_tarea.direccion = v.toUpperCase())
-            "
-            outlined
-            dense
-          ></q-input>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Referencias</label>
-          <q-input
-            v-model="tarea.ubicacion_tarea.referencias"
-            @update:model-value="
-              (v) => (tarea.ubicacion_tarea.referencias = v.toUpperCase())
-            "
-            outlined
-            dense
-          ></q-input>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Coordenadas</label>
-          <q-input
-            v-model="tarea.ubicacion_tarea.coordenadas"
-            @update:model-value="
-              (v) => (tarea.ubicacion_tarea.coordenadas = v.toUpperCase())
-            "
-            outlined
-            dense
-          >
-          </q-input>
-        </div>
-      </div>
-    -->
-      <div
-        v-if="tipoUbicacionTrabajo === 'cliente_final'"
-        class="row q-col-gutter-sm q-pa-md"
-      >
+      <div class="row q-col-gutter-sm q-pa-md">
         <!-- Nombre -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Cliente final</label>
@@ -390,6 +260,7 @@
             v-model="tarea.cliente_final"
             :options="clientesFinales"
             @filter="filtrarClientesFinales"
+            hint="Primero seleccione al cliente principal"
             transition-show="scale"
             transition-hide="scale"
             options-dense
@@ -417,9 +288,9 @@
 
         <!-- Id de cliente -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">ID Cliente</label>
+          <label class="q-mb-sm block">ID de cliente final</label>
           <q-input
-            v-model="clienteFinal.id_cliente"
+            v-model="clienteFinal.id_cliente_final"
             disable
             outlined
             dense
@@ -517,21 +388,38 @@
           ></q-input>
         </div>
 
-        <!-- Referencias -->
+        <!-- Referencia -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Referencias</label>
+          <label class="q-mb-sm block">Referencia</label>
           <q-input
-            v-model="clienteFinal.referencias"
+            v-model="clienteFinal.referencia"
             disable
             outlined
             dense
           ></q-input>
         </div>
 
-        <!-- Coordenadas -->
+        <!-- Coordenada latitud -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Coordenadas</label>
-          <q-input v-model="clienteFinal.coordenadas" disable outlined dense>
+          <label class="q-mb-sm block">Coordenada latitud</label>
+          <q-input
+            v-model="clienteFinal.coordenada_latitud"
+            disable
+            outlined
+            dense
+          >
+          </q-input>
+        </div>
+
+        <!-- Coordenada longitud -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Coordenada longitud</label>
+          <q-input
+            v-model="clienteFinal.coordenada_longitud"
+            disable
+            outlined
+            dense
+          >
           </q-input>
         </div>
       </div>
@@ -545,16 +433,6 @@
       @guardar="guardar(tarea, false)"
     />
   </q-form>
-
-  <!-- <essential-selectable-table
-    ref="refListadoSeleccionableClientes"
-    :configuracion-columnas="configuracionColumnasClientes"
-    :datos="listadoClientes"
-    @selected="seleccionarCliente"
-  >
-  </essential-selectable-table> -->
-
-  <!--<modales-entidad :comportamiento="modalesTarea" /> -->
 </template>
 
 <script src="./GeneralContent.ts"></script>

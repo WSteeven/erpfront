@@ -16,13 +16,13 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoTrabajoController } from 'tiposTrabajos/infraestructure/TipoTrabajoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
-import { ContactoController } from 'tareas/contactos/infraestructure/ContactoController'
 import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { GrupoController } from 'tareas/grupos/infraestructure/GrupoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { ClienteFinal } from 'tareas/contactos/domain/ClienteFinal'
 import { Subtarea } from 'subtareas/domain/Subtarea'
+import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
+import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
 
 export default defineComponent({
     components: { EssentialTable },
@@ -62,7 +62,7 @@ export default defineComponent({
                     params: { tarea_id: store.tarea.id }
                 },
                 grupos: new GrupoController(),
-                clientesFinales: new ContactoController(),
+                clientesFinales: new ClienteFinalController(),
                 provincias: new ProvinciaController(),
                 cantones: new CantonController(),
             })
@@ -73,7 +73,6 @@ export default defineComponent({
             clientesFinales.value = listadosAuxiliares.clientesFinales
             provincias.value = listadosAuxiliares.provincias
             cantones.value = listadosAuxiliares.cantones
-            // subtarea.hydrate(store.subtareaAsignada)
         })
 
         // Filtro tipos de clientes finales
@@ -130,7 +129,7 @@ export default defineComponent({
         const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === subtarea.ubicacion_tarea.provincia))
 
         async function obtenerClienteFinal(clienteFinalId: number) {
-            const clienteFinalController = new ContactoController()
+            const clienteFinalController = new ClienteFinalController()
             const { result } = await clienteFinalController.consultar(clienteFinalId)
             clienteFinal.hydrate(result)
         }
