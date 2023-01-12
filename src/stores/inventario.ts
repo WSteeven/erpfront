@@ -44,6 +44,13 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         return response.data.results
     } 
 
+    /**
+     * 
+     * @param detalle_id detalle_id, identificador de detalle para buscar todas las coincidencias
+     * @param sucursal_id sucursal_id, sucursal especifica seleccionada en la transaccion
+     * @param cliente_id cliente_id, cliente especifico seleccionado en la transaccion
+     * @returns Listado de coincidencias encontradas en el inventario
+     */
     async function cargarElementosId(detalle_id:number, sucursal_id:number, cliente_id:number) {
         const results = await buscarId(detalle_id, sucursal_id, cliente_id)
         console.log('Funcion cargar elemento: ', results)

@@ -78,8 +78,15 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, transaccion)
         setValidador(v$.value)
 
+        /**
+         * Función para listar todos items relacionados a un detalle id.
+         * Busca todas las coincidencias de un item de acuerdo al cliente_id y sucursal_id seleccionada previamente.
+         * 
+         * @param id detalle_id que se busca en el inventario
+         */
         async function listarItems(id) {
-            resultadosInventario.value = await inventarioStore.cargarElementosId(id, transaccionStore.transaccion.sucursal!, transaccion.cliente)
+            console.log('veamos que datos tenemos', transaccion, transaccionStore)
+            resultadosInventario.value = await inventarioStore.cargarElementosId(id, transaccion.sucursal_id!, transaccion.cliente_id)
             console.log('resultadosInventario:', resultadosInventario.value)
         }
         // console.log(transaccionStore.transaccion.listadoProductosSeleccionados)
@@ -136,7 +143,7 @@ export default defineComponent({
             onComplete() {
                 console.log('Completado!!!!', selected2.value)
                 selected2.value.forEach((v) => {
-                    console.log(v.cantidad, v.id)
+                    console.log("VLAUE DE SELECTED2",v)
                     const movimiento = {
                         'inventario_id': v.id,
                         'detalle_producto_transaccion_id': detalleTransaccionStore.detalle.id,

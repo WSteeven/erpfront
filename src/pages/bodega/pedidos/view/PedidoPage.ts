@@ -42,6 +42,7 @@ import { AutorizacionController } from 'pages/administracion/autorizaciones/infr
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController';
 import { usePedidoStore } from 'stores/pedido';
 import { getPackedSettings } from 'http2';
+import { useRouter } from 'vue-router';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -59,6 +60,7 @@ export default defineComponent({
         //stores
         const pedidoStore = usePedidoStore()
         const store = useAuthenticationStore()
+        const router = useRouter()
 
         //modales
         // const modales = new ComportamientoModalesDevoluciones()
@@ -173,7 +175,16 @@ export default defineComponent({
             }
         }
 
-
+        const botonDespachar: CustomActionTable={
+            titulo:'Despachar',
+            color: 'primary',
+            icono: 'bi-pencil-square',
+            accion: ()=>{
+                // router.replace({'transacciones_egresos'})
+                router.push('transacciones-egresos')
+            }, 
+            visible:()=>tabSeleccionado.value =='APROBADO'?true:false
+        }
 
         const botonImprimir: CustomActionTable = {
             titulo: 'Imprimir',
@@ -517,6 +528,7 @@ export default defineComponent({
             botonEditarCantidad,
             botonEliminar,
             botonImprimir,
+            botonDespachar,
 
             //modal
             // modales,

@@ -15,6 +15,7 @@ export class Transaccion extends EntidadAuditable{
     tipo: number|null
     motivo: number|null
     sucursal: number|null
+    sucursal_id: number|null
     per_autoriza: number|null
     per_atiende: number|null
     per_retira: number|null
@@ -53,6 +54,7 @@ export class Transaccion extends EntidadAuditable{
         this.estado=null
         this.obs_estado=null
         this.sucursal=null
+        this.sucursal_id=null
         this.cliente=null
         this.cliente_id=null
         this.per_autoriza=null
