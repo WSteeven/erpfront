@@ -7,7 +7,8 @@ import { defineStore } from 'pinia';
 import { reactive, ref } from 'vue';
 import { acciones } from 'config/utils';
 import { useNotificaciones } from 'shared/notificaciones';
-import { isAxiosError, notificarMensajesError } from 'shared/utils';
+import { notificarMensajesError } from 'shared/utils';
+import { ApiError } from 'shared/error/domain/ApiError';
 
 export const useDetalleTransaccionStore = defineStore('detalle_transaccion', () => {
     //State
@@ -15,7 +16,9 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', () 
 
     const accionDetalle = acciones.nuevo
     const detalleReset = new DetalleProductoTransaccion()
+    const cantidadAnterior = ref()
     const posicion = ref()
+    const esDetalleModificado = ref(false)
     const statusLoading = new StatusEssentialLoading()
 
     const notificaciones = useNotificaciones()
@@ -44,14 +47,13 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', () 
             const ruta = axios.getEndpoint(endpoints.detalle_producto_transaccion) + id
             const response: AxiosResponse = await axios.put(ruta, data)
             statusLoading.desactivar()
+            esDetalleModificado.value=true
             return response.data.modelo
         } catch (e: any) {
-            if (isAxiosError(e)) {
-                console.log('AXIOS ERROR!!!')
-                const mensajes: string[] = e.erroresValidacion
-                notificarMensajesError(mensajes, notificaciones.notificarError('[ERROR]' + e))
-            }
-            notificaciones.notificarError('Ha ocurrido un error, revisa la consola')
+            esDetalleModificado.value=false
+            const errorApi = new ApiError(e)
+            const mensajes: string[] = errorApi.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
         } finally {
             statusLoading.desactivar()
         }
@@ -67,6 +69,7 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', () 
         console.log('datos recibidos en cargar detalle especifico:', modelo)
         detalle.hydrate(modelo)
     }
+
     async function actualizarDetalle(id: number, data: any) {
         console.log('pasó por actualizar')
         const modelo = await editarDetalle(id, data)
@@ -88,6 +91,8 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', () 
         resetearDetalle,
         accionDetalle,
         posicion,
+        esDetalleModificado,
+        cantidadAnterior,
     }
 
 

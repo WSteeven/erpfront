@@ -23,7 +23,6 @@ import { DetalleProductoController } from "pages/bodega/detalles_productos/infra
 import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
-import { emit } from "process";
 import { acciones } from "config/utils";
 import { useNotificaciones } from "shared/notificaciones";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
@@ -43,7 +42,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: inventario, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { guardar, setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onGuardado, onBeforeGuardar, onConsultado } = mixin.useHooks()
+        const { onBeforeGuardar, onConsultado } = mixin.useHooks()
 
         const transaccionStore = useTransaccionStore()
         const detalleProductoTransaccionStore = useDetalleTransaccionStore()
@@ -54,12 +53,12 @@ export default defineComponent({
         const opcion_sucursal = ref([])
         const opcion_cliente: any = ref([])
         const opcion_condicion = ref([])
-        
-        const {notificarError}=useNotificaciones()
+
+        const { notificarError } = useNotificaciones()
         const statusLoading = new StatusEssentialLoading()
 
-        const {entidad: transaccion, listado }=props.mixinModal.useReferencias()
-        
+        const { entidad: transaccion, listado } = props.mixinModal.useReferencias()
+
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
@@ -98,55 +97,46 @@ export default defineComponent({
         })
 
         onBeforeGuardar(() => {
-            console.log('before save!!!',inventario.cantidad)
-            
+            console.log('before save!!!', inventario.cantidad)
+
         })
-        async function guardarRegistro(entidad){
-            try{
+        async function guardarRegistro(entidad) {
+            try {
                 detalleProductoTransaccionStore.detalle.cantidad_final = inventario.cantidad
                 await detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
                 //en esta parte enviar la cantidad actualizada a la transaccion
                 console.log(transaccion, detalleProductoTransaccionStore.detalle)
-                const registroEncontrado = transaccion.listadoProductosTransaccion.filter((v)=>v.id===detalleProductoTransaccionStore.detalle.detalle_id)
+                const registroEncontrado = transaccion.listadoProductosTransaccion.filter((v) => v.id === detalleProductoTransaccionStore.detalle.detalle_id)
                 registroEncontrado[0].despachado = detalleProductoTransaccionStore.detalle.cantidad_final
                 registroEncontrado[0].devuelto = detalleProductoTransaccionStore.detalle.cantidad_final
                 console.log('detalle-posicion', detalleProductoTransaccionStore.posicion)
-                console.log('registro a modificar',registroEncontrado)
+                console.log('registro a modificar', registroEncontrado)
                 console.log(transaccion.listadoProductosTransaccion)
                 // actualizarElementoListado(detalleProductoTransaccionStore.posicion, registroEncontrado[0])
-                await guardar(entidad, false)
-                console.log('inventario guardado es', inventario)
-                console.log('---------------------')
-                emit('cerrar-modal')    
-            }catch(e){
-                notificarError(''+e)
-            }finally{
+                console.log(detalleProductoTransaccionStore.esDetalleModificado)
+                if (detalleProductoTransaccionStore.esDetalleModificado) {
+                    await guardar(entidad, false)
+                    console.log('inventario guardado es', inventario)
+                    console.log('---------------------')
+                    emit('cerrar-modal')
+                } else {
+                    detalleProductoTransaccionStore.detalle.cantidad_final = detalleProductoTransaccionStore.cantidadAnterior
+                }
+            } catch (e) {
+                notificarError('' + e)
+            } finally {
                 statusLoading.desactivar()
             }
 
         }
 
-        /* onGuardado(async () => {
-            console.log('inventario guardado es', inventario)
-            console.log('---------------------')
-            //en esta parte enviar la cantidad actualizada a la transaccion
-            console.log(transaccion, detalleProductoTransaccionStore.detalle)
-            const registroEncontrado = transaccion.listadoProductosTransaccion.filter((v)=>v.id===detalleProductoTransaccionStore.detalle.detalle_id)
-            registroEncontrado[0].despachado = detalleProductoTransaccionStore.detalle.cantidad_final
-            registroEncontrado[0].devuelto = detalleProductoTransaccionStore.detalle.cantidad_final
-            console.log('detalle-posicion', detalleProductoTransaccionStore.posicion)
-            console.log('registro a modificar',registroEncontrado)
-            console.log(transaccion.listadoProductosTransaccion)
-            // actualizarElementoListado(detalleProductoTransaccionStore.posicion, registroEncontrado[0])
-            emit('cerrar-modal')
-        }) */
         function actualizarElementoListado(posicion: number, entidad: any): void {
             if (posicion >= 0) {
-              transaccion.listadoProductosTransaccion.value.splice(posicion, 1, entidad);
-              transaccion.listadoProductosTransaccion.value = [...transaccion.listadoProductosTransaccion.value];
+                transaccion.listadoProductosTransaccion.value.splice(posicion, 1, entidad);
+                transaccion.listadoProductosTransaccion.value = [...transaccion.listadoProductosTransaccion.value];
             }
             console.log('La posicion del elemento del listado de la transaccion es ', detalleProductoTransaccionStore.posicion)
-          }
+        }
         const reglas = {
             cantidad: { required },
             producto: { required },

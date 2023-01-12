@@ -90,6 +90,7 @@ export default defineComponent({
                 // console.log('acciones', acciones)
                 console.log(entidad.cantidad, entidad.devuelto)
                 await detalleStore.cargarDetalle(entidad.detalle_id)
+                detalleProductoTransaccionStore.cantidadAnterior = entidad.devuelto
                 detalleStore.cantidad = entidad.cantidad
                 await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.id)
                 detalleProductoTransaccionStore.posicion = posicion

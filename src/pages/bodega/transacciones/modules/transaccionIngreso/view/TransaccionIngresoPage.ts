@@ -78,7 +78,6 @@ export default defineComponent({
         onConsultado(() => {
             transaccion.solicitante = transaccion.solicitante_id
             console.log('la accion actual es: ', accion.value)
-            // opciones_motivos.value = listadosAuxiliares.motivos.filter((v)=>v.id===transaccion.motivo)
             transaccionStore.transaccion.hydrate(transaccion)
         })
         onReestablecer(() => {
@@ -149,6 +148,8 @@ export default defineComponent({
             })
             //configurar los select definidos al inicio 
             transaccion.cliente = listadosAuxiliares.clientes[0]['id']
+            console.log(store.user.id)
+            transaccion.solicitante = store.user.id
         })
 
         //Reglas de validacion

@@ -19,6 +19,7 @@
               v-model="transaccion.id"
               placeholder="Obligatorio"
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               outlined
               dense
             >
@@ -77,6 +78,7 @@
               outlined
               @update:model-value="filtroMotivos"
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar un motivo"
               :option-value="(v) => v.id"
@@ -121,6 +123,7 @@
               hint="Ingresa un numero de devolución y presiona Enter"
               @keyup.enter="llenarTransaccion(transaccion.devolucion)"
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               outlined
               dense
             >
@@ -133,6 +136,7 @@
               v-model="transaccion.comprobante"
               placeholder="Obligatorio"
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               outlined
               dense
             >
@@ -150,6 +154,7 @@
               dense
               outlined
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               :option-value="(v) => v.id"
@@ -178,6 +183,7 @@
               v-model="transaccion.justificacion"
               placeholder="Obligatorio"
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
@@ -206,6 +212,7 @@
               options-dense
               dense
               outlined
+              :disable="disabled||soloLectura"
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
@@ -241,6 +248,7 @@
               dense
               outlined
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               @update:model-value="filtroTareas"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
@@ -291,7 +299,8 @@
               options-dense
               dense
               outlined
-              :readonly="disabled"
+              :readonly="disabled ||soloLectura"
+              :disable="disabled||soloLectura"
               :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado para la transacción"
               :option-value="(item) => item.id"
@@ -321,7 +330,7 @@
               v-model="transaccion.tiene_obs_estado"
               label="Tiene observación"
               outlined
-              :disable="disabled"
+              :disable="disabled||soloLectura"
               dense
             ></q-checkbox>
           </div>
@@ -332,6 +341,7 @@
               v-model="transaccion.observacion_est"
               placeholder="Obligatorio"
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               :error="!!v$.observacion_est.$errors.length"
               outlined
               dense
@@ -358,6 +368,7 @@
               dense
               outlined
               :readonly="disabled"
+              :disable="disabled||soloLectura"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
               :option-value="(item) => item.id"
@@ -386,7 +397,7 @@
               v-model="transaccion.ingreso_masivo"
               @update:model-value="checkMasivo"
               label="¿Ingreso masivo?"
-              :disable="disabled"
+              :disable="disabled||soloLectura"
               outlined
               dense
             ></q-checkbox>
@@ -434,6 +445,7 @@
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
+                  :disable="disabled || soloLectura"
                   @keydown.enter="listarProductos()"
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
@@ -448,6 +460,7 @@
                   @click="listarProductos()"
                   icon="search"
                   unelevated
+                  :disable="disabled || soloLectura"
                   color="secondary"
                   class="full-width"
                   style="height: 40px"
