@@ -42,7 +42,7 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         statusLoading.desactivar()
         console.log('datos obtenidos:', response.data.results)
         return response.data.results
-    }
+    } 
 
     async function cargarElementosId(detalle_id:number, sucursal_id:number, cliente_id:number) {
         const results = await buscarId(detalle_id, sucursal_id, cliente_id)

@@ -26,7 +26,7 @@ export const usePedidoStore = defineStore('pedido', ()=>{
         if(response.data.modelo.autorizacion===2){
             return response.data.modelo
         }
-    }
+    } 
 
     async function cargarPedido(id:number) {
         try{

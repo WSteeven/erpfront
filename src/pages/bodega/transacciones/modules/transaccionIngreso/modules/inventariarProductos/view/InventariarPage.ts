@@ -26,6 +26,7 @@ import { CondicionController } from "pages/administracion/condiciones/infraestru
 import { emit } from "process";
 import { acciones } from "config/utils";
 import { useNotificaciones } from "shared/notificaciones";
+import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 
 //Controladores para los selects que no se deben usar
 
@@ -55,6 +56,7 @@ export default defineComponent({
         const opcion_condicion = ref([])
         
         const {notificarError}=useNotificaciones()
+        const statusLoading = new StatusEssentialLoading()
 
         const {entidad: transaccion, listado }=props.mixinModal.useReferencias()
         
@@ -96,14 +98,13 @@ export default defineComponent({
         })
 
         onBeforeGuardar(() => {
-            // console.log('before',inventario.cantidad)
-            detalleProductoTransaccionStore.detalle.cantidad_final = inventario.cantidad
+            console.log('before save!!!',inventario.cantidad)
+            
         })
         async function guardarRegistro(entidad){
             try{
+                detalleProductoTransaccionStore.detalle.cantidad_final = inventario.cantidad
                 await detalleProductoTransaccionStore.actualizarDetalle(detalleProductoTransaccionStore.detalle.id!, detalleProductoTransaccionStore.detalle)
-                console.log('inventario guardado es', inventario)
-                console.log('---------------------')
                 //en esta parte enviar la cantidad actualizada a la transaccion
                 console.log(transaccion, detalleProductoTransaccionStore.detalle)
                 const registroEncontrado = transaccion.listadoProductosTransaccion.filter((v)=>v.id===detalleProductoTransaccionStore.detalle.detalle_id)
@@ -114,10 +115,15 @@ export default defineComponent({
                 console.log(transaccion.listadoProductosTransaccion)
                 // actualizarElementoListado(detalleProductoTransaccionStore.posicion, registroEncontrado[0])
                 await guardar(entidad, false)
+                console.log('inventario guardado es', inventario)
+                console.log('---------------------')
                 emit('cerrar-modal')    
             }catch(e){
-                notificarError('HUBO UN ERROR'+e)
+                notificarError(''+e)
+            }finally{
+                statusLoading.desactivar()
             }
+
         }
 
         /* onGuardado(async () => {

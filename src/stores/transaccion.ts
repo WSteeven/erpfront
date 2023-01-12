@@ -24,7 +24,7 @@ export const useTransaccionStore = defineStore("transaccion", () => {
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + id
         const response: AxiosResponse = await axios.get(ruta)
-        statusLoading.desactivar()
+      statusLoading.desactivar()
 
         return response.data.modelo
     }

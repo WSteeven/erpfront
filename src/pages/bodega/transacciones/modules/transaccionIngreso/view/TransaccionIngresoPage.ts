@@ -125,7 +125,7 @@ export default defineComponent({
         cargarVista(async () => {
             await obtenerListados({
                 sucursales: { controller: new SucursalController(), params: { campos: 'id,lugar' } },
-                tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,detalle' } },
+                tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,detalle,cliente_id' } },
                 motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 1 } },
                 autorizaciones: { controller: new AutorizacionController(), params: { campos: 'id,nombre' } },
                 estados: { controller: new EstadosTransaccionController(), params: { campos: 'id,nombre' } },
@@ -578,6 +578,10 @@ export default defineComponent({
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_condiciones.value = listadosAuxiliares.condiciones
 
+        function filtroTareas(val) {
+            const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
+            transaccion.cliente = opcion_encontrada[0]['cliente_id']
+        }
 
         return {
             mixin, transaccion, disabled, accion, v$, soloLectura,
@@ -597,7 +601,7 @@ export default defineComponent({
             modales,
 
             acciones,
-
+            filtroTareas,
             filtroMotivos(val) {
                 esVisibleTarea.value = false
 
