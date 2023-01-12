@@ -1,9 +1,9 @@
 <template>
   <q-page padding>
-    <div class="text-bold q-mb-lg">Tendido de Fibra Óptica</div>
     <q-card>
       <q-card-section>
         <q-form @submit.prevent="enviar()">
+          <div class="text-bold q-mb-lg">Tendido de fibra óptica</div>
           <div class="row q-col-gutter-sm q-py-md">
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Bobina</label>

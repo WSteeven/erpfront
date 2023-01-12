@@ -21,6 +21,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { RegistroTendido } from '../domain/RegistroTendido'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   props: {
@@ -41,6 +42,7 @@ export default defineComponent({
 
     const tendidoStore = useTendidoStore()
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
+    const authenticationStore = useAuthenticationStore()
     accion.value = tendidoStore.accion
 
     if (tendidoStore.idRegistroTendido) consultar({ id: tendidoStore.idRegistroTendido })
@@ -164,7 +166,7 @@ export default defineComponent({
 
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: 2, grupo: 1 })
+      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: tendidoStore.idTarea, grupo: authenticationStore.user.grupo_id })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
     }

@@ -141,6 +141,7 @@ export default defineComponent({
       })
 
       tendidoStore.idTendido = progresiva.id
+      tendidoStore.idTarea = progresiva.tarea
     })
 
     onBeforeGuardar(() => progresiva.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada)

@@ -4,6 +4,7 @@ export class Tendido extends EntidadAuditable {
   marca_inicial: number | null
   marca_final: number | null
   subtarea: number | null
+  tarea: number | null
   bobina: number | null
   cantidad_hilos: number | null
   cantidad_postes: number | null
@@ -19,6 +20,7 @@ export class Tendido extends EntidadAuditable {
     this.marca_inicial = null
     this.marca_final = null
     this.subtarea = null
+    this.tarea = null
     this.bobina = null
     this.cantidad_hilos = null
     this.cantidad_postes = null

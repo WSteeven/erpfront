@@ -156,161 +156,23 @@
         header-class="bg-grey-1"
         default-opened
       >
-        <!-- <div
-          v-if="tipoUbicacionTrabajo === 'ubicacion_manual'"
-          class="row q-col-gutter-sm q-pa-md"
-        >
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Provincias</label>
-            <q-select
-              v-model="subtarea.ubicacion_tarea.provincia"
-              :options="provincias"
-              @filter="filtrarProvincias"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.provincia"
-              :option-value="(item) => item.id"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              disable
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Canton</label>
-            <q-select
-              v-model="subtarea.ubicacion_tarea.canton"
-              :options="cantonesPorProvincia"
-              @filter="filtrarCantones"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.canton"
-              :option-value="(item) => item.id"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              disable
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Parroquia/Barrio</label>
-            <q-input
-              v-model="subtarea.ubicacion_tarea.parroquia"
-              @update:model-value="
-                (v) => (subtarea.ubicacion_tarea.parroquia = v.toUpperCase())
-              "
-              outlined
-              dense
-              disable
-            ></q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Dirección</label>
-            <q-input
-              v-model="subtarea.ubicacion_tarea.direccion"
-              @update:model-value="
-                (v) => (subtarea.ubicacion_tarea.direccion = v.toUpperCase())
-              "
-              outlined
-              dense
-              disable
-            ></q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Referencias</label>
-            <q-input
-              v-model="subtarea.ubicacion_tarea.referencias"
-              @update:model-value="
-                (v) => (subtarea.ubicacion_tarea.referencias = v.toUpperCase())
-              "
-              outlined
-              dense
-              disable
-            ></q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordenadas</label>
-            <q-input
-              v-model="subtarea.ubicacion_tarea.coordenadas"
-              @update:model-value="
-                (v) => (subtarea.ubicacion_tarea.coordenadas = v.toUpperCase())
-              "
-              outlined
-              dense
-              disable
-            >
-            </q-input>
-          </div>
-        </div> -->
-
         <div class="row q-col-gutter-sm q-pa-md">
           <!-- Nombre -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Cliente final</label>
-            <q-select
-              v-model="subtarea.cliente_final"
-              :options="clientesFinales"
-              @filter="filtrarClientesFinales"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.nombres + ' ' + item.apellidos"
-              :option-value="(item) => item.id"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              @update:model-value="
-                (v) => obtenerClienteFinal(subtarea.cliente_final)
-              "
+            <q-input
+              v-model="nombresClienteFinal"
               disable
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+              outlined
+              dense
+            ></q-input>
           </div>
 
           <!-- Id de cliente -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">ID Cliente</label>
+            <label class="q-mb-sm block">ID de cliente final</label>
             <q-input
-              v-model="clienteFinal.id_cliente"
+              v-model="clienteFinal.id_cliente_final"
               disable
               outlined
               dense
@@ -410,9 +272,9 @@
 
           <!-- Referencias -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Referencias</label>
+            <label class="q-mb-sm block">Referencia</label>
             <q-input
-              v-model="clienteFinal.referencias"
+              v-model="clienteFinal.referencia"
               disable
               outlined
               dense
@@ -421,8 +283,25 @@
 
           <!-- Coordenadas -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordenadas</label>
-            <q-input v-model="clienteFinal.coordenadas" disable outlined dense>
+            <label class="q-mb-sm block">Coordenada latitud</label>
+            <q-input
+              v-model="clienteFinal.coordenada_latitud"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <!-- Coordenadas -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Coordenada longitud</label>
+            <q-input
+              v-model="clienteFinal.coordenada_longitud"
+              disable
+              outlined
+              dense
+            >
             </q-input>
           </div>
         </div>

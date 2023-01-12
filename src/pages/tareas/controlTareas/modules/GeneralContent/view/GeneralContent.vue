@@ -10,7 +10,7 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <div class="col-12">
           <q-btn-toggle
-            v-model="model"
+            v-model="tarea.destino"
             class="my-custom-toggle"
             spread
             no-caps
@@ -18,10 +18,13 @@
             toggle-color="secondary"
             unelevated
             :options="[
-              { label: 'Tarea para un proyecto', value: 'PARA_PROYECTO' },
+              {
+                label: 'Tarea para un proyecto',
+                value: destinosTareas.paraProyecto,
+              },
               {
                 label: 'Tarea para cliente final',
-                value: 'PARA_CLIENTE_FINAL',
+                value: destinosTareas.paraClienteFinal,
               },
             ]"
           />
@@ -64,7 +67,7 @@
         </div>
 
         <!-- Cliente principal -->
-        <div v-if="paraClienteFinal" class="col-12 col-md-6">
+        <div v-show="paraClienteFinal" class="col-12 col-md-6">
           <label class="q-mb-sm block">Cliente principal</label>
           <q-select
             v-model="tarea.cliente"
@@ -227,7 +230,6 @@
           <q-input
             v-model="tarea.detalle"
             placeholder="Obligatorio"
-            @update:model-value="(v) => (tarea.detalle = v.toUpperCase())"
             outlined
             dense
             autogrow

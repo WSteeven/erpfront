@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
-import { acciones, rolesAdmitidos } from 'config/utils'
-import { required } from '@vuelidate/validators'
+import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
+import { acciones, rolesAdmitidos, destinosTareas } from 'config/utils'
+import { required, requiredIf } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
@@ -11,14 +11,15 @@ import EssentialSelectableTable from 'components/tables/view/EssentialSelectable
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 
 // Logica y controladores
+import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
-import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
 import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
+import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 
 export default defineComponent({
   props: {
@@ -63,11 +64,14 @@ export default defineComponent({
       proyectos.value = listadosAuxiliares.proyectos
     })
 
+    const paraProyecto = computed(() => tarea.destino === destinosTareas.paraProyecto)
+    const paraClienteFinal = computed(() => tarea.destino === destinosTareas.paraClienteFinal)
+
     // Validaciones
     const rules = {
-      cliente: { required },
+      cliente: { requiredIfCliente: requiredIf(function () { return paraClienteFinal.value ? true : false }) },
       detalle: { required },
-      codigo_tarea_cliente: { required },
+      codigo_tarea_cliente: { requiredIfCodigoTarea: requiredIf(() => paraClienteFinal.value) },
     }
 
     const v$ = useVuelidate(rules, tarea)
@@ -125,7 +129,7 @@ export default defineComponent({
       })
     }
 
-    // Filtro supervisores
+    // Filtro coordinadores
     const coordinadores = ref()
     function filtrarCoordinadores(val, update) {
       if (val === '') {
@@ -193,9 +197,6 @@ export default defineComponent({
       })
     }
 
-    // Informacion de ubicacion
-    const clienteFinal = reactive(new ClienteFinal())
-
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
       const { result } = await clienteFinalController.consultar(clienteFinalId)
@@ -220,16 +221,12 @@ export default defineComponent({
 
     onConsultado(async () => {
       tareaStore.tarea.hydrate(tarea)
-      tarea.tiene_cliente_final = !!tarea.cliente_final
     })
-
-    const model = ref('PARA_PROYECTO')
-    const paraProyecto = computed(() => model.value === 'PARA_PROYECTO')
-    const paraClienteFinal = computed(() => model.value === 'PARA_CLIENTE_FINAL')
 
     const controller = new ClienteFinalController()
     watchEffect(async () => {
-      clientesFinalesSource.value = await (await controller.listar({ cliente: tarea.cliente })).result
+      clientesFinalesSource.value = (await controller.listar({ cliente: tarea.cliente })).result
+      clientesFinales.value = clientesFinalesSource.value
     })
 
     watchEffect(async () => {
@@ -239,11 +236,21 @@ export default defineComponent({
       }
     })
 
+    // Informacion de ubicacion
+    const clienteFinal = reactive(new ClienteFinal())
+
+    watch(computed(() => tarea.destino), (valor) => {
+      tarea.hydrate(new Tarea())
+      clienteFinal.hydrate(new ClienteFinal())
+      tarea.destino = valor
+    })
+
     return {
+      clientesFinalesSource,
       v$,
       tarea,
       accion,
-      // listados
+      destinosTareas,
       provincias,
       cantones,
       cantonesPorProvincia,
@@ -266,13 +273,10 @@ export default defineComponent({
       filtrarCoordinadores,
       proyectos,
       clienteFinal,
-      model,
       paraProyecto,
       paraClienteFinal,
-      // ubicacionManual,
       listadosAuxiliares,
       establecerCliente,
-      // Selector
       configuracionColumnasClientes,
     }
   },

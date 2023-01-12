@@ -3,6 +3,11 @@ import { TabOption } from "components/tables/domain/TabOption"
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
+export const destinosTareas = {
+  paraProyecto: 'PARA_PROYECTO',
+  paraClienteFinal: 'PARA_CLIENTE_FINAL',
+}
+
 export const acciones = {
   nuevo: 'NUEVO',
   eliminar: 'ELIMINAR',

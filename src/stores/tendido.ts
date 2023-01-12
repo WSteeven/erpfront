@@ -4,6 +4,7 @@ import { ref } from 'vue'
 
 export const useTendidoStore = defineStore('tendido', () => {
   const idTendido = ref()
+  const idTarea = ref()
   const accion = ref(acciones.nuevo)
   const idRegistroTendido = ref()
   const numeroElemento = ref()
@@ -13,5 +14,6 @@ export const useTendidoStore = defineStore('tendido', () => {
     idRegistroTendido,
     accion,
     numeroElemento,
+    idTarea,
   }
 })

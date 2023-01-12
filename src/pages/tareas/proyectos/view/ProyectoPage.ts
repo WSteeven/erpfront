@@ -114,7 +114,6 @@ export default defineComponent({
     }
 
     return {
-      // mixin
       mixin,
       proyecto,
       disabled,

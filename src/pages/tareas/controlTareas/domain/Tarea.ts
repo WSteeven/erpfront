@@ -1,5 +1,5 @@
+import { destinosTareas } from 'config/utils'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { UbicacionTarea } from './UbicacionTarea'
 
 export class Tarea extends EntidadAuditable {
   codigo_tarea: string | null
@@ -26,6 +26,6 @@ export class Tarea extends EntidadAuditable {
     this.coordinador = null
     this.proyecto = null
     this.estado = null
-    this.destino = null
+    this.destino = destinosTareas.paraProyecto
   }
 }
