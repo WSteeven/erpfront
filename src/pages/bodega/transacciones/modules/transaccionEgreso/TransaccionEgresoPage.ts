@@ -282,7 +282,7 @@ export default defineComponent({
                 // console.log('La posicion es', posicion)
                 transaccionStore.idTransaccion = entidad.id
                 await transaccionStore.cargarTransaccion(entidad.id)
-                await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id, entidad.listadoProductosTransaccion[posicion]['id'])
+                await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, entidad.listadoProductosTransaccion[posicion]['id'])
                 // console.log('La transaccion del store', transaccionStore.transaccion)
 
                 //aqui va toda la logica de los despachos de material

@@ -144,11 +144,11 @@ export default defineComponent({
             detalle_id,
             onComplete() {
                 console.log('Completado!!!!', selected2.value)
-                selected2.value.forEach((v:Inventario) => {
+                selected2.value.forEach(async (v:Inventario) => {
                     console.log("VLAUE DE SELECTED2",v)
-                    detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, v.detalle!)
+                    await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, v.detalle!)
                     detalleTransaccionStore.detalle.cantidad_final = v.cantidad
-                    detalleTransaccionStore.actualizarDetalle(detalleTransaccionStore.detalle.id!, detalleTransaccionStore.detalle )
+                    await detalleTransaccionStore.actualizarDetalle(detalleTransaccionStore.detalle.id!, detalleTransaccionStore.detalle )
                     /* $datos = [
                         'inventario_id' => $inventario_id,
                         'detalle_producto_transaccion_id' => $detalle_producto_transaccion_id,
@@ -166,7 +166,7 @@ export default defineComponent({
                         'tipo':tiposMovimientos.egreso
                     }
                     console.log('los argumentos que se envían son: ', movimiento)
-                    movimientoStore.enviarMovimiento(movimiento)
+                    await movimientoStore.enviarMovimiento(movimiento)
 
                 })
 
