@@ -3,6 +3,13 @@ import { Pedido } from "./Pedido";
 
 export const configuracionColumnasPedidos: ColumnConfig<Pedido>[]=[
     {
+        name: 'id',
+        field: 'id',
+        label: 'N°',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'justificacion',
         field: 'justificacion',
         label: 'Justificación',

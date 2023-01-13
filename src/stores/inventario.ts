@@ -53,7 +53,7 @@ export const useInventarioStore=defineStore('inventario', ()=>{
      */
     async function cargarElementosId(detalle_id:number, sucursal_id:number, cliente_id:number) {
         const results = await buscarId(detalle_id, sucursal_id, cliente_id)
-        console.log('Funcion cargar elemento: ', results)
+        // console.log('Funcion cargar elemento: ', results)
         return results
     }
 

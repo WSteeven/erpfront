@@ -8,7 +8,7 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 // import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
-import { acciones, logoBN, logoColor, meses, tabOptionsTransacciones } from 'config/utils'
+import { acciones, logoBN, logoColor, meses, opcionesModoAsignacionTrabajo, tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
@@ -153,12 +153,12 @@ export default defineComponent({
                         campos: 'id,nombre'
                     }
                 },
-                estados: {
+                /* estados: {
                     controller: new EstadosTransaccionController(),
                     params: {
                         campos: 'id,nombre'
                     }
-                },
+                }, */
                 detalles: {
                     controller: new DetalleProductoController(),
                     params: {
@@ -175,8 +175,16 @@ export default defineComponent({
                 },
             })
             // transformarOpcionesTipos()
+            if(pedidoStore.pedido) {
+                // console.log('pedidoStore en EGRESO:',pedidoStore.pedido)
+                transaccion.tiene_pedido = true
+                transaccion.tarea = pedidoStore.pedido.tarea
+                cargarDatos()
+                transaccion.solicitante = pedidoStore.pedido.solicitante_id
+                transaccion.sucursal = pedidoStore.pedido.sucursal_id
+            }
         })
-
+        
         //hooks
         onReestablecer(() => {
             puedeEditarCantidad.value = true
@@ -220,7 +228,7 @@ export default defineComponent({
                 requiredIfCoordinador: requiredIf(esCoordinador),
                 requiredIfEsVisibleAut: requiredIf(false)
             },
-            estado: { requiredIfBodega: requiredIf(esBodeguero), },
+            //estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
                 requiredIfObsAutorizacion: requiredIf(false)
                 // requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
@@ -274,7 +282,7 @@ export default defineComponent({
                 // console.log('La posicion es', posicion)
                 transaccionStore.idTransaccion = entidad.id
                 await transaccionStore.cargarTransaccion(entidad.id)
-                await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.listadoProductosTransaccion[posicion]['id'])
+                await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id, entidad.listadoProductosTransaccion[posicion]['id'])
                 // console.log('La transaccion del store', transaccionStore.transaccion)
 
                 //aqui va toda la logica de los despachos de material
@@ -565,15 +573,18 @@ export default defineComponent({
             }
             pdfMake.createPdf(docDefinition).open()
         }
-        async function llenarTransaccion(id:number) {
+        async function llenarTransaccion(id: number) {
             limpiarTransaccion()
             await pedidoStore.cargarPedido(id)
+            cargarDatos()
             console.log(pedidoStore.pedido)
+        }
+        function cargarDatos() {
             transaccion.pedido = pedidoStore.pedido.id
             transaccion.justificacion = pedidoStore.pedido.justificacion
             transaccion.solicitante = pedidoStore.pedido.solicitante
             transaccion.sucursal = pedidoStore.pedido.sucursal
-            if(pedidoStore.pedido.tarea){
+            if (pedidoStore.pedido.tarea) {
                 transaccion.es_tarea = true
                 transaccion.tarea = pedidoStore.pedido.tarea
                 filtroTareas(transaccion.tarea)
@@ -622,10 +633,17 @@ export default defineComponent({
         opciones_clientes.value = listadosAuxiliares.clientes
 
         function filtroTareas(val) {
-            const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
+            console.log('val recibido', val)
+            const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val||v.detalle==val)
+            console.log(listadosAuxiliares.tareas)
+            console.log('cliente_encontrado', opcion_encontrada[0])
             console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
             transaccion.cliente = opcion_encontrada[0]['cliente_id']
+            transaccion.tarea = opcion_encontrada[0]['id']
         }
+        /* function filtroSolicitante(val){
+            const opcion_encontrada = listadosAuxiliares.empleados.filter((v)=>v.id===val)
+        } */
         return {
             mixin, transaccion, disabled, accion, v$, soloLectura,
             configuracionColumnas: configuracionColumnasTransaccionEgreso,

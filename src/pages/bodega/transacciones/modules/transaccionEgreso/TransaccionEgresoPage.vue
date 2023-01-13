@@ -329,6 +329,8 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
+          {{ transaccion.solicitante }}
+          {{ transaccion.solicitante_id }}
           <div
             v-if="esVisibleTarea || transaccion.es_tarea"
             class="col-12 col-md-3"
@@ -458,18 +460,16 @@
               outlined
               :disable="disabled || (soloLectura && !esBodeguero)"
               :readonly="disabled || (soloLectura && !esBodeguero)"
-              :error="!!v$.estado.$errors.length"
-              error-message="Debes seleccionar un estado para la transacción"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
-              <template v-slot:error>
+              <!-- <template v-slot:error>
                 <div v-for="error of v$.estado.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
-              </template>
+              </template> -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -480,7 +480,7 @@
             </q-select>
           </div>
           <!-- Tiene observación de estado -->
-          <div v-if="rolSeleccionado && esBodeguero" class="col-12 col-md-3">
+          <!-- <div v-if="rolSeleccionado && esBodeguero" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_obs_estado"
@@ -489,9 +489,9 @@
               outlined
               dense
             ></q-checkbox>
-          </div>
+          </div> -->
           <!-- observacion estado -->
-          <div v-if="transaccion.tiene_obs_estado" class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               v-model="transaccion.obs_estado"

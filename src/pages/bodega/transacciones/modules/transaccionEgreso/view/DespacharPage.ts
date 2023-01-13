@@ -26,6 +26,8 @@ import { ClienteController } from "pages/sistema/clientes/infraestructure/Client
 import useVuelidate from "@vuelidate/core";
 import { useInventarioStore } from "stores/inventario";
 import { useMovimientoStore } from "stores/movimiento";
+import { tiposMovimientos } from "config/utils";
+import { Inventario } from "pages/bodega/inventario/domain/Inventario";
 
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable },
@@ -52,8 +54,8 @@ export default defineComponent({
         // const opciones_clientes = ref([])
         cargarVista(async () => {
             await transaccion.hydrate(transaccionStore.transaccion) //cargar la transaccion con la del store
-            console.log(transaccionStore.transaccion)
-            console.log(transaccion)
+            /* console.log(transaccionStore.transaccion)
+            console.log(transaccion) */
         })
         // opciones_tipos.value = listadosAuxiliares.tipos
         // opciones_motivos.value = listadosAuxiliares.motivos
@@ -85,9 +87,9 @@ export default defineComponent({
          * @param id detalle_id que se busca en el inventario
          */
         async function listarItems(id) {
-            console.log('veamos que datos tenemos', transaccion, transaccionStore)
+            // console.log('veamos que datos tenemos', transaccion, transaccionStore)
             resultadosInventario.value = await inventarioStore.cargarElementosId(id, transaccion.sucursal_id!, transaccion.cliente_id)
-            console.log('resultadosInventario:', resultadosInventario.value)
+            // console.log('resultadosInventario:', resultadosInventario.value)
         }
         // console.log(transaccionStore.transaccion.listadoProductosSeleccionados)
         /* watch(resultadosInventario, async(newValue, oldValue)=>{
@@ -99,15 +101,15 @@ export default defineComponent({
             detalle_id = (detalleStore.detalle.id)!
         })
 
-        /* watch(selected2, ()=>{
-            selected2.value.forEach((element, index) => {
+        watch(selected2, ()=>{
+            selected2.value.forEach((element:Inventario, index) => {
                 element.cantidad = selected.value[0]['cantidades']
             });
             console.log('selected2 en el watch',selected2.value)
             console.log('en el watch',selected.value[0]['cantidades'])
-        }) */
+        })
         function reemplazarCantidad() {
-            selected2.value.forEach((element, index) => {
+            selected2.value.forEach((element:Inventario, index) => {
                 if (element.detalle_id == selected.value[0]['id']) {
                     element.cantidad = selected.value[0]['cantidades']
                 }
@@ -142,14 +144,26 @@ export default defineComponent({
             detalle_id,
             onComplete() {
                 console.log('Completado!!!!', selected2.value)
-                selected2.value.forEach((v) => {
+                selected2.value.forEach((v:Inventario) => {
                     console.log("VLAUE DE SELECTED2",v)
+                    detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, v.detalle!)
+                    detalleTransaccionStore.detalle.cantidad_final = v.cantidad
+                    detalleTransaccionStore.actualizarDetalle(detalleTransaccionStore.detalle.id!, detalleTransaccionStore.detalle )
+                    /* $datos = [
+                        'inventario_id' => $inventario_id,
+                        'detalle_producto_transaccion_id' => $detalle_producto_transaccion_id,
+                        'cantidad' => $cantidad,
+                        'precio_unitario' => $precio_unitario,
+                        'saldo' => $saldo,
+                        'tipo' => $tipo
+                    ]; */
                     const movimiento = {
                         'inventario_id': v.id,
                         'detalle_producto_transaccion_id': detalleTransaccionStore.detalle.id,
                         'cantidad': v.cantidad,
-                        'detalle_id': detalle_id,
+                        // 'detalle_id': detalle,
                         'precio_unitario': detalleStore.detalle.precio_compra,
+                        'tipo':tiposMovimientos.egreso
                     }
                     console.log('los argumentos que se envían son: ', movimiento)
                     movimientoStore.enviarMovimiento(movimiento)

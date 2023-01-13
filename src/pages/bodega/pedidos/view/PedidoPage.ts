@@ -175,15 +175,20 @@ export default defineComponent({
             }
         }
 
-        const botonDespachar: CustomActionTable={
-            titulo:'Despachar',
+        const botonDespachar: CustomActionTable = {
+            titulo: 'Despachar',
             color: 'primary',
             icono: 'bi-pencil-square',
-            accion: ()=>{
+            accion: ({ entidad, posicion }) => {
                 // router.replace({'transacciones_egresos'})
+                pedidoStore.pedido = entidad
                 router.push('transacciones-egresos')
-            }, 
-            visible:()=>tabSeleccionado.value =='APROBADO'?true:false
+                console.log(posicion)
+                console.log(pedidoStore.pedido)
+                console.log(entidad)
+            },
+            visible: ({ entidad, posicion }) => { 
+                return tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado!=estadosTransacciones.completa ? true : false }
         }
 
         const botonImprimir: CustomActionTable = {

@@ -86,23 +86,6 @@
       <label class="q-mb-sm block">Cliente</label>
       <p>{{ transaccion.cliente }}</p>
     </div>
-    <!-- check ingreso masivo -->
-    <div class="col-12 col-md-3">
-      <q-checkbox
-        class="q-mt-lg q-pt-md"
-        v-model="transaccion.ingreso_masivo"
-        @update:model-value="checkMasivo"
-        label="¿Ingreso masivo?"
-        :disable="disabled"
-        outlined
-        dense
-      ></q-checkbox>
-    </div>
-    <!-- Select condiciones -->
-    <div v-if="transaccion.ingreso_masivo" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Condiciones</label>
-      <p>{{ transaccion.condicion }}</p>
-    </div>
     <!-- Tabla -->
     <div class="col-12">
       <essential-table
