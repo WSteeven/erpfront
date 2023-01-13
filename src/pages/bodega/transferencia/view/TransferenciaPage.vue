@@ -50,9 +50,7 @@
           <!-- Select autorizacion -->
           <div
             v-if="
-              transferencia.autorizacion ||
-              esVisibleAutorizacion ||
-              esCoordinador
+              transferencia.autorizacion || esVisibleAutorizacion || esActivos
             "
             class="col-12 col-md-3 q-mb-md"
           >
@@ -65,8 +63,8 @@
               options-dense
               dense
               outlined
-              :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
+              :disable="disabled || (soloLectura && !esActivos)"
+              :readonly="disabled || (soloLectura && !esActivos)"
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="(v) => v.id"
@@ -93,7 +91,7 @@
             v-if="
               transferencia.tiene_obs_autorizacion ||
               transferencia.observacion_aut ||
-              esVisibleAutorizacion
+              esActivos
             "
             class="col-12 col-md-3"
           >
@@ -101,7 +99,7 @@
               class="q-mt-lg q-pt-md"
               v-model="transferencia.tiene_obs_autorizacion"
               label="Tiene observación"
-              :disable="disabled || soloLectura"
+              :disable="disabled || (soloLectura && !esActivos)"
               outlined
               dense
             ></q-checkbox>
@@ -116,10 +114,10 @@
           >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
-              v-model="transferencia.obs_autorizacion"
+              v-model="transferencia.observacion_aut"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :disable="disabled || (soloLectura && !esActivos)"
+              :readonly="disabled || (soloLectura&&!esActivos)"
               :error="!!v$.observacion_aut.$errors.length"
               outlined
               dense
@@ -273,6 +271,7 @@
               options-dense
               dense
               outlined
+              :disable="disabled || soloLectura"
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
@@ -336,8 +335,9 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
-              v-model="transferencia.obs_estado"
+              v-model="transferencia.observacion_est"
               placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
               outlined
@@ -364,7 +364,7 @@
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
-                  :disable="disabled || soloLectura"
+                  :disable="disabled || (soloLectura&&!esActivos)"
                   @keydown.enter="
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
@@ -389,7 +389,7 @@
                   "
                   icon="search"
                   unelevated
-                  :disable="disabled || soloLectura"
+                  :disable="disabled || (soloLectura&&!esActivos)"
                   color="primary"
                   class="full-width"
                   style="height: 40px"

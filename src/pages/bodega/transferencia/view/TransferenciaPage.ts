@@ -49,6 +49,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Transferencia, new TransferenciaController())
         const { entidad: transferencia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const {onReestablecer, onConsultado}=mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
         //stores
         const store = useAuthenticationStore()
@@ -65,13 +66,26 @@ export default defineComponent({
 
         const modales = new ComportamientoModalesTransferencia()
 
+        const usuarioLogueado = store.user
         const esBodeguero = store.esBodeguero
         const esCoordinador = store.esCoordinador
+        const esActivos = store.esActivosFijos
 
         //FLAGS
         let tabSeleccionado = ref()
         let puedeEditar = ref(false)
+        let soloLectura = ref(false)
         let esVisibleAutorizacion = ref(false)
+
+        //HOOKS
+        onReestablecer(()=>{
+            soloLectura.value = false
+        })
+        onConsultado(()=>{
+            if(usuarioLogueado.id===transferencia.per_autoriza){
+                soloLectura.value=true
+            }
+        })
 
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
@@ -149,7 +163,7 @@ export default defineComponent({
                 eliminar({ entidad, posicion })
             },
             visible: () => {
-                return accion.value == acciones.nuevo ? true : false
+                return accion.value == acciones.nuevo ||(esActivos &&accion.value==acciones.editar)? true : false
             }
         }
         const botonEditarCantidad: CustomActionTable = {
@@ -166,7 +180,7 @@ export default defineComponent({
                 prompt(config)
             },
             visible: () => {
-                return accion.value == acciones.nuevo ? true : false
+                return accion.value == acciones.nuevo ||esActivos? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
@@ -495,7 +509,7 @@ export default defineComponent({
             mixin, transferencia, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasTransferencias,
             acciones,
-            
+
             //listados
             opciones_clientes,
             opciones_estados,
@@ -505,7 +519,9 @@ export default defineComponent({
 
             //variables auxiliares
             esVisibleAutorizacion,
+            soloLectura,
             esBodeguero,
+            esActivos,
 
             //modales
             modales,
@@ -534,11 +550,9 @@ export default defineComponent({
 
             tabEs(val) {
                 tabSeleccionado.value = val
-                // puedeEditar.value = (esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (esBodeguero && tabSeleccionado.value === 'PARCIAL')
-                //     ? true
-                //     : esCoordinador && tabSeleccionado.value === 'ESPERA'
-                //         ? true
-                //         : false
+                puedeEditar.value = (esActivos && tabSeleccionado.value === 'PENDIENTE')
+                    ? true
+                    : false
 
             },
 

@@ -8,7 +8,7 @@ export class Transferencia extends EntidadAuditable{
     solicitante: number|null
     autorizacion: number|null
     per_autoriza: number|null
-    recibida: string|null
+    recibida: boolean
     estado: number|null
     observacion_est: string|null
     
@@ -30,7 +30,7 @@ export class Transferencia extends EntidadAuditable{
         this.autorizacion=null
         this.observacion_est=null
         this.estado=null
-        this.recibida=null
+        this.recibida=false
         this.per_autoriza=null
         
         this.tiene_obs_autorizacion=false
