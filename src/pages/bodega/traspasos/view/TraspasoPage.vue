@@ -21,7 +21,7 @@
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               outlined
-              dense
+              dense 
             >
             </q-input>
           </div>

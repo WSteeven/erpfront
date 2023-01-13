@@ -259,6 +259,16 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/transferencias',
+        name: 'transferencias',
+        component: () =>
+          import(
+            // 'pages/bodega/trans/view/TraspasoPage.vue',
+            'pages/bodega/transferencia/view/TransferenciaPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
 
       //Routes for Recursos Humanos
       {

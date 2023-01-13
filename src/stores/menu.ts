@@ -197,7 +197,14 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1)).length > 0 ? 'Egreso de materiales' : 'Pedidos a bodega',
           link: 'transacciones-egresos',
-          can: store.can('puede.ver.transacciones_egresos'),
+          // can: store.can('puede.ver.transacciones_egresos'),
+          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v == 'BODEGA')),
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Transferencias',
+          link: 'transferencias',
+          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v == 'BODEGA')),
           icon: 'bi-circle',
         },
         {

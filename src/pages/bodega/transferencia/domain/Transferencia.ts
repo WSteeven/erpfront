@@ -1,69 +1,42 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class Transferencia extends EntidadAuditable{
-    id: number|null
-    autorizacion: number|null
-    obs_autorizacion: string|null
     justificacion: string|null
-    comprobante: string|null
-    fecha_limite: string|null
-    estado: number|null
-    obs_estado: string|null
+    sucursal_salida: number|null
+    sucursal_destino: number|null
+    cliente: number|null
     solicitante: number|null
-    devolucion: number|null
-    solicitante_id: number|null
-    tipo: number|null
-    motivo: number|null
-    sucursal: number|null
+    autorizacion: number|null
     per_autoriza: number|null
-    per_atiende: number|null
-    per_retira: number|null
-    tarea: string|null
-    cliente: string|null
-    created_at: string|null
+    recibida: boolean
+    estado: number|null
+    observacion_est: string|null
     
     //variables auxiliares
     tiene_obs_autorizacion: boolean
     tiene_obs_estado: boolean
-    retira_tercero:boolean
-    ingreso_masivo:boolean
-    es_tarea:boolean
-    tiene_devolucion:boolean
-
+    
     // producto: string|null
-    listadoProductosTransaccion:any[]
+    listadoProductos:any[]
     
     constructor(){
         super()
         this.id=null
         this.justificacion=null
-        this.comprobante=null
-        this.fecha_limite=null
-        this.solicitante_id=null
-        this.devolucion=null
-        this.solicitante=null
-        this.motivo=null
-        this.tarea=null
-        this.tipo=null
-        this.autorizacion=null
-        this.obs_autorizacion=null
-        this.estado=null
-        this.obs_estado=null
-        this.sucursal=null
+        this.sucursal_salida=null
+        this.sucursal_destino=null
         this.cliente=null
+        this.solicitante=null
+        this.autorizacion=null
+        this.observacion_est=null
+        this.estado=null
+        this.recibida=false
         this.per_autoriza=null
-        this.per_atiende=null
-        this.per_retira=null
-        this.created_at=null
-
+        
         this.tiene_obs_autorizacion=false
         this.tiene_obs_estado=false
-        this.retira_tercero=false
-        this.ingreso_masivo=false
-        this.es_tarea=false
-        this.tiene_devolucion=false
-
+        
         // this.producto=null
-        this.listadoProductosTransaccion=[]
+        this.listadoProductos=[]
     }
 }

@@ -161,6 +161,11 @@ export const tabOptionsDevoluciones: TabOption[] = [
   { label: 'Creadas', value: 'CREADA' },
   { label: 'Anuladas', value: 'ANULADA' },
 ]
+export const tabOptionsTransferencias: TabOption[] = [
+  { label: 'Pendientes', value: 'PENDIENTE' },
+  { label: 'Tránsito', value: 'TRANSITO' },
+  { label: 'Completadas', value: 'COMPLETADO' },
+]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Aprobados', value: 'APROBADO' },

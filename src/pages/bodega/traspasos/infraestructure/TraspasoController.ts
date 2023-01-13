@@ -6,4 +6,4 @@ export class TraspasoController extends TransaccionSimpleController<Traspaso>{
     constructor(){
         super(endpoints.traspasos)
     }
-}
+} 

@@ -17,61 +17,33 @@ export const configuracionColumnasTransferencias: ColumnConfig<Transferencia>[]=
         sortable: true,
     },
     {
-        name: 'comprobante',
-        field: 'comprobante',
-        label: 'Factura',
-        align: 'left',
-        sortable: true,
-    },
-    /* {
-        name: 'fecha_limite',
-        field: 'fecha_limite',
-        label: 'Fecha límite',
-        align: 'left',
-        sortable: true,
-    }, */
-    {
-        name: 'motivo',
-        field: 'motivo',
-        label: 'Motivo',
-        align: 'left',
-        sortable: true,
-    },
-    {
-        name: 'sucursal',
-        field: 'sucursal',
-        label: 'Sucursal',
-        align: 'left',
-        sortable: true,
-    },
-    {
-        name: 'autoriza',
-        field: 'autoriza',
+        name: 'per_autoriza',
+        field: 'per_autoriza',
         label: 'Autoriza',
         align: 'left',
         sortable: true,
     },
     {
-        name: 'tarea',
-        field: 'tarea',
-        label: 'Tarea',
-        align: 'left',
-        sortable: true,
-    },
-    /* {
         name: 'autorizacion',
         field: 'autorizacion',
         label: 'Autorización',
         align: 'left',
         sortable: true,
-    }, */
-    /* {
-        name: 'tipo',
-        field: 'tipo',
-        label: 'Tipo',
+    },
+    {
+        name: 'sucursal_salida',
+        field: 'sucursal_salida',
+        label: 'Desde',
         align: 'left',
         sortable: true,
-    }, */
+    },
+    {
+        name: 'sucursal_destino',
+        field: 'sucursal_destino',
+        label: 'Desde',
+        align: 'left',
+        sortable: true,
+    },
     {
         name: 'estado',
         field: 'estado',
