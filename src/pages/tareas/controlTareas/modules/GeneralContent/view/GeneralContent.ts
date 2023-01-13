@@ -38,7 +38,7 @@ export default defineComponent({
     const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
     const { consultar, guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       props.mixin.useComportamiento()
-    const { onGuardado, onConsultado, onModificado } = props.mixin.useHooks()
+    const { onGuardado, onConsultado, onModificado, onBeforeModificar } = props.mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -209,6 +209,21 @@ export default defineComponent({
       tareaStore.tarea.cliente = tarea.cliente
     }
 
+    onBeforeModificar(() => {
+      if (tarea.destino === destinosTareas.paraClienteFinal) {
+        tarea.proyecto = null
+      }
+
+      if (tarea.destino === destinosTareas.paraProyecto) {
+        const copiaTarea = Object.assign({}, tarea);
+        tarea.hydrate(new Tarea())
+        tarea.id = copiaTarea.id
+        tarea.codigo_tarea = copiaTarea.codigo_tarea
+        tarea.proyecto = copiaTarea.proyecto
+        tarea.detalle = copiaTarea.detalle
+      }
+    })
+
     onGuardado(() => {
       accion.value = acciones.editar
       consultar(tarea)
@@ -224,6 +239,7 @@ export default defineComponent({
     })
 
     const controller = new ClienteFinalController()
+
     watchEffect(async () => {
       clientesFinalesSource.value = (await controller.listar({ cliente: tarea.cliente })).result
       clientesFinales.value = clientesFinalesSource.value
@@ -240,9 +256,11 @@ export default defineComponent({
     const clienteFinal = reactive(new ClienteFinal())
 
     watch(computed(() => tarea.destino), (valor) => {
-      tarea.hydrate(new Tarea())
-      clienteFinal.hydrate(new ClienteFinal())
-      tarea.destino = valor
+      if (accion.value !== acciones.editar) {
+        tarea.hydrate(new Tarea())
+        clienteFinal.hydrate(new ClienteFinal())
+        tarea.destino = valor
+      }
     })
 
     return {

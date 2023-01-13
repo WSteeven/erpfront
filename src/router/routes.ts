@@ -120,6 +120,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reportes-control-tendidos',
+        name: 'reportes_control_tendidos',
+        component: () => import('tareas/reporteResumenTendidos/view/ReporteResumenTendidoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/perfil',
         name: 'perfil',
         component: () => import('pages/perfil/view/PerfilPage.vue'),

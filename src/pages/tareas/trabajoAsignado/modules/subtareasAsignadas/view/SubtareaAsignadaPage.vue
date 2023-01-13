@@ -150,6 +150,7 @@
       </q-expansion-item>
 
       <q-expansion-item
+        v-if="subtarea.cliente_final"
         class="overflow-hidden bg-white q-mb-md"
         style="border-radius: 8px; border: 1px solid #ddd"
         label="Ubicación del trabajo"

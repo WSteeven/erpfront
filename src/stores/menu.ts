@@ -7,7 +7,7 @@ export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
 
   function checkRol(rol) {
-    return rol == "ADMINISTRATIVO"
+    return rol == 'ADMINISTRATIVO'
   }
 
   // State
@@ -82,28 +82,24 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'solicitud-materiales',
           icon: 'bi-circle',
         }, */
-        /* {
-          title: 'Tendidos',
+        {
+          title: 'Reportes',
           icon: 'bi-circle',
           children: [
             {
+              title: 'Control de materiales diario',
+              link: 'reportes-control-materiales',
+              icon: 'bi-dash',
+              can: store.can('puede.ver.reportes_control_materiales'),
+            },
+            {
               title: 'Control de tendidos',
-              link: 'control-tendidos',
+              link: 'reportes-control-tendidos',
               icon: 'bi-dash',
-              can: store.can('puede.ver.control_tendidos'),
-            },
-            {
-              title: 'Tipos de elementos',
-              link: 'tipos-elementos',
-              icon: 'bi-dash',
-            },
-            {
-              title: 'Propietarios de elementos',
-              link: 'tipos-tareas',
-              icon: 'bi-dash',
+              can: store.can('puede.ver.reportes_control_tendidos'),
             },
           ],
-        }, */
+        },
         /* {
           title: 'Informes',
           link: 'informes',

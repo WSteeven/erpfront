@@ -61,6 +61,7 @@
     </div>
   -->
     <essential-table
+      v-if="colsMateriales.length"
       titulo="Tabla de resumen"
       :configuracionColumnas="columnas"
       :datos="listado"
