@@ -16,7 +16,7 @@ export class Traspaso extends EntidadAuditable {
     es_tarea:boolean|null
 
     constructor(){
-        super()
+        super() 
         this.justificacion=null
         this.devuelta=null
         this.solicitante=null
