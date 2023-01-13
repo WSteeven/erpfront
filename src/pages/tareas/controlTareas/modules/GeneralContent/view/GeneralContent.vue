@@ -44,7 +44,7 @@
         </div>
 
         <!-- Numero tarea cliente -->
-        <div v-if="paraClienteFinal" class="col-12 col-md-3">
+        <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de tarea cliente</label>
           <q-input
             v-model="tarea.codigo_tarea_cliente"

@@ -159,7 +159,7 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-3 q-mb-md">
+          <!--<div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Atención (INTERURBANO/URBANO)</label>
             <q-select
               v-model="subtarea.atencion"
@@ -212,7 +212,7 @@
               clearable
             >
             </q-select>
-          </div>
+          </div> -->
 
           <!-- Fecha de creacion -->
           <div v-if="subtarea.fecha_hora_creacion" class="col-12 col-md-3">

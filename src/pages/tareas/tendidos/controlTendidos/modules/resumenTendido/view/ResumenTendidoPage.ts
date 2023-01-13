@@ -3,14 +3,12 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { tiposElementos, propietariosElementos, estadoElementos, tiposTension, acciones } from 'config/utils'
 import { configuracionColumnasResumenTendido } from '../domain/configuracionColumnasResumenTendido'
 import { useTendidoStore } from 'stores/tendido'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
-// import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-// import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import { RegistroTendidoController } from '../../registrosTendidos/infraestructure/RegistroTendidoController'
@@ -18,8 +16,6 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { RegistroTendido } from '../../registrosTendidos/domain/RegistroTendido'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-// import { useNotificaciones } from 'shared/notificaciones'
-// import { ResumenTendido } from '../domain/ResumenTendido'
 
 export default defineComponent({
   emits: ['cerrar-modal'],
@@ -31,13 +27,9 @@ export default defineComponent({
     const { listado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
-    // const trabajoAsignadoStore = useTrabajoAsignadoStore()
     const tendidoStore = useTendidoStore()
 
-    // if (tendidoStore.idRegistroTendido) consultar({ id: tendidoStore.idRegistroTendido })
     listar({ tendido: tendidoStore.idTendido })
-
-    // const { confirmar, prompt } = useNotificaciones()
 
     const botonVerImagen: CustomActionTable = {
       titulo: 'Ver elemento',
@@ -83,15 +75,33 @@ export default defineComponent({
     }
 
     const materiales: any = ref([])
+    const colsMateriales = ref([])
 
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: 2, grupo: 1 })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
+      // console.log(materiales.value)
+      colsMateriales.value = generarConfiguracionColumnas()
+      console.log('Materiales para columnas')
+      console.log(colsMateriales.value)
     }
 
-    const columnas = [
+    function generarConfiguracionColumnas() {
+      return materiales.value.map((material) => {
+        return {
+          name: material.detalle.replace(/\s+/g, ''),
+          field: material.detalle.replace(/\s+/g, ''),
+          label: material.detalle,
+          align: 'center',
+        }
+      })
+    }
+
+    obtenerMateriales()
+
+    const columnas = computed(() => [
       ...configuracionColumnasResumenTendido,
       {
         name: 'acciones',
@@ -99,7 +109,13 @@ export default defineComponent({
         label: 'Acciones',
         align: 'center',
       },
-    ]
+      ...colsMateriales.value,
+    ])
+
+    /* const objMaterialesString = listado.value.map(entidad => entidad.materiales_ocupados.map(material => '{' + material.detalle + ': ' + material.cantidad_utilizada + '}'))
+    console.log(objMaterialesString)
+    const objMateriales = JSON.parse(objMaterialesString)
+    console.log(objMateriales) */
 
     return {
       listado,
@@ -116,6 +132,7 @@ export default defineComponent({
       botonVerPosteAnclaje1,
       botonVerPosteAnclaje2,
       configuracionColumnasProductos,
+      colsMateriales,
     }
   }
 })

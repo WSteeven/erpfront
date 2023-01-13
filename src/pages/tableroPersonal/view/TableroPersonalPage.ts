@@ -52,7 +52,7 @@ export default defineComponent({
             subtareasPorAsignar.value = result
         }
 
-        obtenerSubtareasPendientesAsignar()
+        // obtenerSubtareasPendientesAsignar()
 
         return {
             tablero,
