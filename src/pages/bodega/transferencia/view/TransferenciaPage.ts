@@ -38,6 +38,8 @@ import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
+
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 import { buildTableBody } from "shared/utils";
 import { useOrquestadorSelectorItems } from "pages/bodega/traspasos/application/OrquestadorSelectorInventario";
 import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
@@ -297,7 +299,7 @@ export default defineComponent({
                                 // auto-sized columns have their widths based on their content
                                 width: '*',
                                 text: [
-                                    { text: 'Transaccion N° ', style: 'defaultStyle' },
+                                    { text: 'Transferencia N° ', style: 'defaultStyle' },
                                     { text: `${transferencia.id}`, style: 'resultStyle', }
                                 ]
                             },
@@ -323,14 +325,14 @@ export default defineComponent({
                     },
                     {
                         columns: [
-                            {
+                            /* {
                                 // auto-sized columns have their widths based on their content
                                 width: '*',
                                 columns: [
                                     { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
                                     { width: 'auto', text: `${transferencia.sucursal}`, style: 'resultStyle', }
                                 ]
-                            },
+                            }, */
                             {
                                 // star-sized columns fill the remaining space
                                 // if there's more than one star-column, available width is divided equally
@@ -350,7 +352,7 @@ export default defineComponent({
                                 width: '*',
                                 columns: [
                                     { width: 'auto', text: 'Desde: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${transferencia.desde_cliente}`, style: 'resultStyle', }
+                                    { width: 'auto', text: `${transferencia.sucursal_salida}`, style: 'resultStyle', }
                                 ]
                             },
                             {
@@ -359,20 +361,20 @@ export default defineComponent({
                                 width: 'auto',
                                 columns: [
                                     { width: 'auto', text: 'Hasta: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${transferencia.hasta_cliente}`, style: 'resultStyle', }
+                                    { width: 'auto', text: `${transferencia.sucursal_destino}`, style: 'resultStyle', }
                                 ],
                             },
                         ],
                     },
                     {
                         columns: [
-                            {
+                            /* {
                                 width: '*',
                                 columns: [
                                     { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
                                     { width: 'auto', text: ` ${transferencia.tarea}`, style: 'resultStyle', }
                                 ]
-                            },
+                            }, */
                             {
                                 // star-sized columns fill the remaining space
                                 // if there's more than one star-column, available width is divided equally
@@ -390,8 +392,8 @@ export default defineComponent({
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
                     */
                     table(transferencia.listadoProductos,
-                        ['producto', 'detalle_id', 'condicion', 'cantidades', 'devuelto'],
-                        ['Producto', 'Descripción', 'Estado', 'Cantidad', 'Devuelto']),
+                        ['producto', 'detalle_id', 'condicion', 'cantidades' ],
+                        ['Producto', 'Descripción', 'Estado', 'Cantidad']),
 
                     { text: '\n\n' },
 
