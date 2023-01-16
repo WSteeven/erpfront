@@ -239,6 +239,17 @@ export default defineComponent({
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
       tecnicosGrupoPrincipal.value = result
+      console.log(tecnicosGrupoPrincipal.value)
+
+      tecnicosGrupoPrincipal.value = tecnicosGrupoPrincipal.value.map((empleado: Empleado) => {
+        const tecnico = new Empleado()
+        tecnico.hydrate(empleado)
+
+        const roles = stringToArray(tecnico.roles ?? '')
+        tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
+
+        return tecnico
+      })
     }
 
     // Filtro tipos de trabajos
@@ -372,7 +383,7 @@ export default defineComponent({
       subtarea.archivos = files
     }
 
-    watch(tecnicosGrupoPrincipal, () => {
+    /* watch(tecnicosGrupoPrincipal, () => {
       tecnicosGrupoPrincipal.value = tecnicosGrupoPrincipal.value.map((empleado: Empleado) => {
         const tecnico = new Empleado()
         tecnico.hydrate(empleado)
@@ -382,7 +393,16 @@ export default defineComponent({
 
         return tecnico
       })
-    })
+    }) */
+
+    function verificarEsVentana() {
+      console.log('es ...')
+      if (!subtarea.es_ventana) {
+        subtarea.fecha_ventana = null
+        subtarea.hora_inicio_ventana = null
+        subtarea.hora_fin_ventana = null
+      }
+    }
 
     return {
       // Referencias
@@ -433,7 +453,7 @@ export default defineComponent({
       opcionesModoAsignacionTrabajo,
       cancelarDesignacion,
       entidadSeleccionada,
-
+      verificarEsVentana,
     }
   },
 })

@@ -9,6 +9,12 @@ export const configuracionColumnasClienteFinal: ColumnConfig<ClienteFinal>[] = [
     align: 'left',
   },
   {
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente corporativo',
+    align: 'left',
+  },
+  {
     name: 'nombres',
     field: 'nombres',
     label: 'Nombres',

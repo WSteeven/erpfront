@@ -15,6 +15,8 @@ export const endpoints = {
   cambiar_contrasena: new Endpoint('user/password', false),
   roles: new Endpoint('user/roles'),
   permisos: new Endpoint('user/permisos'),
+  fecha: new Endpoint('obtener-fecha'),
+  hora: new Endpoint('obtener-hora'),
   //configuraciones: new Endpoint('configuraciones/'),
   tablero: new Endpoint('tablero/'),
   // Ubicacion

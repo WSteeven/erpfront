@@ -22,6 +22,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { Subtarea } from 'pages/tareas/controlTareas/modules/subtareas/domain/Subtarea'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { obtenerTiempoActual } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -30,10 +31,11 @@ export default defineComponent({
     ConfirmarDialog,
   },
   setup() {
-    const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+    const controller = new SubtareaController()
+    const mixin = new ContenedorSimpleMixin(Subtarea, controller)
 
     const { listado } = mixin.useReferencias()
-    const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
 
     const mostrarDialogPlantilla = ref(false)
 
@@ -52,11 +54,32 @@ export default defineComponent({
 
     const botonIniciar: CustomActionTable = {
       titulo: 'Iniciar',
-      icono: 'bi-play',
+      icono: 'bi-play-circle-fill',
       color: 'positive',
       visible: ({ entidad }) => [estadosSubtareas.ASIGNADO].includes(entidad.estado) || (entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion),
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de iniciar el trabajo?', async () => {
+          const { fecha, hora } = await obtenerTiempoActual()
+          if (entidad.es_ventana) {
+            if (fecha < entidad.fecha_ventana) {
+              notificarAdvertencia('No puedes proceder. La ejecución del trabajo empieza el ' + entidad.fecha_ventana)
+              return
+            }
+
+            if (hora < entidad.hora_inicio_ventana) {
+              notificarAdvertencia('No puedes proceder. La ejecución del trabajo empieza a las ' + entidad.hora_inicio_ventana)
+              return
+            }
+          }
+
+          if (entidad.es_dependiente) {
+            const { result: subtareaDependiente } = await controller.consultar(entidad.subtarea_dependiente_id)
+            if (subtareaDependiente.estado !== estadosSubtareas.REALIZADO) {
+              notificarAdvertencia('No puedes proceder. Primero debes finalizar con el trabajo ' + entidad.subtarea_dependiente)
+              return
+            }
+          }
+
           const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
           entidad.estado = estadosSubtareas.EJECUTANDO
           entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
@@ -68,8 +91,8 @@ export default defineComponent({
 
     const botonPausar: CustomActionTable = {
       titulo: 'Pausar',
-      icono: 'bi-pause',
-      color: 'positive',
+      icono: 'bi-pause-circle-fill',
+      color: 'grey-8',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de pausar la subtarea?', () => {
@@ -90,7 +113,7 @@ export default defineComponent({
 
     const botonReanudar: CustomActionTable = {
       titulo: 'Reanudar',
-      icono: 'bi-play',
+      icono: 'bi-play-circle-fill',
       color: 'positive',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.PAUSADO,
       accion: async ({ entidad, posicion }) => {
@@ -107,7 +130,7 @@ export default defineComponent({
 
     const botonFormulario: CustomActionTable = {
       titulo: 'Formulario',
-      icono: 'bi-body-text',
+      icono: 'bi-box-fill',
       color: 'secondary',
       visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
       accion: async ({ entidad }) => {
@@ -144,8 +167,8 @@ export default defineComponent({
     }
 
     const botonRealizar: CustomActionTable = {
-      titulo: 'Realizado',
-      icono: 'bi-check',
+      titulo: 'Finalizar',
+      icono: 'bi-check-circle-fill',
       color: 'positive',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
       accion: ({ entidad, posicion }) => {

@@ -82,7 +82,6 @@ export default defineComponent({
       const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: 2, grupo: 1 })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
-      // console.log(materiales.value)
       colsMateriales.value = generarConfiguracionColumnas()
       console.log('Materiales para columnas')
       console.log(colsMateriales.value)

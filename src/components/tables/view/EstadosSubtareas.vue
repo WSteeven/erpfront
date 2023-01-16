@@ -29,9 +29,9 @@
   <!-- PAUSADO -->
   <q-chip
     v-if="props.propsTable.value === estadosSubtareas.PAUSADO"
-    class="bg-indigo-1"
+    class="bg-grey-3"
   >
-    <q-icon name="bi-circle-fill" color="indigo-5" class="q-mr-xs"></q-icon
+    <q-icon name="bi-circle-fill" color="grey-6" class="q-mr-xs"></q-icon
     >{{ estadosSubtareas.PAUSADO }}
   </q-chip>
 
@@ -50,7 +50,7 @@
     class="bg-red-1 text-red"
   >
     <q-icon
-      name="bi-exclamation-octagon-fill"
+      name="bi-exclamation-circle-fill"
       color="red"
       class="q-mr-xs"
     ></q-icon

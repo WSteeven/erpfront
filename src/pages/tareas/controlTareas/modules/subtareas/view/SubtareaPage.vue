@@ -403,6 +403,7 @@
               v-model="subtarea.es_ventana"
               label="Es ventana de trabajo"
               :disable="disable"
+              @blur="verificarEsVentana()"
               outlined
               dense
             ></q-checkbox>
@@ -537,9 +538,35 @@
             </q-input>
           </div>
 
+          <!-- Asignar a mas empleados -->
+          <div
+            v-if="
+              subtarea.modo_asignacion_trabajo ===
+                opcionesModoAsignacionTrabajo.por_grupo &&
+              tecnicosGrupoPrincipal.length
+            "
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <br />
+            <q-checkbox
+              v-model="subtarea.asignar_mas_empleados"
+              label="Quiero asignar a más empleados"
+              :disable="disable"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
           <!-- Técnicos del grupo principal -->
           <div class="col-12">
-            <div class="row q-col-gutter-sm q-mb-md">
+            <div
+              v-if="
+                subtarea.asignar_mas_empleados ||
+                subtarea.modo_asignacion_trabajo ===
+                  opcionesModoAsignacionTrabajo.por_trabajador
+              "
+              class="row q-col-gutter-sm q-mb-md"
+            >
               <!-- Busqueda -->
               <div class="col-12 col-md-10">
                 <label class="q-mb-sm block">Agregar más empleados</label>
@@ -577,10 +604,10 @@
               </div>
             </div>
 
+            <!--            v-if="tecnicosGrupoPrincipal.length" -->
             <essential-table
-              v-if="tecnicosGrupoPrincipal.length"
               ref="refEmpleadosAsignados"
-              titulo="Empleados asignados"
+              titulo="Listado de empleados asignados"
               :configuracionColumnas="columnas"
               :datos="tecnicosGrupoPrincipal"
               :accion1Header="asignarNuevoTecnicoLider"

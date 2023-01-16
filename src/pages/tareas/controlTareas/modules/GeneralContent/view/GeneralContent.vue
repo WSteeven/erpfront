@@ -68,7 +68,7 @@
 
         <!-- Cliente principal -->
         <div v-show="paraClienteFinal" class="col-12 col-md-6">
-          <label class="q-mb-sm block">Cliente principal</label>
+          <label class="q-mb-sm block">Cliente corporativo</label>
           <q-select
             v-model="tarea.cliente"
             :options="clientes"
@@ -106,7 +106,7 @@
 
         <!-- Supervisor -->
         <div v-if="paraClienteFinal" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Supervisor JP</label>
+          <label class="q-mb-sm block">Fiscalizador JPCONSTRUCRED</label>
           <q-select
             v-model="tarea.supervisor"
             :options="supervisores"
@@ -341,7 +341,7 @@
 
         <!-- Ciudad -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Canton</label>
+          <label class="q-mb-sm block">Cantón</label>
           <q-select
             v-model="clienteFinal.canton"
             :options="listadosAuxiliares.cantones"

@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { apiConfig } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { apiConfig, endpoints } from 'config/api'
 import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
+import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -236,17 +238,34 @@ export function getVisibleColumns<T>(
   return columnas
 }
 
-
+// 20-04-2022
 export function obtenerFechaActual() {
   const timeStamp = Date.now()
   const formattedString = date.formatDate(timeStamp, 'DD-MM-YYYY')
   return formattedString
 }
 
+export async function obtenerTiempoActual() {
+  const axios = AxiosHttpRepository.getInstance()
+
+  try {
+    const fecha: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.fecha))
+    const hora: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.hora))
+
+    //const fechaArray = fecha.split('-') //.map(Number)
+    console.log(fecha.data)
+    return { fecha: fecha.data, hora: hora.data }
+  } catch (e: any) {
+    throw new ApiError(e)
+  }
+}
+
+// Lunes, 16 Enero 2023
 export function obtenerFechaActualTexto() {
   return date.formatDate(Date.now(), 'dddd, DD MMMM YYYY')
 }
 
+// 20-04-2022 12:30:00
 export function obtenerFechaHoraActual() {
   return date.formatDate(Date.now(), 'DD-MM-YYYY HH:mm:ss')
 }
@@ -277,11 +296,11 @@ export function formatBytes(bytes, decimals = 2) {
  * @returns The cuerpo de la tabla para la impresión
  */
 export function buildTableBody(data, columns, columnas) {
-  const body = []
+  const body: any = []
   body.push(columnas)
 
   data.forEach(function (row) {
-    const dataRow = []
+    const dataRow: any = []
     columns.forEach(function (column) {
       dataRow.push(row[column])
     });

@@ -20,8 +20,6 @@ export default defineComponent({
   },
   setup() {
     const loginUser = reactive(new UserLogin())
-    // loginUser.name = 'MJARAMILLO'
-    // loginUser.password = 'password'
 
     const loginController = new LoginController()
 
@@ -33,12 +31,12 @@ export default defineComponent({
         cargando.activar()
         const response: any = await loginController.login(loginUser)
 
-        notificaciones.notificarCorrecto(response.data.mensaje)
+        notificaciones.notificarCorrecto('Bienvenido a JPCONSTRUCRED CIA. LTDA') //response.data.mensaje)
 
       } catch (error: any) {
-        /*if (!isAxiosError(error)) {
+        if (!isAxiosError(error)) {
           notificaciones.notificarError(error.response.data.mensaje)
-        }*/
+        }
       } finally {
         cargando.desactivar()
       }
@@ -53,9 +51,7 @@ export default defineComponent({
       isPwd: ref(true),
       loginUser,
       loginJson,
-      // computed
       enableLoginButton,
-      // functions
       login,
     }
   },

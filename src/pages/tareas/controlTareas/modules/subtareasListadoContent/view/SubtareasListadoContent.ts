@@ -17,6 +17,7 @@ import { SubtareaController } from 'subtareas/infraestructure/SubtareaController
 import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { Subtarea } from 'subtareas/domain/Subtarea'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: { EssentialTableTabs, ModalesEntidad },
@@ -26,7 +27,7 @@ export default defineComponent({
     const { listado } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
 
-    const { confirmar, notificarCorrecto } = useNotificaciones()
+    const { confirmar, notificarCorrecto, prompt } = useNotificaciones()
 
     const tareaStore = useTareaStore()
     const subtareaListadoStore = useSubtareaListadoStore()
@@ -44,7 +45,7 @@ export default defineComponent({
     const agregarSubtarea: CustomActionTable = {
       titulo: 'Crear una subtarea',
       icono: 'bi-plus',
-      color: 'secondary',
+      color: 'positive',
       accion: () => {
         subtareaListadoStore.idSubtareaSeleccionada = null
         tareaStore.accionSubtarea = acciones.nuevo
@@ -54,7 +55,7 @@ export default defineComponent({
 
     const botonEditarSubtarea: CustomActionTable = {
       titulo: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'Editar' : 'Visualizar',
-      icono: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'bi-pencil' : 'bi-eye',
+      icono: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'bi-pencil-fill' : 'bi-eye',
       accion: async ({ entidad, posicion }) => {
         tareaStore.accionSubtarea = entidad.estado === estadosSubtareas.CREADO ? acciones.editar : acciones.consultar
 
@@ -75,7 +76,7 @@ export default defineComponent({
       }
     }
 
-    const botonFinalizar: CustomActionTable = {
+    /* const botonFinalizar: CustomActionTable = {
       titulo: 'Realizado',
       color: 'positive',
       icono: 'bi-check',
@@ -85,12 +86,12 @@ export default defineComponent({
         entidad.estado = estadosSubtareas.REALIZADO
         actualizarElemento(posicion, entidad)
       }),
-    }
+    } */
 
     const botonAsignar: CustomActionTable = {
       titulo: 'Asignar',
       color: 'indigo',
-      icono: 'bi-person',
+      icono: 'bi-person-fill-check',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de asignar la subtarea?', async () => {
@@ -119,14 +120,22 @@ export default defineComponent({
     const botonCancelar: CustomActionTable = {
       titulo: 'Cancelar',
       color: 'negative',
-      icono: 'bi-x-octagon',
+      icono: 'bi-x-circle-fill',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO,
-      accion: async ({ entidad, posicion }) => confirmar(['¿Está seguro de cancelar definitivamente la subtarea?'], async () => {
-        const { result } = await new CambiarEstadoSubtarea().cancelar(entidad.id)
-        entidad.estado = estadosSubtareas.CANCELADO
-        entidad.fecha_hora_cancelacion = result.fecha_hora_cancelacion
-        actualizarElemento(posicion, entidad)
-        notificarCorrecto('Subtarea cancelada correctamente!')
+      accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de cancelar definitivamente la subtarea?'], async () => {
+        const config: CustomActionPrompt = {
+          mensaje: 'Ingrese el motivo de la cancelación',
+          accion: async (data) => {
+            const { result } = await new CambiarEstadoSubtarea().cancelar(entidad.id, data)
+            entidad.estado = estadosSubtareas.CANCELADO
+            entidad.fecha_hora_cancelacion = result.fecha_hora_cancelacion
+            entidad.causa_cancelacion = result.causa_cancelacion
+            notificarCorrecto('Trabajo cancelado exitosamente!')
+            actualizarElemento(posicion, entidad)
+          }
+        }
+
+        prompt(config)
       }),
     }
 
@@ -175,7 +184,7 @@ export default defineComponent({
       botonControlAvance,
       botonSubirArchivos,
       agregarSubtarea,
-      botonFinalizar,
+      // botonFinalizar,
       aplicarFiltro,
       botonAsignar,
       botonSolicitarMaterial,

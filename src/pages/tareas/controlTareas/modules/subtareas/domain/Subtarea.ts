@@ -22,6 +22,7 @@ export class Subtarea extends EntidadAuditable {
 
   es_dependiente: boolean
   subtarea_dependiente: string | null
+  subtarea_dependiente_id: number | null
 
   es_ventana: boolean
   hora_inicio_ventana: string | null
@@ -45,6 +46,7 @@ export class Subtarea extends EntidadAuditable {
 
   // Mostrar / ocultar
   modo_asignacion_trabajo: string
+  asignar_mas_empleados: boolean
 
   constructor() {
     super()
@@ -70,6 +72,7 @@ export class Subtarea extends EntidadAuditable {
 
     this.es_dependiente = false
     this.subtarea_dependiente = null
+    this.subtarea_dependiente_id = null
 
     this.es_ventana = false
     this.hora_inicio_ventana = null
@@ -91,5 +94,7 @@ export class Subtarea extends EntidadAuditable {
 
     // Mostrar / ocultar
     this.modo_asignacion_trabajo = opcionesModoAsignacionTrabajo.por_grupo
+
+    this.asignar_mas_empleados = false
   }
 }

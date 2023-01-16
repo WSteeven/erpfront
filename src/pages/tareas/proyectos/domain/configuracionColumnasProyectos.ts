@@ -10,6 +10,13 @@ export const configuracionColumnasProyecto: ColumnConfig<Proyecto>[] = [
     sortable: true,
   },
   {
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente corporativo',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'nombre',
     field: 'nombre',
     label: 'Nombre',

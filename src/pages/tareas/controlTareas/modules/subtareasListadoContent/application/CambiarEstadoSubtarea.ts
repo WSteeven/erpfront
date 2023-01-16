@@ -34,8 +34,8 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('suspender', subtareaId, { motivo: mensaje })
   }
 
-  async cancelar(subtareaId: number) {
-    return this.solicitud('cancelar', subtareaId)
+  async cancelar(subtareaId: number, mensaje: string) {
+    return this.solicitud('cancelar', subtareaId, { motivo: mensaje })
   }
 
   async solicitud(accion, tarea, data?) {

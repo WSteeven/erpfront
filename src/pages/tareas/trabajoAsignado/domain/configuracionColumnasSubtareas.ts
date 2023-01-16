@@ -55,6 +55,12 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
         align: 'left',
     },
     {
+        name: 'subtarea_dependiente',
+        field: 'subtarea_dependiente',
+        label: 'Depende de',
+        align: 'left',
+    },
+    {
         name: 'estado',
         field: 'estado',
         label: 'Estado',

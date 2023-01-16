@@ -9,7 +9,7 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Cliente -->
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Cliente</label>
+            <label class="q-mb-sm block">Cliente corporativo</label>
             <q-select
               v-model="proyecto.cliente"
               :options="clientes"
@@ -170,7 +170,7 @@
 
           <!-- Canton -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Canton</label>
+            <label class="q-mb-sm block">Cantón</label>
             <q-select
               v-model="proyecto.canton"
               :options="cantones"
