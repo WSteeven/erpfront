@@ -2,6 +2,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { HttpRepository } from '../domain/HttpRepository'
 import { Endpoint } from '../domain/Endpoint'
+import { LocalStorage } from 'quasar'
 
 // SINGLETON
 export class AxiosHttpRepository implements HttpRepository {
@@ -21,35 +22,38 @@ export class AxiosHttpRepository implements HttpRepository {
     })
   }
 
+  static config
+
   public static getInstance(): AxiosHttpRepository {
     if (!this.instance) {
       this.initialize()
       this.instance = new AxiosHttpRepository()
     }
+    AxiosHttpRepository.config = AxiosHttpRepository.getHeaderToken()
     return this.instance
   }
 
   post<HttpResponse>(url: string, data?: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.post(url, data)
+    return AxiosHttpRepository.axiosInst.post(url, data, AxiosHttpRepository.config)
   }
 
   get<HttpResponse>(
     url: string,
     options?: AxiosRequestConfig
   ): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.get(url, options)
+    return AxiosHttpRepository.axiosInst.get(url, AxiosHttpRepository.getHeaderToken())
   }
 
   put<HttpResponse>(url: string, data: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.put(url, data)
+    return AxiosHttpRepository.axiosInst.put(url, data, AxiosHttpRepository.config)
   }
 
   delete<HttpResponse>(url: string): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.delete(url)
+    return AxiosHttpRepository.axiosInst.delete(url, AxiosHttpRepository.config)
   }
 
   patch<HttpResponse>(url: string, data: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.patch(url, data)
+    return AxiosHttpRepository.axiosInst.patch(url, data, AxiosHttpRepository.config)
   }
 
   public getEndpoint(
@@ -86,5 +90,16 @@ export class AxiosHttpRepository implements HttpRepository {
         query.push(`${key}=${args[key]}`)
       }
     return `?${query.join('&')}`
+  }
+
+  static getHeaderToken() {
+    const token = LocalStorage.getItem('token')
+
+    return {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }
   }
 }

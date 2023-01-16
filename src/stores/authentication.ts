@@ -1,10 +1,12 @@
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { UserLogin } from 'src/pages/sistema/authentication/login/domain/UserLogin'
 import { ApiError } from 'shared/error/domain/ApiError'
+import { rolesSistema } from 'config/utils'
 import { endpoints } from 'src/config/api'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
+import { AxiosResponse } from 'axios'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -15,46 +17,44 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const user = ref()
   const auth = ref(false)
   const permisos = ref()
-  const token = ref()
   const nombreUsuario = computed(
     () =>
       `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
       }`
   )
 
-  /* const esCoordinador1 = computed(() =>
-    roles.value ? roles.value.some((rol: string) => rol === 'COORDINADOR') : false
-  ) */
+  const esCoordinador = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.coordinador) : false)
+  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico_lider) : false)
+  const esBodeguero = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.bodega) : false)
+  const esActivosFijos = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.activos_fijos) : false)
 
-  const esCoordinador = computed(() => extraerRol('COORDINADOR'))
-  const esTecnicoLider = computed(() => extraerRol('TECNICO LIDER'))
-  const esBodeguero = computed(() => extraerRol('BODEGA'))
-  const esActivosFijos = computed(() => extraerRol('ACTIVOS FIJOS'))
-
-  function extraerRol(rolConsultar: string) {
-    return auth.value ? user.value.rol?.some((rol: string) => rol === rolConsultar) : null
+  function extraerRol(roles: string[], rolConsultar: string) {
+    return roles.some((rol: string) => rol === rolConsultar)
   }
 
   // Actions
   const login = async (credentiales: UserLogin): Promise<any> => {
     try {
-      await axios.get(axios.getEndpoint(endpoints.authentication))
-      const response: any = await axios.post(axios.getEndpoint(endpoints.login), credentiales)
-      await getUser()
-      token.value = response.data.access_token
-      LocalStorage.set('token', token.value)
-      return user.value
+      const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
+      await axios.get(csrf_cookie)
+
+      const login = axios.getEndpoint(endpoints.login)
+      const response: AxiosResponse = await axios.post(login, credentiales)
+
+      LocalStorage.set('token', response.data.access_token)
+      setUser(response.data.modelo)
+      permisos.value = response.data.modelo.permisos
+
+      return response.data.modelo
     } catch (error: any) {
-      // throw new ApiError(error)
-      throw error
+      throw new ApiError(error)
     }
   }
 
   async function logout(): Promise<any> {
-    const response = await axios.post(axios.getEndpoint(endpoints.logout))
+    await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
     await getUser()
-    return response
   }
 
   const setUser = (userData: any) => {
@@ -64,14 +64,25 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   const getUser = async () => {
     try {
-      const res = await axios.get<any>(axios.getEndpoint(endpoints.api_user))
-      setUser(res.data)
-      if (auth.value) {
-        // await getRoles()
-        await getPermisos()
-      }
+      const userApi = axios.getEndpoint(endpoints.api_user)
+      const response = await axios.get<any>(userApi, getHeaderToken())
+
+      setUser(response.data)
+
+      permisos.value = response.data.permisos
+      return response.data
+
     } catch (e) {
       setUser(null)
+    }
+  }
+
+  function getHeaderToken() {
+    return {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+      },
     }
   }
 
@@ -91,25 +102,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     return auth.value
   }
 
-  //Roles
-  /* const getRoles = async () => {
-    try {
-      const res = await axios.get<any>(axios.getEndpoint(endpoints.roles))
-      roles.value = res.data
-    } catch (error: any) {
-      throw new ApiError(error)
-    }
-  } */
-  // Permisos
-  const getPermisos = async () => {
-    try {
-      const res = await axios.get<any>(axios.getEndpoint(endpoints.permisos))
-      permisos.value = res.data
-    } catch (error: any) {
-      throw new ApiError(error)
-    }
-  }
-
   function can(permiso: string) {
     return permisos.value?.indexOf(permiso) !== -1
   }
@@ -124,7 +116,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     getUser,
     actualizarContrasena,
     isUserLoggedIn,
-    token,
     esCoordinador,
     esTecnicoLider,
     esBodeguero,

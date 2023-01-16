@@ -17,7 +17,7 @@ import { ProyectoController } from '../infraestructure/ProyectoController'
 import { Proyecto } from '../domain/Proyecto'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { rolesAdmitidos } from 'config/utils'
+import { rolesSistema } from 'config/utils'
 
 export default defineComponent({
   components: {
@@ -39,7 +39,7 @@ export default defineComponent({
         cantones: new CantonController(),
         coordinadores: {
           controller: new EmpleadoController(),
-          params: { rol: rolesAdmitidos.coordinador },
+          params: { rol: rolesSistema.coordinador },
         },
       })
       clientes.value = listadosAuxiliares.clientes

@@ -1,4 +1,4 @@
-import { TabOption } from "components/tables/domain/TabOption"
+import { TabOption } from 'components/tables/domain/TabOption'
 
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
@@ -235,9 +235,9 @@ export const estadosTransacciones = {
 }
 
 export const estadosControlStock = {
-  suficiente: "STOCK SUFICIENTE",
-  reorden: "PROXIMO A AGOTARSE",
-  minimo: "DEBAJO DEL MINIMO",
+  suficiente: 'STOCK SUFICIENTE',
+  reorden: 'PROXIMO A AGOTARSE',
+  minimo: 'DEBAJO DEL MINIMO',
 }
 
 export const estadosInventarios = {
@@ -266,12 +266,14 @@ export const estadosSubtareas = {
   REALIZADO: 'REALIZADO',
 }
 
-export const rolesAdmitidos = {
+export const rolesSistema = {
   empleado: 'EMPLEADO',
   tecnico_lider: 'TECNICO JEFE CUADRILLA',
   tecnico_secretario: 'TECNICO SECRETARIO',
   coordinador: 'COORDINADOR',
   fiscalizador: 'FISCALIZADOR',
+  bodega: 'BODEGA',
+  activos_fijos: 'ACTIVOS FIJOS',
 }
 
 export const opcionesModoAsignacionTrabajo = { por_grupo: 'POR_GRUPO_TECNICO', por_trabajador: 'POR_EMPLEADO' }

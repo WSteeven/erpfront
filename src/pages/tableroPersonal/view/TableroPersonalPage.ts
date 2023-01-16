@@ -13,64 +13,64 @@ import { SubtareaController } from 'subtareas/infraestructure/SubtareaController
 import { TableroPersonal } from '../domain/TableroPersonal'
 
 export default defineComponent({
-    components: {
-        ModalesEntidad,
-    },
-    setup() {
-        const store = useAuthenticationStore()
-        const controller = new TableroPersonalController()
-        const tablero = reactive(new TableroPersonal())
-        const usuarios = 20
+  components: {
+    ModalesEntidad,
+  },
+  setup() {
+    const store = useAuthenticationStore()
+    const controller = new TableroPersonalController()
+    const tablero = reactive(new TableroPersonal())
+    const usuarios = 20
 
-        const filtrosTareas = ['Recientes', 'sdsd']
-        const filtroTarea = ref('Recientes')
+    const filtrosTareas = ['Recientes', 'sdsd']
+    const filtroTarea = ref('Recientes')
 
-        const subtareasPorAsignar = ref([])
+    const subtareasPorAsignar = ref([])
 
-        async function index() {
-            const { response } = await controller.listar()
-            tablero.hydrate(response.data.results)
-        }
+    async function index() {
+      const { response } = await controller.listar()
+      tablero.hydrate(response.data.results)
+    }
 
-        index()
+    index()
 
-        const modales = new ComportamientoModalesTableroPersonal()
+    const modales = new ComportamientoModalesTableroPersonal()
 
-        const timeStamp = Date.now()
-        const fecha = date.formatDate(timeStamp, 'dddd, DD MMMM YYYY')
+    const timeStamp = Date.now()
+    const fecha = date.formatDate(timeStamp, 'dddd, DD MMMM YYYY')
 
-        function verSubtarea() {
-            modales.abrirModalEntidad('SubtareaAsignadaPage')
-        }
+    function verSubtarea() {
+      modales.abrirModalEntidad('SubtareaAsignadaPage')
+    }
 
-        async function obtenerSubtareasPendientesAsignar() {
-            const filtros = {
-                estado: 'CREADO',
-                coordinador_id: store.user.id,
-            }
-            const { result } = await new SubtareaController().listar(filtros)
-            subtareasPorAsignar.value = result
-        }
+    async function obtenerSubtareasPendientesAsignar() {
+      const filtros = {
+        estado: 'CREADO',
+        coordinador_id: store.user.id,
+      }
+      const { result } = await new SubtareaController().listar(filtros)
+      subtareasPorAsignar.value = result
+    }
 
-        // obtenerSubtareasPendientesAsignar()
+    // obtenerSubtareasPendientesAsignar()
 
-        return {
-            tablero,
-            store,
-            usuarios,
-            tab: ref(
-                store.esTecnicoLider
-                    ? 'asignadas'
-                    : store.esCoordinador
-                        ? 'pendientes'
-                        : ''
-            ),
-            filtrosTareas,
-            filtroTarea,
-            modales,
-            verSubtarea,
-            fecha,
-            subtareasPorAsignar,
-        }
-    },
+    return {
+      tablero,
+      store,
+      usuarios,
+      /* tab: ref(
+          store.esTecnicoLider
+              ? 'asignadas'
+              : store.esCoordinador
+                  ? 'pendientes'
+                  : ''
+      ), */
+      filtrosTareas,
+      filtroTarea,
+      modales,
+      verSubtarea,
+      fecha,
+      subtareasPorAsignar,
+    }
+  },
 })

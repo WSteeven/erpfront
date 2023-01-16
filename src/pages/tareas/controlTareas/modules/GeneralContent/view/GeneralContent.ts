@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
-import { acciones, rolesAdmitidos, destinosTareas } from 'config/utils'
+import { acciones, rolesSistema, destinosTareas } from 'config/utils'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
@@ -48,11 +48,11 @@ export default defineComponent({
         proyectos: new ProyectoController(),
         supervisores: {
           controller: new EmpleadoController(),
-          params: { rol: rolesAdmitidos.fiscalizador },
+          params: { rol: rolesSistema.fiscalizador },
         },
         coordinadores: {
           controller: new EmpleadoController(),
-          params: { rol: rolesAdmitidos.coordinador },
+          params: { rol: rolesSistema.coordinador },
         },
       })
 

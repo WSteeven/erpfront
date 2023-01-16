@@ -1,14 +1,10 @@
-import { defineStore } from 'pinia'
-import { MenuOption } from 'shared/menu/MenuOption'
-import { computed, Ref } from 'vue'
 import { useAuthenticationStore } from './authentication'
+import { MenuOption } from 'shared/menu/MenuOption'
+import { defineStore } from 'pinia'
+import { computed, Ref } from 'vue'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
-
-  function checkRol(rol) {
-    return rol == 'ADMINISTRATIVO'
-  }
 
   // State
   const links: Ref<MenuOption[]> = computed(() => [
@@ -191,20 +187,20 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v == 'BODEGA')),
+          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
           icon: 'bi-circle',
         },
         {
-          title: (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1)).length > 0 ? 'Egreso de materiales' : 'Pedidos a bodega',
+          title: store.esBodeguero ? 'Egreso de materiales' : 'Pedidos a bodega',
           link: 'transacciones-egresos',
           // can: store.can('puede.ver.transacciones_egresos'),
-          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v == 'BODEGA')),
+          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
           icon: 'bi-circle',
         },
         {
           title: 'Transferencias',
           link: 'transferencias',
-          can: store.can('puede.ver.transacciones_ingresos') && (store.user.rol.filter((v) => v == 'BODEGA')),
+          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
           icon: 'bi-circle',
         },
         {

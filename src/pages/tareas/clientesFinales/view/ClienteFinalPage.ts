@@ -2,7 +2,7 @@
 import { configuracionColumnasClienteFinal } from '../domain/configuracionColumnasClienteFinal'
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from '@vuelidate/validators'
-import { rolesAdmitidos } from 'config/utils'
+import { rolesSistema } from 'config/utils'
 import { computed, defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'

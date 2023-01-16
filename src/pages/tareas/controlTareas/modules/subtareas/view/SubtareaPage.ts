@@ -11,7 +11,7 @@ import {
   regiones,
   atenciones,
   estadosSubtareas,
-  rolesAdmitidos,
+  rolesSistema,
   acciones,
   opcionesModoAsignacionTrabajo,
   tiposIntervenciones,
@@ -122,11 +122,11 @@ export default defineComponent({
     ]
 
     function esLider(entidad) {
-      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesAdmitidos.tecnico_lider)
+      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_lider)
     }
 
     function esSecretario(entidad) {
-      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesAdmitidos.tecnico_secretario)
+      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_secretario)
     }
 
     const eliminarTecnico: CustomActionTable = {
@@ -193,12 +193,12 @@ export default defineComponent({
 
             // Quitar rol tabla Jefe cuadrilla
             const roles = stringToArray(empleadoSeleccionadoAsignacionQuitar.value.roles)
-            empleadoSeleccionadoAsignacionQuitar.value.roles = quitarItemDeArray(roles, rolesAdmitidos.tecnico_lider).join(',')
+            empleadoSeleccionadoAsignacionQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.tecnico_lider).join(',')
 
             // Designar rol tabla Secretario cuadrilla
             const posicion: any = tecnicosGrupoPrincipal.value.findIndex((empleado: Empleado) => empleado.id === id)
             const entidad: Empleado = tecnicosGrupoPrincipal.value[posicion]
-            entidad.roles = entidad.roles + ', ' + rolesAdmitidos.tecnico_lider
+            entidad.roles = entidad.roles + ', ' + rolesSistema.tecnico_lider
             tecnicosGrupoPrincipal.value.splice(posicion, 1, entidad)
 
             notificaciones.notificarCorrecto('Asignado como jefe de cuadrilla')
@@ -211,12 +211,12 @@ export default defineComponent({
 
             // Quitar rol secretario cuadrilla
             const roles = stringToArray(empleadoSeleccionadoAsignacionQuitar.value.roles)
-            empleadoSeleccionadoAsignacionQuitar.value.roles = quitarItemDeArray(roles, rolesAdmitidos.tecnico_secretario).join(',')
+            empleadoSeleccionadoAsignacionQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.tecnico_secretario).join(',')
 
             // Designar rol tabla Secretario cuadrilla
             const posicion: any = tecnicosGrupoPrincipal.value.findIndex((empleado: Empleado) => empleado.id === id)
             const entidad: Empleado = tecnicosGrupoPrincipal.value[posicion]
-            entidad.roles = entidad.roles + ', ' + rolesAdmitidos.tecnico_secretario
+            entidad.roles = entidad.roles + ', ' + rolesSistema.tecnico_secretario
             tecnicosGrupoPrincipal.value.splice(posicion, 1, entidad)
 
             notificaciones.notificarCorrecto('Asignado como secretario de cuadrilla')
@@ -378,7 +378,7 @@ export default defineComponent({
         tecnico.hydrate(empleado)
 
         const roles = stringToArray(tecnico.roles ?? '')
-        tecnico.roles = quitarItemDeArray(roles, rolesAdmitidos.empleado).join(',')
+        tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
 
         return tecnico
       })

@@ -20,8 +20,8 @@ export default defineComponent({
   },
   setup() {
     const loginUser = reactive(new UserLogin())
-    loginUser.name = 'MJARAMILLO'
-    loginUser.password = 'password'
+    // loginUser.name = 'MJARAMILLO'
+    // loginUser.password = 'password'
 
     const loginController = new LoginController()
 

@@ -2,7 +2,7 @@
 import { configuracionColumnasArchivoSubtarea } from 'controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/domain/configuracionColumnasArchivoSubtarea'
 import { configuracionColumnasTecnico } from 'tareas/controlTareas/modules/subtareas/domain/configuracionColumnasTecnico'
 import { descargarArchivoUrl, quitarItemDeArray, stringToArray } from 'shared/utils'
-import { tiposTareasTelconet, accionesTabla, rolesAdmitidos } from 'config/utils'
+import { tiposTareasTelconet, accionesTabla, rolesSistema } from 'config/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { computed, defineComponent, reactive, ref } from "vue"
 import { useTareaStore } from "stores/tarea"
@@ -90,7 +90,7 @@ export default defineComponent({
                 tecnico.hydrate(empleado)
 
                 const roles = stringToArray(tecnico.roles ?? '')
-                tecnico.roles = quitarItemDeArray(roles, rolesAdmitidos.empleado).join(',')
+                tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
 
                 return tecnico
             })
