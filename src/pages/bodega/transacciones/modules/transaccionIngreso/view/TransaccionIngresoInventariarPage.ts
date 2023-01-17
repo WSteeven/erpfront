@@ -1,7 +1,5 @@
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
-import { required, requiredIf } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 // import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
@@ -23,7 +21,6 @@ import { useQuasar } from 'quasar'
 
 //Controladores para los listados
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useNotificaciones } from 'shared/notificaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
@@ -37,10 +34,9 @@ export default defineComponent({
     setup() {
 
         const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
-        const { entidad: transaccion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+        const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, setValidador } = mixin.useComportamiento()
         const { onConsultado, onReestablecer } = mixin.useHooks()
-        const { confirmar, prompt } = useNotificaciones()
 
         //stores
         useNotificacionStore().setQuasar(useQuasar())
@@ -69,7 +65,6 @@ export default defineComponent({
 
         //flags
         let soloLectura = ref(false)
-        let estaInventariando = ref(true)
         let esVisibleComprobante = ref(false)
         let esVisibleTarea = ref(false)
 
@@ -85,14 +80,12 @@ export default defineComponent({
         const botonInventario: CustomActionTable = {
             titulo: 'Inventariar',
             accion: async ({ entidad, posicion }) => {
-                // console.log('boton inventariar')
-                // console.log('accion', accion)
-                // console.log('acciones', acciones)
+                console.log(entidad)
                 console.log(entidad.cantidad, entidad.devuelto)
                 await detalleStore.cargarDetalle(entidad.detalle_id)
                 detalleProductoTransaccionStore.cantidadAnterior = entidad.devuelto
                 detalleStore.cantidad = entidad.cantidad
-                await detalleProductoTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.id)
+                await detalleProductoTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, entidad.detalle_id)
                 detalleProductoTransaccionStore.posicion = posicion
                 // modales.abrirModalEntidad('InventarioPage')
                 modales.abrirModalEntidad('InventariarPage')

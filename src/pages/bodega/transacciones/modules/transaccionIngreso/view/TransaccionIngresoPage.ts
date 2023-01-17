@@ -1,9 +1,11 @@
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
+import { configuracionColumnasDetallesProductosSeleccionables } from '../domain/configuracionColumnasDetallesSeleccionables'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
-import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+// import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
@@ -31,7 +33,6 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
-import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 import { motivos, tabOptionsTransaccionesIngresos } from 'config/utils'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
@@ -164,7 +165,7 @@ export default defineComponent({
             condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
         }
 
-        async function llenarTransaccion(id:number) {
+        async function llenarTransaccion(id: number) {
             limpiarTransaccion()
             await devolucionStore.cargarDevolucion(id)
             console.log(devolucionStore.devolucion)
@@ -224,29 +225,31 @@ export default defineComponent({
         }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Editar cantidad',
-            accion: ({ posicion }) => {
-                const config: CustomActionPrompt={
-                    titulo:'Confirmación',
-                    mensaje:'Ingresa la cantidad',
+            accion: ({ entidad, posicion }) => {
+                console.log(entidad)
+                const config: CustomActionPrompt = {
+                    titulo: 'Confirmación',
+                    mensaje: 'Ingresa la cantidad',
                     defecto: transaccion.listadoProductosTransaccion[posicion].cantidad,
-                    tipo:'number',
+                    tipo: 'number',
+                    validacion: (val) => val > 0,
                     accion: (data) => {
                         transaccion.listadoProductosTransaccion[posicion].cantidad = data
                     },
                 }
                 prompt(config)
             },
-            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar ||!estaInventariando.value
+            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar || !estaInventariando.value
         }
-        
-        const botonEditarInventario: CustomActionTable={
-            titulo:'Ingresar',
-            accion:({entidad, posicion})=>{
+
+        const botonEditarInventario: CustomActionTable = {
+            titulo: 'Ingresar',
+            accion: ({ entidad, posicion }) => {
                 // console.log('Presionaste el boton de inventariar')
                 transaccionStore.idTransaccion = entidad.id
                 modales.abrirModalEntidad('TransaccionIngresoInventariarPage')
             },
-            visible:()=>tabSeleccionado.value=='PENDIENTE'||tabSeleccionado.value=='PARCIAL'
+            visible: () => tabSeleccionado.value == 'PENDIENTE' || tabSeleccionado.value == 'PARCIAL'
         }
         /* const botonEditarInventario: CustomActionTable = {
             titulo: 'Despachar',
@@ -279,7 +282,7 @@ export default defineComponent({
             titulo: 'Imprimir',
             color: 'secondary',
             icono: 'bi-printer',
-            accion: async({ entidad }) => {
+            accion: async ({ entidad }) => {
                 transaccionStore.idTransaccion = entidad.id
                 await transaccionStore.showPreview()
                 // await transaccionStore.cargarTransaccion(entidad.id)
@@ -292,7 +295,7 @@ export default defineComponent({
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
 
-        function table(data, columns, encabezados){
+        function table(data, columns, encabezados) {
             return {
                 layout: 'listadoLayout',
                 table: {
@@ -302,7 +305,7 @@ export default defineComponent({
             }
         }
         const f = new Date()
-        function pdfMakeImprimir(){
+        function pdfMakeImprimir() {
             pdfMake.tableLayouts = {
                 listadoLayout: {
                     hLineWidth: function (i, node) {
@@ -553,6 +556,13 @@ export default defineComponent({
         }
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
+            name: 'condiciones',
+            field: 'condiciones',
+            label: 'Estado del producto',
+            align: 'left',
+            sortable: false,
+        },
+        {
             name: 'cantidad',
             field: 'cantidad',
             label: 'Cantidad',
@@ -625,7 +635,7 @@ export default defineComponent({
 
             // tabla,
             configuracionColumnasProductosSeleccionadosAccion,
-            configuracionColumnasDetallesProductos,
+            configuracionColumnasDetallesProductosSeleccionables,
             configuracionColumnasProductosSeleccionados,
             botonInventario,
             botonEliminar,
@@ -681,7 +691,7 @@ export default defineComponent({
 
             tabEs(val) {
                 tabSeleccionado.value = val
-                puedeEditar.value = (store.esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (store.esBodeguero && tabSeleccionado.value === 'PARCIAL')
+                puedeEditar.value = (store.esBodeguero && tabSeleccionado.value === 'PENDIENTE')
                     ? true
                     : store.esCoordinador && tabSeleccionado.value === 'ESPERA'
                         ? true

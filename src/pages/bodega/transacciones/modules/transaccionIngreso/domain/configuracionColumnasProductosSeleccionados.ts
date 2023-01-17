@@ -22,7 +22,18 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     align: 'left',
     sortable: true,
   },
-  {
+  /* {
+    name: 'condicion',
+    field: 'condicion',
+    label: 'Estado',
+    align: 'left',
+    sortable: false,
+    editable:true,
+    /* options:[{value:1, label:'opcion1'},
+    {value:2, label:'opcion2'}
+  ] 
+  }, */
+  /* {
     name: 'cantidad',
     field: 'cantidad',
     label: 'Cantidades',
@@ -35,6 +46,6 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Acciones',
     align: 'right',
     sortable: false,
-  }
+  } */
 ]
 
