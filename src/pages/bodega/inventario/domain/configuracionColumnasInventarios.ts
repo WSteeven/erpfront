@@ -38,13 +38,6 @@ export const configuracionColumnasInventarios: ColumnConfig<Inventario>[]=[
         sortable: true
     },
     {
-        name: 'prestados',
-        field: 'prestados',
-        label: 'Prestados',
-        align: 'left',
-        sortable: true
-    },
-    {
         name: 'condicion',
         field: 'condicion',
         label: 'Condicion',

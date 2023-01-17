@@ -51,7 +51,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Transferencia, new TransferenciaController())
         const { entidad: transferencia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const {onReestablecer, onConsultado}=mixin.useHooks()
+        const { onReestablecer, onConsultado } = mixin.useHooks()
         const { confirmar, prompt } = useNotificaciones()
         //stores
         const store = useAuthenticationStore()
@@ -78,16 +78,6 @@ export default defineComponent({
         let puedeEditar = ref(false)
         let soloLectura = ref(false)
         let esVisibleAutorizacion = ref(false)
-
-        //HOOKS
-        onReestablecer(()=>{
-            soloLectura.value = false
-        })
-        onConsultado(()=>{
-            if(usuarioLogueado.id===transferencia.per_autoriza){
-                soloLectura.value=true
-            }
-        })
 
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
@@ -131,6 +121,22 @@ export default defineComponent({
             })
         })
 
+
+        //HOOKS
+        onReestablecer(() => {
+            soloLectura.value = false
+        })
+        onConsultado(() => {
+            if (usuarioLogueado.id === transferencia.per_autoriza) {
+                soloLectura.value = true
+            }
+
+            if (transferencia.solicitante) {
+                const opcion_encontrada = listadosAuxiliares.empleados.filter((v) => v.id === transferencia.solicitante)
+                if (opcion_encontrada[0]['id']) transferencia.solicitante = opcion_encontrada[0]['id']
+            }
+        })
+
         //Reglas de validacion
         const reglas = {
             justificacion: { required },
@@ -165,7 +171,7 @@ export default defineComponent({
                 eliminar({ entidad, posicion })
             },
             visible: () => {
-                return accion.value == acciones.nuevo ||(esActivos &&accion.value==acciones.editar)? true : false
+                return accion.value == acciones.nuevo || (esActivos && accion.value == acciones.editar) ? true : false
             }
         }
         const botonEditarCantidad: CustomActionTable = {
@@ -182,7 +188,7 @@ export default defineComponent({
                 prompt(config)
             },
             visible: () => {
-                return accion.value == acciones.nuevo ||esActivos? true : false
+                return accion.value == acciones.nuevo || esActivos ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
@@ -392,7 +398,7 @@ export default defineComponent({
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
                     */
                     table(transferencia.listadoProductos,
-                        ['producto', 'detalle_id', 'condicion', 'cantidades' ],
+                        ['producto', 'detalle_id', 'condicion', 'cantidades'],
                         ['Producto', 'Descripción', 'Estado', 'Cantidad']),
 
                     { text: '\n\n' },
@@ -499,6 +505,7 @@ export default defineComponent({
         ]
 
         //configurar los listados
+        opciones_empleados.value = listadosAuxiliares.empleados
         opciones_clientes.value = listadosAuxiliares.clientes
         opciones_estados.value = listadosAuxiliares.estados
         opciones_sucursales.value = listadosAuxiliares.sucursales
@@ -549,7 +556,7 @@ export default defineComponent({
             tabOptionsTransferencias,
             puedeEditar,
             tab: tabSeleccionado,
-
+            
             tabEs(val) {
                 tabSeleccionado.value = val
                 puedeEditar.value = (esActivos && tabSeleccionado.value === 'PENDIENTE')

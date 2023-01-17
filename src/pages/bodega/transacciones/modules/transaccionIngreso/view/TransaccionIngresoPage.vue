@@ -479,13 +479,15 @@
               "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
-              :permitirEditar="false"
+              :permitirEditar="true"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               :accion3="botonInventario"
               @eliminar="eliminarItem"
+              :permitirEditarModal="true"
+              :modalMaximized="false"
             ></essential-table>
           </div>
         </div>
@@ -493,7 +495,7 @@
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
-        :configuracion-columnas="configuracionColumnasDetallesProductos"
+        :configuracion-columnas="configuracionColumnasDetallesProductosSeleccionables"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
