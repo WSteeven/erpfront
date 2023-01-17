@@ -1,4 +1,4 @@
-type tipos = 'text' | 'number' | 'textarea'
+type tipos = 'text' | 'number' | 'textarea' | 'select'
 
 export interface ColumnConfig<T> {
   name: keyof T
@@ -11,4 +11,5 @@ export interface ColumnConfig<T> {
   style?: string
   input_type?: tipos
   editable?: boolean
+  options?: any[]
 }

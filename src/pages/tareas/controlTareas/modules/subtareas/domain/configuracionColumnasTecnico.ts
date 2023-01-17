@@ -38,7 +38,6 @@ export const configuracionColumnasTecnico: ColumnConfig<Empleado>[] = [
     align: 'left',
     sortable: true,
     visible: false,
-    editable: false,
   },
   {
     name: 'disponible',
@@ -46,7 +45,17 @@ export const configuracionColumnasTecnico: ColumnConfig<Empleado>[] = [
     label: 'Disponible',
     align: 'left',
     sortable: true,
-    editable: false,
+    /* input_type: 'select',
+    options: [
+      {
+        label: 'AMARRAS',
+        value: '1'
+      },
+      {
+        label: 'PREFORMADOS',
+        value: '2'
+      },
+    ] */
   },
   {
     name: 'roles',

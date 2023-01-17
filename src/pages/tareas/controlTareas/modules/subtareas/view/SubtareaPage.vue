@@ -414,6 +414,7 @@
             <q-input
               v-model="subtarea.fecha_ventana"
               placeholder="Obligatorio"
+              :disable="disable"
               outlined
               dense
             >

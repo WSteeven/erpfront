@@ -40,8 +40,8 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'fecha_hora_finalizacion',
-    field: 'fecha_hora_finalizacion',
+    name: 'fecha_hora_realizado',
+    field: 'fecha_hora_realizado',
     label: 'Fecha hora finalización',
     align: 'left',
   },

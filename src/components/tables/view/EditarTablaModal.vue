@@ -25,6 +25,7 @@
 
       <q-card-section>
         <div class="row q-col-gutter-xs q-mb-md">
+          <!-- Inputs normales -->
           <div
             v-for="field in fields"
             :key="field.field"
@@ -33,11 +34,42 @@
             <label class="block q-mb-sm">{{ field.label }}</label>
             <q-input
               v-model="field.valor"
-              :type="field.input_type"
+              :type="field.input_type !== 'select' ? field.input_type : 'text'"
               :autogrow="field.input_type !== 'number'"
               outlined
               dense
             ></q-input>
+          </div>
+          <!-- Selects -->
+          <div
+            v-for="field in fieldsSelect"
+            :key="field.field"
+            class="col-12 col-md-3 q-mb-sm"
+          >
+            <label class="block q-mb-sm">{{ field.label }}</label>
+            <q-select
+              v-model="field.valor"
+              :options="field.options"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.label"
+              :option-value="(item) => item.value"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
         </div>
 
@@ -80,6 +112,7 @@ const props = defineProps({
 
 const emit = defineEmits(['limpiar', 'guardar'])
 
+// normal
 const fields = computed(
   () =>
     props.configuracionColumnas
@@ -92,7 +125,28 @@ const fields = computed(
           valor: props.fila ? props.fila[fila.field] : '',
         })
       })
-      .filter((fila) => fila.field !== 'acciones') // && fila.editable)
+      .filter(
+        (fila) => fila.field !== 'acciones' && fila.input_type !== 'select'
+      ) // && fila.editable)
+)
+
+// normal
+const fieldsSelect = computed(
+  () =>
+    props.configuracionColumnas
+      .map((fila: ColumnConfig<any>) => {
+        return reactive({
+          label: fila.label,
+          field: fila.field,
+          input_type: fila.input_type ?? 'text',
+          // editable: fila.editable ?? true,
+          valor: props.fila ? props.fila[fila.field] : '',
+          options: fila.options,
+        })
+      })
+      .filter(
+        (fila) => fila.field !== 'acciones' && fila.input_type === 'select'
+      ) // && fila.editable)
 )
 
 /* const fields = ref()
