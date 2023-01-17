@@ -5,7 +5,7 @@ export const configuracionColumnasTiposTareas: ColumnConfig<TipoTrabajo>[] = [
   {
     name: 'cliente',
     field: 'cliente',
-    label: 'Cliente',
+    label: 'Cliente corporativo',
     align: 'left',
     sortable: true,
   },

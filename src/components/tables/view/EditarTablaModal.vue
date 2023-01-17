@@ -1,5 +1,10 @@
 <template>
-  <q-dialog v-model="abiertoC" :maximized="true" :full-width="false" top>
+  <q-dialog
+    v-model="abierto"
+    :maximized="modalMaximized"
+    :full-width="true"
+    top
+  >
     <q-card>
       <q-toolbar>
         <q-avatar square>
@@ -23,7 +28,7 @@
           <div
             v-for="field in fields"
             :key="field.field"
-            class="col-12 col-md-3"
+            class="col-12 col-md-3 q-mb-sm"
           >
             <label class="block q-mb-sm">{{ field.label }}</label>
             <q-input
@@ -67,23 +72,27 @@ const props = defineProps({
     type: Object as () => EntidadAuditable,
     required: false,
   },
-  abierto: Boolean,
+  modalMaximized: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmits(['limpiar', 'guardar'])
 
-const fields = computed(() =>
-  props.configuracionColumnas
-    .map((fila: ColumnConfig<any>) => {
-      return reactive({
-        label: fila.label,
-        field: fila.field,
-        input_type: fila.input_type ?? 'text',
-        editable: fila.editable ?? true,
-        valor: props.fila ? props.fila[fila.field] : '',
+const fields = computed(
+  () =>
+    props.configuracionColumnas
+      .map((fila: ColumnConfig<any>) => {
+        return reactive({
+          label: fila.label,
+          field: fila.field,
+          input_type: fila.input_type ?? 'text',
+          // editable: fila.editable ?? true,
+          valor: props.fila ? props.fila[fila.field] : '',
+        })
       })
-    })
-    .filter((fila) => fila.field !== 'acciones' && fila.editable)
+      .filter((fila) => fila.field !== 'acciones') // && fila.editable)
 )
 
 /* const fields = ref()
@@ -103,7 +112,8 @@ watch(props.fila, () => {
 
 // const abierto = computed(() => !!props.fila)
 // const abierto = ref(false)
-const abiertoC = computed(() => props.abierto)
+// const abiertoC = computed(() => props.abierto)
+const abierto = computed(() => !!props.fila)
 
 function guardar() {
   var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))

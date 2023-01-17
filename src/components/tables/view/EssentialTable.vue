@@ -4,7 +4,7 @@
     :fila="fila"
     @limpiar="limpiarFila"
     @guardar="guardarFila"
-    :abierto="abierto"
+    :modalMaximized="modalMaximized"
   ></EditarTablaModal>
 
   <q-table
@@ -32,9 +32,15 @@
     :virtual-scroll-item-size="offset"
     @virtual-scroll="onScroll"
     :pagination="pagination"
+    no-data-label="Aún no se han agregado elementos"
   >
-    <!-- :pagination="{ rowsPerPage: 0 }"
-    :rows-per-page-options="[0]" -->
+    <template v-slot:no-data="{ message }">
+      <div class="full-width row flex-center text-grey-8 q-gutter-sm">
+        <q-icon size="2em" name="bi-exclamation-triangle-fill" />
+        <span> {{ message }} </span>
+      </div>
+    </template>
+
     <template #pagination="scope">
       <botones-paginacion :scope="scope"> </botones-paginacion>
     </template>

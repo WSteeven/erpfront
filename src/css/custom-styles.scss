@@ -124,6 +124,10 @@ body {
   }
 }
 
+.q-virtual-scroll__content {
+  text-transform: uppercase;
+}
+
 // Fondos
 .fondo-gradiente {
   background: #4e54c8; /* fallback for old browsers */

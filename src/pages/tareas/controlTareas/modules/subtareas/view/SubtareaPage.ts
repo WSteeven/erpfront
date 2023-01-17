@@ -135,17 +135,19 @@ export default defineComponent({
       color: 'negative',
       visible: () => [acciones.editar, acciones.nuevo].includes(accion) && !(asignarJefe.value || asignarSecretario.value),
       accion: ({ entidad, posicion }) => {
-        if (esLider(entidad)) {
-          asignarJefe.value = true
-          asignarSecretario.value = false
-          empleadoSeleccionadoAsignacionQuitar.value = entidad
-          return notificaciones.notificarAdvertencia('Debes asignar a un reemplazo para el jefe de cuadrilla seleccionado!')
-        }
-        if (esSecretario(entidad)) {
-          asignarJefe.value = false
-          asignarSecretario.value = true
-          empleadoSeleccionadoAsignacionQuitar.value = entidad
-          return notificaciones.notificarAdvertencia('Debes asignar a un reemplazo para el secretario de cuadrilla seleccionado')
+        if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+          if (esLider(entidad)) {
+            asignarJefe.value = true
+            asignarSecretario.value = false
+            empleadoSeleccionadoAsignacionQuitar.value = entidad
+            return notificaciones.notificarAdvertencia('Debes asignar a un reemplazo para el jefe de cuadrilla seleccionado!')
+          }
+          if (esSecretario(entidad)) {
+            asignarJefe.value = false
+            asignarSecretario.value = true
+            empleadoSeleccionadoAsignacionQuitar.value = entidad
+            return notificaciones.notificarAdvertencia('Debes asignar a un reemplazo para el secretario de cuadrilla seleccionado')
+          }
         }
 
         tecnicosGrupoPrincipal.value.splice(posicion, 1)
@@ -313,13 +315,17 @@ export default defineComponent({
     } = useOrquestadorSelectorTecnicos(tecnicosGrupoPrincipal, 'empleados')
 
     onBeforeGuardar(() => {
-      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
       subtarea.tarea_id = tareaStore.tarea.id
+
+      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
+        subtarea.empleado = tecnicosGrupoPrincipal.value[0].id
+      }
+
+      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
     })
 
     onBeforeModificar(() => {
       subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
-
     })
 
     onConsultado(() => {
@@ -404,6 +410,14 @@ export default defineComponent({
       }
     }
 
+    function listarEmpleados() {
+      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador && tecnicosGrupoPrincipal.value.length > 0) {
+        return notificaciones.notificarAdvertencia('Sólo puede designar a un empleado.')
+      }
+
+      listarTecnicos()
+    }
+
     return {
       // Referencias
       refEmpleadosAsignados,
@@ -444,7 +458,7 @@ export default defineComponent({
       refListadoSeleccionableTecnicos,
       criterioBusquedaTecnico,
       listadoTecnicos,
-      listarTecnicos,
+      listarEmpleados,
       limpiarTecnico,
       seleccionarTecnico,
       // ---
@@ -454,6 +468,7 @@ export default defineComponent({
       cancelarDesignacion,
       entidadSeleccionada,
       verificarEsVentana,
+      Empleado,
     }
   },
 })

@@ -127,13 +127,18 @@ export default defineComponent({
     permitirEditarModal: {
       type: Boolean,
       default: false,
-    }
+    },
+    modalMaximized: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'selected', 'onScroll'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
-    const fila = props.entidad ? ref(new props.entidad()) : null
+    const fila = ref() //props.entidad ? ref(new props.entidad()) : null
+    const filaEditada = ref()
     const listado = ref()
 
     watchEffect(() => listado.value = props.datos)
@@ -145,12 +150,16 @@ export default defineComponent({
 
       emit('editar', data)
 
-      if (props.permitirEditarModal && props.entidad) {
+      /* if (props.permitirEditarModal && props.entidad) {
         fila.value = reactive(new props.entidad())
         fila.value.hydrate(entidad)
         posicionFila.value = posicion
         abrirModal()
         // console.log('..abriendo modal')
+      } */
+      if (props.permitirEditarModal) {
+        fila.value = data.entidad
+        filaEditada.value = data.posicion
       }
     }
     const eliminar = (data: object) => emit('eliminar', data)
@@ -227,15 +236,14 @@ export default defineComponent({
     }
 
     function limpiarFila() {
-      if (props.entidad) fila.value.hydrate(new props.entidad())
+      fila.value = null
     }
 
     const posicionFila = ref()
 
     function guardarFila(data) {
-      fila.value.hydrate(data)
-      listado.value.splice(posicionFila.value, 1, fila.value)
-      cerrarModa()
+      listado.value.splice(filaEditada.value, 1, data)
+      limpiarFila()
     }
 
     const rows = computed(() => listado.value?.length - 1 ?? 0)
@@ -255,16 +263,6 @@ export default defineComponent({
       }
     }
 
-    const abierto = ref(false)
-
-    function abrirModal() {
-      abierto.value = true
-    }
-
-    function cerrarModa() {
-      abierto.value = false
-    }
-
     function extraerVisible(accion: CustomActionTable, propsTable: any): boolean {
       if (accion && accion.visible && accion.hasOwnProperty('visible')) {
         return accion.visible({
@@ -281,8 +279,7 @@ export default defineComponent({
         ? accion.icono({
           entidad: propsTable.row,
           posicion: propsTable.rowIndex,
-        })
-        : accion?.icono
+        }) : accion?.icono
     }
 
     const pagination = ref({
@@ -290,7 +287,6 @@ export default defineComponent({
       descending: false,
       page: 1,
       rowsPerPage: 12,
-      // rowsNumber: xx if getting data from a server
     })
 
     const pagesNumber = computed(() => {
@@ -299,7 +295,6 @@ export default defineComponent({
 
 
     return {
-      abierto,
       grid,
       inFullscreen,
       editar,
@@ -325,7 +320,6 @@ export default defineComponent({
       onScroll,
       loading,
       offset,
-      abrirModal,
       extraerVisible,
       extraerIcono,
       pagesNumber,

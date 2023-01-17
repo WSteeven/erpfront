@@ -5,6 +5,7 @@ export class Subtarea extends EntidadAuditable {
   codigo_subtarea: string | null
   detalle: string | null
   grupo: number | null
+  empleado: number | null
   tecnico_responsable: string | null
   tipo_trabajo: number | null
 
@@ -54,6 +55,7 @@ export class Subtarea extends EntidadAuditable {
     this.codigo_subtarea = null
     this.detalle = null
     this.grupo = null
+    this.empleado = null
     this.tecnico_responsable = null
     this.tipo_trabajo = null
     this.estado = null

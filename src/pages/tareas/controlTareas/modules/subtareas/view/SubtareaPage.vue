@@ -411,7 +411,12 @@
 
           <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de ventana</label>
-            <q-input v-model="subtarea.fecha_ventana" outlined dense>
+            <q-input
+              v-model="subtarea.fecha_ventana"
+              placeholder="Obligatorio"
+              outlined
+              dense
+            >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -445,6 +450,7 @@
             <q-input
               v-model="subtarea.hora_inicio_ventana"
               :disable="disable"
+              placeholder="Obligatorio"
               mask="time"
               outlined
               dense
@@ -482,6 +488,7 @@
             <q-input
               v-model="subtarea.hora_fin_ventana"
               :disable="disable"
+              placeholder="Opcional"
               mask="time"
               outlined
               dense
@@ -572,12 +579,12 @@
                 <label class="q-mb-sm block">Agregar más empleados</label>
                 <q-input
                   v-model="busqueda"
-                  placeholder="Ingrese Nombres o Apellidos o Identificación"
-                  hint="Ingrese los datos del técnico y presione Enter"
+                  placeholder="Ingrese Nombres o Apellidos o Identificación del empleado"
+                  hint="Ingrese los datos del empleado y presione Enter para buscar"
                   @update:model-value="
                     (v) => (criterioBusquedaTecnico = v.toUpperCase())
                   "
-                  @keydown.enter="listarTecnicos()"
+                  @keydown.enter="listarEmpleados()"
                   @blur="
                     criterioBusquedaTecnico === '' ? limpiarTecnico() : null
                   "
@@ -596,7 +603,7 @@
                   :disable="disable"
                   no-caps
                   push
-                  @click="listarTecnicos()"
+                  @click="listarEmpleados()"
                 >
                   <q-icon name="bi-search" class="q-pr-sm" size="xs"></q-icon>
                   <div>Buscar</div>
@@ -607,7 +614,7 @@
             <!--            v-if="tecnicosGrupoPrincipal.length" -->
             <essential-table
               ref="refEmpleadosAsignados"
-              titulo="Listado de empleados asignados"
+              titulo="Listado de empleados que ejecutarán el trabajo"
               :configuracionColumnas="columnas"
               :datos="tecnicosGrupoPrincipal"
               :accion1Header="asignarNuevoTecnicoLider"
@@ -619,12 +626,16 @@
               :permitirEliminar="false"
               :alto-fijo="false"
               :mostrar-header="true"
-              :mostrar-footer="false"
               :tipo-seleccion="tipoSeleccion"
               :accion1="eliminarTecnico"
               @selected="entidadSeleccionada"
             >
             </essential-table>
+            <!--
+              :permitirEditarModal="true"
+              :modalMaximized="false"
+              :entidad="Empleado"
+            -->
           </div>
         </div>
       </q-expansion-item>

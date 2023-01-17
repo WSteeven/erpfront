@@ -38,6 +38,10 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('cancelar', subtareaId, { motivo: mensaje })
   }
 
+  async reagendar(subtareaId: number, nuevaFecha: string) {
+    return this.solicitud('reagendar', subtareaId, { nueva_fecha: nuevaFecha })
+  }
+
   async solicitud(accion, tarea, data?) {
     try {
       const ruta =

@@ -264,6 +264,7 @@ export const estadosSubtareas = {
   SUSPENDIDO: 'SUSPENDIDO',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
+  REAGENDADO: 'REAGENDADO',
 }
 
 export const rolesSistema = {

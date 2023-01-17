@@ -38,8 +38,8 @@
           </div>
 
           <!-- Grupo -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Grupo asignado</label>
+          <div v-if="subtarea.grupo" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Grupo técnico asignado</label>
             <q-select
               v-model="subtarea.grupo"
               :options="grupos"
@@ -134,14 +134,13 @@
 
           <div class="col-12">
             <essential-table
-              titulo="Técnicos asignados"
+              titulo="Listado de empleados que ejecutarán el trabajo"
               :configuracionColumnas="configuracionColumnasTecnico"
               :datos="subtarea.tecnicos_grupo_principal"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
               :alto-fijo="false"
-              :mostrar-header="false"
               :mostrar-footer="false"
             >
             </essential-table>

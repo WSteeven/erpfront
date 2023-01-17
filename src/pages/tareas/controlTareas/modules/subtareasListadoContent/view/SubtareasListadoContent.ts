@@ -145,9 +145,19 @@ export default defineComponent({
       icono: 'bi-calendar-check',
       visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO,
       accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
-        new CambiarEstadoSubtarea().realizar(entidad.id)
-        entidad.estado = estadosSubtareas.REALIZADO
-        actualizarElemento(posicion, entidad)
+        const config: CustomActionPrompt = {
+          mensaje: 'Ingrese la nueva fecha',
+          tipo: 'date',
+          accion: async (data) => {
+            const { result } = await new CambiarEstadoSubtarea().reagendar(entidad.id, data)
+            entidad.estado = estadosSubtareas.CREADO
+            entidad.fecha_hora_creacion = result.fecha_hora_creacion
+            notificarCorrecto('Trabajo reagendado exitosamente!')
+            actualizarElemento(posicion, entidad)
+          }
+        }
+
+        prompt(config)
       }),
     }
 

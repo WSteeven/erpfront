@@ -33,7 +33,6 @@ export default defineComponent({
       new TipoTrabajoController()
     )
     const { entidad: tipoTarea, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { onBeforeGuardar, onConsultado, onBeforeModificar } = mixin.useHooks()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
 
@@ -154,23 +153,6 @@ export default defineComponent({
         tipoTarea.campos_adicionales = [...tipoTarea.campos_adicionales]
       }
     }
-
-    /* onBeforeGuardar(() => {
-      tipoTarea.imagenes_adicionales = JSON.stringify(tipoTarea.imagenes_adicionales)
-      tipoTarea.campos_adicionales = JSON.stringify(tipoTarea.campos_adicionales)
-    })
-
-    onBeforeModificar(() => {
-      tipoTarea.imagenes_adicionales = JSON.stringify(tipoTarea.imagenes_adicionales)
-      tipoTarea.campos_adicionales = JSON.stringify(tipoTarea.campos_adicionales)
-    })
-
-    onConsultado(() => {
-      tipoTarea.imagenes_adicionales = tipoTarea.imagenes_adicionales ? JSON.parse(tipoTarea.imagenes_adicionales) : []
-      tipoTarea.campos_adicionales = tipoTarea.campos_adicionales ? JSON.parse(tipoTarea.campos_adicionales) : []
-      tipoTarea.requiere_imagenes = !!tipoTarea.imagenes_adicionales.length
-      tipoTarea.requiere_campos_adicionales = !!tipoTarea.campos_adicionales.length
-    }) */
 
 
     return {
