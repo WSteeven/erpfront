@@ -45,6 +45,7 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { SubtareaController } from '../infraestructure/SubtareaController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Subtarea } from '../domain/Subtarea'
+import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 
 export default defineComponent({
   props: {
@@ -255,7 +256,7 @@ export default defineComponent({
     }
 
     // Filtro tipos de trabajos
-    const tiposTrabajos = ref([])
+    const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
     function filtrarTiposTrabajos(val, update) {
       if (val === '') {
         update(() => {
@@ -418,6 +419,23 @@ export default defineComponent({
       listarTecnicos()
     }
 
+    function verificarTipoTrabajo() {
+      console.log(subtarea.tipo_trabajo)
+      const index = tiposTrabajos.value.findIndex((tipo: TipoTrabajo) => tipo.id === subtarea.tipo_trabajo)
+      console.log(index)
+      return tiposTrabajos.value[index].nombre === 'EMERGENCIA'
+    }
+
+    const mostrarEmergencia = computed(() => {
+
+      /* if (subtarea.tipo_trabajo) {
+
+        return verificarTipoTrabajo()
+      } else {
+        return false
+      } */
+    })
+
     return {
       // Referencias
       refEmpleadosAsignados,
@@ -469,6 +487,8 @@ export default defineComponent({
       entidadSeleccionada,
       verificarEsVentana,
       Empleado,
+      mostrarEmergencia,
+      verificarTipoTrabajo,
     }
   },
 })

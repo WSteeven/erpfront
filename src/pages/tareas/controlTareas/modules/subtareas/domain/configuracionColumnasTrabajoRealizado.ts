@@ -15,17 +15,8 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizad
   {
     name: 'actividad',
     field: 'actividad',
-    label: 'Actividad realizada',
+    label: 'Acciones realizadas',
     align: 'left',
     input_type: 'text',
-    sortable: true,
-  },
-  {
-    name: 'observacion',
-    field: 'observacion',
-    label: 'Observaciones/Mejoras/Pendientes',
-    align: 'left',
-    input_type: 'text',
-    sortable: true,
   },
 ]

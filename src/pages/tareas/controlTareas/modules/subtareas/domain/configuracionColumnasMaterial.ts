@@ -1,14 +1,13 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import Material from './Material'
+import { MaterialOcupado } from 'pages/tareas/tendidos/controlTendidos/modules/registrosTendidos/domain/MaterialOcupado'
 
-export const configuracionColumnasMaterial: ColumnConfig<Material>[] = [
+export const configuracionColumnasMaterial: ColumnConfig<MaterialOcupado>[] = [
   {
-    name: 'producto',
-    field: 'producto',
-    label: 'Producto',
+    name: 'cantidad_utilizada',
+    field: 'cantidad_utilizada',
+    label: 'Cantidad utilizada',
     align: 'left',
-    sortable: true,
-    input_type: 'text'
+    input_type: 'number'
   },
   {
     name: 'medida',
@@ -19,11 +18,11 @@ export const configuracionColumnasMaterial: ColumnConfig<Material>[] = [
     input_type: 'text'
   },
   {
-    name: 'cantidad_usada',
-    field: 'cantidad_usada',
-    label: 'Cantidad usada',
+    name: 'detalle',
+    field: 'detalle',
+    label: 'Producto',
     align: 'left',
     sortable: true,
-    input_type: 'number'
+    input_type: 'text'
   },
 ]

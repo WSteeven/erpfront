@@ -84,7 +84,7 @@
         {{ titulo }}
       </div>
 
-      <div class="row full-width q-mb-md">
+      <div v-if="permitirBuscar" class="row full-width q-mb-md">
         <q-input
           v-model="filter"
           outlined

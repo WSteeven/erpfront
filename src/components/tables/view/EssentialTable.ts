@@ -132,6 +132,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    permitirBuscar: {
+      type: Boolean,
+      default: true,
+    }
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'selected', 'onScroll'],
   setup(props, { emit }) {

@@ -1,7 +1,7 @@
 <template>
   <!-- <q-page padding> -->
-  <div class="text-h6 q-my-md q-ml-md">Gestionar avances</div>
-  <q-stepper
+  <ControlAvanceContent></ControlAvanceContent>
+  <!--<q-stepper
     v-model="step"
     header-nav
     ref="stepper"
@@ -27,8 +27,9 @@
     >
       <pausas-realizadas-content></pausas-realizadas-content>
     </q-step>
+  </q-stepper> -->
 
-    <q-step
+  <!-- <q-step
       :name="3"
       title="3. Imágenes adicionales"
       icon="bi-list-check"
@@ -44,8 +45,7 @@
       :done="done4"
     >
       <informacion-adicional-content></informacion-adicional-content>
-    </q-step>
-  </q-stepper>
+    </q-step> -->
   <!-- <modales-entidad :comportamiento="modalesSubtarea" /> -->
   <!-- </q-page> -->
 </template>

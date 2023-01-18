@@ -5,6 +5,7 @@ export class MaterialOcupado extends EntidadAuditable {
   detalle: string | null
   stock_actual: number | null
   cantidad_utilizada: number | null
+  medida: string | null
 
   constructor() {
     super()
@@ -12,5 +13,6 @@ export class MaterialOcupado extends EntidadAuditable {
     this.detalle = null
     this.stock_actual = null
     this.cantidad_utilizada = null
+    this.medida = null
   }
 }

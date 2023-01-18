@@ -1,5 +1,5 @@
 // Dependencias
-import { computed, defineComponent, reactive } from "vue";
+import { computed, defineComponent, reactive, Ref, ref } from "vue";
 import { configuracionColumnasTrabajoRealizado } from '../../../../../domain/configuracionColumnasTrabajoRealizado'
 import { configuracionColumnasObservacion } from '../../../../../domain/configuracionColumnasObservacion'
 import { configuracionColumnasMaterial } from '../../../../../domain/configuracionColumnasMaterial'
@@ -15,6 +15,11 @@ import TrabajoRealizado from '../../../../../domain/TrabajoRealizado'
 import { ControlAvance } from "../domain/ControlAvance";
 import Observacion from '../../../../../domain/Observacion'
 import Material from '../../../../../domain/Material'
+import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
+import { endpoints } from "config/api";
+import { AxiosResponse } from "axios";
+import { useTendidoStore } from "stores/tendido";
+import { useAuthenticationStore } from "stores/authentication";
 
 export default defineComponent({
     components: {
@@ -30,29 +35,18 @@ export default defineComponent({
             align: 'center',
         }
 
+        const tendidoStore = useTendidoStore()
+        const authenticationStore = useAuthenticationStore()
+
         const columnasTrabajoRealizado = [
-            ...configuracionColumnasTrabajoRealizado,
-            acciones,
+            ...configuracionColumnasTrabajoRealizado
         ]
 
         const columnasObservacion = [...configuracionColumnasObservacion, acciones]
 
         const columnasMaterial = [...configuracionColumnasMaterial, acciones]
 
-        const cronologiaTrabajoRealizado: TrabajoRealizado[] = [
-            {
-                id: 1,
-                hora: '08:15:14',
-                detalle: 'SE REALIZÓ LA PAUSA POR ...',
-                observacion: '',
-            },
-            {
-                id: 2,
-                hora: '12:36:45',
-                detalle: 'HORA DE ALMUERZO ...',
-                observacion: '',
-            },
-        ]
+        const cronologiaTrabajoRealizado: Ref<TrabajoRealizado[]> = ref([])
 
         const observaciones: Observacion[] = [
             {
@@ -62,27 +56,6 @@ export default defineComponent({
             {
                 id: 2,
                 detalle: 'HORA DE ALMUERZO ...',
-            },
-        ]
-
-        const materiales: Material[] = [
-            {
-                id: 1,
-                producto: 'VARILLA DE ANCLAJE',
-                medida: 'UNIDAD',
-                cantidad_usada: 1,
-            },
-            {
-                id: 2,
-                producto: 'CABLE TENSOR',
-                medida: 'METRO',
-                cantidad_usada: 2,
-            },
-            {
-                id: 3,
-                producto: 'GRILLETES',
-                medida: 'UNIDAD',
-                cantidad_usada: 2,
             },
         ]
 
@@ -135,6 +108,17 @@ export default defineComponent({
         }
 
         const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === controlAvance.tipo_intervencion))
+
+        const materiales: any = ref([])
+
+        async function obtenerMateriales() {
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: 1, grupo: authenticationStore.user.grupo_id })
+            const response: AxiosResponse = await axios.get(ruta)
+            materiales.value = response.data.results
+        }
+
+        obtenerMateriales()
 
         return {
             controlAvance,

@@ -141,6 +141,7 @@
               emit-value
               map-options
               :disable="disable"
+              @update:model-value="verificarTipoTrabajo()"
               :error="!!v$.tipo_trabajo.$errors.length"
             >
               <template v-slot:no-option>

@@ -138,7 +138,8 @@ export default defineComponent({
           store.idSubtareaSeleccionada = entidad.id
           // modales.abrirModalEntidad('SeleccionFormularioPage')
           // modales.abrirModalEntidad('ControlTendido')
-          router.push({ name: 'control_tendidos' })
+          // router.push({ name: 'control_tendidos' })
+          modales.abrirModalEntidad('GestionarAvancesPage')
         })
       }
     }

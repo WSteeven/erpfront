@@ -1,12 +1,13 @@
 // Dependencias
-import { configuracionColumnasMaterialOcupado } from '../domain/configuracionColumnasMaterialOcupado'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { tiposElementos, propietariosElementos, estadoElementos, tiposTension, acciones } from 'config/utils'
-import { useTendidoStore } from 'stores/tendido'
+import { configuracionColumnasMaterialOcupado } from '../domain/configuracionColumnasMaterialOcupado'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useTendidoStore } from 'stores/tendido'
 import { required } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
+import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 
@@ -21,7 +22,6 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { RegistroTendido } from '../domain/RegistroTendido'
-import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   props: {
