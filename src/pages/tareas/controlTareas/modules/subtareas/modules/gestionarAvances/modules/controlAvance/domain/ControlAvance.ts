@@ -1,3 +1,5 @@
+import Observacion from "pages/tareas/controlTareas/modules/subtareas/domain/Observacion";
+import TrabajoRealizado from "pages/tareas/controlTareas/modules/subtareas/domain/TrabajoRealizado";
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class ControlAvance extends EntidadAuditable {
@@ -13,6 +15,8 @@ export class ControlAvance extends EntidadAuditable {
     hora_fin_reparacion: string | null
     fecha_retiro_personal: string | null
     hora_retiro_personal: string | null
+    trabajos_realizados: TrabajoRealizado[]
+    observaciones: Observacion[]
 
     constructor() {
         super()
@@ -28,5 +32,7 @@ export class ControlAvance extends EntidadAuditable {
         this.hora_fin_reparacion = null
         this.fecha_retiro_personal = null
         this.hora_retiro_personal = null
+        this.trabajos_realizados = []
+        this.observaciones = []
     }
 }

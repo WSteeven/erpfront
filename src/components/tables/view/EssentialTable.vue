@@ -299,7 +299,10 @@
             </q-item-section>
 
             <!-- Valor -->
-            <q-item-section caption class="text-right text-grey-7">
+            <q-item-section
+              caption
+              class="text-right text-grey-7 label-card-table"
+            >
               <div
                 v-if="col.name === 'acciones'"
                 :props="props"

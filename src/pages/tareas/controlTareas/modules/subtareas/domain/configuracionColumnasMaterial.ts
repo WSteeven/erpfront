@@ -3,26 +3,29 @@ import { MaterialOcupado } from 'pages/tareas/tendidos/controlTendidos/modules/r
 
 export const configuracionColumnasMaterial: ColumnConfig<MaterialOcupado>[] = [
   {
-    name: 'cantidad_utilizada',
-    field: 'cantidad_utilizada',
-    label: 'Cantidad utilizada',
-    align: 'left',
-    input_type: 'number'
-  },
-  {
-    name: 'medida',
-    field: 'medida',
-    label: 'Medida',
-    align: 'left',
-    sortable: true,
-    input_type: 'text'
-  },
-  {
     name: 'detalle',
     field: 'detalle',
     label: 'Producto',
     align: 'left',
     sortable: true,
     input_type: 'text'
+  },
+  {
+    name: 'medida',
+    field: 'medida',
+    label: 'Medida',
+    align: 'left',
+  },
+  {
+    name: 'stock_actual',
+    field: 'stock_actual',
+    label: 'Stock actual',
+    align: 'left',
+  },
+  {
+    name: 'cantidad_utilizada',
+    field: 'cantidad_utilizada',
+    label: 'Cantidad utilizada',
+    align: 'left',
   },
 ]

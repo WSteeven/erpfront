@@ -1,5 +1,6 @@
 <template>
   <q-page padding>
+    <div class="full-width text-bold q-mb-md">Información general</div>
     <div class="row q-col-gutter-sm q-mb-md">
       <!-- Regional -->
       <div class="col-12 col-md-3">
@@ -19,7 +20,7 @@
 
       <!-- Atenciones -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Atenciones</label>
+        <label class="q-mb-sm block">Atención (URBANO / INTERURBANO)</label>
         <q-select
           v-model="controlAvance.atencion"
           :options="atenciones"
@@ -62,7 +63,7 @@
       </div>
 
       <!-- Fecha de intervencion -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 q-mb-md">
         <label class="q-mb-sm block">Causa de intervención</label>
         <q-select
           v-model="controlAvance.causa_intervencion"
@@ -89,6 +90,7 @@
         </q-select>
       </div>
 
+      <div class="full-width text-bold q-mb-md">Fechas y horas</div>
       <!-- Fecha del reporte del problema -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha del reporte del problema</label>
@@ -114,17 +116,35 @@
         </q-input>
       </div>
 
-      <!-- Hora de reporte de problema -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora de reporte de problema</label>
-        <flat-pickr
+        <q-input
           v-model="controlAvance.hora_reporte_problema"
-          :config="{
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: 'H:i',
-          }"
-        />
+          placeholder="Obligatorio"
+          mask="time"
+          outlined
+          dense
+        >
+          <template v-slot:append>
+            <q-icon name="bi-clock" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-time
+                  v-model="controlAvance.hora_reporte_problema"
+                  format24h
+                  now-btn
+                >
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
 
       <!-- Fecha de arribo -->
@@ -238,6 +258,16 @@
         />
       </div>
 
+      <div class="col-12 col-md-3 q-mb-md">
+        <label class="q-mb-sm block">Tiempo de espera adicionales</label>
+        <q-input
+          v-model="controlAvance.tiempo_espera_adicional"
+          placeholder="Opcional"
+          outlined
+          dense
+        ></q-input>
+      </div>
+
       <div class="col-12 q-mb-sm text-bold">Distancia de la afectación</div>
 
       <div class="col-12 col-md-3">
@@ -259,37 +289,20 @@
           dense
         ></q-input>
       </div>
-
-      <div class="col-12 col-md-3 q-mb-md">
-        <label class="q-mb-sm block">Tiempo de espera adicionales</label>
-        <q-input
-          v-model="controlAvance.tiempo_espera_adicional"
-          placeholder="Opcional"
-          outlined
-          dense
-        ></q-input>
-      </div>
-
-      <div class="col-12 text-center q-mb-xl">
-        <q-btn color="positive" no-caps>
-          <q-icon name="bi-plus"></q-icon>
-          Agregar avance</q-btn
-        >
-      </div>
     </div>
 
-    <div v-if="cronologiaTrabajoRealizado">
+    <div>
       <div class="q-mb-md">
         <essential-table
           titulo="Cronología de trabajos realizados"
           :configuracionColumnas="columnasTrabajoRealizado"
-          :datos="cronologiaTrabajoRealizado"
+          :datos="controlAvance.trabajos_realizados"
           :alto-fijo="false"
           :permitirConsultar="false"
-          :mostrar-footer="false"
           :permitir-buscar="false"
           :permitirEditarModal="true"
           separador="cell"
+          :accion1Header="agregarActividadRealizada"
           @eliminar="tablaTrabajoRealizado.eliminar"
           @editar="tablaTrabajoRealizado.editar"
         ></essential-table>
@@ -300,12 +313,12 @@
         <essential-table
           titulo="Observaciones / Mejoras / Pendientes"
           :configuracionColumnas="columnasObservacion"
-          :datos="observaciones"
+          :datos="controlAvance.observaciones"
           :alto-fijo="false"
           :permitirConsultar="false"
-          :mostrar-footer="false"
           :permitir-buscar="false"
           :permitirEditarModal="true"
+          :accion1Header="agregarObservacion"
           @eliminar="tablaObservacion.eliminar"
           @editar="tablaObservacion.editar"
         ></essential-table>
@@ -318,16 +331,19 @@
           :datos="materiales"
           :alto-fijo="false"
           :permitirConsultar="false"
-          :mostrar-footer="false"
+          :permitirEliminar="false"
+          :permitirEditar="false"
           :mostrar-header="true"
           :permitirEditarModal="true"
           separador="cell"
           @eliminar="tablaMateriales.eliminar"
           @editar="tablaMateriales.editar"
+          :accion1="botonEditarCantidad"
         ></essential-table>
-        <!--:accion1Header="agregarMaterial" -->
       </div>
     </div>
+
+    <div class="full-width text-bold q-mb-md">Información general</div>
 
     <!-- Botones formulario -->
     <div class="row q-gutter-md justify-end">

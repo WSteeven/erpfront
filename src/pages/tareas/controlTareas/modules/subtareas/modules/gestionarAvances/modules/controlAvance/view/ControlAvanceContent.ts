@@ -1,25 +1,26 @@
 // Dependencias
-import { computed, defineComponent, reactive, Ref, ref } from "vue";
 import { configuracionColumnasTrabajoRealizado } from '../../../../../domain/configuracionColumnasTrabajoRealizado'
 import { configuracionColumnasObservacion } from '../../../../../domain/configuracionColumnasObservacion'
 import { configuracionColumnasMaterial } from '../../../../../domain/configuracionColumnasMaterial'
 import { regiones, atenciones, tiposIntervenciones, causaIntervencion } from 'config/utils'
+import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository"
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { computed, defineComponent, reactive, Ref, ref } from "vue"
+import { useAuthenticationStore } from 'stores/authentication'
+import { useTendidoStore } from "stores/tendido"
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
 
 // Componentes
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import flatPickr from 'vue-flatpickr-component'
 
 // Logica y controladores
-import TrabajoRealizado from '../../../../../domain/TrabajoRealizado'
-import { ControlAvance } from "../domain/ControlAvance";
-import Observacion from '../../../../../domain/Observacion'
-import Material from '../../../../../domain/Material'
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { endpoints } from "config/api";
-import { AxiosResponse } from "axios";
-import { useTendidoStore } from "stores/tendido";
-import { useAuthenticationStore } from "stores/authentication";
+import TrabajoRealizado from 'pages/tareas/controlTareas/modules/subtareas/domain/TrabajoRealizado'
+import Observacion from 'pages/tareas/controlTareas/modules/subtareas/domain/Observacion'
+import { useNotificaciones } from 'shared/notificaciones'
+import { ControlAvance } from '../domain/ControlAvance'
 
 export default defineComponent({
     components: {
@@ -35,29 +36,20 @@ export default defineComponent({
             align: 'center',
         }
 
-        const tendidoStore = useTendidoStore()
         const authenticationStore = useAuthenticationStore()
+        const tendidoStore = useTendidoStore()
+
+        const { prompt } = useNotificaciones()
 
         const columnasTrabajoRealizado = [
-            ...configuracionColumnasTrabajoRealizado
+            ...configuracionColumnasTrabajoRealizado,
+            acciones
         ]
 
         const columnasObservacion = [...configuracionColumnasObservacion, acciones]
 
         const columnasMaterial = [...configuracionColumnasMaterial, acciones]
 
-        const cronologiaTrabajoRealizado: Ref<TrabajoRealizado[]> = ref([])
-
-        const observaciones: Observacion[] = [
-            {
-                id: 1,
-                detalle: 'SE REALIZÓ LA PAUSA POR ...',
-            },
-            {
-                id: 2,
-                detalle: 'HORA DE ALMUERZO ...',
-            },
-        ]
 
         const tablaTrabajoRealizado = {
             eliminar: () => {
@@ -66,6 +58,10 @@ export default defineComponent({
             editar: () => {
                 //
             },
+        }
+
+        const eliminarObservacion = ({ posicion }) => {
+            controlAvance.observaciones.splice(posicion)
         }
 
         const tablaObservacion = {
@@ -77,33 +73,42 @@ export default defineComponent({
             },
         }
 
-        const tablaMateriales = {
-            eliminar: () => {
-                //
-            },
-            editar: () => {
-                //
-            },
-        }
-
         const agregarActividadRealizada: CustomActionTable = {
             titulo: 'Agregar actividad realizada',
-            accion: () => {
-                //
-            },
+            icono: 'bi-plus',
+            color: 'positive',
+            accion: () => controlAvance.trabajos_realizados.push(new TrabajoRealizado()),
         }
 
         const agregarObservacion: CustomActionTable = {
             titulo: 'Agregar observación',
-            accion: () => {
-                //
-            },
+            color: 'positive',
+            icono: 'bi-plus',
+            accion: () => controlAvance.observaciones.push(new Observacion()),
         }
 
-        const agregarMaterial: CustomActionTable = {
+        /* const agregarMaterial: CustomActionTable = {
             titulo: 'Agregar material',
             accion: () => {
                 //
+            },
+        } */
+
+        const botonEditarCantidad: CustomActionTable = {
+            titulo: 'Cantidad utilizada',
+            icono: 'bi-pencil',
+            color: 'secondary',
+            accion: ({ entidad, posicion }) => {
+                const config: CustomActionPrompt = {
+                    titulo: 'Confirmación',
+                    mensaje: 'Ingresa la cantidad',
+                    defecto: materiales.value[posicion].cantidad_utilizada,
+                    tipo: 'number',
+                    validacion: (val) => val >= 0 && val <= entidad.stock_actual,
+                    accion: (data) => materiales.value[posicion].cantidad_utilizada = data
+                }
+
+                prompt(config)
             },
         }
 
@@ -128,16 +133,13 @@ export default defineComponent({
             columnasObservacion,
             columnasMaterial,
             // listados
-            cronologiaTrabajoRealizado,
-            observaciones,
             materiales,
             // acciones tabla
             tablaTrabajoRealizado,
             tablaObservacion,
-            tablaMateriales,
             agregarActividadRealizada,
             agregarObservacion,
-            agregarMaterial,
+            botonEditarCantidad,
             // config
             regiones,
             atenciones,

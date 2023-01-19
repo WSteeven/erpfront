@@ -124,10 +124,6 @@ body {
   }
 }
 
-.q-virtual-scroll__content {
-  text-transform: uppercase;
-}
-
 // Fondos
 .fondo-gradiente {
   background: #4e54c8; /* fallback for old browsers */
@@ -146,4 +142,13 @@ body {
 //Notificacion personalizada
 .advertencia-personalizada {
   background: red;
+}
+
+// table
+.q-virtual-scroll__content {
+  text-transform: uppercase;
+}
+
+.label-card-table {
+  text-transform: uppercase;
 }
