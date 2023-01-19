@@ -3,10 +3,9 @@ import Observacion from './Observacion'
 
 export const configuracionColumnasObservacion: ColumnConfig<Observacion>[] = [
   {
-    name: 'detalle',
-    field: 'detalle',
-    label: 'Detalle',
+    name: 'observacion',
+    field: 'observacion',
+    label: 'Observación',
     align: 'left',
-    sortable: true,
   },
 ]

@@ -9,6 +9,7 @@
     :accion4="botonCancelar"
     :accion5="botonReagendar"
     :accion6="botonControlAvance"
+    :accion7="botonVerPausas"
     :permitirConsultar="false"
     :permitirEditar="false"
     :permitirEliminar="false"

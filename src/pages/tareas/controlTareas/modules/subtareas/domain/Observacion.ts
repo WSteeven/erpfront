@@ -1,9 +1,9 @@
 export default class Observacion {
     id: number | null
-    detalle: string | null
+    observacion: string | null
 
     constructor() {
         this.id = null
-        this.detalle = null
+        this.observacion = null
     }
 }

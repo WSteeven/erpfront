@@ -76,6 +76,17 @@ export default defineComponent({
       }
     }
 
+    const botonVerPausas: CustomActionTable = {
+      titulo: 'Ver pausas',
+      icono: 'bi-list',
+      color: 'grey-8',
+      visible: ({ entidad }) => true,
+      accion: ({ entidad }) => {
+        subtareaListadoStore.idSubtareaSeleccionada = entidad.id
+        modales.abrirModalEntidad('GestionarAvancesPage')
+      }
+    }
+
     /* const botonFinalizar: CustomActionTable = {
       titulo: 'Realizado',
       color: 'positive',
@@ -205,6 +216,7 @@ export default defineComponent({
       botonReagendar,
       estado,
       estadosSubtareas,
+      botonVerPausas,
     }
   },
 })
