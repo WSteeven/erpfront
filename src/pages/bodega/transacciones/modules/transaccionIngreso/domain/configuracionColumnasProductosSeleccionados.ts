@@ -1,4 +1,5 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto';
 
 export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = [
   {
@@ -7,8 +8,8 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Producto',
     align: 'left',
     sortable: true,
-    visible:true,
-    editable:false,
+    editable: false, 
+    visible: true
   },
   {
     name: 'descripcion',
@@ -16,8 +17,8 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Descripción',
     align: 'left',
     sortable: true,
-    visible:true,
-    editable:false,
+    editable: false,
+    visible: true
   },
   {
     name: 'categoria',
@@ -25,8 +26,8 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Categoria',
     align: 'left',
     sortable: true,
-    visible:true,
-    editable:false,
+    editable: false,
+    visible: true
   },
   /* {
     name: 'condicion',

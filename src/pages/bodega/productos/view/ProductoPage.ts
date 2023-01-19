@@ -1,6 +1,5 @@
 // Dependencias
 import { configuracionColumnasProductos } from '../domain/configuracionColumnasProductos'
-import { configuracionColumnasCategorias } from 'pages/bodega/categorias/domain/configuracionColumnasCategorias'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
@@ -15,10 +14,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { useOrquestadorSelectorCategorias } from '../application/OrquestadorSelectorCategorias'
-import { Categoria } from 'pages/bodega/categorias/domain/Categoria'
 import { Producto } from '../domain/Producto'
-import { ComportamientoModalesProducto } from '../application/ComportamientoModalesProducto'
 import { ProductoController } from '../infraestructure/ProductoController'
 import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController'
 import { useNotificacionStore } from 'stores/notificacion'

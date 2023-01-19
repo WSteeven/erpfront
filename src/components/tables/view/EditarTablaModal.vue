@@ -55,8 +55,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.label"
-              :option-value="(item) => item.value"
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -94,6 +94,8 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { computed, reactive } from 'vue'
+import e from 'express'
+import { isTemplateNode } from '@vue/compiler-core';
 
 const props = defineProps({
   configuracionColumnas: {
@@ -113,40 +115,44 @@ const props = defineProps({
 const emit = defineEmits(['limpiar', 'guardar'])
 
 // normal
-const fields = computed(
-  () =>
-    props.configuracionColumnas
-      .map((fila: ColumnConfig<any>) => {
-        return reactive({
-          label: fila.label,
-          field: fila.field,
-          input_type: fila.input_type ?? 'text',
-          // editable: fila.editable ?? true,
-          valor: props.fila ? props.fila[fila.field] : '',
-        })
+const fields = computed(() =>
+  props.configuracionColumnas
+    .map((fila: ColumnConfig<any>) => {
+      return reactive({
+        label: fila.label,
+        field: fila.field,
+        input_type: fila.input_type ?? 'text',
+        editable: fila.editable ?? true,
+        valor: props.fila ? props.fila[fila.field] : '',
       })
-      .filter(
-        (fila) => fila.field !== 'acciones' && fila.input_type !== 'select'
-      ) // && fila.editable)
+    })
+    .filter(
+      (fila) =>
+        fila.field !== 'acciones' &&
+        fila.input_type !== 'select' &&
+        fila.editable
+    )
 )
 
 // normal
-const fieldsSelect = computed(
-  () =>
-    props.configuracionColumnas
-      .map((fila: ColumnConfig<any>) => {
-        return reactive({
-          label: fila.label,
-          field: fila.field,
-          input_type: fila.input_type ?? 'text',
-          // editable: fila.editable ?? true,
-          valor: props.fila ? props.fila[fila.field] : '',
-          options: fila.options,
-        })
+const fieldsSelect = computed(() =>
+  props.configuracionColumnas
+    .map((fila: ColumnConfig<any>) => {
+      return reactive({
+        label: fila.label,
+        field: fila.field,
+        input_type: fila.input_type ?? 'text',
+        editable: fila.editable ?? true,
+        valor: props.fila ? props.fila[fila.field] : '',
+        options: fila.options,
       })
-      .filter(
-        (fila) => fila.field !== 'acciones' && fila.input_type === 'select'
-      ) // && fila.editable)
+    })
+    .filter(
+      (fila) =>
+        fila.field !== 'acciones' &&
+        fila.input_type === 'select' &&
+        fila.editable
+    )
 )
 
 /* const fields = ref()
@@ -171,7 +177,43 @@ const abierto = computed(() => !!props.fila)
 
 function guardar() {
   var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
+  var mappedSelect = fieldsSelect.value.map((item) => ({ [item.field]: item.valor }))
+  // var newObj = Object.assign({}, ...mapped)
+  emit('guardar', newObj)
+
+  console.log(props.configuracionColumnas)
+  props.configuracionColumnas.forEach((item) => console.log(item.field))
+  console.log(fields.value)
+
+  let mappedFields = props.configuracionColumnas.map((item: any) => ( {
+    [item.field]: (fields.value[item.field]!==undefined && item.field===fields.value[item.field].field)??fields.value[item.field].valor
+  }))
+
+  let mappedFieldsSelect = props.configuracionColumnas.map((item: any) => ({
+    [item.field]: (fieldsSelect.value[item.field]!==undefined && item.field===fieldsSelect.value[item.field].field)??fieldsSelect.value[item.field].valor
+  }))
+
+  console.log(mapped)
+  console.log(mappedFields)
+  console.log(mappedFieldsSelect)
+}
+function recorrer(arreglo: any[], propiedad: string):any {
+  return arreglo.forEach((element: any) => {
+    return element.hasProperty(propiedad) ? element[propiedad] : null
+  })
+}
+function guardar2() {
+  var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
+  var mappedSelect = fieldsSelect.value.map((item) => ({[item.field]: item.valor}))
   var newObj = Object.assign({}, ...mapped)
+  var newObjAll = Object.assign({}, ...[mapped, mappedSelect])
+
+  console.log('fila recibida', props.fila)
+  console.log(mapped)
+  console.log(mappedSelect)
+  console.log(newObj)
+  console.log(newObjAll)
+
   emit('guardar', newObj)
 }
 

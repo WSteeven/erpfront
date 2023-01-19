@@ -246,6 +246,7 @@ export default defineComponent({
     const posicionFila = ref()
 
     function guardarFila(data) {
+      console.log('data recibida para actualizar', data)
       listado.value.splice(filaEditada.value, 1, data)
       limpiarFila()
     }

@@ -4,7 +4,6 @@ import { configuracionColumnasDetallesProductosSeleccionables } from '../domain/
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
-// import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
@@ -49,6 +48,8 @@ import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -120,6 +121,7 @@ export default defineComponent({
         const opciones_clientes = ref([])
         const opciones_empleados = ref([])
         const opciones_condiciones = ref([])
+        const condicionesModificadas = ref([])
 
         //obtener los listados
         cargarVista(async () => {
@@ -151,6 +153,15 @@ export default defineComponent({
             transaccion.cliente = listadosAuxiliares.clientes[0]['id']
             console.log(store.user.id)
             transaccion.solicitante = store.user.id
+
+            /* condicionesModificadas.value = listadosAuxiliares.condiciones.forEach(v => {
+                return{
+                v['value']:v.id,
+                v.label:v.nombre
+            }
+            })
+    
+            console.log(condicionesModificadas) */
         })
 
         //Reglas de validacion
@@ -554,8 +565,8 @@ export default defineComponent({
             }
             pdfMake.createPdf(docDefinition).open()
         }
-        
-        
+
+
         //Configurar los listados
         // opciones_tipos.value = listadosAuxiliares.tipos
         opciones_estados.value = listadosAuxiliares.estados
@@ -566,7 +577,10 @@ export default defineComponent({
         opciones_clientes.value = listadosAuxiliares.clientes
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_condiciones.value = listadosAuxiliares.condiciones
-        
+
+
+
+
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
             name: 'condiciones',
@@ -574,7 +588,8 @@ export default defineComponent({
             label: 'Estado del producto',
             align: 'left',
             sortable: false,
-            input_type:'select',
+            visible: true,
+            input_type: 'select',
             options: opciones_condiciones.value
         },
         {
@@ -591,7 +606,7 @@ export default defineComponent({
             align: 'center'
         },
         ]
-        
+
         function filtroTareas(val) {
             const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
             transaccion.cliente = opcion_encontrada[0]['cliente_id']
@@ -610,6 +625,8 @@ export default defineComponent({
             opciones_clientes,
             opciones_empleados,
             opciones_condiciones,
+            condicionesModificadas,
+            DetalleProducto,
 
             //modal
             modales,
@@ -638,8 +655,8 @@ export default defineComponent({
 
             // tabla,
             configuracionColumnasProductosSeleccionadosAccion,
+            // configuracionColumnasProductosSeleccionados,
             configuracionColumnasDetallesProductosSeleccionables,
-            configuracionColumnasProductosSeleccionados,
             botonInventario,
             botonEliminar,
             botonEditarCantidad,

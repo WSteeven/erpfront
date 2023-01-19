@@ -470,7 +470,7 @@
               </div>
             </div>
           </div>
-          {{ opciones_condiciones }}
+          {{ transaccion.listadoProductosTransaccion }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -489,6 +489,7 @@
               @eliminar="eliminarItem"
               :permitirEditarModal="true"
               :modalMaximized="false"
+              :entidad="DetalleProducto"
             ></essential-table>
           </div>
         </div>
