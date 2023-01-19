@@ -7,6 +7,8 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Producto',
     align: 'left',
     sortable: true,
+    visible:true,
+    editable:false,
   },
   {
     name: 'descripcion',
@@ -14,6 +16,8 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Descripción',
     align: 'left',
     sortable: true,
+    visible:true,
+    editable:false,
   },
   {
     name: 'categoria',
@@ -21,6 +25,8 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Categoria',
     align: 'left',
     sortable: true,
+    visible:true,
+    editable:false,
   },
   /* {
     name: 'condicion',

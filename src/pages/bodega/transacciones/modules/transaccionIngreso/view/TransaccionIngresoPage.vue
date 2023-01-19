@@ -470,6 +470,7 @@
               </div>
             </div>
           </div>
+          {{ opciones_condiciones }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table

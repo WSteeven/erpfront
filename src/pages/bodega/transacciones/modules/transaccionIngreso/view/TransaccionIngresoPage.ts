@@ -554,6 +554,19 @@ export default defineComponent({
             }
             pdfMake.createPdf(docDefinition).open()
         }
+        
+        
+        //Configurar los listados
+        // opciones_tipos.value = listadosAuxiliares.tipos
+        opciones_estados.value = listadosAuxiliares.estados
+        opciones_motivos.value = listadosAuxiliares.motivos
+        opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
+        opciones_tareas.value = listadosAuxiliares.tareas
+        opciones_clientes.value = listadosAuxiliares.clientes
+        opciones_empleados.value = listadosAuxiliares.empleados
+        opciones_condiciones.value = listadosAuxiliares.condiciones
+        
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
         {
             name: 'condiciones',
@@ -561,6 +574,8 @@ export default defineComponent({
             label: 'Estado del producto',
             align: 'left',
             sortable: false,
+            input_type:'select',
+            options: opciones_condiciones.value
         },
         {
             name: 'cantidad',
@@ -576,19 +591,7 @@ export default defineComponent({
             align: 'center'
         },
         ]
-
-
-        //Configurar los listados
-        // opciones_tipos.value = listadosAuxiliares.tipos
-        opciones_estados.value = listadosAuxiliares.estados
-        opciones_motivos.value = listadosAuxiliares.motivos
-        opciones_sucursales.value = listadosAuxiliares.sucursales
-        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-        opciones_tareas.value = listadosAuxiliares.tareas
-        opciones_clientes.value = listadosAuxiliares.clientes
-        opciones_empleados.value = listadosAuxiliares.empleados
-        opciones_condiciones.value = listadosAuxiliares.condiciones
-
+        
         function filtroTareas(val) {
             const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
             transaccion.cliente = opcion_encontrada[0]['cliente_id']

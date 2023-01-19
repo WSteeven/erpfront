@@ -10,9 +10,9 @@ export const configuracionColumnasProductos: ColumnConfig<Producto>[]=[
     sortable:true,
   },
   {
-    name:'codigo',
-    field:'codigo',
-    label:'Código JP',
+    name:'unidad_medida',
+    field:'unidad_medida',
+    label:'U. Medida',
     align: 'left',
     sortable:true,
   },
