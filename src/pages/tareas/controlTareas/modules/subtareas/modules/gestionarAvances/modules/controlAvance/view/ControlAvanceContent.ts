@@ -60,6 +60,10 @@ export default defineComponent({
             },
         }
 
+        const eliminarTrabajoRealizado = ({ posicion }) => {
+            controlAvance.trabajos_realizados.splice(posicion)
+        }
+
         const eliminarObservacion = ({ posicion }) => {
             controlAvance.observaciones.splice(posicion)
         }
@@ -144,6 +148,8 @@ export default defineComponent({
             regiones,
             atenciones,
             tiposIntervenciones,
+            eliminarTrabajoRealizado,
+            eliminarObservacion,
         }
     }
 })

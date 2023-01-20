@@ -122,6 +122,7 @@
               class="text-dark text-bold"
               >{{ item.header }}</q-item-label
             >
+
             <!-- <EssentialLink v-else v-bind="item" /> -->
             <EssentialLink
               v-else

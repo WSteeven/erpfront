@@ -151,13 +151,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Productos',
           link: 'productos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.productos'),
+          can: store.esBodeguero, //store.can('puede.ver.productos'),
         },
         {
           title: 'Detalles de productos',
           link: 'detalles',
           icon: 'bi-circle',
-          can: store.can('puede.ver.detalles'),
+          can: store.esBodeguero,// can('puede.ver.detalles'),
         },
         {
           title: 'Inventario',
@@ -212,6 +212,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-circle',
+          can: store.esBodeguero,
           children: [
             {
               title: 'Reporte de ingresos',
@@ -272,7 +273,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       header: 'Administración',
-      can: store.can('puede.ver.modulo_administracion'),
+      can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
     },
     {
       title: 'Bodega',
@@ -353,7 +354,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ]
     },
-    {
+    /* {
       header: 'Sistema',
     },
     {
@@ -376,7 +377,7 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
       ],
-    },
+    }, */
   ])
 
   return {

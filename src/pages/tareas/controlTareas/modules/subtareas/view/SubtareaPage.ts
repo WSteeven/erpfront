@@ -3,7 +3,7 @@ import { isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray 
 import { configuracionColumnasTecnico } from '../domain/configuracionColumnasTecnico'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
-import { computed, defineComponent, Ref, ref, watch } from 'vue'
+import { computed, defineComponent, Ref, ref } from 'vue'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,

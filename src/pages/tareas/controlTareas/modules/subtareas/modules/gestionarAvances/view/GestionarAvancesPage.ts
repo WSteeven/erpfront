@@ -16,7 +16,7 @@ import {
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import flatPickr from 'vue-flatpickr-component';
-import PausasRealizadasContent from '../modules/pausasRealizadas/view/PausasRealizadasContent.vue'
+import PausasRealizadasContent from '../modules/pausasRealizadas/view/PausasRealizadasPage.vue'
 import ControlAvanceContent from '../modules/controlAvance/view/ControlAvanceContent.vue'
 import ImagenAdicionalContent from '../modules/imagenesAdicionales/view/ImagenAdicionalContent.vue'
 import InformacionAdicionalContent from '../modules/informacionAdicional/view/InformacionAdicionalContent.vue'
@@ -44,33 +44,7 @@ export default defineComponent({
             },
         ]
 
-        const datos: Ref<Tecnico[]> = ref([
-            {
-                id: 1,
-                tecnico: 'LUIS DHDHD',
-                contacto: '0897564321',
-                grupo: 'MACHALA',
-                disponibilidad: true,
-                observacion: '',
-
-            },
-            {
-                id: 2,
-                tecnico: 'ROBERTO HGHGGF',
-                contacto: '0897564321',
-                grupo: 'SANTO DOMINGO',
-                disponibilidad: true,
-                observacion: '',
-            },
-            {
-                id: 3,
-                tecnico: 'CARLA AGUIRRE',
-                contacto: '0897564321',
-                grupo: 'SANTO DOMINGO',
-                disponibilidad: false,
-                observacion: '',
-            },
-        ])
+        const datos: Ref<Tecnico[]> = ref([])
 
         function enviar() {
             //

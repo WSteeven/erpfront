@@ -20,6 +20,7 @@
     tabDefecto="CREADO"
     @tab-seleccionado="aplicarFiltro"
     :accion1Header="agregarSubtarea"
+    :accion2Header="imprimirListado"
   ></essential-table-tabs>
 
   <modales-entidad :comportamiento="modales" :mixin="mixin" />

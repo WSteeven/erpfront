@@ -53,6 +53,17 @@ export default defineComponent({
       },
     }
 
+    const imprimirListado: CustomActionTable = {
+      titulo: 'Imprimir listado',
+      icono: 'bi-printer',
+      color: 'grey-8',
+      accion: () => {
+        subtareaListadoStore.idSubtareaSeleccionada = null
+        tareaStore.accionSubtarea = acciones.nuevo
+        modales.abrirModalEntidad('SubtareasPage')
+      },
+    }
+
     const botonEditarSubtarea: CustomActionTable = {
       titulo: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'Editar' : 'Visualizar',
       icono: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'bi-pencil-fill' : 'bi-eye',
@@ -83,7 +94,7 @@ export default defineComponent({
       visible: ({ entidad }) => true,
       accion: ({ entidad }) => {
         subtareaListadoStore.idSubtareaSeleccionada = entidad.id
-        modales.abrirModalEntidad('GestionarAvancesPage')
+        modales.abrirModalEntidad('PausasRealizadasPage')
       }
     }
 
@@ -205,6 +216,7 @@ export default defineComponent({
       botonControlAvance,
       botonSubirArchivos,
       agregarSubtarea,
+      imprimirListado,
       // botonFinalizar,
       aplicarFiltro,
       botonAsignar,

@@ -303,8 +303,7 @@
           :permitirEditarModal="true"
           separador="cell"
           :accion1Header="agregarActividadRealizada"
-          @eliminar="tablaTrabajoRealizado.eliminar"
-          @editar="tablaTrabajoRealizado.editar"
+          @eliminar="eliminarTrabajoRealizado"
         ></essential-table>
       </div>
       <!--:accion1Header="agregarActividadRealizada"-->
@@ -319,8 +318,7 @@
           :permitir-buscar="false"
           :permitirEditarModal="true"
           :accion1Header="agregarObservacion"
-          @eliminar="tablaObservacion.eliminar"
-          @editar="tablaObservacion.editar"
+          @eliminar="eliminarObservacion"
         ></essential-table>
       </div>
 
@@ -336,14 +334,12 @@
           :mostrar-header="true"
           :permitirEditarModal="true"
           separador="cell"
-          @eliminar="tablaMateriales.eliminar"
-          @editar="tablaMateriales.editar"
           :accion1="botonEditarCantidad"
         ></essential-table>
       </div>
     </div>
 
-    <div class="full-width text-bold q-mb-md">Información general</div>
+    <div class="full-width text-bold q-mb-md">Imágenes opcionales</div>
 
     <!-- Botones formulario -->
     <div class="row q-gutter-md justify-end">

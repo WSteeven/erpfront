@@ -102,7 +102,7 @@
       </div>
 
       <!-- Botones Header -->
-      <div class="row full-width">
+      <div class="row full-width q-gutter-xs">
         <!-- Boton 1 Header -->
         <q-btn
           v-if="extraerVisible(accion1Header, props)"

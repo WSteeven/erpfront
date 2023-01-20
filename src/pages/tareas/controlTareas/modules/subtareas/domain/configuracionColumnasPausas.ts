@@ -7,20 +7,23 @@ export const configuracionColumnasPausas: ColumnConfig<Pausa>[] = [
     field: 'fecha_hora_pausa',
     label: 'Fecha hora pausa',
     align: 'left',
-    sortable: true,
   },
   {
     name: 'fecha_hora_retorno',
     field: 'fecha_hora_retorno',
     label: 'Fecha hora retorno',
     align: 'left',
-    sortable: true,
+  },
+  {
+    name: 'tiempo_pausado',
+    field: 'tiempo_pausado',
+    label: 'Tiempo pausado',
+    align: 'left',
   },
   {
     name: 'motivo',
     field: 'motivo',
     label: 'Motivo',
     align: 'left',
-    sortable: true,
   },
 ]
