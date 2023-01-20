@@ -3,12 +3,12 @@ import { configuracionColumnasTransaccionEgreso } from '../../domain/configuraci
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
-import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+// import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-// import { useOrquestadorSelectorDetalles } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
-import { acciones, logoBN, logoColor, meses, opcionesModoAsignacionTrabajo, tabOptionsTransacciones } from 'config/utils'
+import { acciones, logoBN, logoColor, meses, tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
@@ -29,7 +29,6 @@ import { TipoTransaccionController } from 'pages/administracion/tipos_transaccio
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
 import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
 
 import { useAuthenticationStore } from 'stores/authentication'
@@ -65,7 +64,6 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const transaccionStore = useTransaccionStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
-        const detalle = useDetalleStore()
         const pedidoStore = usePedidoStore()
 
         const {
@@ -109,15 +107,6 @@ export default defineComponent({
         const opciones_subtareas = ref([])
         const opciones_clientes = ref([])
 
-        /* function transformarOpcionesTipos() {
-            // console.log('llamaste a la funcion')
-            if (!esBodeguero) {
-                opciones_tipos.value.forEach(element => {
-                    if (element.nombre === 'INGRESO') {element.nombre = 'DEVOLUCION'}
-                    if (element.nombre === 'EGRESO') {element.nombre = 'SOLICITUD'}
-                });
-            }
-        } */
         cargarVista(async () => {
             await obtenerListados({
                 empleados: {
@@ -139,13 +128,6 @@ export default defineComponent({
                     controller: new TareaController(),
                     params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
                 },
-                /* subtareas: {
-                    controller: new SubtareaController(),
-                    params: {
-                        campos: 'id,codigo_subtarea,detalle',
-                        estados: [estadosSubtareas.ASIGNADO, estadosSubtareas.EJECUTANDO, estadosSubtareas.PAUSADO]
-                    }
-                }, */
                 motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
                 autorizaciones: {
                     controller: new AutorizacionController(),
@@ -153,12 +135,6 @@ export default defineComponent({
                         campos: 'id,nombre'
                     }
                 },
-                /* estados: {
-                    controller: new EstadosTransaccionController(),
-                    params: {
-                        campos: 'id,nombre'
-                    }
-                }, */
                 detalles: {
                     controller: new DetalleProductoController(),
                     params: {
@@ -175,8 +151,7 @@ export default defineComponent({
                 },
             })
             // transformarOpcionesTipos()
-            if(pedidoStore.pedido) {
-                // console.log('pedidoStore en EGRESO:',pedidoStore.pedido)
+            if(pedidoStore.pedido.id) {
                 transaccion.tiene_pedido = true
                 transaccion.tarea = pedidoStore.pedido.tarea
                 cargarDatos()
@@ -191,7 +166,6 @@ export default defineComponent({
             soloLectura.value = false
         })
         onConsultado(() => {
-            // transaccionStore.transaccion.hydrate(transaccion)
             console.log('Transaccion', transaccion)
             if (transaccion.per_retira) {
                 transaccion.retira_tercero = true
@@ -220,7 +194,6 @@ export default defineComponent({
         const reglas = {
             justificacion: { required },
             sucursal: { required },
-            // tipo: { required },
             cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
             motivo: { requiredIfBodeguero: requiredIf(esBodeguero) },
             tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
@@ -228,14 +201,11 @@ export default defineComponent({
                 requiredIfCoordinador: requiredIf(esCoordinador),
                 requiredIfEsVisibleAut: requiredIf(false)
             },
-            //estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
                 requiredIfObsAutorizacion: requiredIf(false)
-                // requiredIfObsAutorizacion: requiredIf(function () { return transaccion.tiene_obs_autorizacion })
             },
             observacion_est: {
                 requiredIfObsEstado: requiredIf(false)
-                // requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado })
             },
             listadoProductosTransaccion: { required }//validar que envien datos en el listado
         }
@@ -282,7 +252,7 @@ export default defineComponent({
                 // console.log('La posicion es', posicion)
                 transaccionStore.idTransaccion = entidad.id
                 await transaccionStore.cargarTransaccion(entidad.id)
-                await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, entidad.listadoProductosTransaccion[posicion]['id'])
+                // await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, entidad.listadoProductosTransaccion[posicion]['id'])
                 // console.log('La transaccion del store', transaccionStore.transaccion)
 
                 //aqui va toda la logica de los despachos de material
@@ -658,6 +628,9 @@ export default defineComponent({
             opciones_tareas,
             opciones_subtareas,
             opciones_clientes,
+
+            //stores
+            pedidoStore,
 
             //variables auxiliares
             esVisibleAutorizacion,

@@ -263,7 +263,7 @@
           </q-btn>
 
           <!-- custom botons -->
-          <span class="row full-width justify-left">
+          <span class="row justify-left">
             <CustomButtons
               :accion1="accion1"
               :accion2="accion2"
@@ -517,6 +517,20 @@
       </q-td>
     </template>
 
+    <template #body-cell-condiciones="props">
+      <q-td :props="props">
+        <!-- Estados de la tabla condiciones -->
+        <q-chip v-if="props.value == estadosCondiciones.nuevo"> NUEVO </q-chip>
+        <q-chip v-if="props.value == estadosCondiciones.usado"> USADO </q-chip>
+        <q-chip v-if="props.value == estadosCondiciones.mal_estado">
+          MAL ESTADO
+        </q-chip>
+        <q-chip v-if="props.value == estadosCondiciones.danado">
+          DAÑADO
+        </q-chip>
+      </q-td>
+    </template>
+
     <template #body-cell-estado="props">
       <q-td :props="props">
         <q-chip
@@ -552,7 +566,15 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
-        <q-chip v-if="props.value === 1" class="bg-green-1">
+        <q-chip
+          v-if="props.value === estadosTransacciones.no_realizada"
+          class="bg-red-1"
+        >
+          <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
+          NO REALIZADA
+        </q-chip>
+        <q-chip v-if="props.value === 1" class="bg-blue-grey-1">
           <q-icon
             name="bi-circle-fill"
             color="positive"

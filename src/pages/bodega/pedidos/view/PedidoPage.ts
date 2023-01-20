@@ -25,23 +25,18 @@ import { configuracionColumnasProductosSeleccionados } from "../domain/configura
 import { configuracionColumnasDetallesModal } from "../domain/configuracionColumnasDetallesModal";
 import { useNotificaciones } from "shared/notificaciones";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, estadosDevoluciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPedidos } from "config/utils";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { endpoints } from "config/api";
-import html2pdf from 'html2pdf.js'
+import { acciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPedidos } from "config/utils";
 // import { ComportamientoModalesDevoluciones } from "../application/ComportamientoModalesDevolucion";
 
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { useAuthenticationStore } from "stores/authentication";
-import * as fs from 'fs'
-import { buildTableBody, notificarMensajesError } from "shared/utils";
+import { buildTableBody, } from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController';
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController';
 import { usePedidoStore } from 'stores/pedido';
-import { getPackedSettings } from 'http2';
 import { useRouter } from 'vue-router';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs

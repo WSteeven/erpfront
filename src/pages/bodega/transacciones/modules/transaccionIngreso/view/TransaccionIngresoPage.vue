@@ -470,7 +470,7 @@
               </div>
             </div>
           </div>
-          {{ transaccion.listadoProductosTransaccion }}
+          <!-- {{ transaccion.listadoProductosTransaccion }} -->
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -480,7 +480,7 @@
               "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
-              :permitirEditar="true"
+              :permitirEditar="!transaccion.ingreso_masivo&& accion===acciones.nuevo"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"

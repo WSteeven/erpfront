@@ -226,12 +226,14 @@ export const autorizacionesTransacciones = {
   pendiente: 'PENDIENTE',
   aprobado: 'APROBADO',
   cancelado: 'CANCELADO',
+  
 }
 
 export const estadosTransacciones = {
   pendiente: 'PENDIENTE',
   completa: 'COMPLETA',
   parcial: 'PARCIAL',
+  no_realizada: 'NO REALIZADA',
 }
 
 export const estadosControlStock = {
@@ -244,6 +246,12 @@ export const estadosInventarios = {
   inventario: 'INVENTARIO',
   transito: 'TRANSITO',
   sin_stock: 'SIN STOCK',
+}
+export const estadosCondiciones = {
+  nuevo: '1',
+  usado: '2',
+  mal_estado: '3',
+  danado: '4',
 }
 
 export const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']

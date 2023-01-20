@@ -108,30 +108,6 @@
               </template>
             </q-select>
           </div>
-          <!-- Justificacion -->
-          <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Justificación</label>
-            <q-input
-              type="textarea"
-              autogrow
-              v-model="pedido.justificacion"
-              placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :error="!!v$.justificacion.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.justificacion.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
           <!-- Solicitante -->
           <div v-if="pedido.solicitante" class="col-12 col-md-3">
             <label class="q-mb-sm block">Solicitante</label>
@@ -161,6 +137,31 @@
               </template>
             </q-select>
           </div>
+          <!-- Justificacion -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Justificación</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="pedido.justificacion"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :error="!!v$.justificacion.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.justificacion.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
           <!-- Es pedido de tarea -->
           <div
             v-if="pedido.es_tarea || accion === 'NUEVO'"

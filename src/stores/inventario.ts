@@ -43,6 +43,26 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         console.log('datos obtenidos:', response.data.results)
         return response.data.results
     } 
+    /**
+     * 
+     * @param data array de datos compuesto por el listado de detalle_id, el cliente_id y la sucursal_id
+     * @returns listado de elementos encontrados en el inventario que coinciden con el listado de detalle_id
+     */
+    async function buscarTodos(data:any) {
+        statusLoading.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = 'api/buscarDetallesEnInventario'
+        const response: AxiosResponse = await axios.post(ruta, data)
+        statusLoading.desactivar()
+        console.log(response)
+        return {
+            response: response.data.results,
+        }
+    }
+    async function cargarCoincidencias(data:any) {
+        const results = await buscarTodos(data)
+        return results
+    }
 
     /**
      * 
@@ -68,7 +88,6 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         cargarItem,
         resetearInventario,
         cargarElementosId,
-        
-
+        cargarCoincidencias,
     }
 })

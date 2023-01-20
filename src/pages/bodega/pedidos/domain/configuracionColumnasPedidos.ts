@@ -17,13 +17,6 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[]=[
         sortable: true
     },
     {
-        name: 'fecha_limite',
-        field: 'fecha_limite',
-        label: 'Fecha límite',
-        align: 'left',
-        sortable: true
-    },
-    {
         name: 'solicitante',
         field: 'solicitante',
         label: 'Solicitante',
@@ -61,7 +54,7 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[]=[
     {
         name: 'estado',
         field: 'estado',
-        label: 'Estado',
+        label: 'Estado de despacho',
         align: 'left',
         sortable: true
     },

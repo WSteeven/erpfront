@@ -14,7 +14,7 @@ export const usePedidoStore = defineStore('pedido', ()=>{
     const pedidoReset = new Pedido()
     const idPedido = ref()
 
-    const {notificarError} = useNotificaciones()
+    const {notificarAdvertencia} = useNotificaciones()
     const accionPedido = acciones.nuevo
     const statusLoading = new StatusEssentialLoading()
 
@@ -34,7 +34,7 @@ export const usePedidoStore = defineStore('pedido', ()=>{
             const modelo = await consultar(id)
             pedido.hydrate(modelo)
         }catch(e){
-            notificarError('Pedido no encontrado')
+            notificarAdvertencia('Pedido no encontrado')
             pedido.hydrate(pedidoReset)
         }finally{
             statusLoading.desactivar()

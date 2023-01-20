@@ -125,13 +125,13 @@
           flat
           title="Movimiento"
           class="bg-white custom-border"
-          :rows="selected2"
-          :columns="configuracionColumnasItemsMovimiento"
+          :rows="coincidencias"
+          :columns="configuracionColumnasItemsEncontradosInventario"
           row-key="id"
           dense
           :hide-bottom="true"
         >
-          <template v-slot:body="props">
+          <!-- <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="producto" :props="props">{{
                 props.row.producto
@@ -162,14 +162,14 @@
                   />
                 </q-popup-edit>
               </q-td>
-              <!-- <q-td key="precio_unitario" :props="props">
+              !-- <q-td key="precio_unitario" :props="props">
                 {{ props.row.precio_unitario }}
                 <q-popup-edit v-model="props.row.precio_unitario" title="Update Precio de venta" buttons v-slot="scope">
                   <q-input type="number" v-model="scope.value" dense autofocus/>
                 </q-popup-edit>
-              </q-td> -->
+              </q-td> --
             </q-tr>
-          </template>
+          </template> -->
         </q-table>
       </q-step>
       <!-- <q-step :name="3" title="Create an ad" icon="add_comment">

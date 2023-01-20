@@ -126,7 +126,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Categorías',
           link: 'categorias',
-          can: store.can('puede.ver.categorias'),
+          can: store.esBodeguero,//can('puede.ver.categorias'),
           icon: 'bi-circle',
         },
         {

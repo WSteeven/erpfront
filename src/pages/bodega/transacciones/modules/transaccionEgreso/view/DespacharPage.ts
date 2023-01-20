@@ -28,6 +28,7 @@ import { useInventarioStore } from "stores/inventario";
 import { useMovimientoStore } from "stores/movimiento";
 import { tiposMovimientos } from "config/utils";
 import { Inventario } from "pages/bodega/inventario/domain/Inventario";
+import { DetalleProducto } from "pages/bodega/detalles_productos/domain/DetalleProducto";
 
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable },
@@ -44,7 +45,7 @@ export default defineComponent({
         const inventarioStore = useInventarioStore()
         const movimientoStore = useMovimientoStore()
 
-
+        let coincidencias = {}
         // const opciones_tipos = ref([])
         // const opciones_motivos = ref([])
         // const opciones_sucursales = ref([])
@@ -54,16 +55,20 @@ export default defineComponent({
         // const opciones_clientes = ref([])
         cargarVista(async () => {
             await transaccion.hydrate(transaccionStore.transaccion) //cargar la transaccion con la del store
+            let detalles_ids: any = []
+            detalles_ids = transaccionStore.transaccion.listadoProductosTransaccion.map((element: DetalleProducto) => element.id)
+        
+            const data = {
+                detalles: detalles_ids,
+                sucursal_id: transaccionStore.transaccion.sucursal_id,
+                cliente_id: transaccionStore.transaccion.cliente_id,
+            }
+            
+            coincidencias = await inventarioStore.cargarCoincidencias(data)
             /* console.log(transaccionStore.transaccion)
             console.log(transaccion) */
+            await console.log(coincidencias)
         })
-        // opciones_tipos.value = listadosAuxiliares.tipos
-        // opciones_motivos.value = listadosAuxiliares.motivos
-        // opciones_sucursales.value = listadosAuxiliares.sucursales
-        // opciones_empleados.value = listadosAuxiliares.empleados
-        // opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-        // opciones_estados.value = listadosAuxiliares.estados
-        // opciones_clientes.value = listadosAuxiliares.clientes
 
         let resultadosInventario = ref([])
         let selected = ref([])
@@ -134,9 +139,12 @@ export default defineComponent({
             //resultados encontrados
             resultadosInventario,
             configuracionColumnasItemsEncontradosInventario,
+            
             //configuracion columnas
             configuracionColumnasMovimientos,
             configuracionColumnasItemsMovimiento,
+            //coincidencias
+            coincidencias,
 
             //stepper
             step,

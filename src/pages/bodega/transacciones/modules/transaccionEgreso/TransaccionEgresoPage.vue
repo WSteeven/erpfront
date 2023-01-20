@@ -43,46 +43,6 @@
               dense
             ></q-checkbox>
           </div>
-          <!-- Fecha límite -->
-          <div
-            v-if="transaccion.fecha_limite || accion === acciones.nuevo"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Fecha limite</label>
-            <q-input
-              v-model="transaccion.fecha_limite"
-              placeholder="Opcional"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              outlined
-              dense
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="transaccion.fecha_limite"
-                      mask="DD-MM-YYYY"
-                      today-btn
-                    >
-                      <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
           <!-- Select motivo -->
           <div v-if="esBodeguero" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
@@ -329,8 +289,6 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          {{ transaccion.solicitante }}
-          {{ transaccion.solicitante_id }}
           <div
             v-if="esVisibleTarea || transaccion.es_tarea"
             class="col-12 col-md-3"
@@ -441,75 +399,6 @@
                 </q-item>
               </template>
             </q-select>
-          </div>
-          <!-- Select estado -->
-          <div
-            v-if="
-              (rolSeleccionado && esBodeguero) || accion === acciones.consultar
-            "
-            class="col-12 col-md-3 q-mb-md"
-          >
-            <label class="q-mb-sm block">Estado</label>
-            <q-select
-              v-model="transaccion.estado"
-              :options="opciones_estados"
-              transition-show="jum-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="disabled || (soloLectura && !esBodeguero)"
-              :readonly="disabled || (soloLectura && !esBodeguero)"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-            >
-              <!-- <template v-slot:error>
-                <div v-for="error of v$.estado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template> -->
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <!-- Tiene observación de estado -->
-          <!-- <div v-if="rolSeleccionado && esBodeguero" class="col-12 col-md-3">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="transaccion.tiene_obs_estado"
-              label="Tiene observación"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div> -->
-          <!-- observacion estado -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Observacion</label>
-            <q-input
-              v-model="transaccion.obs_estado"
-              placeholder="Obligatorio"
-              :readonly="disabled"
-              :error="!!v$.observacion_est.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_est.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->

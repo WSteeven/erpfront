@@ -30,6 +30,16 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     visible: true
   },
   /* {
+    name: 'precio_compra',
+    field: 'precio_compra',
+    label: 'P. Compra',
+    align: 'left',
+    input_type:'number',
+    sortable: true,
+    editable: true,
+    visible: true
+  }, */
+  /* {
     name: 'condicion',
     field: 'condicion',
     label: 'Estado',

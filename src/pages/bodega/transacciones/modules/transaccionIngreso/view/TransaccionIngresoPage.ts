@@ -250,7 +250,7 @@ export default defineComponent({
                 }
                 prompt(config)
             },
-            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar || !estaInventariando.value
+            visible: () => (accion.value === acciones.nuevo && transaccion.ingreso_masivo) || (accion.value === acciones.editar && transaccion.ingreso_masivo) || (!estaInventariando.value && transaccion.ingreso_masivo) || transaccion.ingreso_masivo
         }
 
         const botonEditarInventario: CustomActionTable = {
@@ -597,6 +597,7 @@ export default defineComponent({
             field: 'cantidad',
             label: 'Cantidad',
             align: 'left',
+            input_type: 'number',
             sortable: false,
         },
         {

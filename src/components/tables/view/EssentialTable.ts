@@ -1,5 +1,5 @@
 // Dependencias
-import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock } from 'config/utils'
+import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondiciones } from 'config/utils'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 import { computed, defineComponent, ref, watchEffect, nextTick, reactive, Ref } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
@@ -246,7 +246,7 @@ export default defineComponent({
     const posicionFila = ref()
 
     function guardarFila(data) {
-      console.log('data recibida para actualizar', data)
+      // console.log('data recibida para actualizar', data)
       listado.value.splice(filaEditada.value, 1, data)
       limpiarFila()
     }
@@ -320,6 +320,7 @@ export default defineComponent({
       autorizacionesTransacciones,
       estadosTransacciones,
       estadosInventarios,
+      estadosCondiciones,
       estadosControlStock,
       estadosSubtareas,
       onScroll,
