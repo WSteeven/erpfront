@@ -66,7 +66,7 @@ export default defineComponent({
 
     const botonEditarSubtarea: CustomActionTable = {
       titulo: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'Editar' : 'Visualizar',
-      icono: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'bi-pencil-fill' : 'bi-eye',
+      icono: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'bi-pencil' : 'bi-eye',
       accion: async ({ entidad, posicion }) => {
         tareaStore.accionSubtarea = entidad.estado === estadosSubtareas.CREADO ? acciones.editar : acciones.consultar
 

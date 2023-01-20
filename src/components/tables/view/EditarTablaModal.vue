@@ -95,7 +95,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { computed, reactive } from 'vue'
 import e from 'express'
-import { isTemplateNode } from '@vue/compiler-core';
+import { isTemplateNode } from '@vue/compiler-core'
 
 const props = defineProps({
   configuracionColumnas: {
@@ -177,7 +177,9 @@ const abierto = computed(() => !!props.fila)
 
 function guardar() {
   var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
-  var mappedSelect = fieldsSelect.value.map((item) => ({ [item.field]: item.valor }))
+  var mappedSelect = fieldsSelect.value.map((item) => ({
+    [item.field]: item.valor,
+  }))
   // var newObj = Object.assign({}, ...mapped)
   emit('guardar', newObj)
 
@@ -185,26 +187,34 @@ function guardar() {
   props.configuracionColumnas.forEach((item) => console.log(item.field))
   console.log(fields.value)
 
-  let mappedFields = props.configuracionColumnas.map((item: any) => ( {
-    [item.field]: (fields.value[item.field]!==undefined && item.field===fields.value[item.field].field)??fields.value[item.field].valor
+  let mappedFields = props.configuracionColumnas.map((item: any) => ({
+    [item.field]:
+      (fields.value[item.field] !== undefined &&
+        item.field === fields.value[item.field].field) ??
+      fields.value[item.field].valor,
   }))
 
   let mappedFieldsSelect = props.configuracionColumnas.map((item: any) => ({
-    [item.field]: (fieldsSelect.value[item.field]!==undefined && item.field===fieldsSelect.value[item.field].field)??fieldsSelect.value[item.field].valor
+    [item.field]:
+      (fieldsSelect.value[item.field] !== undefined &&
+        item.field === fieldsSelect.value[item.field].field) ??
+      fieldsSelect.value[item.field].valor,
   }))
 
   console.log(mapped)
   console.log(mappedFields)
   console.log(mappedFieldsSelect)
 }
-function recorrer(arreglo: any[], propiedad: string):any {
+function recorrer(arreglo: any[], propiedad: string): any {
   return arreglo.forEach((element: any) => {
     return element.hasProperty(propiedad) ? element[propiedad] : null
   })
 }
 function guardar2() {
   var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
-  var mappedSelect = fieldsSelect.value.map((item) => ({[item.field]: item.valor}))
+  var mappedSelect = fieldsSelect.value.map((item) => ({
+    [item.field]: item.valor,
+  }))
   var newObj = Object.assign({}, ...mapped)
   var newObjAll = Object.assign({}, ...[mapped, mappedSelect])
 

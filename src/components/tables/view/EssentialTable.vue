@@ -399,6 +399,14 @@
       </q-td>
     </template>
 
+    <template #body-cell-tipo_trabajo="props">
+      <q-td :props="props">
+        <span :class="{ 'text-red text-bold': resaltar(props.value) }">
+          {{ props.value }}
+        </span>
+      </q-td>
+    </template>
+
     <!-- Resumen tendido -->
     <template #body-cell-instalo_manga="props">
       <q-td :props="props">

@@ -243,6 +243,20 @@
             </template>
           </q-input>
         </div>
+
+        <!-- Observacion -->
+        <div class="col-12 col-md-6">
+          <label class="q-mb-sm block">Observación</label>
+          <q-input
+            v-model="tarea.observacion"
+            placeholder="Opcional"
+            outlined
+            dense
+            autogrow
+            type="textarea"
+          >
+          </q-input>
+        </div>
       </div>
     </q-expansion-item>
 
