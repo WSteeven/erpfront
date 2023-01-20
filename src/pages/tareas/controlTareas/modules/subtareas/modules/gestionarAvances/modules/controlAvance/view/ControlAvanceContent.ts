@@ -50,31 +50,12 @@ export default defineComponent({
 
         const columnasMaterial = [...configuracionColumnasMaterial, acciones]
 
-
-        const tablaTrabajoRealizado = {
-            eliminar: () => {
-                //
-            },
-            editar: () => {
-                //
-            },
-        }
-
         const eliminarTrabajoRealizado = ({ posicion }) => {
             controlAvance.trabajos_realizados.splice(posicion)
         }
 
         const eliminarObservacion = ({ posicion }) => {
             controlAvance.observaciones.splice(posicion)
-        }
-
-        const tablaObservacion = {
-            eliminar: () => {
-                //
-            },
-            editar: () => {
-                //
-            },
         }
 
         const agregarActividadRealizada: CustomActionTable = {
@@ -90,13 +71,6 @@ export default defineComponent({
             icono: 'bi-plus',
             accion: () => controlAvance.observaciones.push(new Observacion()),
         }
-
-        /* const agregarMaterial: CustomActionTable = {
-            titulo: 'Agregar material',
-            accion: () => {
-                //
-            },
-        } */
 
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Cantidad utilizada',
@@ -138,9 +112,6 @@ export default defineComponent({
             columnasMaterial,
             // listados
             materiales,
-            // acciones tabla
-            tablaTrabajoRealizado,
-            tablaObservacion,
             agregarActividadRealizada,
             agregarObservacion,
             botonEditarCantidad,

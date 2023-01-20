@@ -189,6 +189,7 @@ watch(props.fila, () => {
 const abierto = computed(() => !!props.fila)
 
 function guardar() {
+<<<<<<< HEAD
   var mapped =              fields.value.map((item) => ({ [item.field]: item.valor }))
   var mappedSelect =  fieldsSelect.value.map((item) => ({[item.field]: item.valor}))
   var mappedAll =         fieldsAll.value.map((item)=>({[item.field]:item.valor}))
@@ -212,19 +213,37 @@ function guardar() {
   // var newObj3 = Object.assign(filaRecibida!, ...newObj2)
   // console.log(newObj3)
 
+=======
+  var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
+  var mappedSelect = fieldsSelect.value.map((item) => ({
+    [item.field]: item.valor,
+  }))
+  // var newObj = Object.assign({}, ...mapped)
+>>>>>>> e9eb46477b07203ee4de9790014fc55aea0e81c5
   emit('guardar', newObj)
 
   /* console.log(props.configuracionColumnas)
   props.configuracionColumnas.forEach((item) => console.log(item.field))
   console.log(fields.value)
 
-  let mappedFields = props.configuracionColumnas.map((item: any) => ( {
-    [item.field]: (fields.value[item.field]!==undefined && item.field===fields.value[item.field].field)??fields.value[item.field].valor
+  let mappedFields = props.configuracionColumnas.map((item: any) => ({
+    [item.field]:
+      (fields.value[item.field] !== undefined &&
+        item.field === fields.value[item.field].field) ??
+      fields.value[item.field].valor,
   }))
 
   let mappedFieldsSelect = props.configuracionColumnas.map((item: any) => ({
+<<<<<<< HEAD
     [item.field]: (fieldsSelect.value[item.field]!==undefined && item.field===fieldsSelect.value[item.field].field)??fieldsSelect.value[item.field].valor
   })) */
+=======
+    [item.field]:
+      (fieldsSelect.value[item.field] !== undefined &&
+        item.field === fieldsSelect.value[item.field].field) ??
+      fieldsSelect.value[item.field].valor,
+  }))
+>>>>>>> e9eb46477b07203ee4de9790014fc55aea0e81c5
 
   // console.log(mapped)
   // console.log(mappedFields)

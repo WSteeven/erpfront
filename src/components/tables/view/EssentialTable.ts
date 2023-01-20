@@ -298,6 +298,10 @@ export default defineComponent({
       return Math.ceil(listado.value.length / pagination.value.rowsPerPage)
     })
 
+    function resaltar(valor: string) {
+      const tiposTrabajos = ['EMERGENCIA'] //, 'ASISTENCIA NODO CLIENTE', 'ASISTENCIA NODO NEDETEL']
+      return tiposTrabajos.includes(valor)
+    }
 
     return {
       grid,
@@ -331,6 +335,7 @@ export default defineComponent({
       pagesNumber,
       pagination,
       formatBytes,
+      resaltar,
     }
   },
 })
