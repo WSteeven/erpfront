@@ -189,10 +189,11 @@ watch(props.fila, () => {
 const abierto = computed(() => !!props.fila)
 
 function guardar() {
-<<<<<<< HEAD
-  var mapped =              fields.value.map((item) => ({ [item.field]: item.valor }))
-  var mappedSelect =  fieldsSelect.value.map((item) => ({[item.field]: item.valor}))
-  var mappedAll =         fieldsAll.value.map((item)=>({[item.field]:item.valor}))
+  var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
+  var mappedSelect = fieldsSelect.value.map((item) => ({
+    [item.field]: item.valor,
+  }))
+  var mappedAll = fieldsAll.value.map((item) => ({ [item.field]: item.valor }))
   var mappedLleno = [...mappedAll, ...mapped, ...mappedSelect]
   var newObj = Object.assign({}, ...mapped)
   var newObj2 = Object.assign(newObj, ...mappedSelect)
@@ -203,7 +204,7 @@ function guardar() {
   console.log(mappedSelect)
   console.log(mappedAll)
   console.log(mappedLleno)
-  
+
   console.log(newObj)
   console.log(newObj2)
   console.log(newObjAll)
@@ -213,13 +214,6 @@ function guardar() {
   // var newObj3 = Object.assign(filaRecibida!, ...newObj2)
   // console.log(newObj3)
 
-=======
-  var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
-  var mappedSelect = fieldsSelect.value.map((item) => ({
-    [item.field]: item.valor,
-  }))
-  // var newObj = Object.assign({}, ...mapped)
->>>>>>> e9eb46477b07203ee4de9790014fc55aea0e81c5
   emit('guardar', newObj)
 
   /* console.log(props.configuracionColumnas)
@@ -234,16 +228,8 @@ function guardar() {
   }))
 
   let mappedFieldsSelect = props.configuracionColumnas.map((item: any) => ({
-<<<<<<< HEAD
     [item.field]: (fieldsSelect.value[item.field]!==undefined && item.field===fieldsSelect.value[item.field].field)??fieldsSelect.value[item.field].valor
   })) */
-=======
-    [item.field]:
-      (fieldsSelect.value[item.field] !== undefined &&
-        item.field === fieldsSelect.value[item.field].field) ??
-      fieldsSelect.value[item.field].valor,
-  }))
->>>>>>> e9eb46477b07203ee4de9790014fc55aea0e81c5
 
   // console.log(mapped)
   // console.log(mappedFields)

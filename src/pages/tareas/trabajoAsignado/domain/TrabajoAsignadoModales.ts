@@ -7,14 +7,14 @@ import SubtareaAsignadaPage from 'pages/tareas/trabajoAsignado/modules/subtareas
 // import RecopilacionInformacion from 'pages/tareas/trabajoAsignado/modules/recopilacionInformacion/view/SeleccionFormularioPage.vue'
 import ControlTendido from 'tareas/tendidos/controlTendidos/view/ControlTendidoPage.vue'
 import SeleccionFormularioPage from 'pages/tareas/trabajoAsignado/modules/seleccionFormulario/view/SeleccionFormularioPage.vue'
-import GestionarAvancesPage from 'tareas/controlTareas/modules/subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'
+import EmergenciaPage from 'tareas/controlTareas/modules/subtareas/modules/controlAvance/view/EmergenciaPage.vue'
 
 export class TrabajoAsignadoModales {
   SubtareaAsignadaPage: ComponenteModal
   // RecopilacionInformacion: ComponenteModal
   ControlTendido: ComponenteModal
   SeleccionFormularioPage: ComponenteModal
-  GestionarAvancesPage: ComponenteModal
+  EmergenciaPage: ComponenteModal
 
   constructor() {
     this.SubtareaAsignadaPage = markRaw(
@@ -31,8 +31,8 @@ export class TrabajoAsignadoModales {
       new ComponenteModal('Ingreso de información', SeleccionFormularioPage)
     )
 
-    this.GestionarAvancesPage = markRaw(
-      new ComponenteModal('Gestionar avances', GestionarAvancesPage)
+    this.EmergenciaPage = markRaw(
+      new ComponenteModal('Gestionar avances', EmergenciaPage)
     )
   }
 }

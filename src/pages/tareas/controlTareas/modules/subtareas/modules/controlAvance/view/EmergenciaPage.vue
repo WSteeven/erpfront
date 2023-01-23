@@ -93,7 +93,7 @@
       <div class="full-width text-bold q-mb-md">Fechas y horas</div>
       <!-- Fecha del reporte del problema -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Fecha del reporte del problema</label>
+        <label class="q-mb-sm block">Fecha de reporte del problema</label>
         <q-input v-model="controlAvance.fecha_reporte_problema" outlined dense>
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -105,6 +105,7 @@
                 <q-date
                   v-model="controlAvance.fecha_reporte_problema"
                   mask="DD-MM-YYYY"
+                  today-btn
                 >
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
@@ -117,7 +118,7 @@
       </div>
 
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Hora de reporte de problema</label>
+        <label class="q-mb-sm block">Hora de reporte de problema (24H)</label>
         <q-input
           v-model="controlAvance.hora_reporte_problema"
           placeholder="Obligatorio"
@@ -158,7 +159,11 @@
                 transition-show="scale"
                 transition-hide="scale"
               >
-                <q-date v-model="controlAvance.fecha_arribo" mask="DD-MM-YYYY">
+                <q-date
+                  v-model="controlAvance.fecha_arribo"
+                  mask="DD-MM-YYYY"
+                  today-btn
+                >
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -171,15 +176,30 @@
 
       <!-- Hora de arribo -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Hora de arribo</label>
-        <flat-pickr
+        <label class="q-mb-sm block">Hora de arribo (24H)</label>
+        <q-input
           v-model="controlAvance.hora_arribo"
-          :config="{
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: 'H:i',
-          }"
-        />
+          placeholder="Obligatorio"
+          mask="time"
+          outlined
+          dense
+        >
+          <template v-slot:append>
+            <q-icon name="bi-clock" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-time v-model="controlAvance.hora_arribo" format24h now-btn>
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
 
       <!-- Fecha de fin reparacion -->
@@ -196,6 +216,7 @@
                 <q-date
                   v-model="controlAvance.fecha_fin_reparacion"
                   mask="DD-MM-YYYY"
+                  today-btn
                 >
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
@@ -209,15 +230,34 @@
 
       <!-- Hora fin reparacion -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Hora de fin de reparación</label>
-        <flat-pickr
+        <label class="q-mb-sm block">Hora de fin de reparación (24H)</label>
+        <q-input
           v-model="controlAvance.hora_fin_reparacion"
-          :config="{
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: 'H:i',
-          }"
-        />
+          placeholder="Obligatorio"
+          mask="time"
+          outlined
+          dense
+        >
+          <template v-slot:append>
+            <q-icon name="bi-clock" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-time
+                  v-model="controlAvance.hora_fin_reparacion"
+                  format24h
+                  now-btn
+                >
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
 
       <!-- Fecha de retiro de personal -->
@@ -234,6 +274,7 @@
                 <q-date
                   v-model="controlAvance.fecha_retiro_personal"
                   mask="DD-MM-YYYY"
+                  today-btn
                 >
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
@@ -247,15 +288,34 @@
 
       <!-- Hora fin reparacion -->
       <div class="col-12 col-md-3 q-mb-md">
-        <label class="q-mb-sm block">Hora de retiro de personal</label>
-        <flat-pickr
+        <label class="q-mb-sm block">Hora de retiro de personal (24H)</label>
+        <q-input
           v-model="controlAvance.hora_retiro_personal"
-          :config="{
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: 'H:i',
-          }"
-        />
+          placeholder="Obligatorio"
+          mask="time"
+          outlined
+          dense
+        >
+          <template v-slot:append>
+            <q-icon name="bi-clock" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-time
+                  v-model="controlAvance.hora_retiro_personal"
+                  format24h
+                  now-btn
+                >
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
 
       <div class="col-12 col-md-3 q-mb-md">
@@ -351,4 +411,4 @@
   </q-page>
 </template>
 
-<script src="./ControlAvanceContent.ts"></script>
+<script src="./EmergenciaPage.ts"></script>

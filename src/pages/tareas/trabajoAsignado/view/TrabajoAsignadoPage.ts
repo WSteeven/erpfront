@@ -139,7 +139,7 @@ export default defineComponent({
           // modales.abrirModalEntidad('SeleccionFormularioPage')
           // modales.abrirModalEntidad('ControlTendido')
           // router.push({ name: 'control_tendidos' })
-          modales.abrirModalEntidad('GestionarAvancesPage')
+          modales.abrirModalEntidad('EmergenciaPage')
         })
       }
     }
