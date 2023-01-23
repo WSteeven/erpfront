@@ -20,6 +20,7 @@ import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/Proye
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
+import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 
 export default defineComponent({
   props: {
@@ -236,6 +237,11 @@ export default defineComponent({
 
     onConsultado(async () => {
       tareaStore.tarea.hydrate(tarea)
+      console.log('se condaultado')
+      // console.log(tarea)
+      if (tarea.destino === 'PARA_PROYECTO') {
+        setCliente()
+      }
     })
 
     const controller = new ClienteFinalController()
@@ -262,6 +268,13 @@ export default defineComponent({
         tarea.destino = valor
       }
     })
+
+    async function setCliente() {
+      const proyectoController = new ProyectoController()
+      const { result } = await proyectoController.consultar(tarea.proyecto)
+      tareaStore.idCliente = result.cliente
+      console.log(result)
+    }
 
     return {
       clientesFinalesSource,

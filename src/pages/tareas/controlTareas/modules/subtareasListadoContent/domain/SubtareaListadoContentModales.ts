@@ -5,8 +5,9 @@ import { markRaw } from 'vue'
 // Paginas
 import PausasRealizadasPage from 'tareas/controlTareas/modules/subtareas/modules/gestionarAvances/modules/pausasRealizadas/view/PausasRealizadasPage.vue'
 import ArchivoSubtarea from 'pages/tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/view/ArchivoSubtareaPage.vue'
-import GestionarAvancesPage from 'subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'
 import SubtareasPage from 'subtareas/view/SubtareaPage.vue'
+import EmergenciaPage from 'subtareas/modules/controlAvance/view/EmergenciaPage.vue'
+// import GestionarAvancesPage from 'subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'
 
 export class SubtareaListadoContentModales {
   SubtareasPage: ComponenteModal
@@ -19,7 +20,7 @@ export class SubtareaListadoContentModales {
       new ComponenteModal('Detalles del trabajo', SubtareasPage)
     )
     this.GestionarAvancesPage = markRaw(
-      new ComponenteModal('CONSTRUCRED', GestionarAvancesPage)
+      new ComponenteModal('Emergencias', EmergenciaPage)
     )
     this.ArchivoSubtarea = markRaw(
       new ComponenteModal('Compartir archivos para el trabajo', ArchivoSubtarea)

@@ -134,7 +134,7 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.nombre"
+              :option-label="(item) => item.descripcion"
               :option-value="(item) => item.id"
               use-input
               input-debounce="0"
@@ -490,7 +490,7 @@
             <q-input
               v-model="subtarea.hora_fin_ventana"
               :disable="disable"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               mask="time"
               outlined
               dense

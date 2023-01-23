@@ -49,11 +49,11 @@ export default defineComponent({
     const columnasMaterial = [...configuracionColumnasMaterial, acciones]
 
     const eliminarTrabajoRealizado = ({ posicion }) => {
-      controlAvance.trabajos_realizados.splice(posicion)
+      controlAvance.trabajos_realizados.splice(posicion, 1)
     }
 
     const eliminarObservacion = ({ posicion }) => {
-      controlAvance.observaciones.splice(posicion)
+      controlAvance.observaciones.splice(posicion, 1)
     }
 
     const agregarActividadRealizada: CustomActionTable = {

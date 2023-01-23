@@ -87,7 +87,7 @@ export default defineComponent({
       await obtenerListados({
         tiposTrabajos: {
           controller: new TipoTrabajoController(),
-          params: { cliente: tareaStore.tarea.cliente }
+          params: { cliente: tareaStore.tarea.cliente ?? tareaStore.idCliente }
         },
         subtareas: {
           controller: new SubtareaController(),
