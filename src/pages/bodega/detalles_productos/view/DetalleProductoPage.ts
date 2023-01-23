@@ -24,6 +24,7 @@ import { SpanController } from "pages/administracion/span/infraestructure/SpanCo
 import { RamController } from "../modules/computadoras/modules/ram/infraestructure/RamController"
 import { DiscoController } from "../modules/computadoras/modules/disco/infraestructure/DiscoController"
 import { ProcesadorController } from "../modules/computadoras/modules/procesador/infraestructure/ProcesadorController"
+import { acciones } from "config/utils"
 
 export default defineComponent({
     components: { TabLayout },
@@ -154,12 +155,14 @@ export default defineComponent({
         const categoria_var = ref('')
 
         watch(categoria_var, () => {
-            limpiarCamposInformatica()
-            limpiarCamposAdicionales()
-            console.log(detalle.categoria)
-            console.log(categoria_var.value)
-            if (detalle.categoria === 'EPP') {
-                detalle.tiene_adicionales = true
+            if(accion===acciones.consultar){
+                limpiarCamposInformatica()
+                limpiarCamposAdicionales()
+                console.log(detalle.categoria)
+                console.log(categoria_var.value)
+                if (detalle.categoria === 'EPP') {
+                    detalle.tiene_adicionales = true
+                }
             }
         })
 
@@ -284,6 +287,7 @@ export default defineComponent({
 
             actualizarCategoria(val) {
                 const producto = listadosAuxiliares.productos.filter((v) => v.id === val)
+                console.log(producto[0]['categoria'])
                 categoria_var.value = producto[0]['categoria']
                 detalle.categoria = producto[0]['categoria']
                 /* if (producto[0]['categoria'] === 'INFORMATICA') {
