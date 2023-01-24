@@ -188,7 +188,7 @@ export default defineComponent({
                 prompt(config)
             },
             visible: () => {
-                return accion.value == acciones.nuevo || esActivos ? true : false
+                return accion.value == acciones.nuevo || (esActivos&&accion.value==acciones.editar) ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {

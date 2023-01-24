@@ -35,7 +35,7 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', () 
         statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
         // await detalleTransaccionStore.cargarDetalleEspecifico('?transaccion_id=' + transaccionStore.transaccion.id + '&detalle_id=' + entidad.listadoProductosTransaccion[posicion]['id'])
-        const ruta = axios.getEndpoint(endpoints.detalle_producto_transaccion) + '?transaccion_id=' + transaccion_id + '&detalle_id=' + detalle_id
+        const ruta = axios.getEndpoint(endpoints.detalle_producto_transaccion) + '?transaccion_id=' + transaccion_id + '&inventario_id=' + detalle_id
         console.log('ruta a consultar: ', ruta)
         const response: AxiosResponse = await axios.get(ruta)
         statusLoading.desactivar()
@@ -65,8 +65,8 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', () 
         const modelo = await consultarDetalle(id)
         detalle.hydrate(modelo)
     }
-    async function cargarDetalleEspecifico(transaccion_id: number, detalle_id:number) {
-        const modelo = await consultarItem(transaccion_id, detalle_id)
+    async function cargarDetalleEspecifico(transaccion_id: number, inventario_id:number) {
+        const modelo = await consultarItem(transaccion_id, inventario_id)
         console.log('datos recibidos en cargar detalle especifico:', modelo)
         detalle.hydrate(modelo)
     }

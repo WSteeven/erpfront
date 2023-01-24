@@ -11,6 +11,7 @@ export class Transaccion extends EntidadAuditable{
     obs_estado: string|null
     solicitante: number|null
     devolucion: number|null
+    transferencia: number|null
     solicitante_id: number|null
     tipo: number|null
     motivo: number|null
@@ -33,6 +34,7 @@ export class Transaccion extends EntidadAuditable{
     es_tarea:boolean
     tiene_devolucion:boolean
     tiene_pedido:boolean
+    es_transferencia:boolean
 
     // producto: string|null
     listadoProductosTransaccion:any[]
@@ -45,6 +47,7 @@ export class Transaccion extends EntidadAuditable{
         this.fecha_limite=null
         this.solicitante_id=null
         this.devolucion=null
+        this.transferencia=null
         this.solicitante=null
         this.motivo=null
         this.tarea=null
@@ -70,6 +73,7 @@ export class Transaccion extends EntidadAuditable{
         this.es_tarea=false
         this.tiene_devolucion=false
         this.tiene_pedido=false
+        this.es_transferencia=false
 
         // this.producto=null
         this.listadoProductosTransaccion=[]

@@ -352,7 +352,6 @@
                 </div>
               </template>
             </q-input>
-            {{ v$.$errors }}
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
@@ -405,8 +404,8 @@
               titulo="Productos Seleccionados"
               :configuracionColumnas="
                 accion === acciones.nuevo
-                  ? configuracionColumnasItemsSeleccionados
-                  : configuracionColumnasItemsSeleccionados
+                  ? configuracionColumnasProductosSeleccionados
+                  : configuracionColumnasProductosSeleccionados
               "
               :datos="transferencia.listadoProductos"
               :permitirConsultar="false"

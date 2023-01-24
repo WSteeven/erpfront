@@ -67,7 +67,7 @@ export default defineComponent({
 
 
     onBeforeMount(async () => {
-      console.log("onbeforemount")
+      // console.log("onbeforemount")
       await transaccion.hydrate(transaccionStore.transaccion) //cargar la transaccion con la del store
       let detalles_ids: any = []
       detalles_ids = transaccionStore.transaccion.listadoProductosTransaccion.map((element: DetalleProducto) => element.id)
@@ -182,7 +182,7 @@ export default defineComponent({
         console.log('Completado!!!!', selected2.value)
         selected2.value.forEach(async (v: Inventario) => {
           console.log("VLAUE DE SELECTED2", v)
-          await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, v.detalle!)
+          await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, v.id!)
           detalleTransaccionStore.detalle.cantidad_final = v.cantidad
           await detalleTransaccionStore.actualizarDetalle(detalleTransaccionStore.detalle.id!, detalleTransaccionStore.detalle)
           /* $datos = [

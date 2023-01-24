@@ -111,9 +111,24 @@
               </template>
             </q-select>
           </div>
+          <!-- Pedido -->
+          <div v-if="transaccion.es_transferencia" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">N° transferencia</label>
+            <q-input
+              type="number"
+              v-model="transaccion.transferencia"
+              placeholder="Opcional"
+              hint="Ingresa un numero de transferencia y presiona Enter"
+              @keyup.enter="llenarTransferencia(transaccion.transferencia)"
+              :readonly="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Tiene pedido -->
           <div
-            v-if="accion === 'NUEVO' || transaccion.tiene_pedido"
+            v-if="(accion === 'NUEVO' && !transaccion.es_transferencia) || (transaccion.tiene_pedido && !transaccion.es_transferencia) "
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -276,7 +291,7 @@
           </div>
           <!-- Es para una tarea -->
           <div
-            v-if="esVisibleTarea || accion === 'NUEVO'"
+            v-if="(esVisibleTarea&&!transaccion.es_transferencia) || (accion === 'NUEVO'&&!transaccion.es_transferencia)"
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -323,7 +338,7 @@
           </div>
           <!-- Retira un tercero -->
           <div
-            v-if="transaccion.per_retira || accion === 'NUEVO'"
+            v-if="(transaccion.per_retira&&!transaccion.es_transferencia) || (accion === 'NUEVO'&&!transaccion.es_transferencia)"
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -411,7 +426,12 @@
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
                   :disable="disabled || soloLectura"
-                  @keydown.enter="listarProductos()"
+                  @keydown.enter="
+                    listarProductos({
+                      sucursal_id: transaccion.sucursal,
+                      cliente_id: transaccion.cliente,
+                    })
+                  "
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
                   "
@@ -422,7 +442,8 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos()"
+                  @click="listarProductos({sucursal_id: transaccion.sucursal,
+                      cliente_id: transaccion.cliente,})"
                   icon="search"
                   unelevated
                   :disable="disabled || soloLectura"
@@ -439,8 +460,9 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
+              :configuracionColumnas="accion===acciones.nuevo?
+                configuracionColumnasProductosSeleccionadosAccion:
+                configuracionColumnasProductosSeleccionadosDespachado
               "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
@@ -456,9 +478,10 @@
       </q-form>
 
       <!-- Modal de seleccion de detalles -->
+      <!-- :configuracion-columnas="configuracionColumnasDetallesProductos" -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
-        :configuracion-columnas="configuracionColumnasDetallesProductos"
+        :configuracion-columnas="configuracionColumnasInventarios"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"

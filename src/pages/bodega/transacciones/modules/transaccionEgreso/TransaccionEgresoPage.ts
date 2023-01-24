@@ -3,12 +3,14 @@ import { configuracionColumnasTransaccionEgreso } from '../../domain/configuraci
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
+import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
+import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 // import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, logoBN, logoColor, meses, tabOptionsTransacciones } from 'config/utils'
+import { acciones, logoBN, logoColor, meses, motivos, tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
@@ -46,6 +48,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
+import { useOrquestadorSelectorItems } from 'pages/bodega/traspasos/application/OrquestadorSelectorInventario'
+import { useTransferenciaStore } from 'stores/transferencia'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -64,7 +68,9 @@ export default defineComponent({
         const transaccionStore = useTransaccionStore()
         const detalleTransaccionStore = useDetalleTransaccionStore()
         const pedidoStore = usePedidoStore()
+        const transferenciaStore = useTransferenciaStore()
 
+        //orquestador
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
             criterioBusqueda: criterioBusquedaProducto,
@@ -72,7 +78,15 @@ export default defineComponent({
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorItemsTransaccion(transaccion, 'detalles')
+        } = useOrquestadorSelectorItems(transaccion, 'inventarios')
+        // const {
+        //     refListadoSeleccionable: refListadoSeleccionableProductos,
+        //     criterioBusqueda: criterioBusquedaProducto,
+        //     listado: listadoProductos,
+        //     listar: listarProductos,
+        //     limpiar: limpiarProducto,
+        //     seleccionar: seleccionarProducto
+        // } = useOrquestadorSelectorItemsTransaccion(transaccion, 'detalles')
 
 
         const usuarioLogueado = store.user
@@ -340,7 +354,7 @@ export default defineComponent({
                             height: 40,
                             margin: [5, 2]
                         },
-                        { text: 'COMPROBANTE DE EGRESO', width: 'auto', style: 'header', margin: [85, 20] },
+                        { text: transaccion.es_transferencia+'COMPROBANTE DE EGRESO POR TRANSFERENCIA', width: 'auto', style: 'header', margin: [85, 20] },
                         { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
                     ],
                 },
@@ -543,6 +557,20 @@ export default defineComponent({
             cargarDatos()
             console.log(pedidoStore.pedido)
         }
+
+        async function llenarTransferencia(id:number){
+            limpiarTransaccion()
+            await transferenciaStore.cargarTransferencia(id)
+            cargarDatosTransferencia()
+            console.log(transferenciaStore.transferencia)
+        }
+        function cargarDatosTransferencia(){
+            transaccion.sucursal = transferenciaStore.transferencia.sucursal_salida
+            transaccion.justificacion = transferenciaStore.transferencia.justificacion
+            transaccion.cliente = transferenciaStore.transferencia.cliente
+            transaccion.listadoProductosTransaccion = transferenciaStore.transferencia.listadoProductos
+        }
+
         function cargarDatos() {
             transaccion.pedido = pedidoStore.pedido.id
             transaccion.justificacion = pedidoStore.pedido.justificacion
@@ -589,6 +617,21 @@ export default defineComponent({
             name: 'acciones',
             field: 'acciones',
             label: 'Acciones',
+            align: 'right',
+            sortable: false,
+        }
+        ]
+        const configuracionColumnasProductosSeleccionadosDespachado = [...configuracionColumnasProductosSeleccionados, {
+            name: 'cantidad',
+            field: 'cantidad',
+            label: 'Cantidad',
+            align: 'left',
+            sortable: false,
+        },
+        {
+            name: 'despachado',
+            field: 'despachado',
+            label: 'Despachado',
             align: 'right',
             sortable: false,
         }
@@ -648,6 +691,13 @@ export default defineComponent({
             filtroTareas,
             filtroMotivos(val) {
                 console.log('filtro motivos', val)
+                const motivoSeleccionado  =listadosAuxiliares.motivos.filter((v)=>v.id===val)
+                if(motivoSeleccionado[0]['nombre']==motivos.egresoTransferenciaBodegas){
+                    console.log(motivoSeleccionado[0]['nombre'])
+                    transaccion.es_transferencia = true
+                }else{
+                    transaccion.es_transferencia=false
+                }
             },
 
             filtroEmpleados(val, update) {
@@ -677,7 +727,10 @@ export default defineComponent({
 
 
             //tabla
+            configuracionColumnasInventarios,
+            configuracionColumnasItemsSeleccionados,
             configuracionColumnasProductosSeleccionadosAccion,
+            configuracionColumnasProductosSeleccionadosDespachado,
             configuracionColumnasProductosSeleccionados,
             configuracionColumnasDetallesProductos,
             botonEditarCantidad,
@@ -703,6 +756,9 @@ export default defineComponent({
 
             llenarTransaccion,
             limpiarTransaccion,
+
+            //transferencia 
+            llenarTransferencia,
 
             //tabs y filtros
             tabOptionsTransacciones,

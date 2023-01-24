@@ -87,7 +87,7 @@ import { color } from 'echarts'; import { color } from 'echarts';
           :pagination="{rowsPerPage:10}"
           @selection="buscarProductoEnInventario"
         />
-        <div class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div>
+        <!-- <div class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div> -->
       </div>
       <!-- Listado del pedido -->
       <!-- <div class="col-12 col-md-12">
