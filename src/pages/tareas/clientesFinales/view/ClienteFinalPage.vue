@@ -6,6 +6,8 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
+        <div class="text-bold q-pt-md">Información general</div>
+
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Cliente -->
           <div class="col-12 col-md-6">
@@ -50,6 +52,7 @@
             <q-input
               v-model="clienteFinal.id_cliente_final"
               :error="!!v$.id_cliente_final.$errors.length"
+              placeholder="Obligatorio"
               :disable="disabled"
               outlined
               dense
@@ -71,6 +74,7 @@
             <q-input
               v-model="clienteFinal.celular"
               :error="!!v$.celular.$errors.length"
+              placeholder="Obligatorio"
               :disable="disabled"
               outlined
               dense
@@ -89,6 +93,7 @@
             <q-input
               v-model="clienteFinal.nombres"
               :error="!!v$.nombres.$errors.length"
+              placeholder="Obligatorio"
               :disable="disabled"
               outlined
               dense
@@ -107,6 +112,7 @@
             <q-input
               v-model="clienteFinal.apellidos"
               :error="!!v$.apellidos.$errors.length"
+              placeholder="Obligatorio"
               :disable="disabled"
               outlined
               dense
@@ -119,6 +125,46 @@
             </q-input>
           </div>
 
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha de activación</label>
+            <q-input
+              v-model="clienteFinal.fecha_activacion"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="clienteFinal.fecha_activacion"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+        </div>
+
+        <!-- UBICACION -->
+        <div class="text-bold">Ubicación</div>
+        <div class="row q-col-gutter-sm q-py-md q-mb-md">
           <!-- Provincia -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Provincias</label>
@@ -161,7 +207,6 @@
             <q-select
               v-model="clienteFinal.canton"
               :options="cantonesPorProvincia"
-              :error="!!v$.canton.$errors.length"
               :disable="disabled"
               transition-show="scale"
               transition-hide="scale"
@@ -182,12 +227,6 @@
                   </q-item-section>
                 </q-item>
               </template>
-
-              <template v-slot:error>
-                <div v-for="error of v$.canton.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-select>
           </div>
 
@@ -196,16 +235,11 @@
             <label class="q-mb-sm block">Parroquia/Barrio</label>
             <q-input
               v-model="clienteFinal.parroquia"
-              :error="!!v$.parroquia.$errors.length"
+              placeholder="Opcional"
               :disable="disabled"
               outlined
               dense
             >
-              <template v-slot:error>
-                <div v-for="error of v$.parroquia.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-input>
           </div>
 
@@ -214,16 +248,11 @@
             <label class="q-mb-sm block">Dirección</label>
             <q-input
               v-model="clienteFinal.direccion"
-              :error="!!v$.direccion.$errors.length"
+              placeholder="Opcional"
               :disable="disabled"
               outlined
               dense
             >
-              <template v-slot:error>
-                <div v-for="error of v$.direccion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-input>
           </div>
 
@@ -232,16 +261,11 @@
             <label class="q-mb-sm block">Referencia</label>
             <q-input
               v-model="clienteFinal.referencia"
-              :error="!!v$.referencia.$errors.length"
+              placeholder="Opcional"
               :disable="disabled"
               outlined
               dense
             >
-              <template v-slot:error>
-                <div v-for="error of v$.referencia.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-input>
           </div>
 
@@ -250,18 +274,11 @@
             <label class="q-mb-sm block">Coordenada longitud</label>
             <q-input
               v-model="clienteFinal.coordenada_longitud"
+              placeholder="Opcional"
               :disable="disabled"
               outlined
               dense
             >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.coordenada_longitud.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-input>
           </div>
 
@@ -270,18 +287,95 @@
             <label class="q-mb-sm block">Coordenada latitud</label>
             <q-input
               v-model="clienteFinal.coordenada_latitud"
+              placeholder="Opcional"
               :disable="disabled"
               outlined
               dense
             >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.coordenada_latitud.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+            </q-input>
+          </div>
+        </div>
+
+        <!-- RUTA -->
+        <div class="text-bold">Ruta</div>
+        <div class="row q-col-gutter-sm q-py-md">
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Origen</label>
+            <q-input
+              v-model="clienteFinal.ruta_origen"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Destino</label>
+            <q-input
+              v-model="clienteFinal.ruta_destino"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+        </div>
+
+        <!-- ODF -->
+        <div class="text-bold">ODF</div>
+        <div class="row q-col-gutter-sm q-py-md">
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Origen</label>
+            <q-input
+              v-model="clienteFinal.odf_origen"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Destino</label>
+            <q-input
+              v-model="clienteFinal.odf_destino"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+        </div>
+
+        <!-- ODF -->
+        <div class="text-bold">Hilos</div>
+        <div class="row q-col-gutter-sm q-py-md">
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Hilo 1</label>
+            <q-input
+              v-model="clienteFinal.odf_origen"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Hilo 2</label>
+            <q-input
+              v-model="clienteFinal.odf_destino"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
             </q-input>
           </div>
         </div>

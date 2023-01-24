@@ -225,7 +225,7 @@
         </div>
 
         <!-- Detalle -->
-        <div class="col-12 col-md-6">
+        <div class="col-12">
           <label class="q-mb-sm block">Detalle de la tarea</label>
           <q-input
             v-model="tarea.detalle"
@@ -245,7 +245,7 @@
         </div>
 
         <!-- Observacion -->
-        <div class="col-12 col-md-6">
+        <div class="col-12">
           <label class="q-mb-sm block">Observación</label>
           <q-input
             v-model="tarea.observacion"

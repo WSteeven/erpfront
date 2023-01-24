@@ -10,6 +10,7 @@ export class Proyecto extends EntidadAuditable {
   costo: number | null
   nombre: string | null
   fecha_solicitud: string | null
+  demora: string | null
 
   constructor() {
     super()
@@ -22,5 +23,6 @@ export class Proyecto extends EntidadAuditable {
     this.costo = null
     this.nombre = null
     this.fecha_solicitud = null
+    this.demora = null
   }
 }

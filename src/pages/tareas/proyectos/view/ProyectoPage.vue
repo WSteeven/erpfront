@@ -207,7 +207,7 @@
 
           <!-- Coordinador -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordinador</label>
+            <label class="q-mb-sm block">Supervisor JP</label>
             <q-select
               v-model="proyecto.coordinador"
               :options="coordinadores"
