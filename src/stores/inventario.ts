@@ -42,9 +42,9 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         statusLoading.desactivar()
         console.log('datos obtenidos:', response.data.results)
         return response.data.results
-    } 
+    }
     /**
-     * 
+     *
      * @param data array de datos compuesto por el listado de detalle_id, el cliente_id y la sucursal_id
      * @returns listado de elementos encontrados en el inventario que coinciden con el listado de detalle_id
      */
@@ -54,18 +54,17 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         const ruta = 'api/buscarDetallesEnInventario'
         const response: AxiosResponse = await axios.post(ruta, data)
         statusLoading.desactivar()
-        console.log(response)
+        // console.log(response)
         return {
-            response: response.data.results,
+            results :response.data.results,
         }
     }
     async function cargarCoincidencias(data:any) {
-        const results = await buscarTodos(data)
-        return results
+        return await buscarTodos(data)
     }
 
     /**
-     * 
+     *
      * @param detalle_id detalle_id, identificador de detalle para buscar todas las coincidencias
      * @param sucursal_id sucursal_id, sucursal especifica seleccionada en la transaccion
      * @param cliente_id cliente_id, cliente especifico seleccionado en la transaccion
@@ -84,7 +83,7 @@ export const useInventarioStore=defineStore('inventario', ()=>{
     return {
         //state
         inventario,
-        accionInventario, 
+        accionInventario,
         cargarItem,
         resetearInventario,
         cargarElementosId,

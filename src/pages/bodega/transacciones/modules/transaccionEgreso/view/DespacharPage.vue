@@ -1,3 +1,5 @@
+import { color } from 'echarts'; import { color } from 'echarts';
+
 <template>
   <div class="q-pa-md">
     <!-- encabezado -->
@@ -62,8 +64,14 @@
       <!-- Cliente -->
       <div class="col-12 col-md-2">
         <strong><label class="q-mb-sm block">Cliente</label></strong>
-        <q-input v-model="transaccion.cliente" dense readonly borderless autogrow/>
-        </div>
+        <q-input
+          v-model="transaccion.cliente"
+          dense
+          readonly
+          borderless
+          autogrow
+        />
+      </div>
       <!-- Listado del pedido -->
       <div class="col-12 col-md-12">
         <q-table
@@ -73,14 +81,30 @@
           :rows="transaccion.listadoProductosTransaccion"
           :columns="configuracionColumnasListadoProductosSeleccionados"
           row-key="id"
-          selection="single"
           :hide-bottom="true"
           dense
           v-model:selected="selected"
+          :pagination="{rowsPerPage:10}"
           @selection="buscarProductoEnInventario"
         />
         <div class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div>
       </div>
+      <!-- Listado del pedido -->
+      <!-- <div class="col-12 col-md-12">
+        <q-table
+          flat
+          title="Listado de coincidencias"
+          class="bg-white custom-border"
+          :rows="listadoCoincidencias"
+          :columns="configuracionColumnasItemsEncontradosInventario"
+          row-key="id"
+          dense
+          selection="multiple"
+          v-model:selected="selectedCoincidencia"
+          :hide-bottom="true"
+          :pagination="{rowsPerPage:10}"
+        />
+      </div> -->
     </div>
     <!-- fin de encabezado -->
     <q-stepper v-model="step" ref="stepper" color="primary" header-nav animated>
@@ -102,13 +126,15 @@
               flat
               title="Coincidencias"
               class="bg-white custom-border"
-              :rows="resultadosInventario"
+              :rows="listadoCoincidencias"
               :columns="configuracionColumnasItemsEncontradosInventario"
               row-key="id"
               selection="multiple"
               dense
               v-model:selected="selected2"
-              @selection="mostrarEnConsola"
+              :hide-bottom="true"
+              :pagination="{ rowsPerPage: 10 }"
+              @selection="mostrarEnConsolasss"
             />
             <!-- <div class="q-mt-md">Selected: {{ JSON.stringify(selected2) }}</div> -->
             Cantidad de items: {{ selected2.length }}
@@ -125,13 +151,20 @@
           flat
           title="Movimiento"
           class="bg-white custom-border"
-          :rows="coincidencias"
+          :rows="selected2"
           :columns="configuracionColumnasItemsEncontradosInventario"
           row-key="id"
           dense
           :hide-bottom="true"
+          :pagination="{ rowsPerPage: 10 }"
         >
-          <!-- <template v-slot:body="props">
+          <template v-slot:header-cell-cantidad="props">
+            <q-th :props="props">
+              <q-icon name="edit" size="1.5em" />
+              {{ props.col.label }}
+            </q-th>
+          </template>
+          <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="producto" :props="props">{{
                 props.row.producto
@@ -145,31 +178,40 @@
               <q-td key="sucursal_id" :props="props">{{
                 props.row.sucursal_id
               }}</q-td>
-              <q-td key="cantidad" :props="props">
-                {{ props.row.cantidad }}
+              <q-td key="cantidad" :props="props" :no-hover="true">
+                <q-badge color="blue-grey-9" :label="props.row.cantidad" />
+                <!-- {{ props.row.cantidad }} -->
                 <q-popup-edit
                   v-model="props.row.cantidad"
-                  title="Update cantidad"
+                  title="Editar cantidad"
                   buttons
                   v-slot="scope"
                 >
                   <q-input
-                    type="text"
-                    mask="####"
+                    type="number"
                     v-model="scope.value"
                     dense
                     autofocus
                   />
                 </q-popup-edit>
               </q-td>
-              !-- <q-td key="precio_unitario" :props="props">
+              <q-td key="condicion" :props="props">{{
+                props.row.condicion
+              }}</q-td>
+              <q-td key="estado" :props="props">{{ props.row.estado }}</q-td>
+              <!-- <q-td key="precio_unitario" :props="props">
                 {{ props.row.precio_unitario }}
                 <q-popup-edit v-model="props.row.precio_unitario" title="Update Precio de venta" buttons v-slot="scope">
                   <q-input type="number" v-model="scope.value" dense autofocus/>
                 </q-popup-edit>
-              </q-td> --
+              </q-td> -->
             </q-tr>
-          </template> -->
+          </template>
+          <template v-slot:body-cell-cantidad="props">
+            <q-td :props="props">
+              <q-badge color="blue" :label="props.value" />
+            </q-td>
+          </template>
         </q-table>
       </q-step>
       <!-- <q-step :name="3" title="Create an ad" icon="add_comment">

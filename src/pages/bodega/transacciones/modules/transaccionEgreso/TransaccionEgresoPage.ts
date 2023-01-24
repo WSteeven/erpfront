@@ -25,7 +25,6 @@ import { useQuasar } from 'quasar'
 
 //Controladores
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
@@ -100,7 +99,6 @@ export default defineComponent({
         const opciones_empleados = ref([])
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
-        const opciones_tipos = ref([])
         const opciones_motivos = ref([])
         const opciones_estados = ref([])
         const opciones_tareas = ref([])
@@ -119,10 +117,6 @@ export default defineComponent({
                 sucursales: {
                     controller: new SucursalController(),
                     params: { campos: 'id,lugar' },
-                },
-                tipos: {
-                    controller: new TipoTransaccionController(),
-                    params: { tipo: 'EGRESO' }
                 },
                 tareas: {
                     controller: new TareaController(),
@@ -159,7 +153,7 @@ export default defineComponent({
                 transaccion.sucursal = pedidoStore.pedido.sucursal_id
             }
         })
-        
+
         //hooks
         onReestablecer(() => {
             puedeEditarCantidad.value = true
@@ -325,7 +319,7 @@ export default defineComponent({
                 },
             }
 
-            var docDefinition = {
+            let docDefinition = {
                 info: {
                     title: `Transacción N° ${transaccion.id}`,
                     author: `${store.user.nombres} ${store.user.apellidos}`,
@@ -449,7 +443,7 @@ export default defineComponent({
                     },
                     { text: '\n' },
 
-                    /* 
+                    /*
                     ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
                     */
@@ -559,7 +553,17 @@ export default defineComponent({
                 transaccion.tarea = pedidoStore.pedido.tarea
                 filtroTareas(transaccion.tarea)
             }
-            transaccion.listadoProductosTransaccion = pedidoStore.pedido.listadoProductos
+            transaccion.listadoProductosTransaccion = pedidoStore.pedido.listadoProductos.filter((v)=>v.cantidad!=v.despachado)
+            console.log(transaccion.listadoProductosTransaccion)
+            transaccion.listadoProductosTransaccion.forEach((v) => {
+              v.cantidad = buscarCantidadPendienteEnPedido(v.id)
+            });
+        }
+
+        function buscarCantidadPendienteEnPedido(detalle){
+          let fila = pedidoStore.pedido.listadoProductos.filter((v)=>v.id ===detalle)
+          console.log(fila[0])
+          return fila[0]['cantidad']-fila[0]['despachado']
         }
 
         function limpiarTransaccion() {
@@ -594,7 +598,7 @@ export default defineComponent({
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = listadosAuxiliares.sucursales
-        opciones_tipos.value = listadosAuxiliares.tipos
+
         opciones_motivos.value = listadosAuxiliares.motivos
         opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
         opciones_estados.value = listadosAuxiliares.estados
@@ -603,11 +607,11 @@ export default defineComponent({
         opciones_clientes.value = listadosAuxiliares.clientes
 
         function filtroTareas(val) {
-            console.log('val recibido', val)
+            // console.log('val recibido', val)
             const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val||v.detalle==val)
-            console.log(listadosAuxiliares.tareas)
-            console.log('cliente_encontrado', opcion_encontrada[0])
-            console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
+            // console.log(listadosAuxiliares.tareas)
+            // console.log('cliente_encontrado', opcion_encontrada[0])
+            // console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
             transaccion.cliente = opcion_encontrada[0]['cliente_id']
             transaccion.tarea = opcion_encontrada[0]['id']
         }
@@ -621,7 +625,6 @@ export default defineComponent({
             //listados
             opciones_empleados,
             opciones_sucursales,
-            opciones_tipos,
             opciones_motivos,
             opciones_autorizaciones,
             opciones_estados,
@@ -643,13 +646,6 @@ export default defineComponent({
 
             //filtros
             filtroTareas,
-            filtroTipos(val) {
-                const tipoSeleccionado = listadosAuxiliares.tipos.filter((v) => v.id === val)
-                opciones_motivos.value = listadosAuxiliares.motivos.filter((v) => v.tipo_transaccion_id === val)
-                transaccion.motivos = ''
-                if (opciones_motivos.value.length > 1) transaccion.motivo = ''
-                if (opciones_motivos.value.length === 1) transaccion.motivo = opciones_motivos.value[0]['id']
-            },
             filtroMotivos(val) {
                 console.log('filtro motivos', val)
             },

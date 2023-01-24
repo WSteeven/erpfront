@@ -319,7 +319,9 @@
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
+                accion === acciones.nuevo
+                  ? configuracionColumnasProductosSeleccionadosAccion
+                  : configuracionColumnasProductosSeleccionados
               "
               :datos="pedido.listadoProductos"
               :permitirConsultar="false"
