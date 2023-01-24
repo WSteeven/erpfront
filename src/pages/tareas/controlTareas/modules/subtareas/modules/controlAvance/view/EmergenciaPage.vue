@@ -407,13 +407,60 @@
     </div>
 
     <div class="full-width text-bold q-mb-md">Evidencia fotográfica</div>
-    <div class="row">
+    <div class="row q-col-gutter-sm q-mb-md">
       <!-- Imagen elemento -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block"
           >Lecturas del OTDR antes de iniciar los trabajos</label
         >
-        <selector-imagen :imagen="controlAvance.imagen_elemento">
+        <selector-imagen
+          :imagen="controlAvance.imagen_lectura_antes"
+          @update:modelValue="
+            (data) => (controlAvance.imagen_lectura_antes = data)
+          "
+        >
+        </selector-imagen>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block"
+          >Fotografía del incidente o lugar de afectación</label
+        >
+        <selector-imagen :imagen="controlAvance.imagen_incidente">
+        </selector-imagen>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Fotografía lecturas de reparación</label>
+        <selector-imagen :imagen="controlAvance.imagen_reparacion">
+        </selector-imagen>
+      </div>
+    </div>
+
+    <div class="full-width text-bold q-mb-md">Fotográfia del cableado</div>
+    <div class="row q-col-gutter-sm">
+      <!-- Imagen elemento -->
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Punta inicial</label>
+        <selector-imagen :imagen="controlAvance.imagen_punta_inicial">
+        </selector-imagen>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Punta final</label>
+        <selector-imagen :imagen="controlAvance.imagen_punta_final">
+        </selector-imagen>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Evidencia del cableado</label>
+        <selector-imagen :imagen="controlAvance.imagen_evidencia_cableado">
+        </selector-imagen>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Mangas tejidas</label>
+        <selector-imagen :imagen="controlAvance.imagen_mangas_tejidas">
         </selector-imagen>
       </div>
     </div>

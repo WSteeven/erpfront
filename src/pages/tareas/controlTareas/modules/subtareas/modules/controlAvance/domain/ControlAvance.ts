@@ -17,6 +17,7 @@ export class ControlAvance extends EntidadAuditable {
     hora_retiro_personal: string | null
     trabajos_realizados: TrabajoRealizado[]
     observaciones: Observacion[]
+    imagen_lectura_antes: string | null
 
     constructor() {
         super()
@@ -34,5 +35,6 @@ export class ControlAvance extends EntidadAuditable {
         this.hora_retiro_personal = null
         this.trabajos_realizados = []
         this.observaciones = []
+        this.imagen_lectura_antes = null
     }
 }

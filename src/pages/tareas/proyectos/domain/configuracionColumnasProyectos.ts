@@ -19,7 +19,7 @@ export const configuracionColumnasProyecto: ColumnConfig<Proyecto>[] = [
   {
     name: 'nombre',
     field: 'nombre',
-    label: 'Nombre',
+    label: 'Nombre de proyecto',
     align: 'left',
     sortable: true,
   },
@@ -33,7 +33,7 @@ export const configuracionColumnasProyecto: ColumnConfig<Proyecto>[] = [
   {
     name: 'coordinador',
     field: 'coordinador',
-    label: 'Coordinador',
+    label: 'Supervisor JP',
     align: 'left',
     sortable: true,
   },
@@ -50,5 +50,11 @@ export const configuracionColumnasProyecto: ColumnConfig<Proyecto>[] = [
     label: 'Fecha fin',
     align: 'left',
     sortable: true,
+  },
+  {
+    name: 'demora',
+    field: 'demora',
+    label: 'Demora',
+    align: 'left',
   },
 ]
