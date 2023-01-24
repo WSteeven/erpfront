@@ -14,6 +14,7 @@ import { AxiosResponse } from 'axios'
 // Componentes
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import TrabajoRealizado from 'pages/tareas/controlTareas/modules/subtareas/domain/TrabajoRealizado'
@@ -24,6 +25,7 @@ import { ControlAvance } from '../domain/ControlAvance'
 export default defineComponent({
   components: {
     EssentialTable,
+    SelectorImagen,
   },
   setup() {
     const controlAvance = reactive(new ControlAvance())
@@ -57,16 +59,16 @@ export default defineComponent({
     }
 
     const agregarActividadRealizada: CustomActionTable = {
-      titulo: 'Agregar actividad realizada',
-      icono: 'bi-plus',
+      titulo: 'Insertar fila debajo',
+      icono: 'bi-arrow-bar-down',
       color: 'positive',
       accion: () => controlAvance.trabajos_realizados.push(new TrabajoRealizado()),
     }
 
     const agregarObservacion: CustomActionTable = {
-      titulo: 'Agregar observación',
+      titulo: 'Insertar fila debajo',
+      icono: 'bi-arrow-bar-down',
       color: 'positive',
-      icono: 'bi-plus',
       accion: () => controlAvance.observaciones.push(new Observacion()),
     }
 

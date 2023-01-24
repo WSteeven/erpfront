@@ -360,7 +360,10 @@
           :alto-fijo="false"
           :permitirConsultar="false"
           :permitir-buscar="false"
-          :permitirEditarModal="true"
+          :permitirEditarCeldas="true"
+          :permitirEditar="$q.screen.xs"
+          :permitirEditarModal="$q.screen.xs"
+          :mostrarFooter="!controlAvance.trabajos_realizados.length"
           separador="cell"
           :accion1Header="agregarActividadRealizada"
           @eliminar="eliminarTrabajoRealizado"
@@ -376,7 +379,11 @@
           :alto-fijo="false"
           :permitirConsultar="false"
           :permitir-buscar="false"
-          :permitirEditarModal="true"
+          :permitirEditarCeldas="true"
+          :permitirEditar="$q.screen.xs"
+          :permitirEditarModal="$q.screen.xs"
+          :mostrarFooter="!controlAvance.observaciones.length"
+          separador="cell"
           :accion1Header="agregarObservacion"
           @eliminar="eliminarObservacion"
         ></essential-table>
@@ -399,7 +406,17 @@
       </div>
     </div>
 
-    <div class="full-width text-bold q-mb-md">Imágenes opcionales</div>
+    <div class="full-width text-bold q-mb-md">Evidencia fotográfica</div>
+    <div class="row">
+      <!-- Imagen elemento -->
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block"
+          >Lecturas del OTDR antes de iniciar los trabajos</label
+        >
+        <selector-imagen :imagen="controlAvance.imagen_elemento">
+        </selector-imagen>
+      </div>
+    </div>
 
     <!-- Botones formulario -->
     <div class="row q-gutter-md justify-end">

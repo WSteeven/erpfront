@@ -530,9 +530,11 @@
         <!-- Estados de la tabla condiciones -->
         <q-chip v-if="props.value == estadosCondiciones.nuevo"> NUEVO </q-chip>
         <q-chip v-if="props.value == estadosCondiciones.usado"> USADO </q-chip>
-        <q-chip v-if="props.value == estadosCondiciones.mal_estado">MAL ESTADO</q-chip>
+        <q-chip v-if="props.value == estadosCondiciones.mal_estado"
+          >MAL ESTADO</q-chip
+        >
         <q-chip v-if="props.value == estadosCondiciones.danado">DAÑADO</q-chip>
-        {{props.value}}
+        {{ props.value }}
       </q-td>
     </template>
 
@@ -576,7 +578,11 @@
           class="bg-red-1"
         >
           <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
-          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
           NO REALIZADA
         </q-chip>
         <q-chip v-if="props.value === 1" class="bg-blue-grey-1">
@@ -695,6 +701,13 @@
       </q-tr>
     </template> -->
   </q-table>
+
+  <div
+    v-if="!$q.screen.xs && permitirEditarCeldas"
+    class="text-center text-grey-7"
+  >
+    <small>Haz clic sobre una celda para editarla</small>
+  </div>
 
   <previsualizar-tabla-pdf
     :configuracionColumnas="configuracionColumnas"
