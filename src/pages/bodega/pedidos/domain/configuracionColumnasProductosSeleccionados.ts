@@ -29,5 +29,12 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'despachado',
+    field: 'despachado',
+    label: 'Despachado',
+    align: 'left',
+    sortable: true,
+  },
 ]
 

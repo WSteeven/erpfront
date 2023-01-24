@@ -25,8 +25,8 @@ import { configuracionColumnasProductosSeleccionados } from "../domain/configura
 import { configuracionColumnasDetallesModal } from "../domain/configuracionColumnasDetallesModal";
 import { useNotificaciones } from "shared/notificaciones";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPedidos } from "config/utils";
-// import { ComportamientoModalesDevoluciones } from "../application/ComportamientoModalesDevolucion";
+import { acciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPedidos, } from "config/utils";
+
 
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
@@ -182,7 +182,7 @@ export default defineComponent({
                 console.log(pedidoStore.pedido)
                 console.log(entidad)
             },
-            visible: ({ entidad, posicion }) => { 
+            visible: ({ entidad, posicion }) => {
                 return tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado!=estadosTransacciones.completa ? true : false }
         }
 
@@ -503,7 +503,7 @@ export default defineComponent({
         opciones_estados.value = listadosAuxiliares.estados
 
         return {
-            mixin, pedido, disabled, accion, v$,
+            mixin, pedido, disabled, accion, v$, acciones, 
             configuracionColumnas: configuracionColumnasPedidos,
             //listados
             opciones_empleados,
