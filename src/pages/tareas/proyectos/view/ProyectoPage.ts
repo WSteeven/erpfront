@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasProyecto } from '../domain/configuracionColumnasProyectos'
 import { useNotificacionStore } from 'stores/notificacion'
-import { required } from '@vuelidate/validators'
+import { required, minLength, maxLength, helpers } from 'shared/i18n-validators'
 import { defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
@@ -12,11 +12,11 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { ProyectoController } from '../infraestructure/ProyectoController'
 import { Proyecto } from '../domain/Proyecto'
-import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { rolesSistema } from 'config/utils'
 
 export default defineComponent({
@@ -47,11 +47,13 @@ export default defineComponent({
       coordinadores.value = listadosAuxiliares.coordinadores
     })
 
+    const fechaMayor = (valor) => valor > proyecto.fecha_inicio
+
     const rules = {
       cliente: { required },
-      codigo_proyecto: { required },
+      codigo_proyecto: { required, maxLength },
       fecha_inicio: { required },
-      fecha_fin: { required },
+      fecha_fin: { required, fechaMayor: helpers.withMessage('La fecha de fin de proyecto no puede ser mayor que su fecha de inicio', fechaMayor) },
       nombre: { required },
       canton: { required },
       coordinador: { required },

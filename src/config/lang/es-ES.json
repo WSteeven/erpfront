@@ -1,0 +1,9 @@
+{
+  "failed": "Aktion fehlgeschlagen",
+  "success": "Aktion erfolgreich",
+  "required": "No sea bobo",
+  "validations": {
+    "required": "Escriba bien, no sea imbécil",
+    "maxLength": "No te pases"
+  }
+}
