@@ -1,6 +1,7 @@
 //Dependencias
 import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos';
 import { required, requiredIf } from '@vuelidate/validators'
+import { helpers } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles';
@@ -126,6 +127,8 @@ export default defineComponent({
             })
         })
 
+        //Validaciones
+        const fechaLimiteMenor = (valor:string)=>valor>pedido.fecha_limite
         //reglas de validacion
         const reglas = {
             justificacion: { required },
@@ -133,6 +136,10 @@ export default defineComponent({
             observacion_aut: { requiredIfCoordinador: requiredIf(pedido.tiene_obs_autorizacion) },
             sucursal: { required },
             tarea: { requiredIfTarea: requiredIf(pedido.es_tarea) },
+            fecha_limite: {
+                requiredIfCheck: requiredIf(requiereFecha),
+                fechaMenor: helpers.withMessage('La fecha límite no puede ser menor o igual a la fecha actual',fechaLimiteMenor)
+            }
         }
 
         const v$ = useVuelidate(reglas, pedido)
@@ -544,6 +551,10 @@ export default defineComponent({
             puedeEditar,
             esCoordinador, esBodeguero,
 
+            checkFecha(val, evt){
+                console.log(val)
+                console.log(evt)
+            },
             tabEs(val) {
                 // console.log(tabSeleccionado.value)
                 // console.log(val)

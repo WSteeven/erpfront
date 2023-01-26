@@ -30,57 +30,7 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="pedido.created_at" disable outlined dense />
           </div>
-          <!-- Requiere Fecha -->
-          <div v-if="false" class="col-12 col-md-3">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="requiereFecha"
-              label="¿Fecha límite?"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <!-- Fecha límite -->
-          <div
-            v-if="pedido.fecha_limite || requiereFecha"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Fecha limite</label>
-            <q-input
-              v-model="pedido.fecha_limite"
-              placeholder="Opcional"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              outlined
-              dense
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="pedido.fecha_limite"
-                      mask="DD-MM-YYYY"
-                      today-btn
-                    >
-                      <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
+          
           <!-- Sucursal select -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
@@ -161,7 +111,64 @@
               </template>
             </q-input>
           </div>
-
+          <!-- Requiere Fecha -->
+          <div  class="col-12 col-md-3">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="requiereFecha"
+              label="¿Fecha límite?"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Fecha límite -->
+          <div
+            v-if="pedido.fecha_limite || requiereFecha"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Fecha limite</label>
+            <q-input
+              v-model="pedido.fecha_limite"
+              placeholder="Opcional"
+              :error="!!v$.fecha_limite.$errors.length"
+              @blur="v$.fecha_limite.$touch"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="pedido.fecha_limite"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_limite.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
           <!-- Es pedido de tarea -->
           <div
             v-if="pedido.es_tarea || accion === 'NUEVO'"
