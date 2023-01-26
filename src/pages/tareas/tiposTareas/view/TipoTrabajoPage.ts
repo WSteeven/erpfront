@@ -4,7 +4,7 @@ import { configuracionColumnasCamposAdicionales } from '../domain/configuracionC
 import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTiposTareas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificacionStore } from 'stores/notificacion'
-import { required } from '@vuelidate/validators'
+import { required } from 'shared/i18n-validators'
 import { accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'

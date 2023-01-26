@@ -47,13 +47,15 @@ export default defineComponent({
       coordinadores.value = listadosAuxiliares.coordinadores
     })
 
-    const fechaMayor = (valor) => valor > proyecto.fecha_inicio
+    // Validaciones
+    const fechaFinMayor = (valor: string) => valor > proyecto.fecha_inicio
+    const fechaInicioMenor = (valor: string) => valor < proyecto.fecha_fin
 
     const rules = {
       cliente: { required },
       codigo_proyecto: { required, maxLength },
-      fecha_inicio: { required },
-      fecha_fin: { required, fechaMayor: helpers.withMessage('La fecha de fin de proyecto no puede ser mayor que su fecha de inicio', fechaMayor) },
+      fecha_inicio: { required, fechaMenor: helpers.withMessage('La fecha de inicio de proyecto no puede ser menor o igual que su fecha de fin', fechaInicioMenor) },
+      fecha_fin: { required, fechaMayor: helpers.withMessage('La fecha de fin de proyecto no puede ser mayor o igual que su fecha de inicio', fechaFinMayor) },
       nombre: { required },
       canton: { required },
       coordinador: { required },

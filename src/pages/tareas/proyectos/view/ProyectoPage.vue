@@ -27,6 +27,7 @@
               emit-value
               map-options
               :error="!!v$.cliente.$errors.length"
+              @blur="v$.cliente.$touch"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -50,6 +51,8 @@
             <q-input
               v-model="proyecto.codigo_proyecto"
               :error="!!v$.codigo_proyecto.$errors.length"
+              @blur="v$.codigo_proyecto.$touch"
+              placeholder="Obligatorio"
               :disable="disabled"
               outlined
               dense
@@ -65,11 +68,14 @@
             </q-input>
           </div>
 
+          <!-- Nombre de proyecto -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Nombre del proyecto</label>
             <q-input
               v-model="proyecto.nombre"
               :error="!!v$.nombre.$errors.length"
+              @blur="v$.nombre.$touch"
+              placeholder="Obligatorio"
               :disable="disabled"
               outlined
               dense
@@ -88,6 +94,8 @@
             <q-input
               v-model="proyecto.fecha_inicio"
               :error="!!v$.fecha_inicio.$errors.length"
+              placeholder="Obligatorio"
+              @blur="v$.fecha_inicio.$touch"
               :disable="disabled"
               outlined
               dense
@@ -131,6 +139,8 @@
             <q-input
               v-model="proyecto.fecha_fin"
               :error="!!v$.fecha_fin.$errors.length"
+              placeholder="Obligatorio"
+              @blur="v$.fecha_fin.$touch"
               :disable="disabled"
               outlined
               dense
@@ -175,6 +185,7 @@
               v-model="proyecto.canton"
               :options="cantones"
               @filter="filtrarCantones"
+              @blur="v$.canton.$touch"
               :disable="disabled"
               transition-show="scale"
               transition-hide="scale"
@@ -212,6 +223,7 @@
               v-model="proyecto.coordinador"
               :options="coordinadores"
               @filter="filtrarCoordinadores"
+              @blur="v$.coordinador.$touch"
               :disable="disabled"
               transition-show="scale"
               transition-hide="scale"
