@@ -18,7 +18,7 @@ import {
   causaIntervencion,
 } from 'config/utils'
 import useFileList from "components/dropzone/application/fileList"
-import { required, requiredIf } from '@vuelidate/validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useTareaStore } from 'stores/tarea'
@@ -44,8 +44,8 @@ import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoContro
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { SubtareaController } from '../infraestructure/SubtareaController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { Subtarea } from '../domain/Subtarea'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
+import { Subtarea } from '../domain/Subtarea'
 
 export default defineComponent({
   props: {
@@ -267,7 +267,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -368,9 +368,13 @@ export default defineComponent({
     // Validaciones simples
     const rules = {
       detalle: { required },
-      grupo: { requiredIfGrupo: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
+      grupo: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
       tipo_trabajo: { required },
       descripcion_completa: { required },
+      fecha_ventana: { required: requiredIf(() => subtarea.es_ventana) },
+      hora_inicio_ventana: { required: requiredIf(() => subtarea.es_ventana) },
+      hora_fin_ventana: { required: requiredIf(() => subtarea.es_ventana) },
+      subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
     }
 
     const v$ = useVuelidate(rules, subtarea)
