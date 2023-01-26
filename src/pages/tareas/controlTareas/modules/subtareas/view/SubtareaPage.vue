@@ -160,61 +160,6 @@
             </q-select>
           </div>
 
-          <!--<div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Atención (INTERURBANO/URBANO)</label>
-            <q-select
-              v-model="subtarea.atencion"
-              :options="atenciones"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              emit-value
-              map-options
-              clearable
-            >
-            </q-select>
-          </div>
-
-          <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Tipo de intervención</label>
-            <q-select
-              v-model="subtarea.tipo_intervencion"
-              :options="tiposIntervenciones"
-              :option-label="(item) => item.descripcion"
-              :option-value="(item) => item.descripcion"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              emit-value
-              map-options
-              clearable
-            >
-            </q-select>
-          </div>
-
-          <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Causa de intervención</label>
-            <q-select
-              v-model="subtarea.causa_intervencion"
-              :options="causaIntervencion"
-              :option-label="(item) => item.descripcion"
-              :option-value="(item) => item.descripcion"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              emit-value
-              map-options
-              clearable
-            >
-            </q-select>
-          </div> -->
-
           <!-- Fecha de creacion -->
           <div v-if="subtarea.fecha_hora_creacion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de creación</label>
@@ -354,13 +299,14 @@
             ></q-checkbox>
           </div>
 
-          <!--  Subtarea de la q depende -->
+          <!--  Subtarea de la que depende -->
           <div v-if="subtarea.es_dependiente" class="col-12 col-md-3">
             <label class="q-mb-sm block">Subtarea de la que depende</label>
             <q-select
               v-model="subtarea.subtarea_dependiente"
               :options="subtareas"
               @filter="filtrarSubtareas"
+              :error="!!v$.subtarea_dependiente.$errors.length"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -394,6 +340,15 @@
                   </q-item-section>
                 </q-item>
               </template>
+
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.subtarea_dependiente.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
@@ -415,6 +370,7 @@
             <q-input
               v-model="subtarea.fecha_ventana"
               placeholder="Obligatorio"
+              :error="!!v$.fecha_ventana.$errors.length"
               :disable="disable"
               outlined
               dense
@@ -443,6 +399,15 @@
                   </q-popup-proxy>
                 </q-icon>
               </template>
+
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.fecha_ventana.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
 
@@ -453,6 +418,7 @@
               v-model="subtarea.hora_inicio_ventana"
               :disable="disable"
               placeholder="Obligatorio"
+              :error="!!v$.hora_inicio_ventana.$errors.length"
               mask="time"
               outlined
               dense
@@ -481,6 +447,15 @@
                   </q-popup-proxy>
                 </q-icon>
               </template>
+
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.hora_inicio_ventana.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
 
@@ -491,6 +466,7 @@
               v-model="subtarea.hora_fin_ventana"
               :disable="disable"
               placeholder="Obligatorio"
+              :error="!!v$.hora_fin_ventana.$errors.length"
               mask="time"
               outlined
               dense
@@ -518,6 +494,15 @@
                     </q-time>
                   </q-popup-proxy>
                 </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.hora_fin_ventana.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
             </q-input>
           </div>

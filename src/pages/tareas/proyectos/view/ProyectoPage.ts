@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasProyecto } from '../domain/configuracionColumnasProyectos'
-import { useNotificacionStore } from 'stores/notificacion'
 import { required, minLength, maxLength, helpers } from 'shared/i18n-validators'
+import { useNotificacionStore } from 'stores/notificacion'
 import { defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
