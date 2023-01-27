@@ -32,7 +32,7 @@
           </div>
 
           <!-- Sucursal select -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Sucursal</label>
             <q-select
               v-model="pedido.sucursal"
@@ -118,13 +118,14 @@
               v-model="requiereFecha"
               label="¿Fecha límite?"
               :disable="disabled || soloLectura"
+              @update:model-value="checkEsFecha"
               outlined
               dense
             ></q-checkbox>
           </div>
           <!-- Fecha límite -->
           <div
-            v-if="pedido.fecha_limite || requiereFecha"
+            v-if="pedido.tiene_fecha_limite|| requiereFecha"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Fecha limite</label>
@@ -163,8 +164,8 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.fecha_limite.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
+                <div style=" clear: inherit;" v-for="error of v$.fecha_limite.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>  
                 </div>
               </template>
             </q-input>
@@ -172,13 +173,14 @@
           <!-- Es pedido de tarea -->
           <div
             v-if="pedido.es_tarea || accion === 'NUEVO'"
-            class="col-12 col-md-3"
+            class="col-12 col-md-3 q-mb-xl"
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.es_tarea"
               label="¿Es material de tarea?"
               :disable="disabled || soloLectura"
+              @update:model-value="checkEsTarea"
               outlined
               dense
             ></q-checkbox>
@@ -321,14 +323,15 @@
               </div>
             </div>
           </div>
+          {{ v$.$errors }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
-                accion !== acciones.nuevo
-                  ? configuracionColumnasProductosSeleccionados
-                  : configuracionColumnasProductosSeleccionadosAccion
+                accion === acciones.nuevo||accion===acciones.editar
+                  ? configuracionColumnasProductosSeleccionadosAccion
+                  : configuracionColumnasProductosSeleccionadosDespachado
               "
               :datos="pedido.listadoProductos"
               :permitirConsultar="false"

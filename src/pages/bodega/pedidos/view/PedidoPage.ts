@@ -1,9 +1,8 @@
 //Dependencias
 import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos';
-import { required, requiredIf } from '@vuelidate/validators'
-import { helpers } from 'shared/i18n-validators';
+import { helpers, required, requiredIf } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles';
 
 //Componentes
@@ -21,8 +20,8 @@ import { Pedido } from '../domain/Pedido';
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
 import { TareaController } from "pages/tareas/controlTareas/infraestructure/TareaController";
-import { configuracionColumnasProductosSeleccionadosAccion } from "../domain/configuracionColumnasProductosSeleccionadosAccion";
 import { configuracionColumnasProductosSeleccionados } from "../domain/configuracionColumnasProductosSeleccionados";
+import { configuracionColumnasProductosSeleccionadosDespachado } from "../domain/configuracionColumnasProductosSeleccionadosDespachado";
 import { configuracionColumnasDetallesModal } from "../domain/configuracionColumnasDetallesModal";
 import { useNotificaciones } from "shared/notificaciones";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
@@ -33,12 +32,15 @@ import { acciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPed
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { useAuthenticationStore } from "stores/authentication";
-import { buildTableBody, } from "shared/utils";
+import { buildTableBody} from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController';
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController';
 import { usePedidoStore } from 'stores/pedido';
 import { useRouter } from 'vue-router';
+import { TransaccionIngresoContentModales } from 'pages/bodega/transacciones/modules/transaccionIngresoInventario/domain/TransaccionIngresoContentModales';
+import { number } from 'echarts';
+import { fechaMayorActual } from 'shared/validadores/validaciones';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -85,6 +87,7 @@ export default defineComponent({
 
         onReestablecer(() => {
             soloLectura.value = false
+            requiereFecha.value = false
             console.log(accion.value)
         })
         onConsultado(() => {
@@ -128,8 +131,7 @@ export default defineComponent({
             })
         })
 
-        //Validaciones
-        const fechaLimiteMenor = (valor:string)=>valor>pedido.fecha_limite
+        
         //reglas de validacion
         const reglas = {
             justificacion: { required },
@@ -138,8 +140,8 @@ export default defineComponent({
             sucursal: { required },
             tarea: { requiredIfTarea: requiredIf(pedido.es_tarea) },
             fecha_limite: {
-                requiredIfCheck: requiredIf(requiereFecha),
-                // fechaMenor: helpers.withMessage('La fecha límite no puede ser menor o igual a la fecha actual',fechaLimiteMenor)
+                required:requiredIf(requiereFecha),
+                fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual',(fechaMayorActual))
             }
         }
 
@@ -158,7 +160,7 @@ export default defineComponent({
                 eliminar({ entidad, posicion })
             },
             visible: () => {
-              return accion.value == acciones.consultar ? false : true
+                return accion.value == acciones.consultar ? false : true
             }
         }
         const botonEditarCantidad: CustomActionTable = {
@@ -174,7 +176,7 @@ export default defineComponent({
                 prompt(data)
             },
             visible: () => {
-              return accion.value == acciones.consultar ? false : true
+                return accion.value == acciones.consultar ? false : true
             }
         }
 
@@ -191,7 +193,8 @@ export default defineComponent({
                 console.log(entidad)
             },
             visible: ({ entidad, posicion }) => {
-                return tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado!=estadosTransacciones.completa ? true : false }
+                return tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
+            }
         }
 
         const botonImprimir: CustomActionTable = {
@@ -502,6 +505,17 @@ export default defineComponent({
             }
         }
 
+        //Configuracion de columnas 
+        const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
+            name: 'acciones',
+            field: 'acciones',
+            label: 'Acciones',
+            align: 'center',
+            sortable: false,
+            style:'width:250px'
+
+        }]
+
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
@@ -532,7 +546,7 @@ export default defineComponent({
 
             //tabla
             configuracionColumnasProductosSeleccionadosAccion,
-            configuracionColumnasProductosSeleccionados,
+            configuracionColumnasProductosSeleccionadosDespachado,
             botonEditarCantidad,
             botonEliminar,
             botonImprimir,
@@ -552,9 +566,11 @@ export default defineComponent({
             puedeEditar,
             esCoordinador, esBodeguero,
 
-            checkFecha(val, evt){
-                console.log(val)
-                console.log(evt)
+            checkEsFecha(val, evt) {
+                if (!val) pedido.fecha_limite = ''
+            },
+            checkEsTarea(val, evt) {
+                if (!val) pedido.tarea = ''
             },
             tabEs(val) {
                 // console.log(tabSeleccionado.value)

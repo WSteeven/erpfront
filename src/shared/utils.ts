@@ -318,3 +318,4 @@ export function stringToArray(listado: string) {
 export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
+
