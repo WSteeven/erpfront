@@ -237,8 +237,6 @@ export default defineComponent({
 
     onConsultado(async () => {
       tareaStore.tarea.hydrate(tarea)
-      console.log('se condaultado')
-      // console.log(tarea)
       if (tarea.destino === 'PARA_PROYECTO') {
         setCliente()
       }
@@ -273,7 +271,6 @@ export default defineComponent({
       const proyectoController = new ProyectoController()
       const { result } = await proyectoController.consultar(tarea.proyecto)
       tareaStore.idCliente = result.cliente
-      console.log(result)
     }
 
     return {

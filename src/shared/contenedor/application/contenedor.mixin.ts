@@ -43,17 +43,14 @@ export abstract class Contenedor<
    * @returns true, cuando todas las validaciones esten correctas
    */
   async ejecutarValidaciones() {
-    // console.log('verificando validaciones ...')
     try {
       for (const validacion of this.validaciones) {
-        // console.log(await validacion)
         if (!(await validacion.validar())) return
         //return await validacion.validar()
       }
     } catch (error) {
       if (error instanceof Error) {
         this.notificaciones.notificarAdvertencia(error.message)
-        //console.log('validalo x favor: ' + error.message)
       }
       return false
     }
@@ -136,7 +133,6 @@ export abstract class Contenedor<
         requests.push(controlador.listar({ ...this.argsDefault, ...args }))
         // requests.push(controlador.listar()) //{ ...this.argsDefault, ...args }))
       } else {
-        console.log('solo array')
         requests.push(
           new Promise<any[]>((resolve) => resolve(configListado as any))
         )
@@ -151,7 +147,6 @@ export abstract class Contenedor<
     // Ejecuta la lista de peticiones
     return Promise.allSettled(requests).then((results) => {
       results.forEach((elem, index) => {
-        console.log('index')
         // Asigna los valores a la referencia si se completo la peticion
         if (elem.status === 'fulfilled') {
           const key = hashValues[index]

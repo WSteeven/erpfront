@@ -242,7 +242,6 @@ export default defineComponent({
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
       tecnicosGrupoPrincipal.value = result
-      console.log(tecnicosGrupoPrincipal.value)
 
       tecnicosGrupoPrincipal.value = tecnicosGrupoPrincipal.value.map((empleado: Empleado) => {
         const tecnico = new Empleado()
@@ -390,7 +389,6 @@ export default defineComponent({
     const { files, addFiles, removeFile } = useFileList()
 
     function cargarArchivos(files) {
-      console.log(files)
       subtarea.archivos = files
     }
 
@@ -407,7 +405,6 @@ export default defineComponent({
     }) */
 
     function verificarEsVentana() {
-      console.log('es ...')
       if (!subtarea.es_ventana) {
         subtarea.fecha_ventana = null
         subtarea.hora_inicio_ventana = null
@@ -424,9 +421,7 @@ export default defineComponent({
     }
 
     function verificarTipoTrabajo() {
-      console.log(subtarea.tipo_trabajo)
       const index = tiposTrabajos.value.findIndex((tipo: TipoTrabajo) => tipo.id === subtarea.tipo_trabajo)
-      console.log(index)
       return tiposTrabajos.value[index].nombre === 'EMERGENCIA'
     }
 

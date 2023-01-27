@@ -127,7 +127,7 @@
 
               <template v-slot:error>
                 <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
+                  <div>{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>

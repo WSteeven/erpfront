@@ -31,7 +31,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ 'custom-shadow rounded-tabpanel': !$q.screen.xs }"
+      :class="{ ' rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
