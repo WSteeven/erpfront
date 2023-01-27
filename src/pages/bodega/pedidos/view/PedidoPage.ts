@@ -85,6 +85,7 @@ export default defineComponent({
 
         onReestablecer(() => {
             soloLectura.value = false
+            console.log(accion.value)
         })
         onConsultado(() => {
             console.log(accion.value)
@@ -138,7 +139,7 @@ export default defineComponent({
             tarea: { requiredIfTarea: requiredIf(pedido.es_tarea) },
             fecha_limite: {
                 requiredIfCheck: requiredIf(requiereFecha),
-                fechaMenor: helpers.withMessage('La fecha límite no puede ser menor o igual a la fecha actual',fechaLimiteMenor)
+                // fechaMenor: helpers.withMessage('La fecha límite no puede ser menor o igual a la fecha actual',fechaLimiteMenor)
             }
         }
 
@@ -157,7 +158,7 @@ export default defineComponent({
                 eliminar({ entidad, posicion })
             },
             visible: () => {
-                return accion.value == acciones.consultar ? false : true
+              return accion.value == acciones.consultar ? false : true
             }
         }
         const botonEditarCantidad: CustomActionTable = {
@@ -173,7 +174,7 @@ export default defineComponent({
                 prompt(data)
             },
             visible: () => {
-                return accion.value == acciones.consultar ? false : true
+              return accion.value == acciones.consultar ? false : true
             }
         }
 
@@ -510,7 +511,7 @@ export default defineComponent({
         opciones_estados.value = listadosAuxiliares.estados
 
         return {
-            mixin, pedido, disabled, accion, v$, acciones, 
+            mixin, pedido, disabled, accion, v$, acciones,
             configuracionColumnas: configuracionColumnasPedidos,
             //listados
             opciones_empleados,

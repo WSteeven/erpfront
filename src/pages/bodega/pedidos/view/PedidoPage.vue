@@ -30,7 +30,7 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="pedido.created_at" disable outlined dense />
           </div>
-          
+
           <!-- Sucursal select -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
@@ -112,7 +112,7 @@
             </q-input>
           </div>
           <!-- Requiere Fecha -->
-          <div  class="col-12 col-md-3">
+          <div v-if="pedido.tiene_fecha_limite||accion===acciones.nuevo" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="requiereFecha"
@@ -326,9 +326,9 @@
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
-                accion === acciones.nuevo
-                  ? configuracionColumnasProductosSeleccionadosAccion
-                  : configuracionColumnasProductosSeleccionados
+                accion !== acciones.nuevo
+                  ? configuracionColumnasProductosSeleccionados
+                  : configuracionColumnasProductosSeleccionadosAccion
               "
               :datos="pedido.listadoProductos"
               :permitirConsultar="false"
