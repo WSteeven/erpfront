@@ -4,7 +4,7 @@ import { tabTrabajoAsignado, accionesTabla, estadosSubtareas } from 'config/util
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 
@@ -16,12 +16,13 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 // Logica y controladores
 import { CambiarEstadoSubtarea } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/application/CambiarEstadoSubtarea'
 import { SubtareaController } from 'pages/tareas/controlTareas/modules/subtareas/infraestructure/SubtareaController'
-import { SubtareaAsignadaController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController'
+import { TrabajoAsignadoController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Subtarea } from 'pages/tareas/controlTareas/modules/subtareas/domain/Subtarea'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
 import { obtenerTiempoActual } from 'shared/utils'
 
 export default defineComponent({
@@ -32,17 +33,34 @@ export default defineComponent({
   },
   setup() {
     const controller = new SubtareaController()
-    const mixin = new ContenedorSimpleMixin(Subtarea, controller)
-
-    const { listado } = mixin.useReferencias()
-    const { confirmar, prompt, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
-
     const mostrarDialogPlantilla = ref(false)
+    const { confirmar, prompt, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
+    const modales = new ComportamientoModalesTrabajoAsignado()
+    const tabActual = ref()
 
+    /***********
+    * Mixin
+    ************/
+    const mixin = new ContenedorSimpleMixin(Subtarea, controller)
+    const { listado } = mixin.useReferencias()
+
+    /*********
+     * Pusher
+     *********/
+    const puedeEjecutar = computed(() => tabActual.value === estadosSubtareas.ASIGNADO)
+
+    const subtareaPusherEvent = new SubtareaPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
+    subtareaPusherEvent.start()
+
+    /***********
+     * Stores
+     ***********/
     const store = useTrabajoAsignadoStore()
     const authenticationStore = useAuthenticationStore()
-    const modales = new ComportamientoModalesTrabajoAsignado()
 
+    /***************
+     * Botones tabla
+     ***************/
     const botonVer: CustomActionTable = {
       titulo: 'Visualizar',
       icono: 'bi-eye',
@@ -126,8 +144,6 @@ export default defineComponent({
       }
     }
 
-    const router = useRouter()
-
     const botonFormulario: CustomActionTable = {
       titulo: 'Formulario',
       icono: 'bi-box-fill',
@@ -183,6 +199,10 @@ export default defineComponent({
       }
     }
 
+    /************
+     * Funciones
+     ************/
+    // - Actualizar un elemento del listado de trabajo asignado
     function actualizarElemento(posicion: number, entidad: any): void {
       if (posicion >= 0) {
         listado.value.splice(posicion, 1, entidad);
@@ -190,19 +210,19 @@ export default defineComponent({
       }
     }
 
-    const subtareaAsignada = new SubtareaAsignadaController()
-    let estadoSeleccionado = ''
+    // - Filtrar trabajo asignado
+    const trabajoAsignadoController = new TrabajoAsignadoController()
 
-    async function aplicarFiltro(tabSeleccionado) {
-      if (tabSeleccionado !== estadoSeleccionado) {
-        const { result } = await subtareaAsignada.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id,
-        listado.value = result
-        estadoSeleccionado = tabSeleccionado
-      }
+    async function filtrarTrabajoAsignado(tabSeleccionado) {
+      const { result } = await trabajoAsignadoController.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id,
+      listado.value = result
+      tabActual.value = tabSeleccionado
+      console.log('Actualizado listado')
     }
 
-    aplicarFiltro('ASIGNADO')
+    filtrarTrabajoAsignado(estadosSubtareas.ASIGNADO)
 
+    // - Mostrar formulario modal de acuerdo a su tipo de trabajo
     const listadoModales = modales.getModales()
 
     function plantillaSeleccionada(plantilla: keyof typeof listadoModales) {
@@ -216,7 +236,7 @@ export default defineComponent({
       botonIniciar,
       botonVer,
       tabTrabajoAsignado,
-      aplicarFiltro,
+      filtrarTrabajoAsignado,
       accionesTabla,
       modales,
       mostrarDialogPlantilla,

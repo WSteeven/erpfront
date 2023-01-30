@@ -29,7 +29,7 @@
       :permitirEliminar="false"
       :mostrar-botones="false"
       :tab-options="tabTrabajoAsignado"
-      @tab-seleccionado="aplicarFiltro"
+      @tab-seleccionado="filtrarTrabajoAsignado"
       tab-defecto="ASIGNADO"
     ></essential-table-tabs>
 

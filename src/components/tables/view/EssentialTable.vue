@@ -284,7 +284,7 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs custom-shadow q-mb-md full-width"
+        class="q-py-xs custom-shadow q-mb-md full-width rounded-card"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">

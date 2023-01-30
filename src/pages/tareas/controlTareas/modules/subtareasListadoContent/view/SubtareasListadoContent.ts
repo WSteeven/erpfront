@@ -1,7 +1,9 @@
 // Dependencias
 import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
 import { tabOptions, accionesTabla, estadosSubtareas, acciones } from 'config/utils'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { useNotificaciones } from 'shared/notificaciones'
 import { computed, defineComponent } from 'vue'
 import { useTareaStore } from 'stores/tarea'
@@ -15,9 +17,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { ComportamientoModalesSubtareaContent } from '../application/ComportamientoModalesSubtareaContent'
 import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
-import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { Subtarea } from 'subtareas/domain/Subtarea'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: { EssentialTableTabs, ModalesEntidad },

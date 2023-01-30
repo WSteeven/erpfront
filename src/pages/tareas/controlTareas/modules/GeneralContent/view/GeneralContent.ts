@@ -2,7 +2,7 @@
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
 import { acciones, rolesSistema, destinosTareas } from 'config/utils'
-import { required, requiredIf } from '@vuelidate/validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
@@ -20,7 +20,6 @@ import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/Proye
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 
 export default defineComponent({
   props: {
@@ -71,8 +70,9 @@ export default defineComponent({
     // Validaciones
     const rules = {
       cliente: { requiredIfCliente: requiredIf(function () { return paraClienteFinal.value ? true : false }) },
+      titulo: { required },
       detalle: { required },
-      codigo_tarea_cliente: { requiredIfCodigoTarea: requiredIf(() => paraClienteFinal.value) },
+      codigo_tarea_cliente: { required },
     }
 
     const v$ = useVuelidate(rules, tarea)

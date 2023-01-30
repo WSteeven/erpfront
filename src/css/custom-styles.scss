@@ -12,10 +12,6 @@
   );
 }
 
-.rounded-tabs {
-  border-radius: 16px 16px 0 0;
-}
-
 .position-tabpanel {
   position: relative;
   top: 0px;
@@ -33,6 +29,14 @@
   color: $secondary;
   border-radius: 16px 4px 0 0;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
+}
+
+.rounded-card {
+  border-radius: 16px;
+}
+
+.rounded-tabs {
+  border-radius: 16px 16px 0 0;
 }
 
 .rounded-tabpanel {
@@ -53,7 +57,7 @@
 }
 
 .custom-shadow {
-  box-shadow: 0px 10px 60px -10px rgba(44, 54, 180, 0.4);
+  box-shadow: 0px 10px 60px -10px rgba(44, 54, 100, 0.4);
 }
 
 .error-validation {

@@ -227,7 +227,7 @@ export const autorizacionesTransacciones = {
   pendiente: 'PENDIENTE',
   aprobado: 'APROBADO',
   cancelado: 'CANCELADO',
-  
+
 }
 
 export const estadosTransacciones = {

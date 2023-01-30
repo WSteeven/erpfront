@@ -51,6 +51,7 @@
             placeholder="Obligatorio"
             hint="Ticket, OT, Tarea"
             :error="!!v$.codigo_tarea_cliente.$errors.length"
+            @blur="v$.codigo_tarea_cliente.$touch"
             outlined
             dense
             autofocus
@@ -202,6 +203,7 @@
             v-model="tarea.proyecto"
             :options="proyectos"
             @filter="filtrarProyectos"
+            @blur="v$.proyecto.$touch"
             transition-show="scale"
             transition-hide="scale"
             options-dense
@@ -222,6 +224,26 @@
               </q-item>
             </template>
           </q-select>
+        </div>
+
+        <!-- Titulo -->
+        <div class="col-12">
+          <label class="q-mb-sm block">Titulo</label>
+          <q-input
+            v-model="tarea.titulo"
+            placeholder="Obligatorio"
+            outlined
+            dense
+            autogrow
+            type="textarea"
+            :error="!!v$.titulo.$errors.length"
+          >
+            <template v-slot:error>
+              <div v-for="error of v$.tituto.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
         </div>
 
         <!-- Detalle -->

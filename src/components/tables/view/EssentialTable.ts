@@ -169,7 +169,7 @@ export default defineComponent({
     const eliminar = (data: object) => emit('eliminar', data)
 
     // Variables
-    const filter = ref(null)
+    const filter = ref()
     const selected = ref([])
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
 

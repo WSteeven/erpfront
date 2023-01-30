@@ -41,14 +41,26 @@
             <q-badge color="primary" floating> 4 </q-badge>
             <q-menu transition-show="flip-right" transition-hide="flip-left">
               <q-list style="min-width: 100px">
-                <q-item clickable>
+                <q-item clickable v-ripple>
+                  <q-item-section avatar>
+                    <q-icon color="primary" name="bi-newspaper" size="xs" />
+                  </q-item-section>
                   <q-item-section>Primera notificación</q-item-section>
                 </q-item>
-                <q-item clickable>
+
+                <q-item clickable v-ripple>
+                  <q-item-section avatar>
+                    <q-icon color="primary" name="bi-newspaper" size="xs" />
+                  </q-item-section>
                   <q-item-section>Crazy for transitions</q-item-section>
                 </q-item>
+
                 <q-separator />
-                <q-item clickable>
+
+                <q-item clickable v-ripple>
+                  <q-item-section avatar>
+                    <q-icon color="primary" name="bi-bell" size="xs" />
+                  </q-item-section>
                   <q-item-section>Ver todas las notificaciones</q-item-section>
                 </q-item>
               </q-list>
