@@ -54,6 +54,7 @@
               @blur="v$.codigo_proyecto.$touch"
               placeholder="Obligatorio"
               :disable="disabled"
+              autofocus
               outlined
               dense
             >

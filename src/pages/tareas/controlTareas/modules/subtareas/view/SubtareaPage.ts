@@ -57,6 +57,15 @@ export default defineComponent({
   components: { EssentialTable, ButtonSubmits, EssentialSelectableTable, FilePreview, Dropzone },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
+    /*********
+     * Stores
+     *********/
+    const tareaStore = useTareaStore()
+    const subtareaListadoStore = useSubtareaListadoStore()
+
+    /*******
+    * Mixin
+    *********/
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
@@ -64,8 +73,27 @@ export default defineComponent({
 
     const { listado } = props.mixinModal.useReferencias()
 
-    const tareaStore = useTareaStore()
-    const subtareaListadoStore = useSubtareaListadoStore()
+    cargarVista(async () => {
+      await obtenerListados({
+        tiposTrabajos: {
+          controller: new TipoTrabajoController(),
+          params: { cliente: tareaStore.tarea.cliente }
+        },
+        subtareas: {
+          controller: new SubtareaController(),
+          params: { tarea_id: tareaStore.tarea.id }
+        },
+        grupos: {
+          controller: new GrupoController(),
+          params: { campos: 'id,nombre' }
+        }
+      })
+
+      grupos.value = listadosAuxiliares.grupos
+      tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+      subtareas.value = listadosAuxiliares.subtareas
+    })
+
     const accion = tareaStore.accionSubtarea
     const disable = computed(() => (subtarea.estado !== estadosSubtareas.CREADO && subtarea.estado !== null))
 
@@ -82,27 +110,6 @@ export default defineComponent({
     notificacionStore.setQuasar(useQuasar())
 
     const notificaciones = useNotificaciones()
-
-    cargarVista(async () => {
-      await obtenerListados({
-        tiposTrabajos: {
-          controller: new TipoTrabajoController(),
-          params: { cliente: tareaStore.tarea.cliente ?? tareaStore.idCliente }
-        },
-        subtareas: {
-          controller: new SubtareaController(),
-          params: { tarea_id: tareaStore.tarea.id }
-        },
-        grupos: {
-          controller: new GrupoController(),
-          params: { campos: 'id,nombre' }
-        }
-      })
-
-      grupos.value = listadosAuxiliares.grupos
-      tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
-      subtareas.value = listadosAuxiliares.subtareas
-    })
 
     // Carga de la subtarea
     if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
@@ -130,6 +137,9 @@ export default defineComponent({
       return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_secretario)
     }
 
+    /***************
+    * Botones tabla
+    ***************/
     const eliminarTecnico: CustomActionTable = {
       titulo: 'Quitar',
       icono: 'bi-x',
@@ -184,6 +194,139 @@ export default defineComponent({
       },
     }
 
+    /*********
+    * Filtros
+    **********/
+    // - Filtro tipos de trabajos
+    const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
+    function filtrarTiposTrabajos(val, update) {
+      if (val === '') {
+        update(() => {
+          tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
+          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // - Filtros subtareas
+    const subtareas = ref([])
+    function filtrarSubtareas(val, update) {
+      if (val === '') {
+        update(() => {
+          subtareas.value = listadosAuxiliares.subtareas
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        subtareas.value = listadosAuxiliares.subtareas.filter(
+          (v) => v.codigo_subtarea.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // - Filtros grupos
+    const grupos = ref([])
+    function filtrarGrupos(val, update) {
+      if (val === '') {
+        update(() => {
+          grupos.value = listadosAuxiliares.grupos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        grupos.value = listadosAuxiliares.grupos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    /********
+    * Hooks
+    *********/
+    onBeforeGuardar(() => {
+      subtarea.tarea_id = tareaStore.tarea.id
+
+      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
+        subtarea.empleado = tecnicosGrupoPrincipal.value[0].id
+      }
+
+      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
+    })
+
+    onBeforeModificar(() => {
+      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
+    })
+
+    onConsultado(() => {
+      tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
+    })
+
+    function validarString(listado: string) {
+      return listado !== '' ? listado : null
+    }
+
+    async function guardarDatos(subtarea: Subtarea) {
+      try {
+        await guardar(subtarea, false)
+
+        listado.value = [subtarea, ...listado.value]
+
+        emit('cerrar-modal')
+
+      } catch (e) { }
+    }
+
+    async function editarDatos(subtarea: Subtarea) {
+      try {
+        await editar(subtarea, false)
+
+        const indexElemento = subtareaListadoStore.posicionSubtareaSeleccionada
+
+        listado.value.splice(indexElemento, 1, subtarea)
+
+        emit('cerrar-modal')
+      } catch (e) { }
+    }
+
+    function reestablecerDatos() {
+      reestablecer()
+      emit('cerrar-modal')
+    }
+
+    /*************
+    * Validaciones
+    **************/
+    const rules = {
+      detalle: { required },
+      grupo: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
+      tipo_trabajo: { required },
+      descripcion_completa: { required },
+      fecha_ventana: { required: requiredIf(() => subtarea.es_ventana) },
+      hora_inicio_ventana: { required: requiredIf(() => subtarea.es_ventana) },
+      hora_fin_ventana: { required: requiredIf(() => subtarea.es_ventana) },
+      subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
+    }
+
+    const v$ = useVuelidate(rules, subtarea)
+    setValidador(v$.value)
+
+    const validarTecnicosGrupoPrincipal = new ValidarTecnicosGrupoPrincipal(tecnicosGrupoPrincipal)
+
+    mixin.agregarValidaciones(
+      validarTecnicosGrupoPrincipal
+    )
+
+    /************
+    * Funciones
+    *************/
     async function entidadSeleccionada(itemsSeleccionados: EntidadAuditable[]) {
       if (itemsSeleccionados.length) {
         const id = itemsSeleccionados[0].id
@@ -254,57 +397,6 @@ export default defineComponent({
       })
     }
 
-    // Filtro tipos de trabajos
-    const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
-    function filtrarTiposTrabajos(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // Filtros subtareas
-    const subtareas = ref([])
-    function filtrarSubtareas(val, update) {
-      if (val === '') {
-        update(() => {
-          subtareas.value = listadosAuxiliares.subtareas
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        subtareas.value = listadosAuxiliares.subtareas.filter(
-          (v) => v.codigo_subtarea.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // Filtros grupos
-    const grupos = ref([])
-    function filtrarGrupos(val, update) {
-      if (val === '') {
-        update(() => {
-          grupos.value = listadosAuxiliares.grupos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        grupos.value = listadosAuxiliares.grupos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
     const {
       refListadoSeleccionable: refListadoSeleccionableTecnicos,
       criterioBusqueda: criterioBusquedaTecnico,
@@ -313,79 +405,6 @@ export default defineComponent({
       limpiar: limpiarTecnico,
       seleccionar: seleccionarTecnico
     } = useOrquestadorSelectorTecnicos(tecnicosGrupoPrincipal, 'empleados')
-
-    onBeforeGuardar(() => {
-      subtarea.tarea_id = tareaStore.tarea.id
-
-      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
-        subtarea.empleado = tecnicosGrupoPrincipal.value[0].id
-      }
-
-      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
-    })
-
-    onBeforeModificar(() => {
-      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
-    })
-
-    onConsultado(() => {
-      tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
-    })
-
-    function validarString(listado: string) {
-      return listado !== '' ? listado : null
-    }
-
-    async function guardarDatos(subtarea: Subtarea) {
-      try {
-        await guardar(subtarea, false)
-
-        listado.value = [subtarea, ...listado.value]
-
-        emit('cerrar-modal')
-
-      } catch (e) { }
-    }
-
-    async function editarDatos(subtarea: Subtarea) {
-      try {
-        await editar(subtarea, false)
-
-        const indexElemento = subtareaListadoStore.posicionSubtareaSeleccionada
-
-        listado.value.splice(indexElemento, 1, subtarea)
-
-        emit('cerrar-modal')
-      } catch (e) { }
-    }
-
-    function reestablecerDatos() {
-      reestablecer()
-      emit('cerrar-modal')
-    }
-
-    // Validaciones simples
-    const rules = {
-      detalle: { required },
-      grupo: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
-      tipo_trabajo: { required },
-      descripcion_completa: { required },
-      fecha_ventana: { required: requiredIf(() => subtarea.es_ventana) },
-      hora_inicio_ventana: { required: requiredIf(() => subtarea.es_ventana) },
-      hora_fin_ventana: { required: requiredIf(() => subtarea.es_ventana) },
-      subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
-    }
-
-    const v$ = useVuelidate(rules, subtarea)
-    setValidador(v$.value)
-
-    // Validaciones completas
-    const validarTecnicosGrupoPrincipal = new ValidarTecnicosGrupoPrincipal(tecnicosGrupoPrincipal)
-
-    mixin.agregarValidaciones(
-      validarTecnicosGrupoPrincipal
-    )
-
     const { files, addFiles, removeFile } = useFileList()
 
     function cargarArchivos(files) {
@@ -420,20 +439,20 @@ export default defineComponent({
       listarTecnicos()
     }
 
-    function verificarTipoTrabajo() {
+    /* function verificarTipoTrabajo() {
       const index = tiposTrabajos.value.findIndex((tipo: TipoTrabajo) => tipo.id === subtarea.tipo_trabajo)
       return tiposTrabajos.value[index].nombre === 'EMERGENCIA'
-    }
+    } */
 
-    const mostrarEmergencia = computed(() => {
+    /* const mostrarEmergencia = computed(() => {
+    }) */
 
-      /* if (subtarea.tipo_trabajo) {
+    /* if (subtarea.tipo_trabajo) {
 
-        return verificarTipoTrabajo()
-      } else {
-        return false
-      } */
-    })
+      return verificarTipoTrabajo()
+    } else {
+      return false
+    } */
 
     return {
       // Referencias
@@ -486,8 +505,8 @@ export default defineComponent({
       entidadSeleccionada,
       verificarEsVentana,
       Empleado,
-      mostrarEmergencia,
-      verificarTipoTrabajo,
+      // mostrarEmergencia,
+      //verificarTipoTrabajo,
     }
   },
 })

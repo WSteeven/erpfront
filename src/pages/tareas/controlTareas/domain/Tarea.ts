@@ -13,6 +13,7 @@ export class Tarea extends EntidadAuditable {
   proyecto: string | null
   estado: string | null
   destino: string | null
+  tipo_trabajo: string | null
 
   constructor() {
     super()
@@ -27,5 +28,6 @@ export class Tarea extends EntidadAuditable {
     this.proyecto = null
     this.estado = null
     this.destino = destinosTareas.paraProyecto
+    this.tipo_trabajo = null
   }
 }

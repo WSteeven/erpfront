@@ -200,8 +200,8 @@ export default defineComponent({
     }
 
     /************
-     * Funciones
-     ************/
+    * Funciones
+    *************/
     // - Actualizar un elemento del listado de trabajo asignado
     function actualizarElemento(posicion: number, entidad: any): void {
       if (posicion >= 0) {
@@ -217,7 +217,6 @@ export default defineComponent({
       const { result } = await trabajoAsignadoController.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id,
       listado.value = result
       tabActual.value = tabSeleccionado
-      console.log('Actualizado listado')
     }
 
     filtrarTrabajoAsignado(estadosSubtareas.ASIGNADO)

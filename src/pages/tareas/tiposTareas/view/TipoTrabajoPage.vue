@@ -51,6 +51,7 @@
               placeholder="Obligatorio"
               @update:model-value="(v) => (tipoTarea.nombre = v.toUpperCase())"
               :disable="disabled"
+              autofocus
               outlined
               dense
               :error="!!v$.nombre.$errors.length"

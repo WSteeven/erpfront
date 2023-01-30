@@ -68,7 +68,7 @@
         </div>
 
         <!-- Cliente principal -->
-        <div v-show="paraClienteFinal" class="col-12 col-md-6">
+        <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Cliente corporativo</label>
           <q-select
             v-model="tarea.cliente"
@@ -99,6 +99,42 @@
 
             <template v-slot:error>
               <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-select>
+        </div>
+
+        <!-- Tipo trabajo -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Tipo de trabajo a realizar</label>
+          <q-select
+            v-model="tarea.tipo_trabajo"
+            :options="tiposTrabajos"
+            @filter="filtrarTiposTrabajos"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            :option-label="(item) => item.descripcion"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+            :error="!!v$.tipo_trabajo.$errors.length"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.tipo_trabajo.$errors" :key="error.$uid">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -215,6 +251,8 @@
             input-debounce="0"
             emit-value
             map-options
+            :error="!!v$.proyecto.$errors.length"
+            @update:modelValue="setCliente"
           >
             <template v-slot:no-option>
               <q-item>
@@ -222,6 +260,12 @@
                   No hay resultados
                 </q-item-section>
               </q-item>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.proyecto.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
             </template>
           </q-select>
         </div>
@@ -237,10 +281,11 @@
             autogrow
             type="textarea"
             :error="!!v$.titulo.$errors.length"
+            @blur="v$.titulo.$touch"
           >
             <template v-slot:error>
-              <div v-for="error of v$.tituto.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
+              <div v-for="error of v$.titulo.$errors" :key="error.$uid">
+                <div>{{ error.$message }}</div>
               </div>
             </template>
           </q-input>
@@ -257,10 +302,11 @@
             autogrow
             type="textarea"
             :error="!!v$.detalle.$errors.length"
+            @blur="v$.detalle.$touch"
           >
             <template v-slot:error>
               <div v-for="error of v$.detalle.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
+                <div>{{ error.$message }}</div>
               </div>
             </template>
           </q-input>
@@ -281,6 +327,16 @@
         </div>
       </div>
     </q-expansion-item>
+
+    <!-- q-expansion-item
+      class="overflow-hidden q-mb-md"
+      style="border-radius: 8px; border: 1px solid #ddd"
+      label="Información general"
+      header-class="bg-grey-1"
+      default-opened
+    >
+      <subtarea-page :mixin-modal="mixinSubtarea"></subtarea-page>
+    </q-expansion-item> -->
 
     <q-expansion-item
       v-if="paraClienteFinal"

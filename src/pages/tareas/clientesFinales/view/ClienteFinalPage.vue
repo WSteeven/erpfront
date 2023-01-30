@@ -54,6 +54,7 @@
               :error="!!v$.id_cliente_final.$errors.length"
               placeholder="Obligatorio"
               :disable="disabled"
+              autofocus
               outlined
               dense
             >

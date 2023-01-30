@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
-import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { acciones, rolesSistema, destinosTareas } from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
@@ -8,18 +8,23 @@ import useVuelidate from '@vuelidate/core'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import SubtareaPage from 'controlTareas/modules/subtareas/view/SubtareaPage.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 
 // Logica y controladores
 import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { SubtareaController } from '../../subtareas/infraestructure/SubtareaController'
 import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
+import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
+import { Subtarea } from '../../subtareas/domain/Subtarea'
 
 export default defineComponent({
   props: {
@@ -31,9 +36,18 @@ export default defineComponent({
   components: {
     EssentialSelectableTable,
     ButtonSubmits,
+    SubtareaPage,
   },
   setup(props) {
+    /*********
+     * Stores
+     *********/
     const tareaStore = useTareaStore()
+
+    /*******
+     * Mixin
+     *********/
+    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
     const { entidad: tarea, listadosAuxiliares, accion } = props.mixin.useReferencias()
     const { consultar, guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
@@ -54,6 +68,10 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
+        tiposTrabajos: {
+          controller: new TipoTrabajoController(),
+          params: { cliente: tareaStore.tarea.cliente ?? tareaStore.idCliente }
+        },
       })
 
       clientes.value = listadosAuxiliares.clientes
@@ -67,18 +85,25 @@ export default defineComponent({
     const paraProyecto = computed(() => tarea.destino === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => tarea.destino === destinosTareas.paraClienteFinal)
 
-    // Validaciones
-    const rules = {
+    /*************
+    * Validaciones
+    **************/
+    const reglas = {
       cliente: { requiredIfCliente: requiredIf(function () { return paraClienteFinal.value ? true : false }) },
       titulo: { required },
       detalle: { required },
       codigo_tarea_cliente: { required },
+      proyecto: { required },
+      tipo_trabajo: { required },
     }
 
-    const v$ = useVuelidate(rules, tarea)
+    const v$ = useVuelidate(reglas, tarea)
     setValidador(v$.value)
 
-    // Filtro clientes principales
+    /*********
+    * Filtros
+    **********/
+    // - Filtro clientes corporativos
     const clientes = ref()
     function filtrarClientes(val, update) {
       if (val === '') {
@@ -95,7 +120,7 @@ export default defineComponent({
       })
     }
 
-    // Filtro tipos de clientes finales
+    // - Filtro tipos de clientes finales
     const clientesFinales = ref()
     const clientesFinalesSource = ref()
     function filtrarClientesFinales(val, update) {
@@ -113,7 +138,7 @@ export default defineComponent({
       })
     }
 
-    // Filtro supervisores
+    // - Filtro supervisores
     const supervisores = ref()
     function filtrarSupervisores(val, update) {
       if (val === '') {
@@ -130,7 +155,7 @@ export default defineComponent({
       })
     }
 
-    // Filtro coordinadores
+    // - Filtro coordinadores
     const coordinadores = ref()
     function filtrarCoordinadores(val, update) {
       if (val === '') {
@@ -147,7 +172,7 @@ export default defineComponent({
       })
     }
 
-    // Filtro provincias
+    // - Filtro provincias
     const provincias = ref()
     function filtrarProvincias(val, update) {
       if (val === '') {
@@ -164,7 +189,7 @@ export default defineComponent({
       })
     }
 
-    // Filtro cantones
+    // - Filtro cantones
     const cantones = ref([])
     function filtrarCantones(val, update) {
       if (val === '') {
@@ -181,7 +206,7 @@ export default defineComponent({
       })
     }
 
-    // Filtro proyectos
+    // - Filtro proyectos
     const proyectos = ref([])
     function filtrarProyectos(val, update) {
       if (val === '') {
@@ -198,6 +223,26 @@ export default defineComponent({
       })
     }
 
+    // - Filtro tipos de trabajos
+    const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
+    function filtrarTiposTrabajos(val, update) {
+      if (val === '') {
+        update(() => {
+          tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
+          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    /************
+    * Funciones
+    ************/
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
       const { result } = await clienteFinalController.consultar(clienteFinalId)
@@ -210,6 +255,9 @@ export default defineComponent({
       tareaStore.tarea.cliente = tarea.cliente
     }
 
+    /********
+    * Hooks
+    *********/
     onBeforeModificar(() => {
       if (tarea.destino === destinosTareas.paraClienteFinal) {
         tarea.proyecto = null
@@ -237,16 +285,21 @@ export default defineComponent({
 
     onConsultado(async () => {
       tareaStore.tarea.hydrate(tarea)
-      if (tarea.destino === 'PARA_PROYECTO') {
+      /* if (tarea.destino === 'PARA_PROYECTO') {
         setCliente()
-      }
+      } */
     })
 
+    /************
+    * Observers
+    ************/
     const controller = new ClienteFinalController()
 
     watchEffect(async () => {
-      clientesFinalesSource.value = (await controller.listar({ cliente: tarea.cliente })).result
-      clientesFinales.value = clientesFinalesSource.value
+      if (tarea.cliente) {
+        clientesFinalesSource.value = (await controller.listar({ cliente: tarea.cliente })).result
+        clientesFinales.value = clientesFinalesSource.value
+      }
     })
 
     watchEffect(async () => {
@@ -268,12 +321,15 @@ export default defineComponent({
     })
 
     async function setCliente() {
+      console.log('cambiando cliente  ')
       const proyectoController = new ProyectoController()
       const { result } = await proyectoController.consultar(tarea.proyecto)
-      tareaStore.idCliente = result.cliente
+      // tareaStore.idCliente = result.cliente
+      tarea.cliente = result.cliente
     }
 
     return {
+      mixinSubtarea,
       clientesFinalesSource,
       v$,
       tarea,
@@ -281,6 +337,7 @@ export default defineComponent({
       destinosTareas,
       provincias,
       cantones,
+      tiposTrabajos,
       cantonesPorProvincia,
       guardar,
       editar,
@@ -295,6 +352,7 @@ export default defineComponent({
       filtrarCantones,
       filtrarSupervisores,
       filtrarProyectos,
+      filtrarTiposTrabajos,
       obtenerClienteFinal,
       supervisores,
       coordinadores,
@@ -306,6 +364,7 @@ export default defineComponent({
       listadosAuxiliares,
       establecerCliente,
       configuracionColumnasClientes,
+      setCliente,
     }
   },
 })
