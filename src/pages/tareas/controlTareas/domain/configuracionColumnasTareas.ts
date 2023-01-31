@@ -10,11 +10,10 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     sortable: true,
   },
   {
-    name: 'detalle',
-    field: 'detalle',
-    label: 'Detalle',
+    name: 'titulo',
+    field: 'titulo',
+    label: 'Título',
     align: 'center',
-    sortable: true,
   },
   {
     name: 'proyecto',

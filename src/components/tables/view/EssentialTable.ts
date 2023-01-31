@@ -135,6 +135,10 @@ export default defineComponent({
     permitirBuscar: {
       type: Boolean,
       default: true,
+    },
+    estilos: {
+      type: String,
+      required: false,
     }
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'selected', 'onScroll'],

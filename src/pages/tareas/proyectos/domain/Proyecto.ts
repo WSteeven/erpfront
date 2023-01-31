@@ -3,6 +3,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Proyecto extends EntidadAuditable {
   codigo_proyecto: number | null
   coordinador: number | null
+  fiscalizador: number | null
   canton: number | null
   fecha_inicio: string | null
   fecha_fin: string | null
@@ -16,6 +17,7 @@ export class Proyecto extends EntidadAuditable {
     super()
     this.codigo_proyecto = null
     this.coordinador = null
+    this.fiscalizador = null
     this.canton = null
     this.fecha_inicio = null
     this.fecha_fin = null
