@@ -23,6 +23,7 @@
     :selection="tipoSeleccion"
     v-model:selected="selected"
     wrap-cells
+    :style="estilos"
     class="bg-white custom-border"
     :class="{
       'alto-fijo': !inFullscreen && altoFijo,
@@ -69,7 +70,7 @@
     <template v-if="mostrarHeader" v-slot:top="props">
       <div
         v-if="titulo"
-        class="row bg-white text-bold q-mb-lg items-center justify-center block"
+        class="row text-bold text-info q-mb-lg items-center justify-center block"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
@@ -77,8 +78,8 @@
       >
         <q-icon
           v-if="!$q.screen.xs"
-          name="bi-list"
-          color="grey-10"
+          name="bi-grip-vertical"
+          color="info"
           class="q-mr-sm"
         ></q-icon>
         {{ titulo }}
@@ -90,7 +91,7 @@
           outlined
           dense
           clearable
-          class="full-width bg-grey-2"
+          class="full-width bg-white"
           placeholder="Buscar..."
           debounce="300"
           color="primary"
@@ -724,17 +725,15 @@ thead tr:first-child th {
   /* bg color is important for th; just specify one */
   background-color: #fff;
 }
-
+.q-table__top,
+.q-table__bottom,
+thead tr:first-child th {
+  /* bg color is important for th; just specify one */
+  background-color: #f5f5f5;
+}
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 410px;
-
-  /*.q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th {*/
-  /* bg color is important for th; just specify one */
-  //background-color: #fff;
-  //}
 
   thead tr th {
     position: sticky;

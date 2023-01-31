@@ -1,6 +1,7 @@
 // Dependencias
 import { isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray } from 'shared/utils'
 import { configuracionColumnasTecnico } from '../domain/configuracionColumnasTecnico'
+import { configuracionColumnasGrupo } from '../domain/configuracionColumnasGrupo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { computed, defineComponent, Ref, ref } from 'vue'
@@ -119,8 +120,29 @@ export default defineComponent({
 
     const seleccionBusqueda = ref('por_tecnico')
 
+    const gruposSeleccionados = ref([])
+
+    /***************************
+    * Configuracion de columnas
+    ****************************/
     const columnas = [
       ...configuracionColumnasTecnico,
+      {
+        name: 'acciones',
+        field: 'acciones',
+        label: 'Acciones',
+        align: 'center',
+      },
+    ]
+
+    const columnasGrupo = [
+      ...configuracionColumnasGrupo,
+      {
+        name: 'principal',
+        field: 'principal',
+        label: 'Principal',
+        align: 'center',
+      },
       {
         name: 'acciones',
         field: 'acciones',
@@ -140,6 +162,16 @@ export default defineComponent({
     /***************
     * Botones tabla
     ***************/
+    const asignarGrupoPrincipal: CustomActionTable = {
+      titulo: 'Designar como principal',
+      icono: 'bi-check',
+      color: 'positive',
+      visible: () => [acciones.editar, acciones.nuevo].includes(accion),
+      accion: ({ entidad, posicion }) => {
+        console.log(entidad)
+      },
+    }
+
     const eliminarTecnico: CustomActionTable = {
       titulo: 'Quitar',
       icono: 'bi-x',
@@ -377,14 +409,22 @@ export default defineComponent({
     }
 
     function obtenerResponsables(grupo_id: number) {
-      if (grupo_id) obtenerTecnicosGrupo(grupo_id)
-      else tecnicosGrupoPrincipal.value = []
+      if (grupo_id) {
+        obtenerTecnicosGrupo(grupo_id)
+        const index = grupos.value.findIndex((item: any) => item.id === grupo_id)
+        gruposSeleccionados.value.push(grupos.value[index])
+
+      } else notificaciones.notificarAdvertencia('Debe seleccionar un grupo')
+      // else tecnicosGrupoPrincipal.value = []
+
+      subtarea.grupo = null
     }
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      tecnicosGrupoPrincipal.value = result
+      tecnicosGrupoPrincipal.value.push(...result)
+      console.log(tecnicosGrupoPrincipal.value)
 
       tecnicosGrupoPrincipal.value = tecnicosGrupoPrincipal.value.map((empleado: Empleado) => {
         const tecnico = new Empleado()
@@ -411,18 +451,6 @@ export default defineComponent({
       subtarea.archivos = files
     }
 
-    /* watch(tecnicosGrupoPrincipal, () => {
-      tecnicosGrupoPrincipal.value = tecnicosGrupoPrincipal.value.map((empleado: Empleado) => {
-        const tecnico = new Empleado()
-        tecnico.hydrate(empleado)
-
-        const roles = stringToArray(tecnico.roles ?? '')
-        tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
-
-        return tecnico
-      })
-    }) */
-
     function verificarEsVentana() {
       if (!subtarea.es_ventana) {
         subtarea.fecha_ventana = null
@@ -431,28 +459,9 @@ export default defineComponent({
       }
     }
 
-    function listarEmpleados() {
-      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador && tecnicosGrupoPrincipal.value.length > 0) {
-        return notificaciones.notificarAdvertencia('Sólo puede designar a un empleado.')
-      }
-
-      listarTecnicos()
+    function getIndexById(listado, id) {
+      return listado.indexOf((item) => item.id === id)
     }
-
-    /* function verificarTipoTrabajo() {
-      const index = tiposTrabajos.value.findIndex((tipo: TipoTrabajo) => tipo.id === subtarea.tipo_trabajo)
-      return tiposTrabajos.value[index].nombre === 'EMERGENCIA'
-    } */
-
-    /* const mostrarEmergencia = computed(() => {
-    }) */
-
-    /* if (subtarea.tipo_trabajo) {
-
-      return verificarTipoTrabajo()
-    } else {
-      return false
-    } */
 
     return {
       // Referencias
@@ -462,6 +471,7 @@ export default defineComponent({
       subtarea,
       seleccionBusqueda,
       columnas,
+      columnasGrupo,
       tecnicoSeleccionado,
       busqueda,
       grupos,
@@ -494,7 +504,8 @@ export default defineComponent({
       refListadoSeleccionableTecnicos,
       criterioBusquedaTecnico,
       listadoTecnicos,
-      listarEmpleados,
+      //listarEmpleados,
+      listarTecnicos,
       limpiarTecnico,
       seleccionarTecnico,
       // ---
@@ -505,6 +516,8 @@ export default defineComponent({
       entidadSeleccionada,
       verificarEsVentana,
       Empleado,
+      gruposSeleccionados,
+      asignarGrupoPrincipal,
       // mostrarEmergencia,
       //verificarTipoTrabajo,
     }

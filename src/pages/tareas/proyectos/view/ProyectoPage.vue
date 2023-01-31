@@ -219,7 +219,7 @@
 
           <!-- Coordinador -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Supervisor JP</label>
+            <label class="q-mb-sm block">Coordinador</label>
             <q-select
               v-model="proyecto.coordinador"
               :options="coordinadores"
@@ -251,6 +251,37 @@
                 <div v-for="error of v$.coordinador.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Fiscalizador -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fiscalizador</label>
+            <q-select
+              v-model="proyecto.fiscalizador"
+              :options="coordinadores"
+              @filter="filtrarCoordinadores"
+              @blur="v$.coordinador.$touch"
+              :disable="disabled"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombres + ' ' + item.apellidos"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
               </template>
             </q-select>
           </div>

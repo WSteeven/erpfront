@@ -39,24 +39,24 @@ export const configuracionColumnasTecnico: ColumnConfig<Empleado>[] = [
     sortable: true,
     visible: false,
   },
-  {
+  /* {
     name: 'disponible',
     field: 'disponible',
     label: 'Disponible',
     align: 'left',
-    sortable: true,
-    /* input_type: 'select',
-    options: [
-      {
-        label: 'AMARRAS',
-        value: '1'
-      },
-      {
-        label: 'PREFORMADOS',
-        value: '2'
-      },
-    ] */
-  },
+    sortable: true, */
+  /* input_type: 'select',
+  options: [
+    {
+      label: 'AMARRAS',
+      value: '1'
+    },
+    {
+      label: 'PREFORMADOS',
+      value: '2'
+    },
+  ] */
+  // },
   {
     name: 'roles',
     field: 'roles',
