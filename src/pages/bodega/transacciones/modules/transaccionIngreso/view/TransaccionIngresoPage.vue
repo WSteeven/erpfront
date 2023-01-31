@@ -134,6 +134,7 @@
             <label class="q-mb-sm block">N° Factura/Comprobante</label>
             <q-input
               v-model="transaccion.comprobante"
+              type="number"
               placeholder="Obligatorio"
               :readonly="disabled"
               :disable="disabled||soloLectura"

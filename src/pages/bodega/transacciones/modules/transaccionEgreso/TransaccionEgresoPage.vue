@@ -159,7 +159,7 @@
           <!-- Tiene observacion de autorizacion -->
           <div
             v-if="
-              transaccion.tiene_obs_autorizacion ||
+              transaccion.tiene_observacion_aut ||
               transaccion.observacion_aut ||
               esVisibleAutorizacion
             "
@@ -167,7 +167,7 @@
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
-              v-model="transaccion.tiene_obs_autorizacion"
+              v-model="transaccion.tiene_observacion_aut"
               label="Tiene observación"
               :disable="disabled || soloLectura"
               outlined
@@ -177,13 +177,13 @@
           <!-- observacion autorizacion -->
           <div
             v-if="
-              transaccion.tiene_obs_autorizacion || transaccion.observacion_aut
+              transaccion.tiene_observacion_aut || transaccion.observacion_aut
             "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
-              v-model="transaccion.obs_autorizacion"
+              v-model="transaccion.observacion_aut"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"

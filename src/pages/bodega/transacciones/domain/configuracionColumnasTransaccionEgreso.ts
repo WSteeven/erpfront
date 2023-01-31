@@ -58,17 +58,10 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         align: 'left',
         sortable: true,
     },
-    /* {
-        name: 'subtarea',
-        field: 'subtarea',
-        label: 'Subtarea',
-        align: 'left',
-        sortable: true,
-    }, */
     {
         name: 'estado',
         field: 'estado',
-        label: 'Estado',
+        label: 'Estado del despacho',
         align: 'left',
         sortable: true,
     }

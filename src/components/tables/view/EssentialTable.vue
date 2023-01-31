@@ -530,11 +530,9 @@
         <!-- Estados de la tabla condiciones -->
         <q-chip v-if="props.value == estadosCondiciones.nuevo"> NUEVO </q-chip>
         <q-chip v-if="props.value == estadosCondiciones.usado"> USADO </q-chip>
-        <q-chip v-if="props.value == estadosCondiciones.mal_estado"
-          >MAL ESTADO</q-chip
-        >
+        <q-chip v-if="props.value == estadosCondiciones.mal_estado">MAL ESTADO</q-chip>
         <q-chip v-if="props.value == estadosCondiciones.danado">DAÑADO</q-chip>
-        {{ props.value }}
+        <!-- {{ props.value }} -->
       </q-td>
     </template>
 

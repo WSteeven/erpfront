@@ -170,6 +170,7 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Aprobados', value: 'APROBADO' },
   { label: 'Cancelados', value: 'CANCELADO' },
+  { label: 'Completados', value: 'COMPLETA' },
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },

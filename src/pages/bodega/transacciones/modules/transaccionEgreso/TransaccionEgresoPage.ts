@@ -42,15 +42,15 @@ import { useDetalleStore } from 'stores/detalle'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesTransaccionEgreso'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 
-//pdfmake
-import * as pdfMake from 'pdfmake/build/pdfmake'
-import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
 import { useOrquestadorSelectorItems } from 'pages/bodega/traspasos/application/OrquestadorSelectorInventario'
 import { useTransferenciaStore } from 'stores/transferencia'
 
+//pdfmake
+import * as pdfMake from 'pdfmake/build/pdfmake'
+import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
 

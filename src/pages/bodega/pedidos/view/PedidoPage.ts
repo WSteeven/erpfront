@@ -2,7 +2,7 @@
 import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos';
 import { helpers, required, requiredIf } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent,  ref } from "vue";
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles';
 
 //Componentes
@@ -38,8 +38,6 @@ import { AutorizacionController } from 'pages/administracion/autorizaciones/infr
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController';
 import { usePedidoStore } from 'stores/pedido';
 import { useRouter } from 'vue-router';
-import { TransaccionIngresoContentModales } from 'pages/bodega/transacciones/modules/transaccionIngresoInventario/domain/TransaccionIngresoContentModales';
-import { number } from 'echarts';
 import { fechaMayorActual } from 'shared/validadores/validaciones';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs

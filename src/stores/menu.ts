@@ -126,25 +126,25 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Categorías',
           link: 'categorias',
-          can: store.esBodeguero,//can('puede.ver.categorias'),
+          can: store.esActivosFijos, //store.esBodeguero,//can('puede.ver.categorias'),
           icon: 'bi-circle',
         },
         {
           title: 'Control de Stock',
           link: 'control-stock',
-          can: store.can('puede.ver.control_stock'),
+          can: store.esActivosFijos,//store.can('puede.ver.control_stock'),
           icon: 'bi-circle',
         },
         {
           title: 'Marcas',
           link: 'marcas',
-          can: store.can('puede.ver.marcas'),
+          can: store.esActivosFijos,//store.can('puede.ver.marcas'),
           icon: 'bi-circle',
         },
         {
           title: 'Modelos',
           link: 'modelos',
-          can: store.can('puede.ver.modelos'),
+          can: store.esActivosFijos,//store.can('puede.ver.modelos'),
           icon: 'bi-circle',
         },
         {

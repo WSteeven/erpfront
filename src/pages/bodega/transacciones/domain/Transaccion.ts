@@ -3,12 +3,12 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 export class Transaccion extends EntidadAuditable{
     id: number|null
     autorizacion: number|null
-    obs_autorizacion: string|null
+    observacion_aut: string|null
     justificacion: string|null
     comprobante: string|null
     fecha_limite: string|null
     estado: number|null
-    obs_estado: string|null
+    observacion_est: string|null
     solicitante: number|null
     devolucion: number|null
     transferencia: number|null
@@ -53,9 +53,9 @@ export class Transaccion extends EntidadAuditable{
         this.tarea=null
         this.tipo=null
         this.autorizacion=null
-        this.obs_autorizacion=null
+        this.observacion_aut=null
         this.estado=null
-        this.obs_estado=null
+        this.observacion_est=null
         this.sucursal=null
         this.sucursal_id=null
         this.cliente=null
