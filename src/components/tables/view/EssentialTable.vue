@@ -223,43 +223,43 @@
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
       <q-td v-if="!$q.screen.xs" :props="props">
-        <div class="row q-gutter-x-sm justify-center">
+        <div class="row full-width block q-gutter-x-sm justify-center">
           <!-- Consultar -->
           <q-btn
             v-if="permitirConsultar"
-            color="indigo-1"
+            color="grey-3"
             round
-            push
+            unelevated
             dense
             @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-eye" color="secondary" size="xs"></q-icon>
+            <q-icon name="bi-eye" color="info" size="xs"></q-icon>
             <q-tooltip class="bg-dark"> Consultar </q-tooltip>
           </q-btn>
 
           <!-- Editar -->
           <q-btn
             v-if="permitirEditar"
-            color="indigo-1"
+            color="grey-3"
             round
-            push
+            unelevated
             dense
             @click="editar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-pencil" color="secondary" size="xs"></q-icon>
+            <q-icon name="bi-pencil" color="info" size="xs"></q-icon>
             <q-tooltip class="bg-dark"> Editar </q-tooltip>
           </q-btn>
 
           <!-- Eliminar -->
           <q-btn
             v-if="permitirEliminar"
-            color="indigo-1"
+            color="grey-2"
             round
-            push
+            unelevated
             dense
             @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-trash" color="secondary" size="xs"></q-icon>
+            <q-icon name="bi-trash" color="info" size="xs"></q-icon>
             <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
           </q-btn>
 
@@ -312,45 +312,45 @@
                 <!-- Consultar -->
                 <q-btn
                   v-if="permitirConsultar"
-                  color="indigo-1"
+                  color="grey-2"
                   round
-                  push
+                  unelevated
                   dense
                   @click="
                     consultar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-eye" color="secondary" size="xs"></q-icon>
+                  <q-icon name="bi-eye" color="info" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Consultar </q-tooltip>
                 </q-btn>
 
                 <!-- Editar -->
                 <q-btn
                   v-if="permitirEditar"
-                  color="indigo-1"
+                  color="grey-2"
                   round
-                  push
+                  unelevated
                   dense
                   @click="
                     editar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-pencil" color="secondary" size="xs"></q-icon>
+                  <q-icon name="bi-pencil" color="info" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
                 </q-btn>
 
                 <!-- Eliminar -->
                 <q-btn
                   v-if="permitirEliminar"
-                  color="indigo-1"
+                  color="grey-2"
                   round
-                  push
+                  unelevated
                   dense
                   @click="
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-trash" color="secondary" size="xs"></q-icon>
+                  <q-icon name="bi-trash" color="info" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
                 </q-btn>
 
@@ -382,11 +382,34 @@
                     size="md"
                   ></q-icon>
                 </span>
+
+                <span v-if="col.name === 'activo'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check-circle-fill"
+                    color="positive"
+                    size="xs"
+                  ></q-icon>
+                </span>
+
+                <span v-if="col.name === 'es_ventana'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check-circle-fill"
+                    color="positive"
+                    size="xs"
+                  ></q-icon>
+                </span>
+
                 <estados-subtareas
                   v-if="col.name === 'estado'"
                   :propsTable="col"
                 />
-                <span v-else>{{ col.value }}</span>
+
+                <span
+                  v-if="!['pagado', 'activo', 'es_ventana'].includes(col.name)"
+                  >{{ col.value }}</span
+                >
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -540,10 +563,36 @@
     <template #body-cell-condiciones="props">
       <q-td :props="props">
         <!-- Estados de la tabla condiciones -->
-        <q-chip v-if="props.value == estadosCondicionesId.nuevo||props.value==estadosCondicionesValue.nuevo"> NUEVO </q-chip>
-        <q-chip v-if="props.value == estadosCondicionesId.usado||props.value==estadosCondicionesValue.usado"> USADO </q-chip>
-        <q-chip v-if="props.value == estadosCondicionesId.mal_estado||props.value==estadosCondicionesValue.mal_estado">MAL ESTADO</q-chip>
-        <q-chip v-if="props.value == estadosCondicionesId.danado||props.value==estadosCondicionesValue.danado">DAÑADO</q-chip>
+        <q-chip
+          v-if="
+            props.value == estadosCondicionesId.nuevo ||
+            props.value == estadosCondicionesValue.nuevo
+          "
+        >
+          NUEVO
+        </q-chip>
+        <q-chip
+          v-if="
+            props.value == estadosCondicionesId.usado ||
+            props.value == estadosCondicionesValue.usado
+          "
+        >
+          USADO
+        </q-chip>
+        <q-chip
+          v-if="
+            props.value == estadosCondicionesId.mal_estado ||
+            props.value == estadosCondicionesValue.mal_estado
+          "
+          >MAL ESTADO</q-chip
+        >
+        <q-chip
+          v-if="
+            props.value == estadosCondicionesId.danado ||
+            props.value == estadosCondicionesValue.danado
+          "
+          >DAÑADO</q-chip
+        >
         <!-- {{ props.value }} -->
       </q-td>
     </template>
@@ -654,6 +703,7 @@
           ></q-icon
           >{{ estadosControlStock.minimo }}
         </q-chip>
+
         <q-chip
           v-if="props.value === estadosControlStock.reorden"
           class="bg-yellow-1"
@@ -691,7 +741,7 @@
       <q-td :props="props">
         <q-icon
           v-if="props.value"
-          name="bi-check"
+          name="bi-check-circle-fill"
           color="positive"
           size="sm"
         ></q-icon>
@@ -728,18 +778,21 @@
 </template>
 
 <style lang="scss">
-.q-table__top,
+/* .q-table__top,
 .q-table__bottom,
 thead tr:first-child th {
-  /* bg color is important for th; just specify one */
+   bg color is important for th; just specify one 
   background-color: #fff;
-}
+} */
+
 .q-table__top,
 .q-table__bottom,
 thead tr:first-child th {
-  /* bg color is important for th; just specify one */
   background-color: #f5f5f5;
+  /* border-radius: 16px;
+  margin-bottom: 8px; */
 }
+
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 410px;

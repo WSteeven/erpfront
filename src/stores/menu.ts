@@ -255,6 +255,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.empleados'),
         },
+        {
+          title: 'Grupos',
+          link: 'grupos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.grupos'),
+        },
       ],
     },
     //Modulo Activos Fijos

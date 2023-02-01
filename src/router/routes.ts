@@ -280,6 +280,12 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/grupos',
+        name: 'grupos',
+        component: () => import('tareas/grupos/view/GrupoPage.vue'),
+        meta: { requiresAuth: true },
+      },
 
       //Routes for Activos Fijos
       {

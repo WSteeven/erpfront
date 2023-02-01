@@ -550,8 +550,8 @@
                 "
                 @keydown.enter="listarTecnicos()"
                 @blur="criterioBusquedaTecnico === '' ? limpiarTecnico() : null"
-                clearable
                 :disable="disable"
+                clearable
                 outlined
                 dense
               ></q-input>

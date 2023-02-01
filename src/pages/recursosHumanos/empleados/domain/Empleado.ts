@@ -16,6 +16,7 @@ export class Empleado extends EntidadAuditable {
     grupo: number | null
     disponible: boolean
     es_lider: boolean
+    tiene_grupo: boolean
 
     grupo_id: number | null
 
@@ -37,5 +38,6 @@ export class Empleado extends EntidadAuditable {
         this.disponible = true
         this.es_lider = false
         this.grupo_id = null
+        this.tiene_grupo = false
     }
 }

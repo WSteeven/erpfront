@@ -1,25 +1,34 @@
 //Dependencias
-import { configuracionColumnasEmpleados } from "../domain/configuracionColumnasEmpleados";
-import { maxLength, minLength, numeric, required } from '@vuelidate/validators'
+import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
+import { maxLength, minLength, numeric, required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
+import { opcionesEstados } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
-
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Empleado } from "../domain/Empleado";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { EmpleadoController } from "../infraestructure/EmpleadoController";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
-import { RolController } from "pages/administracion/roles/infraestructure/RolController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
+import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
+import { EmpleadoController } from '../infraestructure/EmpleadoController'
+import { useNotificacionStore } from 'stores/notificacion'
+import { Empleado } from '../domain/Empleado'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
     components: { TabLayout },
     setup() {
+        /*********
+        * Stores
+        *********/
+        useNotificacionStore().setQuasar(useQuasar())
+
+        /***********
+        * Mixin
+        ************/
         const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
         const { entidad: empleado, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
@@ -34,25 +43,28 @@ export default defineComponent({
                     params: { campos: 'id,lugar' },
                 },
                 roles: {
-                    controller:new RolController(),
-                    params: {campos:'id,name'}
+                    controller: new RolController(),
+                    params: { campos: 'id,name' }
                 },
                 empleados: {
-                    controller:new EmpleadoController(),
+                    controller: new EmpleadoController(),
                     params: {
-                        campos:'id,nombres,apellidos',
-                        estado:1
+                        campos: 'id,nombres,apellidos',
+                        estado: 1
                     }
                 },
+                grupos: new GrupoController(),
             })
         })
 
-        //reglas de validacion
+        /*************
+        * Validaciones
+        **************/
         const reglas = {
             identificacion: {
                 required,
                 minlength: minLength(10),
-                maxlength: maxLength(10)
+                maxlength: maxLength(10),
             },
             telefono: {
                 required,
@@ -69,9 +81,8 @@ export default defineComponent({
             fecha_nacimiento: { required },
             roles: { required },
             estado: { required },
+            grupo: { required },
         }
-
-        useNotificacionStore().setQuasar(useQuasar())
 
         const v$ = useVuelidate(reglas, empleado)
         setValidador(v$.value)
@@ -79,19 +90,17 @@ export default defineComponent({
         opciones_sucursales.value = listadosAuxiliares.sucursales
         opciones_roles.value = listadosAuxiliares.roles
         opciones_empleados.value = listadosAuxiliares.empleados
-        const opciones_estados = [
-            { value: 1, label: 'ACTIVO' },
-            { value: 0, label: 'INACTIVO' }
-        ]
+
         return {
             mixin, empleado, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasEmpleados,
             isPwd: ref(true),
+            listadosAuxiliares,
             //listado 
             opciones_sucursales,
             opciones_roles,
             opciones_empleados,
-            opciones_estados,
+            opcionesEstados,
 
             //filtro de empleados
             filtroEmpleados(val, update) {

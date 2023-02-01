@@ -20,5 +20,6 @@ export const requiredIf = withI18nMessage(validators.requiredIf, { withArguments
 export const minLength = withI18nMessage(validators.minLength, { withArguments: true })
 // or you can provide the param at definition, statically
 export const maxLength = withI18nMessage(validators.maxLength, { withArguments: true })
+export const numeric = withI18nMessage(validators.numeric)
 
 export const helpers = validators.helpers 
