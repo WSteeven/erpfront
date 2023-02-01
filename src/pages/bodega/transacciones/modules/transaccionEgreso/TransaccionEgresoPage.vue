@@ -433,7 +433,7 @@
               flat
               title="Listado"
               class="bg-white custom-border"
-              :rows="transaccion.listadoProductosTransaccion"
+              :rows="pedidoStore.pedido.listadoProductos"
               :columns="configuracionColumnasListadoProductosSeleccionados"
               row-key="id"
               :hide-bottom="true"
@@ -458,7 +458,7 @@
                     listarProductos({
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
-                      search:criterioBusquedaProducto
+                      search: criterioBusquedaProducto,
                     })
                   "
                   @blur="
@@ -475,7 +475,7 @@
                     listarProductos({
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
-                      search:criterioBusquedaProducto
+                      search: criterioBusquedaProducto,
                     })
                   "
                   icon="search"
@@ -517,7 +517,7 @@
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
         :configuracion-columnas="configuracionColumnasInventarios"
-        :datos="listadoProductos"
+        :datos="transaccion.pedido ? listadoCoincidencias : listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
       >

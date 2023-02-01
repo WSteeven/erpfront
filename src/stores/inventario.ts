@@ -54,7 +54,7 @@ export const useInventarioStore=defineStore('inventario', ()=>{
         const ruta = 'api/buscarDetallesEnInventario'
         const response: AxiosResponse = await axios.post(ruta, data)
         statusLoading.desactivar()
-        // console.log(response)
+        console.log(response)
         return {
             results :response.data.results,
         }
