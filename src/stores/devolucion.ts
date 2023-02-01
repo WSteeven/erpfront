@@ -17,8 +17,8 @@ export const useDevolucionStore = defineStore('devolucion', () => {
     const devolucionReset = new Devolucion()
     const idDevolucion = ref()
 
-    const { notificarError } = useNotificaciones()
-    
+    const { notificarAdvertencia } = useNotificaciones()
+
 
     const accionDevolucion = acciones.nuevo
 
@@ -34,7 +34,7 @@ export const useDevolucionStore = defineStore('devolucion', () => {
             return response.data.modelo
         }
         // console.log(response.data.modelo.estado=='CREADA')
-        
+
     }
 
     async function cargarDevolucion(id: number) {
@@ -43,7 +43,7 @@ export const useDevolucionStore = defineStore('devolucion', () => {
             const modelo = await consultar(id)
             devolucion.hydrate(modelo)
         } catch (e) {
-            notificarError('Registro no encontrado')
+            notificarAdvertencia('Registro no encontrado')
             devolucion.hydrate(devolucionReset)
         } finally {
             statusLoading.desactivar()

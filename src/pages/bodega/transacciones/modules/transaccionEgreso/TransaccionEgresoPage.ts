@@ -6,6 +6,7 @@ import { defineComponent, ref } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 // import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
@@ -45,7 +46,7 @@ import { ClienteController } from 'pages/sistema/clientes/infraestructure/Client
 import { buildTableBody } from "shared/utils";
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
-import { useOrquestadorSelectorItems } from 'pages/bodega/traspasos/application/OrquestadorSelectorInventario'
+
 import { useTransferenciaStore } from 'stores/transferencia'
 
 //pdfmake
@@ -78,15 +79,15 @@ export default defineComponent({
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorItems(transaccion, 'inventarios')
-        // const {
-        //     refListadoSeleccionable: refListadoSeleccionableProductos,
-        //     criterioBusqueda: criterioBusquedaProducto,
-        //     listado: listadoProductos,
-        //     listar: listarProductos,
-        //     limpiar: limpiarProducto,
-        //     seleccionar: seleccionarProducto
-        // } = useOrquestadorSelectorItemsTransaccion(transaccion, 'detalles')
+        } = useOrquestadorSelectorItemsTransaccion(transaccion, 'inventarios')
+        /* const {
+            refListadoSeleccionable: refListadoSeleccionableProductos,
+            criterioBusqueda: criterioBusquedaProducto,
+            listado: listadoProductos,
+            listar: listarProductos,
+            limpiar: limpiarProducto,
+            seleccionar: seleccionarProducto
+        } = useOrquestadorSelectorItemsTransaccion(transaccion, 'detalles') */
 
 
         const usuarioLogueado = store.user
@@ -725,6 +726,8 @@ export default defineComponent({
                 }
             },
 
+            //listado del pedido
+            configuracionColumnasListadoProductosSeleccionados,
 
             //tabla
             configuracionColumnasInventarios,
@@ -757,7 +760,7 @@ export default defineComponent({
             llenarTransaccion,
             limpiarTransaccion,
 
-            //transferencia 
+            //transferencia
             llenarTransferencia,
 
             //tabs y filtros

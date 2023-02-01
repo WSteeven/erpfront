@@ -68,7 +68,7 @@ export const useDetalleTransaccionStore = defineStore('detalle_transaccion', () 
     async function cargarDetalleEspecifico(transaccion_id: number, inventario_id:number) {
         const modelo = await consultarItem(transaccion_id, inventario_id)
         console.log('datos recibidos en cargar detalle especifico:', modelo)
-        detalle.hydrate(modelo)
+        if(modelo!==undefined)detalle.hydrate(modelo)
     }
 
     async function actualizarDetalle(id: number, data: any) {

@@ -6,9 +6,9 @@ export class UserLogin {
   remember_session: boolean
 
   constructor() {
-    this.name = ''
+    this.name = 'CALBARRACIN'
     this.email = ''
-    this.password = null
+    this.password = 'password'
     this.password_confirmation = null
     this.remember_session = false
   }

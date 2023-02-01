@@ -62,7 +62,7 @@ export default defineComponent({
             seleccionar: seleccionarProducto
         } = useOrquestadorSelectorItems(traspaso, 'inventarios')
 
-        //flags 
+        //flags
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
@@ -173,8 +173,8 @@ export default defineComponent({
             },
             visible: ({ entidad, posicion }) => {
                 // console.log('entidad....', entidad)
-                console.log(entidad.cantidades, entidad.devuelto)
-                console.log(entidad.cantidades != entidad.devuelto)
+                // console.log(entidad.cantidades, entidad.devuelto)
+                // console.log(entidad.cantidades != entidad.devuelto)
 
                 return accion.value == acciones.editar && entidad.cantidades != entidad.devuelto ? true : false
             }
@@ -193,7 +193,7 @@ export default defineComponent({
             // visible: () => tabSeleccionado.value == '1' ? true : false
         }
 
-        
+
         function table(data, columns, encabezados) {
             return {
                 layout: 'listadoLayout',
@@ -381,7 +381,7 @@ export default defineComponent({
                         ]
                     },
 
-                    /* 
+                    /*
                     ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
                     */
@@ -515,7 +515,7 @@ export default defineComponent({
             //flags
             soloLectura,
             puedeEditar,
-            //Tabs 
+            //Tabs
             tabOptionsTraspasos,
             tabSeleccionado,
 

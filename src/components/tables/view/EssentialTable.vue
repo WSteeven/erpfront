@@ -529,10 +529,10 @@
     <template #body-cell-condiciones="props">
       <q-td :props="props">
         <!-- Estados de la tabla condiciones -->
-        <q-chip v-if="props.value == estadosCondiciones.nuevo"> NUEVO </q-chip>
-        <q-chip v-if="props.value == estadosCondiciones.usado"> USADO </q-chip>
-        <q-chip v-if="props.value == estadosCondiciones.mal_estado">MAL ESTADO</q-chip>
-        <q-chip v-if="props.value == estadosCondiciones.danado">DAÑADO</q-chip>
+        <q-chip v-if="props.value == estadosCondicionesId.nuevo||props.value==estadosCondicionesValue.nuevo"> NUEVO </q-chip>
+        <q-chip v-if="props.value == estadosCondicionesId.usado||props.value==estadosCondicionesValue.usado"> USADO </q-chip>
+        <q-chip v-if="props.value == estadosCondicionesId.mal_estado||props.value==estadosCondicionesValue.mal_estado">MAL ESTADO</q-chip>
+        <q-chip v-if="props.value == estadosCondicionesId.danado||props.value==estadosCondicionesValue.danado">DAÑADO</q-chip>
         <!-- {{ props.value }} -->
       </q-td>
     </template>

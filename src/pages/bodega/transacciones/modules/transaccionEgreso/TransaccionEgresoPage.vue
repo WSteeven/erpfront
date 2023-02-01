@@ -112,7 +112,10 @@
             </q-select>
           </div>
           <!-- Pedido -->
-          <div v-if="transaccion.es_transferencia" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="transaccion.es_transferencia"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">N° transferencia</label>
             <q-input
               type="number"
@@ -128,7 +131,10 @@
           </div>
           <!-- Tiene pedido -->
           <div
-            v-if="(accion === 'NUEVO' && !transaccion.es_transferencia) || (transaccion.tiene_pedido && !transaccion.es_transferencia) "
+            v-if="
+              (accion === 'NUEVO' && !transaccion.es_transferencia) ||
+              (transaccion.tiene_pedido && !transaccion.es_transferencia)
+            "
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -291,7 +297,10 @@
           </div>
           <!-- Es para una tarea -->
           <div
-            v-if="(esVisibleTarea&&!transaccion.es_transferencia) || (accion === 'NUEVO'&&!transaccion.es_transferencia)"
+            v-if="
+              (esVisibleTarea && !transaccion.es_transferencia) ||
+              (accion === 'NUEVO' && !transaccion.es_transferencia)
+            "
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -338,7 +347,10 @@
           </div>
           <!-- Retira un tercero -->
           <div
-            v-if="(transaccion.per_retira&&!transaccion.es_transferencia) || (accion === 'NUEVO'&&!transaccion.es_transferencia)"
+            v-if="
+              (transaccion.per_retira && !transaccion.es_transferencia) ||
+              (accion === 'NUEVO' && !transaccion.es_transferencia)
+            "
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -415,6 +427,22 @@
               </template>
             </q-select>
           </div>
+          <!-- Listado del pedido -->
+          <div v-if="transaccion.pedido" class="col-12 col-md-12">
+            <q-table
+              flat
+              title="Listado"
+              class="bg-white custom-border"
+              :rows="transaccion.listadoProductosTransaccion"
+              :columns="configuracionColumnasListadoProductosSeleccionados"
+              row-key="id"
+              :hide-bottom="true"
+              dense
+              v-model:selected="selected"
+              :pagination="{ rowsPerPage: 10 }"
+              @selection="buscarProductoEnInventario"
+            />
+          </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -430,6 +458,7 @@
                     listarProductos({
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
+                      search:criterioBusquedaProducto
                     })
                   "
                   @blur="
@@ -442,8 +471,13 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos({sucursal_id: transaccion.sucursal,
-                      cliente_id: transaccion.cliente,})"
+                  @click="
+                    listarProductos({
+                      sucursal_id: transaccion.sucursal,
+                      cliente_id: transaccion.cliente,
+                      search:criterioBusquedaProducto
+                    })
+                  "
                   icon="search"
                   unelevated
                   :disable="disabled || soloLectura"
@@ -460,9 +494,10 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="accion===acciones.nuevo?
-                configuracionColumnasProductosSeleccionadosAccion:
-                configuracionColumnasProductosSeleccionadosDespachado
+              :configuracionColumnas="
+                accion === acciones.nuevo
+                  ? configuracionColumnasItemsSeleccionados
+                  : configuracionColumnasProductosSeleccionadosDespachado
               "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"

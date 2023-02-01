@@ -3,6 +3,13 @@ import { Devolucion } from "./Devolucion";
 
 export const configuracionColumnasDevoluciones: ColumnConfig<Devolucion>[]=[
     {
+        name: 'id',
+        field: 'id',
+        label: 'N°',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'justificacion',
         field: 'justificacion',
         label: 'Justificación',

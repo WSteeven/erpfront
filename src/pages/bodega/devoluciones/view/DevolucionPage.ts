@@ -175,8 +175,9 @@ export default defineComponent({
                 console.log('entidad', entidad)
                 console.log('posicion', posicion)
             },
-            visible: () => {
-                return tabSeleccionado.value == 'CREADA' ? true : false
+            visible: ({entidad, posicion}) => {
+              console.log(entidad)
+                return tabSeleccionado.value == 'CREADA' && store.nombreUsuario==entidad.solicitante? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
