@@ -2,7 +2,7 @@
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 // import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
@@ -52,6 +52,7 @@ import { useTransferenciaStore } from 'stores/transferencia'
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
+import { useInventarioStore } from 'stores/inventario'
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
 
@@ -70,6 +71,7 @@ export default defineComponent({
         const detalleTransaccionStore = useDetalleTransaccionStore()
         const pedidoStore = usePedidoStore()
         const transferenciaStore = useTransferenciaStore()
+        const inventarioStore = useInventarioStore()
 
         //orquestador
         const {
@@ -555,7 +557,7 @@ export default defineComponent({
         async function llenarTransaccion(id: number) {
             limpiarTransaccion()
             await pedidoStore.cargarPedido(id)
-            cargarDatos()
+            await cargarDatos()
             console.log(pedidoStore.pedido)
         }
 
@@ -572,7 +574,9 @@ export default defineComponent({
             transaccion.listadoProductosTransaccion = transferenciaStore.transferencia.listadoProductos
         }
 
-        function cargarDatos() {
+        let coincidencias = ref()
+        let listadoCoincidencias = ref()
+        async function cargarDatos() {
             transaccion.pedido = pedidoStore.pedido.id
             transaccion.justificacion = pedidoStore.pedido.justificacion
             transaccion.solicitante = pedidoStore.pedido.solicitante
@@ -582,12 +586,24 @@ export default defineComponent({
                 transaccion.tarea = pedidoStore.pedido.tarea
                 filtroTareas(transaccion.tarea)
             }
-            transaccion.listadoProductosTransaccion = pedidoStore.pedido.listadoProductos.filter((v)=>v.cantidad!=v.despachado)
+            //transaccion.listadoProductosTransaccion = pedidoStore.pedido.listadoProductos.filter((v)=>v.cantidad!=v.despachado)
             console.log(transaccion.listadoProductosTransaccion)
-            transaccion.listadoProductosTransaccion.forEach((v) => {
-              v.cantidad = buscarCantidadPendienteEnPedido(v.id)
-            });
+            // transaccion.listadoProductosTransaccion.forEach((v) => v.cantidad = buscarCantidadPendienteEnPedido(v.id));
+            let detalles_ids:any=[]
+            detalles_ids = pedidoStore.pedido.listadoProductos.map((v)=>v.id)
+            console.log(detalles_ids)
+            const data = {
+                detalles:detalles_ids,
+                sucursal_id:transaccion.sucursal,
+                cliente_id: transaccion.cliente
+            }
+            coincidencias.value=await inventarioStore.cargarCoincidencias(data)
         }
+
+        watch(coincidencias, ()=>{
+            console.log(coincidencias.value, transaccion.sucursal, transaccion.cliente)
+            listadoCoincidencias.value = coincidencias.value.results
+        })
 
         function buscarCantidadPendienteEnPedido(detalle){
           let fila = pedidoStore.pedido.listadoProductos.filter((v)=>v.id ===detalle)
@@ -678,6 +694,8 @@ export default defineComponent({
 
             //stores
             pedidoStore,
+
+            listadoCoincidencias,
 
             //variables auxiliares
             esVisibleAutorizacion,
