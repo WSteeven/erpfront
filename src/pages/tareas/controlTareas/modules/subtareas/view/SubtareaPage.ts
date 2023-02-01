@@ -47,6 +47,8 @@ import { SubtareaController } from '../infraestructure/SubtareaController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { Subtarea } from '../domain/Subtarea'
+import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
+import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
 
 export default defineComponent({
   props: {
@@ -63,6 +65,8 @@ export default defineComponent({
      *********/
     const tareaStore = useTareaStore()
     const subtareaListadoStore = useSubtareaListadoStore()
+    const notificacionStore = useNotificacionStore()
+    notificacionStore.setQuasar(useQuasar())
 
     /*******
     * Mixin
@@ -95,32 +99,29 @@ export default defineComponent({
       subtareas.value = listadosAuxiliares.subtareas
     })
 
+    if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
+
     const accion = tareaStore.accionSubtarea
     const disable = computed(() => (subtarea.estado !== estadosSubtareas.CREADO && subtarea.estado !== null))
 
+    /************
+     * Variables
+     ************/
     const asignarJefe = ref(false)
     const asignarSecretario = ref(false)
     const tipoSeleccion = computed(() => asignarJefe.value || asignarSecretario.value ? 'single' : 'none')
-
-    const refEmpleadosAsignados = ref() // Tabla
     const empleadoSeleccionadoAsignacionQuitar = ref()
-
     const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
-
-    const notificacionStore = useNotificacionStore()
-    notificacionStore.setQuasar(useQuasar())
-
     const notificaciones = useNotificaciones()
-
-    // Carga de la subtarea
-    if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
-
-    const busqueda = ref()
-    const tecnicoSeleccionado = ref()
-
     const seleccionBusqueda = ref('por_tecnico')
+    const gruposSeleccionados: Ref<GrupoSeleccionado[]> = ref([])
+    const tecnicoSeleccionado = ref()
+    const busqueda = ref()
 
-    const gruposSeleccionados = ref([])
+    /**************
+     * Referencias
+     **************/
+    const refEmpleadosAsignados = ref()
 
     /***************************
     * Configuracion de columnas
@@ -151,22 +152,14 @@ export default defineComponent({
       },
     ]
 
-    function esLider(entidad) {
-      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_lider)
-    }
-
-    function esSecretario(entidad) {
-      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_secretario)
-    }
-
     /***************
     * Botones tabla
     ***************/
-    const asignarGrupoPrincipal: CustomActionTable = {
+    const designarGrupoPrincipal: CustomActionTable = {
       titulo: 'Designar como principal',
       icono: 'bi-check',
       color: 'positive',
-      visible: () => [acciones.editar, acciones.nuevo].includes(accion),
+      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion) && !entidad.principal,
       accion: ({ entidad, posicion }) => {
         console.log(entidad)
       },
@@ -359,6 +352,14 @@ export default defineComponent({
     /************
     * Funciones
     *************/
+    function esLider(entidad) {
+      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_lider)
+    }
+
+    function esSecretario(entidad) {
+      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_secretario)
+    }
+
     async function entidadSeleccionada(itemsSeleccionados: EntidadAuditable[]) {
       if (itemsSeleccionados.length) {
         const id = itemsSeleccionados[0].id
@@ -412,7 +413,12 @@ export default defineComponent({
       if (grupo_id) {
         obtenerTecnicosGrupo(grupo_id)
         const index = grupos.value.findIndex((item: any) => item.id === grupo_id)
-        gruposSeleccionados.value.push(grupos.value[index])
+        const grupoSeleccionado: GrupoSeleccionado = grupos.value[index]
+
+        if (!gruposSeleccionados.value.length) {
+          grupoSeleccionado.principal = true
+        }
+        gruposSeleccionados.value.push(grupoSeleccionado)
 
       } else notificaciones.notificarAdvertencia('Debe seleccionar un grupo')
       // else tecnicosGrupoPrincipal.value = []
@@ -457,10 +463,6 @@ export default defineComponent({
         subtarea.hora_inicio_ventana = null
         subtarea.hora_fin_ventana = null
       }
-    }
-
-    function getIndexById(listado, id) {
-      return listado.indexOf((item) => item.id === id)
     }
 
     return {
@@ -517,7 +519,7 @@ export default defineComponent({
       verificarEsVentana,
       Empleado,
       gruposSeleccionados,
-      asignarGrupoPrincipal,
+      designarGrupoPrincipal,
       // mostrarEmergencia,
       //verificarTipoTrabajo,
     }

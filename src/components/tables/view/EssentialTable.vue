@@ -264,7 +264,7 @@
           </q-btn>
 
           <!-- custom botons -->
-          <span class="row justify-left">
+          <span class="row full-width text-left">
             <CustomButtons
               :accion1="accion1"
               :accion2="accion2"
@@ -431,6 +431,17 @@
       </q-td>
     </template>
 
+    <template #body-cell-principal="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
     <template #body-cell-pagado="props">
       <q-td :props="props" class="">
         <q-icon
@@ -531,7 +542,9 @@
         <!-- Estados de la tabla condiciones -->
         <q-chip v-if="props.value == estadosCondiciones.nuevo"> NUEVO </q-chip>
         <q-chip v-if="props.value == estadosCondiciones.usado"> USADO </q-chip>
-        <q-chip v-if="props.value == estadosCondiciones.mal_estado">MAL ESTADO</q-chip>
+        <q-chip v-if="props.value == estadosCondiciones.mal_estado"
+          >MAL ESTADO</q-chip
+        >
         <q-chip v-if="props.value == estadosCondiciones.danado">DAÑADO</q-chip>
         <!-- {{ props.value }} -->
       </q-td>
