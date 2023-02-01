@@ -579,8 +579,7 @@
               subtarea.modo_asignacion_trabajo ===
               opcionesModoAsignacionTrabajo.por_grupo
             "
-            ref="refEmpleadosAsignados"
-            titulo="Listado de grupos seleccionados"
+            titulo="Grupos seleccionados"
             estilos="margin-bottom: 14px;"
             :configuracionColumnas="columnasGrupo"
             :datos="gruposSeleccionados"
@@ -595,15 +594,15 @@
             :mostrar-header="true"
             :permitir-buscar="false"
             :tipo-seleccion="tipoSeleccion"
-            :accion1="asignarGrupoPrincipal"
-            :accion2="eliminarTecnico"
+            :accion1="eliminarTecnico"
+            :accion2="designarGrupoPrincipal"
             @selected="entidadSeleccionada"
           >
           </essential-table>
 
           <essential-table
             ref="refEmpleadosAsignados"
-            titulo="Listado de empleados que ejecutarán el trabajo"
+            titulo="Empleados de los grupos seleccionados"
             :configuracionColumnas="columnas"
             :datos="tecnicosGrupoPrincipal"
             :accion1Header="asignarNuevoTecnicoLider"
@@ -616,8 +615,8 @@
             :alto-fijo="false"
             :mostrar-header="true"
             :tipo-seleccion="tipoSeleccion"
-            :accion1="eliminarTecnico"
             @selected="entidadSeleccionada"
+            :accion1="eliminarTecnico"
           >
           </essential-table>
           <!--
