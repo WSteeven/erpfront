@@ -162,7 +162,7 @@ export default defineComponent({
                 },
             })
             // transformarOpcionesTipos()
-            if(pedidoStore.pedido.id) {
+            if (pedidoStore.pedido.id) {
                 transaccion.tiene_pedido = true
                 transaccion.tarea = pedidoStore.pedido.tarea
                 cargarDatos()
@@ -357,7 +357,7 @@ export default defineComponent({
                             height: 40,
                             margin: [5, 2]
                         },
-                        { text: transaccion.es_transferencia+'COMPROBANTE DE EGRESO POR TRANSFERENCIA', width: 'auto', style: 'header', margin: [85, 20] },
+                        { text: transaccion.es_transferencia + 'COMPROBANTE DE EGRESO POR TRANSFERENCIA', width: 'auto', style: 'header', margin: [85, 20] },
                         { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
                     ],
                 },
@@ -558,16 +558,16 @@ export default defineComponent({
             limpiarTransaccion()
             await pedidoStore.cargarPedido(id)
             await cargarDatos()
-            console.log(pedidoStore.pedido)
+            // console.log(pedidoStore.pedido)
         }
 
-        async function llenarTransferencia(id:number){
+        async function llenarTransferencia(id: number) {
             limpiarTransaccion()
             await transferenciaStore.cargarTransferencia(id)
             cargarDatosTransferencia()
             console.log(transferenciaStore.transferencia)
         }
-        function cargarDatosTransferencia(){
+        function cargarDatosTransferencia() {
             transaccion.sucursal = transferenciaStore.transferencia.sucursal_salida
             transaccion.justificacion = transferenciaStore.transferencia.justificacion
             transaccion.cliente = transferenciaStore.transferencia.cliente
@@ -576,39 +576,62 @@ export default defineComponent({
 
         let coincidencias = ref()
         let listadoCoincidencias = ref()
+        /**
+         * Cargar los datos del pedido en el formulario de egreso.
+         */
         async function cargarDatos() {
+            //Copiar los valores de las variables
             transaccion.pedido = pedidoStore.pedido.id
             transaccion.justificacion = pedidoStore.pedido.justificacion
             transaccion.solicitante = pedidoStore.pedido.solicitante
             transaccion.sucursal = pedidoStore.pedido.sucursal
+            //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
             if (pedidoStore.pedido.tarea) {
                 transaccion.es_tarea = true
                 transaccion.tarea = pedidoStore.pedido.tarea
                 filtroTareas(transaccion.tarea)
             }
-            //transaccion.listadoProductosTransaccion = pedidoStore.pedido.listadoProductos.filter((v)=>v.cantidad!=v.despachado)
-            console.log(transaccion.listadoProductosTransaccion)
+            //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
+            // transaccion.listadoProductosTransaccion = Array.from(pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado))
+            // console.log(transaccion.listadoProductosTransaccion)
             // transaccion.listadoProductosTransaccion.forEach((v) => v.cantidad = buscarCantidadPendienteEnPedido(v.id));
-            let detalles_ids:any=[]
-            detalles_ids = pedidoStore.pedido.listadoProductos.map((v)=>v.id)
-            console.log(detalles_ids)
-            const data = {
-                detalles:detalles_ids,
-                sucursal_id:transaccion.sucursal,
-                cliente_id: transaccion.cliente
-            }
-            coincidencias.value=await inventarioStore.cargarCoincidencias(data)
+            // let detalles_ids: any = []
+            // detalles_ids = pedidoStore.pedido.listadoProductos.map((v) => v.id)
+            // console.log(detalles_ids)
+            // const data = {
+            //     detalles: detalles_ids,
+            //     sucursal_id: transaccion.sucursal,
+            //     cliente_id: transaccion.cliente
+            // }
+            // coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
         }
 
-        watch(coincidencias, ()=>{
-            console.log(coincidencias.value, transaccion.sucursal, transaccion.cliente)
+        /* watch(coincidencias, () => {
+            console.log(coincidencias.value, transaccion.listadoProductosTransaccion)
             listadoCoincidencias.value = coincidencias.value.results
-        })
+            console.log(listadoCoincidencias.value)
 
-        function buscarCantidadPendienteEnPedido(detalle){
-          let fila = pedidoStore.pedido.listadoProductos.filter((v)=>v.id ===detalle)
-          console.log(fila[0])
-          return fila[0]['cantidad']-fila[0]['despachado']
+            transaccion.listadoProductosTransaccion.forEach((v) => {
+                let item = listadoCoincidencias.value.filter((i) => i.detalle === v.id)
+                console.log(item[0])
+                if (item[0]['cantidad'] >= v.cantidad) {
+                    console.log('hay más en inventario')
+                } else {
+                    console.log('hay menos en inventario')
+                    v.cantidad = item[0]['cantidad']
+                }
+            });
+        }) */
+
+        /**
+         * Función que filtra y obtiene la cantidad restante a despachar en un pedido.
+         * @param detalle detalle_id del pedido
+         * @returns int el resultado de la cantidad solicitada menos la cantidad despachada
+         */
+        function buscarCantidadPendienteEnPedido(detalle) {
+            let fila = pedidoStore.pedido.listadoProductos.filter((v) => v.id === detalle)
+            console.log(fila[0])
+            return fila[0]['cantidad'] - fila[0]['despachado']
         }
 
         function limpiarTransaccion() {
@@ -668,7 +691,7 @@ export default defineComponent({
 
         function filtroTareas(val) {
             // console.log('val recibido', val)
-            const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val||v.detalle==val)
+            const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val || v.detalle == val)
             // console.log(listadosAuxiliares.tareas)
             // console.log('cliente_encontrado', opcion_encontrada[0])
             // console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
@@ -710,12 +733,12 @@ export default defineComponent({
             filtroTareas,
             filtroMotivos(val) {
                 console.log('filtro motivos', val)
-                const motivoSeleccionado  =listadosAuxiliares.motivos.filter((v)=>v.id===val)
-                if(motivoSeleccionado[0]['nombre']==motivos.egresoTransferenciaBodegas){
+                const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)
+                if (motivoSeleccionado[0]['nombre'] == motivos.egresoTransferenciaBodegas) {
                     console.log(motivoSeleccionado[0]['nombre'])
                     transaccion.es_transferencia = true
-                }else{
-                    transaccion.es_transferencia=false
+                } else {
+                    transaccion.es_transferencia = false
                 }
             },
 

@@ -490,13 +490,14 @@
               </div>
             </div>
           </div>
+          {{ transaccion.listadoProductosTransaccion }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
                 accion === acciones.nuevo
-                  ? configuracionColumnasItemsSeleccionados
+                  ? configuracionColumnasProductosSeleccionadosAccion
                   : configuracionColumnasProductosSeleccionadosDespachado
               "
               :datos="transaccion.listadoProductosTransaccion"
@@ -512,12 +513,13 @@
         </div>
       </q-form>
 
+      
       <!-- Modal de seleccion de detalles -->
       <!-- :configuracion-columnas="configuracionColumnasDetallesProductos" -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
         :configuracion-columnas="configuracionColumnasInventarios"
-        :datos="transaccion.pedido ? listadoCoincidencias : listadoProductos"
+        :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
       >
