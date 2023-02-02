@@ -482,6 +482,7 @@
             @filter="filtrarGrupos"
             transition-show="scale"
             transition-hide="scale"
+            hint="Seleccione y presione en Agregar"
             options-dense
             dense
             outlined
@@ -493,7 +494,6 @@
             map-options
             clearable
             :disable="disable"
-            :error="!!v$.grupo.$errors.length"
           >
             <template v-slot:no-option>
               <q-item>
@@ -501,12 +501,6 @@
                   No hay resultados
                 </q-item-section>
               </q-item>
-            </template>
-
-            <template v-slot:error>
-              <div v-for="error of v$.grupo.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
             </template>
           </q-select>
         </div>
@@ -573,7 +567,6 @@
             </div>
           </div>
 
-          <!--            v-if="tecnicosGrupoPrincipal.length" -->
           <essential-table
             v-if="
               subtarea.modo_asignacion_trabajo ===
@@ -582,7 +575,7 @@
             titulo="Grupos seleccionados"
             estilos="margin-bottom: 14px;"
             :configuracionColumnas="columnasGrupo"
-            :datos="gruposSeleccionados"
+            :datos="subtarea.grupos_seleccionados"
             :accion1Header="asignarNuevoTecnicoLider"
             :accion2Header="designarNuevoSecretario"
             :accion3Header="cancelarDesignacion"
@@ -593,8 +586,9 @@
             :alto-fijo="false"
             :mostrar-header="true"
             :permitir-buscar="false"
+            :mostrar-footer="!subtarea.grupos_seleccionados.length"
             :tipo-seleccion="tipoSeleccion"
-            :accion1="eliminarTecnico"
+            :accion1="quitarGrupo"
             :accion2="designarGrupoPrincipal"
             @selected="entidadSeleccionada"
           >
@@ -604,7 +598,7 @@
             ref="refEmpleadosAsignados"
             titulo="Empleados de los grupos seleccionados"
             :configuracionColumnas="columnas"
-            :datos="tecnicosGrupoPrincipal"
+            :datos="subtarea.empleados_seleccionados"
             :accion1Header="asignarNuevoTecnicoLider"
             :accion2Header="designarNuevoSecretario"
             :accion3Header="cancelarDesignacion"
@@ -615,15 +609,11 @@
             :alto-fijo="false"
             :mostrar-header="true"
             :tipo-seleccion="tipoSeleccion"
+            :mostrar-footer="!subtarea.empleados_seleccionados.length"
             @selected="entidadSeleccionada"
             :accion1="eliminarTecnico"
           >
           </essential-table>
-          <!--
-              :permitirEditarModal="true"
-              :modalMaximized="false"
-              :entidad="Empleado"
-            -->
         </div>
       </div>
 

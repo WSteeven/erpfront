@@ -1,11 +1,12 @@
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { GrupoSeleccionado } from './GrupoSeleccionado'
 
 export class Subtarea extends EntidadAuditable {
   codigo_subtarea: string | null
   detalle: string | null
-  grupo: number | null
-  empleado: number | null
+  /*   grupo: number | null
+    empleado: number | null */
   tecnico_responsable: string | null
   tipo_trabajo: number | null
 
@@ -31,8 +32,8 @@ export class Subtarea extends EntidadAuditable {
 
   descripcion_completa: string | null
 
-  tecnicos_grupo_principal: any[] //Ref<Tecnico[]>
-  tecnicos_otros_grupos: any[]
+  /* tecnicos_grupo_principal: any[] //Ref<Tecnico[]>
+  tecnicos_otros_grupos: any[] */
 
   estado: string | null
 
@@ -49,13 +50,16 @@ export class Subtarea extends EntidadAuditable {
   modo_asignacion_trabajo: string
   asignar_mas_empleados: boolean
 
+  grupos_seleccionados: GrupoSeleccionado[]
+  empleados_seleccionados: []
+
   constructor() {
     super()
 
     this.codigo_subtarea = null
     this.detalle = null
-    this.grupo = null
-    this.empleado = null
+    /* this.grupo = null
+    this.empleado = null */
     this.tecnico_responsable = null
     this.tipo_trabajo = null
     this.estado = null
@@ -82,8 +86,8 @@ export class Subtarea extends EntidadAuditable {
 
     this.descripcion_completa = null
 
-    this.tecnicos_grupo_principal = []
-    this.tecnicos_otros_grupos = []
+    /* this.tecnicos_grupo_principal = []
+    this.tecnicos_otros_grupos = [] */
 
     this.tarea_id = null
 
@@ -98,5 +102,8 @@ export class Subtarea extends EntidadAuditable {
     this.modo_asignacion_trabajo = opcionesModoAsignacionTrabajo.por_grupo
 
     this.asignar_mas_empleados = false
+
+    this.grupos_seleccionados = []
+    this.empleados_seleccionados = []
   }
 }

@@ -35,12 +35,12 @@ import Dropzone from 'components/dropzone/view/DropZone.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ValidarTecnicosGrupoPrincipal } from '../application/validaciones/ValidarTecnicosGrupoPrincipal'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 import { CambiarJefeCuadrillaController } from '../infraestructure/CambiarJefeCuadrillaController'
 import { CambiarSecretarioController } from '../infraestructure/CambiarSecretarioController'
 import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
+import { ValidarGrupoAsignado } from '../application/validaciones/ValidarGrupoAsignado'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { SubtareaController } from '../infraestructure/SubtareaController'
@@ -49,6 +49,7 @@ import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { Subtarea } from '../domain/Subtarea'
 import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
+import { ValidarGrupoPrincipal } from '../application/validaciones/ValidarGrupoPrincipal'
 
 export default defineComponent({
   props: {
@@ -114,7 +115,6 @@ export default defineComponent({
     const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
     const notificaciones = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
-    const gruposSeleccionados: Ref<GrupoSeleccionado[]> = ref([])
     const tecnicoSeleccionado = ref()
     const busqueda = ref()
 
@@ -160,8 +160,26 @@ export default defineComponent({
       icono: 'bi-check',
       color: 'positive',
       visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion) && !entidad.principal,
+      accion: ({ posicion }) => {
+        subtarea.grupos_seleccionados = subtarea.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
+          const grupoSeleccionado = new GrupoSeleccionado()
+          grupoSeleccionado.hydrate(grupo)
+          grupoSeleccionado.principal = false
+          return grupoSeleccionado
+        })
+        subtarea.grupos_seleccionados[posicion].principal = true
+      },
+    }
+
+    // Quitar elemento de grupos seleccionados
+    const quitarGrupo: CustomActionTable = {
+      titulo: 'Quitar',
+      icono: 'bi-x',
+      color: 'negative',
+      visible: () => [acciones.editar, acciones.nuevo].includes(accion),
       accion: ({ entidad, posicion }) => {
-        console.log(entidad)
+        entidad.principal = false
+        subtarea.grupos_seleccionados.splice(posicion, 1)
       },
     }
 
@@ -279,24 +297,24 @@ export default defineComponent({
     onBeforeGuardar(() => {
       subtarea.tarea_id = tareaStore.tarea.id
 
-      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
+      /* if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
         subtarea.empleado = tecnicosGrupoPrincipal.value[0].id
       }
 
-      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
+      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString()) */
     })
 
     onBeforeModificar(() => {
-      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
+      // subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
     })
 
     onConsultado(() => {
-      tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
+      // tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
     })
 
-    function validarString(listado: string) {
+    /*function validarString(listado: string) {
       return listado !== '' ? listado : null
-    }
+    }*/
 
     async function guardarDatos(subtarea: Subtarea) {
       try {
@@ -331,7 +349,7 @@ export default defineComponent({
     **************/
     const rules = {
       detalle: { required },
-      grupo: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
+      // grupo: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
       tipo_trabajo: { required },
       descripcion_completa: { required },
       fecha_ventana: { required: requiredIf(() => subtarea.es_ventana) },
@@ -343,11 +361,9 @@ export default defineComponent({
     const v$ = useVuelidate(rules, subtarea)
     setValidador(v$.value)
 
-    const validarTecnicosGrupoPrincipal = new ValidarTecnicosGrupoPrincipal(tecnicosGrupoPrincipal)
-
-    mixin.agregarValidaciones(
-      validarTecnicosGrupoPrincipal
-    )
+    const validarGrupoAsignado = new ValidarGrupoAsignado(subtarea.grupos_seleccionados)
+    // const validarGrupoPrincipal = new ValidarGrupoPrincipal(subtarea.grupos_seleccionados)
+    mixin.agregarValidaciones(validarGrupoAsignado) //, validarGrupoPrincipal)
 
     /************
     * Funciones
@@ -411,17 +427,20 @@ export default defineComponent({
 
     function obtenerResponsables(grupo_id: number) {
       if (grupo_id) {
+        const existe = subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.id === grupo_id)
+
+        if (existe) return notificaciones.notificarAdvertencia('El grupo seleccionado ya ha sido agregado')
+
         obtenerTecnicosGrupo(grupo_id)
         const index = grupos.value.findIndex((item: any) => item.id === grupo_id)
         const grupoSeleccionado: GrupoSeleccionado = grupos.value[index]
 
-        if (!gruposSeleccionados.value.length) {
+        if (subtarea.grupos_seleccionados.length === 0) {
           grupoSeleccionado.principal = true
         }
-        gruposSeleccionados.value.push(grupoSeleccionado)
+        subtarea.grupos_seleccionados.push(grupoSeleccionado)
 
       } else notificaciones.notificarAdvertencia('Debe seleccionar un grupo')
-      // else tecnicosGrupoPrincipal.value = []
 
       subtarea.grupo = null
     }
@@ -429,10 +448,10 @@ export default defineComponent({
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      tecnicosGrupoPrincipal.value.push(...result)
-      console.log(tecnicosGrupoPrincipal.value)
+      subtarea.empleados_seleccionados.push(...result)
+      // console.log(tecnicosGrupoPrincipal.value)
 
-      tecnicosGrupoPrincipal.value = tecnicosGrupoPrincipal.value.map((empleado: Empleado) => {
+      subtarea.empleados_seleccionados = subtarea.empleados_seleccionados.map((empleado: Empleado) => {
         const tecnico = new Empleado()
         tecnico.hydrate(empleado)
 
@@ -502,6 +521,7 @@ export default defineComponent({
       disable,
       configuracionColumnasTecnico,
       tipoSeleccion,
+      quitarGrupo,
       // orquestador
       refListadoSeleccionableTecnicos,
       criterioBusquedaTecnico,
@@ -518,7 +538,6 @@ export default defineComponent({
       entidadSeleccionada,
       verificarEsVentana,
       Empleado,
-      gruposSeleccionados,
       designarGrupoPrincipal,
       // mostrarEmergencia,
       //verificarTipoTrabajo,
