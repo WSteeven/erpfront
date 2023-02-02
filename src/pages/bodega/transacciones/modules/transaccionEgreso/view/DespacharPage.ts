@@ -76,7 +76,7 @@ export default defineComponent({
         sucursal_id: transaccionStore.transaccion.sucursal_id,
         cliente_id: transaccionStore.transaccion.cliente_id,
       }
-      coincidencias.value = await inventarioStore.cargarCoincidencias(data)
+      coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
     })
 
     watch(coincidencias, async (newCoincidencia) => {

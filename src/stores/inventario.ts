@@ -48,19 +48,32 @@ export const useInventarioStore=defineStore('inventario', ()=>{
      * @param data array de datos compuesto por el listado de detalle_id, el cliente_id y la sucursal_id
      * @returns listado de elementos encontrados en el inventario que coinciden con el listado de detalle_id
      */
-    async function buscarTodos(data:any) {
+    async function buscarTodos(data:any, opcion:string) {
+        console.log('datos a consultar en el inventario',data)
         statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = 'api/buscarDetallesEnInventario'
+        let ruta = ''
+        if(opcion==='id'){
+            ruta = 'api/buscarIdsEnInventario'
+        }
+        if(opcion==='detalle_id'){
+            ruta='api/buscarDetallesEnInventario'
+        }
         const response: AxiosResponse = await axios.post(ruta, data)
         statusLoading.desactivar()
-        console.log(response)
+        console.log(response.data.results)
         return {
             results :response.data.results,
         }
     }
-    async function cargarCoincidencias(data:any) {
-        return await buscarTodos(data)
+    /**
+     * 
+     * @param data listado de detalle_id´s, sucursal_id y cliente_id
+     * @param opcion columna a buscar: detalle_id o id
+     * @returns 
+     */
+    async function cargarCoincidencias(data:any, opcion:string) {
+        return await buscarTodos(data, opcion)
     }
 
     /**
