@@ -70,9 +70,15 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'grupo',
-    field: 'grupo',
-    label: 'Grupo',
+    name: 'empleados',
+    field: 'empleados',
+    label: 'Empleados',
+    align: 'left',
+  },
+  {
+    name: 'grupos',
+    field: 'grupos',
+    label: 'Grupos',
     align: 'left',
   },
   {

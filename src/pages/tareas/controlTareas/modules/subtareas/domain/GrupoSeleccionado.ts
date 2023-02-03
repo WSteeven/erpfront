@@ -1,12 +1,10 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
+import { Grupo } from "pages/tareas/grupos/domain/Grupo"
 
-export class GrupoSeleccionado extends EntidadAuditable {
-  nombre: string | null
+export class GrupoSeleccionado extends Grupo {
   principal: boolean
 
   constructor() {
     super()
-    this.nombre = null
     this.principal = false
   }
 }

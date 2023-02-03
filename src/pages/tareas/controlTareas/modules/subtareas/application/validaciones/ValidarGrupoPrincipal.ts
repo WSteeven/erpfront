@@ -1,13 +1,13 @@
-// import { opcionesModoAsignacionTrabajo } from "config/utils"
+import { opcionesModoAsignacionTrabajo } from "config/utils"
 import { Validador } from "shared/validadores/domain/Validador"
-import { Ref } from "vue"
-// import { Subtarea } from '../../domain/Subtarea'
+import { GrupoSeleccionado } from "../../domain/GrupoSeleccionado"
+import { Subtarea } from "../../domain/Subtarea"
 
 export class ValidarGrupoPrincipal implements Validador {
-  private gruposSeleccionados: Ref<any[]>
+  private subtarea: Subtarea
 
-  constructor(gruposSeleccionados: Ref<any[]>) {
-    this.gruposSeleccionados = gruposSeleccionados
+  constructor(subtarea: Subtarea) {
+    this.subtarea = subtarea
   }
 
   /**
@@ -15,11 +15,12 @@ export class ValidarGrupoPrincipal implements Validador {
    */
   async validar() {
 
-    const noEsValido = this.gruposSeleccionados.value.length === 0
+    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+      const noEsValido = !this.subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.principal)
 
-    if (noEsValido)
-      throw new Error("Debe asignar al menos un grupo.")
-
+      if (noEsValido)
+        throw new Error("Debe asignar a un grupo como principal.")
+    }
     return true
   }
 }

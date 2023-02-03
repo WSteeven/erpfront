@@ -50,6 +50,8 @@ import { Subtarea } from '../domain/Subtarea'
 import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
 import { ValidarGrupoPrincipal } from '../application/validaciones/ValidarGrupoPrincipal'
+import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
+import { ValidarEmpleadosSeleccionados } from '../application/validaciones/ValidarEmpleadosSeleccionados'
 
 export default defineComponent({
   props: {
@@ -157,7 +159,7 @@ export default defineComponent({
     ***************/
     const designarGrupoPrincipal: CustomActionTable = {
       titulo: 'Designar como principal',
-      icono: 'bi-check',
+      icono: 'bi-check-circle-fill',
       color: 'positive',
       visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion) && !entidad.principal,
       accion: ({ posicion }) => {
@@ -297,14 +299,14 @@ export default defineComponent({
     onBeforeGuardar(() => {
       subtarea.tarea_id = tareaStore.tarea.id
 
-      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+      /* if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
         subtarea.grupos_seleccionados = subtarea.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
           return {
             grupo_id: grupo.id,
             principal: grupo.principal,
           }
         })
-      }
+      } */
 
       /*subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString()) */
     })
@@ -366,9 +368,10 @@ export default defineComponent({
     const v$ = useVuelidate(rules, subtarea)
     setValidador(v$.value)
 
-    const validarGrupoAsignado = new ValidarGrupoAsignado(subtarea.grupos_seleccionados)
-    // const validarGrupoPrincipal = new ValidarGrupoPrincipal(subtarea.grupos_seleccionados)
-    mixin.agregarValidaciones(validarGrupoAsignado) //, validarGrupoPrincipal)
+    const validarGrupoAsignado = new ValidarGrupoAsignado(subtarea)
+    const validarGrupoPrincipal = new ValidarGrupoPrincipal(subtarea)
+    const validarEmpleadosSeleccionados = new ValidarEmpleadosSeleccionados(subtarea)
+    mixin.agregarValidaciones(validarGrupoAsignado, validarGrupoPrincipal, validarEmpleadosSeleccionados)
 
     /************
     * Funciones
@@ -430,7 +433,7 @@ export default defineComponent({
       }
     }
 
-    function obtenerResponsables(grupo_id: number) {
+    function agregarGrupoSeleccionado(grupo_id: number) {
       if (grupo_id) {
         const existe = subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.id === grupo_id)
 
@@ -474,8 +477,23 @@ export default defineComponent({
       listar: listarTecnicos,
       limpiar: limpiarTecnico,
       seleccionar: seleccionarTecnico
-    } = useOrquestadorSelectorTecnicos(tecnicosGrupoPrincipal, 'empleados')
+    } = useOrquestadorSelectorTecnicos(subtarea, 'empleados')
     const { files, addFiles, removeFile } = useFileList()
+
+    function seleccionarEmpleado(empleados: EmpleadoSeleccionado[]) {
+      /* if (subtarea.grupos_seleccionados.length === 0) {
+        grupoSeleccionado.principal = true
+      }
+      seleccionarTecnico*/
+      empleados = empleados.map((empleado: Empleado) => {
+        const emp = new EmpleadoSeleccionado()
+        emp.hydrate(empleado)
+        emp.principal = false
+        return emp
+      })
+
+      seleccionarTecnico(empleados)
+    }
 
     function cargarArchivos(files) {
       subtarea.archivos = files
@@ -487,6 +505,11 @@ export default defineComponent({
         subtarea.hora_inicio_ventana = null
         subtarea.hora_fin_ventana = null
       }
+    }
+
+    function resetListados() {
+      subtarea.empleados_seleccionados = []
+      subtarea.grupos_seleccionados = []
     }
 
     return {
@@ -520,7 +543,7 @@ export default defineComponent({
       filtrarSubtareas,
       subtareas,
       filtrarGrupos,
-      obtenerResponsables,
+      agregarGrupoSeleccionado,
       guardarDatos, editarDatos, reestablecerDatos,
       accion,
       disable,
@@ -535,6 +558,7 @@ export default defineComponent({
       listarTecnicos,
       limpiarTecnico,
       seleccionarTecnico,
+      seleccionarEmpleado,
       // ---
       files, addFiles, removeFile,
       cargarArchivos,
@@ -544,6 +568,7 @@ export default defineComponent({
       verificarEsVentana,
       Empleado,
       designarGrupoPrincipal,
+      resetListados,
       // mostrarEmergencia,
       //verificarTipoTrabajo,
     }

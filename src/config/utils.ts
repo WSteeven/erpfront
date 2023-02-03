@@ -293,7 +293,7 @@ export const rolesSistema = {
   activos_fijos: 'ACTIVOS FIJOS',
 }
 
-export const opcionesModoAsignacionTrabajo = { por_grupo: 'POR_GRUPO_TECNICO', por_trabajador: 'POR_EMPLEADO' }
+export const opcionesModoAsignacionTrabajo = { por_grupo: 'POR_GRUPO', por_trabajador: 'POR_EMPLEADO' }
 
 export const tiposJornadas = ['INICIO DE JORNADA', 'FIN DE JORNADA']
 
