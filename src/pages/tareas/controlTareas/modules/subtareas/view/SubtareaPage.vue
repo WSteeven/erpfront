@@ -608,6 +608,7 @@
             :permitirEliminar="false"
             :alto-fijo="false"
             :mostrar-header="true"
+            :permitir-buscar="false"
             :tipo-seleccion="tipoSeleccion"
             :mostrar-footer="!subtarea.empleados_seleccionados.length"
             @selected="entidadSeleccionada"

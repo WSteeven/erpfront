@@ -297,11 +297,16 @@ export default defineComponent({
     onBeforeGuardar(() => {
       subtarea.tarea_id = tareaStore.tarea.id
 
-      /* if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
-        subtarea.empleado = tecnicosGrupoPrincipal.value[0].id
+      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+        subtarea.grupos_seleccionados = subtarea.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
+          return {
+            grupo_id: grupo.id,
+            principal: grupo.principal,
+          }
+        })
       }
 
-      subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString()) */
+      /*subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString()) */
     })
 
     onBeforeModificar(() => {
