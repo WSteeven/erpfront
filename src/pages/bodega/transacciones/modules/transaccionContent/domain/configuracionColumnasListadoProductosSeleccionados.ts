@@ -29,5 +29,12 @@ export const configuracionColumnasListadoProductosSeleccionados: ColumnConfig<an
     align: 'left',
     sortable: false,
   },
+  {
+    name: 'despachado',
+    field: 'despachado',
+    label: 'Despachado',
+    align: 'left',
+    sortable: false,
+  },
 ]
 
