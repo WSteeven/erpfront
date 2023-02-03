@@ -401,13 +401,26 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'finalizado'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check-circle-fill"
+                    color="positive"
+                    size="xs"
+                  ></q-icon>
+                </span>
+
                 <estados-subtareas
                   v-if="col.name === 'estado'"
                   :propsTable="col"
                 />
 
                 <span
-                  v-if="!['pagado', 'activo', 'es_ventana'].includes(col.name)"
+                  v-if="
+                    !['pagado', 'activo', 'es_ventana', 'finalizado'].includes(
+                      col.name
+                    )
+                  "
                   >{{ col.value }}</span
                 >
               </q-item-label>
@@ -444,6 +457,17 @@
     </template>
 
     <template #body-cell-es_ventana="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
+    <template #body-cell-finalizado="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
@@ -763,10 +787,18 @@
   </q-table>
 
   <div
-    v-if="!$q.screen.xs && permitirEditarCeldas"
-    class="text-center text-grey-7"
+    v-if="!$q.screen.xs && permitirEditarCeldas && listado.length"
+    class="text-right text-grey-7"
   >
-    <small>Haz clic sobre una celda para editarla</small>
+    <q-chip class="bg-grey-2 text-info" color="info">
+      <q-icon
+        name="bi-info-circle-fill"
+        color="info"
+        size="xs"
+        class="q-mr-sm"
+      ></q-icon>
+      <small>Haz clic sobre una celda para editarla</small>
+    </q-chip>
   </div>
 
   <previsualizar-tabla-pdf
@@ -785,8 +817,8 @@ thead tr:first-child th {
   background-color: #fff;
 } */
 
+//.q-table__bottom,
 .q-table__top,
-.q-table__bottom,
 thead tr:first-child th {
   background-color: #f5f5f5;
   /* border-radius: 16px;

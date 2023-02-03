@@ -57,4 +57,10 @@ export const configuracionColumnasProyecto: ColumnConfig<Proyecto>[] = [
     label: 'Demora',
     align: 'left',
   },
+  {
+    name: 'finalizado',
+    field: 'finalizado',
+    label: 'Finalizado',
+    align: 'left',
+  },
 ]

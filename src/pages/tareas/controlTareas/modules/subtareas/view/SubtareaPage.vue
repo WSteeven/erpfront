@@ -446,12 +446,7 @@
             toggle-color="secondary"
             color="white"
             text-color="primary"
-            @update:model-value="
-              () => {
-                tecnicosGrupoPrincipal = []
-                subtarea.grupo = null
-              }
-            "
+            @update:model-value="resetListados()"
             :options="[
               {
                 label: 'Por grupo',
@@ -513,7 +508,7 @@
             :disable="disable"
             no-caps
             push
-            @click="obtenerResponsables(subtarea.grupo)"
+            @click="agregarGrupoSeleccionado(subtarea.grupo)"
           >
             <q-icon name="bi-plus" class="q-pr-sm" size="xs"></q-icon>
             <div>Agregar</div>
@@ -536,12 +531,9 @@
             <div class="col-12 col-md-10">
               <label class="q-mb-sm block">Empleado</label>
               <q-input
-                v-model="busqueda"
+                v-model="criterioBusquedaTecnico"
                 placeholder="Nombres / Apellidos / Identificación"
                 hint="Ingrese los datos del empleado y presione Enter para buscar"
-                @update:model-value="
-                  (v) => (criterioBusquedaTecnico = v.toUpperCase())
-                "
                 @keydown.enter="listarTecnicos()"
                 @blur="criterioBusquedaTecnico === '' ? limpiarTecnico() : null"
                 :disable="disable"
@@ -631,7 +623,7 @@
       :configuracion-columnas="configuracionColumnasTecnico"
       :datos="listadoTecnicos"
       tipo-seleccion="multiple"
-      @selected="seleccionarTecnico"
+      @selected="seleccionarEmpleado"
     ></essential-selectable-table>
   </q-page>
 </template>

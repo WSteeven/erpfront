@@ -6,8 +6,10 @@ import { Ref, ref } from 'vue'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { useSelector } from 'components/tables/application/selector'
+import { Subtarea } from '../domain/Subtarea'
+import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
 
-export function useOrquestadorSelectorTecnicos(tecnicosOtrosGrupos: Ref<Empleado[]>, endpoint: keyof typeof endpoints) {
+export function useOrquestadorSelectorTecnicos(subtarea: Subtarea, endpoint: keyof typeof endpoints) {
   const refListadoSeleccionable = ref()
   const listado: Ref<EntidadAuditable[]> = ref([])
   const criterioBusqueda = ref()
@@ -19,8 +21,10 @@ export function useOrquestadorSelectorTecnicos(tecnicosOtrosGrupos: Ref<Empleado
     limpiar: () => {
       criterioBusqueda.value = null
     },
-    seleccionarMultiple: (items: Empleado[]) => {
-      tecnicosOtrosGrupos.value = [...tecnicosOtrosGrupos.value, ...items]
+    seleccionarMultiple: (items: EmpleadoSeleccionado[]) => {
+      subtarea.empleados_seleccionados = [...subtarea.empleados_seleccionados, ...items]
+      // console.log('Seleccionado 48564')
+      //console.log(tecnicosOtrosGrupos)
     }
   }
 
@@ -28,10 +32,10 @@ export function useOrquestadorSelectorTecnicos(tecnicosOtrosGrupos: Ref<Empleado
   const listar = () => selector.listar(criterioBusqueda.value)
   const limpiar = () => singleSelector.limpiar()
 
-  const seleccionar = (entidades: Empleado[]) => {
+  const seleccionar = (entidades: EmpleadoSeleccionado[]) => {
     console.log(entidades)
     let ids: any = []
-    ids = tecnicosOtrosGrupos.value.map((entidad: Empleado) => entidad.id)
+    ids = subtarea.empleados_seleccionados.map((entidad: Empleado) => entidad.id)
     const datos = entidades.filter((v) => !ids.includes(v.id))
     singleSelector.seleccionarMultiple(datos)
   }

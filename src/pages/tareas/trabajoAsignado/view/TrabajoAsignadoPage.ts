@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasSubtareas'
+import { configuracionColumnasTrabajoAsignado } from '../domain/configuracionColumnasTrabajoAsignado'
 import { tabTrabajoAsignado, accionesTabla, estadosSubtareas } from 'config/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
@@ -231,7 +231,7 @@ export default defineComponent({
 
     return {
       listado,
-      configuracionColumnasSubtareas,
+      configuracionColumnasTrabajoAsignado,
       botonIniciar,
       botonVer,
       tabTrabajoAsignado,

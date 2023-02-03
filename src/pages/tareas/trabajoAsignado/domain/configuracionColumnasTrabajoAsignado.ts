@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig"
 import { Subtarea } from "pages/tareas/controlTareas/modules/subtareas/domain/Subtarea"
 
-export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
+export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     {
         name: 'codigo_subtarea',
         field: 'codigo_subtarea',
@@ -21,7 +21,18 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
         field: 'tipo_trabajo',
         label: 'Tipo de trabajo',
         align: 'left',
-        sortable: true,
+    },
+    {
+        name: 'empleados',
+        field: 'empleados',
+        label: 'Empleados',
+        align: 'left',
+    },
+    {
+        name: 'grupos',
+        field: 'grupos',
+        label: 'Grupos',
+        align: 'left',
     },
     {
         name: 'fecha_hora_asignacion',

@@ -13,7 +13,7 @@
     <essential-table-tabs
       titulo=""
       :configuracionColumnas="[
-        ...configuracionColumnasSubtareas,
+        ...configuracionColumnasTrabajoAsignado,
         accionesTabla,
       ]"
       :datos="listado"
