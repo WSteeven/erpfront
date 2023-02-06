@@ -144,7 +144,12 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above>
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-lg">
-        <img src="~assets/logo.svg" height="80" class="q-mx-auto block" />
+        <!--<img src="~assets/logo.svg" height="80" class="q-mx-auto block" /> -->
+        <img
+          src="~assets/logoJP_Borde.png"
+          height="80"
+          class="q-mx-auto block"
+        />
       </div>
 
       <!-- Drawer Body -->
@@ -199,7 +204,7 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import EssentialLink from 'components/EssentialLink.vue'
 import BottomMenu from 'components/bottomMenu/view/BottomMenu.vue'
 import FooterComponent from 'components/FooterComponent.vue'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -234,11 +239,16 @@ export default defineComponent({
     }
 
     const $q = useQuasar()
-    const modoOscuro = computed(() => $q.dark.isActive)
+    const modoOscuro = computed(
+      () => LocalStorage.getItem('dark') ?? $q.dark.isActive
+    )
+
+    $q.dark.set(modoOscuro.value)
 
     function toggleDarkMode() {
       console.log(!modoOscuro.value)
       $q.dark.set(!modoOscuro.value)
+      LocalStorage.set('dark', !modoOscuro.value)
     }
 
     return {

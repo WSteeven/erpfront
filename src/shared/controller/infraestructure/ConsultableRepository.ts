@@ -12,7 +12,12 @@ export class ConsultableRepository<T> {
 
   async consultar<T>(id: number, params?: any): Promise<any> {
     try {
-      const ruta = this.httpRepository.getEndpoint(this.endpoint) + id
+      const endpoint = {
+        endpoint: this.endpoint,
+        id,
+      }
+
+      const ruta = this.httpRepository.getEndpoint(endpoint)
       const response: any = await this.httpRepository.get(ruta)
       return {
         response,

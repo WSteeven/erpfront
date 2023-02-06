@@ -3,10 +3,9 @@
     <q-form @submit.prevent="enviar()">
       <!-- Datos de la subtarea -->
       <q-expansion-item
-        class="overflow-hidden bg-white q-mb-md"
-        style="border-radius: 8px; border: 1px solid #ddd"
+        class="overflow-hidden q-mb-md expansion"
         label="Información general"
-        header-class="bg-grey-1"
+        header-class="bg-header-collapse"
         default-opened
       >
         <div class="row q-col-gutter-sm q-pa-md">

@@ -418,9 +418,13 @@
 
                 <span
                   v-if="
-                    !['pagado', 'activo', 'es_ventana', 'finalizado'].includes(
-                      col.name
-                    )
+                    ![
+                      'pagado',
+                      'activo',
+                      'es_ventana',
+                      'finalizado',
+                      'estado',
+                    ].includes(col.name)
                   "
                   >{{ col.value }}</span
                 >

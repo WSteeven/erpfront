@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-grey-2">
+  <q-page class="bg-body">
     <!-- <div class="row items-center empresa">
       <q-avatar square>
         <img src="~assets/logo.svg" />
@@ -31,7 +31,7 @@
 
       <!-- Right side -->
       <div
-        class="col-12 col-md-4 column items-center justify-center bg-white window-height"
+        class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
       >
         <q-avatar
           v-if="$q.screen.xs"

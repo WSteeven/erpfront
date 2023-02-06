@@ -13,7 +13,7 @@
             dense
           ></q-input>
         </div>
-
+        {{ subtarea }}
         <!-- Detalle de la subtarea -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Título del trabajo a realizar</label>
