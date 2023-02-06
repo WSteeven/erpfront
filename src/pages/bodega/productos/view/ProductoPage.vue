@@ -44,6 +44,42 @@
               </template>
             </q-select>
           </div>
+          <!-- Unidad de medida -->
+          <div class="col-12 col-md-6 q-mb-md">
+            <label class="q-mb-sm block">Unidad de medida</label>
+            <q-select
+              v-model="producto.unidad_medida"
+              :options="unidades_medidas"
+              hint="Agregue elementos desde el panel de unidades_medidas"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :readonly="disabled"
+              :error="!!v$.unidad_medida.$errors.length"
+              error-message="Debes seleccionar una unidad de medida"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre+' ('+v.simbolo+')'"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.unidad_medida.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Nombre -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Nombre</label>

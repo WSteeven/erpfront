@@ -67,6 +67,7 @@ export const endpoints = {
   ubicaciones: new Endpoint('ubicaciones/'),
   imagenes_adicionales: new Endpoint('imagenes-adicionales/'),
   materiales_pedidos: new Endpoint('transacciones-egresos/materiales/'),
+  unidades_medidas: new Endpoint('unidades-medidas/'),
 
   // Modulo de tareas
   proyectos: new Endpoint('proyectos/'),

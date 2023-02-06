@@ -19,6 +19,7 @@ import { ProductoController } from '../infraestructure/ProductoController'
 import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
+import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController'
 
 export default defineComponent({
   components: {
@@ -41,14 +42,16 @@ export default defineComponent({
     const { entidad: imagen } = mixinImagenes.useReferencias() */
 
     const opciones = ref([]);
+    const unidades_medidas = ref([])
 
     //Obtener el listado de las categorias
     cargarVista(() => {
       obtenerListados({
         categorias: {
-          controller:new CategoriaController(),
-          params:{campos:'id,nombre'},
-        }
+          controller: new CategoriaController(),
+          params: { campos: 'id,nombre' },
+        },
+        unidades_medidas: new UnidadMedidaController(),
       })
     })
 
@@ -56,6 +59,7 @@ export default defineComponent({
     const reglas = {
       nombre: { required },
       categoria: { required },
+      unidad_medida: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -63,6 +67,7 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, producto)
     setValidador(v$.value)
     opciones.value = listadosAuxiliares.categorias
+    unidades_medidas.value = listadosAuxiliares.unidades_medidas
 
     return {
       mixin,
@@ -73,6 +78,8 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasProductos,
       //listado
       opciones,
+      unidades_medidas,
+      
 
       /**
        * Función para filtrar el SELECT de categorias,
