@@ -1,0 +1,29 @@
+// Custom scrollbar
+body {
+  &::-webkit-scrollbar {
+    width: 0;
+    //background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 50px;
+  }
+}
+
+.rounded-card {
+  border-radius: 16px;
+}
+
+.rounded-tabpanel {
+  border-radius: 0 16px 16px 16px;
+}
+
+// table
+.q-virtual-scroll__content {
+  text-transform: uppercase;
+}
+
+.label-card-table {
+  text-transform: uppercase;
+}

@@ -67,49 +67,72 @@
             </q-menu>
           </q-btn>
 
-          <q-btn dense round flat>
+          <q-btn dense round flat @click.self="mostrarMenu = true">
             <q-avatar size="32px" class="double-border">
               <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
             </q-avatar>
+
             <q-menu
+              v-model="mostrarMenu"
               anchor="center middle"
               self="center middle"
               transition-show="jump-down"
               transition-hide="jump-out"
+              :style="{ 'min-width': width }"
+              class="bg-desenfoque"
+              max-height="100vh"
             >
-              <div class="row no-wrap q-pa-md justify-content">
-                <div class="column">
-                  <!--<div class="text-h6 q-mb-md">{{ roles }}</div>-->
-                  <q-item clickable dense :to="{ name: 'Perfil' }">
-                    <q-item-section> Perfil </q-item-section>
-                  </q-item>
-                  <q-item clickable dense :to="{ name: 'Perfil' }">
-                    <q-item-section> Configuración </q-item-section>
-                  </q-item>
-                </div>
-
-                <q-separator vertical inset class="q-mx-lg" />
-
-                <div class="column items-center">
-                  <q-avatar size="72px">
-                    <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
-                  </q-avatar>
-
-                  <div class="text-subtitle1 q-mt-md q-mb-xs">
-                    {{ nombreUsuario }}
-                  </div>
-
+              <div class="column items-center q-py-sm window-height">
+                <div class="full-width text-right q-pr-md">
                   <q-btn
-                    label="Cerrar sesión"
-                    color="primary"
-                    size="sm"
-                    v-close-popup
-                    no-wrap
-                    no-caps
-                    push
-                    @click="logout()"
-                  />
+                    icon="bi-x"
+                    round
+                    :class="{
+                      'bg-grey-9': $q.dark.isActive,
+                      'bg-white': !$q.dark.isActive,
+                    }"
+                    unelevated
+                    @click="mostrarMenu = false"
+                  ></q-btn>
                 </div>
+                <q-avatar size="72px" class="q-mb-md">
+                  <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+                </q-avatar>
+
+                <div class="text-subtitle1 text-center">
+                  {{ nombreUsuario }}
+                </div>
+
+                <q-item clickable :to="{ name: 'Perfil' }" class="full-width">
+                  <q-avatar>
+                    <q-icon name="bi-person"></q-icon>
+                  </q-avatar>
+                  <q-item-section> Perfil </q-item-section>
+                </q-item>
+
+                <q-item clickable :to="{ name: 'Perfil' }" class="full-width">
+                  <q-avatar>
+                    <q-icon name="bi-gear"></q-icon>
+                  </q-avatar>
+                  <q-item-section> Configuración </q-item-section>
+                </q-item>
+
+                <q-item clickable class="full-width">
+                  <q-toggle
+                    v-model="modoOscuro"
+                    checked-icon="bi-moon-fill"
+                    label="Modo oscuro"
+                    unchecked-icon="bi-sun-fill"
+                    @click="toggleDarkMode()"
+                  />
+                </q-item>
+
+                <q-item clickable class="full-width" @click="logout()">
+                  <q-avatar>
+                    <q-icon name="bi-box-arrow-left"></q-icon>
+                  </q-avatar>
+                  <q-item-section> Cerrar sesión </q-item-section>
+                </q-item>
               </div>
             </q-menu>
           </q-btn>
@@ -118,7 +141,7 @@
     </q-header>
 
     <!-- Drawer -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="bg-white">
+    <q-drawer v-model="leftDrawerOpen" show-if-above>
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-lg">
         <img src="~assets/logo.svg" height="80" class="q-mx-auto block" />
@@ -131,7 +154,7 @@
             <q-item-label
               v-if="item.hasOwnProperty('header')"
               header
-              class="text-dark text-bold"
+              class="text-bold"
               >{{ item.header }}</q-item-label
             >
 
@@ -150,13 +173,13 @@
     </q-drawer>
 
     <!-- Router -->
-    <q-page-container :class="{ 'bg-grey-3': true }">
+    <q-page-container :class="{ 'bg-body': true }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <div>
             <essential-loading></essential-loading>
             <component :is="Component" />
-            <footer-component></footer-component>
+            <!--<footer-component></footer-component> -->
           </div>
         </transition>
       </router-view>
@@ -176,6 +199,7 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import EssentialLink from 'components/EssentialLink.vue'
 import BottomMenu from 'components/bottomMenu/view/BottomMenu.vue'
 import FooterComponent from 'components/FooterComponent.vue'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -209,6 +233,14 @@ export default defineComponent({
       Router.replace({ name: 'Login' })
     }
 
+    const $q = useQuasar()
+    const modoOscuro = computed(() => $q.dark.isActive)
+
+    function toggleDarkMode() {
+      console.log(!modoOscuro.value)
+      $q.dark.set(!modoOscuro.value)
+    }
+
     return {
       links: menu.links,
       leftDrawerOpen,
@@ -218,6 +250,10 @@ export default defineComponent({
       logout,
       nombreUsuario,
       menuVisible,
+      modoOscuro,
+      toggleDarkMode,
+      width: computed(() => ($q.screen.xs ? '100%' : '350px')),
+      mostrarMenu: ref(false),
     }
   },
 })

@@ -6,7 +6,7 @@
       clickable
       tag="a"
       :to="link"
-      active-class="my-menu-link"
+      active-class="link-active"
       exact
     >
       <q-item-section v-if="icon" avatar>
@@ -19,13 +19,7 @@
     </q-item>
 
     <!-- Tiene submenus -->
-    <q-expansion-item
-      v-else
-      clickable
-      tag="a"
-      active-class="my-menu-link"
-      exact
-    >
+    <q-expansion-item v-else clickable tag="a" active-class="link-active" exact>
       <template #header>
         <q-item-section v-if="icon" avatar>
           <q-icon :name="icon" size="xs" class="color-icono" />
@@ -79,22 +73,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss">
-.my-menu-link {
-  background: rgba(#efeff7, 1);
-  border-right: 3px solid $primary;
-
-  i {
-    color: $primary;
-  }
-
-  .q-item__label {
-    font-weight: bold;
-  }
-}
-
-.color-icono {
-  color: #575b6e;
-}
-</style>

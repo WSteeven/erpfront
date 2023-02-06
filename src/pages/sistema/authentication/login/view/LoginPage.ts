@@ -1,6 +1,6 @@
 // Dependencias
 import { computed, defineComponent, reactive, ref } from 'vue'
-import loginJson from 'src/assets/lottie/login7.json'
+// import loginJson from 'src/assets/lottie/login7.json'
 
 // Componentes
 import { Vue3Lottie } from 'vue3-lottie'
@@ -11,7 +11,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
 import { LoginController } from '../infraestructure/LoginController'
 import { useNotificaciones } from 'shared/notificaciones'
-import { isAxiosError } from 'shared/utils'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -29,13 +29,14 @@ export default defineComponent({
     const login = async () => {
       try {
         cargando.activar()
-        const response: any = await loginController.login(loginUser)
+        await loginController.login(loginUser)
 
         notificaciones.notificarCorrecto('Bienvenido a JPCONSTRUCRED CIA. LTDA') //response.data.mensaje)
 
       } catch (error: any) {
-        if (!isAxiosError(error)) {
-          notificaciones.notificarError(error.response.data.mensaje)
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, notificaciones)
         }
       } finally {
         cargando.desactivar()
@@ -50,7 +51,7 @@ export default defineComponent({
     return {
       isPwd: ref(true),
       loginUser,
-      loginJson,
+      // loginJson,
       enableLoginButton,
       login,
     }

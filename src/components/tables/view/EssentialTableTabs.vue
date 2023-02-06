@@ -11,7 +11,7 @@
     :class="{
       'borde-header-tabla': !$q.screen.xs,
     }"
-    class="bg-white"
+    class="bg-table-tabs"
     align="justify"
     @click="emit('tab-seleccionado', tabSeleccionado)"
   >

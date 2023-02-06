@@ -1,21 +1,20 @@
 <template>
   <q-form @submit.prevent>
     <q-expansion-item
-      class="overflow-hidden q-mb-md"
-      style="border-radius: 8px; border: 1px solid #ddd"
+      class="overflow-hidden q-mb-md expansion"
       label="Información general"
-      header-class="bg-grey-1"
+      header-class="bg-header-collapse"
       default-opened
     >
       <div class="row q-col-gutter-sm q-pa-md">
         <div class="col-12">
           <q-btn-toggle
             v-model="tarea.destino"
-            class="my-custom-toggle"
+            class="toggle-button"
             spread
             no-caps
             rounded
-            toggle-color="secondary"
+            toggle-color="positive"
             unelevated
             :options="[
               {
@@ -349,10 +348,9 @@
 
     <q-expansion-item
       v-if="paraClienteFinal"
-      class="overflow-hidden q-mb-md"
-      style="border-radius: 8px; border: 1px solid #ddd"
+      class="overflow-hidden q-mb-md expansion"
       label="Ubicación del trabajo para cliente final"
-      header-class="bg-grey-1"
+      header-class="bg-header-collapse"
       default-opened
     >
       <div class="row q-col-gutter-sm q-pa-md">

@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { useQuasar } from 'quasar'
 import { defineComponent } from 'vue'
 // import Echo from 'laravel-echo'
 // import Pusher from 'pusher-js'
@@ -18,6 +19,11 @@ export default defineComponent({
       console.log(data)
       // app.messages.push(JSON.stringify(data))
     }) */
+
+    const $q = useQuasar()
+
+    // calling here; equivalent to when component is created
+    $q.dark.set(false)
 
     return {
       //
