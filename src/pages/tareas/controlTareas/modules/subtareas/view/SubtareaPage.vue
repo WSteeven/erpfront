@@ -438,14 +438,13 @@
           <q-btn-toggle
             v-model="subtarea.modo_asignacion_trabajo"
             spread
-            class="my-custom-toggle"
+            class="toggle-button"
             no-caps
             unelevated
             :disable="disable"
             rounded
-            toggle-color="secondary"
-            color="white"
-            text-color="primary"
+            toggle-color="positive"
+            color="bg-body"
             @update:model-value="resetListados()"
             :options="[
               {

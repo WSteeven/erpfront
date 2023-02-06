@@ -24,10 +24,11 @@
     v-model:selected="selected"
     wrap-cells
     :style="estilos"
-    class="bg-white custom-border"
+    class="bg-body-table custom-border"
     :class="{
       'alto-fijo': !inFullscreen && altoFijo,
       'my-sticky-dynamic': !inFullscreen && altoFijo,
+      'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
@@ -91,7 +92,7 @@
           outlined
           dense
           clearable
-          class="full-width bg-white"
+          class="full-width"
           placeholder="Buscar..."
           debounce="300"
           color="primary"
@@ -227,7 +228,7 @@
           <!-- Consultar -->
           <q-btn
             v-if="permitirConsultar"
-            color="grey-3"
+            class="bg-btn-table"
             round
             unelevated
             dense
@@ -240,7 +241,7 @@
           <!-- Editar -->
           <q-btn
             v-if="permitirEditar"
-            color="grey-3"
+            class="bg-btn-table"
             round
             unelevated
             dense
@@ -253,7 +254,7 @@
           <!-- Eliminar -->
           <q-btn
             v-if="permitirEliminar"
-            color="grey-2"
+            class="bg-btn-table"
             round
             unelevated
             dense
@@ -285,7 +286,7 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs custom-shadow q-mb-md full-width rounded-card"
+        class="q-py-xs custom-shwadow q-mb-md full-width rounded-card"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">
@@ -312,7 +313,7 @@
                 <!-- Consultar -->
                 <q-btn
                   v-if="permitirConsultar"
-                  color="grey-2"
+                  class="bg-btn-table"
                   round
                   unelevated
                   dense
@@ -327,7 +328,7 @@
                 <!-- Editar -->
                 <q-btn
                   v-if="permitirEditar"
-                  color="grey-2"
+                  class="bg-btn-table"
                   round
                   unelevated
                   dense
@@ -342,7 +343,7 @@
                 <!-- Eliminar -->
                 <q-btn
                   v-if="permitirEliminar"
-                  color="grey-2"
+                  class="bg-btn-table"
                   round
                   unelevated
                   dense
@@ -813,17 +814,15 @@
 /* .q-table__top,
 .q-table__bottom,
 thead tr:first-child th {
-   bg color is important for th; just specify one 
+   bg color is important for th; just specify one
   background-color: #fff;
 } */
 
 //.q-table__bottom,
-.q-table__top,
+/*.q-table__top,
 thead tr:first-child th {
   background-color: #f5f5f5;
-  /* border-radius: 16px;
-  margin-bottom: 8px; */
-}
+} */
 
 .my-sticky-dynamic {
   /* height or max-height is important */

@@ -17,9 +17,11 @@
         <q-btn
           flat
           round
-          class="bg-grey-3"
-          dense
-          icon="close"
+          :class="{
+            'bg-grey-9': $q.dark.isActive,
+            'bg-grey-4': !$q.dark.isActive,
+          }"
+          icon="bi-x"
           @click="cerrarModalEntidad()"
         >
           <q-tooltip class="bg-dark">Cerrar</q-tooltip>
