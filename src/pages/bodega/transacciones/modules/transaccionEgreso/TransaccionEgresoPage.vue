@@ -427,13 +427,14 @@
               </template>
             </q-select>
           </div>
+          {{ listadoPedido }}
           <!-- Listado del pedido -->
-          <div v-if="transaccion.pedido" class="col-12 col-md-12">
+          <div v-if="listadoPedido!==undefined && listadoPedido.length>0" class="col-12 col-md-12">
             <q-table
               flat
               title="Listado"
               class="bg-white custom-border"
-              :rows="pedidoStore.pedido.listadoProductos"
+              :rows="listadoPedido"
               :columns="configuracionColumnasListadoProductosSeleccionados"
               row-key="id"
               :hide-bottom="true"
@@ -445,7 +446,7 @@
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
-          <div class="col-12 col-md-12">
+          <div v-if="!transferenciaStore.transferencia.id" class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
             <div class="row q-col-gutter-x-xs">
               <div class="col-12 col-md-10 q-mb-md">
@@ -490,7 +491,6 @@
               </div>
             </div>
           </div>
-          {{ transaccion.listadoProductosTransaccion }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -513,7 +513,7 @@
         </div>
       </q-form>
 
-      
+
       <!-- Modal de seleccion de detalles -->
       <!-- :configuracion-columnas="configuracionColumnasDetallesProductos" -->
       <essential-selectable-table

@@ -3,6 +3,13 @@ import { Transferencia } from "./Transferencia";
 
 export const configuracionColumnasTransferencias: ColumnConfig<Transferencia>[]=[
     {
+        name: 'id',
+        field: 'id',
+        label: 'N°',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'solicitante',
         field: 'solicitante',
         label: 'Solicitante',
@@ -40,7 +47,7 @@ export const configuracionColumnasTransferencias: ColumnConfig<Transferencia>[]=
     {
         name: 'sucursal_destino',
         field: 'sucursal_destino',
-        label: 'Desde',
+        label: 'Hasta',
         align: 'left',
         sortable: true,
     },

@@ -9,8 +9,8 @@ export const configuracionColumnasItemsSeleccionados: ColumnConfig<any>[]=[
         sortable: true,
       },
       {
-        name: 'detalle_id',
-        field: 'detalle_id',
+        name: 'descripcion',
+        field: 'descripcion',
         label: 'Descripción',
         align: 'left',
         sortable: true,
@@ -40,7 +40,7 @@ export const configuracionColumnasItemsSeleccionados: ColumnConfig<any>[]=[
         name: 'acciones',
         field: 'acciones',
         label: 'Acciones',
-        align: 'right',
+        align: 'center',
         sortable: false,
       }
 ]

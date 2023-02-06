@@ -402,11 +402,7 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                accion === acciones.nuevo
-                  ? configuracionColumnasProductosSeleccionados
-                  : configuracionColumnasProductosSeleccionados
-              "
+              :configuracionColumnas="configuracionColumnasItemsSeleccionados"
               :datos="transferencia.listadoProductos"
               :permitirConsultar="false"
               :permitirEditar="false"
