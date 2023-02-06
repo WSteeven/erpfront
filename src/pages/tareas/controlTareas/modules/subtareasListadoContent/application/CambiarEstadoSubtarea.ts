@@ -11,35 +11,35 @@ export class CambiarEstadoSubtarea {
   }
 
   async asignar(subtareaId: number) {
-    return this.solicitud('asignar', subtareaId)
+    return this.solicitud('/asignar', subtareaId)
   }
 
   async ejecutar(subtareaId: number) {
-    return this.solicitud('ejecutar', subtareaId)
+    return this.solicitud('/ejecutar', subtareaId)
   }
 
   async realizar(subtareaId: number) {
-    return this.solicitud('realizar', subtareaId)
+    return this.solicitud('/realizar', subtareaId)
   }
 
   async pausar(subtareaId: number, mensaje: string) {
-    return this.solicitud('pausar', subtareaId, { motivo: mensaje })
+    return this.solicitud('/pausar', subtareaId, { motivo: mensaje })
   }
 
   async reanudar(subtareaId: number) {
-    return this.solicitud('reanudar', subtareaId)
+    return this.solicitud('/reanudar', subtareaId)
   }
 
   async suspender(subtareaId: number, mensaje: string) {
-    return this.solicitud('suspender', subtareaId, { motivo: mensaje })
+    return this.solicitud('/suspender', subtareaId, { motivo: mensaje })
   }
 
   async cancelar(subtareaId: number, mensaje: string) {
-    return this.solicitud('cancelar', subtareaId, { motivo: mensaje })
+    return this.solicitud('/cancelar', subtareaId, { motivo: mensaje })
   }
 
   async reagendar(subtareaId: number, nuevaFecha: string) {
-    return this.solicitud('reagendar', subtareaId, { nueva_fecha: nuevaFecha })
+    return this.solicitud('/reagendar', subtareaId, { nueva_fecha: nuevaFecha })
   }
 
   async solicitud(accion, tarea, data?) {

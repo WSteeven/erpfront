@@ -17,6 +17,8 @@ export class AxiosHttpRepository implements HttpRepository {
       // baseURL: 'http://181.199.14.212:80', //process.env.VUE_APP_API_URL,
       // baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
       baseURL: 'https://api-sistemas.jpconstrucred.com/', //process.env.VUE_APP_API_URL,
+      baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
+      // baseURL: 'https://api-sistemas.jpconstrucred.com', //process.env.VUE_APP_API_URL,
       withCredentials: true,
       headers: {
         // 'Autorization': 'Bearer'
@@ -72,7 +74,8 @@ export class AxiosHttpRepository implements HttpRepository {
     }
     // si recibe un endpoint y una id
     else {
-      accessor = `${endpoint.endpoint.accessor}${endpoint.id ?? ''}/`
+      //accessor = `${endpoint.endpoint.accessor}${endpoint.id ?? ''}/`
+      accessor = `${endpoint.endpoint.accessor}/${endpoint.id ?? ''}`
       includeApiPath = endpoint.endpoint.includeApiPath
     }
 
