@@ -483,7 +483,7 @@
       </q-td>
     </template>
 
-    <template #body-cell-principal="props">
+    <template #body-cell-responsable="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

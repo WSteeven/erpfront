@@ -1,10 +1,10 @@
-import { Grupo } from "pages/tareas/grupos/domain/Grupo"
+import { Grupo } from "tareas/grupos/domain/Grupo"
 
 export class GrupoSeleccionado extends Grupo {
-  principal: boolean
+  responsable: boolean
 
   constructor() {
     super()
-    this.principal = false
+    this.responsable = false
   }
 }

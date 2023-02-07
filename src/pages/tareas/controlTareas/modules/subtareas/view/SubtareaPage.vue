@@ -13,7 +13,7 @@
             dense
           ></q-input>
         </div>
-        {{ subtarea }}
+
         <!-- Detalle de la subtarea -->
         <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Título del trabajo a realizar</label>
@@ -586,6 +586,36 @@
           </essential-table>
 
           <essential-table
+            v-if="
+              subtarea.modo_asignacion_trabajo ===
+              opcionesModoAsignacionTrabajo.por_grupo
+            "
+            ref="refEmpleadosAsignados"
+            titulo="Empleados de los grupos seleccionados"
+            estilos="margin-bottom: 14px;"
+            :configuracionColumnas="configuracionColumnasEmpleado"
+            :datos="subtarea.empleados_seleccionados"
+            :accion1Header="asignarNuevoTecnicoLider"
+            :accion2Header="designarNuevoSecretario"
+            :accion3Header="cancelarDesignacion"
+            :mostrarBotones="false"
+            :permitirConsultar="false"
+            :permitirEditar="false"
+            :permitirEliminar="false"
+            :alto-fijo="false"
+            :mostrar-header="true"
+            :permitir-buscar="false"
+            :tipo-seleccion="tipoSeleccion"
+            :mostrar-footer="!subtarea.empleados_seleccionados.length"
+            @selected="entidadSeleccionada"
+          >
+          </essential-table>
+
+          <essential-table
+            v-if="
+              subtarea.modo_asignacion_trabajo ===
+              opcionesModoAsignacionTrabajo.por_trabajador
+            "
             ref="refEmpleadosAsignados"
             titulo="Empleados de los grupos seleccionados"
             :configuracionColumnas="columnas"
@@ -603,7 +633,8 @@
             :tipo-seleccion="tipoSeleccion"
             :mostrar-footer="!subtarea.empleados_seleccionados.length"
             @selected="entidadSeleccionada"
-            :accion1="eliminarTecnico"
+            :accion1="quitarEmpleado"
+            :accion2="designarEmpleadoResponsable"
           >
           </essential-table>
         </div>
@@ -619,7 +650,7 @@
 
     <essential-selectable-table
       ref="refListadoSeleccionableTecnicos"
-      :configuracion-columnas="configuracionColumnasTecnico"
+      :configuracion-columnas="configuracionColumnasEmpleado"
       :datos="listadoTecnicos"
       tipo-seleccion="multiple"
       @selected="seleccionarEmpleado"

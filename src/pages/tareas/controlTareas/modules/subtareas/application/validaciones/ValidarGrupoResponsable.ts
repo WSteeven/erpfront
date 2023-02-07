@@ -3,7 +3,7 @@ import { Validador } from "shared/validadores/domain/Validador"
 import { GrupoSeleccionado } from "../../domain/GrupoSeleccionado"
 import { Subtarea } from "../../domain/Subtarea"
 
-export class ValidarGrupoPrincipal implements Validador {
+export class ValidarGrupoResponsable implements Validador {
   private subtarea: Subtarea
 
   constructor(subtarea: Subtarea) {
@@ -16,7 +16,7 @@ export class ValidarGrupoPrincipal implements Validador {
   async validar() {
 
     if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
-      const noEsValido = !this.subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.principal)
+      const noEsValido = !this.subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.responsable)
 
       if (noEsValido)
         throw new Error("Debe asignar a un grupo como principal.")
