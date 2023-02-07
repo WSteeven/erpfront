@@ -330,7 +330,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Tipos de Transacciones',
-          link: 'tipos-transacciones',
+          link: 'transacciones',
           icon: 'bi-circle',
           can: store.can('puede.ver.tipos_transacciones'),
         },
@@ -357,6 +357,13 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'ubicaciones',
           icon: 'bi-circle',
           can: store.can('puede.ver.ubicaciones'),
+        },
+        {
+          title: 'Unidades de medida',
+          link: 'unidades-medidas',
+          icon: 'bi-circle',
+          can: true,
+          // can: store.can('puede.ver.unidad_medida'),
         },
       ]
     },

@@ -133,6 +133,15 @@ const routes: RouteRecordRaw[] = [
       },
       // Routes for bodega
       {
+        path: '/unidades-medidas',
+        name: 'unidades_medidas',
+        component: () =>
+          import(
+            'pages/bodega/unidades_medidas/view/UnidadMedidaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/categorias',
         name: 'categorias',
         component: () =>
