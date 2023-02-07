@@ -36,7 +36,7 @@ export const useTransaccionEgresoStore = defineStore("transaccion", () => {
 
     async function showPreview() {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.transacciones_egresos)+'show-preview/'+idTransaccion.value
+        const ruta = axios.getEndpoint(endpoints.transacciones_egresos)+'/show-preview/'+idTransaccion.value
         const response: AxiosResponse = await axios.get(ruta)
         transaccion.hydrate(response.data.modelo)
     }

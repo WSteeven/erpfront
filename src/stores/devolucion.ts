@@ -52,7 +52,7 @@ export const useDevolucionStore = defineStore('devolucion', () => {
 
     async function showPreview() {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.devoluciones) + 'show-preview/' + idDevolucion.value
+        const ruta = axios.getEndpoint(endpoints.devoluciones) + '/show-preview/' + idDevolucion.value
         const response: AxiosResponse = await axios.get(ruta)
         devolucion.hydrate(response.data.modelo)
     }
