@@ -411,6 +411,15 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'responsable'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check-circle-fill"
+                    color="positive"
+                    size="xs"
+                  ></q-icon>
+                </span>
+
                 <estados-subtareas
                   v-if="col.name === 'estado'"
                   :propsTable="col"
@@ -424,6 +433,7 @@
                       'es_ventana',
                       'finalizado',
                       'estado',
+                      'responsable',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -673,7 +683,10 @@
           ></q-icon>
           NO REALIZADA
         </q-chip>
-        <q-chip v-if="props.value === 1" class="bg-blue-grey-1">
+        <q-chip
+          v-if="props.value === 1"
+          :class="{ 'bg-blue-grey-1': !$q.dark.isActive }"
+        >
           <q-icon
             name="bi-circle-fill"
             color="positive"

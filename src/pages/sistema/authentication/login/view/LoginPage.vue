@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-body">
+  <q-page class="">
     <!-- <div class="row items-center empresa">
       <q-avatar square>
         <img src="~assets/logo.svg" />

@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { Empleado } from "./Empleado";
 
-export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[]=[
+export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
     {
         name: 'identificacion',
         field: 'identificacion',
@@ -57,6 +57,13 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[]=[
         name: 'sucursal',
         field: 'sucursal',
         label: 'Sucursal',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'grupo',
+        field: 'grupo',
+        label: 'Grupo',
         align: 'left',
         sortable: true
     },

@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-import { maxLength, minLength, numeric, required } from 'shared/i18n-validators'
+import { maxLength, minLength, numeric, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { opcionesEstados } from 'config/utils'
 import { defineComponent, ref } from 'vue'
@@ -32,6 +32,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
         const { entidad: empleado, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+        const { onConsultado, onBeforeModificar } = mixin.useHooks()
 
         const opciones_sucursales = ref([])
         const opciones_roles = ref([])
@@ -81,7 +82,7 @@ export default defineComponent({
             fecha_nacimiento: { required },
             roles: { required },
             estado: { required },
-            grupo: { required },
+            grupo: { required: requiredIf(() => empleado.tiene_grupo) },
         }
 
         const v$ = useVuelidate(reglas, empleado)
@@ -91,12 +92,18 @@ export default defineComponent({
         opciones_roles.value = listadosAuxiliares.roles
         opciones_empleados.value = listadosAuxiliares.empleados
 
+        onBeforeModificar(() => {
+            if (!empleado.tiene_grupo) empleado.grupo = null
+        })
+
+        onConsultado(() => empleado.tiene_grupo = !!empleado.grupo)
+
         return {
             mixin, empleado, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasEmpleados,
             isPwd: ref(true),
             listadosAuxiliares,
-            //listado 
+            //listado   
             opciones_sucursales,
             opciones_roles,
             opciones_empleados,

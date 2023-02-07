@@ -74,7 +74,7 @@ export default defineComponent({
       titulo: 'Iniciar',
       icono: 'bi-play-circle-fill',
       color: 'positive',
-      visible: ({ entidad }) => [estadosSubtareas.ASIGNADO].includes(entidad.estado) || (entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion),
+      visible: ({ entidad }) => [estadosSubtareas.ASIGNADO].includes(entidad.estado) && entidad.responsable,//(entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion),
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de iniciar el trabajo?', async () => {
           const { fecha, hora } = await obtenerTiempoActual()
@@ -109,9 +109,9 @@ export default defineComponent({
 
     const botonPausar: CustomActionTable = {
       titulo: 'Pausar',
-      icono: 'bi-pause-circle-fill',
+      icono: 'bi-pause',
       color: 'grey-8',
-      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO && entidad.responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de pausar la subtarea?', () => {
           const config: CustomActionPrompt = {
@@ -133,7 +133,7 @@ export default defineComponent({
       titulo: 'Reanudar',
       icono: 'bi-play-circle-fill',
       color: 'positive',
-      visible: ({ entidad }) => entidad.estado === estadosSubtareas.PAUSADO,
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.PAUSADO && entidad.responsable,
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de reanudar el trabajo?', () => {
           new CambiarEstadoSubtarea().reanudar(entidad.id)
@@ -146,9 +146,9 @@ export default defineComponent({
 
     const botonFormulario: CustomActionTable = {
       titulo: 'Formulario',
-      icono: 'bi-box-fill',
+      icono: 'bi-textarea-t',
       color: 'secondary',
-      visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado),
+      visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado) && entidad.responsable,
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
           store.idSubtareaSeleccionada = entidad.id
@@ -164,7 +164,7 @@ export default defineComponent({
       titulo: 'Suspender',
       icono: 'bi-x-diamond',
       color: 'negative',
-      visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO,
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.ASIGNADO && entidad.responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de suspender el trabajo?', () => {
           const config: CustomActionPrompt = {
@@ -184,10 +184,10 @@ export default defineComponent({
     }
 
     const botonRealizar: CustomActionTable = {
-      titulo: 'Finalizar',
-      icono: 'bi-check-circle-fill',
+      titulo: 'Realizado',
+      icono: 'bi-check',
       color: 'positive',
-      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO && entidad.responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de que completó el trabajo?', async () => {
           const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id)

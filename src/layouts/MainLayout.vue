@@ -43,14 +43,14 @@
               <q-list style="min-width: 120px">
                 <q-item clickable v-ripple>
                   <q-item-section avatar>
-                    <q-icon color="info" name="bi-app-indicator" size="xs" />
+                    <q-icon color="info" name="bi-app" size="xs" />
                   </q-item-section>
                   <q-item-section>Primera notificación</q-item-section>
                 </q-item>
 
                 <q-item clickable v-ripple>
                   <q-item-section avatar>
-                    <q-icon color="info" name="bi-app-indicator" size="xs" />
+                    <q-icon color="info" name="bi-app" size="xs" />
                   </q-item-section>
                   <q-item-section>Crazy for transitions</q-item-section>
                 </q-item>
