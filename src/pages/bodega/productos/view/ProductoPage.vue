@@ -8,7 +8,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Categoria -->
-          <div class="col-12 col-md-6 q-mb-md">
+          <div class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Categoria</label>
             <q-select
               v-model="producto.categoria"
@@ -19,6 +19,7 @@
               options-dense
               dense
               outlined
+              :disable="disabled"
               :readonly="disabled"
               :error="!!v$.categoria.$errors.length"
               error-message="Debes seleccionar una categoría"
@@ -44,23 +45,18 @@
               </template>
             </q-select>
           </div>
-          <!-- Unidad de medida -->
-          <div class="col-12 col-md-6 q-mb-md">
+          <!--Unidad de medida -->
+          <div class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Unidad de medida</label>
             <q-select
               v-model="producto.unidad_medida"
               :options="unidades_medidas"
-              hint="Agregue elementos desde el panel de unidades_medidas"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              options-dense
+              hint="Agregue elementos desde el panel de unidades de medida"
               dense
-              outlined
+              :disable="disabled"
               :readonly="disabled"
               :error="!!v$.unidad_medida.$errors.length"
               error-message="Debes seleccionar una unidad de medida"
-              use-input
-              input-debounce="0"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre+' ('+v.simbolo+')'"
               emit-value
@@ -81,12 +77,13 @@
             </q-select>
           </div>
           <!-- Nombre -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Nombre</label>
             <q-input
               v-model="producto.nombre"
               placeholder="Obligatorio"
               :readonly="disabled"
+              :disable="disabled"
               :error="!!v$.nombre.$errors.length"
               outlined
               dense

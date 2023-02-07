@@ -48,10 +48,10 @@ export default defineComponent({
     cargarVista(() => {
       obtenerListados({
         categorias: {
-          controller: new CategoriaController(),
-          params: { campos: 'id,nombre' },
+          controller:new CategoriaController(),
+          params:{campos:'id,nombre'},
         },
-        unidades_medidas: new UnidadMedidaController(),
+        unidades_medidas: new UnidadMedidaController()
       })
     })
 
@@ -79,7 +79,6 @@ export default defineComponent({
       //listado
       opciones,
       unidades_medidas,
-      
 
       /**
        * Función para filtrar el SELECT de categorias,

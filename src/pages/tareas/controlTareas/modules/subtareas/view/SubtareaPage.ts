@@ -1,7 +1,8 @@
 // Dependencias
 import { isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray } from 'shared/utils'
-import { configuracionColumnasTecnico } from '../domain/configuracionColumnasTecnico'
-import { configuracionColumnasGrupo } from '../domain/configuracionColumnasGrupo'
+import { configuracionColumnasEmpleado } from '../domain/configuracionColumnasEmpleado'
+import { configuracionColumnasEmpleadoSeleccionado } from '../domain/configuracionColumnasEmpleadoSeleccionado'
+import { configuracionColumnasGrupoSeleccionado } from '../domain/configuracionColumnasGrupoSeleccionado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { computed, defineComponent, Ref, ref } from 'vue'
@@ -47,11 +48,11 @@ import { SubtareaController } from '../infraestructure/SubtareaController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { Subtarea } from '../domain/Subtarea'
-import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
-import { ValidarGrupoPrincipal } from '../application/validaciones/ValidarGrupoPrincipal'
+import { ValidarGrupoResponsable } from '../application/validaciones/ValidarGrupoResponsable'
 import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
 import { ValidarEmpleadosSeleccionados } from '../application/validaciones/ValidarEmpleadosSeleccionados'
+import { ValidarEmpleadoResponsable } from '../application/validaciones/ValidarEmpleadoResponsable'
 
 export default defineComponent({
   props: {
@@ -129,7 +130,7 @@ export default defineComponent({
     * Configuracion de columnas
     ****************************/
     const columnas = [
-      ...configuracionColumnasTecnico,
+      ...configuracionColumnasEmpleadoSeleccionado,
       {
         name: 'acciones',
         field: 'acciones',
@@ -139,13 +140,7 @@ export default defineComponent({
     ]
 
     const columnasGrupo = [
-      ...configuracionColumnasGrupo,
-      {
-        name: 'principal',
-        field: 'principal',
-        label: 'Principal',
-        align: 'center',
-      },
+      ...configuracionColumnasGrupoSeleccionado,
       {
         name: 'acciones',
         field: 'acciones',
@@ -158,18 +153,18 @@ export default defineComponent({
     * Botones tabla
     ***************/
     const designarGrupoPrincipal: CustomActionTable = {
-      titulo: 'Designar como principal',
+      titulo: 'Designar como responsable',
       icono: 'bi-check-circle-fill',
       color: 'positive',
-      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion) && !entidad.principal,
+      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion) && !entidad.responsable,
       accion: ({ posicion }) => {
         subtarea.grupos_seleccionados = subtarea.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
           const grupoSeleccionado = new GrupoSeleccionado()
           grupoSeleccionado.hydrate(grupo)
-          grupoSeleccionado.principal = false
+          grupoSeleccionado.responsable = false
           return grupoSeleccionado
         })
-        subtarea.grupos_seleccionados[posicion].principal = true
+        subtarea.grupos_seleccionados[posicion].responsable = true
       },
     }
 
@@ -185,13 +180,30 @@ export default defineComponent({
       },
     }
 
-    const eliminarTecnico: CustomActionTable = {
+    const designarEmpleadoResponsable: CustomActionTable = {
+      titulo: 'Designar como responsable',
+      icono: 'bi-check-circle-fill',
+      color: 'positive',
+      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion) && !entidad.responsable,
+      accion: ({ posicion }) => {
+        subtarea.empleados_seleccionados = subtarea.empleados_seleccionados.map((empleado: EmpleadoSeleccionado) => {
+          const empleadoSeleccionado = new EmpleadoSeleccionado()
+          empleadoSeleccionado.hydrate(empleado)
+          empleadoSeleccionado.responsable = false
+          return empleadoSeleccionado
+        })
+        subtarea.empleados_seleccionados[posicion].responsable = true
+      },
+    }
+
+    const quitarEmpleado: CustomActionTable = {
       titulo: 'Quitar',
       icono: 'bi-x',
       color: 'negative',
       visible: () => [acciones.editar, acciones.nuevo].includes(accion) && !(asignarJefe.value || asignarSecretario.value),
       accion: ({ entidad, posicion }) => {
-        if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+        // NO BORRAR
+        /* if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
           if (esLider(entidad)) {
             asignarJefe.value = true
             asignarSecretario.value = false
@@ -204,9 +216,9 @@ export default defineComponent({
             empleadoSeleccionadoAsignacionQuitar.value = entidad
             return notificaciones.notificarAdvertencia('Debes asignar a un reemplazo para el secretario de cuadrilla seleccionado')
           }
-        }
+        } */
 
-        tecnicosGrupoPrincipal.value.splice(posicion, 1)
+        subtarea.empleados_seleccionados.splice(posicion, 1)
       },
     }
 
@@ -316,6 +328,12 @@ export default defineComponent({
     })
 
     onConsultado(() => {
+      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+        subtarea.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
+          console.log(grupo)
+          if (grupo.id) obtenerTecnicosGrupo(grupo.id)
+        })
+      }
       // tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
     })
 
@@ -369,9 +387,10 @@ export default defineComponent({
     setValidador(v$.value)
 
     const validarGrupoAsignado = new ValidarGrupoAsignado(subtarea)
-    const validarGrupoPrincipal = new ValidarGrupoPrincipal(subtarea)
+    const validarGrupoResponsable = new ValidarGrupoResponsable(subtarea)
     const validarEmpleadosSeleccionados = new ValidarEmpleadosSeleccionados(subtarea)
-    mixin.agregarValidaciones(validarGrupoAsignado, validarGrupoPrincipal, validarEmpleadosSeleccionados)
+    const validarEmpleadoResponsable = new ValidarEmpleadoResponsable(subtarea)
+    mixin.agregarValidaciones(validarGrupoAsignado, validarGrupoResponsable, validarEmpleadosSeleccionados, validarEmpleadoResponsable)
 
     /************
     * Funciones
@@ -444,7 +463,7 @@ export default defineComponent({
         const grupoSeleccionado: GrupoSeleccionado = grupos.value[index]
 
         if (subtarea.grupos_seleccionados.length === 0) {
-          grupoSeleccionado.principal = true
+          grupoSeleccionado.responsable = true
         }
         subtarea.grupos_seleccionados.push(grupoSeleccionado)
 
@@ -457,7 +476,6 @@ export default defineComponent({
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
       subtarea.empleados_seleccionados.push(...result)
-      // console.log(tecnicosGrupoPrincipal.value)
 
       subtarea.empleados_seleccionados = subtarea.empleados_seleccionados.map((empleado: Empleado) => {
         const tecnico = new Empleado()
@@ -481,14 +499,10 @@ export default defineComponent({
     const { files, addFiles, removeFile } = useFileList()
 
     function seleccionarEmpleado(empleados: EmpleadoSeleccionado[]) {
-      /* if (subtarea.grupos_seleccionados.length === 0) {
-        grupoSeleccionado.principal = true
-      }
-      seleccionarTecnico*/
       empleados = empleados.map((empleado: Empleado) => {
         const emp = new EmpleadoSeleccionado()
         emp.hydrate(empleado)
-        emp.principal = false
+        emp.responsable = false
         return emp
       })
 
@@ -524,9 +538,10 @@ export default defineComponent({
       tecnicoSeleccionado,
       busqueda,
       grupos,
-      eliminarTecnico,
+      quitarEmpleado,
       asignarNuevoTecnicoLider,
       designarNuevoSecretario,
+      designarEmpleadoResponsable,
       listadosAuxiliares,
       tecnicosGrupoPrincipal,
       tiposInstalaciones,
@@ -547,7 +562,7 @@ export default defineComponent({
       guardarDatos, editarDatos, reestablecerDatos,
       accion,
       disable,
-      configuracionColumnasTecnico,
+      configuracionColumnasEmpleado,
       tipoSeleccion,
       quitarGrupo,
       // orquestador

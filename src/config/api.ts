@@ -65,6 +65,7 @@ export const endpoints = {
   perchas: new Endpoint('perchas'),
   pisos: new Endpoint('pisos'),
   ubicaciones: new Endpoint('ubicaciones'),
+  unidades_medidas: new Endpoint('unidades-medidas'),
   imagenes_adicionales: new Endpoint('imagenes-adicionales'),
   materiales_pedidos: new Endpoint('transacciones-egresos/materiales'),
 

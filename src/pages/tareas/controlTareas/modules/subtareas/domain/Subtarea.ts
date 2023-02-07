@@ -1,6 +1,7 @@
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { EmpleadoSeleccionado } from './EmpleadoSeleccionado'
 import { GrupoSeleccionado } from './GrupoSeleccionado'
 
 export class Subtarea extends EntidadAuditable {
@@ -52,7 +53,7 @@ export class Subtarea extends EntidadAuditable {
   asignar_mas_empleados: boolean
 
   grupos_seleccionados: GrupoSeleccionado[]
-  empleados_seleccionados: Empleado[]
+  empleados_seleccionados: EmpleadoSeleccionado[]
 
   empleados: string | null
   grupos: string | null
