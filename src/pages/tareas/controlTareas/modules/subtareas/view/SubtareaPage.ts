@@ -1,8 +1,8 @@
 // Dependencias
+import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
+import { configuracionColumnasGrupoSeleccionado } from 'subtareas/domain/configuracionColumnasGrupoSeleccionado'
 import { isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray } from 'shared/utils'
-import { configuracionColumnasEmpleado } from '../domain/configuracionColumnasEmpleado'
-import { configuracionColumnasEmpleadoSeleccionado } from '../domain/configuracionColumnasEmpleadoSeleccionado'
-import { configuracionColumnasGrupoSeleccionado } from '../domain/configuracionColumnasGrupoSeleccionado'
+import { configuracionColumnasEmpleado } from 'subtareas/domain/configuracionColumnasEmpleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { computed, defineComponent, Ref, ref } from 'vue'
@@ -36,9 +36,12 @@ import Dropzone from 'components/dropzone/view/DropZone.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ValidarEmpleadosSeleccionados } from '../application/validaciones/ValidarEmpleadosSeleccionados'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
+import { ValidarEmpleadoResponsable } from '../application/validaciones/ValidarEmpleadoResponsable'
 import { CambiarJefeCuadrillaController } from '../infraestructure/CambiarJefeCuadrillaController'
+import { ValidarGrupoResponsable } from '../application/validaciones/ValidarGrupoResponsable'
 import { CambiarSecretarioController } from '../infraestructure/CambiarSecretarioController'
 import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
 import { ValidarGrupoAsignado } from '../application/validaciones/ValidarGrupoAsignado'
@@ -47,12 +50,9 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { SubtareaController } from '../infraestructure/SubtareaController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
-import { Subtarea } from '../domain/Subtarea'
-import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
-import { ValidarGrupoResponsable } from '../application/validaciones/ValidarGrupoResponsable'
 import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
-import { ValidarEmpleadosSeleccionados } from '../application/validaciones/ValidarEmpleadosSeleccionados'
-import { ValidarEmpleadoResponsable } from '../application/validaciones/ValidarEmpleadoResponsable'
+import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
+import { Subtarea } from '../domain/Subtarea'
 
 export default defineComponent({
   props: {
@@ -72,7 +72,7 @@ export default defineComponent({
     const notificacionStore = useNotificacionStore()
     notificacionStore.setQuasar(useQuasar())
 
-    /*******
+    /********
     * Mixin
     *********/
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())

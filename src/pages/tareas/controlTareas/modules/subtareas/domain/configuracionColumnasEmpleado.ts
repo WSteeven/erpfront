@@ -1,6 +1,5 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { Tecnico } from './Tecnico'
 
 export const configuracionColumnasEmpleado: ColumnConfig<Empleado>[] = [
   {
