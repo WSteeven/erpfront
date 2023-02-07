@@ -6,7 +6,8 @@
     <q-tabs
       v-model="tabs"
       align="left"
-      active-class="chip"
+      switch-indicator
+      active-class="tab-active"
       indicator-color="transparent"
       dense
     >
@@ -14,14 +15,14 @@
         v-if="mostrarFormulario"
         name="formulario"
         label="Formulario"
-        :class="{ 'chip-opaque': tabs !== 'formulario' }"
+        :class="{ 'tab-inactive': tabs !== 'formulario' }"
         no-caps
       />
       <q-tab
         v-if="mostrarListado"
         name="listado"
         label="Listado"
-        :class="{ 'chip-opaque': tabs !== 'listado' }"
+        :class="{ 'tab-inactive': tabs !== 'listado' }"
         no-caps
       />
     </q-tabs>
@@ -32,7 +33,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ 'custom-shadow rounded-tabpanel': !$q.screen.xs }"
+      :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
