@@ -20,7 +20,7 @@ export const usePedidoStore = defineStore('pedido', () => {
 
   async function consultar(id: number) {
     const axios = AxiosHttpRepository.getInstance()
-    const ruta = axios.getEndpoint(endpoints.pedidos) + 'show-preview/' + id
+    const ruta = axios.getEndpoint(endpoints.pedidos) + '/show-preview/' + id
     const response: AxiosResponse = await axios.get(ruta)
     console.log('Respuesta obtenida en store de pedido: ', response)
     if (response.data.modelo.autorizacion ===autorizacionesTransacciones.aprobado) {
@@ -48,7 +48,7 @@ export const usePedidoStore = defineStore('pedido', () => {
 
   async function showPreview() {
     const axios = AxiosHttpRepository.getInstance()
-    const ruta = axios.getEndpoint(endpoints.pedidos) + 'show-preview/' + idPedido.value
+    const ruta = axios.getEndpoint(endpoints.pedidos) + '/show-preview/' + idPedido.value
     const response: AxiosResponse = await axios.get(ruta)
     pedido.hydrate(response.data.modelo)
   }

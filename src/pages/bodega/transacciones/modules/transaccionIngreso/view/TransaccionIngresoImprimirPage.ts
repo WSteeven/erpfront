@@ -52,7 +52,7 @@ export default defineComponent({
 
         async function consultarTransaccion() {
             const axios = AxiosHttpRepository.getInstance()
-            const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + 'show-preview/' + transaccionStore.idTransaccion
+            const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/show-preview/' + transaccionStore.idTransaccion
             const response: AxiosResponse = await axios.get(ruta)
             transaccion.hydrate(response.data.modelo)
         }

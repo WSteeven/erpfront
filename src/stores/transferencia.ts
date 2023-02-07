@@ -44,7 +44,7 @@ export const useTransferenciaStore = defineStore('transferencia', () => {
 
     async function showPreview() {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.transferencias) + 'show-preview/' + idTransferencia.value
+        const ruta = axios.getEndpoint(endpoints.transferencias) + '/show-preview/' + idTransferencia.value
         const response: AxiosResponse = await axios.get(ruta)
         transferencia.hydrate(response.data.modelo)
     }

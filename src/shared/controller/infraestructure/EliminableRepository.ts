@@ -18,7 +18,11 @@ export class EliminableRepository<T> {
     params?: any
   ): Promise<ResponseItem<T, HttpResponseDelete<T>>> {
     try {
-      const ruta = this.httpRepository.getEndpoint(this.endpoint) + id
+      const endpoint = {
+        endpoint: this.endpoint, 
+        id
+      }
+      const ruta = this.httpRepository.getEndpoint(endpoint)
       const response: AxiosResponse = await this.httpRepository.delete(ruta)
       return {
         response,
