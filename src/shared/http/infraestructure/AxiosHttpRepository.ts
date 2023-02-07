@@ -14,8 +14,8 @@ export class AxiosHttpRepository implements HttpRepository {
 
   private static initialize(): void {
     this.axiosInst = axios.create({
-      // baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
-      baseURL: 'https://api-sistemas.jpconstrucred.com', //process.env.VUE_APP_API_URL,
+      baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
+      // baseURL: 'https://api-sistemas.jpconstrucred.com', //process.env.VUE_APP_API_URL,
       withCredentials: true,
       /*headers: {
         'Autorization': 'Bearer'

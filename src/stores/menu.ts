@@ -362,8 +362,8 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Unidades de medida',
           link: 'unidades-medidas',
           icon: 'bi-circle',
-          can: true,
-          // can: store.can('puede.ver.unidad_medida'),
+          can: store.can('puede.ver.unidades_medidas'),
+          // can: true,
         },
       ]
     },
