@@ -5,6 +5,8 @@
     :datos="listado"
     separador="cell"
     :alto-fijo="false"
+    :permitir-buscar="false"
+    :mostrar-footer="!listado.length"
   ></essential-table>
 </template>
 

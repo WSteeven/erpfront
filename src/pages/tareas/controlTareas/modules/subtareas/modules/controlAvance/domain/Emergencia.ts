@@ -1,8 +1,8 @@
-import Observacion from "pages/tareas/controlTareas/modules/subtareas/domain/Observacion";
-import TrabajoRealizado from "pages/tareas/controlTareas/modules/subtareas/domain/TrabajoRealizado";
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import Observacion from 'tareas/controlTareas/modules/subtareas/domain/Observacion'
+import TrabajoRealizado from 'tareas/controlTareas/modules/subtareas/domain/TrabajoRealizado'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class ControlAvance extends EntidadAuditable {
+export class Emergencia extends EntidadAuditable {
     regional: string | null
     atencion: string | null
     tipo_intervencion: string | null

@@ -10,9 +10,9 @@ export const configuracionColumnasTiposTareas: ColumnConfig<TipoTrabajo>[] = [
     sortable: true,
   },
   {
-    name: 'nombre',
-    field: 'nombre',
-    label: 'Nombre de tarea',
+    name: 'descripcion',
+    field: 'descripcion',
+    label: 'Nombre de trabajo',
     align: 'left',
     sortable: true,
   },

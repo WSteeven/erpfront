@@ -18,11 +18,8 @@
         multiple
         style="width: 100%"
         flat
-        bordered
-        text-color="dark"
-        color="grey-2"
-        class="bg-grey-2"
         :factory="factoryFn"
+        class="bg-header-collapse expansion"
       />
     </div>
 

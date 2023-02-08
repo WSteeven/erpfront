@@ -45,7 +45,7 @@ export default defineComponent({
 
     const rules = {
       cliente: { required },
-      nombre: { required },
+      descripcion: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())

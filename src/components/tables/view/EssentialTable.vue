@@ -420,6 +420,10 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'tamanio_bytes'">
+                  {{ formatBytes(col.value) }}
+                </span>
+
                 <estados-subtareas
                   v-if="col.name === 'estado'"
                   :propsTable="col"
@@ -434,6 +438,7 @@
                       'finalizado',
                       'estado',
                       'responsable',
+                      'tamanio_bytes',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span

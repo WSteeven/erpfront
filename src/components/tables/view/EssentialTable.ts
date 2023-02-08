@@ -114,7 +114,7 @@ export default defineComponent({
     },
     altoFijo: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     mostrarHeader: {
       type: Boolean,
@@ -295,7 +295,7 @@ export default defineComponent({
       sortBy: 'desc',
       descending: false,
       page: 1,
-      rowsPerPage: 12,
+      rowsPerPage: props.altoFijo ? 15 : 0,
     })
 
     const pagesNumber = computed(() => {
