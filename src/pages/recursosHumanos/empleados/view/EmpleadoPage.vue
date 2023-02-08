@@ -187,30 +187,50 @@
             </q-input>
           </div>
 
-          <!-- Fecha de nacimiento -->
+          <!-- Fecha límite -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de nacimiento</label>
             <q-input
-              type="date"
               v-model="empleado.fecha_nacimiento"
               placeholder="Obligatorio"
-              :disable="disabled"
               :error="!!v$.fecha_nacimiento.$errors.length"
               @blur="v$.fecha_nacimiento.$touch"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
               outlined
               dense
             >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="empleado.fecha_nacimiento"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_nacimiento.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
+                <div style=" clear: inherit;" v-for="error of v$.fecha_nacimiento.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>  
                 </div>
               </template>
             </q-input>
           </div>
-
           <!-- Sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
