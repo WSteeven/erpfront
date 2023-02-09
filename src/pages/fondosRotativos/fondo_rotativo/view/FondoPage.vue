@@ -260,52 +260,21 @@
             <!-- Comprobante 1 Archivo -->
             <div class="col-6 col-md-3">
               <label class="q-mb-sm block">Comprobante 1</label>
-              <q-file
-                standout
-                v-model="fondo.comprobante"
-                :disable="disabled"
-                :error="!!v$.comprobante.$errors.length"
-                @blur="v$.comprobante.$touch"
-                outlined
-                dense
+              <selector-imagen
+                :imagen="fondo.comprobante1"
+                @update:modelValue="(data) => (fondo.comprobante1 = data)"
               >
-                <template v-slot:prepend>
-                  <q-icon name="attach_file"></q-icon>
-                </template>
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.comprobante.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-file>
+              </selector-imagen>
             </div>
+
             <!-- Comprobante 2 Archivo -->
             <div class="col-6 col-md-3">
               <label class="q-mb-sm block">Comprobante 2</label>
-              <q-file
-                standout
-                v-model="fondo.comprobante2"
-                :disable="disabled"
-                :error="!!v$.comprobante2.$errors.length"
-                @blur="v$.comprobante2.$touch"
-                outlined
-                dense
+              <selector-imagen
+                :imagen="fondo.comprobante2"
+                @update:modelValue="(data) => (fondo.comprobante2 = data)"
               >
-                <template v-slot:prepend>
-                  <q-icon name="attach_file"></q-icon>
-                </template>
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.comprobante2.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-file>
+              </selector-imagen>
             </div>
           </div>
         </div>

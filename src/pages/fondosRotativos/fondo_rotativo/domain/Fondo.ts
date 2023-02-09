@@ -8,7 +8,7 @@ export class Fondo extends EntidadAuditable {
   aut_especial: string | null
   detalle: string | null
   sub_detalle: string | null
-  comprobante: string | null
+  comprobante1: string | null
   comprobante2: string | null
   cantidad: number | null
   valor_u: number | null
@@ -31,7 +31,7 @@ export class Fondo extends EntidadAuditable {
     this.aut_especial = null
     this.detalle = null
     this.sub_detalle = null
-    this.comprobante = null
+    this.comprobante1 = null
     this.comprobante2 = null
     this.cantidad = null
     this.valor_u = null

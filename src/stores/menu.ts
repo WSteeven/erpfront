@@ -252,7 +252,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Fondo Rotativo',
           link: 'fondo',
           icon: 'bi-circle',
-          can: true,
+          can: store.can('puede.ver.viaticos'),
         },
       ]
     },

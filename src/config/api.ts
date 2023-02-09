@@ -97,6 +97,6 @@ export const endpoints = {
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   viaticos: new Endpoint('fondos-rotativos/viaticos'),
-  detalle_fondo: new Endpoint('fondos-rotativos/detalle-fondo'),
+  detalle_fondo: new Endpoint('fondos-rotativos/detalles-viaticos'),
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
 }

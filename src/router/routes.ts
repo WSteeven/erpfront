@@ -444,7 +444,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/fondosRotativos/fondo_rotativo/view/FondoPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
     ],
   },

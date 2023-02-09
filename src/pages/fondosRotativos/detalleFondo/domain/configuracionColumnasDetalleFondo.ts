@@ -10,9 +10,9 @@ export const configuracionColumnasDetalleFondo: ColumnConfig<DetalleFondo>[] = [
     sortable: true
   },
   {
-    name: 'transcriptor',
-    field: 'transcriptor',
-    label: 'Transcriptor',
+    name: 'autorizacion',
+    field: 'autorizacion',
+    label: 'Autorizacion',
     align: 'left',
     sortable: true
   },

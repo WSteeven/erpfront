@@ -1,7 +1,10 @@
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { Fondo } from '../domain/Fondo'
 
+// Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
+
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -13,7 +16,7 @@ import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infre
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayout, SelectorImagen },
   setup() {
     /*********
     * Stores
@@ -84,7 +87,7 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-      comprobante: {
+      comprobante1: {
         required: true,
         minLength: 3,
         maxLength: 50,
@@ -123,7 +126,7 @@ export default defineComponent({
         },
         detalles: {
           controller: new DetalleFondoController(),
-          params: { campos: 'id,canton' },
+          params: { campos: 'id,descripcion' },
         },
         autorizacionesEspeciales: {
           controller: new UsuarioController(),
