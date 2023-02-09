@@ -10,7 +10,8 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
-import { markRaw, watch, watchEffect } from 'vue'
+import { markRaw } from 'vue'
+import { ParamsType } from 'config/types'
 
 export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
@@ -29,11 +30,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.desactivar()
   }
 
-  useReferencias(): any {
+  useReferencias() {
     return { entidad: this.entidad as T, ...this.refs }
   }
 
-  useComportamiento(): any {
+  useComportamiento() {
     return {
       listar: this.listar.bind(this),
       consultar: this.consultar.bind(this),
@@ -47,7 +48,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
   }
 
-  useHooks(): any {
+  useHooks() {
     return {
       onBeforeGuardar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeGuardar', callback),
@@ -67,7 +68,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   // Consultar
-  private async consultar(data: T) {
+  private async consultar(data: { [id: string]: number } | T) {//T) {
 
     this.hooks.onBeforeConsultar()
 
@@ -115,13 +116,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     })*/
   }
 
-  // Listar
-  private async listar(params: any, append = false) {
+  private async listar(params?: ParamsType, append = false) {
     this.cargarVista(async () => {
       try {
         const { result } = await this.controller.listar(params)
-        /* this.refs.currentPageListado.value = result.current_page
-        this.refs.nextPageUrl.value = result.next_page_url */
         if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
 
         if (append) this.refs.listado.value.push(...result)
@@ -140,7 +138,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   // Guardar
-  private async guardar(data: any, resetOnSaved = true,) {
+  // @noImplicitAny: false
+  private async guardar(data: T, resetOnSaved = true,) {
 
     if (!this.seCambioEntidad(this.entidad_vacia)) {
       this.notificaciones.notificarAdvertencia(
@@ -182,7 +181,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
             stop()
           }
         }) */
-
+        // @noImplicitAny: false
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
@@ -267,7 +266,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     })
   }
 
-  private setValidador(validador) {
+  // @noImplicitAny: false
+  private setValidador(validador: any) {
     this.refs.validador.value = validador
   }
 

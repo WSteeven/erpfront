@@ -1,7 +1,7 @@
-import { Validador } from "shared/validadores/domain/Validador"
-import { opcionesModoAsignacionTrabajo } from "config/utils"
-import { Subtarea } from "../../domain/Subtarea"
-import { EmpleadoSeleccionado } from "../../domain/EmpleadoSeleccionado"
+import { Validador } from 'shared/validadores/domain/Validador'
+import { opcionesModoAsignacionTrabajo } from 'config/utils'
+import { Subtarea } from '../../domain/Subtarea'
+import { EmpleadoSeleccionado } from '../../domain/EmpleadoSeleccionado'
 
 export class ValidarEmpleadoResponsable implements Validador {
   private subtarea: Subtarea
@@ -19,7 +19,7 @@ export class ValidarEmpleadoResponsable implements Validador {
       const noEsValido = !this.subtarea.empleados_seleccionados.some((empleado: EmpleadoSeleccionado) => empleado.responsable)
 
       if (noEsValido)
-        throw new Error("Debe asignar a un empleado responsable.")
+        throw new Error('Debe asignar a un empleado responsable.')
     }
 
     return true

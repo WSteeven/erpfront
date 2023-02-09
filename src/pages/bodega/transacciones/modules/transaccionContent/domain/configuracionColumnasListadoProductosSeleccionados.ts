@@ -1,4 +1,4 @@
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export const configuracionColumnasListadoProductosSeleccionados: ColumnConfig<any>[] = [
   {

@@ -581,8 +581,8 @@
             :tipo-seleccion="tipoSeleccion"
             :accion1="quitarGrupo"
             :accion2="designarGrupoPrincipal"
-            @selected="entidadSeleccionada"
           >
+            <!-- @selected="entidadSeleccionada" -->
           </essential-table>
 
           <essential-table
@@ -607,8 +607,8 @@
             :permitir-buscar="false"
             :tipo-seleccion="tipoSeleccion"
             :mostrar-footer="!subtarea.empleados_seleccionados.length"
-            @selected="entidadSeleccionada"
           >
+            <!--@selected="entidadSeleccionada" -->
           </essential-table>
 
           <essential-table
@@ -632,10 +632,10 @@
             :permitir-buscar="false"
             :tipo-seleccion="tipoSeleccion"
             :mostrar-footer="!subtarea.empleados_seleccionados.length"
-            @selected="entidadSeleccionada"
             :accion1="quitarEmpleado"
             :accion2="designarEmpleadoResponsable"
           >
+            <!--@selected="entidadSeleccionada"-->
           </essential-table>
         </div>
       </div>

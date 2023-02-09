@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Prestamo } from "./Prestamo";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Prestamo } from './Prestamo'
 
-export const configuracionColumnasPrestamos: ColumnConfig<Prestamo>[]=[
+export const configuracionColumnasPrestamos: ColumnConfig<Prestamo>[] = [
     {
         name: 'solicitante',
         field: 'solicitante',

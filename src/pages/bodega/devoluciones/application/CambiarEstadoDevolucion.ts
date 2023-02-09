@@ -1,7 +1,7 @@
-import { AxiosResponse } from "axios";
-import { endpoints } from "config/api";
-import { ApiError } from "shared/error/domain/ApiError";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
+import { AxiosResponse } from 'axios'
+import { endpoints } from 'config/api'
+import { ApiError } from 'shared/error/domain/ApiError'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 
 export class CambiarEstadoDevolucion {
     axios: AxiosHttpRepository

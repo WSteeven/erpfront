@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ActivoFijo } from "./ActivoFijo";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { ActivoFijo } from './ActivoFijo'
 
-export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[]=[
+export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[] = [
     {
         name: 'cantidad',
         field: 'cantidad',
@@ -44,7 +44,7 @@ export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[]=[
         label: 'Estado del activo',
         align: 'left',
         sortable: true,
-        // style: 'color: red;' //cada celda es un td
+        // style: 'color: red' //cada celda es un td
     },
     {
         name: 'observacion',

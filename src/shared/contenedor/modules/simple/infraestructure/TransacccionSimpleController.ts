@@ -7,6 +7,7 @@ import { GuardableRepository } from 'shared/controller/infraestructure/Guardable
 import { EditableRepository } from 'shared/controller/infraestructure/EditableRepository'
 import { EliminableRepository } from 'shared/controller/infraestructure/EliminableRepository'
 import { ConsultableRepository } from 'shared/controller/infraestructure/ConsultableRepository'
+import { ParamsType } from 'config/types'
 
 export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   implements Controller<T>
@@ -39,7 +40,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     return await this.consultableRepository.consultar(id, params)
   }
 
-  async guardar(entidad: T, params?: any) {
+  async guardar(entidad: T, params?: ParamsType) {
     return await this.guardableRepository.guardar(entidad, params)
   }
 
@@ -49,6 +50,6 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   }
 
   async eliminar(id: number, params?: any) {
-    return await this.eliminableRepository.eliminar(id, params)
+    return await this.eliminableRepository.eliminar(id) //, params)
   }
 }

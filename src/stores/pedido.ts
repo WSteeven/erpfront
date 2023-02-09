@@ -1,12 +1,12 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { endpoints } from "config/api";
-import { acciones, autorizacionesTransacciones, estadosTransacciones } from "config/utils";
-import { Pedido } from "pages/bodega/pedidos/domain/Pedido";
-import { defineStore } from "pinia";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { reactive, ref } from "vue";
+import { AxiosResponse } from 'axios'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { endpoints } from 'config/api'
+import { acciones, autorizacionesTransacciones, estadosTransacciones } from 'config/utils'
+import { Pedido } from 'pages/bodega/pedidos/domain/Pedido'
+import { defineStore } from 'pinia'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useNotificaciones } from 'shared/notificaciones'
+import { reactive, ref } from 'vue'
 
 export const usePedidoStore = defineStore('pedido', () => {
   //State
@@ -23,7 +23,7 @@ export const usePedidoStore = defineStore('pedido', () => {
     const ruta = axios.getEndpoint(endpoints.pedidos) + '/show-preview/' + id
     const response: AxiosResponse = await axios.get(ruta)
     console.log('Respuesta obtenida en store de pedido: ', response)
-    if (response.data.modelo.autorizacion ===autorizacionesTransacciones.aprobado) {
+    if (response.data.modelo.autorizacion === autorizacionesTransacciones.aprobado) {
       return response.data.modelo
     }
   }

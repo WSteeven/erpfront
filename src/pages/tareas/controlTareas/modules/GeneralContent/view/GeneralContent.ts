@@ -25,11 +25,12 @@ import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 import { Subtarea } from '../../subtareas/domain/Subtarea'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export default defineComponent({
   props: {
     mixin: {
-      type: Object as () => ContenedorSimpleMixin<any>,
+      type: Object as () => ContenedorSimpleMixin<Tarea>,
       required: true,
     },
   },
@@ -249,7 +250,7 @@ export default defineComponent({
       return result
     }
 
-    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
+    // const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
 
     function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
@@ -264,7 +265,7 @@ export default defineComponent({
       }
 
       if (tarea.destino === destinosTareas.paraProyecto) {
-        const copiaTarea = Object.assign({}, tarea);
+        const copiaTarea = Object.assign({}, tarea)
         tarea.hydrate(new Tarea())
         tarea.id = copiaTarea.id
         tarea.codigo_tarea = copiaTarea.codigo_tarea
@@ -322,10 +323,12 @@ export default defineComponent({
 
     async function setCliente() {
       console.log('cambiando cliente  ')
-      const proyectoController = new ProyectoController()
-      const { result } = await proyectoController.consultar(tarea.proyecto)
-      // tareaStore.idCliente = result.cliente
-      tarea.cliente = result.cliente
+      if (tarea.proyecto) {
+        const proyectoController = new ProyectoController()
+        const { result } = await proyectoController.consultar(tarea.proyecto)
+        // tareaStore.idCliente = result.cliente
+        tarea.cliente = result.cliente
+      }
     }
 
     return {
@@ -338,7 +341,7 @@ export default defineComponent({
       provincias,
       cantones,
       tiposTrabajos,
-      cantonesPorProvincia,
+      // cantonesPorProvincia,
       guardar,
       editar,
       eliminar,

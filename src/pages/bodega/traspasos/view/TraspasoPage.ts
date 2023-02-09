@@ -1,39 +1,39 @@
 //Dependencias
-import { configuracionColumnasTraspasos } from "../domain/configuracionColumnasTraspasos";
-import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
-import { configuracionColumnasItemsSeleccionados } from "../domain/configuracionColumnasItemsSeleccionados";
-import { configuracionColumnasItemsSeleccionadosDevolver } from "../domain/configuracionColumnasItemsSeleccionadosDevolver";
-import { configuracionColumnasItemsSeleccionadosDevuelto } from "../domain/configuracionColumnasItemsSeleccionadosDevuelto";
-import { required } from "@vuelidate/validators";
+import { configuracionColumnasTraspasos } from '../domain/configuracionColumnasTraspasos'
+import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
+import { configuracionColumnasItemsSeleccionados } from '../domain/configuracionColumnasItemsSeleccionados'
+import { configuracionColumnasItemsSeleccionadosDevolver } from '../domain/configuracionColumnasItemsSeleccionadosDevolver'
+import { configuracionColumnasItemsSeleccionadosDevuelto } from '../domain/configuracionColumnasItemsSeleccionadosDevuelto'
+import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
-import { useOrquestadorSelectorItems } from "../application/OrquestadorSelectorInventario";
+import { defineComponent, ref } from 'vue'
+import { useOrquestadorSelectorItems } from '../application/OrquestadorSelectorInventario'
 
 //Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { TraspasoController } from "../infraestructure/TraspasoController";
-import { Traspaso } from "../domain/Traspaso";
-import { useNotificaciones } from "shared/notificaciones";
-import { useAuthenticationStore } from "stores/authentication";
-import { TareaController } from "pages/tareas/controlTareas/infraestructure/TareaController";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
-import { EstadosTransaccionController } from "pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, logoBN, logoColor, meses, tabOptionsTraspasos } from "config/utils";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { TraspasoController } from '../infraestructure/TraspasoController'
+import { Traspaso } from '../domain/Traspaso'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useAuthenticationStore } from 'stores/authentication'
+import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { acciones, logoBN, logoColor, meses, tabOptionsTraspasos } from 'config/utils'
 
 
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import { buildTableBody } from "shared/utils";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
+import { buildTableBody } from 'shared/utils'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -84,7 +84,7 @@ export default defineComponent({
             v$.value.listadoProductos.$errors.forEach(error =>
                 // console.log(error.$message)
                 notificarAdvertencia('Debe agregar al menos un producto al listado')
-            );
+            )
         })
 
         const opciones_clientes = ref([])
@@ -145,8 +145,8 @@ export default defineComponent({
             titulo: 'Cantidad',
             icono: 'bi-pencil',
             accion: ({ posicion }) => {
-                const config: CustomActionPrompt={
-                    titulo:'Confirmación',
+                const config: CustomActionPrompt = {
+                    titulo: 'Confirmación',
                     mensaje: 'Ingresa la cantidad',
                     defecto: traspaso.listadoProductos[posicion].cantidades,
                     tipo: 'number',
@@ -162,9 +162,9 @@ export default defineComponent({
             titulo: 'Devolucion',
             icono: 'bi-pencil',
             accion: ({ posicion }) => {
-                const config: CustomActionPrompt={
+                const config: CustomActionPrompt = {
                     titulo: 'Confirmación',
-                    mensaje:'Ingresa la cantidad',
+                    mensaje: 'Ingresa la cantidad',
                     defecto: traspaso.listadoProductos[posicion].devolucion,
                     tipo: 'number',
                     accion: (data) => traspaso.listadoProductos[posicion].devolucion = data,
@@ -185,7 +185,7 @@ export default defineComponent({
             icono: 'bi-printer',
             accion: async ({ entidad, posicion }) => {
                 // devolucionStore.idDevolucion = entidad.id
-                // modales.abrirModalEntidad("ImprimirDevolucionPage")
+                // modales.abrirModalEntidad('ImprimirDevolucionPage')
                 // await devolucionStore.showPreview()
                 console.log('entidad en el boton imprimir', entidad)
                 pdfMakeImprimir(entidad)
@@ -210,29 +210,29 @@ export default defineComponent({
                 listadoLayout: {
                     hLineWidth: function (i, node) {
                         if (i === 0 || i === node.table.body.length) {
-                            return 0;
+                            return 0
                         }
-                        return (i === node.table.headerRows) ? 2 : 1;
+                        return (i === node.table.headerRows) ? 2 : 1
                     },
                     vLineWidth: function (i) {
-                        return 0;
+                        return 0
                     },
                     hLineColor: function (i) {
-                        return i === 1 ? 'black' : '#aaa';
+                        return i === 1 ? 'black' : '#aaa'
                     },
                     paddingLeft: function (i) {
-                        return i === 0 ? 0 : 8;
+                        return i === 0 ? 0 : 8
                     },
                     paddingRight: function (i, node) {
-                        return (i === node.table.widths.length - 1) ? 0 : 8;
+                        return (i === node.table.widths.length - 1) ? 0 : 8
                     }
                 },
                 lineaLayout: {
                     hLineWidth: function (i, node) {
-                        return (i === 0 || i === node.table.body.length) ? 0 : 2;
+                        return (i === 0 || i === node.table.body.length) ? 0 : 2
                     },
                     vLineWidth: function (i, node) {
-                        return 0;
+                        return 0
                     },
                 },
             }
@@ -410,7 +410,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [0, 0, 60, 0]
                             },
@@ -419,7 +419,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [60, 0, 0, 0]
                             }

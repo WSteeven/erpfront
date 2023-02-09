@@ -1,7 +1,7 @@
 // Dependencias
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // Componentes
 import { ComportamientoModales } from '../application/ComportamientoModales'

@@ -24,6 +24,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
 import { obtenerTiempoActual } from 'shared/utils'
+import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
 
 export default defineComponent({
   components: {
@@ -155,7 +156,9 @@ export default defineComponent({
           // modales.abrirModalEntidad('SeleccionFormularioPage')
           // router.push({ name: 'control_tendidos' })
           // modales.abrirModalEntidad('ControlTendido')
-          modales.abrirModalEntidad('EmergenciaPage')
+          // modales.abrirModalEntidad('EmergenciaPage')
+          const obtenerPlantilla = new ObtenerPlantilla()
+          modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
         })
       }
     }
@@ -205,8 +208,8 @@ export default defineComponent({
     // - Actualizar un elemento del listado de trabajo asignado
     function actualizarElemento(posicion: number, entidad: any): void {
       if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad);
-        listado.value = [...listado.value];
+        listado.value.splice(posicion, 1, entidad)
+        listado.value = [...listado.value]
       }
     }
 

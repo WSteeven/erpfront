@@ -6,15 +6,15 @@ import {
   reactive,
   ref,
   UnwrapRef,
-} from "vue"
-import {columnaImportable} from "@shared/importable/domain/importable"
-import {ColumnConfig, ConfigTabla} from "../../../tablas/types"
-import {iconos} from "@config/utils.config"
-import XLSX from "xlsx"
+} from 'vue'
+import { columnaImportable } from '@shared/importable/domain/importable'
+import { ColumnConfig, ConfigTabla } from '../../../tablas/types'
+import { iconos } from '@config/utils.config'
+import XLSX from 'xlsx'
 // Componentes
-import Listado from "@shared/componentes/tablas/listado.vue"
-import {Modal} from "bootstrap/dist/js/bootstrap.js"
-import {Notificaciones} from "../../../toastification/application/notificaciones"
+import Listado from '@shared/componentes/tablas/listado.vue'
+import { Modal } from 'bootstrap/dist/js/bootstrap.js'
+import { Notificaciones } from '../../../toastification/application/notificaciones'
 
 export default defineComponent({
   components: {
@@ -26,8 +26,8 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ["importar"],
-  setup(props, {emit}) {
+  emits: ['importar'],
+  setup(props, { emit }) {
     const refImportarExcel = ref()
     const refFormulario = ref()
     const listado = ref<any>([])
@@ -43,7 +43,7 @@ export default defineComponent({
         modal.show()
       } else {
         notificar.notificarAdvertencia(
-          "No se ha configurado los campos importables."
+          'No se ha configurado los campos importables.'
         )
       }
     }
@@ -85,7 +85,7 @@ export default defineComponent({
     }
 
     // 3) Configuracion de la tabla
-    const configuracionTabla: ConfigTabla<any> = reactive({columnas: fields})
+    const configuracionTabla: ConfigTabla<any> = reactive({ columnas: fields })
 
     const procesarArchivo = function (event: any): void {
       const file = event.target.files[0]
@@ -98,7 +98,7 @@ export default defineComponent({
           const contenido = reader.result
           if (contenido) {
             const wb = XLSX.read(new Uint8Array(contenido as ArrayBuffer), {
-              type: "array",
+              type: 'array',
             })
             listado.value = [
               ...XLSX.utils.sheet_to_json<any>(wb.Sheets[wb.SheetNames[0]]),
@@ -113,7 +113,7 @@ export default defineComponent({
      */
     function descargarPlantilla() {
       const wb = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(wb, wsDefecto, "plantilla")
+      XLSX.utils.book_append_sheet(wb, wsDefecto, 'plantilla')
       XLSX.writeFile(wb, `plantilla.xlsx`)
     }
 
@@ -121,7 +121,7 @@ export default defineComponent({
      * Emite el evento para que el controlador importe el listado obtenido
      */
     const emitEventImportar = () => {
-      emit("importar", listado.value)
+      emit('importar', listado.value)
       ocultar()
     }
 

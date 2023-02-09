@@ -12,7 +12,7 @@ export class DescargableRepository {
   descargarListado(args?: any): any {
     return this.httpRepository.get<any>(
       this.httpRepository.getEndpoint(this.endpoint, args),
-      { responseType: 'blob' }
+      // { responseType: 'blob' }
     )
   }
 }

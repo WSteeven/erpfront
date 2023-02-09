@@ -43,7 +43,7 @@ import { useDetalleStore } from 'stores/detalle'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesTransaccionEgreso'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 
-import { buildTableBody } from "shared/utils";
+import { buildTableBody } from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
 
@@ -293,7 +293,7 @@ export default defineComponent({
         empleadoRetira.value = response.response.data.modelo
         console.log(transaccion)
         // console.log(empleadoRetira)
-        // modales.abrirModalEntidad("TransaccionEgresoImprimirPage")
+        // modales.abrirModalEntidad('TransaccionEgresoImprimirPage')
         pdfMakeImprimir()
       },
       //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
@@ -314,29 +314,29 @@ export default defineComponent({
         listadoLayout: {
           hLineWidth: function (i, node) {
             if (i === 0 || i === node.table.body.length) {
-              return 0;
+              return 0
             }
-            return (i === node.table.headerRows) ? 2 : 1;
+            return (i === node.table.headerRows) ? 2 : 1
           },
           vLineWidth: function (i) {
-            return 0;
+            return 0
           },
           hLineColor: function (i) {
-            return i === 1 ? 'black' : '#aaa';
+            return i === 1 ? 'black' : '#aaa'
           },
           paddingLeft: function (i) {
-            return i === 0 ? 0 : 8;
+            return i === 0 ? 0 : 8
           },
           paddingRight: function (i, node) {
-            return (i === node.table.widths.length - 1) ? 0 : 8;
+            return (i === node.table.widths.length - 1) ? 0 : 8
           }
         },
         lineaLayout: {
           hLineWidth: function (i, node) {
-            return (i === 0 || i === node.table.body.length) ? 0 : 2;
+            return (i === 0 || i === node.table.body.length) ? 0 : 2
           },
           vLineWidth: function (i, node) {
-            return 0;
+            return 0
           },
         },
       }
@@ -494,7 +494,7 @@ export default defineComponent({
                 width: '*',
                 table: {
                   widths: ['*'],
-                  body: [[" "], [" "]]
+                  body: [[' '], [' ']]
                 },
                 margin: [0, 0, 60, 0]
               },
@@ -503,7 +503,7 @@ export default defineComponent({
                 width: '*',
                 table: {
                   widths: ['*'],
-                  body: [[" "], [" "]]
+                  body: [[' '], [' ']]
                 },
                 margin: [60, 0, 0, 0]
               }
@@ -606,7 +606,7 @@ export default defineComponent({
       //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
       // transaccion.listadoProductosTransaccion = Array.from(pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado))
       // console.log(transaccion.listadoProductosTransaccion)
-      // transaccion.listadoProductosTransaccion.forEach((v) => v.cantidad = buscarCantidadPendienteEnPedido(v.id));
+      // transaccion.listadoProductosTransaccion.forEach((v) => v.cantidad = buscarCantidadPendienteEnPedido(v.id))
       // let detalles_ids: any = []
       // detalles_ids = pedidoStore.pedido.listadoProductos.map((v) => v.id)
       // console.log(detalles_ids)
@@ -632,7 +632,7 @@ export default defineComponent({
                 console.log('hay menos en inventario')
                 v.cantidad = item[0]['cantidad']
             }
-        });
+        })
     }) */
 
     /**

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import { HttpRepository } from '../domain/HttpRepository'
 import { Endpoint } from '../domain/Endpoint'
 import { LocalStorage } from 'quasar'
@@ -37,7 +37,6 @@ export class AxiosHttpRepository implements HttpRepository {
 
   get<HttpResponse>(
     url: string,
-    options?: AxiosRequestConfig
   ): Promise<HttpResponse> {
     return AxiosHttpRepository.axiosInst.get(url, AxiosHttpRepository.getHeaderToken())
   }

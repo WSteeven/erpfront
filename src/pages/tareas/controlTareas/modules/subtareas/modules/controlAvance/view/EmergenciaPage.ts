@@ -8,7 +8,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, Ref, ref } from 'vue'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 
@@ -22,6 +22,8 @@ import TrabajoRealizado from 'pages/tareas/controlTareas/modules/subtareas/domai
 import Observacion from 'pages/tareas/controlTareas/modules/subtareas/domain/Observacion'
 import { EmergenciaController } from '../infraestructure/EmergenciaController'
 import { Emergencia } from '../domain/Emergencia'
+import { MaterialOcupado } from 'pages/tareas/tendidos/controlTendidos/modules/registrosTendidos/domain/MaterialOcupado'
+import { CausaIntervencion } from './CausaIntervencion'
 
 export default defineComponent({
   components: {
@@ -97,9 +99,9 @@ export default defineComponent({
       emergencia.observaciones.splice(posicion, 1)
     }
 
-    const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === emergencia.tipo_intervencion))
+    const causasIntervencion = computed(() => causaIntervencion.filter((causa: CausaIntervencion) => causa.categoria === emergencia.tipo_intervencion))
 
-    const materiales: any = ref([])
+    const materiales: Ref<MaterialOcupado[]> = ref([])
 
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
@@ -113,7 +115,6 @@ export default defineComponent({
     return {
       emergencia,
       accion,
-      acciones,
       causasIntervencion,
       // columnas
       columnasTrabajoRealizado,

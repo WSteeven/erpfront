@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 
 export class DetalleProductoTransaccion extends EntidadAuditable {
@@ -10,11 +10,11 @@ export class DetalleProductoTransaccion extends EntidadAuditable {
 
     constructor() {
         super()
-        this.id= null
-        this.inventario_id= null
-        this.transaccion_id= null
-        this.cantidad_inicial= null
-        this.cantidad_final= null
+        this.id = null
+        this.inventario_id = null
+        this.transaccion_id = null
+        this.cantidad_inicial = null
+        this.cantidad_final = null
     }
 
 }

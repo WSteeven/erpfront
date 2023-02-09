@@ -1,19 +1,19 @@
 //Dependencias
-import { configuracionColumnasProductosSeleccionados } from "../../transaccionContent/domain/configuracionColumnasProductosSeleccionados";
-import { defineComponent, ref } from "vue";
-import { useTransaccionStore } from "stores/transaccion";
-import { useDetalleStore } from "stores/detalle";
+import { configuracionColumnasProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
+import { defineComponent, ref } from 'vue'
+import { useTransaccionStore } from 'stores/transaccion'
+import { useDetalleStore } from 'stores/detalle'
 
 //Componentes 
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { DetalleProductoTransaccion } from "../../detalle_producto_transaccion/domain/DetalleProductoTransaccion";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { ComportamientoModalesTransaccionIngreso } from "../application/ComportamientoModalesTransaccionIngreso";
-import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { useDetalleTransaccionStore } from "stores/detalleTransaccion";
+import { DetalleProductoTransaccion } from '../../detalle_producto_transaccion/domain/DetalleProductoTransaccion'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { ComportamientoModalesTransaccionIngreso } from '../application/ComportamientoModalesTransaccionIngreso'
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
 
 
 export default defineComponent({

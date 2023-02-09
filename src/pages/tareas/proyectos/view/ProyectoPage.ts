@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasProyecto } from '../domain/configuracionColumnasProyectos'
-import { required, minLength, maxLength, helpers } from 'shared/i18n-validators'
+import { required, maxLength, helpers } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
@@ -48,8 +48,8 @@ export default defineComponent({
     })
 
     // Validaciones
-    const fechaFinMayor = (valor: string) => valor > proyecto.fecha_inicio
-    const fechaInicioMenor = (valor: string) => valor < proyecto.fecha_fin
+    const fechaFinMayor = (valor: string) => valor > (proyecto.fecha_inicio ?? 0)
+    const fechaInicioMenor = (valor: string) => valor < (proyecto.fecha_fin ?? 0)
 
     const rules = {
       cliente: { required },

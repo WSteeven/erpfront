@@ -22,7 +22,7 @@ export interface HttpRepository {
   ): Promise<S>
 
   getEndpoint(
-    endpoint: Endpoint | { endpoint: Endpoint; id: number | null },
+    endpoint: Endpoint | { endpoint: Endpoint id: number | null },
     args?: any
   ): string
 }

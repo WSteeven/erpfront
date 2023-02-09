@@ -41,15 +41,15 @@ export default defineComponent({
     )
     const { entidad: imagen } = mixinImagenes.useReferencias() */
 
-    const opciones = ref([]);
+    const opciones = ref([])
     const unidades_medidas = ref([])
 
     //Obtener el listado de las categorias
     cargarVista(() => {
       obtenerListados({
         categorias: {
-          controller:new CategoriaController(),
-          params:{campos:'id,nombre'},
+          controller: new CategoriaController(),
+          params: { campos: 'id,nombre' },
         },
         unidades_medidas: new UnidadMedidaController()
       })

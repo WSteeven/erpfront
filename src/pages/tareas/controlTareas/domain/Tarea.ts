@@ -11,7 +11,7 @@ export class Tarea extends EntidadAuditable {
   detalle: string | null
   supervisor: number | null
   coordinador: number | null
-  proyecto: string | null
+  proyecto: number | null
   estado: string | null
   destino: string | null
   tipo_trabajo: string | null

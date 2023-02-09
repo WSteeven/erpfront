@@ -33,10 +33,11 @@ export function useOrquestadorSelectorTecnicos(subtarea: Subtarea, endpoint: key
   const limpiar = () => singleSelector.limpiar()
 
   const seleccionar = (entidades: EmpleadoSeleccionado[]) => {
-    console.log(entidades)
-    let ids: any = []
-    ids = subtarea.empleados_seleccionados.map((entidad: Empleado) => entidad.id)
-    const datos = entidades.filter((v) => !ids.includes(v.id))
+    const ids: number[] = subtarea.empleados_seleccionados.map((entidad: Empleado) => entidad.id ?? -1)
+    const datos = entidades.filter((v) => {
+      if (v.id) !ids.includes(v.id)
+    })
+
     singleSelector.seleccionarMultiple(datos)
   }
 

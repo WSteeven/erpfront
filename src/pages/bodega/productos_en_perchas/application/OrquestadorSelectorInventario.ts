@@ -1,9 +1,9 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { useSelector } from "components/tables/application/selectorListado";
-import { endpoints } from "config/api";
-import { Ref, ref } from "vue";
-import { ProductoEnPercha } from "../domain/ProductoEnPercha";
-import { Inventario } from "pages/bodega/inventario/domain/Inventario";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { useSelector } from 'components/tables/application/selectorListado'
+import { endpoints } from 'config/api'
+import { Ref, ref } from 'vue'
+import { ProductoEnPercha } from '../domain/ProductoEnPercha'
+import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
 
 export function useOrquestadorSelectorInventario(entidad: ProductoEnPercha, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
