@@ -53,6 +53,13 @@ export const usePedidoStore = defineStore('pedido', () => {
     pedido.hydrate(response.data.modelo)
   }
 
+  async function imprimirPdf() {
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = axios.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value
+    const response: AxiosResponse = await axios.get(ruta)
+    console.log('Pedido consultado para imprimir')
+  }
+
   function resetearPedido() {
     pedido.hydrate(pedidoReset)
   }
