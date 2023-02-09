@@ -12,7 +12,6 @@ import {
 import { useTendidoStore } from 'stores/tendido'
 import { computed, defineComponent, onMounted, watch } from 'vue'
 import { required } from '@vuelidate/validators'
-import { logoBN, logoColor } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 
@@ -33,12 +32,6 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { BobinaController } from '../infraestructure/BobinaController'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { Tendido } from '../domain/Tendido'
-
-// PDFmake
-import * as pdfMake from 'pdfmake/build/pdfmake'
-import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import { buildTableBody } from 'shared/utils';
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
 export default defineComponent({
   components: {
