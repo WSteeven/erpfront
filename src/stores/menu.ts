@@ -243,6 +243,19 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    //Modulo Fondos Rotativos
+    {
+      title: 'Fondos Rotativos',
+      icon: 'bi-cash-stack',
+      children: [
+        {
+          title: 'Fondo Rotativo',
+          link: 'fondo',
+          icon: 'bi-circle',
+          can: true,
+        },
+      ]
+    },
     //Modulo Recursos Humanos
     {
       title: 'RR HH',

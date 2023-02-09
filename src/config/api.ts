@@ -93,4 +93,10 @@ export const endpoints = {
   registros_tendidos: new Endpoint('registros-tendidos'),
   reportes_control_materiales: new Endpoint('reportes-control-materiales'),
   resumen_tendidos: new Endpoint('resumen-tendidos'),
+
+  // Modulo Fondos Rotativos
+  tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
+  viaticos: new Endpoint('fondos-rotativos/viaticos'),
+  detalle_fondo: new Endpoint('fondos-rotativos/detalle-fondo'),
+  usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
 }
