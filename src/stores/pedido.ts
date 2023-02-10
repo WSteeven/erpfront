@@ -68,7 +68,7 @@ export const usePedidoStore = defineStore('pedido', () => {
     console.log('Pedido consultado para imprimir. Pasó todo con éxito')
   } */
   async function imprimirPdf() {
-    const axiosHttpRepository =AxiosHttpRepository.getInstance()
+    const axiosHttpRepository =AxiosHttpRepository.getInstance() 
     axios({
       url: 'http://localhost:8000/api/pedidos/imprimir/'+idPedido.value,
       // url: axiosHttpRepository.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value,
