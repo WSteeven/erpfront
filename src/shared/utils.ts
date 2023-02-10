@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { apiConfig, endpoints } from 'config/api'
 import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
@@ -53,7 +53,7 @@ export function descargarArchivoUrl(
   url: string,
 ): void {
   const link = document.createElement('a')
-  link.href = apiConfig.URL_BALSE + url
+  link.href = apiConfig.URL_BASE + url
   link.target = '_blank'
   link.click()
   link.remove()
@@ -319,3 +319,11 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
 
+export async function imprimirPdf(ruta:string, metodo:string, responseType:string, headers?: {}) {
+  const ax = axios({
+    url: ruta,
+    method:metodo,
+    responseType:responseType,
+    headers: headers
+  })
+}

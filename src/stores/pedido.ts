@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { endpoints } from 'config/api';
+import { apiConfig, endpoints } from 'config/api';
 import { acciones, autorizacionesTransacciones, estadosTransacciones } from 'config/utils';
 import { time } from 'console';
 import { Pedido } from 'pages/bodega/pedidos/domain/Pedido';
@@ -70,7 +70,7 @@ export const usePedidoStore = defineStore('pedido', () => {
   async function imprimirPdf() {
     const axiosHttpRepository =AxiosHttpRepository.getInstance()
     axios({
-      url: 'http://localhost:8000/api/pedidos/imprimir/'+idPedido.value,
+      url: apiConfig.URL_BASE+'/'+axiosHttpRepository.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value,
       // url: axiosHttpRepository.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value,
       method: 'GET',
       responseType: 'blob',
@@ -78,14 +78,14 @@ export const usePedidoStore = defineStore('pedido', () => {
       headers:{
         'Authorization':AxiosHttpRepository.getHeaderToken().headers.Authorization}
     }).then((response)=>{
-      const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+      console.log(response)
+      const fileURL = window.URL.createObjectURL(new Blob([response.data], {type:'application/pdf'}))
       const fileLink = document.createElement('a')
       fileLink.href = fileURL
       fileLink.setAttribute('download', 'pedido_'+idPedido.value+'_'+Date.now()+'.pdf')
       document.body.appendChild(fileLink)
       fileLink.click()
     })
-    console.log('Pedido consultado para imprimir. Pasó todo con éxito')
   }
 
   function resetearPedido() {

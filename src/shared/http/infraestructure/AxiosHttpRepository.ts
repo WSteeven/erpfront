@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { HttpRepository } from '../domain/HttpRepository'
 import { Endpoint } from '../domain/Endpoint'
 import { LocalStorage } from 'quasar'
+import { apiConfig } from 'config/api'
 
 // SINGLETON
 export class AxiosHttpRepository implements HttpRepository {
@@ -15,7 +16,9 @@ export class AxiosHttpRepository implements HttpRepository {
   private static initialize(): void {
     this.axiosInst = axios.create({
       // baseURL: 'https://api-sistemas.jpconstrucred.com/', //process.env.VUE_APP_API_URL,
-      baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
+      // baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
+      baseURL: process.env.API_URL, //process.env.VUE_APP_API_URL,
+
       withCredentials: true,
     })
   }

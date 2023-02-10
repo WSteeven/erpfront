@@ -69,7 +69,7 @@ export default defineComponent({
     const refGestor = ref()
     const axios = AxiosHttpRepository.getInstance()
 
-    const ruta = `${apiConfig.URL_BALSE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
+    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
 
     async function factoryFn(files) {
       const fd = new FormData()

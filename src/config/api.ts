@@ -1,7 +1,8 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
 
 export const apiConfig = {
-  URL_BALSE: 'http://localhost:8000',
+  // URL_BASE: 'http://localhost:8000',
+  URL_BASE: process.env.API_URL,
 }
 
 export const endpoints = {
