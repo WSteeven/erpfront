@@ -20,7 +20,7 @@
               error-message="Debes seleccionar un canton"
               use-input
               input-debounce="0"
-              @filter="filterFn"
+              @filter="filtrarCantones"
               :option-value="(v) => v.id"
               :option-label="(v) => v.canton"
               emit-value
@@ -103,17 +103,17 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">RUC</label>
             <q-input
-              v-model="fondo.RUC"
+              v-model="fondo.ruc"
               placeholder="Obligatorio"
               type="number"
               :disable="disabled"
-              :error="!!v$.RUC.$errors.length"
-              @blur="v$.RUC.$touch"
+              :error="!!v$.ruc.$errors.length"
+              @blur="v$.ruc.$touch"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.RUC.$errors" :key="error.$uid">
+                <div v-for="error of v$.ruc.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -124,17 +124,17 @@
             <div class="col-4 col-md-3">
               <label class="q-mb-sm block">Cantidad</label>
               <q-input
-                v-model="fondo.cant"
+                v-model="fondo.cantidad"
                 placeholder="Obligatorio"
                 type="number"
                 :disable="disabled"
-                :error="!!v$.cant.$errors.length"
-                @blur="v$.cant.$touch"
+                :error="!!v$.cantidad.$errors.length"
+                @blur="v$.cantidad.$touch"
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.cant.$errors" :key="error.$uid">
+                  <div v-for="error of v$.cantidad.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -199,7 +199,7 @@
               error-message="Debes seleccionar un canton"
               use-input
               input-debounce="0"
-              @filter="filterFn"
+              @filter="filtrarAutorizacionesEspeciales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.name"
               emit-value
@@ -219,7 +219,7 @@
               </template>
             </q-select>
           </div>
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Detalle</label>
             <q-select
               v-model="fondo.detalle"
@@ -235,7 +235,7 @@
               error-message="Debes seleccionar un canton"
               use-input
               input-debounce="0"
-              @filter="filterFn"
+              @filter="filtrarDetalles"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"
               emit-value
@@ -255,27 +255,82 @@
               </template>
             </q-select>
           </div>
+          <div class="col-12 col-md-4 q-mb-md" v-if="fondo.detalle != null">
+            <label class="q-mb-sm block">SubDetalle</label>
+            <q-select
+              v-model="fondo.sub_detalle"
+              :options="sub_detalles"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.sub_detalle.$errors.length"
+              error-message="Debes seleccionar un canton"
+              use-input
+              input-debounce="0"
+              @filter="filtarSubdetalles"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.descripcion"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.sub_detalle.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
 
-          <div class="row q-col-gutter-sm q-mb-md">
-            <!-- Comprobante 1 Archivo -->
-            <div class="col-6 col-md-3">
-              <label class="q-mb-sm block">Comprobante 1</label>
-              <selector-imagen
-                :imagen="fondo.comprobante1"
-                @update:modelValue="(data) => (fondo.comprobante1 = data)"
-              >
-              </selector-imagen>
-            </div>
+          <!-- Comprobante 1 Archivo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Comprobante 1</label>
+            <selector-imagen
+              :imagen="fondo.comprobante1"
+              @update:modelValue="(data) => (fondo.comprobante1 = data)"
+            >
+            </selector-imagen>
+          </div>
 
-            <!-- Comprobante 2 Archivo -->
-            <div class="col-6 col-md-3">
-              <label class="q-mb-sm block">Comprobante 2</label>
-              <selector-imagen
-                :imagen="fondo.comprobante2"
-                @update:modelValue="(data) => (fondo.comprobante2 = data)"
-              >
-              </selector-imagen>
-            </div>
+          <!-- Comprobante 2 Archivo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Comprobante 2</label>
+            <selector-imagen
+              :imagen="fondo.comprobante2"
+              @update:modelValue="(data) => (fondo.comprobante2 = data)"
+            >
+            </selector-imagen>
+          </div>
+
+          <!-- Observacion -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observación</label>
+            <q-input
+              v-model="fondo.observacion"
+              placeholder="Obligatorio"
+              type="textarea"
+              :disable="disabled"
+              :error="!!v$.observacion.$errors.length"
+              @blur="v$.observacion.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
         </div>
       </q-form>

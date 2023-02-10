@@ -446,6 +446,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/detalle_fondo',
+        name: 'detalle_fondo',
+        component: () =>
+          import(
+            'pages/fondosRotativos/detalleFondo/view/DetalleFondoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

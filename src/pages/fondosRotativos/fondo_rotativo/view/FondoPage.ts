@@ -14,6 +14,7 @@ import { configuracionColumnasFondo } from '../domain/configuracionColumnasFondo
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
+import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -44,18 +45,18 @@ export default defineComponent({
       },
       num_tarea: {
         required: true,
-        minLength: 3,
-        maxLength: 50,
+        minLength: 2,
+        maxLength: 25,
       },
-      RUC: {
+      ruc: {
         required: true,
-        minLength: 3,
-        maxLength: 50,
+        minLength: 13,
+        maxLength: 13,
       },
       factura: {
         required: true,
         minLength: 3,
-        maxLength: 50,
+        maxLength: 25,
       },
       aut_especial: {
         required: true,
@@ -72,7 +73,7 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-      cant: {
+      cantidad: {
         required: true,
         minLength: 3,
         maxLength: 50,
@@ -116,6 +117,7 @@ export default defineComponent({
 
     const cantones = ref([]);
     const detalles = ref([]);
+    const sub_detalles = ref([]);
     const autorizacionesEspeciales = ref([]);
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -132,12 +134,17 @@ export default defineComponent({
           controller: new UsuarioController(),
           params: { campos: 'id,name' },
         },
+        sub_detalles: {
+          controller: new SubDetalleFondoController(),
+          params: { campos: 'id,descripcion' },
+        },
       })
 
       cantones.value = listadosAuxiliares.cantones
       detalles.value = listadosAuxiliares.detalles
       autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
-      // console.log(listadosAuxiliaresautorizacionesEspeciales)
+      sub_detalles.value = listadosAuxiliares.sub_detalles
+
     })
 
 
@@ -147,7 +154,7 @@ export default defineComponent({
     /*********
    * Filtros
    **********/
-    // - Filtro clientes corporativos
+    // - Filtro AUTORIZACIONES ESPECIALES
 
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
@@ -163,6 +170,58 @@ export default defineComponent({
         )
       })
     }
+    // - Filtro Detalles
+
+    function filtrarDetalles(val, update) {
+      if (val === '') {
+        update(() => {
+          detalles.value = listadosAuxiliares.detalles
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        detalles.value = listadosAuxiliares.detalles.filter(
+          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // - Filtro Lugares
+
+    function filtrarCantones(val, update) {
+      if (val === '') {
+        update(() => {
+          cantones.value = listadosAuxiliares.cantones
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        cantones.value = listadosAuxiliares.cantones.filter(
+          (v) => v.canton.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtarSubdetalles(val, update) {
+
+      if (val === '') {
+        update(() => {
+          sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
+            (v) => v.id == fondo.detalle
+          )
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
+          (v) => v.detalle.indexOf(needle) > -1
+        )
+      })
+
+    }
+
 
     watchEffect(() => fondo.total = fondo.cant * fondo.valor_u)
 
@@ -171,10 +230,14 @@ export default defineComponent({
       fondo,
       cantones,
       detalles,
+      sub_detalles,
       disabled, accion, v$,
       configuracionColumnas: configuracionColumnasFondo,
       autorizacionesEspeciales,
       filtrarAutorizacionesEspeciales,
+      filtrarCantones,
+      filtrarDetalles,
+      filtarSubdetalles,
       listadosAuxiliares,
       computed
     }

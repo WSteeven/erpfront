@@ -1,4 +1,4 @@
-import { defineComponent, reactive } from 'vue'
+import { defineComponent } from 'vue'
 import { DetalleFondo } from '../domain/DetalleFondo'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -34,7 +34,12 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-      transcriptor: {
+      autorizacion: {
+        required: true,
+        minLength: 3,
+        maxLength: 50,
+      },
+      estatus: {
         required: true,
         minLength: 3,
         maxLength: 50,
@@ -48,7 +53,6 @@ export default defineComponent({
     onReestablecer(() => {
       //sucursal.value=''
     })
-
     return {
       mixin,
       detalleFondo,

@@ -3,11 +3,14 @@ export class Fondo extends EntidadAuditable {
   fecha_viat: Date | null
   lugar: number | null
   num_tarea: string | null
-  RUC: string | null
+  ruc: string | null
   factura: string | null
-  aut_especial: string | null
+  aut_especial: number | null
+  aut_especial_user: string | null
   detalle: string | null
+  detalle_info: string | null
   sub_detalle: string | null
+  sub_detalle_info: string | null
   comprobante1: string | null
   comprobante2: string | null
   cantidad: number | null
@@ -16,6 +19,7 @@ export class Fondo extends EntidadAuditable {
   observacion: string | null
   id_usuario: number | null
   estado: string | null
+  estado_info: string | null
   detalle_estado: string | null
   fecha_ingreso: Date | null
   transcriptor: string | null
@@ -26,11 +30,14 @@ export class Fondo extends EntidadAuditable {
     this.fecha_viat = null
     this.lugar = null
     this.num_tarea = null
-    this.RUC = null
+    this.ruc = null
     this.factura = null
     this.aut_especial = null
+    this.aut_especial_user = null
     this.detalle = null
+    this.detalle_info = null
     this.sub_detalle = null
+    this.sub_detalle_info = null
     this.comprobante1 = null
     this.comprobante2 = null
     this.cantidad = null
@@ -39,6 +46,7 @@ export class Fondo extends EntidadAuditable {
     this.observacion = null
     this.id_usuario = null
     this.estado = null
+    this.estado_info = null
     this.detalle_estado = null
     this.fecha_ingreso = null
     this.transcriptor = null

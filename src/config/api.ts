@@ -1,7 +1,7 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
 
 export const apiConfig = {
-  URL_BALSE: 'http://localhost:8000',
+  URL_BALSE: process.env.VUE_APP_API_URL,
 }
 
 export const endpoints = {
@@ -98,5 +98,6 @@ export const endpoints = {
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   viaticos: new Endpoint('fondos-rotativos/viaticos'),
   detalle_fondo: new Endpoint('fondos-rotativos/detalles-viaticos'),
+  sub_detalle_fondo: new Endpoint('fondos-rotativos/sub-detalles-viaticos'),
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
 }

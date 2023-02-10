@@ -24,52 +24,38 @@ export const configuracionColumnasFondo: ColumnConfig<Fondo>[] = [
     sortable: true
   },
   {
-    name: 'RUC',
-    field: 'RUC',
-    label: 'RUC',
+    name: 'ruc',
+    field: 'ruc',
+    label: 'ruc',
     align: 'left',
     sortable: true
   },
   {
-    name: 'aut_especial',
-    field: 'aut_especial',
+    name: 'aut_especial_user',
+    field: 'aut_especial_user',
     label: 'Autorización Especial',
     align: 'left',
     sortable: true
   },
   {
-    name: 'detalle',
-    field: 'detalle',
+    name: 'detalle_info',
+    field: 'detalle_info',
     label: 'Detalle',
     align: 'left',
     sortable: true
   },
 
   {
-    name: 'sub_detalle',
-    field: 'sub_detalle',
+    name: 'sub_detalle_info',
+    field: 'sub_detalle_info',
     label: 'SubDetalle',
     align: 'left',
     sortable: true
   },
 
   {
-    name: 'comprobante',
-    field: 'comprobante',
-    label: 'Comprobante 1',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'comprobante2',
-    field: 'comprobante2',
-    label: 'Comprobante 2',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'estado',
-    field: 'estado',
+    name: 'estado_info',
+    field: 'estado_info',
     label: 'Estado	',
     align: 'left',
     sortable: true

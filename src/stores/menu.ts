@@ -252,7 +252,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Fondo Rotativo',
           link: 'fondo',
           icon: 'bi-circle',
-          can: store.can('puede.ver.viaticos'),
+          can: store.can('puede.ver.fondo'),
+        },
+        {
+          title: 'Detalle Fondos Rotativos',
+          link: 'detalle_fondo',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.detalle_fondo'),
         },
       ]
     },

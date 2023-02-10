@@ -16,6 +16,7 @@
     "@vuelidate/core": "^2.0.0-alpha.44",
     "@vuelidate/validators": "^2.0.0-alpha.31",
     "axios": "^0.21.1",
+    "dotenv": "^16.0.3",
     "echarts": "^5.4.0",
     "html2pdf.js": "^0.10.1",
     "jspdf": "^2.5.1",
