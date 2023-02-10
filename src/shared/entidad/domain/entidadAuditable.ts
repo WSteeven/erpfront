@@ -1,5 +1,5 @@
-import {Auditable} from "@shared/auditoria/domain/Auditable.application"
-import {Hidratable} from "./hidratable"
+import { Auditable } from 'shared/auditoria/domain/Auditable.application'
+import { Hidratable } from './Hidratable'
 
 export class EntidadAuditable extends Hidratable implements Auditable {
   id: number | null

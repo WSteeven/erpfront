@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import axios, {AxiosInstance, AxiosRequestConfig} from "axios"
-import {Endpoint} from "@shared/http/domain/Endpoint"
-import {HttpRepository} from "../domain/HttpRepository"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
+import { HttpRepository } from '../domain/HttpRepository'
+import { Endpoint } from '../domain/Endpoint'
+import { LocalStorage } from 'quasar'
 
 // SINGLETON
 export class AxiosHttpRepository implements HttpRepository {
@@ -9,49 +10,52 @@ export class AxiosHttpRepository implements HttpRepository {
   private static axiosInst: AxiosInstance
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private constructor() {}
+  private constructor() { }
 
   private static initialize(): void {
     this.axiosInst = axios.create({
-      baseURL: process.env.VUE_APP_API_URL,
+      // baseURL: 'https://api-sistemas.jpconstrucred.com/', //process.env.VUE_APP_API_URL,
+      baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
       withCredentials: true,
-      headers: {},
     })
   }
+
+  // static config
 
   public static getInstance(): AxiosHttpRepository {
     if (!this.instance) {
       this.initialize()
       this.instance = new AxiosHttpRepository()
     }
+    // AxiosHttpRepository.config = AxiosHttpRepository.getHeaderToken()
     return this.instance
   }
 
-  post<HttpResponse>(url: string, data?: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.post(url, data)
+  post<HttpResponse>(url: string, data?: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
+    return AxiosHttpRepository.axiosInst.post(url, data, { ...this.getOptions(), ...options })
   }
 
   get<HttpResponse>(
     url: string,
     options?: AxiosRequestConfig
   ): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.get(url, options)
+    return AxiosHttpRepository.axiosInst.get(url, { ...this.getOptions(), ...options })
   }
 
-  put<HttpResponse>(url: string, data: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.put(url, data)
+  put<HttpResponse>(url: string, data: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
+    return AxiosHttpRepository.axiosInst.put(url, data, { ...this.getOptions(), ...options })
   }
 
-  delete<HttpResponse>(url: string): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.delete(url)
+  delete<HttpResponse>(url: string, options?: AxiosRequestConfig): Promise<HttpResponse> {
+    return AxiosHttpRepository.axiosInst.delete(url, { ...this.getOptions(), ...options })
   }
 
-  patch<HttpResponse>(url: string, data: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.patch(url, data)
+  patch<HttpResponse>(url: string, data: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
+    return AxiosHttpRepository.axiosInst.patch(url, data, { ...this.getOptions(), ...options })
   }
 
   public getEndpoint(
-    endpoint: Endpoint | {endpoint: Endpoint; id: number | null},
+    endpoint: Endpoint | { endpoint: Endpoint; id: number | null },
     args?: Record<string, any>
   ): string {
     let accessor: string
@@ -63,7 +67,8 @@ export class AxiosHttpRepository implements HttpRepository {
     }
     // si recibe un endpoint y una id
     else {
-      accessor = `${endpoint.endpoint.accessor}${endpoint.id ?? ""}/`
+      //accessor = `${endpoint.endpoint.accessor}${endpoint.id ?? ''}/`
+      accessor = `${endpoint.endpoint.accessor}/${endpoint.id ?? ''}`
       includeApiPath = endpoint.endpoint.includeApiPath
     }
 
@@ -76,13 +81,34 @@ export class AxiosHttpRepository implements HttpRepository {
   }
 
   private mapearArgumentos(args: Record<string, any>): string {
-    const query = []
+    const query: any = []
 
     // comprueba si el valor es valido
     for (const key in args)
       if (args[key] !== null && args[key] !== undefined) {
         query.push(`${key}=${args[key]}`)
       }
-    return `?${query.join("&")}`
+    return `?${query.join('&')}`
   }
+
+  getOptions() {
+    const options: AxiosRequestConfig = { headers: {} }
+    const token = LocalStorage.getItem('token')
+
+    if (token) {
+      options.headers = { Authorization: `Bearer ${token}`, }
+    }
+    return options
+  }
+
+  /* static getHeaderToken(): AxiosRequestConfig {
+    const token = LocalStorage.getItem('token')
+
+    return {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  } */
 }

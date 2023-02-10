@@ -1,1 +1,10 @@
 // app global css in SCSS form
+@import './custom-styles-light.scss';
+
+@import './custom-styles-dark.scss';
+
+@import './general.scss';
+
+@import './router-transitions.scss';
+
+// @import 'src/css/flatpickr.scss';

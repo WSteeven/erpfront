@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {ApiError} from "@/@app/shared/error/domain/ApiError"
-import {AxiosHttpRepository} from "@/@app/shared/http/infraestructure/AxiosHttpRepository"
-import {Endpoint} from "@shared/http/domain/Endpoint"
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { ApiError } from 'shared/error/domain/ApiError'
+import { Endpoint } from 'shared/http/domain/Endpoint'
 
 export class ImportableRepository<T> {
   private httpRepository = AxiosHttpRepository.getInstance()
@@ -15,10 +14,10 @@ export class ImportableRepository<T> {
     return this.httpRepository
       .post<T>(
         this.httpRepository.getEndpoint(this.endpoint, {
-          opcion: "import",
+          opcion: 'import',
           ...args,
         }),
-        {listado}
+        { listado }
       )
       .catch((error) => {
         throw new ApiError(error)

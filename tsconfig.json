@@ -1,6 +1,20 @@
 {
   "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "noImplicitAny": false,
+    "strictFunctionTypes": false,
+    "paths": {
+      "config/*": ["src/config/*"],
+      "shared/*": ["src/shared/*"],
+      "components/*": ["src/components/*"],
+      "stores/*": ["src/stores/*"],
+      "sistema/*": ["src/pages/sistema/*"],
+      "pages/*": ["src/pages/*"],
+      "tareas/*": ["src/pages/tareas/*"],
+      "controlTareas/*": ["src/pages/tareas/controlTareas/*"],
+      "subtareas/*": ["src/pages/tareas/controlTareas/modules/subtareas/*"],
+      "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"]
+    }
   }
 }

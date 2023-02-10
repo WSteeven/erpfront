@@ -6,17 +6,17 @@ import {
   reactive,
   ref,
   UnwrapRef,
-} from "vue"
+} from 'vue'
 // Componentes
-import CardImage from "@componentes/cards/cardImage/view/CardImage.vue"
-import ButtonSubmits from "@shared/componentes/buttonSubmits/view/buttonSubmits.vue"
-import {Modal} from "bootstrap/dist/js/bootstrap.js"
+import CardImage from '@componentes/cards/cardImage/view/CardImage.vue'
+import ButtonSubmits from '@shared/componentes/buttonSubmits/view/buttonSubmits.vue'
+import { Modal } from 'bootstrap/dist/js/bootstrap.js'
 // Logica y controladores
-import {ContenedorSimpleMixin} from "@shared/contenedor/modules/simple/application/contenedorSimple.mixin"
-import {MiNegocio} from "@/@app/negocios/modules/misNegocios/domain/minegocio.domain"
+import { ContenedorSimpleMixin } from '@/app/shared/contenedor/modules/simple/application/contenedorSimple.mixin'
+import { MiNegocio } from '@/@app/negocios/modules/misNegocios/domain/minegocio.domain'
 
 export default defineComponent({
-  name: "CardTransaccionesSimples",
+  name: 'CardTransaccionesSimples',
   components: {
     ButtonSubmits,
     CardImage,
@@ -29,7 +29,7 @@ export default defineComponent({
     tituloModal: {
       type: String,
       required: false,
-      default: "Modal",
+      default: 'Modal',
     },
     cbSeleccionarCard: {
       type: Function,
@@ -46,10 +46,10 @@ export default defineComponent({
 
     // mixin
     const mixin: UnwrapRef<any> = reactive(props.mixin)
-    const {listar, guardar, reestablecer, notificaciones} =
+    const { listar, guardar, reestablecer, notificaciones } =
       mixin.useComportamiento()
 
-    const {entidad, listado, accion} = mixin.useReferencias()
+    const { entidad, listado, accion } = mixin.useReferencias()
 
     listar()
     const negociosPropietarioListado = computed(() =>
@@ -65,7 +65,7 @@ export default defineComponent({
     )
 
     const asociarme = () => {
-      notificaciones.notificarAdvertencia("El código ingresado no es válido")
+      notificaciones.notificarAdvertencia('El código ingresado no es válido')
     }
 
     // Mostra / ocultar modal

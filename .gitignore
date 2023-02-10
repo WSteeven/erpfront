@@ -24,10 +24,14 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
+yarn.lock
 # Editor directories and files
 .idea
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
+
+# vscode
+extensions.json
+settings.json

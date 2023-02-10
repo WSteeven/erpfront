@@ -1,18 +1,51 @@
 <template>
-  <q-item clickable tag="a" :to="link">
-    <q-item-section v-if="icon" avatar>
-      <q-icon :name="icon" />
-    </q-item-section>
+  <div v-if="can">
+    <!-- No tiene submenus -->
+    <q-item
+      v-if="!children"
+      clickable
+      tag="a"
+      :to="link"
+      active-class="link-active"
+      exact
+    >
+      <q-item-section v-if="icon" avatar>
+        <q-icon :name="icon" size="xs" class="color-icono" />
+      </q-item-section>
 
-    <q-item-section>
-      <q-item-label>{{ title }}</q-item-label>
-      <q-item-label caption>{{ caption }}</q-item-label>
-    </q-item-section>
-  </q-item>
+      <q-item-section>
+        <q-item-label>{{ title }}</q-item-label>
+      </q-item-section>
+    </q-item>
+
+    <!-- Tiene submenus -->
+    <q-expansion-item v-else clickable tag="a" active-class="link-active" exact>
+      <template #header>
+        <q-item-section v-if="icon" avatar>
+          <q-icon :name="icon" size="xs" class="color-icono" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>{{ title }}</q-item-label>
+        </q-item-section>
+      </template>
+
+      <div v-for="child in children" :key="child.title">
+        <EssentialLink
+          :title="child.title ?? ''"
+          :link="child.link"
+          :icon="child.icon"
+          :children="child.children"
+          :can="child.can"
+        ></EssentialLink>
+      </div>
+    </q-expansion-item>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
+import { MenuOption } from 'shared/menu/MenuOption'
 
 export default defineComponent({
   name: 'EssentialLink',
@@ -20,11 +53,6 @@ export default defineComponent({
     title: {
       type: String,
       required: true,
-    },
-
-    caption: {
-      type: String,
-      default: '',
     },
 
     link: {
@@ -36,6 +64,12 @@ export default defineComponent({
       type: String,
       default: '',
     },
+
+    children: {
+      type: Object as () => MenuOption[],
+      required: false,
+    },
+    can: { type: Boolean, default: true },
   },
-});
+})
 </script>

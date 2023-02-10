@@ -1,0 +1,8 @@
+{
+  "failed": "Aktion fehlgeschlagen",
+  "success": "Aktion erfolgreich",
+  "validations": {
+    "required": "Campo requerido",
+    "maxLength": "No te pases"
+  }
+}

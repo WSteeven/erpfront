@@ -1,4 +1,4 @@
-import {Hidratable} from "./hidratable"
+import { Hidratable } from './Hidratable'
 
 export class Entidad extends Hidratable {
   id: number | null

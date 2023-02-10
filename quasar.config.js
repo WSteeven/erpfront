@@ -8,7 +8,8 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-const { configure } = require('quasar/wrappers');
+const { configure } = require('quasar/wrappers')
+let path = require('path')
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -44,6 +45,7 @@ module.exports = configure(function (/* ctx */) {
 
       'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
+      'bootstrap-icons',
     ],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
@@ -52,6 +54,14 @@ module.exports = configure(function (/* ctx */) {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node16',
       },
+
+      /* extendViteConf(viteConf, { isServer, isClient }) {
+        Object.assign(viteConf.resolve.alias, {
+          config: path.join(__dirname, './src/config'),
+          shared: path.join(__dirname, './src/shared'),
+          components: path.join(__dirname, './src/components'),
+        })
+      }, */
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
@@ -75,6 +85,19 @@ module.exports = configure(function (/* ctx */) {
       // vitePlugins: [
       //   [ 'package-name', { ..options.. } ]
       // ]
+      alias: {
+        config: path.join(__dirname, './src/config'),
+        shared: path.join(__dirname, './src/shared'),
+        pages: path.join(__dirname, './src/pages'),
+        tareas: path.join(__dirname, './src/pages/tareas'),
+        sistema: path.join(__dirname, './src/pages/sistema'),
+        controlTareas: path.join(__dirname, './src/pages/tareas/controlTareas'),
+        subtareas: path.join(
+          __dirname,
+          './src/pages/tareas/controlTareas/modules/subtareas'
+        ),
+        tiposTrabajos: path.join(__dirname, './src/pages/tareas/tiposTareas'),
+      },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
@@ -89,6 +112,7 @@ module.exports = configure(function (/* ctx */) {
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
+      lang: 'es', // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),
@@ -98,7 +122,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify', 'Dialog'],
     },
 
     // animations: 'all', // --- includes all animations
@@ -195,5 +219,5 @@ module.exports = configure(function (/* ctx */) {
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
     },
-  };
-});
+  }
+})

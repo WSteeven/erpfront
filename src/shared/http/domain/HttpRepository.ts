@@ -1,10 +1,10 @@
-import {Endpoint} from "@shared/http/domain/Endpoint"
+import { Endpoint } from 'shared/http/domain/Endpoint'
 import {
   HttpResponseDelete,
   HttpResponseGet,
   HttpResponsePost,
   HttpResponsePut,
-} from "@shared/http/domain/HttpResponse"
+} from 'shared/http/domain/HttpResponse'
 
 export interface HttpRepository {
   post<T, S = HttpResponsePost<T>>(url: string, data?: any): Promise<S>
@@ -22,7 +22,7 @@ export interface HttpRepository {
   ): Promise<S>
 
   getEndpoint(
-    endpoint: Endpoint | {endpoint: Endpoint; id: number | null},
+    endpoint: Endpoint | { endpoint: Endpoint id: number | null },
     args?: any
   ): string
 }

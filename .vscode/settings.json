@@ -6,11 +6,15 @@
   "editor.codeActionsOnSave": [
     "source.fixAll.eslint"
   ],
+  "eslint.enable": false,
   "eslint.validate": [
     "javascript",
     "javascriptreact",
     "typescript",
     "vue"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

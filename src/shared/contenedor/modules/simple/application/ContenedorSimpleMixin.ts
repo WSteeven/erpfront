@@ -1,0 +1,305 @@
+import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { Contenedor } from '../../../application/contenedor.mixin'
+import { Instanciable } from 'shared/entidad/domain/instanciable'
+import { HooksSimples } from '../domain/hooksSimples'
+import { acciones } from 'config/utils'
+
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useRouter } from 'vue-router'
+import { markRaw } from 'vue'
+import { ParamsType } from 'config/types'
+
+export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
+  private hooks = new HooksSimples()
+  private statusEssentialLoading = new StatusEssentialLoading()
+
+  constructor(
+    entidad: Instanciable,
+    controller: TransaccionSimpleController<T>
+  ) {
+    super(entidad, controller, markRaw(new Referencias()))
+  }
+
+  private async cargarVista(callback: () => Promise<void>): Promise<void> {
+    this.statusEssentialLoading.activar()
+    await callback()
+    this.statusEssentialLoading.desactivar()
+  }
+
+  useReferencias() {
+    return { entidad: this.entidad as T, ...this.refs }
+  }
+
+  useComportamiento() {
+    return {
+      listar: this.listar.bind(this),
+      consultar: this.consultar.bind(this),
+      guardar: this.guardar.bind(this),
+      editar: this.editar.bind(this),
+      eliminar: this.eliminar.bind(this),
+      reestablecer: this.reestablecer.bind(this),
+      obtenerListados: this.obtenerListados.bind(this),
+      cargarVista: this.cargarVista.bind(this),
+      setValidador: this.setValidador.bind(this),
+    }
+  }
+
+  useHooks() {
+    return {
+      onBeforeGuardar: (callback: () => void) =>
+        this.hooks.bindHook('onBeforeGuardar', callback),
+      onGuardado: (callback: () => void) =>
+        this.hooks.bindHook('onGuardado', callback),
+      onBeforeConsultar: (callback: () => void) =>
+        this.hooks.bindHook('onBeforeConsultar', callback),
+      onConsultado: (callback: () => void) =>
+        this.hooks.bindHook('onConsultado', callback),
+      onBeforeModificar: (callback: () => void) =>
+        this.hooks.bindHook('onBeforeModificar', callback),
+      onModificado: (callback: () => void) =>
+        this.hooks.bindHook('onModificado', callback),
+      onReestablecer: (callback: () => void) =>
+        this.hooks.bindHook('onReestablecer', callback),
+    }
+  }
+
+  // Consultar
+  private async consultar(data: { [id: string]: number } | T) {//T) {
+
+    this.hooks.onBeforeConsultar()
+
+    this.cargarVista(async () => {
+      if (data.id === null) {
+        return this.notificaciones.notificarAdvertencia(
+          'No se puede consultar el recurso con id null'
+        )
+      }
+
+      try {
+        const { result } = await this.controller.consultar(
+          data.id,
+          this.argsDefault
+        )
+
+        this.entidad.hydrate(result)
+        this.entidad_copia.hydrate(this.entidad)
+        this.refs.tabs.value = 'formulario'
+
+      } catch (error) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, this.notificaciones)
+        }
+      } finally {
+        this.hooks.onConsultado()
+      }
+    })
+
+    /*const stop = watch(this.entidad, () => {
+      if (this.entidad.id !== null) {
+        this.hooks.onConsultado()
+        stop()
+      }
+    })*/
+
+    /* const stop = watchEffect(() => {
+      console.log('dentrode  watch consultar')
+      if (this.entidad.id !== null) {
+        this.hooks.onConsultado()
+        console.log('ha sido consultado mixin')
+        stop()
+      }
+    })*/
+  }
+
+  private async listar(params?: ParamsType, append = false) {
+    this.cargarVista(async () => {
+      try {
+        const { result } = await this.controller.listar(params)
+        if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+
+        if (append) this.refs.listado.value.push(...result)
+        else this.refs.listado.value = result
+      } catch (error) {
+        this.notificaciones.notificarError('Error al obtener el listado.')
+      }
+    })
+  }
+
+  private async reestablecer() {
+    this.entidad.hydrate(this.entidad_vacia)
+    this.refs.accion.value = acciones.nuevo
+    this.refs.validador.value?.$reset()
+    this.hooks.onReestablecer()
+  }
+
+  // Guardar
+  // @noImplicitAny: false
+  private async guardar(data: T, resetOnSaved = true,) {
+
+    if (!this.seCambioEntidad(this.entidad_vacia)) {
+      this.notificaciones.notificarAdvertencia(
+        'No se ha efectuado ningun cambio'
+      )
+      // throw new Error('No se ha efectuado ningun cambio')
+      return console.log('No se ha efectuado ningun cambio')
+    }
+
+
+    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+      this.notificaciones.notificarAdvertencia('Verifique el formulario')
+      // throw new Error('Verifique el formulario')
+      return console.log('Verifique el formulario')
+    }
+
+    this.hooks.onBeforeGuardar()
+
+    this.cargarVista(async () => {
+      try {
+        const { response } = await this.controller.guardar(
+          data,
+          this.argsDefault
+        )
+
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+        this.agregarElementoListadoActual(response.data.modelo)
+        this.entidad.hydrate(response.data.modelo)
+
+        if (resetOnSaved) {
+          this.reestablecer()
+        }
+
+        this.hooks.onGuardado()
+
+        /* const stop = watchEffect(() => {
+          // console.log('dentrode  watch')
+          if (this.entidad.id !== null) {
+            this.hooks.onGuardado()
+            // console.log('ha sido guardado mixin')
+            stop()
+          }
+        }) */
+        // @noImplicitAny: false
+      } catch (error: any) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, this.notificaciones)
+        }
+      }
+    })
+  }
+
+  // Editar
+  private async editar(data: T, resetOnUpdated = true) {
+    if (this.entidad.id === null) {
+      return this.notificaciones.notificarAdvertencia(
+        'No se puede editar el recurso con id null'
+      )
+    }
+
+    if (!this.seCambioEntidad(this.entidad_vacia)) {
+      return this.notificaciones.notificarAdvertencia(
+        'No se ha efectuado ningun cambio'
+      )
+    }
+
+    this.hooks.onBeforeModificar()
+
+    if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+      this.notificaciones.notificarAdvertencia('Verifique el formulario')
+      throw new Error('Verifique el formulario')
+    }
+
+    this.cargarVista(async () => {
+      try {
+        const { response, result: modelo } = await this.controller.editar(
+          data,
+          this.argsDefault
+        )
+
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+        this.actualizarElementoListadoActual(modelo)
+        this.entidad.hydrate(response.data.modelo)
+
+        if (resetOnUpdated) {
+          this.reestablecer()
+        }
+
+        this.hooks.onModificado()
+
+      } catch (error: any) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, this.notificaciones)
+        } else {
+          this.notificaciones.notificarError(error.message)
+        }
+      }
+    })
+
+  }
+
+  // Eliminar
+  private async eliminar(data: T, callback?: () => void) {
+    // this.verificarAutenticacion()
+
+    this.notificaciones.confirmar('Esta seguro que desea eliminar?', () => {
+      if (data.id === null) {
+        return this.notificaciones.notificarAdvertencia(
+          'No se puede eliminar el recurso con id null'
+        )
+      }
+
+      this.controller
+        .eliminar(data.id, this.argsDefault)
+        .then(({ response }) => {
+          this.notificaciones.notificarCorrecto(response.data.mensaje)
+          this.eliminarElementoListaActual(data)
+          this.reestablecer()
+          if (callback) callback()
+        })
+        .catch((error) => {
+          this.notificaciones.notificarError(error.message)
+        })
+    })
+  }
+
+  // @noImplicitAny: false
+  private setValidador(validador: any) {
+    this.refs.validador.value = validador
+  }
+
+  private async verificarAutenticacion(): Promise<void> {
+    const authentication = useAuthenticationStore()
+    const autenticado = await authentication.isUserLoggedIn()
+    const router = useRouter()
+
+    if (!autenticado) router.replace({ name: 'Login' })
+  }
+
+  /* private descargarArchivoBinario(formato: string) {
+    if (this.refs.listado.value.length !== 0) {
+      const paramsListado: { [key: string]: any } = { opcion: "print" }
+
+      if (formato !== "pdf") {
+        paramsListado.opcion = "export"
+        paramsListado.format = formato
+      }
+
+      this.controller
+        .descargarListado({ ...this.argsDefault, ...paramsListado })
+        .then((data: any) => {
+          this.utils.descargarArchivo(data, this.refs.catalogo, formato)
+        })
+        .catch(() =>
+          this.notificaciones.notificarError(
+            "No se consiguio obtener el archivo del servidor."
+          )
+        )
+    }
+  } */
+}
