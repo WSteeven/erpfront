@@ -188,12 +188,13 @@ export default defineComponent({
             icono: 'bi-printer',
             accion: async ({ entidad, posicion }) => {
                 pedidoStore.idPedido = entidad.id
-                // modales.abrirModalEntidad('ImprimirDevolucionPage')
-                await pedidoStore.showPreview()
+                // modales.abrirModalEntidad("ImprimirDevolucionPage")
+                // await pedidoStore.showPreview()
+                await pedidoStore.imprimirPdf()
                 console.log(pedidoStore.pedido)
                 console.log(pedidoStore.pedido.listadoProductos)
                 console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
-                pdfMakeImprimir()
+                // pdfMakeImprimir()
             },
             visible: () => tabSeleccionado.value == 'APROBADO' ? true : false
         }
@@ -490,7 +491,7 @@ export default defineComponent({
             }
         }
 
-        //Configuracion de columnas 
+        //Configuracion de columnas
         const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
             name: 'acciones',
             field: 'acciones',

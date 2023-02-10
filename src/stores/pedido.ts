@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { endpoints } from 'config/api'
 import { acciones, autorizacionesTransacciones, estadosTransacciones } from 'config/utils'
@@ -53,6 +53,40 @@ export const usePedidoStore = defineStore('pedido', () => {
     pedido.hydrate(response.data.modelo)
   }
 
+  /* async function imprimirPdf2() {
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = axios.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value
+    const response: AxiosResponse = await axios.get(ruta,{responseType: 'blob', })
+    console.log(response)
+    const blob = new Blob([response.data], {type: 'application/pdf'})
+    const link = document.createElement('a')
+    link.href=window.URL.createObjectURL(blob)
+    link.download = 'pedido_'+idPedido.value+'.pdf'
+    link.click()
+    console.log('Pedido consultado para imprimir. Pasó todo con éxito')
+  } */
+  async function imprimirPdf() {
+    const axiosHttpRepository = AxiosHttpRepository.getInstance()
+    axios({
+      url: 'http://localhost:8000/api/pedidos/imprimir/' + idPedido.value,
+      // url: axiosHttpRepository.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value,
+      method: 'GET',
+      responseType: 'blob',
+
+      headers: {
+        'Authorization': AxiosHttpRepository.getHeaderToken().headers.Authorization
+      }
+    }).then((response) => {
+      const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+      const fileLink = document.createElement('a')
+      fileLink.href = fileURL
+      fileLink.setAttribute('download', 'pedido_' + idPedido.value + '_' + Date.now() + '.pdf')
+      document.body.appendChild(fileLink)
+      fileLink.click()
+    })
+    console.log('Pedido consultado para imprimir. Pasó todo con éxito')
+  }
+
   function resetearPedido() {
     pedido.hydrate(pedidoReset)
   }
@@ -63,7 +97,8 @@ export const usePedidoStore = defineStore('pedido', () => {
     cargarPedido,
     resetearPedido,
     idPedido,
-    showPreview
+    showPreview,
+    imprimirPdf,
   }
 
 })
