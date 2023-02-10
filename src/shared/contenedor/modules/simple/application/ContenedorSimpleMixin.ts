@@ -145,13 +145,15 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
-      throw new Error('No se ha efectuado ningun cambio')
+      // throw new Error('No se ha efectuado ningun cambio')
+      return console.log('No se ha efectuado ningun cambio')
     }
 
 
     if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
-      throw new Error('Verifique el formulario')
+      // throw new Error('Verifique el formulario')
+      return console.log('Verifique el formulario')
     }
 
     this.hooks.onBeforeGuardar()
@@ -278,4 +280,26 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     if (!autenticado) router.replace({ name: 'Login' })
   }
+
+  /* private descargarArchivoBinario(formato: string) {
+    if (this.refs.listado.value.length !== 0) {
+      const paramsListado: { [key: string]: any } = { opcion: "print" }
+
+      if (formato !== "pdf") {
+        paramsListado.opcion = "export"
+        paramsListado.format = formato
+      }
+
+      this.controller
+        .descargarListado({ ...this.argsDefault, ...paramsListado })
+        .then((data: any) => {
+          this.utils.descargarArchivo(data, this.refs.catalogo, formato)
+        })
+        .catch(() =>
+          this.notificaciones.notificarError(
+            "No se consiguio obtener el archivo del servidor."
+          )
+        )
+    }
+  } */
 }

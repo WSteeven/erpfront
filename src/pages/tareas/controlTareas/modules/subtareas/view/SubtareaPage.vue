@@ -1,5 +1,8 @@
 <template>
-  <q-page padding>
+  <q-page
+    padding
+    :class="{ 'bg-body-table-dark-color': $q.dark.isActive, 'bg-white': !$q.dark.isActive }"
+  >
     <q-form @submit.prevent>
       <div class="text-bold q-mb-lg">1. Información general</div>
       <div class="row q-col-gutter-sm q-mb-lg">

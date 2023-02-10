@@ -8,6 +8,7 @@ import { EditableRepository } from 'shared/controller/infraestructure/EditableRe
 import { EliminableRepository } from 'shared/controller/infraestructure/EliminableRepository'
 import { ConsultableRepository } from 'shared/controller/infraestructure/ConsultableRepository'
 import { ParamsType } from 'config/types'
+import { DescargableRepository } from 'shared/controller/infraestructure/listado/DescargableRepository'
 
 export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   implements Controller<T>
@@ -19,7 +20,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   private editableRepository: EditableRepository<T>
   private eliminableRepository: EliminableRepository<T>
   private listableRepository: ListableRepository<T>
-  // private descargableRepository: DescargableRepository
+  private descargableRepository: DescargableRepository
   // private importableRepository: ImportableRepository<T>
 
   protected constructor(endpoint: Endpoint) {
@@ -28,7 +29,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     this.editableRepository = new EditableRepository(endpoint)
     this.eliminableRepository = new EliminableRepository(endpoint)
     this.listableRepository = new ListableRepository(endpoint)
-    // this.descargableRepository = new DescargableRepository(endpoint)
+    this.descargableRepository = new DescargableRepository(endpoint)
     // this.importableRepository = new ImportableRepository(endpoint)
   }
 
@@ -51,5 +52,9 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
 
   async eliminar(id: number, params?: any) {
     return await this.eliminableRepository.eliminar(id) //, params)
+  }
+
+  async descargarListado(params?: any) {
+    return await this.descargableRepository.descargarListado(params)
   }
 }

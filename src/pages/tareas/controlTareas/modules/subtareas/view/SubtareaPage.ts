@@ -362,7 +362,7 @@ export default defineComponent({
 
     function reestablecerDatos() {
       reestablecer()
-      emit('cerrar-modal')
+      // emit('cerrar-modal')
     }
 
     /*************
