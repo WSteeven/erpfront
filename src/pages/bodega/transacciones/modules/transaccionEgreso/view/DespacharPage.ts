@@ -1,27 +1,27 @@
-import { configuracionColumnasProductos } from "pages/bodega/productos/domain/configuracionColumnasProductos";
-import { configuracionColumnasListadoProductosSeleccionados } from "../../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados";
-import { configuracionColumnasItemsEncontradosInventario } from "../../transaccionContent/domain/configuracionColumnasItemsEncontradosInventario";
-import { configuracionColumnasMovimientos } from "pages/bodega/movimientos/domain/configuracionColumnasMovimientos";
-import { configuracionColumnasItemsMovimiento } from "../../transaccionContent/domain/configuracionColumnasItemsMovimiento";
-import { required } from "@vuelidate/validators";
+import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
+import { configuracionColumnasListadoProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
+import { configuracionColumnasItemsEncontradosInventario } from '../../transaccionContent/domain/configuracionColumnasItemsEncontradosInventario'
+import { configuracionColumnasMovimientos } from 'pages/bodega/movimientos/domain/configuracionColumnasMovimientos'
+import { configuracionColumnasItemsMovimiento } from '../../transaccionContent/domain/configuracionColumnasItemsMovimiento'
+import { required } from '@vuelidate/validators'
 
 //componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
-import { defineComponent, onBeforeMount, onMounted, ref, watch, watchEffect } from "vue";
-import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
-import { useDetalleTransaccionStore } from "stores/detalleTransaccion";
-import { useDetalleStore } from "stores/detalle";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { TransaccionEgresoController } from "pages/bodega/transacciones/infraestructure/TransaccionEgresoController";
-import useVuelidate from "@vuelidate/core";
-import { useInventarioStore } from "stores/inventario";
-import { useMovimientoStore } from "stores/movimiento";
-import { tiposMovimientos } from "config/utils";
-import { Inventario } from "pages/bodega/inventario/domain/Inventario";
-import { DetalleProducto } from "pages/bodega/detalles_productos/domain/DetalleProducto";
+import { defineComponent, onBeforeMount, onMounted, ref, watch, watchEffect } from 'vue'
+import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
+import { useDetalleStore } from 'stores/detalle'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
+import { TransaccionEgresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionEgresoController'
+import useVuelidate from '@vuelidate/core'
+import { useInventarioStore } from 'stores/inventario'
+import { useMovimientoStore } from 'stores/movimiento'
+import { tiposMovimientos } from 'config/utils'
+import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 
 export default defineComponent({
   components: { EssentialTable, EssentialSelectableTable },
@@ -67,7 +67,7 @@ export default defineComponent({
 
 
     onBeforeMount(async () => {
-      // console.log("onbeforemount")
+      // console.log('onbeforemount')
       await transaccion.hydrate(transaccionStore.transaccion) //cargar la transaccion con la del store
       let detalles_ids: any = []
       detalles_ids = transaccionStore.transaccion.listadoProductosTransaccion.map((element: DetalleProducto) => element.id)
@@ -80,7 +80,7 @@ export default defineComponent({
     })
 
     watch(coincidencias, async (newCoincidencia) => {
-      // console.log("entro en el watch de coincidencias")
+      // console.log('entro en el watch de coincidencias')
       // console.log(coincidencias.value.results)
       listadoCoincidencias.value = coincidencias.value.results
     })
@@ -95,12 +95,12 @@ export default defineComponent({
       if (step.value === 2) {
         console.log(transaccion.listadoProductosTransaccion)
         console.log(selected2.value)
-        selected2.value.forEach((v:any) => {
-          if(v.cantidad>=buscarCantidadEnTransaccion(v.detalle)){
+        selected2.value.forEach((v: any) => {
+          if (v.cantidad >= buscarCantidadEnTransaccion(v.detalle)) {
             v.cantidad = buscarCantidadEnTransaccion(v.detalle)
           }
-        });
-        console.log("actualizado", selected2.value)
+        })
+        console.log('actualizado', selected2.value)
       }
 
     })
@@ -137,7 +137,7 @@ export default defineComponent({
       console.log('selected2 en el watch', selected2.value)
       selected2.value.forEach((element: Inventario, index) => {
         element.cantidad = selected.value[0]['cantidad']
-      });
+      })
       console.log('en el watch', selected.value[0]['cantidad'])
     }) */
     function reemplazarCantidad() {
@@ -157,8 +157,8 @@ export default defineComponent({
       buscarProductoEnInventario(details) {
         // setValidador(v$.value)
         if (details.added) {//Si se selecciono un item, realizar la busqueda
-          console.log("se seleccionó", details.rows)
-          console.log("se seleccionó", details.rows[0]['id'])
+          console.log('se seleccionó', details.rows)
+          console.log('se seleccionó', details.rows[0]['id'])
           detalle_id = details.rows[0]['id']
           listarItems(details.rows[0]['id'])
         }
@@ -181,7 +181,7 @@ export default defineComponent({
       onComplete() {
         console.log('Completado!!!!', selected2.value)
         selected2.value.forEach(async (v: Inventario) => {
-          console.log("VLAUE DE SELECTED2", v)
+          console.log('VLAUE DE SELECTED2', v)
           await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, v.id!)
           detalleTransaccionStore.detalle.cantidad_final = v.cantidad
           await detalleTransaccionStore.actualizarDetalle(detalleTransaccionStore.detalle.id!, detalleTransaccionStore.detalle)
@@ -192,7 +192,7 @@ export default defineComponent({
               'precio_unitario' => $precio_unitario,
               'saldo' => $saldo,
               'tipo' => $tipo
-          ]; */
+          ] */
           const movimiento = {
             'inventario_id': v.id,
             'detalle_producto_transaccion_id': detalleTransaccionStore.detalle.id,
@@ -240,13 +240,13 @@ export default defineComponent({
 
       mostrarEnConsola(details) {
         if (details.added) {//Si se selecciono un item, realizar la busqueda
-          console.log("se seleccionó", details.rows)
-          console.log("id se seleccionó", details.rows[0]['id'])
+          console.log('se seleccionó', details.rows)
+          console.log('id se seleccionó', details.rows[0]['id'])
           console.log('details modificado en cantidad', details.rows[0]['cantidad'] = selected.value[0]['cantidades'])
           console.log('details modificado en todo', details.rows)
-          console.log("La cantidad del details seleccionado es", details.rows[0]['cantidad'])
-          console.log("La cantidad del selected2 es", selected2.value)
-          console.log("La cantidad del select1 es", selected.value[0]['cantidades'])
+          console.log('La cantidad del details seleccionado es', details.rows[0]['cantidad'])
+          console.log('La cantidad del selected2 es', selected2.value)
+          console.log('La cantidad del select1 es', selected.value[0]['cantidades'])
 
 
         }

@@ -1,14 +1,13 @@
 // Dependencias
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
-import { computed, defineComponent, ref, watchEffect, nextTick, reactive, Ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect, nextTick, Ref } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
 import { TipoSeleccion, estadosSubtareas } from 'config/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns, formatBytes } from 'shared/utils'
-import { exportFile, useQuasar } from 'quasar'
 import { offset } from 'config/utils_tablas'
 
 // Componentes
@@ -145,7 +144,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
-    const fila = ref() //props.entidad ? ref(new props.entidad()) : null
+    const fila = ref()
     const filaEditada = ref()
     const listado = ref()
 
@@ -158,13 +157,6 @@ export default defineComponent({
 
       emit('editar', data)
 
-      /* if (props.permitirEditarModal && props.entidad) {
-        fila.value = reactive(new props.entidad())
-        fila.value.hydrate(entidad)
-        posicionFila.value = posicion
-        abrirModal()
-        // console.log('..abriendo modal')
-      } */
       if (props.permitirEditarModal) {
         fila.value = data.entidad
         filaEditada.value = data.posicion
@@ -181,61 +173,6 @@ export default defineComponent({
     const seleccionar = () => {
       emit('selected', selected.value)
     }
-    const $q = useQuasar()
-
-    function wrapCsvValue(val, formatFn?, row?) {
-      let formatted = formatFn !== void 0 ? formatFn(val, row) : val
-
-      formatted =
-        formatted === void 0 || formatted === null ? '' : String(formatted)
-
-      formatted = formatted.split('"').join('""')
-      /**
-       * Excel accepts \n and \r in strings, but some other CSV parsers do not
-       * Uncomment the next two lines to escape new lines
-       */
-      // .split('\n').join('\\n')
-      // .split('\r').join('\\r')
-
-      return `"${formatted}"`
-    }
-
-    function exportTable() {
-      // naive encoding to csv format
-      const content = [
-        props.configuracionColumnas.map((col) => wrapCsvValue(col.label)),
-      ]
-        .concat(
-          props.datos.map((row: any) =>
-            props.configuracionColumnas
-              .map((col: any) =>
-                wrapCsvValue(
-                  typeof col.field === 'function'
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format,
-                  row
-                )
-              )
-              .join(',')
-          )
-        )
-        .join('\r\n')
-
-      const status = exportFile(
-        'table-export.csv',
-        '\ufeff' + content,
-        'text/csv'
-      )
-
-      if (status !== true) {
-        $q.notify({
-          message: 'Browser denied file download...',
-          color: 'negative',
-          icon: 'warning',
-        })
-      }
-    }
 
     const printTable = new EstadoPrevisualizarTablaPDF()
 
@@ -246,8 +183,6 @@ export default defineComponent({
     function limpiarFila() {
       fila.value = null
     }
-
-    const posicionFila = ref()
 
     function guardarFila(data) {
       // console.log('data recibida para actualizar', data)
@@ -313,7 +248,6 @@ export default defineComponent({
       editar,
       consultar,
       eliminar,
-      exportTable,
       filter,
       selected,
       visibleColumns,

@@ -1,13 +1,13 @@
-import {computed, defineComponent, reactive} from "vue"
-import {Perfil} from "../domain/Perfil.domain"
-import {useField} from "vee-validate"
-import {SesionUsuario} from "@/router/sesionUsuario"
-import {PerfilController} from "../infraestructure/Perfil.controller"
-import {ActualizarPerfil} from "../application/ActualizarPerfil.application"
-import {EliminarCuenta} from "../application/EliminarCuenta.application"
+import { computed, defineComponent, reactive } from 'vue'
+import { Perfil } from '../domain/Perfil.domain'
+import { useField } from 'vee-validate'
+import { SesionUsuario } from '@/router/sesionUsuario'
+import { PerfilController } from '../infraestructure/Perfil.controller'
+import { ActualizarPerfil } from '../application/ActualizarPerfil.application'
+import { EliminarCuenta } from '../application/EliminarCuenta.application'
 
 export default defineComponent({
-  name: "Perfil",
+  name: 'Perfil',
   setup() {
     const perfilUsuario = reactive(new Perfil())
     const controller = new PerfilController()
@@ -24,12 +24,12 @@ export default defineComponent({
 
     // Validator function
     const isRequired = (value: any) => {
-      return value && value !== "" ? true : "Este campo es requerido"
+      return value && value !== '' ? true : 'Este campo es requerido'
     }
     // Reglas de validacion
-    const {handleChange: handleName} = useField("name", isRequired)
-    const {handleChange: handleLastname} = useField("lastname", isRequired)
-    const {handleChange: handleEmail} = useField("email", isRequired)
+    const { handleChange: handleName } = useField('name', isRequired)
+    const { handleChange: handleLastname } = useField('lastname', isRequired)
+    const { handleChange: handleEmail } = useField('email', isRequired)
 
     return {
       perfilUsuario,

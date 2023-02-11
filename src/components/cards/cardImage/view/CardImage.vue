@@ -20,19 +20,19 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent} from "vue"
+import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "CardImage",
+  name: 'CardImage',
   props: {
-    imageUrl: {type: String, required: true},
-    title: {type: String, required: true},
-    subtitle: {type: String, required: true},
+    imageUrl: { type: String, required: true },
+    title: { type: String, required: true },
+    subtitle: { type: String, required: true },
   },
-  emits: ["clickEvent"],
-  setup(props, {emit}) {
+  emits: ['clickEvent'],
+  setup(props, { emit }) {
     const clickEvent = () => {
-      emit("clickEvent")
+      emit('clickEvent')
     }
     return {
       card_image_url: computed(() => props.imageUrl),

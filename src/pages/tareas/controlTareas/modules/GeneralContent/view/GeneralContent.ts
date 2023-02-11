@@ -10,6 +10,8 @@ import useVuelidate from '@vuelidate/core'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import SubtareaPage from 'controlTareas/modules/subtareas/view/SubtareaPage.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
@@ -25,11 +27,14 @@ import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 import { Subtarea } from '../../subtareas/domain/Subtarea'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { ComportamientoModalesGeneralContent } from '../application/ComportamientoModalesGeneralContent'
+import { DescargarReporteBodega } from '../infraestructure/DescargarReporteBodegaController'
 
 export default defineComponent({
   props: {
     mixin: {
-      type: Object as () => ContenedorSimpleMixin<any>,
+      type: Object as () => ContenedorSimpleMixin<Tarea>,
       required: true,
     },
   },
@@ -37,6 +42,8 @@ export default defineComponent({
     EssentialSelectableTable,
     ButtonSubmits,
     SubtareaPage,
+    LabelAbrirModal,
+    ModalesEntidad,
   },
   setup(props) {
     /*********
@@ -94,7 +101,7 @@ export default defineComponent({
       detalle: { required },
       codigo_tarea_cliente: { required },
       proyecto: { required },
-      tipo_trabajo: { required },
+      // tipo_trabajo: { required },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -249,7 +256,7 @@ export default defineComponent({
       return result
     }
 
-    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
+    // const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
 
     function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
@@ -264,7 +271,7 @@ export default defineComponent({
       }
 
       if (tarea.destino === destinosTareas.paraProyecto) {
-        const copiaTarea = Object.assign({}, tarea);
+        const copiaTarea = Object.assign({}, tarea)
         tarea.hydrate(new Tarea())
         tarea.id = copiaTarea.id
         tarea.codigo_tarea = copiaTarea.codigo_tarea
@@ -321,11 +328,20 @@ export default defineComponent({
     })
 
     async function setCliente() {
-      console.log('cambiando cliente  ')
-      const proyectoController = new ProyectoController()
-      const { result } = await proyectoController.consultar(tarea.proyecto)
-      // tareaStore.idCliente = result.cliente
-      tarea.cliente = result.cliente
+      if (tarea.proyecto) {
+        const proyectoController = new ProyectoController()
+        const { result } = await proyectoController.consultar(tarea.proyecto)
+        tarea.cliente = result.cliente
+      }
+    }
+
+    const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
+
+    const modales = new ComportamientoModalesGeneralContent()
+
+    function descargarPDF() {
+      const descargarReporteBodega = new DescargarReporteBodega()
+      descargarReporteBodega.descargar('http://localhost:8000/api/pedidos/imprimir/1')
     }
 
     return {
@@ -338,7 +354,7 @@ export default defineComponent({
       provincias,
       cantones,
       tiposTrabajos,
-      cantonesPorProvincia,
+      // cantonesPorProvincia,
       guardar,
       editar,
       eliminar,
@@ -365,6 +381,9 @@ export default defineComponent({
       establecerCliente,
       configuracionColumnasClientes,
       setCliente,
+      modales,
+      // acciones
+      mostrarLabelModal,
     }
   },
 })

@@ -1,22 +1,22 @@
 //Dependencias
-import { configuracionColumnasProductosEnPerchas } from "../domain/configuracionColumnasProductosEnPerchas";
-import { minValue, required } from "@vuelidate/validators";
+import { configuracionColumnasProductosEnPerchas } from '../domain/configuracionColumnasProductosEnPerchas'
+import { minValue, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
-import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
+import { defineComponent, ref } from 'vue'
+import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { ProductoEnPercha } from "../domain/ProductoEnPercha";
-import { ProductosEnPerchaController } from "../infraestructure/ProductosEnPerchaController";
-import { InventarioController } from "pages/bodega/inventario/infraestructure/InventarioController";
-import { UbicacionController } from "pages/administracion/ubicaciones/infraestructure/UbicacionController";
-import { useOrquestadorSelectorInventario } from "../application/OrquestadorSelectorInventario";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ProductoEnPercha } from '../domain/ProductoEnPercha'
+import { ProductosEnPerchaController } from '../infraestructure/ProductosEnPerchaController'
+import { InventarioController } from 'pages/bodega/inventario/infraestructure/InventarioController'
+import { UbicacionController } from 'pages/administracion/ubicaciones/infraestructure/UbicacionController'
+import { useOrquestadorSelectorInventario } from '../application/OrquestadorSelectorInventario'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 
 
 export default defineComponent({
@@ -24,8 +24,8 @@ export default defineComponent({
     setup() {
         const mixin = new ContenedorSimpleMixin(ProductoEnPercha, new ProductosEnPerchaController())
         const { entidad: producto_percha, disabled, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento();
-        const {onGuardado, onReestablecer}=mixin.useHooks()
+        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { onGuardado, onReestablecer } = mixin.useHooks()
 
         let sucursal = ref()
 
@@ -65,11 +65,11 @@ export default defineComponent({
         opciones_ubicaciones.value = listadosAuxiliares.ubicaciones
         opciones_sucursales.value = listadosAuxiliares.sucursales
 
-        onGuardado(()=>{
-            sucursal.value=''
+        onGuardado(() => {
+            sucursal.value = ''
         })
-        onReestablecer(()=>{
-            sucursal.value=''
+        onReestablecer(() => {
+            sucursal.value = ''
         })
         function updateSucursal(val: number) {
             cargarVista(async () => {

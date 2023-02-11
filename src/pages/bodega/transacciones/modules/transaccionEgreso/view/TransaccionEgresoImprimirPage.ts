@@ -1,37 +1,37 @@
-import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos';
-import { configuracionColumnasListadoProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados';
-import { configuracionColumnasItemsEncontradosInventario } from '../../transaccionContent/domain/configuracionColumnasItemsEncontradosInventario';
-import { configuracionColumnasMovimientos } from 'pages/bodega/movimientos/domain/configuracionColumnasMovimientos';
-import { configuracionColumnasItemsMovimiento } from '../../transaccionContent/domain/configuracionColumnasItemsMovimiento';
-import { required } from '@vuelidate/validators';
+import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
+import { configuracionColumnasListadoProductosSeleccionados } from '../../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
+import { configuracionColumnasItemsEncontradosInventario } from '../../transaccionContent/domain/configuracionColumnasItemsEncontradosInventario'
+import { configuracionColumnasMovimientos } from 'pages/bodega/movimientos/domain/configuracionColumnasMovimientos'
+import { configuracionColumnasItemsMovimiento } from '../../transaccionContent/domain/configuracionColumnasItemsMovimiento'
+import { required } from '@vuelidate/validators'
 
 //componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
-import { defineComponent, reactive, ref, watch } from 'vue';
-import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
-import { useDetalleTransaccionStore } from 'stores/detalleTransaccion';
-import { useDetalleStore } from 'stores/detalle';
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController';
-import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion';
-import { TransaccionEgresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionEgresoController';
-import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController';
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController';
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController';
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController';
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
-import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController';
-import useVuelidate from '@vuelidate/core';
-import { useInventarioStore } from 'stores/inventario';
-import { useMovimientoStore } from 'stores/movimiento';
-import { useAuthenticationStore } from 'stores/authentication';
-import { number } from 'echarts';
-import { useTransaccionStore } from 'stores/transaccion';
-import axios, { AxiosResponse } from 'axios';
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
-import { endpoints } from 'config/api';
+import { defineComponent, reactive, ref, watch } from 'vue'
+import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
+import { useDetalleStore } from 'stores/detalle'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
+import { TransaccionEgresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionEgresoController'
+import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import useVuelidate from '@vuelidate/core'
+import { useInventarioStore } from 'stores/inventario'
+import { useMovimientoStore } from 'stores/movimiento'
+import { useAuthenticationStore } from 'stores/authentication'
+import { number } from 'echarts'
+import { useTransaccionStore } from 'stores/transaccion'
+import axios, { AxiosResponse } from 'axios'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
 import html2pdf from 'html2pdf.js'
 
 export default defineComponent({
@@ -77,7 +77,7 @@ export default defineComponent({
             html2pdf()
                 .set({
                     margin: 0.3,
-                    filename: 'egreso_'+hoy.getTime()+'.pdf',
+                    filename: 'egreso_' + hoy.getTime() + '.pdf',
                     image: {
                         type: 'jpeg',
                         quality: 0.98,
@@ -111,7 +111,7 @@ export default defineComponent({
 
 
         const hoy = new Date()
-        var meses = new Array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
+        var meses = new Array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre')
         return {
             buscarProductoEnInventario(details) {
                 // setValidador(v$.value)

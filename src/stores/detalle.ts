@@ -1,44 +1,44 @@
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
-import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto';
-import { endpoints } from 'config/api';
-import { AxiosResponse } from 'axios';
-import { defineStore } from 'pinia';
-import { reactive } from 'vue';
-import { acciones } from 'config/utils';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { defineStore } from 'pinia'
+import { reactive } from 'vue'
+import { acciones } from 'config/utils'
 
-export const useDetalleStore = defineStore('detalle', ()=>{
+export const useDetalleStore = defineStore('detalle', () => {
     //State
     const detalle = reactive(new DetalleProducto())
     let cantidad
-    let estaInventario=true
+    let estaInventario = true
 
     const accionDetalle = acciones.nuevo
     const detalleReset = new DetalleProducto()
 
     const statusLoading = new StatusEssentialLoading()
 
-    async function consultarDetalle(id:number) {
+    async function consultarDetalle(id: number) {
         statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.detalles)+id
+        const ruta = axios.getEndpoint(endpoints.detalles) + id
         const response: AxiosResponse = await axios.get(ruta)
         statusLoading.desactivar()
         return response.data.modelo
-    }      
+    }
 
 
-    
 
-    async function cargarDetalle(id:number) {
+
+    async function cargarDetalle(id: number) {
         // console.log('estas en el cargar detalle')
         const modelo = await consultarDetalle(id)
         // console.log('modelo obtenido: ',modelo)
         detalle.hydrate(modelo)
-        estaInventario=true
+        estaInventario = true
     }
 
-    function resetearDetalle(){
+    function resetearDetalle() {
         detalle.hydrate(detalleReset)
     }
     return {
@@ -48,6 +48,6 @@ export const useDetalleStore = defineStore('detalle', ()=>{
         accionDetalle,
         estaInventario,
         cantidad,
-        
+
     }
 })

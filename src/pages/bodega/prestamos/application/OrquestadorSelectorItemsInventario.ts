@@ -27,24 +27,24 @@ export function useOrquestadorSelectorItemsInventario(entidad: Prestamo, endpoin
         }, */
         seleccionarMultiple: (items: Inventario[]) => {
             console.log('item recibido en el seleccionar del orquestador: ', items)
-            entidad.listadoProductos=[...entidad.listadoProductos, ...items]
-            
+            entidad.listadoProductos = [...entidad.listadoProductos, ...items]
+
             // items.forEach(item => {
-            // });
+            // })
         }
     }
 
     const selector = useSelector(singleSelector)
     const listar = (params) => selector.listar(criterioBusqueda.value, params)
     const limpiar = () => singleSelector.limpiar()
-    
+
     const seleccionar = (entidades: Inventario[]) => {
         // console.log('seleccionar del selector, recibe un id cuando pudiera recibir todo el objeto... ', entidades)
         // singleSelector.seleccionar(id)
-        let ids:any=[]
-        ids = entidad.listadoProductos.map((entidad:Inventario)=>entidad.id)
+        let ids: any = []
+        ids = entidad.listadoProductos.map((entidad: Inventario) => entidad.id)
         // console.log(ids)
-        const datos = entidades.filter((v)=> !ids.includes(v.id))
+        const datos = entidades.filter((v) => !ids.includes(v.id))
         // console.log('datos: ',datos)
         singleSelector.seleccionarMultiple(datos)
     }

@@ -1,12 +1,12 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class UnidadMedida extends EntidadAuditable{
-  nombre:string|null
-  simbolo:string|null
+export class UnidadMedida extends EntidadAuditable {
+  nombre: string | null
+  simbolo: string | null
 
-  constructor(){
+  constructor() {
     super()
-    this.nombre=null
-    this.simbolo=null
+    this.nombre = null
+    this.simbolo = null
   }
 }

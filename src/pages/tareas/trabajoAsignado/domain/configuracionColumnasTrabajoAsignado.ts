@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig"
-import { Subtarea } from "pages/tareas/controlTareas/modules/subtareas/domain/Subtarea"
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Subtarea } from 'pages/tareas/controlTareas/modules/subtareas/domain/Subtarea'
 
 export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     {

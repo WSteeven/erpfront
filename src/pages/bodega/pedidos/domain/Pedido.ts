@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Pedido extends EntidadAuditable {
     justificacion: string | null
@@ -9,42 +9,42 @@ export class Pedido extends EntidadAuditable {
     solicitante_id: number | null
     autorizacion: number | null
     per_autoriza: number | null
-    tarea: number| null
+    tarea: number | null
     sucursal: number | null
     sucursal_id: number | null
     estado: number | null
-    created_at: string|null
+    created_at: string | null
 
     listadoProductos: any[]
 
     //variables auxiliares
-    es_tarea:boolean|null
-    tiene_fecha_limite:boolean|null
-    tiene_observacion_aut:boolean|null
-    tiene_observacion_est:boolean|null
+    es_tarea: boolean | null
+    tiene_fecha_limite: boolean | null
+    tiene_observacion_aut: boolean | null
+    tiene_observacion_est: boolean | null
 
     constructor() {
         super()
-        this.justificacion= null
-        this.fecha_limite= null
-        this.observacion_aut= null
-        this.observacion_est= null
-        this.solicitante= null
-        this.solicitante_id= null
-        this.autorizacion= null
-        this.per_autoriza= null
-        this.tarea= null
-        this.sucursal= null
-        this.sucursal_id= null
-        this.estado= null
-        this.created_at= null
+        this.justificacion = null
+        this.fecha_limite = null
+        this.observacion_aut = null
+        this.observacion_est = null
+        this.solicitante = null
+        this.solicitante_id = null
+        this.autorizacion = null
+        this.per_autoriza = null
+        this.tarea = null
+        this.sucursal = null
+        this.sucursal_id = null
+        this.estado = null
+        this.created_at = null
 
-        this.listadoProductos=[]
+        this.listadoProductos = []
 
         //variables auxiliares
-        this.es_tarea=false
-        this.tiene_fecha_limite=false
-        this.tiene_observacion_aut=false
-        this.tiene_observacion_est=false
+        this.es_tarea = false
+        this.tiene_fecha_limite = false
+        this.tiene_observacion_aut = false
+        this.tiene_observacion_est = false
     }
 }

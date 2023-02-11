@@ -52,7 +52,7 @@
       @click="emitir('cancelar', true)"
     >
       <q-icon name="bi-x-lg" size="xs" class="q-pr-sm"></q-icon>
-      <span>Cancelar</span>
+      <span>Limpiar formulario</span>
     </q-btn>
   </div>
 </template>

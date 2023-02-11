@@ -1,8 +1,8 @@
-import { opcionesModoAsignacionTrabajo } from 'config/utils'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { EmpleadoSeleccionado } from './EmpleadoSeleccionado'
+import { opcionesModoAsignacionTrabajo } from 'config/utils'
 import { GrupoSeleccionado } from './GrupoSeleccionado'
+import { Archivo } from '../../subtareasListadoContent/modules/gestorArchivosSubtareas/domain/Archivo'
 
 export class Subtarea extends EntidadAuditable {
   codigo_subtarea: string | null
@@ -46,7 +46,7 @@ export class Subtarea extends EntidadAuditable {
   fecha_ventana: string | null
   es_primera_asignacion: boolean
 
-  archivos: any
+  archivos: File[]
 
   // Mostrar / ocultar
   modo_asignacion_trabajo: string
@@ -101,7 +101,7 @@ export class Subtarea extends EntidadAuditable {
     this.fecha_ventana = null
     this.es_primera_asignacion = false
 
-    this.archivos = null
+    this.archivos = []
 
     // Mostrar / ocultar
     this.modo_asignacion_trabajo = opcionesModoAsignacionTrabajo.por_grupo

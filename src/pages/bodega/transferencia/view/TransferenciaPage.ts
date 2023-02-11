@@ -1,48 +1,48 @@
 //Dependencias
-import { configuracionColumnasTransferencias } from "../domain/configuracionColumnasTransferencias";
-import { configuracionColumnasProductosSeleccionados } from "pages/bodega/devoluciones/domain/configuracionColumnasProductosSeleccionados";
-import { configuracionColumnasItemsSeleccionados } from "../domain/configuracionColumnasItemsSeleccionados";
-import { required, requiredIf } from "@vuelidate/validators";
+import { configuracionColumnasTransferencias } from '../domain/configuracionColumnasTransferencias'
+import { configuracionColumnasProductosSeleccionados } from 'pages/bodega/devoluciones/domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasItemsSeleccionados } from '../domain/configuracionColumnasItemsSeleccionados'
+import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
-import { acciones, logoBN, logoColor, meses, tabOptionsTransacciones, tabOptionsTransferencias, } from "config/utils";
+import { defineComponent, ref } from 'vue'
+import { acciones, logoBN, logoColor, meses, tabOptionsTransacciones, tabOptionsTransferencias, } from 'config/utils'
 
 
 //Componentes
-import TabLayoutFilterTabs from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { TransferenciaController } from "../infraestructure/TransferenciaController";
-import { Transferencia } from "../domain/Transferencia";
-import { useNotificaciones } from "shared/notificaciones";
-import { useOrquestadorSelectorItemsTransaccion } from "pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles";
-import { ComportamientoModalesTransferencia } from "../application/ComportamientoModalesTransferencia";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { TipoTransaccionController } from "pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController";
-import { TareaController } from "pages/tareas/controlTareas/infraestructure/TareaController";
-import { SubtareaController } from "pages/tareas/controlTareas/modules/subtareas/infraestructure/SubtareaController";
-import { MotivoController } from "pages/administracion/motivos/infraestructure/MotivoController";
-import { AutorizacionController } from "pages/administracion/autorizaciones/infraestructure/AutorizacionController";
-import { EstadosTransaccionController } from "pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController";
-import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController";
-import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
-import { useAuthenticationStore } from "stores/authentication";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { TransferenciaController } from '../infraestructure/TransferenciaController'
+import { Transferencia } from '../domain/Transferencia'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
+import { ComportamientoModalesTransferencia } from '../application/ComportamientoModalesTransferencia'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
+import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { SubtareaController } from 'pages/tareas/controlTareas/modules/subtareas/infraestructure/SubtareaController'
+import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { useAuthenticationStore } from 'stores/authentication'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
-import { buildTableBody } from "shared/utils";
-import { useOrquestadorSelectorItems } from "pages/bodega/traspasos/application/OrquestadorSelectorInventario";
-import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
+import { buildTableBody } from 'shared/utils'
+import { useOrquestadorSelectorItems } from 'pages/bodega/traspasos/application/OrquestadorSelectorInventario'
+import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 
 
 export default defineComponent({
@@ -188,7 +188,7 @@ export default defineComponent({
                 prompt(config)
             },
             visible: () => {
-                return accion.value == acciones.nuevo || (esActivos&&accion.value==acciones.editar) ? true : false
+                return accion.value == acciones.nuevo || (esActivos && accion.value == acciones.editar) ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
@@ -197,7 +197,7 @@ export default defineComponent({
             icono: 'bi-printer',
             accion: async ({ entidad, posicion }) => {
                 // devolucionStore.idDevolucion = entidad.id
-                // modales.abrirModalEntidad("ImprimirDevolucionPage")
+                // modales.abrirModalEntidad('ImprimirDevolucionPage')
                 // await devolucionStore.showPreview()
                 console.log('entidad en el boton imprimir', entidad)
                 pdfMakeImprimir(entidad)
@@ -222,29 +222,29 @@ export default defineComponent({
                 listadoLayout: {
                     hLineWidth: function (i, node) {
                         if (i === 0 || i === node.table.body.length) {
-                            return 0;
+                            return 0
                         }
-                        return (i === node.table.headerRows) ? 2 : 1;
+                        return (i === node.table.headerRows) ? 2 : 1
                     },
                     vLineWidth: function (i) {
-                        return 0;
+                        return 0
                     },
                     hLineColor: function (i) {
-                        return i === 1 ? 'black' : '#aaa';
+                        return i === 1 ? 'black' : '#aaa'
                     },
                     paddingLeft: function (i) {
-                        return i === 0 ? 0 : 8;
+                        return i === 0 ? 0 : 8
                     },
                     paddingRight: function (i, node) {
-                        return (i === node.table.widths.length - 1) ? 0 : 8;
+                        return (i === node.table.widths.length - 1) ? 0 : 8
                     }
                 },
                 lineaLayout: {
                     hLineWidth: function (i, node) {
-                        return (i === 0 || i === node.table.body.length) ? 0 : 2;
+                        return (i === 0 || i === node.table.body.length) ? 0 : 2
                     },
                     vLineWidth: function (i, node) {
-                        return 0;
+                        return 0
                     },
                 },
             }
@@ -422,7 +422,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [0, 0, 60, 0]
                             },
@@ -431,7 +431,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [60, 0, 0, 0]
                             }
@@ -556,7 +556,7 @@ export default defineComponent({
             tabOptionsTransferencias,
             puedeEditar,
             tab: tabSeleccionado,
-            
+
             tabEs(val) {
                 tabSeleccionado.value = val
                 puedeEditar.value = (esActivos && tabSeleccionado.value === 'PENDIENTE')

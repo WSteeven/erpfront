@@ -22,7 +22,7 @@ export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, end
             entidad.listadoProductosSeleccionados = [...entidad.listadoProductosSeleccionados, ...items]
 
             // items.forEach(item => {
-            // });
+            // })
         }
     }
 

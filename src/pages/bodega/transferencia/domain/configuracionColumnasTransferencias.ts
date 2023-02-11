@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Transferencia } from "./Transferencia";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Transferencia } from './Transferencia'
 
-export const configuracionColumnasTransferencias: ColumnConfig<Transferencia>[]=[
+export const configuracionColumnasTransferencias: ColumnConfig<Transferencia>[] = [
     {
         name: 'id',
         field: 'id',

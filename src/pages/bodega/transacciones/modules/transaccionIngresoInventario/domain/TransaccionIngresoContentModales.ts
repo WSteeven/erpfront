@@ -1,11 +1,11 @@
-import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
-import { markRaw } from "vue";
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain'
+import { markRaw } from 'vue'
 
 //paginas
-import InventarioPage from "pages/bodega/inventario/view/InventarioPage.vue";
-import InventariarPage from "../../transaccionIngreso/modules/inventariarProductos/view/InventariarPage.vue";
-import TransaccionIngresoImprimirPage from "../../transaccionIngreso/view/TransaccionIngresoImprimirPage.vue";
-import TransaccionIngresoInventariarPage from "../../transaccionIngreso/view/TransaccionIngresoInventariarPage.vue";
+import InventarioPage from 'pages/bodega/inventario/view/InventarioPage.vue'
+import InventariarPage from '../../transaccionIngreso/modules/inventariarProductos/view/InventariarPage.vue'
+import TransaccionIngresoImprimirPage from '../../transaccionIngreso/view/TransaccionIngresoImprimirPage.vue'
+import TransaccionIngresoInventariarPage from '../../transaccionIngreso/view/TransaccionIngresoInventariarPage.vue'
 
 export class TransaccionIngresoContentModales {
     InventarioPage: ComponenteModal

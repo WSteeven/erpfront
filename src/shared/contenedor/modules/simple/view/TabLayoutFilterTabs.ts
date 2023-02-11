@@ -16,7 +16,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 export default defineComponent({
   props: {
     mixin: {
-      type: Object as () => ContenedorSimpleMixin<any>,
+      type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
       required: true,
     },
     mostrarButtonSubmits: {
@@ -73,13 +73,13 @@ export default defineComponent({
     const { listar, guardar, editar, eliminar, consultar, reestablecer } =
       props.mixin.useComportamiento()
 
-    const { entidad, listado, accion, filtros, fields, tabs, currentPageListado, nextPageUrl } =
+    const { entidad, listado, accion, filtros, tabs, nextPageUrl } =
       props.mixin.useReferencias()
 
     const Router = useRouter()
     let listadoCargado = false
 
-    const accionPersonalizada = props.accion1
+    const accionPersonalizada = computed(() => props.accion1)
     // console.log('accion recibida:',accionPersonalizada)
 
     const columnas = [
@@ -166,7 +166,6 @@ export default defineComponent({
       listado,
       accion,
       filtros,
-      fields,
       accionTabla,
       // tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
@@ -180,12 +179,8 @@ export default defineComponent({
       puedeEditar,
       puedeEliminar,
       aplicarFiltro,
-      //cargar listado
       cargarListado,
-
       accionPersonalizada,
-      accion2: props.accion2,
-
       esBodeguero,
       esCoordinador,
     }

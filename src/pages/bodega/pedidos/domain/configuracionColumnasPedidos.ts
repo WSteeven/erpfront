@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Pedido } from "./Pedido";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Pedido } from './Pedido'
 
-export const configuracionColumnasPedidos: ColumnConfig<Pedido>[]=[
+export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
     {
         name: 'id',
         field: 'id',

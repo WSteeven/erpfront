@@ -1,10 +1,10 @@
 // Dependencias
 import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'subtareas/domain/configuracionColumnasGrupoSeleccionado'
-import { isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray } from 'shared/utils'
 import { configuracionColumnasEmpleado } from 'subtareas/domain/configuracionColumnasEmpleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
+import { quitarItemDeArray, stringToArray } from 'shared/utils'
 import { computed, defineComponent, Ref, ref } from 'vue'
 import {
   tiposInstalaciones,
@@ -19,7 +19,6 @@ import {
   tiposIntervenciones,
   causaIntervencion,
 } from 'config/utils'
-import useFileList from "components/dropzone/application/fileList"
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -31,8 +30,6 @@ import { useQuasar } from 'quasar'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import FilePreview from 'components/dropzone/view/FilePreview.vue'
-import Dropzone from 'components/dropzone/view/DropZone.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -40,9 +37,7 @@ import { ValidarEmpleadosSeleccionados } from '../application/validaciones/Valid
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 import { ValidarEmpleadoResponsable } from '../application/validaciones/ValidarEmpleadoResponsable'
-import { CambiarJefeCuadrillaController } from '../infraestructure/CambiarJefeCuadrillaController'
 import { ValidarGrupoResponsable } from '../application/validaciones/ValidarGrupoResponsable'
-import { CambiarSecretarioController } from '../infraestructure/CambiarSecretarioController'
 import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
 import { ValidarGrupoAsignado } from '../application/validaciones/ValidarGrupoAsignado'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
@@ -52,16 +47,17 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
+import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
 import { Subtarea } from '../domain/Subtarea'
 
 export default defineComponent({
   props: {
     mixinModal: {
-      type: Object as () => ContenedorSimpleMixin<any>,
+      type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
       required: true,
     },
   },
-  components: { EssentialTable, ButtonSubmits, EssentialSelectableTable, FilePreview, Dropzone },
+  components: { EssentialTable, ButtonSubmits, EssentialSelectableTable },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     /*********
@@ -103,7 +99,7 @@ export default defineComponent({
       subtareas.value = listadosAuxiliares.subtareas
     })
 
-    if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
+    if (subtareaListadoStore.idSubtareaSeleccionada) consultar(subtareaListadoStore.idSubtareaSeleccionada)
 
     const accion = tareaStore.accionSubtarea
     const disable = computed(() => (subtarea.estado !== estadosSubtareas.CREADO && subtarea.estado !== null))
@@ -114,7 +110,7 @@ export default defineComponent({
     const asignarJefe = ref(false)
     const asignarSecretario = ref(false)
     const tipoSeleccion = computed(() => asignarJefe.value || asignarSecretario.value ? 'single' : 'none')
-    const empleadoSeleccionadoAsignacionQuitar = ref()
+    // const empleadoSeleccionadoAsignacionQuitar = ref()
     const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
     const notificaciones = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
@@ -366,7 +362,7 @@ export default defineComponent({
 
     function reestablecerDatos() {
       reestablecer()
-      emit('cerrar-modal')
+      // emit('cerrar-modal')
     }
 
     /*************
@@ -403,7 +399,7 @@ export default defineComponent({
       return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_secretario)
     }
 
-    async function entidadSeleccionada(itemsSeleccionados: EntidadAuditable[]) {
+    /* async function entidadSeleccionada(itemsSeleccionados: EntidadAuditable[]) {
       if (itemsSeleccionados.length) {
         const id = itemsSeleccionados[0].id
 
@@ -450,7 +446,7 @@ export default defineComponent({
           }
         }
       }
-    }
+    } */
 
     function agregarGrupoSeleccionado(grupo_id: number) {
       if (grupo_id) {
@@ -459,7 +455,7 @@ export default defineComponent({
         if (existe) return notificaciones.notificarAdvertencia('El grupo seleccionado ya ha sido agregado')
 
         obtenerTecnicosGrupo(grupo_id)
-        const index = grupos.value.findIndex((item: any) => item.id === grupo_id)
+        const index = grupos.value.findIndex((item: Grupo) => item.id === grupo_id)
         const grupoSeleccionado: GrupoSeleccionado = grupos.value[index]
 
         if (subtarea.grupos_seleccionados.length === 0) {
@@ -468,8 +464,6 @@ export default defineComponent({
         subtarea.grupos_seleccionados.push(grupoSeleccionado)
 
       } else notificaciones.notificarAdvertencia('Debe seleccionar un grupo')
-
-      subtarea.grupo = null
     }
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
@@ -478,10 +472,10 @@ export default defineComponent({
       subtarea.empleados_seleccionados.push(...result)
 
       subtarea.empleados_seleccionados = subtarea.empleados_seleccionados.map((empleado: Empleado) => {
-        const tecnico = new Empleado()
+        const tecnico = new EmpleadoSeleccionado()
         tecnico.hydrate(empleado)
 
-        const roles = stringToArray(tecnico.roles ?? '')
+        const roles = tecnico.roles && typeof (tecnico.roles) === 'string' ? stringToArray(tecnico.roles) : []
         tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
 
         return tecnico
@@ -496,7 +490,6 @@ export default defineComponent({
       limpiar: limpiarTecnico,
       seleccionar: seleccionarTecnico
     } = useOrquestadorSelectorTecnicos(subtarea, 'empleados')
-    const { files, addFiles, removeFile } = useFileList()
 
     function seleccionarEmpleado(empleados: EmpleadoSeleccionado[]) {
       empleados = empleados.map((empleado: Empleado) => {
@@ -509,7 +502,7 @@ export default defineComponent({
       seleccionarTecnico(empleados)
     }
 
-    function cargarArchivos(files) {
+    function cargarArchivos(files: File[]) {
       subtarea.archivos = files
     }
 
@@ -574,12 +567,10 @@ export default defineComponent({
       limpiarTecnico,
       seleccionarTecnico,
       seleccionarEmpleado,
-      // ---
-      files, addFiles, removeFile,
       cargarArchivos,
       opcionesModoAsignacionTrabajo,
       cancelarDesignacion,
-      entidadSeleccionada,
+      // entidadSeleccionada,
       verificarEsVentana,
       Empleado,
       designarGrupoPrincipal,

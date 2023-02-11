@@ -6,7 +6,8 @@ import { endpoints } from 'src/config/api'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -33,7 +34,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   // Actions
-  const login = async (credentiales: UserLogin): Promise<any> => {
+  const login = async (credentiales: UserLogin): Promise<Empleado> => {
     try {
       const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
       await axios.get(csrf_cookie)
@@ -46,18 +47,19 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       permisos.value = response.data.modelo.permisos
 
       return response.data.modelo
-    } catch (error: any) {
-      throw new ApiError(error)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
     }
   }
 
-  async function logout(): Promise<any> {
+  async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
     await getUser()
   }
 
-  const setUser = (userData: any) => {
+  const setUser = (userData: Empleado | null) => {
     user.value = userData
     auth.value = Boolean(userData)
   }
@@ -65,7 +67,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const getUser = async () => {
     try {
       const userApi = axios.getEndpoint(endpoints.api_user)
-      const response = await axios.get<any>(userApi, getHeaderToken())
+      const response = await axios.get<AxiosResponse>(userApi)
 
       setUser(response.data)
 
@@ -77,20 +79,12 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  function getHeaderToken() {
-    return {
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${LocalStorage.getItem('token')}`,
-      },
-    }
-  }
-
   const actualizarContrasena = async (userLogin: UserLogin) => {
     try {
       await axios.post(axios.getEndpoint(endpoints.reset_password), userLogin)
-    } catch (error: any) {
-      throw new ApiError(error)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
     }
   }
 

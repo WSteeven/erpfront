@@ -1,4 +1,4 @@
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = [
   {
@@ -7,7 +7,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Producto',
     align: 'left',
     sortable: true,
-    editable: false, 
+    editable: false,
     visible: true
   },
   {
