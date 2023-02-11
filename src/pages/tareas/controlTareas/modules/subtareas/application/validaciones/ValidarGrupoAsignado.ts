@@ -1,6 +1,6 @@
-import { Validador } from "shared/validadores/domain/Validador"
-import { opcionesModoAsignacionTrabajo } from "config/utils"
-import { Subtarea } from "../../domain/Subtarea"
+import { Validador } from 'shared/validadores/domain/Validador'
+import { opcionesModoAsignacionTrabajo } from 'config/utils'
+import { Subtarea } from '../../domain/Subtarea'
 
 export class ValidarGrupoAsignado implements Validador {
   private subtarea: Subtarea
@@ -18,7 +18,7 @@ export class ValidarGrupoAsignado implements Validador {
       const noEsValido = this.subtarea.grupos_seleccionados.length === 0
 
       if (noEsValido)
-        throw new Error("Debe asignar al menos un grupo.")
+        throw new Error('Debe asignar al menos un grupo.')
     }
 
     return true

@@ -1,6 +1,6 @@
 import * as validators from '@vuelidate/validators'
 import messages from 'config/lang/es-ES.json'
-import { createI18n } from "vue-i18n"
+import { createI18n } from 'vue-i18n'
 
 const { createI18nMessage } = validators
 const i18n = createI18n({

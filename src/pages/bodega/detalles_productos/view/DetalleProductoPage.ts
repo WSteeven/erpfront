@@ -1,30 +1,30 @@
 //Dependencias
-import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos"
-import { numeric, required, requiredIf } from "@vuelidate/validators"
+import { configuracionColumnasDetallesProductos } from '../domain/configuracionColumnasDetallesProductos'
+import { numeric, required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, watch } from "vue"
+import { defineComponent, ref, watch } from 'vue'
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue"
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { DetalleProductoController } from "../infraestructure/DetalleProductoController"
-import { DetalleProducto } from "../domain/DetalleProducto"
-import { useNotificacionStore } from "stores/notificacion"
-import { useQuasar } from "quasar"
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { DetalleProductoController } from '../infraestructure/DetalleProductoController'
+import { DetalleProducto } from '../domain/DetalleProducto'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
 
 //Controladores para los selects
-import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController"
-import { MarcaController } from "pages/bodega/marcas/infraestructure/MarcaController"
-import { ModeloController } from "pages/bodega/modelos/infraestructure/ModeloController"
-import { TipoFibraController } from "pages/administracion/tipos_fibras/infraestructure/TipoFibraController"
-import { HiloController } from "pages/administracion/hilos/infraestructure/HiloController"
-import { SpanController } from "pages/administracion/span/infraestructure/SpanController"
-import { RamController } from "../modules/computadoras/modules/ram/infraestructure/RamController"
-import { DiscoController } from "../modules/computadoras/modules/disco/infraestructure/DiscoController"
-import { ProcesadorController } from "../modules/computadoras/modules/procesador/infraestructure/ProcesadorController"
-import { acciones } from "config/utils"
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
+import { MarcaController } from 'pages/bodega/marcas/infraestructure/MarcaController'
+import { ModeloController } from 'pages/bodega/modelos/infraestructure/ModeloController'
+import { TipoFibraController } from 'pages/administracion/tipos_fibras/infraestructure/TipoFibraController'
+import { HiloController } from 'pages/administracion/hilos/infraestructure/HiloController'
+import { SpanController } from 'pages/administracion/span/infraestructure/SpanController'
+import { RamController } from '../modules/computadoras/modules/ram/infraestructure/RamController'
+import { DiscoController } from '../modules/computadoras/modules/disco/infraestructure/DiscoController'
+import { ProcesadorController } from '../modules/computadoras/modules/procesador/infraestructure/ProcesadorController'
+import { acciones } from 'config/utils'
 
 export default defineComponent({
     components: { TabLayout },
@@ -150,12 +150,12 @@ export default defineComponent({
             rowsPerPage: 10
             // rowsNumber: xx if getting data from a server
         })
-        const opciones_tipos = ['HOMBRE', 'MUJER'];
+        const opciones_tipos = ['HOMBRE', 'MUJER']
 
         const categoria_var = ref('')
 
         watch(categoria_var, () => {
-            if(accion===acciones.consultar){
+            if (accion === acciones.consultar) {
                 limpiarCamposInformatica()
                 limpiarCamposAdicionales()
                 console.log(detalle.categoria)

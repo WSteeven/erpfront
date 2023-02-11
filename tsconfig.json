@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "noImplicitAny": false,
+    "strictFunctionTypes": false,
     "paths": {
       "config/*": ["src/config/*"],
       "shared/*": ["src/shared/*"],

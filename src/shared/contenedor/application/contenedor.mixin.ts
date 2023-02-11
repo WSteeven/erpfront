@@ -1,4 +1,4 @@
-// import {Validador} from "@shared/validadores/domain/validador.domain"
+// import {Validador} from '@shared/validadores/domain/validador.domain'
 import { ListableController } from 'shared/controller/domain/ListableController.domain'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Controller } from 'shared/controller/domain/Controller.domain'

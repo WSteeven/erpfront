@@ -10,7 +10,7 @@ import {
   acciones,
 } from 'config/utils'
 import { useTendidoStore } from 'stores/tendido'
-import { computed, defineComponent, onMounted, watch } from 'vue'
+import { computed, defineComponent, onMounted, watch, watchEffect } from 'vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
@@ -85,16 +85,6 @@ export default defineComponent({
       })
     })
 
-    const setBase64 = (file: File) => {
-      if (file !== null && file !== undefined) {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => (progresiva.imagen = reader.result)
-      } else {
-        progresiva.imagen = file
-      }
-    }
-
     const agregarProgresiva: CustomActionTable = {
       titulo: 'Agregar nuevo elemento',
       icono: 'bi-plus',
@@ -155,8 +145,13 @@ export default defineComponent({
       return listadosAuxiliares.bobinas.find((item: any) => item.id === id)
     }
 
-    watch(computed(() => progresiva.bobina), () => {
+    /* watch(computed(() => progresiva.bobina), () => {
       progresiva.cantidad_hilos = obtenerElemento(progresiva.bobina).cantidad_hilos
+    }) */
+
+    watchEffect(() => {
+      if (progresiva.bobina)
+        progresiva.cantidad_hilos = obtenerElemento(progresiva.bobina).cantidad_hilos
     })
 
     const marcaInicial = computed(() => listadoRegistrosTendidos.value.length ? listadoRegistrosTendidos.value[0].progresiva_entrada : 0)
@@ -174,7 +169,6 @@ export default defineComponent({
       // mixin 2
       listadoRegistrosTendidos,
       configuracionColumnasControlTendido,
-      setBase64,
       modales,
       agregarProgresiva,
       consultarRegistro,

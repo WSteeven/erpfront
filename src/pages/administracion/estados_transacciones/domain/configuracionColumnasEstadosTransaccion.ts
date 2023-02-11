@@ -1,12 +1,12 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { EstadosTransaccion } from "./EstadosTransaccion";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { EstadosTransaccion } from './EstadosTransaccion'
 
-export const configuracionColumnasEstadosTransaccion: ColumnConfig<EstadosTransaccion>[]=[
+export const configuracionColumnasEstadosTransaccion: ColumnConfig<EstadosTransaccion>[] = [
     {
-        name:'nombre',
-        field:'nombre',
-        label:'nombre',
-        align:'left',
-        sortable:true,
+        name: 'nombre',
+        field: 'nombre',
+        label: 'nombre',
+        align: 'left',
+        sortable: true,
     }
 ]

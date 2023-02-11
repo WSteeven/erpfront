@@ -91,7 +91,6 @@ export default defineComponent({
       titulo: 'Ver pausas',
       icono: 'bi-list',
       color: 'grey-8',
-      visible: ({ entidad }) => true,
       accion: ({ entidad }) => {
         subtareaListadoStore.idSubtareaSeleccionada = entidad.id
         modales.abrirModalEntidad('PausasRealizadasPage')
@@ -200,10 +199,10 @@ export default defineComponent({
       if (tareaStore.tarea.id) listar({ tarea_id: tareaStore.tarea.id, estado: tabSeleccionado })
     }
 
-    function actualizarElemento(posicion: number, entidad: any): void {
+    function actualizarElemento(posicion: number, entidad: Subtarea): void {
       if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad);
-        listado.value = [...listado.value];
+        listado.value.splice(posicion, 1, entidad)
+        listado.value = [...listado.value]
       }
     }
 

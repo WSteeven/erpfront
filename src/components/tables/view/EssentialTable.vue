@@ -570,7 +570,7 @@
       <q-td :props="props">
         <q-chip
           v-if="props.value === autorizacionesTransacciones['aprobado']"
-          class="bg-green-1"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -581,7 +581,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['cancelado']"
-          class="bg-red-1"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -592,7 +592,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['pendiente']"
-          class="bg-yellow-1"
+          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -645,7 +645,7 @@
       <q-td :props="props">
         <q-chip
           v-if="props.value === estadosTransacciones['completa']"
-          class="bg-green-1"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -656,7 +656,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones['parcial']"
-          class="bg-red-1"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -667,7 +667,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones['pendiente']"
-          class="bg-yellow-1"
+          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -678,7 +678,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
-          class="bg-red-1"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
           <q-icon
@@ -699,7 +699,7 @@
           ></q-icon
           >ACTIVO
         </q-chip>
-        <q-chip v-if="props.value === 0" class="bg-red-1">
+        <q-chip v-if="props.value === 0" :class="{'bg-red-1': !$q.dark.isActive}">
           <q-icon
             name="bi-circle-fill"
             color="negative"

@@ -15,7 +15,7 @@ import { acciones, logoBN, logoColor, meses } from 'config/utils'
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -46,7 +46,7 @@ import { useRouter } from 'vue-router'
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import { buildTableBody } from "shared/utils";
+import { buildTableBody } from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
@@ -321,29 +321,29 @@ export default defineComponent({
                 listadoLayout: {
                     hLineWidth: function (i, node) {
                         if (i === 0 || i === node.table.body.length) {
-                            return 0;
+                            return 0
                         }
-                        return (i === node.table.headerRows) ? 2 : 1;
+                        return (i === node.table.headerRows) ? 2 : 1
                     },
                     vLineWidth: function (i) {
-                        return 0;
+                        return 0
                     },
                     hLineColor: function (i) {
-                        return i === 1 ? 'black' : '#aaa';
+                        return i === 1 ? 'black' : '#aaa'
                     },
                     paddingLeft: function (i) {
-                        return i === 0 ? 0 : 8;
+                        return i === 0 ? 0 : 8
                     },
                     paddingRight: function (i, node) {
-                        return (i === node.table.widths.length - 1) ? 0 : 8;
+                        return (i === node.table.widths.length - 1) ? 0 : 8
                     }
                 },
                 lineaLayout: {
                     hLineWidth: function (i, node) {
-                        return (i === 0 || i === node.table.body.length) ? 0 : 2;
+                        return (i === 0 || i === node.table.body.length) ? 0 : 2
                     },
                     vLineWidth: function (i, node) {
-                        return 0;
+                        return 0
                     },
                 },
             }
@@ -500,7 +500,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [0, 0, 60, 0]
                             },
@@ -509,7 +509,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [60, 0, 0, 0]
                             }

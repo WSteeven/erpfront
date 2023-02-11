@@ -7,8 +7,8 @@ import { configuracionColumnasGrupoSeleccionado } from 'subtareas/domain/configu
 import { descargarArchivoUrl, quitarItemDeArray, stringToArray } from 'shared/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { computed, defineComponent, reactive, ref } from "vue"
-import { useTareaStore } from "stores/tarea"
+import { computed, defineComponent, reactive, ref } from 'vue'
+import { useTareaStore } from 'stores/tarea'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -82,7 +82,7 @@ export default defineComponent({
       clienteFinal.hydrate(result)
     }
 
-    consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
+    consultar(trabajoAsignadoStore.idSubtareaSeleccionada)
 
     /********
      * Hooks

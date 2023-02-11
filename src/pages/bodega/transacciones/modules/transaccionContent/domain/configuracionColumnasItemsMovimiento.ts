@@ -1,6 +1,6 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig"
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
-export const configuracionColumnasItemsMovimiento:ColumnConfig<any>[]=[
+export const configuracionColumnasItemsMovimiento: ColumnConfig<any>[] = [
     {
         name: 'producto',
         field: 'producto',

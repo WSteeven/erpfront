@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { apiConfig, endpoints } from 'config/api'
 import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
@@ -29,7 +29,7 @@ export function validarKeyBuscar(keyCode?: number): boolean {
 
 export function validarEmail(email?: string): boolean {
   const validador =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    /^(([^<>()\[\]\\.,:\s@']+(\.[^<>()\[\]\\.,:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return validador.test(String(email).toLowerCase())
 }
 
@@ -53,7 +53,7 @@ export function descargarArchivoUrl(
   url: string,
 ): void {
   const link = document.createElement('a')
-  link.href = apiConfig.URL_BALSE + url
+  link.href = apiConfig.URL_BASE + url
   link.target = '_blank'
   link.click()
   link.remove()
@@ -275,15 +275,15 @@ export function obtenerMensajesError() {
 }
 
 export function formatBytes(bytes, decimals = 2) {
-  if (bytes === 0) return "0 Bytes"
+  if (bytes === 0) return '0 Bytes'
 
   const k = 1024
   const dm = decimals < 0 ? 0 : decimals
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
 
   const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 /**
  * Build the body table with elements of an array.
@@ -303,9 +303,9 @@ export function buildTableBody(data, columns, columnas) {
     const dataRow: any = []
     columns.forEach(function (column) {
       dataRow.push(row[column])
-    });
+    })
     body.push(dataRow)
-  });
+  })
 
   return body
 }
@@ -319,3 +319,11 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
 
+export async function imprimirPdf(ruta:string, metodo:string, responseType:string, headers?: {}) {
+  const ax = axios({
+    url: ruta,
+    method:metodo,
+    responseType:responseType,
+    headers: headers
+  })
+}

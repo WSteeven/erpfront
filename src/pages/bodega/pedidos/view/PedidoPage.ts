@@ -1,47 +1,39 @@
 //Dependencias
-import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos';
-import { helpers, required, requiredIf } from 'shared/i18n-validators';
+import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos'
+import { helpers, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent,  ref } from "vue";
-import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles';
+import { defineComponent, ref } from 'vue'
+import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles'
 
 //Componentes
-// import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+// import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { PedidoController } from '../infraestructura/PedidoController';
-import { Pedido } from '../domain/Pedido';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { PedidoController } from '../infraestructura/PedidoController'
+import { Pedido } from '../domain/Pedido'
 
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { TareaController } from "pages/tareas/controlTareas/infraestructure/TareaController";
-import { configuracionColumnasProductosSeleccionados } from "../domain/configuracionColumnasProductosSeleccionados";
-import { configuracionColumnasProductosSeleccionadosDespachado } from "../domain/configuracionColumnasProductosSeleccionadosDespachado";
-import { configuracionColumnasDetallesModal } from "../domain/configuracionColumnasDetallesModal";
-import { useNotificaciones } from "shared/notificaciones";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPedidos, } from "config/utils";
+import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain/configuracionColumnasProductosSeleccionadosDespachado'
+import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
+import { acciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPedidos, } from 'config/utils'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
+import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
 
-
-//pdfmake
-import * as pdfMake from 'pdfmake/build/pdfmake'
-import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import { useAuthenticationStore } from "stores/authentication";
-import { buildTableBody} from "shared/utils";
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController';
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController';
-import { usePedidoStore } from 'stores/pedido';
-import { useRouter } from 'vue-router';
-import { fechaMayorActual } from 'shared/validadores/validaciones';
-
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
-
+import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { fechaMayorActual } from 'shared/validadores/validaciones'
+import { useAuthenticationStore } from 'stores/authentication'
+import { usePedidoStore } from 'stores/pedido'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -51,17 +43,14 @@ export default defineComponent({
         const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer, onConsultado } = mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+        const { confirmar, prompt } = useNotificaciones()
 
-        //stores
+        // Stores
         const pedidoStore = usePedidoStore()
         const store = useAuthenticationStore()
         const router = useRouter()
 
-        //modales
-        // const modales = new ComportamientoModalesDevoluciones()
-
-        //orquestador
+        // Orquestador
         const {
             refListadoSeleccionable: refListado,
             criterioBusqueda: criterioBusquedaProducto,
@@ -71,7 +60,7 @@ export default defineComponent({
             seleccionar: seleccionarProducto
         } = useOrquestadorSelectorDetalles(pedido, 'detalles')
 
-        //flags
+        // Flags
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
@@ -80,8 +69,6 @@ export default defineComponent({
 
         const esCoordinador = store.esCoordinador
         const esBodeguero = store.esBodeguero
-
-
 
         onReestablecer(() => {
             soloLectura.value = false
@@ -138,8 +125,8 @@ export default defineComponent({
             sucursal: { required },
             tarea: { requiredIfTarea: requiredIf(pedido.es_tarea) },
             fecha_limite: {
-                required:requiredIf(requiereFecha),
-                fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual',(fechaMayorActual))
+                required: requiredIf(requiereFecha),
+                fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
             }
         }
 
@@ -225,36 +212,36 @@ export default defineComponent({
             }
         }
 
-        const f = new Date();
+        const f = new Date()
 
         function pdfMakeImprimir() {
             pdfMake.tableLayouts = {
                 listadoLayout: {
                     hLineWidth: function (i, node) {
                         if (i === 0 || i === node.table.body.length) {
-                            return 0;
+                            return 0
                         }
-                        return (i === node.table.headerRows) ? 2 : 1;
+                        return (i === node.table.headerRows) ? 2 : 1
                     },
                     vLineWidth: function (i) {
-                        return 0;
+                        return 0
                     },
                     hLineColor: function (i) {
-                        return i === 1 ? 'black' : '#aaa';
+                        return i === 1 ? 'black' : '#aaa'
                     },
                     paddingLeft: function (i) {
-                        return i === 0 ? 0 : 8;
+                        return i === 0 ? 0 : 8
                     },
                     paddingRight: function (i, node) {
-                        return (i === node.table.widths.length - 1) ? 0 : 8;
+                        return (i === node.table.widths.length - 1) ? 0 : 8
                     }
                 },
                 lineaLayout: {
                     hLineWidth: function (i, node) {
-                        return (i === 0 || i === node.table.body.length) ? 0 : 2;
+                        return (i === 0 || i === node.table.body.length) ? 0 : 2
                     },
                     vLineWidth: function (i, node) {
-                        return 0;
+                        return 0
                     },
                 },
             }
@@ -415,7 +402,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [0, 0, 60, 0]
                             },
@@ -424,7 +411,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [60, 0, 0, 0]
                             }
@@ -477,7 +464,7 @@ export default defineComponent({
                         bold: true
                     },
                 },
-            };
+            }
             pdfMake.createPdf(dd).open()
         }
 
@@ -499,8 +486,8 @@ export default defineComponent({
 
         function actualizarElemento(posicion: number, entidad: any): void {
             if (posicion >= 0) {
-                listado.value.splice(posicion, 1, entidad);
-                listado.value = [...listado.value];
+                listado.value.splice(posicion, 1, entidad)
+                listado.value = [...listado.value]
             }
         }
 
@@ -511,7 +498,7 @@ export default defineComponent({
             label: 'Acciones',
             align: 'center',
             sortable: false,
-            style:'width:250px'
+            style: 'width:250px'
 
         }]
 

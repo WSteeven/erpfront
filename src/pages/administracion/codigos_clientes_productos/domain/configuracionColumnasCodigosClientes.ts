@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { CodigoCliente } from "./CodigoCliente";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { CodigoCliente } from './CodigoCliente'
 
-export const configuracionColumnasCodigosClientes: ColumnConfig<CodigoCliente>[]=[
+export const configuracionColumnasCodigosClientes: ColumnConfig<CodigoCliente>[] = [
     {
         name: 'codigo',
         field: 'codigo',
