@@ -19,7 +19,7 @@ export class ValidarGrupoResponsable implements Validador {
       const noEsValido = !this.subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.responsable)
 
       if (noEsValido)
-        throw new Error('Debe asignar a un grupo como principal.')
+        throw new Error('Debe asignar a un grupo como principal.') // Borrame please
     }
     return true
   }
