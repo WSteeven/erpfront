@@ -201,7 +201,7 @@ export default defineComponent({
     onGuardado(() => {
       pedidoStore.resetearPedido()
       listadoPedido.value = ref<any>([])
-      transaccion.pedido = ''
+      transaccion.pedido = null
     })
 
 
@@ -287,14 +287,15 @@ export default defineComponent({
       icono: 'bi-printer',
       accion: async ({ entidad, posicion }) => {
         transaccionStore.idTransaccion = entidad.id
-        await transaccionStore.showPreview()
-        transaccion.hydrate(transaccionStore.transaccion)
-        const response = await new EmpleadoController().consultar(transaccion.per_retira_id)
-        empleadoRetira.value = response.response.data.modelo
-        console.log(transaccion)
+        await transaccionStore.imprimirEgreso()
+        // await transaccionStore.showPreview()
+        // transaccion.hydrate(transaccionStore.transaccion)
+        // const response = await new EmpleadoController().consultar(transaccion.per_retira_id!)
+        // empleadoRetira.value = response.response.data.modelo
+        // console.log(transaccion)
         // console.log(empleadoRetira)
         // modales.abrirModalEntidad('TransaccionEgresoImprimirPage')
-        pdfMakeImprimir()
+        // pdfMakeImprimir()
       },
       //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
     }

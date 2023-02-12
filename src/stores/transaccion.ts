@@ -1,11 +1,12 @@
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
-import { endpoints } from 'config/api'
+import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { acciones } from 'config/utils'
+import { imprimirArchivo } from 'shared/utils'
 
 export const useTransaccionStore = defineStore('transaccion', () => {
     //State
@@ -35,11 +36,20 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         transaccion.hydrate(modelo)
     }
 
-    async function imprimirIngreso(id: number) {
+    async function imprimirIngreso() {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + 'imprimir/' + id
-        console.log('ruta desde donde se imprime', ruta)
+        const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_ingresos) + 'imprimir/' + idTransaccion.value
+        const filename = 'ingreso_'+idTransaccion.value+Date.now()
+        imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+        console.log('Ingreso impreso con éxito.')
         // const response: AxiosResponse = await axios.get(ruta, responseType:'blob')
+    }
+    async function imprimirEgreso() {
+      const axios = AxiosHttpRepository.getInstance()
+      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_egresos)+'/imprimir/'+idTransaccion.value
+      const filename = 'egreso_'+idTransaccion.value+Date.now()
+      imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+      console.log('Egreso impreso con éxito.')
     }
     async function showPreview() {
         const axios = AxiosHttpRepository.getInstance()
@@ -60,6 +70,7 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         cargarTransaccion,
         resetearTransaccion,
         imprimirIngreso,
+        imprimirEgreso,
         idTransaccion,
         showPreview,
 

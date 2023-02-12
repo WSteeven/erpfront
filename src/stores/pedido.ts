@@ -6,6 +6,7 @@ import { Pedido } from 'pages/bodega/pedidos/domain/Pedido'
 import { defineStore } from 'pinia'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useNotificaciones } from 'shared/notificaciones'
+import { imprimirArchivo } from 'shared/utils'
 import { reactive, ref } from 'vue'
 
 export const usePedidoStore = defineStore('pedido', () => {
@@ -53,19 +54,15 @@ export const usePedidoStore = defineStore('pedido', () => {
     pedido.hydrate(response.data.modelo)
   }
 
-  /* async function imprimirPdf2() {
+   async function imprimirPdf() {
     const axios = AxiosHttpRepository.getInstance()
-    const ruta = axios.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value
-    const response: AxiosResponse = await axios.get(ruta,{responseType: 'blob', })
-    console.log(response)
-    const blob = new Blob([response.data], {type: 'application/pdf'})
-    const link = document.createElement('a')
-    link.href=window.URL.createObjectURL(blob)
-    link.download = 'pedido_'+idPedido.value+'.pdf'
-    link.click()
-    console.log('Pedido consultado para imprimir. Pasó todo con éxito')
-  } */
-  async function imprimirPdf() {
+    const url = apiConfig.URL_BASE+'/'+ axios.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value
+    const filename = 'pedido_'+idPedido.value+Date.now()
+    imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+    console.log('Pedido impreso con éxito')
+  }
+
+  async function imprimirPdf2() {
     const axiosHttpRepository = AxiosHttpRepository.getInstance()
     axios({
       url: apiConfig.URL_BASE + '/' + axiosHttpRepository.getEndpoint(endpoints.pedidos) + '/imprimir/' + idPedido.value,
@@ -74,7 +71,7 @@ export const usePedidoStore = defineStore('pedido', () => {
       responseType: 'blob',
 
       headers: {
-        'Authorization': AxiosHttpRepository.getOptions().headers.Authorization
+        'Authorization': axiosHttpRepository.getOptions().headers.Authorization
       }
     }).then((response) => {
       console.log(response)

@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosResponse, Method, ResponseType } from 'axios'
 import { apiConfig, endpoints } from 'config/api'
 import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
+import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 
 export function limpiarListado<T>(listado: T[]): void {
@@ -319,11 +320,32 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
 
-export async function imprimirPdf(ruta:string, metodo:string, responseType:string, headers?: {}) {
-  const ax = axios({
+/**
+ * Metodo generico para descargar archivos desde una API
+ * @param ruta URL desde donde se descargará el archivo
+ * @param metodo metodo http de la consulta, generalmente GET
+ * @param responseType tipo de respuesta esperada, de la clase axios.ResponseType
+ * @param formato tipo de archivo esperado
+ * @param titulo  nombre del archivo para descargar
+ */
+export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo:string, data?:any,) {
+  const axiosHttpRepository = AxiosHttpRepository.getInstance()
+  axios({
     url: ruta,
-    method:metodo,
-    responseType:responseType,
-    headers: headers
+    method: metodo,
+    data: data,
+    responseType: responseType,
+    headers: {
+      'Authorization': axiosHttpRepository.getOptions().headers.Authorization
+    }
+  }).then((response: HttpResponseGet) => {
+    const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+    const link = document.createElement('a')
+    link.href = fileURL
+    link.target='_blank'
+    link.setAttribute('download', `${titulo}.${formato}`)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
   })
 }

@@ -34,6 +34,7 @@ import { fechaMayorActual } from 'shared/validadores/validaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
+import { buildTableBody } from 'shared/utils'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -121,9 +122,9 @@ export default defineComponent({
         const reglas = {
             justificacion: { required },
             autorizacion: { requiredIfCoordinador: requiredIf(esCoordinador) },
-            observacion_aut: { requiredIfCoordinador: requiredIf(pedido.tiene_obs_autorizacion) },
+            observacion_aut: { requiredIfCoordinador: requiredIf(pedido.tiene_observacion_aut!) },
             sucursal: { required },
-            tarea: { requiredIfTarea: requiredIf(pedido.es_tarea) },
+            tarea: { requiredIfTarea: requiredIf(pedido.es_tarea!) },
             fecha_limite: {
                 required: requiredIf(requiereFecha),
                 fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))

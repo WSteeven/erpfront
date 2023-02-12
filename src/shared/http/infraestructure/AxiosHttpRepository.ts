@@ -94,7 +94,7 @@ export class AxiosHttpRepository implements HttpRepository {
     return `?${query.join('&')}`
   }
 
-  static getOptions() {
+  getOptions() {
     const options: AxiosRequestConfig = { headers: {} }
     const token = LocalStorage.getItem('token')
 

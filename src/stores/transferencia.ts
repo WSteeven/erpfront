@@ -21,7 +21,7 @@ export const useTransferenciaStore = defineStore('transferencia', () => {
 
     async function consultar(id: number) {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.transferencias) + id
+        const ruta = axios.getEndpoint(endpoints.transferencias) +'/'+ id
         const response: AxiosResponse = await axios.get(ruta)
         console.log('Respuesta obtenida en el store de transferencia:', response)
         if (response.data.modelo.autorizacion === 2) {
