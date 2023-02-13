@@ -207,6 +207,8 @@ export default defineComponent({
 
       if (val === '') {
         update(() => {
+          console.log(fondo.detalle);
+
           sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
             (v) => v.id == fondo.detalle
           )

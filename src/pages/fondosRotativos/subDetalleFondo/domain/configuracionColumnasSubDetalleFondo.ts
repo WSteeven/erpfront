@@ -3,9 +3,16 @@ import { SubDetalleFondo } from "./SubDetalleFondo";
 
 export const configuracionColumnasSubDetalleFondo: ColumnConfig<SubDetalleFondo>[] = [
   {
+    name: 'detalle_viatico',
+    field: 'detalle_viatico',
+    label: 'Detalle',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'descripcion',
     field: 'descripcion',
-    label: 'Descripcion',
+    label: 'Sub Detalle',
     align: 'left',
     sortable: true
   },
@@ -16,5 +23,20 @@ export const configuracionColumnasSubDetalleFondo: ColumnConfig<SubDetalleFondo>
     align: 'left',
     sortable: true
   },
+  {
+    name: 'transcriptor',
+    field: 'transcriptor',
+    label: 'Transcriptor',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'fecha_trans',
+    field: 'fecha_trans',
+    label: 'Fecha',
+    align: 'left',
+    sortable: true
+  },
+
 
 ]

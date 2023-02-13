@@ -3,10 +3,47 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Detalle</label>
+            <q-select
+              v-model="subDetalleFondo.detalle_viatico"
+              :options="detalles"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.detalle_viatico.$errors.length"
+              error-message="Debes seleccionar un canton"
+              use-input
+              input-debounce="0"
+              @filter="filtrarDetalles"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.descripcion"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.detalle_viatico.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Nombre -->
           <div class="col-12 col-md-3">
+            <label class="q-mb-xs">Descripcion</label>
             <q-input
-              v-model="tipoFondo.descripcion"
+              v-model="subDetalleFondo.descripcion"
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.descripcion.$errors.length"
@@ -21,27 +58,53 @@
               </template>
             </q-input>
           </div>
-          <!-- transcriptor -->
-          <div class="col-12 col-md-3">
-            <q-input
-              v-model="tipoFondo.transcriptor"
-              placeholder="Obligatorio"
+                    <!-- transcriptor -->
+                    <div class="col-12 col-md-3">
+            <label class="q-mb-xs">Requiere Autorización(*): </label>
+            <q-toggle
+              :label="subDetalleFondo.autorizacion"
+              false-value="NO"
+              true-value="SI"
+              color="green"
+              v-model="subDetalleFondo.autorizacion"
               :disable="disabled"
-              :error="!!v$.transcriptor.$errors.length"
-              @blur="v$.transcriptor.$touch"
+              :error="!!v$.autorizacion.$errors.length"
+              @blur="v$.autorizacion.$touch"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.transcriptor.$errors" :key="error.$uid">
+                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </q-input>
+            </q-toggle>
           </div>
+          <div class="col-12 col-md-3">
+            <label class="q-mb-xs">Estatus del Detalle(*): </label>
+            <q-toggle
+              :label="subDetalleFondo.estatus"
+              false-value="Inactivo"
+              true-value="Activo"
+              color="blue"
+              v-model="subDetalleFondo.estatus"
+              :disable="disabled"
+              :error="!!v$.estatus.$errors.length"
+              @blur="v$.estatus.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.estatus.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-toggle>
+          </div>
+
         </div>
       </q-form>
     </template>
   </tab-layout>
 </template>
-<script src="./TipoFondoPage.ts"></script>
+<script src="./SubDetalleFondoPage.ts"></script>

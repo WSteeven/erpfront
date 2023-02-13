@@ -455,6 +455,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/sub_detalle_fondo',
+        name: 'sub_detalle_fondo',
+        component: () =>
+          import(
+            'pages/fondosRotativos/subDetalleFondo/view/SubDetalleFondoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

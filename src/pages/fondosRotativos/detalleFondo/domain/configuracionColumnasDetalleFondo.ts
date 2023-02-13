@@ -12,9 +12,32 @@ export const configuracionColumnasDetalleFondo: ColumnConfig<DetalleFondo>[] = [
   {
     name: 'autorizacion',
     field: 'autorizacion',
-    label: 'Autorizacion',
+    label: 'Autorización',
     align: 'left',
     sortable: true
   },
+  {
+    name: 'transcriptor',
+    field: 'transcriptor',
+    label: 'Transcriptor',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'fecha_trans',
+    field: 'fecha_trans',
+    label: 'Fecha',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'estatus',
+    field: 'estatus',
+    label: 'Estatus',
+    align: 'left',
+    sortable: true
+  },
+
+
 
 ]

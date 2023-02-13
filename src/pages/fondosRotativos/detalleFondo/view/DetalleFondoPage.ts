@@ -23,7 +23,6 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(DetalleFondo, new DetalleFondoController())
     const { entidad: detalleFondo, disabled, accion } = mixin.useReferencias()
     const { setValidador } = mixin.useComportamiento()
-    const { onGuardado, onReestablecer } = mixin.useHooks()
 
     /*************
     * Validaciones
@@ -47,12 +46,8 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, detalleFondo)
     setValidador(v$.value)
-    onGuardado(() => {
-      //sucursal.value=''
-    })
-    onReestablecer(() => {
-      //sucursal.value=''
-    })
+    detalleFondo.autorizacion='NO';
+    detalleFondo.estatus='Inactivo';
     return {
       mixin,
       detalleFondo,

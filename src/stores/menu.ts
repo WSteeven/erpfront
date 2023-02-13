@@ -246,7 +246,7 @@ export const useMenuStore = defineStore('menu', () => {
     //Modulo Fondos Rotativos
     {
       title: 'Fondos Rotativos',
-      icon: 'bi-cash-stack',
+      icon: 'fa-solid fa-cash-register',
       children: [
         {
           title: 'Fondo Rotativo',
@@ -255,11 +255,22 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.fondo'),
         },
         {
-          title: 'Detalle Fondos Rotativos',
-          link: 'detalle_fondo',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.detalle_fondo'),
+          title: 'Detalle Fondos',
+          icon: 'bi-list-task',
+          children: [ {
+            title: 'Detalle',
+            link: 'detalle_fondo',
+            icon: 'bi-circle',
+            can: store.can('puede.ver.detalle_fondo'),
+          },
+          {
+            title: 'SubDetalle',
+            link: 'sub_detalle_fondo',
+            icon: 'bi-circle',
+            can: store.can('puede.ver.sub_detalle_fondo'),
+          }]
         },
+
       ]
     },
     //Modulo Recursos Humanos
