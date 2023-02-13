@@ -35,3 +35,5 @@ yarn.lock
 # vscode
 extensions.json
 settings.json
+
+.env

@@ -375,9 +375,9 @@ export default defineComponent({
       // grupo: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
       tipo_trabajo: { required },
       descripcion_completa: { required },
-      fecha_ventana: { required: requiredIf(() => subtarea.es_ventana) },
-      hora_inicio_ventana: { required: requiredIf(() => subtarea.es_ventana) },
-      hora_fin_ventana: { required: requiredIf(() => subtarea.es_ventana) },
+      fecha_agendado: { required: requiredIf(() => subtarea.es_ventana) },
+      hora_inicio_agendado: { required: requiredIf(() => subtarea.es_ventana) },
+      hora_fin_agendado: { required: requiredIf(() => subtarea.es_ventana) },
       subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
     }
 
@@ -510,9 +510,9 @@ export default defineComponent({
 
     function verificarEsVentana() {
       if (!subtarea.es_ventana) {
-        subtarea.fecha_ventana = null
-        subtarea.hora_inicio_ventana = null
-        subtarea.hora_fin_ventana = null
+        // subtarea.fecha_agendado = null
+        // subtarea.hora_inicio_ventana = null
+        subtarea.hora_fin_agendado = null
       }
     }
 

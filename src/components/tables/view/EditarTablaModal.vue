@@ -174,13 +174,15 @@ function guardar() {
   var mappedSelect = fieldsSelect.value.map((item) => ({
     [item.field]: item.valor,
   }))
-  var mappedAll = fieldsAll.value.map((item) => ({ [item.field]: item.valor }))
-  var mappedLleno = [...mappedAll, ...mapped, ...mappedSelect]
-  var newObj = Object.assign({}, ...mapped)
+  const mappedAll = fieldsAll.value.map((item) => ({
+    [item.field]: item.valor,
+  }))
+  const mappedLleno = [...mappedAll, ...mapped, ...mappedSelect]
+  const newObj = Object.assign({}, ...mapped)
+
   Object.assign(newObj, ...mappedSelect)
   Object.assign(newObj, ...mappedAll)
   Object.assign(newObj, ...mappedLleno)
-  // var filaRecibida = props.fila
 
   emit('guardar', newObj)
 }

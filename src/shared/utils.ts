@@ -330,7 +330,7 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  * @param formato tipo de archivo esperado
  * @param titulo  nombre del archivo para descargar
  */
-export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo:string, data?:any,) {
+export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
     url: ruta,
@@ -344,7 +344,7 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
     const link = document.createElement('a')
     link.href = fileURL
-    link.target='_blank'
+    link.target = '_blank'
     link.setAttribute('download', `${titulo}.${formato}`)
     document.body.appendChild(link)
     link.click()

@@ -104,8 +104,68 @@
         </q-input>
       </div>
 
-      <div class="text-center full-width q-py-md">
-        {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+      <!-- aqui 
+      v-if="mostrarBotones" -->
+      <div
+        class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
+      >
+        <div>
+          {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+        </div>
+
+        <div class="row">
+          <q-select
+            v-model="visibleColumns"
+            multiple
+            outlined
+            dense
+            options-dense
+            :display-value="$q.lang.table.columns"
+            emit-value
+            map-options
+            :options="configuracionColumnas"
+            option-value="name"
+            options-cover
+          />
+
+          <!-- <q-btn flat round dense icon="bi-printer" @click="previsualizarPdf()">
+            <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
+              'Imprimir PDF'
+            }}</q-tooltip>
+          </q-btn> -->
+
+          <q-btn
+            flat
+            round
+            dense
+            :icon="props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'"
+            @click="
+              () => {
+                props.toggleFullscreen()
+                inFullscreen = !props.inFullscreen
+              }
+            "
+            class="q-ml-md"
+          >
+            <q-tooltip class="bg-dark">{{
+              props.inFullscreen
+                ? 'Salir de pantalla completa'
+                : 'Abrir en pantalla completa'
+            }}</q-tooltip>
+          </q-btn>
+
+          <!--<q-btn
+            flat
+            round
+            dense
+            :icon="grid ? 'bi-list' : 'bi-grid-3x3'"
+            @click="grid = !grid"
+          >
+            <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
+              grid ? 'Formato de lista' : 'Formato de cuadrícula'
+            }}</q-tooltip>
+          </q-btn> -->
+        </div>
       </div>
 
       <!-- Botones Header -->
@@ -164,66 +224,6 @@
           <span>{{ accion3Header.titulo }}</span>
         </q-btn>
       </div>
-
-      <!--<div class="row q-col-gutter-sm"> -->
-      <!-- <div
-        v-if="mostrarBotones"
-        class="row q-col-gutter-sm"
-        :class="{ 'no-wrap': !$q.screen.xs }"
-      >
-        <q-select
-          v-model="visibleColumns"
-          multiple
-          outlined
-          dense
-          rounded
-          options-dense
-          :display-value="$q.lang.table.columns"
-          emit-value
-          map-options
-          :options="configuracionColumnas"
-          option-value="name"
-          options-cover
-        />
-
-        <q-btn flat round dense icon="bi-printer" @click="previsualizarPdf()">
-          <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-            'Imprimir PDF'
-          }}</q-tooltip>
-        </q-btn>
-
-        <q-btn
-          flat
-          round
-          dense
-          :icon="props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'"
-          @click="
-            () => {
-              props.toggleFullscreen()
-              inFullscreen = !props.inFullscreen
-            }
-          "
-          class="q-ml-md"
-        >
-          <q-tooltip class="bg-dark">{{
-            props.inFullscreen
-              ? 'Salir de pantalla completa'
-              : 'Abrir en pantalla completa'
-          }}</q-tooltip>
-        </q-btn>
-
-        <q-btn
-          flat
-          round
-          dense
-          :icon="grid ? 'bi-list' : 'bi-grid-3x3'"
-          @click="grid = !grid"
-        >
-          <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-            grid ? 'Formato de lista' : 'Formato de cuadrícula'
-          }}</q-tooltip>
-        </q-btn>
-      </div> -->
     </template>
 
     <!-- Botones de acciones Desktop -->

@@ -29,8 +29,8 @@ export class Subtarea extends EntidadAuditable {
   subtarea_dependiente_id: number | null
 
   es_ventana: boolean
-  hora_inicio_ventana: string | null
-  hora_fin_ventana: string | null
+  hora_inicio_agendado: string | null
+  hora_fin_agendado: string | null
 
   descripcion_completa: string | null
 
@@ -43,7 +43,7 @@ export class Subtarea extends EntidadAuditable {
 
   // ubicacion_tarea: UbicacionTarea
   cliente_final: number | null
-  fecha_ventana: string | null
+  fecha_agendado: string | null
   es_primera_asignacion: boolean
 
   archivos: File[]
@@ -87,8 +87,8 @@ export class Subtarea extends EntidadAuditable {
     this.subtarea_dependiente_id = null
 
     this.es_ventana = false
-    this.hora_inicio_ventana = null
-    this.hora_fin_ventana = null
+    this.hora_inicio_agendado = null
+    this.hora_fin_agendado = null
 
     this.descripcion_completa = null
 
@@ -99,7 +99,7 @@ export class Subtarea extends EntidadAuditable {
 
     // this.ubicacion_tarea = new UbicacionTarea()
     this.cliente_final = null
-    this.fecha_ventana = null
+    this.fecha_agendado = null
     this.es_primera_asignacion = false
 
     this.archivos = []
