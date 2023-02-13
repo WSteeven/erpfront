@@ -1,10 +1,10 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class Ram extends EntidadAuditable{
-    nombre: string|null
+export class Ram extends EntidadAuditable {
+    nombre: string | null
 
-    constructor(){
+    constructor() {
         super()
-        this.nombre=null
+        this.nombre = null
     }
 }

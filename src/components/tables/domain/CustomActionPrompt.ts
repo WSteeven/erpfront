@@ -4,7 +4,7 @@ export interface CustomActionPrompt {
   titulo?: string,
   mensaje: string
   accion: (param) => void
-  defecto?: string
+  defecto?: string | number | null
   tipo?: string
   validacion?: funcion
 }

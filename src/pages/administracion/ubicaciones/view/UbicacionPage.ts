@@ -1,6 +1,6 @@
 //Dependencias
-//import { configuracionColumnasPerchas } from "pages/administracion/perchas/domain/configuracionColumnasPerchas";
-//import { configuracionColumnasPisos } from "pages/administracion/pisos/domain/configuracionColumnasPisos";
+//import { configuracionColumnasPerchas } from 'pages/administracion/perchas/domain/configuracionColumnasPerchas'
+//import { configuracionColumnasPisos } from 'pages/administracion/pisos/domain/configuracionColumnasPisos'
 import { configuracionColumnasUbicaciones } from '../domain/configuracionColumnasUbicaciones'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'

@@ -1,4 +1,4 @@
-import { Grupo } from "tareas/grupos/domain/Grupo"
+import { Grupo } from 'tareas/grupos/domain/Grupo'
 
 export class GrupoSeleccionado extends Grupo {
   responsable: boolean

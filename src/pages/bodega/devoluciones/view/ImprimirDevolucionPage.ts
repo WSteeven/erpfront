@@ -1,19 +1,19 @@
 //dependencias
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref } from 'vue'
 import html2pdf from 'html2pdf.js'
 
 //componentes
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { Devolucion } from '../domain/Devolucion';
-import { DevolucionController } from '../infraestructure/DevolucionController';
-import { useDevolucionStore } from 'stores/devolucion';
-import { useAuthenticationStore } from 'stores/authentication';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { Devolucion } from '../domain/Devolucion'
+import { DevolucionController } from '../infraestructure/DevolucionController'
+import { useDevolucionStore } from 'stores/devolucion'
+import { useAuthenticationStore } from 'stores/authentication'
 
 //pdf
-import { jsPDFAPI } from 'jspdf';
-import { jsPDF } from 'jspdf';
+import { jsPDFAPI } from 'jspdf'
+import { jsPDF } from 'jspdf'
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
@@ -80,20 +80,20 @@ export default defineComponent({
                     },
                 },
                 pageBreakBefore: function (currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
-                    return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
+                    return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
                 }
             }
 
             var dd = {
                 header: 'simple text',
-              
+
                 footer: {
-                  columns: [
-                    'Left part',
-                    { text: 'Right part', alignment: 'right' }
-                  ]
+                    columns: [
+                        'Left part',
+                        { text: 'Right part', alignment: 'right' }
+                    ]
                 },
-              
+
                 content: [
                     { text: 'COMPROBANTE DE DEVOLUCIÓN', style: 'header' },
                     { text: '', style: 'hr' },
@@ -104,7 +104,7 @@ export default defineComponent({
                     { text: '3 Headline', headlineLevel: 1 },
                     'Some long text of variable length ...',
                 ]
-              };
+            }
 
             pdfMake.createPdf(dd).open()
         }
@@ -115,7 +115,7 @@ export default defineComponent({
                 orientation: 'landscape',
                 unit: 'in',
                 format: 'a5'
-            });
+            })
             // const contenido = refPDF.value
             const contenido = document.getElementById('imprimase')
             console.log(contenido)
@@ -123,7 +123,7 @@ export default defineComponent({
             doc.html(contenido!, {
                 callback: function (doc) {
 
-                    doc.save();
+                    doc.save()
                 },
                 margin: 0.3,
                 image: {
@@ -139,7 +139,7 @@ export default defineComponent({
                 ], */
                 x: 10,
                 y: 10
-            });
+            })
             // doc.save('ejemplo.pdf')
         }
 

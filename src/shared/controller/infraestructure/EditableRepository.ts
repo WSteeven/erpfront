@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Endpoint } from 'shared/http/domain/Endpoint'
 import { AxiosHttpRepository } from '../../http/infraestructure/AxiosHttpRepository'
+import { HttpResponsePut } from '../../http/domain/HttpResponse'
+import { Endpoint } from 'shared/http/domain/Endpoint'
 import { ApiError } from '../../error/domain/ApiError'
 import { ResponseItem } from '../domain/ResponseItem'
-import { HttpResponsePut } from '../../http/domain/HttpResponse'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
+import { ParamsType } from 'config/types'
 
 export class EditableRepository<T> {
   private readonly httpRepository = AxiosHttpRepository.getInstance()
-  private readonly endpoint
+  private readonly endpoint: Endpoint
 
   constructor(endpoint: Endpoint) {
     this.endpoint = endpoint
@@ -17,24 +18,26 @@ export class EditableRepository<T> {
   async editar(
     id: number | null,
     entidad: T,
-    args?: any
+    params?: ParamsType
   ): Promise<ResponseItem<T, HttpResponsePut<T>>> {
     try {
       const endpoint = {
         endpoint: this.endpoint,
         id,
       }
-      const ruta = this.httpRepository.getEndpoint(endpoint, args)
+      const ruta = this.httpRepository.getEndpoint(endpoint, params)
       const response: AxiosResponse = await this.httpRepository.put(
         ruta,
         entidad
       )
+
       return {
         response,
         result: response.data.modelo,
       }
-    } catch (error: any) {
-      throw new ApiError(error)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
     }
   }
 }

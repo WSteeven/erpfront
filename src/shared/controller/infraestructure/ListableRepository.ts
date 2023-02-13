@@ -1,3 +1,4 @@
+import { ParamsType } from 'config/types'
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import {
   HttpResponseGet,
@@ -9,13 +10,13 @@ import { AxiosHttpRepository } from '../../http/infraestructure/AxiosHttpReposit
 
 export class ListableRepository<T> {
   private readonly httpRepository = AxiosHttpRepository.getInstance()
-  private readonly endpoint
+  private readonly endpoint: Endpoint
 
   constructor(endpoint: Endpoint) {
     this.endpoint = endpoint
   }
 
-  async listar<C = T>(args?: any) {
+  async listar<C = T>(args?: ParamsType) {
     return this.httpRepository
       .get<HttpResponseGet<HttpResponseList<C>>>(
         this.httpRepository.getEndpoint(this.endpoint, args)

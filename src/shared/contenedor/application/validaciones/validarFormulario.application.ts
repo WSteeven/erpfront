@@ -1,5 +1,5 @@
-import {Validador} from "@shared/validadores/domain/validador.domain"
-import {Ref} from "@vue/composition-api"
+import { Validador } from '@shared/validadores/domain/validador.domain'
+import { Ref } from '@vue/composition-api'
 
 export class ValidarFormulario implements Validador {
   private formulario: Ref<any>

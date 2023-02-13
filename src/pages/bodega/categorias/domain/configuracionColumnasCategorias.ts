@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Categoria } from "./Categoria";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Categoria } from './Categoria'
 
-export const configuracionColumnasCategorias: ColumnConfig<Categoria>[]=[
+export const configuracionColumnasCategorias: ColumnConfig<Categoria>[] = [
     {
         name: 'nombre',
         field: 'nombre',

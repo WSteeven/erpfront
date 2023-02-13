@@ -1,9 +1,9 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { useSelector } from "components/tables/application/selector";
-import { endpoints } from "config/api";
-import { Ref, ref } from "vue";
-import { Pedido } from "../domain/Pedido";
-import { DetalleProducto } from "pages/bodega/detalles_productos/domain/DetalleProducto";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { useSelector } from 'components/tables/application/selector'
+import { endpoints } from 'config/api'
+import { Ref, ref } from 'vue'
+import { Pedido } from '../domain/Pedido'
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 
 export function useOrquestadorSelectorDetalles(entidad: Pedido, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()

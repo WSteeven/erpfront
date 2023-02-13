@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse, Method, ResponseType } from 'axios'
 import { apiConfig, endpoints } from 'config/api'
 import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
+import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 
 export function limpiarListado<T>(listado: T[]): void {
@@ -29,7 +30,7 @@ export function validarKeyBuscar(keyCode?: number): boolean {
 
 export function validarEmail(email?: string): boolean {
   const validador =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    /^(([^<>()\[\]\\.,:\s@']+(\.[^<>()\[\]\\.,:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return validador.test(String(email).toLowerCase())
 }
 
@@ -53,7 +54,7 @@ export function descargarArchivoUrl(
   url: string,
 ): void {
   const link = document.createElement('a')
-  link.href = apiConfig.URL_BALSE + url
+  link.href = apiConfig.URL_BASE + url
   link.target = '_blank'
   link.click()
   link.remove()
@@ -275,15 +276,15 @@ export function obtenerMensajesError() {
 }
 
 export function formatBytes(bytes, decimals = 2) {
-  if (bytes === 0) return "0 Bytes"
+  if (bytes === 0) return '0 Bytes'
 
   const k = 1024
   const dm = decimals < 0 ? 0 : decimals
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
 
   const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 /**
  * Build the body table with elements of an array.
@@ -303,9 +304,9 @@ export function buildTableBody(data, columns, columnas) {
     const dataRow: any = []
     columns.forEach(function (column) {
       dataRow.push(row[column])
-    });
+    })
     body.push(dataRow)
-  });
+  })
 
   return body
 }
@@ -319,3 +320,32 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
 
+/**
+ * Metodo generico para descargar archivos desde una API
+ * @param ruta URL desde donde se descargará el archivo
+ * @param metodo metodo http de la consulta, generalmente GET
+ * @param responseType tipo de respuesta esperada, de la clase axios.ResponseType
+ * @param formato tipo de archivo esperado
+ * @param titulo  nombre del archivo para descargar
+ */
+export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo:string, data?:any,) {
+  const axiosHttpRepository = AxiosHttpRepository.getInstance()
+  axios({
+    url: ruta,
+    method: metodo,
+    data: data,
+    responseType: responseType,
+    headers: {
+      'Authorization': axiosHttpRepository.getOptions().headers.Authorization
+    }
+  }).then((response: HttpResponseGet) => {
+    const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+    const link = document.createElement('a')
+    link.href = fileURL
+    link.target='_blank'
+    link.setAttribute('download', `${titulo}.${formato}`)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+  })
+}

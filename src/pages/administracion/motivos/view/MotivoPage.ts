@@ -1,19 +1,19 @@
 //Dependencias
-import { configuracionColumnasMotivos } from "../domain/configuracionColumnasMotivos";
-import { required } from "@vuelidate/validators";
+import { configuracionColumnasMotivos } from '../domain/configuracionColumnasMotivos'
+import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue'
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { MotivoController } from "../infraestructure/MotivoController";
-import { Motivo } from "../domain/Motivo";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
-import { TipoTransaccionController } from "pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { MotivoController } from '../infraestructure/MotivoController'
+import { Motivo } from '../domain/Motivo'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+import { TipoTransaccionController } from 'pages/administracion/tipos_transacciones/infraestructure/TipoTransaccionController'
 
 export default defineComponent({
     components: { TabLayout },

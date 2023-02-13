@@ -2,22 +2,23 @@ import { useAuthenticationStore } from 'src/stores/authentication'
 import { UserLogin } from '../domain/UserLogin'
 import { rolesSistema } from 'config/utils'
 import { useRouter } from 'vue-router'
-import { watch, computed } from 'vue'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export class LoginController {
   store = useAuthenticationStore()
   Router = useRouter()
 
-  async login(userLogin: UserLogin): Promise<any> {
+  async login(userLogin: UserLogin): Promise<Empleado> {
     try {
       // const response = await this.store.login(userLogin)
       const usuario = await this.store.login(userLogin)
-      const roles = usuario.rol
+      const roles = usuario.roles
 
       console.log('soy user')
       console.log(usuario)
+      const existeYEsArreglo = typeof (roles) === 'object' && roles
 
-      if (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario)) {
+      if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
         console.log('es tecnico')
         this.Router.replace({ name: 'trabajo_asignado' })
       } else {

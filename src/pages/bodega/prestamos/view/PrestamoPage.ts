@@ -1,54 +1,54 @@
 //Dependencias
-import { configuracionColumnasPrestamos } from "../domain/configuracionColumnasPrestamos";
-import { helpers, required, requiredIf } from "@vuelidate/validators";
-import {useVuelidate} from '@vuelidate/core';
-import { defineComponent, ref } from "vue";
+import { configuracionColumnasPrestamos } from '../domain/configuracionColumnasPrestamos'
+import { helpers, required, requiredIf } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
+import { defineComponent, ref } from 'vue'
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { PrestamoController } from "../infraestructure/PrestamoController";
-import { Prestamo } from "../domain/Prestamo";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { InventarioController } from "pages/bodega/inventario/infraestructure/InventarioController";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
-import { useNotificaciones } from "shared/notificaciones";
-import { useAuthenticationStore } from "stores/authentication";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { PrestamoController } from '../infraestructure/PrestamoController'
+import { Prestamo } from '../domain/Prestamo'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { InventarioController } from 'pages/bodega/inventario/infraestructure/InventarioController'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useAuthenticationStore } from 'stores/authentication'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { useOrquestadorSelectorItemsInventario } from "../application/OrquestadorSelectorItemsInventario";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
+import { useOrquestadorSelectorItemsInventario } from '../application/OrquestadorSelectorItemsInventario'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 
 export default defineComponent({
-    components: {TabLayout, EssentialTable, EssentialSelectableTable},
-    setup(){
+    components: { TabLayout, EssentialTable, EssentialSelectableTable },
+    setup() {
         const mixin = new ContenedorSimpleMixin(Prestamo, new PrestamoController())
-        const {entidad:prestamo, disabled, listadosAuxiliares}= mixin.useReferencias()
-        const {setValidador, cargarVista, obtenerListados}=mixin.useComportamiento()
-        const {confirmar, prompt} = useNotificaciones()
-        
+        const { entidad: prestamo, disabled, listadosAuxiliares } = mixin.useReferencias()
+        const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+        const { confirmar, prompt } = useNotificaciones()
+
         let sucursal = ref()
         const {
             refListadoSeleccionable: refListadoSeleccionableProductos,
-            criterioBusqueda:criterioBusquedaProducto,
+            criterioBusqueda: criterioBusquedaProducto,
             listado: listadoProductos,
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        }=useOrquestadorSelectorItemsInventario(prestamo, 'inventarios')
+        } = useOrquestadorSelectorItemsInventario(prestamo, 'inventarios')
 
 
         const opciones_empleados = ref([])
         const opciones_sucursales = ref([])
         //Obtener los listados
-        cargarVista(async()=>{
+        cargarVista(async () => {
             await obtenerListados({
                 empleados: new EmpleadoController(),
                 sucursales: new SucursalController(),
@@ -58,20 +58,20 @@ export default defineComponent({
         })
 
         const reglas = {
-            fecha_salida:{required},
-            solicitante:{required},
-            estado:{required},
-            listadoProductos: { 
+            fecha_salida: { required },
+            solicitante: { required },
+            estado: { required },
+            listadoProductos: {
                 $each: helpers.forEach({
-                    cantidades:{required}
+                    cantidades: { required }
                 }),
-                required ,
+                required,
             },
             fecha_devolucion: {
-                requiredIfDevuelto: requiredIf(function(){return prestamo.estado==='DEVUELTO'?true:false;}),
+                requiredIfDevuelto: requiredIf(function () { return prestamo.estado === 'DEVUELTO' ? true : false }),
             },
-            
-            
+
+
         }
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -111,15 +111,15 @@ export default defineComponent({
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = listadosAuxiliares.sucursales
-        const estados = ['PENDIENTE','DEVUELTO']
+        const estados = ['PENDIENTE', 'DEVUELTO']
 
 
-        function updateSucursal(){
-            prestamo.listadoProductos=[]
+        function updateSucursal() {
+            prestamo.listadoProductos = []
         }
 
         return {
-            mixin, prestamo, v$, disabled, 
+            mixin, prestamo, v$, disabled,
             configuracionColumnas: configuracionColumnasPrestamos,
 
             //listados
@@ -127,7 +127,7 @@ export default defineComponent({
             opciones_sucursales,
             estados,
 
-            
+
             //filtros
             filtroEmpleados(val, update) {
                 if (val === '') {
@@ -138,17 +138,17 @@ export default defineComponent({
                 }
                 update(() => {
                     const needle = val.toLowerCase()
-                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle)>-1)
+                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
                 })
             },
-            empleadoSeleccionado(val){
+            empleadoSeleccionado(val) {
                 sucursal.value = opciones_empleados.value[0]['sucursal']
                 // console.log(sucursal.value)
-                const sucursalEncontrada = listadosAuxiliares.sucursales.filter((v)=>v.lugar===sucursal.value)
-                sucursal.value=sucursalEncontrada[0]['id']
+                const sucursalEncontrada = listadosAuxiliares.sucursales.filter((v) => v.lugar === sucursal.value)
+                sucursal.value = sucursalEncontrada[0]['id']
             },
             //sucursal seleccionada
-            SucursalSeleccionada(val){
+            SucursalSeleccionada(val) {
                 updateSucursal()
             },
 
@@ -157,7 +157,7 @@ export default defineComponent({
             configuracionColumnasProductosSeleccionadosAccion,
             botonEditarCantidad,
             eliminarItem,
-            
+
             //selector
             refListadoSeleccionableProductos,
             criterioBusquedaProducto,
@@ -166,11 +166,11 @@ export default defineComponent({
             limpiarProducto,
             seleccionarProducto,
             configuracionColumnasProductos,
-            
+
             //variable para el filtrado
             sucursal,
 
-            seleccionarPrueba(data){
+            seleccionarPrueba(data) {
                 console.log('Aqui se recibe la fila seleccionada')
                 console.log(data)
             }

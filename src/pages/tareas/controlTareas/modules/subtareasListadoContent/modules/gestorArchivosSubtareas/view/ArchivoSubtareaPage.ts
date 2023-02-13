@@ -8,7 +8,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { apiConfig, endpoints } from 'config/api'
 import { accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -69,7 +69,7 @@ export default defineComponent({
     const refGestor = ref()
     const axios = AxiosHttpRepository.getInstance()
 
-    const ruta = `${apiConfig.URL_BALSE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
+    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
 
     async function factoryFn(files) {
       const fd = new FormData()
@@ -85,8 +85,9 @@ export default defineComponent({
         files.value = []
         listado.value.push(response.data.modelo) //, ...listado.value]
         notificarCorrecto(response.data.mensaje)
-      } catch (error: any) {
-        notificarError(error.response.data.mensaje)
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError
+        notificarError(axiosError.response?.data.mensaje)
       }
     }
 

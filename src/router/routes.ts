@@ -44,7 +44,7 @@ const routes: RouteRecordRaw[] = [
           import('pages/tareas/tiposTareas/view/TipoTrabajoPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
+      /* {
         path: '/solicitud-materiales',
         name: 'solicitud_materiales',
         component: () =>
@@ -52,7 +52,7 @@ const routes: RouteRecordRaw[] = [
             'pages/tareas/solicitudMateriales/view/SolicitudMaterialesPage.vue'
           ),
         meta: { requiresAuth: true },
-      },
+      }, */
       {
         path: '/control-tendidos',
         name: 'control_tendidos',

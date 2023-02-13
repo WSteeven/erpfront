@@ -1,7 +1,5 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { EmpleadoSeleccionado } from './EmpleadoSeleccionado'
-import { Tecnico } from './Tecnico'
 
 export const configuracionColumnasEmpleadoSeleccionado: ColumnConfig<EmpleadoSeleccionado>[] = [
   {

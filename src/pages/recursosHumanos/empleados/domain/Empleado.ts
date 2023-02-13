@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Empleado extends EntidadAuditable {
     identificacion: string | null
@@ -12,7 +12,7 @@ export class Empleado extends EntidadAuditable {
     usuario: string | null
     sucursal: string | null
     estado: string | null
-    roles: string | null
+    roles: string | null | string[]
     grupo: number | null
     disponible: boolean
     es_lider: boolean

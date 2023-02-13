@@ -1,47 +1,47 @@
 //Dependencias
-import { configuracionColumnasDevoluciones } from "../domain/configuracionColumnasDevoluciones";
+import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
-import { useOrquestadorSelectorDetalles } from "../application/OrquestadorSelectorDetalles";
+import { defineComponent, ref } from 'vue'
+import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
-// import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+// import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { DevolucionController } from "../infraestructure/DevolucionController";
-import { Devolucion } from "../domain/Devolucion";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { DevolucionController } from '../infraestructure/DevolucionController'
+import { Devolucion } from '../domain/Devolucion'
 
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { TareaController } from "pages/tareas/controlTareas/infraestructure/TareaController";
-import { configuracionColumnasProductosSeleccionadosAccion } from "../domain/configuracionColumnasProductosSeleccionadosAccion";
-import { configuracionColumnasProductosSeleccionados } from "../domain/configuracionColumnasProductosSeleccionados";
-import { configuracionColumnasDetallesModal } from "../domain/configuracionColumnasDetallesModal";
-import { useNotificaciones } from "shared/notificaciones";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, estadosDevoluciones, logoBN, logoColor, meses, tabOptionsDevoluciones } from "config/utils";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { endpoints } from "config/api";
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
+import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
+import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { acciones, estadosDevoluciones, logoBN, logoColor, meses, tabOptionsDevoluciones } from 'config/utils'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
 import html2pdf from 'html2pdf.js'
-import { ComportamientoModalesDevoluciones } from "../application/ComportamientoModalesDevolucion";
-import { useDevolucionStore } from "stores/devolucion";
+import { ComportamientoModalesDevoluciones } from '../application/ComportamientoModalesDevolucion'
+import { useDevolucionStore } from 'stores/devolucion'
 
 //pdfmake
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import { useAuthenticationStore } from "stores/authentication";
+import { useAuthenticationStore } from 'stores/authentication'
 import * as fs from 'fs'
-import { LoginController } from "pages/sistema/authentication/login/infraestructure/LoginController";
-import { buildTableBody, notificarMensajesError } from "shared/utils";
-import { CambiarEstadoDevolucion } from "../application/CambiarEstadoDevolucion";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { Entidad } from "shared/entidad/domain/entidad";
+import { LoginController } from 'pages/sistema/authentication/login/infraestructure/LoginController'
+import { buildTableBody, notificarMensajesError } from 'shared/utils'
+import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { Entidad } from 'shared/entidad/domain/entidad'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -175,9 +175,9 @@ export default defineComponent({
                 console.log('entidad', entidad)
                 console.log('posicion', posicion)
             },
-            visible: ({entidad, posicion}) => {
-              console.log(entidad)
-                return tabSeleccionado.value == 'CREADA' && store.nombreUsuario==entidad.solicitante? true : false
+            visible: ({ entidad, posicion }) => {
+                console.log(entidad)
+                return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
@@ -186,7 +186,7 @@ export default defineComponent({
             icono: 'bi-printer',
             accion: async ({ entidad, posicion }) => {
                 devolucionStore.idDevolucion = entidad.id
-                // modales.abrirModalEntidad("ImprimirDevolucionPage")
+                // modales.abrirModalEntidad('ImprimirDevolucionPage')
                 await devolucionStore.showPreview()
                 console.log(devolucionStore.devolucion.listadoProductos)
                 console.log(devolucionStore.devolucion.listadoProductos.flatMap((v) => v))
@@ -211,36 +211,36 @@ export default defineComponent({
             }
         }
 
-        const f = new Date();
+        const f = new Date()
 
         function pdfMakeImprimir() {
             pdfMake.tableLayouts = {
                 listadoLayout: {
                     hLineWidth: function (i, node) {
                         if (i === 0 || i === node.table.body.length) {
-                            return 0;
+                            return 0
                         }
-                        return (i === node.table.headerRows) ? 2 : 1;
+                        return (i === node.table.headerRows) ? 2 : 1
                     },
                     vLineWidth: function (i) {
-                        return 0;
+                        return 0
                     },
                     hLineColor: function (i) {
-                        return i === 1 ? 'black' : '#aaa';
+                        return i === 1 ? 'black' : '#aaa'
                     },
                     paddingLeft: function (i) {
-                        return i === 0 ? 0 : 8;
+                        return i === 0 ? 0 : 8
                     },
                     paddingRight: function (i, node) {
-                        return (i === node.table.widths.length - 1) ? 0 : 8;
+                        return (i === node.table.widths.length - 1) ? 0 : 8
                     }
                 },
                 lineaLayout: {
                     hLineWidth: function (i, node) {
-                        return (i === 0 || i === node.table.body.length) ? 0 : 2;
+                        return (i === 0 || i === node.table.body.length) ? 0 : 2
                     },
                     vLineWidth: function (i, node) {
-                        return 0;
+                        return 0
                     },
                 },
             }
@@ -488,7 +488,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [0, 0, 60, 0]
                             },
@@ -497,7 +497,7 @@ export default defineComponent({
                                 width: '*',
                                 table: {
                                     widths: ['*'],
-                                    body: [[" "], [" "]]
+                                    body: [[' '], [' ']]
                                 },
                                 margin: [60, 0, 0, 0]
                             }
@@ -550,7 +550,7 @@ export default defineComponent({
                         bold: true
                     },
                 },
-            };
+            }
             pdfMake.createPdf(dd).open()
         }
 
@@ -572,8 +572,8 @@ export default defineComponent({
 
         function actualizarElemento(posicion: number, entidad: any): void {
             if (posicion >= 0) {
-                listado.value.splice(posicion, 1, entidad);
-                listado.value = [...listado.value];
+                listado.value.splice(posicion, 1, entidad)
+                listado.value = [...listado.value]
             }
         }
 

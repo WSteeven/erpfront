@@ -1,4 +1,4 @@
-import { Validador } from "./Validador"
+import { Validador } from './Validador'
 
 export class ValidadorMultiple<T extends Validador> implements Validador {
   protected validadores: T[] = []

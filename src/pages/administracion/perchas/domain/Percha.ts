@@ -1,12 +1,12 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class Percha extends EntidadAuditable{
-    nombre:string|null
-    sucursal:number|null
+export class Percha extends EntidadAuditable {
+    nombre: string | null
+    sucursal: number | null
 
-    constructor(){
+    constructor() {
         super()
-        this.nombre=null
-        this.sucursal=null
+        this.nombre = null
+        this.sucursal = null
     }
 }

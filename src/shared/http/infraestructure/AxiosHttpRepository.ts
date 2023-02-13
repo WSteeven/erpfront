@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { HttpRepository } from '../domain/HttpRepository'
 import { Endpoint } from '../domain/Endpoint'
 import { LocalStorage } from 'quasar'
+import { apiConfig } from 'config/api'
 
 // SINGLETON
 export class AxiosHttpRepository implements HttpRepository {
@@ -15,43 +16,45 @@ export class AxiosHttpRepository implements HttpRepository {
   private static initialize(): void {
     this.axiosInst = axios.create({
       // baseURL: 'https://api-sistemas.jpconstrucred.com/', //process.env.VUE_APP_API_URL,
-      baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
+      // baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
+      baseURL: process.env.API_URL, //process.env.VUE_APP_API_URL,
+
       withCredentials: true,
     })
   }
 
-  static config
+  // static config
 
   public static getInstance(): AxiosHttpRepository {
     if (!this.instance) {
       this.initialize()
       this.instance = new AxiosHttpRepository()
     }
-    AxiosHttpRepository.config = AxiosHttpRepository.getHeaderToken()
+    // AxiosHttpRepository.config = AxiosHttpRepository.getHeaderToken()
     return this.instance
   }
 
-  post<HttpResponse>(url: string, data?: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.post(url, data, AxiosHttpRepository.config)
+  post<HttpResponse>(url: string, data?: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
+    return AxiosHttpRepository.axiosInst.post(url, data, { ...this.getOptions(), ...options })
   }
 
   get<HttpResponse>(
     url: string,
     options?: AxiosRequestConfig
   ): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.get(url, AxiosHttpRepository.getHeaderToken())
+    return AxiosHttpRepository.axiosInst.get(url, { ...this.getOptions(), ...options })
   }
 
-  put<HttpResponse>(url: string, data: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.put(url, data, AxiosHttpRepository.config)
+  put<HttpResponse>(url: string, data: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
+    return AxiosHttpRepository.axiosInst.put(url, data, { ...this.getOptions(), ...options })
   }
 
-  delete<HttpResponse>(url: string): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.delete(url, AxiosHttpRepository.config)
+  delete<HttpResponse>(url: string, options?: AxiosRequestConfig): Promise<HttpResponse> {
+    return AxiosHttpRepository.axiosInst.delete(url, { ...this.getOptions(), ...options })
   }
 
-  patch<HttpResponse>(url: string, data: any): Promise<HttpResponse> {
-    return AxiosHttpRepository.axiosInst.patch(url, data, AxiosHttpRepository.config)
+  patch<HttpResponse>(url: string, data: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
+    return AxiosHttpRepository.axiosInst.patch(url, data, { ...this.getOptions(), ...options })
   }
 
   public getEndpoint(
@@ -91,7 +94,17 @@ export class AxiosHttpRepository implements HttpRepository {
     return `?${query.join('&')}`
   }
 
-  static getHeaderToken() {
+  getOptions() {
+    const options: AxiosRequestConfig = { headers: {} }
+    const token = LocalStorage.getItem('token')
+
+    if (token) {
+      options.headers = { Authorization: `Bearer ${token}`, }
+    }
+    return options
+  }
+
+  /* static getHeaderToken(): AxiosRequestConfig {
     const token = LocalStorage.getItem('token')
 
     return {
@@ -100,5 +113,5 @@ export class AxiosHttpRepository implements HttpRepository {
         Authorization: `Bearer ${token}`,
       },
     }
-  }
+  } */
 }

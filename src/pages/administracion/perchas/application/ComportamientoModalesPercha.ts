@@ -1,8 +1,8 @@
-import { ComportamientoModales } from "components/modales/application/ComportamientoModales";
-import { PerchaModales } from "../domain/PerchaModales";
+import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
+import { PerchaModales } from '../domain/PerchaModales'
 
 export class ComportamientoModalesPercha extends ComportamientoModales<PerchaModales>{
-    constructor(){
+    constructor() {
         super(new PerchaModales())
     }
 }

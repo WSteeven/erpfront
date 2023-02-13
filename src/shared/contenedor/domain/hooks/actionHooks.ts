@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import {Hooks} from "./hooks"
+import { Hooks } from './hooks'
 
 export class ActionHooks<T> extends Hooks<T> {
   onBeforeGuardar: () => void
@@ -12,12 +12,12 @@ export class ActionHooks<T> extends Hooks<T> {
 
   constructor() {
     super()
-    this.onBeforeGuardar = () => {}
-    this.onGuardado = () => {}
-    this.onBeforeModificar = () => {}
-    this.onModificado = () => {}
-    this.onBeforeConsultar = () => {}
-    this.onConsultado = () => {}
-    this.onReestablecer = () => {}
+    this.onBeforeGuardar = () => { }
+    this.onGuardado = () => { }
+    this.onBeforeModificar = () => { }
+    this.onModificado = () => { }
+    this.onBeforeConsultar = () => { }
+    this.onConsultado = () => { }
+    this.onReestablecer = () => { }
   }
 }

@@ -202,7 +202,6 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 
 // Componentes
 import EssentialLink from 'components/EssentialLink.vue'
-import BottomMenu from 'components/bottomMenu/view/BottomMenu.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import { LocalStorage, useQuasar } from 'quasar'
 
@@ -212,7 +211,6 @@ export default defineComponent({
   components: {
     EssentialLink,
     EssentialLoading,
-    BottomMenu,
     FooterComponent,
   },
 

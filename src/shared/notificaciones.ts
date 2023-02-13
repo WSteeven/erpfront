@@ -1,7 +1,7 @@
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useQuasar } from 'quasar'
 import { useNotificacionStore } from 'stores/notificacion'
-import { validarEmail } from './utils'
+
 
 export function useNotificaciones() {
   const $q = useNotificacionStore().$q ?? useQuasar()
@@ -64,26 +64,6 @@ export function useNotificaciones() {
     })
       .onOk(() => {
         callback()
-      })
-      .onCancel(() => {
-        // console.log('>>>> Cancel')
-      })
-  }
-
-  function prompt2(mensaje: string, callback: (data) => void, defaultValue = '', type = 'text') {
-    $q.dialog({
-      html: true,
-      title: 'Confirmación',
-      message: mensaje,
-      prompt: {
-        model: defaultValue,
-        type: type, // optional
-      },
-      cancel: true,
-      persistent: true,
-    })
-      .onOk((data) => {
-        callback(data)
       })
       .onCancel(() => {
         // console.log('>>>> Cancel')

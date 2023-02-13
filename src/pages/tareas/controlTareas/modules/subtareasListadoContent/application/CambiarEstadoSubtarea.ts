@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import { endpoints } from 'config/api'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
@@ -52,8 +52,9 @@ export class CambiarEstadoSubtarea {
         response,
         result: response.data.modelo,
       }
-    } catch (e: any) {
-      throw new ApiError(e)
+    } catch (e: unknown) {
+      const axiosError = e as AxiosError
+      throw new ApiError(axiosError)
     }
   }
 }

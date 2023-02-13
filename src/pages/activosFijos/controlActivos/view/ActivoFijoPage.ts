@@ -1,22 +1,22 @@
 //Dependencias
-import { configuracionColumnasActivosFijos } from "../domain/configuracionColumnasActivosFijos";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from "@vuelidate/core"
-import { defineComponent, ref } from "vue";
+import { configuracionColumnasActivosFijos } from '../domain/configuracionColumnasActivosFijos'
+import { required } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
+import { defineComponent, ref } from 'vue'
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { ActivoFijo } from "../domain/ActivoFijo";
-import { useQuasar } from "quasar";
-import { useNotificacionStore } from "stores/notificacion";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController";
-import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { ActivoFijoController } from "../infraestructure/ActivoFijoController";
-import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ActivoFijo } from '../domain/ActivoFijo'
+import { useQuasar } from 'quasar'
+import { useNotificacionStore } from 'stores/notificacion'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { ActivoFijoController } from '../infraestructure/ActivoFijoController'
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
 
 export default defineComponent({
     components: { TabLayout },

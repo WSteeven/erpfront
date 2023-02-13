@@ -1,31 +1,31 @@
 //Dependencias
-import { configuracionColumnasInventarios } from "pages/bodega/inventario/domain/configuracionColumnasInventarios";
-import { required } from "@vuelidate/validators";
+import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
+import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue'
 
 //Componentes
 import buttonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { InventarioController } from "pages/bodega/inventario/infraestructure/InventarioController";
-import { Inventario } from "pages/bodega/inventario/domain/Inventario";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { InventarioController } from 'pages/bodega/inventario/infraestructure/InventarioController'
+import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
 
 //Stores
-import { useDetalleStore } from "stores/detalle";
-import { useTransaccionStore } from "stores/transaccion";
-import { useDetalleTransaccionStore } from "stores/detalleTransaccion";
-import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
-import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController";
-import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
-import { acciones } from "config/utils";
-import { useNotificaciones } from "shared/notificaciones";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
+import { useDetalleStore } from 'stores/detalle'
+import { useTransaccionStore } from 'stores/transaccion'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
+import { acciones } from 'config/utils'
+import { useNotificaciones } from 'shared/notificaciones'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 //Controladores para los selects que no se deben usar
 
@@ -132,8 +132,8 @@ export default defineComponent({
 
         function actualizarElementoListado(posicion: number, entidad: any): void {
             if (posicion >= 0) {
-                transaccion.listadoProductosTransaccion.value.splice(posicion, 1, entidad);
-                transaccion.listadoProductosTransaccion.value = [...transaccion.listadoProductosTransaccion.value];
+                transaccion.listadoProductosTransaccion.value.splice(posicion, 1, entidad)
+                transaccion.listadoProductosTransaccion.value = [...transaccion.listadoProductosTransaccion.value]
             }
             console.log('La posicion del elemento del listado de la transaccion es ', detalleProductoTransaccionStore.posicion)
         }
