@@ -6,16 +6,16 @@
           <!-- Nombre -->
           <div class="col-12 col-md-3">
             <q-input
-              v-model="tipoFondo.descripcion"
+              v-model="saldo.descripcion_saldo"
               placeholder="Obligatorio"
               :disable="disabled"
-              :error="!!v$.descripcion.$errors.length"
-              @blur="v$.descripcion.$touch"
+              :error="!!v$.descripcion_saldo.$errors.length"
+              @blur="v$.descripcion_saldo.$touch"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
+                <div v-for="error of v$.descripcion_saldo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -24,16 +24,18 @@
           <!-- transcriptor -->
           <div class="col-12 col-md-3">
             <q-input
-              v-model="tipoFondo.transcriptor"
-              placeholder="Obligatorio"
+              v-model="saldo.fecha"
+              formatModel="string"
+              format="YYYY-MM-DD"
+              type="date"
               :disable="disabled"
-              :error="!!v$.transcriptor.$errors.length"
-              @blur="v$.transcriptor.$touch"
+              :error="!!v$.fecha.$errors.length"
+              @blur="v$.fecha.$touch"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.transcriptor.$errors" :key="error.$uid">
+                <div v-for="error of v$.fecha.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -44,4 +46,4 @@
     </template>
   </tab-layout>
 </template>
-<script src="./TipoFondoPage.ts"></script>
+<script src="./SaldoPage.ts"></script>

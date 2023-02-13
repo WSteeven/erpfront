@@ -270,6 +270,18 @@ export const useMenuStore = defineStore('menu', () => {
             can: store.can('puede.ver.sub_detalle_fondo'),
           }]
         },
+        {
+          title: 'Saldo',
+          icon: 'bi-cash',
+          children:[
+            {
+              title: 'Saldo',
+              link: 'saldo',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.saldo'),
+            }
+          ]
+        },
 
       ]
     },

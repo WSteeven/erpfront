@@ -464,6 +464,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/saldo',
+        name: 'saldo',
+        component: () =>
+          import(
+            'pages/fondosRotativos/saldo/view/SaldoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {
