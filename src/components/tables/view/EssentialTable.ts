@@ -95,6 +95,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion8: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
     accion1Header: {
       type: Object as () => CustomActionTable,
       required: false,
@@ -140,7 +144,7 @@ export default defineComponent({
       required: false,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'selected', 'onScroll'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'selected', 'onScroll'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)

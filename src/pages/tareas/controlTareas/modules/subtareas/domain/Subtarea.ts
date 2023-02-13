@@ -57,6 +57,7 @@ export class Subtarea extends EntidadAuditable {
 
   empleados: string | null
   grupos: string | null
+  dias_ocupados: number | null
 
   constructor() {
     super()
@@ -113,5 +114,7 @@ export class Subtarea extends EntidadAuditable {
 
     this.empleados = null
     this.grupos = null
+
+    this.dias_ocupados = null
   }
 }

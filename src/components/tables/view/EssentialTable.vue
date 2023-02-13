@@ -26,7 +26,8 @@
     :style="estilos"
     class="bg-body-table custom-border"
     :class="{
-      'alto-fijo': !inFullscreen && altoFijo,
+      'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
+      'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
       'my-sticky-dynamic': !inFullscreen && altoFijo,
       'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
     }"
@@ -101,6 +102,10 @@
             <q-icon name="search"></q-icon>
           </template>
         </q-input>
+      </div>
+
+      <div class="text-center full-width q-py-md">
+        {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
       </div>
 
       <!-- Botones Header -->
@@ -274,6 +279,7 @@
               :accion5="accion5"
               :accion6="accion6"
               :accion7="accion7"
+              :accion8="accion8"
               :propsTable="props"
             ></CustomButtons>
           </span>
@@ -699,7 +705,10 @@
           ></q-icon
           >ACTIVO
         </q-chip>
-        <q-chip v-if="props.value === 0" :class="{'bg-red-1': !$q.dark.isActive}">
+        <q-chip
+          v-if="props.value === 0"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
           <q-icon
             name="bi-circle-fill"
             color="negative"
@@ -833,19 +842,6 @@
 </template>
 
 <style lang="scss">
-/* .q-table__top,
-.q-table__bottom,
-thead tr:first-child th {
-   bg color is important for th; just specify one
-  background-color: #fff;
-} */
-
-//.q-table__bottom,
-/*.q-table__top,
-thead tr:first-child th {
-  background-color: #f5f5f5;
-} */
-
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 410px;
@@ -866,8 +862,12 @@ thead tr:first-child th {
   }
 }
 
-.alto-fijo {
-  height: calc(100vh - 240px);
+.alto-fijo-desktop {
+  height: calc(100vh - 200px);
+}
+
+.alto-fijo-mobile {
+  height: 100vh;
 }
 
 .rounded {

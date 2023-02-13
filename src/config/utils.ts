@@ -140,6 +140,7 @@ export const tabOptions: TabOption[] = [
   { label: 'Suspendido', value: 'SUSPENDIDO' },
   { label: 'Cancelado', value: 'CANCELADO' },
   { label: 'Realizado', value: 'REALIZADO' },
+  { label: 'Finalizado', value: 'FINALIZADO' },
 ]
 
 export const tabTrabajoAsignado: TabOption[] = [
@@ -281,6 +282,7 @@ export const estadosSubtareas = {
   SUSPENDIDO: 'SUSPENDIDO',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
+  FINALIZADO: 'FINALIZADO',
   REAGENDADO: 'REAGENDADO',
 }
 

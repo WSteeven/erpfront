@@ -54,10 +54,10 @@ export const usePedidoStore = defineStore('pedido', () => {
     pedido.hydrate(response.data.modelo)
   }
 
-   async function imprimirPdf() {
+  async function imprimirPdf() {
     const axios = AxiosHttpRepository.getInstance()
-    const url = apiConfig.URL_BASE+'/'+ axios.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value
-    const filename = 'pedido_'+idPedido.value+Date.now()
+    const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.pedidos) + '/imprimir/' + idPedido.value
+    const filename = 'pedido_' + idPedido.value + Date.now()
     imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
     console.log('Pedido impreso con éxito')
   }
@@ -71,6 +71,7 @@ export const usePedidoStore = defineStore('pedido', () => {
       responseType: 'blob',
 
       headers: {
+        'Authorization': AxiosHttpRepository.getInstance().getOptions().headers.Authorization
         'Authorization': axiosHttpRepository.getOptions().headers.Authorization
       }
     }).then((response) => {

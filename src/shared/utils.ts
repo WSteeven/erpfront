@@ -320,6 +320,8 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
 
+/*export async function imprimirPdf(ruta:string, metodo:string, responseType:string, headers?: {}) {
+  const ax = axios({
 /**
  * Metodo generico para descargar archivos desde una API
  * @param ruta URL desde donde se descargará el archivo
@@ -328,7 +330,7 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  * @param formato tipo de archivo esperado
  * @param titulo  nombre del archivo para descargar
  */
-export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo:string, data?:any,) {
+/*export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo:string, data?:any,) {
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
     url: ruta,
@@ -348,4 +350,19 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     link.click()
     link.remove()
   })
+}*/
+
+export function obtenerUbicacion(onUbicacionConcedida) {
+
+  const onErrorDeUbicacion = err => {
+    console.log('Error obteniendo ubicación: ', err)
+  }
+
+  const opcionesDeSolicitud = {
+    enableHighAccuracy: true, // Alta precisión
+    maximumAge: 0, // No queremos caché
+    timeout: 5000 // Esperar solo 5 segundos
+  }
+
+  navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud)
 }

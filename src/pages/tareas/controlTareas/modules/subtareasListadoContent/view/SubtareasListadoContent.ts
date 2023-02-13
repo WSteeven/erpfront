@@ -42,6 +42,9 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesSubtareaContent()
 
+    /***************
+     * Botones tabla
+     ***************/
     const agregarSubtarea: CustomActionTable = {
       titulo: 'Crear una subtarea',
       icono: 'bi-plus',
@@ -77,10 +80,10 @@ export default defineComponent({
     }
 
     const botonControlAvance: CustomActionTable = {
-      titulo: 'Control de avances',
-      icono: 'bi-journal-text',
+      titulo: 'Formulario',
+      icono: 'bi-check2-square',
       color: 'indigo',
-      visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO, estadosSubtareas.PAUSADO].includes(entidad.estado),
+      visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO, estadosSubtareas.PAUSADO, estadosSubtareas.FINALIZADO].includes(entidad.estado),
       accion: ({ entidad }) => {
         subtareaListadoStore.idSubtareaSeleccionada = entidad.id
         modales.abrirModalEntidad('GestionarAvancesPage')
@@ -97,17 +100,20 @@ export default defineComponent({
       }
     }
 
-    /* const botonFinalizar: CustomActionTable = {
-      titulo: 'Realizado',
+    const botonFinalizar: CustomActionTable = {
+      titulo: 'Finalizar',
       color: 'positive',
       icono: 'bi-check',
-      visible: ({ entidad }) => entidad.estado === estadosSubtareas.EJECUTANDO,
-      accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como realizada la subtarea?', () => {
-        new CambiarEstadoSubtarea().realizar(entidad.id)
-        entidad.estado = estadosSubtareas.REALIZADO
+      visible: ({ entidad }) => entidad.estado === estadosSubtareas.REALIZADO,
+      accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
+        const { result } = await new CambiarEstadoSubtarea().finalizar(entidad.id)
+        entidad.estado = estadosSubtareas.FINALIZADO
+        entidad.fecha_hora_finalizacion = result.fecha_hora_finalizacion
+        entidad.dias_ocupados = result.dias_ocupados
         actualizarElemento(posicion, entidad)
+        notificarCorrecto('Subtarea finalizada exitosamente!')
       }),
-    } */
+    }
 
     const botonAsignar: CustomActionTable = {
       titulo: 'Asignar',
@@ -120,7 +126,7 @@ export default defineComponent({
           entidad.estado = estadosSubtareas.ASIGNADO
           entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
           actualizarElemento(posicion, entidad)
-          notificarCorrecto('Subtarea asignada correctamente!')
+          notificarCorrecto('Subtarea asignada exitosamente!')
         })
       },
     }
@@ -215,7 +221,7 @@ export default defineComponent({
       botonSubirArchivos,
       agregarSubtarea,
       imprimirListado,
-      // botonFinalizar,
+      botonFinalizar,
       aplicarFiltro,
       botonAsignar,
       botonSolicitarMaterial,

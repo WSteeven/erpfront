@@ -521,8 +521,6 @@
       </div>
     </q-expansion-item>
 
-    <q-btn label="Descargar PDF" color="primary" @click="descargarPDF()" />
-
     <button-submits
       :accion="accion"
       @cancelar="reestablecer()"

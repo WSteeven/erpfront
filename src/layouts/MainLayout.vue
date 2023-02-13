@@ -237,16 +237,14 @@ export default defineComponent({
     }
 
     const $q = useQuasar()
-    const modoOscuro = computed(
-      () => LocalStorage.getItem('dark') ?? $q.dark.isActive
-    )
 
-    $q.dark.set(modoOscuro.value)
+    const modoOscuro = ref(LocalStorage.getItem('dark') ?? false)
+
+    $q.dark.set(Boolean(modoOscuro.value))
 
     function toggleDarkMode() {
-      console.log(!modoOscuro.value)
-      $q.dark.set(!modoOscuro.value)
-      LocalStorage.set('dark', !modoOscuro.value)
+      $q.dark.set(Boolean(modoOscuro.value))
+      LocalStorage.set('dark', modoOscuro.value)
     }
 
     return {

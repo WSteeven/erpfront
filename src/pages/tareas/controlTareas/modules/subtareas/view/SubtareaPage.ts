@@ -341,6 +341,8 @@ export default defineComponent({
       try {
         await guardar(subtarea, false)
 
+        console.log('trabajo guardado')
+        console.log(subtarea)
         listado.value = [subtarea, ...listado.value]
 
         emit('cerrar-modal')

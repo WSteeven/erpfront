@@ -12,6 +12,7 @@ export class LoginController {
     try {
       // const response = await this.store.login(userLogin)
       const usuario = await this.store.login(userLogin)
+      console.log('---dentro...')
       const roles = usuario.roles
 
       console.log('soy user')

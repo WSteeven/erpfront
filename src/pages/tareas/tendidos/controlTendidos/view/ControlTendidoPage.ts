@@ -10,7 +10,7 @@ import {
   acciones,
 } from 'config/utils'
 import { useTendidoStore } from 'stores/tendido'
-import { computed, defineComponent, onMounted, watch, watchEffect } from 'vue'
+import { computed, defineComponent, onMounted, watchEffect } from 'vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
@@ -42,27 +42,34 @@ export default defineComponent({
     EssentialTable,
   },
   setup() {
-    // Mixin tendido
-    const mixin = new ContenedorSimpleMixin(
-      Tendido,
-      new ControlTendidoController()
-    )
+    /*********
+    * Stores
+    *********/
+    const trabajoAsignadoStore = useTrabajoAsignadoStore()
+    const tendidoStore = useTendidoStore()
+
+    /********
+    * Mixin
+    *********/
+    const mixin = new ContenedorSimpleMixin(Tendido, new ControlTendidoController())
 
     const { entidad: progresiva, listadosAuxiliares } = mixin.useReferencias()
     const { guardar, consultar, cargarVista, obtenerListados, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado, onGuardado } = mixin.useHooks()
 
-    // Stores
-    const trabajoAsignadoStore = useTrabajoAsignadoStore()
-    const tendidoStore = useTendidoStore()
-
-    // Mixin
+    /*************
+    * Mixin modal
+    **************/
     const mixinRegistroTendido = new ContenedorSimpleMixin(RegistroTendido, new RegistroTendidoController())
     const { entidad: registroTendido, listado: listadoRegistrosTendidos } = mixinRegistroTendido.useReferencias()
     const { listar: listarRegistrosTendidos } = mixinRegistroTendido.useComportamiento()
-    const entidadReset = new RegistroTendido()
 
+    /************
+    * Variables
+    ************/
+    const entidadReset = new RegistroTendido()
     const router = useRouter()
+    const modales = new ComportamientoModalesProgresiva()
 
     onMounted(() => {
       // Consultar control tendido
@@ -91,7 +98,7 @@ export default defineComponent({
       color: 'secondary',
       accion: () => {
         modales.abrirModalEntidad('RegistroTendidoPage')
-        //         tendidoStore.idTendido = progresiva.id
+        // tendidoStore.idTendido = progresiva.id
         registroTendido.hydrate(entidadReset)
         tendidoStore.idRegistroTendido = null
         tendidoStore.accion = acciones.nuevo
@@ -117,7 +124,9 @@ export default defineComponent({
       modales.abrirModalEntidad('ResumenTendidoPage')
     }
 
-    // Hooks
+    /********
+     * Hooks
+     *********/
     onConsultado(() => {
       listarRegistrosTendidos({
         tendido: progresiva.id
@@ -131,9 +140,10 @@ export default defineComponent({
 
     onGuardado(() => tendidoStore.idTendido = progresiva.id)
 
-    const modales = new ComportamientoModalesProgresiva()
 
-    // Reglas de validacion
+    /*************
+    * Validaciones
+    **************/
     const reglas = {
       bobina: { required },
     }
@@ -141,13 +151,12 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, progresiva)
     setValidador(v$.value)
 
+    /************
+    * Funciones
+    *************/
     function obtenerElemento(id: number) {
       return listadosAuxiliares.bobinas.find((item: any) => item.id === id)
     }
-
-    /* watch(computed(() => progresiva.bobina), () => {
-      progresiva.cantidad_hilos = obtenerElemento(progresiva.bobina).cantidad_hilos
-    }) */
 
     watchEffect(() => {
       if (progresiva.bobina)

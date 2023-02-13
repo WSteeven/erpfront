@@ -37,6 +37,13 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     sortable: true,
   },
   {
+    name: 'cantidad_subtareas',
+    field: 'cantidad_subtareas',
+    label: 'Cant. subtareas',
+    align: 'center',
+    sortable: true,
+  },
+  {
     name: 'estado',
     field: 'estado',
     label: 'Estado',

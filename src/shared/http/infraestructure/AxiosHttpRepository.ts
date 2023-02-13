@@ -18,7 +18,7 @@ export class AxiosHttpRepository implements HttpRepository {
       // baseURL: 'https://api-sistemas.jpconstrucred.com/', //process.env.VUE_APP_API_URL,
       // baseURL: 'http://localhost:8000', //process.env.VUE_APP_API_URL,
       baseURL: process.env.API_URL, //process.env.VUE_APP_API_URL,
-
+      // baseURL: 'http://backend_jpconstrucred.test:80',
       withCredentials: true,
     })
   }

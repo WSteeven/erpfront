@@ -36,8 +36,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   // Actions
   const login = async (credentiales: UserLogin): Promise<Empleado> => {
     try {
-      const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
-      await axios.get(csrf_cookie)
+      /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
+      console.log('authentication...')
+      await axios.get(csrf_cookie) */
+
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)

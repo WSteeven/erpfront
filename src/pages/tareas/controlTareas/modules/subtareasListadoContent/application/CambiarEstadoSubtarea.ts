@@ -22,6 +22,10 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/realizar', subtareaId)
   }
 
+  async finalizar(subtareaId: number) {
+    return this.solicitud('/finalizar', subtareaId)
+  }
+
   async pausar(subtareaId: number, mensaje: string) {
     return this.solicitud('/pausar', subtareaId, { motivo: mensaje })
   }

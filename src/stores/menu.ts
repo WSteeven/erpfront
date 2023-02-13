@@ -20,7 +20,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Trabajo asignado',
       link: 'trabajo-asignado',
-      icon: 'bi-ui-checks',
+      icon: 'bi-check2-square',
       can: store.can('puede.ver.trabajo_asignado'),
     },
     {
@@ -41,7 +41,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Tareas',
-      icon: 'bi-ui-checks',
+      icon: 'bi-pin-angle',
       can: store.can('puede.ver.modulo_tareas'),
       children: [
         /*{

@@ -42,7 +42,19 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
   {
     name: 'fecha_hora_realizado',
     field: 'fecha_hora_realizado',
+    label: 'Fecha hora realizado',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_finalizacion',
+    field: 'fecha_hora_finalizacion',
     label: 'Fecha hora finalización',
+    align: 'left',
+  },
+  {
+    name: 'dias_ocupados',
+    field: 'dias_ocupados',
+    label: 'Días ocupados',
     align: 'left',
   },
   {

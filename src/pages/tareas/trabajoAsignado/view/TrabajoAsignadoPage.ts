@@ -73,7 +73,7 @@ export default defineComponent({
 
     const botonIniciar: CustomActionTable = {
       titulo: 'Iniciar',
-      icono: 'bi-play-circle-fill',
+      icono: 'bi-play-fill',
       color: 'positive',
       visible: ({ entidad }) => [estadosSubtareas.ASIGNADO].includes(entidad.estado) && entidad.responsable,//(entidad.estado === estadosSubtareas.SUSPENDIDO && entidad.es_primera_asignacion),
       accion: ({ entidad, posicion }) => {
@@ -147,7 +147,7 @@ export default defineComponent({
 
     const botonFormulario: CustomActionTable = {
       titulo: 'Formulario',
-      icono: 'bi-textarea-t',
+      icono: 'bi-check2-square',
       color: 'secondary',
       visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO].includes(entidad.estado) && entidad.responsable,
       accion: async ({ entidad }) => {
