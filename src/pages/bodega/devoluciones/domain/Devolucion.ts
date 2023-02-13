@@ -3,9 +3,9 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Devolucion extends EntidadAuditable {
     justificacion: string | null
-    solicitante: string | null
+    solicitante: number | null
     tarea: string | null
-    sucursal: string | null
+    sucursal: number | null
     estado: string | null
     created_at: string | null
 

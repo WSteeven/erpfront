@@ -27,6 +27,8 @@ export class Transaccion extends EntidadAuditable {
     cliente_id: number | null
     created_at: string | null
 
+    condicion:number|null
+
     //variables auxiliares
     tiene_obs_autorizacion: boolean
     tiene_obs_estado: boolean
@@ -67,6 +69,8 @@ export class Transaccion extends EntidadAuditable {
         this.per_retira = null
         this.per_retira_id = null
         this.created_at = null
+        
+        this.condicion = null
 
         this.tiene_obs_autorizacion = false
         this.tiene_obs_estado = false

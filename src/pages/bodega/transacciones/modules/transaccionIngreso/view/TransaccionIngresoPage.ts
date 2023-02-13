@@ -50,6 +50,7 @@ import { buildTableBody } from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
+import { number } from 'echarts'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -84,7 +85,7 @@ export default defineComponent({
         })
         onReestablecer(() => {
             transaccion.cliente = listadosAuxiliares.clientes[0]['id']
-            transaccion.condicion = ''
+            transaccion.condicion = null
 
             //reestablecer valores de las banderas
             esVisibleComprobante.value = false
@@ -169,7 +170,7 @@ export default defineComponent({
             justificacion: { required },
             sucursal: { required },
             motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
-            estado: { requiredIfRol: requiredIf(accion === acciones.editar), },
+            estado: { requiredIfRol: requiredIf(accion.value === acciones.editar), },
             observacion_est: { requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado }) },
             listadoProductosTransaccion: { required },
             cliente: { required },
@@ -187,10 +188,10 @@ export default defineComponent({
             transaccion.listadoProductosTransaccion = devolucionStore.devolucion.listadoProductos
         }
         function limpiarTransaccion() {
-            transaccion.devolucion = ''
+            transaccion.devolucion = null
             transaccion.justificacion = ''
-            transaccion.solicitante = ''
-            transaccion.sucursal = ''
+            transaccion.solicitante = null
+            transaccion.sucursal = null
             transaccion.listadoProductosTransaccion = []
         }
 
@@ -306,7 +307,7 @@ export default defineComponent({
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
 
-        function table(data, columns, encabezados) {
+        /* function table(data, columns, encabezados) {
             return {
                 layout: 'listadoLayout',
                 table: {
@@ -474,7 +475,7 @@ export default defineComponent({
                     /*
                     ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
-                    */
+                    *
                     table(transaccion.listadoProductosTransaccion,
                         ['producto', 'descripcion', 'categoria', 'cantidad', 'devuelto'],
                         ['Producto', 'Descripción', 'Estado', 'Cantidad', 'ingresado']),
@@ -490,7 +491,7 @@ export default defineComponent({
                                 `${element.id}`
                             })
                         }
-                    }, */
+                    }, *
 
                     { text: '\n\n' },
                     {
@@ -564,7 +565,7 @@ export default defineComponent({
                 },
             }
             pdfMake.createPdf(docDefinition).open()
-        }
+        } */
 
 
         //Configurar los listados
@@ -644,7 +645,7 @@ export default defineComponent({
 
             checkMasivo(val, evt) {//checkbox de ingreso masivo
                 if (!val) {
-                    transaccion.condicion = ''
+                    transaccion.condicion = null
                 }
             },
             checkDevolucion(val, evt) {

@@ -38,18 +38,18 @@ export const useTransaccionStore = defineStore('transaccion', () => {
 
     async function imprimirIngreso() {
         const axios = AxiosHttpRepository.getInstance()
-        const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_ingresos) + '/imprimir/' + idTransaccion.value
-        const filename = 'ingreso_'+idTransaccion.value+Date.now()
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_ingresos) + '/imprimir/' + idTransaccion.value
+        const filename = 'ingreso_' + idTransaccion.value + '_' + Date.now()
         imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
         console.log('Ingreso impreso con éxito.')
         // const response: AxiosResponse = await axios.get(ruta, responseType:'blob')
     }
     async function imprimirEgreso() {
-      const axios = AxiosHttpRepository.getInstance()
-      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_egresos)+'/imprimir/'+idTransaccion.value
-      const filename = 'egreso_'+idTransaccion.value+Date.now()
-      imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
-      console.log('Egreso impreso con éxito.')
+        const axios = AxiosHttpRepository.getInstance()
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/imprimir/' + idTransaccion.value
+        const filename = 'egreso_' + idTransaccion.value + '_' + Date.now()
+        imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+        console.log('Egreso impreso con éxito.')
     }
     async function showPreview() {
         const axios = AxiosHttpRepository.getInstance()

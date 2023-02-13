@@ -330,7 +330,7 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  * @param formato tipo de archivo esperado
  * @param titulo  nombre del archivo para descargar
  */
-/*export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo:string, data?:any,) {
+export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo:string, data?:any,) {
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
     url: ruta,
@@ -350,7 +350,7 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
     link.click()
     link.remove()
   })
-}*/
+}
 
 export function obtenerUbicacion(onUbicacionConcedida) {
 
