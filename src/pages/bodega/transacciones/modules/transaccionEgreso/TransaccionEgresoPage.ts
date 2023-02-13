@@ -288,19 +288,10 @@ export default defineComponent({
       accion: async ({ entidad, posicion }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.imprimirEgreso()
-        // await transaccionStore.showPreview()
-        // transaccion.hydrate(transaccionStore.transaccion)
-        // const response = await new EmpleadoController().consultar(transaccion.per_retira_id!)
-        // empleadoRetira.value = response.response.data.modelo
-        // console.log(transaccion)
-        // console.log(empleadoRetira)
-        // modales.abrirModalEntidad('TransaccionEgresoImprimirPage')
-        // pdfMakeImprimir()
       },
-      //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
     }
 
-    function table(data, columns, encabezados) {
+    /* function table(data, columns, encabezados) {
       return {
         layout: 'listadoLayout',
         table: {
@@ -469,7 +460,7 @@ export default defineComponent({
           /*
           ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
               ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
-          */
+          /
           table(transaccion.listadoProductosTransaccion,
             ['producto', 'descripcion', 'categoria', 'cantidad'],
             ['Producto', 'Descripción', 'Estado', 'Cantidad']),
@@ -485,7 +476,7 @@ export default defineComponent({
                       `${element.id}`
                   })
               }
-          }, */
+          }, *
 
           { text: '\n\n' },
           {
@@ -564,7 +555,7 @@ export default defineComponent({
         },
       }
       pdfMake.createPdf(docDefinition).open()
-    }
+    } */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
       await pedidoStore.cargarPedido(id)
@@ -648,13 +639,13 @@ export default defineComponent({
     }
 
     function limpiarTransaccion() {
-      transaccion.pedido = ''
+      transaccion.pedido = null
       transaccion.justificacion = ''
-      transaccion.solicitante = ''
-      transaccion.sucursal = ''
-      transaccion.tarea = ''
+      transaccion.solicitante =null
+      transaccion.sucursal = null
+      transaccion.tarea = null
       transaccion.es_tarea = false
-      transaccion.cliente = ''
+      transaccion.cliente = null
       transaccion.listadoProductosTransaccion = []
       listadoPedido.value = []
     }

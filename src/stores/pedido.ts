@@ -62,7 +62,7 @@ export const usePedidoStore = defineStore('pedido', () => {
     console.log('Pedido impreso con éxito')
   }
 
-  async function imprimirPdf2() {
+  /* async function imprimirPdf2() {
     const axiosHttpRepository = AxiosHttpRepository.getInstance()
     axios({
       url: apiConfig.URL_BASE + '/' + axiosHttpRepository.getEndpoint(endpoints.pedidos) + '/imprimir/' + idPedido.value,
@@ -82,7 +82,7 @@ export const usePedidoStore = defineStore('pedido', () => {
       document.body.appendChild(fileLink)
       fileLink.click()
     })
-  }
+  } */
 
   function resetearPedido() {
     pedido.hydrate(pedidoReset)

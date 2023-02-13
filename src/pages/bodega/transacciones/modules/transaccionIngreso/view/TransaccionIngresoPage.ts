@@ -149,7 +149,7 @@ export default defineComponent({
                 },
                 condiciones: new CondicionController(),
             })
-            //configurar los select definidos al inicio 
+            //configurar los select definidos al inicio
             transaccion.cliente = listadosAuxiliares.clientes[0]['id']
             console.log(store.user.id)
             transaccion.solicitante = store.user.id
@@ -160,7 +160,7 @@ export default defineComponent({
                 v.label:v.nombre
             }
             })
-    
+
             console.log(condicionesModificadas) */
         })
 
@@ -295,13 +295,13 @@ export default defineComponent({
             icono: 'bi-printer',
             accion: async ({ entidad }) => {
                 transaccionStore.idTransaccion = entidad.id
-                await transaccionStore.showPreview()
+                // await transaccionStore.showPreview()
                 // await transaccionStore.cargarTransaccion(entidad.id)
                 console.log('Presionaste el boton IMPRIMIR')
-
-                transaccion.hydrate(transaccionStore.transaccion)
+                await transaccionStore.imprimirIngreso()
+                // transaccion.hydrate(transaccionStore.transaccion)
                 // console.log(transaccion, transaccionStore)
-                pdfMakeImprimir()
+                // pdfMakeImprimir()
             },
             //visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
@@ -471,7 +471,7 @@ export default defineComponent({
                     },
                     { text: '\n' },
 
-                    /* 
+                    /*
                     ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
                         ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
                     */

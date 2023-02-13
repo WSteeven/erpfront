@@ -38,7 +38,7 @@ export const useTransaccionStore = defineStore('transaccion', () => {
 
     async function imprimirIngreso() {
         const axios = AxiosHttpRepository.getInstance()
-        const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_ingresos) + 'imprimir/' + idTransaccion.value
+        const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_ingresos) + '/imprimir/' + idTransaccion.value
         const filename = 'ingreso_'+idTransaccion.value+Date.now()
         imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
         console.log('Ingreso impreso con éxito.')
