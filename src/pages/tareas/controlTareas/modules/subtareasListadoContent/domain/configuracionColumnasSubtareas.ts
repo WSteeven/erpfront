@@ -22,9 +22,33 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
+    name: 'es_ventana',
+    field: 'es_ventana',
+    label: 'Es ventana',
+    align: 'left',
+  },
+  {
     name: 'fecha_hora_creacion',
     field: 'fecha_hora_creacion',
     label: 'Fecha hora creación',
+    align: 'left',
+  },
+  {
+    name: 'fecha_agendado',
+    field: 'fecha_agendado',
+    label: 'Fecha de agendamiento',
+    align: 'left',
+  },
+  {
+    name: 'hora_inicio_agendado',
+    field: 'hora_inicio_agendado',
+    label: 'Hora inicio de agendamiento',
+    align: 'left',
+  },
+  {
+    name: 'hora_fin_agendado',
+    field: 'hora_fin_agendado',
+    label: 'Hora fin de agendamiento',
     align: 'left',
   },
   {
@@ -91,30 +115,6 @@ export const configuracionColumnasSubtareas: ColumnConfig<Subtarea>[] = [
     name: 'grupos',
     field: 'grupos',
     label: 'Grupos',
-    align: 'left',
-  },
-  {
-    name: 'es_ventana',
-    field: 'es_ventana',
-    label: 'Es ventana',
-    align: 'left',
-  },
-  {
-    name: 'fecha_ventana',
-    field: 'fecha_ventana',
-    label: 'Fecha de ventana',
-    align: 'left',
-  },
-  {
-    name: 'hora_inicio_ventana',
-    field: 'hora_inicio_ventana',
-    label: 'Hora inicio de ventana',
-    align: 'left',
-  },
-  {
-    name: 'hora_fin_ventana',
-    field: 'hora_fin_ventana',
-    label: 'Hora fin de ventana',
     align: 'left',
   },
   {

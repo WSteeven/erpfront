@@ -273,12 +273,12 @@
           ></q-checkbox>
         </div>
 
-        <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de ventana</label>
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de agendamiento</label>
           <q-input
-            v-model="subtarea.fecha_ventana"
-            placeholder="Obligatorio"
-            :error="!!v$.fecha_ventana.$errors.length"
+            v-model="subtarea.fecha_agendado"
+            placeholder="Opcional"
+            :error="!!v$.fecha_agendado.$errors.length"
             :disable="disable"
             outlined
             dense
@@ -291,7 +291,7 @@
                   transition-hide="scale"
                 >
                   <q-date
-                    v-model="subtarea.fecha_ventana"
+                    v-model="subtarea.fecha_agendado"
                     mask="DD-MM-YYYY"
                     today-btn
                   >
@@ -309,7 +309,7 @@
             </template>
 
             <template v-slot:error>
-              <div v-for="error of v$.fecha_ventana.$errors" :key="error.$uid">
+              <div v-for="error of v$.fecha_agendado.$errors" :key="error.$uid">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -317,13 +317,13 @@
         </div>
 
         <!-- Hora inicio de ventana -->
-        <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Hora inicio de ventana (24H)</label>
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Hora inicio de agendamiento (24H)</label>
           <q-input
-            v-model="subtarea.hora_inicio_ventana"
+            v-model="subtarea.hora_inicio_agendado"
             :disable="disable"
             placeholder="Obligatorio"
-            :error="!!v$.hora_inicio_ventana.$errors.length"
+            :error="!!v$.hora_inicio_agendado.$errors.length"
             mask="time"
             outlined
             dense
@@ -336,7 +336,7 @@
                   transition-hide="scale"
                 >
                   <q-time
-                    v-model="subtarea.hora_inicio_ventana"
+                    v-model="subtarea.hora_inicio_agendado"
                     format24h
                     now-btn
                   >
@@ -355,7 +355,7 @@
 
             <template v-slot:error>
               <div
-                v-for="error of v$.hora_inicio_ventana.$errors"
+                v-for="error of v$.hora_inicio_agendado.$errors"
                 :key="error.$uid"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -366,12 +366,12 @@
 
         <!-- Hora fin de ventana -->
         <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Hora fin de ventana (24H)</label>
+          <label class="q-mb-sm block">Hora fin de agendamiento (24H)</label>
           <q-input
-            v-model="subtarea.hora_fin_ventana"
+            v-model="subtarea.hora_fin_agendado"
             :disable="disable"
             placeholder="Obligatorio"
-            :error="!!v$.hora_fin_ventana.$errors.length"
+            :error="!!v$.hora_fin_agendado.$errors.length"
             mask="time"
             outlined
             dense
@@ -383,7 +383,11 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-time v-model="subtarea.hora_fin_ventana" format24h now-btn>
+                  <q-time
+                    v-model="subtarea.hora_fin_agendado"
+                    format24h
+                    now-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn
                         v-close-popup
@@ -399,7 +403,7 @@
 
             <template v-slot:error>
               <div
-                v-for="error of v$.hora_fin_ventana.$errors"
+                v-for="error of v$.hora_fin_agendado.$errors"
                 :key="error.$uid"
               >
                 <div class="error-msg">{{ error.$message }}</div>

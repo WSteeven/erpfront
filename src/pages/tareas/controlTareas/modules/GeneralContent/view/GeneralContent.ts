@@ -16,6 +16,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 // Logica y controladores
 import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ComportamientoModalesGeneralContent } from '../application/ComportamientoModalesGeneralContent'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
@@ -27,9 +28,6 @@ import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { Tarea } from 'pages/tareas/controlTareas/domain/Tarea'
 import { Subtarea } from '../../subtareas/domain/Subtarea'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { ComportamientoModalesGeneralContent } from '../application/ComportamientoModalesGeneralContent'
-import { DescargarReporteBodega } from '../infraestructure/DescargarReporteBodegaController'
 
 export default defineComponent({
   props: {
@@ -292,9 +290,6 @@ export default defineComponent({
 
     onConsultado(async () => {
       tareaStore.tarea.hydrate(tarea)
-      /* if (tarea.destino === 'PARA_PROYECTO') {
-        setCliente()
-      } */
     })
 
     /************
@@ -339,11 +334,6 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesGeneralContent()
 
-    function descargarPDF() {
-      const descargarReporteBodega = new DescargarReporteBodega()
-      descargarReporteBodega.descargar('http://localhost:8000/api/pedidos/imprimir/1')
-    }
-
     return {
       mixinSubtarea,
       clientesFinalesSource,
@@ -354,7 +344,6 @@ export default defineComponent({
       provincias,
       cantones,
       tiposTrabajos,
-      // cantonesPorProvincia,
       guardar,
       editar,
       eliminar,
@@ -382,7 +371,6 @@ export default defineComponent({
       configuracionColumnasClientes,
       setCliente,
       modales,
-      // acciones
       mostrarLabelModal,
     }
   },
