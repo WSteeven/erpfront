@@ -112,7 +112,10 @@
             </q-input>
           </div>
           <!-- Requiere Fecha -->
-          <div v-if="pedido.tiene_fecha_limite||accion===acciones.nuevo" class="col-12 col-md-3">
+          <div
+            v-if="pedido.tiene_fecha_limite || accion === acciones.nuevo"
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="requiereFecha"
@@ -125,7 +128,7 @@
           </div>
           <!-- Fecha límite -->
           <div
-            v-if="pedido.tiene_fecha_limite|| requiereFecha"
+            v-if="pedido.tiene_fecha_limite || requiereFecha"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Fecha limite</label>
@@ -164,8 +167,12 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div style=" clear: inherit;" v-for="error of v$.fecha_limite.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>  
+                <div
+                  style="clear: inherit"
+                  v-for="error of v$.fecha_limite.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
@@ -328,7 +335,7 @@
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
-                accion === acciones.nuevo||accion===acciones.editar
+                accion === acciones.nuevo || accion === acciones.editar
                   ? configuracionColumnasProductosSeleccionadosAccion
                   : configuracionColumnasProductosSeleccionadosDespachado
               "
