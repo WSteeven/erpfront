@@ -9,6 +9,8 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { SaldoController } from '../infrestructure/SaldoController'
 import { configuracionColumnasSaldo } from '../domain/configuracionColumnasSaldo'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
+import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
+import { TipoSaldoController } from 'pages/fondosRotativos/tipo_saldo/infrestructure/TipoSaldoController'
 
 
 export default defineComponent({
@@ -78,25 +80,41 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, saldo)
     setValidador(v$.value)
    const usuarios= ref([]);
+   const tiposFondos= ref([]);
+   const tiposSaldos= ref([]);
    usuarios.value=listadosAuxiliares.usuarios
 
    cargarVista(async () => {
     await obtenerListados({
-      cantones: {
+      usuarios: {
         controller: new UsuarioController(),
-        params: { campos: 'id,canton' },
+        params: { campos: 'id,name' },
+      },
+      tiposFondos: {
+        controller: new TipoFondoController(),
+        params: { campos: 'id,descripcion' },
+      },
+      tiposSaldos: {
+        controller: new TipoSaldoController(),
+        params: { campos: 'id,descripcion' },
       },
 
     })
 
     usuarios.value = listadosAuxiliares.usuarios
+    tiposFondos.value = listadosAuxiliares.tiposFondos
+    tiposSaldos.value = listadosAuxiliares.tiposSaldos
 
   })
+  watchEffect(() => saldo.saldo_actual =parseFloat(saldo.saldo_anterior) + parseFloat(saldo.saldo_depositado))
     return {
       mixin,
       saldo,
       disabled, accion, v$,
       usuarios,
+      tiposFondos,
+      tiposSaldos,
+      watchEffect,
       configuracionColumnas: configuracionColumnasSaldo,
     }
   }

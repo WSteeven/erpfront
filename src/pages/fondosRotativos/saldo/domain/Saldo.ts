@@ -4,7 +4,9 @@ export class Saldo extends EntidadAuditable {
   id_tipo_saldo:number|null
   tipo_saldo:string|null
   id_saldo:number |null
+  tipo_saldo_info:string|null
   id_tipo_fondo:number |null
+  tipo_fondo_info: string | null
   tipo_fondo:string|null
   descripcion_saldo: string |null
   saldo_anterior:number | null
@@ -14,8 +16,10 @@ export class Saldo extends EntidadAuditable {
   fecha_fin:Date|null
   id_usuario:number|null
   usuario:string|null
+  usuario_info:string|null
   id_estatus:number|null
   estatus:string|null
+  estatus_info:string|null
   transcriptor:string|null
   fecha_trans:Date|null
 
@@ -24,8 +28,10 @@ export class Saldo extends EntidadAuditable {
     this.fecha=null
     this.id_tipo_saldo=null
     this.id_saldo=null
+    this.tipo_saldo_info=null
     this.tipo_saldo=null
     this.id_tipo_fondo=null
+    this.tipo_fondo_info=null
     this.tipo_fondo=null
     this.descripcion_saldo=null
     this.saldo_anterior=null
@@ -35,7 +41,9 @@ export class Saldo extends EntidadAuditable {
     this.fecha_fin=null
     this.id_usuario=null
     this.usuario=null
+    this.usuario_info=null
     this.id_estatus=null
+    this.estatus_info=null
     this.estatus=null
     this.transcriptor = null
     this.fecha_trans = null

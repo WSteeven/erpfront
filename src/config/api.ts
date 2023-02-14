@@ -100,5 +100,8 @@ export const endpoints = {
   detalle_fondo: new Endpoint('fondos-rotativos/detalles-viaticos'),
   sub_detalle_fondo: new Endpoint('fondos-rotativos/sub-detalles-viaticos'),
   saldo:new Endpoint('fondos-rotativos/saldo-grupo'),
+  tipo_saldo:new Endpoint('fondos-rotativos/tipo-saldo'),
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
+  usuarios: new Endpoint('usuarios'),
+  lista_usuarios: new Endpoint('lista-usuarios'),
 }

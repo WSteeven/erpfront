@@ -2,8 +2,8 @@ import { TransaccionSimpleController } from "shared/contenedor/modules/simple/in
 import { Usuario } from "../domain/Usuario";
 import { endpoints } from "config/api";
 
-export class UsuarioController extends TransaccionSimpleController<Usuario>{
+export class UsuarioAutorizadoresController extends TransaccionSimpleController<Usuario>{
   constructor() {
-    super(endpoints.lista_usuarios)
+    super(endpoints.usuarios_autorizadores)
   }
 }

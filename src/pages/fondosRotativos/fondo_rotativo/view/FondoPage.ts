@@ -236,12 +236,13 @@ export default defineComponent({
       disabled, accion, v$,
       configuracionColumnas: configuracionColumnasFondo,
       autorizacionesEspeciales,
+      watchEffect,
       filtrarAutorizacionesEspeciales,
       filtrarCantones,
       filtrarDetalles,
       filtarSubdetalles,
-      listadosAuxiliares,
-      computed
+      listadosAuxiliares
+
     }
 
   }

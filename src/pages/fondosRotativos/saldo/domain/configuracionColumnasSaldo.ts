@@ -10,15 +10,15 @@ export const configuracionColumnasSaldo: ColumnConfig<Saldo>[] = [
     sortable: true
   },
   {
-    name: 'tipo_saldo',
-    field: 'tipo_saldo',
+    name: 'tipo_saldo_info',
+    field: 'tipo_saldo_info',
     label: 'Tipo Saldo',
     align: 'left',
     sortable: true
   },
   {
-    name: 'tipo_fondo',
-    field: 'tipo_fondo',
+    name: 'tipo_fondo_info',
+    field: 'tipo_fondo_info',
     label: 'Tipo Fondo',
     align: 'left',
     sortable: true
@@ -73,15 +73,15 @@ export const configuracionColumnasSaldo: ColumnConfig<Saldo>[] = [
     sortable: true
   },
   {
-    name: 'usuario',
-    field: 'usuario',
+    name: 'usuario_info',
+    field: 'usuario_info',
     label: 'Usuario',
     align: 'left',
     sortable: true
   },
   {
-    name: 'estatus',
-    field: 'estatus',
+    name: 'estatus_info',
+    field: 'estatus_info',
     label: 'Estatus',
     align: 'left',
     sortable: true
