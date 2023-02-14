@@ -1,4 +1,4 @@
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import {  defineComponent, reactive, ref, watchEffect } from 'vue'
 import { Fondo } from '../domain/Fondo'
 
 // Componentes
@@ -29,7 +29,6 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Fondo, new FondoController())
     const { entidad: fondo, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onGuardado, onReestablecer } = mixin.useHooks()
 
     /*************
     * Validaciones
@@ -73,7 +72,7 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-      cantidad: {
+      cant: {
         required: true,
         minLength: 3,
         maxLength: 50,
@@ -108,12 +107,6 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, fondo)
     setValidador(v$.value)
-    onGuardado(() => {
-      //sucursal.value=''
-    })
-    onReestablecer(() => {
-      //sucursal.value=''
-    })
 
     const cantones = ref([]);
     const detalles = ref([]);

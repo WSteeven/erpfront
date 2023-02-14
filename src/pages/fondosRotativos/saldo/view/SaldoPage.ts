@@ -106,6 +106,56 @@ export default defineComponent({
     tiposSaldos.value = listadosAuxiliares.tiposSaldos
 
   })
+  /*********
+   * Filtros
+   **********/
+ // - Filtro AUTORIZACIONES ESPECIALES
+
+ function filtrarUsuarios(val, update) {
+  if (val === '') {
+    update(() => {
+      usuarios.value = listadosAuxiliares.usuarios
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    usuarios.value = listadosAuxiliares.usuarios.filter(
+      (v) => v.name.toLowerCase().indexOf(needle) > -1
+    )
+  })
+}
+// - Filtro TIPOS FONDOS
+function filtrarTiposFondos(val, update) {
+  if (val === '') {
+    update(() => {
+      tiposFondos.value = listadosAuxiliares.tiposFondos
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    tiposFondos.value = listadosAuxiliares.tiposFondos.filter(
+      (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+    )
+  })
+}
+
+// - Filtro TIPOS FONDOS
+function filtrarTiposSaldos(val, update) {
+  if (val === '') {
+    update(() => {
+      tiposSaldos.value = listadosAuxiliares.tiposSaldos
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    tiposSaldos.value = listadosAuxiliares.tiposSaldos.filter(
+      (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+    )
+  })
+}
   watchEffect(() => saldo.saldo_actual =parseFloat(saldo.saldo_anterior) + parseFloat(saldo.saldo_depositado))
     return {
       mixin,
@@ -114,6 +164,9 @@ export default defineComponent({
       usuarios,
       tiposFondos,
       tiposSaldos,
+      filtrarUsuarios,
+      filtrarTiposFondos,
+      filtrarTiposSaldos,
       watchEffect,
       configuracionColumnas: configuracionColumnasSaldo,
     }

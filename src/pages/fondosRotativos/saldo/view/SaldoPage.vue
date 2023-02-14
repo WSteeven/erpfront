@@ -17,10 +17,10 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.usuario.$errors.length"
-              error-message="Debes seleccionar un canton"
+              error-message="Debes seleccionar un usuario"
               use-input
               input-debounce="0"
-              @filter="filtrarCantones"
+              @filter="filtrarUsuarios"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres+' '+v.apellidos"
               emit-value
@@ -54,10 +54,10 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.tipo_fondo.$errors.length"
-              error-message="Debes seleccionar un canton"
+              error-message="Debes seleccionar un tipo de fondo"
               use-input
               input-debounce="0"
-              @filter="filtrarCantones"
+              @filter="filtrarTiposFondos"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"
               emit-value
@@ -91,10 +91,10 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.tipo_saldo.$errors.length"
-              error-message="Debes seleccionar un canton"
+              error-message="Debes seleccionar un tipo de saldo"
               use-input
               input-debounce="0"
-              @filter="filtrarCantones"
+              @filter="filtrarTiposSaldos"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"
               emit-value

@@ -44,22 +44,44 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
             <q-input
-              v-model="fondo.fecha_viat"
-              formatModel="string"
-              format="YYYY-MM-DD"
-              type="date"
-              :disable="disabled"
-              :error="!!v$.fecha_viat.$errors.length"
-              @blur="v$.fecha_viat.$touch"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.fecha_viat.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
+            v-model="fondo.fecha_viat"
+            placeholder="Obligatorio"
+            :error="!!v$.fecha_viat.$errors.length"
+            :disable="disabled"
+            outlined
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="fondo.fecha_viat"
+                    mask="DD-MM-YYYY"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.fecha_viat.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
           </div>
           <!-- Tarea -->
           <div class="col-12 col-md-3">
@@ -124,17 +146,17 @@
             <div class="col-4 col-md-3">
               <label class="q-mb-sm block">Cantidad</label>
               <q-input
-                v-model="fondo.cantidad"
+                v-model="fondo.cant"
                 placeholder="Obligatorio"
                 type="number"
                 :disable="disabled"
-                :error="!!v$.cantidad.$errors.length"
-                @blur="v$.cantidad.$touch"
+                :error="!!v$.cant.$errors.length"
+                @blur="v$.cant.$touch"
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.cantidad.$errors" :key="error.$uid">
+                  <div v-for="error of v$.cant.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
