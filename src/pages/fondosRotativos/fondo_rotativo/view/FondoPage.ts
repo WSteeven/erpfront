@@ -15,6 +15,7 @@ import { CantonController } from 'sistema/ciudad/infraestructure/CantonControlle
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
+import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -124,7 +125,7 @@ export default defineComponent({
           params: { campos: 'id,descripcion' },
         },
         autorizacionesEspeciales: {
-          controller: new UsuarioController(),
+          controller: new UsuarioAutorizadoresController(),
           params: { campos: 'id,name' },
         },
         sub_detalles: {
