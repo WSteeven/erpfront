@@ -473,6 +473,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/reporte-fondo-fecha',
+        name: 'reporte_fondo_fecha',
+        component: () =>
+          import(
+            'pages/fondosRotativos/reportes/fondo_rotativo_fecha/view/FondoRotativoFechaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

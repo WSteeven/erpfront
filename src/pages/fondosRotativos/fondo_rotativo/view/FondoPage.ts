@@ -8,14 +8,15 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
+import { helpers } from 'shared/i18n-validators';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { FondoController } from '../infrestructure/FondoController'
 import { configuracionColumnasFondo } from '../domain/configuracionColumnasFondo'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
+import { validarIdentificacion } from 'shared/validadores/validaciones';
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -52,6 +53,7 @@ export default defineComponent({
         required: true,
         minLength: 13,
         maxLength: 13,
+        helper: helpers.withMessage('El RUC ingresado es Invalido',(validarIdentificacion))
       },
       factura: {
         required: true,
@@ -159,9 +161,7 @@ export default defineComponent({
       }
       update(() => {
         const needle = val.toLowerCase()
-        autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
-        )
+        autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales.filter((v) => v.usuario.toLowerCase().indexOf(needle) > -1)
       })
     }
     // - Filtro Detalles

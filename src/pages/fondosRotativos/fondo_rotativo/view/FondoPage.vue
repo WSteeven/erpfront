@@ -223,7 +223,7 @@
               input-debounce="0"
               @filter="filtrarAutorizacionesEspeciales"
               :option-value="(v) => v.id"
-              :option-label="(v) => v.name"
+              :option-label="(v) => v.usuario"
               emit-value
               map-options
             >

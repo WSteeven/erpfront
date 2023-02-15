@@ -255,6 +255,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.fondo'),
         },
         {
+          title: 'Reporte Fondo Rotativo',
+          link: 'reporte-fondo-fecha',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.reporte_fondo_fecha'),
+        },
+        {
           title: 'Detalle Fondos',
           icon: 'bi-list-task',
           children: [ {

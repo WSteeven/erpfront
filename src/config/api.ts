@@ -104,4 +104,7 @@ export const endpoints = {
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
   usuarios: new Endpoint('usuarios'),
   lista_usuarios: new Endpoint('lista-usuarios'),
+  fondo_rotativo_fecha_excel: new Endpoint('fondos-rotativos/reporte/fecha/excel'),
+  fondo_rotativo_fecha_pdf: new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
+
 }
