@@ -99,7 +99,7 @@ export default defineComponent({
       subtareas.value = listadosAuxiliares.subtareas
     })
 
-    if (subtareaListadoStore.idSubtareaSeleccionada) consultar(subtareaListadoStore.idSubtareaSeleccionada)
+    if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
 
     const accion = tareaStore.accionSubtarea
     const disable = computed(() => (subtarea.estado !== estadosSubtareas.CREADO && subtarea.estado !== null))

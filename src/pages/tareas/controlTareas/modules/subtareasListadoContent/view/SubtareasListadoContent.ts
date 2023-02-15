@@ -76,6 +76,7 @@ export default defineComponent({
         modales.abrirModalEntidad('SubtareasPage')
         subtareaListadoStore.posicionSubtareaSeleccionada = posicion
         subtareaListadoStore.idSubtareaSeleccionada = entidad.id
+        console.log(entidad)
       },
     }
 

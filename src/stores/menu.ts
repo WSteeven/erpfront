@@ -68,16 +68,6 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.tipos_trabajos'),
         },
-        /* {
-          title: 'Solicitud de materiales a bodega',
-          link: 'solicitud-materiales',
-          icon: 'bi-circle',
-        },
-        {
-          title: 'Devolución de materiales a bodega',
-          link: 'solicitud-materiales',
-          icon: 'bi-circle',
-        }, */
         {
           title: 'Reportes',
           icon: 'bi-circle',
@@ -93,6 +83,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reportes-control-tendidos',
               icon: 'bi-dash',
               can: store.can('puede.ver.reportes_control_tendidos'),
+            },
+            {
+              title: 'Trabajos realizados',
+              link: 'reporte-trabajos-realizados',
+              icon: 'bi-dash',
+              can: store.can('puede.ver.reporte_trabajos_realizados'),
             },
           ],
         },
