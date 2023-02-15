@@ -34,6 +34,7 @@ import * as pdfMake from 'pdfmake/build/pdfmake'
 import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { buildTableBody } from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
 
@@ -46,11 +47,10 @@ export default defineComponent({
         const { entidad: traspaso, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer, onBeforeGuardar, onConsultado } = mixin.useHooks()
-        const { confirmar, prompt } = useNotificaciones()
+        const { confirmar, prompt, notificarError, notificarAdvertencia } = useNotificaciones()
 
         //stores
         const store = useAuthenticationStore()
-        const { notificarError, notificarAdvertencia } = useNotificaciones()
 
         //orquestador
         const {
@@ -78,13 +78,14 @@ export default defineComponent({
             soloLectura.value = false
         })
         onBeforeGuardar(() => {
+            console.log('se ejecuta el ONBEFOREGUARDAR')
             if (traspaso.desde_cliente === traspaso.hasta_cliente) {
                 notificarError('¡No se puede hacer traspasos en un mismo cliente!')
             }
-            v$.value.listadoProductos.$errors.forEach(error =>
-                // console.log(error.$message)
+            /* v$.value.listadoProductos.$errors.forEach(error =>
+                console.log(error.$message),
                 notificarAdvertencia('Debe agregar al menos un producto al listado')
-            )
+            ) */
         })
 
         const opciones_clientes = ref([])
@@ -117,14 +118,25 @@ export default defineComponent({
             traspaso.desde_cliente = listadosAuxiliares.clientes[0]['id']
         })
 
+        /**
+         * Validaciones
+         */
         const reglas = {
             sucursal: { required },
             desde_cliente: { required },
             hasta_cliente: { required },
-            listadoProductos: { required },
+            // listadoProductos: { required },
         }
         const v$ = useVuelidate(reglas, traspaso)
         setValidador(v$.value)
+
+        const validarListadoProductos = new ValidarListadoProductos(traspaso)
+        mixin.agregarValidaciones(validarListadoProductos)
+
+        /**
+         * Funciones
+         * 
+         */
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',

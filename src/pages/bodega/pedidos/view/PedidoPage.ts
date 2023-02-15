@@ -35,6 +35,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { buildTableBody } from 'shared/utils'
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -64,7 +65,6 @@ export default defineComponent({
         // Flags
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
-        let esVisibleTarea = ref(false)
         let requiereFecha = ref(false)
         let puedeEditar = ref(false)
 
@@ -82,6 +82,7 @@ export default defineComponent({
                 soloLectura.value = true
             }
         })
+        console.log('es coordinador? ', esCoordinador)
 
         const opciones_empleados = ref([])
         const opciones_sucursales = ref([])
@@ -95,7 +96,8 @@ export default defineComponent({
                     controller: new EmpleadoController(),
                     params: {
                         campos: 'id,nombres,apellidos',
-                        estado: 1
+                        estado: 1,
+                        rol:
                     }
                 },
                 tareas: {
@@ -118,21 +120,32 @@ export default defineComponent({
         })
 
 
-        //reglas de validacion
+        /*****************************************************************************************
+         * Validaciones
+         ****************************************************************************************/
         const reglas = {
             justificacion: { required },
-            autorizacion: { requiredIfCoordinador: requiredIf(esCoordinador) },
-            observacion_aut: { requiredIfCoordinador: requiredIf(pedido.tiene_observacion_aut!) },
+            autorizacion: { requiredIfCoordinador: requiredIf(()=>esCoordinador) },
+            observacion_aut: { requiredIfCoordinador: requiredIf(()=>pedido.tiene_observacion_aut!) },
             sucursal: { required },
-            tarea: { requiredIfTarea: requiredIf(pedido.es_tarea!) },
+            responsable: { requiredIfCoordinador: requiredIf(()=>esCoordinador) },
+            tarea: { requiredIfTarea: requiredIf(()=>pedido.es_tarea!) },
             fecha_limite: {
-                required: requiredIf(requiereFecha),
+                required: requiredIf(()=>requiereFecha.value),
                 fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
-            }
+            },
         }
 
         const v$ = useVuelidate(reglas, pedido)
         setValidador(v$.value)
+
+        const validarListadoProductos = new ValidarListadoProductos(pedido)
+        mixin.agregarValidaciones(validarListadoProductos)
+
+
+        /*******************************************************************************************
+         * Funciones
+         ******************************************************************************************/
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',
@@ -544,7 +557,6 @@ export default defineComponent({
 
             //flags
             soloLectura,
-            esVisibleTarea,
             requiereFecha,
 
             //Tabs
@@ -571,18 +583,18 @@ export default defineComponent({
             },
 
             //Filtros
-            filtroEmpleados(val, update) {
-                if (val === '') {
-                    update(() => {
+            filtroResponsable(val, update){
+                if(val===''){
+                    update(()=>{
                         opciones_empleados.value = listadosAuxiliares.empleados
                     })
                     return
                 }
-                update(() => {
+                update(()=>{
                     const needle = val.toLowerCase()
-                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v)=>v.nombres.toLowerCase().indexOf(needle)>-1||v.apellidos.toLowerCase().indexOf(needle)>-1)
                 })
-            },
+            }
         }
     }
 })

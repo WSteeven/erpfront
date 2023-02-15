@@ -111,6 +111,46 @@
               </template>
             </q-input>
           </div>
+          <!-- Responsable -->
+          <div v-if="esCoordinador" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Responsable</label>
+            <q-select
+              v-model="pedido.responsable"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroResponsable"
+              error-message="Debes seleccionar el responsable de los materiales"
+              :error="!!v$.responsable.$errors.length"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.responsable.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
           <!-- Requiere Fecha -->
           <div
             v-if="pedido.tiene_fecha_limite || accion === acciones.nuevo"
@@ -193,7 +233,7 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div v-if="esVisibleTarea || pedido.es_tarea" class="col-12 col-md-3">
+          <div v-if="pedido.es_tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="pedido.tarea"
@@ -207,6 +247,8 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
+              :error="!!v$.tarea.$errors.length"
+              error-message="Debe seleccionar una tarea"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
               emit-value
@@ -218,6 +260,11 @@
                     <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
                   </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
             </q-select>
           </div>
