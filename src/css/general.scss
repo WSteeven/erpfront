@@ -27,3 +27,10 @@ body {
 .label-card-table {
   text-transform: uppercase;
 }
+
+input[type='time']::-webkit-calendar-picker-indicator {
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+  filter: invert(70%);
+}

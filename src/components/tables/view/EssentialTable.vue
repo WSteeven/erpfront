@@ -33,10 +33,10 @@
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
-    @virtual-scroll="onScroll"
     :pagination="pagination"
     no-data-label="Aún no se han agregado elementos"
   >
+    <!--@virtual-scroll="onScroll" -->
     <template v-slot:no-data="{ message }">
       <div class="full-width row flex-center text-grey-8 q-gutter-sm">
         <q-icon size="2em" name="bi-exclamation-triangle-fill" />

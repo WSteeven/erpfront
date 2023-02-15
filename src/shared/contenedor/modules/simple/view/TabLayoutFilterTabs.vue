@@ -59,13 +59,13 @@
           :permitirEliminar="puedeEliminar"
           :accion1="accionPersonalizada"
           :accion2="accion2"
-          @onScroll="cargarListado"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
           :tab-options="tabOptions"
           @tab-seleccionado="aplicarFiltro"
         ></essential-table-tabs>
+        <!--@onScroll="cargarListado" -->
       </q-tab-panel>
     </q-tab-panels>
   </q-page>

@@ -557,7 +557,7 @@ export default defineComponent({
                 if (!val) pedido.fecha_limite = ''
             },
             checkEsTarea(val, evt) {
-                if (!val) pedido.tarea = ''
+                if (!val) pedido.tarea = null
             },
             tabEs(val) {
                 // console.log(tabSeleccionado.value)

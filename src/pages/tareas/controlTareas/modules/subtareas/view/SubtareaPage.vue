@@ -364,7 +364,7 @@
           </q-input>
         </div>
 
-        <!-- Hora fin de ventana -->
+        <!-- Hora fin de agendamiento -->
         <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
           <label class="q-mb-sm block">Hora fin de agendamiento (24H)</label>
           <q-input
@@ -372,35 +372,11 @@
             :disable="disable"
             placeholder="Obligatorio"
             :error="!!v$.hora_fin_agendado.$errors.length"
-            mask="time"
+            type="time"
+            stack-label
             outlined
             dense
           >
-            <template v-slot:append>
-              <q-icon name="bi-clock" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-time
-                    v-model="subtarea.hora_fin_agendado"
-                    format24h
-                    now-btn
-                  >
-                    <div class="row items-center justify-end">
-                      <q-btn
-                        v-close-popup
-                        label="Cerrar"
-                        color="primary"
-                        flat
-                      />
-                    </div>
-                  </q-time>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-
             <template v-slot:error>
               <div
                 v-for="error of v$.hora_fin_agendado.$errors"
