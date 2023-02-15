@@ -42,13 +42,13 @@ import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelect
 import { ValidarGrupoAsignado } from '../application/validaciones/ValidarGrupoAsignado'
 import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { SubtareaController } from '../infraestructure/SubtareaController'
+import { TrabajoController } from '../infraestructure/TrabajoController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
 import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
-import { Subtarea } from '../domain/Subtarea'
+import { Subtarea } from '../domain/Trabajo'
 
 export default defineComponent({
   props: {
@@ -71,7 +71,7 @@ export default defineComponent({
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+    const mixin = new ContenedorSimpleMixin(Subtarea, new TrabajoController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onBeforeModificar, onConsultado } = mixin.useHooks()
@@ -85,7 +85,7 @@ export default defineComponent({
           params: { cliente: tareaStore.tarea.cliente }
         },
         subtareas: {
-          controller: new SubtareaController(),
+          controller: new TrabajoController(),
           params: { tarea_id: tareaStore.tarea.id }
         },
         grupos: {
@@ -463,7 +463,6 @@ export default defineComponent({
         if (subtarea.grupos_seleccionados.length === 0) {
           grupoSeleccionado.responsable = true
         }
-
         subtarea.grupos_seleccionados.push(grupoSeleccionado)
 
       } else notificaciones.notificarAdvertencia('Debe seleccionar un grupo')
