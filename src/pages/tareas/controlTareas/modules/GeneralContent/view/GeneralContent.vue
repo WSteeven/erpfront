@@ -1,4 +1,5 @@
 <template>
+  <TrabajoPage></TrabajoPage>
   <q-form @submit.prevent>
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"

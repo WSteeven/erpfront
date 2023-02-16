@@ -3,8 +3,8 @@ import { configuracionColumnasTareas } from '../domain/configuracionColumnasTare
 import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
-import SubtareasListadoContent from 'pages/tareas/controlTareas/modules/subtareasListadoContent/view/SubtareasListadoContent.vue'
-import GeneralContent from 'pages/tareas/controlTareas/modules/GeneralContent/view/GeneralContent.vue'
+import SubtareasListadoContent from 'tareas/controlTareas/modules/subtareasListadoContent/view/SubtareasListadoContent.vue'
+import GeneralContent from 'tareas/controlTareas/modules/GeneralContent/view/GeneralContent.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores

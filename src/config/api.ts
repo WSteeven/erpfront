@@ -75,6 +75,7 @@ export const endpoints = {
   proyectos: new Endpoint('proyectos'),
   tareas: new Endpoint('tareas'),
   subtareas: new Endpoint('subtareas'),
+  trabajos: new Endpoint('trabajos'),
   trabajo_asignado: new Endpoint('trabajo-asignado'),
   pausas_subtareas: new Endpoint('subtareas/pausas'),
   tipos_trabajos: new Endpoint('tipos-trabajos'),

@@ -1,6 +1,6 @@
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { UserLogin } from '../domain/UserLogin'
-import { rolesSistema } from 'config/utils'
+import { cargosSistema, rolesSistema } from 'config/utils'
 import { useRouter } from 'vue-router'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
@@ -12,18 +12,15 @@ export class LoginController {
     try {
       // const response = await this.store.login(userLogin)
       const usuario = await this.store.login(userLogin)
-      console.log('---dentro...')
-      const roles = usuario.roles
+      // const roles = usuario.roles
 
-      console.log('soy user')
-      console.log(usuario)
-      const existeYEsArreglo = typeof (roles) === 'object' && roles
+      // const existeYEsArreglo = typeof (roles) === 'object' && roles
 
-      if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
-        console.log('es tecnico')
+      //if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
+
+      if (typeof usuario.cargo === 'string' && [cargosSistema.tecnico_lider, cargosSistema.tecnico_secretario].includes(usuario.cargo)) {
         this.Router.replace({ name: 'trabajo_asignado' })
       } else {
-        console.log('raiz')
         this.Router.replace('/')
       }
 

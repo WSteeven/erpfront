@@ -12,6 +12,7 @@ import SubtareaPage from 'controlTareas/modules/subtareas/view/SubtareaPage.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import TrabajoPage from 'tareas/controlTareas/modules/trabajos/view/TrabajoPage.vue'
 
 // Logica y controladores
 import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
@@ -37,6 +38,7 @@ export default defineComponent({
     },
   },
   components: {
+    TrabajoPage,
     EssentialSelectableTable,
     ButtonSubmits,
     SubtareaPage,
@@ -82,9 +84,9 @@ export default defineComponent({
       clientes.value = listadosAuxiliares.clientes
       supervisores.value = listadosAuxiliares.supervisores
       coordinadores.value = listadosAuxiliares.coordinadores
+      proyectos.value = listadosAuxiliares.proyectos
       provincias.value = listadosAuxiliares.provincias
       cantones.value = listadosAuxiliares.cantones
-      proyectos.value = listadosAuxiliares.proyectos
     })
 
     const paraProyecto = computed(() => tarea.destino === destinosTareas.paraProyecto)
