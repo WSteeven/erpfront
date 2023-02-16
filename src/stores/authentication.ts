@@ -8,6 +8,9 @@ import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -28,6 +31,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico_lider) : false)
   const esBodeguero = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.bodega) : false)
   const esActivosFijos = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.activos_fijos) : false)
+  const esTecnico = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico) : false)
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
@@ -48,6 +52,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       setUser(response.data.modelo)
       permisos.value = response.data.modelo.permisos
 
+      cargarDatosLS()
+
       return response.data.modelo
     } catch (error: unknown) {
       const axiosError = error as AxiosError
@@ -55,9 +61,30 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
+  /**
+   * Función para cargar datos en el Local Storage
+   */
+  async function cargarDatosLS(){
+      const autorizaciones = (await new AutorizacionController().listar({campos: 'id,nombre'})).result
+      LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
+      const sucursales = (await new SucursalController().listar({campos: 'id,lugar'})).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      const estados_transacciones = (await new EstadosTransaccionController().listar({ campos: 'id,nombre' })).result
+      LocalStorage.set('estados_transacciones', JSON.stringify(estados_transacciones))
+  }
+  /**
+   * Función para limpiar los datos del Local Storage
+   */
+  function limpiarLS(){
+    LocalStorage.remove('autorizaciones')
+    LocalStorage.remove('sucursales')
+    LocalStorage.remove('estados_transacciones')
+  }
+
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
+    limpiarLS()
     await getUser()
   }
 
@@ -113,6 +140,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     actualizarContrasena,
     isUserLoggedIn,
     esCoordinador,
+    esTecnico,
     esTecnicoLider,
     esBodeguero,
     esActivosFijos,

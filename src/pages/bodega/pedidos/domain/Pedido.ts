@@ -7,6 +7,7 @@ export class Pedido extends EntidadAuditable {
     observacion_est: string | null
     solicitante: number | null
     responsable: number | null
+    responsable_id: number | null
     solicitante_id: number | null
     autorizacion: number | null
     per_autoriza: number | null
@@ -33,6 +34,7 @@ export class Pedido extends EntidadAuditable {
         this.solicitante = null
         this.solicitante_id = null
         this.responsable = null
+        this.responsable_id = null
         this.autorizacion = null
         this.per_autoriza = null
         this.tarea = null

@@ -2,18 +2,18 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Categorias"
+    titulo-pagina="Cargos"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- nombre -->
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Nombre de la Categoria</label>
+            <label class="q-mb-sm block">Nombre del Cargo</label>
             <q-input
-              v-model="categoria.nombre"
+              v-model="cargo.nombre"
               placeholder="Obligatorio"
-              :readonly="disabled"
+              :disable="disabled"
               :error="!!v$.nombre.$errors.length"
               outlined
               dense
@@ -26,10 +26,10 @@
             </q-input>
           </div>
         </div>
-      </q-form> 
+      </q-form>
     </template>
   </tab-layout>
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 
-<script src="./CategoriaPage.ts"></script>
+<script src="./CargoPage.ts"></script>

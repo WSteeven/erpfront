@@ -11,7 +11,7 @@ import { configuracionColumnasProductosSeleccionados } from './domain/configurac
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, logoBN, logoColor, meses, motivos, tabOptionsTransacciones } from 'config/utils'
+import { acciones, motivos, tabOptionsTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
@@ -24,7 +24,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TransaccionEgresoController } from '../../infraestructure/TransaccionEgresoController'
 import { Transaccion } from '../../domain/Transaccion'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 
 //Controladores
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
@@ -107,7 +107,6 @@ export default defineComponent({
     let tabSeleccionado = ref()
     let puedeEditar = ref(false)
     let esVisibleTarea = ref(false)
-    let esVisibleSubtarea = ref(false)
     let requiereFecha = ref(false) //para mostrar u ocultar fecha limite
 
     const modales = new ComportamientoModalesTransaccionEgreso()
@@ -117,9 +116,7 @@ export default defineComponent({
     const opciones_autorizaciones = ref([])
     const opciones_sucursales = ref([])
     const opciones_motivos = ref([])
-    const opciones_estados = ref([])
     const opciones_tareas = ref([])
-    const opciones_subtareas = ref([])
     const opciones_clientes = ref([])
 
     cargarVista(async () => {
@@ -131,27 +128,27 @@ export default defineComponent({
             estado: 1
           }
         },
-        sucursales: {
+        /* sucursales: {
           controller: new SucursalController(),
           params: { campos: 'id,lugar' },
-        },
+        }, */
         tareas: {
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
         },
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
-        autorizaciones: {
+        /* autorizaciones: {
           controller: new AutorizacionController(),
           params: {
             campos: 'id,nombre'
           }
-        },
-        detalles: {
+        }, */
+        /* detalles: {
           controller: new DetalleProductoController(),
           params: {
             campos: 'id,producto_id,descripcion,modelo_id,serial'
           }
-        },
+        }, */
         clientes: {
           controller: new ClienteController(),
           params: {
@@ -173,6 +170,7 @@ export default defineComponent({
 
     //hooks
     onReestablecer(() => {
+      console.log('se reestableció')
       puedeEditarCantidad.value = true
       soloLectura.value = false
     })
@@ -263,9 +261,7 @@ export default defineComponent({
     }
     const botonDespachar: CustomActionTable = {
       titulo: 'Despachar',
-      accion: async ({ entidad, posicion }) => {
-        // console.log('La entidad es', entidad)
-        // console.log('La posicion es', posicion)
+      accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.cargarTransaccion(entidad.id)
         // await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, entidad.listadoProductosTransaccion[posicion]['id'])
@@ -291,271 +287,6 @@ export default defineComponent({
       },
     }
 
-    /* function table(data, columns, encabezados) {
-      return {
-        layout: 'listadoLayout',
-        table: {
-          headerRows: 1,
-          body: buildTableBody(data, columns, encabezados)
-        }
-      }
-    }
-    const f = new Date()
-    function pdfMakeImprimir() {
-      pdfMake.tableLayouts = {
-        listadoLayout: {
-          hLineWidth: function (i, node) {
-            if (i === 0 || i === node.table.body.length) {
-              return 0
-            }
-            return (i === node.table.headerRows) ? 2 : 1
-          },
-          vLineWidth: function (i) {
-            return 0
-          },
-          hLineColor: function (i) {
-            return i === 1 ? 'black' : '#aaa'
-          },
-          paddingLeft: function (i) {
-            return i === 0 ? 0 : 8
-          },
-          paddingRight: function (i, node) {
-            return (i === node.table.widths.length - 1) ? 0 : 8
-          }
-        },
-        lineaLayout: {
-          hLineWidth: function (i, node) {
-            return (i === 0 || i === node.table.body.length) ? 0 : 2
-          },
-          vLineWidth: function (i, node) {
-            return 0
-          },
-        },
-      }
-
-      let docDefinition = {
-        info: {
-          title: `Transacción N° ${transaccion.id}`,
-          author: `${store.user.nombres} ${store.user.apellidos}`,
-        },
-        background: {
-          image: logoBN,
-          margin: [50, 80, 50, 50],
-          opacity: 0.1
-        },
-        pageSize: 'A5',
-        pageOrientation: 'landscape',
-        header:
-        {
-          columns: [
-            {
-              image: logoColor,
-              width: 70,
-              height: 40,
-              margin: [5, 2]
-            },
-            transaccion.es_transferencia ? { text: 'COMPROBANTE DE EGRESO POR TRANSFERENCIA', width: 'auto', style: 'headerTransferencia', margin: [40, 20] } : { text: 'COMPROBANTE DE EGRESO', width: 'auto', style: 'header', margin: [85, 20] },
-            { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
-          ],
-        },
-        footer: function (currentPage, pageCount) {
-          return [
-            {
-              columns: [
-                {
-                  width: '*',
-                  text: currentPage.toString() + ' de ' + pageCount,
-                  margin: [10, 10]
-                },
-                { qr: `Transacción N° ${transaccion.id}\n Generado por ${store.user.nombres} ${store.user.apellidos}, el ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}, ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
-                // { text: 'pie de pagina', alignment: 'right', margin: [5, 2] }
-              ]
-            }
-          ]
-        },
-        content: [
-          {
-            canvas: [
-              {
-                type: 'line',
-                x1: 0, y1: 5,
-                x2: 510, y2: 5,
-                lineWidth: 1,
-              },
-            ], margin: [0, 0, 0, 20]
-          },
-          {
-            columns: [
-              {
-                // auto-sized columns have their widths based on their content
-                width: '*',
-                text: [
-                  { text: 'Transaccion N° ', style: 'defaultStyle' },
-                  { text: `${transaccion.id}`, style: 'resultStyle', }
-                ]
-              },
-              {
-                // star-sized columns fill the remaining space
-                // if there's more than one star-column, available width is divided equally
-                width: '*',
-                text: [
-                  { text: 'Fecha: ', style: 'defaultStyle' },
-                  { text: `${transaccion.created_at}`, style: 'resultStyle', }
-                ]
-              },
-              {
-                // fixed width
-                width: '*',
-                text: [
-                  { text: 'Solicitante: ', style: 'defaultStyle' },
-                  { text: `${transaccion.solicitante}`, style: 'resultStyle', }
-                ]
-              },
-            ],
-
-          },
-          {
-            columns: [
-              {
-                // auto-sized columns have their widths based on their content
-                width: '*',
-                columns: [
-                  { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
-                  { width: 'auto', text: `${transaccion.sucursal}`, style: 'resultStyle', }
-                ]
-              },
-              {
-                // star-sized columns fill the remaining space
-                // if there's more than one star-column, available width is divided equally
-                width: 'auto',
-                columns: [
-                  { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
-                  { width: 'auto', text: `${transaccion.justificacion}`, style: 'resultStyle', }
-                ],
-              },
-            ],
-          },
-          {
-            columns: [
-              {
-                width: '*',
-                columns: [
-                  { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                  { width: 'auto', text: ` ${transaccion.tarea}`, style: 'resultStyle', }
-                ]
-              },
-              {
-                // star-sized columns fill the remaining space
-                // if there's more than one star-column, available width is divided equally
-                width: 'auto',
-                columns: [
-                  { width: 'auto', text: 'Estado: ', style: 'defaultStyle' },
-                  { width: 'auto', text: `${transaccion.estado}`, style: 'resultStyle', }
-                ],
-              },
-            ]
-          },
-          { text: '\n' },
-
-          /*
-          ['producto', 'detalle_id', 'cliente_id', 'condicion', 'cantidades', 'devuelto'],
-              ['Producto', 'Descripción', 'Propietario', 'Estado', 'Cantidad', 'Devuelto']),
-          /
-          table(transaccion.listadoProductosTransaccion,
-            ['producto', 'descripcion', 'categoria', 'cantidad'],
-            ['Producto', 'Descripción', 'Estado', 'Cantidad']),
-
-          { text: '\n\n' },
-
-          // aqui debe ir el listado de devoluciones realizadas
-
-          /* { text: 'Listado de devoluciones' },
-          function () {
-              {
-                  text: traspaso.listadoDevoluciones.forEach((element) => {
-                      `${element.id}`
-                  })
-              }
-          }, *
-
-          { text: '\n\n' },
-          {
-            columns: [
-              {
-                layout: 'lineaLayout',
-                width: '*',
-                table: {
-                  widths: ['*'],
-                  body: [[' '], [' ']]
-                },
-                margin: [0, 0, 60, 0]
-              },
-              {
-                layout: 'lineaLayout',
-                width: '*',
-                table: {
-                  widths: ['*'],
-                  body: [[' '], [' ']]
-                },
-                margin: [60, 0, 0, 0]
-              }
-
-            ],
-            columnGap: 10
-          },
-          {
-            columns: [
-              {
-                // auto-sized columns have their widths based on their content
-                // width: '*',
-                text: [
-                  { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center' },
-                  { text: `${transaccion.solicitante}\n`, style: 'resultStyle', alignment: 'center' },
-                  {
-                    text: [
-                      { text: 'C.I: ', style: 'resultStyle', alignment: 'center' },
-                      { text: `${store.user.identificacion}`, style: 'resultStyle' }
-                    ],
-                    alignment: 'center',
-                  }
-                ]
-              },
-              {
-                // width: '*',
-                text: [
-                  { text: 'RECIBE \n', style: 'resultStyle', alignment: 'center' },
-                  { text: `${transaccion.per_retira} \n`, style: 'resultStyle', alignment: 'center' },
-                  { text: `C.I: ${empleadoRetira.value.identificacion}\n`, style: 'resultStyle', margin: [60, 0, 0, 0], alignment: 'center' }
-                ]
-              },
-            ],
-            // optional space between columns
-            columnGap: 140
-          },
-        ],
-        styles: {
-          header: {
-            fontSize: 16,
-            bold: true,
-            alignment: 'center'
-          },
-          headerTransferencia: {
-            fontSize: 14,
-            bold: true,
-            alignment: 'center'
-          },
-          defaultStyle: {
-            fontSize: 10,
-            bold: false
-          },
-          resultStyle: {
-            fontSize: 10,
-            bold: true
-          },
-        },
-      }
-      pdfMake.createPdf(docDefinition).open()
-    } */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
       await pedidoStore.cargarPedido(id)
@@ -586,6 +317,7 @@ export default defineComponent({
       transaccion.pedido = pedidoStore.pedido.id
       transaccion.justificacion = pedidoStore.pedido.justificacion
       transaccion.solicitante = Number.isInteger(pedidoStore.pedido.solicitante) ? pedidoStore.pedido.solicitante : pedidoStore.pedido.solicitante_id
+      // transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable)  pedidoStore.pedido.responsable : pedidoStore.pedido.responsable_id
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
       listadoPedido.value = pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)
       listadoPedido.value.sort((v, w) => v.id - w.id)
@@ -678,13 +410,11 @@ export default defineComponent({
 
     //Configurar los listados
     opciones_empleados.value = listadosAuxiliares.empleados
-    opciones_sucursales.value = listadosAuxiliares.sucursales
-
+    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+    console.log(JSON.parse(LocalStorage.getItem('autorizaciones')!.toString()))
     opciones_motivos.value = listadosAuxiliares.motivos
-    opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-    opciones_estados.value = listadosAuxiliares.estados
+    opciones_autorizaciones.value =JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_tareas.value = listadosAuxiliares.tareas
-    opciones_subtareas.value = listadosAuxiliares.subtareas
     opciones_clientes.value = listadosAuxiliares.clientes
 
     function filtroTareas(val) {
@@ -708,9 +438,7 @@ export default defineComponent({
       opciones_sucursales,
       opciones_motivos,
       opciones_autorizaciones,
-      opciones_estados,
       opciones_tareas,
-      opciones_subtareas,
       opciones_clientes,
 
       //stores
@@ -723,7 +451,6 @@ export default defineComponent({
       //variables auxiliares
       esVisibleAutorizacion,
       esVisibleTarea,
-      esVisibleSubtarea,
       requiereFecha,
 
       //modales

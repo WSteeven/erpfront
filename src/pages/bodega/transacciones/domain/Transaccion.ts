@@ -14,6 +14,8 @@ export class Transaccion extends EntidadAuditable {
     pedido: number | null
     transferencia: number | null
     solicitante_id: number | null
+    responsable: number | null
+    responsable_id: number | null
     tipo: number | null
     motivo: number | null
     sucursal: number | null
@@ -62,6 +64,8 @@ export class Transaccion extends EntidadAuditable {
         this.observacion_est = null
         this.sucursal = null
         this.sucursal_id = null
+        this.responsable = null
+        this.responsable_id = null
         this.cliente = null
         this.cliente_id = null
         this.per_autoriza = null
@@ -69,7 +73,7 @@ export class Transaccion extends EntidadAuditable {
         this.per_retira = null
         this.per_retira_id = null
         this.created_at = null
-        
+
         this.condicion = null
 
         this.tiene_obs_autorizacion = false

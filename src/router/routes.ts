@@ -245,6 +245,15 @@ const routes: RouteRecordRaw[] = [
 
       //Routes for Recursos Humanos
       {
+        path: '/cargos',
+        name: 'cargos',
+        component: () =>
+          import(
+            'pages/recursosHumanos/cargos/view/CargoPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/empleados',
         name: 'empleados',
         component: () =>

@@ -225,8 +225,12 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div style=" clear: inherit;" v-for="error of v$.fecha_nacimiento.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>  
+                <div
+                  style="clear: inherit"
+                  v-for="error of v$.fecha_nacimiento.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
@@ -303,7 +307,39 @@
               </template>
             </q-select>
           </div>
-
+          <!--Cargo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cargo</label>
+            <q-select
+              v-model="empleado.cargo"
+              :options="opciones_cargos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.cargo.$errors.length"
+              error-message="Debes seleccionar un cargo"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.cargo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Roles -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Roles</label>

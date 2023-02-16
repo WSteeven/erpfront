@@ -22,7 +22,8 @@
       :name="opcion.value"
       class=""
       :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
-    ></q-tab>
+    >
+  </q-tab>
   </q-tabs>
 
   <essential-table

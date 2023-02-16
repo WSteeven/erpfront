@@ -112,7 +112,7 @@
             </q-input>
           </div>
           <!-- Responsable -->
-          <div v-if="esCoordinador" class="col-12 col-md-3">
+          <div v-if="!esTecnico" class="col-12 col-md-3">
             <label class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="pedido.responsable"
@@ -142,10 +142,7 @@
                 </q-item>
               </template>
               <template v-slot:error>
-                <div
-                  v-for="error of v$.responsable.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.responsable.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -158,7 +155,7 @@
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
-              v-model="requiereFecha"
+              v-model="pedido.tiene_fecha_limite"
               label="¿Fecha límite?"
               :disable="disabled || soloLectura"
               @update:model-value="checkEsFecha"
@@ -168,7 +165,7 @@
           </div>
           <!-- Fecha límite -->
           <div
-            v-if="pedido.tiene_fecha_limite || requiereFecha"
+            v-if="pedido.tiene_fecha_limite"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Fecha limite</label>
@@ -268,6 +265,25 @@
               </template>
             </q-select>
           </div>
+          <!-- Persona que autoriza -->
+          <div v-if="pedido.per_autoriza" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Persona que autoriza</label>
+            <q-select
+              v-model="pedido.per_autoriza"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            />
+          </div>
           <!-- Select autorizacion -->
           <div
             v-if="pedido.autorizacion || esCoordinador"
@@ -340,6 +356,46 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+            </q-input>
+          </div>
+          <!-- Select estado -->
+          <div
+            v-if="pedido.estado || accion === acciones.consultar"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">Estado del despacho</label>
+            <q-select
+              v-model="pedido.estado"
+              :options="opciones_estados"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || (soloLectura && !esCoordinador)"
+              :readonly="disabled || (soloLectura && !esCoordinador)"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+            </q-select>
+          </div>
+          <!-- observacion estado -->
+          <div
+            v-if="pedido.observacion_est"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              autogrow
+              v-model="pedido.observacion_est"
+              placeholder="Obligatorio"
+              :disable="disabled || (soloLectura && !esCoordinador)"
+              :readonly="disabled || (soloLectura && !esCoordinador)"
+              outlined
+              dense
+            >
             </q-input>
           </div>
           <!-- Configuracion para seleccionar productos -->

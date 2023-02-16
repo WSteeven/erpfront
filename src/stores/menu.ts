@@ -252,6 +252,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.empleados'),
         },
         {
+          title: 'Cargos',
+          link: 'cargos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.cargos'),
+        },
+        {
           title: 'Grupos',
           link: 'grupos',
           icon: 'bi-circle',

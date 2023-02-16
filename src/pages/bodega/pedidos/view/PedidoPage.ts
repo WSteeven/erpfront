@@ -19,7 +19,7 @@ import { Pedido } from '../domain/Pedido'
 
 import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain/configuracionColumnasProductosSeleccionadosDespachado'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { acciones, estadosTransacciones, logoBN, logoColor, meses, tabOptionsPedidos, } from 'config/utils'
+import { acciones, estadosTransacciones, logoBN, logoColor, meses, rolesSistema, tabOptionsPedidos, } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
@@ -36,565 +36,309 @@ import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { buildTableBody } from 'shared/utils'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
+import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
+import { Cargo } from 'pages/recursosHumanos/cargos/domain/Cargo'
+import { LocalStorage } from 'quasar'
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
+  components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
 
-    setup() {
-        const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
-        const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onReestablecer, onConsultado } = mixin.useHooks()
-        const { confirmar, prompt } = useNotificaciones()
+  setup() {
+    const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
+    const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { onReestablecer, onConsultado } = mixin.useHooks()
+    const { confirmar, prompt } = useNotificaciones()
 
-        // Stores
-        const pedidoStore = usePedidoStore()
-        const store = useAuthenticationStore()
-        const router = useRouter()
+    // Stores
+    const pedidoStore = usePedidoStore()
+    const store = useAuthenticationStore()
+    const router = useRouter()
 
-        // Orquestador
-        const {
-            refListadoSeleccionable: refListado,
-            criterioBusqueda: criterioBusquedaProducto,
-            listado: listadoProductos,
-            listar: listarProductos,
-            limpiar: limpiarProducto,
-            seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorDetalles(pedido, 'detalles')
+    // Orquestador
+    const {
+      refListadoSeleccionable: refListado,
+      criterioBusqueda: criterioBusquedaProducto,
+      listado: listadoProductos,
+      listar: listarProductos,
+      limpiar: limpiarProducto,
+      seleccionar: seleccionarProducto
+    } = useOrquestadorSelectorDetalles(pedido, 'detalles')
 
-        // Flags
-        let tabSeleccionado = ref()
-        let soloLectura = ref(false)
-        let requiereFecha = ref(false)
-        let puedeEditar = ref(false)
+    // Flags
+    let tabSeleccionado = ref()
+    let soloLectura = ref(false)
+    let puedeEditar = ref(false)
 
-        const esCoordinador = store.esCoordinador
-        const esBodeguero = store.esBodeguero
+    const esCoordinador = store.esCoordinador
+    const esBodeguero = store.esBodeguero
+    const esTecnico = store.esTecnico
+    console.log('11111',esTecnico)
 
-        onReestablecer(() => {
-            soloLectura.value = false
-            requiereFecha.value = false
-            console.log(accion.value)
-        })
-        onConsultado(() => {
-            console.log(accion.value)
-            if (accion.value === acciones.editar && esCoordinador) {
-                soloLectura.value = true
-            }
-        })
-        console.log('es coordinador? ', esCoordinador)
+    onReestablecer(() => {
+      soloLectura.value = false
+      // console.log(accion.value)
+    })
+    onConsultado(() => {
+      opciones_empleados.value = listadosAuxiliares.empleados
+      console.log(accion.value)
+      if (accion.value === acciones.editar && esCoordinador) {
+        soloLectura.value = true
+      }
+    })
+    console.log('es coordinador? ', esCoordinador)
+    let cargo_tecnico:Cargo
 
-        const opciones_empleados = ref([])
-        const opciones_sucursales = ref([])
-        const opciones_tareas = ref([])
-        const opciones_autorizaciones = ref([])
-        const opciones_estados = ref([])
-        //Obtener los listados
-        cargarVista(async () => {
-            await obtenerListados({
-                empleados: {
-                    controller: new EmpleadoController(),
-                    params: {
-                        campos: 'id,nombres,apellidos',
-                        estado: 1,
-                        rol:
-                    }
-                },
-                tareas: {
-                    controller: new TareaController(),
-                    params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
-                },
-                sucursales: {
-                    controller: new SucursalController(),
-                    params: { campos: 'id,lugar' },
-                },
-                autorizaciones: {
-                    controller: new AutorizacionController(),
-                    params: { campos: 'id,nombre' },
-                },
-                estados: {
-                    controller: new EstadosTransaccionController(),
-                    params: { campos: 'id,nombre' },
-                },
-            })
-        })
-
-
-        /*****************************************************************************************
-         * Validaciones
-         ****************************************************************************************/
-        const reglas = {
-            justificacion: { required },
-            autorizacion: { requiredIfCoordinador: requiredIf(()=>esCoordinador) },
-            observacion_aut: { requiredIfCoordinador: requiredIf(()=>pedido.tiene_observacion_aut!) },
-            sucursal: { required },
-            responsable: { requiredIfCoordinador: requiredIf(()=>esCoordinador) },
-            tarea: { requiredIfTarea: requiredIf(()=>pedido.es_tarea!) },
-            fecha_limite: {
-                required: requiredIf(()=>requiereFecha.value),
-                fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
-            },
-        }
-
-        const v$ = useVuelidate(reglas, pedido)
-        setValidador(v$.value)
-
-        const validarListadoProductos = new ValidarListadoProductos(pedido)
-        mixin.agregarValidaciones(validarListadoProductos)
+    const opciones_empleados = ref([])
+    const opciones_sucursales = ref([])
+    const opciones_tareas = ref([])
+    const opciones_autorizaciones = ref([])
+    const opciones_estados = ref([])
+    //Obtener los listados
+    cargarVista(async () => {
+      await obtenerListados({
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos,cargo_id',
+            estado: 1,
+          }
+        },
+        tareas: {
+          controller: new TareaController(),
+          params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
+        },
+        /* sucursales: {
+          controller: new SucursalController(),
+          params: { campos: 'id,lugar' },
+        }, */
+        /* autorizaciones: {
+          controller: new AutorizacionController(),
+          params: { campos: 'id,nombre' },
+        }, */
+        /* estados: {
+          controller: new EstadosTransaccionController(),
+          params: { campos: 'id,nombre' },
+        }, */
+      })
+      //obtener el cargo
+      const response =await new CargoController().listar({nombre:'TECNICO'})
+      cargo_tecnico = (await response).result[0]//se carga el array recibido con el cargo
+      console.log(cargo_tecnico.id)
+    })
 
 
-        /*******************************************************************************************
-         * Funciones
-         ******************************************************************************************/
-
-        function eliminar({ entidad, posicion }) {
-            confirmar('¿Está seguro de continuar?',
-                () => pedido.listadoProductos.splice(posicion, 1))
-        }
-        const botonEliminar: CustomActionTable = {
-            titulo: 'Quitar',
-            color: 'negative',
-            icono: 'bi-x',
-            accion: ({ entidad, posicion }) => {
-                eliminar({ entidad, posicion })
-            },
-            visible: () => {
-                return accion.value == acciones.consultar ? false : true
-            }
-        }
-        const botonEditarCantidad: CustomActionTable = {
-            titulo: 'Cantidad',
-            icono: 'bi-pencil',
-            accion: ({ posicion }) => {
-                const data: CustomActionPrompt = {
-                    titulo: 'Modifica',
-                    mensaje: 'Ingresa la cantidad',
-                    defecto: pedido.listadoProductos[posicion].cantidad,
-                    accion: (data) => pedido.listadoProductos[posicion].cantidad = data,
-                }
-                prompt(data)
-            },
-            visible: () => {
-                return accion.value == acciones.consultar ? false : true
-            }
-        }
-
-        const botonDespachar: CustomActionTable = {
-            titulo: 'Despachar',
-            color: 'primary',
-            icono: 'bi-pencil-square',
-            accion: ({ entidad, posicion }) => {
-                // router.replace({'transacciones_egresos'})
-                pedidoStore.pedido = entidad
-                router.push('transacciones-egresos')
-                console.log(posicion)
-                console.log(pedidoStore.pedido)
-                console.log(entidad)
-            },
-            visible: ({ entidad, posicion }) => {
-                return tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
-            }
-        }
-
-        const botonImprimir: CustomActionTable = {
-            titulo: 'Imprimir',
-            color: 'secondary',
-            icono: 'bi-printer',
-            accion: async ({ entidad, posicion }) => {
-                pedidoStore.idPedido = entidad.id
-                // modales.abrirModalEntidad("ImprimirDevolucionPage")
-                // await pedidoStore.showPreview()
-                await pedidoStore.imprimirPdf()
-                console.log(pedidoStore.pedido)
-                console.log(pedidoStore.pedido.listadoProductos)
-                console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
-                // pdfMakeImprimir()
-            },
-            visible: () => tabSeleccionado.value == 'APROBADO' ? true : false
-        }
-        //construccion de la tabla para imprimir
-        function table(data, columns, encabezados) {
-            // const columnas =['Producto', 'Descripción', 'Categoría', 'Cantidad']
-            return {
-                // style:'tableExample',
-                layout: 'lightHorizontalLines',
-                table: {
-                    headerRows: 1,
-                    body: buildTableBody(data, columns, encabezados),
-
-                }
-            }
-        }
-
-        const f = new Date()
-
-        function pdfMakeImprimir() {
-            pdfMake.tableLayouts = {
-                listadoLayout: {
-                    hLineWidth: function (i, node) {
-                        if (i === 0 || i === node.table.body.length) {
-                            return 0
-                        }
-                        return (i === node.table.headerRows) ? 2 : 1
-                    },
-                    vLineWidth: function (i) {
-                        return 0
-                    },
-                    hLineColor: function (i) {
-                        return i === 1 ? 'black' : '#aaa'
-                    },
-                    paddingLeft: function (i) {
-                        return i === 0 ? 0 : 8
-                    },
-                    paddingRight: function (i, node) {
-                        return (i === node.table.widths.length - 1) ? 0 : 8
-                    }
-                },
-                lineaLayout: {
-                    hLineWidth: function (i, node) {
-                        return (i === 0 || i === node.table.body.length) ? 0 : 2
-                    },
-                    vLineWidth: function (i, node) {
-                        return 0
-                    },
-                },
-            }
-            var dd = {
-                // watermark: { text: 'BODEGA JPCONSTRUCRED', opacity: 0.1, bold: true, italics: false },
-                info: {
-                    title: `Pedido ${pedidoStore.pedido.id}`,
-                    author: `${store.user.nombres} ${store.user.apellidos}`,
-                },
-                background: {
-                    image: logoBN,
-                    margin: [50, 50, 50, 50],
-                    opacity: 0.1
-                },
-                pageSize: 'A5',
-                pageOrientation: 'landscape',
-                header: {
-                    columns: [
-                        {
-                            image: logoColor,
-                            width: 70,
-                            height: 40,
-                            margin: [5, 2]
-                        },
-                        { text: 'COMPROBANTE DE PEDIDO', width: 'auto', style: 'header', margin: [85, 20] },
-                        { text: 'Sistema de Bodega', alignment: 'right', margin: [5, 20, 5] }
-                    ]
-                },
-                footer: function (currentPage, pageCount) {
-                    return [
-                        {
-                            columns: [
-                                {
-                                    width: '*',
-                                    text: currentPage.toString() + ' de ' + pageCount,
-                                    margin: [10, 10]
-                                },
-                                { qr: `Pedido N° ${pedidoStore.pedido.id}\n Generado por ${store.user.nombres} ${store.user.apellidos}, el ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}, ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`, fit: '50', alignment: 'right', margin: [0, 0, 5, 0] },
-                                // { text: 'pie de pagina', alignment: 'right', margin: [5, 2] }
-                            ]
-                        }
-                    ]
-                },
-
-                content: [
-                    {
-                        canvas: [
-                            {
-                                type: 'line',
-                                x1: 0, y1: 5,
-                                x2: 510, y2: 5,
-                                lineWidth: 1,
-                            },
-                        ], margin: [0, 0, 0, 20]
-                    },
-                    {
-                        columns: [
-                            {
-                                // auto-sized columns have their widths based on their content
-                                width: '*',
-                                text: [
-                                    { text: 'Transaccion N° ', style: 'defaultStyle' },
-                                    { text: `${pedidoStore.pedido.id}`, style: 'resultStyle', }
-                                ]
-                            },
-                            {
-                                // star-sized columns fill the remaining space
-                                // if there's more than one star-column, available width is divided equally
-                                width: '*',
-                                text: [
-                                    { text: 'Fecha: ', style: 'defaultStyle' },
-                                    { text: `${pedidoStore.pedido.created_at}`, style: 'resultStyle', }
-                                ]
-                            },
-                            {
-                                // fixed width
-                                width: '*',
-                                text: [
-                                    { text: 'Solicitante: ', style: 'defaultStyle' },
-                                    { text: `${pedidoStore.pedido.solicitante}`, style: 'resultStyle', }
-                                ]
-                            },
-                        ],
-
-                    },
-                    {
-                        columns: [
-                            {
-                                // auto-sized columns have their widths based on their content
-                                width: '*',
-                                columns: [
-                                    { width: 'auto', text: 'Sucursal: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${pedidoStore.pedido.sucursal}`, style: 'resultStyle', }
-                                ]
-                            },
-                            {
-                                // star-sized columns fill the remaining space
-                                // if there's more than one star-column, available width is divided equally
-                                width: 'auto',
-                                columns: [
-                                    { width: 'auto', text: 'Justificación: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${pedidoStore.pedido.justificacion}`, style: 'resultStyle', }
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        columns: [
-                            {
-                                width: '*',
-                                columns: [
-                                    { width: 'auto', text: 'Autorizado por: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${pedidoStore.pedido.per_autoriza}`, style: 'resultStyle', }
-                                ]
-                            },
-                            {
-                                width: 'auto',
-                                columns: [
-                                    { width: 'auto', text: 'Estado: ', style: 'defaultStyle' },
-                                    { width: 'auto', text: `${pedidoStore.pedido.estado}`, style: 'resultStyle', }
-                                ]
-                            }
-                        ]
-                    },
-                    comprobarTarea(),
-                    { text: '\n' },
-                    /* {
-                        columns: [
-                            {
-                                width: '*',
-                                columns: [
-                                    { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                                    {
-                                        width: 'auto', text: function () {
-                                            if (devolucionStore.devolucion.tarea) {
-                                                return [` ${devolucionStore.devolucion.tarea}`]
-                                            } else
-                                                return ['no hay tarea']
-                                        }, style: 'resultStyle',
-                                    }
-                                ]
-                            }
-                        ]
-                    }, */
-
-                    table(pedidoStore.pedido.listadoProductos, ['producto', 'descripcion', 'categoria', 'cantidad'], ['Producto', 'Descripción', 'Categoría', 'Cantidad']),
-
-                    // 'Some long text of variable length ...',
-                    // { text: '2 Headline', headlineLevel: 1 },
-                    // 'Some long text of variable length ...',
-                    // { text: '3 Headline', headlineLevel: 1 },
-                    // 'Some long text of variable length ...',
-                    { text: '\n\n\n\n' },
-                    {
-                        columns: [
-                            {
-                                layout: 'lineaLayout',
-                                width: '*',
-                                table: {
-                                    widths: ['*'],
-                                    body: [[' '], [' ']]
-                                },
-                                margin: [0, 0, 60, 0]
-                            },
-                            {
-                                layout: 'lineaLayout',
-                                width: '*',
-                                table: {
-                                    widths: ['*'],
-                                    body: [[' '], [' ']]
-                                },
-                                margin: [60, 0, 0, 0]
-                            }
-
-                        ],
-                        columnGap: 10
-                    },
-                    {
-                        columns: [
-                            {
-                                // auto-sized columns have their widths based on their content
-                                // width: '*',
-                                text: [
-                                    { text: 'ENTREGA \n', style: 'resultStyle', alignment: 'center' },
-                                    { text: `${pedidoStore.pedido.solicitante}\n`, style: 'resultStyle', alignment: 'center', },
-                                    {
-                                        text: [
-                                            { text: 'C.I: ', style: 'resultStyle', alignment: 'center', },
-                                            { text: `${store.user.identificacion}`, style: 'resultStyle', }
-                                        ],
-                                        alignment: 'center',
-                                    }
-                                ]
-                            },
-                            {
-                                // width: '*',
-                                text: [
-                                    { text: 'RECIBE \n', style: 'resultStyle', alignment: 'center' },
-                                    { text: 'BODEGUERO: \n', style: 'resultStyle', },
-                                    { text: 'C.I: \n', style: 'resultStyle', margin: [60, 0, 0, 0], }
-                                ]
-                            },
-                        ],
-                        // optional space between columns
-                        columnGap: 140
-                    },
-                ],
-                styles: {
-                    header: {
-                        fontSize: 16,
-                        bold: true,
-                        alignment: 'center'
-                    },
-                    defaultStyle: {
-                        fontSize: 10,
-                        bold: false
-                    },
-                    resultStyle: {
-                        fontSize: 10,
-                        bold: true
-                    },
-                },
-            }
-            pdfMake.createPdf(dd).open()
-        }
-
-        function comprobarTarea() {
-            if (pedidoStore.pedido.tarea !== null) {
-                return {
-                    columns: [
-                        {
-                            width: '*',
-                            columns: [
-                                { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                                { width: 'auto', text: ` ${pedidoStore.pedido.tarea}`, style: 'resultStyle' }
-                            ]
-                        }
-                    ],
-                }
-            }
-        }
-
-        function actualizarElemento(posicion: number, entidad: any): void {
-            if (posicion >= 0) {
-                listado.value.splice(posicion, 1, entidad)
-                listado.value = [...listado.value]
-            }
-        }
-
-        //Configuracion de columnas
-        const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
-            name: 'acciones',
-            field: 'acciones',
-            label: 'Acciones',
-            align: 'center',
-            sortable: false,
-            style: 'width:250px'
-
-        }]
-
-
-        //Configurar los listados
-        opciones_empleados.value = listadosAuxiliares.empleados
-        opciones_sucursales.value = listadosAuxiliares.sucursales
-        opciones_tareas.value = listadosAuxiliares.tareas
-        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-        opciones_estados.value = listadosAuxiliares.estados
-
-        return {
-            mixin, pedido, disabled, accion, v$, acciones,
-            configuracionColumnas: configuracionColumnasPedidos,
-            //listados
-            opciones_empleados,
-            opciones_tareas,
-            opciones_sucursales,
-            opciones_estados,
-            opciones_autorizaciones,
-
-            //selector
-            refListado,
-            criterioBusquedaProducto,
-            listadoProductos,
-            listarProductos,
-            limpiarProducto,
-            seleccionarProducto,
-            configuracionColumnasDetallesModal,
-
-
-            //tabla
-            configuracionColumnasProductosSeleccionadosAccion,
-            configuracionColumnasProductosSeleccionadosDespachado,
-            botonEditarCantidad,
-            botonEliminar,
-            botonImprimir,
-            botonDespachar,
-
-            //modal
-            // modales,
-
-            //flags
-            soloLectura,
-            requiereFecha,
-
-            //Tabs
-            tabOptionsPedidos,
-            tabSeleccionado,
-            puedeEditar,
-            esCoordinador, esBodeguero,
-
-            checkEsFecha(val, evt) {
-                if (!val) pedido.fecha_limite = ''
-            },
-            checkEsTarea(val, evt) {
-                if (!val) pedido.tarea = null
-            },
-            tabEs(val) {
-                // console.log(tabSeleccionado.value)
-                // console.log(val)
-                tabSeleccionado.value = val
-                puedeEditar.value = (esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (esBodeguero && tabSeleccionado.value === 'PARCIAL')
-                    ? true
-                    : esCoordinador && tabSeleccionado.value === 'PENDIENTE'
-                        ? true
-                        : false
-            },
-
-            //Filtros
-            filtroResponsable(val, update){
-                if(val===''){
-                    update(()=>{
-                        opciones_empleados.value = listadosAuxiliares.empleados
-                    })
-                    return
-                }
-                update(()=>{
-                    const needle = val.toLowerCase()
-                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v)=>v.nombres.toLowerCase().indexOf(needle)>-1||v.apellidos.toLowerCase().indexOf(needle)>-1)
-                })
-            }
-        }
+    /*****************************************************************************************
+     * Validaciones
+     ****************************************************************************************/
+    const reglas = {
+      justificacion: { required },
+      autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
+      observacion_aut: { requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!) },
+      sucursal: { required },
+      responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico) },
+      tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
+      fecha_limite: {
+        required: requiredIf(() => pedido.tiene_fecha_limite!),
+        fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
+      },
     }
+
+    const v$ = useVuelidate(reglas, pedido)
+    setValidador(v$.value)
+
+    const validarListadoProductos = new ValidarListadoProductos(pedido)
+    mixin.agregarValidaciones(validarListadoProductos)
+
+
+    /*******************************************************************************************
+     * Funciones
+     ******************************************************************************************/
+
+    function eliminar({ entidad, posicion }) {
+      confirmar('¿Está seguro de continuar?',
+        () => pedido.listadoProductos.splice(posicion, 1))
+    }
+    const botonEliminar: CustomActionTable = {
+      titulo: 'Quitar',
+      color: 'negative',
+      icono: 'bi-x',
+      accion: ({ entidad, posicion }) => {
+        eliminar({ entidad, posicion })
+      },
+      visible: () => {
+        return accion.value == acciones.consultar ? false : true
+      }
+    }
+    const botonEditarCantidad: CustomActionTable = {
+      titulo: 'Cantidad',
+      icono: 'bi-pencil',
+      accion: ({ posicion }) => {
+        const data: CustomActionPrompt = {
+          titulo: 'Modifica',
+          mensaje: 'Ingresa la cantidad',
+          defecto: pedido.listadoProductos[posicion].cantidad,
+          accion: (data) => pedido.listadoProductos[posicion].cantidad = data,
+        }
+        prompt(data)
+      },
+      visible: () => {
+        return accion.value == acciones.consultar ? false : true
+      }
+    }
+
+    const botonDespachar: CustomActionTable = {
+      titulo: 'Despachar',
+      color: 'primary',
+      icono: 'bi-pencil-square',
+      accion: ({ entidad, posicion }) => {
+        // router.replace({'transacciones_egresos'})
+        pedidoStore.pedido = entidad
+        router.push('transacciones-egresos')
+        console.log(posicion)
+        console.log(pedidoStore.pedido)
+        console.log(entidad)
+      },
+      visible: ({ entidad, posicion }) => {
+        return tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
+      }
+    }
+
+    const botonImprimir: CustomActionTable = {
+      titulo: 'Imprimir',
+      color: 'secondary',
+      icono: 'bi-printer',
+      accion: async ({ entidad, posicion }) => {
+        pedidoStore.idPedido = entidad.id
+        // modales.abrirModalEntidad("ImprimirDevolucionPage")
+        // await pedidoStore.showPreview()
+        await pedidoStore.imprimirPdf()
+        console.log(pedidoStore.pedido)
+        console.log(pedidoStore.pedido.listadoProductos)
+        console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
+        // pdfMakeImprimir()
+      },
+      visible: () => tabSeleccionado.value == 'APROBADO' ? true : false
+    }
+
+    function actualizarElemento(posicion: number, entidad: any): void {
+      if (posicion >= 0) {
+        listado.value.splice(posicion, 1, entidad)
+        listado.value = [...listado.value]
+      }
+    }
+
+    //Configuracion de columnas
+    const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
+      name: 'acciones',
+      field: 'acciones',
+      label: 'Acciones',
+      align: 'center',
+      sortable: false,
+      style: 'width:250px'
+
+    }]
+
+
+    //Configurar los listados
+    //filtrar los empleados que solo son tecnicos
+    opciones_empleados.value = listadosAuxiliares.empleados
+    // opciones_sucursales.value = listadosAuxiliares.sucursales
+    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+    opciones_tareas.value = listadosAuxiliares.tareas
+    // opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
+    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+    // opciones_estados.value = listadosAuxiliares.estados
+    opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
+    if (esCoordinador) {
+      opciones_empleados.value = listadosAuxiliares.empleados.filter((v)=>v.cargo_id===cargo_tecnico!.id)
+    }
+
+
+    return {
+      mixin, pedido, disabled, accion, v$, acciones,
+      configuracionColumnas: configuracionColumnasPedidos,
+      //listados
+      opciones_empleados,
+      opciones_tareas,
+      opciones_sucursales,
+      opciones_estados,
+      opciones_autorizaciones,
+
+      //selector
+      refListado,
+      criterioBusquedaProducto,
+      listadoProductos,
+      listarProductos,
+      limpiarProducto,
+      seleccionarProducto,
+      configuracionColumnasDetallesModal,
+
+
+      //tabla
+      configuracionColumnasProductosSeleccionadosAccion,
+      configuracionColumnasProductosSeleccionadosDespachado,
+      botonEditarCantidad,
+      botonEliminar,
+      botonImprimir,
+      botonDespachar,
+
+      //modal
+      // modales,
+
+      //flags
+      soloLectura,
+
+      //Tabs
+      tabOptionsPedidos,
+      tabSeleccionado,
+      puedeEditar,
+      esCoordinador, esBodeguero, esTecnico,
+
+      checkEsFecha(val, evt) {
+        if (!val) pedido.fecha_limite = ''
+      },
+      checkEsTarea(val, evt) {
+        if (!val) pedido.tarea = null
+      },
+      tabEs(val) {
+        // console.log(tabSeleccionado.value)
+        // console.log(val)
+        tabSeleccionado.value = val
+        puedeEditar.value = (esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (esBodeguero && tabSeleccionado.value === 'PARCIAL')
+          ? true
+          : esCoordinador && tabSeleccionado.value === 'PENDIENTE'
+            ? true
+            : false
+      },
+
+      //Filtros
+      filtroResponsable(val, update) {
+        if(esCoordinador){
+          if (val === '') {
+            update(() => {
+              // opciones_empleados.value = listadosAuxiliares.empleados
+              opciones_empleados.value = listadosAuxiliares.empleados.filter((v)=>v.cargo_id===cargo_tecnico.id)
+            })
+            return
+          }
+          update(() => {
+            const needle = val.toLowerCase()
+            opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)&&v.cargo_id===cargo_tecnico.id)
+          })
+        }else{
+          if (val === '') {
+            update(() => {
+              opciones_empleados.value = listadosAuxiliares.empleados
+            })
+            return
+          }
+          update(() => {
+            const needle = val.toLowerCase()
+            opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
+          })
+        }
+      }
+    }
+  }
 })
