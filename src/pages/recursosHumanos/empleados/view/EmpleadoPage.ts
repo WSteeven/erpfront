@@ -37,7 +37,7 @@ export default defineComponent({
         const opciones_sucursales = ref([])
         const opciones_roles = ref([])
         const opciones_empleados = ref([])
-        cargarVista(() => {
+        cargarVista(async() => {
             obtenerListados({
                 sucursales: {
                     controller: new SucursalController(),
