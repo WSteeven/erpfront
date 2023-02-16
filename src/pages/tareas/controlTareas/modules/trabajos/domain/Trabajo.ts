@@ -1,6 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { EmpleadoSeleccionado } from './EmpleadoSeleccionado'
-import { opcionesModoAsignacionTrabajo } from 'config/utils'
+import { destinosTareas, opcionesModoAsignacionTrabajo } from 'config/utils'
 import { GrupoSeleccionado } from './GrupoSeleccionado'
 
 export class Trabajo extends EntidadAuditable {
@@ -28,7 +28,6 @@ export class Trabajo extends EntidadAuditable {
 
   es_dependiente: boolean
   es_ventana: boolean
-
   fecha_agendado: string | null
   hora_inicio_agendado: string | null
   hora_fin_agendado: string | null
@@ -63,7 +62,7 @@ export class Trabajo extends EntidadAuditable {
     this.titulo = null
     this.descripcion_completa = null
     this.observacion = null
-    this.para_cliente_proyecto = null
+    this.para_cliente_proyecto = destinosTareas.paraProyecto
     this.fecha_solicitud = null
     this.estado = null
     this.modo_asignacion_trabajo = opcionesModoAsignacionTrabajo.por_grupo

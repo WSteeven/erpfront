@@ -27,9 +27,9 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/tareas',
         name: 'tareas',
-        component: () =>
-          import('pages/tareas/controlTareas/view/ControlTareaPage.vue'),
+        component: () => import('tareas/controlTareas/modules/trabajos/view/TrabajoPage.vue'),
         meta: { requiresAuth: true },
+        // component: () => import('pages/tareas/controlTareas/view/ControlTareaPage.vue'),
       },
       {
         path: '/tipos-trabajos',

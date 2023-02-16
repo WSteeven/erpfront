@@ -2,10 +2,11 @@
 import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'subtareas/domain/configuracionColumnasGrupoSeleccionado'
 import { configuracionColumnasEmpleado } from 'subtareas/domain/configuracionColumnasEmpleado'
+import { configuracionColumnasTareas } from 'tareas/controlTareas/domain/configuracionColumnasTareas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { quitarItemDeArray, stringToArray } from 'shared/utils'
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,
@@ -31,6 +32,7 @@ import { useQuasar } from 'quasar'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -52,6 +54,9 @@ import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
 import { Trabajo } from '../domain/Trabajo'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
+import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
+import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
+import { ComportamientoModalesGeneralContent } from '../../GeneralContent/application/ComportamientoModalesGeneralContent'
 
 export default defineComponent({
   props: {
@@ -60,7 +65,7 @@ export default defineComponent({
       required: false,
     },
   },
-  components: { EssentialTable, ButtonSubmits, EssentialSelectableTable },
+  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     /*********
@@ -75,7 +80,7 @@ export default defineComponent({
     * Mixin
     *********/
     const mixin = new ContenedorSimpleMixin(Trabajo, new TrabajoController())
-    const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: trabajo, listadosAuxiliares, accion } = mixin.useReferencias()
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onBeforeModificar, onConsultado } = mixin.useHooks()
 
@@ -117,8 +122,8 @@ export default defineComponent({
 
     if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
 
-    const accion = tareaStore.accionSubtarea
-    const disable = computed(() => (subtarea.estado !== estadosSubtareas.CREADO && subtarea.estado !== null))
+    // const accion = tareaStore.accionSubtarea
+    const disable = computed(() => (trabajo.estado !== estadosSubtareas.CREADO && trabajo.estado !== null))
 
     /************
      * Variables
@@ -168,15 +173,15 @@ export default defineComponent({
       titulo: 'Designar como responsable',
       icono: 'bi-check-circle-fill',
       color: 'positive',
-      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion) && !entidad.responsable,
+      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion.value) && !entidad.responsable,
       accion: ({ posicion }) => {
-        subtarea.grupos_seleccionados = subtarea.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
+        trabajo.grupos_seleccionados = trabajo.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
           const grupoSeleccionado = new GrupoSeleccionado()
           grupoSeleccionado.hydrate(grupo)
           grupoSeleccionado.responsable = false
           return grupoSeleccionado
         })
-        subtarea.grupos_seleccionados[posicion].responsable = true
+        trabajo.grupos_seleccionados[posicion].responsable = true
       },
     }
 
@@ -185,10 +190,10 @@ export default defineComponent({
       titulo: 'Quitar',
       icono: 'bi-x',
       color: 'negative',
-      visible: () => [acciones.editar, acciones.nuevo].includes(accion),
+      visible: () => [acciones.editar, acciones.nuevo].includes(accion.value), //accion),
       accion: ({ entidad, posicion }) => {
         entidad.principal = false
-        subtarea.grupos_seleccionados.splice(posicion, 1)
+        trabajo.grupos_seleccionados.splice(posicion, 1)
       },
     }
 
@@ -196,15 +201,15 @@ export default defineComponent({
       titulo: 'Designar como responsable',
       icono: 'bi-check-circle-fill',
       color: 'positive',
-      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion) && !entidad.responsable,
+      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion.value) && !entidad.responsable,
       accion: ({ posicion }) => {
-        subtarea.empleados_seleccionados = subtarea.empleados_seleccionados.map((empleado: EmpleadoSeleccionado) => {
+        trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: EmpleadoSeleccionado) => {
           const empleadoSeleccionado = new EmpleadoSeleccionado()
           empleadoSeleccionado.hydrate(empleado)
           empleadoSeleccionado.responsable = false
           return empleadoSeleccionado
         })
-        subtarea.empleados_seleccionados[posicion].responsable = true
+        trabajo.empleados_seleccionados[posicion].responsable = true
       },
     }
 
@@ -212,10 +217,10 @@ export default defineComponent({
       titulo: 'Quitar',
       icono: 'bi-x',
       color: 'negative',
-      visible: () => [acciones.editar, acciones.nuevo].includes(accion) && !(asignarJefe.value || asignarSecretario.value),
+      visible: () => [acciones.editar, acciones.nuevo].includes(accion.value) && !(asignarJefe.value || asignarSecretario.value),
       accion: ({ entidad, posicion }) => {
         // NO BORRAR
-        /* if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+        /* if (trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
           if (esLider(entidad)) {
             asignarJefe.value = true
             asignarSecretario.value = false
@@ -230,7 +235,7 @@ export default defineComponent({
           }
         } */
 
-        subtarea.empleados_seleccionados.splice(posicion, 1)
+        trabajo.empleados_seleccionados.splice(posicion, 1)
       },
     }
 
@@ -279,6 +284,24 @@ export default defineComponent({
         const needle = val.toLowerCase()
         clientes.value = listadosAuxiliares.clientes.filter(
           (v) => v.razon_social.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // - Filtro tipos de clientes finales
+    const clientesFinales = ref()
+    const clientesFinalesSource = ref()
+    function filtrarClientesFinales(val, update) {
+      if (val === '') {
+        update(() => {
+          clientesFinales.value = clientesFinalesSource.value
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        clientesFinales.value = clientesFinalesSource.value.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -389,10 +412,10 @@ export default defineComponent({
     * Hooks
     *********/
     onBeforeGuardar(() => {
-      subtarea.tarea_id = tareaStore.tarea.id
+      trabajo.tarea_id = tareaStore.tarea.id
 
-      /* if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
-        subtarea.grupos_seleccionados = subtarea.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
+      /* if (trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+        trabajo.grupos_seleccionados = trabajo.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
           return {
             grupo_id: grupo.id,
             principal: grupo.principal,
@@ -400,47 +423,47 @@ export default defineComponent({
         })
       } */
 
-      /*subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString()) */
+      /*trabajo.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString()) */
     })
 
     onBeforeModificar(() => {
-      // subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
+      // trabajo.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
     })
 
     onConsultado(() => {
-      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
-        subtarea.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
+      if (trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+        trabajo.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
           console.log(grupo)
           if (grupo.id) obtenerTecnicosGrupo(grupo.id)
         })
       }
-      // tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
+      // tecnicosGrupoPrincipal.value = trabajo.tecnicos_grupo_principal
     })
 
     /*function validarString(listado: string) {
       return listado !== '' ? listado : null
     }*/
 
-    /* async function guardarDatos(subtarea: Trabajo) {
+    /* async function guardarDatos(trabajo: Trabajo) {
       try {
-        await guardar(subtarea, false)
+        await guardar(trabajo, false)
 
         console.log('trabajo guardado')
-        console.log(subtarea)
-        listado.value = [subtarea, ...listado.value]
+        console.log(trabajo)
+        listado.value = [trabajo, ...listado.value]
 
         emit('cerrar-modal')
 
       } catch (e) { }
     }
 
-    async function editarDatos(subtarea: Trabajo) {
+    async function editarDatos(trabajo: Trabajo) {
       try {
-        await editar(subtarea, false)
+        await editar(trabajo, false)
 
         const indexElemento = subtareaListadoStore.posicionSubtareaSeleccionada
 
-        listado.value.splice(indexElemento, 1, subtarea)
+        listado.value.splice(indexElemento, 1, trabajo)
 
         emit('cerrar-modal')
       } catch (e) { }
@@ -451,21 +474,21 @@ export default defineComponent({
       // emit('cerrar-modal')
     }
 
-    const paraProyecto = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraProyecto)
-    const paraClienteFinal = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
+    const paraProyecto = computed(() => trabajo.para_cliente_proyecto === destinosTareas.paraProyecto)
+    const paraClienteFinal = computed(() => trabajo.para_cliente_proyecto === destinosTareas.paraClienteFinal)
 
     /*************
     * Validaciones
     **************/
     const rules = {
       detalle: { required },
-      // grupo: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
+      // grupo: { required: requiredIf(() => trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
       tipo_trabajo: { required },
       descripcion_completa: { required },
-      fecha_agendado: { required: requiredIf(() => subtarea.es_ventana) },
-      hora_inicio_agendado: { required: requiredIf(() => subtarea.es_ventana) },
-      hora_fin_agendado: { required: requiredIf(() => subtarea.es_ventana) },
-      subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
+      fecha_agendado: { required: requiredIf(() => trabajo.es_ventana) },
+      hora_inicio_agendado: { required: requiredIf(() => trabajo.es_ventana) },
+      hora_fin_agendado: { required: requiredIf(() => trabajo.es_ventana) },
+      subtarea_dependiente: { required: requiredIf(() => trabajo.es_dependiente) },
       // vienen de tareas
       cliente: { requiredIfCliente: requiredIf(function () { return paraClienteFinal.value ? true : false }) },
       titulo: { required },
@@ -473,78 +496,41 @@ export default defineComponent({
       proyecto: { required },
     }
 
-    const v$ = useVuelidate(rules, subtarea)
+    const v$ = useVuelidate(rules, trabajo)
     setValidador(v$.value)
 
-    const validarGrupoAsignado = new ValidarGrupoAsignado(subtarea)
-    const validarGrupoResponsable = new ValidarGrupoResponsable(subtarea)
-    const validarEmpleadosSeleccionados = new ValidarEmpleadosSeleccionados(subtarea)
-    const validarEmpleadoResponsable = new ValidarEmpleadoResponsable(subtarea)
+    const validarGrupoAsignado = new ValidarGrupoAsignado(trabajo)
+    const validarGrupoResponsable = new ValidarGrupoResponsable(trabajo)
+    const validarEmpleadosSeleccionados = new ValidarEmpleadosSeleccionados(trabajo)
+    const validarEmpleadoResponsable = new ValidarEmpleadoResponsable(trabajo)
     mixin.agregarValidaciones(validarGrupoAsignado, validarGrupoResponsable, validarEmpleadosSeleccionados, validarEmpleadoResponsable)
 
     /************
     * Funciones
     *************/
-    function esLider(entidad) {
+    async function obtenerClienteFinal(clienteFinalId: number) {
+      const clienteFinalController = new ClienteFinalController()
+      const { result } = await clienteFinalController.consultar(clienteFinalId)
+      return result
+    }
+
+    // const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
+
+    function establecerCliente() {
+      tareaStore.tarea.cliente = trabajo.cliente
+    }
+
+    /*function esLider(entidad) {
       return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_lider)
     }
 
     function esSecretario(entidad) {
       return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_secretario)
-    }
-
-    /* async function entidadSeleccionada(itemsSeleccionados: EntidadAuditable[]) {
-      if (itemsSeleccionados.length) {
-        const id = itemsSeleccionados[0].id
-
-        try {
-          // Jefe de cuadrilla --
-          if (asignarJefe.value) {
-            await new CambiarJefeCuadrillaController().guardar({ grupo: subtarea.grupo, nuevo_jefe: id })
-            asignarJefe.value = false
-
-            // Quitar rol tabla Jefe cuadrilla
-            const roles = stringToArray(empleadoSeleccionadoAsignacionQuitar.value.roles)
-            empleadoSeleccionadoAsignacionQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.tecnico_lider).join(',')
-
-            // Designar rol tabla Secretario cuadrilla
-            const posicion: any = tecnicosGrupoPrincipal.value.findIndex((empleado: Empleado) => empleado.id === id)
-            const entidad: Empleado = tecnicosGrupoPrincipal.value[posicion]
-            entidad.roles = entidad.roles + ', ' + rolesSistema.tecnico_lider
-            tecnicosGrupoPrincipal.value.splice(posicion, 1, entidad)
-
-            notificaciones.notificarCorrecto('Asignado como jefe de cuadrilla')
-          }
-
-          // Secretario de cuadrilla --
-          if (asignarSecretario.value) {
-            await new CambiarSecretarioController().guardar({ grupo: subtarea.grupo, nuevo_jefe: id })
-            asignarSecretario.value = false
-
-            // Quitar rol secretario cuadrilla
-            const roles = stringToArray(empleadoSeleccionadoAsignacionQuitar.value.roles)
-            empleadoSeleccionadoAsignacionQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.tecnico_secretario).join(',')
-
-            // Designar rol tabla Secretario cuadrilla
-            const posicion: any = tecnicosGrupoPrincipal.value.findIndex((empleado: Empleado) => empleado.id === id)
-            const entidad: Empleado = tecnicosGrupoPrincipal.value[posicion]
-            entidad.roles = entidad.roles + ', ' + rolesSistema.tecnico_secretario
-            tecnicosGrupoPrincipal.value.splice(posicion, 1, entidad)
-
-            notificaciones.notificarCorrecto('Asignado como secretario de cuadrilla')
-          }
-        } catch (e) {
-          if (isAxiosError(e)) {
-            const mensajes: string[] = e.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
-          }
-        }
-      }
-    } */
+    }*/
 
     function agregarGrupoSeleccionado(grupo_id: number) {
       if (grupo_id) {
-        const existe = subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.id === grupo_id)
+        const existe = trabajo.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.id === grupo_id)
 
         if (existe) return notificaciones.notificarAdvertencia('El grupo seleccionado ya ha sido agregado')
 
@@ -552,10 +538,10 @@ export default defineComponent({
         const index = grupos.value.findIndex((item: Grupo) => item.id === grupo_id)
         const grupoSeleccionado: GrupoSeleccionado = grupos.value[index]
 
-        if (subtarea.grupos_seleccionados.length === 0) {
+        if (trabajo.grupos_seleccionados.length === 0) {
           grupoSeleccionado.responsable = true
         }
-        subtarea.grupos_seleccionados.push(grupoSeleccionado)
+        trabajo.grupos_seleccionados.push(grupoSeleccionado)
 
       } else notificaciones.notificarAdvertencia('Debe seleccionar un grupo')
     }
@@ -563,9 +549,9 @@ export default defineComponent({
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      subtarea.empleados_seleccionados.push(...result)
+      trabajo.empleados_seleccionados.push(...result)
 
-      subtarea.empleados_seleccionados = subtarea.empleados_seleccionados.map((empleado: Empleado) => {
+      trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
         const tecnico = new EmpleadoSeleccionado()
         tecnico.hydrate(empleado)
 
@@ -583,7 +569,7 @@ export default defineComponent({
       listar: listarTecnicos,
       limpiar: limpiarTecnico,
       seleccionar: seleccionarTecnico
-    } = useOrquestadorSelectorTecnicos(subtarea, 'empleados')
+    } = useOrquestadorSelectorTecnicos(trabajo, 'empleados')
 
     function seleccionarEmpleado(empleados: EmpleadoSeleccionado[]) {
       empleados = empleados.map((empleado: Empleado) => {
@@ -597,28 +583,71 @@ export default defineComponent({
     }
 
     function cargarArchivos(files: File[]) {
-      subtarea.archivos = files
+      trabajo.archivos = files
     }
 
     function verificarEsVentana() {
-      if (!subtarea.es_ventana) {
-        // subtarea.fecha_agendado = null
-        // subtarea.hora_inicio_ventana = null
-        subtarea.hora_fin_agendado = null
+      if (!trabajo.es_ventana) {
+        // trabajo.fecha_agendado = null
+        // trabajo.hora_inicio_ventana = null
+        trabajo.hora_fin_agendado = null
       }
     }
 
     function resetListados() {
-      subtarea.empleados_seleccionados = []
-      subtarea.grupos_seleccionados = []
+      trabajo.empleados_seleccionados = []
+      trabajo.grupos_seleccionados = []
     }
+
+    /************
+    * Observers
+    ************/
+    const controller = new ClienteFinalController()
+
+    watchEffect(async () => {
+      if (trabajo.cliente) {
+        clientesFinalesSource.value = (await controller.listar({ cliente: trabajo.cliente })).result
+        clientesFinales.value = clientesFinalesSource.value
+      }
+    })
+
+    watchEffect(async () => {
+      if (trabajo.cliente_final) {
+        const res = await obtenerClienteFinal(trabajo.cliente_final)
+        clienteFinal.hydrate(res)
+      }
+    })
+
+    // Informacion de ubicacion
+    const clienteFinal = reactive(new ClienteFinal())
+
+    watch(computed(() => trabajo.para_cliente_proyecto), (valor) => {
+      if (accion.value !== acciones.editar) {
+        trabajo.hydrate(new Trabajo())
+        clienteFinal.hydrate(new ClienteFinal())
+        trabajo.para_cliente_proyecto = valor
+      }
+    })
+
+    async function setCliente() {
+      if (trabajo.proyecto) {
+        const proyectoController = new ProyectoController()
+        const { result } = await proyectoController.consultar(trabajo.proyecto)
+        trabajo.cliente = result.cliente
+      }
+    }
+
+    const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
+
+    const modales = new ComportamientoModalesGeneralContent()
 
     return {
       // Referencias
       refEmpleadosAsignados,
       // Others
       v$,
-      subtarea,
+      mixin,
+      trabajo,
       seleccionBusqueda,
       columnas,
       columnasGrupo,
@@ -646,7 +675,6 @@ export default defineComponent({
       subtareas,
       filtrarGrupos,
       agregarGrupoSeleccionado,
-      // guardarDatos, editarDatos,
       reestablecerDatos,
       accion,
       disable,
@@ -657,7 +685,6 @@ export default defineComponent({
       refListadoSeleccionableTecnicos,
       criterioBusquedaTecnico,
       listadoTecnicos,
-      //listarEmpleados,
       listarTecnicos,
       limpiarTecnico,
       seleccionarTecnico,
@@ -665,7 +692,6 @@ export default defineComponent({
       cargarArchivos,
       opcionesModoAsignacionTrabajo,
       cancelarDesignacion,
-      // entidadSeleccionada,
       verificarEsVentana,
       Empleado,
       designarGrupoPrincipal,
@@ -681,8 +707,20 @@ export default defineComponent({
       fiscalizadores,
       coordinadores,
       proyectos,
-      // mostrarEmergencia,
-      //verificarTipoTrabajo,
+      //
+      guardar,
+      editar,
+      tareaStore,
+      reestablecer,
+      obtenerClienteFinal,
+      establecerCliente,
+      setCliente,
+      filtrarClientesFinales,
+      clientesFinales,
+      clientesFinalesSource,
+      mostrarLabelModal,
+      modales,
+      configuracionColumnasTareas,
     }
   },
 })

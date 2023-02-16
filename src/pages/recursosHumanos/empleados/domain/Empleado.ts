@@ -12,7 +12,7 @@ export class Empleado extends EntidadAuditable {
     usuario: string | null
     sucursal: string | null
     estado: string | null
-    cargo:number | null
+    cargo: number | null
     roles: string | null | string[]
     grupo: number | null
     disponible: boolean

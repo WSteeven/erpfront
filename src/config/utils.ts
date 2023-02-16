@@ -288,13 +288,16 @@ export const estadosSubtareas = {
 
 export const rolesSistema = {
   empleado: 'EMPLEADO',
-  tecnico: 'TECNICO',
-  tecnico_lider: 'TECNICO JEFE CUADRILLA',
-  tecnico_secretario: 'TECNICO SECRETARIO',
   coordinador: 'COORDINADOR',
   fiscalizador: 'FISCALIZADOR',
   bodega: 'BODEGA',
   activos_fijos: 'ACTIVOS FIJOS',
+  tecnico: 'TECNICO',
+}
+
+export const cargosSistema = {
+  tecnico_lider: 'TÉCNICO LÍDER DE GRUPO',
+  tecnico_secretario: 'TÉCNICO SECRETARIO',
 }
 
 export const opcionesModoAsignacionTrabajo = { por_grupo: 'POR_GRUPO', por_trabajador: 'POR_EMPLEADO' }

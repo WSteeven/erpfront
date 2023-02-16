@@ -1,12 +1,14 @@
 <template>
-  <q-page
-    padding
-    :class="{
-      'bg-body-table-dark-color': $q.dark.isActive,
-      'bg-white': !$q.dark.isActive,
-    }"
+  <tab-layout
+    :mixin="mixin"
+    :mostrar-button-submits="false"
+    :configuracionColumnas="configuracionColumnasTareas"
+    tituloPagina="Control de trabajos"
+    :full="true"
+    :permitirConsultar="false"
+    :permitirEliminar="false"
   >
-    <q-form @submit.prevent>
+    <template #formulario>
       <q-expansion-item
         class="overflow-hidden q-mb-md expansion"
         label="Información general"
@@ -16,7 +18,7 @@
         <div class="row q-col-gutter-sm q-pa-md">
           <div class="col-12">
             <q-btn-toggle
-              v-model="subtarea.destino"
+              v-model="trabajo.para_cliente_proyecto"
               class="toggle-button"
               spread
               no-caps
@@ -39,10 +41,10 @@
 
         <div class="row q-col-gutter-sm q-pa-md">
           <!-- Codigo tarea JP -->
-          <div v-if="subtarea.codigo_tarea" class="col-12 col-md-3">
+          <div v-if="trabajo.codigo_tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Código de tarea</label>
             <q-input
-              v-model="subtarea.codigo_tarea"
+              v-model="trabajo.codigo_tarea"
               outlined
               dense
               disable
@@ -53,7 +55,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Código de tarea cliente</label>
             <q-input
-              v-model="subtarea.codigo_tarea_cliente"
+              v-model="trabajo.codigo_tarea_cliente"
               placeholder="Obligatorio"
               hint="Ticket, OT, Tarea"
               :error="!!v$.codigo_tarea_cliente.$errors.length"
@@ -77,7 +79,7 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Cliente corporativo</label>
             <q-select
-              v-model="subtarea.cliente"
+              v-model="trabajo.cliente"
               :options="clientes"
               @filter="filtrarClientes"
               transition-show="scale"
@@ -115,7 +117,7 @@
           <div v-if="paraClienteFinal" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fiscalizador JPCONSTRUCRED</label>
             <q-select
-              v-model="subtarea.fiscalizador"
+              v-model="trabajo.fiscalizador"
               :options="fiscalizadores"
               @filter="filtrarFiscalizadores"
               transition-show="scale"
@@ -145,7 +147,7 @@
           <div v-if="paraClienteFinal" class="col-12 col-md-3">
             <label class="q-mb-sm block">Coordinador</label>
             <q-select
-              v-model="subtarea.coordinador"
+              v-model="trabajo.coordinador"
               :options="coordinadores"
               @filter="filtrarCoordinadores"
               transition-show="scale"
@@ -174,7 +176,7 @@
           <!-- Fecha de solicitud -->
           <div v-if="paraClienteFinal" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de solicitud del cliente</label>
-            <q-input v-model="subtarea.fecha_solicitud" outlined dense>
+            <q-input v-model="trabajo.fecha_solicitud" outlined dense>
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -183,7 +185,7 @@
                     transition-hide="scale"
                   >
                     <q-date
-                      v-model="subtarea.fecha_solicitud"
+                      v-model="trabajo.fecha_solicitud"
                       mask="DD-MM-YYYY"
                       today-btn
                     >
@@ -206,7 +208,7 @@
           <div v-if="paraProyecto" class="col-12 col-md-3">
             <label class="q-mb-sm block">Código de proyecto</label>
             <q-select
-              v-model="subtarea.proyecto"
+              v-model="trabajo.proyecto"
               :options="proyectos"
               @filter="filtrarProyectos"
               @blur="v$.proyecto.$touch"
@@ -244,7 +246,7 @@
           <div class="col-12 col-md-3">
             <br />
             <q-toggle
-              v-model="subtarea.tiene_subtareas"
+              v-model="trabajo.tiene_subtareas"
               checked-icon="check"
               label="Tiene subtareas"
               unchecked-icon="clear"
@@ -255,7 +257,7 @@
           <div class="col-12">
             <label class="q-mb-sm block">Título del trabajo a realizar</label>
             <q-input
-              v-model="subtarea.titulo"
+              v-model="trabajo.titulo"
               placeholder="Obligatorio"
               outlined
               dense
@@ -276,7 +278,7 @@
               >Descripción completa del trabajo a realizar</label
             >
             <q-input
-              v-model="subtarea.descripcion_completa"
+              v-model="trabajo.descripcion_completa"
               placeholder="Obligatorio"
               outlined
               dense
@@ -300,7 +302,7 @@
           <div class="col-12">
             <label class="q-mb-sm block">Observación</label>
             <q-input
-              v-model="subtarea.observacion"
+              v-model="trabajo.observacion"
               placeholder="Opcional"
               outlined
               dense
@@ -314,7 +316,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tipo de trabajo a realizar</label>
             <q-select
-              v-model="subtarea.tipo_trabajo"
+              v-model="trabajo.tipo_trabajo"
               :options="tiposTrabajos"
               @filter="filtrarTiposTrabajos"
               transition-show="scale"
@@ -351,7 +353,7 @@
           <div class="col-12 col-md-3">
             <br />
             <q-checkbox
-              v-model="subtarea.es_dependiente"
+              v-model="trabajo.es_dependiente"
               label="Es dependiente"
               :disable="disable"
               outlined
@@ -360,10 +362,10 @@
           </div>
 
           <!--  Trabajo del que depende -->
-          <div v-if="subtarea.es_dependiente" class="col-12 col-md-3">
+          <div v-if="trabajo.es_dependiente" class="col-12 col-md-3">
             <label class="q-mb-sm block">Trabajo del que depende</label>
             <q-select
-              v-model="subtarea.subtarea_dependiente"
+              v-model="trabajo.subtarea_dependiente"
               :options="subtareas"
               @filter="filtrarSubtareas"
               :error="!!v$.subtarea_dependiente.$errors.length"
@@ -416,7 +418,7 @@
           <div class="col-12 col-md-3 q-mb-md">
             <br />
             <q-checkbox
-              v-model="subtarea.es_ventana"
+              v-model="trabajo.es_ventana"
               label="Es ventana de trabajo"
               :disable="disable"
               @blur="verificarEsVentana()"
@@ -428,7 +430,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de agendamiento</label>
             <q-input
-              v-model="subtarea.fecha_agendado"
+              v-model="trabajo.fecha_agendado"
               placeholder="Opcional"
               :error="!!v$.fecha_agendado.$errors.length"
               :disable="disable"
@@ -443,7 +445,7 @@
                     transition-hide="scale"
                   >
                     <q-date
-                      v-model="subtarea.fecha_agendado"
+                      v-model="trabajo.fecha_agendado"
                       mask="DD-MM-YYYY"
                       today-btn
                     >
@@ -477,7 +479,7 @@
               >Hora inicio de agendamiento (24H)</label
             >
             <q-input
-              v-model="subtarea.hora_inicio_agendado"
+              v-model="trabajo.hora_inicio_agendado"
               :disable="disable"
               placeholder="Obligatorio"
               :error="!!v$.hora_inicio_agendado.$errors.length"
@@ -493,7 +495,7 @@
                     transition-hide="scale"
                   >
                     <q-time
-                      v-model="subtarea.hora_inicio_agendado"
+                      v-model="trabajo.hora_inicio_agendado"
                       format24h
                       now-btn
                     >
@@ -522,10 +524,10 @@
           </div>
 
           <!-- Hora fin de agendamiento -->
-          <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
+          <div v-if="trabajo.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora fin de agendamiento (24H)</label>
             <q-input
-              v-model="subtarea.hora_fin_agendado"
+              v-model="trabajo.hora_fin_agendado"
               :disable="disable"
               placeholder="Obligatorio"
               :error="!!v$.hora_fin_agendado.$errors.length"
@@ -555,10 +557,10 @@
       >
         <div class="row q-col-gutter-sm q-pa-md">
           <!-- Fecha de creacion -->
-          <div v-if="subtarea.fecha_hora_creacion" class="col-12 col-md-3">
+          <div v-if="trabajo.fecha_hora_creacion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de creación</label>
             <q-input
-              v-model="subtarea.fecha_hora_creacion"
+              v-model="trabajo.fecha_hora_creacion"
               outlined
               dense
               disable
@@ -566,10 +568,10 @@
             </q-input>
           </div>
 
-          <div v-if="subtarea.fecha_hora_asignacion" class="col-12 col-md-3">
+          <div v-if="trabajo.fecha_hora_asignacion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de asignación</label>
             <q-input
-              v-model="subtarea.fecha_hora_asignacion"
+              v-model="trabajo.fecha_hora_asignacion"
               outlined
               dense
               disable
@@ -578,26 +580,21 @@
           </div>
 
           <!-- Fecha de inicio -->
-          <div v-if="subtarea.fecha_hora_inicio" class="col-12 col-md-3">
+          <div v-if="trabajo.fecha_hora_inicio" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Fecha y hora de inicio de trabajo</label
             >
-            <q-input
-              v-model="subtarea.fecha_hora_inicio"
-              outlined
-              dense
-              disable
-            >
+            <q-input v-model="trabajo.fecha_hora_inicio" outlined dense disable>
             </q-input>
           </div>
 
           <!-- Fecha de finalizacion -->
-          <div v-if="subtarea.fecha_hora_finalizacion" class="col-12 col-md-3">
+          <div v-if="trabajo.fecha_hora_finalizacion" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Fecha y hora de finalización de trabajo</label
             >
             <q-input
-              v-model="subtarea.fecha_hora_finalizacion"
+              v-model="trabajo.fecha_hora_finalizacion"
               outlined
               dense
               disable
@@ -606,10 +603,10 @@
           </div>
 
           <!-- Técnico responsable -->
-          <div v-if="subtarea.cantidad_dias" class="col-12 col-md-3">
+          <div v-if="trabajo.cantidad_dias" class="col-12 col-md-3">
             <label class="q-mb-sm block">Cantidad de días</label>
             <q-input
-              v-model="subtarea.cantidad_dias"
+              v-model="trabajo.cantidad_dias"
               outlined
               disable
               dense
@@ -617,10 +614,10 @@
           </div>
 
           <!-- Fecha y hora de estado realizado -->
-          <div v-if="subtarea.fecha_hora_realizado" class="col-12 col-md-3">
+          <div v-if="trabajo.fecha_hora_realizado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora realizado</label>
             <q-input
-              v-model="subtarea.fecha_hora_realizado"
+              v-model="trabajo.fecha_hora_realizado"
               outlined
               dense
               disable
@@ -629,12 +626,12 @@
           </div>
 
           <!-- Fecha y hora de estado suspendido -->
-          <div v-if="subtarea.fecha_hora_suspendido" class="col-12 col-md-3">
+          <div v-if="trabajo.fecha_hora_suspendido" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Fecha y hora de estado suspendido</label
             >
             <q-input
-              v-model="subtarea.fecha_hora_suspendido"
+              v-model="trabajo.fecha_hora_suspendido"
               outlined
               dense
               disable
@@ -643,10 +640,10 @@
           </div>
 
           <!-- Causa de la suspencion -->
-          <div v-if="subtarea.causa_suspencion" class="col-12 col-md-3">
+          <div v-if="trabajo.causa_suspencion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Causa de la suspención</label>
             <q-input
-              v-model="subtarea.causa_suspencion"
+              v-model="trabajo.causa_suspencion"
               disable
               outlined
               type="textarea"
@@ -656,10 +653,10 @@
           </div>
 
           <!-- Fecha y hora de estado cancelacion -->
-          <div v-if="subtarea.fecha_hora_cancelado" class="col-12 col-md-3">
+          <div v-if="trabajo.fecha_hora_cancelado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha y hora de cancelación</label>
             <q-input
-              v-model="subtarea.fecha_hora_cancelado"
+              v-model="trabajo.fecha_hora_cancelado"
               outlined
               dense
               disable
@@ -669,12 +666,12 @@
 
           <!-- Causa de la suspencion -->
           <div
-            v-if="subtarea.fecha_hora_estado_cancelado"
+            v-if="trabajo.fecha_hora_estado_cancelado"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Causa de la cancelación</label>
             <q-input
-              v-model="subtarea.causa_cancelacion"
+              v-model="trabajo.causa_cancelacion"
               placeholder="Opcional"
               outlined
               dense
@@ -691,7 +688,7 @@
             >Modo de asignación del trabajo</label
           >
           <q-btn-toggle
-            v-model="subtarea.modo_asignacion_trabajo"
+            v-model="trabajo.modo_asignacion_trabajo"
             spread
             class="toggle-button"
             no-caps
@@ -718,7 +715,7 @@
       <!-- Grupo -->
       <div
         v-if="
-          subtarea.modo_asignacion_trabajo ===
+          trabajo.modo_asignacion_trabajo ===
           opcionesModoAsignacionTrabajo.por_grupo
         "
         class="row q-col-gutter-sm q-mb-md"
@@ -726,7 +723,7 @@
         <div class="col-12 col-md-10">
           <label class="q-mb-sm block">Grupo técnico seleccionado</label>
           <q-select
-            v-model="subtarea.grupo"
+            v-model="trabajo.grupo"
             :options="grupos"
             @filter="filtrarGrupos"
             transition-show="scale"
@@ -762,7 +759,7 @@
             :disable="disable"
             no-caps
             push
-            @click="agregarGrupoSeleccionado(subtarea.grupo)"
+            @click="agregarGrupoSeleccionado(trabajo.grupo)"
           >
             <q-icon name="bi-plus" class="q-pr-sm" size="xs"></q-icon>
             <div>Agregar</div>
@@ -775,8 +772,8 @@
         <div class="col-12">
           <div
             v-if="
-              subtarea.asignar_mas_empleados ||
-              subtarea.modo_asignacion_trabajo ===
+              trabajo.asignar_mas_empleados ||
+              trabajo.modo_asignacion_trabajo ===
                 opcionesModoAsignacionTrabajo.por_trabajador
             "
             class="row q-col-gutter-sm q-mb-md"
@@ -815,13 +812,13 @@
 
           <essential-table
             v-if="
-              subtarea.modo_asignacion_trabajo ===
+              trabajo.modo_asignacion_trabajo ===
               opcionesModoAsignacionTrabajo.por_grupo
             "
             titulo="Grupos seleccionados"
             estilos="margin-bottom: 14px;"
             :configuracionColumnas="columnasGrupo"
-            :datos="subtarea.grupos_seleccionados"
+            :datos="trabajo.grupos_seleccionados"
             :accion1Header="asignarNuevoTecnicoLider"
             :accion2Header="designarNuevoSecretario"
             :accion3Header="cancelarDesignacion"
@@ -832,7 +829,7 @@
             :alto-fijo="false"
             :mostrar-header="true"
             :permitir-buscar="false"
-            :mostrar-footer="!subtarea.grupos_seleccionados.length"
+            :mostrar-footer="!trabajo.grupos_seleccionados.length"
             :tipo-seleccion="tipoSeleccion"
             :accion1="quitarGrupo"
             :accion2="designarGrupoPrincipal"
@@ -842,14 +839,14 @@
 
           <essential-table
             v-if="
-              subtarea.modo_asignacion_trabajo ===
+              trabajo.modo_asignacion_trabajo ===
               opcionesModoAsignacionTrabajo.por_grupo
             "
             ref="refEmpleadosAsignados"
             titulo="Empleados de los grupos seleccionados"
             estilos="margin-bottom: 14px;"
             :configuracionColumnas="configuracionColumnasEmpleado"
-            :datos="subtarea.empleados_seleccionados"
+            :datos="trabajo.empleados_seleccionados"
             :accion1Header="asignarNuevoTecnicoLider"
             :accion2Header="designarNuevoSecretario"
             :accion3Header="cancelarDesignacion"
@@ -861,20 +858,20 @@
             :mostrar-header="true"
             :permitir-buscar="false"
             :tipo-seleccion="tipoSeleccion"
-            :mostrar-footer="!subtarea.empleados_seleccionados.length"
+            :mostrar-footer="!trabajo.empleados_seleccionados.length"
           >
             <!--@selected="entidadSeleccionada" -->
           </essential-table>
 
           <essential-table
             v-if="
-              subtarea.modo_asignacion_trabajo ===
+              trabajo.modo_asignacion_trabajo ===
               opcionesModoAsignacionTrabajo.por_trabajador
             "
             ref="refEmpleadosAsignados"
             titulo="Empleados de los grupos seleccionados"
             :configuracionColumnas="columnas"
-            :datos="subtarea.empleados_seleccionados"
+            :datos="trabajo.empleados_seleccionados"
             :accion1Header="asignarNuevoTecnicoLider"
             :accion2Header="designarNuevoSecretario"
             :accion3Header="cancelarDesignacion"
@@ -886,7 +883,7 @@
             :mostrar-header="true"
             :permitir-buscar="false"
             :tipo-seleccion="tipoSeleccion"
-            :mostrar-footer="!subtarea.empleados_seleccionados.length"
+            :mostrar-footer="!trabajo.empleados_seleccionados.length"
             :accion1="quitarEmpleado"
             :accion2="designarEmpleadoResponsable"
           >
@@ -901,16 +898,18 @@
         @editar="editarDatos(subtarea)"
         @guardar="guardarDatos(subtarea)"
       />
-    </q-form>
 
-    <essential-selectable-table
-      ref="refListadoSeleccionableTecnicos"
-      :configuracion-columnas="configuracionColumnasEmpleado"
-      :datos="listadoTecnicos"
-      tipo-seleccion="multiple"
-      @selected="seleccionarEmpleado"
-    ></essential-selectable-table>
-  </q-page>
+      <essential-selectable-table
+        ref="refListadoSeleccionableTecnicos"
+        :configuracion-columnas="configuracionColumnasEmpleado"
+        :datos="listadoTecnicos"
+        tipo-seleccion="multiple"
+        @selected="seleccionarEmpleado"
+      ></essential-selectable-table>
+      <!--</q-form>
+  </q-page> -->
+    </template>
+  </tab-layout>
 </template>
 
 <script src="./TrabajoPage.ts"></script>
