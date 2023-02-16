@@ -3,6 +3,9 @@ export class Fondo extends EntidadAuditable {
   fecha_viat: Date | null
   lugar: number | null
   num_tarea: string | null
+  tarea_info: string | null
+  proyecto: number | null
+  proyecto_info: string | null
   ruc: string | null
   factura: string | null
   aut_especial: number | null
@@ -30,6 +33,9 @@ export class Fondo extends EntidadAuditable {
     this.fecha_viat = null
     this.lugar = null
     this.num_tarea = null
+    this.tarea_info = null
+    this.proyecto = null
+    this.proyecto_info = null
     this.ruc = null
     this.factura = null
     this.aut_especial = null

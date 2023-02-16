@@ -159,7 +159,7 @@
             v-model="saldo.fecha"
             placeholder="Obligatorio"
             :error="!!v$.fecha.$errors.length"
-            :disable="disable"
+            :disable="disabled"
             outlined
             dense
           >

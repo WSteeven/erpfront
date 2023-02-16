@@ -10,9 +10,9 @@ export const configuracionColumnasFondo: ColumnConfig<Fondo>[] = [
     sortable: true
   },
   {
-    name: 'num_tarea',
-    field: 'num_tarea',
-    label: '#Tarea',
+    name: 'tarea_info',
+    field: 'tarea_info',
+    label: 'Tarea',
     align: 'left',
     sortable: true
   },
@@ -26,7 +26,7 @@ export const configuracionColumnasFondo: ColumnConfig<Fondo>[] = [
   {
     name: 'ruc',
     field: 'ruc',
-    label: 'ruc',
+    label: 'RUC.',
     align: 'left',
     sortable: true
   },

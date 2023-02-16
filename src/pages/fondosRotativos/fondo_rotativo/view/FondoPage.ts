@@ -1,4 +1,4 @@
-import {  defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, reactive, ref, watchEffect } from 'vue'
 import { Fondo } from '../domain/Fondo'
 
 // Componentes
@@ -8,7 +8,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { helpers } from 'shared/i18n-validators';
+import { helpers } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { FondoController } from '../infrestructure/FondoController'
 import { configuracionColumnasFondo } from '../domain/configuracionColumnasFondo'
@@ -16,25 +16,33 @@ import { CantonController } from 'sistema/ciudad/infraestructure/CantonControlle
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
-import { validarIdentificacion } from 'shared/validadores/validaciones';
+import { validarIdentificacion } from 'shared/validadores/validaciones'
+import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
+import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
   setup() {
     /*********
-    * Stores
-    *********/
+     * Stores
+     *********/
     useNotificacionStore().setQuasar(useQuasar())
     /***********
-    * Mixin
-    ************/
+     * Mixin
+     ************/
     const mixin = new ContenedorSimpleMixin(Fondo, new FondoController())
-    const { entidad: fondo, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const {
+      entidad: fondo,
+      disabled,
+      accion,
+      listadosAuxiliares,
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } =
+      mixin.useComportamiento()
 
     /*************
-    * Validaciones
-    **************/
+     * Validaciones
+     **************/
     const reglas = {
       fecha_viat: {
         required: true,
@@ -42,9 +50,14 @@ export default defineComponent({
         maxLength: 50,
       },
       lugar: {
-        required: true
+        required: true,
       },
       num_tarea: {
+        required: true,
+        minLength: 2,
+        maxLength: 25,
+      },
+      proyecto: {
         required: true,
         minLength: 2,
         maxLength: 25,
@@ -53,12 +66,15 @@ export default defineComponent({
         required: true,
         minLength: 13,
         maxLength: 13,
-        helper: helpers.withMessage('El RUC ingresado es Invalido',(validarIdentificacion))
+        helper: helpers.withMessage(
+          'El RUC ingresado es Invalido',
+          validarIdentificacion
+        ),
       },
       factura: {
         required: true,
         minLength: 3,
-        maxLength: 25,
+        maxLength: 15,
       },
       aut_especial: {
         required: true,
@@ -105,16 +121,17 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-
     }
 
     const v$ = useVuelidate(reglas, fondo)
     setValidador(v$.value)
 
-    const cantones = ref([]);
-    const detalles = ref([]);
-    const sub_detalles = ref([]);
-    const autorizacionesEspeciales = ref([]);
+    const cantones = ref([])
+    const detalles = ref([])
+    const sub_detalles = ref([])
+    const proyectos = ref([])
+    const autorizacionesEspeciales = ref([])
+    const tareas = ref([])
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -134,34 +151,44 @@ export default defineComponent({
           controller: new SubDetalleFondoController(),
           params: { campos: 'id,descripcion' },
         },
+        proyectos: {
+          controller: new ProyectoController(),
+          params: { campos: 'id,nombre,codigo_proyecto' },
+        },
+        tareas: {
+          controller: new TareaController(),
+          params: { campos: 'id,codigo_tarea,detalle,cliente_id,proyecto_id' },
+        },
       })
-
       cantones.value = listadosAuxiliares.cantones
       detalles.value = listadosAuxiliares.detalles
-      autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
+      autorizacionesEspeciales.value =
+        listadosAuxiliares.autorizacionesEspeciales
       sub_detalles.value = listadosAuxiliares.sub_detalles
-
+      listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
+      proyectos.value = listadosAuxiliares.proyectos
+      tareas.value = listadosAuxiliares.tareas
     })
 
-
-
-
-
     /*********
-   * Filtros
-   **********/
+     * Filtros
+     **********/
     // - Filtro AUTORIZACIONES ESPECIALES
 
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
         update(() => {
-          autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
+          autorizacionesEspeciales.value =
+            listadosAuxiliares.autorizacionesEspeciales
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales.filter((v) => v.usuario.toLowerCase().indexOf(needle) > -1)
+        autorizacionesEspeciales.value =
+          listadosAuxiliares.autorizacionesEspeciales.filter(
+            (v) => v.usuario.toLowerCase().indexOf(needle) > -1
+          )
       })
     }
     // - Filtro Detalles
@@ -198,11 +225,8 @@ export default defineComponent({
       })
     }
     function filtarSubdetalles(val, update) {
-
       if (val === '') {
         update(() => {
-          console.log(fondo.detalle);
-
           sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
             (v) => v.id == fondo.detalle
           )
@@ -215,11 +239,51 @@ export default defineComponent({
           (v) => v.detalle.indexOf(needle) > -1
         )
       })
-
+    }
+    function filtrarProyectos(val, update) {
+      if (val === '') {
+        update(() => {
+          proyectos.value = listadosAuxiliares.proyectos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        proyectos.value = listadosAuxiliares.proyectos.filter(
+          (v) =>
+            v.codigo_proyecto.toLowerCase().indexOf(needle) > -1 ||
+            v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrarTareas(val, update) {
+      if (fondo.proyecto == 0) {
+        update(() => {
+          tareas.value = listadosAuxiliares.tareas.filter(
+            (v) => v.proyecto_id == null
+          )
+        })
+        return
+      }
+      if (val === '') {
+        update(() => {
+          tareas.value = listadosAuxiliares.tareas.filter(
+            (v) => v.proyecto_id == fondo.proyecto
+          )
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tareas.value = listadosAuxiliares.tareas.filter(
+          (v) =>
+            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
+            v.detalle.toLowerCase().indexOf(needle) > -1
+        )
+      })
     }
 
-
-    watchEffect(() => fondo.total = fondo.cant * fondo.valor_u)
+    watchEffect(() => (fondo.total = fondo.cant * fondo.valor_u))
 
     return {
       mixin,
@@ -227,7 +291,11 @@ export default defineComponent({
       cantones,
       detalles,
       sub_detalles,
-      disabled, accion, v$,
+      proyectos,
+      tareas,
+      disabled,
+      accion,
+      v$,
       configuracionColumnas: configuracionColumnasFondo,
       autorizacionesEspeciales,
       watchEffect,
@@ -235,11 +303,9 @@ export default defineComponent({
       filtrarCantones,
       filtrarDetalles,
       filtarSubdetalles,
-      listadosAuxiliares
-
+      filtrarProyectos,
+      filtrarTareas,
+      listadosAuxiliares,
     }
-
-  }
+  },
 })
-
-

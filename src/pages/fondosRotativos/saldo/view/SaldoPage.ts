@@ -114,15 +114,17 @@ export default defineComponent({
  function filtrarUsuarios(val, update) {
   if (val === '') {
     update(() => {
-      usuarios.value = listadosAuxiliares.usuarios
+      usuarios.value =
+        listadosAuxiliares.usuarios
     })
     return
   }
   update(() => {
     const needle = val.toLowerCase()
-    usuarios.value = listadosAuxiliares.usuarios.filter(
-      (v) => v.name.toLowerCase().indexOf(needle) > -1
-    )
+    usuarios.value =
+      listadosAuxiliares.usuarios.filter(
+        (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+      )
   })
 }
 // - Filtro TIPOS FONDOS

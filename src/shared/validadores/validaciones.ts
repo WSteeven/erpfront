@@ -16,8 +16,9 @@ export function fechaMayorActual(valor: string) {
     // console.log('fecha actual <= fecha recibida ?', fechaActual <= fechaRecibida)
     return !helpers.req(valor)|| fechaActual <= fechaRecibida
   }
-  export function validarIdentificacion(usuario: string) {
-    const numero = usuario;
+  export function validarIdentificacion(identificacion: string) {
+    const numero = identificacion;
+
       let suma = 0;
       let residuo = 0;
       let pri = false;
@@ -35,6 +36,10 @@ export function fechaMayorActual(valor: string) {
         // tslint:disable-next-line: radix
         const n = parseInt(numero.charAt(i));
         if (isNaN(n)) { ok = 0; }
+      }
+      if(identificacion.length !== 13){return false;}
+      if(identificacion === '9999999999' || identificacion === '9999999999999' ){
+        return true;
       }
       if (ok === 0) {
         return false;
