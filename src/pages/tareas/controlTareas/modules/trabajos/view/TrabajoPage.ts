@@ -18,6 +18,7 @@ import {
   opcionesModoAsignacionTrabajo,
   tiposIntervenciones,
   causaIntervencion,
+  destinosTareas,
 } from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -48,13 +49,15 @@ import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
 import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
 import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
-import { Subtarea } from '../domain/Trabajo'
+import { Trabajo } from '../domain/Trabajo'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 
 export default defineComponent({
   props: {
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
-      required: true,
+      required: false,
     },
   },
   components: { EssentialTable, ButtonSubmits, EssentialSelectableTable },
@@ -71,12 +74,12 @@ export default defineComponent({
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Subtarea, new TrabajoController())
+    const mixin = new ContenedorSimpleMixin(Trabajo, new TrabajoController())
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onBeforeModificar, onConsultado } = mixin.useHooks()
 
-    const { listado } = props.mixinModal.useReferencias()
+    // const { listado } = props.mixinModal.useReferencias()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -91,12 +94,25 @@ export default defineComponent({
         grupos: {
           controller: new GrupoController(),
           params: { campos: 'id,nombre' }
-        }
+        },
+        clientes: new ClienteController(),
+        proyectos: new ProyectoController(),
+        fiscalizadores: {
+          controller: new EmpleadoController(),
+          params: { rol: rolesSistema.fiscalizador },
+        },
+        coordinadores: {
+          controller: new EmpleadoController(),
+          params: { rol: rolesSistema.coordinador },
+        },
       })
 
       grupos.value = listadosAuxiliares.grupos
       tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
       subtareas.value = listadosAuxiliares.subtareas
+      fiscalizadores.value = listadosAuxiliares.fiscalizadores
+      coordinadores.value = listadosAuxiliares.coordinadores
+      proyectos.value = listadosAuxiliares.proyectos
     })
 
     if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
@@ -250,6 +266,74 @@ export default defineComponent({
     /*********
     * Filtros
     **********/
+    // - Filtro clientes corporativos
+    const clientes = ref()
+    function filtrarClientes(val, update) {
+      if (val === '') {
+        update(() => {
+          clientes.value = listadosAuxiliares.clientes
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        clientes.value = listadosAuxiliares.clientes.filter(
+          (v) => v.razon_social.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // - Filtro proyectos
+    const proyectos = ref([])
+    function filtrarProyectos(val, update) {
+      if (val === '') {
+        update(() => {
+          proyectos.value = listadosAuxiliares.proyectos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        proyectos.value = listadosAuxiliares.proyectos.filter(
+          (v) => v.proyectos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // - Filtro supervisores
+    const fiscalizadores = ref()
+    function filtrarFiscalizadores(val, update) {
+      if (val === '') {
+        update(() => {
+          fiscalizadores.value = listadosAuxiliares.fiscalizadores
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        fiscalizadores.value = listadosAuxiliares.fiscalizadores.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // - Filtro coordinadores
+    const coordinadores = ref()
+    function filtrarCoordinadores(val, update) {
+      if (val === '') {
+        update(() => {
+          coordinadores.value = listadosAuxiliares.coordinadores
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        coordinadores.value = listadosAuxiliares.coordinadores.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
     // - Filtro tipos de trabajos
     const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
     function filtrarTiposTrabajos(val, update) {
@@ -337,7 +421,7 @@ export default defineComponent({
       return listado !== '' ? listado : null
     }*/
 
-    async function guardarDatos(subtarea: Subtarea) {
+    /* async function guardarDatos(subtarea: Trabajo) {
       try {
         await guardar(subtarea, false)
 
@@ -350,7 +434,7 @@ export default defineComponent({
       } catch (e) { }
     }
 
-    async function editarDatos(subtarea: Subtarea) {
+    async function editarDatos(subtarea: Trabajo) {
       try {
         await editar(subtarea, false)
 
@@ -360,12 +444,15 @@ export default defineComponent({
 
         emit('cerrar-modal')
       } catch (e) { }
-    }
+    } */
 
     function reestablecerDatos() {
       reestablecer()
       // emit('cerrar-modal')
     }
+
+    const paraProyecto = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraProyecto)
+    const paraClienteFinal = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
 
     /*************
     * Validaciones
@@ -379,6 +466,11 @@ export default defineComponent({
       hora_inicio_agendado: { required: requiredIf(() => subtarea.es_ventana) },
       hora_fin_agendado: { required: requiredIf(() => subtarea.es_ventana) },
       subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
+      // vienen de tareas
+      cliente: { requiredIfCliente: requiredIf(function () { return paraClienteFinal.value ? true : false }) },
+      titulo: { required },
+      codigo_tarea_cliente: { required },
+      proyecto: { required },
     }
 
     const v$ = useVuelidate(rules, subtarea)
@@ -554,7 +646,8 @@ export default defineComponent({
       subtareas,
       filtrarGrupos,
       agregarGrupoSeleccionado,
-      guardarDatos, editarDatos, reestablecerDatos,
+      // guardarDatos, editarDatos,
+      reestablecerDatos,
       accion,
       disable,
       configuracionColumnasEmpleado,
@@ -577,6 +670,17 @@ export default defineComponent({
       Empleado,
       designarGrupoPrincipal,
       resetListados,
+      destinosTareas,
+      filtrarClientes,
+      clientes,
+      paraProyecto,
+      paraClienteFinal,
+      filtrarProyectos,
+      filtrarFiscalizadores,
+      filtrarCoordinadores,
+      fiscalizadores,
+      coordinadores,
+      proyectos,
       // mostrarEmergencia,
       //verificarTipoTrabajo,
     }
