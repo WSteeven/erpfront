@@ -350,7 +350,7 @@
           </div>
 
           <!-- Es dependiente -->
-          <div class="col-12 col-md-3">
+          <div v-if="trabajo.tiene_subtareas" class="col-12 col-md-3">
             <br />
             <q-checkbox
               v-model="trabajo.es_dependiente"
