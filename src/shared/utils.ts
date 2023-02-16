@@ -286,30 +286,6 @@ export function formatBytes(bytes, decimals = 2) {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
-/**
- * Build the body table with elements of an array.
- * columns y columnas deben tener la misma longitud de datos.
- *
- * @param data - el listado de productos que se mostrarán en la tabla
- * @param columns - las posición para el recorrido del array
- * @param columnas - los encabezados de la tabla
- *
- * @returns The cuerpo de la tabla para la impresión
- */
-export function buildTableBody(data, columns, columnas) {
-  const body: any = []
-  body.push(columnas)
-
-  data.forEach(function (row) {
-    const dataRow: any = []
-    columns.forEach(function (column) {
-      dataRow.push(row[column])
-    })
-    body.push(dataRow)
-  })
-
-  return body
-}
 
 export function stringToArray(listado: string) {
   const array = listado.split(',')
@@ -320,8 +296,6 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
 
-/*export async function imprimirPdf(ruta:string, metodo:string, responseType:string, headers?: {}) {
-  const ax = axios({
 /**
  * Metodo generico para descargar archivos desde una API
  * @param ruta URL desde donde se descargará el archivo

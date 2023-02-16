@@ -19,7 +19,7 @@ import { Pedido } from '../domain/Pedido'
 
 import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain/configuracionColumnasProductosSeleccionadosDespachado'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { acciones, estadosTransacciones, logoBN, logoColor, meses, rolesSistema, tabOptionsPedidos, } from 'config/utils'
+import { acciones, estadosTransacciones, tabOptionsPedidos, } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
@@ -27,14 +27,11 @@ import { TareaController } from 'pages/tareas/controlTareas/infraestructure/Tare
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { fechaMayorActual } from 'shared/validadores/validaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
-import { buildTableBody } from 'shared/utils'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 import { Cargo } from 'pages/recursosHumanos/cargos/domain/Cargo'
@@ -199,7 +196,7 @@ export default defineComponent({
         console.log(pedidoStore.pedido)
         console.log(entidad)
       },
-      visible: ({ entidad, posicion }) => {
+      visible: ({ entidad }) => {
         return tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
       }
     }
@@ -208,7 +205,7 @@ export default defineComponent({
       titulo: 'Imprimir',
       color: 'secondary',
       icono: 'bi-printer',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         pedidoStore.idPedido = entidad.id
         // modales.abrirModalEntidad("ImprimirDevolucionPage")
         // await pedidoStore.showPreview()
@@ -216,7 +213,6 @@ export default defineComponent({
         console.log(pedidoStore.pedido)
         console.log(pedidoStore.pedido.listadoProductos)
         console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
-        // pdfMakeImprimir()
       },
       visible: () => tabSeleccionado.value == 'APROBADO' ? true : false
     }
@@ -244,11 +240,11 @@ export default defineComponent({
     //filtrar los empleados que solo son tecnicos
     opciones_empleados.value = listadosAuxiliares.empleados
     // opciones_sucursales.value = listadosAuxiliares.sucursales
-    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-    opciones_tareas.value = listadosAuxiliares.tareas
     // opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     // opciones_estados.value = listadosAuxiliares.estados
+    opciones_tareas.value = listadosAuxiliares.tareas
+    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
     if (esCoordinador) {
       opciones_empleados.value = listadosAuxiliares.empleados.filter((v)=>v.cargo_id===cargo_tecnico!.id)
