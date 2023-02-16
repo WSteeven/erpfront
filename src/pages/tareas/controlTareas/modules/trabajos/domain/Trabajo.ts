@@ -2,7 +2,6 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { EmpleadoSeleccionado } from './EmpleadoSeleccionado'
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
 import { GrupoSeleccionado } from './GrupoSeleccionado'
-import { Archivo } from '../../subtareasListadoContent/modules/gestorArchivosSubtareas/domain/Archivo'
 
 export class Trabajo extends EntidadAuditable {
   codigo_trabajo: string | null
@@ -12,6 +11,8 @@ export class Trabajo extends EntidadAuditable {
   observacion: string | null
   para_cliente_proyecto: string | null
   fecha_solicitud: string | null
+  estado: string | null
+  modo_asignacion_trabajo: string
 
   // Tiempos
   fecha_hora_creacion: string | null
@@ -21,96 +22,93 @@ export class Trabajo extends EntidadAuditable {
   fecha_hora_finalizacion: string | null
   fecha_hora_suspendido: string | null
   causa_suspencion: string | null
-  cantidad_dias: string | null
   fecha_hora_cancelacion: string | null
   causa_cancelacion: string | null
+  dias_ocupados: number | null
 
   es_dependiente: boolean
-
   es_ventana: boolean
+
   fecha_agendado: string | null
   hora_inicio_agendado: string | null
   hora_fin_agendado: string | null
 
-  estado: string | null
-  modo_asignacion_trabajo: string
-
-  // ubicacion_tarea: UbicacionTarea
-  tarea_id: number | null
+  // Foreign keys
+  tipo_trabajo: number | null
+  trabajo_padre: number | null
   cliente_final: number | null
-  es_primera_asignacion: boolean
+  coordinador: number | null
+  fiscalizador: number | null
+  proyecto: number | null
+  cliente: number | null
+  trabajo_dependiente: string | null
 
   archivos: File[]
-  tipo_trabajo: number | null
-  subtarea_dependiente: string | null
-  subtarea_dependiente_id: number | null
+  trabajo_dependiente_id: number | null
 
-  // Mostrar / ocultar
-  asignar_mas_empleados: boolean
-
+  // Listados
   grupos_seleccionados: GrupoSeleccionado[]
   empleados_seleccionados: EmpleadoSeleccionado[]
 
-  empleados: string | null
-  grupos: string | null
-  dias_ocupados: number | null
+  tiene_subtareas: boolean
+
+  /*empleados: string | null
+  grupos: string | null */
 
   constructor() {
     super()
 
-    this.codigo_subtarea = null
-    this.detalle = null
-    /* this.grupo = null
-    this.empleado = null */
-    this.tecnico_responsable = null
-    this.tipo_trabajo = null
+    this.codigo_trabajo = null
+    this.codigo_trabajo_cliente = null
+    this.titulo = null
+    this.descripcion_completa = null
+    this.observacion = null
+    this.para_cliente_proyecto = null
+    this.fecha_solicitud = null
     this.estado = null
+    this.modo_asignacion_trabajo = opcionesModoAsignacionTrabajo.por_grupo
 
     // Tiempos
     this.fecha_hora_creacion = null
     this.fecha_hora_asignacion = null
     this.fecha_hora_ejecucion = null
     this.fecha_hora_finalizacion = null
-    this.cantidad_dias = null
     this.fecha_hora_realizado = null
     this.fecha_hora_suspendido = null
     this.causa_suspencion = null
     this.fecha_hora_cancelacion = null
     this.causa_cancelacion = null
+    this.dias_ocupados = null
 
     this.es_dependiente = false
-    this.subtarea_dependiente = null
-    this.subtarea_dependiente_id = null
-
     this.es_ventana = false
+
+    this.fecha_agendado = null
     this.hora_inicio_agendado = null
     this.hora_fin_agendado = null
 
-    this.descripcion_completa = null
-
-    /* this.tecnicos_grupo_principal = []
-    this.tecnicos_otros_grupos = [] */
-
-    this.tarea_id = null
-
-    // this.ubicacion_tarea = new UbicacionTarea()
+    // Foreign keys
+    this.tipo_trabajo = null
     this.cliente_final = null
-    this.fecha_agendado = null
-    this.es_primera_asignacion = false
+    this.coordinador = null
+    this.fiscalizador = null
+    this.proyecto = null
+    this.cliente = null
+    this.trabajo_padre = null
+    this.trabajo_dependiente = null
+
+    this.trabajo_dependiente_id = null
 
     this.archivos = []
 
-    // Mostrar / ocultar
-    this.modo_asignacion_trabajo = opcionesModoAsignacionTrabajo.por_grupo
-
-    this.asignar_mas_empleados = false
-
+    // Listados
     this.grupos_seleccionados = []
     this.empleados_seleccionados = []
 
-    this.empleados = null
-    this.grupos = null
+    this.tiene_subtareas = false
 
-    this.dias_ocupados = null
+    /* this.empleados = null
+    this.grupos = null*/
+
   }
 }
