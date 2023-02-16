@@ -5,7 +5,7 @@
     titulo-pagina="Pedido"
     :tab-options="tabOptionsPedidos"
     @tab-seleccionado="tabEs"
-    :permitirEditar="puedeEditar"
+    :permitirEditar="true"
     :accion1="botonDespachar"
     :accion2="botonImprimir"
   >
@@ -30,7 +30,7 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="pedido.created_at" disable outlined dense />
           </div>
-
+          {{ puedeEditar }}
           <!-- Sucursal select -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Sucursal</label>

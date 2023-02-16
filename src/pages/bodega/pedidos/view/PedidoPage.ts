@@ -70,7 +70,7 @@ export default defineComponent({
     const esCoordinador = store.esCoordinador
     const esBodeguero = store.esBodeguero
     const esTecnico = store.esTecnico
-    console.log('11111',esTecnico)
+    const esActivosFijos = store.esActivosFijos
 
     onReestablecer(() => {
       soloLectura.value = false
@@ -84,6 +84,7 @@ export default defineComponent({
       }
     })
     console.log('es coordinador? ', esCoordinador)
+    console.log('es activos fijos? ', esActivosFijos)
     let cargo_tecnico:Cargo
 
     const opciones_empleados = ref([])
@@ -303,7 +304,7 @@ export default defineComponent({
         tabSeleccionado.value = val
         puedeEditar.value = (esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (esBodeguero && tabSeleccionado.value === 'PARCIAL')
           ? true
-          : esCoordinador && tabSeleccionado.value === 'PENDIENTE'
+          : (esCoordinador||esActivosFijos) && tabSeleccionado.value === 'PENDIENTE'
             ? true
             : false
       },
