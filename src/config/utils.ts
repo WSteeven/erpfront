@@ -288,6 +288,7 @@ export const estadosSubtareas = {
 
 export const rolesSistema = {
   empleado: 'EMPLEADO',
+  tecnico: 'TECNICO',
   tecnico_lider: 'TECNICO JEFE CUADRILLA',
   tecnico_secretario: 'TECNICO SECRETARIO',
   coordinador: 'COORDINADOR',

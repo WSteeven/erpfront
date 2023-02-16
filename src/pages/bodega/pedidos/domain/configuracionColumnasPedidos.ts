@@ -45,6 +45,13 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         sortable: true
     },
     {
+        name: 'responsable',
+        field: 'responsable',
+        label: 'Responsable',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'sucursal',
         field: 'sucursal',
         label: 'Sucursal',

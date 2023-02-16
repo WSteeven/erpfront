@@ -6,6 +6,8 @@ export class Pedido extends EntidadAuditable {
     observacion_aut: string | null
     observacion_est: string | null
     solicitante: number | null
+    responsable: number | null
+    responsable_id: number | null
     solicitante_id: number | null
     autorizacion: number | null
     per_autoriza: number | null
@@ -18,7 +20,7 @@ export class Pedido extends EntidadAuditable {
     listadoProductos: any[]
 
     //variables auxiliares
-    es_tarea: boolean | null
+    es_tarea: boolean |null
     tiene_fecha_limite: boolean | null
     tiene_observacion_aut: boolean | null
     tiene_observacion_est: boolean | null
@@ -31,6 +33,8 @@ export class Pedido extends EntidadAuditable {
         this.observacion_est = null
         this.solicitante = null
         this.solicitante_id = null
+        this.responsable = null
+        this.responsable_id = null
         this.autorizacion = null
         this.per_autoriza = null
         this.tarea = null
