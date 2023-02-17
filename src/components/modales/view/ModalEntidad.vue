@@ -1,8 +1,8 @@
 <template>
   <q-dialog
     v-model="abierto"
-    :maximized="true"
-    :full-width="false"
+    :maximized="false"
+    :full-width="true"
     :persistent="confirmarCerrar"
   >
     <q-card class="bg-body">
