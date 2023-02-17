@@ -11,6 +11,7 @@ export class Transferencia extends EntidadAuditable {
     recibida: boolean
     estado: number | null
     observacion_est: string | null
+    observacion_aut: string | null
 
     //variables auxiliares
     tiene_obs_autorizacion: boolean
@@ -29,6 +30,7 @@ export class Transferencia extends EntidadAuditable {
         this.solicitante = null
         this.autorizacion = null
         this.observacion_est = null
+        this.observacion_aut = null
         this.estado = null
         this.recibida = false
         this.per_autoriza = null

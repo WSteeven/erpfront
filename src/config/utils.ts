@@ -314,3 +314,9 @@ export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
   { value: 0, label: 'INACTIVO' }
 ]
+
+export const opciones_tipo_contribuyente = [
+  { value: 'NATURAL', label: 'NATURAL' },
+  { value: 'PRIVADA', label: 'PRIVADA' },
+  { value: 'PUBLICA', label: 'PUBLICA' },
+]
