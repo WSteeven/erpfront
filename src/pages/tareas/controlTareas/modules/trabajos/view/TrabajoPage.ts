@@ -2,7 +2,7 @@
 import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'subtareas/domain/configuracionColumnasGrupoSeleccionado'
 import { configuracionColumnasEmpleado } from 'subtareas/domain/configuracionColumnasEmpleado'
-import { configuracionColumnasTareas } from 'tareas/controlTareas/domain/configuracionColumnasTareas'
+import { configuracionColumnasTrabajo } from '../domain/configuracionColumnasTrabajo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { quitarItemDeArray, stringToArray } from 'shared/utils'
@@ -481,19 +481,18 @@ export default defineComponent({
     * Validaciones
     **************/
     const rules = {
-      detalle: { required },
+      titulo: { required },
       // grupo: { required: requiredIf(() => trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
       tipo_trabajo: { required },
       descripcion_completa: { required },
-      fecha_agendado: { required: requiredIf(() => trabajo.es_ventana) },
-      hora_inicio_agendado: { required: requiredIf(() => trabajo.es_ventana) },
+      fecha_agendado: { required },
+      hora_inicio_agendado: { required },
       hora_fin_agendado: { required: requiredIf(() => trabajo.es_ventana) },
-      subtarea_dependiente: { required: requiredIf(() => trabajo.es_dependiente) },
+      trabajo_dependiente: { required: requiredIf(() => trabajo.es_dependiente) },
       // vienen de tareas
-      cliente: { requiredIfCliente: requiredIf(function () { return paraClienteFinal.value ? true : false }) },
-      titulo: { required },
-      codigo_tarea_cliente: { required },
-      proyecto: { required },
+      codigo_trabajo_cliente: { required },
+      cliente: { required: requiredIf(() => paraClienteFinal.value) },
+      proyecto: { required: requiredIf(() => paraProyecto.value) },
     }
 
     const v$ = useVuelidate(rules, trabajo)
@@ -720,7 +719,7 @@ export default defineComponent({
       clientesFinalesSource,
       mostrarLabelModal,
       modales,
-      configuracionColumnasTareas,
+      configuracionColumnasTrabajo,
     }
   },
 })

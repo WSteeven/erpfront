@@ -1,0 +1,145 @@
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Trabajo } from './Trabajo'
+
+export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
+  {
+    name: 'codigo_trabajo',
+    field: 'codigo_trabajo',
+    label: 'Cód. Trabajo',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'codigo_trabajo_cliente',
+    field: 'codigo_trabajo_cliente',
+    label: 'Cód. Trabajo Cliente',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'titulo',
+    field: 'titulo',
+    label: 'Título',
+    align: 'left',
+  },
+  {
+    name: 'fecha_solicitud',
+    field: 'fecha_solicitud',
+    label: 'Fecha solicitud',
+    align: 'left',
+  },
+  {
+    name: 'tipo_trabajo',
+    field: 'tipo_trabajo',
+    label: 'Tipo de trabajo',
+    align: 'left',
+  },
+  {
+    name: 'es_ventana',
+    field: 'es_ventana',
+    label: 'Es ventana',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_creacion',
+    field: 'fecha_hora_creacion',
+    label: 'Fecha hora creación',
+    align: 'left',
+  },
+  {
+    name: 'fecha_agendado',
+    field: 'fecha_agendado',
+    label: 'Fecha de agendamiento',
+    align: 'left',
+  },
+  {
+    name: 'hora_inicio_agendado',
+    field: 'hora_inicio_agendado',
+    label: 'Hora inicio de agendamiento',
+    align: 'left',
+  },
+  {
+    name: 'hora_fin_agendado',
+    field: 'hora_fin_agendado',
+    label: 'Hora fin de agendamiento',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_asignacion',
+    field: 'fecha_hora_asignacion',
+    label: 'Fecha hora asignación',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_ejecucion',
+    field: 'fecha_hora_ejecucion',
+    label: 'Fecha hora ejecución',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_realizado',
+    field: 'fecha_hora_realizado',
+    label: 'Fecha hora realizado',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_finalizacion',
+    field: 'fecha_hora_finalizacion',
+    label: 'Fecha hora finalización',
+    align: 'left',
+  },
+  {
+    name: 'dias_ocupados',
+    field: 'dias_ocupados',
+    label: 'Días ocupados',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_suspendido',
+    field: 'fecha_hora_suspendido',
+    label: 'Fecha hora suspención',
+    align: 'left',
+  },
+  {
+    name: 'causa_suspencion',
+    field: 'causa_suspencion',
+    label: 'Causa de suspención',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_cancelacion',
+    field: 'fecha_hora_cancelacion',
+    label: 'Fecha hora cancelación',
+    align: 'left',
+  },
+  {
+    name: 'causa_cancelacion',
+    field: 'causa_cancelacion',
+    label: 'Causa de cancelación',
+    align: 'left',
+  },
+  {
+    name: 'empleados',
+    field: 'empleados',
+    label: 'Empleados',
+    align: 'left',
+  },
+  {
+    name: 'grupos',
+    field: 'grupos',
+    label: 'Grupos',
+    align: 'left',
+  },
+  {
+    name: 'trabajo_dependiente',
+    field: 'trabajo_dependiente',
+    label: 'Depende de',
+    align: 'left',
+  },
+  {
+    name: 'estado',
+    field: 'estado',
+    label: 'Estado',
+    align: 'left',
+  },
+]

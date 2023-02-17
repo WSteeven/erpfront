@@ -51,8 +51,9 @@ export class Trabajo extends EntidadAuditable {
 
   tiene_subtareas: boolean
 
-  /*empleados: string | null
-  grupos: string | null */
+  // para mostrar en tabla
+  empleados: string | null
+  grupos: string | null
 
   constructor() {
     super()
@@ -106,8 +107,7 @@ export class Trabajo extends EntidadAuditable {
 
     this.tiene_subtareas = false
 
-    /* this.empleados = null
-    this.grupos = null*/
-
+    this.empleados = null
+    this.grupos = null
   }
 }
