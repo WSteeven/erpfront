@@ -111,7 +111,7 @@
               </template>
             </q-select>
           </div>
-          <!-- Pedido -->
+          <!-- Transferencia -->
           <div
             v-if="transaccion.es_transferencia"
             class="col-12 col-md-3 q-mb-md"

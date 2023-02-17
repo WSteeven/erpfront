@@ -287,6 +287,7 @@ export const estadosSubtareas = {
 }
 
 export const rolesSistema = {
+  rrhh: 'RECURSOS HUMANOS',
   empleado: 'EMPLEADO',
   coordinador: 'COORDINADOR',
   fiscalizador: 'FISCALIZADOR',

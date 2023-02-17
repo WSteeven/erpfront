@@ -5,7 +5,7 @@
     titulo-pagina="Pedido"
     :tab-options="tabOptionsPedidos"
     @tab-seleccionado="tabEs"
-    :permitirEditar="true"
+    :permitirEditar="puedeEditar"
     :accion1="botonDespachar"
     :accion2="botonImprimir"
   >
@@ -30,7 +30,6 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="pedido.created_at" disable outlined dense />
           </div>
-          {{ puedeEditar }}
           <!-- Sucursal select -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Sucursal</label>
@@ -112,7 +111,7 @@
             </q-input>
           </div>
           <!-- Responsable -->
-          <div v-if="!esTecnico" class="col-12 col-md-3">
+          <div v-if="esCoordinador||esRRHH|!esTecnico" class="col-12 col-md-3">
             <label class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="pedido.responsable"
@@ -298,8 +297,8 @@
               options-dense
               dense
               outlined
-              :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
+              :disable="disabled || (soloLectura && !(esCoordinador||esActivosFijos))"
+              :readonly="disabled || (soloLectura && !(esCoordinador||esActivosFijos))"
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="(v) => v.id"
@@ -372,8 +371,8 @@
               options-dense
               dense
               outlined
-              :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
+              :disable="disabled || soloLectura"
+              :readonly="disabled ||soloLectura"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
