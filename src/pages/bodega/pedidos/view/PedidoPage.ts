@@ -71,6 +71,7 @@ export default defineComponent({
     const esBodeguero = store.esBodeguero
     const esTecnico = store.esTecnico
     const esActivosFijos = store.esActivosFijos
+    const esRRHH = store.esRecursosHumanos
 
     onReestablecer(() => {
       soloLectura.value = false
@@ -79,11 +80,12 @@ export default defineComponent({
     onConsultado(() => {
       opciones_empleados.value = listadosAuxiliares.empleados
       console.log(accion.value)
-      if (accion.value === acciones.editar && esCoordinador) {
+      if (accion.value === acciones.editar && (esCoordinador||esActivosFijos)) {
         soloLectura.value = true
       }
     })
     console.log('es coordinador? ', esCoordinador)
+    console.log('es bodeguero? ', esBodeguero)
     console.log('es activos fijos? ', esActivosFijos)
     let cargo_tecnico:Cargo
 
@@ -122,7 +124,7 @@ export default defineComponent({
       //obtener el cargo
       const response =await new CargoController().listar({nombre:'TECNICO'})
       cargo_tecnico = (await response).result[0]//se carga el array recibido con el cargo
-      console.log(cargo_tecnico.id)
+      console.log(cargo_tecnico)
     })
 
 
@@ -134,7 +136,7 @@ export default defineComponent({
       autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
       observacion_aut: { requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!) },
       sucursal: { required },
-      responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico) },
+      responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico||esRRHH) },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
       fecha_limite: {
         required: requiredIf(() => pedido.tiene_fecha_limite!),
@@ -283,6 +285,9 @@ export default defineComponent({
       //modal
       // modales,
 
+      //stores
+      store,
+
       //flags
       soloLectura,
 
@@ -290,7 +295,7 @@ export default defineComponent({
       tabOptionsPedidos,
       tabSeleccionado,
       puedeEditar,
-      esCoordinador, esBodeguero, esTecnico,
+      esCoordinador, esBodeguero, esTecnico, esActivosFijos, esRRHH,
 
       checkEsFecha(val, evt) {
         if (!val) pedido.fecha_limite = ''
@@ -302,11 +307,9 @@ export default defineComponent({
         // console.log(tabSeleccionado.value)
         // console.log(val)
         tabSeleccionado.value = val
-        puedeEditar.value = (esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (esBodeguero && tabSeleccionado.value === 'PARCIAL')
+        puedeEditar.value = (esCoordinador && tabSeleccionado.value === estadosTransacciones.pendiente) ||(esActivosFijos && tabSeleccionado.value===estadosTransacciones.pendiente)
           ? true
-          : (esCoordinador||esActivosFijos) && tabSeleccionado.value === 'PENDIENTE'
-            ? true
-            : false
+          : false
       },
 
       //Filtros
