@@ -11,7 +11,8 @@ import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestruct
 import { FondoRotativoFecha } from '../domain/FondoRotativoFecha'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { AxiosResponse } from 'axios'
-import { endpoints } from 'config/api'
+import { apiConfig, endpoints } from 'config/api'
+import { imprimirArchivo } from 'shared/utils'
 
 
 export default defineComponent({
@@ -121,23 +122,17 @@ function filtrarTiposFondoRotativoFechas(val, update) {
 
 
   async function generar_excel(valor:FondoRotativoFecha):Promise<void> {
-    const titulo =  'prueba';
-    const formato = 'xlsx'
     const axios = AxiosHttpRepository.getInstance()
-    const ruta = axios.getEndpoint(endpoints.fondo_rotativo_fecha_excel)
-    const response:AxiosResponse = await axios.post(ruta, valor)
-    const fileURL = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.ms-excel' }));
-    const link = document.createElement('a');
-    link.href = fileURL
-    link.target = '_blank'
-    link.setAttribute('download', `${titulo}.${formato}`)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
+    const url = apiConfig.URL_BASE + '/' +axios.getEndpoint(endpoints.fondo_rotativo_fecha_excel)
+    const filename = 'prueba_reporte' + Date.now()
+    imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename,valor)
   }
 
   function generar_pdf(valor:FondoRotativoFecha):void {
-    console.log('pdf',valor);
+    const axios = AxiosHttpRepository.getInstance()
+    const url = apiConfig.URL_BASE + '/' +axios.getEndpoint(endpoints.fondo_rotativo_fecha_pdf)
+    const filename = 'prueba_reporte' + Date.now()
+    imprimirArchivo(url, 'POST', 'blob', 'pdf', filename,valor)
   }
 
      return {
