@@ -94,8 +94,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { computed, reactive } from 'vue'
-import e from 'express'
-import { isTemplateNode } from '@vue/compiler-core'
 
 const props = defineProps({
   configuracionColumnas: {
@@ -168,24 +166,7 @@ const fieldsAll = computed(() =>
     })
     .filter((fila) => fila.field !== 'acciones')
 )
-/* const fields = ref()
-const fila = computed()
-watch(props.fila, () => {
-  props.configuracionColumnas
-    .map((fila: ColumnConfig<any>) => {
-      return reactive({
-        label: fila.label,
-        field: fila.field,
-        input_type: fila.input_type ?? 'text',
-        valor: props.fila ? props.fila[fila.field] : '',
-      })
-    })
-    .filter((fila) => fila.field !== 'acciones')
-}) */
 
-// const abierto = computed(() => !!props.fila)
-// const abierto = ref(false)
-// const abiertoC = computed(() => props.abierto)
 const abierto = computed(() => !!props.fila)
 
 function guardar() {
@@ -193,76 +174,20 @@ function guardar() {
   var mappedSelect = fieldsSelect.value.map((item) => ({
     [item.field]: item.valor,
   }))
-  var mappedAll = fieldsAll.value.map((item) => ({ [item.field]: item.valor }))
-  var mappedLleno = [...mappedAll, ...mapped, ...mappedSelect]
-  var newObj = Object.assign({}, ...mapped)
-  var newObj2 = Object.assign(newObj, ...mappedSelect)
-  var newObjAll = Object.assign(newObj2, ...mappedAll)
-  var newObjLleno = Object.assign(newObjAll, ...mappedLleno)
-  var filaRecibida = props.fila
-  console.log(mapped)
-  console.log(mappedSelect)
-  console.log(mappedAll)
-  console.log(mappedLleno)
-
-  console.log(newObj)
-  console.log(newObj2)
-  console.log(newObjAll)
-  console.log(newObjLleno)
-  console.log(filaRecibida)
-  // filaRecibida?.hydrate(newObj2)
-  // var newObj3 = Object.assign(filaRecibida!, ...newObj2)
-  // console.log(newObj3)
-
-  emit('guardar', newObj)
-
-  /* console.log(props.configuracionColumnas)
-  props.configuracionColumnas.forEach((item) => console.log(item.field))
-  console.log(fields.value)
-
-  let mappedFields = props.configuracionColumnas.map((item: any) => ({
-    [item.field]:
-      (fields.value[item.field] !== undefined &&
-        item.field === fields.value[item.field].field) ??
-      fields.value[item.field].valor,
-  }))
-
-  let mappedFieldsSelect = props.configuracionColumnas.map((item: any) => ({
-    [item.field]: (fieldsSelect.value[item.field]!==undefined && item.field===fieldsSelect.value[item.field].field)??fieldsSelect.value[item.field].valor
-  })) */
-
-  // console.log(mapped)
-  // console.log(mappedFields)
-  // console.log(mappedFieldsSelect)
-}
-function recorrer(arreglo: any[], propiedad: string): any {
-  return arreglo.forEach((element: any) => {
-    return element.hasProperty(propiedad) ? element[propiedad] : null
-  })
-}
-function guardar2() {
-  var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
-  var mappedSelect = fieldsSelect.value.map((item) => ({
+  const mappedAll = fieldsAll.value.map((item) => ({
     [item.field]: item.valor,
   }))
-  var newObj = Object.assign({}, ...mapped)
-  var newObjAll = Object.assign({}, ...[mapped, mappedSelect])
+  const mappedLleno = [...mappedAll, ...mapped, ...mappedSelect]
+  const newObj = Object.assign({}, ...mapped)
 
-  console.log('fila recibida', props.fila)
-  console.log(mapped)
-  console.log(mappedSelect)
-  console.log(newObj)
-  console.log(newObjAll)
+  Object.assign(newObj, ...mappedSelect)
+  Object.assign(newObj, ...mappedAll)
+  Object.assign(newObj, ...mappedLleno)
 
   emit('guardar', newObj)
 }
-
-/* function abrirModalEntidad() {
-  abierto.value = true
-} */
 
 function cerrarModalEntidad() {
   emit('limpiar')
-  // abierto.value = false
 }
 </script>

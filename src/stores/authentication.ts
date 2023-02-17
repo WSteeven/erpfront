@@ -6,7 +6,11 @@ import { endpoints } from 'src/config/api'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -24,19 +28,23 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   )
 
   const esCoordinador = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.coordinador) : false)
-  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico_lider) : false)
+  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico) : false)
   const esBodeguero = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.bodega) : false)
   const esActivosFijos = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.activos_fijos) : false)
+  const esTecnico = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico) : false)
+  const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.rrhh) : false)
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
   }
 
   // Actions
-  const login = async (credentiales: UserLogin): Promise<any> => {
+  const login = async (credentiales: UserLogin): Promise<Empleado> => {
     try {
-      const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
-      await axios.get(csrf_cookie)
+      /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
+      console.log('authentication...')
+      await axios.get(csrf_cookie) */
+
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
@@ -45,19 +53,43 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       setUser(response.data.modelo)
       permisos.value = response.data.modelo.permisos
 
+      cargarDatosLS()
+
       return response.data.modelo
-    } catch (error: any) {
-      throw new ApiError(error)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
     }
   }
 
-  async function logout(): Promise<any> {
+  /**
+   * Función para cargar datos en el Local Storage
+   */
+  async function cargarDatosLS(){
+      const autorizaciones = (await new AutorizacionController().listar({campos: 'id,nombre'})).result
+      LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
+      const sucursales = (await new SucursalController().listar({campos: 'id,lugar'})).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      const estados_transacciones = (await new EstadosTransaccionController().listar({ campos: 'id,nombre' })).result
+      LocalStorage.set('estados_transacciones', JSON.stringify(estados_transacciones))
+  }
+  /**
+   * Función para limpiar los datos del Local Storage
+   */
+  function limpiarLS(){
+    LocalStorage.remove('autorizaciones')
+    LocalStorage.remove('sucursales')
+    LocalStorage.remove('estados_transacciones')
+  }
+
+  async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
+    limpiarLS()
     await getUser()
   }
 
-  const setUser = (userData: any) => {
+  const setUser = (userData: Empleado | null) => {
     user.value = userData
     auth.value = Boolean(userData)
   }
@@ -65,7 +97,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const getUser = async () => {
     try {
       const userApi = axios.getEndpoint(endpoints.api_user)
-      const response = await axios.get<any>(userApi, getHeaderToken())
+      const response = await axios.get<AxiosResponse>(userApi)
 
       setUser(response.data)
 
@@ -77,20 +109,12 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  function getHeaderToken() {
-    return {
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${LocalStorage.getItem('token')}`,
-      },
-    }
-  }
-
   const actualizarContrasena = async (userLogin: UserLogin) => {
     try {
       await axios.post(axios.getEndpoint(endpoints.reset_password), userLogin)
-    } catch (error: any) {
-      throw new ApiError(error)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
     }
   }
 
@@ -117,9 +141,11 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     actualizarContrasena,
     isUserLoggedIn,
     esCoordinador,
+    esTecnico,
     esTecnicoLider,
     esBodeguero,
     esActivosFijos,
+    esRecursosHumanos,
     extraerRol,
   }
 })

@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasPerchas } from '../domain/configuracionColumnasPerchas'
-//import { configuracionColumnasSucursales } from "pages/administracion/sucursales/domain/configuracionColumnasSucursales";
+//import { configuracionColumnasSucursales } from 'pages/administracion/sucursales/domain/configuracionColumnasSucursales'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
@@ -13,7 +13,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-//import { useOrquestadorSelectorSucursales } from "../application/OrquestadorSelectorSucursales";
+//import { useOrquestadorSelectorSucursales } from '../application/OrquestadorSelectorSucursales'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { PerchaController } from '../infraestructure/PerchaController'
 import { Percha } from '../domain/Percha'
@@ -27,7 +27,7 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Percha, new PerchaController())
     const { entidad: percha, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =mixin.useComportamiento()
+    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
     const opciones_sucursales = ref([])
     //Obtener los listados

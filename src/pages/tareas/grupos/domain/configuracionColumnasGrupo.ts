@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig"
-import { Grupo } from "./Grupo"
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Grupo } from './Grupo'
 
 export const configuracionColumnasGrupo: ColumnConfig<Grupo>[] = [
     {

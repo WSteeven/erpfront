@@ -1,12 +1,13 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { endpoints } from "config/api";
-import { acciones, autorizacionesTransacciones, estadosTransacciones } from "config/utils";
-import { Pedido } from "pages/bodega/pedidos/domain/Pedido";
-import { defineStore } from "pinia";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { reactive, ref } from "vue";
+import axios, { AxiosResponse } from 'axios'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { apiConfig, endpoints } from 'config/api'
+import { acciones, autorizacionesTransacciones, estadosTransacciones } from 'config/utils'
+import { Pedido } from 'pages/bodega/pedidos/domain/Pedido'
+import { defineStore } from 'pinia'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useNotificaciones } from 'shared/notificaciones'
+import { imprimirArchivo } from 'shared/utils'
+import { reactive, ref } from 'vue'
 
 export const usePedidoStore = defineStore('pedido', () => {
   //State
@@ -23,7 +24,7 @@ export const usePedidoStore = defineStore('pedido', () => {
     const ruta = axios.getEndpoint(endpoints.pedidos) + '/show-preview/' + id
     const response: AxiosResponse = await axios.get(ruta)
     console.log('Respuesta obtenida en store de pedido: ', response)
-    if (response.data.modelo.autorizacion ===autorizacionesTransacciones.aprobado) {
+    if (response.data.modelo.autorizacion === autorizacionesTransacciones.aprobado) {
       return response.data.modelo
     }
   }
@@ -53,6 +54,37 @@ export const usePedidoStore = defineStore('pedido', () => {
     pedido.hydrate(response.data.modelo)
   }
 
+  async function imprimirPdf() {
+    const axios = AxiosHttpRepository.getInstance()
+    const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.pedidos) + '/imprimir/' + idPedido.value
+    const filename = 'pedido_' + idPedido.value + '_' + Date.now()
+    imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+    console.log('Pedido impreso con éxito')
+  }
+
+  /* async function imprimirPdf2() {
+    const axiosHttpRepository = AxiosHttpRepository.getInstance()
+    axios({
+      url: apiConfig.URL_BASE + '/' + axiosHttpRepository.getEndpoint(endpoints.pedidos) + '/imprimir/' + idPedido.value,
+      // url: axiosHttpRepository.getEndpoint(endpoints.pedidos)+'/imprimir/'+idPedido.value,
+      method: 'GET',
+      responseType: 'blob',
+
+      headers: {
+        'Authorization': AxiosHttpRepository.getInstance().getOptions().headers.Authorization
+        'Authorization': axiosHttpRepository.getOptions().headers.Authorization
+      }
+    }).then((response) => {
+      console.log(response)
+      const fileURL = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
+      const fileLink = document.createElement('a')
+      fileLink.href = fileURL
+      fileLink.setAttribute('download', 'pedido_' + idPedido.value + '_' + Date.now() + '.pdf')
+      document.body.appendChild(fileLink)
+      fileLink.click()
+    })
+  } */
+
   function resetearPedido() {
     pedido.hydrate(pedidoReset)
   }
@@ -63,7 +95,8 @@ export const usePedidoStore = defineStore('pedido', () => {
     cargarPedido,
     resetearPedido,
     idPedido,
-    showPreview
+    showPreview,
+    imprimirPdf,
   }
 
 })

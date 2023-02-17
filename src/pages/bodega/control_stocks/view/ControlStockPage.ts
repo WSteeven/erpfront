@@ -1,27 +1,27 @@
 //Dependencias
-import { configuracionColumnasControlStock } from "../domain/configuracionColumnasControlStock";
-import { required } from "@vuelidate/validators";
+import { configuracionColumnasControlStock } from '../domain/configuracionColumnasControlStock'
+import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue'
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController";
-import { ControlStockController } from "../infraestructure/ControlStockController";
-import { ControlStock } from "../domain/ControlStock";
-import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
-import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { ControlStockController } from '../infraestructure/ControlStockController'
+import { ControlStock } from '../domain/ControlStock'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
 
 export default defineComponent({
     components: { TabLayout },
     setup() {
         const mixin = new ContenedorSimpleMixin(ControlStock, new ControlStockController())
         const { entidad: stock, disabled, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento();
+        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
         const reglas = {
             sucursal_id: { required },

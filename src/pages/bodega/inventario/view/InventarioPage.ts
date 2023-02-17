@@ -1,27 +1,27 @@
 //Dependencias
-import { configuracionColumnasInventarios } from "../domain/configuracionColumnasInventarios";
-import { required } from "@vuelidate/validators";
+import { configuracionColumnasInventarios } from '../domain/configuracionColumnasInventarios'
+import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
-import { useDetalleStore } from "stores/detalle";
+import { defineComponent, ref } from 'vue'
+import { useDetalleStore } from 'stores/detalle'
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { InventarioController } from "../infraestructure/InventarioController";
-import { Inventario } from "../domain/Inventario";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { InventarioController } from '../infraestructure/InventarioController'
+import { Inventario } from '../domain/Inventario'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
 //Controladores para los selects
-import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController";
-import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
-import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
-import { SucursalController } from "pages/administracion/sucursales/infraestructure/SucursalController";
-import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
-import { useTransaccionStore } from "stores/transaccion";
-import { useDetalleTransaccionStore } from "stores/detalleTransaccion";
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
+import { useTransaccionStore } from 'stores/transaccion'
+import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
 
 export default defineComponent({
     components: { TabLayout },

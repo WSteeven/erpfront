@@ -29,6 +29,7 @@ export default defineComponent({
     const login = async () => {
       try {
         cargando.activar()
+        console.log('logenado')
         await loginController.login(loginUser)
 
         notificaciones.notificarCorrecto('Bienvenido a JPCONSTRUCRED CIA. LTDA') //response.data.mensaje)

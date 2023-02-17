@@ -30,7 +30,6 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="pedido.created_at" disable outlined dense />
           </div>
-
           <!-- Sucursal select -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Sucursal</label>
@@ -111,11 +110,51 @@
               </template>
             </q-input>
           </div>
+          <!-- Responsable -->
+          <div v-if="esCoordinador||esRRHH|!esTecnico" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Responsable</label>
+            <q-select
+              v-model="pedido.responsable"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroResponsable"
+              error-message="Debes seleccionar el responsable de los materiales"
+              :error="!!v$.responsable.$errors.length"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.responsable.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
           <!-- Requiere Fecha -->
-          <div v-if="pedido.tiene_fecha_limite||accion===acciones.nuevo" class="col-12 col-md-3">
+          <div
+            v-if="pedido.tiene_fecha_limite || accion === acciones.nuevo"
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
-              v-model="requiereFecha"
+              v-model="pedido.tiene_fecha_limite"
               label="¿Fecha límite?"
               :disable="disabled || soloLectura"
               @update:model-value="checkEsFecha"
@@ -125,7 +164,7 @@
           </div>
           <!-- Fecha límite -->
           <div
-            v-if="pedido.tiene_fecha_limite|| requiereFecha"
+            v-if="pedido.tiene_fecha_limite"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Fecha limite</label>
@@ -164,8 +203,12 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div style=" clear: inherit;" v-for="error of v$.fecha_limite.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>  
+                <div
+                  style="clear: inherit"
+                  v-for="error of v$.fecha_limite.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
@@ -186,7 +229,7 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div v-if="esVisibleTarea || pedido.es_tarea" class="col-12 col-md-3">
+          <div v-if="pedido.es_tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="pedido.tarea"
@@ -200,6 +243,8 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
+              :error="!!v$.tarea.$errors.length"
+              error-message="Debe seleccionar una tarea"
               :option-label="(item) => item.detalle"
               :option-value="(item) => item.id"
               emit-value
@@ -212,7 +257,31 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:error>
+                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
+          </div>
+          <!-- Persona que autoriza -->
+          <div v-if="pedido.per_autoriza" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Persona que autoriza</label>
+            <q-select
+              v-model="pedido.per_autoriza"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            />
           </div>
           <!-- Select autorizacion -->
           <div
@@ -228,8 +297,8 @@
               options-dense
               dense
               outlined
-              :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
+              :disable="disabled || (soloLectura && !(esCoordinador||esActivosFijos))"
+              :readonly="disabled || (soloLectura && !(esCoordinador||esActivosFijos))"
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="(v) => v.id"
@@ -288,6 +357,46 @@
               </template>
             </q-input>
           </div>
+          <!-- Select estado -->
+          <div
+            v-if="pedido.estado || accion === acciones.consultar"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">Estado del despacho</label>
+            <q-select
+              v-model="pedido.estado"
+              :options="opciones_estados"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :readonly="disabled ||soloLectura"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+            </q-select>
+          </div>
+          <!-- observacion estado -->
+          <div
+            v-if="pedido.observacion_est"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              autogrow
+              v-model="pedido.observacion_est"
+              placeholder="Obligatorio"
+              :disable="disabled || (soloLectura && !esCoordinador)"
+              :readonly="disabled || (soloLectura && !esCoordinador)"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -328,7 +437,7 @@
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
-                accion === acciones.nuevo||accion===acciones.editar
+                accion === acciones.nuevo || accion === acciones.editar
                   ? configuracionColumnasProductosSeleccionadosAccion
                   : configuracionColumnasProductosSeleccionadosDespachado
               "

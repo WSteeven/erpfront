@@ -1,7 +1,8 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
 
 export const apiConfig = {
-  URL_BALSE: process.env.VUE_APP_API_URL,
+  // URL_BASE: 'http://localhost:8000',
+  URL_BASE: process.env.API_URL,
 }
 
 export const endpoints = {
@@ -25,6 +26,7 @@ export const endpoints = {
   cantones: new Endpoint('cantones'),
 
   // Modulo de RR HH
+  cargos: new Endpoint('cargos'),
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
@@ -73,6 +75,7 @@ export const endpoints = {
   proyectos: new Endpoint('proyectos'),
   tareas: new Endpoint('tareas'),
   subtareas: new Endpoint('subtareas'),
+  trabajos: new Endpoint('trabajos'),
   trabajo_asignado: new Endpoint('trabajo-asignado'),
   pausas_subtareas: new Endpoint('subtareas/pausas'),
   tipos_trabajos: new Endpoint('tipos-trabajos'),
@@ -107,4 +110,5 @@ export const endpoints = {
   fondo_rotativo_fecha_excel: new Endpoint('fondos-rotativos/reporte/fecha/excel'),
   fondo_rotativo_fecha_pdf: new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
 
+  emergencias: new Endpoint('emergencias'),
 }

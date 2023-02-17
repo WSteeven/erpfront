@@ -213,7 +213,7 @@
 
 <script lang="ts">
 import { useAuthenticationStore } from 'stores/authentication'
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import { TableroController } from '../infraestructure/TableroController'
 import { Tablero } from '../domain/Tablero'
 

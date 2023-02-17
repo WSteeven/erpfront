@@ -15,7 +15,7 @@ import { acciones } from 'config/utils'
 export default defineComponent({
   props: {
     mixin: {
-      type: Object as () => ContenedorSimpleMixin<any>,
+      type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
       required: true,
     },
     mostrarButtonSubmits: {
@@ -63,7 +63,7 @@ export default defineComponent({
     const { listar, guardar, editar, eliminar, consultar, reestablecer } =
       props.mixin.useComportamiento()
 
-    const { entidad, listado, accion, filtros, fields, tabs, currentPageListado, nextPageUrl } =
+    const { entidad, listado, accion, filtros, tabs, nextPageUrl } =
       props.mixin.useReferencias()
 
     const Router = useRouter()
@@ -139,7 +139,6 @@ export default defineComponent({
       listado,
       accion,
       filtros,
-      fields,
       accionTabla,
       // tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,

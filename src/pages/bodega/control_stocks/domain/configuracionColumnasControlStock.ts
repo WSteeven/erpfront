@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ControlStock } from "./ControlStock";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { ControlStock } from './ControlStock'
 
-export const configuracionColumnasControlStock: ColumnConfig<ControlStock>[]=[
+export const configuracionColumnasControlStock: ColumnConfig<ControlStock>[] = [
     {
         name: 'sucursal_id',
         field: 'sucursal_id',

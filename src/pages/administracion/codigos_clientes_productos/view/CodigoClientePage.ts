@@ -1,21 +1,21 @@
 //Dependencias
-import { configuracionColumnasCodigosClientes } from "../domain/configuracionColumnasCodigosClientes";
-import { required } from "@vuelidate/validators";
+import { configuracionColumnasCodigosClientes } from '../domain/configuracionColumnasCodigosClientes'
+import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue'
 
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { CodigoClienteController } from "../infraestructure/CodigoClienteController";
-import { CodigoCliente } from "../domain/CodigoCliente";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
-import { ProductoController } from "pages/bodega/productos/infraestructure/ProductoController";
-import { ClienteController } from "pages/sistema/clientes/infraestructure/ClienteController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CodigoClienteController } from '../infraestructure/CodigoClienteController'
+import { CodigoCliente } from '../domain/CodigoCliente'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
+import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 
 export default defineComponent({
     components: { TabLayout },
@@ -57,8 +57,8 @@ export default defineComponent({
         setValidador(v$.value)
 
         //Configurar el listado
-         opciones_productos.value = listadosAuxiliares.productos
-         opciones_clientes.value = listadosAuxiliares.clientes
+        opciones_productos.value = listadosAuxiliares.productos
+        opciones_clientes.value = listadosAuxiliares.clientes
 
         return {
             mixin, codigo_cliente, disabled, accion, v$,

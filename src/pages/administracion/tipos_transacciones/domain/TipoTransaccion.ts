@@ -1,12 +1,12 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class TipoTransaccion extends EntidadAuditable{
-    nombre:string |null
+export class TipoTransaccion extends EntidadAuditable {
+    nombre: string | null
     // tipo: string | null
 
-    constructor(){
+    constructor() {
         super()
-        this.nombre=null
+        this.nombre = null
         // this.tipo=null
     }
 }

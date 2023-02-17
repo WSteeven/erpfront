@@ -20,7 +20,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Trabajo asignado',
       link: 'trabajo-asignado',
-      icon: 'bi-ui-checks',
+      icon: 'bi-check2-square',
       can: store.can('puede.ver.trabajo_asignado'),
     },
     {
@@ -41,7 +41,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Tareas',
-      icon: 'bi-ui-checks',
+      icon: 'bi-pin-angle',
       can: store.can('puede.ver.modulo_tareas'),
       children: [
         /*{
@@ -68,16 +68,6 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.tipos_trabajos'),
         },
-        /* {
-          title: 'Solicitud de materiales a bodega',
-          link: 'solicitud-materiales',
-          icon: 'bi-circle',
-        },
-        {
-          title: 'Devolución de materiales a bodega',
-          link: 'solicitud-materiales',
-          icon: 'bi-circle',
-        }, */
         {
           title: 'Reportes',
           icon: 'bi-circle',
@@ -93,6 +83,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reportes-control-tendidos',
               icon: 'bi-dash',
               can: store.can('puede.ver.reportes_control_tendidos'),
+            },
+            {
+              title: 'Trabajos realizados',
+              link: 'reporte-trabajos-realizados',
+              icon: 'bi-dash',
+              can: store.can('puede.ver.reporte_trabajos_realizados'),
             },
           ],
         },
@@ -302,6 +298,12 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'empleados',
           icon: 'bi-circle',
           can: store.can('puede.ver.empleados'),
+        },
+        {
+          title: 'Cargos',
+          link: 'cargos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.cargos'),
         },
         {
           title: 'Grupos',

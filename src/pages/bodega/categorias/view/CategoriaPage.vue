@@ -26,7 +26,7 @@
             </q-input>
           </div>
         </div>
-      </q-form>
+      </q-form> 
     </template>
   </tab-layout>
 </template>

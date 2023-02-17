@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Percha } from "./Percha";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Percha } from './Percha'
 
-export const configuracionColumnasPerchas: ColumnConfig<Percha>[]=[
+export const configuracionColumnasPerchas: ColumnConfig<Percha>[] = [
     {
         name: 'nombre',
         field: 'nombre',

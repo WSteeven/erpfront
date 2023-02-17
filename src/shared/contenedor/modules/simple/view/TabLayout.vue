@@ -57,11 +57,11 @@
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
           :accion1="accion1"
-          @onScroll="cargarListado"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
         ></essential-table>
+        <!--@onScroll="cargarListado" -->
       </q-tab-panel>
     </q-tab-panels>
   </q-page>

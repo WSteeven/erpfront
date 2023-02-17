@@ -3,11 +3,11 @@ import { AxiosHttpRepository } from '../../http/infraestructure/AxiosHttpReposit
 import { ApiError } from '../../error/domain/ApiError'
 import { HttpResponseDelete } from '../../http/domain/HttpResponse'
 import { ResponseItem } from '../domain/ResponseItem'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 
 export class EliminableRepository<T> {
   private readonly httpRepository = AxiosHttpRepository.getInstance()
-  private readonly endpoint
+  private readonly endpoint: Endpoint
 
   constructor(endpoint: Endpoint) {
     this.endpoint = endpoint
@@ -15,11 +15,11 @@ export class EliminableRepository<T> {
 
   async eliminar(
     id: number,
-    params?: any
+    // params?: any
   ): Promise<ResponseItem<T, HttpResponseDelete<T>>> {
     try {
       const endpoint = {
-        endpoint: this.endpoint, 
+        endpoint: this.endpoint,
         id
       }
       const ruta = this.httpRepository.getEndpoint(endpoint)
@@ -28,8 +28,9 @@ export class EliminableRepository<T> {
         response,
         result: response.data.mensaje,
       }
-    } catch (error: any) {
-      throw new ApiError(error)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
     }
   }
 }

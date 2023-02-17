@@ -1,9 +1,9 @@
-import { TransaccionSimpleController } from "shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController";
-import { EstadosTransaccion } from "../domain/EstadosTransaccion";
-import { endpoints } from "config/api";
+import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
+import { EstadosTransaccion } from '../domain/EstadosTransaccion'
+import { endpoints } from 'config/api'
 
 export class EstadosTransaccionController extends TransaccionSimpleController<EstadosTransaccion>{
-    constructor(){
+    constructor() {
         super(endpoints.estados_transacciones)
     }
 }

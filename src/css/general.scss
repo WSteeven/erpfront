@@ -1,8 +1,8 @@
 // Custom scrollbar
 body {
   &::-webkit-scrollbar {
-    width: 0;
-    //background-color: transparent;
+    width: 10px;
+    background-color: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -26,4 +26,11 @@ body {
 
 .label-card-table {
   text-transform: uppercase;
+}
+
+input[type='time']::-webkit-calendar-picker-indicator {
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+  filter: invert(70%);
 }

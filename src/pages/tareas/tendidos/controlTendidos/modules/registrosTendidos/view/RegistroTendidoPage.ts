@@ -2,8 +2,12 @@
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { tiposElementos, propietariosElementos, estadoElementos, tiposTension, acciones } from 'config/utils'
 import { configuracionColumnasMaterialOcupado } from '../domain/configuracionColumnasMaterialOcupado'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
+import { useNotificaciones } from 'shared/notificaciones'
 import { useTendidoStore } from 'stores/tendido'
 import { required } from '@vuelidate/validators'
 import { defineComponent, ref } from 'vue'
@@ -17,11 +21,8 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useNotificaciones } from 'shared/notificaciones'
 import { RegistroTendido } from '../domain/RegistroTendido'
+import { obtenerUbicacion } from 'shared/utils'
 
 export default defineComponent({
   props: {
@@ -36,19 +37,34 @@ export default defineComponent({
     EssentialTable,
   },
   setup(props, { emit }) {
+    /*********
+     * Stores
+     *********/
+    const tendidoStore = useTendidoStore()
+    const trabajoAsignadoStore = useTrabajoAsignadoStore()
+    const authenticationStore = useAuthenticationStore()
+
+    /********
+     * Mixin
+    *********/
     const { guardar, editar, consultar, setValidador } = props.mixinModal.useComportamiento()
     const { entidad: registroTendido, disabled, accion } = props.mixinModal.useReferencias()
     const { onBeforeGuardar, onConsultado, onBeforeModificar } = props.mixinModal.useHooks()
 
-    const tendidoStore = useTendidoStore()
-    const trabajoAsignadoStore = useTrabajoAsignadoStore()
-    const authenticationStore = useAuthenticationStore()
-    accion.value = tendidoStore.accion
-
     if (tendidoStore.idRegistroTendido) consultar({ id: tendidoStore.idRegistroTendido })
     else registroTendido.numero_elemento = tendidoStore.numeroElemento
 
-    // Reglas de validacion
+    accion.value = tendidoStore.accion
+
+    /************
+     * Variables
+     ************/
+    const { confirmar, prompt } = useNotificaciones()
+    const materiales: any = ref([])
+
+    /*************
+    * Validaciones
+    **************/
     const reglas = {
       coordenada_del_elemento_latitud: { required },
       coordenada_del_elemento_longitud: { required },
@@ -65,6 +81,9 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, registroTendido)
     setValidador(v$.value)
 
+    /***************************
+    * Configuracion de columnas
+    ****************************/
     const configuracionColumnasMaterialOcupadoAccion = [...configuracionColumnasMaterialOcupado,
     {
       name: 'acciones',
@@ -73,14 +92,9 @@ export default defineComponent({
       align: 'center'
     }]
 
-    const { confirmar, prompt } = useNotificaciones()
-
-    function eliminar({ posicion }) {
-      confirmar('¿Esta seguro de continuar?',
-        () =>
-          registroTendido.listadoProductosSeleccionados.splice(posicion, 1))
-    }
-
+    /***************
+    * Botones tabla
+    ***************/
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil',
@@ -100,6 +114,15 @@ export default defineComponent({
       },
     }
 
+    /************
+    * Funciones
+    *************/
+    function eliminar({ posicion }) {
+      confirmar('¿Esta seguro de continuar?',
+        () =>
+          registroTendido.listadoProductosSeleccionados.splice(posicion, 1))
+    }
+
     async function guardarDatos(entidad: RegistroTendido) {
       try {
         await guardar(entidad, false)
@@ -117,21 +140,6 @@ export default defineComponent({
 
     function cerrar() {
       emit('cerrar-modal')
-    }
-
-    function obtenerUbicacion(onUbicacionConcedida) {
-
-      const onErrorDeUbicacion = err => {
-        console.log('Error obteniendo ubicación: ', err)
-      }
-
-      const opcionesDeSolicitud = {
-        enableHighAccuracy: true, // Alta precisión
-        maximumAge: 0, // No queremos caché
-        timeout: 5000 // Esperar solo 5 segundos
-      }
-
-      navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud)
     }
 
     function ubicacionCoordenadaElemento() {
@@ -162,8 +170,6 @@ export default defineComponent({
       })
     }
 
-    const materiales: any = ref([])
-
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: tendidoStore.idTarea, grupo: authenticationStore.user.grupo_id })
@@ -189,7 +195,13 @@ export default defineComponent({
 
     if (accion.value === acciones.nuevo) obtenerMateriales()
 
-    // Hooks
+    function filtrarMaterialesOcupados() {
+      return materiales.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada') && material.cantidad_utilizada > 0)
+    }
+
+    /********
+    * Hooks
+    *********/
     onConsultado(() => obtenerMateriales().then(() => ajustarCantidadesUtilizadas()))
 
     onBeforeModificar(() => registroTendido.materiales_ocupados = filtrarMaterialesOcupados())
@@ -199,10 +211,6 @@ export default defineComponent({
       registroTendido.materiales_ocupados = filtrarMaterialesOcupados()
       registroTendido.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
     })
-
-    function filtrarMaterialesOcupados() {
-      return materiales.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada') && material.cantidad_utilizada > 0)
-    }
 
     return {
       disabled,

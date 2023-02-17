@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Pedido } from "./Pedido";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Pedido } from './Pedido'
 
-export const configuracionColumnasPedidos: ColumnConfig<Pedido>[]=[
+export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
     {
         name: 'id',
         field: 'id',
@@ -41,6 +41,13 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[]=[
         name: 'tarea',
         field: 'tarea',
         label: 'Tarea',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'responsable',
+        field: 'responsable',
+        label: 'Responsable',
         align: 'left',
         sortable: true
     },

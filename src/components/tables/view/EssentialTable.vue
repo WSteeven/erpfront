@@ -26,16 +26,17 @@
     :style="estilos"
     class="bg-body-table custom-border"
     :class="{
-      'alto-fijo': !inFullscreen && altoFijo,
+      'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
+      'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
       'my-sticky-dynamic': !inFullscreen && altoFijo,
       'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
-    @virtual-scroll="onScroll"
     :pagination="pagination"
     no-data-label="Aún no se han agregado elementos"
   >
+    <!--@virtual-scroll="onScroll" -->
     <template v-slot:no-data="{ message }">
       <div class="full-width row flex-center text-grey-8 q-gutter-sm">
         <q-icon size="2em" name="bi-exclamation-triangle-fill" />
@@ -103,6 +104,70 @@
         </q-input>
       </div>
 
+      <!-- aqui 
+      v-if="mostrarBotones" -->
+      <div
+        class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
+      >
+        <div>
+          {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+        </div>
+
+        <div class="row">
+          <q-select
+            v-model="visibleColumns"
+            multiple
+            outlined
+            dense
+            options-dense
+            :display-value="$q.lang.table.columns"
+            emit-value
+            map-options
+            :options="configuracionColumnas"
+            option-value="name"
+            options-cover
+          />
+
+          <!-- <q-btn flat round dense icon="bi-printer" @click="previsualizarPdf()">
+            <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
+              'Imprimir PDF'
+            }}</q-tooltip>
+          </q-btn> -->
+
+          <q-btn
+            flat
+            round
+            dense
+            :icon="props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'"
+            @click="
+              () => {
+                props.toggleFullscreen()
+                inFullscreen = !props.inFullscreen
+              }
+            "
+            class="q-ml-md"
+          >
+            <q-tooltip class="bg-dark">{{
+              props.inFullscreen
+                ? 'Salir de pantalla completa'
+                : 'Abrir en pantalla completa'
+            }}</q-tooltip>
+          </q-btn>
+
+          <!--<q-btn
+            flat
+            round
+            dense
+            :icon="grid ? 'bi-list' : 'bi-grid-3x3'"
+            @click="grid = !grid"
+          >
+            <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
+              grid ? 'Formato de lista' : 'Formato de cuadrícula'
+            }}</q-tooltip>
+          </q-btn> -->
+        </div>
+      </div>
+
       <!-- Botones Header -->
       <div class="row full-width q-gutter-xs">
         <!-- Boton 1 Header -->
@@ -159,66 +224,6 @@
           <span>{{ accion3Header.titulo }}</span>
         </q-btn>
       </div>
-
-      <!--<div class="row q-col-gutter-sm"> -->
-      <!-- <div
-        v-if="mostrarBotones"
-        class="row q-col-gutter-sm"
-        :class="{ 'no-wrap': !$q.screen.xs }"
-      >
-        <q-select
-          v-model="visibleColumns"
-          multiple
-          outlined
-          dense
-          rounded
-          options-dense
-          :display-value="$q.lang.table.columns"
-          emit-value
-          map-options
-          :options="configuracionColumnas"
-          option-value="name"
-          options-cover
-        />
-
-        <q-btn flat round dense icon="bi-printer" @click="previsualizarPdf()">
-          <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-            'Imprimir PDF'
-          }}</q-tooltip>
-        </q-btn>
-
-        <q-btn
-          flat
-          round
-          dense
-          :icon="props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'"
-          @click="
-            () => {
-              props.toggleFullscreen()
-              inFullscreen = !props.inFullscreen
-            }
-          "
-          class="q-ml-md"
-        >
-          <q-tooltip class="bg-dark">{{
-            props.inFullscreen
-              ? 'Salir de pantalla completa'
-              : 'Abrir en pantalla completa'
-          }}</q-tooltip>
-        </q-btn>
-
-        <q-btn
-          flat
-          round
-          dense
-          :icon="grid ? 'bi-list' : 'bi-grid-3x3'"
-          @click="grid = !grid"
-        >
-          <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-            grid ? 'Formato de lista' : 'Formato de cuadrícula'
-          }}</q-tooltip>
-        </q-btn>
-      </div> -->
     </template>
 
     <!-- Botones de acciones Desktop -->
@@ -274,6 +279,7 @@
               :accion5="accion5"
               :accion6="accion6"
               :accion7="accion7"
+              :accion8="accion8"
               :propsTable="props"
             ></CustomButtons>
           </span>
@@ -411,6 +417,19 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'responsable'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check-circle-fill"
+                    color="positive"
+                    size="xs"
+                  ></q-icon>
+                </span>
+
+                <span v-if="col.name === 'tamanio_bytes'">
+                  {{ formatBytes(col.value) }}
+                </span>
+
                 <estados-subtareas
                   v-if="col.name === 'estado'"
                   :propsTable="col"
@@ -424,6 +443,8 @@
                       'es_ventana',
                       'finalizado',
                       'estado',
+                      'responsable',
+                      'tamanio_bytes',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -555,7 +576,7 @@
       <q-td :props="props">
         <q-chip
           v-if="props.value === autorizacionesTransacciones['aprobado']"
-          class="bg-green-1"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -566,7 +587,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['cancelado']"
-          class="bg-red-1"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -577,7 +598,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['pendiente']"
-          class="bg-yellow-1"
+          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -652,7 +673,7 @@
       <q-td :props="props">
         <q-chip
           v-if="props.value === estadosTransacciones['completa']"
-          class="bg-green-1"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -663,7 +684,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones['parcial']"
-          class="bg-red-1"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -674,7 +695,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones['pendiente']"
-          class="bg-yellow-1"
+          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
           <q-icon
             name="bi-circle-fill"
@@ -685,7 +706,7 @@
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
-          class="bg-red-1"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
           <q-icon
@@ -695,7 +716,10 @@
           ></q-icon>
           NO REALIZADA
         </q-chip>
-        <q-chip v-if="props.value === 1" class="bg-blue-grey-1">
+        <q-chip
+          v-if="props.value === 1"
+          :class="{ 'bg-blue-grey-1': !$q.dark.isActive }"
+        >
           <q-icon
             name="bi-circle-fill"
             color="positive"
@@ -703,7 +727,10 @@
           ></q-icon
           >ACTIVO
         </q-chip>
-        <q-chip v-if="props.value === 0" class="bg-red-1">
+        <q-chip
+          v-if="props.value === 0"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
           <q-icon
             name="bi-circle-fill"
             color="negative"
@@ -837,19 +864,6 @@
 </template>
 
 <style lang="scss">
-/* .q-table__top,
-.q-table__bottom,
-thead tr:first-child th {
-   bg color is important for th; just specify one
-  background-color: #fff;
-} */
-
-//.q-table__bottom,
-/*.q-table__top,
-thead tr:first-child th {
-  background-color: #f5f5f5;
-} */
-
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 410px;
@@ -870,8 +884,12 @@ thead tr:first-child th {
   }
 }
 
-.alto-fijo {
-  height: calc(100vh - 240px);
+.alto-fijo-desktop {
+  height: calc(100vh - 200px);
+}
+
+.alto-fijo-mobile {
+  height: 100vh;
 }
 
 .rounded {

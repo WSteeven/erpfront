@@ -1,7 +1,7 @@
-import { opcionesModoAsignacionTrabajo } from "config/utils"
-import { Validador } from "shared/validadores/domain/Validador"
-import { GrupoSeleccionado } from "../../domain/GrupoSeleccionado"
-import { Subtarea } from "../../domain/Subtarea"
+import { opcionesModoAsignacionTrabajo } from 'config/utils'
+import { Validador } from 'shared/validadores/domain/Validador'
+import { GrupoSeleccionado } from '../../domain/GrupoSeleccionado'
+import { Subtarea } from '../../domain/Subtarea'
 
 export class ValidarGrupoResponsable implements Validador {
   private subtarea: Subtarea
@@ -19,7 +19,7 @@ export class ValidarGrupoResponsable implements Validador {
       const noEsValido = !this.subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.responsable)
 
       if (noEsValido)
-        throw new Error("Debe asignar a un grupo como principal.")
+        throw new Error('Debe asignar a un grupo como principal.') // Borrame please
     }
     return true
   }

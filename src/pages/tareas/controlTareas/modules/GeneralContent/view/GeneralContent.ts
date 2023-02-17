@@ -10,10 +10,14 @@ import useVuelidate from '@vuelidate/core'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import SubtareaPage from 'controlTareas/modules/subtareas/view/SubtareaPage.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import TrabajoPage from 'tareas/controlTareas/modules/trabajos/view/TrabajoPage.vue'
 
 // Logica y controladores
 import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ComportamientoModalesGeneralContent } from '../application/ComportamientoModalesGeneralContent'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
@@ -29,14 +33,17 @@ import { Subtarea } from '../../subtareas/domain/Subtarea'
 export default defineComponent({
   props: {
     mixin: {
-      type: Object as () => ContenedorSimpleMixin<any>,
+      type: Object as () => ContenedorSimpleMixin<Tarea>,
       required: true,
     },
   },
   components: {
+    TrabajoPage,
     EssentialSelectableTable,
     ButtonSubmits,
     SubtareaPage,
+    LabelAbrirModal,
+    ModalesEntidad,
   },
   setup(props) {
     /*********
@@ -77,9 +84,9 @@ export default defineComponent({
       clientes.value = listadosAuxiliares.clientes
       supervisores.value = listadosAuxiliares.supervisores
       coordinadores.value = listadosAuxiliares.coordinadores
+      proyectos.value = listadosAuxiliares.proyectos
       provincias.value = listadosAuxiliares.provincias
       cantones.value = listadosAuxiliares.cantones
-      proyectos.value = listadosAuxiliares.proyectos
     })
 
     const paraProyecto = computed(() => tarea.destino === destinosTareas.paraProyecto)
@@ -94,7 +101,7 @@ export default defineComponent({
       detalle: { required },
       codigo_tarea_cliente: { required },
       proyecto: { required },
-      tipo_trabajo: { required },
+      // tipo_trabajo: { required },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -249,7 +256,7 @@ export default defineComponent({
       return result
     }
 
-    const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
+    // const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
 
     function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
@@ -264,7 +271,7 @@ export default defineComponent({
       }
 
       if (tarea.destino === destinosTareas.paraProyecto) {
-        const copiaTarea = Object.assign({}, tarea);
+        const copiaTarea = Object.assign({}, tarea)
         tarea.hydrate(new Tarea())
         tarea.id = copiaTarea.id
         tarea.codigo_tarea = copiaTarea.codigo_tarea
@@ -285,9 +292,6 @@ export default defineComponent({
 
     onConsultado(async () => {
       tareaStore.tarea.hydrate(tarea)
-      /* if (tarea.destino === 'PARA_PROYECTO') {
-        setCliente()
-      } */
     })
 
     /************
@@ -321,12 +325,16 @@ export default defineComponent({
     })
 
     async function setCliente() {
-      console.log('cambiando cliente  ')
-      const proyectoController = new ProyectoController()
-      const { result } = await proyectoController.consultar(tarea.proyecto)
-      // tareaStore.idCliente = result.cliente
-      tarea.cliente = result.cliente
+      if (tarea.proyecto) {
+        const proyectoController = new ProyectoController()
+        const { result } = await proyectoController.consultar(tarea.proyecto)
+        tarea.cliente = result.cliente
+      }
     }
+
+    const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
+
+    const modales = new ComportamientoModalesGeneralContent()
 
     return {
       mixinSubtarea,
@@ -338,7 +346,6 @@ export default defineComponent({
       provincias,
       cantones,
       tiposTrabajos,
-      cantonesPorProvincia,
       guardar,
       editar,
       eliminar,
@@ -365,6 +372,8 @@ export default defineComponent({
       establecerCliente,
       configuracionColumnasClientes,
       setCliente,
+      modales,
+      mostrarLabelModal,
     }
   },
 })

@@ -1,16 +1,16 @@
 // Dependencias
-import { configuracionColumnasCategorias } from "../domain/configuracionColumnasCategorias";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from '@vuelidate/core';
-import { defineComponent } from "vue";
+import { configuracionColumnasCategorias } from '../domain/configuracionColumnasCategorias'
+import { required } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
+import { defineComponent } from 'vue'
 
 // Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { CategoriaController } from "../infraestructure/CategoriaController";
-import { Categoria } from "../domain/Categoria";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CategoriaController } from '../infraestructure/CategoriaController'
+import { Categoria } from '../domain/Categoria'
 
 export default defineComponent({
     components: { TabLayout },
@@ -26,7 +26,7 @@ export default defineComponent({
 
         const v$ = useVuelidate(reglas, categoria)
         setValidador(v$.value)
-
+ 
 
 
         return {

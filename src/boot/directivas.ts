@@ -3,12 +3,12 @@ import Pusher from 'pusher-js'
 const pusher = Pusher
 
 declare global {
-  interface Window { Pusher: any; Echo: any; }
+  interface Window { Pusher: any, Echo: any }
 }
 
 window.Pusher = pusher
 
-window.onload = function(){
+window.onload = function () {
   window.Echo = new Echo({
     broadcaster: 'pusher',
     key: 'fZiFHdHn89NjzzxqN5p2',

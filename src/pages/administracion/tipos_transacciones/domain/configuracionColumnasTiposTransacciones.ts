@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { TipoTransaccion } from "./TipoTransaccion";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { TipoTransaccion } from './TipoTransaccion'
 
-export const configuracionColumnasTiposTransacciones: ColumnConfig<TipoTransaccion>[]=[
+export const configuracionColumnasTiposTransacciones: ColumnConfig<TipoTransaccion>[] = [
     {
         name: 'nombre',
         field: 'nombre',

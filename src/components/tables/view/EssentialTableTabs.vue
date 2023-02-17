@@ -22,7 +22,8 @@
       :name="opcion.value"
       class=""
       :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
-    ></q-tab>
+    >
+  </q-tab>
   </q-tabs>
 
   <essential-table
@@ -40,6 +41,7 @@
     :accion5="accion5"
     :accion6="accion6"
     :accion7="accion7"
+    :accion8="accion8"
     :accion1Header="accion1Header"
     :accion2Header="accion2Header"
     :accion3Header="accion3Header"
@@ -55,6 +57,7 @@
     @accion5="emitAccion5"
     @accion6="emitAccion6"
     @accion7="emitAccion7"
+    @accion8="emitAccion8"
   ></essential-table>
 </template>
 
@@ -132,6 +135,10 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+  accion8: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
   accion1Header: {
     type: Object as () => CustomActionTable,
     required: false,
@@ -178,6 +185,7 @@ const emit = defineEmits([
   'accion5',
   'accion6',
   'accion7',
+  'accion8',
   'tab-seleccionado',
 ])
 
@@ -193,4 +201,5 @@ const emitAccion4 = (data) => emit('accion4', data)
 const emitAccion5 = (data) => emit('accion5', data)
 const emitAccion6 = (data) => emit('accion6', data)
 const emitAccion7 = (data) => emit('accion7', data)
+const emitAccion8 = (data) => emit('accion8', data)
 </script>

@@ -4,7 +4,7 @@
   }
 
   .bg-body-table {
-    background-color: $grey-2;
+    background-color: #fff;
   }
 
   .bg-desenfoque {
@@ -88,7 +88,7 @@
   // Tabla
   .q-table__top,
   thead tr:first-child th {
-    background-color: #fff;
+    background-color: $grey-2;
   }
 
   .borde-header-tabla {
@@ -99,8 +99,7 @@
   }
 
   .bg-btn-table {
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: $grey-2;
   }
 
   // Loading

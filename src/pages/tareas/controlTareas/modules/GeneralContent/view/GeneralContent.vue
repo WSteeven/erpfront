@@ -1,4 +1,5 @@
 <template>
+  <TrabajoPage></TrabajoPage>
   <q-form @submit.prevent>
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
@@ -245,7 +246,7 @@
         </div>
 
         <!-- Tipo trabajo -->
-        <div v-if="!tarea.tiene_subtareas" class="col-12 col-md-3">
+        <!--<div v-if="!tarea.tiene_subtareas" class="col-12 col-md-3">
           <label class="q-mb-sm block">Tipo de trabajo a realizar</label>
           <q-select
             v-model="tarea.tipo_trabajo"
@@ -278,7 +279,7 @@
               </div>
             </template>
           </q-select>
-        </div>
+        </div> -->
 
         <!-- Titulo -->
         <div class="col-12">
@@ -336,16 +337,6 @@
       </div>
     </q-expansion-item>
 
-    <!-- q-expansion-item
-      class="overflow-hidden q-mb-md"
-      style="border-radius: 8px; border: 1px solid #ddd"
-      label="Información general"
-      header-class="bg-grey-1"
-      default-opened
-    >
-      <subtarea-page :mixin-modal="mixinSubtarea"></subtarea-page>
-    </q-expansion-item> -->
-
     <q-expansion-item
       v-if="paraClienteFinal"
       class="overflow-hidden q-mb-md expansion"
@@ -356,7 +347,12 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Nombre -->
         <div class="col-12 col-md-6">
-          <label class="q-mb-sm block">Cliente final</label>
+          <label-abrir-modal
+            v-if="mostrarLabelModal"
+            label="Cliente final"
+            @click="modales.abrirModalEntidad('ClienteFinalPage')"
+          />
+          <label v-else class="q-mb-sm block">Cliente final</label>
           <q-select
             v-model="tarea.cliente_final"
             :options="clientesFinales"
@@ -534,6 +530,8 @@
       @guardar="guardar(tarea, false)"
     />
   </q-form>
+
+  <modales-entidad :comportamiento="modales" />
 </template>
 
 <script src="./GeneralContent.ts"></script>

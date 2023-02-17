@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ProductoEnPercha } from "./ProductoEnPercha";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { ProductoEnPercha } from './ProductoEnPercha'
 
-export const configuracionColumnasProductosEnPerchas: ColumnConfig<ProductoEnPercha>[]=[
+export const configuracionColumnasProductosEnPerchas: ColumnConfig<ProductoEnPercha>[] = [
     {
         name: 'inventario',
         field: 'inventario',

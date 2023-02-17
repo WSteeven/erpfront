@@ -2,7 +2,6 @@
 import { configuracionColumnasImagenesAdicionales } from '../domain/configuracionColumnasImagenesAdicionales'
 import { configuracionColumnasCamposAdicionales } from '../domain/configuracionColumnasCamposAdicionales'
 import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTiposTareas'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from 'shared/i18n-validators'
 import { accionesTabla } from 'config/utils'
@@ -45,7 +44,7 @@ export default defineComponent({
 
     const rules = {
       cliente: { required },
-      nombre: { required },
+      descripcion: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -70,91 +69,6 @@ export default defineComponent({
       })
     }
 
-    function previsualizar(jajaja: string) {
-      console.log(jajaja)
-    }
-
-    const agregarImagenAdicional: CustomActionTable = {
-      titulo: 'Agregar etiqueta de imagen',
-      accion: () => {
-        tipoTarea.imagenes_adicionales.push(new ImagenesAdicionales())
-      },
-    }
-
-    const botonHabilitarFormulario: CustomActionTable = {
-      titulo: 'Activar',
-      icono: 'bi-eye',
-      color: 'positive',
-      visible: ({ entidad }) => !entidad.activo,
-      accion: ({ entidad, posicion }) => {
-        entidad.activo = true
-        actualizarElementoImagen(posicion, entidad)
-      },
-    }
-
-    const botonDeshabilitarFormulario: CustomActionTable = {
-      titulo: 'Desactivar',
-      icono: 'bi-eye-slash',
-      color: 'negative',
-      visible: ({ entidad }) => entidad.activo,
-      accion: ({ entidad, posicion }) => {
-        entidad.activo = false
-        actualizarElementoImagen(posicion, entidad)
-      },
-    }
-
-    function eliminarImagenAdicional({ posicion }) {
-      tipoTarea.imagenes_adicionales.splice(posicion, 1)
-    }
-
-    const agregarCampoAdicional: CustomActionTable = {
-      titulo: 'Agregar campo',
-      accion: () => {
-        tipoTarea.campos_adicionales.push(new CamposAdicionales())
-      },
-    }
-
-    function eliminarCampoAdicional({ posicion }) {
-      tipoTarea.campos_adicionales.splice(posicion, 1)
-    }
-
-    const botonActivarCampo: CustomActionTable = {
-      titulo: 'Activar',
-      icono: 'bi-eye',
-      color: 'positive',
-      visible: ({ entidad }) => !entidad.activo,
-      accion: ({ entidad, posicion }) => {
-        entidad.activo = true
-        actualizarElementoCampo(posicion, entidad)
-      },
-    }
-
-    const botonDesactivarCampo: CustomActionTable = {
-      titulo: 'Desactivar',
-      icono: 'bi-eye-slash',
-      color: 'negative',
-      visible: ({ entidad }) => entidad.activo,
-      accion: ({ entidad, posicion }) => {
-        entidad.activo = false
-        actualizarElementoCampo(posicion, entidad)
-      },
-    }
-
-    function actualizarElementoImagen(posicion: number, entidad: any): void {
-      if (posicion >= 0) {
-        tipoTarea.imagenes_adicionales.splice(posicion, 1, entidad)
-        tipoTarea.imagenes_adicionales = [...tipoTarea.imagenes_adicionales]
-      }
-    }
-
-    function actualizarElementoCampo(posicion: number, entidad: any): void {
-      if (posicion >= 0) {
-        tipoTarea.campos_adicionales.splice(posicion, 1, entidad)
-        tipoTarea.campos_adicionales = [...tipoTarea.campos_adicionales]
-      }
-    }
-
-
     return {
       // mixin
       mixin,
@@ -167,15 +81,6 @@ export default defineComponent({
       configuracionColumnasTiposTareas,
       filtrarClientes,
       clientes,
-      previsualizar,
-      agregarImagenAdicional,
-      botonHabilitarFormulario,
-      botonDeshabilitarFormulario,
-      eliminarImagenAdicional,
-      agregarCampoAdicional,
-      eliminarCampoAdicional,
-      botonActivarCampo,
-      botonDesactivarCampo,
       // Instanciables
       ImagenesAdicionales,
       CamposAdicionales,

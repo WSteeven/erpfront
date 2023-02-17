@@ -1,9 +1,9 @@
 // Dependencias
 import { configuracionColumnasControlAsistencia } from '../domain/configuracionColumnasReporte'
-import { tiposJornadas, logoBN, logoColor } from 'config/utils'
 import { required } from '@vuelidate/validators'
 import { defineComponent, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
+import { tiposJornadas } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -18,12 +18,6 @@ import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoContro
 import { ReporteControlMaterial } from '../domain/ReporteControlMaterial'
 import { FiltroReporteMaterial } from '../domain/FiltroReporteMaterial'
 
-//pdfmake
-import * as pdfMake from 'pdfmake/build/pdfmake'
-import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import { buildTableBody } from 'shared/utils'
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
-
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen },
   setup() {
@@ -33,7 +27,7 @@ export default defineComponent({
     )
 
     const { listadosAuxiliares, listado } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, listar, setValidador } = mixin.useComportamiento()
+    const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({

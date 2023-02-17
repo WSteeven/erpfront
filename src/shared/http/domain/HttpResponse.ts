@@ -1,18 +1,18 @@
-export interface HttpResponseGet<T = any> {
-  status: number
-  data: T
-}
-
 export interface ResponseData<T> {
   mensaje: string
   errores: string
   modelo: T
 }
 
+export interface HttpResponseGet<T = any> {
+  status: number
+  data: T
+}
+
 export interface HttpResponsePost<T = any> {
   status: number
   data: ResponseData<T>
-  mensaje: string
+  // mensaje: string
 }
 
 export interface HttpResponseList<T = any> {

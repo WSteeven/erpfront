@@ -5,6 +5,8 @@
     :datos="listado"
     separador="cell"
     :alto-fijo="false"
+    :permitir-buscar="false"
+    :mostrar-footer="!listado.length"
   ></essential-table>
 </template>
 
@@ -14,6 +16,7 @@ import { configuracionColumnasPausas } from 'controlTareas/modules/subtareas/dom
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
 import { ref } from 'vue'
 
 // Componentes
@@ -21,11 +24,12 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 // Props
 defineProps({
   mixinModal: {
-    type: Object as () => ContenedorSimpleMixin<any>,
+    type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
     required: true,
   },
 })
@@ -43,7 +47,7 @@ obtenerPausas()
 async function obtenerPausas() {
   const axios = AxiosHttpRepository.getInstance()
   const ruta = axios.getEndpoint(endpoints.pausas_subtareas) + '/' + idSubtarea
-  const response: any = await axios.get(ruta)
+  const response: AxiosResponse = await axios.get(ruta)
   listado.value = response.data.results
 }
 </script>

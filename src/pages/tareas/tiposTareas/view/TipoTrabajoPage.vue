@@ -16,6 +16,7 @@
               @filter="filtrarClientes"
               transition-show="scale"
               transition-hide="scale"
+              :disable="disabled"
               options-dense
               dense
               outlined
@@ -47,17 +48,19 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Nombre del trabajo</label>
             <q-input
-              v-model="tipoTarea.nombre"
+              v-model="tipoTarea.descripcion"
               placeholder="Obligatorio"
-              @update:model-value="(v) => (tipoTarea.nombre = v.toUpperCase())"
+              @update:model-value="
+                (v) => (tipoTarea.descripcion = v.toUpperCase())
+              "
               :disable="disabled"
               autofocus
               outlined
               dense
-              :error="!!v$.nombre.$errors.length"
+              :error="!!v$.descripcion.$errors.length"
             >
               <template v-slot:error>
-                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
+                <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>

@@ -1,4 +1,4 @@
-// import {ColumnConfig} from "@template/shared/components/tables/types"
+// import {ColumnConfig} from '@template/shared/components/tables/types'
 
 export interface Permisos {
   menus: Menu[]

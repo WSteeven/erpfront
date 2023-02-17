@@ -392,7 +392,7 @@
             </q-select>
           </div>
           <!-- check ingreso masivo -->
-          <div class="col-12 col-md-3">
+          <div v-if="accion===acciones.nuevo" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.ingreso_masivo"
