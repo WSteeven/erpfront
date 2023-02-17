@@ -43,18 +43,11 @@ import { useDetalleStore } from 'stores/detalle'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesTransaccionEgreso'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 
-import { buildTableBody } from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
-
-//pdfmake
-import * as pdfMake from 'pdfmake/build/pdfmake'
-import * as pdfFonts from 'pdfmake/build/vfs_fonts'
 import { useInventarioStore } from 'stores/inventario'
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs
-
 
 export default defineComponent({
   components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -211,6 +204,7 @@ export default defineComponent({
       cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
       motivo: { requiredIfBodeguero: requiredIf(esBodeguero) },
       tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
+      responsable:{requiredIfPedido: requiredIf(transaccion.pedido!>0)},
       autorizacion: {
         requiredIfCoordinador: requiredIf(esCoordinador),
         requiredIfEsVisibleAut: requiredIf(false)
@@ -317,7 +311,7 @@ export default defineComponent({
       transaccion.pedido = pedidoStore.pedido.id
       transaccion.justificacion = pedidoStore.pedido.justificacion
       transaccion.solicitante = Number.isInteger(pedidoStore.pedido.solicitante) ? pedidoStore.pedido.solicitante : pedidoStore.pedido.solicitante_id
-      // transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable)  pedidoStore.pedido.responsable : pedidoStore.pedido.responsable_id
+      transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable)?  pedidoStore.pedido.responsable : null
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
       listadoPedido.value = pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)
       listadoPedido.value.sort((v, w) => v.id - w.id)

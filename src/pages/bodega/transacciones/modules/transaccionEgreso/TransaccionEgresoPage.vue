@@ -345,6 +345,43 @@
               </template>
             </q-select>
           </div>
+          <!-- Responsable -->
+          <div v-if="!esTecnico" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Responsable</label>
+            <q-select
+              v-model="transaccion.responsable"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroEmpleados"
+              error-message="Debes seleccionar el responsable de los materiales"
+              :error="!!v$.responsable.$errors.length"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.responsable.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
           <!-- Retira un tercero -->
           <div
             v-if="
@@ -427,7 +464,6 @@
               </template>
             </q-select>
           </div>
-          {{ listadoPedido }}
           <!-- Listado del pedido -->
           <div
             v-if="listadoPedido !== undefined && listadoPedido.length > 0"

@@ -28,7 +28,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   )
 
   const esCoordinador = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.coordinador) : false)
-  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico_lider) : false)
+  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico) : false)
   const esBodeguero = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.bodega) : false)
   const esActivosFijos = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.activos_fijos) : false)
   const esTecnico = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico) : false)
