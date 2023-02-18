@@ -310,6 +310,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/empresas',
+        name: 'empresas',
+        component: () =>
+          import(
+            'pages/administracion/empresas/view/EmpresaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/estados-transacciones',
         name: 'estados_transacciones',
         component: () =>

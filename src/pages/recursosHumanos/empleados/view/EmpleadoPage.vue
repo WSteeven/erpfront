@@ -319,6 +319,9 @@
               options-dense
               dense
               outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroCargos"
               :error="!!v$.cargo.$errors.length"
               error-message="Debes seleccionar un cargo"
               :option-value="(v) => v.id"

@@ -48,6 +48,7 @@ import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
 import { useInventarioStore } from 'stores/inventario'
+import { ValidarListadoProductosEgreso } from './application/validaciones/ValidarListadoProductosEgreso'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -151,7 +152,7 @@ export default defineComponent({
           },
         },
       })
-      // transformarOpcionesTipos()
+      //comprueba si hay un pedido en el store para llenar automaticamente los datos de ese pedido en la transaccion
       if (pedidoStore.pedido.id) {
         transaccion.tiene_pedido = true
         transaccion.tarea = pedidoStore.pedido.tarea
@@ -196,15 +197,16 @@ export default defineComponent({
     })
 
 
-
-    //Reglas de validacion
+    /*****************************************************************************************
+     * Validaciones
+     ****************************************************************************************/
     const reglas = {
       justificacion: { required },
       sucursal: { required },
       cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
       motivo: { requiredIfBodeguero: requiredIf(esBodeguero) },
       tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
-      responsable:{requiredIfPedido: requiredIf(transaccion.pedido!>0)},
+      responsable: { requiredIfPedido: requiredIf(transaccion.pedido! > 0) },
       autorizacion: {
         requiredIfCoordinador: requiredIf(esCoordinador),
         requiredIfEsVisibleAut: requiredIf(false)
@@ -215,11 +217,13 @@ export default defineComponent({
       observacion_est: {
         requiredIfObsEstado: requiredIf(false)
       },
-      listadoProductosTransaccion: { required }//validar que envien datos en el listado
     }
     const v$ = useVuelidate(reglas, transaccion)
     setValidador(v$.value)
 
+    //validar que envien datos en el listado
+    const validarListadoProductos = new ValidarListadoProductosEgreso(transaccion)
+    mixin.agregarValidaciones(validarListadoProductos)
 
 
     function eliminar({ entidad, posicion }) {
@@ -311,8 +315,9 @@ export default defineComponent({
       transaccion.pedido = pedidoStore.pedido.id
       transaccion.justificacion = pedidoStore.pedido.justificacion
       transaccion.solicitante = Number.isInteger(pedidoStore.pedido.solicitante) ? pedidoStore.pedido.solicitante : pedidoStore.pedido.solicitante_id
-      transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable)?  pedidoStore.pedido.responsable : null
+      transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable) ? pedidoStore.pedido.responsable : pedidoStore.pedido.responsable_id
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
+      transaccion.per_autoriza = Number.isInteger(pedidoStore.pedido.per_autoriza)?pedidoStore.pedido.per_autoriza:pedidoStore.pedido.per_autoriza_id
       listadoPedido.value = pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)
       listadoPedido.value.sort((v, w) => v.id - w.id)
       //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
@@ -367,7 +372,7 @@ export default defineComponent({
     function limpiarTransaccion() {
       transaccion.pedido = null
       transaccion.justificacion = ''
-      transaccion.solicitante =null
+      transaccion.solicitante = null
       transaccion.sucursal = null
       transaccion.tarea = null
       transaccion.es_tarea = false
@@ -407,7 +412,7 @@ export default defineComponent({
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
     console.log(JSON.parse(LocalStorage.getItem('autorizaciones')!.toString()))
     opciones_motivos.value = listadosAuxiliares.motivos
-    opciones_autorizaciones.value =JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_tareas.value = listadosAuxiliares.tareas
     opciones_clientes.value = listadosAuxiliares.clientes
 

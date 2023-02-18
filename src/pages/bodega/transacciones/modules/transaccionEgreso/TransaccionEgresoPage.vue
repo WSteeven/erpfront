@@ -56,6 +56,7 @@
               outlined
               @update:model-value="filtroMotivos"
               :readonly="disabled || (soloLectura && !esBodeguero)"
+              :disable="disabled || (soloLectura && !esBodeguero)"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar un motivo"
               :option-value="(v) => v.id"
@@ -111,7 +112,7 @@
               </template>
             </q-select>
           </div>
-          <!-- Pedido -->
+          <!-- Transferencia -->
           <div
             v-if="transaccion.es_transferencia"
             class="col-12 col-md-3 q-mb-md"
@@ -157,6 +158,7 @@
               hint="Ingresa un numero de pedido y presiona Enter"
               @keyup.enter="llenarTransaccion(transaccion.pedido)"
               :readonly="disabled"
+              :disable="disabled"
               outlined
               dense
             >
@@ -441,7 +443,7 @@
               options-dense
               dense
               outlined
-              :disable="transaccion.es_tarea"
+              :disable="transaccion.es_tarea ||disabled"
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
