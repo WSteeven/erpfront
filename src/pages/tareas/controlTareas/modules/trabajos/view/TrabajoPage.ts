@@ -33,6 +33,8 @@ import EssentialSelectableTable from 'components/tables/view/EssentialSelectable
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -57,6 +59,10 @@ import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/Proye
 import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
 import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
 import { ComportamientoModalesGeneralContent } from '../../GeneralContent/application/ComportamientoModalesGeneralContent'
+import { useTrabajoStore } from 'stores/trabajo'
+import { nivelesTrabajos } from 'config/trabajo.utils'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
 
 export default defineComponent({
   props: {
@@ -65,16 +71,18 @@ export default defineComponent({
       required: false,
     },
   },
-  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable },
+  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     /*********
      * Stores
      *********/
     const tareaStore = useTareaStore()
+    const trabajoStore = useTrabajoStore()
     const subtareaListadoStore = useSubtareaListadoStore()
     const notificacionStore = useNotificacionStore()
     notificacionStore.setQuasar(useQuasar())
+    trabajoStore.nivelActual = nivelesTrabajos.TAREA
 
     /********
     * Mixin
@@ -110,6 +118,8 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
+        provincias: new ProvinciaController(),
+        cantones: new CantonController(),
       })
 
       grupos.value = listadosAuxiliares.grupos
@@ -118,6 +128,9 @@ export default defineComponent({
       fiscalizadores.value = listadosAuxiliares.fiscalizadores
       coordinadores.value = listadosAuxiliares.coordinadores
       proyectos.value = listadosAuxiliares.proyectos
+      clientes.value = listadosAuxiliares.clientes
+      provincias.value = listadosAuxiliares.provincias
+      cantones.value = listadosAuxiliares.cantones
     })
 
     if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
@@ -374,6 +387,12 @@ export default defineComponent({
       })
     }
 
+    // - Filtro provincias
+    const provincias = ref()
+
+    // - Filtro cantones
+    const cantones = ref([])
+
     // - Filtros subtareas
     const subtareas = ref([])
     function filtrarSubtareas(val, update) {
@@ -539,6 +558,7 @@ export default defineComponent({
 
         if (trabajo.grupos_seleccionados.length === 0) {
           grupoSeleccionado.responsable = true
+          //console.log(trabajo.grupos_seleccionados.length)
         }
         trabajo.grupos_seleccionados.push(grupoSeleccionado)
 
@@ -720,6 +740,12 @@ export default defineComponent({
       mostrarLabelModal,
       modales,
       configuracionColumnasTrabajo,
+      trabajoStore,
+      nivelesTrabajos,
+      acciones,
+      clienteFinal,
+      provincias,
+      cantones,
     }
   },
 })

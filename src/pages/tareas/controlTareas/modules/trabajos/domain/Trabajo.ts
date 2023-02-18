@@ -49,7 +49,7 @@ export class Trabajo extends EntidadAuditable {
   grupos_seleccionados: GrupoSeleccionado[]
   empleados_seleccionados: EmpleadoSeleccionado[]
 
-  tiene_subtareas: boolean
+  tiene_subtrabajos: boolean
 
   // para mostrar en tabla
   empleados: string | null
@@ -105,7 +105,7 @@ export class Trabajo extends EntidadAuditable {
     this.grupos_seleccionados = []
     this.empleados_seleccionados = []
 
-    this.tiene_subtareas = false
+    this.tiene_subtrabajos = true
 
     this.empleados = null
     this.grupos = null
