@@ -21,7 +21,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarUsuarios"
-              :option-value="(v) => v.id"
+              :option-value="(v) => v.usuario_id"
               :option-label="(v) => v.nombres+' '+v.apellidos"
               emit-value
               map-options

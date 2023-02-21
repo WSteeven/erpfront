@@ -228,7 +228,7 @@ export default defineComponent({
       if (val === '') {
         update(() => {
           sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-            (v) => v.id == fondo.detalle
+            (v) => v.id_detalle_viatico == fondo.detalle
           )
         })
         return
