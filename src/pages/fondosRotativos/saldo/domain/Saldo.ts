@@ -12,6 +12,7 @@ export class Saldo extends EntidadAuditable {
   saldo_anterior:number | null
   saldo_depositado:number | null
   saldo_actual:number | null
+  gasto:number | null
   fecha_inicio:Date |null
   fecha_fin:Date|null
   id_usuario:number|null
@@ -37,6 +38,7 @@ export class Saldo extends EntidadAuditable {
     this.saldo_anterior=null
     this.saldo_depositado=null
     this.saldo_actual=null
+    this.gasto=null
     this.fecha_inicio=null
     this.fecha_fin=null
     this.id_usuario=null

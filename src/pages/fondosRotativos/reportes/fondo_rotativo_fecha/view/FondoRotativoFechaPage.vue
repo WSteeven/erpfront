@@ -63,8 +63,8 @@
         <q-separator></q-separator>
 
         <q-card-actions align="around">
-          <q-btn  color="positive"   @click="generar_excel(fondo_rotativo_fecha)"> <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon>Excel</q-btn>
-          <q-btn  color="negative"   @click="generar_pdf(fondo_rotativo_fecha)"> <q-icon name="bi-file-earmark-pdf-fill"  size="xs"  class="q-mr-sm"></q-icon>PDF</q-btn>
+          <q-btn  color="positive"   @click="generar_reporte(fondo_rotativo_fecha,'excel')"> <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon>Excel</q-btn>
+          <q-btn  color="negative"   @click="generar_reporte(fondo_rotativo_fecha,'pdf')"> <q-icon name="bi-file-earmark-pdf-fill"  size="xs"  class="q-mr-sm"></q-icon>PDF</q-btn>
         </q-card-actions>
       </q-card>
   </q-page>

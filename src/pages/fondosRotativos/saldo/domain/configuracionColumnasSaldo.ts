@@ -52,6 +52,13 @@ export const configuracionColumnasSaldo: ColumnConfig<Saldo>[] = [
     sortable: true
   },
   {
+    name: 'gasto',
+    field: 'gasto',
+    label: 'Gasto',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'saldo_actual',
     field: 'saldo_actual',
     label: 'Saldo Actual',

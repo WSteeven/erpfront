@@ -19,6 +19,7 @@ import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/in
 import { validarIdentificacion } from 'shared/validadores/validaciones'
 import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { FondoRotativoPusherEvent } from '../application/FondoRotativoPusherEvent'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -282,6 +283,12 @@ export default defineComponent({
         )
       })
     }
+     /*********
+     * Pusher
+     *********/
+
+     const fondoRotativoPusherEvent = new FondoRotativoPusherEvent()
+     fondoRotativoPusherEvent.start()
 
     watchEffect(() => (fondo.total = fondo.cant * fondo.valor_u))
 
