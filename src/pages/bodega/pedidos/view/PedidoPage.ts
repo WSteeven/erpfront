@@ -36,6 +36,7 @@ import { ValidarListadoProductos } from '../application/validaciones/ValidarList
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 import { Cargo } from 'pages/recursosHumanos/cargos/domain/Cargo'
 import { LocalStorage } from 'quasar'
+import { PedidoPageEvent } from '../application/PedidoPageEvent'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -46,6 +47,11 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
+
+    /**
+     * Pusher
+     */
+    // const pedidoPusherEvent   = new PedidoPageEvent()
 
     // Stores
     const pedidoStore = usePedidoStore()

@@ -11,6 +11,7 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -70,6 +71,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
       const sucursales = (await new SucursalController().listar({campos: 'id,lugar'})).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      const condiciones = (await new CondicionController().listar({campos:'id,nombre'})).result
+      LocalStorage.set('condiciones', JSON.stringify(condiciones))
       const estados_transacciones = (await new EstadosTransaccionController().listar({ campos: 'id,nombre' })).result
       LocalStorage.set('estados_transacciones', JSON.stringify(estados_transacciones))
   }
@@ -79,6 +82,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   function limpiarLS(){
     LocalStorage.remove('autorizaciones')
     LocalStorage.remove('sucursales')
+    LocalStorage.remove('condiciones')
     LocalStorage.remove('estados_transacciones')
   }
 

@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Activos Fijos"
+    :accion1="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -24,6 +25,7 @@
               use-input
               input-debounce="0"
               @filter="filtroProductos"
+              @update:model-value="seleccionarDetalle"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -92,7 +94,6 @@
           <div class="col-12 col-md-2">
             <label class="q-mb-sm block">En custodia desde</label>
             <q-input
-              type="date"
               v-model="activo.fecha_desde"
               placeholder="Obligatorio"
               :readonly="disabled"
@@ -100,6 +101,29 @@
               outlined
               dense
             >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer"
+                  ><q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="activo.fecha_desde"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date> </q-popup-proxy
+                ></q-icon>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.fecha_desde.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>

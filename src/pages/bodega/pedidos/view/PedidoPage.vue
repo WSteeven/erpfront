@@ -321,12 +321,12 @@
             </q-select>
           </div>
           <!-- Tiene observacion de autorizacion -->
-          <div v-if="esCoordinador" class="col-12 col-md-3">
+          <div v-if="esCoordinador || esActivosFijos" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.tiene_observacion_aut"
               label="Tiene observación"
-              :disable="disabled || (soloLectura && !esCoordinador)"
+              :disable="disabled || (soloLectura && !(esCoordinador||esActivosFijos))"
               outlined
               dense
             ></q-checkbox>
@@ -340,9 +340,8 @@
             <q-input
               autogrow
               v-model="pedido.observacion_aut"
-              placeholder="Obligatorio"
-              :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
+              placeholder="Opcional"
+              :disable="disabled || (soloLectura && !(esCoordinador||esActivosFijos))"
               :error="!!v$.observacion_aut.$errors.length"
               outlined
               dense
