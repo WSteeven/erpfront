@@ -1,12 +1,12 @@
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
 import { Validador } from 'shared/validadores/domain/Validador'
 import { GrupoSeleccionado } from '../../domain/GrupoSeleccionado'
-import { Subtarea } from '../../domain/Trabajo'
+import { Trabajo } from '../../domain/Trabajo'
 
 export class ValidarGrupoResponsable implements Validador {
-  private subtarea: Subtarea
+  private subtarea: Trabajo
 
-  constructor(subtarea: Subtarea) {
+  constructor(subtarea: Trabajo) {
     this.subtarea = subtarea
   }
 
@@ -15,7 +15,7 @@ export class ValidarGrupoResponsable implements Validador {
    */
   async validar() {
 
-    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+    if (!this.subtarea.tiene_subtrabajos && this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
       const noEsValido = !this.subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.responsable)
 
       if (noEsValido)

@@ -1,7 +1,15 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { estadosSubtareas, estadosTrabajoArray } from 'config/utils'
 import { Trabajo } from './Trabajo'
 
 export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
+  {
+    name: 'trabajo_padre',
+    field: 'trabajo_padre',
+    label: 'Cód. Trabajo Padre',
+    align: 'left',
+    sortable: true,
+  },
   {
     name: 'codigo_trabajo',
     field: 'codigo_trabajo',
@@ -17,15 +25,23 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     sortable: true,
   },
   {
-    name: 'titulo',
-    field: 'titulo',
-    label: 'Título',
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente',
     align: 'left',
+    sortable: true,
   },
   {
-    name: 'fecha_solicitud',
-    field: 'fecha_solicitud',
-    label: 'Fecha solicitud',
+    name: 'proyecto',
+    field: 'proyecto',
+    label: 'Proyecto',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'titulo',
+    field: 'titulo',
+    label: 'Título del trabajo',
     align: 'left',
   },
   {
@@ -35,15 +51,23 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     align: 'left',
   },
   {
+    name: 'fecha_solicitud',
+    field: 'fecha_solicitud',
+    label: 'Fecha solicitud',
+    align: 'left',
+    type: 'date',
+  },
+  {
     name: 'es_ventana',
     field: 'es_ventana',
     label: 'Es ventana',
     align: 'left',
+    type: 'boolean',
   },
   {
     name: 'fecha_hora_creacion',
     field: 'fecha_hora_creacion',
-    label: 'Fecha hora creación',
+    label: 'Fecha y hora de creación',
     align: 'left',
   },
   {
@@ -51,6 +75,7 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     field: 'fecha_agendado',
     label: 'Fecha de agendamiento',
     align: 'left',
+    type: 'date',
   },
   {
     name: 'hora_inicio_agendado',
@@ -67,25 +92,25 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
   {
     name: 'fecha_hora_asignacion',
     field: 'fecha_hora_asignacion',
-    label: 'Fecha hora asignación',
+    label: 'Fecha y hora de asignación',
     align: 'left',
   },
   {
     name: 'fecha_hora_ejecucion',
     field: 'fecha_hora_ejecucion',
-    label: 'Fecha hora ejecución',
+    label: 'Fecha y hora de ejecución',
     align: 'left',
   },
   {
     name: 'fecha_hora_realizado',
     field: 'fecha_hora_realizado',
-    label: 'Fecha hora realizado',
+    label: 'Fecha y hora de realizado',
     align: 'left',
   },
   {
     name: 'fecha_hora_finalizacion',
     field: 'fecha_hora_finalizacion',
-    label: 'Fecha hora finalización',
+    label: 'Fecha y hora de finalización',
     align: 'left',
   },
   {
@@ -93,11 +118,12 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     field: 'dias_ocupados',
     label: 'Días ocupados',
     align: 'left',
+    type: 'number',
   },
   {
     name: 'fecha_hora_suspendido',
     field: 'fecha_hora_suspendido',
-    label: 'Fecha hora suspención',
+    label: 'Fecha y hora de suspención',
     align: 'left',
   },
   {
@@ -109,7 +135,7 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
   {
     name: 'fecha_hora_cancelacion',
     field: 'fecha_hora_cancelacion',
-    label: 'Fecha hora cancelación',
+    label: 'Fecha y hora de cancelación',
     align: 'left',
   },
   {
@@ -121,13 +147,19 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
   {
     name: 'empleados',
     field: 'empleados',
-    label: 'Empleados',
+    label: 'Empleados responsables',
     align: 'left',
   },
   {
     name: 'grupos',
     field: 'grupos',
-    label: 'Grupos',
+    label: 'Grupos responsables',
+    align: 'left',
+  },
+  {
+    name: 'coordinador',
+    field: 'coordinador',
+    label: 'Coordinador',
     align: 'left',
   },
   {
@@ -137,9 +169,23 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     align: 'left',
   },
   {
+    name: 'canton',
+    field: 'canton',
+    label: 'Cantón',
+    align: 'left',
+  },
+  {
     name: 'estado',
     field: 'estado',
     label: 'Estado',
+    align: 'left',
+    type: 'select',
+    options: estadosTrabajoArray
+  },
+  {
+    name: 'cantidad_subtareas',
+    field: 'cantidad_subtareas',
+    label: 'Cant. Subtareas',
     align: 'left',
   },
 ]

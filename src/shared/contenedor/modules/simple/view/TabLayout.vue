@@ -60,6 +60,7 @@
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
+          @filtrarTodos="filtrarTodos"
         ></essential-table>
         <!--@onScroll="cargarListado" -->
       </q-tab-panel>

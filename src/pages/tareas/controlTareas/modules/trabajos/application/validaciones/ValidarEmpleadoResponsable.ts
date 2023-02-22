@@ -1,12 +1,12 @@
 import { Validador } from 'shared/validadores/domain/Validador'
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
-import { Subtarea } from '../../domain/Trabajo'
+import { Trabajo } from '../../domain/Trabajo'
 import { EmpleadoSeleccionado } from '../../domain/EmpleadoSeleccionado'
 
 export class ValidarEmpleadoResponsable implements Validador {
-  private subtarea: Subtarea
+  private subtarea: Trabajo
 
-  constructor(subtarea: Subtarea) {
+  constructor(subtarea: Trabajo) {
     this.subtarea = subtarea
   }
 
@@ -15,7 +15,7 @@ export class ValidarEmpleadoResponsable implements Validador {
    */
   async validar() {
 
-    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
+    if (!this.subtarea.tiene_subtrabajos && this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
       const noEsValido = !this.subtarea.empleados_seleccionados.some((empleado: EmpleadoSeleccionado) => empleado.responsable)
 
       if (noEsValido)

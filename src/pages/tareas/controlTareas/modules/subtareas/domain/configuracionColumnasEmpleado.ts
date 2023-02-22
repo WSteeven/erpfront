@@ -44,7 +44,7 @@ export const configuracionColumnasEmpleado: ColumnConfig<Empleado>[] = [
     label: 'Disponible',
     align: 'left',
     sortable: true, */
-  /* input_type: 'select',
+  /* type: 'select',
   options: [
     {
       label: 'AMARRAS',

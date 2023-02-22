@@ -27,9 +27,15 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/tareas',
         name: 'tareas',
-        component: () => import('tareas/controlTareas/modules/trabajos/view/TrabajoPage.vue'),
+        component: () => import('tareas/tareas/view/TareaPage.vue'),
         meta: { requiresAuth: true },
         // component: () => import('pages/tareas/controlTareas/view/ControlTareaPage.vue'),
+      },
+      {
+        path: '/hoja-control-trabajos',
+        name: 'hoja_control_trabajos',
+        component: () => import('tareas/controlTareas/modules/trabajos/view/TrabajoPage.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: '/tipos-trabajos',

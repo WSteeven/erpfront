@@ -1,4 +1,4 @@
-type tipos = 'text' | 'number' | 'textarea' | 'select'
+type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search'
 
 export interface ColumnConfig<T> {
   name: keyof T
@@ -9,7 +9,8 @@ export interface ColumnConfig<T> {
   visible?: boolean
   print?: boolean
   style?: string
-  input_type?: tipos
+  type?: tipos
   editable?: boolean
   options?: any[]
+  // filtrar?: boolean
 }

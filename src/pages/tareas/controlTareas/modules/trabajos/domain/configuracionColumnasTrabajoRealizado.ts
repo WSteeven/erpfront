@@ -7,7 +7,7 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizad
     field: 'hora',
     label: 'Hora',
     align: 'left',
-    input_type: 'text',
+    type: 'text',
     sortable: true,
     editable: false,
   },
@@ -16,6 +16,6 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizad
     field: 'actividad',
     label: 'Acciones realizadas',
     align: 'left',
-    input_type: 'text',
+    type: 'text',
   },
 ]

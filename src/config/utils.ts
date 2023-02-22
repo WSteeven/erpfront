@@ -1,6 +1,8 @@
 import { TabOption } from 'components/tables/domain/TabOption'
 import { CausaIntervencion } from 'pages/tareas/controlTareas/modules/subtareas/modules/controlAvance/view/CausaIntervencion'
 
+export const maskFecha = 'DD-MM-YYYY'
+//export const maskFecha = 'YYYY/MM/DD'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
@@ -285,6 +287,18 @@ export const estadosSubtareas = {
   FINALIZADO: 'FINALIZADO',
   REAGENDADO: 'REAGENDADO',
 }
+
+export const estadosTrabajoArray = [
+  'CREADO',
+  'ASIGNADO',
+  'EJECUTANDO',
+  'PAUSADO',
+  'SUSPENDIDO',
+  'CANCELADO',
+  'REALIZADO',
+  'FINALIZADO',
+  'REAGENDADO',
+]
 
 export const rolesSistema = {
   rrhh: 'RECURSOS HUMANOS',

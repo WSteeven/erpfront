@@ -16,6 +16,7 @@ import EditarTablaModal from './EditarTablaModal.vue'
 import CustomButtons from './CustomButtonsTable.vue'
 import EstadosSubtareas from './EstadosSubtareas.vue'
 import BotonesPaginacion from './BotonesPaginacion.vue'
+import TableFilters from 'components/tables/view/TableFilters.vue'
 
 export default defineComponent({
   components: {
@@ -24,6 +25,7 @@ export default defineComponent({
     CustomButtons,
     EstadosSubtareas,
     BotonesPaginacion,
+    TableFilters,
   },
   props: {
     referencia: Object as () => Ref,
@@ -144,7 +146,7 @@ export default defineComponent({
       required: false,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'selected', 'onScroll'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'selected', 'onScroll', 'filtrarTodos'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -246,7 +248,42 @@ export default defineComponent({
       return tiposTrabajos.includes(valor)
     }
 
+    const mostrarFiltros = ref(false)
+    const tituloBotonFiltros = computed(() =>
+      mostrarFiltros.value ? "Ocultar filtros" : "Mostrar filtros"
+    )
+
+    function consultarCien() {
+      console.log('consultar cien')
+    }
+
+    function consultarTodos() {
+      console.log('En essential table antes de filtrar todos')
+      // filtros.search = busqueda.value === "" ? null : busqueda.value
+      // listar({...filtros, ...filtrosBusqueda.value}, false)
+      console.log(filtros.value)
+      emit('filtrarTodos', filtros.value)
+    }
+
+    const filtros = ref()
+
+    function establecerFiltros(filtrosEditados) {
+      console.log('Estableciendo filtros')
+      console.log(filtrosEditados)
+      filtros.value = filtrosEditados
+    }
+
+    const refTableFilters = ref()
+    function resetearFiltros() {
+      refTableFilters.value.resetearFiltros()
+    }
+
     return {
+      refTableFilters,
+      resetearFiltros,
+      establecerFiltros,
+      consultarCien,
+      consultarTodos,
       grid,
       inFullscreen,
       editar,
@@ -279,6 +316,8 @@ export default defineComponent({
       pagination,
       formatBytes,
       resaltar,
+      mostrarFiltros,
+      tituloBotonFiltros,
     }
   },
 })

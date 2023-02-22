@@ -59,7 +59,8 @@ export class AxiosHttpRepository implements HttpRepository {
 
   public getEndpoint(
     endpoint: Endpoint | { endpoint: Endpoint; id: number | null },
-    args?: Record<string, any>
+    args?: Record<string, any>,
+    filtrar?: boolean
   ): string {
     let accessor: string
     let includeApiPath: boolean
@@ -79,17 +80,22 @@ export class AxiosHttpRepository implements HttpRepository {
       accessor = `api/${accessor}`
     }
 
-    if (args) accessor += this.mapearArgumentos(args)
+    if (args) accessor += this.mapearArgumentos(args, filtrar)
     return accessor
   }
 
-  private mapearArgumentos(args: Record<string, any>): string {
+  private mapearArgumentos(args: Record<string, any>, filtrar = false): string {
     const query: any = []
 
     // comprueba si el valor es valido
     for (const key in args)
       if (args[key] !== null && args[key] !== undefined) {
-        query.push(`${key}=${args[key]}`)
+        //if (['campos', 'rol'].includes(key)) {
+        if (!filtrar) {
+          query.push(`${key}=${args[key]}`)
+        } else {
+          query.push(`${key}[like]=%${args[key]}%`)
+        }
       }
     return `?${query.join('&')}`
   }
@@ -103,15 +109,4 @@ export class AxiosHttpRepository implements HttpRepository {
     }
     return options
   }
-
-  /* static getHeaderToken(): AxiosRequestConfig {
-    const token = LocalStorage.getItem('token')
-
-    return {
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  } */
 }

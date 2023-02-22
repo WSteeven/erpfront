@@ -320,7 +320,7 @@ export default defineComponent({
             align: 'left',
             sortable: false,
             visible: true,
-            input_type: 'select',
+            type: 'select',
             options: opciones_condiciones.value
         },
         {
@@ -328,7 +328,7 @@ export default defineComponent({
             field: 'cantidad',
             label: 'Cantidad',
             align: 'left',
-            input_type: 'number',
+            type: 'number',
             sortable: false,
         },
         {

@@ -54,6 +54,8 @@ export class Trabajo extends EntidadAuditable {
   // para mostrar en tabla
   empleados: string | null
   grupos: string | null
+  canton: string | null
+  cantidad_subtareas: number | null
 
   constructor() {
     super()
@@ -109,5 +111,7 @@ export class Trabajo extends EntidadAuditable {
 
     this.empleados = null
     this.grupos = null
+    this.canton = null
+    this.cantidad_subtareas = null
   }
 }

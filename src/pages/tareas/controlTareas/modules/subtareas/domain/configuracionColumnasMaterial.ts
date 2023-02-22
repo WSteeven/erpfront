@@ -8,7 +8,7 @@ export const configuracionColumnasMaterial: ColumnConfig<MaterialOcupado>[] = [
     label: 'Producto',
     align: 'left',
     sortable: true,
-    input_type: 'text'
+    type: 'text'
   },
   {
     name: 'medida',

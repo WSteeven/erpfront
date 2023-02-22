@@ -34,8 +34,8 @@
             <label class="block q-mb-sm">{{ field.label }}</label>
             <q-input
               v-model="field.valor"
-              :type="field.input_type !== 'select' ? field.input_type : 'text'"
-              :autogrow="field.input_type !== 'number'"
+              :type="field.type !== 'select' ? field.type : 'text'"
+              :autogrow="field.type !== 'number'"
               outlined
               dense
             ></q-input>
@@ -119,16 +119,14 @@ const fields = computed(() =>
       return reactive({
         label: fila.label,
         field: fila.field,
-        input_type: fila.input_type ?? 'text',
+        type: fila.type ?? 'text',
         editable: fila.editable ?? true,
         valor: props.fila ? props.fila[fila.field] : '',
       })
     })
     .filter(
       (fila) =>
-        fila.field !== 'acciones' &&
-        fila.input_type !== 'select' &&
-        fila.editable
+        fila.field !== 'acciones' && fila.type !== 'select' && fila.editable
     )
 )
 
@@ -139,7 +137,7 @@ const fieldsSelect = computed(() =>
       return reactive({
         label: fila.label,
         field: fila.field,
-        input_type: fila.input_type ?? 'text',
+        type: fila.type ?? 'text',
         editable: fila.editable ?? true,
         valor: props.fila ? props.fila[fila.field] : '',
         options: fila.options,
@@ -147,9 +145,7 @@ const fieldsSelect = computed(() =>
     })
     .filter(
       (fila) =>
-        fila.field !== 'acciones' &&
-        fila.input_type === 'select' &&
-        fila.editable
+        fila.field !== 'acciones' && fila.type === 'select' && fila.editable
     )
 )
 // Todos los campos
@@ -159,7 +155,7 @@ const fieldsAll = computed(() =>
       return reactive({
         label: fila.label,
         field: fila.field,
-        input_type: fila.input_type ?? 'text',
+        type: fila.type ?? 'text',
         editable: fila.editable ?? true,
         valor: props.fila ? props.fila[fila.field] : '',
       })

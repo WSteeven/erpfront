@@ -34,7 +34,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     field: 'precio_compra',
     label: 'P. Compra',
     align: 'left',
-    input_type:'number',
+    type:'number',
     sortable: true,
     editable: true,
     visible: true
@@ -48,7 +48,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     editable:true,
     /* options:[{value:1, label:'opcion1'},
     {value:2, label:'opcion2'}
-  ] 
+  ]
   }, */
   /* {
     name: 'cantidad',

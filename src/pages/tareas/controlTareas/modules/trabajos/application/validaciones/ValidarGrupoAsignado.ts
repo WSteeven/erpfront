@@ -1,11 +1,11 @@
 import { Validador } from 'shared/validadores/domain/Validador'
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
-import { Subtarea } from '../../domain/Trabajo'
+import { Trabajo } from '../../domain/Trabajo'
 
 export class ValidarGrupoAsignado implements Validador {
-  private subtarea: Subtarea
+  private subtarea: Trabajo
 
-  constructor(subtarea: Subtarea) {
+  constructor(subtarea: Trabajo) {
     this.subtarea = subtarea
   }
 
@@ -14,7 +14,7 @@ export class ValidarGrupoAsignado implements Validador {
    */
   async validar() {
 
-    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+    if (!this.subtarea.tiene_subtrabajos && this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
       const noEsValido = this.subtarea.grupos_seleccionados.length === 0
 
       if (noEsValido)

@@ -20,6 +20,7 @@ import {
   tiposIntervenciones,
   causaIntervencion,
   destinosTareas,
+  maskFecha,
 } from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -431,7 +432,7 @@ export default defineComponent({
     * Hooks
     *********/
     onBeforeGuardar(() => {
-      trabajo.tarea_id = tareaStore.tarea.id
+      // REVISAR trabajo.tarea_id = tareaStore.tarea.id
 
       /* if (trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
         trabajo.grupos_seleccionados = trabajo.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
@@ -502,12 +503,12 @@ export default defineComponent({
     const rules = {
       titulo: { required },
       // grupo: { required: requiredIf(() => trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
-      tipo_trabajo: { required },
       descripcion_completa: { required },
-      fecha_agendado: { required },
-      hora_inicio_agendado: { required },
-      hora_fin_agendado: { required: requiredIf(() => trabajo.es_ventana) },
-      trabajo_dependiente: { required: requiredIf(() => trabajo.es_dependiente) },
+      tipo_trabajo: { required: requiredIf(() => !trabajo.tiene_subtrabajos) },
+      fecha_agendado: { required: requiredIf(() => !trabajo.tiene_subtrabajos) },
+      hora_inicio_agendado: { required: requiredIf(() => !trabajo.tiene_subtrabajos) },
+      hora_fin_agendado: { required: requiredIf(() => trabajo.es_ventana && !trabajo.tiene_subtrabajos) },
+      trabajo_dependiente: { required: requiredIf(() => trabajo.es_dependiente && !trabajo.tiene_subtrabajos) },
       // vienen de tareas
       codigo_trabajo_cliente: { required },
       cliente: { required: requiredIf(() => paraClienteFinal.value) },
@@ -746,6 +747,7 @@ export default defineComponent({
       clienteFinal,
       provincias,
       cantones,
+      maskFecha
     }
   },
 })

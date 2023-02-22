@@ -87,84 +87,133 @@
         {{ titulo }}
       </div>
 
-      <div v-if="permitirBuscar" class="row full-width q-mb-md">
-        <q-input
-          v-model="filter"
-          outlined
-          dense
-          clearable
-          class="full-width"
-          placeholder="Buscar..."
-          debounce="300"
-          color="primary"
-        >
-          <template v-slot:append>
-            <q-icon name="search"></q-icon>
-          </template>
-        </q-input>
+      <div v-if="permitirBuscar" class="row q-col-gutter-xs full-width q-mb-md">
+        <div class="col-md-8 col-12">
+          <q-input
+            v-model="filter"
+            outlined
+            dense
+            clearable
+            class=""
+            placeholder="Buscar..."
+            debounce="300"
+            color="primary"
+          >
+            <template v-slot:append>
+              <q-icon name="search"></q-icon>
+            </template>
+          </q-input>
+        </div>
+
+        <div class="col-md-4 col-12">
+          <div class="row">
+            <q-select
+              v-model="visibleColumns"
+              multiple
+              outlined
+              dense
+              options-dense
+              :display-value="$q.lang.table.columns"
+              emit-value
+              map-options
+              :options="configuracionColumnas"
+              option-value="name"
+              options-cover
+              class="col-9"
+            />
+
+            <q-btn
+              flat
+              round
+              dense
+              :icon="
+                props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'
+              "
+              @click="
+                () => {
+                  props.toggleFullscreen()
+                  inFullscreen = !props.inFullscreen
+                }
+              "
+              class="q-ml-md"
+            >
+              <q-tooltip class="bg-dark">{{
+                props.inFullscreen
+                  ? 'Salir de pantalla completa'
+                  : 'Abrir en pantalla completa'
+              }}</q-tooltip>
+            </q-btn>
+          </div>
+        </div>
       </div>
 
-      <!-- aqui 
-      v-if="mostrarBotones" -->
+      <!-- Filtros -->
+      <table-filters
+        ref="refTableFilters"
+        v-if="mostrarFiltros"
+        :configuracionColumnas="configuracionColumnas"
+        @filtrosEditados="establecerFiltros"
+      ></table-filters>
+
       <div
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
-        <div>
+        <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
           {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
-        </div>
+        </q-chip>
 
-        <div class="row">
-          <q-select
-            v-model="visibleColumns"
-            multiple
-            outlined
-            dense
-            options-dense
-            :display-value="$q.lang.table.columns"
-            emit-value
-            map-options
-            :options="configuracionColumnas"
-            option-value="name"
-            options-cover
-          />
+        <div class="row q-gutter-xs justify-end q-mb-md">
+          <q-btn
+            v-if="mostrarFiltros"
+            color="grey-8"
+            no-caps
+            push
+            @click="resetearFiltros()"
+          >
+            <q-icon name="bi-eraser" class="q-mr-sm" size="xs"></q-icon>
+            Resetear filtros</q-btn
+          >
 
-          <!-- <q-btn flat round dense icon="bi-printer" @click="previsualizarPdf()">
-            <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-              'Imprimir PDF'
-            }}</q-tooltip>
-          </q-btn> -->
+          <q-btn-dropdown
+            v-if="mostrarFiltros"
+            split
+            color="primary"
+            push
+            no-caps
+            @click="consultarCien"
+          >
+            <template v-slot:label>
+              <div class="row items-center no-wrap">
+                <q-icon left name="bi-search" size="xs" />
+                <div class="text-center">Consultar</div>
+              </div>
+            </template>
+
+            <q-list>
+              <q-item clickable v-close-popup @click="consultarTodos">
+                <q-item-section avatar>
+                  <q-icon name="bi-search" size="xs" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Consultar todos</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
 
           <q-btn
-            flat
-            round
-            dense
-            :icon="props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'"
-            @click="
-              () => {
-                props.toggleFullscreen()
-                inFullscreen = !props.inFullscreen
-              }
-            "
-            class="q-ml-md"
+            color="primary"
+            no-caps
+            push
+            @click="mostrarFiltros = !mostrarFiltros"
           >
-            <q-tooltip class="bg-dark">{{
-              props.inFullscreen
-                ? 'Salir de pantalla completa'
-                : 'Abrir en pantalla completa'
-            }}</q-tooltip>
-          </q-btn>
-
-          <!--<q-btn
-            flat
-            round
-            dense
-            :icon="grid ? 'bi-list' : 'bi-grid-3x3'"
-            @click="grid = !grid"
+            <q-icon
+              :name="mostrarFiltros ? 'bi-eye-slash' : 'bi-eye'"
+              class="q-mr-sm"
+              size="xs"
+            ></q-icon>
+            {{ tituloBotonFiltros }}</q-btn
           >
-            <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-              grid ? 'Formato de lista' : 'Formato de cuadrícula'
-            }}</q-tooltip>
-          </q-btn> -->
         </div>
       </div>
 
