@@ -134,6 +134,16 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     return permisos.value?.indexOf(permiso) !== -1
   }
 
+  async function listadoUsuarios(){
+    try{
+      const response = await axios.get<AxiosResponse>(axios.getEndpoint(endpoints.usuarios))
+      return response.data.modelo
+    }catch(e){
+      const axiosError = e as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+
   return {
     user,
     login,
@@ -151,5 +161,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esActivosFijos,
     esRecursosHumanos,
     extraerRol,
+    listadoUsuarios,
   }
 })

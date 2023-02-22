@@ -65,6 +65,37 @@
               </template>
             </q-input>
           </div>
+          <!-- Administrador -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Administrador</label>
+            <q-select
+              v-model="sucursal.administrador"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              hint="Este campo es opcional"
+              @filter="filtroEmpleados"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
         </div>
       </q-form>
     </template>
