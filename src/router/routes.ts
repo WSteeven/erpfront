@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/hoja-control-trabajos',
         name: 'hoja_control_trabajos',
-        component: () => import('tareas/controlTareas/modules/trabajos/view/TrabajoPage.vue'),
+        component: () => import('tareas/trabajos/view/TrabajoPage.vue'),
         meta: { requiresAuth: true },
       },
       {

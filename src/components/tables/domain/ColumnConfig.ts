@@ -1,10 +1,11 @@
 type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search'
+type align = 'left' | 'center' | 'right'
 
 export interface ColumnConfig<T> {
   name: keyof T
   field: keyof T
   label: string
-  align?: string
+  align?: align
   sortable?: boolean
   visible?: boolean
   print?: boolean

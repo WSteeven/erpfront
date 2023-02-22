@@ -2,11 +2,11 @@
 import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'subtareas/domain/configuracionColumnasGrupoSeleccionado'
 import { configuracionColumnasEmpleado } from 'subtareas/domain/configuracionColumnasEmpleado'
+import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { configuracionColumnasTrabajo } from '../domain/configuracionColumnasTrabajo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { quitarItemDeArray, stringToArray } from 'shared/utils'
-import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,
@@ -59,11 +59,10 @@ import { ClienteController } from 'sistema/clientes/infraestructure/ClienteContr
 import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
 import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
 import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
-import { ComportamientoModalesGeneralContent } from '../../GeneralContent/application/ComportamientoModalesGeneralContent'
 import { useTrabajoStore } from 'stores/trabajo'
 import { nivelesTrabajos } from 'config/trabajo.utils'
-import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
+import { TareaController } from 'pages/tareas/tareas/infraestructure/TareaController'
+import { ComportamientoModalesTrabajo } from '../application/ComportamientoModalesTrabajo'
 
 export default defineComponent({
   props: {
@@ -93,39 +92,29 @@ export default defineComponent({
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onBeforeModificar, onConsultado } = mixin.useHooks()
 
-    // const { listado } = props.mixinModal.useReferencias()
-
     cargarVista(async () => {
       await obtenerListados({
         tiposTrabajos: {
           controller: new TipoTrabajoController(),
           params: { cliente: tareaStore.tarea.cliente }
         },
-        subtareas: {
-          controller: new TrabajoController(),
-          params: { tarea_id: tareaStore.tarea.id }
-        },
+        trabajos: new TrabajoController(),
+        tareas: new TareaController(),
         grupos: {
           controller: new GrupoController(),
           params: { campos: 'id,nombre' }
         },
         clientes: new ClienteController(),
-        proyectos: new ProyectoController(),
-        fiscalizadores: {
-          controller: new EmpleadoController(),
-          params: { rol: rolesSistema.fiscalizador },
-        },
         coordinadores: {
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
-        provincias: new ProvinciaController(),
-        cantones: new CantonController(),
       })
 
       grupos.value = listadosAuxiliares.grupos
       tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
-      subtareas.value = listadosAuxiliares.subtareas
+      tareas.value = listadosAuxiliares.tareas
+      trabajos.value = listadosAuxiliares.trabajos
       fiscalizadores.value = listadosAuxiliares.fiscalizadores
       coordinadores.value = listadosAuxiliares.coordinadores
       proyectos.value = listadosAuxiliares.proyectos
@@ -145,9 +134,9 @@ export default defineComponent({
     const asignarJefe = ref(false)
     const asignarSecretario = ref(false)
     const tipoSeleccion = computed(() => asignarJefe.value || asignarSecretario.value ? 'single' : 'none')
-    // const empleadoSeleccionadoAsignacionQuitar = ref()
     const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
-    const notificaciones = useNotificaciones()
+    // const notificaciones = useNotificaciones()
+    const { confirmar, notificarCorrecto, prompt, notificarAdvertencia } = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
     const tecnicoSeleccionado = ref()
     const busqueda = ref()
@@ -394,19 +383,36 @@ export default defineComponent({
     // - Filtro cantones
     const cantones = ref([])
 
-    // - Filtros subtareas
-    const subtareas = ref([])
-    function filtrarSubtareas(val, update) {
+    // - Filtro trabajos
+    const trabajos = ref([])
+    function filtrarTrabajos(val, update) {
       if (val === '') {
         update(() => {
-          subtareas.value = listadosAuxiliares.subtareas
+          trabajos.value = listadosAuxiliares.trabajos
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        subtareas.value = listadosAuxiliares.subtareas.filter(
-          (v) => v.codigo_subtarea.toLowerCase().indexOf(needle) > -1
+        tareas.value = listadosAuxiliares.trabajos.filter(
+          (v) => v.codigo_trabajo.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    // - Filtros tareas
+    const tareas = ref([])
+    function filtrarTareas(val, update) {
+      if (val === '') {
+        update(() => {
+          tareas.value = listadosAuxiliares.tareas
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tareas.value = listadosAuxiliares.tareas.filter(
+          (v) => v.codigo_tarea.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -504,15 +510,15 @@ export default defineComponent({
       titulo: { required },
       // grupo: { required: requiredIf(() => trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
       descripcion_completa: { required },
-      tipo_trabajo: { required: requiredIf(() => !trabajo.tiene_subtrabajos) },
-      fecha_agendado: { required: requiredIf(() => !trabajo.tiene_subtrabajos) },
-      hora_inicio_agendado: { required: requiredIf(() => !trabajo.tiene_subtrabajos) },
-      hora_fin_agendado: { required: requiredIf(() => trabajo.es_ventana && !trabajo.tiene_subtrabajos) },
-      trabajo_dependiente: { required: requiredIf(() => trabajo.es_dependiente && !trabajo.tiene_subtrabajos) },
+      tipo_trabajo: { required },
+      fecha_agendado: { required },
+      hora_inicio_agendado: { required },
+      hora_fin_agendado: { required: requiredIf(() => trabajo.es_ventana) },
+      trabajo_dependiente: { required: requiredIf(() => trabajo.es_dependiente) },
       // vienen de tareas
-      codigo_trabajo_cliente: { required },
-      cliente: { required: requiredIf(() => paraClienteFinal.value) },
-      proyecto: { required: requiredIf(() => paraProyecto.value) },
+      //codigo_trabajo_cliente: { required },
+      //cliente: { required: requiredIf(() => paraClienteFinal.value) },
+      //proyecto: { required: requiredIf(() => paraProyecto.value) },
     }
 
     const v$ = useVuelidate(rules, trabajo)
@@ -551,7 +557,7 @@ export default defineComponent({
       if (grupo_id) {
         const existe = trabajo.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.id === grupo_id)
 
-        if (existe) return notificaciones.notificarAdvertencia('El grupo seleccionado ya ha sido agregado')
+        if (existe) return notificarAdvertencia('El grupo seleccionado ya ha sido agregado')
 
         obtenerTecnicosGrupo(grupo_id)
         const index = grupos.value.findIndex((item: Grupo) => item.id === grupo_id)
@@ -563,7 +569,7 @@ export default defineComponent({
         }
         trabajo.grupos_seleccionados.push(grupoSeleccionado)
 
-      } else notificaciones.notificarAdvertencia('Debe seleccionar un grupo')
+      } else notificarAdvertencia('Debe seleccionar un grupo')
     }
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
@@ -659,7 +665,7 @@ export default defineComponent({
 
     const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
 
-    const modales = new ComportamientoModalesGeneralContent()
+    const modales = new ComportamientoModalesTrabajo()
 
     return {
       // Referencias
@@ -691,8 +697,7 @@ export default defineComponent({
       causaIntervencion,
       filtrarTiposTrabajos,
       tiposTrabajos,
-      filtrarSubtareas,
-      subtareas,
+
       filtrarGrupos,
       agregarGrupoSeleccionado,
       reestablecerDatos,
@@ -747,7 +752,11 @@ export default defineComponent({
       clienteFinal,
       provincias,
       cantones,
-      maskFecha
+      maskFecha,
+      tareas,
+      filtrarTareas,
+      trabajos,
+      filtrarTrabajos,
     }
   },
 })

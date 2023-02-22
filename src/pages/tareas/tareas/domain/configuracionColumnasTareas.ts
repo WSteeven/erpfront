@@ -17,10 +17,17 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     sortable: true,
   },
   {
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'titulo',
     field: 'titulo',
     label: 'Título',
-    align: 'center',
+    align: 'left',
   },
   {
     name: 'proyecto',
@@ -30,10 +37,9 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     sortable: true,
   },
   {
-    name: 'cliente',
-    field: 'cliente',
-    label: 'Cliente',
-    align: 'center',
+    name: 'cliente_final',
+    field: 'cliente_final',
+    label: 'Cliente final',
     sortable: true,
   },
   {
@@ -47,6 +53,13 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     name: 'fiscalizador',
     field: 'fiscalizador',
     label: 'Fiscalizador',
+    align: 'center',
+    sortable: true,
+  },
+  {
+    name: 'cantidad_trabajos',
+    field: 'cantidad_trabajos',
+    label: 'Cantidad de trabajos',
     align: 'center',
     sortable: true,
   },

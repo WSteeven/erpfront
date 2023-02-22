@@ -5,7 +5,7 @@ import { GrupoSeleccionado } from './GrupoSeleccionado'
 
 export class Trabajo extends EntidadAuditable {
   codigo_trabajo: string | null
-  codigo_trabajo_cliente: string | null
+  codigo_tarea_cliente: string | null
   titulo: string | null
   descripcion_completa: string | null
   observacion: string | null
@@ -41,6 +41,7 @@ export class Trabajo extends EntidadAuditable {
   proyecto: number | null
   cliente: number | null
   trabajo_dependiente: string | null
+  tarea: number | null
 
   archivos: File[]
   trabajo_dependiente_id: number | null
@@ -61,7 +62,7 @@ export class Trabajo extends EntidadAuditable {
     super()
 
     this.codigo_trabajo = null
-    this.codigo_trabajo_cliente = null
+    this.codigo_tarea_cliente = null
     this.titulo = null
     this.descripcion_completa = null
     this.observacion = null
@@ -88,6 +89,7 @@ export class Trabajo extends EntidadAuditable {
     this.fecha_agendado = null
     this.hora_inicio_agendado = null
     this.hora_fin_agendado = null
+    this.tarea = null
 
     // Foreign keys
     this.tipo_trabajo = null

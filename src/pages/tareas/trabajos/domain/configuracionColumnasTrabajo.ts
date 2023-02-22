@@ -4,9 +4,16 @@ import { Trabajo } from './Trabajo'
 
 export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
   {
-    name: 'trabajo_padre',
-    field: 'trabajo_padre',
-    label: 'Cód. Trabajo Padre',
+    name: 'tarea',
+    field: 'tarea',
+    label: 'Cód. Tarea JP',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'codigo_tarea_cliente',
+    field: 'codigo_tarea_cliente',
+    label: 'Cód. Tarea Cliente',
     align: 'left',
     sortable: true,
   },
@@ -14,13 +21,6 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     name: 'codigo_trabajo',
     field: 'codigo_trabajo',
     label: 'Cód. Trabajo',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'codigo_trabajo_cliente',
-    field: 'codigo_trabajo_cliente',
-    label: 'Cód. Trabajo Cliente',
     align: 'left',
     sortable: true,
   },
@@ -181,11 +181,5 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     align: 'left',
     type: 'select',
     options: estadosTrabajoArray
-  },
-  {
-    name: 'cantidad_subtareas',
-    field: 'cantidad_subtareas',
-    label: 'Cant. Subtareas',
-    align: 'left',
   },
 ]

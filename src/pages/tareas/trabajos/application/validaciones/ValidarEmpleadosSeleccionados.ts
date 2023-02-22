@@ -2,7 +2,7 @@ import { Validador } from 'shared/validadores/domain/Validador'
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
 import { Trabajo } from '../../domain/Trabajo'
 
-export class ValidarGrupoAsignado implements Validador {
+export class ValidarEmpleadosSeleccionados implements Validador {
   private subtarea: Trabajo
 
   constructor(subtarea: Trabajo) {
@@ -14,11 +14,11 @@ export class ValidarGrupoAsignado implements Validador {
    */
   async validar() {
 
-    if (!this.subtarea.tiene_subtrabajos && this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
-      const noEsValido = this.subtarea.grupos_seleccionados.length === 0
+    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
+      const noEsValido = this.subtarea.empleados_seleccionados.length === 0
 
       if (noEsValido)
-        throw new Error('Debe asignar al menos un grupo.')
+        throw new Error('Debe asignar al menos un empleado.')
     }
 
     return true

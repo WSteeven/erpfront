@@ -6,6 +6,8 @@
     :full="true"
     :permitirConsultar="false"
     :permitirEliminar="false"
+    :mostrar-listado="false"
+    :mostrar-custom-listado="true"
   >
     <template #formulario>
       <div class="q-pa-sm">
@@ -15,30 +17,6 @@
           header-class="bg-header-collapse"
           default-opened
         >
-          <!-- <div class="row q-col-gutter-sm q-pa-md">
-            <div class="col-12">
-              <q-btn-toggle
-                v-model="trabajo.para_cliente_proyecto"
-                class="toggle-button"
-                spread
-                no-caps
-                rounded
-                toggle-color="positive"
-                unelevated
-                :options="[
-                  {
-                    label: 'Tarea para un proyecto',
-                    value: destinosTareas.paraProyecto,
-                  },
-                  {
-                    label: 'Tarea para cliente final',
-                    value: destinosTareas.paraClienteFinal,
-                  },
-                ]"
-              />
-            </div>
-          </div> -->
-
           <div class="row q-col-gutter-sm q-pa-md">
             <!-- Codigo tarea JP -->
             <div v-if="trabajo.codigo_trabajo" class="col-12 col-md-3">
@@ -50,213 +28,6 @@
                 disable
               ></q-input>
             </div>
-
-            <!-- Numero tarea cliente -->
-            <!--<div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Código de trabajo cliente</label>
-              <q-input
-                v-model="trabajo.codigo_trabajo_cliente"
-                placeholder="Obligatorio"
-                hint="Ticket, OT, Tarea"
-                :error="!!v$.codigo_trabajo_cliente.$errors.length"
-                @blur="v$.codigo_trabajo_cliente.$touch"
-                outlined
-                dense
-                autofocus
-              >
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.codigo_trabajo_cliente.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-input>
-            </div> -->
-
-            <!-- Cliente principal -->
-            <!--<div v-if="paraClienteFinal" class="col-12 col-md-6">
-              <label class="q-mb-sm block">Cliente corporativo</label>
-              <q-select
-                v-model="trabajo.cliente"
-                :options="clientes"
-                @filter="filtrarClientes"
-                transition-show="scale"
-                transition-hide="scale"
-                options-dense
-                dense
-                outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.id"
-                :option-disable="(item) => (item.id === 1 ? true : false)"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                @update:model-value="establecerCliente()"
-                :error="!!v$.cliente.$errors.length"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div v-for="error of v$.cliente.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
-            </div> -->
-
-            <!-- Fiscalizador -->
-            <!--<div v-if="paraClienteFinal" class="col-12 col-md-3">
-              <label class="q-mb-sm block">Fiscalizador JPCONSTRUCRED</label>
-              <q-select
-                v-model="trabajo.fiscalizador"
-                :options="fiscalizadores"
-                @filter="filtrarFiscalizadores"
-                transition-show="scale"
-                transition-hide="scale"
-                options-dense
-                dense
-                clearable
-                outlined
-                :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div> -->
-
-            <!-- Coordinador -->
-            <!--<div
-              v-if="paraClienteFinal && trabajo.coordinador"
-              class="col-12 col-md-3"
-            >
-              <label class="q-mb-sm block">Coordinador</label>
-              <q-select
-                v-model="trabajo.coordinador"
-                :options="coordinadores"
-                @filter="filtrarCoordinadores"
-                transition-show="scale"
-                transition-hide="scale"
-                options-dense
-                dense
-                clearable
-                outlined
-                :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div> -->
-
-            <!-- Fecha de solicitud -->
-            <!--<div v-if="paraClienteFinal" class="col-12 col-md-3">
-              <label class="q-mb-sm block"
-                >Fecha de solicitud del cliente</label
-              >
-              <q-input v-model="trabajo.fecha_solicitud" outlined dense>
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date
-                        v-model="trabajo.fecha_solicitud"
-                        :mask="maskFecha"
-                        today-btn
-                      >
-                        <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Cerrar"
-                            color="primary"
-                            flat
-                          />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div> -->
-
-            <!-- Codigo de proyecto -->
-            <!--<div v-if="paraProyecto" class="col-12 col-md-3">
-              <label class="q-mb-sm block">Código de proyecto</label>
-              <q-select
-                v-model="trabajo.proyecto"
-                :options="proyectos"
-                @filter="filtrarProyectos"
-                @blur="v$.proyecto.$touch"
-                transition-show="scale"
-                transition-hide="scale"
-                options-dense
-                dense
-                outlined
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                :error="!!v$.proyecto.$errors.length"
-                @update:modelValue="setCliente"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div v-for="error of v$.proyecto.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
-            </div> -->
-
-            <!-- Tiene subtareas -->
-            <!--<div class="col-12 col-md-3">
-              <br />
-              <q-toggle
-                v-model="trabajo.tiene_subtrabajos"
-                checked-icon="check"
-                label="Tiene subtrabajos  "
-                unchecked-icon="clear"
-              />
-            </div> -->
 
             <!-- Titulo -->
             <div class="col-12">
@@ -321,15 +92,15 @@
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Tarea</label>
               <q-select
-                v-model="trabajo.tipo_trabajo"
-                :options="tiposTrabajos"
-                @filter="filtrarTiposTrabajos"
+                v-model="trabajo.tarea"
+                :options="tareas"
+                @filter="filtrarTareas"
                 transition-show="scale"
                 transition-hide="scale"
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.descripcion"
+                :option-label="(item) => item.codigo_tarea"
                 :option-value="(item) => item.id"
                 use-input
                 input-debounce="0"
@@ -414,15 +185,15 @@
               <label class="q-mb-sm block">Trabajo del que depende</label>
               <q-select
                 v-model="trabajo.trabajo_dependiente"
-                :options="subtareas"
-                @filter="filtrarSubtareas"
+                :options="trabajos"
+                @filter="filtrarTrabajos"
                 :error="!!v$.trabajo_dependiente.$errors.length"
                 transition-show="scale"
                 transition-hide="scale"
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.codigo_subtarea"
+                :option-label="(item) => item.codigo_trabajo"
                 :option-value="(item) => item.id"
                 use-input
                 input-debounce="0"
@@ -434,10 +205,10 @@
                   <q-item v-bind="scope.itemProps" class="q-my-sm">
                     <q-item-section>
                       <q-item-label class="text-bold text-primary">{{
-                        scope.opt.codigo_subtarea
+                        scope.opt.codigo_trabajo
                       }}</q-item-label>
                       <q-item-label caption
-                        >{{ scope.opt.detalle }}
+                        >{{ scope.opt.titulo }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -962,6 +733,31 @@
 
         <modales-entidad :comportamiento="modales" />
       </div>
+    </template>
+
+    <template #custom-listado>
+      <essential-table-tabs
+        titulo=""
+        :configuracionColumnas="configuracionColumnas"
+        :datos="listado"
+        :accion1="botonEditarSubtarea"
+        :accion2="botonSubirArchivos"
+        :accion3="botonAsignar"
+        :accion4="botonCancelar"
+        :accion5="botonReagendar"
+        :accion6="botonControlAvance"
+        :accion7="botonVerPausas"
+        :accion8="botonFinalizar"
+        :permitirConsultar="false"
+        :permitirEditar="false"
+        :permitirEliminar="false"
+        :mostrar-botones="false"
+        :tab-options="tabOptions"
+        :mostrarFooter="true"
+        tabDefecto="CREADO"
+        @tab-seleccionado="aplicarFiltro"
+        :accion1Header="agregarSubtarea"
+      ></essential-table-tabs>
     </template>
   </tab-layout>
 </template>

@@ -7,6 +7,7 @@ export class Tarea extends EntidadAuditable {
   fecha_solicitud: string | null
   titulo: string | null
   para_cliente_proyecto: string | null
+  cantidad_trabajos: number | null
 
   // Foreign keys
   cliente: number | null
@@ -22,6 +23,7 @@ export class Tarea extends EntidadAuditable {
     this.fecha_solicitud = null
     this.titulo = null
     this.para_cliente_proyecto = destinosTareas.paraProyecto
+    this.cantidad_trabajos = null
 
     // Foreign key
     this.cliente = null

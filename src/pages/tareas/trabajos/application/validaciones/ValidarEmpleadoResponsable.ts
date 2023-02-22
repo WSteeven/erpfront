@@ -15,7 +15,7 @@ export class ValidarEmpleadoResponsable implements Validador {
    */
   async validar() {
 
-    if (!this.subtarea.tiene_subtrabajos && this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
+    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
       const noEsValido = !this.subtarea.empleados_seleccionados.some((empleado: EmpleadoSeleccionado) => empleado.responsable)
 
       if (noEsValido)

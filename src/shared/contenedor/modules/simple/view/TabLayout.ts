@@ -1,16 +1,16 @@
 // Dependencias
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { useAuthenticationStore } from 'stores/authentication'
 import { useRoute, useRouter } from 'vue-router'
+import { acciones } from 'config/utils'
 
 // Componentes
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { useAuthenticationStore } from 'stores/authentication'
-import { acciones } from 'config/utils'
 
 export default defineComponent({
   props: {
@@ -36,6 +36,10 @@ export default defineComponent({
     mostrarListado: {
       type: Boolean,
       default: true,
+    },
+    mostrarCustomListado: {
+      type: Boolean,
+      default: false,
     },
     permitirConsultar: {
       type: Boolean,

@@ -15,7 +15,7 @@ export class ValidarGrupoResponsable implements Validador {
    */
   async validar() {
 
-    if (!this.subtarea.tiene_subtrabajos && this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
       const noEsValido = !this.subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.responsable)
 
       if (noEsValido)
