@@ -7,6 +7,7 @@ export class DetalleProducto extends EntidadAuditable {
     descripcion: string | null
     marca: string | null
     modelo: string | null
+    modelo_id: string | null
     serial: string | null
     precio_compra: string | null
 
@@ -44,6 +45,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.descripcion = null
         this.marca = null
         this.modelo = null
+        this.modelo_id = null
         this.serial = null
         this.precio_compra = null
         this.ram = null
