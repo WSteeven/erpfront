@@ -3,34 +3,6 @@ import { Saldo } from "./Saldo";
 
 export const configuracionColumnasSaldo: ColumnConfig<Saldo>[] = [
   {
-    name: 'id_saldo',
-    field: 'id_saldo',
-    label: 'Id Cash',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'tipo_saldo_info',
-    field: 'tipo_saldo_info',
-    label: 'Tipo Saldo',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'tipo_fondo_info',
-    field: 'tipo_fondo_info',
-    label: 'Tipo Fondo',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'descripcion_saldo',
-    field: 'descripcion_saldo',
-    label: 'Descripción',
-    align: 'left',
-    sortable: true
-  },
-  {
     name: 'fecha',
     field: 'fecha',
     label: 'Fecha Fondo',
@@ -85,14 +57,7 @@ export const configuracionColumnasSaldo: ColumnConfig<Saldo>[] = [
     label: 'Usuario',
     align: 'left',
     sortable: true
-  },
-  {
-    name: 'estatus_info',
-    field: 'estatus_info',
-    label: 'Estatus',
-    align: 'left',
-    sortable: true
-  },
+  }
 
 
 ]

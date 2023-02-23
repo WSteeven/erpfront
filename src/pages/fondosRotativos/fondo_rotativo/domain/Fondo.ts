@@ -24,8 +24,6 @@ export class Fondo extends EntidadAuditable {
   estado: string | null
   estado_info: string | null
   detalle_estado: string | null
-  fecha_ingreso: Date | null
-  transcriptor: string | null
 
 
   constructor() {
@@ -54,8 +52,6 @@ export class Fondo extends EntidadAuditable {
     this.estado = null
     this.estado_info = null
     this.detalle_estado = null
-    this.fecha_ingreso = null
-    this.transcriptor = null
 
   }
 }

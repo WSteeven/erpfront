@@ -11,6 +11,10 @@ import { configuracionColumnasSaldo } from '../domain/configuracionColumnasSaldo
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { TipoSaldoController } from 'pages/fondosRotativos/tipo_saldo/infrestructure/TipoSaldoController'
+import axios from 'axios'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import { apiConfig } from 'config/api'
 
 
 export default defineComponent({
@@ -143,6 +147,7 @@ function filtrarTiposFondos(val, update) {
   })
 }
 
+
 // - Filtro TIPOS FONDOS
 function filtrarTiposSaldos(val, update) {
   if (val === '') {
@@ -158,7 +163,29 @@ function filtrarTiposSaldos(val, update) {
     )
   })
 }
-  watchEffect(() => saldo.saldo_actual =parseFloat(saldo.saldo_anterior) + parseFloat(saldo.saldo_depositado))
+
+function saldo_anterior (){
+  const url_saldo =
+            apiConfig.URL_BASE +
+            '/api/fondos-rotativos/ultimo_saldo/'+saldo.usuario;
+  const axiosHttpRepository = AxiosHttpRepository.getInstance()
+  axios({
+    url: url_saldo,
+    method: 'GET',
+    responseType: 'json',
+    headers: {
+      'Authorization': axiosHttpRepository.getOptions().headers.Authorization
+    }
+  }).then((response: HttpResponseGet) => {
+    const { data } = response
+    if (data) {
+      saldo.saldo_anterior = data.saldo_actual
+    }
+
+  })
+
+}
+  watchEffect(() => saldo.saldo_actual =parseFloat(saldo.saldo_anterior!==null?saldo.saldo_anterior.toString():'0') + parseFloat(saldo.saldo_depositado!==null?saldo.saldo_depositado.toString():'0'))
     return {
       mixin,
       saldo,
@@ -166,6 +193,7 @@ function filtrarTiposSaldos(val, update) {
       usuarios,
       tiposFondos,
       tiposSaldos,
+      saldo_anterior,
       filtrarUsuarios,
       filtrarTiposFondos,
       filtrarTiposSaldos,

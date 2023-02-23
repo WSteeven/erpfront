@@ -411,8 +411,8 @@ const routes: RouteRecordRaw[] = [
       }, */
       //Fondos Rotativos
       {
-        path: '/fondo',
-        name: 'fondo',
+        path: '/gasto',
+        name: 'gasto',
         component: () =>
           import(
             'pages/fondosRotativos/fondo_rotativo/view/FondoPage.vue'

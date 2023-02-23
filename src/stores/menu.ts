@@ -245,10 +245,10 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'fa-solid fa-cash-register',
       children: [
         {
-          title: 'Fondo Rotativo',
-          link: 'fondo',
+          title: 'Gastos',
+          link: 'gasto',
           icon: 'bi-circle',
-          can: store.can('puede.ver.fondo'),
+          can: store.can('puede.ver.gasto'),
         },
         {
           title: 'Reporte Fondo Rotativo',
