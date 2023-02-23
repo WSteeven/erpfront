@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { configuracionColumnasTareas } from '../domain/configuracionColumnasTareas'
-import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
 import { acciones, rolesSistema, destinosTareas } from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
@@ -10,30 +10,28 @@ import useVuelidate from '@vuelidate/core'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
+import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
-import { ProvinciaController } from 'pages/sistema/provincia/infraestructure/ProvinciaController'
-import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
-import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
-import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
-import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
-import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
-import { Tarea } from '../domain/Tarea'
+import { TipoTrabajoController } from 'tiposTareas/infraestructure/TipoTrabajoController'
+import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
+import { TipoTrabajo } from 'tiposTareas/domain/TipoTrabajo'
 import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 import { TareaController } from '../infraestructure/TareaController'
+import { Tarea } from '../domain/Tarea'
 
 export default defineComponent({
   components: {
     TabLayout,
     EssentialSelectableTable,
-    ButtonSubmits,
     LabelAbrirModal,
     ModalesEntidad,
   },
@@ -48,9 +46,8 @@ export default defineComponent({
      *********/
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
     const { entidad: tarea, listadosAuxiliares, accion } = mixin.useReferencias()
-    const { consultar, guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
+    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
-    const { onGuardado, onConsultado, onModificado, onBeforeModificar } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -91,7 +88,6 @@ export default defineComponent({
       titulo: { required },
       codigo_tarea_cliente: { required },
       proyecto: { required: requiredIf(() => paraProyecto.value) },
-      // tipo_trabajo: { required },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -246,43 +242,9 @@ export default defineComponent({
       return result
     }
 
-    // const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
-
     function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
     }
-
-    /********
-    * Hooks
-    *********/
-    onBeforeModificar(() => {
-      /* if (tarea.destino === destinosTareas.paraClienteFinal) {
-        tarea.proyecto = null
-      }
-
-      if (tarea.destino === destinosTareas.paraProyecto) {
-        const copiaTarea = Object.assign({}, tarea)
-        tarea.hydrate(new Tarea())
-        tarea.id = copiaTarea.id
-        tarea.codigo_tarea = copiaTarea.codigo_tarea
-        tarea.proyecto = copiaTarea.proyecto
-        tarea.detalle = copiaTarea.detalle
-      } */
-    })
-
-    onGuardado(() => {
-      /* accion.value = acciones.editar
-      consultar(tarea)*/
-    })
-
-    onModificado(() => {
-      /*accion.value = acciones.editar
-      consultar(tarea)*/
-    })
-
-    onConsultado(async () => {
-      //tareaStore.tarea.hydrate(tarea)
-    })
 
     /************
     * Observers
@@ -305,14 +267,6 @@ export default defineComponent({
 
     // Informacion de ubicacion
     const clienteFinal = reactive(new ClienteFinal())
-
-    /* watch(computed(() => tarea.destino), (valor) => {
-      if (accion.value !== acciones.editar) {
-        tarea.hydrate(new Tarea())
-        clienteFinal.hydrate(new ClienteFinal())
-        tarea.destino = valor
-      }
-    })*/
 
     async function setCliente() {
       if (tarea.proyecto) {

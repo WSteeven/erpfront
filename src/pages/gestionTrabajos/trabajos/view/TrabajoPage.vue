@@ -538,7 +538,9 @@
                 ref="refEmpleadosAsignados"
                 titulo="Empleados de los grupos seleccionados"
                 estilos="margin-bottom: 14px;"
-                :configuracionColumnas="configuracionColumnasEmpleado"
+                :configuracionColumnas="
+                  configuracionColumnasEmpleadoSeleccionable
+                "
                 :datos="trabajo.empleados_seleccionados"
                 :accion1Header="asignarNuevoTecnicoLider"
                 :accion2Header="designarNuevoSecretario"
@@ -563,7 +565,7 @@
                 "
                 ref="refEmpleadosAsignados"
                 titulo="Empleados de los grupos seleccionados"
-                :configuracionColumnas="columnas"
+                :configuracionColumnas="columnasEmpleadoSeleccionado"
                 :datos="trabajo.empleados_seleccionados"
                 :accion1Header="asignarNuevoTecnicoLider"
                 :accion2Header="designarNuevoSecretario"
@@ -725,7 +727,7 @@
 
         <essential-selectable-table
           ref="refListadoSeleccionableTecnicos"
-          :configuracion-columnas="configuracionColumnasEmpleado"
+          :configuracion-columnas="configuracionColumnasEmpleadoSeleccionable"
           :datos="listadoTecnicos"
           tipo-seleccion="multiple"
           @selected="seleccionarEmpleado"

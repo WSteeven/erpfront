@@ -1,9 +1,9 @@
 // Dependencias
-import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
-import { configuracionColumnasGrupoSeleccionado } from 'subtareas/domain/configuracionColumnasGrupoSeleccionado'
-import { configuracionColumnasEmpleado } from 'subtareas/domain/configuracionColumnasEmpleado'
+import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
+import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
+import { configuracionColumnasEmpleadoSeleccionable } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionable'
 import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
-import { configuracionColumnasTrabajo } from '../domain/configuracionColumnasTrabajo'
+import { configuracionColumnasTrabajo } from 'gestionTrabajos/trabajos/domain/configuracionColumnasTrabajo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { quitarItemDeArray, stringToArray } from 'shared/utils'
@@ -28,6 +28,8 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
+import { useTrabajoStore } from 'stores/trabajo'
+import { nivelesTrabajos } from 'config/trabajo.utils'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -38,31 +40,29 @@ import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
+import { ClienteFinalController } from 'gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ValidarEmpleadosSeleccionados } from '../application/validaciones/ValidarEmpleadosSeleccionados'
+import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { TipoTrabajoController } from 'pages/tareas/tiposTareas/infraestructure/TipoTrabajoController'
 import { ValidarEmpleadoResponsable } from '../application/validaciones/ValidarEmpleadoResponsable'
+import { ProyectoController } from 'gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { ValidarGrupoResponsable } from '../application/validaciones/ValidarGrupoResponsable'
 import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
+import { ComportamientoModalesTrabajo } from '../application/ComportamientoModalesTrabajo'
+import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
+import { TareaController } from 'gestionTrabajos/tareas/infraestructure/TareaController'
 import { ValidarGrupoAsignado } from '../application/validaciones/ValidarGrupoAsignado'
-import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { TrabajoController } from '../infraestructure/TrabajoController'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFinal'
+import { TipoTrabajo } from 'gestionTrabajos/tiposTareas/domain/TipoTrabajo'
+import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { TipoTrabajo } from 'pages/tareas/tiposTareas/domain/TipoTrabajo'
+import { TrabajoController } from '../infraestructure/TrabajoController'
 import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
-import { Grupo } from 'pages/tareas/grupos/domain/Grupo'
+import { Grupo } from 'recursosHumanos/grupos/domain/Grupo'
 import { Trabajo } from '../domain/Trabajo'
-import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
-import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
-import { ClienteFinalController } from 'pages/tareas/clientesFinales/infraestructure/ClienteFinalController'
-import { ClienteFinal } from 'pages/tareas/clientesFinales/domain/ClienteFinal'
-import { useTrabajoStore } from 'stores/trabajo'
-import { nivelesTrabajos } from 'config/trabajo.utils'
-import { TareaController } from 'pages/tareas/tareas/infraestructure/TareaController'
-import { ComportamientoModalesTrabajo } from '../application/ComportamientoModalesTrabajo'
 
 export default defineComponent({
   props: {
@@ -149,7 +149,7 @@ export default defineComponent({
     /***************************
     * Configuracion de columnas
     ****************************/
-    const columnas = [
+    const columnasEmpleadoSeleccionado = [
       ...configuracionColumnasEmpleadoSeleccionado,
       {
         name: 'acciones',
@@ -159,7 +159,7 @@ export default defineComponent({
       },
     ]
 
-    const columnasGrupo = [
+    const columnasGrupoSeleccionado = [
       ...configuracionColumnasGrupoSeleccionado,
       {
         name: 'acciones',
@@ -675,8 +675,8 @@ export default defineComponent({
       mixin,
       trabajo,
       seleccionBusqueda,
-      columnas,
-      columnasGrupo,
+      columnasEmpleadoSeleccionado,
+      columnasGrupoSeleccionado,
       tecnicoSeleccionado,
       busqueda,
       grupos,
@@ -703,7 +703,7 @@ export default defineComponent({
       reestablecerDatos,
       accion,
       disable,
-      configuracionColumnasEmpleado,
+      configuracionColumnasEmpleadoSeleccionable,
       tipoSeleccion,
       quitarGrupo,
       // orquestador

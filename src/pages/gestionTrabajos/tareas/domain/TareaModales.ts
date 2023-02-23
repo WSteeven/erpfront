@@ -3,7 +3,7 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 // Paginas
-import ClienteFinalPage from 'tareas/clientesFinales/view/ClienteFinalPage.vue'
+import ClienteFinalPage from 'clientesFinales/view/ClienteFinalPage.vue'
 
 export class TareaModales {
   ClienteFinalPage: ComponenteModal

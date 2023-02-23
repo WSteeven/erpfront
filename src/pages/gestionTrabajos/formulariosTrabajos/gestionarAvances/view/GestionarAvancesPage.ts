@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasEmpleado } from 'pages/tareas/controlTareas/modules/subtareas/domain/configuracionColumnasEmpleado'
+import { configuracionColumnasEmpleadoSeleccionable } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionable'
 import { computed, defineComponent, Ref, ref } from 'vue'
 import { useTareaStore } from 'stores/tarea'
 import {
@@ -19,9 +19,10 @@ import PausasRealizadasContent from '../modules/pausasRealizadas/view/PausasReal
 import ControlAvanceContent from '../modules/controlAvance/view/ControlAvanceContent.vue'
 import ImagenAdicionalContent from '../modules/imagenesAdicionales/view/ImagenAdicionalContent.vue'
 import InformacionAdicionalContent from '../modules/informacionAdicional/view/InformacionAdicionalContent.vue'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 // Logica y controladores
-import { Tecnico } from 'subtareas/domain/Tecnico'
+//import { Tecnico } from 'subtareas/domain/Tecnico'
 
 export default defineComponent({
   components: { EssentialTable, PausasRealizadasContent, ControlAvanceContent, ImagenAdicionalContent, InformacionAdicionalContent },
@@ -34,7 +35,7 @@ export default defineComponent({
     const seleccionBusqueda = ref('por_tecnico')
 
     const columnas = [
-      ...configuracionColumnasEmpleado,
+      ...configuracionColumnasEmpleadoSeleccionable,
       {
         name: 'acciones',
         field: 'acciones',
@@ -43,7 +44,7 @@ export default defineComponent({
       },
     ]
 
-    const datos: Ref<Tecnico[]> = ref([])
+    const datos: Ref<Empleado[]> = ref([])
 
     function enviar() {
       //
@@ -57,7 +58,7 @@ export default defineComponent({
 
     //const modalesSubtarea = new ComportamientoModalesSubtarea()
 
-    const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
+    //const causasIntervencion = computed(() => causaIntervencion.filter((causa: any) => causa.categoria === subtarea.tipo_intervencion))
 
     return {
       step: ref(1),
@@ -83,7 +84,7 @@ export default defineComponent({
       regiones,
       atenciones,
       tiposIntervenciones,
-      causasIntervencion,
+      //      causasIntervencion,
     }
   },
 })
