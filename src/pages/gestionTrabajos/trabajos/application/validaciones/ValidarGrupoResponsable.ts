@@ -1,13 +1,13 @@
-import { opcionesModoAsignacionTrabajo } from 'config/utils'
+import { GrupoSeleccionado } from 'trabajos/domain/GrupoSeleccionado'
 import { Validador } from 'shared/validadores/domain/Validador'
-import { GrupoSeleccionado } from '../../domain/GrupoSeleccionado'
-import { Trabajo } from '../../domain/Trabajo'
+import { opcionesModoAsignacionTrabajo } from 'config/utils'
+import { Trabajo } from 'trabajos/domain/Trabajo'
 
 export class ValidarGrupoResponsable implements Validador {
-  private subtarea: Trabajo
+  private trabajo: Trabajo
 
-  constructor(subtarea: Trabajo) {
-    this.subtarea = subtarea
+  constructor(trabajo: Trabajo) {
+    this.trabajo = trabajo
   }
 
   /**
@@ -15,11 +15,11 @@ export class ValidarGrupoResponsable implements Validador {
    */
   async validar() {
 
-    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
-      const noEsValido = !this.subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.responsable)
+    if (this.trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+      const noEsValido = !this.trabajo.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.es_responsable)
 
       if (noEsValido)
-        throw new Error('Debe asignar a un grupo como principal.') // Borrame please
+        throw new Error('Debe asignar a un grupo como principal.')
     }
     return true
   }

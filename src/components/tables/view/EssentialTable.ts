@@ -5,9 +5,9 @@ import { computed, defineComponent, ref, watchEffect, nextTick, Ref } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
-import { TipoSeleccion, estadosSubtareas } from 'config/utils'
-import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns, formatBytes } from 'shared/utils'
+import { ColumnConfig } from '../domain/ColumnConfig'
+import { TipoSeleccion } from 'config/utils'
 import { offset } from 'config/utils_tablas'
 
 // Componentes
@@ -306,7 +306,6 @@ export default defineComponent({
       estadosCondicionesId,
       estadosCondicionesValue,
       estadosControlStock,
-      estadosSubtareas,
       onScroll,
       loading,
       offset,

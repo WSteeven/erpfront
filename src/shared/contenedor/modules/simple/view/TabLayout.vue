@@ -1,5 +1,7 @@
 <template>
   <q-page :padding="!$q.screen.xs">
+    <slot name="modales" />
+
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"

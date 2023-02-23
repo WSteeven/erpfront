@@ -3,7 +3,6 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTrabajo"
     tituloPagina="Control de trabajos"
-    :full="true"
     :permitirConsultar="false"
     :permitirEliminar="false"
     :mostrar-listado="false"
@@ -18,23 +17,13 @@
           default-opened
         >
           <div class="row q-col-gutter-sm q-pa-md">
-            <!-- Codigo tarea JP -->
-            <div v-if="trabajo.codigo_trabajo" class="col-12 col-md-3">
-              <label class="q-mb-sm block">Código de trabajo</label>
-              <q-input
-                v-model="trabajo.codigo_trabajo"
-                outlined
-                dense
-                disable
-              ></q-input>
-            </div>
-
             <!-- Titulo -->
             <div class="col-12">
               <label class="q-mb-sm block">Título del trabajo a realizar</label>
               <q-input
                 v-model="trabajo.titulo"
                 placeholder="Obligatorio"
+                :disable="disable"
                 outlined
                 dense
                 :error="!!v$.titulo.$errors.length"
@@ -57,6 +46,7 @@
                 v-model="trabajo.descripcion_completa"
                 placeholder="Obligatorio"
                 outlined
+                :disable="disable"
                 dense
                 autogrow
                 type="textarea"
@@ -81,11 +71,23 @@
                 v-model="trabajo.observacion"
                 placeholder="Opcional"
                 outlined
+                :disable="disable"
                 dense
                 autogrow
                 type="textarea"
               >
               </q-input>
+            </div>
+
+            <!-- Codigo tarea JP -->
+            <div v-if="trabajo.codigo_trabajo" class="col-12 col-md-3">
+              <label class="q-mb-sm block">Código de trabajo</label>
+              <q-input
+                v-model="trabajo.codigo_trabajo"
+                outlined
+                dense
+                disable
+              ></q-input>
             </div>
 
             <!-- Tarea -->
@@ -100,13 +102,13 @@
                 options-dense
                 dense
                 outlined
+                :disable="disable"
                 :option-label="(item) => item.codigo_tarea"
                 :option-value="(item) => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
                 map-options
-                :disable="disable"
                 :error="!!v$.tipo_trabajo.$errors.length"
               >
                 <template v-slot:no-option>
@@ -140,13 +142,13 @@
                 options-dense
                 dense
                 outlined
+                :disable="disable"
                 :option-label="(item) => item.descripcion"
                 :option-value="(item) => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
                 map-options
-                :disable="disable"
                 :error="!!v$.tipo_trabajo.$errors.length"
               >
                 <template v-slot:no-option>
@@ -174,8 +176,8 @@
               <q-checkbox
                 v-model="trabajo.es_dependiente"
                 label="Es dependiente"
-                :disable="disable"
                 outlined
+                :disable="disable"
                 dense
               ></q-checkbox>
             </div>
@@ -193,11 +195,11 @@
                 options-dense
                 dense
                 outlined
+                :disable="disable"
                 :option-label="(item) => item.codigo_trabajo"
                 :option-value="(item) => item.id"
                 use-input
                 input-debounce="0"
-                :disable="disable"
                 emit-value
                 map-options
               >
@@ -239,9 +241,9 @@
               <q-checkbox
                 v-model="trabajo.es_ventana"
                 label="Es ventana de trabajo"
-                :disable="disable"
                 @blur="verificarEsVentana()"
                 outlined
+                :disable="disable"
                 dense
               ></q-checkbox>
             </div>
@@ -252,8 +254,8 @@
                 v-model="trabajo.fecha_agendado"
                 placeholder="Obligatorio"
                 :error="!!v$.fecha_agendado.$errors.length"
-                :disable="disable"
                 outlined
+                :disable="disable"
                 dense
               >
                 <template v-slot:append>
@@ -292,45 +294,21 @@
               </q-input>
             </div>
 
-            <!-- Hora inicio de ventana -->
+            <!-- Hora inicio de agendamiento -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block"
                 >Hora inicio de agendamiento (24H)</label
               >
               <q-input
                 v-model="trabajo.hora_inicio_agendado"
-                :disable="disable"
                 placeholder="Obligatorio"
                 :error="!!v$.hora_inicio_agendado.$errors.length"
-                mask="time"
+                type="time"
+                :disable="disable"
+                stack-label
                 outlined
                 dense
               >
-                <template v-slot:append>
-                  <q-icon name="bi-clock" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-time
-                        v-model="trabajo.hora_inicio_agendado"
-                        format24h
-                        now-btn
-                      >
-                        <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Cerrar"
-                            color="primary"
-                            flat
-                          />
-                        </div>
-                      </q-time>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-
                 <template v-slot:error>
                   <div
                     v-for="error of v$.hora_inicio_agendado.$errors"
@@ -349,12 +327,12 @@
               >
               <q-input
                 v-model="trabajo.hora_fin_agendado"
-                :disable="disable"
                 placeholder="Obligatorio"
                 :error="!!v$.hora_fin_agendado.$errors.length"
                 type="time"
                 stack-label
                 outlined
+                :disable="disable"
                 dense
               >
                 <template v-slot:error>
@@ -391,7 +369,6 @@
                 :disable="disable"
                 rounded
                 toggle-color="positive"
-                color="bg-body"
                 @update:model-value="resetListados()"
                 :options="[
                   {
@@ -467,7 +444,7 @@
               trabajo.modo_asignacion_trabajo ===
               opcionesModoAsignacionTrabajo.por_trabajador
             "
-            class="q-mb-md"
+            class="row q-col-gutter-sm q-pa-sm"
           >
             <!-- Busqueda -->
             <div class="col-12 col-md-10">
@@ -732,8 +709,6 @@
           tipo-seleccion="multiple"
           @selected="seleccionarEmpleado"
         ></essential-selectable-table>
-
-        <modales-entidad :comportamiento="modales" />
       </div>
     </template>
 
@@ -744,19 +719,26 @@
           accionesTabla,
         ]"
         :datos="listado"
-        :accion1="botonSubirArchivos"
-        :accion2="botonAsignar"
-        :accion3="botonCancelar"
-        :accion4="botonReagendar"
-        :accion5="botonFormulario"
-        :accion6="botonVerPausas"
-        :accion7="botonFinalizar"
+        :accion1="botonEditarTrabajo"
+        :accion2="botonSubirArchivos"
+        :accion3="botonAsignar"
+        :accion4="botonCancelar"
+        :accion5="botonReagendar"
+        :accion6="botonFormulario"
+        :accion7="botonVerPausas"
+        :accion8="botonFinalizar"
+        separador="cell"
         :permitirConsultar="false"
         :permitirEditar="false"
         :permitirEliminar="false"
         :mostrar-botones="false"
         :mostrarFooter="true"
+        @filtrarTodos="filtrarTodos"
       ></essential-table>
+    </template>
+
+    <template #modales>
+      <modales-entidad :comportamiento="modales" />
     </template>
   </tab-layout>
 </template>

@@ -1,13 +1,13 @@
+import { EmpleadoSeleccionado } from 'trabajos/domain/EmpleadoSeleccionado'
 import { Validador } from 'shared/validadores/domain/Validador'
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
-import { Trabajo } from '../../domain/Trabajo'
-import { EmpleadoSeleccionado } from '../../domain/EmpleadoSeleccionado'
+import { Trabajo } from 'trabajos/domain/Trabajo'
 
 export class ValidarEmpleadoResponsable implements Validador {
-  private subtarea: Trabajo
+  private trabajo: Trabajo
 
-  constructor(subtarea: Trabajo) {
-    this.subtarea = subtarea
+  constructor(trabajo: Trabajo) {
+    this.trabajo = trabajo
   }
 
   /**
@@ -15,8 +15,8 @@ export class ValidarEmpleadoResponsable implements Validador {
    */
   async validar() {
 
-    if (this.subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
-      const noEsValido = !this.subtarea.empleados_seleccionados.some((empleado: EmpleadoSeleccionado) => empleado.responsable)
+    if (this.trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_trabajador) {
+      const noEsValido = !this.trabajo.empleados_seleccionados.some((empleado: EmpleadoSeleccionado) => empleado.es_responsable)
 
       if (noEsValido)
         throw new Error('Debe asignar a un empleado responsable.')

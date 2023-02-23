@@ -1,19 +1,19 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { estadosSubtareas, estadosTrabajoArray } from 'config/utils'
+import { estadosTrabajoArray } from 'config/utils'
 import { Trabajo } from './Trabajo'
 
 export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
   {
-    name: 'tarea',
-    field: 'tarea',
-    label: 'Cód. Tarea JP',
+    name: 'codigo_tarea_cliente',
+    field: 'codigo_tarea_cliente',
+    label: 'Cód. Tarea Cliente',
     align: 'left',
     sortable: true,
   },
   {
-    name: 'codigo_tarea_cliente',
-    field: 'codigo_tarea_cliente',
-    label: 'Cód. Tarea Cliente',
+    name: 'tarea',
+    field: 'tarea',
+    label: 'Cód. Tarea JP',
     align: 'left',
     sortable: true,
   },
@@ -25,18 +25,12 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     sortable: true,
   },
   {
-    name: 'cliente',
-    field: 'cliente',
-    label: 'Cliente',
+    name: 'estado',
+    field: 'estado',
+    label: 'Estado',
     align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'proyecto',
-    field: 'proyecto',
-    label: 'Proyecto',
-    align: 'left',
-    sortable: true,
+    type: 'select',
+    options: estadosTrabajoArray
   },
   {
     name: 'titulo',
@@ -175,11 +169,17 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     align: 'left',
   },
   {
-    name: 'estado',
-    field: 'estado',
-    label: 'Estado',
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente',
     align: 'left',
-    type: 'select',
-    options: estadosTrabajoArray
+    sortable: true,
+  },
+  {
+    name: 'proyecto',
+    field: 'proyecto',
+    label: 'Proyecto',
+    align: 'left',
+    sortable: true,
   },
 ]

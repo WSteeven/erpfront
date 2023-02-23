@@ -133,7 +133,7 @@ export default defineComponent({
     }*/
 
     function filtrarTodos(filtros) {
-      filtrar(filtros)
+      if (props.mostrarListado) filtrar(filtros)
     }
 
     /* const aplicarFiltros = (filtros: any) => {

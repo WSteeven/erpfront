@@ -13,7 +13,7 @@ import {
   tiposTareasNedetel,
   regiones,
   atenciones,
-  estadosSubtareas,
+  estadosTrabajos,
   rolesSistema,
   acciones,
   accionesTabla,
@@ -91,7 +91,7 @@ export default defineComponent({
     *********/
     const mixin = new ContenedorSimpleMixin(Trabajo, new TrabajoController())
     const { entidad: trabajo, listadosAuxiliares, accion, listado } = mixin.useReferencias()
-    const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
+    const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador, filtrar } = mixin.useComportamiento()
     const { onBeforeGuardar, onBeforeModificar, onConsultado } = mixin.useHooks()
 
     cargarVista(async () => {
@@ -127,8 +127,7 @@ export default defineComponent({
 
     if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
 
-    // const accion = tareaStore.accionSubtarea
-    const disable = computed(() => (trabajo.estado !== estadosSubtareas.CREADO && trabajo.estado !== null))
+    const disable = computed(() => (trabajo.estado !== estadosTrabajos.CREADO && accion.value !== acciones.nuevo))
 
     /************
      * Variables
@@ -137,8 +136,7 @@ export default defineComponent({
     const asignarSecretario = ref(false)
     const tipoSeleccion = computed(() => asignarJefe.value || asignarSecretario.value ? 'single' : 'none')
     const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
-    // const notificaciones = useNotificaciones()
-    const { confirmar, notificarCorrecto, prompt, notificarAdvertencia } = useNotificaciones()
+    const { notificarAdvertencia } = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
     const tecnicoSeleccionado = ref()
     const busqueda = ref()
@@ -171,14 +169,19 @@ export default defineComponent({
       },
     ]
 
+    /**********
+     * Modales
+     **********/
+    const modales = new ComportamientoModalesTrabajo()
+
     /***************
     * Botones tabla
     ***************/
     const designarGrupoPrincipal: CustomActionTable = {
       titulo: 'Designar como responsable',
-      icono: 'bi-check-circle-fill',
+      icono: 'bi-check',
       color: 'positive',
-      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion.value) && !entidad.responsable,
+      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion.value) && !entidad.es_responsable && !disable.value,
       accion: ({ posicion }) => {
         trabajo.grupos_seleccionados = trabajo.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
           const grupoSeleccionado = new GrupoSeleccionado()
@@ -195,7 +198,7 @@ export default defineComponent({
       titulo: 'Quitar',
       icono: 'bi-x',
       color: 'negative',
-      visible: () => [acciones.editar, acciones.nuevo].includes(accion.value), //accion),
+      visible: () => !disable.value,//[acciones.editar, acciones.nuevo].includes(accion.value), //accion),
       accion: ({ entidad, posicion }) => {
         entidad.principal = false
         trabajo.grupos_seleccionados.splice(posicion, 1)
@@ -204,9 +207,9 @@ export default defineComponent({
 
     const designarEmpleadoResponsable: CustomActionTable = {
       titulo: 'Designar como responsable',
-      icono: 'bi-check-circle-fill',
+      icono: 'bi-check',
       color: 'positive',
-      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion.value) && !entidad.responsable,
+      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion.value) && !entidad.es_responsable,
       accion: ({ posicion }) => {
         trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: EmpleadoSeleccionado) => {
           const empleadoSeleccionado = new EmpleadoSeleccionado()
@@ -273,7 +276,17 @@ export default defineComponent({
       },
     }
 
-    const { botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonAsignar, botonFinalizar, botonVerPausas } = useBotonesTablaTrabajo()
+    const { botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonAsignar, botonFinalizar, botonVerPausas } = useBotonesTablaTrabajo(listado, modales)
+
+    const botonEditarTrabajo: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil',
+      color: 'blue-grey-4',
+      accion: ({ entidad }) => {
+        accion.value = acciones.editar
+        consultar(entidad)
+      },
+    }
 
     /*********
     * Filtros
@@ -572,6 +585,7 @@ export default defineComponent({
           //console.log(trabajo.grupos_seleccionados.length)
         }
         trabajo.grupos_seleccionados.push(grupoSeleccionado)
+        trabajo.grupo = null
 
       } else notificarAdvertencia('Debe seleccionar un grupo')
     }
@@ -669,9 +683,12 @@ export default defineComponent({
 
     const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
 
-    const modales = new ComportamientoModalesTrabajo()
+    function filtrarTodos(filtros) {
+      filtrar(filtros)
+    }
 
     return {
+      filtrarTodos,
       // Referencias
       refEmpleadosAsignados,
       // Others
@@ -764,6 +781,7 @@ export default defineComponent({
       filtrarTrabajos,
       botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonAsignar, botonFinalizar, botonVerPausas,
       accionesTabla,
+      botonEditarTrabajo,
     }
   },
 })
