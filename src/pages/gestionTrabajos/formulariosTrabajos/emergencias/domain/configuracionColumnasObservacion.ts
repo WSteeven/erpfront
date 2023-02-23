@@ -1,5 +1,5 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import Observacion from './Observacion'
+import Observacion from 'trabajos/domain/Observacion'
 
 export const configuracionColumnasObservacion: ColumnConfig<Observacion>[] = [
   {

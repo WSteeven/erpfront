@@ -9,8 +9,8 @@ export const configuracionColumnasGrupoSeleccionado: ColumnConfig<GrupoSeleccion
     align: 'left',
   },
   {
-    name: 'responsable',
-    field: 'responsable',
+    name: 'es_responsable',
+    field: 'es_responsable',
     label: 'Responsable',
     align: 'center',
   },

@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { MaterialOcupado } from 'pages/tareas/tendidos/controlTendidos/modules/registrosTendidos/domain/MaterialOcupado'
+import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 
-export const configuracionColumnasMaterial: ColumnConfig<MaterialOcupado>[] = [
+export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<MaterialOcupadoFormulario>[] = [
   {
     name: 'detalle',
     field: 'detalle',

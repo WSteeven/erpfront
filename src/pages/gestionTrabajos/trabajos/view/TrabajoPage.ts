@@ -1,9 +1,9 @@
 // Dependencias
+import { configuracionColumnasEmpleadoSeleccionable } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionable'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
-import { configuracionColumnasEmpleadoSeleccionable } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionable'
-import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { configuracionColumnasTrabajo } from 'gestionTrabajos/trabajos/domain/configuracionColumnasTrabajo'
+import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { quitarItemDeArray, stringToArray } from 'shared/utils'
@@ -16,6 +16,7 @@ import {
   estadosSubtareas,
   rolesSistema,
   acciones,
+  accionesTabla,
   opcionesModoAsignacionTrabajo,
   tiposIntervenciones,
   causaIntervencion,
@@ -44,7 +45,7 @@ import { ClienteFinalController } from 'gestionTrabajos/clientesFinales/infraest
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ValidarEmpleadosSeleccionados } from '../application/validaciones/ValidarEmpleadosSeleccionados'
 import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ValidarEmpleadoResponsable } from '../application/validaciones/ValidarEmpleadoResponsable'
 import { ProyectoController } from 'gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { ValidarGrupoResponsable } from '../application/validaciones/ValidarGrupoResponsable'
@@ -63,6 +64,7 @@ import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
 import { Grupo } from 'recursosHumanos/grupos/domain/Grupo'
 import { Trabajo } from '../domain/Trabajo'
+import { useBotonesTablaTrabajo } from '../application/BotonesTablaTrabajos'
 
 export default defineComponent({
   props: {
@@ -88,7 +90,7 @@ export default defineComponent({
     * Mixin
     *********/
     const mixin = new ContenedorSimpleMixin(Trabajo, new TrabajoController())
-    const { entidad: trabajo, listadosAuxiliares, accion } = mixin.useReferencias()
+    const { entidad: trabajo, listadosAuxiliares, accion, listado } = mixin.useReferencias()
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onBeforeModificar, onConsultado } = mixin.useHooks()
 
@@ -181,10 +183,10 @@ export default defineComponent({
         trabajo.grupos_seleccionados = trabajo.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
           const grupoSeleccionado = new GrupoSeleccionado()
           grupoSeleccionado.hydrate(grupo)
-          grupoSeleccionado.responsable = false
+          grupoSeleccionado.es_responsable = false
           return grupoSeleccionado
         })
-        trabajo.grupos_seleccionados[posicion].responsable = true
+        trabajo.grupos_seleccionados[posicion].es_responsable = true
       },
     }
 
@@ -209,10 +211,10 @@ export default defineComponent({
         trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: EmpleadoSeleccionado) => {
           const empleadoSeleccionado = new EmpleadoSeleccionado()
           empleadoSeleccionado.hydrate(empleado)
-          empleadoSeleccionado.responsable = false
+          empleadoSeleccionado.es_responsable = false
           return empleadoSeleccionado
         })
-        trabajo.empleados_seleccionados[posicion].responsable = true
+        trabajo.empleados_seleccionados[posicion].es_responsable = true
       },
     }
 
@@ -270,6 +272,8 @@ export default defineComponent({
         asignarSecretario.value = false
       },
     }
+
+    const { botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonAsignar, botonFinalizar, botonVerPausas } = useBotonesTablaTrabajo()
 
     /*********
     * Filtros
@@ -564,7 +568,7 @@ export default defineComponent({
         const grupoSeleccionado: GrupoSeleccionado = grupos.value[index]
 
         if (trabajo.grupos_seleccionados.length === 0) {
-          grupoSeleccionado.responsable = true
+          grupoSeleccionado.es_responsable = true
           //console.log(trabajo.grupos_seleccionados.length)
         }
         trabajo.grupos_seleccionados.push(grupoSeleccionado)
@@ -601,7 +605,7 @@ export default defineComponent({
       empleados = empleados.map((empleado: Empleado) => {
         const emp = new EmpleadoSeleccionado()
         emp.hydrate(empleado)
-        emp.responsable = false
+        emp.es_responsable = false
         return emp
       })
 
@@ -673,6 +677,7 @@ export default defineComponent({
       // Others
       v$,
       mixin,
+      listado,
       trabajo,
       seleccionBusqueda,
       columnasEmpleadoSeleccionado,
@@ -757,6 +762,8 @@ export default defineComponent({
       filtrarTareas,
       trabajos,
       filtrarTrabajos,
+      botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonAsignar, botonFinalizar, botonVerPausas,
+      accionesTabla,
     }
   },
 })

@@ -1,8 +1,8 @@
 // Dependencias
-import { configuracionColumnasTrabajoRealizado } from '../../../domain/configuracionColumnasTrabajoRealizado'
+import { configuracionColumnasMaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasMaterialOcupadoFormulario'
+import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
+import { configuracionColumnasObservacion } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasObservacion'
 import { regiones, atenciones, tiposIntervenciones, causaIntervencion, accionesTabla } from 'config/utils'
-import { configuracionColumnasObservacion } from '../../../domain/configuracionColumnasObservacion'
-import { configuracionColumnasMaterial } from '../../../domain/configuracionColumnasMaterial'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -18,11 +18,11 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import TrabajoRealizado from 'pages/tareas/controlTareas/modules/subtareas/domain/TrabajoRealizado'
-import Observacion from 'pages/tareas/controlTareas/modules/subtareas/domain/Observacion'
+import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
+import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
+import Observacion from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/Observacion'
 import { EmergenciaController } from '../infraestructure/EmergenciaController'
 import { Emergencia } from '../domain/Emergencia'
-import { MaterialOcupado } from 'pages/tareas/tendidos/controlTendidos/modules/registrosTendidos/domain/MaterialOcupado'
 import { CausaIntervencion } from './CausaIntervencion'
 
 export default defineComponent({
@@ -52,7 +52,7 @@ export default defineComponent({
 
     const columnasObservacion = [...configuracionColumnasObservacion, accionesTabla]
 
-    const columnasMaterial = [...configuracionColumnasMaterial, accionesTabla]
+    const columnasMaterial = [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
 
     /***************
      * Botones tabla
@@ -101,7 +101,7 @@ export default defineComponent({
 
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: CausaIntervencion) => causa.categoria === emergencia.tipo_intervencion))
 
-    const materiales: Ref<MaterialOcupado[]> = ref([])
+    const materiales: Ref<MaterialOcupadoFormulario[]> = ref([])
 
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()

@@ -510,7 +510,7 @@
                 "
                 titulo="Grupos seleccionados"
                 estilos="margin-bottom: 14px;"
-                :configuracionColumnas="columnasGrupo"
+                :configuracionColumnas="columnasGrupoSeleccionado"
                 :datos="trabajo.grupos_seleccionados"
                 :accion1Header="asignarNuevoTecnicoLider"
                 :accion2Header="designarNuevoSecretario"
@@ -738,28 +738,25 @@
     </template>
 
     <template #custom-listado>
-      <essential-table-tabs
-        titulo=""
-        :configuracionColumnas="configuracionColumnas"
+      <essential-table
+        :configuracionColumnas="[
+          ...configuracionColumnasTrabajo,
+          accionesTabla,
+        ]"
         :datos="listado"
-        :accion1="botonEditarSubtarea"
-        :accion2="botonSubirArchivos"
-        :accion3="botonAsignar"
-        :accion4="botonCancelar"
-        :accion5="botonReagendar"
-        :accion6="botonControlAvance"
-        :accion7="botonVerPausas"
-        :accion8="botonFinalizar"
+        :accion1="botonSubirArchivos"
+        :accion2="botonAsignar"
+        :accion3="botonCancelar"
+        :accion4="botonReagendar"
+        :accion5="botonFormulario"
+        :accion6="botonVerPausas"
+        :accion7="botonFinalizar"
         :permitirConsultar="false"
         :permitirEditar="false"
         :permitirEliminar="false"
         :mostrar-botones="false"
-        :tab-options="tabOptions"
         :mostrarFooter="true"
-        tabDefecto="CREADO"
-        @tab-seleccionado="aplicarFiltro"
-        :accion1Header="agregarSubtarea"
-      ></essential-table-tabs>
+      ></essential-table>
     </template>
   </tab-layout>
 </template>

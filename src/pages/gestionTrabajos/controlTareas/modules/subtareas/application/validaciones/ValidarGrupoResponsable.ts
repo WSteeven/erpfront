@@ -1,6 +1,6 @@
 import { opcionesModoAsignacionTrabajo } from 'config/utils'
 import { Validador } from 'shared/validadores/domain/Validador'
-import { GrupoSeleccionado } from '../../domain/GrupoSeleccionado'
+import { GrupoSeleccionado } from '../../../../../formulariosTrabajos/emergencias/domain/GrupoSeleccionado'
 import { Subtarea } from '../../domain/Subtarea'
 
 export class ValidarGrupoResponsable implements Validador {

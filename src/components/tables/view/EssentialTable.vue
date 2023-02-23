@@ -24,11 +24,11 @@
     v-model:selected="selected"
     wrap-cells
     :style="estilos"
-    class="bg-body-table custom-border"
+    class="bg-body-table custom-border my-sticky-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
-      'my-sticky-dynamic': !inFullscreen && altoFijo,
+      'my-sticky-dynamic2': !inFullscreen && altoFijo,
       'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
     }"
     virtual-scroll
@@ -466,7 +466,7 @@
                   ></q-icon>
                 </span>
 
-                <span v-if="col.name === 'responsable'">
+                <span v-if="col.name === 'es_responsable'">
                   <q-icon
                     v-if="col.value"
                     name="bi-check-circle-fill"
@@ -492,7 +492,7 @@
                       'es_ventana',
                       'finalizado',
                       'estado',
-                      'responsable',
+                      'es_responsable',
                       'tamanio_bytes',
                     ].includes(col.name)
                   "
@@ -553,7 +553,7 @@
       </q-td>
     </template>
 
-    <template #body-cell-responsable="props">
+    <template #body-cell-es_responsable="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
@@ -932,6 +932,30 @@
   border-right: 1px solid $grey-4;
   border-left: 1px solid $grey-4;
   border-radius: 4px 4px 0 0;
+}
+
+.my-sticky-column-table {
+  /* specifying max-width so the example can
+    highlight the sticky column on any browser window */
+  max-width: 100%;
+
+  thead tr:first-child th:last-child {
+    /* bg color is important for th; just specify one */
+    background-color: $grey-2;
+  }
+
+  td:last-child {
+    background-color: #fff;
+  }
+
+  th:last-child,
+  td:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    border-left: 1px solid $grey-4;
+    border-bottom: 1px solid $grey-4;
+  }
 }
 </style>
 

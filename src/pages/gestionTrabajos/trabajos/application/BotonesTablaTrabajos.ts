@@ -5,6 +5,7 @@ import { useNotificaciones } from "shared/notificaciones"
 import { useSubtareaListadoStore } from "stores/subtareaListado"
 import { Trabajo } from "../domain/Trabajo"
 import { CambiarEstadoTrabajo } from "./CambiarEstadoTrabajo"
+import { ComportamientoModalesTrabajo } from "./ComportamientoModalesTrabajo"
 
 export const useBotonesTablaTrabajo = () => {
     const subtareaListadoStore = useSubtareaListadoStore()
@@ -50,14 +51,14 @@ export const useBotonesTablaTrabajo = () => {
         },
     } */
 
-    const botonControlAvance: CustomActionTable = {
+    const botonFormulario: CustomActionTable = {
         titulo: 'Formulario',
         icono: 'bi-check2-square',
         color: 'indigo',
         visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO, estadosSubtareas.PAUSADO, estadosSubtareas.FINALIZADO].includes(entidad.estado),
         accion: ({ entidad }) => {
             subtareaListadoStore.idSubtareaSeleccionada = entidad.id
-            modales.abrirModalEntidad('GestionarAvancesPage')
+            modales.abrirModalEntidad('EmergenciasPage')
         }
     }
 
@@ -98,19 +99,6 @@ export const useBotonesTablaTrabajo = () => {
                 entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
                 actualizarElemento(posicion, entidad)
                 notificarCorrecto('Subtarea asignada exitosamente!')
-            })
-        },
-    }
-
-    const botonSolicitarMaterial: CustomActionTable = {
-        titulo: 'Solicitar material',
-        icono: 'bi-list',
-        visible: ({ entidad }) => entidad.estado !== estadosSubtareas.REALIZADO,
-        accion: async ({ entidad, posicion }) => {
-            confirmar('¿Está seguro de asignar la subtarea?', async () => {
-                await cambiarEstadoTrabajo.asignar(entidad.id)
-                entidad.estado = estadosSubtareas.ASIGNADO
-                actualizarElemento(posicion, entidad)
             })
         },
     }
@@ -167,7 +155,7 @@ export const useBotonesTablaTrabajo = () => {
         accion: async ({ entidad, posicion }) => {
             subtareaListadoStore.idSubtareaSeleccionada = entidad.id
             subtareaListadoStore.posicionSubtareaSeleccionada = posicion
-            modales.abrirModalEntidad('ArchivoSubtarea')
+            modales.abrirModalEntidad('GestorArchivoTrabajo')
         }
     }
 
@@ -179,6 +167,12 @@ export const useBotonesTablaTrabajo = () => {
     }
 
     return {
-
+        botonFormulario,
+        botonSubirArchivos,
+        botonCancelar,
+        botonReagendar,
+        botonAsignar,
+        botonFinalizar,
+        botonVerPausas,
     }
 }

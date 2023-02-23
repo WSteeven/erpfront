@@ -23,7 +23,7 @@ import { acciones, estadosTransacciones, tabOptionsPedidos, } from 'config/utils
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { TareaController } from 'tareas/infraestructure/TareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 
@@ -86,14 +86,14 @@ export default defineComponent({
     onConsultado(() => {
       opciones_empleados.value = listadosAuxiliares.empleados
       console.log(accion.value)
-      if (accion.value === acciones.editar && (esCoordinador||esActivosFijos)) {
+      if (accion.value === acciones.editar && (esCoordinador || esActivosFijos)) {
         soloLectura.value = true
       }
     })
     console.log('es coordinador? ', esCoordinador)
     console.log('es bodeguero? ', esBodeguero)
     console.log('es activos fijos? ', esActivosFijos)
-    let cargo_tecnico:Cargo
+    let cargo_tecnico: Cargo
 
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
@@ -112,7 +112,7 @@ export default defineComponent({
         },
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
+          params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
         /* sucursales: {
           controller: new SucursalController(),
@@ -128,7 +128,7 @@ export default defineComponent({
         }, */
       })
       //obtener el cargo
-      const response =await new CargoController().listar({nombre:'TECNICO'})
+      const response = await new CargoController().listar({ nombre: 'TECNICO' })
       cargo_tecnico = (await response).result[0]//se carga el array recibido con el cargo
       console.log(cargo_tecnico)
     })
@@ -142,7 +142,7 @@ export default defineComponent({
       autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
       observacion_aut: { requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!) },
       sucursal: { required },
-      responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico||esRRHH) },
+      responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico || esRRHH) },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
       fecha_limite: {
         required: requiredIf(() => pedido.tiene_fecha_limite!),
@@ -256,7 +256,7 @@ export default defineComponent({
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
     if (esCoordinador) {
-      opciones_empleados.value = listadosAuxiliares.empleados.filter((v)=>v.cargo_id===cargo_tecnico!.id)
+      opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.cargo_id === cargo_tecnico!.id)
     }
 
 
@@ -313,26 +313,26 @@ export default defineComponent({
         // console.log(tabSeleccionado.value)
         // console.log(val)
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador && tabSeleccionado.value === estadosTransacciones.pendiente) ||(esActivosFijos && tabSeleccionado.value===estadosTransacciones.pendiente)
+        puedeEditar.value = (esCoordinador && tabSeleccionado.value === estadosTransacciones.pendiente) || (esActivosFijos && tabSeleccionado.value === estadosTransacciones.pendiente)
           ? true
           : false
       },
 
       //Filtros
       filtroResponsable(val, update) {
-        if(esCoordinador){
+        if (esCoordinador) {
           if (val === '') {
             update(() => {
               // opciones_empleados.value = listadosAuxiliares.empleados
-              opciones_empleados.value = listadosAuxiliares.empleados.filter((v)=>v.cargo_id===cargo_tecnico.id)
+              opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.cargo_id === cargo_tecnico.id)
             })
             return
           }
           update(() => {
             const needle = val.toLowerCase()
-            opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)&&v.cargo_id===cargo_tecnico.id)
+            opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1) && v.cargo_id === cargo_tecnico.id)
           })
-        }else{
+        } else {
           if (val === '') {
             update(() => {
               opciones_empleados.value = listadosAuxiliares.empleados

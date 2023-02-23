@@ -4,19 +4,16 @@ import { markRaw } from 'vue'
 
 // Paginas
 // import TipoTareaPage from 'tareas/tiposTareas/view/TipoTrabajoPage.vue'
-import EmergenciasPage from 'tareas/controlTareas/modules/subtareas/modules/gestionarAvances/view/GestionarAvancesPage.vue'
-import PausasRealizadasPage from 'tareas/controlTareas/modules/subtareas/modules/gestionarAvances/modules/pausasRealizadas/view/PausasRealizadasPage.vue'
-import ArchivoSubtarea from 'tareas/controlTareas/modules/subtareasListadoContnt/modules/gestorArchivosSubtareas/view/ArchivoSubtareaPage.vue'
-//import SubtareasPage from 'subtareas/view/SubtareaPage.vue'
-import EmergenciaPage from 'subtareas/modules/controlAvance/view/EmergenciaPage.vue'
-import ClienteFinalPage from 'tareas/clientesFinales/view/ClienteFinalPage.vue'
+//import EmergenciasPage from 'trabajos/modules/gestionarAvances/view/GestionarAvancesPage.vue'
+import PausasRealizadasPage from 'gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
+import GestorArchivoTrabajo from 'gestionTrabajos/formulariosTrabajos/gestorArchivosTrabajos/view/GestorArchivoTrabajoPage.vue'
+import EmergenciasPage from 'gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
+import ClienteFinalPage from 'clientesFinales/view/ClienteFinalPage.vue'
 
 export class TrabajoModales {
   // TipoTareaPage: ComponenteModal
-  // SubtareasPage: ComponenteModal
   EmergenciasPage: ComponenteModal
-  GestionarAvancesPage: ComponenteModal
-  ArchivoSubtarea: ComponenteModal
+  GestorArchivoTrabajo: ComponenteModal
   PausasRealizadasPage: ComponenteModal
   ClienteFinalPage: ComponenteModal
 
@@ -27,14 +24,8 @@ export class TrabajoModales {
     this.EmergenciasPage = markRaw(
       new ComponenteModal('Gestionar avances', EmergenciasPage)
     )
-    /*this.SubtareasPage = markRaw(
-      new ComponenteModal('Detalles del trabajo', SubtareasPage)
-    )*/
-    this.GestionarAvancesPage = markRaw(
-      new ComponenteModal('Emergencias', EmergenciaPage)
-    )
-    this.ArchivoSubtarea = markRaw(
-      new ComponenteModal('Compartir archivos para el trabajo', ArchivoSubtarea)
+    this.GestorArchivoTrabajo = markRaw(
+      new ComponenteModal('Compartir archivos para el trabajo', GestorArchivoTrabajo)
     )
     this.PausasRealizadasPage = markRaw(
       new ComponenteModal('Pausas realizadas', PausasRealizadasPage)

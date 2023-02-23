@@ -1,10 +1,10 @@
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 
 export class EmpleadoSeleccionado extends Empleado {
-  responsable: boolean
+  es_responsable: boolean
 
   constructor() {
     super()
-    this.responsable = false
+    this.es_responsable = false
   }
 }

@@ -41,4 +41,4 @@
   </q-page>
 </template>
 
-<script src="./ArchivoSubtareaPage.ts"></script>
+<script src="./GestorArchivoTrabajoPage.ts"></script>

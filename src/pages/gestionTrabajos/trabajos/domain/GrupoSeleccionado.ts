@@ -1,10 +1,10 @@
 import { Grupo } from 'recursosHumanos/grupos/domain/Grupo'
 
 export class GrupoSeleccionado extends Grupo {
-  responsable: boolean
+  es_responsable: boolean
 
   constructor() {
     super()
-    this.responsable = false
+    this.es_responsable = false
   }
 }

@@ -31,8 +31,8 @@ export const configuracionColumnasEmpleadoSeleccionado: ColumnConfig<EmpleadoSel
     sortable: true,
   },
   {
-    name: 'responsable',
-    field: 'responsable',
+    name: 'es_responsable',
+    field: 'es_responsable',
     label: 'Responsable',
     align: 'left',
     sortable: true,

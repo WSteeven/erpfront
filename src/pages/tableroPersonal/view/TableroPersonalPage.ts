@@ -9,7 +9,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 // Logica y controladores
 import { ComportamientoModalesTableroPersonal } from '../application/ComportamientoModalesTableroPersonal'
 import { TableroPersonalController } from '../infraestructure/TableroPersonalController'
-import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
+// import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { TableroPersonal } from '../domain/TableroPersonal'
 
 export default defineComponent({
@@ -40,7 +40,7 @@ export default defineComponent({
     const fecha = date.formatDate(timeStamp, 'dddd, DD MMMM YYYY')
 
     function verSubtarea() {
-      modales.abrirModalEntidad('SubtareaAsignadaPage')
+      // modales.abrirModalEntidad('SubtareaAsignadaPage')
     }
 
     async function obtenerSubtareasPendientesAsignar() {
@@ -48,8 +48,8 @@ export default defineComponent({
         estado: 'CREADO',
         coordinador_id: store.user.id,
       }
-      const { result } = await new SubtareaController().listar(filtros)
-      subtareasPorAsignar.value = result
+      // const { result } = await new SubtareaController().listar(filtros)
+      // subtareasPorAsignar.value = result
     }
 
     // obtenerSubtareasPendientesAsignar()
