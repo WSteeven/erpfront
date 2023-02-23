@@ -1,15 +1,16 @@
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
 import { CustomActionTable } from "components/tables/domain/CustomActionTable"
-import { estadosSubtareas } from "config/utils"
+import { estadosTrabajos } from "config/utils"
 import { useNotificaciones } from "shared/notificaciones"
 import { useSubtareaListadoStore } from "stores/subtareaListado"
+import { Ref } from "vue"
 import { Trabajo } from "../domain/Trabajo"
 import { CambiarEstadoTrabajo } from "./CambiarEstadoTrabajo"
 import { ComportamientoModalesTrabajo } from "./ComportamientoModalesTrabajo"
 
-export const useBotonesTablaTrabajo = () => {
+export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: ComportamientoModalesTrabajo) => {
     const subtareaListadoStore = useSubtareaListadoStore()
-    const modales = new ComportamientoModalesTrabajo()
+    // const modales = new ComportamientoModalesTrabajo()
     const { confirmar, notificarCorrecto, prompt, notificarAdvertencia } = useNotificaciones()
     const cambiarEstadoTrabajo = new CambiarEstadoTrabajo()
 
@@ -39,10 +40,10 @@ export const useBotonesTablaTrabajo = () => {
     } */
 
     /* const botonEditarSubtarea: CustomActionTable = {
-        titulo: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'Editar' : 'Visualizar',
-        icono: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO ? 'bi-pencil' : 'bi-eye',
+        titulo: ({ entidad }) => entidad.estado === estadosTrabajos.CREADO ? 'Editar' : 'Visualizar',
+        icono: ({ entidad }) => entidad.estado === estadosTrabajos.CREADO ? 'bi-pencil' : 'bi-eye',
         accion: async ({ entidad, posicion }) => {
-            tareaStore.accionSubtarea = entidad.estado === estadosSubtareas.CREADO ? acciones.editar : acciones.consultar
+            tareaStore.accionSubtarea = entidad.estado === estadosTrabajos.CREADO ? acciones.editar : acciones.consultar
 
             modales.abrirModalEntidad('SubtareasPage')
             subtareaListadoStore.posicionSubtareaSeleccionada = posicion
@@ -55,7 +56,7 @@ export const useBotonesTablaTrabajo = () => {
         titulo: 'Formulario',
         icono: 'bi-check2-square',
         color: 'indigo',
-        visible: ({ entidad }) => [estadosSubtareas.EJECUTANDO, estadosSubtareas.REALIZADO, estadosSubtareas.PAUSADO, estadosSubtareas.FINALIZADO].includes(entidad.estado),
+        visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
         accion: ({ entidad }) => {
             subtareaListadoStore.idSubtareaSeleccionada = entidad.id
             modales.abrirModalEntidad('EmergenciasPage')
@@ -76,14 +77,14 @@ export const useBotonesTablaTrabajo = () => {
         titulo: 'Finalizar',
         color: 'positive',
         icono: 'bi-check',
-        visible: ({ entidad }) => entidad.estado === estadosSubtareas.REALIZADO,
+        visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
         accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
             const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id)
-            entidad.estado = estadosSubtareas.FINALIZADO
+            entidad.estado = estadosTrabajos.FINALIZADO
             entidad.fecha_hora_finalizacion = result.fecha_hora_finalizacion
             entidad.dias_ocupados = result.dias_ocupados
             actualizarElemento(posicion, entidad)
-            notificarCorrecto('Subtarea finalizada exitosamente!')
+            notificarCorrecto('Trabajo finalizada exitosamente!')
         }),
     }
 
@@ -91,14 +92,14 @@ export const useBotonesTablaTrabajo = () => {
         titulo: 'Asignar',
         color: 'indigo',
         icono: 'bi-person-fill-check',
-        visible: ({ entidad }) => entidad.estado === estadosSubtareas.CREADO,
+        visible: ({ entidad }) => entidad.estado === estadosTrabajos.CREADO,
         accion: ({ entidad, posicion }) => {
             confirmar('¿Está seguro de asignar la subtarea?', async () => {
                 const { result } = await cambiarEstadoTrabajo.asignar(entidad.id)
-                entidad.estado = estadosSubtareas.ASIGNADO
+                entidad.estado = estadosTrabajos.ASIGNADO
                 entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
                 actualizarElemento(posicion, entidad)
-                notificarCorrecto('Subtarea asignada exitosamente!')
+                notificarCorrecto('Trabajo asignada exitosamente!')
             })
         },
     }
@@ -107,13 +108,13 @@ export const useBotonesTablaTrabajo = () => {
         titulo: 'Cancelar',
         color: 'negative',
         icono: 'bi-x-circle-fill',
-        visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO,
+        visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
         accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de cancelar definitivamente la subtarea?'], async () => {
             const config: CustomActionPrompt = {
                 mensaje: 'Ingrese el motivo de la cancelación',
                 accion: async (data) => {
                     const { result } = await cambiarEstadoTrabajo.cancelar(entidad.id, data)
-                    entidad.estado = estadosSubtareas.CANCELADO
+                    entidad.estado = estadosTrabajos.CANCELADO
                     entidad.fecha_hora_cancelacion = result.fecha_hora_cancelacion
                     entidad.causa_cancelacion = result.causa_cancelacion
                     notificarCorrecto('Trabajo cancelado exitosamente!')
@@ -129,14 +130,14 @@ export const useBotonesTablaTrabajo = () => {
         titulo: 'Reagendar',
         color: 'info',
         icono: 'bi-calendar-check',
-        visible: ({ entidad }) => entidad.estado === estadosSubtareas.SUSPENDIDO,
+        visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
         accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
             const config: CustomActionPrompt = {
                 mensaje: 'Ingrese la nueva fecha',
                 tipo: 'date',
                 accion: async (data) => {
                     const { result } = await cambiarEstadoTrabajo.reagendar(entidad.id, data)
-                    entidad.estado = estadosSubtareas.CREADO
+                    entidad.estado = estadosTrabajos.CREADO
                     entidad.fecha_hora_creacion = result.fecha_hora_creacion
                     notificarCorrecto('Trabajo reagendado exitosamente!')
                     actualizarElemento(posicion, entidad)

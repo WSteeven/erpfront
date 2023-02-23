@@ -22,7 +22,6 @@
     bordered
     :selection="tipoSeleccion"
     v-model:selected="selected"
-    wrap-cells
     :style="estilos"
     class="bg-body-table custom-border my-sticky-column-table"
     :class="{
@@ -30,12 +29,15 @@
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
       'my-sticky-dynamic2': !inFullscreen && altoFijo,
       'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
+      'my-sticky-column-table-dark': $q.dark.isActive,
+      'my-sticky-column-table-light': !$q.dark.isActive,
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
     :pagination="pagination"
     no-data-label="Aún no se han agregado elementos"
   >
+    <!-- wrap-cells -->
     <!--@virtual-scroll="onScroll" -->
     <template v-slot:no-data="{ message }">
       <div class="full-width row flex-center text-grey-8 q-gutter-sm">
@@ -278,7 +280,7 @@
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
       <q-td v-if="!$q.screen.xs" :props="props">
-        <div class="row full-width block q-gutter-x-sm justify-center">
+        <div class="row full-width block q-gutter-sm justify-center">
           <!-- Consultar -->
           <q-btn
             v-if="permitirConsultar"
@@ -319,19 +321,19 @@
           </q-btn>
 
           <!-- custom botons -->
-          <span class="row full-width text-left">
-            <CustomButtons
-              :accion1="accion1"
-              :accion2="accion2"
-              :accion3="accion3"
-              :accion4="accion4"
-              :accion5="accion5"
-              :accion6="accion6"
-              :accion7="accion7"
-              :accion8="accion8"
-              :propsTable="props"
-            ></CustomButtons>
-          </span>
+          <!--<span class="row full-width text-left"> -->
+          <CustomButtons
+            :accion1="accion1"
+            :accion2="accion2"
+            :accion3="accion3"
+            :accion4="accion4"
+            :accion5="accion5"
+            :accion6="accion6"
+            :accion7="accion7"
+            :accion8="accion8"
+            :propsTable="props"
+          ></CustomButtons>
+          <!---</span> -->
         </div>
       </q-td>
     </template>
@@ -935,18 +937,7 @@
 }
 
 .my-sticky-column-table {
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
   max-width: 100%;
-
-  thead tr:first-child th:last-child {
-    /* bg color is important for th; just specify one */
-    background-color: $grey-2;
-  }
-
-  td:last-child {
-    background-color: #fff;
-  }
 
   th:last-child,
   td:last-child {
@@ -955,6 +946,26 @@
     z-index: 1;
     border-left: 1px solid $grey-4;
     border-bottom: 1px solid $grey-4;
+  }
+}
+
+.my-sticky-column-table-dark {
+  thead tr:first-child th:last-child {
+    background-color: #1f1f1f;
+  }
+
+  td:last-child {
+    background-color: #060606;
+  }
+}
+
+.my-sticky-column-table-light {
+  thead tr:first-child th:last-child {
+    background-color: $grey-2;
+  }
+
+  td:last-child {
+    background-color: #fff;
   }
 }
 </style>

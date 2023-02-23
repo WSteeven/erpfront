@@ -1,11 +1,12 @@
 <template>
   <!-- Accion 1-->
-  <span
+  <!--<span
     :class="{
       'row full-width justify-left q-gutter-sm': !$q.screen.xs,
       'column justify-end q-gutter-y-sm': $q.screen.xs,
     }"
-  >
+  > -->
+  <div class="text-left block">
     <q-btn
       v-if="extraerVisible(accion1)"
       :color="accion1?.color ?? 'primary'"
@@ -172,7 +173,7 @@
       ></q-icon>
       <span>{{ extraerTitulo(accion8) }}</span>
     </q-btn>
-  </span>
+  </div>
 </template>
 
 <script lang="ts" setup>

@@ -194,7 +194,7 @@ export const accionesTabla = {
   field: 'acciones',
   label: 'Acciones',
   align: 'center',
-  style: 'width: 500px'
+  //style: 'width: 1000px'
 }
 
 export const tiposTrabajosEstaticos = {
@@ -277,7 +277,7 @@ export const estadosDevoluciones = {
   CREADA: 'CREADA',
   ANULADA: 'ANULADA',
 }
-export const estadosSubtareas = {
+export const estadosTrabajos = {
   CREADO: 'CREADO',
   ASIGNADO: 'ASIGNADO',
   EJECUTANDO: 'EJECUTANDO',
