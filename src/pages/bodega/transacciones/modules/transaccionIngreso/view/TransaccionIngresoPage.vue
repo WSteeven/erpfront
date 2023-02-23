@@ -138,6 +138,8 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :disable="disabled||soloLectura"
+              :rules="[ val => val< 0 || 'Ingresa un numero válido' ]"
+              :lazy-rules="true"
               outlined
               dense
             >

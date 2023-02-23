@@ -658,7 +658,7 @@
         </q-chip>
       </q-td>
     </template>
-
+    <!-- corregir esto para que sea dinamico -->
     <template #body-cell-condiciones="props">
       <q-td :props="props">
         <!-- Estados de la tabla condiciones -->

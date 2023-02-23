@@ -35,7 +35,7 @@ import { DetalleProductoController } from 'pages/bodega/detalles_productos/infra
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useTransaccionStore } from 'stores/transaccion'
 import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
@@ -128,7 +128,7 @@ export default defineComponent({
         }, */
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
+          params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
         /* autorizaciones: {

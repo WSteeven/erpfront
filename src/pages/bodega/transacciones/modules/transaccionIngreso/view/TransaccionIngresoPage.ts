@@ -31,7 +31,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { motivos, tabOptionsTransaccionesIngresos } from 'config/utils'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
@@ -121,7 +121,7 @@ export default defineComponent({
                 // sucursales: { controller: new SucursalController(), params: { campos: 'id,lugar' } },
                 // autorizaciones: { controller: new AutorizacionController(), params: { campos: 'id,nombre' } },
                 // estados: { controller: new EstadosTransaccionController(), params: { campos: 'id,nombre' } },
-                tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,detalle,cliente_id' } },
+                tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,titulo,cliente_id' } },
                 motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 1 } },
                 detalles: { controller: new DetalleProductoController(), params: { campos: 'id,producto_id,descripcion,modelo_id,serial' } },
                 clientes: {
