@@ -1,5 +1,5 @@
 import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
-import { TrabajoAsignadoModales } from 'pages/tareas/trabajoAsignado/domain/TrabajoAsignadoModales'
+import { TrabajoAsignadoModales } from '../domain/TrabajoAsignadoModales'
 
 export class ComportamientoModalesTrabajoAsignado extends ComportamientoModales<TrabajoAsignadoModales> {
     constructor() {

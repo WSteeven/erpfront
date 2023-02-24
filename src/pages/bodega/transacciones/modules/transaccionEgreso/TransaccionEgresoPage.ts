@@ -2,22 +2,20 @@
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
-// import { configuracionColumnasProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, motivos, tabOptionsTransacciones } from 'config/utils'
+import { acciones, motivos } from 'config/utils'
 
 // Componentes
-import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -27,31 +25,24 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 
 //Controladores
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
 import { useNotificaciones } from 'shared/notificaciones'
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useTransaccionStore } from 'stores/transaccion'
-import { useDetalleTransaccionStore } from 'stores/detalleTransaccion'
-import { useDetalleStore } from 'stores/detalle'
-import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesTransaccionEgreso'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
-import { useInventarioStore } from 'stores/inventario'
 import { ValidarListadoProductosEgreso } from './application/validaciones/ValidarListadoProductosEgreso'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
+  components: { TabLayout, EssentialTable, EssentialSelectableTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
@@ -62,10 +53,8 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
-    const detalleTransaccionStore = useDetalleTransaccionStore()
     const pedidoStore = usePedidoStore()
     const transferenciaStore = useTransferenciaStore()
-    const inventarioStore = useInventarioStore()
 
     //orquestador
     const {
@@ -76,14 +65,6 @@ export default defineComponent({
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
     } = useOrquestadorSelectorItemsTransaccion(transaccion, 'inventarios')
-    /* const {
-        refListadoSeleccionable: refListadoSeleccionableProductos,
-        criterioBusqueda: criterioBusquedaProducto,
-        listado: listadoProductos,
-        listar: listarProductos,
-        limpiar: limpiarProducto,
-        seleccionar: seleccionarProducto
-    } = useOrquestadorSelectorItemsTransaccion(transaccion, 'detalles') */
 
 
     const usuarioLogueado = store.user
@@ -98,12 +79,9 @@ export default defineComponent({
     let puedeDespacharMaterial = ref(false)
     let esVisibleAutorizacion = ref(false)
 
-    let tabSeleccionado = ref()
-    let puedeEditar = ref(false)
     let esVisibleTarea = ref(false)
     let requiereFecha = ref(false) //para mostrar u ocultar fecha limite
 
-    const modales = new ComportamientoModalesTransaccionEgreso()
     // const modales =new ComportamientoModalesTransaccionIngreso()
 
     const opciones_empleados = ref([])
@@ -122,27 +100,11 @@ export default defineComponent({
             estado: 1
           }
         },
-        /* sucursales: {
-          controller: new SucursalController(),
-          params: { campos: 'id,lugar' },
-        }, */
         tareas: {
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
-        /* autorizaciones: {
-          controller: new AutorizacionController(),
-          params: {
-            campos: 'id,nombre'
-          }
-        }, */
-        /* detalles: {
-          controller: new DetalleProductoController(),
-          params: {
-            campos: 'id,producto_id,descripcion,modelo_id,serial'
-          }
-        }, */
         clientes: {
           controller: new ClienteController(),
           params: {
@@ -257,29 +219,11 @@ export default defineComponent({
       },
       visible: () => puedeEditarCantidad.value
     }
-    const botonDespachar: CustomActionTable = {
-      titulo: 'Despachar',
-      accion: async ({ entidad }) => {
-        transaccionStore.idTransaccion = entidad.id
-        await transaccionStore.cargarTransaccion(entidad.id)
-        // await detalleTransaccionStore.cargarDetalleEspecifico(transaccionStore.transaccion.id!, entidad.listadoProductosTransaccion[posicion]['id'])
-        // console.log('La transaccion del store', transaccionStore.transaccion)
-
-        //aqui va toda la logica de los despachos de material
-        await transaccionStore.showPreview()
-        modales.abrirModalEntidad('DespacharPage')
-      },
-      // visible: ({ entidad, posicion }) => puedeDespacharMaterial.value
-      visible: ({ entidad, posicion }) => puedeEditar.value && esBodeguero
-      // }
-    }
-
-    const empleadoRetira = ref()
     const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
       color: 'secondary',
       icono: 'bi-printer',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.imprimirEgreso()
       },
@@ -289,7 +233,6 @@ export default defineComponent({
       limpiarTransaccion()
       await pedidoStore.cargarPedido(id)
       await cargarDatos()
-      // console.log(pedidoStore.pedido)
     }
 
     async function llenarTransferencia(id: number) {
@@ -317,7 +260,7 @@ export default defineComponent({
       transaccion.solicitante = Number.isInteger(pedidoStore.pedido.solicitante) ? pedidoStore.pedido.solicitante : pedidoStore.pedido.solicitante_id
       transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable) ? pedidoStore.pedido.responsable : pedidoStore.pedido.responsable_id
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
-      transaccion.per_autoriza = Number.isInteger(pedidoStore.pedido.per_autoriza)?pedidoStore.pedido.per_autoriza:pedidoStore.pedido.per_autoriza_id
+      transaccion.per_autoriza = Number.isInteger(pedidoStore.pedido.per_autoriza) ? pedidoStore.pedido.per_autoriza : pedidoStore.pedido.per_autoriza_id
       listadoPedido.value = pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)
       listadoPedido.value.sort((v, w) => v.id - w.id)
       //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
@@ -452,8 +395,6 @@ export default defineComponent({
       esVisibleTarea,
       requiereFecha,
 
-      //modales
-      modales,
 
       //filtros
       filtroTareas,
@@ -504,7 +445,6 @@ export default defineComponent({
       configuracionColumnasProductosSeleccionados,
       configuracionColumnasDetallesProductos,
       botonEditarCantidad,
-      botonDespachar,
       botonEliminar,
       botonImprimir,
       eliminar,
@@ -529,23 +469,6 @@ export default defineComponent({
 
       //transferencia
       llenarTransferencia,
-
-      //tabs y filtros
-      tabOptionsTransacciones,
-      puedeEditar,
-      tabSeleccionado,
-
-      tabEs(val) {
-        tabSeleccionado.value = val
-        puedeEditar.value = (esBodeguero && tabSeleccionado.value === 'PENDIENTE') || (esBodeguero && tabSeleccionado.value === 'PARCIAL')
-          ? true
-          : esCoordinador && tabSeleccionado.value === 'ESPERA'
-            ? true
-            : false
-
-      },
-      //accion que se envia
-      // accionDespachar: botonDespachar,
 
 
 

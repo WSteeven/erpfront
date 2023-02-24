@@ -1,13 +1,10 @@
 <template>
-  <tab-layout-filter-tabs
+  <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Transacciones - Egresos"
-    :tab-options="tabOptionsTransaccionesIngresos"
-    @tab-seleccionado="tabEs"
-    :permitirEditar="puedeEditar"
+    titulo-pagina="Transacciones - Ingresos"
+    :permitirEditar="false"
     :accion1="botonImprimir"
-    :accion2="botonEditarInventario"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -138,7 +135,7 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :disable="disabled||soloLectura"
-              :rules="[ val => val< 0 || 'Ingresa un numero válido' ]"
+              :rules="[ val => val> 0 || 'Ingresa un numero de comprobante válido' ]"
               :lazy-rules="true"
               outlined
               dense
@@ -253,7 +250,7 @@
               :readonly="disabled"
               :disable="disabled||soloLectura"
               @update:model-value="filtroTareas"
-              :option-label="(item) => item.detalle"
+              :option-label="(item) => item.titulo"
               :option-value="(item) => item.id"
               emit-value
               map-options
@@ -261,31 +258,10 @@
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
-            </q-select>
-          </div>
-          <!-- Subtarea -->
-          <div v-if="esVisibleSubtarea" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Subtarea</label>
-            <q-select
-              v-model="transaccion.subtarea"
-              :options="opciones_subtareas"
-              transition-show="jum-up"
-              transition-hide="jum-up"
-              options-dense
-              clearable
-              hint="Subtarea #"
-              dense
-              outlined
-              :readonly="disabled"
-              :option-label="(item) => item.detalle"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
-            >
             </q-select>
           </div>
           <!-- Select estado -->
@@ -488,7 +464,6 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
-              :accion3="botonInventario"
               @eliminar="eliminarItem"
               :permitirEditarModal="true"
               :modalMaximized="false"
@@ -507,9 +482,7 @@
       >
       </essential-selectable-table>
     </template>
-  </tab-layout-filter-tabs>
+  </tab-layout>
 
-  <!-- Modales -->
-  <modales-entidad :comportamiento="modales"></modales-entidad>
-</template>
+  </template>
 <script src="./TransaccionIngresoPage.ts" />

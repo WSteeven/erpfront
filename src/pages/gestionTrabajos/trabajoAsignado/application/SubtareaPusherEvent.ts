@@ -1,4 +1,4 @@
-import { estadosSubtareas } from 'config/utils'
+import { estadosTrabajos } from 'config/utils'
 import Pusher from 'pusher-js'
 import { Ref } from 'vue'
 
@@ -23,7 +23,7 @@ export class SubtareaPusherEvent {
 
     pusher.subscribe('subtareas-tracker')
     pusher.bind('subtarea-event', function (e) {
-      if (puedeEjecutar.value) accion(estadosSubtareas.ASIGNADO)
+      if (puedeEjecutar.value) accion(estadosTrabajos.ASIGNADO)
     })
   }
 }

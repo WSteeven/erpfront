@@ -3,11 +3,11 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 // Paginas
-import SubtareaAsignadaPage from 'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
+import SubtareaAsignadaPage from '../modules/subtareasAsignadas/view/SubtareaAsignadaPage'
 // import RecopilacionInformacion from 'pages/tareas/trabajoAsignado/modules/recopilacionInformacion/view/SeleccionFormularioPage.vue'
-import ControlTendido from 'tareas/tendidos/controlTendidos/view/ControlTendidoPage.vue'
-import SeleccionFormularioPage from 'pages/tareas/trabajoAsignado/modules/seleccionFormulario/view/SeleccionFormularioPage.vue'
-import EmergenciaPage from 'tareas/controlTareas/modules/subtareas/modules/controlAvance/view/EmergenciaPage.vue'
+import ControlTendidoPage from 'pages/gestionTrabajos/tendidos/controlTendidos/view/ControlTendidoPage'
+import SeleccionFormularioPage from 'pages/gestionTrabajos/trabajoAsignado/modules/seleccionFormulario/view/SeleccionFormularioPage.vue'
+import EmergenciaPage from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage'
 
 export class TrabajoAsignadoModales {
   SubtareaAsignadaPage: ComponenteModal
@@ -24,7 +24,7 @@ export class TrabajoAsignadoModales {
         new ComponenteModal('CONSTRUCRED', RecopilacionInformacion)
     )*/
     this.ControlTendido = markRaw(
-      new ComponenteModal('CONSTRUCRED', ControlTendido)
+      new ComponenteModal('CONSTRUCRED', ControlTendidoPage)
     )
 
     this.SeleccionFormularioPage = markRaw(

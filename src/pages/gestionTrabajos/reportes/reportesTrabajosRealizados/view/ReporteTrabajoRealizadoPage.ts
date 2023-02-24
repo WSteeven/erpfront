@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasSubtareas } from 'tareas/controlTareas/modules/subtareasListadoContent/domain/configuracionColumnasSubtareas'
+import { configuracionColumnasSubtareas } from '../domain/configuracionColumnasReporte'
 import { required } from '@vuelidate/validators'
 import { defineComponent, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
@@ -13,8 +13,8 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ReporteTrabajoRealizadoController } from '../infraestructure/ReporteTrabajoRealizadoController'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
-import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { ReporteControlMaterial } from '../domain/ReporteControlMaterial'
 import { FiltroReporteMaterial } from '../domain/FiltroReporteMaterial'
 

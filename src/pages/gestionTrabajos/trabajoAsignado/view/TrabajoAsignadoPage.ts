@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasTrabajoAsignado } from '../domain/configuracionColumnasTrabajoAsignado'
-import { tabTrabajoAsignado, accionesTabla, estadosSubtareas } from 'config/utils'
+import { tabTrabajoAsignado, accionesTabla, estadosTrabajos as estadosSubtareas } from 'config/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -9,17 +9,18 @@ import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 
 // Componentes
-import ConfirmarDialog from 'pages/tareas/trabajoAsignado/view/ConfirmarDialog.vue'
+// import ConfirmarDialog from 'pages/tareas/trabajoAsignado/view/ConfirmarDialog.vue'
+import ConfirmarDialog from 'pages/gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { CambiarEstadoSubtarea } from 'pages/tareas/controlTareas/modules/subtareasListadoContent/application/CambiarEstadoSubtarea'
-import { SubtareaController } from 'pages/tareas/controlTareas/modules/subtareas/infraestructure/SubtareaController'
+import { CambiarEstadoSubtarea } from 'pages/gestionTrabajos/controlTareas/modules/subtareasListadoContent/application/CambiarEstadoSubtarea'
+import { SubtareaController } from 'pages/gestionTrabajos/controlTareas/modules/subtareas/infraestructure/SubtareaController'
 import { TrabajoAsignadoController } from '../modules/subtareasAsignadas/infraestructure/TipoTrabajoController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { Subtarea } from 'pages/tareas/controlTareas/modules/subtareas/domain/Subtarea'
+import { Subtarea } from 'pages/gestionTrabajos/controlTareas/modules/subtareas/domain/Subtarea'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'

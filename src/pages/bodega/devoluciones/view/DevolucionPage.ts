@@ -19,7 +19,7 @@ import { Devolucion } from '../domain/Devolucion'
 
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
@@ -187,7 +187,7 @@ export default defineComponent({
             },
             visible: () => tabSeleccionado.value == 'CREADA' ? true : false
         }
-        
+
         function comprobarTarea() {
             if (devolucionStore.devolucion.tarea !== null) {
                 return {

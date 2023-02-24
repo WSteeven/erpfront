@@ -1,15 +1,10 @@
 <template>
-  <!--   {{ puedeEditar }}
-  {{ tabSeleccionado }} -->
-  <tab-layout-filter-tabs
+  <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
-    :tab-options="tabOptionsTransacciones"
-    @tab-seleccionado="tabEs"
-    :permitirEditar="puedeEditar"
-    :accion1="botonDespachar"
-    :accion2="botonImprimir"
+    :permitirEditar="false"
+    :accion1="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -31,17 +26,6 @@
           <div v-if="transaccion.created_at" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="transaccion.created_at" disable outlined dense />
-          </div>
-          <!-- Requiere Fecha -->
-          <div v-if="false" class="col-12 col-md-3">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="requiereFecha"
-              label="¿Fecha límite?"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
           </div>
           <!-- Select motivo -->
           <div v-if="esBodeguero" class="col-12 col-md-3 q-mb-md">
@@ -333,7 +317,7 @@
               :disable="soloLectura"
               :readonly="disabled || soloLectura"
               @update:model-value="filtroTareas"
-              :option-label="(item) => item.detalle"
+              :option-label="(item) => item.titulo"
               :option-value="(item) => item.id"
               emit-value
               map-options
@@ -341,7 +325,7 @@
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
@@ -568,8 +552,6 @@
       >
       </essential-selectable-table>
     </template>
-  </tab-layout-filter-tabs>
-  <!-- Modales -->
-  <modales-entidad :comportamiento="modales"></modales-entidad>
+  </tab-layout>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

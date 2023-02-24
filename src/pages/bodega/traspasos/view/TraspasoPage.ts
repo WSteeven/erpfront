@@ -21,7 +21,7 @@ import { TraspasoController } from '../infraestructure/TraspasoController'
 import { Traspaso } from '../domain/Traspaso'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useAuthenticationStore } from 'stores/authentication'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
@@ -129,7 +129,7 @@ export default defineComponent({
 
         /**
          * Funciones
-         * 
+         *
          */
 
         function eliminar({ entidad, posicion }) {

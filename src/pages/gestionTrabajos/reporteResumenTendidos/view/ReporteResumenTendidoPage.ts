@@ -13,8 +13,8 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ReporteControlMaterialController } from '../infraestructure/ReporteControlMaterialController'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
-import { GrupoController } from 'pages/tareas/grupos/infraestructure/GrupoController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { ReporteControlMaterial } from '../domain/ReporteControlMaterial'
 import { FiltroReporteMaterial } from '../domain/FiltroReporteMaterial'
 
