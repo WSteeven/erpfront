@@ -915,7 +915,7 @@
 }
 
 .alto-fijo-desktop {
-  height: calc(100vh - 200px);
+  height: calc(100vh - 100px);
 }
 
 .alto-fijo-mobile {

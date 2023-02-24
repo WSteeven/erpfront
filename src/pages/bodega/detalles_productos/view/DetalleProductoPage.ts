@@ -44,8 +44,8 @@ export default defineComponent({
         const opciones_procesadores = ref([])
 
         //Obtener los listados
-        cargarVista(() => {
-            obtenerListados({
+        cargarVista(async() => {
+            await obtenerListados({
                 productos: {
                     controller: new ProductoController(),
                     params: { campos: 'id,nombre,categoria_id' }
@@ -155,7 +155,7 @@ export default defineComponent({
         const categoria_var = ref('')
 
         watch(categoria_var, () => {
-            if (accion === acciones.consultar) {
+            if (accion.value === acciones.consultar) {
                 limpiarCamposInformatica()
                 limpiarCamposAdicionales()
                 console.log(detalle.categoria)
@@ -296,6 +296,10 @@ export default defineComponent({
                 if (producto[0]['categoria'] === 'EPP') {
                     limpiarCamposInformatica()
                 } */
+            },
+            calcularMetraje(){
+                detalle.custodia = (parseInt(detalle.punta_inicial!)+parseInt(detalle.punta_final!)).toString()
+                console.log(detalle.custodia)
             }
         }
     }

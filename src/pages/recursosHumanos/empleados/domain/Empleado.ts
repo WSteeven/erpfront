@@ -10,7 +10,7 @@ export class Empleado extends EntidadAuditable {
     email: string | null
     password: string | null
     usuario: string | null
-    sucursal: string | null
+    canton: string | null
     estado: string | null
     cargo: number | null
     roles: string | null | string[]
@@ -32,7 +32,7 @@ export class Empleado extends EntidadAuditable {
         this.email = null
         this.password = null
         this.usuario = null
-        this.sucursal = null
+        this.canton = null
         this.estado = null
         this.cargo = null
         this.roles = null

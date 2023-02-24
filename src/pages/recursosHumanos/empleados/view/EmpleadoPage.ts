@@ -10,7 +10,6 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { EmpleadoController } from '../infraestructure/EmpleadoController'
@@ -18,6 +17,7 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { Empleado } from '../domain/Empleado'
 import { useQuasar } from 'quasar'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 
 export default defineComponent({
     components: { TabLayout },
@@ -35,16 +35,13 @@ export default defineComponent({
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
         const { onConsultado, onBeforeModificar } = mixin.useHooks()
 
-        const opciones_sucursales = ref([])
+        const opciones_cantones = ref([])
         const opciones_roles = ref([])
         const opciones_cargos = ref([])
         const opciones_empleados = ref([])
         cargarVista(async() => {
             obtenerListados({
-                sucursales: {
-                    controller: new SucursalController(),
-                    params: { campos: 'id,lugar' },
-                },
+                cantones: new CantonController(),
                 cargos: new CargoController(),
                 roles: {
                     controller: new RolController(),
@@ -78,7 +75,6 @@ export default defineComponent({
             },
             nombres: { required },
             apellidos: { required },
-            sucursal: { required },
             jefe: { required },
             email: { required },
             usuario: { required },
@@ -92,7 +88,7 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, empleado)
         setValidador(v$.value)
 
-        opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_cantones.value = listadosAuxiliares.cantones
         opciones_roles.value = listadosAuxiliares.roles
         opciones_cargos.value = listadosAuxiliares.cargos
         opciones_empleados.value = listadosAuxiliares.empleados
@@ -109,7 +105,7 @@ export default defineComponent({
             isPwd: ref(true),
             listadosAuxiliares,
             //listado
-            opciones_sucursales,
+            opciones_cantones,
             opciones_roles,
             opciones_cargos,
             opciones_empleados,
@@ -127,6 +123,19 @@ export default defineComponent({
                 update(() => {
                     const needle = val.toLowerCase()
                     opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+                })
+            },
+            //filtro de cantones
+            filtroCantones(val, update) {
+                if (val === '') {
+                    update(() => {
+                        opciones_cantones.value = listadosAuxiliares.cantones
+                    })
+                    return
+                }
+                update(() => {
+                    const needle = val.toLowerCase()
+                    opciones_cantones.value = listadosAuxiliares.cantones.filter((v) => v.canton.toLowerCase().indexOf(needle) > -1 )
                 })
             },
             //filtro de cargos
