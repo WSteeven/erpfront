@@ -455,6 +455,7 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :error="!!v$.punta_final.$errors.length"
+              @blur="calcularMetraje"
               outlined
               dense
             >

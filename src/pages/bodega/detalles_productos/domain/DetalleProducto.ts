@@ -23,6 +23,7 @@ export class DetalleProducto extends EntidadAuditable {
     hilos: string | null
     punta_inicial: string | null
     punta_final: string | null
+    punta_corte: string | null
     custodia: string | null
     puntas: string | null
     adicionales: string | null
@@ -59,6 +60,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.hilos = null
         this.punta_inicial = null
         this.punta_final = null
+        this.punta_corte = null
         this.custodia = null
         this.puntas = null
 

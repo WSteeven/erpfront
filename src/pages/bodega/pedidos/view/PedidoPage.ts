@@ -6,7 +6,6 @@ import { defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles'
 
 //Componentes
-// import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -21,7 +20,6 @@ import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { acciones, estadosTransacciones, tabOptionsPedidos, } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -33,10 +31,8 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
-import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
-import { Cargo } from 'pages/recursosHumanos/cargos/domain/Cargo'
 import { LocalStorage } from 'quasar'
-import { PedidoPageEvent } from '../application/PedidoPageEvent'
+
 
 export default defineComponent({
   components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -81,7 +77,6 @@ export default defineComponent({
 
     onReestablecer(() => {
       soloLectura.value = false
-      // console.log(accion.value)
     })
     onConsultado(() => {
       opciones_empleados.value = listadosAuxiliares.empleados
@@ -93,13 +88,13 @@ export default defineComponent({
     console.log('es coordinador? ', esCoordinador)
     console.log('es bodeguero? ', esBodeguero)
     console.log('es activos fijos? ', esActivosFijos)
-    let cargo_tecnico: Cargo
 
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
     const opciones_tareas = ref([])
     const opciones_autorizaciones = ref([])
     const opciones_estados = ref([])
+
     //Obtener los listados
     cargarVista(async () => {
       await obtenerListados({
@@ -114,23 +109,7 @@ export default defineComponent({
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
-        /* sucursales: {
-          controller: new SucursalController(),
-          params: { campos: 'id,lugar' },
-        }, */
-        /* autorizaciones: {
-          controller: new AutorizacionController(),
-          params: { campos: 'id,nombre' },
-        }, */
-        /* estados: {
-          controller: new EstadosTransaccionController(),
-          params: { campos: 'id,nombre' },
-        }, */
       })
-      //obtener el cargo
-      const response = await new CargoController().listar({ nombre: 'TECNICO' })
-      cargo_tecnico = (await response).result[0]//se carga el array recibido con el cargo
-      console.log(cargo_tecnico)
     })
 
 
@@ -216,8 +195,6 @@ export default defineComponent({
       icono: 'bi-printer',
       accion: async ({ entidad }) => {
         pedidoStore.idPedido = entidad.id
-        // modales.abrirModalEntidad("ImprimirDevolucionPage")
-        // await pedidoStore.showPreview()
         await pedidoStore.imprimirPdf()
         console.log(pedidoStore.pedido)
         console.log(pedidoStore.pedido.listadoProductos)
@@ -246,19 +223,11 @@ export default defineComponent({
 
 
     //Configurar los listados
-    //filtrar los empleados que solo son tecnicos
     opciones_empleados.value = listadosAuxiliares.empleados
-    // opciones_sucursales.value = listadosAuxiliares.sucursales
-    // opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-    // opciones_estados.value = listadosAuxiliares.estados
     opciones_tareas.value = listadosAuxiliares.tareas
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
-    if (esCoordinador) {
-      opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.cargo_id === cargo_tecnico!.id)
-    }
-
 
     return {
       mixin, pedido, disabled, accion, v$, acciones,
@@ -288,9 +257,6 @@ export default defineComponent({
       botonImprimir,
       botonDespachar,
 
-      //modal
-      // modales,
-
       //stores
       store,
 
@@ -310,8 +276,6 @@ export default defineComponent({
         if (!val) pedido.tarea = null
       },
       tabEs(val) {
-        // console.log(tabSeleccionado.value)
-        // console.log(val)
         tabSeleccionado.value = val
         puedeEditar.value = (esCoordinador && tabSeleccionado.value === estadosTransacciones.pendiente) || (esActivosFijos && tabSeleccionado.value === estadosTransacciones.pendiente)
           ? true
@@ -320,30 +284,17 @@ export default defineComponent({
 
       //Filtros
       filtroResponsable(val, update) {
-        if (esCoordinador) {
-          if (val === '') {
-            update(() => {
-              // opciones_empleados.value = listadosAuxiliares.empleados
-              opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.cargo_id === cargo_tecnico.id)
-            })
-            return
-          }
+        if (val === '') {
           update(() => {
-            const needle = val.toLowerCase()
-            opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1) && v.cargo_id === cargo_tecnico.id)
+            // opciones_empleados.value = listadosAuxiliares.empleados
+            opciones_empleados.value = listadosAuxiliares.empleados
           })
-        } else {
-          if (val === '') {
-            update(() => {
-              opciones_empleados.value = listadosAuxiliares.empleados
-            })
-            return
-          }
-          update(() => {
-            const needle = val.toLowerCase()
-            opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
-          })
+          return
         }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
+        })
       }
     }
   }
