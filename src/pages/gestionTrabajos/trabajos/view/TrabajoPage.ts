@@ -1,12 +1,12 @@
 // Dependencias
-import { configuracionColumnasEmpleadoSeleccionable } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionable'
+import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
 import { configuracionColumnasTrabajo } from 'gestionTrabajos/trabajos/domain/configuracionColumnasTrabajo'
 import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaListadoStore } from 'stores/subtareaListado'
-import { quitarItemDeArray, stringToArray } from 'shared/utils'
+// import { quitarItemDeArray, stringToArray } from 'shared/utils'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,
@@ -65,6 +65,7 @@ import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
 import { Grupo } from 'recursosHumanos/grupos/domain/Grupo'
 import { Trabajo } from '../domain/Trabajo'
 import { useBotonesTablaTrabajo } from '../application/BotonesTablaTrabajos'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
   props: {
@@ -96,11 +97,11 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        tiposTrabajos: {
+        /* tiposTrabajos: {
           controller: new TipoTrabajoController(),
           params: { cliente: tareaStore.tarea.cliente }
-        },
-        trabajos: new TrabajoController(),
+        }, */
+        //         trabajos: new TrabajoController(),
         tareas: new TareaController(),
         grupos: {
           controller: new GrupoController(),
@@ -114,9 +115,9 @@ export default defineComponent({
       })
 
       grupos.value = listadosAuxiliares.grupos
-      tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+      // tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
       tareas.value = listadosAuxiliares.tareas
-      trabajos.value = listadosAuxiliares.trabajos
+      // trabajos.value = listadosAuxiliares.trabajos
       fiscalizadores.value = listadosAuxiliares.fiscalizadores
       coordinadores.value = listadosAuxiliares.coordinadores
       proyectos.value = listadosAuxiliares.proyectos
@@ -378,18 +379,19 @@ export default defineComponent({
     }
 
     // - Filtro tipos de trabajos
+    const tiposTrabajosSource: Ref<TipoTrabajo[]> = ref([])
     const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
     function filtrarTiposTrabajos(val, update) {
       if (val === '') {
         update(() => {
-          tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+          tiposTrabajos.value = tiposTrabajosSource.value
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+        tiposTrabajos.value = tiposTrabajosSource.value.filter(
+          (v) => v.descripcion ? v.descripcion.toLowerCase().indexOf(needle) > -1 : null
         )
       })
     }
@@ -401,18 +403,19 @@ export default defineComponent({
     const cantones = ref([])
 
     // - Filtro trabajos
-    const trabajos = ref([])
+    const trabajosSource: Ref<Trabajo[]> = ref([])
+    const trabajos: Ref<Trabajo[]> = ref([])
     function filtrarTrabajos(val, update) {
       if (val === '') {
         update(() => {
-          trabajos.value = listadosAuxiliares.trabajos
+          trabajos.value = trabajosSource.value
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        tareas.value = listadosAuxiliares.trabajos.filter(
-          (v) => v.codigo_trabajo.toLowerCase().indexOf(needle) > -1
+        trabajos.value = trabajosSource.value.filter(
+          (v) => v.codigo_trabajo ? v.codigo_trabajo.toLowerCase().indexOf(needle) > -1 : null
         )
       })
     }
@@ -525,17 +528,13 @@ export default defineComponent({
     **************/
     const rules = {
       titulo: { required },
-      // grupo: { required: requiredIf(() => trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) },
       descripcion_completa: { required },
       tipo_trabajo: { required },
+      tarea: { required },
       fecha_agendado: { required },
       hora_inicio_agendado: { required },
       hora_fin_agendado: { required: requiredIf(() => trabajo.es_ventana) },
       trabajo_dependiente: { required: requiredIf(() => trabajo.es_dependiente) },
-      // vienen de tareas
-      //codigo_trabajo_cliente: { required },
-      //cliente: { required: requiredIf(() => paraClienteFinal.value) },
-      //proyecto: { required: requiredIf(() => paraProyecto.value) },
     }
 
     const v$ = useVuelidate(rules, trabajo)
@@ -556,19 +555,9 @@ export default defineComponent({
       return result
     }
 
-    // const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === tarea.ubicacion_tarea.provincia))
-
     function establecerCliente() {
       tareaStore.tarea.cliente = trabajo.cliente
     }
-
-    /*function esLider(entidad) {
-      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_lider)
-    }
-
-    function esSecretario(entidad) {
-      return (entidad.roles).replaceAll(', ', ',').split(',').includes(rolesSistema.tecnico_secretario)
-    }*/
 
     function agregarGrupoSeleccionado(grupo_id: number) {
       if (grupo_id) {
@@ -595,7 +584,7 @@ export default defineComponent({
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
       trabajo.empleados_seleccionados.push(...result)
 
-      trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
+      /*trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
         const tecnico = new EmpleadoSeleccionado()
         tecnico.hydrate(empleado)
 
@@ -603,7 +592,7 @@ export default defineComponent({
         tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
 
         return tecnico
-      })
+      })*/
     }
 
     const {
@@ -687,6 +676,23 @@ export default defineComponent({
       filtrar(filtros)
     }
 
+    watchEffect(async () => {
+      if (trabajo.tarea) {
+        const idCliente = obtenerIdCliente(trabajo.tarea)
+        const { result } = await new TipoTrabajoController().listar({ cliente_id: idCliente })
+        tiposTrabajosSource.value = result
+        trabajo.tipo_trabajo = null
+
+        // trabajos
+        // trabajos: new TrabajoController(),
+      }
+    })
+
+    function obtenerIdCliente(idTarea: number) {
+      const tarea: Tarea = tareas.value.filter((tarea: Tarea) => tarea.id === idTarea)[0]
+      return tarea.cliente_id
+    }
+
     return {
       filtrarTodos,
       // Referencias
@@ -725,7 +731,7 @@ export default defineComponent({
       reestablecerDatos,
       accion,
       disable,
-      configuracionColumnasEmpleadoSeleccionable,
+      configuracionColumnasEmpleadoGrupo,
       tipoSeleccion,
       quitarGrupo,
       // orquestador
@@ -782,6 +788,7 @@ export default defineComponent({
       botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonAsignar, botonFinalizar, botonVerPausas,
       accionesTabla,
       botonEditarTrabajo,
+      configuracionColumnasEmpleadoSeleccionado,
     }
   },
 })

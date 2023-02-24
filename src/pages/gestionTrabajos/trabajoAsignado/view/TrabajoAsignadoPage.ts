@@ -4,35 +4,32 @@ import { tabTrabajoAsignado, accionesTabla, estadosTrabajos } from 'config/utils
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, defineComponent, ref } from 'vue'
 import { date } from 'quasar'
 
 // Componentes
-// import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
+import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { CambiarEstadoTrabajo } from 'trabajos/application/CambiarEstadoTrabajo'
-// import { SubtareaController } from 'pages/tareas/controlTareas/modules/subtareas/infraestructure/SubtareaController'
 import { TrabajoAsignadoController } from 'gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-// import { Subtarea } from 'pages/tareas/controlTareas/modules/subtareas/domain/Subtarea'
+import { CambiarEstadoTrabajo } from 'trabajos/application/CambiarEstadoTrabajo'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
-import { obtenerTiempoActual } from 'shared/utils'
-import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
 import { TrabajoController } from 'trabajos/infraestructure/TrabajoController'
+import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
+import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
+import { obtenerTiempoActual } from 'shared/utils'
 import { Trabajo } from 'trabajos/domain/Trabajo'
 
 export default defineComponent({
   components: {
     EssentialTableTabs,
     ModalesEntidad,
-    // ConfirmarDialog,
+    ConfirmarDialog,
   },
   setup() {
     const controller = new TrabajoController()
@@ -58,7 +55,7 @@ export default defineComponent({
     /***********
      * Stores
      ***********/
-    const store = useTrabajoAsignadoStore()
+    const trabajoAsignadoStore = useTrabajoAsignadoStore()
     const authenticationStore = useAuthenticationStore()
 
     /***************
@@ -68,8 +65,8 @@ export default defineComponent({
       titulo: 'Visualizar',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
-        store.idSubtareaSeleccionada = entidad.id
-        modales.abrirModalEntidad('SubtareaAsignadaPage')
+        trabajoAsignadoStore.idTrabajoSeleccionado = entidad.id
+        modales.abrirModalEntidad('DetalleTrabajoAsignadoPage')
       },
     }
 
@@ -77,7 +74,7 @@ export default defineComponent({
       titulo: 'Iniciar',
       icono: 'bi-play-fill',
       color: 'positive',
-      visible: ({ entidad }) => [estadosTrabajos.ASIGNADO].includes(entidad.estado) && entidad.responsable,//(entidad.estado === estadosTrabajos.SUSPENDIDO && entidad.es_primera_asignacion),
+      visible: ({ entidad }) => [estadosTrabajos.ASIGNADO].includes(entidad.estado) && entidad.responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de iniciar el trabajo?', async () => {
           const { fecha, hora } = await obtenerTiempoActual()
@@ -154,7 +151,7 @@ export default defineComponent({
       visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.responsable,
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
-          store.idSubtareaSeleccionada = entidad.id
+          trabajoAsignadoStore.idTrabajoSeleccionado = entidad.id
           // modales.abrirModalEntidad('SeleccionFormularioPage')
           // router.push({ name: 'control_tendidos' })
           // modales.abrirModalEntidad('ControlTendido')

@@ -1,8 +1,7 @@
 <template>
-  <!--<div class="text-bold q-mb-md">Sección de iltros</div> -->
   <div
     v-if="configuracionColumnas && configuracionColumnas.length > 0"
-    class="row q-col-gutter-xs q-py-xs"
+    class="row q-col-gutter-xs q-py-xs col-12"
   >
     <div
       v-for="filtro in camposFiltro"
@@ -117,9 +116,6 @@ export default defineComponent({
       camposFiltro.forEach((filtro: any) => {
         filtros[filtro.field] = null
       })
-
-      // console.log(filtros)
-      // camposFiltro = reactive(reset())
 
       emit('filtrosEditados', filtros)
     }

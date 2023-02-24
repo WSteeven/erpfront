@@ -109,7 +109,7 @@
                 input-debounce="0"
                 emit-value
                 map-options
-                :error="!!v$.tipo_trabajo.$errors.length"
+                :error="!!v$.tarea.$errors.length"
               >
                 <template v-slot:no-option>
                   <q-item>
@@ -131,10 +131,7 @@
                 </template>
 
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_trabajo.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.tarea.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -150,6 +147,7 @@
                 @filter="filtrarTiposTrabajos"
                 transition-show="scale"
                 transition-hide="scale"
+                hint="Seleccione primero una tarea"
                 options-dense
                 dense
                 outlined
@@ -526,9 +524,7 @@
                 ref="refEmpleadosAsignados"
                 titulo="Empleados de los grupos seleccionados"
                 estilos="margin-bottom: 14px;"
-                :configuracionColumnas="
-                  configuracionColumnasEmpleadoSeleccionable
-                "
+                :configuracionColumnas="configuracionColumnasEmpleadoGrupo"
                 :datos="trabajo.empleados_seleccionados"
                 :accion1Header="asignarNuevoTecnicoLider"
                 :accion2Header="designarNuevoSecretario"
@@ -715,7 +711,7 @@
 
         <essential-selectable-table
           ref="refListadoSeleccionableTecnicos"
-          :configuracion-columnas="configuracionColumnasEmpleadoSeleccionable"
+          :configuracion-columnas="configuracionColumnasEmpleadoGrupo"
           :datos="listadoTecnicos"
           tipo-seleccion="multiple"
           @selected="seleccionarEmpleado"
@@ -744,6 +740,7 @@
         :permitirEliminar="false"
         :mostrar-botones="false"
         :mostrarFooter="true"
+        :permitirFiltrar="true"
         @filtrarTodos="filtrarTodos"
       ></essential-table>
     </template>

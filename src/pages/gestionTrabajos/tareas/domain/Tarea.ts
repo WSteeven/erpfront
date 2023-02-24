@@ -15,6 +15,7 @@ export class Tarea extends EntidadAuditable {
   fiscalizador: number | null
   coordinador: number | null
   cliente_final: number | null
+  cliente_id: number | null
 
   constructor() {
     super()
@@ -31,5 +32,6 @@ export class Tarea extends EntidadAuditable {
     this.coordinador = null
     this.fiscalizador = null
     this.cliente_final = null
+    this.cliente_id = null
   }
 }

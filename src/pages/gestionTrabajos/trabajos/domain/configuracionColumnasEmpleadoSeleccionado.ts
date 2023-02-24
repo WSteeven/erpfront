@@ -47,9 +47,9 @@ export const configuracionColumnasEmpleadoSeleccionado: ColumnConfig<EmpleadoSel
   },
 
   {
-    name: 'roles',
-    field: 'roles',
-    label: 'Rol',
+    name: 'cargo',
+    field: 'cargo',
+    label: 'Cargo',
     align: 'left',
     sortable: true,
   },

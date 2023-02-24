@@ -6,7 +6,7 @@ import { markRaw } from 'vue'
 // import TipoTareaPage from 'tareas/tiposTareas/view/TipoTrabajoPage.vue'
 //import EmergenciasPage from 'trabajos/modules/gestionarAvances/view/GestionarAvancesPage.vue'
 import PausasRealizadasPage from 'gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
-import GestorArchivoTrabajo from 'gestionTrabajos/formulariosTrabajos/gestorArchivosTrabajos/view/GestorArchivoTrabajoPage.vue'
+import GestorArchivoTrabajo from 'trabajos/modules/gestorArchivosTrabajos/view/GestorArchivoTrabajoPage.vue'
 import EmergenciasPage from 'gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
 import ClienteFinalPage from 'clientesFinales/view/ClienteFinalPage.vue'
 

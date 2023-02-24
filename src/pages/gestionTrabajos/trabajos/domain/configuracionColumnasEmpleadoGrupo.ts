@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 
-export const configuracionColumnasEmpleado: ColumnConfig<Empleado>[] = [
+export const configuracionColumnasEmpleadoGrupo: ColumnConfig<Empleado>[] = [
   {
     name: 'nombres',
     field: 'nombres',
@@ -38,28 +38,10 @@ export const configuracionColumnasEmpleado: ColumnConfig<Empleado>[] = [
     sortable: true,
     visible: false,
   },
-  /* {
-    name: 'disponible',
-    field: 'disponible',
-    label: 'Disponible',
-    align: 'left',
-    sortable: true, */
-  /* type: 'select',
-  options: [
-    {
-      label: 'AMARRAS',
-      value: '1'
-    },
-    {
-      label: 'PREFORMADOS',
-      value: '2'
-    },
-  ] */
-  // },
   {
-    name: 'roles',
-    field: 'roles',
-    label: 'Rol',
+    name: 'cargo',
+    field: 'cargo',
+    label: 'Cargo',
     align: 'left',
     sortable: true,
   },

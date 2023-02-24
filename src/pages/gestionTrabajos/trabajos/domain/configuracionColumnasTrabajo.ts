@@ -6,23 +6,29 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
   {
     name: 'codigo_tarea_cliente',
     field: 'codigo_tarea_cliente',
-    label: 'Cód. Tarea Cliente',
+    label: 'Tarea Cliente',
     align: 'left',
     sortable: true,
   },
   {
     name: 'tarea',
     field: 'tarea',
-    label: 'Cód. Tarea JP',
+    label: 'Tarea JP',
     align: 'left',
     sortable: true,
   },
   {
     name: 'codigo_trabajo',
     field: 'codigo_trabajo',
-    label: 'Cód. Trabajo',
+    label: 'Código de trabajo',
     align: 'left',
     sortable: true,
+  },
+  {
+    name: 'coordinador',
+    field: 'coordinador',
+    label: 'Coordinador',
+    align: 'left',
   },
   {
     name: 'estado',
@@ -148,12 +154,6 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     name: 'grupos',
     field: 'grupos',
     label: 'Grupos responsables',
-    align: 'left',
-  },
-  {
-    name: 'coordinador',
-    field: 'coordinador',
-    label: 'Coordinador',
     align: 'left',
   },
   {

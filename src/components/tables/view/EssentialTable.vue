@@ -152,12 +152,13 @@
       <!-- Filtros -->
       <table-filters
         ref="refTableFilters"
-        v-if="mostrarFiltros"
+        v-if="permitirFiltrar && mostrarFiltros"
         :configuracionColumnas="configuracionColumnas"
         @filtrosEditados="establecerFiltros"
       ></table-filters>
 
       <div
+        v-if="permitirFiltrar"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
         <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">

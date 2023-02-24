@@ -1,13 +1,13 @@
 // Dependencias
 import { configuracionColumnasArchivoTrabajo } from 'trabajos/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoTrabajo'
-import { tiposTareasTelconet, accionesTabla, rolesSistema, opcionesModoAsignacionTrabajo } from 'config/utils'
-import { configuracionColumnasEmpleadoSeleccionable } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionable'
+import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
-import { descargarArchivoUrl, quitarItemDeArray, stringToArray } from 'shared/utils'
+import { tiposTareasTelconet, accionesTabla, opcionesModoAsignacionTrabajo } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { computed, defineComponent, reactive, ref } from 'vue'
+import { descargarArchivoUrl } from 'shared/utils'
 import { useTareaStore } from 'stores/tarea'
 
 // Componentes
@@ -15,18 +15,17 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ArchivoTrabajoController } from 'trabajos/modules/gestorArchivosTrabajos/infraestructure/ArchivoTrabajoController'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
-import { GrupoSeleccionado } from 'trabajos/domain/GrupoSeleccionado'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTrabajoController } from 'pages/gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { TrabajoController } from 'pages/gestionTrabajos/trabajos/infraestructure/TrabajoController'
+import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
-//import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
 import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFinal'
-import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-//import { Subtarea } from 'tra/domain/Subtarea'
+import { Trabajo } from 'pages/gestionTrabajos/trabajos/domain/Trabajo'
+import { GrupoSeleccionado } from 'trabajos/domain/GrupoSeleccionado'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -40,8 +39,8 @@ export default defineComponent({
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
-    const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
+    const mixin = new ContenedorSimpleMixin(Trabajo, new TrabajoController())
+    const { entidad: trabajo, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, consultar } = mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
 
@@ -52,7 +51,7 @@ export default defineComponent({
           params: { cliente: store.tarea.cliente }
         },
         subtareas: {
-          controller: new SubtareaController(),
+          controller: new TrabajoController(),
           params: { tarea_id: store.tarea.id }
         },
         grupos: new GrupoController(),
@@ -82,18 +81,18 @@ export default defineComponent({
       clienteFinal.hydrate(result)
     }
 
-    consultar(trabajoAsignadoStore.idSubtareaSeleccionada)
+    consultar(trabajoAsignadoStore.idTrabajoSeleccionado)
 
     /********
      * Hooks
      *********/
     onConsultado(() => {
-      if (subtarea.cliente_final) {
-        obtenerClienteFinal(subtarea.cliente_final)
+      if (trabajo.cliente_final) {
+        obtenerClienteFinal(trabajo.cliente_final)
       }
 
-      if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
-        subtarea.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
+      if (trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+        trabajo.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
           console.log(grupo)
           if (grupo.id) obtenerTecnicosGrupo(grupo.id)
         })
@@ -118,9 +117,9 @@ export default defineComponent({
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      subtarea.empleados_seleccionados.push(...result)
+      trabajo.empleados_seleccionados.push(...result)
 
-      subtarea.empleados_seleccionados = subtarea.empleados_seleccionados.map((empleado: Empleado) => {
+      /* trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
         const tecnico = new Empleado()
         tecnico.hydrate(empleado)
 
@@ -128,20 +127,20 @@ export default defineComponent({
         tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
 
         return tecnico
-      })
+      }) */
     }
 
     async function obtenerArchivos() {
-      const { result } = await new ArchivoTrabajoController().listar({ subtarea: trabajoAsignadoStore.idSubtareaSeleccionada })
+      const { result } = await new ArchivoTrabajoController().listar({ trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
       archivos.value = result
     }
 
     obtenerArchivos()
 
     return {
-      subtarea,
+      trabajo,
       tiposTareasTelconet,
-      configuracionColumnasEmpleadoSeleccionable,
+      configuracionColumnasEmpleadoGrupo,
       configuracionColumnasGrupoSeleccionado,
       configuracionColumnasEmpleadoSeleccionado,
       columnasGestor: [...configuracionColumnasArchivoTrabajo, accionesTabla],

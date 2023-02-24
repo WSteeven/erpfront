@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasEmpleadoSeleccionable } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionable'
+import { configuracionColumnasEmpleadoSeleccionable } from 'pages/gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
 import { computed, defineComponent, Ref, ref } from 'vue'
 import { useTareaStore } from 'stores/tarea'
 import {

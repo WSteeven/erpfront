@@ -11,7 +11,6 @@
     </div>
 
     <essential-table-tabs
-      titulo=""
       :configuracionColumnas="[
         ...configuracionColumnasTrabajoAsignado,
         accionesTabla,

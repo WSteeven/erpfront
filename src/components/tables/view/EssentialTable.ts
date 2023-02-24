@@ -12,11 +12,11 @@ import { offset } from 'config/utils_tablas'
 
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
-import EditarTablaModal from './EditarTablaModal.vue'
-import CustomButtons from './CustomButtonsTable.vue'
-import EstadosSubtareas from './EstadosSubtareas.vue'
-import BotonesPaginacion from './BotonesPaginacion.vue'
 import TableFilters from 'components/tables/view/TableFilters.vue'
+import BotonesPaginacion from './BotonesPaginacion.vue'
+import EditarTablaModal from './EditarTablaModal.vue'
+import EstadosSubtareas from './EstadosSubtareas.vue'
+import CustomButtons from './CustomButtonsTable.vue'
 
 export default defineComponent({
   components: {
@@ -140,6 +140,10 @@ export default defineComponent({
     permitirBuscar: {
       type: Boolean,
       default: true,
+    },
+    permitirFiltrar: {
+      type: Boolean,
+      default: false,
     },
     estilos: {
       type: String,

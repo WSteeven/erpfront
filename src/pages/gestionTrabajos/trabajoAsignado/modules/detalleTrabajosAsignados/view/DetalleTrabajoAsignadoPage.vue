@@ -13,7 +13,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Código subtarea</label>
             <q-input
-              v-model="subtarea.codigo_subtarea"
+              v-model="trabajo.codigo_subtarea"
               disable
               outlined
               dense
@@ -26,7 +26,7 @@
               >Detalle / Ruta / Enlace / Proyecto</label
             >
             <q-input
-              v-model="subtarea.detalle"
+              v-model="trabajo.detalle"
               outlined
               disable
               dense
@@ -37,10 +37,10 @@
           </div>
 
           <!-- Grupo -->
-          <div v-if="subtarea.grupo" class="col-12 col-md-3">
+          <div v-if="trabajo.grupo" class="col-12 col-md-3">
             <label class="q-mb-sm block">Grupo técnico asignado</label>
             <q-select
-              v-model="subtarea.grupo"
+              v-model="trabajo.grupo"
               :options="grupos"
               transition-show="scale"
               transition-hide="scale"
@@ -62,7 +62,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tipo de trabajo</label>
             <q-select
-              v-model="subtarea.tipo_trabajo"
+              v-model="trabajo.tipo_trabajo"
               :options="listadosAuxiliares.tiposTrabajos"
               transition-show="scale"
               transition-hide="scale"
@@ -83,7 +83,7 @@
               >Descripción completa del trabajo a realizar</label
             >
             <q-input
-              v-model="subtarea.descripcion_completa"
+              v-model="trabajo.descripcion_completa"
               autogrow
               disable
               outlined
@@ -95,7 +95,7 @@
           <div class="col-12 col-md-3">
             <br />
             <q-checkbox
-              v-model="subtarea.es_ventana"
+              v-model="trabajo.es_ventana"
               label="Es ventana de trabajo"
               outlined
               dense
@@ -103,17 +103,17 @@
             ></q-checkbox>
           </div>
 
-          <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
+          <div v-if="trabajo.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de ventana</label>
-            <q-input v-model="subtarea.fecha_ventana" outlined dense disable>
+            <q-input v-model="trabajo.fecha_ventana" outlined dense disable>
             </q-input>
           </div>
 
           <!-- Hora inicio de ventana -->
-          <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
+          <div v-if="trabajo.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora inicio de ventana</label>
             <q-input
-              v-model="subtarea.hora_inicio_ventana"
+              v-model="trabajo.hora_inicio_ventana"
               outlined
               dense
               disable
@@ -121,10 +121,10 @@
           </div>
 
           <!-- Hora fin de ventana -->
-          <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
+          <div v-if="trabajo.es_ventana" class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora fin de ventana</label>
             <q-input
-              v-model="subtarea.hora_fin_ventana"
+              v-model="trabajo.hora_fin_ventana"
               outlined
               dense
               disable
@@ -134,13 +134,13 @@
           <div class="col-12">
             <essential-table
               v-if="
-                subtarea.modo_asignacion_trabajo ===
+                trabajo.modo_asignacion_trabajo ===
                 opcionesModoAsignacionTrabajo.por_grupo
               "
               titulo="Grupos asignados"
               estilos="margin-bottom: 14px;"
               :configuracionColumnas="configuracionColumnasGrupoSeleccionado"
-              :datos="subtarea.grupos_seleccionados"
+              :datos="trabajo.grupos_seleccionados"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -148,18 +148,18 @@
               :alto-fijo="false"
               :mostrar-header="true"
               :permitir-buscar="false"
-              :mostrar-footer="!subtarea.grupos_seleccionados.length"
+              :mostrar-footer="!trabajo.grupos_seleccionados.length"
             >
             </essential-table>
 
             <essential-table
               v-if="
-                subtarea.modo_asignacion_trabajo ===
+                trabajo.modo_asignacion_trabajo ===
                 opcionesModoAsignacionTrabajo.por_grupo
               "
               titulo="Empleados que ejecutarán el trabajo"
-              :configuracionColumnas="configuracionColumnasEmpleado"
-              :datos="subtarea.empleados_seleccionados"
+              :configuracionColumnas="configuracionColumnasEmpleadoGrupo"
+              :datos="trabajo.empleados_seleccionados"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -170,12 +170,12 @@
 
             <essential-table
               v-if="
-                subtarea.modo_asignacion_trabajo ===
+                trabajo.modo_asignacion_trabajo ===
                 opcionesModoAsignacionTrabajo.por_trabajador
               "
               titulo="Empleados que ejecutarán el trabajo"
               :configuracionColumnas="configuracionColumnasEmpleadoSeleccionado"
-              :datos="subtarea.empleados_seleccionados"
+              :datos="trabajo.empleados_seleccionados"
               :mostrarBotones="false"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -188,7 +188,7 @@
       </q-expansion-item>
 
       <q-expansion-item
-        v-if="subtarea.cliente_final"
+        v-if="trabajo.cliente_final"
         class="overflow-hidden q-mb-md expansion"
         label="Ubicación del trabajo"
         header-class="bg-header-collapse"
