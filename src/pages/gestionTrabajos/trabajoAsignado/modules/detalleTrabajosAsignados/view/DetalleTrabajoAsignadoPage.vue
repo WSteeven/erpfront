@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-form @submit.prevent="enviar()">
+    <q-form @submit.prevent>
       <!-- Datos de la subtarea -->
       <q-expansion-item
         class="overflow-hidden q-mb-md expansion"
@@ -368,4 +368,4 @@
   </q-page>
 </template>
 
-<script src="./SubtareaAsignadaPage.ts"></script>
+<script src="./DetalleTrabajoAsignadoPage.ts"></script>

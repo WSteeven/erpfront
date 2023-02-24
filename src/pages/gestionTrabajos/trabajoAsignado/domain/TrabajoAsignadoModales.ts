@@ -3,22 +3,21 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 // Paginas
-import SubtareaAsignadaPage from '../modules/subtareasAsignadas/view/SubtareaAsignadaPage'
 // import RecopilacionInformacion from 'pages/tareas/trabajoAsignado/modules/recopilacionInformacion/view/SeleccionFormularioPage.vue'
-import ControlTendidoPage from 'pages/gestionTrabajos/tendidos/controlTendidos/view/ControlTendidoPage'
-import SeleccionFormularioPage from 'pages/gestionTrabajos/trabajoAsignado/modules/seleccionFormulario/view/SeleccionFormularioPage.vue'
-import EmergenciaPage from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage'
-
+import DetalleTrabajoAsignadoPage from 'gestionTrabajos/trabajoAsignado/modules/detalleTrabajosAsignados/view/DetalleTrabajoAsignadoPage.vue'
+import ControlTendido from 'formulariosTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
+import EmergenciaPage from 'formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
+//import SeleccionFormularioPage from 'pages/tareas/trabajoAsignado/modules/seleccionFormulario/view/SeleccionFormularioPage.vue'
 export class TrabajoAsignadoModales {
-  SubtareaAsignadaPage: ComponenteModal
+  DetalleTrabajoAsignadoPage: ComponenteModal
   // RecopilacionInformacion: ComponenteModal
   ControlTendido: ComponenteModal
-  SeleccionFormularioPage: ComponenteModal
+  // SeleccionFormularioPage: ComponenteModal
   EmergenciaPage: ComponenteModal
 
   constructor() {
-    this.SubtareaAsignadaPage = markRaw(
-      new ComponenteModal('Detalles del trabajo', SubtareaAsignadaPage)
+    this.DetalleTrabajoAsignadoPage = markRaw(
+      new ComponenteModal('Detalles del trabajo', DetalleTrabajoAsignadoPage)
     )
     /*this.RecopilacionInformacion = markRaw(
         new ComponenteModal('CONSTRUCRED', RecopilacionInformacion)
@@ -27,9 +26,9 @@ export class TrabajoAsignadoModales {
       new ComponenteModal('CONSTRUCRED', ControlTendidoPage)
     )
 
-    this.SeleccionFormularioPage = markRaw(
+    /*this.SeleccionFormularioPage = markRaw(
       new ComponenteModal('Ingreso de información', SeleccionFormularioPage)
-    )
+    ) */
 
     this.EmergenciaPage = markRaw(
       new ComponenteModal('Gestionar avances', EmergenciaPage)

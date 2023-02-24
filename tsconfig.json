@@ -15,6 +15,9 @@
       "tareas/*": ["src/pages/gestionTrabajos/tareas/*"],
       "trabajos/*": ["src/pages/gestionTrabajos/trabajos/*"],
       "clientesFinales/*": ["src/pages/gestionTrabajos/clientesFinales/*"],
+      "formulariosTrabajos/*": [
+        "src/pages/gestionTrabajos/formulariosTrabajos/*"
+      ],
       "tiposTareas/*": ["src/pages/gestionTrabajos/tiposTareas/*"],
       "proyectos/*": ["src/pages/gestionTrabajos/proyectos/*"],
       "recursosHumanos/*": ["src/pages/recursosHumanos/*"],

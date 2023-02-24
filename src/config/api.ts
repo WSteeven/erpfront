@@ -90,7 +90,7 @@ export const endpoints = {
   tendidos: new Endpoint('tendidos'),
   intercambiar_jefe_cuadrilla: new Endpoint('intercambiar-jefe-cuadrilla'),
   intercambiar_secretario_cuadrilla: new Endpoint('intercambiar-secretario-cuadrilla'),
-  archivos_subtareas: new Endpoint('archivos-subtareas'),
+  archivos_trabajos: new Endpoint('archivos-trabajos'),
   materiales_despachados: new Endpoint('transacciones-egresos/materiales-despachados'),
   materiales_despachados_sin_bobina: new Endpoint('materiales-grupo-tarea'),
   // materiales_despachados_con_bobina: new Endpoint('transacciones-egresos/materiales-despachados-con-bobina'),
