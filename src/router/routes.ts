@@ -74,7 +74,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/trabajo-asignado',
         name: 'trabajo_asignado',
-        component: () => import('tareas/trabajoAsignado/view/TrabajoAsignadoPage.vue'),
+        component: () => import('gestionTrabajos/trabajoAsignado/view/TrabajoAsignadoPage.vue'),
         meta: { requiresAuth: true },
       },
       {

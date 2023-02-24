@@ -119,6 +119,17 @@
                   </q-item>
                 </template>
 
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                      <q-item-label caption>{{
+                        scope.opt.titulo
+                      }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+
                 <template v-slot:error>
                   <div
                     v-for="error of v$.tipo_trabajo.$errors"

@@ -97,6 +97,10 @@ module.exports = configure(function (/* ctx */) {
           __dirname,
           './src/pages/gestionTrabajos/clientesFinales'
         ),
+        formulariosTrabajos: path.join(
+          __dirname,
+          './src/pages/gestionTrabajos/formulariosTrabajos'
+        ),
         tiposTareas: path.join(
           __dirname,
           './src/pages/gestionTrabajos/tiposTareas'

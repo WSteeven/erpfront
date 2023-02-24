@@ -1,9 +1,9 @@
 // Dependencias
-import { configuracionColumnasArchivoSubtarea } from 'controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/domain/configuracionColumnasArchivoSubtarea'
+import { configuracionColumnasArchivoTrabajo } from 'trabajos/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoTrabajo'
 import { tiposTareasTelconet, accionesTabla, rolesSistema, opcionesModoAsignacionTrabajo } from 'config/utils'
-import { configuracionColumnasEmpleado } from 'subtareas/domain/configuracionColumnasEmpleado'
-import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
-import { configuracionColumnasGrupoSeleccionado } from 'subtareas/domain/configuracionColumnasGrupoSeleccionado'
+import { configuracionColumnasEmpleadoSeleccionable } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionable'
+import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
+import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
 import { descargarArchivoUrl, quitarItemDeArray, stringToArray } from 'shared/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
@@ -14,19 +14,19 @@ import { useTareaStore } from 'stores/tarea'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ArchivoSubtareaController } from 'tareas/controlTareas/modules/subtareasListadoContent/modules/gestorArchivosSubtareas/infraestructure/ArchivoSubtareaController'
+import { ArchivoTrabajoController } from 'trabajos/modules/gestorArchivosTrabajos/infraestructure/ArchivoTrabajoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ClienteFinalController } from 'tareas/clientesFinales/infraestructure/ClienteFinalController'
-import { GrupoSeleccionado } from 'tareas/controlTareas/modules/subtareas/domain/GrupoSeleccionado'
+import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
+import { GrupoSeleccionado } from 'trabajos/domain/GrupoSeleccionado'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TipoTrabajoController } from 'tiposTrabajos/infraestructure/TipoTrabajoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
-import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
-import { GrupoController } from 'tareas/grupos/infraestructure/GrupoController'
-import { ClienteFinal } from 'tareas/clientesFinales/domain/ClienteFinal'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { Subtarea } from 'subtareas/domain/Subtarea'
+//import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
+import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
+import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFinal'
+import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
+//import { Subtarea } from 'tra/domain/Subtarea'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -132,7 +132,7 @@ export default defineComponent({
     }
 
     async function obtenerArchivos() {
-      const { result } = await new ArchivoSubtareaController().listar({ subtarea: trabajoAsignadoStore.idSubtareaSeleccionada })
+      const { result } = await new ArchivoTrabajoController().listar({ subtarea: trabajoAsignadoStore.idSubtareaSeleccionada })
       archivos.value = result
     }
 
@@ -141,10 +141,10 @@ export default defineComponent({
     return {
       subtarea,
       tiposTareasTelconet,
-      configuracionColumnasEmpleado,
+      configuracionColumnasEmpleadoSeleccionable,
       configuracionColumnasGrupoSeleccionado,
       configuracionColumnasEmpleadoSeleccionado,
-      columnasGestor: [...configuracionColumnasArchivoSubtarea, accionesTabla],
+      columnasGestor: [...configuracionColumnasArchivoTrabajo, accionesTabla],
       tiposTrabajos,
       grupos,
       subtareas,
