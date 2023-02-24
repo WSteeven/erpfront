@@ -277,10 +277,16 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-cash',
           children:[
             {
-              title: 'Saldo',
-              link: 'saldo',
+              title: 'Acreditacion',
+              link: 'acreditacion',
               icon: 'bi-circle',
-              can: store.can('puede.ver.saldo'),
+              can: store.can('puede.ver.acreditacion'),
+            },
+            {
+              title: 'Reporte Saldo Actual',
+              link: 'reporte-saldo-actual',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_saldo_actual'),
             }
           ]
         },

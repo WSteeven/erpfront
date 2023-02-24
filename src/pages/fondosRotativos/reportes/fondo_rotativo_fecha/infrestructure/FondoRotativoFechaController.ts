@@ -4,6 +4,6 @@ import { endpoints } from "config/api";
 
 export class FondoRotativoFechaController extends TransaccionSimpleController<FondoRotativoFecha>{
   constructor() {
-    super(endpoints.fondo_rotativo_fecha)
+    super(endpoints.fondo_rotativo_fecha_pdf)
   }
 }

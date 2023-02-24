@@ -437,12 +437,13 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+
       {
-        path: '/saldo',
-        name: 'saldo',
+        path: '/acreditacion',
+        name: 'acreditacion',
         component: () =>
           import(
-            'pages/fondosRotativos/saldo/view/SaldoPage.vue'
+            'pages/fondosRotativos/saldos/acreditacion/view/AcreditacionPage.vue'
           ),
         meta: { requiresAuth: true },
       },
@@ -453,6 +454,15 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/fondosRotativos/reportes/fondo_rotativo_fecha/view/FondoRotativoFechaPage.vue'
           ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporte-saldo-actual',
+        name: 'reporte_saldo_actual',
+        component: () =>
+        import(
+          'pages/fondosRotativos/saldos/reporteSaldoActual/view/Reporte_saldo_actualPage.vue'
+        ),
         meta: { requiresAuth: true },
       },
     ],
