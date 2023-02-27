@@ -301,6 +301,12 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.ver.reporte_fondo_fecha'),
             },
             {
+              title: 'Autorizaciones',
+              link: 'reporte-autorizaciones',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_autorizaciones'),
+            },
+            {
               title: 'Saldo Actual',
               link: 'reporte-saldo-actual',
               icon: 'bi-circle',
@@ -308,7 +314,7 @@ export const useMenuStore = defineStore('menu', () => {
             }
           ]
         },
-        
+
 
       ]
     },

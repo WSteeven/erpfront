@@ -17,8 +17,8 @@ import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infre
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
 import { validarIdentificacion } from 'shared/validadores/validaciones'
-import { ProyectoController } from 'pages/tareas/proyectos/infraestructure/ProyectoController'
-import { TareaController } from 'pages/tareas/controlTareas/infraestructure/TareaController'
+import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
+import { TareaController } from 'tareas/infraestructure/TareaController'
 import { FondoRotativoPusherEvent } from '../application/FondoRotativoPusherEvent'
 
 export default defineComponent({
@@ -92,7 +92,7 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-      cant: {
+      cantidad: {
         required: true,
         minLength: 3,
         maxLength: 50,
@@ -158,7 +158,7 @@ export default defineComponent({
         },
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,detalle,cliente_id,proyecto_id' },
+          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
         },
       })
       cantones.value = listadosAuxiliares.cantones
@@ -290,7 +290,7 @@ export default defineComponent({
      const fondoRotativoPusherEvent = new FondoRotativoPusherEvent()
      fondoRotativoPusherEvent.start()
 
-    watchEffect(() => (fondo.total = fondo.cant * fondo.valor_u))
+    watchEffect(() => (fondo.total = fondo.cantidad! * fondo.valor_u!))
 
     return {
       mixin,

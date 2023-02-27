@@ -480,6 +480,15 @@ const routes: RouteRecordRaw[] = [
         ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/reporte-autorizaciones',
+        name: 'reporte_autorizaciones',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/fondo_rotativo_autorizaciones_fecha/view/Reporte_autorizaciones_fechaPage.vue'
+        ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

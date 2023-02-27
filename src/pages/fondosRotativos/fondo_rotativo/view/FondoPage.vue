@@ -85,7 +85,7 @@
             <q-select v-model="fondo.num_tarea" :options="tareas" transition-show="jump-up" transition-hide="jump-down"
               options-dense dense outlined :disable="disabled" :readonly="disabled" :error="!!v$.num_tarea.$errors.length"
               error-message="Debes seleccionar una Tarea" use-input input-debounce="0" @filter="filtrarTareas"
-              :option-value="(v) => v.id" :option-label="(v) => v.detalle" emit-value map-options>
+              :option-value="(v) => v.id" :option-label="(v) => v.titulo" emit-value map-options>
               <template v-slot:error>
                 <div v-for="error of v$.num_tarea.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
@@ -97,7 +97,7 @@
                     <q-item-label class="text-bold text-primary">{{
                       scope.opt.codigo_tarea
                     }}</q-item-label>
-                    <q-item-label caption>{{scope.opt.detalle  }} </q-item-label>
+                    <q-item-label caption>{{scope.opt.titulo  }} </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
@@ -138,10 +138,10 @@
             <!-- Cantidad -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Cantidad</label>
-              <q-input v-model="fondo.cant" placeholder="Obligatorio" type="number" :disable="disabled"
-                :error="!!v$.cant.$errors.length" @blur="v$.cant.$touch" outlined dense>
+              <q-input v-model="fondo.cantidad" placeholder="Obligatorio" type="number" :disable="disabled"
+                :error="!!v$.cantidad.$errors.length" @blur="v$.cantidad.$touch" outlined dense>
                 <template v-slot:error>
-                  <div v-for="error of v$.cant.$errors" :key="error.$uid">
+                  <div v-for="error of v$.cantidad.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
