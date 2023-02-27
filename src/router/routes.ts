@@ -103,6 +103,15 @@ const routes: RouteRecordRaw[] = [
       },
       // Routes for bodega
       {
+        path: '/notificaciones',
+        name: 'notificaciones',
+        component: () =>
+          import(
+            'pages/administracion/notificaciones/view/NotificacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/unidades-medidas',
         name: 'unidades_medidas',
         component: () =>

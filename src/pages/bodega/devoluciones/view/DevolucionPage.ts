@@ -34,6 +34,7 @@ import { LoginController } from 'pages/sistema/authentication/login/infraestruct
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { Entidad } from 'shared/entidad/domain/entidad'
+import { LocalStorage } from 'quasar'
 
 
 export default defineComponent({
@@ -89,11 +90,7 @@ export default defineComponent({
                 },
                 tareas: {
                     controller: new TareaController(),
-                    params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
-                },
-                sucursales: {
-                    controller: new SucursalController(),
-                    params: { campos: 'id,lugar' },
+                    params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
                 },
             })
         })
@@ -176,33 +173,11 @@ export default defineComponent({
             icono: 'bi-printer',
             accion: async ({ entidad, posicion }) => {
                 devolucionStore.idDevolucion = entidad.id
-                // modales.abrirModalEntidad('ImprimirDevolucionPage')
-                await devolucionStore.showPreview()
-                console.log(devolucionStore.devolucion.listadoProductos)
-                console.log(devolucionStore.devolucion.listadoProductos.flatMap((v) => v))
-                // pdfMakeImprimir()
-
-
-
+                await devolucionStore.imprimirPdf()
             },
             visible: () => tabSeleccionado.value == 'CREADA' ? true : false
         }
 
-        function comprobarTarea() {
-            if (devolucionStore.devolucion.tarea !== null) {
-                return {
-                    columns: [
-                        {
-                            width: '*',
-                            columns: [
-                                { width: 'auto', text: 'Tarea: ', style: 'defaultStyle', alignment: 'right' },
-                                { width: 'auto', text: ` ${devolucionStore.devolucion.tarea}`, style: 'resultStyle' }
-                            ]
-                        }
-                    ],
-                }
-            }
-        }
 
         function actualizarElemento(posicion: number, entidad: any): void {
             if (posicion >= 0) {
@@ -214,7 +189,7 @@ export default defineComponent({
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
-        opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
 
         return {

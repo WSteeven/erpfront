@@ -664,7 +664,6 @@
     <!-- corregir esto para que sea dinamico -->
     <template #body-cell-condiciones="props">
       <q-td :props="props">
-        <!-- Estados de la tabla condiciones -->
         <q-chip
           v-if="
             props.value == estadosCondicionesId.nuevo ||
@@ -695,9 +694,20 @@
           "
           >DAÑADO</q-chip
         >
-        <!-- {{ props.value }} -->
       </q-td>
     </template>
+
+    <template #body-cell-leida="props">
+      <q-td :props="props">
+        <span v-if="props.value == false || props.value == 0">
+        <q-icon class="bi-check-circle-fill" color="negative" size="sm"> </q-icon>
+        </span>
+        <span v-else>
+        <q-icon class="bi-check-circle-fill" color="positive" size="sm"> </q-icon>
+        </span>
+      </q-td>
+    </template>
+
 
     <template #body-cell-estado="props">
       <q-td :props="props">

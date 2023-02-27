@@ -30,6 +30,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useOrquestadorSelectorItems } from '../application/OrquestadorSelectorItems'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
+import { LocalStorage } from 'quasar'
 
 
 export default defineComponent({
@@ -80,18 +81,6 @@ export default defineComponent({
                         campos: 'id,nombres,apellidos',
                         estado: 1
                     }
-                },
-                sucursales: {
-                    controller: new SucursalController(),
-                    params: { campos: 'id,lugar' },
-                },
-                autorizaciones: {
-                    controller: new AutorizacionController(),
-                    params: {campos: 'id,nombre'}
-                },
-                estados: {
-                    controller: new EstadosTransaccionController(),
-                    params: {campos: 'id,nombre'}
                 },
                 clientes: {
                     controller: new ClienteController(),
@@ -182,7 +171,7 @@ export default defineComponent({
                 // devolucionStore.idDevolucion = entidad.id
                 // modales.abrirModalEntidad('ImprimirDevolucionPage')
                 // await devolucionStore.showPreview()
-                console.log('entidad en el boton imprimir', entidad)
+                console.log('presionaste el boton imprimir')
                 // pdfMakeImprimir(entidad)
             },
             // visible: () => tabSeleccionado.value == '1' ? true : false
@@ -208,11 +197,9 @@ export default defineComponent({
         //configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_clientes.value = listadosAuxiliares.clientes
-        opciones_estados.value = listadosAuxiliares.estados
-        opciones_sucursales.value = listadosAuxiliares.sucursales
-        opciones_autorizaciones.value = listadosAuxiliares.autorizaciones
-        opciones_estados.value = listadosAuxiliares.estados
-        opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+        opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+        opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
 
 
         return {

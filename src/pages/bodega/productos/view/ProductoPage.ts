@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasProductos } from '../domain/configuracionColumnasProductos'
 import { configuracionColumnasDetallesProductos } from '../domain/configuracionColumnasDetalles'
-import { required } from '@vuelidate/validators'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 

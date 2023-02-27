@@ -364,6 +364,10 @@
               </template>
             </q-input>
           </div>
+          <!-- boton para emitir un evento -->
+          <!-- <q-btn flat  label="Emitir " type="submit" color="primary" @click="$emit('notificar', 'mensaje para mostrar en la campanita')">
+          <q-icon name="bi-send" size="xs" class="q-pr-sm"></q-icon>
+          </q-btn> -->
           <!-- Select estado -->
           <div
             v-if="pedido.estado || accion === acciones.consultar"

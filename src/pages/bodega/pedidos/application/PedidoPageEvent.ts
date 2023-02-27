@@ -1,16 +1,22 @@
-import Pusher from "pusher-js"
-import { Ref } from "vue"
+import { useNotificaciones } from 'shared/notificaciones';
+import Pusher from 'pusher-js'
+import { Ref } from 'vue'
 
 export class PedidoPageEvent{
-  accion: (param:string)=> void
-  puedeEjecutar: Ref<boolean>
+  accion: string
+  puedeEjecutar: boolean
 
-  constructor(accion:(param:string)=>void, puedeEjecutar:Ref<boolean>){
+
+  constructor(accion:string, puedeEjecutar:boolean){
     this.accion = accion
     this.puedeEjecutar = puedeEjecutar
   }
 
+  /**
+   * It subscribes to a channel and listens for events.
+   */
   start(){
+    const {notificarCorrecto} = useNotificaciones()
     const pusher = new Pusher('0df833686e4616dd7444',{
       cluster:'sa1',
     })
@@ -18,12 +24,11 @@ export class PedidoPageEvent{
     const accion = this.accion
     const puedeEjecutar = this.puedeEjecutar
 
-    pusher.subscribe('pedidos-tracker')
-    pusher.bind('pedido-event', function(e){
-      if(puedeEjecutar.value) {
-        //hagase algo
-        console.log(e)
-      }
+    const channel = pusher.subscribe('pedidos-tracker')
+    channel.bind('pedido-event', function(e){
+      // notificarCorrecto('Tienes un pedido esperando ser atendido')
+      new Event('notificar', e.mensaje)//se crea el evento
+      console.log('Mensaje',e.mensaje)
     })
   }
 

@@ -121,6 +121,12 @@ export const useMenuStore = defineStore('menu', () => {
       ],
     },
     {
+      title:'Notificaciones',
+      icon: 'bi-bell',
+      link: 'notificaciones',
+      can: true
+    },
+    {
       title: 'Bodega',
       icon: 'bi-building',
       can: store.can('puede.ver.modulo_bodega'),

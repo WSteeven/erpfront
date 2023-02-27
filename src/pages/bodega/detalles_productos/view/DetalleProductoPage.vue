@@ -155,6 +155,20 @@
               </template>
             </q-select>
           </div>
+          <!-- Imei -->
+          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4">
+            <label class="q-mb-sm block">Imei</label>
+            <q-input
+              type="number"
+              v-model="detalle.imei"
+              placeholder="Opcional"
+              hint="Rellena este campo si el detalle es telefono o tablet"
+              :readonly="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Marca -->
           <div class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Marca</label>
@@ -267,7 +281,7 @@
               v-model="detalle.tiene_adicionales"
               label="Campos adicionales"
               outlined
-              
+
               dense
               :disable="disabled"
             ></q-checkbox>
@@ -425,7 +439,7 @@
           <div v-if="detalle.es_fibra" class="col-12 col-md-4">
             <label class="q-mb-sm block">Punta Inicial (A)</label>
             <q-input
-              type="tel"
+              type="number"
               mask="####"
               unmasked-value
               suffix="metros"
@@ -447,7 +461,7 @@
           <div v-if="detalle.es_fibra" class="col-12 col-md-4">
             <label class="q-mb-sm block">Punta Final (B)</label>
             <q-input
-              type="tel"
+              type="number"
               mask="####"
               unmasked-value
               suffix="metros"
@@ -470,7 +484,7 @@
           <div v-if="detalle.es_fibra" class="col-12 col-md-4">
             <label class="q-mb-sm block">Punta al corte</label>
             <q-input
-              type="tel"
+              type="number"
               mask="####"
               unmasked-value
               suffix="metros"

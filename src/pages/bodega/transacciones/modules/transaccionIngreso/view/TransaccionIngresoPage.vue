@@ -73,6 +73,7 @@
               options-dense
               dense
               outlined
+              @popup-show="ordenarMotivos"
               @update:model-value="filtroMotivos"
               :readonly="disabled"
               :disable="disabled||soloLectura"
@@ -91,6 +92,24 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <!-- Transferencia -->
+          <div
+            v-if="transaccion.es_transferencia"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">N° transferencia</label>
+            <q-input
+              type="number"
+              v-model="transaccion.transferencia"
+              placeholder="Opcional"
+              hint="Ingresa un numero de transferencia y presiona Enter"
+              @keyup.enter="llenarTransferencia(transaccion.transferencia)"
+              :readonly="disabled"
+              outlined
+              dense
+            >
+            </q-input>
           </div>
           <!-- Tiene devolución -->
           <div
@@ -127,7 +146,7 @@
             </q-input>
           </div>
           <!-- Comprobante/Factura -->
-          <div v-if="esVisibleComprobante" class="col-12 col-md-3 q-mb-md">
+          <div v-if="esVisibleComprobante || transaccion.comprobante" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° Factura/Comprobante</label>
             <q-input
               v-model="transaccion.comprobante"
@@ -157,6 +176,7 @@
               :disable="disabled||soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
+              @popup-show="ordenarSucursales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -182,6 +202,8 @@
             <q-input
               v-model="transaccion.justificacion"
               placeholder="Obligatorio"
+              type="textarea"
+              autogrow
               :readonly="disabled"
               :disable="disabled||soloLectura"
               :error="!!v$.justificacion.$errors.length"
@@ -198,6 +220,7 @@
               </template>
             </q-input>
           </div>
+
           <!-- Solicitante -->
           <div
             v-if="transaccion.solicitante || esBodeguero"
@@ -317,6 +340,8 @@
           <div v-if="transaccion.tiene_obs_estado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
+            type="textarea"
+            autogrow
               v-model="transaccion.observacion_est"
               placeholder="Obligatorio"
               :readonly="disabled"
@@ -350,6 +375,7 @@
               :disable="disabled||soloLectura"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              @popup-show="ordenarClientes"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value

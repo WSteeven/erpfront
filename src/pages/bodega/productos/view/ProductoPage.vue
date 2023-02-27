@@ -52,6 +52,7 @@
               v-model="producto.unidad_medida"
               :options="unidades_medidas"
               hint="Agregue elementos desde el panel de unidades de medida"
+              options-dense
               dense
               outlined
               :disable="disabled"

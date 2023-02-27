@@ -22,15 +22,15 @@ import { Traspaso } from '../domain/Traspaso'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, meses, tabOptionsTraspasos } from 'config/utils'
+import { acciones, tabOptionsTraspasos } from 'config/utils'
 
 
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
+import { LocalStorage } from 'quasar'
+import { useTraspasoStore } from 'stores/traspaso'
 
 
 export default defineComponent({
@@ -41,10 +41,11 @@ export default defineComponent({
         const { entidad: traspaso, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer, onBeforeGuardar, onConsultado } = mixin.useHooks()
-        const { confirmar, prompt, notificarError, notificarAdvertencia } = useNotificaciones()
+        const { confirmar, prompt, notificarError } = useNotificaciones()
 
         //stores
         const store = useAuthenticationStore()
+        const traspasoStore = useTraspasoStore()
 
         //orquestador
         const {
@@ -90,7 +91,6 @@ export default defineComponent({
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
-                estados: { controller: new EstadosTransaccionController(), params: { campos: 'id,nombre' } },
                 clientes: {
                     controller: new ClienteController(),
                     params: {
@@ -101,15 +101,10 @@ export default defineComponent({
                 },
                 tareas: {
                     controller: new TareaController(),
-                    params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
-                },
-                sucursales: {
-                    controller: new SucursalController(),
-                    params: { campos: 'id,lugar' },
+                    params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
                 },
             })
-
-            traspaso.desde_cliente = listadosAuxiliares.clientes[0]['id']
+            // traspaso.desde_cliente = listadosAuxiliares.clientes[0]['id']
         })
 
         /**
@@ -189,12 +184,9 @@ export default defineComponent({
             titulo: 'Imprimir',
             color: 'secondary',
             icono: 'bi-printer',
-            accion: async ({ entidad, posicion }) => {
-                // devolucionStore.idDevolucion = entidad.id
-                // modales.abrirModalEntidad('ImprimirDevolucionPage')
-                // await devolucionStore.showPreview()
-                console.log('entidad en el boton imprimir', entidad)
-                // pdfMakeImprimir(entidad)
+            accion: async ({ entidad }) => {
+              traspasoStore.idTraspaso = entidad.id
+              await traspasoStore.imprmirPdf()
             },
             // visible: () => tabSeleccionado.value == '1' ? true : false
         }
@@ -202,8 +194,8 @@ export default defineComponent({
 
         //configurar los listados
         opciones_clientes.value = listadosAuxiliares.clientes
-        opciones_estados.value = listadosAuxiliares.estados
-        opciones_sucursales.value = listadosAuxiliares.sucursales
+        opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
+        opciones_sucursales.value =  JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
 
         return {

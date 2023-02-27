@@ -57,8 +57,6 @@
               outlined
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
-              use-input
-              input-debounce="0"
               emit-value
               map-options
             >

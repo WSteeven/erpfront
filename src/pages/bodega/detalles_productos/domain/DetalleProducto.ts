@@ -14,6 +14,7 @@ export class DetalleProducto extends EntidadAuditable {
     ram: string | null
     disco: string | null
     procesador: string | null
+    imei: string | null
 
     computadora: string | null
     fibra: string | null
@@ -52,6 +53,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.ram = null
         this.disco = null
         this.procesador = null
+        this.imei = null
         this.computadora = null
         this.fibra = null
         this.span = null

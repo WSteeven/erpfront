@@ -36,6 +36,11 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
+import { Cliente } from 'sistema/clientes/domain/Cliente'
+import { ordernarListaString } from 'shared/utils'
+import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { useTransferenciaStore } from 'stores/transferencia'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -53,6 +58,7 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
     const devolucionStore = useDevolucionStore()
+    const transferenciaStore = useTransferenciaStore()
 
     const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
@@ -147,6 +153,20 @@ export default defineComponent({
       transaccion.sucursal = devolucionStore.devolucion.sucursal
       transaccion.listadoProductosTransaccion = devolucionStore.devolucion.listadoProductos
     }
+
+    async function llenarTransferencia(id:number){
+      limpiarTransaccion()
+      await transferenciaStore.cargarTransferencia(id)
+      cargarDatosTransferencia()
+    }
+
+    function cargarDatosTransferencia() {
+      transaccion.sucursal = transferenciaStore.transferencia.sucursal_destino
+      transaccion.justificacion = transferenciaStore.transferencia.justificacion
+      transaccion.cliente = transferenciaStore.transferencia.cliente
+      transaccion.listadoProductosTransaccion = transferenciaStore.transferencia.listadoProductos
+    }
+
     function limpiarTransaccion() {
       transaccion.devolucion = null
       transaccion.justificacion = ''
@@ -200,9 +220,9 @@ export default defineComponent({
       icono: 'bi-printer',
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
-        console.log('Presionaste el boton IMPRIMIR')
         await transaccionStore.imprimirIngreso()
-        },
+        // console.log('Presionaste el boton IMPRIMIR')
+      },
     }
 
     //Configurar los listados
@@ -274,6 +294,11 @@ export default defineComponent({
         const opcionSeleccionada = listadosAuxiliares.motivos.filter((v) => v.id === val)
         esVisibleComprobante.value = opcionSeleccionada[0]['nombre'] === motivos.compraProveedor ? true : false
         esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === motivos.mercaderiaClienteTarea || opcionSeleccionada[0]['nombre'] === motivos.devolucionTarea ? true : false
+        if(opcionSeleccionada[0]['nombre']==motivos.ingresoTransferenciaBodegas){
+          transaccion.es_transferencia = true
+        }else{
+          transaccion.es_transferencia = false
+        }
       },
 
       checkMasivo(val, evt) {//checkbox de ingreso masivo
@@ -314,6 +339,9 @@ export default defineComponent({
       llenarTransaccion,
       limpiarTransaccion,
 
+      //transferencia
+      llenarTransferencia,
+
       //variables auxiliares
       esVisibleComprobante,
       esVisibleTarea,
@@ -328,7 +356,7 @@ export default defineComponent({
       filtroEmpleados(val, update) {
         if (val === '') {
           update(() => {
-            opciones_empleados.value = listadosAuxiliares.empleados
+            opciones_empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres))
           })
           return
         }
@@ -337,6 +365,16 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
+      //ordenacion de listas
+      ordenarClientes(){
+        opciones_clientes.value.sort((a:Cliente, b:Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+      },
+      ordenarMotivos(){
+        opciones_motivos.value.sort((a:Motivo, b:Motivo) => ordernarListaString(a.nombre!, b.nombre!))
+      },
+      ordenarSucursales(){
+        opciones_sucursales.value.sort((a:Sucursal, b:Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      }
     }
   }
 })

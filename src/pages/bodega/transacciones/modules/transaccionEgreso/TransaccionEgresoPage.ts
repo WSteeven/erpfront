@@ -353,9 +353,8 @@ export default defineComponent({
     //Configurar los listados
     opciones_empleados.value = listadosAuxiliares.empleados
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-    console.log(JSON.parse(LocalStorage.getItem('autorizaciones')!.toString()))
-    opciones_motivos.value = listadosAuxiliares.motivos
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+    opciones_motivos.value = listadosAuxiliares.motivos
     opciones_tareas.value = listadosAuxiliares.tareas
     opciones_clientes.value = listadosAuxiliares.clientes
 

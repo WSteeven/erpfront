@@ -2,7 +2,7 @@
 import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos'
 import { helpers, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, Ref, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -32,22 +32,26 @@ import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { LocalStorage } from 'quasar'
+import { PedidoPageEvent } from '../application/PedidoPageEvent'
 
 
 export default defineComponent({
   components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
-
-  setup() {
+  emits:['notificar'],
+  setup(props, {emit}) {
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onReestablecer, onConsultado } = mixin.useHooks()
+    const { onReestablecer, onConsultado, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
+
 
     /**
      * Pusher
      */
-    // const pedidoPusherEvent   = new PedidoPageEvent()
+
+    const pedidoPusherEvent   = new PedidoPageEvent('mensaje enviado desde PedidoPage.ts', true)
+    pedidoPusherEvent.start()
 
     // Stores
     const pedidoStore = usePedidoStore()
@@ -85,9 +89,13 @@ export default defineComponent({
         soloLectura.value = true
       }
     })
-    console.log('es coordinador? ', esCoordinador)
-    console.log('es bodeguero? ', esBodeguero)
-    console.log('es activos fijos? ', esActivosFijos)
+    onGuardado(()=>{
+      console.log('guardado, ahora se emite el evento')
+      emit('notificar', 'Tienes un pedido realizado')
+    })
+    // console.log('es coordinador? ', esCoordinador)
+    // console.log('es bodeguero? ', esBodeguero)
+    // console.log('es activos fijos? ', esActivosFijos)
 
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
@@ -200,7 +208,7 @@ export default defineComponent({
         console.log(pedidoStore.pedido.listadoProductos)
         console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
       },
-      visible: () => tabSeleccionado.value == 'APROBADO' ? true : false
+      visible: () => tabSeleccionado.value == 'APROBADO'||tabSeleccionado.value == 'COMPLETA' ? true : false
     }
 
     function actualizarElemento(posicion: number, entidad: any): void {
