@@ -26,9 +26,10 @@ export class PedidoPageEvent{
 
     const channel = pusher.subscribe('pedidos-tracker')
     channel.bind('pedido-event', function(e){
+      console.log(e)
       // notificarCorrecto('Tienes un pedido esperando ser atendido')
       new Event('notificar', e.mensaje)//se crea el evento
-      console.log('Mensaje',e.mensaje)
+      // console.log('Mensaje',e.mensaje)
     })
   }
 

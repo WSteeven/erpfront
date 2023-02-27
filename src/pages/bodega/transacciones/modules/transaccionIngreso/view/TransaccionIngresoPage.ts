@@ -125,7 +125,7 @@ export default defineComponent({
         },
       })
       //configurar los select definidos al inicio
-      transaccion.cliente = listadosAuxiliares.clientes[0]['id']
+      // transaccion.cliente = listadosAuxiliares.clientes[0]['id']
       console.log(store.user.id)
       transaccion.solicitante = store.user.id
 

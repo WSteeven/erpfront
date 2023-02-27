@@ -31,9 +31,23 @@ export const configuracionColumnasInventarios: ColumnConfig<Inventario>[] = [
         sortable: true
     },
     {
+        name: 'por_recibir',
+        field: 'por_recibir',
+        label: 'Por recibir',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'cantidad',
         field: 'cantidad',
         label: 'Cantidad',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'por_entregar',
+        field: 'por_entregar',
+        label: 'Por entregar',
         align: 'left',
         sortable: true
     },
@@ -44,11 +58,11 @@ export const configuracionColumnasInventarios: ColumnConfig<Inventario>[] = [
         align: 'left',
         sortable: true
     },
-    {
+    /* {
         name: 'estado',
         field: 'estado',
         label: 'Estado',
         align: 'left',
         sortable: true
-    },
+    }, */
 ]
