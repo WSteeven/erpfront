@@ -21,21 +21,27 @@ const routes: RouteRecordRaw[] = [
         path: '/proyectos',
         name: 'proyectos',
         component: () =>
-          import('pages/tareas/proyectos/view/ProyectoPage.vue'),
+          import('pages/gestionTrabajos/proyectos/view/ProyectoPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/tareas',
         name: 'tareas',
-        component: () => import('tareas/controlTareas/modules/trabajos/view/TrabajoPage.vue'),
+        component: () => import('tareas/view/TareaPage.vue'),
         meta: { requiresAuth: true },
         // component: () => import('pages/tareas/controlTareas/view/ControlTareaPage.vue'),
+      },
+      {
+        path: '/hoja-control-trabajos',
+        name: 'hoja_control_trabajos',
+        component: () => import('trabajos/view/TrabajoPage.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: '/tipos-trabajos',
         name: 'tipos_trabajos',
         component: () =>
-          import('pages/tareas/tiposTareas/view/TipoTrabajoPage.vue'),
+          import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -43,50 +49,50 @@ const routes: RouteRecordRaw[] = [
         name: 'control_tendidos',
         component: () =>
           import(
-            'tareas/tendidos/controlTendidos/view/ControlTendidoPage.vue'
+            'gestionTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
           ),
         meta: { requiresAuth: true },
       },
       {
         path: '/control-cambios',
         name: 'control_cambios',
-        component: () => import('tareas/controlCambios/view/ControlCambioPage.vue'),
+        component: () => import('gestionTrabajos/controlCambios/view/ControlCambioPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/clientes-finales',
         name: 'clientes_finales',
-        component: () => import('tareas/clientesFinales/view/ClienteFinalPage.vue'),
+        component: () => import('gestionTrabajos/clientesFinales/view/ClienteFinalPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/control-asistencia',
         name: 'control_asistencia',
-        component: () => import('tareas/controlAsistencia/view/ControlAsistenciaPage.vue'),
+        component: () => import('gestionTrabajos/controlAsistencia/view/ControlAsistenciaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/trabajo-asignado',
         name: 'trabajo_asignado',
-        component: () => import('tareas/trabajoAsignado/view/TrabajoAsignadoPage.vue'),
+        component: () => import('gestionTrabajos/trabajoAsignado/view/TrabajoAsignadoPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/reportes-control-materiales',
         name: 'reportes_control_materiales',
-        component: () => import('tareas/reportesControlMateriales/view/ReporteControlMaterialPage.vue'),
+        component: () => import('gestionTrabajos/reportesControlMateriales/view/ReporteControlMaterialPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/reportes-control-tendidos',
         name: 'reportes_control_tendidos',
-        component: () => import('tareas/reporteResumenTendidos/view/ReporteResumenTendidoPage.vue'),
+        component: () => import('gestionTrabajos/reporteResumenTendidos/view/ReporteResumenTendidoPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/reporte-trabajos-realizados',
         name: 'reporte_trabajos_realizados',
-        component: () => import('tareas/reportes/reportesTrabajosRealizados/view/ReporteTrabajoRealizadoPage.vue'),
+        component: () => import('gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteTrabajoRealizadoPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -96,6 +102,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       // Routes for bodega
+      {
+        path: '/notificaciones',
+        name: 'notificaciones',
+        component: () =>
+          import(
+            'pages/administracion/notificaciones/view/NotificacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/unidades-medidas',
         name: 'unidades_medidas',
@@ -196,15 +211,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/transacciones-ingresos/ingresar/',
-        name: 'transacciones_ingresos_inventario',
-        component: () =>
-          import(
-            'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoInventariarPage.vue',
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
         path: '/transacciones-ingresos',
         name: 'transacciones_ingresos',
         component: () =>
@@ -265,7 +271,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/grupos',
         name: 'grupos',
-        component: () => import('tareas/grupos/view/GrupoPage.vue'),
+        component: () => import('pages/recursosHumanos/grupos/view/GrupoPage.vue'),
         meta: { requiresAuth: true },
       },
 
@@ -306,6 +312,15 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/administracion/condiciones/view/CondicionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/empresas',
+        name: 'empresas',
+        component: () =>
+          import(
+            'pages/administracion/empresas/view/EmpresaPage.vue'
           ),
         meta: { requiresAuth: true },
       },
@@ -395,7 +410,7 @@ const routes: RouteRecordRaw[] = [
         name: 'subtarea_asignada',
         component: () =>
           import(
-            'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
+            'pages/gestionTrabajos/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
           ),
         meta: { requiresAuth: true },
       },

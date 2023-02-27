@@ -2,7 +2,7 @@
   <q-dialog
     v-model="abierto"
     :maximized="true"
-    :full-width="false"
+    :full-width="true"
     :persistent="confirmarCerrar"
   >
     <q-card class="bg-body">

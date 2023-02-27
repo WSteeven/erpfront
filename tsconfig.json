@@ -11,7 +11,16 @@
       "stores/*": ["src/stores/*"],
       "sistema/*": ["src/pages/sistema/*"],
       "pages/*": ["src/pages/*"],
-      "tareas/*": ["src/pages/tareas/*"],
+      "gestionTrabajos/*": ["src/pages/gestionTrabajos/*"],
+      "tareas/*": ["src/pages/gestionTrabajos/tareas/*"],
+      "trabajos/*": ["src/pages/gestionTrabajos/trabajos/*"],
+      "clientesFinales/*": ["src/pages/gestionTrabajos/clientesFinales/*"],
+      "formulariosTrabajos/*": [
+        "src/pages/gestionTrabajos/formulariosTrabajos/*"
+      ],
+      "tiposTareas/*": ["src/pages/gestionTrabajos/tiposTareas/*"],
+      "proyectos/*": ["src/pages/gestionTrabajos/proyectos/*"],
+      "recursosHumanos/*": ["src/pages/recursosHumanos/*"],
       "controlTareas/*": ["src/pages/tareas/controlTareas/*"],
       "subtareas/*": ["src/pages/tareas/controlTareas/modules/subtareas/*"],
       "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"]

@@ -38,21 +38,21 @@
 
         <span>
           <q-btn dense round flat icon="bi-bell" class="q-mr-md" color="grey-8">
-            <q-badge color="info" floating> 4 </q-badge>
-            <q-menu transition-show="flip-right" transition-hide="flip-left">
+            <q-badge color="info" floating
+              >{{ notificaciones.length }}
+            </q-badge>
+            <q-menu transition-show="flip-right" transition-hide="flip-left" @show="ordenarNotificaciones">
               <q-list style="min-width: 120px">
-                <q-item clickable v-ripple>
+                <q-item
+                  v-for="notificacion in notificaciones"
+                  :key="notificacion.id"
+                  clickable
+                  v-ripple
+                >
                   <q-item-section avatar>
                     <q-icon color="info" name="bi-app" size="xs" />
                   </q-item-section>
-                  <q-item-section>Primera notificación</q-item-section>
-                </q-item>
-
-                <q-item clickable v-ripple>
-                  <q-item-section avatar>
-                    <q-icon color="info" name="bi-app" size="xs" />
-                  </q-item-section>
-                  <q-item-section>Crazy for transitions</q-item-section>
+                  <q-item-section>{{ notificacion.title }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -183,7 +183,7 @@
         <transition name="scale" mode="out-in">
           <div>
             <essential-loading></essential-loading>
-            <component :is="Component" />
+            <component :is="Component" @notificar="actualizarNotificaciones" />
             <!--<footer-component></footer-component> -->
           </div>
         </transition>
@@ -247,6 +247,20 @@ export default defineComponent({
       LocalStorage.set('dark', modoOscuro.value)
     }
 
+    //configuracion de las notificaciones
+    const notificaciones = ref([
+      { id: 1, title: 'Crazy for transitions', link: '', fecha: '' }, //deben tener un link para poder dar click y ver más detalles de la notificacion y la fecha y hora en que esta se generó
+      { id: 2, title: 'Primera notificacion' },
+      // { id: 3, title: 'Segunda notificacion' },
+      // { id: 4, title: 'Notificacion más reciente' },
+    ])
+
+    function actualizarNotificaciones(val){
+      notificaciones.value.push({id:notificaciones.value.length+1, title:val})
+      // console.log('entró aqui?',val, notificaciones.value.length);
+
+    }
+
     return {
       links: menu.links,
       leftDrawerOpen,
@@ -260,6 +274,9 @@ export default defineComponent({
       toggleDarkMode,
       width: computed(() => ($q.screen.xs ? '100%' : '350px')),
       mostrarMenu: ref(false),
+      notificaciones,
+      actualizarNotificaciones,
+      ordenarNotificaciones(){notificaciones.value.sort((a, b) => {return b.id-a.id})},
     }
   },
 })

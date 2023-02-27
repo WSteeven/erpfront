@@ -40,7 +40,7 @@ export const useMenuStore = defineStore('menu', () => {
       link: '/admin',
     },
     {
-      title: 'Tareas',
+      title: 'Gestión de trabajos',
       icon: 'bi-pin-angle',
       can: store.can('puede.ver.modulo_tareas'),
       children: [
@@ -57,10 +57,16 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.proyectos'),
         },
         {
-          title: 'Control de tareas',
+          title: 'Tareas',
           link: 'tareas',
           icon: 'bi-circle',
           can: store.can('puede.ver.tareas'),
+        },
+        {
+          title: 'Hoja de control',
+          link: 'hoja-control-trabajos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.hoja_control_trabajos'),
         },
         {
           title: 'Tipos de trabajos',
@@ -113,6 +119,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-people-fill',
         },
       ],
+    },
+    {
+      title:'Notificaciones',
+      icon: 'bi-bell',
+      link: 'notificaciones',
+      can: true
     },
     {
       title: 'Bodega',
@@ -366,6 +378,12 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'codigos-clientes',
           icon: 'bi-circle',
           can: store.can('puede.ver.codigos_clientes'),
+        },
+        {
+          title: 'Empresas',
+          link: 'empresas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.empresas'),
         },
         {
           title: 'Estados de transacciones',

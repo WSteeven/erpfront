@@ -42,6 +42,7 @@
   .expansion {
     border-radius: 8px;
     border: 1px solid #ddd;
+    background-color: #fff;
   }
 
   .mini-texto {
@@ -99,7 +100,8 @@
   }
 
   .bg-btn-table {
-    background-color: $grey-2;
+    background-color: $primary;
+    color: #fff;
   }
 
   // Loading
@@ -124,8 +126,8 @@
   }
 
   .q-field--disabled .q-field__inner {
-    background-color: #9ba5bb5d;
-    color: $primary !important;
+    background-color: #9ba5bb47;
+    //color: $accent !important;
   }
 
   // EssentialTableTabs
@@ -134,7 +136,7 @@
   }
 
   // Scroll table
-  .q-virtual-scroll {
+  /* .q-virtual-scroll {
     &::-webkit-scrollbar {
       width: 10px;
       height: 10px;
@@ -146,7 +148,7 @@
       background: #ccc;
       border-radius: 50px;
     }
-  }
+  } */
 
   // Menu item drawer
   .link-active {

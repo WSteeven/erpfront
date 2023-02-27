@@ -22,20 +22,22 @@
     bordered
     :selection="tipoSeleccion"
     v-model:selected="selected"
-    wrap-cells
     :style="estilos"
-    class="bg-body-table custom-border"
+    class="bg-body-table custom-border my-sticky-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
-      'my-sticky-dynamic': !inFullscreen && altoFijo,
+      'my-sticky-dynamic2': !inFullscreen && altoFijo,
       'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
+      'my-sticky-column-table-dark': $q.dark.isActive,
+      'my-sticky-column-table-light': !$q.dark.isActive,
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
     :pagination="pagination"
     no-data-label="Aún no se han agregado elementos"
   >
+    <!-- wrap-cells -->
     <!--@virtual-scroll="onScroll" -->
     <template v-slot:no-data="{ message }">
       <div class="full-width row flex-center text-grey-8 q-gutter-sm">
@@ -87,84 +89,134 @@
         {{ titulo }}
       </div>
 
-      <div v-if="permitirBuscar" class="row full-width q-mb-md">
-        <q-input
-          v-model="filter"
-          outlined
-          dense
-          clearable
-          class="full-width"
-          placeholder="Buscar..."
-          debounce="300"
-          color="primary"
-        >
-          <template v-slot:append>
-            <q-icon name="search"></q-icon>
-          </template>
-        </q-input>
-      </div>
-
-      <!-- aqui 
-      v-if="mostrarBotones" -->
-      <div
-        class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
-      >
-        <div>
-          {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
-        </div>
-
-        <div class="row">
-          <q-select
-            v-model="visibleColumns"
-            multiple
+      <div v-if="permitirBuscar" class="row q-col-gutter-xs full-width q-mb-md">
+        <div class="col-md-8 col-12">
+          <q-input
+            v-model="filter"
             outlined
             dense
-            options-dense
-            :display-value="$q.lang.table.columns"
-            emit-value
-            map-options
-            :options="configuracionColumnas"
-            option-value="name"
-            options-cover
-          />
+            clearable
+            class=""
+            placeholder="Buscar..."
+            debounce="300"
+            color="primary"
+          >
+            <template v-slot:append>
+              <q-icon name="search"></q-icon>
+            </template>
+          </q-input>
+        </div>
 
-          <!-- <q-btn flat round dense icon="bi-printer" @click="previsualizarPdf()">
-            <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-              'Imprimir PDF'
-            }}</q-tooltip>
-          </q-btn> -->
+        <div class="col-md-4 col-12">
+          <div class="row">
+            <q-select
+              v-model="visibleColumns"
+              multiple
+              outlined
+              dense
+              options-dense
+              :display-value="$q.lang.table.columns"
+              emit-value
+              map-options
+              :options="configuracionColumnas"
+              option-value="name"
+              options-cover
+              class="col-9"
+            />
+
+            <q-btn
+              flat
+              round
+              dense
+              :icon="
+                props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'
+              "
+              @click="
+                () => {
+                  props.toggleFullscreen()
+                  inFullscreen = !props.inFullscreen
+                }
+              "
+              class="q-ml-md"
+            >
+              <q-tooltip class="bg-dark">{{
+                props.inFullscreen
+                  ? 'Salir de pantalla completa'
+                  : 'Abrir en pantalla completa'
+              }}</q-tooltip>
+            </q-btn>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <table-filters
+        ref="refTableFilters"
+        v-if="permitirFiltrar && mostrarFiltros"
+        :configuracionColumnas="configuracionColumnas"
+        @filtrosEditados="establecerFiltros"
+      ></table-filters>
+
+      <div
+        v-if="permitirFiltrar"
+        class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
+      >
+        <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
+          {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+        </q-chip>
+
+        <div class="row q-gutter-xs justify-end q-mb-md">
+          <q-btn
+            v-if="mostrarFiltros"
+            color="grey-8"
+            no-caps
+            push
+            @click="resetearFiltros()"
+          >
+            <q-icon name="bi-eraser" class="q-mr-sm" size="xs"></q-icon>
+            Resetear filtros</q-btn
+          >
+
+          <q-btn-dropdown
+            v-if="mostrarFiltros"
+            split
+            color="primary"
+            push
+            no-caps
+            @click="consultarCien"
+          >
+            <template v-slot:label>
+              <div class="row items-center no-wrap">
+                <q-icon left name="bi-search" size="xs" />
+                <div class="text-center">Consultar</div>
+              </div>
+            </template>
+
+            <q-list>
+              <q-item clickable v-close-popup @click="consultarTodos">
+                <q-item-section avatar>
+                  <q-icon name="bi-search" size="xs" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Consultar todos</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
 
           <q-btn
-            flat
-            round
-            dense
-            :icon="props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'"
-            @click="
-              () => {
-                props.toggleFullscreen()
-                inFullscreen = !props.inFullscreen
-              }
-            "
-            class="q-ml-md"
+            color="primary"
+            no-caps
+            push
+            @click="mostrarFiltros = !mostrarFiltros"
           >
-            <q-tooltip class="bg-dark">{{
-              props.inFullscreen
-                ? 'Salir de pantalla completa'
-                : 'Abrir en pantalla completa'
-            }}</q-tooltip>
-          </q-btn>
-
-          <!--<q-btn
-            flat
-            round
-            dense
-            :icon="grid ? 'bi-list' : 'bi-grid-3x3'"
-            @click="grid = !grid"
+            <q-icon
+              :name="mostrarFiltros ? 'bi-eye-slash' : 'bi-eye'"
+              class="q-mr-sm"
+              size="xs"
+            ></q-icon>
+            {{ tituloBotonFiltros }}</q-btn
           >
-            <q-tooltip class="bg-dark" :disable="$q.platform.is.mobile">{{
-              grid ? 'Formato de lista' : 'Formato de cuadrícula'
-            }}</q-tooltip>
-          </q-btn> -->
         </div>
       </div>
 
@@ -229,61 +281,62 @@
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
       <q-td v-if="!$q.screen.xs" :props="props">
-        <div class="row full-width block q-gutter-x-sm justify-center">
+        <!--<div class="row full-width block q-gutter-sm justify-center"> -->
+        <q-btn-group
+          v-if="permitirConsultar || permitirEditar || permitirEliminar"
+          rounded
+          unelevated
+        >
           <!-- Consultar -->
           <q-btn
             v-if="permitirConsultar"
-            class="bg-btn-table"
-            round
-            unelevated
+            class="bg-btn-table q-px-md"
             dense
+            glossy
             @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-eye" color="info" size="xs"></q-icon>
+            <q-icon name="bi-eye" size="xs"></q-icon>
             <q-tooltip class="bg-dark"> Consultar </q-tooltip>
           </q-btn>
 
           <!-- Editar -->
           <q-btn
             v-if="permitirEditar"
-            class="bg-btn-table"
-            round
-            unelevated
+            class="bg-btn-table q-px-md"
+            glossy
             dense
             @click="editar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-pencil" color="info" size="xs"></q-icon>
+            <q-icon name="bi-pencil" size="xs" color="white"></q-icon>
             <q-tooltip class="bg-dark"> Editar </q-tooltip>
           </q-btn>
 
           <!-- Eliminar -->
           <q-btn
             v-if="permitirEliminar"
-            class="bg-btn-table"
-            round
-            unelevated
+            class="bg-btn-table q-px-md"
+            glossy
             dense
             @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-trash" color="info" size="xs"></q-icon>
+            <q-icon name="bi-trash" size="xs" color="white"></q-icon>
             <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
           </q-btn>
+        </q-btn-group>
 
-          <!-- custom botons -->
-          <span class="row full-width text-left">
-            <CustomButtons
-              :accion1="accion1"
-              :accion2="accion2"
-              :accion3="accion3"
-              :accion4="accion4"
-              :accion5="accion5"
-              :accion6="accion6"
-              :accion7="accion7"
-              :accion8="accion8"
-              :propsTable="props"
-            ></CustomButtons>
-          </span>
-        </div>
+        <CustomButtons
+          v-if="accion1"
+          :accion1="accion1"
+          :accion2="accion2"
+          :accion3="accion3"
+          :accion4="accion4"
+          :accion5="accion5"
+          :accion6="accion6"
+          :accion7="accion7"
+          :accion8="accion8"
+          :propsTable="props"
+        ></CustomButtons>
+        <!--</div> -->
       </q-td>
     </template>
 
@@ -417,7 +470,7 @@
                   ></q-icon>
                 </span>
 
-                <span v-if="col.name === 'responsable'">
+                <span v-if="col.name === 'es_responsable'">
                   <q-icon
                     v-if="col.value"
                     name="bi-check-circle-fill"
@@ -443,7 +496,7 @@
                       'es_ventana',
                       'finalizado',
                       'estado',
-                      'responsable',
+                      'es_responsable',
                       'tamanio_bytes',
                     ].includes(col.name)
                   "
@@ -504,7 +557,7 @@
       </q-td>
     </template>
 
-    <template #body-cell-responsable="props">
+    <template #body-cell-es_responsable="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
@@ -631,10 +684,9 @@
         </q-chip>
       </q-td>
     </template>
-
+    <!-- corregir esto para que sea dinamico -->
     <template #body-cell-condiciones="props">
       <q-td :props="props">
-        <!-- Estados de la tabla condiciones -->
         <q-chip
           v-if="
             props.value == estadosCondicionesId.nuevo ||
@@ -665,9 +717,20 @@
           "
           >DAÑADO</q-chip
         >
-        <!-- {{ props.value }} -->
       </q-td>
     </template>
+
+    <template #body-cell-leida="props">
+      <q-td :props="props">
+        <span v-if="props.value == false || props.value == 0">
+        <q-icon class="bi-check-circle-fill" color="negative" size="sm"> </q-icon>
+        </span>
+        <span v-else>
+        <q-icon class="bi-check-circle-fill" color="positive" size="sm"> </q-icon>
+        </span>
+      </q-td>
+    </template>
+
 
     <template #body-cell-estado="props">
       <q-td :props="props">
@@ -885,7 +948,7 @@
 }
 
 .alto-fijo-desktop {
-  height: calc(100vh - 200px);
+  height: calc(100vh - 100px);
 }
 
 .alto-fijo-mobile {
@@ -905,6 +968,39 @@
   border-right: 1px solid $grey-4;
   border-left: 1px solid $grey-4;
   border-radius: 4px 4px 0 0;
+}
+
+.my-sticky-column-table {
+  max-width: 100%;
+
+  th:last-child,
+  td:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    border-left: 1px solid $grey-4;
+    border-bottom: 1px solid $grey-4;
+  }
+}
+
+.my-sticky-column-table-dark {
+  thead tr:first-child th:last-child {
+    background-color: #1f1f1f;
+  }
+
+  td:last-child {
+    background-color: #060606;
+  }
+}
+
+.my-sticky-column-table-light {
+  thead tr:first-child th:last-child {
+    background-color: $grey-2;
+  }
+
+  td:last-child {
+    background-color: #fff;
+  }
 }
 </style>
 

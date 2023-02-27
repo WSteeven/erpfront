@@ -3,14 +3,14 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 // Paginas
-import SubtareaAsignadaPage from 'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
+// import SubtareaAsignadaPage from 'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
 
 export class TableroPersonalModales {
-    SubtareaAsignadaPage: ComponenteModal
+    // SubtareaAsignadaPage: ComponenteModal
 
     constructor() {
-        this.SubtareaAsignadaPage = markRaw(
+        /* this.SubtareaAsignadaPage = markRaw(
             new ComponenteModal('CONSTRUCRED', SubtareaAsignadaPage)
-        )
+        ) */
     }
 }

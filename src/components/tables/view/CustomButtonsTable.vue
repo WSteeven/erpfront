@@ -1,178 +1,177 @@
 <template>
   <!-- Accion 1-->
-  <span
+  <!--<span
     :class="{
       'row full-width justify-left q-gutter-sm': !$q.screen.xs,
       'column justify-end q-gutter-y-sm': $q.screen.xs,
     }"
-  >
-    <q-btn
-      v-if="extraerVisible(accion1)"
-      :color="accion1?.color ?? 'primary'"
-      rounded
-      dense
-      push
-      no-caps
-      no-wrap
-      class="q-px-sm"
-      @click="ejecutarAccion(accion1)"
+  > -->
+  <div class="text-left block">
+    <q-btn-group
+      :rounded="$q.screen.md"
+      :unelevated="$q.screen.xs"
+      :class="{ 'column full-width': $q.screen.xs }"
     >
-      <q-icon
-        v-if="accion1?.icono"
-        :name="extraerIcono(accion1) ?? ''"
-        size="xs"
-        class="q-mr-xs"
-      ></q-icon>
-      <span>{{ extraerTitulo(accion1) }}</span>
-    </q-btn>
+      <q-btn
+        v-if="extraerVisible(accion1)"
+        :color="accion1?.color ?? 'primary'"
+        glossy
+        dense
+        no-caps
+        no-wrap
+        class="q-px-sm"
+        @click="ejecutarAccion(accion1)"
+      >
+        <q-icon
+          v-if="accion1?.icono"
+          :name="extraerIcono(accion1) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion1) }}</span>
+      </q-btn>
 
-    <!-- Accion 2 -->
-    <q-btn
-      v-if="extraerVisible(accion2)"
-      :color="accion2?.color ?? 'primary'"
-      rounded
-      dense
-      push
-      no-caps
-      no-wrap
-      class="q-px-sm"
-      @click="ejecutarAccion(accion2)"
-    >
-      <q-icon
-        v-if="accion2?.icono"
-        :name="extraerIcono(accion2) ?? ''"
-        size="xs"
-        class="q-mr-xs"
-      ></q-icon>
-      <span>{{ extraerTitulo(accion2) }}</span>
-    </q-btn>
+      <!-- Accion 2 -->
+      <q-btn
+        v-if="extraerVisible(accion2)"
+        :color="accion2?.color ?? 'primary'"
+        dense
+        glossy
+        no-caps
+        no-wrap
+        class="q-px-sm"
+        @click="ejecutarAccion(accion2)"
+      >
+        <q-icon
+          v-if="accion2?.icono"
+          :name="extraerIcono(accion2) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion2) }}</span>
+      </q-btn>
 
-    <!-- Accion 3 -->
-    <q-btn
-      v-if="extraerVisible(accion3)"
-      :color="accion3?.color ?? 'primary'"
-      rounded
-      dense
-      push
-      no-caps
-      no-wrap
-      class="q-px-sm"
-      @click="ejecutarAccion(accion3)"
-    >
-      <q-icon
-        v-if="accion3?.icono"
-        :name="extraerIcono(accion3) ?? ''"
-        size="xs"
-        class="q-mr-xs"
-      ></q-icon>
-      <span>{{ extraerTitulo(accion3) }}</span>
-    </q-btn>
+      <!-- Accion 3 -->
+      <q-btn
+        v-if="extraerVisible(accion3)"
+        :color="accion3?.color ?? 'primary'"
+        dense
+        glossy
+        no-caps
+        no-wrap
+        class="q-px-sm"
+        @click="ejecutarAccion(accion3)"
+      >
+        <q-icon
+          v-if="accion3?.icono"
+          :name="extraerIcono(accion3) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion3) }}</span>
+      </q-btn>
 
-    <!-- Accion 4 -->
-    <q-btn
-      v-if="extraerVisible(accion4)"
-      :color="accion4?.color ?? 'primary'"
-      rounded
-      dense
-      push
-      no-caps
-      no-wrap
-      class="q-px-sm"
-      @click="ejecutarAccion(accion4)"
-    >
-      <q-icon
-        v-if="accion4?.icono"
-        :name="extraerIcono(accion4) ?? ''"
-        size="xs"
-        class="q-mr-xs"
-      ></q-icon>
-      <span>{{ extraerTitulo(accion4) }}</span>
-    </q-btn>
+      <!-- Accion 4 -->
+      <q-btn
+        v-if="extraerVisible(accion4)"
+        :color="accion4?.color ?? 'primary'"
+        dense
+        glossy
+        no-caps
+        no-wrap
+        class="q-px-sm"
+        @click="ejecutarAccion(accion4)"
+      >
+        <q-icon
+          v-if="accion4?.icono"
+          :name="extraerIcono(accion4) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion4) }}</span>
+      </q-btn>
 
-    <!-- Accion 5 -->
-    <q-btn
-      v-if="extraerVisible(accion5)"
-      :color="accion5?.color ?? 'primary'"
-      rounded
-      dense
-      push
-      no-caps
-      no-wrap
-      class="q-px-sm"
-      @click="ejecutarAccion(accion5)"
-    >
-      <q-icon
-        v-if="accion5?.icono"
-        :name="extraerIcono(accion5) ?? ''"
-        size="xs"
-        class="q-mr-xs"
-      ></q-icon>
-      <span>{{ extraerTitulo(accion5) }}</span>
-    </q-btn>
+      <!-- Accion 5 -->
+      <q-btn
+        v-if="extraerVisible(accion5)"
+        :color="accion5?.color ?? 'primary'"
+        dense
+        glossy
+        no-caps
+        no-wrap
+        class="q-px-sm"
+        @click="ejecutarAccion(accion5)"
+      >
+        <q-icon
+          v-if="accion5?.icono"
+          :name="extraerIcono(accion5) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion5) }}</span>
+      </q-btn>
 
-    <!-- Accion 6 -->
-    <q-btn
-      v-if="extraerVisible(accion6)"
-      :color="accion6?.color ?? 'primary'"
-      rounded
-      dense
-      push
-      no-caps
-      no-wrap
-      class="q-px-sm"
-      @click="ejecutarAccion(accion6)"
-    >
-      <q-icon
-        v-if="accion6?.icono"
-        :name="extraerIcono(accion6) ?? ''"
-        size="xs"
-        class="q-mr-xs"
-      ></q-icon>
-      <span>{{ extraerTitulo(accion6) }}</span>
-    </q-btn>
+      <!-- Accion 6 -->
+      <q-btn
+        v-if="extraerVisible(accion6)"
+        :color="accion6?.color ?? 'primary'"
+        dense
+        glossy
+        no-caps
+        no-wrap
+        class="q-px-sm"
+        @click="ejecutarAccion(accion6)"
+      >
+        <q-icon
+          v-if="accion6?.icono"
+          :name="extraerIcono(accion6) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion6) }}</span>
+      </q-btn>
 
-    <!-- Accion 7 -->
-    <q-btn
-      v-if="extraerVisible(accion7)"
-      :color="accion7?.color ?? 'primary'"
-      rounded
-      dense
-      push
-      no-caps
-      no-wrap
-      class="q-px-sm"
-      @click="ejecutarAccion(accion7)"
-    >
-      <q-icon
-        v-if="accion7?.icono"
-        :name="extraerIcono(accion7) ?? ''"
-        size="xs"
-        class="q-mr-xs"
-      ></q-icon>
-      <span>{{ extraerTitulo(accion7) }}</span>
-    </q-btn>
+      <!-- Accion 7 -->
+      <q-btn
+        v-if="extraerVisible(accion7)"
+        :color="accion7?.color ?? 'primary'"
+        dense
+        glossy
+        no-caps
+        no-wrap
+        class="q-px-sm"
+        @click="ejecutarAccion(accion7)"
+      >
+        <q-icon
+          v-if="accion7?.icono"
+          :name="extraerIcono(accion7) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion7) }}</span>
+      </q-btn>
 
-    <!-- Accion 8 -->
-    <q-btn
-      v-if="extraerVisible(accion8)"
-      :color="accion8?.color ?? 'primary'"
-      rounded
-      dense
-      push
-      no-caps
-      no-wrap
-      class="q-px-sm"
-      @click="ejecutarAccion(accion8)"
-    >
-      <q-icon
-        v-if="accion8?.icono"
-        :name="extraerIcono(accion8) ?? ''"
-        size="xs"
-        class="q-mr-xs"
-      ></q-icon>
-      <span>{{ extraerTitulo(accion8) }}</span>
-    </q-btn>
-  </span>
+      <!-- Accion 8 -->
+      <q-btn
+        v-if="extraerVisible(accion8)"
+        :color="accion8?.color ?? 'primary'"
+        dense
+        glossy
+        no-caps
+        no-wrap
+        class="q-px-sm"
+        @click="ejecutarAccion(accion8)"
+      >
+        <q-icon
+          v-if="accion8?.icono"
+          :name="extraerIcono(accion8) ?? ''"
+          size="xs"
+          class="q-mr-xs"
+        ></q-icon>
+        <span>{{ extraerTitulo(accion8) }}</span>
+      </q-btn>
+    </q-btn-group>
+  </div>
 </template>
 
 <script lang="ts" setup>

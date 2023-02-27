@@ -7,12 +7,14 @@ export class DetalleProducto extends EntidadAuditable {
     descripcion: string | null
     marca: string | null
     modelo: string | null
+    modelo_id: string | null
     serial: string | null
     precio_compra: string | null
 
     ram: string | null
     disco: string | null
     procesador: string | null
+    imei: string | null
 
     computadora: string | null
     fibra: string | null
@@ -22,6 +24,7 @@ export class DetalleProducto extends EntidadAuditable {
     hilos: string | null
     punta_inicial: string | null
     punta_final: string | null
+    punta_corte: string | null
     custodia: string | null
     puntas: string | null
     adicionales: string | null
@@ -44,11 +47,13 @@ export class DetalleProducto extends EntidadAuditable {
         this.descripcion = null
         this.marca = null
         this.modelo = null
+        this.modelo_id = null
         this.serial = null
         this.precio_compra = null
         this.ram = null
         this.disco = null
         this.procesador = null
+        this.imei = null
         this.computadora = null
         this.fibra = null
         this.span = null
@@ -57,6 +62,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.hilos = null
         this.punta_inicial = null
         this.punta_final = null
+        this.punta_corte = null
         this.custodia = null
         this.puntas = null
 

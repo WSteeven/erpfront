@@ -7,6 +7,8 @@ export class Producto extends EntidadAuditable {
   cantidad: number |null
   codigo: number |null
 
+  detalles: number |null
+
   constructor(){
     super()
     this.nombre= null
@@ -14,5 +16,6 @@ export class Producto extends EntidadAuditable {
     this.unidad_medida = null
     this.cantidad= null
     this.codigo= null
+    this.detalles= null
   }
 }

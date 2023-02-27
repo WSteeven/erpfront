@@ -1,16 +1,16 @@
 // Dependencias
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { useAuthenticationStore } from 'stores/authentication'
 import { useRoute, useRouter } from 'vue-router'
+import { acciones } from 'config/utils'
 
 // Componentes
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { useAuthenticationStore } from 'stores/authentication'
-import { acciones } from 'config/utils'
 
 export default defineComponent({
   props: {
@@ -37,6 +37,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    mostrarCustomListado: {
+      type: Boolean,
+      default: false,
+    },
     permitirConsultar: {
       type: Boolean,
       default: true,
@@ -60,11 +64,9 @@ export default defineComponent({
   },
   components: { EssentialTable, ButtonSubmits },
   setup(props) {
-    const { listar, guardar, editar, eliminar, consultar, reestablecer } =
-      props.mixin.useComportamiento()
+    const { listar, filtrar, guardar, editar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
 
-    const { entidad, listado, accion, filtros, tabs, nextPageUrl } =
-      props.mixin.useReferencias()
+    const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
 
     const Router = useRouter()
     let listadoCargado = false
@@ -125,12 +127,32 @@ export default defineComponent({
       store.can(`puede.eliminar.${router.name?.toString()}`) && props.permitirEliminar
     )
 
-    function cargarListado() {
+    /*function cargarListado() {
       if (nextPageUrl.value)
         listar()
+    }*/
+
+    function filtrarTodos(filtros) {
+      if (props.mostrarListado) filtrar(filtros)
     }
 
+    /* const aplicarFiltros = (filtros: any) => {
+      filtrosBusqueda.value = filtros
+    }
+
+    const obtenerListadoFiltros = () => {
+      filtros.search = busqueda.value === "" ? null : busqueda.value
+      const newParams = {...filtrosBusqueda.value}
+      newParams.limit = 100
+      listar({...filtros, ...newParams}, false)
+    }
+    const obtenerTodoListadoFiltros = () => {
+      filtros.search = busqueda.value === "" ? null : busqueda.value
+      listar({...filtros, ...filtrosBusqueda.value}, false)
+    } */
+
     return {
+      filtrarTodos,
       tabs,
       tituloTabla,
       guardar,
@@ -151,7 +173,7 @@ export default defineComponent({
       puedeCrear,
       puedeEditar,
       puedeEliminar,
-      cargarListado,
+      //cargarListado,
 
       //acciones personalizadas
       // accion1: props.accion1

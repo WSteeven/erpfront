@@ -1,6 +1,7 @@
 // Dependencias
 import { configuracionColumnasProductos } from '../domain/configuracionColumnasProductos'
-import { required } from '@vuelidate/validators'
+import { configuracionColumnasDetallesProductos } from '../domain/configuracionColumnasDetalles'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 
@@ -19,6 +20,7 @@ import { ProductoController } from '../infraestructure/ProductoController'
 import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
+import { acciones } from 'config/utils';
 import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController'
 
 export default defineComponent({
@@ -45,7 +47,7 @@ export default defineComponent({
     const unidades_medidas = ref([])
 
     //Obtener el listado de las categorias
-    cargarVista(() => {
+    cargarVista(async() => {
       obtenerListados({
         categorias: {
           controller: new CategoriaController(),
@@ -76,6 +78,9 @@ export default defineComponent({
       accion,
       v$,
       configuracionColumnas: configuracionColumnasProductos,
+      acciones,
+      configuracionColumnasDetallesProductos,
+
       //listado
       opciones,
       unidades_medidas,

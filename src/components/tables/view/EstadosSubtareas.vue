@@ -1,56 +1,56 @@
 <template>
   <!-- CREADO -->
   <q-chip
-    v-if="props.propsTable.value === estadosSubtareas.CREADO"
+    v-if="props.propsTable.value === estadosTrabajos.CREADO"
     :class="{ 'bg-yellow-1': !$q.dark.isActive }"
     class="text-warning"
   >
     <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
-    >{{ estadosSubtareas.CREADO }}
+    >{{ estadosTrabajos.CREADO }}
   </q-chip>
 
   <!-- ASIGNADO -->
   <q-chip
-    v-if="props.propsTable.value === estadosSubtareas.ASIGNADO"
+    v-if="props.propsTable.value === estadosTrabajos.ASIGNADO"
     :class="{ 'bg-purple-1': !$q.dark.isActive }"
     class="text-purple"
   >
     <q-icon name="bi-circle-fill" color="purple-5" class="q-mr-xs"></q-icon
-    >{{ estadosSubtareas.ASIGNADO }}
+    >{{ estadosTrabajos.ASIGNADO }}
   </q-chip>
 
   <!-- EJECUTANDO -->
   <q-chip
-    v-if="props.propsTable.value === estadosSubtareas.EJECUTANDO"
+    v-if="props.propsTable.value === estadosTrabajos.EJECUTANDO"
     :class="{ 'bg-blue-1': !$q.dark.isActive }"
     class="text-blue"
   >
     <q-icon name="bi-circle-fill" color="blue" class="q-mr-xs"></q-icon
-    >{{ estadosSubtareas.EJECUTANDO }}
+    >{{ estadosTrabajos.EJECUTANDO }}
   </q-chip>
 
   <!-- PAUSADO -->
   <q-chip
-    v-if="props.propsTable.value === estadosSubtareas.PAUSADO"
+    v-if="props.propsTable.value === estadosTrabajos.PAUSADO"
     :class="{ 'bg-grey-3': !$q.dark.isActive }"
   >
     <q-icon name="bi-circle-fill" color="grey-6" class="q-mr-xs"></q-icon
-    >{{ estadosSubtareas.PAUSADO }}
+    >{{ estadosTrabajos.PAUSADO }}
   </q-chip>
 
   <!-- SUSPENDIDO -->
   <q-chip
-    v-if="props.propsTable.value === estadosSubtareas.SUSPENDIDO"
+    v-if="props.propsTable.value === estadosTrabajos.SUSPENDIDO"
     :class="{ 'bg-red-1': !$q.dark.isActive }"
     class="text-red"
   >
     <q-icon name="bi-circle-fill" color="red" class="q-mr-xs"></q-icon
-    >{{ estadosSubtareas.SUSPENDIDO }}
+    >{{ estadosTrabajos.SUSPENDIDO }}
   </q-chip>
 
   <!-- CANCELADO -->
   <q-chip
-    v-if="props.propsTable.value === estadosSubtareas.CANCELADO"
+    v-if="props.propsTable.value === estadosTrabajos.CANCELADO"
     class="bg-red-1 text-red"
   >
     <q-icon
@@ -58,32 +58,32 @@
       color="red"
       class="q-mr-xs"
     ></q-icon
-    >{{ estadosSubtareas.CANCELADO }}
+    >{{ estadosTrabajos.CANCELADO }}
   </q-chip>
 
   <!-- REALIZADO -->
   <q-chip
-    v-if="props.propsTable.value === estadosSubtareas.REALIZADO"
+    v-if="props.propsTable.value === estadosTrabajos.REALIZADO"
     :class="{ 'bg-green-1': !$q.dark.isActive }"
     class="text-green"
   >
     <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon
-    >{{ estadosSubtareas.REALIZADO }}
+    >{{ estadosTrabajos.REALIZADO }}
   </q-chip>
 
   <!-- FINALIZADO -->
   <q-chip
-    v-if="props.propsTable.value === estadosSubtareas.FINALIZADO"
+    v-if="props.propsTable.value === estadosTrabajos.FINALIZADO"
     :class="{ 'bg-green-1': !$q.dark.isActive }"
     class="text-light-green"
   >
     <q-icon name="bi-circle-fill" color="light-green" class="q-mr-xs"></q-icon
-    >{{ estadosSubtareas.FINALIZADO }}
+    >{{ estadosTrabajos.FINALIZADO }}
   </q-chip>
 </template>
 
 <script setup>
-import { estadosSubtareas } from 'config/utils'
+import { estadosTrabajos } from 'config/utils'
 
 const props = defineProps({
   propsTable: {

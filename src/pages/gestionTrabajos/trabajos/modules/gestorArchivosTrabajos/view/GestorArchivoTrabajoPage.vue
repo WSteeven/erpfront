@@ -1,0 +1,49 @@
+<template>
+  <q-page>
+    <div class="col-12">
+      <b>Código de trabajo: </b>{{ codigoTrabajoSeleccionado }}
+    </div>
+    <div class="col-12 col-md-3 text-center q-mb-lg">
+      <br />
+      <q-checkbox
+        v-model="quiero_subir_archivos"
+        label="Quiero subir archivos"
+        outlined
+        dense
+      ></q-checkbox>
+    </div>
+
+    <div v-if="quiero_subir_archivos" class="col-12 q-mb-md">
+      <q-uploader
+        ref="refGestor"
+        url=""
+        label="Selecciona o arrastra tus archivos aquí"
+        multiple
+        style="width: 100%"
+        flat
+        :factory="factoryFn"
+        class="bg-header-collapse expansion"
+      />
+    </div>
+
+    <div v-if="listado.length" class="col-12">
+      <essential-table
+        titulo="Archivos compartidos hasta el momento"
+        :configuracionColumnas="columnas"
+        :datos="listado"
+        :alto-fijo="false"
+        :permitirConsultar="false"
+        :permitirEditar="false"
+        :permitirEliminar="false"
+        :mostrar-footer="false"
+        :mostrar-botones="false"
+        :permitir-buscar="false"
+        :accion1="btnDescargar"
+        :accion2="btnComentar"
+        :accion3="btnEliminar"
+      ></essential-table>
+    </div>
+  </q-page>
+</template>
+
+<script src="./GestorArchivoTrabajoPage.ts"></script>

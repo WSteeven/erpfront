@@ -1,5 +1,7 @@
 <template>
   <q-page :padding="!$q.screen.xs">
+    <slot name="modales" />
+
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -21,6 +23,13 @@
         name="listado"
         label="Listado"
         :class="{ 'tab-inactive': tabs !== 'listado' }"
+        no-caps
+      />
+      <q-tab
+        v-if="mostrarCustomListado"
+        name="custom-listado"
+        label="Listado"
+        :class="{ 'tab-inactive': tabs !== 'custom-listado' }"
         no-caps
       />
     </q-tabs>
@@ -60,8 +69,13 @@
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
+          @filtrarTodos="filtrarTodos"
         ></essential-table>
-        <!--@onScroll="cargarListado" -->
+      </q-tab-panel>
+
+      <!-- Custom listado -->
+      <q-tab-panel name="custom-listado">
+        <slot name="custom-listado" />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>

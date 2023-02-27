@@ -102,7 +102,7 @@ $border-color: #464646;
   }
 
   // Scroll table
-  .q-virtual-scroll {
+  /* .q-virtual-scroll {
     &::-webkit-scrollbar {
       width: 10px;
       height: 10px;
@@ -114,7 +114,7 @@ $border-color: #464646;
       background: $border-color;
       border-radius: 50px;
     }
-  }
+  } */
 
   // Menu item drawer
   .link-active {
@@ -149,5 +149,6 @@ $border-color: #464646;
   .expansion {
     border-radius: 8px;
     border: 1px solid $border-color;
+    background-color: $dark-color;
   }
 }

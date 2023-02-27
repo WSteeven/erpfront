@@ -91,7 +91,26 @@ module.exports = configure(function (/* ctx */) {
         config: path.join(__dirname, './src/config'),
         shared: path.join(__dirname, './src/shared'),
         pages: path.join(__dirname, './src/pages'),
-        tareas: path.join(__dirname, './src/pages/tareas'),
+        gestionTrabajos: path.join(__dirname, './src/pages/gestionTrabajos'),
+        tareas: path.join(__dirname, './src/pages/gestionTrabajos/tareas'),
+        trabajos: path.join(__dirname, './src/pages/gestionTrabajos/trabajos'),
+        clientesFinales: path.join(
+          __dirname,
+          './src/pages/gestionTrabajos/clientesFinales'
+        ),
+        formulariosTrabajos: path.join(
+          __dirname,
+          './src/pages/gestionTrabajos/formulariosTrabajos'
+        ),
+        tiposTareas: path.join(
+          __dirname,
+          './src/pages/gestionTrabajos/tiposTareas'
+        ),
+        proyectos: path.join(
+          __dirname,
+          './src/pages/gestionTrabajos/proyectos'
+        ),
+        recursosHumanos: path.join(__dirname, './src/pages/recursosHumanos'),
         sistema: path.join(__dirname, './src/pages/sistema'),
         controlTareas: path.join(__dirname, './src/pages/tareas/controlTareas'),
         subtareas: path.join(

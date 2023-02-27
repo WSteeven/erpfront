@@ -1,6 +1,9 @@
 import { TabOption } from 'components/tables/domain/TabOption'
-import { CausaIntervencion } from 'pages/tareas/controlTareas/modules/subtareas/modules/controlAvance/view/CausaIntervencion'
+import { CausaIntervencion } from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/view/CausaIntervencion'
+// import { CausaIntervencion } from 'pages/tareas/controlTareas/modules/subtareas/modules/controlAvance/view/CausaIntervencion'
 
+export const maskFecha = 'DD-MM-YYYY'
+//export const maskFecha = 'YYYY/MM/DD'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
@@ -191,7 +194,7 @@ export const accionesTabla = {
   field: 'acciones',
   label: 'Acciones',
   align: 'center',
-  style: 'width: 500px'
+  //style: 'width: 1000px'
 }
 
 export const tiposTrabajosEstaticos = {
@@ -274,7 +277,7 @@ export const estadosDevoluciones = {
   CREADA: 'CREADA',
   ANULADA: 'ANULADA',
 }
-export const estadosSubtareas = {
+export const estadosTrabajos = {
   CREADO: 'CREADO',
   ASIGNADO: 'ASIGNADO',
   EJECUTANDO: 'EJECUTANDO',
@@ -285,6 +288,18 @@ export const estadosSubtareas = {
   FINALIZADO: 'FINALIZADO',
   REAGENDADO: 'REAGENDADO',
 }
+
+export const estadosTrabajoArray = [
+  'CREADO',
+  'ASIGNADO',
+  'EJECUTANDO',
+  'PAUSADO',
+  'SUSPENDIDO',
+  'CANCELADO',
+  'REALIZADO',
+  'FINALIZADO',
+  'REAGENDADO',
+]
 
 export const rolesSistema = {
   rrhh: 'RECURSOS HUMANOS',
@@ -313,4 +328,10 @@ export const tiposMovimientos = {
 export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
   { value: 0, label: 'INACTIVO' }
+]
+
+export const opciones_tipo_contribuyente = [
+  { value: 'NATURAL', label: 'NATURAL' },
+  { value: 'PRIVADA', label: 'PRIVADA' },
+  { value: 'PUBLICA', label: 'PUBLICA' },
 ]

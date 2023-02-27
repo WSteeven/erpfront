@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
 import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
@@ -305,6 +306,8 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  * @param titulo  nombre del archivo para descargar
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
+  const statusLoading = new StatusEssentialLoading()
+  statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
     url: ruta,
@@ -324,6 +327,24 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     link.click()
     link.remove()
   })
+  statusLoading.desactivar()
+}
+
+/**
+ *  Función de comparación para ordenar dos strings, se debe usar de la siguiente manera:
+ * (a,b)=>ordenarListaString(a.propiedad, b.propiedad)
+ * @param a primer string
+ * @param b segundo string
+ * @returns el valor de ordenación segun sea menor, mayor o igual la comparación dada
+ */
+export function ordernarListaString(a:string, b:string) {
+  if (a < b) {
+    return -1
+  }
+  if (a > b) {
+    return 1
+  }
+  return 0
 }
 
 export function obtenerUbicacion(onUbicacionConcedida) {

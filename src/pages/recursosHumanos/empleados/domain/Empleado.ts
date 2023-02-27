@@ -1,45 +1,47 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Empleado extends EntidadAuditable {
-    identificacion: string | null
-    nombres: string | null
-    apellidos: string | null
-    telefono: string | null
-    fecha_nacimiento: string | null
-    jefe: string | null
-    email: string | null
-    password: string | null
-    usuario: string | null
-    sucursal: string | null
-    estado: string | null
-    cargo: number | null
-    roles: string | null | string[]
-    grupo: number | null
-    disponible: boolean
-    es_lider: boolean
-    tiene_grupo: boolean
+  identificacion: string | null
+  nombres: string | null
+  apellidos: string | null
+  telefono: string | null
+  fecha_nacimiento: string | null
+  jefe: string | null
+  email: string | null
+  password: string | null
+  usuario: string | null
+  canton: string | null
+  estado: string | null
+  cargo: number | null
+  roles: string | null | string[]
+  grupo: number | null
+  disponible: boolean
+  es_lider: boolean
+  tiene_grupo: boolean
+  // es_responsable_grupo: boolean
 
-    grupo_id: number | null
+  grupo_id: number | null
 
-    constructor() {
-        super()
-        this.identificacion = null
-        this.nombres = null
-        this.apellidos = null
-        this.telefono = null
-        this.fecha_nacimiento = null
-        this.jefe = null
-        this.email = null
-        this.password = null
-        this.usuario = null
-        this.sucursal = null
-        this.estado = null
-        this.cargo = null
-        this.roles = null
-        this.grupo = null
-        this.disponible = true
-        this.es_lider = false
-        this.grupo_id = null
-        this.tiene_grupo = false
-    }
+  constructor() {
+    super()
+    this.identificacion = null
+    this.nombres = null
+    this.apellidos = null
+    this.telefono = null
+    this.fecha_nacimiento = null
+    this.jefe = null
+    this.email = null
+    this.password = null
+    this.usuario = null
+    this.canton = null
+    this.estado = null
+    this.cargo = null
+    this.roles = null
+    this.grupo = null
+    this.disponible = true
+    this.es_lider = false
+    this.grupo_id = null
+    this.tiene_grupo = false
+    // this.es_responsable_grupo = false
+  }
 }

@@ -52,18 +52,23 @@
               v-model="producto.unidad_medida"
               :options="unidades_medidas"
               hint="Agregue elementos desde el panel de unidades de medida"
+              options-dense
               dense
+              outlined
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.unidad_medida.$errors.length"
               error-message="Debes seleccionar una unidad de medida"
               :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre+' ('+v.simbolo+')'"
+              :option-label="(v) => v.nombre + ' (' + v.simbolo + ')'"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.unidad_medida.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.unidad_medida.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -95,11 +100,26 @@
               </template>
             </q-input>
           </div>
+          <!-- Listado de productos -->
+          <div
+            v-if="accion === acciones.consultar"
+            class="col-12 col-md-12 q-mt-xl"
+          >
+            <q-table
+              bordered
+              title="Detalles"
+              :rows="producto.detalles"
+              :columns="configuracionColumnasDetallesProductos"
+              row-key="id"
+              :pagination="{ rowsPerPage: 10 }"
+              dense
+            >
+            </q-table>
+          </div>
         </div>
       </q-form>
     </template>
   </tab-layout>
 </template>
-
 
 <script src="./ProductoPage.ts" />

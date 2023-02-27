@@ -24,13 +24,6 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         sortable: true,
     },
     {
-        name: 'fecha_limite',
-        field: 'fecha_limite',
-        label: 'Fecha límite',
-        align: 'left',
-        sortable: true,
-    },
-    {
         name: 'motivo',
         field: 'motivo',
         label: 'Motivo',

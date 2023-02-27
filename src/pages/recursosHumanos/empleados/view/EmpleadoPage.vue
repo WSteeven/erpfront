@@ -235,28 +235,29 @@
               </template>
             </q-input>
           </div>
-          <!-- Sucursal -->
+          <!-- Canton -->
           <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Sucursal</label>
+            <label class="q-mb-sm block">Canton</label>
             <q-select
-              v-model="empleado.sucursal"
-              :options="opciones_sucursales"
+              v-model="empleado.canton"
+              :options="opciones_cantones"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"
               options-dense
               dense
               outlined
-              :error="!!v$.sucursal.$errors.length"
-              @blur="v$.sucursal.$touch"
-              error-message="Debes seleccionar una sucursal"
+              :input-debounce="0"
+              use-input
+              @filter="filtroCantones"
+              hint="Opcional"
               :option-value="(v) => v.id"
-              :option-label="(v) => v.lugar"
+              :option-label="(v) => v.canton"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
+                <div v-for="error of v$.canton.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -319,6 +320,9 @@
               options-dense
               dense
               outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroCargos"
               :error="!!v$.cargo.$errors.length"
               error-message="Debes seleccionar un cargo"
               :option-value="(v) => v.id"
@@ -436,6 +440,16 @@
               </template>
             </q-select>
           </div>
+
+          <!--<div v-if="empleado.tiene_grupo" class="col-12 col-md-3 q-mb-md">
+            <br />
+            <q-toggle
+              v-model="empleado.es_responsable_grupo"
+              checked-icon="check"
+              color="positive"
+              label="Designar como responsable del grupo seleccionado"
+            />
+          </div> -->
         </div>
       </q-form>
     </template>

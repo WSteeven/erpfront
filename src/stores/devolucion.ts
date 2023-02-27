@@ -1,12 +1,12 @@
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { Devolucion } from 'pages/bodega/devoluciones/domain/Devolucion'
-import { endpoints } from 'config/api'
+import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { acciones } from 'config/utils'
-import { notificarMensajesError } from 'shared/utils'
+import { imprimirArchivo, notificarMensajesError } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 
 import TransaccionIngresoPage from 'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoPage'
@@ -26,7 +26,7 @@ export const useDevolucionStore = defineStore('devolucion', () => {
 
     async function consultar(id: number) {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.devoluciones) + id
+        const ruta = axios.getEndpoint(endpoints.devoluciones) +'/'+ id
         const response: AxiosResponse = await axios.get(ruta)
         // console.log('Respuesta obtenida: ', response)
         // console.log('Estado es: ', response.data.modelo.estado)
@@ -56,6 +56,12 @@ export const useDevolucionStore = defineStore('devolucion', () => {
         const response: AxiosResponse = await axios.get(ruta)
         devolucion.hydrate(response.data.modelo)
     }
+    async function imprimirPdf() {
+      const axios = AxiosHttpRepository.getInstance()
+      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.devoluciones) + '/imprimir/' + idDevolucion.value
+      const filename = 'devolucion_'+idDevolucion.value+'_'+Date.now()
+      imprimirArchivo(url,'GET', 'blob', 'pdf', filename)
+    }
 
     function resetearDevolucion() {
         devolucion.hydrate(devolucionReset)
@@ -68,5 +74,7 @@ export const useDevolucionStore = defineStore('devolucion', () => {
         resetearDevolucion,
         idDevolucion,
         showPreview,
+        imprimirPdf,
+
     }
 })

@@ -37,6 +37,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   useComportamiento() {
     return {
       listar: this.listar.bind(this),
+      filtrar: this.filtrar.bind(this),
       consultar: this.consultar.bind(this),
       guardar: this.guardar.bind(this),
       editar: this.editar.bind(this),
@@ -124,6 +125,19 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
         if (append) this.refs.listado.value.push(...result)
         else this.refs.listado.value = result
+      } catch (error) {
+        this.notificaciones.notificarError('Error al obtener el listado.')
+      }
+    })
+  }
+
+  private async filtrar(params?: ParamsType) {
+    this.cargarVista(async () => {
+      try {
+        const { result } = await this.controller.filtrar(params)
+        if (result.length == 0) this.notificaciones.notificarCorrecto('No se encontraron coincidencias.')
+
+        this.refs.listado.value = result
       } catch (error) {
         this.notificaciones.notificarError('Error al obtener el listado.')
       }

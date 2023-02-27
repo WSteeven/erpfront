@@ -143,7 +143,7 @@
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               @update:model-value="filtroTareas"
-              :option-label="(item) => item.detalle"
+              :option-label="(item) => item.titulo"
               :option-value="(item) => item.id"
               emit-value
               map-options
@@ -151,7 +151,7 @@
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>

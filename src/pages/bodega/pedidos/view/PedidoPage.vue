@@ -111,7 +111,10 @@
             </q-input>
           </div>
           <!-- Responsable -->
-          <div v-if="esCoordinador||esRRHH|!esTecnico" class="col-12 col-md-3">
+          <div
+            v-if="esCoordinador || esRRHH | !esTecnico"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="pedido.responsable"
@@ -163,10 +166,7 @@
             ></q-checkbox>
           </div>
           <!-- Fecha límite -->
-          <div
-            v-if="pedido.tiene_fecha_limite"
-            class="col-12 col-md-3"
-          >
+          <div v-if="pedido.tiene_fecha_limite" class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha limite</label>
             <q-input
               v-model="pedido.fecha_limite"
@@ -245,7 +245,7 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.tarea.$errors.length"
               error-message="Debe seleccionar una tarea"
-              :option-label="(item) => item.detalle"
+              :option-label="(item) => item.titulo"
               :option-value="(item) => item.id"
               emit-value
               map-options
@@ -253,7 +253,7 @@
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
@@ -297,8 +297,12 @@
               options-dense
               dense
               outlined
-              :disable="disabled || (soloLectura && !(esCoordinador||esActivosFijos))"
-              :readonly="disabled || (soloLectura && !(esCoordinador||esActivosFijos))"
+              :disable="
+                disabled || (soloLectura && !(esCoordinador || esActivosFijos))
+              "
+              :readonly="
+                disabled || (soloLectura && !(esCoordinador || esActivosFijos))
+              "
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="(v) => v.id"
@@ -321,12 +325,14 @@
             </q-select>
           </div>
           <!-- Tiene observacion de autorizacion -->
-          <div v-if="esCoordinador" class="col-12 col-md-3">
+          <div v-if="esCoordinador || esActivosFijos" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.tiene_observacion_aut"
               label="Tiene observación"
-              :disable="disabled || (soloLectura && !esCoordinador)"
+              :disable="
+                disabled || (soloLectura && !(esCoordinador || esActivosFijos))
+              "
               outlined
               dense
             ></q-checkbox>
@@ -340,9 +346,10 @@
             <q-input
               autogrow
               v-model="pedido.observacion_aut"
-              placeholder="Obligatorio"
-              :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
+              placeholder="Opcional"
+              :disable="
+                disabled || (soloLectura && !(esCoordinador || esActivosFijos))
+              "
               :error="!!v$.observacion_aut.$errors.length"
               outlined
               dense
@@ -357,6 +364,10 @@
               </template>
             </q-input>
           </div>
+          <!-- boton para emitir un evento -->
+          <!-- <q-btn flat  label="Emitir " type="submit" color="primary" @click="$emit('notificar', 'mensaje para mostrar en la campanita')">
+          <q-icon name="bi-send" size="xs" class="q-pr-sm"></q-icon>
+          </q-btn> -->
           <!-- Select estado -->
           <div
             v-if="pedido.estado || accion === acciones.consultar"
@@ -372,7 +383,7 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :readonly="disabled ||soloLectura"
+              :readonly="disabled || soloLectura"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -381,10 +392,7 @@
             </q-select>
           </div>
           <!-- observacion estado -->
-          <div
-            v-if="pedido.observacion_est"
-            class="col-12 col-md-3"
-          >
+          <div v-if="pedido.observacion_est" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow

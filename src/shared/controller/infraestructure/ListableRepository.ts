@@ -1,10 +1,10 @@
 import { ParamsType } from 'config/types'
 import { Endpoint } from 'shared/http/domain/Endpoint'
+import { ApiError } from '../../error/domain/ApiError'
 import {
   HttpResponseGet,
   HttpResponseList,
 } from 'shared/http/domain/HttpResponse'
-import { ApiError } from '../../error/domain/ApiError'
 
 import { AxiosHttpRepository } from '../../http/infraestructure/AxiosHttpRepository'
 

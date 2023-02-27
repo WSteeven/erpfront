@@ -29,7 +29,7 @@ export default defineComponent({
 
     const opciones = ref([])
     //obtener el listado de todas las marcas
-    cargarVista(() => {
+    cargarVista(async() => {
       obtenerListados({
         marcas: {
           controller: new MarcaController(),

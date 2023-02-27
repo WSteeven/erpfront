@@ -17,7 +17,7 @@ import { TipoTransaccionController } from 'pages/administracion/tipos_transaccio
 
 export default defineComponent({
     components: { TabLayout },
-    setup() {
+    setup() { 
         const mixin = new ContenedorSimpleMixin(Motivo, new MotivoController())
         const { entidad: motivo, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()

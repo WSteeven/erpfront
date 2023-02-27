@@ -51,7 +51,7 @@
       push
       @click="emitir('cancelar', true)"
     >
-      <q-icon name="bi-x-lg" size="xs" class="q-pr-sm"></q-icon>
+      <q-icon name="bi-eraser" size="xs" class="q-pr-sm"></q-icon>
       <span>Limpiar formulario</span>
     </q-btn>
   </div>
