@@ -251,12 +251,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.gasto'),
         },
         {
-          title: 'Reporte Fondo Rotativo',
-          link: 'reporte-fondo-fecha',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.reporte_fondo_fecha'),
-        },
-        {
           title: 'Detalle Fondos',
           icon: 'bi-list-task',
           children: [ {
@@ -282,14 +276,27 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-circle',
               can: store.can('puede.ver.acreditacion'),
             },
+          ]
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          children:[
             {
-              title: 'Reporte Saldo Actual',
+              title: 'Fondo Rotativo',
+              link: 'reporte-fondo-fecha',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_fondo_fecha'),
+            },
+            {
+              title: 'Saldo Actual',
               link: 'reporte-saldo-actual',
               icon: 'bi-circle',
               can: store.can('puede.ver.reporte_saldo_actual'),
             }
           ]
         },
+        
 
       ]
     },

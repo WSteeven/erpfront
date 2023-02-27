@@ -16,7 +16,7 @@
           <q-select v-model="reporte_saldo_actual.usuario" :options="usuarios" transition-show="jump-up"
             transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
             :error="!!v$.usuario.$errors.length" error-message="Debes seleccionar un usuario" use-input input-debounce="0"
-            @filter="filtrarUsuarios" :option-value="(v) => v.id" :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            @filter="filtrarUsuarios" :option-value="(v) => v.usuario_id" :option-label="(v) => v.nombres + ' ' + v.apellidos"
             emit-value map-options>
             <template v-slot:error>
               <div v-for="error of v$.usuario.$errors" :key="error.$uid">
@@ -41,9 +41,9 @@
       <q-separator></q-separator>
 
       <q-card-actions align="around">
-        <q-btn color="positive" @click="generar_reporte(fondo_rotativo_fecha, 'excel')"> <q-icon
+        <q-btn color="positive" @click="generar_reporte(reporte_saldo_actual, 'excel')"> <q-icon
             name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon>Excel</q-btn>
-        <q-btn color="negative" @click="generar_reporte(fondo_rotativo_fecha, 'pdf')"> <q-icon
+        <q-btn color="negative" @click="generar_reporte(reporte_saldo_actual, 'pdf')"> <q-icon
             name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm"></q-icon>PDF</q-btn>
       </q-card-actions>
     </q-card>
