@@ -3,6 +3,6 @@ import { endpoints } from 'config/api'
 
 export class BobinaController extends TransaccionSimpleController<any> {
   constructor() {
-    super(endpoints.bobinas_grupo_tarea)
+    super(endpoints.bobinas_empleado_tarea)
   }
 }

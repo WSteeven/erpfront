@@ -440,6 +440,16 @@
               </template>
             </q-select>
           </div>
+
+          <!--<div v-if="empleado.tiene_grupo" class="col-12 col-md-3 q-mb-md">
+            <br />
+            <q-toggle
+              v-model="empleado.es_responsable_grupo"
+              checked-icon="check"
+              color="positive"
+              label="Designar como responsable del grupo seleccionado"
+            />
+          </div> -->
         </div>
       </q-form>
     </template>

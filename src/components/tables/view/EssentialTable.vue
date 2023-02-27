@@ -281,61 +281,62 @@
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
       <q-td v-if="!$q.screen.xs" :props="props">
-        <div class="row full-width block q-gutter-sm justify-center">
+        <!--<div class="row full-width block q-gutter-sm justify-center"> -->
+        <q-btn-group
+          v-if="permitirConsultar || permitirEditar || permitirEliminar"
+          rounded
+          unelevated
+        >
           <!-- Consultar -->
           <q-btn
             v-if="permitirConsultar"
-            class="bg-btn-table"
-            round
-            unelevated
+            class="bg-btn-table q-px-md"
             dense
+            glossy
             @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-eye" color="info" size="xs"></q-icon>
+            <q-icon name="bi-eye" size="xs"></q-icon>
             <q-tooltip class="bg-dark"> Consultar </q-tooltip>
           </q-btn>
 
           <!-- Editar -->
           <q-btn
             v-if="permitirEditar"
-            class="bg-btn-table"
-            round
-            unelevated
+            class="bg-btn-table q-px-md"
+            glossy
             dense
             @click="editar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-pencil" color="info" size="xs"></q-icon>
+            <q-icon name="bi-pencil" size="xs" color="white"></q-icon>
             <q-tooltip class="bg-dark"> Editar </q-tooltip>
           </q-btn>
 
           <!-- Eliminar -->
           <q-btn
             v-if="permitirEliminar"
-            class="bg-btn-table"
-            round
-            unelevated
+            class="bg-btn-table q-px-md"
+            glossy
             dense
             @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-trash" color="info" size="xs"></q-icon>
+            <q-icon name="bi-trash" size="xs" color="white"></q-icon>
             <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
           </q-btn>
+        </q-btn-group>
 
-          <!-- custom botons -->
-          <!--<span class="row full-width text-left"> -->
-          <CustomButtons
-            :accion1="accion1"
-            :accion2="accion2"
-            :accion3="accion3"
-            :accion4="accion4"
-            :accion5="accion5"
-            :accion6="accion6"
-            :accion7="accion7"
-            :accion8="accion8"
-            :propsTable="props"
-          ></CustomButtons>
-          <!---</span> -->
-        </div>
+        <CustomButtons
+          v-if="accion1"
+          :accion1="accion1"
+          :accion2="accion2"
+          :accion3="accion3"
+          :accion4="accion4"
+          :accion5="accion5"
+          :accion6="accion6"
+          :accion7="accion7"
+          :accion8="accion8"
+          :propsTable="props"
+        ></CustomButtons>
+        <!--</div> -->
       </q-td>
     </template>
 

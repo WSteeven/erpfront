@@ -36,6 +36,18 @@
           </div>
 
           <div class="row q-col-gutter-sm q-pa-md">
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Medio de notificación</label>
+              <q-select
+                v-model="tarea.medio_notificacion"
+                :options="mediosNotificacion"
+                options-dense
+                dense
+                outlined
+                clearable
+              />
+            </div>
+
             <!-- Codigo tarea JP -->
             <div v-if="tarea.codigo_tarea" class="col-12 col-md-3">
               <label class="q-mb-sm block">Código de tarea</label>
@@ -56,6 +68,7 @@
                 hint="Ticket, OT, Tarea"
                 :error="!!v$.codigo_tarea_cliente.$errors.length"
                 @blur="v$.codigo_tarea_cliente.$touch"
+                :disable="disabled"
                 outlined
                 dense
                 autofocus
@@ -92,6 +105,7 @@
                 map-options
                 @update:model-value="establecerCliente()"
                 :error="!!v$.cliente.$errors.length"
+                :disable="disabled"
               >
                 <template v-slot:no-option>
                   <q-item>
@@ -128,6 +142,7 @@
                 input-debounce="0"
                 emit-value
                 map-options
+                :disable="disabled"
               >
                 <template v-slot:no-option>
                   <q-item>
@@ -161,7 +176,7 @@
                 input-debounce="0"
                 emit-value
                 map-options
-                disable
+                :disable="disabled"
               >
                 <template v-slot:no-option>
                   <q-item>
@@ -178,7 +193,12 @@
               <label class="q-mb-sm block"
                 >Fecha de solicitud del cliente</label
               >
-              <q-input v-model="tarea.fecha_solicitud" outlined dense>
+              <q-input
+                v-model="tarea.fecha_solicitud"
+                outlined
+                dense
+                :disable="disabled"
+              >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy
@@ -227,6 +247,7 @@
                 map-options
                 :error="!!v$.proyecto.$errors.length"
                 @update:modelValue="setCliente"
+                :disable="disabled"
               >
                 <template v-slot:no-option>
                   <q-item>
@@ -254,6 +275,7 @@
                 dense
                 :error="!!v$.titulo.$errors.length"
                 @blur="v$.titulo.$touch"
+                :disable="disabled"
               >
                 <template v-slot:error>
                   <div v-for="error of v$.titulo.$errors" :key="error.$uid">
@@ -297,6 +319,7 @@
                 input-debounce="0"
                 emit-value
                 map-options
+                :disable="disabled"
                 @update:model-value="
                   (v) => obtenerClienteFinal(tarea.cliente_final)
                 "
@@ -313,7 +336,7 @@
 
             <!-- Id de cliente -->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">ID de cliente final</label>
+              <label class="q-mb-sm block">ID/Código de cliente final</label>
               <q-input
                 v-model="clienteFinal.id_cliente_final"
                 disable

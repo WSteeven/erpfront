@@ -116,8 +116,20 @@ export default defineComponent({
 
     const cantonesPorProvincia = computed(() => cantones.value.filter((canton: any) => canton.provincia_id === clienteFinal.provincia))
 
+    const mediosTransmision = [
+      { label: 'Fibra', value: 'FIBRA' },
+      { label: 'Radio', value: 'RADIO' },
+    ]
+
+    const tendidosInteriorCable = [
+      { label: 'Visto', value: 'VISTO' },
+      { label: 'Canaleta', value: 'CANALETA' },
+    ]
+
     return {
       // mixin
+      mediosTransmision,
+      tendidosInteriorCable,
       mixin,
       clienteFinal,
       disabled,

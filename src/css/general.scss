@@ -9,8 +9,8 @@ body {
     border-radius: 50px;
 
     background: #009fff;
-    background: -webkit-linear-gradient(to top, #da7e2f, #2f4d81, #009fff);
-    background: linear-gradient(to top, #da7e2f, #2f4d81, #009fff);
+    background: -webkit-linear-gradient(to top, #2f4d81, #009fff);
+    background: linear-gradient(to top, #2f4d81, #009fff);
   }
 }
 
@@ -49,7 +49,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
   &::-webkit-scrollbar-thumb {
     border-radius: 50px;
     background: #009fff;
-    background: -webkit-linear-gradient(45deg, #da7e2f, #2f4d81, #009fff);
-    background: linear-gradient(45deg, #da7e2f, #2f4d81, #009fff);
+    background: -webkit-linear-gradient(45deg, #2f4d81, #009fff);
+    background: linear-gradient(45deg, #2f4d81, #009fff);
   }
 }

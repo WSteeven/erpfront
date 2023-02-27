@@ -75,13 +75,7 @@ export default defineComponent({
     const clienteFinal = reactive(new ClienteFinal())
     const archivos = ref([])
 
-    async function obtenerClienteFinal(clienteFinalId: number) {
-      const clienteFinalController = new ClienteFinalController()
-      const { result } = await clienteFinalController.consultar(clienteFinalId)
-      clienteFinal.hydrate(result)
-    }
-
-    consultar(trabajoAsignadoStore.idTrabajoSeleccionado)
+    consultar({ id: trabajoAsignadoStore.idTrabajoSeleccionado })
 
     /********
      * Hooks
@@ -128,6 +122,12 @@ export default defineComponent({
 
         return tecnico
       }) */
+    }
+
+    async function obtenerClienteFinal(clienteFinalId: number) {
+      const clienteFinalController = new ClienteFinalController()
+      const { result } = await clienteFinalController.consultar(clienteFinalId)
+      clienteFinal.hydrate(result)
     }
 
     async function obtenerArchivos() {

@@ -17,13 +17,6 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     sortable: true,
   },
   {
-    name: 'cliente',
-    field: 'cliente',
-    label: 'Cliente',
-    align: 'left',
-    sortable: true,
-  },
-  {
     name: 'titulo',
     field: 'titulo',
     label: 'Título',
@@ -54,6 +47,20 @@ export const configuracionColumnasTareas: ColumnConfig<Tarea>[] = [
     field: 'fiscalizador',
     label: 'Fiscalizador',
     align: 'center',
+    sortable: true,
+  },
+  {
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'medio_notificacion',
+    field: 'medio_notificacion',
+    label: 'Medio de notificación',
+    align: 'left',
     sortable: true,
   },
   {

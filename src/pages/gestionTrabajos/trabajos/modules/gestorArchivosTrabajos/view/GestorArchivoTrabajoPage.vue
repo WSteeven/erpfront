@@ -1,6 +1,9 @@
 <template>
   <q-page>
-    <div class="col-12 col-md-3 q-mb-md">
+    <div class="col-12">
+      <b>Código de trabajo: </b>{{ codigoTrabajoSeleccionado }}
+    </div>
+    <div class="col-12 col-md-3 text-center q-mb-lg">
       <br />
       <q-checkbox
         v-model="quiero_subir_archivos"
@@ -31,11 +34,13 @@
         :alto-fijo="false"
         :permitirConsultar="false"
         :permitirEditar="false"
+        :permitirEliminar="false"
         :mostrar-footer="false"
         :mostrar-botones="false"
-        @eliminar="botonEliminar"
-        :accion1="botonAgregarComentario"
-        :accion2="botonDescargar"
+        :permitir-buscar="false"
+        :accion1="btnDescargar"
+        :accion2="btnComentar"
+        :accion3="btnEliminar"
       ></essential-table>
     </div>
   </q-page>

@@ -1,11 +1,12 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { configuracionColumnasTareas } from '../domain/configuracionColumnasTareas'
-import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { acciones, rolesSistema, destinosTareas } from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
+import { mediosNotificacion } from 'config/trabajo.utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -45,9 +46,10 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
-    const { entidad: tarea, listadosAuxiliares, accion } = mixin.useReferencias()
+    const { entidad: tarea, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
+    const { onReestablecer } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -265,7 +267,12 @@ export default defineComponent({
       }
     })
 
-    // Informacion de ubicacion
+    /* watch(computed(() => tarea.para_cliente_proyecto), (paraClienteProyecto) => {
+      reestablecer()
+      tarea.para_cliente_proyecto = paraClienteProyecto
+    }) */
+
+    // Informacion de cliente final
     const clienteFinal = reactive(new ClienteFinal())
 
     async function setCliente() {
@@ -280,11 +287,21 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesTarea()
 
+    /*********
+     * Hooks
+     *********/
+    onReestablecer(() => {
+      clienteFinal.hydrate(new ClienteFinal())
+      clientesFinales.value = []
+      clientesFinalesSource.value = []
+    })
+
     return {
       clientesFinalesSource,
       v$,
       tarea,
       accion,
+      disabled,
       destinosTareas,
       provincias,
       cantones,
@@ -319,6 +336,7 @@ export default defineComponent({
       mostrarLabelModal,
       configuracionColumnasTareas,
       mixin,
+      mediosNotificacion,
     }
   },
 })
