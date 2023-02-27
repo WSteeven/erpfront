@@ -5,8 +5,6 @@ import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configur
 import { configuracionColumnasTrabajo } from 'gestionTrabajos/trabajos/domain/configuracionColumnasTrabajo'
 import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useSubtareaListadoStore } from 'stores/subtareaListado'
-// import { quitarItemDeArray, stringToArray } from 'shared/utils'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,
@@ -80,12 +78,9 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const tareaStore = useTareaStore()
     const trabajoStore = useTrabajoStore()
-    const subtareaListadoStore = useSubtareaListadoStore()
     const notificacionStore = useNotificacionStore()
     notificacionStore.setQuasar(useQuasar())
-    trabajoStore.nivelActual = nivelesTrabajos.TAREA
 
     /********
     * Mixin
@@ -126,7 +121,7 @@ export default defineComponent({
       cantones.value = listadosAuxiliares.cantones
     })
 
-    if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
+    //if (subtareaListadoStore.idSubtareaSeleccionada) consultar({ id: subtareaListadoStore.idSubtareaSeleccionada })
 
     const disable = computed(() => (trabajo.estado !== estadosTrabajos.CREADO && accion.value !== acciones.nuevo))
 
@@ -282,7 +277,7 @@ export default defineComponent({
     const botonEditarTrabajo: CustomActionTable = {
       titulo: 'Editar',
       icono: 'bi-pencil',
-      color: 'blue-grey-4',
+      color: 'primary',
       accion: ({ entidad }) => {
         accion.value = acciones.editar
         consultar(entidad)
@@ -531,8 +526,8 @@ export default defineComponent({
       descripcion_completa: { required },
       tipo_trabajo: { required },
       tarea: { required },
-      fecha_agendado: { required },
-      hora_inicio_agendado: { required },
+      fecha_agendado: { required: requiredIf(() => trabajo.es_ventana) },
+      hora_inicio_agendado: { required: requiredIf(() => trabajo.es_ventana) },
       hora_fin_agendado: { required: requiredIf(() => trabajo.es_ventana) },
       trabajo_dependiente: { required: requiredIf(() => trabajo.es_dependiente) },
     }
@@ -555,9 +550,9 @@ export default defineComponent({
       return result
     }
 
-    function establecerCliente() {
+    /*function establecerCliente() {
       tareaStore.tarea.cliente = trabajo.cliente
-    }
+    }*/
 
     function agregarGrupoSeleccionado(grupo_id: number) {
       if (grupo_id) {
@@ -615,9 +610,9 @@ export default defineComponent({
       seleccionarTecnico(empleados)
     }
 
-    function cargarArchivos(files: File[]) {
+    /* function cargarArchivos(files: File[]) {
       trabajo.archivos = files
-    }
+    } */
 
     function verificarEsVentana() {
       if (!trabajo.es_ventana) {
@@ -682,9 +677,6 @@ export default defineComponent({
         const { result } = await new TipoTrabajoController().listar({ cliente_id: idCliente })
         tiposTrabajosSource.value = result
         trabajo.tipo_trabajo = null
-
-        // trabajos
-        // trabajos: new TrabajoController(),
       }
     })
 
@@ -742,7 +734,7 @@ export default defineComponent({
       limpiarTecnico,
       seleccionarTecnico,
       seleccionarEmpleado,
-      cargarArchivos,
+      // cargarArchivos,
       opcionesModoAsignacionTrabajo,
       cancelarDesignacion,
       verificarEsVentana,
@@ -763,10 +755,10 @@ export default defineComponent({
       //
       guardar,
       editar,
-      tareaStore,
+      //tareaStore,
       reestablecer,
       obtenerClienteFinal,
-      establecerCliente,
+      //establecerCliente,
       setCliente,
       filtrarClientesFinales,
       clientesFinales,

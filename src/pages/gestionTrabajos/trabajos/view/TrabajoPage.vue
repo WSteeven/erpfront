@@ -235,7 +235,7 @@
 
                 <template v-slot:error>
                   <div
-                    v-for="error of v$.subtarea_dependiente.$errors"
+                    v-for="error of v$.trabajo_dependiente.$errors"
                     :key="error.$uid"
                   >
                     <div class="error-msg">{{ error.$message }}</div>
@@ -261,7 +261,7 @@
               <label class="q-mb-sm block">Fecha de agendamiento</label>
               <q-input
                 v-model="trabajo.fecha_agendado"
-                placeholder="Obligatorio"
+                :placeholder="trabajo.es_ventana ? 'Obligatorio' : 'Opcional'"
                 :error="!!v$.fecha_agendado.$errors.length"
                 outlined
                 :disable="disable"
@@ -310,7 +310,6 @@
               >
               <q-input
                 v-model="trabajo.hora_inicio_agendado"
-                placeholder="Obligatorio"
                 :error="!!v$.hora_inicio_agendado.$errors.length"
                 type="time"
                 :disable="disable"
@@ -336,7 +335,6 @@
               >
               <q-input
                 v-model="trabajo.hora_fin_agendado"
-                placeholder="Obligatorio"
                 :error="!!v$.hora_fin_agendado.$errors.length"
                 type="time"
                 stack-label
@@ -463,7 +461,7 @@
                 placeholder="Nombres / Apellidos / Identificación"
                 hint="Ingrese los datos del empleado y presione Enter para buscar"
                 @keydown.enter="listarTecnicos()"
-                @blur="criterioBusquedaTecnico === '' ? limpiarTecnico() : null"
+                @blur="limpiarTecnico()"
                 :disable="disable"
                 clearable
                 outlined
@@ -604,12 +602,12 @@
             </div>
 
             <!-- Fecha de inicio -->
-            <div v-if="trabajo.fecha_hora_inicio" class="col-12 col-md-3">
+            <div v-if="trabajo.fecha_hora_ejecucion" class="col-12 col-md-3">
               <label class="q-mb-sm block"
-                >Fecha y hora de inicio de trabajo</label
+                >Fecha y hora de ejecución del trabajo</label
               >
               <q-input
-                v-model="trabajo.fecha_hora_inicio"
+                v-model="trabajo.fecha_hora_ejecucion"
                 outlined
                 dense
                 disable

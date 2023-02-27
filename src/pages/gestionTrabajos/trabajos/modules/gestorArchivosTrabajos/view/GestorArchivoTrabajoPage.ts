@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasArchivoTrabajo } from '../domain/configuracionColumnasArchivoTrabajo'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useSubtareaListadoStore } from 'stores/subtareaListado'
 import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
@@ -16,34 +16,48 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ArchivoTrabajoController } from '../infraestructure/ArchivoTrabajoController'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { Archivo } from '../domain/Archivo'
-
+import { useTrabajoStore } from 'stores/trabajo'
 
 export default defineComponent({
   components: {
     EssentialTable
   },
   setup() {
+    /*********
+     * Stores
+     *********/
+    const trabajoStore = useTrabajoStore()
+
+    /********
+    * Mixin
+    *********/
     const mixin = new ContenedorSimpleMixin(Archivo, new ArchivoTrabajoController())
     const { entidad: archivo, listado } = mixin.useReferencias()
     const { editar, eliminar, listar } = mixin.useComportamiento()
 
     const { prompt, notificarCorrecto, notificarError } = useNotificaciones()
-    const store = useSubtareaListadoStore()
 
-    listar({ subtarea: store.idSubtareaSeleccionada })
+    listar({ trabajo_id: trabajoStore.idTrabajoSeleccionado })
 
-    async function botonEliminar({ entidad }) {
-      await eliminar(entidad, () =>
-        listado.value.splice(store.posicionSubtareaSeleccionada, 1)
-      )
+    /***************
+    * Botones tabla
+    ***************/
+    const btnEliminar: CustomActionTable = {
+      titulo: 'Eliminar',
+      icono: 'bi-trash3',
+      color: 'negative',
+      accion: async ({ entidad, posicion }) => {
+        await eliminar(entidad, () =>
+          listado.value.splice(posicion, 1)
+        )
+      }
     }
 
-    const botonAgregarComentario: CustomActionTable = {
+    const btnComentar: CustomActionTable = {
       titulo: 'Comentar',
       icono: 'bi-chat-square-text',
-      color: 'secondary',
+      color: 'primary',
       accion: ({ entidad }) => {
         const config: CustomActionPrompt = {
           mensaje: 'Ingrese el comentario',
@@ -59,7 +73,7 @@ export default defineComponent({
       },
     }
 
-    const botonDescargar: CustomActionTable = {
+    const btnDescargar: CustomActionTable = {
       titulo: 'Descargar',
       icono: 'bi-download',
       color: 'positive',
@@ -71,19 +85,24 @@ export default defineComponent({
 
     const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_trabajos)}`
 
+    /************
+    * Funciones
+    *************/
+    const quiero_subir_archivos = ref(false)
+
     async function factoryFn(files) {
       const fd = new FormData()
       fd.append('file', files[0])
-      fd.append('subtarea', store.idSubtareaSeleccionada)
-      // console.log(files)
+      fd.append('trabajo_id', trabajoStore.idTrabajoSeleccionado)
 
       try {
         const response: AxiosResponse = await axios.post(ruta, fd)
-        refGestor.value.reset()
+        /*refGestor.value.reset()
         refGestor.value.removeUploadedFiles()
-        refGestor.value.removeQueuedFiles()
+        refGestor.value.removeQueuedFiles()*/
+        quiero_subir_archivos.value = false
         files.value = []
-        listado.value.push(response.data.modelo) //, ...listado.value]
+        listado.value.push(response.data.modelo)
         notificarCorrecto(response.data.mensaje)
       } catch (error: unknown) {
         const axiosError = error as AxiosError
@@ -94,13 +113,14 @@ export default defineComponent({
     return {
       listado,
       refGestor,
-      botonEliminar,
       extraerExtension: (nombre: string) => nombre.split('.').at(-1),
       formatBytes,
-      quiero_subir_archivos: ref(false),
+      quiero_subir_archivos,
       columnas: [...configuracionColumnasArchivoTrabajo, accionesTabla],
-      botonAgregarComentario,
-      botonDescargar,
+      codigoTrabajoSeleccionado: trabajoStore.codigoTrabajoSeleccionado,
+      btnEliminar,
+      btnComentar,
+      btnDescargar,
       factoryFn,
     }
   }

@@ -27,6 +27,7 @@
         :options="filtro.options"
         @update:model-value="emitEvent()"
         dense
+        options-dense
         clearable
       />
 

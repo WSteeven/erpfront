@@ -6,10 +6,10 @@ import { Ref, ref } from 'vue'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { useSelector } from 'components/tables/application/selector'
-import { Subtarea } from '../domain/Trabajo'
+import { Trabajo } from '../domain/Trabajo'
 import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
 
-export function useOrquestadorSelectorTecnicos(subtarea: Subtarea, endpoint: keyof typeof endpoints) {
+export function useOrquestadorSelectorTecnicos(subtarea: Trabajo, endpoint: keyof typeof endpoints) {
   const refListadoSeleccionable = ref()
   const listado: Ref<EntidadAuditable[]> = ref([])
   const criterioBusqueda = ref()

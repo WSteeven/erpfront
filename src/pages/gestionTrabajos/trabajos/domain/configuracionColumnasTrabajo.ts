@@ -25,12 +25,6 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     sortable: true,
   },
   {
-    name: 'coordinador',
-    field: 'coordinador',
-    label: 'Coordinador',
-    align: 'left',
-  },
-  {
     name: 'estado',
     field: 'estado',
     label: 'Estado',
@@ -160,6 +154,12 @@ export const configuracionColumnasTrabajo: ColumnConfig<Trabajo>[] = [
     name: 'trabajo_dependiente',
     field: 'trabajo_dependiente',
     label: 'Depende de',
+    align: 'left',
+  },
+  {
+    name: 'coordinador',
+    field: 'coordinador',
+    label: 'Coordinador',
     align: 'left',
   },
   {

@@ -1,5 +1,6 @@
 // Dependencias
 import { configuracionColumnasControlTendido } from '../domain/configuracionColumnasControlTendido'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import {
   tiposElementos,
   propietariosElementos,
@@ -11,6 +12,7 @@ import {
 } from 'config/utils'
 import { useTendidoStore } from 'stores/tendido'
 import { computed, defineComponent, onMounted, watchEffect } from 'vue'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
@@ -28,9 +30,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { ComportamientoModalesProgresiva } from '../application/ComportamientoModalesProgresiva'
 import { ControlTendidoController } from '../infraestructure/ControlTendidoController'
 import { RegistroTendido } from '../modules/registrosTendidos/domain/RegistroTendido'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { BobinaController } from '../infraestructure/BobinaController'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { Tendido } from '../domain/Tendido'
 
 export default defineComponent({
@@ -73,8 +73,8 @@ export default defineComponent({
 
     onMounted(() => {
       // Consultar control tendido
-      if (trabajoAsignadoStore.idSubtareaSeleccionada) {
-        consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
+      if (trabajoAsignadoStore.idTrabajoSeleccionado) {
+        consultar({ id: trabajoAsignadoStore.idTrabajoSeleccionado })
       } else {
         router.replace({ name: 'trabajo_asignado' })
       }
@@ -136,7 +136,7 @@ export default defineComponent({
       tendidoStore.idTarea = progresiva.tarea
     })
 
-    onBeforeGuardar(() => progresiva.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada)
+    onBeforeGuardar(() => progresiva.subtarea = trabajoAsignadoStore.idTrabajoSeleccionado)
 
     onGuardado(() => tendidoStore.idTendido = progresiva.id)
 

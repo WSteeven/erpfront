@@ -62,7 +62,7 @@ export default defineComponent({
      * Botones tabla
      ***************/
     const botonVer: CustomActionTable = {
-      titulo: 'Visualizar',
+      titulo: 'Ver trabajo',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
         trabajoAsignadoStore.idTrabajoSeleccionado = entidad.id
@@ -74,26 +74,26 @@ export default defineComponent({
       titulo: 'Iniciar',
       icono: 'bi-play-fill',
       color: 'positive',
-      visible: ({ entidad }) => [estadosTrabajos.ASIGNADO].includes(entidad.estado) && entidad.responsable,
+      visible: ({ entidad }) => [estadosTrabajos.ASIGNADO].includes(entidad.estado) && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de iniciar el trabajo?', async () => {
           const { fecha, hora } = await obtenerTiempoActual()
           if (entidad.es_ventana) {
-            if (fecha < entidad.fecha_ventana) {
-              notificarAdvertencia('No puedes proceder. La ejecución del trabajo empieza el ' + entidad.fecha_ventana)
+            if (fecha < entidad.fecha_agendado) {
+              notificarAdvertencia('No puedes proceder. La ejecución del trabajo empieza el ' + entidad.fecha_agendado)
               return
             }
 
-            if (hora < entidad.hora_inicio_ventana) {
-              notificarAdvertencia('No puedes proceder. La ejecución del trabajo empieza a las ' + entidad.hora_inicio_ventana)
+            if (hora < entidad.hora_inicio_agendado) {
+              notificarAdvertencia('No puedes proceder. La ejecución del trabajo empieza a las ' + entidad.hora_inicio_agendado)
               return
             }
           }
 
           if (entidad.es_dependiente) {
-            const { result: subtareaDependiente } = await controller.consultar(entidad.subtarea_dependiente_id)
-            if (subtareaDependiente.estado !== estadosTrabajos.REALIZADO) {
-              notificarAdvertencia('No puedes proceder. Primero debes finalizar con el trabajo ' + entidad.subtarea_dependiente)
+            const { result: trabajoDependiente } = await controller.consultar(entidad.trabajo_dependiente_id)
+            if (trabajoDependiente.estado !== estadosTrabajos.REALIZADO) {
+              notificarAdvertencia('No puedes proceder. Primero debes finalizar con el trabajo ' + entidad.trabajo_dependiente)
               return
             }
           }
@@ -110,7 +110,7 @@ export default defineComponent({
     const botonPausar: CustomActionTable = {
       titulo: 'Pausar',
       icono: 'bi-pause',
-      color: 'grey-8',
+      color: 'blue-6',
       visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de pausar la subtarea?', () => {
@@ -133,7 +133,7 @@ export default defineComponent({
       titulo: 'Reanudar',
       icono: 'bi-play-circle-fill',
       color: 'positive',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.responsable,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.es_responsable,
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de reanudar el trabajo?', () => {
           new CambiarEstadoTrabajo().reanudar(entidad.id)
@@ -147,8 +147,8 @@ export default defineComponent({
     const botonFormulario: CustomActionTable = {
       titulo: 'Formulario',
       icono: 'bi-check2-square',
-      color: 'secondary',
-      visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.responsable,
+      color: 'indigo',
+      visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.es_responsable,
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
           trabajoAsignadoStore.idTrabajoSeleccionado = entidad.id
@@ -166,7 +166,7 @@ export default defineComponent({
       titulo: 'Suspender',
       icono: 'bi-x-diamond',
       color: 'negative',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.ASIGNADO && entidad.responsable,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.ASIGNADO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de suspender el trabajo?', () => {
           const config: CustomActionPrompt = {
@@ -189,7 +189,7 @@ export default defineComponent({
       titulo: 'Realizado',
       icono: 'bi-check',
       color: 'positive',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.responsable,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de que completó el trabajo?', async () => {
           const { result } = await new CambiarEstadoTrabajo().realizar(entidad.id)

@@ -1,7 +1,7 @@
 <template>
   <q-dialog
     v-model="abierto"
-    :maximized="false"
+    :maximized="true"
     :full-width="true"
     :persistent="confirmarCerrar"
   >
