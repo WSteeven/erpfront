@@ -147,7 +147,7 @@
           </div>
 
           <div class="row justify-end q-gutter-xs">
-            <q-btn
+            <!--<q-btn
               color="secondary"
               class="col-12 col-md-3"
               no-caps
@@ -159,7 +159,7 @@
             >
               <q-icon name="bi-chevron-left" size="xs" class="q-pr-sm"></q-icon>
               <span>Volver a la pantalla principal</span>
-            </q-btn>
+            </q-btn> -->
 
             <q-btn
               v-if="!progresiva.id"
@@ -172,7 +172,7 @@
               push
             >
               <q-icon name="bi-play-fill" size="xs" class="q-pr-sm"></q-icon>
-              Agregar elementos
+              Comenzar a agregar elementos
             </q-btn>
 
             <q-btn

@@ -286,6 +286,7 @@
           v-if="permitirConsultar || permitirEditar || permitirEliminar"
           rounded
           unelevated
+          class="q-mb-xs block text-left"
         >
           <!-- Consultar -->
           <q-btn
@@ -701,14 +702,15 @@
     <template #body-cell-leida="props">
       <q-td :props="props">
         <span v-if="props.value == false || props.value == 0">
-        <q-icon class="bi-check-circle-fill" color="negative" size="sm"> </q-icon>
+          <q-icon class="bi-check-circle-fill" color="negative" size="sm">
+          </q-icon>
         </span>
         <span v-else>
-        <q-icon class="bi-check-circle-fill" color="positive" size="sm"> </q-icon>
+          <q-icon class="bi-check-circle-fill" color="positive" size="sm">
+          </q-icon>
         </span>
       </q-td>
     </template>
-
 
     <template #body-cell-estado="props">
       <q-td :props="props">

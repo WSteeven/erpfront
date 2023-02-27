@@ -37,8 +37,8 @@ import { PedidoPageEvent } from '../application/PedidoPageEvent'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
-  emits:['notificar'],
-  setup(props, {emit}) {
+  emits: ['notificar'],
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
@@ -50,7 +50,7 @@ export default defineComponent({
      * Pusher
      */
 
-    const pedidoPusherEvent   = new PedidoPageEvent('mensaje enviado desde PedidoPage.ts', true)
+    const pedidoPusherEvent = new PedidoPageEvent('mensaje enviado desde PedidoPage.ts', true)
     pedidoPusherEvent.start()
 
     // Stores
@@ -89,7 +89,7 @@ export default defineComponent({
         soloLectura.value = true
       }
     })
-    onGuardado(()=>{
+    onGuardado(() => {
       console.log('guardado, ahora se emite el evento')
       emit('notificar', 'Tienes un pedido realizado')
     })
@@ -208,7 +208,7 @@ export default defineComponent({
         console.log(pedidoStore.pedido.listadoProductos)
         console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
       },
-      visible: () => tabSeleccionado.value == 'APROBADO'||tabSeleccionado.value == 'COMPLETA' ? true : false
+      visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }
 
     function actualizarElemento(posicion: number, entidad: any): void {

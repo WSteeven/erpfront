@@ -66,12 +66,12 @@ import { useBotonesTablaTrabajo } from '../application/BotonesTablaTrabajos'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
-  props: {
+  /*props: {
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
       required: false,
     },
-  },
+  },*/
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -752,7 +752,6 @@ export default defineComponent({
       fiscalizadores,
       coordinadores,
       proyectos,
-      //
       guardar,
       editar,
       //tareaStore,

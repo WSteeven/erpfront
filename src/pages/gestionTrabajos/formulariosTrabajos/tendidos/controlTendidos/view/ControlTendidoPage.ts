@@ -67,27 +67,26 @@ export default defineComponent({
     /************
     * Variables
     ************/
-    const entidadReset = new RegistroTendido()
-    const router = useRouter()
     const modales = new ComportamientoModalesProgresiva()
+    const entidadReset = new RegistroTendido()
+    // const router = useRouter()
 
-    onMounted(() => {
+    consultar({ id: trabajoAsignadoStore.idTrabajoSeleccionado })
+
+    /*onMounted(() => {
       // Consultar control tendido
       if (trabajoAsignadoStore.idTrabajoSeleccionado) {
         consultar({ id: trabajoAsignadoStore.idTrabajoSeleccionado })
       } else {
         router.replace({ name: 'trabajo_asignado' })
       }
-    })
+    })*/
 
     cargarVista(async () => {
       await obtenerListados({
         bobinas: {
           controller: new BobinaController(),
-          params: {
-            tarea: 2,
-            grupo: 1,
-          }
+          params: { trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado }
         },
       })
     })

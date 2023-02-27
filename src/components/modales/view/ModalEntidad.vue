@@ -31,8 +31,16 @@
 
       <q-card-section>
         <component
+          v-if="mixin"
           :is="componente"
           :mixin-modal="mixin"
+          @seleccionar="emit('seleccionar')"
+          @cerrar-modal="cerrarModalEntidad()"
+        ></component>
+
+        <component
+          v-else
+          :is="componente"
           @seleccionar="emit('seleccionar')"
           @cerrar-modal="cerrarModalEntidad()"
         ></component>

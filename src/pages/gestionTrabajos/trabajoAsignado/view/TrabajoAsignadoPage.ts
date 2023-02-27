@@ -113,7 +113,7 @@ export default defineComponent({
       color: 'blue-6',
       visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de pausar la subtarea?', () => {
+        confirmar('¿Está seguro de pausar el trabajo?', () => {
           const config: CustomActionPrompt = {
             mensaje: 'Ingrese el motivo de la pausa',
             accion: (data) => {
@@ -152,10 +152,7 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
           trabajoAsignadoStore.idTrabajoSeleccionado = entidad.id
-          // modales.abrirModalEntidad('SeleccionFormularioPage')
-          // router.push({ name: 'control_tendidos' })
-          // modales.abrirModalEntidad('ControlTendido')
-          // modales.abrirModalEntidad('EmergenciaPage')
+
           const obtenerPlantilla = new ObtenerPlantilla()
           modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
         })
@@ -216,7 +213,7 @@ export default defineComponent({
     const trabajoAsignadoController = new TrabajoAsignadoController()
 
     async function filtrarTrabajoAsignado(tabSeleccionado) {
-      const { result } = await trabajoAsignadoController.listar({ estado: tabSeleccionado }) //grupo_id: grupo_id,
+      const { result } = await trabajoAsignadoController.listar({ estado: tabSeleccionado })
       listado.value = result
       tabActual.value = tabSeleccionado
     }
