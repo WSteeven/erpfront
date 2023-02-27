@@ -50,7 +50,7 @@
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
-                  clickable
+                  clickable :to="notificacion.link"
                   v-ripple
                 >
                   <q-item-section avatar>
