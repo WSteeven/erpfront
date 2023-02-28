@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
         name: 'control_tendidos',
         component: () =>
           import(
-            'gestionTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
+            'gestionTrabajos/formulariosTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
           ),
         meta: { requiresAuth: true },
       },
@@ -410,7 +410,7 @@ const routes: RouteRecordRaw[] = [
         name: 'subtarea_asignada',
         component: () =>
           import(
-            'pages/gestionTrabajos/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'
+            'gestionTrabajos/trabajoAsignado/modules/detalleTrabajosAsignados/view/DetalleTrabajoAsignadoPage.vue'
           ),
         meta: { requiresAuth: true },
       },
