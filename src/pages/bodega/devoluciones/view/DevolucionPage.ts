@@ -6,11 +6,9 @@ import { defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
-// import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -18,27 +16,23 @@ import { DevolucionController } from '../infraestructure/DevolucionController'
 import { Devolucion } from '../domain/Devolucion'
 
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones,  meses, tabOptionsDevoluciones } from 'config/utils'
-import { ComportamientoModalesDevoluciones } from '../application/ComportamientoModalesDevolucion'
+import { acciones, tabOptionsDevoluciones } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
-import { LoginController } from 'pages/sistema/authentication/login/infraestructure/LoginController'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { Entidad } from 'shared/entidad/domain/entidad'
 import { LocalStorage } from 'quasar'
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
+    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable },
 
     setup() {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
@@ -50,9 +44,6 @@ export default defineComponent({
         //stores
         const devolucionStore = useDevolucionStore()
         const store = useAuthenticationStore()
-
-        //modales
-        const modales = new ComportamientoModalesDevoluciones()
 
         //orquestador
         const {
@@ -217,9 +208,6 @@ export default defineComponent({
             botonEliminar,
             botonAnular,
             botonImprimir,
-
-            //modal
-            modales,
 
             //flags
             soloLectura,

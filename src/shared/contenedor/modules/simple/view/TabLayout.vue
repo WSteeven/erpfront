@@ -1,6 +1,8 @@
 <template>
   <q-page :padding="!$q.screen.xs">
-    <slot name="modales" />
+    <transition name="scale" mode="out-in">
+      <slot name="modales" />
+    </transition>
 
     <!-- Tabs -->
     <q-tabs

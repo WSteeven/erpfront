@@ -219,7 +219,5 @@
       ></essential-selectable-table>
     </template>
   </tab-layout-filter-tabs>
-  <!-- Modales -->
-  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./DevolucionPage.ts"></script>

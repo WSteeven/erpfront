@@ -5,6 +5,7 @@ import { ImagenesAdicionales } from './ImagenesAdicionales' */
 export class TipoTrabajo extends EntidadAuditable {
   cliente: number | null
   descripcion: string | null
+  cliente_id: number | null
   /* plantilla: string | null
   requiere_imagenes: boolean
   requiere_campos_adicionales: boolean
@@ -15,6 +16,7 @@ export class TipoTrabajo extends EntidadAuditable {
     super()
     this.cliente = null
     this.descripcion = null
+    this.cliente_id = null
     /* this.plantilla = null
     this.requiere_imagenes = false
     this.requiere_campos_adicionales = false
