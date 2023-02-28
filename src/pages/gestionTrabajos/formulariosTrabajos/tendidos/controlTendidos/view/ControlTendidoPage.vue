@@ -155,9 +155,9 @@
       </q-btn>
     </div>
 
-    <q-card class="rounded q-mb-md">
+    <q-card v-if="tendido.id" class="rounded q-mb-md">
       <q-card-section>
-        <div v-if="tendido.id" class="row q-mb-xl">
+        <div class="row q-mb-xl">
           <div class="col-12">
             <essential-table
               titulo="Registro de avances"

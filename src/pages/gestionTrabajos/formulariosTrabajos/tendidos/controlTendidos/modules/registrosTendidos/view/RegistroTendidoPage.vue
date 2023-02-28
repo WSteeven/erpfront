@@ -299,7 +299,7 @@
       <div class="col-12 col-md-3">
         <q-checkbox
           v-model="registroTendido.tiene_americano"
-          label="Americano"
+          label="Tiene americano"
           :disable="disabled"
           class="q-pt-lg"
           outlined

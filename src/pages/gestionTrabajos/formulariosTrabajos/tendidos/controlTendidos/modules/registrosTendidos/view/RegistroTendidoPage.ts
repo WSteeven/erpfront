@@ -37,6 +37,7 @@ export default defineComponent({
     EssentialTable,
   },
   setup(props, { emit }) {
+    console.log('hola xD')
     /*********
      * Stores
      *********/
@@ -98,7 +99,7 @@ export default defineComponent({
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil',
-      color: 'secondary',
+      color: 'primary',
       visible: () => accion.value !== acciones.consultar,
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
@@ -209,7 +210,7 @@ export default defineComponent({
     onBeforeGuardar(() => {
       registroTendido.tendido = tendidoStore.idTendido
       registroTendido.materiales_ocupados = filtrarMaterialesOcupados()
-      registroTendido.subtarea = trabajoAsignadoStore.idTrabajoSeleccionado
+      registroTendido.trabajo = trabajoAsignadoStore.idTrabajoSeleccionado
     })
 
     return {
