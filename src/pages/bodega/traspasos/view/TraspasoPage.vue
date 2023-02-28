@@ -6,7 +6,7 @@
     :tab-options="tabOptionsTraspasos"
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
-    :accion2="botonImprimir"
+    :accion1="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>

@@ -33,7 +33,12 @@ export const useTransferenciaStore = defineStore('transferencia', () => {
         try {
             statusLoading.activar()
             const modelo = await consultar(id)
-            transferencia.hydrate(modelo)
+            if (modelo.recibida) {
+              notificarAdvertencia('La transferencia ya ha sido ingresada y completada')
+              transferencia.hydrate(transferenciaReset)
+            }else{
+              transferencia.hydrate(modelo)
+            }
         } catch (e) {
             notificarAdvertencia('Transferencia no encontrada o no aprobada')
             transferencia.hydrate(transferenciaReset)

@@ -715,6 +715,17 @@
     <template #body-cell-estado="props">
       <q-td :props="props">
         <q-chip
+          v-if="props.value === 'COMPLETADO'"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+          COMPLETA
+        </q-chip>
+        <q-chip
           v-if="props.value === estadosTransacciones['completa']"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
         >

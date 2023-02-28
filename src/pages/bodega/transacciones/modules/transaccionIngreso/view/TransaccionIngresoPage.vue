@@ -113,7 +113,7 @@
           </div>
           <!-- Tiene devolución -->
           <div
-            v-if="accion === 'NUEVO' || transaccion.tiene_devolucion"
+            v-if="(accion === 'NUEVO' && !transaccion.es_transferencia) || (transaccion.tiene_devolucion&&!transaccion.es_transferencia)"
             class="col-12 col-md-3"
           >
             <q-checkbox

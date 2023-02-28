@@ -245,6 +245,7 @@ export default defineComponent({
       transaccion.sucursal = transferenciaStore.transferencia.sucursal_salida
       transaccion.justificacion = transferenciaStore.transferencia.justificacion
       transaccion.cliente = transferenciaStore.transferencia.cliente
+      transaccion.per_autoriza = transferenciaStore.transferencia.per_autoriza
       transaccion.listadoProductosTransaccion = transferenciaStore.transferencia.listadoProductos
     }
 
