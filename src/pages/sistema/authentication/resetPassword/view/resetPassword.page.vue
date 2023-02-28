@@ -25,9 +25,9 @@
           <!-- Contraseña Vieja-->
           <div class="col-12 q-mb-sm">
             <q-input v-model="resetPassword.password_old" label="Contraseña Vieja" outlined dense
-              :type="isPwd ? 'password' : 'text'" hint="Porfavor ingrese la contraseña antigua">
+              :type="isPwdold ? 'password' : 'text'" hint="Porfavor ingrese la contraseña antigua">
               <template v-slot:append>
-                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                <q-icon :name="isPwdold ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwdold = !isPwdold" />
               </template>
             </q-input>
           </div>
@@ -44,9 +44,9 @@
           <!-- Confirmacion de contraseña -->
           <div class="col-12 q-mb-sm">
             <q-input v-model="resetPassword.password_confirmation" label="Confirmar Contraseña" outlined dense
-              :type="isPwd ? 'password' : 'text'" hint="Porfavor confirme su contraseña">
+              :type="isPwdConfirm ? 'password' : 'text'" hint="Porfavor confirme su contraseña">
               <template v-slot:append>
-                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                <q-icon :name="isPwdConfirm ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwdConfirm = !isPwdConfirm" />
               </template>
             </q-input>
           </div>
