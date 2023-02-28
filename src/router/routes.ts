@@ -450,6 +450,18 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/resetear-contrasena',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'ResetearContrasena',
+        component: () =>
+          import('pages/sistema/authentication/resetPassword/view/resetPassword.page.vue'),
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it

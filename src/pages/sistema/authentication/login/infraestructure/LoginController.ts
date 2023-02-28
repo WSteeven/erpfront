@@ -27,11 +27,13 @@ export class LoginController {
 
       return usuario
     } catch (error: unknown) {
-      // --------
       if (error instanceof ApiError) {
-        error.status
-        // redireccion
-
+        switch (error.status) {
+          case 412:
+          this.Router.replace({ name: 'ResetearContrasena' })
+          this.store.setNombreusuario(userLogin.name!);
+          break;
+        }
       }
       throw error
     }

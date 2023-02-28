@@ -50,7 +50,8 @@
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
-                  clickable :to="notificacion.link"
+                  clickable
+                  :to="notificacion.link"
                   v-ripple
                 >
                   <q-item-section avatar>
@@ -185,12 +186,11 @@
     <q-page-container :class="{ 'bg-body': true }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
-          <div>
-            <essential-loading></essential-loading>
-            <component :is="Component" @notificar="actualizarNotificaciones" />
-            <!--<footer-component></footer-component> -->
-          </div>
+          <essential-loading></essential-loading>
         </transition>
+
+        <component :is="Component" @notificar="actualizarNotificaciones" />
+        <!--<footer-component></footer-component> -->
       </router-view>
     </q-page-container>
   </q-layout>

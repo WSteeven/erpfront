@@ -71,6 +71,7 @@ export default defineComponent({
     return {
       forgotPassword,
       isPwd: ref(true),
+      isPwdconfirm: ref(true),
       enviando,
       // computed
       enableLoginButton,
