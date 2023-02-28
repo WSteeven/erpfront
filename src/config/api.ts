@@ -93,7 +93,7 @@ export const endpoints = {
   intercambiar_secretario_cuadrilla: new Endpoint('intercambiar-secretario-cuadrilla'),
   archivos_trabajos: new Endpoint('archivos-trabajos'),
   materiales_despachados: new Endpoint('transacciones-egresos/materiales-despachados'),
-  materiales_despachados_sin_bobina: new Endpoint('materiales-grupo-tarea'),
+  materiales_despachados_sin_bobina: new Endpoint('materiales-empleado-tarea'),
   // materiales_despachados_con_bobina: new Endpoint('transacciones-egresos/materiales-despachados-con-bobina'),
   bobinas_empleado_tarea: new Endpoint('bobinas-empleado-tarea'),
   registros_tendidos: new Endpoint('registros-tendidos'),

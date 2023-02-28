@@ -230,6 +230,7 @@
           push
           rounded
           no-caps
+          glossy
           @click="accion1Header.accion"
         >
           <q-icon

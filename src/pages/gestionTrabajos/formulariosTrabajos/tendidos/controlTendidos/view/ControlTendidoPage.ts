@@ -53,7 +53,7 @@ export default defineComponent({
     *********/
     const mixin = new ContenedorSimpleMixin(Tendido, new ControlTendidoController())
 
-    const { entidad: progresiva, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: tendido, listadosAuxiliares } = mixin.useReferencias()
     const { guardar, consultar, cargarVista, obtenerListados, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado, onGuardado } = mixin.useHooks()
 
@@ -94,7 +94,7 @@ export default defineComponent({
     const agregarProgresiva: CustomActionTable = {
       titulo: 'Agregar nuevo elemento',
       icono: 'bi-plus',
-      color: 'secondary',
+      color: 'positive',
       accion: () => {
         modales.abrirModalEntidad('RegistroTendidoPage')
         // tendidoStore.idTendido = progresiva.id
@@ -128,16 +128,16 @@ export default defineComponent({
      *********/
     onConsultado(() => {
       listarRegistrosTendidos({
-        tendido: progresiva.id
+        tendido: tendido.id
       })
 
-      tendidoStore.idTendido = progresiva.id
-      tendidoStore.idTarea = progresiva.tarea
+      tendidoStore.idTendido = tendido.id
+      tendidoStore.idTarea = tendido.tarea
     })
 
-    onBeforeGuardar(() => progresiva.subtarea = trabajoAsignadoStore.idTrabajoSeleccionado)
+    onBeforeGuardar(() => tendido.trabajo = trabajoAsignadoStore.idTrabajoSeleccionado)
 
-    onGuardado(() => tendidoStore.idTendido = progresiva.id)
+    onGuardado(() => tendidoStore.idTendido = tendido.id)
 
 
     /*************
@@ -147,7 +147,7 @@ export default defineComponent({
       bobina: { required },
     }
 
-    const v$ = useVuelidate(reglas, progresiva)
+    const v$ = useVuelidate(reglas, tendido)
     setValidador(v$.value)
 
     /************
@@ -157,10 +157,10 @@ export default defineComponent({
       return listadosAuxiliares.bobinas.find((item: any) => item.id === id)
     }
 
-    watchEffect(() => {
-      if (progresiva.bobina)
-        progresiva.cantidad_hilos = obtenerElemento(progresiva.bobina).cantidad_hilos
-    })
+    /* watchEffect(() => {
+      if (tendido.bobina)
+        tendido.cantidad_hilos = obtenerElemento(tendido.bobina).cantidad_hilos
+    }) */
 
     const marcaInicial = computed(() => listadoRegistrosTendidos.value.length ? listadoRegistrosTendidos.value[0].progresiva_entrada : 0)
     const marcaFinal = computed(() => listadoRegistrosTendidos.value.length ? listadoRegistrosTendidos.value[listadoRegistrosTendidos.value.length - 1].progresiva_salida : 0)
@@ -172,7 +172,7 @@ export default defineComponent({
       mixinRegistroTendido,
       listadosAuxiliares,
       guardar,
-      progresiva,
+      tendido,
       verResumen,
       // mixin 2
       listadoRegistrosTendidos,
