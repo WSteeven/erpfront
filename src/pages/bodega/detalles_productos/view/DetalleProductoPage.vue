@@ -245,7 +245,7 @@
               fill-mask
               unmasked-value
               v-model="detalle.precio_compra"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :readonly="disabled"
               outlined
               dense
@@ -269,6 +269,7 @@
             <q-checkbox
               v-model="detalle.es_fibra"
               label="Es fibra"
+              @update:model-value="checkFibra"
               outlined
               dense
               :disable="disabled"
