@@ -16,7 +16,7 @@
               v-model="transaccion.id"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               outlined
               dense
             >
@@ -76,7 +76,7 @@
               @popup-show="ordenarMotivos"
               @update:model-value="filtroMotivos"
               :readonly="disabled"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar un motivo"
               :option-value="(v) => v.id"
@@ -113,7 +113,7 @@
           </div>
           <!-- Tiene devolución -->
           <div
-            v-if="accion === 'NUEVO' || transaccion.tiene_devolucion"
+            v-if="(accion === 'NUEVO' && !transaccion.es_transferencia) || (transaccion.tiene_devolucion&&!transaccion.es_transferencia)"
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -139,22 +139,27 @@
               hint="Ingresa un numero de devolución y presiona Enter"
               @keyup.enter="llenarTransaccion(transaccion.devolucion)"
               :readonly="disabled"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               outlined
               dense
             >
             </q-input>
           </div>
           <!-- Comprobante/Factura -->
-          <div v-if="esVisibleComprobante || transaccion.comprobante" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="esVisibleComprobante || transaccion.comprobante"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">N° Factura/Comprobante</label>
             <q-input
               v-model="transaccion.comprobante"
               type="number"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :disable="disabled||soloLectura"
-              :rules="[ val => val> 0 || 'Ingresa un numero de comprobante válido' ]"
+              :disable="disabled || soloLectura"
+              :rules="[
+                (val) => val > 0 || 'Ingresa un numero de comprobante válido',
+              ]"
               :lazy-rules="true"
               outlined
               dense
@@ -173,7 +178,7 @@
               dense
               outlined
               :readonly="disabled"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               @popup-show="ordenarSucursales"
@@ -205,7 +210,7 @@
               type="textarea"
               autogrow
               :readonly="disabled"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
@@ -235,7 +240,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
@@ -271,7 +276,7 @@
               dense
               outlined
               :readonly="disabled"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               @update:model-value="filtroTareas"
               :option-label="(item) => item.titulo"
               :option-value="(item) => item.id"
@@ -301,8 +306,8 @@
               options-dense
               dense
               outlined
-              :readonly="disabled ||soloLectura"
-              :disable="disabled||soloLectura"
+              :readonly="disabled || soloLectura"
+              :disable="disabled || soloLectura"
               :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado para la transacción"
               :option-value="(item) => item.id"
@@ -332,7 +337,7 @@
               v-model="transaccion.tiene_obs_estado"
               label="Tiene observación"
               outlined
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               dense
             ></q-checkbox>
           </div>
@@ -340,12 +345,12 @@
           <div v-if="transaccion.tiene_obs_estado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
-            type="textarea"
-            autogrow
+              type="textarea"
+              autogrow
               v-model="transaccion.observacion_est"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               :error="!!v$.observacion_est.$errors.length"
               outlined
               dense
@@ -372,7 +377,7 @@
               dense
               outlined
               :readonly="disabled"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
               @popup-show="ordenarClientes"
@@ -396,13 +401,13 @@
             </q-select>
           </div>
           <!-- check ingreso masivo -->
-          <div v-if="accion===acciones.nuevo" class="col-12 col-md-3">
+          <div v-if="accion === acciones.nuevo" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.ingreso_masivo"
               @update:model-value="checkMasivo"
               label="¿Ingreso masivo?"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               outlined
               dense
             ></q-checkbox>
@@ -485,7 +490,9 @@
               "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
-              :permitirEditar="!transaccion.ingreso_masivo&& accion===acciones.nuevo"
+              :permitirEditar="
+                !transaccion.ingreso_masivo && accion === acciones.nuevo
+              "
               :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
@@ -501,7 +508,9 @@
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
-        :configuracion-columnas="configuracionColumnasDetallesProductosSeleccionables"
+        :configuracion-columnas="
+          configuracionColumnasDetallesProductosSeleccionables
+        "
         :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
@@ -509,6 +518,5 @@
       </essential-selectable-table>
     </template>
   </tab-layout>
-
-  </template>
+</template>
 <script src="./TransaccionIngresoPage.ts" />

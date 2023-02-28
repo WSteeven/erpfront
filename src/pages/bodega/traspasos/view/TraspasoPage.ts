@@ -173,10 +173,6 @@ export default defineComponent({
                 prompt(config)
             },
             visible: ({ entidad, posicion }) => {
-                // console.log('entidad....', entidad)
-                // console.log(entidad.cantidades, entidad.devuelto)
-                // console.log(entidad.cantidades != entidad.devuelto)
-
                 return accion.value == acciones.editar && entidad.cantidades != entidad.devuelto ? true : false
             }
         }

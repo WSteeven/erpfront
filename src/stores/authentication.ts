@@ -12,6 +12,8 @@ import { EstadosTransaccionController } from 'pages/administracion/estados_trans
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
+import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
+import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -22,6 +24,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const user = ref()
   const auth = ref(false)
   const permisos = ref()
+  const nombre_usuario = ref()
   const nombreUsuario = computed(
     () =>
       `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
@@ -57,6 +60,24 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       cargarDatosLS()
 
       return response.data.modelo
+    } catch (error: unknown) {
+      console.log(error);
+
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+  const enviarCorreoRecuperacion = async (userLogin: ForgotPassword) => {
+    try {
+      await axios.post(axios.getEndpoint(endpoints.enviar_correo_recuperacion), userLogin)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+  const recuperacionCuenta = async (userLogin: ForgotPassword) => {
+    try {
+      await axios.post(axios.getEndpoint(endpoints.recuperacion_cuenta), userLogin)
     } catch (error: unknown) {
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
@@ -97,6 +118,12 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     user.value = userData
     auth.value = Boolean(userData)
   }
+  const setNombreusuario = (email: string) => {
+    nombre_usuario.value = email
+  }
+  const getNombreusuario = () => {
+    return nombre_usuario.value
+  }
 
   const getUser = async () => {
     try {
@@ -113,9 +140,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  const actualizarContrasena = async (userLogin: UserLogin) => {
+  const actualizarContrasena = async (userReset: ResetPassword) => {
     try {
-      await axios.post(axios.getEndpoint(endpoints.reset_password), userLogin)
+      await axios.post(axios.getEndpoint(endpoints.reset_password), userReset)
     } catch (error: unknown) {
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
@@ -146,12 +173,17 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   return {
     user,
+    nombre_usuario,
     login,
+    enviarCorreoRecuperacion,
+    recuperacionCuenta,
     nombreUsuario,
     logout,
     permisos,
     can,
     getUser,
+    getNombreusuario,
+    setNombreusuario,
     actualizarContrasena,
     isUserLoggedIn,
     esCoordinador,

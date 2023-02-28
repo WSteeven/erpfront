@@ -1,9 +1,16 @@
-import { useAuthenticationStore } from '@/stores/authentication'
-import { UserLogin } from '../../login/domain/UserLogin'
+import { useAuthenticationStore } from "stores/authentication";
+import { useRouter } from "vue-router";
+import { ResetPassword } from "../domain/ResetPassword"
 
 export class ResetPasswordController {
-  async actualizarContrasena(userLogin: UserLogin): Promise<void> {
-    const authentication = useAuthenticationStore()
-    return await authentication.actualizarContrasena(userLogin)
+  store = useAuthenticationStore()
+  Router = useRouter()
+  async actualizarContrasena(resetPassword: ResetPassword): Promise<void> {
+    try {
+      await this.store.actualizarContrasena(resetPassword);
+      this.Router.replace('/login')
+   } catch (error) {
+
+   }
   }
 }

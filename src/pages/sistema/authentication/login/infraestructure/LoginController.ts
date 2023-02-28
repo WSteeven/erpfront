@@ -3,6 +3,7 @@ import { UserLogin } from '../domain/UserLogin'
 import { cargosSistema, rolesSistema } from 'config/utils'
 import { useRouter } from 'vue-router'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { ApiError } from 'shared/error/domain/ApiError'
 
 export class LoginController {
   store = useAuthenticationStore()
@@ -25,7 +26,15 @@ export class LoginController {
       }
 
       return usuario
-    } catch (error) {
+    } catch (error: unknown) {
+      if (error instanceof ApiError) {
+        switch (error.status) {
+          case 412:
+          this.Router.replace({ name: 'ResetearContrasena' })
+          this.store.setNombreusuario(userLogin.name!);
+          break;
+        }
+      }
       throw error
     }
   }

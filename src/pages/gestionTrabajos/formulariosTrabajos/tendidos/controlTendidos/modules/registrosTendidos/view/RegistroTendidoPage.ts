@@ -172,7 +172,7 @@ export default defineComponent({
 
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { tarea: tendidoStore.idTarea, grupo: authenticationStore.user.grupo_id })
+      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
     }
@@ -209,7 +209,7 @@ export default defineComponent({
     onBeforeGuardar(() => {
       registroTendido.tendido = tendidoStore.idTendido
       registroTendido.materiales_ocupados = filtrarMaterialesOcupados()
-      registroTendido.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
+      registroTendido.subtarea = trabajoAsignadoStore.idTrabajoSeleccionado
     })
 
     return {

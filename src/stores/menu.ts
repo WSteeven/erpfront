@@ -177,7 +177,8 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Productos en Perchas',
           link: 'productos-perchas',
           icon: 'bi-circle',
-          can: store.can('puede.ver.productos_perchas'),
+          // can: store.can('puede.ver.productos_perchas'),
+          can: false,
         },
         {
           title: 'Devoluciones',

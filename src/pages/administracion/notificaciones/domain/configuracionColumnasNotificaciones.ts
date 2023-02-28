@@ -12,7 +12,7 @@ export const configuracionColumnasNotificaciones: ColumnConfig<any>[] = [
   {
     name: 'leida',
     field: 'leida',
-    label: 'Estado',
+    label: 'Leído',
     align: 'left',
     sortable: true
   },

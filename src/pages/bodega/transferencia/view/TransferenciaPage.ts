@@ -21,9 +21,6 @@ import { Transferencia } from '../domain/Transferencia'
 import { useNotificaciones } from 'shared/notificaciones'
 import { ComportamientoModalesTransferencia } from '../application/ComportamientoModalesTransferencia'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -169,7 +166,6 @@ export default defineComponent({
             icono: 'bi-printer',
             accion: async ({ entidad, posicion }) => {
                 // devolucionStore.idDevolucion = entidad.id
-                // modales.abrirModalEntidad('ImprimirDevolucionPage')
                 // await devolucionStore.showPreview()
                 console.log('presionaste el boton imprimir')
                 // pdfMakeImprimir(entidad)

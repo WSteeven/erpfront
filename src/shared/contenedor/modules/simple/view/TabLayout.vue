@@ -1,6 +1,8 @@
 <template>
   <q-page :padding="!$q.screen.xs">
-    <slot name="modales" />
+    <transition name="scale" mode="out-in">
+      <slot name="modales" />
+    </transition>
 
     <!-- Tabs -->
     <q-tabs
@@ -40,7 +42,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ ' rounded-tabpanel': !$q.screen.xs }"
+      :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">

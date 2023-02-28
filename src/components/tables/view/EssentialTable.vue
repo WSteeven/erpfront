@@ -230,6 +230,7 @@
           push
           rounded
           no-caps
+          glossy
           @click="accion1Header.accion"
         >
           <q-icon
@@ -286,6 +287,7 @@
           v-if="permitirConsultar || permitirEditar || permitirEliminar"
           rounded
           unelevated
+          class="q-mb-xs block text-left"
         >
           <!-- Consultar -->
           <q-btn
@@ -723,17 +725,29 @@
     <template #body-cell-leida="props">
       <q-td :props="props">
         <span v-if="props.value == false || props.value == 0">
-        <q-icon class="bi-check-circle-fill" color="negative" size="sm"> </q-icon>
+          <q-icon class="bi-check-circle-fill" color="negative" size="sm">
+          </q-icon>
         </span>
         <span v-else>
-        <q-icon class="bi-check-circle-fill" color="positive" size="sm"> </q-icon>
+          <q-icon class="bi-check-circle-fill" color="positive" size="sm">
+          </q-icon>
         </span>
       </q-td>
     </template>
 
-
     <template #body-cell-estado="props">
       <q-td :props="props">
+        <q-chip
+          v-if="props.value === 'COMPLETADO'"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+          COMPLETA
+        </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones['completa']"
           :class="{ 'bg-green-1': !$q.dark.isActive }"

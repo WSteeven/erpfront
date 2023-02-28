@@ -41,12 +41,17 @@
             <q-badge color="info" floating
               >{{ notificaciones.length }}
             </q-badge>
-            <q-menu transition-show="flip-right" transition-hide="flip-left" @show="ordenarNotificaciones">
+            <q-menu
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              @show="ordenarNotificaciones"
+            >
               <q-list style="min-width: 120px">
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
                   clickable
+                  :to="notificacion.link"
                   v-ripple
                 >
                   <q-item-section avatar>
@@ -57,7 +62,7 @@
 
                 <q-separator />
 
-                <q-item clickable v-ripple>
+                <q-item clickable v-ripple to="notificaciones">
                   <q-item-section avatar>
                     <q-icon color="info" name="bi-bell" size="xs" />
                   </q-item-section>
@@ -181,12 +186,11 @@
     <q-page-container :class="{ 'bg-body': true }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
-          <div>
-            <essential-loading></essential-loading>
-            <component :is="Component" @notificar="actualizarNotificaciones" />
-            <!--<footer-component></footer-component> -->
-          </div>
+          <essential-loading></essential-loading>
         </transition>
+
+        <component :is="Component" @notificar="actualizarNotificaciones" />
+        <!--<footer-component></footer-component> -->
       </router-view>
     </q-page-container>
   </q-layout>
@@ -255,10 +259,12 @@ export default defineComponent({
       // { id: 4, title: 'Notificacion más reciente' },
     ])
 
-    function actualizarNotificaciones(val){
-      notificaciones.value.push({id:notificaciones.value.length+1, title:val})
+    function actualizarNotificaciones(val) {
+      notificaciones.value.push({
+        id: notificaciones.value.length + 1,
+        title: val,
+      })
       // console.log('entró aqui?',val, notificaciones.value.length);
-
     }
 
     return {
@@ -276,7 +282,11 @@ export default defineComponent({
       mostrarMenu: ref(false),
       notificaciones,
       actualizarNotificaciones,
-      ordenarNotificaciones(){notificaciones.value.sort((a, b) => {return b.id-a.id})},
+      ordenarNotificaciones() {
+        notificaciones.value.sort((a, b) => {
+          return b.id - a.id
+        })
+      },
     }
   },
 })

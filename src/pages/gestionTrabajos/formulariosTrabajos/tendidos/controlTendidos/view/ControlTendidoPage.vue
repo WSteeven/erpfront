@@ -1,20 +1,21 @@
 <template>
   <q-page padding>
-    <q-card>
+    <q-card class="rounded q-mb-md">
       <q-card-section>
-        <q-form @submit.prevent="enviar()">
-          <div class="text-bold q-mb-lg">Tendido de fibra óptica</div>
+        <q-form @submit.prevent>
+          <div class="text-bold q-mb-lg">1. Información general</div>
           <div class="row q-col-gutter-sm q-py-md">
+            <!-- Bobina -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Bobina</label>
               <q-select
-                v-model="progresiva.bobina"
+                v-model="tendido.bobina"
                 :options="listadosAuxiliares.bobinas"
                 transition-show="scale"
                 transition-hide="scale"
                 options-dense
                 dense
-                :disable="!!progresiva.id"
+                :disable="!!tendido.id"
                 outlined
                 :option-label="(item) => item.descripcion"
                 :option-value="(item) => item.id"
@@ -38,11 +39,11 @@
               </q-select>
             </div>
 
-            <!-- Marca inicial -->
-            <div v-if="progresiva.bobina" class="col-12 col-md-3">
+            <!-- Cantidad de hilos -->
+            <div v-if="tendido.bobina" class="col-12 col-md-3">
               <label class="q-mb-sm block">Cantidad de hilos de la FO</label>
               <q-input
-                v-model="progresiva.cantidad_hilos"
+                v-model="tendido.cantidad_hilos"
                 outlined
                 disable
                 dense
@@ -117,77 +118,62 @@
               ></q-input>
             </div>
 
-            <div v-if="progresiva.fecha" class="col-12 col-md-3 q-mb-md">
+            <div v-if="tendido.fecha" class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Fecha del tendido</label>
-              <q-input
-                v-model="progresiva.fecha"
-                disable
-                outlined
-                dense
-              ></q-input>
+              <q-input v-model="tendido.fecha" disable outlined dense></q-input>
             </div>
-          </div>
-
-          <div v-if="progresiva.id" class="row q-mb-xl">
-            <div class="col-12">
-              <essential-table
-                titulo="Registro de avances"
-                :configuracionColumnas="[
-                  ...configuracionColumnasControlTendido,
-                  accionesTabla,
-                ]"
-                :datos="listadoRegistrosTendidos"
-                :alto-fijo="false"
-                :permitirEliminar="false"
-                :accion1Header="agregarProgresiva"
-                @consultar="consultarRegistro"
-                @editar="editarRegistro"
-              ></essential-table>
-            </div>
-          </div>
-
-          <div class="row justify-end q-gutter-xs">
-            <q-btn
-              color="secondary"
-              class="col-12 col-md-3"
-              no-caps
-              push
-              flat
-              :to="{ name: 'trabajo_asignado' }"
-              rounded
-              no-wrap
-            >
-              <q-icon name="bi-chevron-left" size="xs" class="q-pr-sm"></q-icon>
-              <span>Volver a la pantalla principal</span>
-            </q-btn>
-
-            <q-btn
-              v-if="!progresiva.id"
-              class="col-12 col-md-3"
-              color="positive"
-              @click="guardar(progresiva, false)"
-              no-caps
-              no-wrap
-              rounded
-              push
-            >
-              <q-icon name="bi-play-fill" size="xs" class="q-pr-sm"></q-icon>
-              Agregar elementos
-            </q-btn>
-
-            <q-btn
-              v-if="progresiva.id"
-              color="positive"
-              class="col-12 col-md-3"
-              no-caps
-              push
-              @click="verResumen()"
-            >
-              <q-icon name="bi-table" size="xs" class="q-pr-sm"></q-icon>
-              <span>Ver resumen</span>
-            </q-btn>
           </div>
         </q-form>
+      </q-card-section>
+    </q-card>
+
+    <div class="row justify-center q-mb-md q-gutter-xs">
+      <q-btn
+        v-if="!tendido.id"
+        class="col-12 col-md-3"
+        color="positive"
+        @click="guardar(tendido, false)"
+        no-caps
+        no-wrap
+        rounded
+        push
+      >
+        <q-icon name="bi-play-fill" size="xs" class="q-pr-sm"></q-icon>
+        Comenzar a agregar elementos
+      </q-btn>
+
+      <q-btn
+        v-if="tendido.id"
+        color="positive"
+        class="col-12 col-md-3"
+        no-caps
+        push
+        @click="verResumen()"
+      >
+        <q-icon name="bi-table" size="xs" class="q-pr-sm"></q-icon>
+        <span>Ver resumen</span>
+      </q-btn>
+    </div>
+
+    <q-card class="rounded q-mb-md">
+      <q-card-section>
+        <div v-if="tendido.id" class="row q-mb-xl">
+          <div class="col-12">
+            <essential-table
+              titulo="Registro de avances"
+              :configuracionColumnas="[
+                ...configuracionColumnasControlTendido,
+                accionesTabla,
+              ]"
+              :datos="listadoRegistrosTendidos"
+              :alto-fijo="false"
+              :permitirEliminar="false"
+              :accion1Header="agregarProgresiva"
+              @consultar="consultarRegistro"
+              @editar="editarRegistro"
+            ></essential-table>
+          </div>
+        </div>
       </q-card-section>
     </q-card>
 

@@ -5,22 +5,22 @@
     :full-width="true"
     :persistent="confirmarCerrar"
   >
-    <q-card class="bg-body">
+    <q-card class="bg-desenfoque" :class="{ 'q-py-md q-px-xl': !$q.screen.xs }">
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
-      <q-toolbar>
+      <q-toolbar class="bg-body rounded-header" rounded>
         <q-avatar square>
           <img src="~assets/logo.svg" />
         </q-avatar>
 
-        <q-toolbar-title>{{ titulo }}</q-toolbar-title>
+        <q-toolbar-title class="text-primary"
+          ><span>{{ titulo }}</span></q-toolbar-title
+        >
 
         <q-btn
-          flat
           round
-          :class="{
-            'bg-grey-9': $q.dark.isActive,
-            'bg-grey-4': !$q.dark.isActive,
-          }"
+          glossy
+          unelevated
+          color="grey-6"
           icon="bi-x"
           @click="cerrarModalEntidad()"
         >
@@ -29,10 +29,18 @@
         <!--v-close-popup -->
       </q-toolbar>
 
-      <q-card-section>
+      <q-card-section class="bg-body rounded-footer">
         <component
+          v-if="mixin"
           :is="componente"
           :mixin-modal="mixin"
+          @seleccionar="emit('seleccionar')"
+          @cerrar-modal="cerrarModalEntidad()"
+        ></component>
+
+        <component
+          v-else
+          :is="componente"
           @seleccionar="emit('seleccionar')"
           @cerrar-modal="cerrarModalEntidad()"
         ></component>

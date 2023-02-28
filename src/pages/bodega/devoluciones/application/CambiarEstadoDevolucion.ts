@@ -1,6 +1,5 @@
 import { AxiosResponse } from 'axios'
 import { endpoints } from 'config/api'
-import { ApiError } from 'shared/error/domain/ApiError'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 
 export class CambiarEstadoDevolucion {
@@ -11,7 +10,7 @@ export class CambiarEstadoDevolucion {
     }
 
     async anular(devolucionId: number, mensaje: string) {
-        return this.solicitud('anular/', devolucionId, { motivo: mensaje })
+        return this.solicitud('/anular/', devolucionId, { motivo: mensaje })
     }
 
     async solicitud(accion, id, data?) {

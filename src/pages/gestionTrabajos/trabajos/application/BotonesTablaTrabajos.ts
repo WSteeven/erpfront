@@ -29,6 +29,7 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     titulo: 'Ver pausas',
     icono: 'bi-pause',
     color: 'blue-6',
+    visible: ({ entidad }) => entidad.estado !== estadosTrabajos.CREADO,
     accion: ({ entidad }) => {
       trabajoStore.idTrabajoSeleccionado = entidad.id
       trabajoStore.codigoTrabajoSeleccionado = entidad.codigo_trabajo

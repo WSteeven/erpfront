@@ -25,29 +25,31 @@ import { ref } from 'vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { useTrabajoStore } from 'stores/trabajo'
-
-// Props
-defineProps({
-  mixinModal: {
-    type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
-    required: true,
-  },
-})
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 // Emits
 defineEmits(['cerrar-modal', 'seleccionar'])
 
+/*********
+ * Stores
+ *********/
 const trabajoStore = useTrabajoStore()
-const codigoTrabajoSeleccionado = trabajoStore.codigoTrabajoSeleccionado
 
+/************
+ * Variables
+ ************/
+const codigoTrabajoSeleccionado = trabajoStore.codigoTrabajoSeleccionado
 const listado = ref([])
 
-obtenerPausas()
+/*************
+ * Funciones
+ *************/
 
 async function obtenerPausas() {
+  const statusEssentialLoading = new StatusEssentialLoading()
+  statusEssentialLoading.activar()
+
   const axios = AxiosHttpRepository.getInstance()
   const ruta =
     axios.getEndpoint(endpoints.pausas_trabajos) +
@@ -55,5 +57,9 @@ async function obtenerPausas() {
     trabajoStore.idTrabajoSeleccionado
   const response: AxiosResponse = await axios.get(ruta)
   listado.value = response.data.results
+
+  statusEssentialLoading.desactivar()
 }
+
+obtenerPausas()
 </script>

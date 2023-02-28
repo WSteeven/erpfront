@@ -20,6 +20,7 @@
                 v-model="clienteFinal.cliente"
                 :options="clientes"
                 @filter="filtrarClientes"
+                @blur="v$.cliente.$touch"
                 :disable="disabled"
                 transition-show="scale"
                 transition-hide="scale"
@@ -50,12 +51,13 @@
               </q-select>
             </div>
 
-            <!-- Id de cliente -->
+            <!-- Id / Codigo de cliente -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">ID/Código de cliente final</label>
               <q-input
                 v-model="clienteFinal.id_cliente_final"
                 :error="!!v$.id_cliente_final.$errors.length"
+                @blur="v$.id_cliente_final.$touch"
                 placeholder="Obligatorio"
                 :disable="disabled"
                 autofocus
@@ -92,6 +94,7 @@
               <q-input
                 v-model="clienteFinal.nombres"
                 :error="!!v$.nombres.$errors.length"
+                @blur="v$.nombres.$touch"
                 placeholder="Obligatorio"
                 :disable="disabled"
                 outlined
@@ -110,17 +113,11 @@
               <label class="q-mb-sm block">Apellidos</label>
               <q-input
                 v-model="clienteFinal.apellidos"
-                :error="!!v$.apellidos.$errors.length"
-                placeholder="Obligatorio"
+                placeholder="Opcional"
                 :disable="disabled"
                 outlined
                 dense
               >
-                <template v-slot:error>
-                  <div v-for="error of v$.apellidos.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
               </q-input>
             </div>
 
@@ -142,17 +139,11 @@
               <label class="q-mb-sm block">Celular</label>
               <q-input
                 v-model="clienteFinal.celular"
-                :error="!!v$.celular.$errors.length"
-                placeholder="Obligatorio"
+                placeholder="Opcional"
                 :disable="disabled"
                 outlined
                 dense
               >
-                <template v-slot:error>
-                  <div v-for="error of v$.celular.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
               </q-input>
             </div>
 
@@ -162,7 +153,6 @@
               <q-select
                 v-model="clienteFinal.provincia"
                 :options="listadosAuxiliares.provincias"
-                :error="!!v$.provincia.$errors.length"
                 :disable="disabled"
                 transition-show="scale"
                 transition-hide="scale"
@@ -182,12 +172,6 @@
                       No hay resultados
                     </q-item-section>
                   </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div v-for="error of v$.provincia.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
                 </template>
               </q-select>
             </div>
@@ -355,8 +339,8 @@
           </div>
         </q-expansion-item>
 
-        <!-- RUTA -->
-        <div class="text-bold">Ruta</div>
+        <!-- Ruta -->
+        <!--<div class="text-bold">Ruta</div>
         <div class="row q-col-gutter-sm q-py-md">
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Origen</label>
@@ -381,10 +365,10 @@
             >
             </q-input>
           </div>
-        </div>
+        </div> -->
 
         <!-- ODF -->
-        <div class="text-bold">ODF</div>
+        <!--<div class="text-bold">ODF</div>
         <div class="row q-col-gutter-sm q-py-md">
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Origen</label>
@@ -409,10 +393,10 @@
             >
             </q-input>
           </div>
-        </div>
+        </div> -->
 
-        <!-- ODF -->
-        <div class="text-bold">Hilos</div>
+        <!-- Hilos -->
+        <!--<div class="text-bold">Hilos</div>
         <div class="row q-col-gutter-sm q-py-md">
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Hilo 1</label>
@@ -437,7 +421,7 @@
             >
             </q-input>
           </div>
-        </div>
+        </div> -->
       </q-form>
     </template>
   </tab-layout>

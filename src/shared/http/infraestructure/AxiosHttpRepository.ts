@@ -3,7 +3,6 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { HttpRepository } from '../domain/HttpRepository'
 import { Endpoint } from '../domain/Endpoint'
 import { LocalStorage } from 'quasar'
-import { apiConfig } from 'config/api'
 
 // SINGLETON
 export class AxiosHttpRepository implements HttpRepository {

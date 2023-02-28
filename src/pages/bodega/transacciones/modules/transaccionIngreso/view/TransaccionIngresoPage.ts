@@ -125,8 +125,8 @@ export default defineComponent({
         },
       })
       //configurar los select definidos al inicio
-      transaccion.cliente = listadosAuxiliares.clientes[0]['id']
-      console.log(store.user.id)
+      // transaccion.cliente = listadosAuxiliares.clientes[0]['id']
+      // console.log(store.user.id)
       transaccion.solicitante = store.user.id
 
     })
@@ -154,7 +154,7 @@ export default defineComponent({
       transaccion.listadoProductosTransaccion = devolucionStore.devolucion.listadoProductos
     }
 
-    async function llenarTransferencia(id:number){
+    async function llenarTransferencia(id: number) {
       limpiarTransaccion()
       await transferenciaStore.cargarTransferencia(id)
       cargarDatosTransferencia()
@@ -164,6 +164,7 @@ export default defineComponent({
       transaccion.sucursal = transferenciaStore.transferencia.sucursal_destino
       transaccion.justificacion = transferenciaStore.transferencia.justificacion
       transaccion.cliente = transferenciaStore.transferencia.cliente
+      transaccion.per_autoriza = transferenciaStore.transferencia.per_autoriza
       transaccion.listadoProductosTransaccion = transferenciaStore.transferencia.listadoProductos
     }
 
@@ -294,9 +295,9 @@ export default defineComponent({
         const opcionSeleccionada = listadosAuxiliares.motivos.filter((v) => v.id === val)
         esVisibleComprobante.value = opcionSeleccionada[0]['nombre'] === motivos.compraProveedor ? true : false
         esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === motivos.mercaderiaClienteTarea || opcionSeleccionada[0]['nombre'] === motivos.devolucionTarea ? true : false
-        if(opcionSeleccionada[0]['nombre']==motivos.ingresoTransferenciaBodegas){
+        if (opcionSeleccionada[0]['nombre'] == motivos.ingresoTransferenciaBodegas) {
           transaccion.es_transferencia = true
-        }else{
+        } else {
           transaccion.es_transferencia = false
         }
       },
@@ -366,14 +367,14 @@ export default defineComponent({
         })
       },
       //ordenacion de listas
-      ordenarClientes(){
-        opciones_clientes.value.sort((a:Cliente, b:Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+      ordenarClientes() {
+        opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
       },
-      ordenarMotivos(){
-        opciones_motivos.value.sort((a:Motivo, b:Motivo) => ordernarListaString(a.nombre!, b.nombre!))
+      ordenarMotivos() {
+        opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
       },
-      ordenarSucursales(){
-        opciones_sucursales.value.sort((a:Sucursal, b:Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       }
     }
   }
