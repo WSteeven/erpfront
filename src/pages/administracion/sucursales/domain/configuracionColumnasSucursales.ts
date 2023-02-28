@@ -24,9 +24,9 @@ export const configuracionColumnasSucursales: ColumnConfig<Sucursal>[] = [
         sortable: true
     },
     {
-        name: 'administrador',
-        field: 'administrador',
-        label: 'Administrador',
+        name: 'extension',
+        field: 'extension',
+        label: 'Extensión',
         align: 'left',
         sortable: true
     }

@@ -1,53 +1,93 @@
 <template>
-  <div class="pt-5 px-4 position-fixed w-100 h-100">
-    <div class="row mb-4">
-      <div class="card col-12 col-md-6 mx-auto p-4">
-        <form @submit.prevent="enviarCorreoRecuperacion" class="w-100">
-          <div class="d-grid gap-2 mb-4">
-            <div class="pb-4">
-              <h2 class="text-texto">Recupera tu cuenta</h2>
-              <span class="text-texto"
-                >Ingrese el correo electrónico con el que se registró</span
-              >
-            </div>
-            <!-- Correo -->
-            <div>
-              <label class="form-label" for="email">Correo</label>
-              <input
-                class="form-control"
-                v-model="loginUser.email"
-                type="email"
-                placeholder="Ingrese su correo"
-              />
-            </div>
+  <q-page class="">
+    <div class="row items-center">
+      <!-- Left side -->
+      <div v-if="!$q.screen.xs && !$q.screen.sm" class="col-12 col-md-8 text-center q-pa-lg">
+        <div class="imagen d-flex align-items-center justify-content-center">
+          <q-avatar square size="400px">
+            <img src="~assets/logo.svg" />
+          </q-avatar>
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div class="col-12 col-md-4 column items-center bg-body-table justify-center window-height">
+        <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
+          <img src="~assets/logo.svg" />
+        </q-avatar>
+
+        <form @submit.prevent="enviarCorreoRecuperacion" class="full-width q-px-lg">
+          <div class="q-mb-sm">
+            <h2>Bienvenidos a JPCONSTRUCRED</h2>
+            <span>Recupera tu cuenta</span>
           </div>
-          <!-- Botones -->
-          <div class="col-12 d-grid d-md-flex justify-content-md-end gap-2">
-            <button
-              class="btn btn-primary block"
-              :class="{disabled: !enableLoginButton}"
-            >
-              <span
-                v-if="enviando"
-                class="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              <i v-else class="bi-envelope me-2"></i>
-              Enviar correo de recuperación
-            </button>
-            <router-link
-              :to="{name: 'Login'}"
-              replace
-              class="btn btn-danger block"
-              >Ir a login</router-link
-            >
+
+          <!-- Usuario -->
+          <div class="col-12 q-mb-sm" v-if="!enviando">
+            <q-input v-model="forgotPassword.email" label="Email" type="email"
+              hint="Ingrese el correo electrónico con el que se registró" outlined dense />
+          </div>
+          <!-- Codigo de Reestablecimiento de contraseña -->
+          <div class="col-12 q-mb-sm" v-if="enviando">
+            <q-input v-model="forgotPassword.code" label="Codigo"
+              hint="Ingrese el Codigo que se le envio al correo electrónico insttitucional " outlined dense />
+          </div>
+
+
+          <!-- Contraseña -->
+          <div class="col-12 q-mb-sm" v-if="enviando">
+            <q-input v-model="forgotPassword.password" label="Contraseña Nueva" outlined dense
+              :type="isPwd ? 'password' : 'text'" hint="No comparta su contraseña con nadie">
+              <template v-slot:append>
+                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+              </template>
+            </q-input>
+          </div>
+          <!-- Confirmacion de contraseña -->
+          <div class="col-12 q-mb-sm" v-if="enviando">
+            <q-input v-model="forgotPassword.password_confirmation" label="Confirmar Contraseña" outlined dense
+              :type="isPwd ? 'password' : 'text'" hint="Porfavor confirme su contraseña">
+              <template v-slot:append>
+                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+              </template>
+            </q-input>
+          </div>
+
+          <div class="col-12" v-if="!enviando">
+            <!-- Botones -->
+            <q-btn color="primary" label="Enviar codigo de recuperación" class="full-width q-mb-sm"
+              :disabled="!enableLoginButton" no-caps unelevated @click="enviarCorreoRecuperacion()">
+            </q-btn>
+          </div>
+          <div class="col-12" v-if="enviando">
+            <!-- Botones -->
+            <q-btn color="primary" label="Recuperar Cuenta" class="full-width q-mb-sm" :disabled="!enableRecoveryPasswordButton"
+              no-caps unelevated @click="recuperacionCuenta()">
+            </q-btn>
           </div>
         </form>
       </div>
     </div>
-    <img src="/img/forgot_password.svg" alt="Imagen contraseña olvidada" />
-  </div>
+  </q-page>
 </template>
 
 <script lang="ts" src="./forgotPassword.page.ts"></script>
+<style>
+h2 {
+  line-height: 1.2;
+  font-size: 1.714rem;
+}
+
+.empresa {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+}
+
+.fondo {
+  background: rgb(94, 88, 252);
+  background: linear-gradient(90deg,
+      rgba(94, 88, 252, 1) 0%,
+      rgba(110, 143, 255, 1) 100%);
+}
+</style>

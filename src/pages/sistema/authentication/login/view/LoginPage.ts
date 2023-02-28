@@ -12,6 +12,8 @@ import { UserLogin } from 'pages/sistema/authentication/login/domain/UserLogin'
 import { LoginController } from '../infraestructure/LoginController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useRouter } from 'vue-router';
+
 
 export default defineComponent({
   name: 'LoginPage',
@@ -25,6 +27,7 @@ export default defineComponent({
 
     const notificaciones = useNotificaciones()
     const cargando = new StatusEssentialLoading()
+    const Router = useRouter()
 
     const login = async () => {
       try {
@@ -36,12 +39,17 @@ export default defineComponent({
 
       } catch (error: any) {
         if (isAxiosError(error)) {
+         // console.log(error);
+
           const mensajes: string[] = error.erroresValidacion
           notificarMensajesError(mensajes, notificaciones)
         }
       } finally {
         cargando.desactivar()
       }
+    }
+    const recuperarPassword =() => {
+        Router.replace('/recuperar-contrasena')
     }
 
 
@@ -55,6 +63,7 @@ export default defineComponent({
       // loginJson,
       enableLoginButton,
       login,
+      recuperarPassword
     }
   },
 })

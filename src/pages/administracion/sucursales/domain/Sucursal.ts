@@ -4,13 +4,15 @@ export class Sucursal extends EntidadAuditable {
     lugar: string | null
     telefono: string | null
     correo: string | null
-    administrador: string | null
+    extension: string | null
+    // administrador: string | null
 
     constructor() {
         super()
         this.lugar = null
         this.telefono = null
         this.correo = null
-        this.administrador = null
+        this.extension = null
+        // this.administrador = null
     }
 }

@@ -98,6 +98,18 @@
             >
             </q-btn>
           </div>
+          <div class="col-12">
+            <!-- Botones -->
+            <q-btn
+            flat color="primary"
+              label="Recuperar contraseña"
+              class="full-width q-mb-sm"
+              no-caps
+              unelevated
+              @click="recuperarPassword()"
+            >
+            </q-btn>
+          </div>
         </form>
       </div>
     </div>
