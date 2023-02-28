@@ -11,6 +11,8 @@ export const endpoints = {
   usuarios: new Endpoint('usuarios'),
   login: new Endpoint('usuarios/login'),
   logout: new Endpoint('usuarios/logout'),
+  enviar_correo_recuperacion : new Endpoint('usuarios/recuperar-password'),
+  recuperacion_cuenta : new Endpoint('usuarios/validar-token'),
   api_user: new Endpoint('user'),
   reset_password: new Endpoint('reset-password', false),
   perfil_usuario: new Endpoint('user/profile-information', false),

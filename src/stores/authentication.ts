@@ -12,6 +12,7 @@ import { EstadosTransaccionController } from 'pages/administracion/estados_trans
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
+import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -57,6 +58,22 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       cargarDatosLS()
 
       return response.data.modelo
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+  const enviarCorreoRecuperacion = async (userLogin: ForgotPassword) => {
+    try {
+      await axios.post(axios.getEndpoint(endpoints.enviar_correo_recuperacion), userLogin)
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+  const recuperacionCuenta = async (userLogin: ForgotPassword) => {
+    try {
+      await axios.post(axios.getEndpoint(endpoints.recuperacion_cuenta), userLogin)
     } catch (error: unknown) {
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
@@ -147,6 +164,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   return {
     user,
     login,
+    enviarCorreoRecuperacion,
+    recuperacionCuenta,
     nombreUsuario,
     logout,
     permisos,
