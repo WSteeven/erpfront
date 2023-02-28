@@ -3,7 +3,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Tendido extends EntidadAuditable {
   marca_inicial: number | null
   marca_final: number | null
-  subtarea: number | null
+  trabajo: number | null
   tarea: number | null
   bobina: number | null
   cantidad_hilos: number | null
@@ -19,7 +19,7 @@ export class Tendido extends EntidadAuditable {
 
     this.marca_inicial = null
     this.marca_final = null
-    this.subtarea = null
+    this.trabajo = null
     this.tarea = null
     this.bobina = null
     this.cantidad_hilos = null

@@ -8,7 +8,7 @@
   > -->
   <div class="text-left block">
     <q-btn-group
-      :rounded="$q.screen.md"
+      :rounded="$q.screen.xl || $q.screen.lg || $q.screen.md"
       :unelevated="$q.screen.xs"
       :class="{ 'column full-width': $q.screen.xs }"
     >
