@@ -109,6 +109,7 @@
                 input-debounce="0"
                 emit-value
                 map-options
+                @update:model-value="trabajo.tipo_trabajo = null"
                 :error="!!v$.tarea.$errors.length"
               >
                 <template v-slot:no-option>
@@ -144,7 +145,6 @@
               <q-select
                 v-model="trabajo.tipo_trabajo"
                 :options="tiposTrabajos"
-                @filter="filtrarTiposTrabajos"
                 transition-show="scale"
                 transition-hide="scale"
                 hint="Seleccione primero una tarea"

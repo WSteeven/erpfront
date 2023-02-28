@@ -296,7 +296,7 @@
         >
           <div class="row q-col-gutter-sm q-pa-md">
             <!-- Nombre -->
-            <div class="col-12 col-md-6">
+            <div class="col-12">
               <label-abrir-modal
                 v-if="mostrarLabelModal"
                 label="Cliente final"
@@ -313,7 +313,9 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.nombres + ' ' + item.apellidos"
+                :option-label="
+                  (item) => item.nombres + ' ' + (item.apellidos ?? '')
+                "
                 :option-value="(item) => item.id"
                 use-input
                 input-debounce="0"
@@ -335,7 +337,7 @@
             </div>
 
             <!-- Id de cliente -->
-            <div class="col-12 col-md-3">
+            <div v-if="clienteFinal.id_cliente_final" class="col-12 col-md-3">
               <label class="q-mb-sm block">ID/Código de cliente final</label>
               <q-input
                 v-model="clienteFinal.id_cliente_final"
@@ -346,7 +348,7 @@
             </div>
 
             <!-- Celular -->
-            <div class="col-12 col-md-3">
+            <div v-if="clienteFinal.celular" class="col-12 col-md-3">
               <label class="q-mb-sm block">Celular</label>
               <q-input
                 v-model="clienteFinal.celular"
@@ -357,7 +359,7 @@
             </div>
 
             <!-- Provincia -->
-            <div class="col-12 col-md-3">
+            <div v-if="clienteFinal.provincia" class="col-12 col-md-3">
               <label class="q-mb-sm block">Provincias</label>
               <q-select
                 v-model="clienteFinal.provincia"
@@ -386,7 +388,7 @@
             </div>
 
             <!-- Ciudad -->
-            <div class="col-12 col-md-3">
+            <div v-if="clienteFinal.canton" class="col-12 col-md-3">
               <label class="q-mb-sm block">Cantón</label>
               <q-select
                 v-model="clienteFinal.canton"
@@ -415,7 +417,7 @@
             </div>
 
             <!-- Parroquia -->
-            <div class="col-12 col-md-3">
+            <div v-if="clienteFinal.parroquia" class="col-12 col-md-3">
               <label class="q-mb-sm block">Parroquia/Barrio</label>
               <q-input
                 v-model="clienteFinal.parroquia"
@@ -426,7 +428,7 @@
             </div>
 
             <!-- Direccion -->
-            <div class="col-12 col-md-3">
+            <div v-if="clienteFinal.direccion" class="col-12 col-md-3">
               <label class="q-mb-sm block">Dirección</label>
               <q-input
                 v-model="clienteFinal.direccion"
@@ -437,7 +439,7 @@
             </div>
 
             <!-- Referencia -->
-            <div class="col-12 col-md-3">
+            <div v-if="clienteFinal.referencia" class="col-12 col-md-3">
               <label class="q-mb-sm block">Referencia</label>
               <q-input
                 v-model="clienteFinal.referencia"
@@ -448,7 +450,7 @@
             </div>
 
             <!-- Coordenada latitud -->
-            <div class="col-12 col-md-3">
+            <div v-if="clienteFinal.coordenada_latitud" class="col-12 col-md-3">
               <label class="q-mb-sm block">Coordenada latitud</label>
               <q-input
                 v-model="clienteFinal.coordenada_latitud"
@@ -460,7 +462,10 @@
             </div>
 
             <!-- Coordenada longitud -->
-            <div class="col-12 col-md-3">
+            <div
+              v-if="clienteFinal.coordenada_longitud"
+              class="col-12 col-md-3"
+            >
               <label class="q-mb-sm block">Coordenada longitud</label>
               <q-input
                 v-model="clienteFinal.coordenada_longitud"

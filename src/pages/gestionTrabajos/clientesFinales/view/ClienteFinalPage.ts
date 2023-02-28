@@ -5,14 +5,12 @@ import { computed, defineComponent, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
-// import { rolesSistema } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-// import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
@@ -49,13 +47,6 @@ export default defineComponent({
       cliente: { required },
       id_cliente_final: { required },
       nombres: { required },
-      apellidos: { required },
-      celular: { required },
-      provincia: { required },
-      canton: { required },
-      parroquia: { required },
-      direccion: { required },
-      referencia: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())

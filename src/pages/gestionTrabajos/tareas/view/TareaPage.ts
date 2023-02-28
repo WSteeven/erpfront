@@ -1,42 +1,42 @@
 // Dependencias
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { configuracionColumnasTareas } from '../domain/configuracionColumnasTareas'
-import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
 import { acciones, rolesSistema, destinosTareas } from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
+import { mediosNotificacion } from 'config/trabajo.utils'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
-import { mediosNotificacion } from 'config/trabajo.utils'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { TipoTrabajoController } from 'tiposTareas/infraestructure/TipoTrabajoController'
+import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
+import { TipoTrabajoController } from 'tiposTareas/infraestructure/TipoTrabajoController'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
+import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
+import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { TipoTrabajo } from 'tiposTareas/domain/TipoTrabajo'
-import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
-import { TareaController } from '../infraestructure/TareaController'
 import { Tarea } from '../domain/Tarea'
 
 export default defineComponent({
   components: {
-    TabLayout,
     EssentialSelectableTable,
     LabelAbrirModal,
     ModalesEntidad,
+    TabLayout,
   },
-  setup(props) {
+  setup() {
     /*********
      * Stores
      *********/

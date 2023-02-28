@@ -24,18 +24,17 @@ import {
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
-import { useTareaStore } from 'stores/tarea'
+import { nivelesTrabajos } from 'config/trabajo.utils'
+import { useTrabajoStore } from 'stores/trabajo'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
-import { useTrabajoStore } from 'stores/trabajo'
-import { nivelesTrabajos } from 'config/trabajo.utils'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
@@ -43,8 +42,8 @@ import { ClienteFinalController } from 'gestionTrabajos/clientesFinales/infraest
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ValidarEmpleadosSeleccionados } from '../application/validaciones/ValidarEmpleadosSeleccionados'
 import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
-import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ValidarEmpleadoResponsable } from '../application/validaciones/ValidarEmpleadoResponsable'
+import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ProyectoController } from 'gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { ValidarGrupoResponsable } from '../application/validaciones/ValidarGrupoResponsable'
 import { useOrquestadorSelectorTecnicos } from '../application/OrquestadorSelectorTecnico'
@@ -55,23 +54,16 @@ import { ValidarGrupoAsignado } from '../application/validaciones/ValidarGrupoAs
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { TipoTrabajo } from 'gestionTrabajos/tiposTareas/domain/TipoTrabajo'
-import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { useBotonesTablaTrabajo } from '../application/BotonesTablaTrabajos'
 import { TrabajoController } from '../infraestructure/TrabajoController'
 import { EmpleadoSeleccionado } from '../domain/EmpleadoSeleccionado'
+import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { GrupoSeleccionado } from '../domain/GrupoSeleccionado'
 import { Grupo } from 'recursosHumanos/grupos/domain/Grupo'
 import { Trabajo } from '../domain/Trabajo'
-import { useBotonesTablaTrabajo } from '../application/BotonesTablaTrabajos'
-import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
-  /*props: {
-    mixinModal: {
-      type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
-      required: false,
-    },
-  },*/
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -92,11 +84,7 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        /* tiposTrabajos: {
-          controller: new TipoTrabajoController(),
-          params: { cliente: tareaStore.tarea.cliente }
-        }, */
-        //         trabajos: new TrabajoController(),
+        tiposTrabajos: new TipoTrabajoController(),
         tareas: new TareaController(),
         grupos: {
           controller: new GrupoController(),
@@ -110,9 +98,8 @@ export default defineComponent({
       })
 
       grupos.value = listadosAuxiliares.grupos
-      // tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
+      tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
       tareas.value = listadosAuxiliares.tareas
-      // trabajos.value = listadosAuxiliares.trabajos
       fiscalizadores.value = listadosAuxiliares.fiscalizadores
       coordinadores.value = listadosAuxiliares.coordinadores
       proyectos.value = listadosAuxiliares.proyectos
@@ -374,7 +361,11 @@ export default defineComponent({
     }
 
     // - Filtro tipos de trabajos
-    const tiposTrabajosSource: Ref<TipoTrabajo[]> = ref([])
+    // const tiposTrabajosSource: Ref<TipoTrabajo[]> = ref([])
+    const tiposTrabajosSource = computed(() =>
+      listadosAuxiliares.tiposTrabajos.filter((tipo: TipoTrabajo) => tipo.cliente_id === (trabajo.tarea ? obtenerIdCliente(trabajo.tarea) : false))
+    )
+
     const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
     function filtrarTiposTrabajos(val, update) {
       if (val === '') {
@@ -671,14 +662,14 @@ export default defineComponent({
       filtrar(filtros)
     }
 
-    watchEffect(async () => {
+    /* watchEffect(async () => {
       if (trabajo.tarea) {
         const idCliente = obtenerIdCliente(trabajo.tarea)
         const { result } = await new TipoTrabajoController().listar({ cliente_id: idCliente })
         tiposTrabajosSource.value = result
         trabajo.tipo_trabajo = null
       }
-    })
+    }) */
 
     function obtenerIdCliente(idTarea: number) {
       const tarea: Tarea = tareas.value.filter((tarea: Tarea) => tarea.id === idTarea)[0]
@@ -780,6 +771,7 @@ export default defineComponent({
       accionesTabla,
       botonEditarTrabajo,
       configuracionColumnasEmpleadoSeleccionado,
+      tiposTrabajosSource,
     }
   },
 })
