@@ -24,7 +24,6 @@ import { SpanController } from 'pages/administracion/span/infraestructure/SpanCo
 import { RamController } from '../modules/computadoras/modules/ram/infraestructure/RamController'
 import { DiscoController } from '../modules/computadoras/modules/disco/infraestructure/DiscoController'
 import { ProcesadorController } from '../modules/computadoras/modules/procesador/infraestructure/ProcesadorController'
-import { acciones } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout },
@@ -123,6 +122,15 @@ export default defineComponent({
       detalle.color = ''
       detalle.talla = ''
       detalle.tipo = ''
+    }
+    function limpiarCamposFibra() {
+      detalle.serial= null
+      detalle.span = null
+      detalle.tipo_fibra= null
+      detalle.hilos= null
+      detalle.punta_inicial= null
+      detalle.punta_final= null
+      detalle.punta_corte= null
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -285,6 +293,11 @@ export default defineComponent({
           const needle = val.toLowerCase()
           opciones_productos.value = listadosAuxiliares.productos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
         })
+      },
+      checkFibra(val){
+        if(!val){
+          limpiarCamposFibra()
+        }
       },
 
       actualizarCategoria(val) {

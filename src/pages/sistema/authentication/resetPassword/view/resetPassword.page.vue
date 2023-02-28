@@ -39,14 +39,14 @@
               label="Contraseña antigua"
               outlined
               dense
-              :type="isPwd ? 'password' : 'text'"
+              :type="isPwdold ? 'password' : 'text'"
               hint="Porfavor ingrese la contraseña antigua"
             >
               <template v-slot:append>
                 <q-icon
                   :name="isPwd ? 'visibility_off' : 'visibility'"
                   class="cursor-pointer"
-                  @click="isPwd = !isPwd"
+                  @click="isPwd = !isPwdold"
                 />
               </template>
             </q-input>
@@ -78,14 +78,14 @@
               label="Confirmar Contraseña"
               outlined
               dense
-              :type="isPwd ? 'password' : 'text'"
+              :type="isPwdConfirm ? 'password' : 'text'"
               hint="Porfavor confirme su contraseña"
             >
               <template v-slot:append>
                 <q-icon
                   :name="isPwd ? 'visibility_off' : 'visibility'"
                   class="cursor-pointer"
-                  @click="isPwd = !isPwd"
+                  @click="isPwd = !isPwdConfirm"
                 />
               </template>
             </q-input>

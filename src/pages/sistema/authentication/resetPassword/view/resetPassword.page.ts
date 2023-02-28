@@ -9,18 +9,23 @@ import { ResetPassword} from '../domain/ResetPassword'
 import { ResetPasswordController } from '../infraestructure/resetPassword.controller'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'ResetPassword',
   components: {  LottiePlayer: Vue3Lottie },
   setup() {
     const resetPassword = reactive(new ResetPassword())
+    const Router = useRouter()
     const enviando = ref(false)
     const store = useAuthenticationStore();
     const resetPasswordController = new ResetPasswordController()
     const notificaciones = useNotificaciones()
     const cargando = new StatusEssentialLoading()
     resetPassword.nombreUsuario = store.getNombreusuario();
+    if (resetPassword.nombreUsuario === undefined) {
+      Router.replace('/login')
+    }
     async function resetearPassword() {
       enviando.value = true
       try {
@@ -52,6 +57,8 @@ export default defineComponent({
     return {
       resetPassword,
       isPwd: ref(true),
+      isPwdold: ref(true),
+      isPwdConfirm: ref(true),
       enviando,
       // computed
       enableLoginButton,

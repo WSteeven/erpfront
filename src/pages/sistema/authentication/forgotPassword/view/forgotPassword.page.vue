@@ -46,9 +46,9 @@
           <!-- Confirmacion de contraseña -->
           <div class="col-12 q-mb-sm" v-if="enviando">
             <q-input v-model="forgotPassword.password_confirmation" label="Confirmar Contraseña" outlined dense
-              :type="isPwd ? 'password' : 'text'" hint="Porfavor confirme su contraseña">
+              :type="isPwdconfirm ? 'password' : 'text'" hint="Porfavor confirme su contraseña">
               <template v-slot:append>
-                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                <q-icon :name="isPwdconfirm ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwdconfirm = !isPwdconfirm" />
               </template>
             </q-input>
           </div>
