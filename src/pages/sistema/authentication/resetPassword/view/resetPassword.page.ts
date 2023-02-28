@@ -1,58 +1,62 @@
 // Dependencias
 import { computed, defineComponent, reactive, ref } from 'vue'
-// Componentes
-import { Notificaciones } from '@/app/shared/componentes/toastification/application/notificaciones'
-import PasswordInput from 'src/@app/shared/componentes/passwordInput/view/passwordInput.vue'
+import { Vue3Lottie } from 'vue3-lottie'
+import 'vue3-lottie/dist/style.css'
 // Logica y controladores
-import { LoginUser } from '@sistema/authentication/login/domain/loginUser.domain'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useNotificaciones } from 'shared/notificaciones'
+import { ResetPassword} from '../domain/ResetPassword'
 import { ResetPasswordController } from '../infraestructure/resetPassword.controller'
-import router from '@/router'
-import { isAxiosError, notificarMensajesError } from '@/app/shared/utils'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   name: 'ResetPassword',
-  components: { PasswordInput },
+  components: {  LottiePlayer: Vue3Lottie },
   setup() {
-    const loginUser = reactive(new LoginUser())
+    const resetPassword = reactive(new ResetPassword())
     const enviando = ref(false)
-
+    const store = useAuthenticationStore();
     const resetPasswordController = new ResetPasswordController()
-
-    const notificaciones = new Notificaciones()
-    const enviarCorreoRecuperacion = () => {
+    const notificaciones = useNotificaciones()
+    const cargando = new StatusEssentialLoading()
+    resetPassword.nombreUsuario = store.getNombreusuario();
+    async function resetearPassword() {
       enviando.value = true
-      resetPasswordController
-        .actualizarContrasena(loginUser)
-        .then(() => {
-          notificaciones.notificarCorrecto('Contraseña actualizada con éxito!')
-          router.replace({ name: 'Login' })
-        })
-        .catch((error) => {
-          if (isAxiosError(error)) {
-            const mensajes: string[] = error.erroresValidacion
-            notificarMensajesError(mensajes)
-          }
-        })
-        .finally(() => (enviando.value = false))
+      try {
+
+        cargando.activar()
+        await resetPasswordController.actualizarContrasena(resetPassword)
+        notificaciones.notificarCorrecto('Contraseña actualizada correctamente')
+
+      } catch (error: any) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
+        enviando.value = true
+      }
     }
 
     const enableLoginButton = computed(
       () =>
-        loginUser.email !== '' &&
-        loginUser.password !== '' &&
-        loginUser.password === loginUser.password_confirmation
+      resetPassword.password_old !== '' &&
+      resetPassword.password !== '' &&
+      resetPassword.password === resetPassword.password_confirmation
     )
 
-    const query: any = router.currentRoute.value.query
-    loginUser.token = query.token
+
 
     return {
-      loginUser,
+      resetPassword,
+      isPwd: ref(true),
       enviando,
       // computed
       enableLoginButton,
       // functions
-      enviarCorreoRecuperacion,
+      resetearPassword,
     }
   },
 })

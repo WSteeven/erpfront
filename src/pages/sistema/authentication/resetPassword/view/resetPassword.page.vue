@@ -1,84 +1,85 @@
 <template>
-  <div class="row g-0 pt-5 px-4">
-    <div class="card col-12 col-md-6 mx-auto p-4">
-      <form @submit.prevent="enviarCorreoRecuperacion" class="w-100">
-        <div class="d-grid gap-2 mb-4">
-          <div class="pb-4">
-            <h2 class="text-texto">Cambia tu contraseña</h2>
+  <q-page class="">
+    <div class="row items-center">
+      <!-- Left side -->
+      <div v-if="!$q.screen.xs && !$q.screen.sm" class="col-12 col-md-8 text-center q-pa-lg">
+        <div class="imagen d-flex align-items-center justify-content-center">
+          <q-avatar square size="400px">
+            <img src="~assets/logo.svg" />
+          </q-avatar>
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div class="col-12 col-md-4 column items-center bg-body-table justify-center window-height">
+        <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
+          <img src="~assets/logo.svg" />
+        </q-avatar>
+
+        <form @submit.prevent="resetearPassword" class="full-width q-px-lg">
+          <div class="q-mb-sm">
+            <h2>Bienvenidos a JPCONSTRUCRED</h2>
+            <span>Cambia tu contraseña</span>
           </div>
-          <!-- email -->
-          <div class="mb-2">
-            <label class="form-text" for="email">Correo:</label>
-            <input
-              id="email"
-              class="form-control"
-              v-model="loginUser.email"
-              type="email"
-              placeholder="Ingrese su correo"
-            />
+
+          <!-- Contraseña Vieja-->
+          <div class="col-12 q-mb-sm">
+            <q-input v-model="resetPassword.password_old" label="Contraseña Vieja" outlined dense
+              :type="isPwd ? 'password' : 'text'" hint="Porfavor ingrese la contraseña antigua">
+              <template v-slot:append>
+                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+              </template>
+            </q-input>
           </div>
+
           <!-- Contraseña -->
-          <div>
-            <label class="form-label" for="email">Contraseña:</label>
-            <password-input
-              v-model="loginUser.password"
-              placeholder="Ingrese la nueva contraseña"
-            ></password-input>
+          <div class="col-12 q-mb-sm">
+            <q-input v-model="resetPassword.password" label="Contraseña Nueva" outlined dense
+              :type="isPwd ? 'password' : 'text'" hint="No comparta su contraseña con nadie">
+              <template v-slot:append>
+                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+              </template>
+            </q-input>
           </div>
-          <!-- Confirmar contraseña -->
-          <div>
-            <label class="form-label" for="email">Confirmar contraseña:</label>
-            <password-input
-              v-model="loginUser.password_confirmation"
-              placeholder="Repita la nueva contraseña"
-            ></password-input>
+          <!-- Confirmacion de contraseña -->
+          <div class="col-12 q-mb-sm">
+            <q-input v-model="resetPassword.password_confirmation" label="Confirmar Contraseña" outlined dense
+              :type="isPwd ? 'password' : 'text'" hint="Porfavor confirme su contraseña">
+              <template v-slot:append>
+                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+              </template>
+            </q-input>
           </div>
-        </div>
-        <!-- Botones -->
-        <div class="col-12 d-grid d-md-flex justify-content-md-end gap-2">
-          <button
-            class="btn btn-primary block"
-            :class="{disabled: !enableLoginButton}"
-          >
-            <span
-              v-if="enviando"
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            <i v-else class="bi-save me-2"></i>
-            Actualizar
-          </button>
-          <router-link
-            :to="{name: 'Login'}"
-            replace
-            class="btn btn-danger block"
-            >Ir a login</router-link
-          >
-        </div>
-      </form>
+
+          <div class="col-12">
+            <!-- Botones -->
+            <q-btn color="primary" label="Enviar codigo de recuperación" class="full-width q-mb-sm"
+              :disabled="!enableLoginButton" no-caps unelevated @click="resetearPassword()">
+            </q-btn>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script lang="ts" src="./resetPassword.page.ts"></script>
-
-<style lang="scss" scoped>
-.logo-section {
-  position: absolute;
-  left: 0px;
-  top: 0;
-  text-align: start;
-  display: flex;
-  align-items: flex-start;
-}
-
+<style>
 h2 {
   line-height: 1.2;
   font-size: 1.714rem;
 }
 
-a {
-  cursor: pointer;
+.empresa {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+}
+
+.fondo {
+  background: rgb(94, 88, 252);
+  background: linear-gradient(90deg,
+      rgba(94, 88, 252, 1) 0%,
+      rgba(110, 143, 255, 1) 100%);
 }
 </style>

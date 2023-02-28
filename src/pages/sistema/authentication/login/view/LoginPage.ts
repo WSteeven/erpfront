@@ -39,8 +39,6 @@ export default defineComponent({
 
       } catch (error: any) {
         if (isAxiosError(error)) {
-         // console.log(error);
-
           const mensajes: string[] = error.erroresValidacion
           notificarMensajesError(mensajes, notificaciones)
         }
