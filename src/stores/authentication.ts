@@ -59,6 +59,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       return response.data.modelo
     } catch (error: unknown) {
+      console.log(error);
+
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
     }
