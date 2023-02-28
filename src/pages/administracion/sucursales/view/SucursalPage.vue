@@ -32,7 +32,7 @@
               v-model="sucursal.telefono"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :error="!!v$.telefono.$errors - length"
+              :error="!!v$.telefono.$errors.length"
               outlined
               dense
               type="tel"
@@ -53,7 +53,7 @@
               v-model="sucursal.correo"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :error="!!v$.correo.$errors - length"
+              :error="!!v$.correo.$errors.length"
               outlined
               dense
               type="email"
@@ -65,8 +65,27 @@
               </template>
             </q-input>
           </div>
-          <!-- Administrador -->
+          <!-- Extension -->
           <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Extensión</label>
+            <q-input
+              v-model="sucursal.extension"
+              type="number"
+              placeholder="Opcional"
+              :readonly="disabled"
+              :error="!!v$.extension.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.extension.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Administrador -->
+          <!-- <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Administrador</label>
             <q-select
               v-model="sucursal.administrador"
@@ -95,7 +114,7 @@
                 </q-item>
               </template>
             </q-select>
-          </div>
+          </div> -->
         </div>
       </q-form>
     </template>

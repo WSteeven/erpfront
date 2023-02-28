@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasSucursales } from '../domain/configuracionColumnasSucursales'
-import { required } from '@vuelidate/validators'
+import { numeric, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 
@@ -36,6 +36,7 @@ export default defineComponent({
             lugar: { required },
             telefono: { required },
             correo: { required },
+            extension:{numeric, requiredIfExtension: requiredIf(sucursal.extension!==null)}
         }
 
         const v$ = useVuelidate(reglas, sucursal)

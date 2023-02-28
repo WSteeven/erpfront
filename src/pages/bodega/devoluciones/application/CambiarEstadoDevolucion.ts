@@ -11,7 +11,7 @@ export class CambiarEstadoDevolucion {
     }
 
     async anular(devolucionId: number, mensaje: string) {
-        return this.solicitud('anular/', devolucionId, { motivo: mensaje })
+        return this.solicitud('/anular/', devolucionId, { motivo: mensaje })
     }
 
     async solicitud(accion, id, data?) {
