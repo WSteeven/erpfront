@@ -14,7 +14,7 @@
             options-dense
             dense
             outlined
-            :option-label="(item) => item.detalle"
+            :option-label="(item) => item.titulo"
             :option-value="(item) => item.id"
             emit-value
             map-options
@@ -23,7 +23,7 @@
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
                   <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                  <q-item-label caption>{{ scope.opt.detalle }}</q-item-label>
+                  <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                 </q-item-section>
               </q-item>
             </template>
@@ -52,6 +52,7 @@
             input-debounce="0"
             emit-value
             map-options
+            clearable
             :error="!!v$.grupo.$errors.length"
           >
             <template v-slot:no-option>

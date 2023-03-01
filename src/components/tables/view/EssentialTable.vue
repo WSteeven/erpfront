@@ -382,7 +382,7 @@
                     consultar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-eye" color="info" size="xs"></q-icon>
+                  <q-icon name="bi-eye" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Consultar </q-tooltip>
                 </q-btn>
 
@@ -397,7 +397,7 @@
                     editar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-pencil" color="info" size="xs"></q-icon>
+                  <q-icon name="bi-pencil" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
                 </q-btn>
 
@@ -412,7 +412,7 @@
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-trash" color="info" size="xs"></q-icon>
+                  <q-icon name="bi-trash" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
                 </q-btn>
 

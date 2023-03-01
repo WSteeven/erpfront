@@ -309,11 +309,12 @@ export const rolesSistema = {
   bodega: 'BODEGA',
   activos_fijos: 'ACTIVOS FIJOS',
   tecnico: 'TECNICO',
+  tecnico_lider: 'TECNICO LIDER DE GRUPO',
 }
 
 export const cargosSistema = {
-  tecnico_lider: 'TÉCNICO LÍDER DE GRUPO',
-  tecnico_secretario: 'TÉCNICO SECRETARIO',
+  tecnico_lider: 'TECNICO LIDER DE GRUPO',
+  tecnico_secretario: 'TECNICO SECRETARIO',
 }
 
 export const opcionesModoAsignacionTrabajo = { por_grupo: 'POR_GRUPO', por_trabajador: 'POR_EMPLEADO' }

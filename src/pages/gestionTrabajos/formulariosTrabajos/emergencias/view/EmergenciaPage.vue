@@ -117,34 +117,16 @@
         </q-input>
       </div>
 
+      <!-- Hora reporte problema -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora de reporte de problema (24H)</label>
         <q-input
           v-model="emergencia.hora_reporte_problema"
-          placeholder="Obligatorio"
-          mask="time"
+          type="time"
+          stack-label
           outlined
           dense
         >
-          <template v-slot:append>
-            <q-icon name="bi-clock" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-time
-                  v-model="emergencia.hora_reporte_problema"
-                  format24h
-                  now-btn
-                >
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
         </q-input>
       </div>
 
@@ -179,26 +161,11 @@
         <label class="q-mb-sm block">Hora de arribo (24H)</label>
         <q-input
           v-model="emergencia.hora_arribo"
-          placeholder="Obligatorio"
-          mask="time"
+          type="time"
+          stack-label
           outlined
           dense
         >
-          <template v-slot:append>
-            <q-icon name="bi-clock" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-time v-model="emergencia.hora_arribo" format24h now-btn>
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
         </q-input>
       </div>
 
@@ -233,30 +200,11 @@
         <label class="q-mb-sm block">Hora de fin de reparación (24H)</label>
         <q-input
           v-model="emergencia.hora_fin_reparacion"
-          placeholder="Obligatorio"
-          mask="time"
+          type="time"
+          stack-label
           outlined
           dense
         >
-          <template v-slot:append>
-            <q-icon name="bi-clock" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-time
-                  v-model="emergencia.hora_fin_reparacion"
-                  format24h
-                  now-btn
-                >
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
         </q-input>
       </div>
 
@@ -286,35 +234,16 @@
         </q-input>
       </div>
 
-      <!-- Hora fin reparacion -->
-      <div class="col-12 col-md-3 q-mb-md">
+      <!-- Hora retiro personal -->
+      <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora de retiro de personal (24H)</label>
         <q-input
           v-model="emergencia.hora_retiro_personal"
-          placeholder="Obligatorio"
-          mask="time"
+          type="time"
+          stack-label
           outlined
           dense
         >
-          <template v-slot:append>
-            <q-icon name="bi-clock" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-time
-                  v-model="emergencia.hora_retiro_personal"
-                  format24h
-                  now-btn
-                >
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                  </div>
-                </q-time>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
         </q-input>
       </div>
 

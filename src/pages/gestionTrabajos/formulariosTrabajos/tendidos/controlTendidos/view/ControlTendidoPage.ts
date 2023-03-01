@@ -157,10 +157,14 @@ export default defineComponent({
       return listadosAuxiliares.bobinas.find((item: any) => item.id === id)
     }
 
-    /* watchEffect(() => {
-      if (tendido.bobina)
-        tendido.cantidad_hilos = obtenerElemento(tendido.bobina).cantidad_hilos
-    }) */
+    watchEffect(() => {
+      if (tendido.bobina) {
+        const bobina = obtenerElemento(tendido.bobina)//.cantidad_hilos
+        if (bobina) {
+          tendido.cantidad_hilos = bobina.cantidad_hilos
+        }
+      }
+    })
 
     const marcaInicial = computed(() => listadoRegistrosTendidos.value.length ? listadoRegistrosTendidos.value[0].progresiva_entrada : 0)
     const marcaFinal = computed(() => listadoRegistrosTendidos.value.length ? listadoRegistrosTendidos.value[listadoRegistrosTendidos.value.length - 1].progresiva_salida : 0)
