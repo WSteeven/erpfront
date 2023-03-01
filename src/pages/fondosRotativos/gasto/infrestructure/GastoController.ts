@@ -5,6 +5,6 @@ import { Gasto } from "../domain/Gasto";
 
 export class GastoController extends TransaccionSimpleController<Gasto>{
   constructor() {
-    super(endpoints.viaticos)
+    super(endpoints.gastos)
   }
 }
