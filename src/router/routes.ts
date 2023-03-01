@@ -44,6 +44,20 @@ const routes: RouteRecordRaw[] = [
           import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
         meta: { requiresAuth: true },
       },
+      /*{
+        path: '/tipos-elementos',
+        name: 'tipos_elementos',
+        component: () =>
+          import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
+        meta: { requiresAuth: true },
+      },*/
+      {
+        path: '/propietarios-elementos',
+        name: 'propietarios_elementos',
+        component: () =>
+          import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/control-tendidos',
         name: 'control_tendidos',
