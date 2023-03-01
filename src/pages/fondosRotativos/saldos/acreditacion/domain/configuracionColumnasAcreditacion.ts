@@ -10,16 +10,9 @@ export const configuracionColumnasAcreditacion: ColumnConfig<Acreditacion>[] = [
     sortable: true
   },
   {
-    name: 'acreditacion_anterior',
-    field: 'acreditacion_anterior',
-    label: 'Acreditacion Anterior',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'acreditacion_depositado',
-    field: 'acreditacion_depositado',
-    label: 'Acreditacion Depositado',
+    name: 'descripcion_acreditacion',
+    field: 'descripcion_acreditacion',
+    label: 'Descripcion',
     align: 'left',
     sortable: true
   },
@@ -31,26 +24,13 @@ export const configuracionColumnasAcreditacion: ColumnConfig<Acreditacion>[] = [
     sortable: true
   },
   {
-    name: 'acreditacion_actual',
-    field: 'acreditacion_actual',
-    label: 'Acreditacion Actual',
+    name: 'monto',
+    field: 'monto',
+    label: 'Monto',
     align: 'left',
     sortable: true
   },
-  {
-    name: 'fecha_inicio',
-    field: 'fecha_inicio',
-    label: 'Fecha Inicio',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'fecha_fin',
-    field: 'fecha_fin',
-    label: 'Fecha Fin',
-    align: 'left',
-    sortable: true
-  },
+
   {
     name: 'usuario_info',
     field: 'usuario_info',

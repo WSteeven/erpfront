@@ -2,7 +2,7 @@ import Pusher from 'pusher-js'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Ref } from 'vue'
 
-export class FondoRotativoPusherEvent {
+export class GastoPusherEvent {
    authenticationStore = useAuthenticationStore()
    usuario = this.authenticationStore.user
   start() {

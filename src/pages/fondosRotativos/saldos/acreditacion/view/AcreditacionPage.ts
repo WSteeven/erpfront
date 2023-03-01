@@ -55,7 +55,7 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-      descripcion_saldo: {
+      descripcion_acreditacion: {
         required: true,
         minLength: 3,
         maxLength: 50,

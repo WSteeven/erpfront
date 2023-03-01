@@ -1,9 +1,10 @@
 import { TransaccionSimpleController } from "shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController";
-import { Saldo } from "../domain/Saldo";
-import { endpoints } from "config/api";
 
-export class SaldoController extends TransaccionSimpleController<Saldo>{
+import { endpoints } from "config/api";
+import { Gasto } from "../domain/Gasto";
+
+export class GastoController extends TransaccionSimpleController<Gasto>{
   constructor() {
-    super(endpoints.saldo)
+    super(endpoints.viaticos)
   }
 }

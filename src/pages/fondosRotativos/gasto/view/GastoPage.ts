@@ -1,5 +1,5 @@
 import { defineComponent, reactive, ref, watchEffect } from 'vue'
-import { Fondo } from '../domain/Fondo'
+import { Gasto } from '../domain/Gasto'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -10,8 +10,8 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { FondoController } from '../infrestructure/FondoController'
-import { configuracionColumnasFondo } from '../domain/configuracionColumnasFondo'
+import { GastoController } from '../infrestructure/GastoController'
+import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
@@ -19,7 +19,7 @@ import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/in
 import { validarIdentificacion } from 'shared/validadores/validaciones'
 import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'tareas/infraestructure/TareaController'
-import { FondoRotativoPusherEvent } from '../application/FondoRotativoPusherEvent'
+import { GastoPusherEvent } from '../application/GastoPusherEvent'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -31,9 +31,9 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Fondo, new FondoController())
+    const mixin = new ContenedorSimpleMixin(Gasto, new GastoController())
     const {
-      entidad: fondo,
+      entidad: gasto,
       disabled,
       accion,
       listadosAuxiliares,
@@ -124,7 +124,7 @@ export default defineComponent({
       },
     }
 
-    const v$ = useVuelidate(reglas, fondo)
+    const v$ = useVuelidate(reglas, gasto)
     setValidador(v$.value)
 
     const cantones = ref([])
@@ -168,6 +168,7 @@ export default defineComponent({
       sub_detalles.value = listadosAuxiliares.sub_detalles
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
+      listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
       tareas.value = listadosAuxiliares.tareas
     })
 
@@ -229,7 +230,7 @@ export default defineComponent({
       if (val === '') {
         update(() => {
           sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-            (v) => v.id_detalle_viatico == fondo.detalle
+            (v) => v.id_detalle_viatico == gasto.detalle
           )
         })
         return
@@ -258,7 +259,7 @@ export default defineComponent({
       })
     }
     function filtrarTareas(val, update) {
-      if (fondo.proyecto == 0) {
+      if (gasto.proyecto == 0) {
         update(() => {
           tareas.value = listadosAuxiliares.tareas.filter(
             (v) => v.proyecto_id == null
@@ -269,7 +270,7 @@ export default defineComponent({
       if (val === '') {
         update(() => {
           tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == fondo.proyecto
+            (v) => v.proyecto_id == gasto.proyecto
           )
         })
         return
@@ -287,14 +288,14 @@ export default defineComponent({
      * Pusher
      *********/
 
-     const fondoRotativoPusherEvent = new FondoRotativoPusherEvent()
-     fondoRotativoPusherEvent.start()
+     const gastoPusherEvent = new GastoPusherEvent()
+     gastoPusherEvent.start()
 
-    watchEffect(() => (fondo.total = fondo.cantidad! * fondo.valor_u!))
+    watchEffect(() => (gasto.total = gasto.cantidad! * gasto.valor_u!))
 
     return {
       mixin,
-      fondo,
+      gasto,
       cantones,
       detalles,
       sub_detalles,
@@ -303,7 +304,7 @@ export default defineComponent({
       disabled,
       accion,
       v$,
-      configuracionColumnas: configuracionColumnasFondo,
+      configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
       watchEffect,
       filtrarAutorizacionesEspeciales,

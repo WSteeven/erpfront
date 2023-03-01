@@ -8,7 +8,7 @@ export class Acreditacion extends EntidadAuditable {
   id_tipo_fondo:number |null
   tipo_fondo_info: string | null
   tipo_fondo:string|null
-  descripcion_saldo: string |null
+  descripcion_acreditacion:string|null
   saldo_anterior:number | null
   saldo_depositado:number | null
   monto:number | null
@@ -35,7 +35,7 @@ export class Acreditacion extends EntidadAuditable {
     this.id_tipo_fondo=null
     this.tipo_fondo_info=null
     this.tipo_fondo=null
-    this.descripcion_saldo=null
+    this.descripcion_acreditacion=null
     this.saldo_anterior=null
     this.saldo_depositado=null
     this.saldo_actual=null

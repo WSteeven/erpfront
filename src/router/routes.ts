@@ -430,7 +430,7 @@ const routes: RouteRecordRaw[] = [
         name: 'gasto',
         component: () =>
           import(
-            'pages/fondosRotativos/fondo_rotativo/view/FondoPage.vue'
+            'pages/fondosRotativos/gasto/view/GastoPage.vue'
           ),
         meta: { requiresAuth: true },
       },
@@ -476,7 +476,7 @@ const routes: RouteRecordRaw[] = [
         name: 'reporte_saldo_actual',
         component: () =>
         import(
-          'pages/fondosRotativos/saldos/reporteSaldoActual/view/Reporte_saldo_actualPage.vue'
+          'pages/fondosRotativos/reportes/reporteSaldoActual/view/Reporte_saldo_actualPage.vue'
         ),
         meta: { requiresAuth: true },
       },

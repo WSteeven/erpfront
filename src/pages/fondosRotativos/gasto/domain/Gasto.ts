@@ -1,5 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-export class Fondo extends EntidadAuditable {
+export class Gasto extends EntidadAuditable {
   fecha_viat: Date | null
   lugar: number | null
   num_tarea: string | null

@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Fondo } from "./Fondo";
+import { Gasto } from "./Gasto";
 
-export const configuracionColumnasFondo: ColumnConfig<Fondo>[] = [
+export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
   {
     name: 'fecha_viat',
     field: 'fecha_viat',

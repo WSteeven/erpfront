@@ -83,10 +83,10 @@
           <!-- Descripcion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Descripción del Saldo:</label>
-            <q-input v-model="acreditacion.descripcion_saldo" placeholder="Obligatorio" :disable="disabled"
-              :error="!!v$.descripcion_saldo.$errors.length" @blur="v$.descripcion_saldo.$touch" outlined dense>
+            <q-input v-model="acreditacion.descripcion_acreditacion" placeholder="Obligatorio" :disable="disabled"
+              :error="!!v$.descripcion_acreditacion.$errors.length" @blur="v$.descripcion_acreditacion.$touch" outlined dense>
               <template v-slot:error>
-                <div v-for="error of v$.descripcion_saldo.$errors" :key="error.$uid">
+                <div v-for="error of v$.descripcion_acreditacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
