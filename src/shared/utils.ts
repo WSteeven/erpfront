@@ -250,7 +250,12 @@ export function obtenerFechaActual() {
 export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
+  const cargando = new StatusEssentialLoading()
+
   try {
+    cargando.activar()
+    cargando.establecerMensaje('Obteniendo fecha y hora actual')
+
     const fecha: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.fecha))
     const hora: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.hora))
 
@@ -259,6 +264,8 @@ export async function obtenerTiempoActual() {
     return { fecha: fecha.data, hora: hora.data }
   } catch (e: any) {
     throw new ApiError(e)
+  } finally {
+    cargando.desactivar()
   }
 }
 
@@ -337,7 +344,7 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
  * @param b segundo string
  * @returns el valor de ordenación segun sea menor, mayor o igual la comparación dada
  */
-export function ordernarListaString(a:string, b:string) {
+export function ordernarListaString(a: string, b: string) {
   if (a < b) {
     return -1
   }

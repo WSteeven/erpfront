@@ -24,6 +24,8 @@ import Observacion from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/
 import { EmergenciaController } from '../infraestructure/EmergenciaController'
 import { Emergencia } from '../domain/Emergencia'
 import { CausaIntervencion } from './CausaIntervencion'
+import { obtenerTiempoActual } from 'shared/utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -61,7 +63,12 @@ export default defineComponent({
       titulo: 'Insertar fila debajo',
       icono: 'bi-arrow-bar-down',
       color: 'positive',
-      accion: () => emergencia.trabajos_realizados.push(new TrabajoRealizado()),
+      accion: async () => {
+        const fila: TrabajoRealizado = new TrabajoRealizado()
+        const { hora } = await obtenerTiempoActual()
+        fila.hora = hora
+        emergencia.trabajos_realizados.push(fila)
+      }
     }
 
     const agregarObservacion: CustomActionTable = {

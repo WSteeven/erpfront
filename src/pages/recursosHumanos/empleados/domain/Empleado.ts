@@ -13,7 +13,7 @@ export class Empleado extends EntidadAuditable {
   canton: string | null
   estado: string | null
   cargo: number | null
-  roles: string | null | string[]
+  rol: string | null | string[]
   grupo: number | null
   disponible: boolean
   es_lider: boolean
@@ -36,7 +36,7 @@ export class Empleado extends EntidadAuditable {
     this.canton = null
     this.estado = null
     this.cargo = null
-    this.roles = null
+    this.rol = null
     this.grupo = null
     this.disponible = true
     this.es_lider = false

@@ -33,7 +33,7 @@ export default defineComponent({
       await obtenerListados({
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,detalle,cliente_id' }
+          params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
         grupos: {
           controller: new GrupoController(),

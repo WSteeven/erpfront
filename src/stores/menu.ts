@@ -23,22 +23,22 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-check2-square',
       can: store.can('puede.ver.trabajo_asignado'),
     },
-    {
+    /* {
       title: 'Reportes control de materiales',
       link: 'reportes-control-materiales',
       icon: 'bi-table',
       can: store.can('puede.ver.reportes_control_materiales'),
-    },
+    }, */
     {
       title: 'Control de asistencia',
       link: 'control-asistencia',
       icon: 'bi-person-check',
     },
-    {
+    /* {
       title: 'Tablero',
       icon: 'bi-layers-fill',
       link: '/admin',
-    },
+    }, */
     {
       title: 'Gestión de trabajos',
       icon: 'bi-pin-angle',
@@ -121,7 +121,7 @@ export const useMenuStore = defineStore('menu', () => {
       ],
     },
     {
-      title:'Notificaciones',
+      title: 'Notificaciones',
       icon: 'bi-bell',
       link: 'notificaciones',
       can: true

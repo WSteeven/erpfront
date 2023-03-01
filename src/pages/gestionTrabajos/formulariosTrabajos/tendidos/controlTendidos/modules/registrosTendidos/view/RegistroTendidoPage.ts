@@ -37,13 +37,12 @@ export default defineComponent({
     EssentialTable,
   },
   setup(props, { emit }) {
-    console.log('hola xD')
     /*********
      * Stores
      *********/
     const tendidoStore = useTendidoStore()
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
-    const authenticationStore = useAuthenticationStore()
+    // const authenticationStore = useAuthenticationStore()
 
     /********
      * Mixin
@@ -185,6 +184,7 @@ export default defineComponent({
       for (let i = 0; i < materiales.value.length; i++) {
         const indexOcupado = obtenerIndice(materialesOcupados, materiales.value[i].detalle_producto_id)
         if (indexOcupado >= 0) {
+          if (accion.value === acciones.consultar) materiales.value[i].stock_actual = materialesOcupados[indexOcupado].stock_actual
           materiales.value[i].cantidad_utilizada = materialesOcupados[indexOcupado].cantidad_utilizada
         }
       }

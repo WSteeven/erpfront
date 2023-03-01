@@ -1,9 +1,9 @@
+import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { UserLogin } from '../domain/UserLogin'
-import { cargosSistema, rolesSistema } from 'config/utils'
-import { useRouter } from 'vue-router'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ApiError } from 'shared/error/domain/ApiError'
+import { UserLogin } from '../domain/UserLogin'
+import { rolesSistema } from 'config/utils'
+import { useRouter } from 'vue-router'
 
 export class LoginController {
   store = useAuthenticationStore()
@@ -13,13 +13,16 @@ export class LoginController {
     try {
       // const response = await this.store.login(userLogin)
       const usuario = await this.store.login(userLogin)
-      // const roles = usuario.roles
+      const roles = usuario.rol
 
-      // const existeYEsArreglo = typeof (roles) === 'object' && roles
+      const existeYEsArreglo = typeof (roles) === 'object' && roles
 
       //if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
+      console.log(roles)
+      console.log(existeYEsArreglo)
 
-      if (typeof usuario.cargo === 'string' && [cargosSistema.tecnico_lider, cargosSistema.tecnico_secretario].includes(usuario.cargo)) {
+      if (roles?.includes(rolesSistema.tecnico_lider)) {
+        // if (typeof usuario.cargo === 'string' && [cargosSistema.tecnico_lider, cargosSistema.tecnico_secretario].includes(usuario.cargo)) {
         this.Router.replace({ name: 'trabajo_asignado' })
       } else {
         this.Router.replace('/')
@@ -30,9 +33,9 @@ export class LoginController {
       if (error instanceof ApiError) {
         switch (error.status) {
           case 412:
-          this.Router.replace({ name: 'ResetearContrasena' })
-          this.store.setNombreusuario(userLogin.name!);
-          break;
+            this.Router.replace({ name: 'ResetearContrasena' })
+            this.store.setNombreusuario(userLogin.name!);
+            break;
         }
       }
       throw error
