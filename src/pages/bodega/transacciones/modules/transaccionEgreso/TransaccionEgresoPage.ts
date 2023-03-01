@@ -40,6 +40,7 @@ import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
 import { ValidarListadoProductosEgreso } from './application/validaciones/ValidarListadoProductosEgreso'
+import { limpiarListado } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -82,7 +83,6 @@ export default defineComponent({
     let esVisibleTarea = ref(false)
     let requiereFecha = ref(false) //para mostrar u ocultar fecha limite
 
-    // const modales =new ComportamientoModalesTransaccionIngreso()
 
     const opciones_empleados = ref([])
     const opciones_autorizaciones = ref([])
@@ -231,8 +231,15 @@ export default defineComponent({
 
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
-      await pedidoStore.cargarPedido(id)
-      await cargarDatos()
+      try {
+        await pedidoStore.cargarPedido(id)
+        await cargarDatos()
+      } catch (error) {
+        //En esta seccion se limpian los campos previamente llenados
+        limpiarTransaccion()
+        limpiarProducto()
+        limpiarListado(listadoPedido.value)
+      }
     }
 
     async function llenarTransferencia(id: number) {
@@ -421,16 +428,23 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
-      retiraOtro(val, evt) {
+      
+      checkRetiraOtro(val) {
         if (!val) {
-          transaccion.per_retira = store.user.id
+          // transaccion.per_retira = store.user.id
+          transaccion.per_retira = null
         }
       },
 
-      checkPedido(val, evt) {
-        console.log('Pedido', val)
+      checkPedido(val) {
+        // console.log('Pedido', val)
         if (!val) {
           limpiarTransaccion()
+        }
+      },
+      checkTarea(val) {
+        if (!val) {
+          transaccion.tarea = null
         }
       },
 

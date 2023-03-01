@@ -293,6 +293,7 @@
               class="q-mt-lg q-pt-md"
               v-model="transaccion.es_tarea"
               label="¿Es material para tarea?"
+              @update:model-value="checkTarea"
               :disable="disabled || soloLectura"
               outlined
               dense
@@ -379,7 +380,7 @@
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.retira_tercero"
-              @update:model-value="retiraOtro"
+              @update:model-value="checkRetiraOtro"
               label="¿Retira otra persona?"
               :disable="disabled || soloLectura"
               outlined
