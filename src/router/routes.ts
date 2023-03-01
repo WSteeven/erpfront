@@ -489,6 +489,15 @@ const routes: RouteRecordRaw[] = [
         ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/reporte-consolidado',
+        name: 'reporte_consolidado',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/consolidado/view/Reporte_consolidadoPage.vue'
+        ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

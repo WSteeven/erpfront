@@ -116,6 +116,10 @@ export const endpoints = {
   fondo_rotativo_fecha_pdf: new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
   fondo_rotativo_autorizaciones_fecha_pdf: new Endpoint('fondos-rotativos/autorizaciones_fecha/pdf'),
   fondo_rotativo_autorizaciones_fecha_excel: new Endpoint('fondos-rotativos/autorizaciones_fecha/excel'),
+  consolidado_pdf: new Endpoint('fondos-rotativos/consolidado/pdf'),
+  consolidado_excel: new Endpoint('fondos-rotativos/consolidado/excel'),
+
+
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
   reporte_saldo_actual_excel: new Endpoint('fondos-rotativos/reporte/saldo_actual/excel'),

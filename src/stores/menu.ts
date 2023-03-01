@@ -312,6 +312,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-saldo-actual',
               icon: 'bi-circle',
               can: store.can('puede.ver.reporte_saldo_actual'),
+            },
+            {
+              title: 'Saldo Consolidado',
+              link: 'reporte-consolidado',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_consolidado'),
             }
           ]
         },
