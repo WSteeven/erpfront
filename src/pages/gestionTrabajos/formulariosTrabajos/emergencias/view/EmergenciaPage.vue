@@ -427,12 +427,12 @@
           :permitirConsultar="false"
           :permitir-buscar="false"
           :permitirEditarCeldas="true"
-          :permitirEditar="$q.screen.xs"
-          :permitirEditarModal="$q.screen.xs"
+          :permitirEditarModal="true"
           :mostrarFooter="!emergencia.trabajo_realizado.length"
           separador="cell"
           :accion1Header="agregarActividadRealizada"
           @eliminar="eliminarTrabajoRealizado"
+          :entidad="TrabajoRealizado"
         ></essential-table>
       </div>
       <!--:accion1Header="agregarActividadRealizada"-->

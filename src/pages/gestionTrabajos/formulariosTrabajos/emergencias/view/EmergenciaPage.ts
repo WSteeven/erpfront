@@ -82,7 +82,7 @@ export default defineComponent({
         if (typeof emergencia.trabajo_realizado === 'object') {
           fila.hora = hora
           emergencia.trabajo_realizado.push(fila)
-          refTrabajos.value.abrirModalEntidad()
+          refTrabajos.value.abrirModalEntidad(fila, emergencia.trabajo_realizado.length - 1)
         }
 
       }
@@ -222,6 +222,7 @@ export default defineComponent({
       editar,
       reestablecer,
       emit,
+      TrabajoRealizado,
     }
   }
 })

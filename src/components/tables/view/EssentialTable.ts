@@ -176,7 +176,10 @@ export default defineComponent({
     }
     const eliminar = (data: object) => emit('eliminar', data)
 
-    function abrirModalEntidad() {
+    function abrirModalEntidad(entidad, posicion) {
+      console.log(entidad)
+      fila.value = entidad
+      filaEditada.value = posicion
       refEditarModal.value.abrir()
     }
 
@@ -201,7 +204,7 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
-      // console.log('data recibida para actualizar', data)
+      console.log('data recibida para actualizar', data)
       listado.value.splice(filaEditada.value, 1, data)
       limpiarFila()
     }
