@@ -49,7 +49,12 @@
       color="negative"
       no-caps
       push
-      @click="emitir('cancelar', true)"
+      @click="
+        () => {
+          emitir('cancelar', true)
+          emitir('cerrar-modal')
+        }
+      "
     >
       <q-icon name="bi-eraser" size="xs" class="q-pr-sm"></q-icon>
       <span>Limpiar formulario</span>
@@ -84,7 +89,7 @@ export default defineComponent({
       default: true,
     },
   },
-  emits: ['guardar', 'editar', 'cancelar', 'eliminar'],
+  emits: ['guardar', 'editar', 'cancelar', 'eliminar', 'cerrar-modal'],
   setup(props, { emit }) {
     const { nuevo, consultar, editar, eliminar } = acciones
     const emitir = (evento: any, ...args: any) => emit(evento, ...args)

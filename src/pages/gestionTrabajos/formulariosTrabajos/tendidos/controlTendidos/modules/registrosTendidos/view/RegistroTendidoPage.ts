@@ -179,7 +179,6 @@ export default defineComponent({
 
     function ajustarCantidadesUtilizadas() {
       const materialesOcupados = registroTendido.materiales_ocupados
-      // console.log(materialesOcupados[0])
 
       for (let i = 0; i < materiales.value.length; i++) {
         const indexOcupado = obtenerIndice(materialesOcupados, materiales.value[i].detalle_producto_id)
