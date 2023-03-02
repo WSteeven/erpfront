@@ -18,7 +18,6 @@
         @update:model-value="emitEvent()"
         >{{ filtro.label }}
       </q-checkbox>
-
       <!-- Select -->
       <q-select
         v-if="filtro.type === 'select'"

@@ -25,21 +25,6 @@
 
       <q-card-section class="bg-body rounded-footer">
         <div class="row q-col-gutter-xs q-mb-md">
-          <!-- Inputs normales -->
-          <div
-            v-for="field in fields"
-            :key="field.field"
-            class="col-12 col-md-3 q-mb-sm"
-          >
-            <label class="block q-mb-sm">{{ field.label }}</label>
-            <q-input
-              v-model="field.valor"
-              :type="field.type !== 'select' ? field.type : 'text'"
-              :autogrow="field.type !== 'number'"
-              outlined
-              dense
-            ></q-input>
-          </div>
           <!-- Selects -->
           <div
             v-for="field in fieldsSelect"
@@ -55,8 +40,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="(item) => item.label"
+              :option-value="(item) => item.label"
               emit-value
               map-options
             >
@@ -68,6 +53,21 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <!-- Inputs normales -->
+          <div
+            v-for="field in fields"
+            :key="field.field"
+            class="col-12 col-md-3 q-mb-sm"
+          >
+            <label class="block q-mb-sm">{{ field.label }}</label>
+            <q-input
+              v-model="field.valor"
+              :type="field.type !== 'select' ? field.type : 'text'"
+              :autogrow="field.type !== 'number'"
+              outlined
+              dense
+            ></q-input>
           </div>
         </div>
 

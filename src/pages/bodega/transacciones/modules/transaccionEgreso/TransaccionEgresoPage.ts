@@ -229,6 +229,12 @@ export default defineComponent({
       },
     }
 
+
+    /**
+     * It loads a transaction from the database, and if it fails, it cleans the fields that were
+     * previously filled.
+     * @param {number} id - number =&gt; id of the order
+     */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
       try {
@@ -274,7 +280,7 @@ export default defineComponent({
       //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
       if (pedidoStore.pedido.tarea) {
         transaccion.es_tarea = true
-        transaccion.tarea = pedidoStore.pedido.tarea
+        transaccion.tarea = Number.isInteger(pedidoStore.pedido.tarea) ? pedidoStore.pedido.tarea : pedidoStore.pedido.tarea_id
         filtroTareas(transaccion.tarea)
       }
       //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
@@ -428,7 +434,7 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
-      
+
       checkRetiraOtro(val) {
         if (!val) {
           // transaccion.per_retira = store.user.id
