@@ -2,7 +2,7 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -29,12 +29,18 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { LocalStorage } from 'quasar'
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
+import { number } from '@intlify/core-base'
+import { Producto } from 'pages/bodega/productos/domain/Producto'
+import { watch } from 'vue'
 
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable },
-
-    setup() {
+emits:['editar'],
+    setup(props,{emit}) {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
         const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
@@ -57,6 +63,7 @@ export default defineComponent({
 
         //flags
         let tabSeleccionado = ref()
+        let refModalEditable = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
 
@@ -72,6 +79,7 @@ export default defineComponent({
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
+                productos: new ProductoController(),
                 empleados: {
                     controller: new EmpleadoController(),
                     params: {
@@ -89,7 +97,6 @@ export default defineComponent({
         //reglas de validacion
         const reglas = {
             justificacion: { required },
-            // solicitante:{required},
             sucursal: { required },
             tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
         }
@@ -101,7 +108,7 @@ export default defineComponent({
             confirmar('¿Está seguro de continuar?',
                 () => devolucion.listadoProductos.splice(posicion, 1))
         }
-        const botonEliminar: CustomActionTable = {
+        /* const botonEliminar: CustomActionTable = {
             titulo: 'Quitar',
             color: 'negative',
             icono: 'bi-x',
@@ -111,7 +118,7 @@ export default defineComponent({
             visible: () => {
                 return accion.value == acciones.consultar ? false : true
             }
-        }
+        } */
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Cantidad',
             icono: 'bi-pencil',
@@ -147,7 +154,6 @@ export default defineComponent({
                             }
                         }
                     }
-
                     prompt(data)
                 })
                 console.log('entidad', entidad)
@@ -177,13 +183,69 @@ export default defineComponent({
             }
         }
 
+        const addRow:CustomActionTable= {
+            titulo: 'Agregar fila',
+            icono: 'bi-plus',
+            accion: () => {
+            const fila = [{ 'id': devolucion.listadoProductos.length + 1 }]
+            devolucion.listadoProductos = [...devolucion.listadoProductos, ...fila]
+            refModalEditable.value.abrirModalEntidad(devolucion.listadoProductos.length)
+            notificarCorrecto('Diste clic en añadir fila')
+            }
+        }
+
+
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
+        
 
+        const configuracionColumnasProductosSeleccionadosAccion: any = computed(()=>[
+            {
+                name: 'producto',
+                field: 'producto',
+                label: 'Producto',
+                align: 'left',
+                sortable: true,
+                type: 'select',
+                options: listadosAuxiliares.productos.map((v:Producto)=>{return {label:v.nombre}})
+                // options: opciones_productos_modificados.value
+            },
+            {
+                name: 'descripcion',
+                field: 'descripcion',
+                label: 'Descripción',
+                align: 'left',
+                sortable: true,
+            },
+            {
+                name: 'serial',
+                field: 'serial',
+                label: 'serial',
+                align: 'left',
+                sortable: true,
+            },
+            {
+                name: 'cantidad',
+                field: 'cantidad',
+                label: 'Cantidad',
+                align: 'left',
+                type: 'number',
+                sortable: false,
+            },
+            {
+                name: 'acciones',
+                field: 'acciones',
+                label: 'Acciones',
+                align: 'right',
+                sortable: false,
+            }
+        ])
+        
         return {
+            refModalEditable,
             mixin, devolucion, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasDevoluciones,
             //listados
@@ -200,12 +262,14 @@ export default defineComponent({
             seleccionarProducto,
             configuracionColumnasDetallesModal,
 
+            //boton de agregar fila
+            addRow,
 
             //tabla
             configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
             botonEditarCantidad,
-            botonEliminar,
+            eliminar,
             botonAnular,
             botonImprimir,
 
