@@ -5,14 +5,18 @@
     :full-width="true"
     top
   >
-    <q-card class="bg-desenfoque" :class="{ 'q-py-md q-px-xl': !$q.screen.xs }">
+    <q-card
+      flat
+      class="bg-transparent"
+      :class="{ 'q-py-md q-px-xl': !$q.screen.xs }"
+    >
       <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
           <img src="~assets/logo.svg" />
         </q-avatar>
 
         <q-toolbar-title>Editar fila</q-toolbar-title>
-        {{ fila }}
+
         <q-btn
           flat
           round
@@ -54,6 +58,7 @@
               </template>
             </q-select>
           </div>
+
           <!-- Inputs normales -->
           <div
             v-for="field in fields"

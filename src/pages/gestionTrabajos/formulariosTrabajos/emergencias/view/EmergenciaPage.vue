@@ -408,7 +408,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Distancia</label>
         <q-input
-          v-model="emergencia.distancia"
+          v-model="emergencia.distancia_afectacion"
           placeholder="Opcional"
           outlined
           dense
@@ -426,28 +426,24 @@
           :alto-fijo="false"
           :permitirConsultar="false"
           :permitir-buscar="false"
-          :permitirEditarCeldas="true"
           :permitirEditarModal="true"
           :mostrarFooter="!emergencia.trabajo_realizado.length"
           separador="cell"
           :accion1Header="agregarActividadRealizada"
           @eliminar="eliminarTrabajoRealizado"
-          :entidad="TrabajoRealizado"
         ></essential-table>
       </div>
-      <!--:accion1Header="agregarActividadRealizada"-->
 
       <div class="q-mb-md">
         <essential-table
+          ref="refObservaciones"
           titulo="Observaciones / Mejoras / Pendientes"
           :configuracionColumnas="columnasObservacion"
           :datos="emergencia.observaciones"
           :alto-fijo="false"
           :permitirConsultar="false"
           :permitir-buscar="false"
-          :permitirEditarCeldas="true"
-          :permitirEditar="$q.screen.xs"
-          :permitirEditarModal="$q.screen.xs"
+          :permitirEditarModal="true"
           :mostrarFooter="!emergencia.observaciones.length"
           separador="cell"
           :accion1Header="agregarObservacion"

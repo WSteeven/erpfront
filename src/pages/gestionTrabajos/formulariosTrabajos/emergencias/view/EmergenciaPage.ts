@@ -56,6 +56,7 @@ export default defineComponent({
      * Variables
      ************/
     const refTrabajos = ref()
+    const refObservaciones = ref()
 
     /***************************
     * Configuracion de columnas
@@ -92,7 +93,15 @@ export default defineComponent({
       titulo: 'Insertar fila debajo',
       icono: 'bi-arrow-bar-down',
       color: 'positive',
-      accion: () => typeof emergencia.observaciones === 'object' ? emergencia.observaciones.push(new Observacion()) : null,
+      accion: () => {
+        const fila: Observacion = new Observacion()
+
+        if (typeof emergencia.observaciones === 'object') {
+
+          emergencia.observaciones.push(fila)
+          refObservaciones.value.abrirModalEntidad(fila, emergencia.observaciones.length - 1)
+        }
+      }
     }
 
     const botonEditarCantidad: CustomActionTable = {
@@ -138,17 +147,16 @@ export default defineComponent({
     * Hooks
     *********/
     onConsultado(() => {
-      emergencia.observaciones = typeof emergencia.observaciones === 'string' ? JSON.parse(emergencia.observaciones) : []
-      emergencia.trabajo_realizado = typeof emergencia.trabajo_realizado === 'string' ? JSON.parse(emergencia.trabajo_realizado) : []
+      // emergencia.observaciones = typeof emergencia.observaciones === 'string' ? JSON.parse(emergencia.observaciones) : []
+      // emergencia.trabajo_realizado = typeof emergencia.trabajo_realizado === 'string' ? JSON.parse(emergencia.trabajo_realizado) : []
       obtenerMateriales().then(() => ajustarCantidadesUtilizadas())
+      emergencia.trabajo = 1
     })
 
     onBeforeGuardar(() => {
-      // registroTendido.tendido = tendidoStore.idTendido
       emergencia.materiales_ocupados = filtrarMaterialesOcupados()
-      emergencia.trabajo_realizado = JSON.stringify(emergencia.trabajo_realizado)
-      emergencia.observaciones = JSON.stringify(emergencia.observaciones)
-      // registroTendido.trabajo = trabajoAsignadoStore.idTrabajoSeleccionado
+      //emergencia.trabajo_realizado = JSON.stringify(emergencia.trabajo_realizado)
+      //     emergencia.observaciones = JSON.stringify(emergencia.observaciones)
     })
 
     /************
@@ -200,6 +208,7 @@ export default defineComponent({
     return {
       v$,
       refTrabajos,
+      refObservaciones,
       emergencia,
       accion,
       causasIntervencion,
@@ -222,7 +231,6 @@ export default defineComponent({
       editar,
       reestablecer,
       emit,
-      TrabajoRealizado,
     }
   }
 })
