@@ -39,8 +39,8 @@ import { watch } from 'vue'
 
 export default defineComponent({
     components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable },
-emits:['editar'],
-    setup(props,{emit}) {
+    emits: ['editar'],
+    setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
         const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
@@ -148,7 +148,8 @@ emits:['editar'],
                             try {
                                 const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
                                 notificarCorrecto('Devolución anulada exitosamente!')
-                                actualizarElemento(posicion, entidad)
+                                actualizarElemento(posicion, entidad)//no sé que hace
+                                listado.value.splice(posicion, 1)
                             } catch (e: any) {
                                 notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
                             }
@@ -156,8 +157,6 @@ emits:['editar'],
                     }
                     prompt(data)
                 })
-                console.log('entidad', entidad)
-                console.log('posicion', posicion)
             },
             visible: ({ entidad, posicion }) => {
                 console.log(entidad)
@@ -183,14 +182,14 @@ emits:['editar'],
             }
         }
 
-        const addRow:CustomActionTable= {
+        const addRow: CustomActionTable = {
             titulo: 'Agregar fila',
             icono: 'bi-plus',
             accion: () => {
-            const fila = [{ 'id': devolucion.listadoProductos.length + 1 }]
-            devolucion.listadoProductos = [...devolucion.listadoProductos, ...fila]
-            refModalEditable.value.abrirModalEntidad(devolucion.listadoProductos.length)
-            notificarCorrecto('Diste clic en añadir fila')
+                const fila = []
+                devolucion.listadoProductos.push(fila)
+                refModalEditable.value.abrirModalEntidad(fila, devolucion.listadoProductos.length - 1)
+                notificarCorrecto('Diste clic en añadir fila')
             }
         }
 
@@ -200,9 +199,9 @@ emits:['editar'],
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
-        
 
-        const configuracionColumnasProductosSeleccionadosAccion: any = computed(()=>[
+
+        const configuracionColumnasProductosSeleccionadosAccion: any = computed(() => [
             {
                 name: 'producto',
                 field: 'producto',
@@ -210,20 +209,13 @@ emits:['editar'],
                 align: 'left',
                 sortable: true,
                 type: 'select',
-                options: listadosAuxiliares.productos.map((v:Producto)=>{return {label:v.nombre}})
+                options: listadosAuxiliares.productos.map((v: Producto) => { return { label: v.nombre } })
                 // options: opciones_productos_modificados.value
             },
             {
                 name: 'descripcion',
                 field: 'descripcion',
                 label: 'Descripción',
-                align: 'left',
-                sortable: true,
-            },
-            {
-                name: 'serial',
-                field: 'serial',
-                label: 'serial',
                 align: 'left',
                 sortable: true,
             },
@@ -243,7 +235,7 @@ emits:['editar'],
                 sortable: false,
             }
         ])
-        
+
         return {
             refModalEditable,
             mixin, devolucion, disabled, accion, v$,
