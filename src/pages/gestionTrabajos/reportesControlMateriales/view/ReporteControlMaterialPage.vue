@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
-    <div class="text-bold q-mb-lg">Control de material diario</div>
-    <q-card flat bordered class="q-mb-md">
+    <div class="text-primary text-bold q-mb-lg">Control de material diario</div>
+    <q-card flat bordered class="rounded q-mb-md">
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Tarea -->
         <div class="col-12 col-md-4">

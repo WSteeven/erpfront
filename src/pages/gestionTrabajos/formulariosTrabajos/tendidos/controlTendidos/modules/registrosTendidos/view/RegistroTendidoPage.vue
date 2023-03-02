@@ -353,6 +353,7 @@
         <q-input
           v-model="registroTendido.observaciones"
           type="textarea"
+          placeholder="Opcional"
           :disable="disabled"
           autogrow
           outlined

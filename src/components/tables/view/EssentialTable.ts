@@ -157,22 +157,28 @@ export default defineComponent({
     const fila = ref()
     const filaEditada = ref()
     const listado = ref()
+    const refEditarModal = ref()
 
     watchEffect(() => listado.value = props.datos)
 
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
     const editar = (data: any) => {
-      const { entidad, posicion } = data
+      // const { entidad, posicion } = data
 
       emit('editar', data)
 
       if (props.permitirEditarModal) {
         fila.value = data.entidad
         filaEditada.value = data.posicion
+        refEditarModal.value.abrir()
       }
     }
     const eliminar = (data: object) => emit('eliminar', data)
+
+    function abrirModalEntidad() {
+      refEditarModal.value.abrir()
+    }
 
     // Variables
     const filter = ref()
@@ -283,6 +289,7 @@ export default defineComponent({
     }
 
     return {
+      refEditarModal,
       refTableFilters,
       resetearFiltros,
       establecerFiltros,
@@ -321,6 +328,7 @@ export default defineComponent({
       resaltar,
       mostrarFiltros,
       tituloBotonFiltros,
+      abrirModalEntidad,
     }
   },
 })

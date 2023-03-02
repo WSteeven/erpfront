@@ -7,12 +7,15 @@ import { useTrabajoStore } from 'stores/trabajo'
 import { estadosTrabajos } from 'config/utils'
 import { Trabajo } from '../domain/Trabajo'
 import { Ref } from 'vue'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: ComportamientoModalesTrabajo) => {
   const trabajoStore = useTrabajoStore()
 
   const { confirmar, notificarCorrecto, prompt } = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoTrabajo()
+
+  const cargando = new StatusEssentialLoading()
 
   const botonFormulario: CustomActionTable = {
     titulo: 'Formulario',
@@ -58,11 +61,13 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     icono: 'bi-person-fill-check',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.CREADO,
     accion: ({ entidad, posicion }) => {
-      confirmar('¿Está seguro de asignar la subtarea?', async () => {
+      confirmar('¿Está seguro de asignar el trabajo?', async () => {
+        cargando.activar();
         const { result } = await cambiarEstadoTrabajo.asignar(entidad.id)
         entidad.estado = estadosTrabajos.ASIGNADO
         entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
         actualizarElemento(posicion, entidad)
+        cargando.desactivar()
         notificarCorrecto('Trabajo asignada exitosamente!')
       })
     },

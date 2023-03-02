@@ -11,11 +11,10 @@ import {
   acciones,
 } from 'config/utils'
 import { useTendidoStore } from 'stores/tendido'
-import { computed, defineComponent, onMounted, watchEffect } from 'vue'
+import { computed, defineComponent, watchEffect } from 'vue'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -69,7 +68,6 @@ export default defineComponent({
     ************/
     const modales = new ComportamientoModalesProgresiva()
     const entidadReset = new RegistroTendido()
-    // const router = useRouter()
 
     consultar({ id: trabajoAsignadoStore.idTrabajoSeleccionado })
 
@@ -159,7 +157,7 @@ export default defineComponent({
 
     watchEffect(() => {
       if (tendido.bobina) {
-        const bobina = obtenerElemento(tendido.bobina)//.cantidad_hilos
+        const bobina = obtenerElemento(tendido.bobina)
         if (bobina) {
           tendido.cantidad_hilos = bobina.cantidad_hilos
         }

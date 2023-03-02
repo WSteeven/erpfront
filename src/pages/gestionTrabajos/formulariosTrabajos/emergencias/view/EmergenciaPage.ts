@@ -52,6 +52,11 @@ export default defineComponent({
     const { guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado } = mixin.useHooks()
 
+    /************
+     * Variables
+     ************/
+    const refTrabajos = ref()
+
     /***************************
     * Configuracion de columnas
     ****************************/
@@ -74,8 +79,12 @@ export default defineComponent({
       accion: async () => {
         const fila: TrabajoRealizado = new TrabajoRealizado()
         const { hora } = await obtenerTiempoActual()
-        fila.hora = hora
-        if (typeof emergencia.trabajo_realizado === 'object') emergencia.trabajo_realizado.push(fila)
+        if (typeof emergencia.trabajo_realizado === 'object') {
+          fila.hora = hora
+          emergencia.trabajo_realizado.push(fila)
+          refTrabajos.value.abrirModalEntidad()
+        }
+
       }
     }
 
@@ -190,6 +199,7 @@ export default defineComponent({
 
     return {
       v$,
+      refTrabajos,
       emergencia,
       accion,
       causasIntervencion,

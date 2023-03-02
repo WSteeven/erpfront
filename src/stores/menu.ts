@@ -63,7 +63,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas'),
         },
         {
-          title: 'Hoja de control',
+          title: 'Control de tareas',
           link: 'hoja-control-trabajos',
           icon: 'bi-circle',
           can: store.can('puede.ver.hoja_control_trabajos'),
@@ -84,7 +84,7 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-dash',
               can: store.can('puede.ver.reportes_control_materiales'),
             },
-            {
+            /* {
               title: 'Control de tendidos',
               link: 'reportes-control-tendidos',
               icon: 'bi-dash',
@@ -95,7 +95,7 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-trabajos-realizados',
               icon: 'bi-dash',
               can: store.can('puede.ver.reporte_trabajos_realizados'),
-            },
+            }, */
           ],
         },
         /* {

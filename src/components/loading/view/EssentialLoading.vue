@@ -3,7 +3,7 @@
   <!--  -->
   <section v-show="status.estaCargando.value" class="loading-background">
     <q-spinner-cube size="4em" color="primary" class="q-mb-md" />
-    <b>Cargando...</b>
+    <b class="text-primary">Cargando...</b>
   </section>
   <!-- </transition> -->
 </template>

@@ -2,7 +2,10 @@
   <q-page class="">
     <div class="row items-center">
       <!-- Left side -->
-      <div v-if="!$q.screen.xs && !$q.screen.sm" class="col-12 col-md-8 text-center q-pa-lg">
+      <div
+        v-if="!$q.screen.xs && !$q.screen.sm"
+        class="col-12 col-md-8 text-center q-pa-lg"
+      >
         <div class="imagen d-flex align-items-center justify-content-center">
           <q-avatar square size="400px">
             <img src="~assets/logo.svg" />
@@ -11,12 +14,22 @@
       </div>
 
       <!-- Right side -->
-      <div class="col-12 col-md-4 column items-center bg-body-table justify-center window-height">
-        <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
+      <div
+        class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
+      >
+        <q-avatar
+          v-if="$q.screen.xs"
+          square
+          size="120px"
+          class="q-mx-auto block q-mb-md"
+        >
           <img src="~assets/logo.svg" />
         </q-avatar>
 
-        <form @submit.prevent="enviarCorreoRecuperacion" class="full-width q-px-lg">
+        <form
+          @submit.prevent="enviarCorreoRecuperacion"
+          class="full-width q-px-lg"
+        >
           <div class="q-mb-sm">
             <h2>Bienvenidos a JPCONSTRUCRED</h2>
             <span>Recupera tu cuenta</span>
@@ -24,45 +37,99 @@
 
           <!-- Usuario -->
           <div class="col-12 q-mb-sm" v-if="!enviando">
-            <q-input v-model="forgotPassword.email" label="Email" type="email"
-              hint="Ingrese el correo electrónico con el que se registró" outlined dense />
+            <q-input
+              v-model="forgotPassword.email"
+              label="Email"
+              type="email"
+              hint="Ingrese el correo electrónico con el que se registró"
+              outlined
+              dense
+            />
           </div>
           <!-- Codigo de Reestablecimiento de contraseña -->
           <div class="col-12 q-mb-sm" v-if="enviando">
-            <q-input v-model="forgotPassword.code" label="Codigo"
-              hint="Ingrese el Codigo que se le envio al correo electrónico insttitucional " outlined dense />
+            <q-input
+              v-model="forgotPassword.code"
+              label="Codigo"
+              hint="Ingrese el Codigo que se le envio al correo electrónico insttitucional "
+              outlined
+              dense
+            />
           </div>
-
 
           <!-- Contraseña -->
           <div class="col-12 q-mb-sm" v-if="enviando">
-            <q-input v-model="forgotPassword.password" label="Contraseña Nueva" outlined dense
-              :type="isPwd ? 'password' : 'text'" hint="No comparta su contraseña con nadie">
+            <q-input
+              v-model="forgotPassword.password"
+              label="Contraseña Nueva"
+              outlined
+              dense
+              :type="isPwd ? 'password' : 'text'"
+              hint="No comparta su contraseña con nadie"
+            >
               <template v-slot:append>
-                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
               </template>
             </q-input>
           </div>
           <!-- Confirmacion de contraseña -->
           <div class="col-12 q-mb-sm" v-if="enviando">
-            <q-input v-model="forgotPassword.password_confirmation" label="Confirmar Contraseña" outlined dense
-              :type="isPwdconfirm ? 'password' : 'text'" hint="Porfavor confirme su contraseña">
+            <q-input
+              v-model="forgotPassword.password_confirmation"
+              label="Confirmar Contraseña"
+              outlined
+              dense
+              :type="isPwdconfirm ? 'password' : 'text'"
+              hint="Porfavor confirme su contraseña"
+            >
               <template v-slot:append>
-                <q-icon :name="isPwdconfirm ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwdconfirm = !isPwdconfirm" />
+                <q-icon
+                  :name="isPwdconfirm ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwdconfirm = !isPwdconfirm"
+                />
               </template>
             </q-input>
           </div>
 
           <div class="col-12" v-if="!enviando">
             <!-- Botones -->
-            <q-btn color="primary" label="Enviar codigo de recuperación" class="full-width q-mb-sm"
-              :disabled="!enableLoginButton" no-caps unelevated @click="enviarCorreoRecuperacion()">
+            <q-btn
+              color="primary"
+              label="Enviar codigo de recuperación"
+              class="full-width q-mb-sm"
+              :disabled="!enableLoginButton"
+              no-caps
+              unelevated
+              @click="enviarCorreoRecuperacion()"
+            >
+            </q-btn>
+
+            <q-btn
+              color="primary"
+              label="Volver al inicio de sesión"
+              class="full-width q-mb-sm"
+              no-caps
+              flat
+              :to="{ name: 'Login' }"
+            >
             </q-btn>
           </div>
           <div class="col-12" v-if="enviando">
             <!-- Botones -->
-            <q-btn color="primary" label="Recuperar Cuenta" class="full-width q-mb-sm" :disabled="!enableRecoveryPasswordButton"
-              no-caps unelevated @click="recuperacionCuenta()">
+            <q-btn
+              color="primary"
+              label="Recuperar Cuenta"
+              class="full-width q-mb-sm"
+              :disabled="!enableRecoveryPasswordButton"
+              no-caps
+              unelevated
+              @click="recuperacionCuenta()"
+            >
             </q-btn>
           </div>
         </form>
@@ -86,8 +153,10 @@ h2 {
 
 .fondo {
   background: rgb(94, 88, 252);
-  background: linear-gradient(90deg,
-      rgba(94, 88, 252, 1) 0%,
-      rgba(110, 143, 255, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(94, 88, 252, 1) 0%,
+    rgba(110, 143, 255, 1) 100%
+  );
 }
 </style>

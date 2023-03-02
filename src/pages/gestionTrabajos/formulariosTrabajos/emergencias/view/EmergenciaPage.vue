@@ -419,6 +419,7 @@
     <div>
       <div class="q-mb-md">
         <essential-table
+          ref="refTrabajos"
           titulo="Cronología de trabajos realizados"
           :configuracionColumnas="columnasTrabajoRealizado"
           :datos="emergencia.trabajo_realizado"
@@ -464,6 +465,7 @@
           :permitirEliminar="false"
           :permitirEditar="false"
           :mostrar-header="true"
+          :mostrar-footer="false"
           :permitirEditarModal="true"
           separador="cell"
           :accion1="botonEditarCantidad"
