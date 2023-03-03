@@ -9,6 +9,7 @@ import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelect
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -38,7 +39,7 @@ import { watch } from 'vue'
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable },
+    components: { TabLayoutFilterTabs, EssentialTable, TablaDevolucionProducto, EssentialSelectableTable },
     emits: ['editar'],
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
@@ -73,6 +74,7 @@ export default defineComponent({
             soloLectura.value = false
         })
 
+        const opciones_productos = ref([])
         const opciones_empleados = ref([])
         const opciones_sucursales = ref([])
         const opciones_tareas = ref([])
@@ -183,7 +185,7 @@ export default defineComponent({
         }
 
         const addRow: CustomActionTable = {
-            titulo: 'Agregar fila',
+            titulo: 'Agregar ítem',
             icono: 'bi-plus',
             accion: () => {
                 const fila = []
@@ -199,6 +201,7 @@ export default defineComponent({
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
+        opciones_productos.value = listadosAuxiliares.productos
 
 
         const configuracionColumnasProductosSeleccionadosAccion: any = computed(() => [
@@ -216,6 +219,13 @@ export default defineComponent({
                 name: 'descripcion',
                 field: 'descripcion',
                 label: 'Descripción',
+                align: 'left',
+                sortable: true,
+            },
+            {
+                name: 'serial',
+                field: 'serial',
+                label: 'serial',
                 align: 'left',
                 sortable: true,
             },
@@ -244,6 +254,7 @@ export default defineComponent({
             opciones_empleados,
             opciones_tareas,
             opciones_sucursales,
+            opciones_productos,
 
             //selector
             refListado,

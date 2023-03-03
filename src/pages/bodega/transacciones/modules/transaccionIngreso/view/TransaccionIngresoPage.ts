@@ -93,6 +93,7 @@ export default defineComponent({
     const estaInventariando = ref(true)
     const esVisibleComprobante = ref(false)
     const esVisibleTarea = ref(false)
+    let listadoDevolucion = ref()
 
     const opciones_autorizaciones = ref([])
     const opciones_sucursales = ref([])
@@ -144,6 +145,12 @@ export default defineComponent({
       condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
     }
 
+    
+    /**
+     * It takes an id, loads a devolucion from the server, and then populates a form with the data from
+     * the devolucion.
+     * @param {number} id - number
+     */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
       await devolucionStore.cargarDevolucion(id)
@@ -152,7 +159,13 @@ export default defineComponent({
       transaccion.justificacion = devolucionStore.devolucion.justificacion
       transaccion.solicitante = devolucionStore.devolucion.solicitante
       transaccion.sucursal = devolucionStore.devolucion.sucursal
-      transaccion.listadoProductosTransaccion = devolucionStore.devolucion.listadoProductos
+      listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
+      listadoDevolucion.value.sort((v,w)=>v.id-w.id) //ordena el listado de devolucion
+      if(devolucionStore.devolucion.tarea){
+        transaccion.es_tarea = true
+        transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea:devolucionStore.devolucion.tarea_id
+        filtroTareas(transaccion.tarea)
+      }
     }
 
     async function llenarTransferencia(id: number) {
@@ -175,6 +188,7 @@ export default defineComponent({
       transaccion.solicitante = null
       transaccion.sucursal = null
       transaccion.listadoProductosTransaccion = []
+      listadoDevolucion.value = []
     }
 
     const v$ = useVuelidate(reglas, transaccion)
@@ -285,7 +299,8 @@ export default defineComponent({
       opciones_clientes,
       opciones_empleados,
       opciones_condiciones,
-      DetalleProducto,
+
+      listadoDevolucion,
 
 
       acciones,

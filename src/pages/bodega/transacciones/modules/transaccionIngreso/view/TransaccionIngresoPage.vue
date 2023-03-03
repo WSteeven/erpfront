@@ -445,6 +445,24 @@
               </template>
             </q-select>
           </div>
+          <!-- Listado de la devolución -->
+          <div
+            v-if="listadoDevolucion !== undefined && listadoDevolucion.length > 0"
+            class="col-12 col-md-12"
+          >
+            <q-table
+              flat
+              title="Listado del pedido"
+              class="bg-body-table custom-border"
+              :rows="listadoDevolucion"
+              :columns="configuracionColumnasListadoProductosSeleccionados"
+              row-key="id"
+              :hide-bottom="true"
+              dense
+            />
+          </div>
+
+
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -480,7 +498,6 @@
               </div>
             </div>
           </div>
-          {{ transaccion.listadoProductosTransaccion }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -497,7 +514,6 @@
               @eliminar="eliminarItem"
               :permitirEditarModal="true"
               :modalMaximized="false"
-              :entidad="DetalleProducto"
             ></essential-table>
           </div>
         </div>

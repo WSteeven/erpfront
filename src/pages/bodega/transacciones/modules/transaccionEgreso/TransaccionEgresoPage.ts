@@ -276,7 +276,7 @@ export default defineComponent({
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
       transaccion.per_autoriza = Number.isInteger(pedidoStore.pedido.per_autoriza) ? pedidoStore.pedido.per_autoriza : pedidoStore.pedido.per_autoriza_id
       listadoPedido.value = pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)
-      listadoPedido.value.sort((v, w) => v.id - w.id)
+      listadoPedido.value.sort((v, w) => v.id - w.id) //ordena el listado de pedido
       //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
       if (pedidoStore.pedido.tarea) {
         transaccion.es_tarea = true
