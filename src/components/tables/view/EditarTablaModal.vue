@@ -46,6 +46,22 @@
               outlined
               :option-label="(item) => item.label"
               :option-value="(item) => item.label"
+              use-input
+              input-debounce="0"
+              @filter="(val, update) => {
+                const opciones = field.options
+                  if (val === '') {
+                    update(() => {
+                      field.options =opciones
+                    })
+                    return
+                  }
+                  update(() => {
+                    field.options = field.options!.filter(
+                      (item) =>item.label.toLowerCase().indexOf(val.toLowerCase())>-1)
+                  })
+                }
+              "
               emit-value
               map-options
             >
@@ -97,6 +113,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { computed, reactive, ref, defineComponent } from 'vue'
+import console from 'console'
 
 export default defineComponent({
   props: {
@@ -197,6 +214,20 @@ export default defineComponent({
       emit('limpiar')
     }
 
+    function filtrarSelect(val, update) {
+      // const opciones = fieldsSelect.filter
+      console.log(val)
+      // if(val ===''){
+      //   update(()=>{
+      //     opciones = opciones
+      //   })
+      //   return
+      // }
+      // update(()=>{
+      //   opciones = opciones.filter((item) => item.label.toLowerCase().includes(val.toLowerCase()))
+      // })
+    }
+
     return {
       fields,
       fieldsSelect,
@@ -205,6 +236,7 @@ export default defineComponent({
       abrir,
       guardar,
       cerrarModalEntidad,
+      filtrarSelect,
     }
   },
 })

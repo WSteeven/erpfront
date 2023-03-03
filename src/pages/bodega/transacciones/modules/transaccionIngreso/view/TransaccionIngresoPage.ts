@@ -51,7 +51,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer } = mixin.useHooks()
+    const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
     //stores
@@ -64,6 +64,9 @@ export default defineComponent({
     const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
 
+    onGuardado(()=>{
+      listadoDevolucion.value = []
+    })
     onConsultado(() => {
       transaccion.solicitante = transaccion.solicitante_id
       console.log('la accion actual es: ', accion.value)
@@ -163,6 +166,7 @@ export default defineComponent({
       listadoDevolucion.value.sort((v,w)=>v.id-w.id) //ordena el listado de devolucion
       if(devolucionStore.devolucion.tarea){
         transaccion.es_tarea = true
+        esVisibleTarea.value=true
         transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea:devolucionStore.devolucion.tarea_id
         filtroTareas(transaccion.tarea)
       }

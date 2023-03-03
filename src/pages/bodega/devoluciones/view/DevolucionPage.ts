@@ -161,7 +161,7 @@ export default defineComponent({
                 })
             },
             visible: ({ entidad, posicion }) => {
-                console.log(entidad)
+                // console.log(entidad)
                 return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante ? true : false
             }
         }
@@ -184,7 +184,7 @@ export default defineComponent({
             }
         }
 
-        const addRow: CustomActionTable = {
+        /* const addRow: CustomActionTable = {
             titulo: 'Agregar ítem',
             icono: 'bi-plus',
             accion: () => {
@@ -193,7 +193,7 @@ export default defineComponent({
                 refModalEditable.value.abrirModalEntidad(fila, devolucion.listadoProductos.length - 1)
                 notificarCorrecto('Diste clic en añadir fila')
             }
-        }
+        } */
 
 
 
@@ -204,7 +204,7 @@ export default defineComponent({
         opciones_productos.value = listadosAuxiliares.productos
 
 
-        const configuracionColumnasProductosSeleccionadosAccion: any = computed(() => [
+        /* const configuracionColumnasProductosSeleccionadosAccion: any = computed(() => [
             {
                 name: 'producto',
                 field: 'producto',
@@ -244,7 +244,7 @@ export default defineComponent({
                 align: 'right',
                 sortable: false,
             }
-        ])
+        ]) */
 
         return {
             refModalEditable,
@@ -266,7 +266,7 @@ export default defineComponent({
             configuracionColumnasDetallesModal,
 
             //boton de agregar fila
-            addRow,
+            // addRow,
 
             //tabla
             configuracionColumnasProductosSeleccionadosAccion,
@@ -285,8 +285,8 @@ export default defineComponent({
             tabSeleccionado,
 
             tabEs(val) {
-                console.log(tabSeleccionado.value)
-                console.log(val)
+                // console.log(tabSeleccionado.value)
+                // console.log(val)
                 tabSeleccionado.value = val
             },
 

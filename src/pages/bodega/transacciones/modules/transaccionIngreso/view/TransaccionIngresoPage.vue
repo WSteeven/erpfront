@@ -261,7 +261,7 @@
           </div>
           <!-- Tarea -->
           <div
-            v-if="esVisibleTarea || esVisibleSubtarea"
+            v-if="esVisibleTarea"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Tarea</label>
@@ -452,7 +452,7 @@
           >
             <q-table
               flat
-              title="Listado del pedido"
+              title="Listado de la devolución"
               class="bg-body-table custom-border"
               :rows="listadoDevolucion"
               :columns="configuracionColumnasListadoProductosSeleccionados"
