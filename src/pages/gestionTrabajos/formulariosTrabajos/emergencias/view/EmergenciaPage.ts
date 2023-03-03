@@ -14,6 +14,7 @@ import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 
 // Componentes
+import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -28,12 +29,14 @@ import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { CausaIntervencion } from './CausaIntervencion'
 import { obtenerTiempoActual } from 'shared/utils'
 import { Emergencia } from '../domain/Emergencia'
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
 
 export default defineComponent({
   components: {
     EssentialTable,
     SelectorImagen,
     ButtonSubmits,
+    TablaDevolucionProducto,
   },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -46,8 +49,8 @@ export default defineComponent({
     * Mixin
     *********/
     const mixin = new ContenedorSimpleMixin(Emergencia, new EmergenciaController())
-    const { entidad: emergencia, accion, listado } = mixin.useReferencias()
-    const { guardar, editar, reestablecer, setValidador, listar } = mixin.useComportamiento()
+    const { entidad: emergencia, accion, listado, listadosAuxiliares } = mixin.useReferencias()
+    const { guardar, editar, reestablecer, setValidador, listar, cargarVista, obtenerListados } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado } = mixin.useHooks()
 
     /************
@@ -61,7 +64,13 @@ export default defineComponent({
      ************/
     listar({ trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
 
-    watchEffect(() => {
+    cargarVista(async () => {
+      await obtenerListados({
+        productos: new ProductoController(),
+      })
+    })
+
+    /* watchEffect(() => {
       console.log(listado.value)
       if (listado.value) {
         if (listado.value.length) {
@@ -74,7 +83,7 @@ export default defineComponent({
         }
         //refTrab
       }
-    })
+    }) */
 
     /***************************
     * Configuracion de columnas
@@ -92,9 +101,8 @@ export default defineComponent({
      * Botones tabla
      ***************/
     const agregarActividadRealizada: CustomActionTable = {
-      titulo: 'Insertar fila debajo',
+      titulo: 'Agregar ítem',
       icono: 'bi-arrow-bar-down',
-      color: 'positive',
       accion: async () => {
         const fila: TrabajoRealizado = new TrabajoRealizado()
         const { hora } = await obtenerTiempoActual()
@@ -108,9 +116,8 @@ export default defineComponent({
     }
 
     const agregarObservacion: CustomActionTable = {
-      titulo: 'Insertar fila debajo',
+      titulo: 'Agregar ítem',
       icono: 'bi-arrow-bar-down',
-      color: 'positive',
       accion: () => {
         const fila: Observacion = new Observacion()
 
@@ -245,6 +252,7 @@ export default defineComponent({
       editar,
       reestablecer,
       emit,
+      listadosAuxiliares,
     }
   }
 })
