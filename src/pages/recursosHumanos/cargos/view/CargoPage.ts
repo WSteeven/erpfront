@@ -11,6 +11,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CargoController } from '../infraestructure/CargoController'
 import { Cargo } from '../domain/Cargo'
+import { removeAccents } from 'shared/utils'
 
 export default defineComponent({
     components: { TabLayout },
@@ -28,8 +29,8 @@ export default defineComponent({
         setValidador(v$.value)
 
 
-
         return {
+            removeAccents,
             mixin,
             cargo,
             v$,

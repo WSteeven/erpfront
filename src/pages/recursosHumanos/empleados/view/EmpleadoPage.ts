@@ -7,6 +7,7 @@ import { defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -20,7 +21,7 @@ import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/Ca
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 
 export default defineComponent({
-    components: { TabLayout },
+    components: { TabLayout, SelectorImagen },
     setup() {
         /*********
         * Stores
@@ -39,7 +40,7 @@ export default defineComponent({
         const opciones_roles = ref([])
         const opciones_cargos = ref([])
         const opciones_empleados = ref([])
-        cargarVista(async() => {
+        cargarVista(async () => {
             obtenerListados({
                 cantones: new CantonController(),
                 cargos: new CargoController(),
@@ -135,7 +136,7 @@ export default defineComponent({
                 }
                 update(() => {
                     const needle = val.toLowerCase()
-                    opciones_cantones.value = listadosAuxiliares.cantones.filter((v) => v.canton.toLowerCase().indexOf(needle) > -1 )
+                    opciones_cantones.value = listadosAuxiliares.cantones.filter((v) => v.canton.toLowerCase().indexOf(needle) > -1)
                 })
             },
             //filtro de cargos
@@ -148,7 +149,7 @@ export default defineComponent({
                 }
                 update(() => {
                     const needle = val.toLowerCase()
-                    opciones_cargos.value = listadosAuxiliares.cargos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1 )
+                    opciones_cargos.value = listadosAuxiliares.cargos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
                 })
             }
 

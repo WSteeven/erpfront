@@ -2,7 +2,7 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -18,7 +18,6 @@ import { Devolucion } from '../domain/Devolucion'
 
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -30,12 +29,8 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { LocalStorage } from 'quasar'
-import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
-import { number } from '@intlify/core-base'
 import { Producto } from 'pages/bodega/productos/domain/Producto'
-import { watch } from 'vue'
 
 
 export default defineComponent({

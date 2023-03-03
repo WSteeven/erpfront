@@ -1,5 +1,6 @@
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
+import { configuracionColumnasListadoProductosDevolucion } from '../../transaccionContent/domain/configuracionColumnasListadoProductosDevolucion'
 import { configuracionColumnasDetallesProductosSeleccionables } from '../domain/configuracionColumnasDetallesSeleccionables'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -35,7 +36,6 @@ import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraes
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 import { Cliente } from 'sistema/clientes/domain/Cliente'
 import { ordernarListaString } from 'shared/utils'
 import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
@@ -145,7 +145,7 @@ export default defineComponent({
       condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
     }
 
-    
+
     /**
      * It takes an id, loads a devolucion from the server, and then populates a form with the data from
      * the devolucion.
@@ -160,10 +160,10 @@ export default defineComponent({
       transaccion.solicitante = devolucionStore.devolucion.solicitante
       transaccion.sucursal = devolucionStore.devolucion.sucursal
       listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
-      listadoDevolucion.value.sort((v,w)=>v.id-w.id) //ordena el listado de devolucion
-      if(devolucionStore.devolucion.tarea){
+      listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
+      if (devolucionStore.devolucion.tarea) {
         transaccion.es_tarea = true
-        transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea:devolucionStore.devolucion.tarea_id
+        transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea : devolucionStore.devolucion.tarea_id
         filtroTareas(transaccion.tarea)
       }
     }
@@ -254,7 +254,7 @@ export default defineComponent({
 
 
 
-    const configuracionColumnasProductosSeleccionadosAccion = computed(()=>[...configuracionColumnasProductosSeleccionados,
+    const configuracionColumnasProductosSeleccionadosAccion = computed(() => [...configuracionColumnasProductosSeleccionados,
     {
       name: 'condiciones',
       field: 'condiciones',
@@ -263,7 +263,7 @@ export default defineComponent({
       sortable: false,
       visible: true,
       type: 'select',
-      options: opciones_condiciones.value.map((v:Condicion)=>{return {label:v.nombre}})
+      options: opciones_condiciones.value.map((v: Condicion) => { return { label: v.nombre } })
     },
     {
       name: 'cantidad',
@@ -340,6 +340,8 @@ export default defineComponent({
       // botonDespachar,
       eliminarItem,
 
+      //listado de devoluciones
+      configuracionColumnasListadoProductosDevolucion,
 
       //selector
       refListadoSeleccionableProductos,
