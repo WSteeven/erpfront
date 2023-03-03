@@ -24,6 +24,7 @@ import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
 import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
 import { obtenerTiempoActual } from 'shared/utils'
 import { Trabajo } from 'trabajos/domain/Trabajo'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -213,9 +214,15 @@ export default defineComponent({
     const trabajoAsignadoController = new TrabajoAsignadoController()
 
     async function filtrarTrabajoAsignado(tabSeleccionado) {
+      const cargando = new StatusEssentialLoading()
+
+      cargando.activar()
+
       const { result } = await trabajoAsignadoController.listar({ estado: tabSeleccionado })
       listado.value = result
       tabActual.value = tabSeleccionado
+
+      cargando.desactivar()
     }
 
     filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)

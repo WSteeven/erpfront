@@ -6,11 +6,11 @@
       'column justify-end q-gutter-y-sm': $q.screen.xs,
     }"
   > -->
-  <div class="text-left block">
+  <span class="text-left">
     <q-btn-group
       :rounded="$q.screen.md || $q.screen.lg || $q.screen.xl"
       :unelevated="$q.screen.xs"
-      :class="{ 'column full-width': $q.screen.xs }"
+      :class="{ 'column ': $q.screen.xs }"
     >
       <q-btn
         v-if="extraerVisible(accion1)"
@@ -171,7 +171,7 @@
         <span>{{ extraerTitulo(accion8) }}</span>
       </q-btn>
     </q-btn-group>
-  </div>
+  </span>
 </template>
 
 <script lang="ts" setup>

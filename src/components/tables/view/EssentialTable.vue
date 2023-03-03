@@ -283,63 +283,67 @@
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
       <q-td v-if="!$q.screen.xs" :props="props">
-        <!--<div class="row full-width block q-gutter-sm justify-center"> -->
-        <q-btn-group
-          v-if="permitirConsultar || permitirEditar || permitirEliminar"
-          rounded
-          unelevated
-          class="q-mb-xs block text-left"
-        >
-          <!-- Consultar -->
-          <q-btn
-            v-if="permitirConsultar"
-            class="bg-primary q-px-md"
-            dense
-            glossy
-            @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
+        <div class="row inline full-width block q-col-gutter-x-xs text-left">
+          <q-btn-group
+            v-if="permitirConsultar || permitirEditar || permitirEliminar"
+            rounded
+            unelevated
+            class="inline text-left"
           >
-            <q-icon name="bi-eye" size="xs" color="white"></q-icon>
-            <q-tooltip class="bg-dark"> Consultar </q-tooltip>
-          </q-btn>
+            <!-- Consultar -->
+            <q-btn
+              v-if="permitirConsultar"
+              class="bg-primary q-px-md"
+              dense
+              glossy
+              @click="
+                consultar({ entidad: props.row, posicion: props.rowIndex })
+              "
+            >
+              <q-icon name="bi-eye" size="xs" color="white"></q-icon>
+              <q-tooltip class="bg-dark"> Consultar </q-tooltip>
+            </q-btn>
 
-          <!-- Editar -->
-          <q-btn
-            v-if="permitirEditar"
-            class="bg-secondary q-px-md"
-            glossy
-            dense
-            @click="editar({ entidad: props.row, posicion: props.rowIndex })"
-          >
-            <q-icon name="bi-pencil-square" size="xs" color="white"></q-icon>
-            <q-tooltip class="bg-dark"> Editar </q-tooltip>
-          </q-btn>
+            <!-- Editar -->
+            <q-btn
+              v-if="permitirEditar"
+              class="bg-secondary q-px-md"
+              glossy
+              dense
+              @click="editar({ entidad: props.row, posicion: props.rowIndex })"
+            >
+              <q-icon name="bi-pencil-square" size="xs" color="white"></q-icon>
+              <q-tooltip class="bg-dark"> Editar </q-tooltip>
+            </q-btn>
 
-          <!-- Eliminar -->
-          <q-btn
-            v-if="permitirEliminar"
-            class="bg-negative q-px-md"
-            glossy
-            dense
-            @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
-          >
-            <q-icon name="bi-trash3" size="xs" color="white"></q-icon>
-            <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
-          </q-btn>
-        </q-btn-group>
+            <!-- Eliminar -->
+            <q-btn
+              v-if="permitirEliminar"
+              class="bg-negative q-px-md"
+              glossy
+              dense
+              @click="
+                eliminar({ entidad: props.row, posicion: props.rowIndex })
+              "
+            >
+              <q-icon name="bi-trash3" size="xs" color="white"></q-icon>
+              <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
+            </q-btn>
+          </q-btn-group>
 
-        <CustomButtons
-          v-if="accion1"
-          :accion1="accion1"
-          :accion2="accion2"
-          :accion3="accion3"
-          :accion4="accion4"
-          :accion5="accion5"
-          :accion6="accion6"
-          :accion7="accion7"
-          :accion8="accion8"
-          :propsTable="props"
-        ></CustomButtons>
-        <!--</div> -->
+          <CustomButtons
+            v-if="accion1"
+            :accion1="accion1"
+            :accion2="accion2"
+            :accion3="accion3"
+            :accion4="accion4"
+            :accion5="accion5"
+            :accion6="accion6"
+            :accion7="accion7"
+            :accion8="accion8"
+            :propsTable="props"
+          ></CustomButtons>
+        </div>
       </q-td>
     </template>
 
