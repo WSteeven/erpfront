@@ -195,6 +195,7 @@
               </template>
             </q-select>
           </div>
+          <!-- Detalle -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Detalle</label>
             <q-select v-model="gasto.detalle" :options="detalles" transition-show="jump-up" transition-hide="jump-down"
@@ -215,6 +216,7 @@
               </template>
             </q-select>
           </div>
+          <!-- Subdetalle-->
           <div class="col-12 col-md-4 q-mb-md" v-if="gasto.detalle != null">
             <label class="q-mb-sm block">SubDetalle</label>
             <q-select v-model="gasto.sub_detalle" :options="sub_detalles" transition-show="jump-up"
