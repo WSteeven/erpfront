@@ -188,39 +188,6 @@ export default defineComponent({
         )
       })
     }
-    // - Filtro TIPOS FONDOS
-    function filtrarTiposFondos(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposFondos.value = listadosAuxiliares.tiposFondos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposFondos.value = listadosAuxiliares.tiposFondos.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro TIPOS FONDOS
-    function filtrarTiposFondoRotativoFechas(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposFondoRotativoFechas.value =
-            listadosAuxiliares.tiposFondoRotativoFechas
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposFondoRotativoFechas.value =
-          listadosAuxiliares.tiposFondoRotativoFechas.filter(
-            (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-          )
-      })
-    }
 
     // - Filtro AUTORIZACIONES ESPECIALES
 
@@ -319,35 +286,31 @@ export default defineComponent({
     function filtrarTiposFiltro(val, update) {
       switch (consolidadofiltrado.tipo_saldo) {
         case '1':
-          console.log('acreditacion');
           update(() => {
-          tipos_filtros.value = listadosAuxiliares.tipos_filtros.filter(
-            (v) => v.value === '6')});
-          break
-        case '2':
-          console.log('gastos');
-          update(() => {
-            tipos_filtros.value = listadosAuxiliares.tipos_filtros});
-          break
-        case '3':
-          console.log('consolidado');
+            tipos_filtros.value = listadosAuxiliares.tipos_filtro.filter(
+              (v) => v.value == 6
+            )
+          })
+          break;
 
-          update(() => {
-            tipos_filtros.value = listadosAuxiliares.tipos_filtros});
-          break
         default:
+          update(() => {
+            tipos_filtros.value = [
+              { value: '0', name: 'Todos' },
+              { value: '1', name: 'Proyecto' },
+              { value: '2', name: 'Tarea' },
+              { value: '3', name: 'Detalle' },
+              { value: '4', name: 'SubDetalle' },
+              { value: '5', name: 'Autorizacion' },
+              { value: '6', name: 'Usuario' },
+            ]
+          })
           break
-      }
-      if (val === '') {
-        update(() => {
-          tipos_filtros.value = listadosAuxiliares.tipos_filtro
-        })
-        return
       }
       update(() => {
         const needle = val.toLowerCase()
         tipos_filtros.value = listadosAuxiliares.tipos_filtro.filter(
-          (v) => v.label.toLowerCase().indexOf(needle) > -1
+          (v) => v.name.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -372,7 +335,7 @@ export default defineComponent({
     ): Promise<void> {
       const axios = AxiosHttpRepository.getInstance()
       const filename =
-        'reporte_semanal_gastos_del_' +
+        'reporte_gastos_del_' +
         valor.fecha_inicio +
         '_al_' +
         valor.fecha_fin
@@ -381,14 +344,14 @@ export default defineComponent({
           const url_excel =
             apiConfig.URL_BASE +
             '/' +
-            axios.getEndpoint(endpoints.consolidado_excel)
+            axios.getEndpoint(endpoints.consolidado_filtrado_excel)
           imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
           break
         case 'pdf':
           const url_pdf =
             apiConfig.URL_BASE +
             '/' +
-            axios.getEndpoint(endpoints.consolidado_pdf)
+            axios.getEndpoint(endpoints.consolidado_filtrado_pdf)
           imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
           break
         default:
@@ -413,8 +376,6 @@ export default defineComponent({
       tareas,
       generar_reporte,
       filtrarUsuarios,
-      filtrarTiposFondos,
-      filtrarTiposFondoRotativoFechas,
       filtarTiposSaldos,
       filtrarTiposFiltro,
       filtrarAutorizacionesEspeciales,
@@ -423,6 +384,7 @@ export default defineComponent({
       filtrarProyectos,
       filtrarTareas,
       watchEffect,
+      listadosAuxiliares,
     }
   },
 })

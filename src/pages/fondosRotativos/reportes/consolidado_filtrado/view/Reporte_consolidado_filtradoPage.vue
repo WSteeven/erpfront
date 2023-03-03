@@ -81,7 +81,7 @@
           </q-select>
         </div>
         <!-- Tipos filtros -->
-        <div class="col-12 col-md-3" >
+          <div class="col-12 col-md-3" >
           <label class="q-mb-sm block">Tipo Filtro</label>
           <q-select v-model="consolidadofiltrado.tipo_filtro" :options="tipos_filtros" transition-show="jump-up"
             transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"

@@ -517,7 +517,7 @@ const routes: RouteRecordRaw[] = [
         name: 'reporte_consolidado_filtrado',
         component: () =>
         import(
-          'pages/fondosRotativos/reportes/consolidado_filtrado/view/Reporte_consolidadoPage.vue'
+          'pages/fondosRotativos/reportes/consolidado_filtrado/view/Reporte_consolidado_filtradoPage.vue'
         ),
         //cambiar a true cuando este listo
         meta: { requiresAuth: false },
