@@ -6,10 +6,9 @@ import { regiones, atenciones, tiposIntervenciones, causaIntervencion, accionesT
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, Ref, ref } from 'vue'
-import { required, requiredIf } from 'shared/i18n-validators'
+import { computed, defineComponent, onMounted, Ref, ref, watchEffect } from 'vue'
+import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
@@ -29,7 +28,6 @@ import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { CausaIntervencion } from './CausaIntervencion'
 import { obtenerTiempoActual } from 'shared/utils'
 import { Emergencia } from '../domain/Emergencia'
-// import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -48,8 +46,8 @@ export default defineComponent({
     * Mixin
     *********/
     const mixin = new ContenedorSimpleMixin(Emergencia, new EmergenciaController())
-    const { entidad: emergencia, accion } = mixin.useReferencias()
-    const { guardar, editar, reestablecer, setValidador } = mixin.useComportamiento()
+    const { entidad: emergencia, accion, listado } = mixin.useReferencias()
+    const { guardar, editar, reestablecer, setValidador, listar } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado } = mixin.useHooks()
 
     /************
@@ -57,6 +55,26 @@ export default defineComponent({
      ************/
     const refTrabajos = ref()
     const refObservaciones = ref()
+
+    /************
+     * Init
+     ************/
+    listar({ trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
+
+    watchEffect(() => {
+      console.log(listado.value)
+      if (listado.value) {
+        if (listado.value.length) {
+
+          console.log(listado.value[0])
+          const em = new Emergencia()
+          em.hydrate(listado.value[0])
+          console.log(em)
+          emergencia.hydrate(listado.value[1])
+        }
+        //refTrab
+      }
+    })
 
     /***************************
     * Configuracion de columnas
@@ -147,16 +165,12 @@ export default defineComponent({
     * Hooks
     *********/
     onConsultado(() => {
-      // emergencia.observaciones = typeof emergencia.observaciones === 'string' ? JSON.parse(emergencia.observaciones) : []
-      // emergencia.trabajo_realizado = typeof emergencia.trabajo_realizado === 'string' ? JSON.parse(emergencia.trabajo_realizado) : []
       obtenerMateriales().then(() => ajustarCantidadesUtilizadas())
-      emergencia.trabajo = 1
     })
 
     onBeforeGuardar(() => {
       emergencia.materiales_ocupados = filtrarMaterialesOcupados()
-      //emergencia.trabajo_realizado = JSON.stringify(emergencia.trabajo_realizado)
-      //     emergencia.observaciones = JSON.stringify(emergencia.observaciones)
+      emergencia.trabajo = trabajoAsignadoStore.idTrabajoSeleccionado
     })
 
     /************

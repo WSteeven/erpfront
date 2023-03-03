@@ -7,7 +7,7 @@
   >
     <q-card
       flat
-      class="bg-transparent"
+      class="bg-desenfoque"
       :class="{ 'q-py-md q-px-xl': !$q.screen.xs }"
     >
       <q-toolbar class="bg-body rounded-header">
