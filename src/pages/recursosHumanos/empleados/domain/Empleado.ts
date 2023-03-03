@@ -18,6 +18,7 @@ export class Empleado extends EntidadAuditable {
   disponible: boolean
   es_lider: boolean
   tiene_grupo: boolean
+  firma_url: string | null
   // es_responsable_grupo: boolean
 
   grupo_id: number | null
@@ -42,6 +43,7 @@ export class Empleado extends EntidadAuditable {
     this.es_lider = false
     this.grupo_id = null
     this.tiene_grupo = false
+    this.firma_url = null
     // this.es_responsable_grupo = false
   }
 }

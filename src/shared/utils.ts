@@ -247,6 +247,15 @@ export function obtenerFechaActual() {
   return formattedString
 }
 
+/**
+ * Funcion para remover tildes o acentos de una cadena
+ * @param accents cadena que se va a limpiar
+ * @returns cadena sin acentos ni tildes
+ */
+export function removeAccents(accents: string) {
+  return accents.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+}
+
 export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 

@@ -113,7 +113,10 @@
           </div>
           <!-- Tiene devolución -->
           <div
-            v-if="(accion === 'NUEVO' && !transaccion.es_transferencia) || (transaccion.tiene_devolucion&&!transaccion.es_transferencia)"
+            v-if="
+              (accion === 'NUEVO' && !transaccion.es_transferencia) ||
+              (transaccion.tiene_devolucion && !transaccion.es_transferencia)
+            "
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -447,7 +450,9 @@
           </div>
           <!-- Listado de la devolución -->
           <div
-            v-if="listadoDevolucion !== undefined && listadoDevolucion.length > 0"
+            v-if="
+              listadoDevolucion !== undefined && listadoDevolucion.length > 0
+            "
             class="col-12 col-md-12"
           >
             <q-table
@@ -455,13 +460,12 @@
               title="Listado de la devolución"
               class="bg-body-table custom-border"
               :rows="listadoDevolucion"
-              :columns="configuracionColumnasListadoProductosSeleccionados"
+              :columns="configuracionColumnasListadoProductosDevolucion"
               row-key="id"
               :hide-bottom="true"
               dense
             />
           </div>
-
 
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
@@ -507,7 +511,9 @@
               "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
-              :permitirEditar="!transaccion.ingreso_masivo && accion === acciones.nuevo"
+              :permitirEditar="
+                !transaccion.ingreso_masivo && accion === acciones.nuevo
+              "
               :permitirEliminar="true"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"

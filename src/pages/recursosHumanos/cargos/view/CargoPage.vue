@@ -12,6 +12,7 @@
             <label class="q-mb-sm block">Nombre del Cargo</label>
             <q-input
               v-model="cargo.nombre"
+              @update:model-value="(v) => (cargo.nombre = removeAccents(v))"
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.nombre.$errors.length"
