@@ -1,5 +1,6 @@
 <template>
   <EditarTablaModal
+    ref="refEditarModal"
     :configuracionColumnas="configuracionColumnas"
     :fila="fila"
     @limpiar="limpiarFila"
@@ -292,36 +293,36 @@
           <!-- Consultar -->
           <q-btn
             v-if="permitirConsultar"
-            class="bg-btn-table q-px-md"
+            class="bg-primary q-px-md"
             dense
             glossy
             @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-eye" size="xs"></q-icon>
+            <q-icon name="bi-eye" size="xs" color="white"></q-icon>
             <q-tooltip class="bg-dark"> Consultar </q-tooltip>
           </q-btn>
 
           <!-- Editar -->
           <q-btn
             v-if="permitirEditar"
-            class="bg-btn-table q-px-md"
+            class="bg-secondary q-px-md"
             glossy
             dense
             @click="editar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-pencil" size="xs" color="white"></q-icon>
+            <q-icon name="bi-pencil-square" size="xs" color="white"></q-icon>
             <q-tooltip class="bg-dark"> Editar </q-tooltip>
           </q-btn>
 
           <!-- Eliminar -->
           <q-btn
             v-if="permitirEliminar"
-            class="bg-btn-table q-px-md"
+            class="bg-negative q-px-md"
             glossy
             dense
             @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
           >
-            <q-icon name="bi-trash" size="xs" color="white"></q-icon>
+            <q-icon name="bi-trash3" size="xs" color="white"></q-icon>
             <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
           </q-btn>
         </q-btn-group>
@@ -382,7 +383,7 @@
                     consultar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-eye" color="info" size="xs"></q-icon>
+                  <q-icon name="bi-eye" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Consultar </q-tooltip>
                 </q-btn>
 
@@ -397,7 +398,7 @@
                     editar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-pencil" color="info" size="xs"></q-icon>
+                  <q-icon name="bi-pencil" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
                 </q-btn>
 
@@ -412,7 +413,7 @@
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-trash" color="info" size="xs"></q-icon>
+                  <q-icon name="bi-trash" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
                 </q-btn>
 

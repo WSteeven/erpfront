@@ -23,6 +23,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { RegistroTendido } from '../domain/RegistroTendido'
 import { obtenerUbicacion } from 'shared/utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   props: {
@@ -42,7 +43,7 @@ export default defineComponent({
      *********/
     const tendidoStore = useTendidoStore()
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
-    const authenticationStore = useAuthenticationStore()
+    // const authenticationStore = useAuthenticationStore()
 
     /********
      * Mixin
@@ -98,7 +99,7 @@ export default defineComponent({
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil',
-      color: 'secondary',
+      color: 'primary',
       visible: () => accion.value !== acciones.consultar,
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
@@ -171,19 +172,22 @@ export default defineComponent({
     }
 
     async function obtenerMateriales() {
+      const cargando = new StatusEssentialLoading()
+      cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
+      cargando.desactivar()
     }
 
     function ajustarCantidadesUtilizadas() {
       const materialesOcupados = registroTendido.materiales_ocupados
-      // console.log(materialesOcupados[0])
 
       for (let i = 0; i < materiales.value.length; i++) {
         const indexOcupado = obtenerIndice(materialesOcupados, materiales.value[i].detalle_producto_id)
         if (indexOcupado >= 0) {
+          // if (accion.value === acciones.consultar) materiales.value[i].stock_actual = materialesOcupados[indexOcupado].stock_actual
           materiales.value[i].cantidad_utilizada = materialesOcupados[indexOcupado].cantidad_utilizada
         }
       }
@@ -193,6 +197,7 @@ export default defineComponent({
       return listadoBuscar.findIndex((item) => item.detalle_producto_id === id)
     }
 
+    // Sólo cuando es un nuevo registro se obtienen los materiales en stock y se deja el campo de cantidad_utilizada vacio
     if (accion.value === acciones.nuevo) obtenerMateriales()
 
     function filtrarMaterialesOcupados() {
@@ -209,7 +214,7 @@ export default defineComponent({
     onBeforeGuardar(() => {
       registroTendido.tendido = tendidoStore.idTendido
       registroTendido.materiales_ocupados = filtrarMaterialesOcupados()
-      registroTendido.subtarea = trabajoAsignadoStore.idTrabajoSeleccionado
+      registroTendido.trabajo = trabajoAsignadoStore.idTrabajoSeleccionado
     })
 
     return {

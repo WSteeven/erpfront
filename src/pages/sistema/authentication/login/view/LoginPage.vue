@@ -101,7 +101,8 @@
           <div class="col-12">
             <!-- Botones -->
             <q-btn
-            flat color="primary"
+              flat
+              color="primary"
               label="Recuperar contraseña"
               class="full-width q-mb-sm"
               no-caps

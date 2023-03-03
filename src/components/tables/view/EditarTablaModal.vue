@@ -5,8 +5,12 @@
     :full-width="true"
     top
   >
-    <q-card>
-      <q-toolbar>
+    <q-card
+      flat
+      class="bg-desenfoque"
+      :class="{ 'q-py-md q-px-xl': !$q.screen.xs }"
+    >
+      <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
           <img src="~assets/logo.svg" />
         </q-avatar>
@@ -23,23 +27,8 @@
         />
       </q-toolbar>
 
-      <q-card-section>
+      <q-card-section class="bg-body rounded-footer">
         <div class="row q-col-gutter-xs q-mb-md">
-          <!-- Inputs normales -->
-          <div
-            v-for="field in fields"
-            :key="field.field"
-            class="col-12 col-md-3 q-mb-sm"
-          >
-            <label class="block q-mb-sm">{{ field.label }}</label>
-            <q-input
-              v-model="field.valor"
-              :type="field.type !== 'select' ? field.type : 'text'"
-              :autogrow="field.type !== 'number'"
-              outlined
-              dense
-            ></q-input>
-          </div>
           <!-- Selects -->
           <div
             v-for="field in fieldsSelect"
@@ -55,8 +44,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="(item) => item.label"
+              :option-value="(item) => item.label"
               emit-value
               map-options
             >
@@ -68,6 +57,22 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <!-- Inputs normales -->
+          <div
+            v-for="field in fields"
+            :key="field.field"
+            class="col-12 col-md-3 q-mb-sm"
+          >
+            <label class="block q-mb-sm">{{ field.label }}</label>
+            <q-input
+              v-model="field.valor"
+              :type="field.type !== 'select' ? field.type : 'text'"
+              :autogrow="field.type !== 'number'"
+              outlined
+              dense
+            ></q-input>
           </div>
         </div>
 
@@ -88,100 +93,119 @@
   </q-dialog>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from '../domain/ColumnConfig'
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref, defineComponent } from 'vue'
 
-const props = defineProps({
-  configuracionColumnas: {
-    type: Object as () => ColumnConfig<EntidadAuditable>[],
-    required: true,
+export default defineComponent({
+  props: {
+    configuracionColumnas: {
+      type: Object as () => ColumnConfig<EntidadAuditable>[],
+      required: true,
+    },
+    fila: {
+      type: Object as () => EntidadAuditable,
+      required: false,
+    },
+    modalMaximized: {
+      type: Boolean,
+      default: true,
+    },
   },
-  fila: {
-    type: Object as () => EntidadAuditable,
-    required: false,
-  },
-  modalMaximized: {
-    type: Boolean,
-    default: true,
+  emits: ['limpiar', 'guardar'],
+
+  // normal
+  setup(props, { emit }) {
+    const fields = computed(() =>
+      props.configuracionColumnas
+        .map((fila: ColumnConfig<any>) => {
+          return reactive({
+            label: fila.label,
+            field: fila.field,
+            type: fila.type ?? 'text',
+            editable: fila.editable ?? true,
+            valor: props.fila ? props.fila[fila.field] : '',
+          })
+        })
+        .filter(
+          (fila) =>
+            fila.field !== 'acciones' && fila.type !== 'select' && fila.editable
+        )
+    )
+
+    // normal
+    const fieldsSelect = computed(() =>
+      props.configuracionColumnas
+        .map((fila: ColumnConfig<any>) => {
+          return reactive({
+            label: fila.label,
+            field: fila.field,
+            type: fila.type ?? 'text',
+            editable: fila.editable ?? true,
+            valor: props.fila ? props.fila[fila.field] : '',
+            options: fila.options,
+          })
+        })
+        .filter(
+          (fila) =>
+            fila.field !== 'acciones' && fila.type === 'select' && fila.editable
+        )
+    )
+    // Todos los campos
+    const fieldsAll = computed(() =>
+      props.configuracionColumnas
+        .map((fila: ColumnConfig<any>) => {
+          return reactive({
+            label: fila.label,
+            field: fila.field,
+            type: fila.type ?? 'text',
+            editable: fila.editable ?? true,
+            valor: props.fila ? props.fila[fila.field] : '',
+          })
+        })
+        .filter((fila) => fila.field !== 'acciones')
+    )
+
+    const abierto = ref(false) //computed(() => !!props.fila)
+
+    function abrir() {
+      abierto.value = true
+    }
+
+    function guardar() {
+      var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
+      var mappedSelect = fieldsSelect.value.map((item) => ({
+        [item.field]: item.valor,
+      }))
+      const mappedAll = fieldsAll.value.map((item) => ({
+        [item.field]: item.valor,
+      }))
+      const mappedLleno = [...mappedAll, ...mapped, ...mappedSelect]
+      const newObj = Object.assign({}, ...mapped)
+
+      Object.assign(newObj, ...mappedSelect)
+      Object.assign(newObj, ...mappedAll)
+      Object.assign(newObj, ...mappedLleno)
+
+      emit('guardar', newObj)
+      abierto.value = false
+    }
+
+    function cerrarModalEntidad() {
+      abierto.value = false
+      emit('limpiar')
+    }
+
+    return {
+      fields,
+      fieldsSelect,
+      fieldsAll,
+      abierto,
+      abrir,
+      guardar,
+      cerrarModalEntidad,
+    }
   },
 })
-
-const emit = defineEmits(['limpiar', 'guardar'])
-
-// normal
-const fields = computed(() =>
-  props.configuracionColumnas
-    .map((fila: ColumnConfig<any>) => {
-      return reactive({
-        label: fila.label,
-        field: fila.field,
-        type: fila.type ?? 'text',
-        editable: fila.editable ?? true,
-        valor: props.fila ? props.fila[fila.field] : '',
-      })
-    })
-    .filter(
-      (fila) =>
-        fila.field !== 'acciones' && fila.type !== 'select' && fila.editable
-    )
-)
-
-// normal
-const fieldsSelect = computed(() =>
-  props.configuracionColumnas
-    .map((fila: ColumnConfig<any>) => {
-      return reactive({
-        label: fila.label,
-        field: fila.field,
-        type: fila.type ?? 'text',
-        editable: fila.editable ?? true,
-        valor: props.fila ? props.fila[fila.field] : '',
-        options: fila.options,
-      })
-    })
-    .filter(
-      (fila) =>
-        fila.field !== 'acciones' && fila.type === 'select' && fila.editable
-    )
-)
-// Todos los campos
-const fieldsAll = computed(() =>
-  props.configuracionColumnas
-    .map((fila: ColumnConfig<any>) => {
-      return reactive({
-        label: fila.label,
-        field: fila.field,
-        type: fila.type ?? 'text',
-        editable: fila.editable ?? true,
-        valor: props.fila ? props.fila[fila.field] : '',
-      })
-    })
-    .filter((fila) => fila.field !== 'acciones')
-)
-
-const abierto = computed(() => !!props.fila)
-
-function guardar() {
-  var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
-  var mappedSelect = fieldsSelect.value.map((item) => ({
-    [item.field]: item.valor,
-  }))
-  const mappedAll = fieldsAll.value.map((item) => ({
-    [item.field]: item.valor,
-  }))
-  const mappedLleno = [...mappedAll, ...mapped, ...mappedSelect]
-  const newObj = Object.assign({}, ...mapped)
-
-  Object.assign(newObj, ...mappedSelect)
-  Object.assign(newObj, ...mappedAll)
-  Object.assign(newObj, ...mappedLleno)
-
-  emit('guardar', newObj)
-}
-
-function cerrarModalEntidad() {
-  emit('limpiar')
-}
 </script>

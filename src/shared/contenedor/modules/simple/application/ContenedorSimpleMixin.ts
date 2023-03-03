@@ -118,17 +118,19 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   private async listar(params?: ParamsType, append = false) {
-    this.cargarVista(async () => {
-      try {
-        const { result } = await this.controller.listar(params)
-        if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+    //this.cargarVista(async () => {
+    this.statusEssentialLoading.activar()
+    try {
+      const { result } = await this.controller.listar(params)
+      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
 
-        if (append) this.refs.listado.value.push(...result)
-        else this.refs.listado.value = result
-      } catch (error) {
-        this.notificaciones.notificarError('Error al obtener el listado.')
-      }
-    })
+      if (append) this.refs.listado.value.push(...result)
+      else this.refs.listado.value = result
+    } catch (error) {
+      this.notificaciones.notificarError('Error al obtener el listado.')
+    }
+    this.statusEssentialLoading.desactivar()
+    //})
   }
 
   private async filtrar(params?: ParamsType) {

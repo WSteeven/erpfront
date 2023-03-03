@@ -35,7 +35,7 @@ export class RegistroTendido extends EntidadAuditable {
   hora: string | null
   materiales_ocupados: any[]
   tension: string | null
-  subtarea: number | null
+  trabajo: number | null
 
   // Imagenes
   imagen_elemento: string | null
@@ -74,7 +74,7 @@ export class RegistroTendido extends EntidadAuditable {
     this.hora = null
     this.materiales_ocupados = []
     this.tension = null
-    this.subtarea = null
+    this.trabajo = null
     this.imagen_elemento = null
     this.imagen_cruce_americano = null
     this.imagen_poste_anclaje1 = null

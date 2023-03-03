@@ -3,7 +3,7 @@ import { configuracionColumnasTransaccionIngreso } from '../../../domain/configu
 import { configuracionColumnasDetallesProductosSeleccionables } from '../domain/configuracionColumnasDetallesSeleccionables'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
@@ -41,6 +41,7 @@ import { ordernarListaString } from 'shared/utils'
 import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { useTransferenciaStore } from 'stores/transferencia'
+import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -239,7 +240,7 @@ export default defineComponent({
 
 
 
-    const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados,
+    const configuracionColumnasProductosSeleccionadosAccion = computed(()=>[...configuracionColumnasProductosSeleccionados,
     {
       name: 'condiciones',
       field: 'condiciones',
@@ -248,7 +249,7 @@ export default defineComponent({
       sortable: false,
       visible: true,
       type: 'select',
-      options: opciones_condiciones.value
+      options: opciones_condiciones.value.map((v:Condicion)=>{return {label:v.nombre}})
     },
     {
       name: 'cantidad',
@@ -264,7 +265,7 @@ export default defineComponent({
       label: 'Acciones',
       align: 'center'
     },
-    ]
+    ])
 
     function filtroTareas(val) {
       const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)

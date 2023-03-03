@@ -159,51 +159,23 @@
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
-          <div class="col-12 col-md-12">
-            <label class="q-mb-sm block">Agregar productos</label>
-            <div class="row q-col-gutter-x-xs">
-              <div class="col-12 col-md-10 q-mb-md">
-                <q-input
-                  v-model="criterioBusquedaProducto"
-                  placeholder="Nombre de producto"
-                  hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarProductos()"
-                  @blur="
-                    criterioBusquedaProducto === '' ? limpiarProducto() : null
-                  "
-                  outlined
-                  dense
-                >
-                </q-input>
-              </div>
-              <div class="col-12 col-md-2">
-                <q-btn
-                  @click="listarProductos()"
-                  icon="search"
-                  unelevated
-                  color="primary"
-                  class="full-width"
-                  style="height: 40px"
-                  no-caps
-                  >Buscar</q-btn
-                >
-              </div>
-            </div>
-          </div>
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
+            ref="refModalEditable"
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
-              "
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
               :datos="devolucion.listadoProductos"
+              :accion1Header="addRow"
               :permitirConsultar="false"
-              :permitirEditar="false"
-              :permitirEliminar="false"
+              :permitirEditar="true"
+              :permitirEliminar="true"
+              @eliminar="eliminar"
               :mostrarBotones="false"
-              :accion1="botonEditarCantidad"
-              :accion2="botonEliminar"
+              :permitirEditarModal="true"
+              :permitirFiltrar="true"
+              :modalMaximized="false"
+
             ></essential-table>
           </div>
         </div>
