@@ -1,48 +1,96 @@
 <template>
-  <form @submit.prevent="actualizarContrasena()">
-    <div class="row">
-      <!-- Contraseña actual -->
-      <div class="col-md-12 col-lg-4 mb-4">
-        <label class="form-label" for="email">Contraseña actual</label>
-        <password-input
-          v-model="cambiarContrasena.current_password"
-          placeholder="Ingrese la contraseña actual"
-        ></password-input>
-      </div>
+  <q-page padding>
+    <q-card flat bordered class="my-card bg-grey-1  ">
+      <q-card-section>
+        <div class="row items-center no-wrap">
+          <div class="col">
+            <div class="text-h6">Generar Reporte Fondo Rotativo Contabilidad</div>
+          </div>
+        </div>
+      </q-card-section>
 
-      <!-- Nueva contraseña -->
-      <div class="col-md-12 col-lg-4 mb-4">
-        <label class="form-label" for="email">Nueva contraseña</label>
-        <password-input
-          v-model="cambiarContrasena.password"
-          placeholder="Ingrese la nueva contraseña"
-        ></password-input>
-      </div>
+      <q-card-section>
+        <div class="row q-col-gutter-sm q-mb-md">
+          <!-- Usuarios -->
+          <div class="col-12 col-md-2 q-mb-md">
+            <label class="q-mb-sm block">Contraseña actua</label>
+            <q-input v-model="cambiarContrasena.current_password" placeholder="Obligatorio"
+              :error="!!v$.current_password.$errors.length" :disable="disabled" outlined dense>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="cambiarContrasena.current_password" mask="DD-MM-YYYY" today-btn>
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
 
-      <!-- Confirmar nueva contraseña -->
-      <div class="col-md-12 col-lg-4 mb-4">
-        <label class="form-label" for="email"
-          >Confirme la nueva contraseña</label
-        >
-        <password-input
-          v-model="cambiarContrasena.password_confirmation"
-          placeholder="Repita la nueva contraseña"
-        ></password-input>
-      </div>
-    </div>
-    <!-- Botones -->
-    <div class="row">
-      <div class="col-12 d-grid d-md-flex justify-content-md-end gap-2">
-        <button
-          class="btn btn-primary block"
-          :class="{disabled: !habilitarBoton}"
-        >
-          <i class="bi-save me-2"></i>
-          Actualizar contraseña
-        </button>
-      </div>
-    </div>
-  </form>
+              <template v-slot:error>
+                <div v-for="error of v$.current_password.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Fecha Inicio -->
+          <div class="col-12 col-md-4 q-mb-md">
+            <label class="q-mb-sm block">Fecha Inicio:</label>
+            <q-input v-model="cambiarContrasena.fecha_inicio" placeholder="Obligatorio"
+              :error="!!v$.fecha_inicio.$errors.length" :disable="disabled" outlined dense>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="cambiarContrasena.fecha_inicio" mask="DD-MM-YYYY" today-btn>
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Fecha Fin -->
+          <div class="col-12 col-md-4 q-mb-md">
+            <label class="q-mb-sm block">Fecha Fin:</label>
+            <q-input v-model="cambiarContrasena.fecha_fin" placeholder="Obligatorio"
+              :error="!!v$.fecha_fin.$errors.length" :disable="disabled" outlined dense>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="cambiarContrasena.fecha_fin" mask="DD-MM-YYYY" today-btn>
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <div class="col-4 col-md-2 q-mb-md" style="margin-top: 2%;">
+            <q-btn color="positive" @click="abrir_reporte(cambiarContrasena)"><q-icon size="xs" class="q-mr-sm"
+                name="bi-search" /></q-btn>
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+  </q-page>
+
 </template>
-
-<script lang="ts" src="./cambiarContrasena.page.ts"></script>
+<script src="./Reporte_contabilidadPage.ts"></script>

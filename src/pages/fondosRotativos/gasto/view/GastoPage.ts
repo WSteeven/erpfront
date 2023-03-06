@@ -20,6 +20,7 @@ import { validarIdentificacion } from 'shared/validadores/validaciones'
 import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
+import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -38,8 +39,18 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
+    const { setValidador, obtenerListados, cargarVista,consultar } =
       mixin.useComportamiento()
+
+    /*******
+     * Init
+     ******/
+    const fondoRotativoStore= useFondoRotativoStore()
+    const mostrarListado = ref(true)
+    if(fondoRotativoStore.id_gasto) {
+      consultar({id: fondoRotativoStore.id_gasto})
+      mostrarListado.value = false
+    }
 
     /*************
      * Validaciones
@@ -314,6 +325,7 @@ export default defineComponent({
       filtrarProyectos,
       filtrarTareas,
       listadosAuxiliares,
+      mostrarListado,
     }
   },
 })

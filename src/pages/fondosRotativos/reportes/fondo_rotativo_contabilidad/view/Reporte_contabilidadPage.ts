@@ -9,15 +9,22 @@ import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestruct
 import { FondoRotativoContabilidad } from '../domain/FondoRotativoContabilidad'
 import { FondoRotativoContabilidadController } from '../infrestructure/FondoRotativoContabilidadController'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { ConfiguracionColumnasContabilidad } from '../domain/ConfiguracionColumnasContabilidad'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+import { ComportamientoModalesFondoRotativoContabilidad } from '../application/ComportamientoModalesFondoRotativoContabilidad'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { accionesTabla } from 'config/utils'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayout, EssentialTable, ModalEntidad },
   setup() {
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    const fondoRotativoStore = useFondoRotativoStore()
     /***********
      * Mixin
      ************/
@@ -32,7 +39,6 @@ export default defineComponent({
       listadosAuxiliares,
       listado,
     } = mixin.useReferencias()
-    const store_fondos_rotativos = useFondoRotativoStore();
     const { setValidador, obtenerListados, cargarVista,listar } =
       mixin.useComportamiento()
 
@@ -56,6 +62,7 @@ export default defineComponent({
         maxLength: 50,
       },
     }
+    const opened = ref(false)
     const v$ = useVuelidate(reglas, fondo_rotativo_contabilidad)
     setValidador(v$.value)
     const usuarios = ref([])
@@ -95,41 +102,8 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
         )
-      })
-    }
-    // - Filtro TIPOS FONDOS
-    function filtrarTiposFondos(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposFondos.value = listadosAuxiliares.tiposFondos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposFondos.value = listadosAuxiliares.tiposFondos.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro TIPOS FONDOS
-    function filtrarTiposFondoRotativoFechas(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposFondoRotativoFechas.value =
-            listadosAuxiliares.tiposFondoRotativoFechas
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposFondoRotativoFechas.value =
-          listadosAuxiliares.tiposFondoRotativoFechas.filter(
-            (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-          )
       })
     }
     async function abrir_reporte(
@@ -140,22 +114,36 @@ export default defineComponent({
           fecha_fin: valor.fecha_fin })
 
     }
+    /**Modales */
+    const modales = new ComportamientoModalesFondoRotativoContabilidad()
+    const botonVerModalGasto: CustomActionTable = {
+      titulo: 'Consultar',
+      icono: 'bi-eye',
+      color: 'indigo',
+      accion: ({ entidad }) => {
+        fondoRotativoStore.id_gasto = entidad.id
+        modales.abrirModalEntidad('GastoPage')
+      }
+    }
 
     return {
       mixin,
       fondo_rotativo_contabilidad,
+      ConfiguracionColumnasContabilidad,
       disabled,
       accion,
       v$,
       usuarios,
+      opened,
       tiposFondos,
       tiposFondoRotativoFechas,
       abrir_reporte,
       filtrarUsuarios,
-      filtrarTiposFondos,
-      filtrarTiposFondoRotativoFechas,
       watchEffect,
+      modales,
       listado,
+      botonVerModalGasto,
+      accionesTabla,
     }
   },
 })

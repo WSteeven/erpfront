@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { GastoContabilidad } from "./GastoContabilidad";
+import { FondoRotativoContabilidad } from "./FondoRotativoContabilidad";
 
-export const configuracionColumnasGastoContabilidad: ColumnConfig<GastoContabilidad>[] = [
+export const ConfiguracionColumnasContabilidad: ColumnConfig<FondoRotativoContabilidad>[] = [
   {
     name: 'fecha_viat',
     field: 'fecha_viat',
@@ -63,7 +63,28 @@ export const configuracionColumnasGastoContabilidad: ColumnConfig<GastoContabili
   {
     name: 'detalle_estado',
     field: 'detalle_estado',
-    label: 'Detalle Estado',
+    label: 'Observacion',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'cantidad',
+    field: 'cantidad',
+    label: 'Cantidad',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'valor_u',
+    field: 'valor_u',
+    label: 'V.Unit',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'total',
+    field: 'total',
+    label: 'Total',
     align: 'left',
     sortable: true
   },
