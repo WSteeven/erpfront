@@ -908,18 +908,23 @@
       </q-td>
     </template>
 
-    <!-- <template v-slot:body="props">
-      <q-tr :props="props">
-        <q-td key="cantidad_solicitada" :props="props">
-          {{ props.row.cantidad_solicitada }}
-          <q-popup-edit v-model="props.row.cantidad_solicitada" v-slot="scope">
-            <q-input v-model="scope.value" dense autofocus counter />
-          </q-popup-edit>
-        </q-td>
-
-        <q-td key="protein" :props="props">{{ props.row.protein }}</q-td>
-      </q-tr>
-    </template> -->
+    <!-- tiene firma -->
+    <template #body-cell-firma_url="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
   </q-table>
 
   <div

@@ -84,7 +84,14 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
     {
         name: 'estado',
         field: 'estado',
-        label: 'Estado',
+        label: '¿Activo?',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'firma_url',
+        field: 'firma_url',
+        label: '¿Firma?',
         align: 'left',
         sortable: true
     },

@@ -22,7 +22,8 @@
   <q-img
     v-show="imagenCodificada"
     :src="imagenCodificada"
-    style="max-width: 100%; height: 150px"
+    width="100%"
+    :height="alto"
     fit="cover"
   >
   </q-img>
@@ -40,11 +41,12 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps(['modelValue', 'imagen', 'disable', 'error'])
+const props = defineProps(['modelValue', 'imagen', 'disable', 'error', 'alto'])
 const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()
 const imagenCodificada = computed(() => props.imagen)
+const alto =computed(() => props.alto??'150px')
 
 const setBase64 = (file: File) => {
   if (file !== null && file !== undefined) {

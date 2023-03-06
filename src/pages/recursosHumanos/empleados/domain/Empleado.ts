@@ -11,7 +11,7 @@ export class Empleado extends EntidadAuditable {
   password: string | null
   usuario: string | null
   canton: string | null
-  estado: string | null
+  estado: boolean | null
   cargo: number | null
   roles: string | null | string[]
   grupo: number | null
@@ -19,6 +19,7 @@ export class Empleado extends EntidadAuditable {
   es_lider: boolean
   tiene_grupo: boolean
   firma_url: string | null
+  foto_url: string | null
   // es_responsable_grupo: boolean
 
   grupo_id: number | null
@@ -35,7 +36,7 @@ export class Empleado extends EntidadAuditable {
     this.password = null
     this.usuario = null
     this.canton = null
-    this.estado = null
+    this.estado = true
     this.cargo = null
     this.roles = null
     this.grupo = null
@@ -44,6 +45,7 @@ export class Empleado extends EntidadAuditable {
     this.grupo_id = null
     this.tiene_grupo = false
     this.firma_url = null
+    this.foto_url = null
     // this.es_responsable_grupo = false
   }
 }
