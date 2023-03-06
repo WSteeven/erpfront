@@ -128,10 +128,21 @@
         <div class="col-12 col-md-4 q-mb-md"
           v-if="(consolidadofiltrado.tipo_filtro == 1 || consolidadofiltrado.tipo_filtro == 0) && consolidadofiltrado.tipo_saldo == 2">
           <label class="q-mb-sm block">Proyectos</label>
-          <q-select v-model="consolidadofiltrado.proyecto" :options="proyectos" transition-show="jump-up"
-            transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
+          <q-select v-model="consolidadofiltrado.proyecto"
+          :options="proyectos"
+          transition-show="jump-up"
+            transition-hide="jump-down"
+            options-dense
+            dense
+            outlined
+            :disable="disabled"
+            :readonly="disabled"
             :error="!!v$.proyecto.$errors.length" error-message="Debes seleccionar un canton" use-input input-debounce="0"
-            @filter="filtrarProyectos" :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
+            @filter="filtrarProyectos"
+            :option-value="(v) => v.id"
+            :option-label="(v) => v.nombre"
+            emit-value
+            map-options>
             <template v-slot:error>
               <div v-for="error of v$.proyecto.$errors" :key="error.$uid">
                 <div class="error-msg">{{ error.$message }}</div>

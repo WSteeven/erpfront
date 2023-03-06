@@ -522,6 +522,26 @@ const routes: RouteRecordRaw[] = [
         //cambiar a true cuando este listo
         meta: { requiresAuth: false },
       },
+      {
+        path: '/reporte-contabilidad',
+        name: 'reporte_contabilidad',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/fondo_rotativo_contabilidad/view/Reporte_contabilidadPage.vue'
+        ),
+        //cambiar a true cuando este listo
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/reporte-contabilidad-generado',
+        name: 'reporte_contabilidad_generado',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/generar_reporte_contabilidad/view/GastoContabilidadPage.vue'
+        ),
+        //cambiar a true cuando este listo
+        meta: { requiresAuth: false },
+      },
     ],
   },
   {

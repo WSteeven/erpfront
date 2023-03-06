@@ -324,7 +324,13 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Saldo Consolidado con Filtro',
               link: 'reporte-consolidado-filtrado',
               icon: 'bi-circle',
-              can: true,//store.can('puede.ver.reporte_consolidado'),
+              can: true,//store.can('puede.ver.reporte_consolidado_filtrado'),
+            },
+            {
+              title: 'Contabilidad',
+              link: 'reporte-contabilidad',
+              icon: 'bi-circle',
+              can: true,//store.can('puede.ver.reporte_contabilidad'),
             }
           ]
         },
