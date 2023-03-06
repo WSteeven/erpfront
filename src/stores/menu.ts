@@ -305,31 +305,37 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Autorizaciones',
           link: 'autorizaciones',
           icon: 'bi-circle',
-          can: store.can('puede.ver.autorizaciones'),
+          can: store.can('puede.ver.autorizaciones') && store.esActivosFijos,
         },
         {
           title: 'Condiciones de productos',
           link: 'condiciones',
           icon: 'bi-circle',
-          can: store.can('puede.ver.condiciones'),
+          can: store.can('puede.ver.condiciones') && store.esActivosFijos,
         },
         {
           title: 'Codigos de productos',
           link: 'codigos-clientes',
           icon: 'bi-circle',
-          can: store.can('puede.ver.codigos_clientes'),
+          can: store.can('puede.ver.codigos_clientes') && store.esActivosFijos,
         },
         {
           title: 'Empresas',
           link: 'empresas',
           icon: 'bi-circle',
-          can: store.can('puede.ver.empresas'),
+          can: store.can('puede.ver.empresas') && store.esActivosFijos,
+        },
+        {
+          title: 'Clientes',
+          link: 'clientes',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.clientes'),
         },
         {
           title: 'Estados de transacciones',
           link: 'estados-transacciones',
           icon: 'bi-circle',
-          can: store.can('puede.ver.estados_transacciones'),
+          can: store.can('puede.ver.estados_transacciones') && store.esActivosFijos,
         },
         {
           title: 'Hilos',
@@ -346,14 +352,14 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Motivos',
           link: 'motivos',
-          can: store.can('puede.ver.motivos'),
+          can: store.can('puede.ver.motivos') && store.esActivosFijos,
           icon: 'bi-circle',
         },
         {
           title: 'Tipos de Transacciones',
-          link: 'transacciones',
+          link: 'tipos-transacciones',
           icon: 'bi-circle',
-          can: store.can('puede.ver.tipos_transacciones'),
+          can: store.can('puede.ver.tipos_transacciones') && false,
         },
         {
           title: 'Perchas',
@@ -371,7 +377,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Sucursales',
           link: 'sucursales',
           icon: 'bi-circle',
-          can: store.can('puede.ver.sucursales'),
+          can: store.can('puede.ver.sucursales') && store.esActivosFijos,
         },
         {
           title: 'Ubicaciones',
@@ -383,7 +389,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Unidades de medida',
           link: 'unidades-medidas',
           icon: 'bi-circle',
-          can: store.can('puede.ver.unidades_medidas'),
+          can: store.can('puede.ver.unidades_medidas') && store.esActivosFijos,
           // can: true,
         },
       ]

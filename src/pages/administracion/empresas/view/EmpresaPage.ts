@@ -6,20 +6,28 @@ import { defineComponent } from "vue";
 
 //Componentes 
 import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+
+//Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { Empresa } from "../domain/Empresa";
 import { EmpresaController } from "../infraestructure/EmpresaController";
 import { opciones_tipo_contribuyente } from "config/utils";
 
-//Logica y controladores
 
 
 export default defineComponent({
     components:{TabLayout},
-    setup(){
+    emits: ['cerrar-modal', 'guardado'],
+    setup(props, {emit}){
         const mixin = new ContenedorSimpleMixin(Empresa, new EmpresaController())
         const {entidad:empresa, disabled, accion} = mixin.useReferencias()
         const {setValidador} = mixin.useComportamiento()
+        const {onGuardado} =mixin.useHooks()
+
+        onGuardado(()=>{
+            emit('cerrar-modal')
+            emit('guardado')
+        })
 
         /**************************************************************
          * Validaciones

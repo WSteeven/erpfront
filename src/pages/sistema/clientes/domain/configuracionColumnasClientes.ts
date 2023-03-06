@@ -26,7 +26,7 @@ export const configuracionColumnasClientes: ColumnConfig<Cliente>[] = [
   {
     name: 'estado',
     field: 'estado',
-    label: 'Estado',
+    label: 'Activo',
     align: 'left',
     sortable: true,
   },

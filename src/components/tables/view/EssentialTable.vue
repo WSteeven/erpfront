@@ -784,28 +784,18 @@
           ></q-icon>
           NO REALIZADA
         </q-chip>
-        <q-chip
-          v-if="props.value === 1"
-          :class="{ 'bg-blue-grey-1': !$q.dark.isActive }"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
-          >ACTIVO
-        </q-chip>
-        <q-chip
-          v-if="props.value === 0"
-          :class="{ 'bg-red-1': !$q.dark.isActive }"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon
-          >INACTIVO
-        </q-chip>
+        <q-icon
+          v-if="props.value === 1 || props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="props.value === 0 || !props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
 
         <!-- Estados de la tabla inventarios -->
         <q-chip
@@ -883,12 +873,34 @@
       </q-td>
     </template>
 
+    <template #body-cell-requiere_bodega="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
     <template #body-cell-activo="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
           name="bi-check-circle-fill"
           color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
           size="sm"
         ></q-icon>
       </q-td>

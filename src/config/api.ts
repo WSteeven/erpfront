@@ -27,6 +27,7 @@ export const endpoints = {
   paises: new Endpoint('paises'),
   provincias: new Endpoint('provincias'),
   cantones: new Endpoint('cantones'),
+  parroquias: new Endpoint('parroquias'),
 
   // Modulo de RR HH
   cargos: new Endpoint('cargos'),

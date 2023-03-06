@@ -35,6 +35,7 @@
           :is="componente"
           :mixin-modal="mixinModal"
           @cerrar-modal="cerrarModalEntidad()"
+          @guardado="(data)=>emit('guardado',data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
 
@@ -42,6 +43,7 @@
           v-else
           :is="componente"
           @cerrar-modal="cerrarModalEntidad()"
+          @guardado="(data)=>emit('guardado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
         <!-- :mostrar-listado="false"></component> -->

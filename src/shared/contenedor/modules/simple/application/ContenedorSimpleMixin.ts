@@ -186,7 +186,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       if (agregarAlListado) this.agregarElementoListadoActual(response.data.modelo)
       this.entidad.hydrate(response.data.modelo)
 
-      this.statusEssentialLoading.desactivar()
       /* if (resetOnSaved) {
       } */
 
@@ -211,6 +210,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         await notificarMensajesError(mensajes, this.notificaciones)
       }
       //})
+    }finally{
+      this.statusEssentialLoading.desactivar()
     }
   }
 
