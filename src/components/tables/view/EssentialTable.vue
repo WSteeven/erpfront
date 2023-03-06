@@ -490,10 +490,12 @@
                   {{ formatBytes(col.value) }}
                 </span>
 
-                <estados-subtareas
-                  v-if="col.name === 'estado'"
-                  :propsTable="col"
-                />
+                <div :class="{ 'q-mb-xs': $q.screen.xs }">
+                  <estados-subtareas
+                    v-if="col.name === 'estado'"
+                    :propsTable="col"
+                  />
+                </div>
 
                 <span
                   v-if="
@@ -785,13 +787,13 @@
           NO REALIZADA
         </q-chip>
         <q-icon
-          v-if="props.value === 1 || props.value"
+          v-if="props.value === 1 || props.value === true"
           name="bi-check-circle-fill"
           color="positive"
           size="sm"
         ></q-icon>
         <q-icon
-          v-if="props.value === 0 || !props.value"
+          v-if="props.value === 0 || props.value === false"
           name="bi-x-circle-fill"
           color="negative"
           size="sm"

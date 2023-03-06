@@ -29,18 +29,19 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-table',
       can: store.can('puede.ver.reportes_control_materiales'),
     }, */
-    {
-      title: 'Control de asistencia',
-      link: 'control-asistencia',
-      icon: 'bi-person-check',
-    },
     /* {
       title: 'Tablero',
       icon: 'bi-layers-fill',
       link: '/admin',
     }, */
     {
-      title: 'Gestión de trabajos',
+      title: 'Notificaciones',
+      icon: 'bi-bell',
+      link: 'notificaciones',
+      can: true
+    },
+    {
+      title: 'Proyectos y tareas',
       icon: 'bi-pin-angle',
       can: store.can('puede.ver.modulo_tareas'),
       children: [
@@ -57,22 +58,47 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.proyectos'),
         },
         {
-          title: 'Tareas',
+          title: 'Control de tareas',
           link: 'tareas',
           icon: 'bi-circle',
           can: store.can('puede.ver.tareas'),
         },
-        {
+        /* {
           title: 'Control de tareas',
           link: 'hoja-control-trabajos',
           icon: 'bi-circle',
           can: store.can('puede.ver.hoja_control_trabajos'),
-        },
+        }, */
         {
           title: 'Tipos de trabajos',
           link: 'tipos-trabajos',
           icon: 'bi-circle',
           can: store.can('puede.ver.tipos_trabajos'),
+        },
+        /* {
+          title: 'Informes',
+          link: 'informes',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Control diario de materiales',
+          link: 'control-diario-materiales',
+          icon: 'bi-circle',
+        }, */
+        {
+          title: 'Control de cambios',
+          link: 'control-cambios',
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Control de asistencia',
+          link: 'control-asistencia',
+          icon: 'bi-person-check',
+        },
+        {
+          title: 'Clientes finales',
+          link: 'clientes-finales',
+          icon: 'bi-circle',
         },
         {
           title: 'Reportes',
@@ -98,33 +124,7 @@ export const useMenuStore = defineStore('menu', () => {
             }, */
           ],
         },
-        /* {
-          title: 'Informes',
-          link: 'informes',
-          icon: 'bi-circle',
-        },
-        {
-          title: 'Control diario de materiales',
-          link: 'control-diario-materiales',
-          icon: 'bi-circle',
-        }, */
-        {
-          title: 'Control de cambios',
-          link: 'control-cambios',
-          icon: 'bi-circle',
-        },
-        {
-          title: 'Clientes finales',
-          link: 'clientes-finales',
-          icon: 'bi-people-fill',
-        },
       ],
-    },
-    {
-      title: 'Notificaciones',
-      icon: 'bi-bell',
-      link: 'notificaciones',
-      can: true
     },
     {
       title: 'Bodega',

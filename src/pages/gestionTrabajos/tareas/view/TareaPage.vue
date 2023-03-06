@@ -363,7 +363,7 @@
                     >Descripción completa del trabajo a realizar</label
                   >
                   <q-input
-                    v-model="tarea.subtarea.descripcion_completa"
+                    v-model="tarea.descripcion_completa"
                     placeholder="Obligatorio"
                     outlined
                     :disable="disabled"
@@ -390,7 +390,7 @@
                     >Tipo de trabajo a realizar</label
                   >
                   <q-select
-                    v-model="tarea.subtarea.tipo_trabajo"
+                    v-model="tarea.tipo_trabajo"
                     :options="tiposTrabajos"
                     @filter="filtrarTiposTrabajos"
                     transition-show="scale"
@@ -431,7 +431,7 @@
                 <div class="col-12 col-md-3 q-mb-md">
                   <br />
                   <q-checkbox
-                    v-model="tarea.subtarea.es_ventana"
+                    v-model="tarea.es_ventana"
                     label="Es ventana de trabajo"
                     @blur="verificarEsVentana()"
                     outlined
@@ -443,7 +443,7 @@
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Fecha de agendamiento</label>
                   <q-input
-                    v-model="tarea.subtarea.fecha_agendado"
+                    v-model="tarea.fecha_agendado"
                     :placeholder="tarea.es_ventana ? 'Obligatorio' : 'Opcional'"
                     :error="!!v$.fecha_agendado.$errors.length"
                     outlined
@@ -492,7 +492,7 @@
                     >Hora inicio de agendamiento (24H)</label
                   >
                   <q-input
-                    v-model="tarea.subtarea.hora_inicio_agendado"
+                    v-model="tarea.hora_inicio_agendado"
                     :error="!!v$.hora_inicio_agendado.$errors.length"
                     type="time"
                     :disable="disabled"
@@ -517,7 +517,7 @@
                     >Hora fin de agendamiento (24H)</label
                   >
                   <q-input
-                    v-model="tarea.subtarea.hora_fin_agendado"
+                    v-model="tarea.hora_fin_agendado"
                     :error="!!v$.hora_fin_agendado.$errors.length"
                     type="time"
                     stack-label
@@ -552,7 +552,7 @@
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Trabajo designado</label>
                   <q-btn-toggle
-                    v-model="tarea.subtarea.modo_asignacion_trabajo"
+                    v-model="tarea.modo_asignacion_trabajo"
                     class="toggle-button"
                     spread
                     no-caps
@@ -582,7 +582,7 @@
                 >
                   <label class="q-mb-sm block">Grupo seleccionado</label>
                   <q-select
-                    v-model="tarea.subtarea.grupo"
+                    v-model="tarea.grupo"
                     :options="grupos"
                     @filter="filtrarGrupos"
                     transition-show="scale"
@@ -625,7 +625,7 @@
                 >
                   <label class="q-mb-sm block">Empleado seleccionado</label>
                   <q-select
-                    v-model="tarea.subtarea.empleado"
+                    v-model="tarea.empleado"
                     :options="empleados"
                     @filter="filtrarEmpleados"
                     transition-show="scale"
@@ -1024,12 +1024,11 @@
             :datos="subtareas"
             :tabOptions="tabOptionsEstadosSubtareas"
             :accion1="btnConsultarSubtarea"
-            :accion2="botonSubirArchivos"
-            :accion3="botonCancelar"
-            :accion4="botonReagendar"
-            :accion5="botonFormulario"
-            :accion6="botonVerPausas"
-            :accion7="botonFinalizar"
+            :accion2="botonCancelar"
+            :accion3="botonReagendar"
+            :accion4="botonFormulario"
+            :accion5="botonVerPausas"
+            :accion6="botonFinalizar"
             :accion1Header="btnAgregarSubtarea"
             separador="cell"
             :permitirConsultar="false"
@@ -1043,6 +1042,7 @@
             tabDefecto=""
             :alto-fijo="false"
           ></essential-table-tabs>
+          <!--:accion2="botonSubirArchivos" -->
         </q-tab-panel>
       </q-tab-panels>
     </template>

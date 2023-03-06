@@ -9,7 +9,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     label: 'Tarea Cliente',
     align: 'left',
     sortable: true,
-  },
+  }, */
   {
     name: 'tarea',
     field: 'tarea',
@@ -23,7 +23,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     label: 'Código de subtarea',
     align: 'left',
     sortable: true,
-  },*/
+  },
   {
     name: 'estado',
     field: 'estado',

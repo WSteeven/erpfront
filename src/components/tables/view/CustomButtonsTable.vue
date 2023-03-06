@@ -10,7 +10,7 @@
     <q-btn-group
       :rounded="$q.screen.md || $q.screen.lg || $q.screen.xl"
       :unelevated="$q.screen.xs"
-      :class="{ 'column ': $q.screen.xs }"
+      :class="{ 'column q-gutter-y-xs': $q.screen.xs }"
     >
       <q-btn
         v-if="extraerVisible(accion1)"

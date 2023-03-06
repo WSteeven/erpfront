@@ -56,7 +56,7 @@ export class Tarea extends EntidadAuditable {
 
   grupo: number | null
   empleado: number | null
-  subtarea: Subtarea
+  subtarea: Subtarea | null
 
   // para mostrar en tabla
   empleados: string | null
@@ -130,7 +130,7 @@ export class Tarea extends EntidadAuditable {
 
     this.grupo = null
     this.empleado = null
-    this.subtarea = new Subtarea()
+    this.subtarea = null //new Subtarea()
 
     this.empleados = null
     this.grupos = null

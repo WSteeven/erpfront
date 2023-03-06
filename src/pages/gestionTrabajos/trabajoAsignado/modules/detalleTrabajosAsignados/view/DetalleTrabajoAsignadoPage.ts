@@ -3,7 +3,7 @@ import { configuracionColumnasArchivoTrabajo } from 'trabajos/modules/gestorArch
 import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
-import { tiposTareasTelconet, accionesTabla, opcionesModoAsignacionTrabajo } from 'config/utils'
+import { tiposTareasTelconet, accionesTabla } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { computed, defineComponent, reactive, ref } from 'vue'
@@ -26,6 +26,10 @@ import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoCon
 import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { Trabajo } from 'pages/gestionTrabajos/trabajos/domain/Trabajo'
 import { GrupoSeleccionado } from 'trabajos/domain/GrupoSeleccionado'
+import { modosAsignacionTrabajo } from 'config/tareas.utils'
+import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { ArchivoSubtareaController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -39,7 +43,7 @@ export default defineComponent({
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Trabajo, new TrabajoController())
+    const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { entidad: trabajo, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, consultar } = mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
@@ -51,7 +55,7 @@ export default defineComponent({
           params: { cliente: store.tarea.cliente }
         },
         subtareas: {
-          controller: new TrabajoController(),
+          controller: new SubtareaController(),
           params: { tarea_id: store.tarea.id }
         },
         grupos: new GrupoController(),
@@ -85,12 +89,12 @@ export default defineComponent({
         obtenerClienteFinal(trabajo.cliente_final)
       }
 
-      if (trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+      /* if (trabajo.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
         trabajo.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
           console.log(grupo)
           if (grupo.id) obtenerTecnicosGrupo(grupo.id)
         })
-      }
+      } */
     })
 
     /***************
@@ -108,21 +112,21 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    async function obtenerTecnicosGrupo(grupo_id: number) {
+    /*async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      trabajo.empleados_seleccionados.push(...result)
+      trabajo.empleados_seleccionados.push(...result)*/
 
-      /* trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
-        const tecnico = new Empleado()
-        tecnico.hydrate(empleado)
+    /* trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
+      const tecnico = new Empleado()
+      tecnico.hydrate(empleado)
 
-        const roles = stringToArray(tecnico.roles ?? '')
-        tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
+      const roles = stringToArray(tecnico.roles ?? '')
+      tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
 
-        return tecnico
-      }) */
-    }
+      return tecnico
+    }) */
+    // }
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
@@ -131,7 +135,7 @@ export default defineComponent({
     }
 
     async function obtenerArchivos() {
-      const { result } = await new ArchivoTrabajoController().listar({ trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada })
+      const { result } = await new ArchivoSubtareaController().listar({ subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada })
       archivos.value = result
     }
 
@@ -152,7 +156,7 @@ export default defineComponent({
       archivos,
       botonDescargar,
       clientesFinales,
-      opcionesModoAsignacionTrabajo,
+      modosAsignacionTrabajo,
       nombresClienteFinal: computed(() => clienteFinal.nombres + ' ' + clienteFinal.apellidos)
     }
   }

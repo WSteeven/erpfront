@@ -16,7 +16,6 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { TrabajoAsignadoController } from 'gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { CambiarEstadoTrabajo } from 'trabajos/application/CambiarEstadoTrabajo'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { TrabajoController } from 'trabajos/infraestructure/TrabajoController'
@@ -25,6 +24,7 @@ import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
 import { obtenerTiempoActual } from 'shared/utils'
 import { Trabajo } from 'trabajos/domain/Trabajo'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { CambiarEstadoSubtarea } from 'pages/gestionTrabajos/subtareas/application/CambiarEstadoSubtarea'
 
 export default defineComponent({
   components: {
@@ -99,7 +99,7 @@ export default defineComponent({
             }
           }
 
-          const { result } = await new CambiarEstadoTrabajo().ejecutar(entidad.id)
+          const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
           entidad.estado = estadosTrabajos.EJECUTANDO
           entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
           notificarCorrecto('Trabajo iniciado exitosamente!')
@@ -118,7 +118,7 @@ export default defineComponent({
           const config: CustomActionPrompt = {
             mensaje: 'Ingrese el motivo de la pausa',
             accion: (data) => {
-              new CambiarEstadoTrabajo().pausar(entidad.id, data)
+              new CambiarEstadoSubtarea().pausar(entidad.id, data)
               entidad.estado = estadosTrabajos.PAUSADO
               notificarCorrecto('Trabajo pausado exitosamente!')
               actualizarElemento(posicion, entidad)
@@ -132,12 +132,12 @@ export default defineComponent({
 
     const botonReanudar: CustomActionTable = {
       titulo: 'Reanudar',
-      icono: 'bi-play-circle-fill',
+      icono: 'bi-play-circle',
       color: 'positive',
       visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.es_responsable,
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de reanudar el trabajo?', () => {
-          new CambiarEstadoTrabajo().reanudar(entidad.id)
+          new CambiarEstadoSubtarea().reanudar(entidad.id)
           entidad.estado = estadosTrabajos.EJECUTANDO
           notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
           actualizarElemento(posicion, entidad)
@@ -170,7 +170,7 @@ export default defineComponent({
           const config: CustomActionPrompt = {
             mensaje: 'Ingrese el motivo de la suspención',
             accion: async (data) => {
-              const { result } = await new CambiarEstadoTrabajo().suspender(entidad.id, data)
+              const { result } = await new CambiarEstadoSubtarea().suspender(entidad.id, data)
               entidad.estado = estadosTrabajos.SUSPENDIDO
               entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
               notificarCorrecto('Trabajo suspendido exitosamente!')
@@ -190,7 +190,7 @@ export default defineComponent({
       visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de que completó el trabajo?', async () => {
-          const { result } = await new CambiarEstadoTrabajo().realizar(entidad.id)
+          const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id)
           entidad.estado = estadosTrabajos.REALIZADO
           entidad.fecha_hora_realizado = result.fecha_hora_realizado
           actualizarElemento(posicion, entidad)

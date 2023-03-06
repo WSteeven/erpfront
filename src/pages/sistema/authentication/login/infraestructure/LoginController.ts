@@ -13,7 +13,7 @@ export class LoginController {
     try {
       // const response = await this.store.login(userLogin)
       const usuario = await this.store.login(userLogin)
-      const roles = usuario.rol
+      const roles = usuario.roles
 
       const existeYEsArreglo = typeof (roles) === 'object' && roles
 

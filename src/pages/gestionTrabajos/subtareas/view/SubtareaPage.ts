@@ -2,7 +2,6 @@
 import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
-//import { configuracionColumnasTrabajo } from 'gestionTrabajos/trabajos/domain/configuracionColumnasTrabajo'
 import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import {
@@ -48,9 +47,11 @@ import { TareaController } from 'gestionTrabajos/tareas/infraestructure/TareaCon
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { useBotonesTablaSubtarea } from '../application/BotonesTablaSubtarea'
+import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { Subtarea } from '../domain/Subtarea'
-import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
+import { useSubirArchivos } from '../application/SubirArchivos'
+import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad },
@@ -284,8 +285,8 @@ export default defineComponent({
       filtrarFiscalizadores,
       coordinadores,
       filtrarCoordinadores,
-      provincias,
-      cantones,
+      // provincias,
+      // cantones,
       proyectos,
       filtrarProyectos,
       tiposTrabajos,
@@ -317,9 +318,19 @@ export default defineComponent({
       // tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
     })
 
+    /* onGuardado(() => {
+      const subirArchivos = useSubirArchivos(subtarea.id)
+    }) */
+
     /*function validarString(listado: string) {
       return listado !== '' ? listado : null
     }*/
+
+    const archivos = ref()
+    const refUploader = ref()
+
+    let botonEliminar, botonComentar, botonDescargar, subirArchivo
+    const columnasArchivos = ref()
 
     async function guardarDatos(subtarea: Subtarea) {
       try {
@@ -340,6 +351,17 @@ export default defineComponent({
           entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
           listado.value = [...listado.value, entidad]
           //actualizarElemento(posicion, entidad)
+
+          // Subir archivos
+          refUploader.value.upload()
+          const { listado: listadoArchivos, btnEliminar, btnComentar, btnDescargar, factoryFn } = useSubirArchivos(entidad.id)
+          /*archivos.value = listadoArchivos.value
+          botonEliminar = btnEliminar
+          botonComentar = btnComentar
+          botonDescargar = btnDescargar*/
+          subirArchivo = factoryFn
+          // columnasArchivos.value = columnas
+          // console.log(columnas)
         }
 
         emit('cerrar-modal')
@@ -347,7 +369,9 @@ export default defineComponent({
       } catch (e) { }
     }
 
-    async function editarDatos(subtarea: Subtarea) {
+
+
+    /* async function editarDatos(subtarea: Subtarea) {
       try {
         await editar(subtarea, false)
 
@@ -357,7 +381,7 @@ export default defineComponent({
 
         emit('cerrar-modal')
       } catch (e) { }
-    }
+    } */
 
     function reestablecerDatos() {
       reestablecer()
@@ -366,6 +390,8 @@ export default defineComponent({
 
     const paraProyecto = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
+
+
 
     /*************
     * Validaciones
@@ -497,6 +523,7 @@ export default defineComponent({
       filtrarTodos,
       // Referencias
       refEmpleadosAsignados,
+      refUploader,
       // Others
       v$,
       //mixin,
@@ -556,6 +583,9 @@ export default defineComponent({
       accionesTabla,
       botonEditarTrabajo,
       configuracionColumnasEmpleadoSeleccionado,
+      archivos,
+      botonEliminar, botonComentar, botonDescargar, subirArchivo,
+      columnasArchivos: [...configuracionColumnasArchivoSubtarea, accionesTabla],
       // Filtros
       clientes,
       filtrarClientes,

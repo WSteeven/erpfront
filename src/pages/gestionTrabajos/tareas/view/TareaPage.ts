@@ -235,6 +235,7 @@ export default defineComponent({
 
     onBeforeGuardar(() => {
       if (!tarea.tiene_subtareas) {
+        tarea.subtarea = new Subtarea()
         tarea.subtarea.titulo = tarea.titulo
         tarea.subtarea.observacion = tarea.observacion
       }

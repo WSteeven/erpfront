@@ -85,7 +85,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           data.id,
           this.argsDefault
         )
-
+        console.log(result)
         this.entidad.hydrate(result)
         this.entidad_copia.hydrate(this.entidad)
         this.refs.tabs.value = 'formulario'

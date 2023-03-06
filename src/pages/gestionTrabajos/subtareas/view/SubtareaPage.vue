@@ -530,22 +530,46 @@
       </div>
     </q-expansion-item>
 
+    <b class="block q-mb-md">Compartir archivos</b>
+    <div class="col-12 q-mb-md">
+      <q-uploader
+        ref="refUploader"
+        label="Selecciona o arrastra tus archivos aquí"
+        multiple
+        style="width: 100%"
+        flat
+        :factory="subirArchivo"
+        color="white"
+        text-color="black"
+        class="bg-header-collapse expansion"
+        hide-upload-btn
+      />
+    </div>
+
+    <!--<div class="col-12">
+      <essential-table
+        titulo="Archivos compartidos hasta el momento"
+        :configuracionColumnas="columnasArchivos"
+        :datos="archivos"
+        :alto-fijo="false"
+        :permitirConsultar="false"
+        :permitirEditar="false"
+        :permitirEliminar="false"
+        :mostrar-footer="false"
+        :mostrar-botones="false"
+        :permitir-buscar="false"
+        :accion1="botonDescargar"
+        :accion2="botonComentar"
+        :accion3="botonEliminar"
+      ></essential-table>
+    </div> -->
+
     <button-submits
       :accion="accion"
       label-guardar="Guardar y asignar"
       @cancelar="reestablecerDatos()"
       @guardar="guardarDatos(subtarea)"
     />
-
-    <!--<button-submits
-      v-if="mostrarButtonSubmits"
-      :accion="accion"
-      :permitirGuardar="puedeCrear"
-      @cancelar="reestablecer()"
-      @editar="editar(entidad, resetFormularioOnUpdate)"
-      @eliminar="eliminar(entidad, cbEliminar)"
-      @guardar="guardar(entidad)"
-    /> -->
 
     <!--<essential-selectable-table
           ref="refListadoSeleccionableTecnicos"
