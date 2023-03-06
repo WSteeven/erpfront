@@ -1,17 +1,9 @@
-import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
-import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 
-export class Tarea extends EntidadAuditable {
+export class Subtarea extends EntidadAuditable {
   codigo_tarea: string | null
-  cantidad_trabajos: number | null
-  medio_notificacion: string | null
-  tiene_subtareas: boolean
-
-  // Foreign keys
-
-  // Trabajo ----
-  codigo_trabajo: string | null
+  codigo_subtarea: string | null
   codigo_tarea_cliente: string | null
   titulo: string | null
   descripcion_completa: string | null
@@ -47,44 +39,23 @@ export class Tarea extends EntidadAuditable {
   fiscalizador: number | null
   proyecto: number | null
   cliente: number | null
-  cliente_id: number | null
-  trabajo_dependiente: string | null
+  subtarea_dependiente: string | null
   tarea: number | null
 
   archivos: File[]
-  trabajo_dependiente_id: number | null
+  subtarea_dependiente_id: number | null
 
-  grupo: number | null
-  empleado: number | null
-  subtarea: Subtarea
+  empleado: number | string | null
+  grupo: number | string | null
 
-  // para mostrar en tabla
-  empleados: string | null
-  grupos: string | null
   canton: string | null
   cantidad_subtareas: number | null
 
   constructor() {
     super()
+
     this.codigo_tarea = null
-    this.codigo_tarea_cliente = null
-    this.fecha_solicitud = null
-    this.titulo = null
-    this.para_cliente_proyecto = destinosTareas.paraProyecto
-    this.cantidad_trabajos = null
-    this.medio_notificacion = 'CORREO'
-    this.tiene_subtareas = true
-
-    // Foreign key
-    this.cliente = null
-    this.proyecto = null
-    this.coordinador = null
-    this.fiscalizador = null
-    this.cliente_final = null
-    this.cliente_id = null
-
-    // Trabajo ----
-    this.codigo_trabajo = null
+    this.codigo_subtarea = null
     this.codigo_tarea_cliente = null
     this.titulo = null
     this.descripcion_completa = null
@@ -122,18 +93,17 @@ export class Tarea extends EntidadAuditable {
     this.proyecto = null
     this.cliente = null
     this.trabajo_padre = null
-    this.trabajo_dependiente = null
+    this.subtarea_dependiente = null
 
-    this.trabajo_dependiente_id = null
+    this.subtarea_dependiente_id = null
 
     this.archivos = []
 
-    this.grupo = null
+    // Listados
     this.empleado = null
-    this.subtarea = new Subtarea()
+    this.grupo = null
 
-    this.empleados = null
-    this.grupos = null
+
     this.canton = null
     this.cantidad_subtareas = null
   }

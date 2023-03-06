@@ -47,15 +47,17 @@
       <!-- Formulario -->
       <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
         <slot name="formulario" />
-        <button-submits
-          v-if="mostrarButtonSubmits"
-          :accion="accion"
-          :permitirGuardar="puedeCrear"
-          @cancelar="reestablecer()"
-          @editar="editar(entidad, resetFormularioOnUpdate)"
-          @eliminar="eliminar(entidad, cbEliminar)"
-          @guardar="guardar(entidad)"
-        />
+        <div :class="{ 'q-pa-md': full }">
+          <button-submits
+            v-if="mostrarButtonSubmits"
+            :accion="accion"
+            :permitirGuardar="puedeCrear"
+            @cancelar="reestablecer()"
+            @editar="editar(entidad, resetFormularioOnUpdate)"
+            @eliminar="eliminar(entidad, cbEliminar)"
+            @guardar="guardar(entidad)"
+          />
+        </div>
       </q-tab-panel>
 
       <!-- Listado -->

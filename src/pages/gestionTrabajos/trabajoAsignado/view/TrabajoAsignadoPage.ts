@@ -66,7 +66,7 @@ export default defineComponent({
       titulo: 'Ver trabajo',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
-        trabajoAsignadoStore.idTrabajoSeleccionado = entidad.id
+        trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
         modales.abrirModalEntidad('DetalleTrabajoAsignadoPage')
       },
     }
@@ -152,7 +152,7 @@ export default defineComponent({
       visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.es_responsable,
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
-          trabajoAsignadoStore.idTrabajoSeleccionado = entidad.id
+          trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
 
           const obtenerPlantilla = new ObtenerPlantilla()
           modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))

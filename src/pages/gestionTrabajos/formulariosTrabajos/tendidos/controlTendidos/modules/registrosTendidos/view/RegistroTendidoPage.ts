@@ -175,7 +175,7 @@ export default defineComponent({
       const cargando = new StatusEssentialLoading()
       cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
+      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
       cargando.desactivar()
@@ -214,7 +214,7 @@ export default defineComponent({
     onBeforeGuardar(() => {
       registroTendido.tendido = tendidoStore.idTendido
       registroTendido.materiales_ocupados = filtrarMaterialesOcupados()
-      registroTendido.trabajo = trabajoAsignadoStore.idTrabajoSeleccionado
+      registroTendido.trabajo = trabajoAsignadoStore.idSubtareaSeleccionada
     })
 
     return {

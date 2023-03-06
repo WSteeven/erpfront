@@ -2,9 +2,9 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useTrabajoAsignadoStore = defineStore('trabajoAsignado', () => {
-  const idTrabajoSeleccionado = ref()
+  const idSubtareaSeleccionada = ref()
 
   return {
-    idTrabajoSeleccionado,
+    idSubtareaSeleccionada,
   }
 })

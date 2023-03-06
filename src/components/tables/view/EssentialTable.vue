@@ -24,7 +24,7 @@
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table custom-border my-sticky-column-table"
+    class="bg-body-table my-sticky-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -522,6 +522,14 @@
       </q-td>
     </template>
 
+    <template #body-cell-cantidad_subtareas="props">
+      <q-td>
+        <q-chip v-if="props.value != 0" dense class="q-px-md bg-accent-5">
+          {{ props.value }}
+        </q-chip>
+      </q-td>
+    </template>
+
     <template #body-cell-tipo_trabajo="props">
       <q-td :props="props">
         <span :class="{ 'text-red text-bold': resaltar(props.value) }">
@@ -967,6 +975,7 @@
   border-radius: 4px 4px 0 0;
 }
 
+// Columna estatica ---
 .my-sticky-column-table {
   max-width: 100%;
 

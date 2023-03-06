@@ -7,11 +7,6 @@ export const maskFecha = 'DD-MM-YYYY'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
-export const destinosTareas = {
-  paraProyecto: 'PARA_PROYECTO',
-  paraClienteFinal: 'PARA_CLIENTE_FINAL',
-}
-
 export const acciones = {
   nuevo: 'NUEVO',
   eliminar: 'ELIMINAR',
@@ -133,18 +128,6 @@ export const causaIntervencion: CausaIntervencion[] =
     { categoria: 'SPT', descripcion: 'SPT-REVISION ALARMAS/SEGURIDAD' },
     { categoria: 'SPT', descripcion: 'SPT-REVISION NODO' },
   ]
-
-export const tabOptions: TabOption[] = [
-  // { label: 'Todo', value: '' },
-  { label: 'Creado', value: 'CREADO' },
-  { label: 'Asignado', value: 'ASIGNADO' },
-  { label: 'Ejecutando', value: 'EJECUTANDO' },
-  { label: 'Pausado', value: 'PAUSADO' },
-  { label: 'Suspendido', value: 'SUSPENDIDO' },
-  { label: 'Cancelado', value: 'CANCELADO' },
-  { label: 'Realizado', value: 'REALIZADO' },
-  { label: 'Finalizado', value: 'FINALIZADO' },
-]
 
 export const tabTrabajoAsignado: TabOption[] = [
   //{ label: 'Todo', value: '' },
@@ -316,8 +299,6 @@ export const cargosSistema = {
   tecnico_lider: 'TECNICO LIDER DE GRUPO',
   tecnico_secretario: 'TECNICO SECRETARIO',
 }
-
-export const opcionesModoAsignacionTrabajo = { por_grupo: 'POR_GRUPO', por_trabajador: 'POR_EMPLEADO' }
 
 export const tiposJornadas = ['INICIO DE JORNADA', 'FIN DE JORNADA']
 

@@ -16,12 +16,12 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    mixin: {
+    mixinModal: {
       type: Object as () => ContenedorSimpleMixin<any>,
       required: false,
     },
   },
-  emits: ['seleccionar', 'accion1'],
+  //emits: ['seleccionar', 'accion1'],
   setup(props) {
     const { componente, titulo, abierto } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()

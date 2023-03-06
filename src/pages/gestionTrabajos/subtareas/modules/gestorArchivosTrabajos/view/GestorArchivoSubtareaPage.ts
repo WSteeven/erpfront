@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasArchivoTrabajo } from '../domain/configuracionColumnasArchivoTrabajo'
+import { configuracionColumnasArchivoSubtarea } from '../domain/configuracionColumnasArchivoSubtarea'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -15,7 +15,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ArchivoTrabajoController } from '../infraestructure/ArchivoTrabajoController'
+import { ArchivoSubtareaController } from '../infraestructure/ArchivoSubtareaController'
 import { Archivo } from '../domain/Archivo'
 import { useSubtareaStore } from 'stores/subtarea'
 
@@ -32,13 +32,13 @@ export default defineComponent({
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Archivo, new ArchivoTrabajoController())
+    const mixin = new ContenedorSimpleMixin(Archivo, new ArchivoSubtareaController())
     const { entidad: archivo, listado } = mixin.useReferencias()
     const { editar, eliminar, listar } = mixin.useComportamiento()
 
     const { prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
-    listar({ trabajo_id: subtareaStore.idSubtareaSeleccionada })
+    listar({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
 
     /***************
     * Botones tabla
@@ -83,7 +83,7 @@ export default defineComponent({
     const refGestor = ref()
     const axios = AxiosHttpRepository.getInstance()
 
-    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_trabajos)}`
+    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
 
     /************
     * Funciones
@@ -93,7 +93,7 @@ export default defineComponent({
     async function factoryFn(files) {
       const fd = new FormData()
       fd.append('file', files[0])
-      fd.append('trabajo_id', subtareaStore.idSubtareaSeleccionada)
+      fd.append('subtarea_id', subtareaStore.idSubtareaSeleccionada)
 
       try {
         const response: AxiosResponse = await axios.post(ruta, fd)
@@ -116,7 +116,7 @@ export default defineComponent({
       extraerExtension: (nombre: string) => nombre.split('.').at(-1),
       formatBytes,
       quiero_subir_archivos,
-      columnas: [...configuracionColumnasArchivoTrabajo, accionesTabla],
+      columnas: [...configuracionColumnasArchivoSubtarea, accionesTabla],
       codigoTrabajoSeleccionado: subtareaStore.codigoTrabajoSeleccionado,
       btnEliminar,
       btnComentar,

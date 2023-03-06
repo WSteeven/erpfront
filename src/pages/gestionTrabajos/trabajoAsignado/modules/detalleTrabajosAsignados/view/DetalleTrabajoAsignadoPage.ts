@@ -75,7 +75,7 @@ export default defineComponent({
     const clienteFinal = reactive(new ClienteFinal())
     const archivos = ref([])
 
-    consultar({ id: trabajoAsignadoStore.idTrabajoSeleccionado })
+    consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
 
     /********
      * Hooks
@@ -131,7 +131,7 @@ export default defineComponent({
     }
 
     async function obtenerArchivos() {
-      const { result } = await new ArchivoTrabajoController().listar({ trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
+      const { result } = await new ArchivoTrabajoController().listar({ trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada })
       archivos.value = result
     }
 

@@ -52,7 +52,7 @@ async function obtenerPausas() {
 
   const axios = AxiosHttpRepository.getInstance()
   const ruta =
-    axios.getEndpoint(endpoints.pausas_trabajos) +
+    axios.getEndpoint(endpoints.pausas_subtareas) +
     '/' +
     subtareaStore.idSubtareaSeleccionada
   const response: AxiosResponse = await axios.get(ruta)

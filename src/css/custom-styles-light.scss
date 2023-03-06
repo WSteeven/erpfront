@@ -126,8 +126,13 @@
   }
 
   .q-field--disabled .q-field__inner {
-    background-color: #9ba5bb47;
+    background-color: #9ba5bb23;
     //color: $accent !important;
+  }
+
+  .q-field--disabled .q-field__inner .q-field__native {
+    color: #000 !important;
+    font-weight: 500 !important;
   }
 
   // EssentialTableTabs

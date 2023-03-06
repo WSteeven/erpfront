@@ -33,7 +33,7 @@ export default defineComponent({
             titulo: 'Continuar',
             icono: 'bi-play',
             accion: async ({ entidad }) => {
-                // trabajoAsignadoStore.idTrabajoSeleccionado = entidad.id
+                // trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
                 // modales.abrirModalEntidad('DetalleTrabajoAsignadoPage')
             },
         }

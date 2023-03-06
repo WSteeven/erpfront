@@ -62,7 +62,7 @@ export default defineComponent({
     /************
      * Init
      ************/
-    listar({ trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
+    listar({ trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada })
 
     cargarVista(async () => {
       await obtenerListados({
@@ -177,7 +177,7 @@ export default defineComponent({
 
     onBeforeGuardar(() => {
       emergencia.materiales_ocupados = filtrarMaterialesOcupados()
-      emergencia.trabajo = trabajoAsignadoStore.idTrabajoSeleccionado
+      emergencia.trabajo = trabajoAsignadoStore.idSubtareaSeleccionada
     })
 
     /************
@@ -199,7 +199,7 @@ export default defineComponent({
 
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado })
+      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
     }

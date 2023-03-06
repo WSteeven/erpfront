@@ -69,12 +69,12 @@ export default defineComponent({
     const modales = new ComportamientoModalesProgresiva()
     const entidadReset = new RegistroTendido()
 
-    consultar({ id: trabajoAsignadoStore.idTrabajoSeleccionado })
+    consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
 
     /*onMounted(() => {
       // Consultar control tendido
-      if (trabajoAsignadoStore.idTrabajoSeleccionado) {
-        consultar({ id: trabajoAsignadoStore.idTrabajoSeleccionado })
+      if (trabajoAsignadoStore.idSubtareaSeleccionada) {
+        consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
       } else {
         router.replace({ name: 'trabajo_asignado' })
       }
@@ -84,7 +84,7 @@ export default defineComponent({
       await obtenerListados({
         bobinas: {
           controller: new BobinaController(),
-          params: { trabajo_id: trabajoAsignadoStore.idTrabajoSeleccionado }
+          params: { trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada }
         },
       })
     })
@@ -133,7 +133,7 @@ export default defineComponent({
       tendidoStore.idTarea = tendido.tarea
     })
 
-    onBeforeGuardar(() => tendido.trabajo = trabajoAsignadoStore.idTrabajoSeleccionado)
+    onBeforeGuardar(() => tendido.trabajo = trabajoAsignadoStore.idSubtareaSeleccionada)
 
     onGuardado(() => tendidoStore.idTendido = tendido.id)
 

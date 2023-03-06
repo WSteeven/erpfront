@@ -1,11 +1,11 @@
 <template>
   <q-dialog
     v-model="abierto"
-    :maximized="true"
+    :maximized="$q.screen.xs"
     :full-width="true"
     :persistent="confirmarCerrar"
   >
-    <q-card class="bg-desenfoque" :class="{ 'q-py-md q-px-xl': !$q.screen.xs }">
+    <q-card class="bg-transparent rounded-card no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
       <q-toolbar class="bg-body rounded-header" rounded>
         <q-avatar square>
@@ -31,19 +31,19 @@
 
       <q-card-section class="bg-body rounded-footer">
         <component
-          v-if="mixin"
+          v-if="mixinModal"
           :is="componente"
-          :mixin-modal="mixin"
-          @seleccionar="emit('seleccionar')"
+          :mixin-modal="mixinModal"
           @cerrar-modal="cerrarModalEntidad()"
         ></component>
+        <!--  @seleccionar="emit('seleccionar')" -->
 
         <component
           v-else
           :is="componente"
-          @seleccionar="emit('seleccionar')"
           @cerrar-modal="cerrarModalEntidad()"
         ></component>
+        <!--  @seleccionar="emit('seleccionar')" -->
         <!-- :mostrar-listado="false"></component> -->
       </q-card-section>
     </q-card>

@@ -1,33 +1,45 @@
 // Dependencias
+import { mediosNotificacion, modosAsignacionTrabajo, destinosTareas, tabOptionsEstadosSubtareas } from 'config/tareas.utils'
+import { configuracionColumnasSubtarea } from 'gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
-import { configuracionColumnasTareas } from '../domain/configuracionColumnasTareas'
-import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
-import { acciones, rolesSistema, destinosTareas } from 'config/utils'
+import { configuracionColumnasTarea } from '../domain/configuracionColumnasTarea'
+import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { acciones, accionesTabla, rolesSistema } from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
-import { mediosNotificacion } from 'config/trabajo.utils'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useSubtareaStore } from 'stores/subtarea'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
+import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
+import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TipoTrabajoController } from 'tiposTareas/infraestructure/TipoTrabajoController'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
+import { useFiltrosListadosTarea } from '../application/FiltrosListadosTarea'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
-import { TipoTrabajo } from 'tiposTareas/domain/TipoTrabajo'
 import { Tarea } from '../domain/Tarea'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -35,12 +47,15 @@ export default defineComponent({
     LabelAbrirModal,
     ModalesEntidad,
     TabLayout,
+    EstadosSubtareas,
+    EssentialTableTabs,
   },
   setup() {
     /*********
      * Stores
      *********/
     const tareaStore = useTareaStore()
+    const subtareaStore = useSubtareaStore()
 
     /*******
      * Mixin
@@ -49,7 +64,12 @@ export default defineComponent({
     const { entidad: tarea, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
-    const { onReestablecer } = mixin.useHooks()
+    const { onReestablecer, onConsultado, onBeforeGuardar } = mixin.useHooks()
+
+    // -- Mixin subtarea
+    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+    const { listado: subtareas } = mixinSubtarea.useReferencias()
+    const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -57,7 +77,7 @@ export default defineComponent({
         provincias: new ProvinciaController(),
         cantones: new CantonController(),
         proyectos: new ProyectoController(),
-        supervisores: {
+        fiscalizadores: {
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.fiscalizador },
         },
@@ -69,16 +89,21 @@ export default defineComponent({
           controller: new TipoTrabajoController(),
           params: { cliente: tareaStore.tarea.cliente ?? tareaStore.idCliente }
         },
+        grupos: new GrupoController(),
+        empleados: new EmpleadoController()
       })
 
+      // Necesario al consultar
       clientes.value = listadosAuxiliares.clientes
-      supervisores.value = listadosAuxiliares.supervisores
+      fiscalizadores.value = listadosAuxiliares.fiscalizadores
       coordinadores.value = listadosAuxiliares.coordinadores
-      proyectos.value = listadosAuxiliares.proyectos
-      provincias.value = listadosAuxiliares.provincias
-      cantones.value = listadosAuxiliares.cantones
+      listadosAuxiliares.clientesFinales = []
     })
 
+    /************
+     * Variables
+     ************/
+    const { notificarAdvertencia } = useNotificaciones()
     const paraProyecto = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
 
@@ -90,6 +115,13 @@ export default defineComponent({
       titulo: { required },
       codigo_tarea_cliente: { required },
       proyecto: { required: requiredIf(() => paraProyecto.value) },
+      descripcion_completa: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      tipo_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      fecha_agendado: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      hora_inicio_agendado: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      hora_fin_agendado: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      grupo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) },
+      empleado: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_empleado) },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -98,142 +130,28 @@ export default defineComponent({
     /*********
     * Filtros
     **********/
-    // - Filtro clientes corporativos
-    const clientes = ref()
-    function filtrarClientes(val, update) {
-      if (val === '') {
-        update(() => {
-          clientes.value = listadosAuxiliares.clientes
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        clientes.value = listadosAuxiliares.clientes.filter(
-          (v) => v.razon_social.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro tipos de clientes finales
-    const clientesFinales = ref()
-    const clientesFinalesSource = ref()
-    function filtrarClientesFinales(val, update) {
-      if (val === '') {
-        update(() => {
-          clientesFinales.value = clientesFinalesSource.value
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        clientesFinales.value = clientesFinalesSource.value.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro supervisores
-    const supervisores = ref()
-    function filtrarSupervisores(val, update) {
-      if (val === '') {
-        update(() => {
-          supervisores.value = listadosAuxiliares.supervisores
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        supervisores.value = listadosAuxiliares.supervisores.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro coordinadores
-    const coordinadores = ref()
-    function filtrarCoordinadores(val, update) {
-      if (val === '') {
-        update(() => {
-          coordinadores.value = listadosAuxiliares.coordinadores
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        coordinadores.value = listadosAuxiliares.coordinadores.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro provincias
-    const provincias = ref()
-    function filtrarProvincias(val, update) {
-      if (val === '') {
-        update(() => {
-          provincias.value = listadosAuxiliares.provincias
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        provincias.value = listadosAuxiliares.provincias.filter(
-          (v) => v.provincia.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro cantones
-    const cantones = ref([])
-    function filtrarCantones(val, update) {
-      if (val === '') {
-        update(() => {
-          cantones.value = listadosAuxiliares.cantones
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        cantones.value = listadosAuxiliares.cantones.filter(
-          (v) => v.canton.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro proyectos
-    const proyectos = ref([])
-    function filtrarProyectos(val, update) {
-      if (val === '') {
-        update(() => {
-          proyectos.value = listadosAuxiliares.proyectos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        proyectos.value = listadosAuxiliares.proyectos.filter(
-          (v) => v.proyectos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro tipos de trabajos
-    const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
-    function filtrarTiposTrabajos(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+    const {
+      clientes,
+      filtrarClientes,
+      clientesFinales,
+      filtrarClientesFinales,
+      fiscalizadores,
+      filtrarFiscalizadores,
+      coordinadores,
+      filtrarCoordinadores,
+      provincias,
+      filtrarProvincias,
+      cantones,
+      filtrarCantones,
+      proyectos,
+      filtrarProyectos,
+      tiposTrabajos,
+      filtrarTiposTrabajos,
+      grupos,
+      filtrarGrupos,
+      empleados,
+      filtrarEmpleados,
+    } = useFiltrosListadosTarea(listadosAuxiliares)
 
     /************
     * Funciones
@@ -252,25 +170,40 @@ export default defineComponent({
     * Observers
     ************/
     const controller = new ClienteFinalController()
+    const cargando = new StatusEssentialLoading()
 
-    watchEffect(async () => {
+    watch(computed(() => tarea.cliente), async () => {
+      clienteFinal.hydrate(new ClienteFinal())
+      tarea.cliente_final = null
+
       if (tarea.cliente) {
-        clientesFinalesSource.value = (await controller.listar({ cliente: tarea.cliente })).result
-        clientesFinales.value = clientesFinalesSource.value
+        cargando.activar()
+        listadosAuxiliares.clientesFinales = (await controller.listar({ cliente: tarea.cliente })).result
+        clientesFinales.value = listadosAuxiliares.clientesFinales
+        cargando.desactivar()
       }
     })
 
     watchEffect(async () => {
       if (tarea.cliente_final) {
+        cargando.activar()
         const res = await obtenerClienteFinal(tarea.cliente_final)
         clienteFinal.hydrate(res)
+        cargando.desactivar()
       }
     })
 
-    /* watch(computed(() => tarea.para_cliente_proyecto), (paraClienteProyecto) => {
-      reestablecer()
-      tarea.para_cliente_proyecto = paraClienteProyecto
-    }) */
+    watchEffect(() => {
+      if (!tarea.id) subtareas.value = []
+    })
+
+    function verificarEsVentana() {
+      if (!tarea.es_ventana) {
+        // trabajo.fecha_agendado = null
+        // trabajo.hora_inicio_ventana = null
+        tarea.hora_fin_agendado = null
+      }
+    }
 
     // Informacion de cliente final
     const clienteFinal = reactive(new ClienteFinal())
@@ -286,6 +219,7 @@ export default defineComponent({
     const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
 
     const modales = new ComportamientoModalesTarea()
+    const modalesSubtarea = new ComportamientoModalesSubtarea()
 
     /*********
      * Hooks
@@ -293,11 +227,58 @@ export default defineComponent({
     onReestablecer(() => {
       clienteFinal.hydrate(new ClienteFinal())
       clientesFinales.value = []
-      clientesFinalesSource.value = []
     })
 
+    onConsultado(() => {
+      filtrarSubtareas('')
+    })
+
+    onBeforeGuardar(() => {
+      if (!tarea.tiene_subtareas) {
+        tarea.subtarea.titulo = tarea.titulo
+        tarea.subtarea.observacion = tarea.observacion
+      }
+    })
+
+    // Subtareas
+    const { botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
+
+    const btnAgregarSubtarea: CustomActionTable = {
+      titulo: 'Agregar subtarea',
+      icono: 'bi-plus',
+      color: 'positive',
+      accion: () => {
+        if (!tarea.id) return notificarAdvertencia('Primero debe seleccionar una tarea.')
+        subtareaStore.idTarea = tarea.id
+        subtareaStore.codigoTarea = tarea.codigo_tarea
+        subtareaStore.observacionTarea = tarea.observacion
+        subtareaStore.accion = acciones.nuevo
+        subtareaStore.idSubtareaSeleccionada = null
+        modalesSubtarea.abrirModalEntidad('SubtareaPage')
+      },
+    }
+
+    const btnConsultarSubtarea: CustomActionTable = {
+      titulo: 'Consultar',
+      icono: 'bi-eye',
+      accion: ({ entidad }) => {
+        subtareaStore.idSubtareaSeleccionada = entidad.id
+        subtareaStore.accion = acciones.consultar
+        modalesSubtarea.abrirModalEntidad('SubtareaPage')
+      },
+    }
+
+    function filtrarSubtareas(estado) {
+      console.log(estado)
+      listarSubtareas({ tarea_id: tarea.id, estado: estado })
+    }
+
     return {
-      clientesFinalesSource,
+      mixinSubtarea,
+      filtrarSubtareas,
+      btnAgregarSubtarea,
+      btnConsultarSubtarea,
+      subtareas,
       v$,
       tarea,
       accion,
@@ -317,11 +298,11 @@ export default defineComponent({
       filtrarClientesFinales,
       filtrarProvincias,
       filtrarCantones,
-      filtrarSupervisores,
+      filtrarFiscalizadores,
       filtrarProyectos,
       filtrarTiposTrabajos,
       obtenerClienteFinal,
-      supervisores,
+      fiscalizadores,
       coordinadores,
       filtrarCoordinadores,
       proyectos,
@@ -333,10 +314,23 @@ export default defineComponent({
       configuracionColumnasClientes,
       setCliente,
       modales,
+      modalesSubtarea,
       mostrarLabelModal,
-      configuracionColumnasTareas,
+      configuracionColumnasTarea,
       mixin,
       mediosNotificacion,
+      tab: ref('tarea'),
+      verificarEsVentana,
+      grupos,
+      filtrarGrupos,
+      empleados,
+      filtrarEmpleados,
+      modosAsignacionTrabajo,
+      configuracionColumnasSubtarea,
+      columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
+      botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
+      tabOptionsEstadosSubtareas,
+      indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white')
     }
   },
 })

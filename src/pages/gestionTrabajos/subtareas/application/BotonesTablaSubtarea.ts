@@ -1,19 +1,19 @@
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { ComportamientoModalesTrabajo } from './ComportamientoModalesTrabajo'
-import { CambiarEstadoTrabajo } from './CambiarEstadoTrabajo'
+import { ComportamientoModalesSubtarea } from './ComportamientoModalesSubtarea'
+import { CambiarEstadoSubtarea } from './CambiarEstadoSubtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
 import { estadosTrabajos } from 'config/utils'
-import { Trabajo } from '../domain/Trabajo'
+import { Subtarea } from '../domain/Subtarea'
 import { Ref } from 'vue'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
-export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: ComportamientoModalesTrabajo) => {
+export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: ComportamientoModalesSubtarea) => {
   const subtareaStore = useSubtareaStore()
 
   const { confirmar, notificarCorrecto, prompt } = useNotificaciones()
-  const cambiarEstadoTrabajo = new CambiarEstadoTrabajo()
+  const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
 
   const cargando = new StatusEssentialLoading()
 
@@ -35,7 +35,7 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     visible: ({ entidad }) => entidad.estado !== estadosTrabajos.CREADO,
     accion: ({ entidad }) => {
       subtareaStore.idSubtareaSeleccionada = entidad.id
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_trabajo
+      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
       modales.abrirModalEntidad('PausasRealizadasPage')
     }
   }
@@ -55,7 +55,8 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     }),
   }
 
-  const botonAsignar: CustomActionTable = {
+  // x - Se va porque las subtareas se guardan y se asignan en el mismo paso
+  /* const botonAsignar: CustomActionTable = {
     titulo: 'Asignar',
     color: 'indigo',
     icono: 'bi-person-fill-check',
@@ -71,7 +72,7 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
         notificarCorrecto('Trabajo asignada exitosamente!')
       })
     },
-  }
+  } */
 
   const botonCancelar: CustomActionTable = {
     titulo: 'Cancelar',
@@ -124,12 +125,12 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     visible: () => true,
     accion: async ({ entidad }) => {
       subtareaStore.idSubtareaSeleccionada = entidad.id
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_trabajo
+      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
       modales.abrirModalEntidad('GestorArchivoTrabajo')
     }
   }
 
-  function actualizarElemento(posicion: number, entidad: Trabajo): void {
+  function actualizarElemento(posicion: number, entidad: Subtarea): void {
     if (posicion >= 0) {
       listado.value.splice(posicion, 1, entidad)
       listado.value = [...listado.value]
@@ -141,7 +142,7 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     botonSubirArchivos,
     botonCancelar,
     botonReagendar,
-    botonAsignar,
+    // botonAsignar,
     botonFinalizar,
     botonVerPausas,
   }
