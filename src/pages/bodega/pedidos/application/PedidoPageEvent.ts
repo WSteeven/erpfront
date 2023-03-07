@@ -1,34 +1,29 @@
 import { useNotificaciones } from 'shared/notificaciones';
 import Pusher from 'pusher-js'
-import { Ref } from 'vue'
+import { useAuthenticationStore } from 'stores/authentication';
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 
 export class PedidoPageEvent {
-  accion: string
-  puedeEjecutar: boolean
-
-
-  constructor(accion: string, puedeEjecutar: boolean) {
-    this.accion = accion
-    this.puedeEjecutar = puedeEjecutar
-  }
-
+  
+  store = useAuthenticationStore()
+  notificacionesPusherStore = useNotificationRealtimeStore()
+  // const emits=defineEmits(['notificar'])
+  
   /**
    * It subscribes to a channel and listens for events.
-   */
-  start() {
-    const { notificarCorrecto } = useNotificaciones()
-    const pusher = new Pusher('0df833686e4616dd7444', {
-      cluster: 'sa1',
-    })
-
-    const accion = this.accion
-    const puedeEjecutar = this.puedeEjecutar
-
-    const channel = pusher.subscribe('pedidos-tracker')
+  */
+ start() {
+   const { notificarCorrecto } = useNotificaciones()
+   const notificacionStore = this.notificacionesPusherStore
+   const pusher = notificacionStore.pusher
+    
+    const channel = pusher.subscribe('pedidos-tracker-'+this.store.user.id)
     channel.bind('pedido-event', function (e) {
       console.log(e)
+      notificacionStore.agregar(e.notificacion)
       // notificarCorrecto('Tienes un pedido esperando ser atendido')
-      new Event('notificar', e.mensaje)//se crea el evento
+      // new Event('notificar', e.mensaje)
+      // new Event('notificar', 'Tienes un pedido pendiente de autorizar')//se crea el evento
       // console.log('Mensaje',e.mensaje)
     })
   }

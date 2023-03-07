@@ -37,16 +37,41 @@
         </span> -->
 
         <span>
-          <q-btn dense round flat icon="bi-bell" class="q-mr-md" color="grey-8">
+          <q-btn
+            dense
+            round
+            flat
+            icon="bi-bell"
+            class="q-mr-md"
+            color="grey-8"
+            @click.self="mostrarNotificaciones = true"
+          >
             <q-badge color="info" floating
               >{{ notificaciones.length }}
             </q-badge>
             <q-menu
-              transition-show="flip-right"
-              transition-hide="flip-left"
-              @show="ordenarNotificaciones"
+              v-model="mostrarNotificaciones"
+              anchor="center middle"
+              self="center middle"
+              transition-show="jump-down"
+              transition-hide="jump-out"
+              :style="{ 'min-width': width }"
+              class="window-height"
+              max-height="100vh"
             >
-              <q-list style="min-width: 120px">
+                <div class="full-width text-right q-pr-md">
+                  <q-btn
+                    icon="bi-x"
+                    round
+                    :class="{
+                      'bg-grey-9': $q.dark.isActive,
+                      'bg-white': !$q.dark.isActive,
+                    }"
+                    unelevated
+                    @click="mostrarNotificaciones = false"
+                  ></q-btn>
+                </div>
+              <q-list style="min-width: 120px; max-width: 400px">
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
@@ -57,7 +82,7 @@
                   <q-item-section avatar>
                     <q-icon color="info" name="bi-app" size="xs" />
                   </q-item-section>
-                  <q-item-section>{{ notificacion.title }}</q-item-section>
+                  <q-item-section>{{ notificacion.mensaje }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -208,6 +233,8 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import EssentialLink from 'components/EssentialLink.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import { LocalStorage, useQuasar } from 'quasar'
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
+import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -251,19 +278,21 @@ export default defineComponent({
       LocalStorage.set('dark', modoOscuro.value)
     }
 
-    //configuracion de las notificaciones
-    const notificaciones = ref([
-      { id: 1, title: 'Crazy for transitions', link: '', fecha: '' }, //deben tener un link para poder dar click y ver más detalles de la notificacion y la fecha y hora en que esta se generó
-      { id: 2, title: 'Primera notificacion' },
-      // { id: 3, title: 'Segunda notificacion' },
-      // { id: 4, title: 'Notificacion más reciente' },
-    ])
+    const notificacionesPusherStore = useNotificationRealtimeStore()
+    notificacionesPusherStore.listar() //cargar las notificaciones de la base de datos
 
-    function actualizarNotificaciones(val) {
-      notificaciones.value.push({
+    //configuracion de las notificaciones
+    const notificaciones = computed(
+      () => notificacionesPusherStore.listadoNotificaciones
+    )
+
+    async function actualizarNotificaciones(val) {
+      /* notificaciones.value.push({
         id: notificaciones.value.length + 1,
         title: val,
-      })
+      }) */
+      console.log(notificacionesPusherStore.listadoNotificaciones)
+      // notificaciones.value = notificacionesPusherStore.listadoNotificaciones
       // console.log('entró aqui?',val, notificaciones.value.length);
     }
 
@@ -280,11 +309,12 @@ export default defineComponent({
       toggleDarkMode,
       width: computed(() => ($q.screen.xs ? '100%' : '350px')),
       mostrarMenu: ref(false),
+      mostrarNotificaciones: ref(false),
       notificaciones,
       actualizarNotificaciones,
       ordenarNotificaciones() {
-        notificaciones.value.sort((a, b) => {
-          return b.id - a.id
+        notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
+          return b.id! - a.id!
         })
       },
     }

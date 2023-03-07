@@ -9,7 +9,12 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!--Empresa -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Empresa</label>
+            <label-abrir-modal
+              v-if="mostrarLabelModal"
+              label="Empresa"
+              @click="modales.abrirModalEntidad('EmpresaPage')"
+            />
+            <label v-else class="q-mb-sm block">Empresa</label>
             <q-select
               v-model="proveedor.empresa"
               :options="opciones_empresas"
@@ -57,6 +62,7 @@
       </q-form>
     </template>
   </tab-layout>
+  <modales-entidad :comportamiento="modales" @guardado="guardado"></modales-entidad>
 </template>
 
 <script src="./ProveedorPage.ts"></script>

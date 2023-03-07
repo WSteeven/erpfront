@@ -131,7 +131,7 @@
               type="textarea"
               autogrow
               v-model="empresa.direccion"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :readonly="disabled"
               :disable="disabled"
               outlined

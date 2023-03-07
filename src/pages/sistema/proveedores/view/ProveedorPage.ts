@@ -29,7 +29,6 @@ export default defineComponent({
     const modales = new ComportamientoModalesProveedores()
 
     const opciones_empresas = ref([])
-
     cargarVista(async () => {
       obtenerListados({
         empresas: new EmpresaController()
@@ -37,16 +36,16 @@ export default defineComponent({
     })
 
     /**************************************************************
-         * Validaciones
-         **************************************************************/
-    const reglas ={
-      empresa: {required},
+     * Validaciones
+     **************************************************************/
+    const reglas = {
+      empresa: { required },
     }
     const v$ = useVuelidate(reglas, proveedor)
-    setValidador(v$)
+    setValidador(v$.value)
 
-    async function guardado(){
-      const {result} = await new EmpresaController().listar()
+    async function guardado() {
+      const { result } = await new EmpresaController().listar()
       opciones_empresas.value = result
     }
 
