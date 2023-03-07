@@ -50,7 +50,7 @@ export default defineComponent({
      * Pusher
      */
 
-    const pedidoPusherEvent = new PedidoPageEvent('mensaje enviado desde PedidoPage.ts', true)
+    const pedidoPusherEvent = new PedidoPageEvent()
     pedidoPusherEvent.start()
 
     // Stores
@@ -90,8 +90,8 @@ export default defineComponent({
       }
     })
     onGuardado(() => {
-      console.log('guardado, ahora se emite el evento')
-      emit('notificar', 'Tienes un pedido realizado')
+      // console.log('guardado, ahora se emite el evento')
+      // emit('notificar')
     })
     // console.log('es coordinador? ', esCoordinador)
     // console.log('es bodeguero? ', esBodeguero)
