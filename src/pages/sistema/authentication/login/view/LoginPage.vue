@@ -12,7 +12,8 @@
       <!-- Left side -->
       <div
         v-if="!$q.screen.xs && !$q.screen.sm"
-        class="col-12 col-md-8 text-center q-pa-lg"
+        class="col-12 col-md-8 justify-center q-pa-lg items-center row window-height"
+        :class="{ 'bg-grey-2': !$q.dark.isActive }"
       >
         <div class="imagen d-flex align-items-center justify-content-center">
           <!-- <lottie-player

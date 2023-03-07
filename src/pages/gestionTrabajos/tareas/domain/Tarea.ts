@@ -46,6 +46,7 @@ export class Tarea extends EntidadAuditable {
   coordinador: number | null
   fiscalizador: number | null
   proyecto: number | null
+  proyecto_id: number | null
   cliente: number | null
   cliente_id: number | null
   trabajo_dependiente: string | null
@@ -56,7 +57,7 @@ export class Tarea extends EntidadAuditable {
 
   grupo: number | null
   empleado: number | null
-  subtarea: Subtarea | null
+  subtarea: any | null
 
   // para mostrar en tabla
   empleados: string | null
@@ -120,6 +121,7 @@ export class Tarea extends EntidadAuditable {
     this.coordinador = null
     this.fiscalizador = null
     this.proyecto = null
+    this.proyecto_id = null
     this.cliente = null
     this.trabajo_padre = null
     this.trabajo_dependiente = null

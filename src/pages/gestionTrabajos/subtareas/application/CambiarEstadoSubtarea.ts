@@ -39,6 +39,10 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/suspender', idTrabajo, { motivo: mensaje })
   }
 
+  async pendiente(idTrabajo: number, mensaje: string) {
+    return this.solicitud('/pendiente', idTrabajo, { motivo: mensaje })
+  }
+
   async cancelar(idTrabajo: number, mensaje: string) {
     return this.solicitud('/cancelar', idTrabajo, { motivo: mensaje })
   }

@@ -13,7 +13,7 @@ export class Perfil extends EntidadAuditable {
   cargo: string | null
   grupo: string | null
   usuario: string | null
-  rol: string[] | null
+  roles: string[] | null
   permisos: string[] | null
   foto_url: string | null
   firma_url: string | null
@@ -32,7 +32,7 @@ export class Perfil extends EntidadAuditable {
     this.cargo = null
     this.grupo = null
     this.usuario = null
-    this.rol = null
+    this.roles = null
     this.permisos = null
     this.foto_url = null
     this.firma_url = null

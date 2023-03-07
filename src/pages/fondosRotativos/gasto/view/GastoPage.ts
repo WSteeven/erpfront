@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { Gasto } from '../domain/Gasto'
 
 // Componentes
@@ -21,6 +21,7 @@ import { ProyectoController } from 'proyectos/infraestructure/ProyectoController
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -39,16 +40,16 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista,consultar } =
+    const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
 
     /*******
      * Init
      ******/
-    const fondoRotativoStore= useFondoRotativoStore()
+    const fondoRotativoStore = useFondoRotativoStore()
     const mostrarListado = ref(true)
-    if(fondoRotativoStore.id_gasto) {
-      consultar({id: fondoRotativoStore.id_gasto})
+    if (fondoRotativoStore.id_gasto) {
+      consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
     }
 
@@ -269,6 +270,7 @@ export default defineComponent({
         )
       })
     }
+
     function filtrarTareas(val, update) {
       if (gasto.proyecto == 0) {
         update(() => {
@@ -295,12 +297,14 @@ export default defineComponent({
         )
       })
     }
-     /*********
-     * Pusher
-     *********/
 
-     const gastoPusherEvent = new GastoPusherEvent()
-     gastoPusherEvent.start()
+    const listadoTareas = computed(() => listadosAuxiliares.tareas.filter((tarea: Tarea) => tarea.proyecto_id === gasto.proyecto))
+    /*********
+    * Pusher
+    *********/
+
+    const gastoPusherEvent = new GastoPusherEvent()
+    gastoPusherEvent.start()
 
     watchEffect(() => (gasto.total = gasto.cantidad! * gasto.valor_u!))
 
@@ -326,6 +330,7 @@ export default defineComponent({
       filtrarTareas,
       listadosAuxiliares,
       mostrarListado,
+      listadoTareas,
     }
   },
 })

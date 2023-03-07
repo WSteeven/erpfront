@@ -1,9 +1,10 @@
 // Dependencias
 import { configuracionColumnasTrabajoAsignado } from '../domain/configuracionColumnasTrabajoAsignado'
-import { tabTrabajoAsignado, accionesTabla, estadosTrabajos } from 'config/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
+import { accionesTabla, estadosTrabajos } from 'config/utils'
 import { useNotificaciones } from 'shared/notificaciones'
+import { tabTrabajoAsignado } from 'config/tareas.utils'
 import { computed, defineComponent, ref } from 'vue'
 import { date } from 'quasar'
 
@@ -16,15 +17,15 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { TrabajoAsignadoController } from 'gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CambiarEstadoSubtarea } from 'pages/gestionTrabajos/subtareas/application/CambiarEstadoSubtarea'
+import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { TrabajoController } from 'trabajos/infraestructure/TrabajoController'
 import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
 import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
 import { obtenerTiempoActual } from 'shared/utils'
 import { Trabajo } from 'trabajos/domain/Trabajo'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { CambiarEstadoSubtarea } from 'pages/gestionTrabajos/subtareas/application/CambiarEstadoSubtarea'
 
 export default defineComponent({
   components: {
@@ -33,7 +34,7 @@ export default defineComponent({
     ConfirmarDialog,
   },
   setup() {
-    const controller = new TrabajoController()
+    const controller = new SubtareaController()
     const mostrarDialogPlantilla = ref(false)
     const { confirmar, prompt, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const modales = new ComportamientoModalesTrabajoAsignado()
@@ -92,9 +93,9 @@ export default defineComponent({
           }
 
           if (entidad.es_dependiente) {
-            const { result: trabajoDependiente } = await controller.consultar(entidad.trabajo_dependiente_id)
-            if (trabajoDependiente.estado !== estadosTrabajos.REALIZADO) {
-              notificarAdvertencia('No puedes proceder. Primero debes finalizar con el trabajo ' + entidad.trabajo_dependiente)
+            const { result: subtareaDependiente } = await controller.consultar(entidad.subtarea_dependiente_id)
+            if (subtareaDependiente.estado !== estadosTrabajos.REALIZADO) {
+              notificarAdvertencia('No puedes proceder. Primero debes finalizar con el trabajo ' + subtareaDependiente.codigo_subtarea)
               return
             }
           }
@@ -162,7 +163,7 @@ export default defineComponent({
 
     const botonSuspender: CustomActionTable = {
       titulo: 'Suspender',
-      icono: 'bi-x-diamond',
+      icono: 'bi-power',
       color: 'negative',
       visible: ({ entidad }) => entidad.estado === estadosTrabajos.ASIGNADO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
@@ -174,6 +175,29 @@ export default defineComponent({
               entidad.estado = estadosTrabajos.SUSPENDIDO
               entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
               notificarCorrecto('Trabajo suspendido exitosamente!')
+              actualizarElemento(posicion, entidad)
+            }
+          }
+
+          prompt(config)
+        })
+      },
+    }
+
+    const btnPendiente: CustomActionTable = {
+      titulo: 'Pendiente',
+      icono: 'bi-clock',
+      color: 'orange-8',
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.ASIGNADO && entidad.es_responsable,
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de marcar como pendiente el trabajo?', () => {
+          const config: CustomActionPrompt = {
+            mensaje: 'Ingrese el motivo por el que se mantiene como pendiente',
+            accion: async (data) => {
+              const { result } = await new CambiarEstadoSubtarea().pendiente(entidad.id, data)
+              entidad.estado = estadosTrabajos.PENDIENTE
+              entidad.fecha_hora_pendiente = result.fecha_hora_pendiente
+              notificarCorrecto('Trabajo marcado como pendiente exitosamente!')
               actualizarElemento(posicion, entidad)
             }
           }
@@ -205,8 +229,8 @@ export default defineComponent({
     // - Actualizar un elemento del listado de trabajo asignado
     function actualizarElemento(posicion: number, entidad: any): void {
       if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad)
-        listado.value = [...listado.value]
+        listado.value.splice(posicion, 1)
+        // listado.value = [...listado.value]
       }
     }
 
@@ -247,6 +271,7 @@ export default defineComponent({
       mostrarDialogPlantilla,
       plantillaSeleccionada,
       botonPausar,
+      btnPendiente,
       botonReanudar,
       botonFormulario,
       botonSuspender,

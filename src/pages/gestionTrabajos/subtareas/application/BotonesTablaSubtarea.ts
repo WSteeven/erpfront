@@ -75,7 +75,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   } */
 
   const botonCancelar: CustomActionTable = {
-    titulo: 'Cancelar',
+    titulo: ({ entidad }) => entidad.estado === estadosTrabajos.ASIGNADO,
     color: 'negative',
     icono: 'bi-x-circle-fill',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
@@ -98,9 +98,9 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
 
   const botonReagendar: CustomActionTable = {
     titulo: 'Reagendar',
-    color: 'info',
+    color: 'orange-8',
     icono: 'bi-calendar-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.PENDIENTE,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
       const config: CustomActionPrompt = {
         mensaje: 'Ingrese la nueva fecha',
@@ -118,7 +118,9 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     }),
   }
 
-  const botonSubirArchivos: CustomActionTable = {
+
+
+  /* const botonSubirArchivos: CustomActionTable = {
     titulo: 'Archivos',
     color: 'yellow-9',
     icono: 'bi-folder-fill',
@@ -128,7 +130,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
       subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
       modales.abrirModalEntidad('GestorArchivoTrabajo')
     }
-  }
+  } */
 
   function actualizarElemento(posicion: number, entidad: Subtarea): void {
     if (posicion >= 0) {
@@ -139,7 +141,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
 
   return {
     botonFormulario,
-    botonSubirArchivos,
+    // botonSubirArchivos,
     botonCancelar,
     botonReagendar,
     // botonAsignar,

@@ -554,6 +554,7 @@
                   <q-btn-toggle
                     v-model="tarea.modo_asignacion_trabajo"
                     class="toggle-button"
+                    :disable="disabled"
                     spread
                     no-caps
                     rounded
@@ -1029,6 +1030,7 @@
             :accion4="botonFormulario"
             :accion5="botonVerPausas"
             :accion6="botonFinalizar"
+            :accion7="btnAnular"
             :accion1Header="btnAgregarSubtarea"
             separador="cell"
             :permitirConsultar="false"

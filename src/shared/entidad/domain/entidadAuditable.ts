@@ -1,7 +1,7 @@
 import { Auditable } from 'shared/auditoria/domain/Auditable.application'
 import { Hidratable } from './Hidratable'
 
-export class EntidadAuditable extends Hidratable implements Auditable {
+export class EntidadAuditable extends Hidratable { //implements Auditable {
   id: number | null
   // negocio: number | null
   // usuario_inserta: number | null

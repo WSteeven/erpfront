@@ -30,6 +30,7 @@ import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { ArchivoSubtareaController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
+import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -147,7 +148,7 @@ export default defineComponent({
       configuracionColumnasEmpleadoGrupo,
       configuracionColumnasGrupoSeleccionado,
       configuracionColumnasEmpleadoSeleccionado,
-      columnasGestor: [...configuracionColumnasArchivoTrabajo, accionesTabla],
+      columnasGestor: [...configuracionColumnasArchivoSubtarea, accionesTabla],
       tiposTrabajos,
       grupos,
       subtareas,

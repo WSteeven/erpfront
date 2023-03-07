@@ -26,8 +26,20 @@ export const tabOptionsEstadosSubtareas: TabOption[] = [
   { label: 'Asignado', value: 'ASIGNADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },
+  { label: 'Pendiente', value: 'PENDIENTE' },
   { label: 'Suspendido', value: 'SUSPENDIDO' },
   { label: 'Cancelado', value: 'CANCELADO' },
   { label: 'Realizado', value: 'REALIZADO' },
   { label: 'Finalizado', value: 'FINALIZADO' },
+]
+
+export const tabTrabajoAsignado: TabOption[] = [
+  //{ label: 'Todo', value: '' },
+  { label: 'Agendado', value: 'ASIGNADO' },
+  { label: 'Ejecutando', value: 'EJECUTANDO' },
+  { label: 'Pausado', value: 'PAUSADO' },
+  { label: 'Próximos trabajos', value: '  PROXIMO' },
+  // { label: 'Realizado', value: 'REALIZADO' },
+  /*{ label: 'Suspendido', value: 'SUSPENDIDO' },
+  { label: 'Cancelado', value: 'CANCELADO' },*/
 ]

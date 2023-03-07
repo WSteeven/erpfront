@@ -113,9 +113,11 @@ export default defineComponent({
      * Init
     *******/
     if (subtareaStore.idSubtareaSeleccionada) {
-      consultar({ id: subtareaStore.idSubtareaSeleccionada })
-      listarArchivos({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
+      consultar({ id: subtareaStore.idSubtareaSeleccionada }).then(() => {
+        listarArchivos({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
+      })
     } else subtarea.hydrate(new Subtarea())
+
 
     subtarea.tarea = subtareaStore.codigoTarea
     subtarea.observacion = subtareaStore.observacionTarea
@@ -268,7 +270,7 @@ export default defineComponent({
       },
     }
 
-    const { botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas } = useBotonesTablaSubtarea(listado, modales)
+    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas } = useBotonesTablaSubtarea(listado, modales)
 
     const botonEditarTrabajo: CustomActionTable = {
       titulo: 'Editar',
@@ -321,6 +323,7 @@ export default defineComponent({
     }) */
 
     onConsultado(() => {
+      subtarea.tarea = subtareaStore.codigoTarea
       /* if (subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
         subtarea.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
           console.log(grupo)
@@ -401,11 +404,11 @@ export default defineComponent({
 
     function reestablecerDatos() {
       reestablecer()
-      // emit('cerrar-modal')
+      emit('cerrar-modal')
     }
 
-    const paraProyecto = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraProyecto)
-    const paraClienteFinal = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
+    // const paraProyecto = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraProyecto)
+    // const paraClienteFinal = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
 
 
 
@@ -429,11 +432,11 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    async function obtenerClienteFinal(clienteFinalId: number) {
+    /* async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
       const { result } = await clienteFinalController.consultar(clienteFinalId)
       return result
-    }
+    } */
 
     /*function establecerCliente() {
       tareaStore.tarea.cliente = subtarea.cliente
@@ -489,37 +492,37 @@ export default defineComponent({
       }
     })*/
 
-    watchEffect(async () => {
+    /* watchEffect(async () => {
       if (subtarea.cliente_final) {
         const res = await obtenerClienteFinal(subtarea.cliente_final)
         clienteFinal.hydrate(res)
       }
-    })
+    }) */
 
     // Informacion de ubicacion
-    const clienteFinal = reactive(new ClienteFinal())
+    // const clienteFinal = reactive(new ClienteFinal())
 
-    watch(computed(() => subtarea.para_cliente_proyecto), (valor) => {
+    /* watch(computed(() => subtarea.para_cliente_proyecto), (valor) => {
       if (accion.value !== acciones.editar) {
         subtarea.hydrate(new Subtarea())
         clienteFinal.hydrate(new ClienteFinal())
         subtarea.para_cliente_proyecto = valor
       }
-    })
+    }) */
 
-    async function setCliente() {
+    /* async function setCliente() {
       if (subtarea.proyecto) {
         const proyectoController = new ProyectoController()
         const { result } = await proyectoController.consultar(subtarea.proyecto)
         subtarea.cliente = result.cliente
       }
-    }
+    } */
 
-    const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
+    // const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
 
-    function filtrarTodos(filtros) {
+    /* function filtrarTodos(filtros) {
       filtrar(filtros)
-    }
+    } */
 
     /* watchEffect(async () => {
       if (subtarea.tarea) {
@@ -536,7 +539,7 @@ export default defineComponent({
     } */
 
     return {
-      filtrarTodos,
+      // filtrarTodos,
       // Referencias
       refEmpleadosAsignados,
       refUploader,
@@ -580,22 +583,22 @@ export default defineComponent({
       Empleado,
       // designarGrupoPrincipal,
       destinosTareas,
-      paraProyecto,
-      paraClienteFinal,
+      // paraProyecto,
+      // paraClienteFinal,
       guardar,
       editar,
       reestablecer,
-      obtenerClienteFinal,
-      setCliente,
-      mostrarLabelModal,
+      // obtenerClienteFinal,
+      // setCliente,
+      // mostrarLabelModal,
       modales,
       //configuracionColumnasTrabajo,
       subtareaStore,
       nivelesTrabajos,
       acciones,
-      clienteFinal,
+      // clienteFinal,
       maskFecha,
-      botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
+      botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
       accionesTabla,
       botonEditarTrabajo,
       configuracionColumnasEmpleadoSeleccionado,

@@ -2,10 +2,10 @@
 import { mediosNotificacion, modosAsignacionTrabajo, destinosTareas, tabOptionsEstadosSubtareas } from 'config/tareas.utils'
 import { configuracionColumnasSubtarea } from 'gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
-import { configuracionColumnasTarea } from '../domain/configuracionColumnasTarea'
 import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { configuracionColumnasTarea } from '../domain/configuracionColumnasTarea'
 import { acciones, accionesTabla, maskFecha, rolesSistema } from 'config/utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
@@ -28,6 +28,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TipoTrabajoController } from 'tiposTareas/infraestructure/TipoTrabajoController'
@@ -39,7 +40,6 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -227,6 +227,20 @@ export default defineComponent({
 
     onConsultado(() => {
       filtrarSubtareas('')
+
+      if (tarea.subtarea) {
+        tarea.titulo = tarea.subtarea.titulo
+        tarea.observacion = tarea.subtarea.observacion
+        tarea.descripcion_completa = tarea.subtarea.descripcion_completa
+        tarea.tipo_trabajo = tarea.subtarea.tipo_trabajo
+        tarea.es_ventana = tarea.subtarea.es_ventana
+        tarea.fecha_agendado = tarea.subtarea.fecha_agendado
+        tarea.hora_inicio_agendado = tarea.subtarea.hora_inicio_agendado
+        tarea.hora_fin_agendado = tarea.subtarea.hora_fin_agendado
+        tarea.grupo = tarea.subtarea.grupo
+        tarea.empleado = tarea.subtarea.empleado
+        tarea.modo_asignacion_trabajo = tarea.subtarea.modo_asignacion_trabajo
+      }
     })
 
     onBeforeGuardar(() => {
@@ -247,7 +261,7 @@ export default defineComponent({
     })
 
     // Subtareas
-    const { botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
+    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
@@ -268,6 +282,7 @@ export default defineComponent({
       titulo: 'Consultar',
       icono: 'bi-eye',
       accion: ({ entidad }) => {
+        subtareaStore.codigoTarea = tarea.codigo_tarea
         subtareaStore.idSubtareaSeleccionada = entidad.id
         subtareaStore.accion = acciones.consultar
         modalesSubtarea.abrirModalEntidad('SubtareaPage')
@@ -334,7 +349,7 @@ export default defineComponent({
       modosAsignacionTrabajo,
       configuracionColumnasSubtarea,
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
-      botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
+      botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
       tabOptionsEstadosSubtareas,
       indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white'),
       maskFecha,

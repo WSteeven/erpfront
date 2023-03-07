@@ -129,16 +129,6 @@ export const causaIntervencion: CausaIntervencion[] =
     { categoria: 'SPT', descripcion: 'SPT-REVISION NODO' },
   ]
 
-export const tabTrabajoAsignado: TabOption[] = [
-  //{ label: 'Todo', value: '' },
-  { label: 'Asignado', value: 'ASIGNADO' },
-  { label: 'Ejecutando', value: 'EJECUTANDO' },
-  { label: 'Pausado', value: 'PAUSADO' },
-  { label: 'Realizado', value: 'REALIZADO' },
-  /*{ label: 'Suspendido', value: 'SUSPENDIDO' },
-  { label: 'Cancelado', value: 'CANCELADO' },*/
-]
-
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'Pendiente', value: 'PENDIENTE' },
@@ -266,6 +256,7 @@ export const estadosTrabajos = {
   EJECUTANDO: 'EJECUTANDO',
   PAUSADO: 'PAUSADO',
   SUSPENDIDO: 'SUSPENDIDO',
+  PENDIENTE: 'PENDIENTE',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',

@@ -4,6 +4,8 @@
     "baseUrl": ".",
     "noImplicitAny": false,
     "strictFunctionTypes": false,
+    "target": "es6",
+    "module": "es6",
     "paths": {
       "config/*": ["src/config/*"],
       "shared/*": ["src/shared/*"],
