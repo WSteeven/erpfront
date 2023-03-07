@@ -677,6 +677,28 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
+        <q-chip
+          v-if="props.value === 'SI'"
+          class="bg-yellow-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="primary"
+            class="q-mr-xs"
+          ></q-icon>
+          SI
+        </q-chip>
+        <q-chip
+          v-if="props.value === 'NO'"
+          class="bg-yellow-1"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          NO
+        </q-chip>
       </q-td>
     </template>
     <!-- corregir esto para que sea dinamico -->

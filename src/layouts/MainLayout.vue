@@ -133,14 +133,14 @@
                   {{ nombreUsuario }}
                 </div>
 
-                <q-item clickable :to="{ name: 'Perfil' }" class="full-width">
+                <q-item clickable :to="{ name: 'perfil' }" class="full-width">
                   <q-avatar>
                     <q-icon name="bi-person"></q-icon>
                   </q-avatar>
                   <q-item-section> Perfil </q-item-section>
                 </q-item>
 
-                <q-item clickable :to="{ name: 'Perfil' }" class="full-width">
+                <q-item clickable :to="{ name: 'perfil' }" class="full-width">
                   <q-avatar>
                     <q-icon name="bi-gear"></q-icon>
                   </q-avatar>

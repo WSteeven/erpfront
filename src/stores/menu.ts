@@ -252,6 +252,98 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    {
+      title: 'Cambiar contraseña',
+      icon: 'bi-lock',
+      link: 'cambiar-contrasena',
+      can: store.can('puede.ver.cambiar_contrasena'),
+    },
+    //Modulo Fondos Rotativos
+    {
+      title: 'Fondos Rotativos',
+      icon: 'fa-solid fa-cash-register',
+      can: store.can('puede.ver.fondo'),
+      children: [
+        {
+          title: 'Gastos',
+          link: 'gasto',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.gasto'),
+        },
+        {
+          title: 'Detalle Fondos',
+          icon: 'bi-list-task',
+          children: [ {
+            title: 'Detalle',
+            link: 'detalle_fondo',
+            icon: 'bi-circle',
+            can: store.can('puede.ver.detalle_fondo'),
+          },
+          {
+            title: 'SubDetalle',
+            link: 'sub_detalle_fondo',
+            icon: 'bi-circle',
+            can: store.can('puede.ver.sub_detalle_fondo'),
+          }]
+        },
+        {
+          title: 'Saldo',
+          icon: 'bi-cash',
+          children:[
+            {
+              title: 'Acreditacion',
+              link: 'acreditacion',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.acreditacion'),
+            },
+          ]
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          children:[
+            {
+              title: 'Fondo Rotativo',
+              link: 'reporte-fondo-fecha',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_fondo_fecha'),
+            },
+            {
+              title: 'Autorizaciones',
+              link: 'reporte-autorizaciones',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_autorizaciones'),
+            },
+            {
+              title: 'Saldo Actual',
+              link: 'reporte-saldo-actual',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_saldo_actual'),
+            },
+            {
+              title: 'Saldo Consolidado',
+              link: 'reporte-consolidado',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_consolidado'),
+            },
+            {
+              title: 'Saldo Consolidado con Filtro',
+              link: 'reporte-consolidado-filtrado',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_consolidado_filtrado'),
+            },
+            {
+              title: 'Contabilidad',
+              link: 'reporte-contabilidad',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_contabilidad'),
+            }
+          ]
+        },
+
+
+      ]
+    },
     //Modulo Recursos Humanos
     {
       title: 'RR HH',

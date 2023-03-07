@@ -1,116 +1,86 @@
 <template>
   <q-page padding class="q-pa-lg">
-    <div class="text-h6 q-mb-md">Perfil</div>
-    <form @submit.prevent>
-      <div class="row q-col-gutter-sm q-mb-md">
-        <!-- Nombre -->
-        <div class="col-12 col-md-3">
-          <q-input
-            v-model="perfil.nombres"
-            label="Nombre"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          />
-        </div>
+    <div class="row q-col-gutter-sm q-mb-md">
+      <div class="col-12 col-md-8 q-mb-md">
+        <q-card class="my-card">
+          <q-card-section>
+            <div class="relative-position container flex flex-center text-white">
 
-        <!-- Apellidos -->
-        <div class="col-12 col-md-3">
-          <q-input
-            v-model="perfil.apellidos"
-            label="Apellidos"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          />
-        </div>
+                <q-img :src="perfil.foto_url !=null?perfil.foto_url:'https://ui-avatars.com/api/?name='+perfil.nombres+'+'+perfil.apellidos" width="300px" height="416px" fit="cover">
+                </q-img>
 
-        <!-- Fecha de nacimiento -->
-        <div class="col-12 col-md-3">
-          <q-input
-            v-model="perfil.fecha_nacimiento"
-            label="Fecha de nacimiento"
-            outlined
-            dense
-            mask="date"
-            :rules="[
-              'date',
-              (val) => (val && val.length > 0) || 'Campo requerido',
-            ]"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="perfil.fecha_nacimiento">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-
-        <!-- Teléfono -->
-        <div class="col-12 col-md-3">
-          <q-input
-            v-model="perfil.telefono"
-            label="Teléfono"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          />
-        </div>
-
-        <!-- Correo -->
-        <div class="col-12 col-md-3">
-          <q-input
-            v-model="perfil.email"
-            type="email"
-            label="Correo"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          />
-        </div>
-
-        <!-- Tipo de identificacion -->
-        <!-- <div class="col-12 col-md-3">
-          <q-select
-            v-model="perfil.tipo_identificacion"
-            label="Tipo de identificación"
-            placeholder="Seleccione..."
-            :options="tipos_identificaciones"
-            outlined
-            options-dense
-            dense
-          />
-        </div> -->
-
-        <!-- Indentificacion -->
-        <div class="col-12 col-md-3">
-          <q-input
-            v-model="perfil.identificacion"
-            label="Identificación"
-            outlined
-            dense
-            :rules="[(val) => (val && val.length > 0) || 'Campo requerido']"
-          />
-        </div>
+            </div>
+            <div class="relative-position container flex flex-center text-h6">
+              {{ perfil.nombres + ' ' + perfil.apellidos }}
+            </div>
+            <div class="relative-position container flex flex-center text-subtitle2">
+              {{ perfil.email }}
+            </div>
+            <hr>
+            <div>
+              <div class="relative-position container flex flex-center">
+                Nombres: {{ perfil.nombres + ' ' + perfil.apellidos }}
+              </div>
+              <div class="relative-position container flex flex-center">
+                Correo Institucional: {{ perfil.email }}
+              </div>
+              <div class="relative-position container flex flex-center">
+                Fecha de Nacimiento: {{ perfil.fecha_nacimiento }}
+              </div>
+              <div class="relative-position container flex flex-center">
+                Dirección: {{ perfil.direccion }}
+              </div>
+              <div class="relative-position container flex flex-center">
+                Teléfono: {{ perfil.telefono }}
+              </div>
+              <div class="relative-position container flex flex-center">
+                Cargo: {{ perfil.cargo }}
+              </div>
+              <div class="relative-position container flex flex-center">
+                Grupo: {{ perfil.grupo }}
+              </div>
+              <div class="relative-position container flex flex-center">
+                Usuario: {{ perfil.usuario }}
+              </div>
+            </div>
+            <div class="col-3 relative-position container flex flex-center">
+              <q-img :src="perfil.firma_url!=null?perfil.firma_url:'src/assets/sinfirma.jpeg'" width="300px" height="100px" fit="cover">
+                </q-img>
+            </div>
+          </q-card-section>
+        </q-card>
       </div>
+      <div class="col-12 col-md-4 q-mb-xs q-mt-xs ">
+        <div class="col-12 col-md-12 block">
+          <q-btn color="primary" class="full-width block"> Cambiar Contraseña</q-btn>
+        </div>
+        <q-card class="my-card q-mt-lg">
+          <q-card-section>
+            <div class="text-h6">Roles</div>
+            <div class="q-pa-md q-gutter-sm">
+              <q-item dense v-for="(rol, index) in perfil.rol " :key="index">
+                <q-item-section>{{ rol }}</q-item-section>
+              </q-item>
+            </div>
+          </q-card-section>
+        </q-card>
 
-      <div class="row justify-end">
-        <q-btn color="primary" @click="actualizar()" no-caps unelevated>
-          <q-icon name="bi-save" class="q-mr-md" size="xs"></q-icon>
-          Actualizar perfil
-        </q-btn>
+        <q-card class="my-card q-mt-lg">
+          <q-card-section>
+            <div class="text-h6">Permisos</div>
+            <q-scroll-area style="height: 458px;">
+              <div class="q-pa-md q-gutter-sm">
+                <q-item dense v-for="(permiso, index) in perfil.permisos " :key="index">
+                  <q-item-section>{{ permiso }}</q-item-section>
+                </q-item>
+              </div>
+            </q-scroll-area>
+          </q-card-section>
+        </q-card>
+
+
       </div>
-    </form>
+    </div>
   </q-page>
 </template>
 

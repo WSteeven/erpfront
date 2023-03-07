@@ -456,6 +456,109 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       }, */
+      {
+        path: '/cambiar-contrasena',
+        name: 'cambiar_contrasena',
+        component: () =>
+          import(
+            'pages/administracion/cambiarContrasena/view/cambiarContrasenaPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
+      //Fondos Rotativos
+      {
+        path: '/gasto',
+        name: 'gasto',
+        component: () =>
+          import(
+            'pages/fondosRotativos/gasto/view/GastoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/detalle_fondo',
+        name: 'detalle_fondo',
+        component: () =>
+          import(
+            'pages/fondosRotativos/detalleFondo/view/DetalleFondoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/sub_detalle_fondo',
+        name: 'sub_detalle_fondo',
+        component: () =>
+          import(
+            'pages/fondosRotativos/subDetalleFondo/view/SubDetalleFondoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+
+      {
+        path: '/acreditacion',
+        name: 'acreditacion',
+        component: () =>
+          import(
+            'pages/fondosRotativos/saldos/acreditacion/view/AcreditacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporte-fondo-fecha',
+        name: 'reporte_fondo_fecha',
+        component: () =>
+          import(
+            'pages/fondosRotativos/reportes/fondo_rotativo_fecha/view/FondoRotativoFechaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporte-saldo-actual',
+        name: 'reporte_saldo_actual',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/reporteSaldoActual/view/Reporte_saldo_actualPage.vue'
+        ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporte-autorizaciones',
+        name: 'reporte_autorizaciones',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/fondo_rotativo_autorizaciones_fecha/view/Reporte_autorizaciones_fechaPage.vue'
+        ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporte-consolidado',
+        name: 'reporte_consolidado',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/consolidado/view/Reporte_consolidadoPage.vue'
+        ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporte-consolidado-filtrado',
+        name: 'reporte_consolidado_filtrado',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/consolidado_filtrado/view/Reporte_consolidado_filtradoPage.vue'
+        ),
+        //cambiar a true cuando este listo
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/reporte-contabilidad',
+        name: 'reporte_contabilidad',
+        component: () =>
+        import(
+          'pages/fondosRotativos/reportes/fondo_rotativo_contabilidad/view/Reporte_contabilidadPage.vue'
+        ),
+        //cambiar a true cuando este listo
+        meta: { requiresAuth: false },
+      },
     ],
   },
   {

@@ -24,7 +24,7 @@ export default defineComponent({
     },
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
-      required: true,
+      required: false,
     },
     tituloPagina: {
       type: String,
@@ -72,7 +72,7 @@ export default defineComponent({
     let listadoCargado = false
 
     const columnas = [
-      ...props.configuracionColumnas,
+      ...(props.configuracionColumnas ? props.configuracionColumnas : []),
       {
         name: 'acciones',
         field: 'acciones',
@@ -82,10 +82,12 @@ export default defineComponent({
       },
     ]
 
-    if (!listadoCargado) {
+    if (!listadoCargado && props.mostrarListado) {
       listar()
       listadoCargado = true
     }
+
+
 
     const seleccionado = ref()
 
