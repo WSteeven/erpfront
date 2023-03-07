@@ -12,7 +12,7 @@
       @click="emitir('guardar')"
     >
       <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-      <span>Guardar</span>
+      <span>{{ labelGuardar }}</span>
     </q-btn>
 
     <!-- Boton modificar -->
@@ -87,6 +87,10 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: true,
+    },
+    labelGuardar: {
+      type: String,
+      default: 'Guardar',
     },
   },
   emits: ['guardar', 'editar', 'cancelar', 'eliminar', 'cerrar-modal'],

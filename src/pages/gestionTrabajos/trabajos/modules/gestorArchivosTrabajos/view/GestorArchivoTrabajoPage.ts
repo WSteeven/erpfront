@@ -17,7 +17,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ArchivoTrabajoController } from '../infraestructure/ArchivoTrabajoController'
 import { Archivo } from '../domain/Archivo'
-import { useTrabajoStore } from 'stores/trabajo'
+import { useSubtareaStore } from 'stores/subtarea'
 
 export default defineComponent({
   components: {
@@ -27,7 +27,7 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const trabajoStore = useTrabajoStore()
+    const subtareaStore = useSubtareaStore()
 
     /********
     * Mixin
@@ -38,7 +38,7 @@ export default defineComponent({
 
     const { prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
-    listar({ trabajo_id: trabajoStore.idTrabajoSeleccionado })
+    listar({ trabajo_id: subtareaStore.idSubtareaSeleccionada })
 
     /***************
     * Botones tabla
@@ -93,7 +93,7 @@ export default defineComponent({
     async function factoryFn(files) {
       const fd = new FormData()
       fd.append('file', files[0])
-      fd.append('trabajo_id', trabajoStore.idTrabajoSeleccionado)
+      fd.append('trabajo_id', subtareaStore.idSubtareaSeleccionada)
 
       try {
         const response: AxiosResponse = await axios.post(ruta, fd)
@@ -117,7 +117,7 @@ export default defineComponent({
       formatBytes,
       quiero_subir_archivos,
       columnas: [...configuracionColumnasArchivoTrabajo, accionesTabla],
-      codigoTrabajoSeleccionado: trabajoStore.codigoTrabajoSeleccionado,
+      codigoTrabajoSeleccionado: subtareaStore.codigoTrabajoSeleccionado,
       btnEliminar,
       btnComentar,
       btnDescargar,

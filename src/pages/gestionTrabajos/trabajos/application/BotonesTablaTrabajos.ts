@@ -3,14 +3,14 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesTrabajo } from './ComportamientoModalesTrabajo'
 import { CambiarEstadoTrabajo } from './CambiarEstadoTrabajo'
 import { useNotificaciones } from 'shared/notificaciones'
-import { useTrabajoStore } from 'stores/trabajo'
+import { useSubtareaStore } from 'stores/subtarea'
 import { estadosTrabajos } from 'config/utils'
 import { Trabajo } from '../domain/Trabajo'
 import { Ref } from 'vue'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: ComportamientoModalesTrabajo) => {
-  const trabajoStore = useTrabajoStore()
+  const subtareaStore = useSubtareaStore()
 
   const { confirmar, notificarCorrecto, prompt } = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoTrabajo()
@@ -23,7 +23,7 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     color: 'indigo',
     visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
     accion: ({ entidad }) => {
-      trabajoStore.idTrabajoSeleccionado = entidad.id
+      subtareaStore.idSubtareaSeleccionada = entidad.id
       modales.abrirModalEntidad('EmergenciasPage')
     }
   }
@@ -34,8 +34,8 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     color: 'blue-6',
     visible: ({ entidad }) => entidad.estado !== estadosTrabajos.CREADO,
     accion: ({ entidad }) => {
-      trabajoStore.idTrabajoSeleccionado = entidad.id
-      trabajoStore.codigoTrabajoSeleccionado = entidad.codigo_trabajo
+      subtareaStore.idSubtareaSeleccionada = entidad.id
+      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_trabajo
       modales.abrirModalEntidad('PausasRealizadasPage')
     }
   }
@@ -123,8 +123,8 @@ export const useBotonesTablaTrabajo = (listado: Ref<Trabajo[]>, modales: Comport
     icono: 'bi-folder-fill',
     visible: () => true,
     accion: async ({ entidad }) => {
-      trabajoStore.idTrabajoSeleccionado = entidad.id
-      trabajoStore.codigoTrabajoSeleccionado = entidad.codigo_trabajo
+      subtareaStore.idSubtareaSeleccionada = entidad.id
+      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_trabajo
       modales.abrirModalEntidad('GestorArchivoTrabajo')
     }
   }

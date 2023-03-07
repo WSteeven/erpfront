@@ -339,6 +339,24 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/clientes',
+        name: 'clientes',
+        component: () =>
+          import(
+            'pages/sistema/clientes/view/ClientePage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/proveedores',
+        name: 'proveedores',
+        component: () =>
+          import(
+            'pages/sistema/proveedores/view/ProveedorPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/estados-transacciones',
         name: 'estados_transacciones',
         component: () =>

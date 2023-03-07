@@ -31,12 +31,12 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       }`
   )
 
-  const esCoordinador = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.coordinador) : false)
-  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico) : false)
-  const esBodeguero = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.bodega) : false)
-  const esActivosFijos = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.activos_fijos) : false)
-  const esTecnico = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.tecnico) : false)
-  const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.rol, rolesSistema.rrhh) : false)
+  const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
+  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false)
+  const esBodeguero = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false)
+  const esActivosFijos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.activos_fijos) : false)
+  const esTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false)
+  const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false)
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
@@ -87,20 +87,20 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   /**
    * Función para cargar datos en el Local Storage
    */
-  async function cargarDatosLS(){
-      const autorizaciones = (await new AutorizacionController().listar({campos: 'id,nombre'})).result
-      LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
-      const sucursales = (await new SucursalController().listar({campos: 'id,lugar'})).result
-      LocalStorage.set('sucursales', JSON.stringify(sucursales))
-      const condiciones = (await new CondicionController().listar({campos:'id,nombre'})).result
-      LocalStorage.set('condiciones', JSON.stringify(condiciones))
-      const estados_transacciones = (await new EstadosTransaccionController().listar({ campos: 'id,nombre' })).result
-      LocalStorage.set('estados_transacciones', JSON.stringify(estados_transacciones))
+  async function cargarDatosLS() {
+    const autorizaciones = (await new AutorizacionController().listar({ campos: 'id,nombre' })).result
+    LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
+    const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+    LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    const condiciones = (await new CondicionController().listar({ campos: 'id,nombre' })).result
+    LocalStorage.set('condiciones', JSON.stringify(condiciones))
+    const estados_transacciones = (await new EstadosTransaccionController().listar({ campos: 'id,nombre' })).result
+    LocalStorage.set('estados_transacciones', JSON.stringify(estados_transacciones))
   }
   /**
    * Función para limpiar los datos del Local Storage
    */
-  function limpiarLS(){
+  function limpiarLS() {
     LocalStorage.remove('autorizaciones')
     LocalStorage.remove('sucursales')
     LocalStorage.remove('condiciones')
@@ -161,11 +161,11 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     return permisos.value?.indexOf(permiso) !== -1
   }
 
-  async function listadoUsuarios(){
-    try{
+  async function listadoUsuarios() {
+    try {
       const response = await axios.get<AxiosResponse>(axios.getEndpoint(endpoints.usuarios))
       return response.data.modelo
-    }catch(e){
+    } catch (e) {
       const axiosError = e as AxiosError
       throw new ApiError(axiosError)
     }

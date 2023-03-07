@@ -24,7 +24,7 @@
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table custom-border my-sticky-column-table"
+    class="bg-body-table my-sticky-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -283,63 +283,67 @@
     <!-- Botones de acciones Desktop -->
     <template #body-cell-acciones="props">
       <q-td v-if="!$q.screen.xs" :props="props">
-        <!--<div class="row full-width block q-gutter-sm justify-center"> -->
-        <q-btn-group
-          v-if="permitirConsultar || permitirEditar || permitirEliminar"
-          rounded
-          unelevated
-          class="q-mb-xs block text-left"
-        >
-          <!-- Consultar -->
-          <q-btn
-            v-if="permitirConsultar"
-            class="bg-primary q-px-md"
-            dense
-            glossy
-            @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
+        <div class="row inline full-width block q-col-gutter-x-xs text-left">
+          <q-btn-group
+            v-if="permitirConsultar || permitirEditar || permitirEliminar"
+            rounded
+            unelevated
+            class="inline text-left"
           >
-            <q-icon name="bi-eye" size="xs" color="white"></q-icon>
-            <q-tooltip class="bg-dark"> Consultar </q-tooltip>
-          </q-btn>
+            <!-- Consultar -->
+            <q-btn
+              v-if="permitirConsultar"
+              class="bg-primary q-px-md"
+              dense
+              glossy
+              @click="
+                consultar({ entidad: props.row, posicion: props.rowIndex })
+              "
+            >
+              <q-icon name="bi-eye" size="xs" color="white"></q-icon>
+              <q-tooltip class="bg-dark"> Consultar </q-tooltip>
+            </q-btn>
 
-          <!-- Editar -->
-          <q-btn
-            v-if="permitirEditar"
-            class="bg-secondary q-px-md"
-            glossy
-            dense
-            @click="editar({ entidad: props.row, posicion: props.rowIndex })"
-          >
-            <q-icon name="bi-pencil-square" size="xs" color="white"></q-icon>
-            <q-tooltip class="bg-dark"> Editar </q-tooltip>
-          </q-btn>
+            <!-- Editar -->
+            <q-btn
+              v-if="permitirEditar"
+              class="bg-secondary q-px-md"
+              glossy
+              dense
+              @click="editar({ entidad: props.row, posicion: props.rowIndex })"
+            >
+              <q-icon name="bi-pencil-square" size="xs" color="white"></q-icon>
+              <q-tooltip class="bg-dark"> Editar </q-tooltip>
+            </q-btn>
 
-          <!-- Eliminar -->
-          <q-btn
-            v-if="permitirEliminar"
-            class="bg-negative q-px-md"
-            glossy
-            dense
-            @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
-          >
-            <q-icon name="bi-trash3" size="xs" color="white"></q-icon>
-            <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
-          </q-btn>
-        </q-btn-group>
+            <!-- Eliminar -->
+            <q-btn
+              v-if="permitirEliminar"
+              class="bg-negative q-px-md"
+              glossy
+              dense
+              @click="
+                eliminar({ entidad: props.row, posicion: props.rowIndex })
+              "
+            >
+              <q-icon name="bi-trash3" size="xs" color="white"></q-icon>
+              <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
+            </q-btn>
+          </q-btn-group>
 
-        <CustomButtons
-          v-if="accion1"
-          :accion1="accion1"
-          :accion2="accion2"
-          :accion3="accion3"
-          :accion4="accion4"
-          :accion5="accion5"
-          :accion6="accion6"
-          :accion7="accion7"
-          :accion8="accion8"
-          :propsTable="props"
-        ></CustomButtons>
-        <!--</div> -->
+          <CustomButtons
+            v-if="accion1"
+            :accion1="accion1"
+            :accion2="accion2"
+            :accion3="accion3"
+            :accion4="accion4"
+            :accion5="accion5"
+            :accion6="accion6"
+            :accion7="accion7"
+            :accion8="accion8"
+            :propsTable="props"
+          ></CustomButtons>
+        </div>
       </q-td>
     </template>
 
@@ -486,10 +490,12 @@
                   {{ formatBytes(col.value) }}
                 </span>
 
-                <estados-subtareas
-                  v-if="col.name === 'estado'"
-                  :propsTable="col"
-                />
+                <div :class="{ 'q-mb-xs': $q.screen.xs }">
+                  <estados-subtareas
+                    v-if="col.name === 'estado'"
+                    :propsTable="col"
+                  />
+                </div>
 
                 <span
                   v-if="
@@ -515,6 +521,14 @@
     <template #body-cell-tamanio_bytes="props">
       <q-td :props="props">
         {{ formatBytes(props.value) }}
+      </q-td>
+    </template>
+
+    <template #body-cell-cantidad_subtareas="props">
+      <q-td>
+        <q-chip v-if="props.value != 0" dense class="q-px-md bg-accent-5">
+          {{ props.value }}
+        </q-chip>
       </q-td>
     </template>
 
@@ -794,28 +808,18 @@
           ></q-icon>
           NO REALIZADA
         </q-chip>
-        <q-chip
-          v-if="props.value === 1"
-          :class="{ 'bg-blue-grey-1': !$q.dark.isActive }"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
-          >ACTIVO
-        </q-chip>
-        <q-chip
-          v-if="props.value === 0"
-          :class="{ 'bg-red-1': !$q.dark.isActive }"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon
-          >INACTIVO
-        </q-chip>
+        <q-icon
+          v-if="props.value === 1 || props.value === true"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="props.value === 0 || props.value === false"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
 
         <!-- Estados de la tabla inventarios -->
         <q-chip
@@ -893,6 +897,22 @@
       </q-td>
     </template>
 
+    <template #body-cell-requiere_bodega="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
     <template #body-cell-activo="props">
       <q-td :props="props">
         <q-icon
@@ -901,21 +921,32 @@
           color="positive"
           size="sm"
         ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
       </q-td>
     </template>
 
-    <!-- <template v-slot:body="props">
-      <q-tr :props="props">
-        <q-td key="cantidad_solicitada" :props="props">
-          {{ props.row.cantidad_solicitada }}
-          <q-popup-edit v-model="props.row.cantidad_solicitada" v-slot="scope">
-            <q-input v-model="scope.value" dense autofocus counter />
-          </q-popup-edit>
-        </q-td>
-
-        <q-td key="protein" :props="props">{{ props.row.protein }}</q-td>
-      </q-tr>
-    </template> -->
+    <!-- tiene firma -->
+    <template #body-cell-firma_url="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
   </q-table>
 
   <div
@@ -985,6 +1016,7 @@
   border-radius: 4px 4px 0 0;
 }
 
+// Columna estatica ---
 .my-sticky-column-table {
   max-width: 100%;
 

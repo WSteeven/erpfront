@@ -1,6 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { EmpleadoSeleccionado } from './EmpleadoSeleccionado'
-import { destinosTareas, opcionesModoAsignacionTrabajo } from 'config/utils'
+import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 import { GrupoSeleccionado } from './GrupoSeleccionado'
 
 export class Trabajo extends EntidadAuditable {
@@ -69,7 +69,7 @@ export class Trabajo extends EntidadAuditable {
     this.para_cliente_proyecto = destinosTareas.paraProyecto
     this.fecha_solicitud = null
     this.estado = null
-    this.modo_asignacion_trabajo = opcionesModoAsignacionTrabajo.por_grupo
+    this.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
 
     // Tiempos
     this.fecha_hora_creacion = null

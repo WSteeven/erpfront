@@ -124,6 +124,7 @@
               dense
             ></q-checkbox>
           </div>
+          <!-- {{ devolucion.listadoProductos }} -->
           <!-- Tarea -->
           <div
             v-if="esVisibleTarea || devolucion.es_tarea"
@@ -157,12 +158,13 @@
               </template>
             </q-select>
           </div>
+          <!-- {{ devolucion.listadoProductos }} -->
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <!-- Tabla -->
-          <div class="col-12">
+          <!-- <div class="col-12">
             <essential-table
-            ref="refModalEditable"
+              ref="refModalEditable"
               titulo="Productos Seleccionados"
               :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
               :datos="devolucion.listadoProductos"
@@ -177,7 +179,13 @@
               :modalMaximized="false"
 
             ></essential-table>
-          </div>
+          </div> -->
+          <tabla-devolucion-producto
+            :listado="devolucion.listadoProductos"
+            :listadoProductos="opciones_productos"
+            @actualizar="(data)=>devolucion.listadoProductos = data"
+          >
+          </tabla-devolucion-producto>
         </div>
       </q-form>
 

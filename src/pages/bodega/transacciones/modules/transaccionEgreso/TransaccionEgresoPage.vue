@@ -458,7 +458,7 @@
           >
             <q-table
               flat
-              title="Listado"
+              title="Listado del pedido"
               class="bg-body-table custom-border"
               :rows="listadoPedido"
               :columns="configuracionColumnasListadoProductosSeleccionados"

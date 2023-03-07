@@ -72,35 +72,14 @@
           <!-- Estado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado</label>
-            <q-select
+            <q-toggle
+              :label="empleado.estado ? 'ACTIVO' : 'INACTIVO'"
               v-model="empleado.estado"
-              :options="opcionesEstados"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              :disable="disabled"
-              options-dense
-              dense
-              outlined
-              :error="!!v$.estado.$errors.length"
-              @blur="v$.estado.$touch"
-              :option-value="(v) => v.value"
-              :option-label="(v) => v.label"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.estado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+            />
           </div>
         </div>
         <!--</q-card> -->
@@ -440,7 +419,24 @@
               </template>
             </q-select>
           </div>
-
+          <!-- Foto de perfil -->
+          <div class="col-12 col-md-3">
+            <label for="q-mb-sm block">Foto de perfil</label>
+            <selector-imagen
+              :imagen="empleado.foto_url"
+              :alto="'400px'"
+              @update:model-value="(data) => (empleado.foto_url = data)"
+            ></selector-imagen>
+          </div>
+          <!-- Firma del empleado -->
+          <div class="col-12 col-md-3">
+            <label for="q-mb-sm block">Firma</label>
+            <selector-imagen
+              :imagen="empleado.firma_url"
+              :alto="'80px'"
+              @update:model-value="(data) => (empleado.firma_url = data)"
+            ></selector-imagen>
+          </div>
           <!--<div v-if="empleado.tiene_grupo" class="col-12 col-md-3 q-mb-md">
             <br />
             <q-toggle

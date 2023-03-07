@@ -85,7 +85,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           data.id,
           this.argsDefault
         )
-
+        console.log(result)
         this.entidad.hydrate(result)
         this.entidad_copia.hydrate(this.entidad)
         this.refs.tabs.value = 'formulario'
@@ -155,7 +155,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   // Guardar
   // @noImplicitAny: false
-  private async guardar(data: T, resetOnSaved = true,) {
+  private async guardar(data: T, agregarAlListado = true): Promise<any> {
 
     if (!this.seCambioEntidad(this.entidad_vacia)) {
       this.notificaciones.notificarAdvertencia(
@@ -174,39 +174,45 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     this.hooks.onBeforeGuardar()
 
-    this.cargarVista(async () => {
-      try {
-        const { response } = await this.controller.guardar(
-          data,
-          this.argsDefault
-        )
+    //return this.cargarVista(async (): Promise<any> => {
+    this.statusEssentialLoading.activar()
+    try {
+      const { response } = await this.controller.guardar(
+        data,
+        this.argsDefault
+      )
 
-        this.notificaciones.notificarCorrecto(response.data.mensaje)
-        this.agregarElementoListadoActual(response.data.modelo)
-        this.entidad.hydrate(response.data.modelo)
+      this.notificaciones.notificarCorrecto(response.data.mensaje)
+      if (agregarAlListado) this.agregarElementoListadoActual(response.data.modelo)
+      this.entidad.hydrate(response.data.modelo)
 
-        if (resetOnSaved) {
-          this.reestablecer()
+      /* if (resetOnSaved) {
+      } */
+
+
+      //console.log(this.entidad)
+      const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
+      this.reestablecer()
+      this.hooks.onGuardado()
+      return copiaEntidad
+      /* const stop = watchEffect(() => {
+        // console.log('dentrode  watch')
+        if (this.entidad.id !== null) {
+          this.hooks.onGuardado()
+          // console.log('ha sido guardado mixin')
+          stop()
         }
-
-        this.hooks.onGuardado()
-
-        /* const stop = watchEffect(() => {
-          // console.log('dentrode  watch')
-          if (this.entidad.id !== null) {
-            this.hooks.onGuardado()
-            // console.log('ha sido guardado mixin')
-            stop()
-          }
-        }) */
-        // @noImplicitAny: false
-      } catch (error: any) {
-        if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          await notificarMensajesError(mensajes, this.notificaciones)
-        }
+      }) */
+      // @noImplicitAny: false
+    } catch (error: any) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
       }
-    })
+      //})
+    }finally{
+      this.statusEssentialLoading.desactivar()
+    }
   }
 
   // Editar

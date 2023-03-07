@@ -2,13 +2,14 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -17,7 +18,6 @@ import { Devolucion } from '../domain/Devolucion'
 
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -29,16 +29,12 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { LocalStorage } from 'quasar'
-import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
-import { number } from '@intlify/core-base'
 import { Producto } from 'pages/bodega/productos/domain/Producto'
-import { watch } from 'vue'
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable },
+    components: { TabLayoutFilterTabs, EssentialTable, TablaDevolucionProducto, EssentialSelectableTable },
     emits: ['editar'],
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
@@ -73,6 +69,7 @@ export default defineComponent({
             soloLectura.value = false
         })
 
+        const opciones_productos = ref([])
         const opciones_empleados = ref([])
         const opciones_sucursales = ref([])
         const opciones_tareas = ref([])
@@ -159,7 +156,7 @@ export default defineComponent({
                 })
             },
             visible: ({ entidad, posicion }) => {
-                console.log(entidad)
+                // console.log(entidad)
                 return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante ? true : false
             }
         }
@@ -182,8 +179,8 @@ export default defineComponent({
             }
         }
 
-        const addRow: CustomActionTable = {
-            titulo: 'Agregar fila',
+        /* const addRow: CustomActionTable = {
+            titulo: 'Agregar ítem',
             icono: 'bi-plus',
             accion: () => {
                 const fila = []
@@ -191,7 +188,7 @@ export default defineComponent({
                 refModalEditable.value.abrirModalEntidad(fila, devolucion.listadoProductos.length - 1)
                 notificarCorrecto('Diste clic en añadir fila')
             }
-        }
+        } */
 
 
 
@@ -199,9 +196,10 @@ export default defineComponent({
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
+        opciones_productos.value = listadosAuxiliares.productos
 
 
-        const configuracionColumnasProductosSeleccionadosAccion: any = computed(() => [
+        /* const configuracionColumnasProductosSeleccionadosAccion: any = computed(() => [
             {
                 name: 'producto',
                 field: 'producto',
@@ -220,6 +218,13 @@ export default defineComponent({
                 sortable: true,
             },
             {
+                name: 'serial',
+                field: 'serial',
+                label: 'serial',
+                align: 'left',
+                sortable: true,
+            },
+            {
                 name: 'cantidad',
                 field: 'cantidad',
                 label: 'Cantidad',
@@ -234,7 +239,7 @@ export default defineComponent({
                 align: 'right',
                 sortable: false,
             }
-        ])
+        ]) */
 
         return {
             refModalEditable,
@@ -244,6 +249,7 @@ export default defineComponent({
             opciones_empleados,
             opciones_tareas,
             opciones_sucursales,
+            opciones_productos,
 
             //selector
             refListado,
@@ -255,10 +261,9 @@ export default defineComponent({
             configuracionColumnasDetallesModal,
 
             //boton de agregar fila
-            addRow,
+            // addRow,
 
             //tabla
-            configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
             botonEditarCantidad,
             eliminar,
@@ -274,8 +279,8 @@ export default defineComponent({
             tabSeleccionado,
 
             tabEs(val) {
-                console.log(tabSeleccionado.value)
-                console.log(val)
+                // console.log(tabSeleccionado.value)
+                // console.log(val)
                 tabSeleccionado.value = val
             },
 

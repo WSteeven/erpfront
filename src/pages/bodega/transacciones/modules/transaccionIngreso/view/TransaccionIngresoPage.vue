@@ -113,7 +113,10 @@
           </div>
           <!-- Tiene devolución -->
           <div
-            v-if="(accion === 'NUEVO' && !transaccion.es_transferencia) || (transaccion.tiene_devolucion&&!transaccion.es_transferencia)"
+            v-if="
+              (accion === 'NUEVO' && !transaccion.es_transferencia) ||
+              (transaccion.tiene_devolucion && !transaccion.es_transferencia)
+            "
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -261,7 +264,7 @@
           </div>
           <!-- Tarea -->
           <div
-            v-if="esVisibleTarea || esVisibleSubtarea"
+            v-if="esVisibleTarea"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Tarea</label>
@@ -445,6 +448,25 @@
               </template>
             </q-select>
           </div>
+          <!-- Listado de la devolución -->
+          <div
+            v-if="
+              listadoDevolucion !== undefined && listadoDevolucion.length > 0
+            "
+            class="col-12 col-md-12"
+          >
+            <q-table
+              flat
+              title="Listado de la devolución"
+              class="bg-body-table custom-border"
+              :rows="listadoDevolucion"
+              :columns="configuracionColumnasListadoProductosDevolucion"
+              row-key="id"
+              :hide-bottom="true"
+              dense
+            />
+          </div>
+
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -480,7 +502,6 @@
               </div>
             </div>
           </div>
-          {{ transaccion.listadoProductosTransaccion }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -490,14 +511,15 @@
               "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
-              :permitirEditar="!transaccion.ingreso_masivo && accion === acciones.nuevo"
+              :permitirEditar="
+                !transaccion.ingreso_masivo && accion === acciones.nuevo
+              "
               :permitirEliminar="true"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               @eliminar="eliminarItem"
               :permitirEditarModal="true"
               :modalMaximized="false"
-              :entidad="DetalleProducto"
             ></essential-table>
           </div>
         </div>

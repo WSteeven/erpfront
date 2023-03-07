@@ -15,17 +15,16 @@ import {
   rolesSistema,
   acciones,
   accionesTabla,
-  opcionesModoAsignacionTrabajo,
   tiposIntervenciones,
   causaIntervencion,
-  destinosTareas,
   maskFecha,
 } from 'config/utils'
+import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
-import { nivelesTrabajos } from 'config/trabajo.utils'
-import { useTrabajoStore } from 'stores/trabajo'
+import { nivelesTrabajos } from 'config/tareas.utils'
+import { useSubtareaStore } from 'stores/subtarea'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 
@@ -70,7 +69,7 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const trabajoStore = useTrabajoStore()
+    const subtareaStore = useSubtareaStore()
     const notificacionStore = useNotificacionStore()
     notificacionStore.setQuasar(useQuasar())
 
@@ -463,7 +462,7 @@ export default defineComponent({
     })
 
     onConsultado(() => {
-      if (trabajo.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
+      if (trabajo.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
         trabajo.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
           console.log(grupo)
           if (grupo.id) obtenerTecnicosGrupo(grupo.id)
@@ -726,7 +725,7 @@ export default defineComponent({
       seleccionarTecnico,
       seleccionarEmpleado,
       // cargarArchivos,
-      opcionesModoAsignacionTrabajo,
+      modosAsignacionTrabajo,
       cancelarDesignacion,
       verificarEsVentana,
       Empleado,
@@ -756,7 +755,7 @@ export default defineComponent({
       mostrarLabelModal,
       modales,
       configuracionColumnasTrabajo,
-      trabajoStore,
+      subtareaStore,
       nivelesTrabajos,
       acciones,
       clienteFinal,

@@ -23,7 +23,7 @@
       class=""
       :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
     >
-  </q-tab>
+    </q-tab>
   </q-tabs>
 
   <essential-table
@@ -58,6 +58,8 @@
     @accion6="emitAccion6"
     @accion7="emitAccion7"
     @accion8="emitAccion8"
+    :permitir-filtrar="permitirFiltrar"
+    :permitir-buscar="permitirBuscar"
   ></essential-table>
 </template>
 
@@ -172,6 +174,14 @@ const props = defineProps({
     required: true,
   },
   tabDefecto: String,
+  permitirFiltrar: {
+    type: Boolean,
+    default: false,
+  },
+  permitirBuscar: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmits([

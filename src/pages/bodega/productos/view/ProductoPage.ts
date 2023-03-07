@@ -47,7 +47,7 @@ export default defineComponent({
     const unidades_medidas = ref([])
 
     //Obtener el listado de las categorias
-    cargarVista(async() => {
+    cargarVista(async () => {
       obtenerListados({
         categorias: {
           controller: new CategoriaController(),

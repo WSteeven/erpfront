@@ -1,11 +1,18 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Trabajo } from 'gestionTrabajos/trabajos/domain/Trabajo'
+import { Subtarea } from 'gestionTrabajos/subtareas/domain/Subtarea'
 
-export const configuracionColumnasTrabajoAsignado: ColumnConfig<Trabajo>[] = [
+export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
   {
-    name: 'codigo_trabajo',
-    field: 'codigo_trabajo',
-    label: 'Cód. Trabajo',
+    name: 'tarea',
+    field: 'tarea',
+    label: 'Cód. Tarea',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'codigo_subtarea',
+    field: 'codigo_subtarea',
+    label: 'Cód. Subtarea',
     align: 'left',
     sortable: true,
   },
@@ -23,15 +30,22 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Trabajo>[] = [
     align: 'left',
   },
   {
-    name: 'empleados',
-    field: 'empleados',
-    label: 'Empleados',
+    name: 'estado',
+    field: 'estado',
+    label: 'Estado',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'empleado',
+    field: 'empleado',
+    label: 'Empleado designado',
     align: 'left',
   },
   {
-    name: 'grupos',
-    field: 'grupos',
-    label: 'Grupos',
+    name: 'grupo',
+    field: 'grupo',
+    label: 'Grupo designado',
     align: 'left',
   },
   {
@@ -66,16 +80,9 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Trabajo>[] = [
     align: 'left',
   },
   {
-    name: 'trabajo_dependiente',
-    field: 'trabajo_dependiente',
+    name: 'subtarea_dependiente',
+    field: 'subtarea_dependiente',
     label: 'Depende de',
     align: 'left',
-  },
-  {
-    name: 'estado',
-    field: 'estado',
-    label: 'Estado',
-    align: 'left',
-    sortable: true,
   },
 ]

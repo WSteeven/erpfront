@@ -25,7 +25,7 @@ import { ref } from 'vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { useTrabajoStore } from 'stores/trabajo'
+import { useSubtareaStore } from 'stores/subtarea'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 // Emits
@@ -34,12 +34,12 @@ defineEmits(['cerrar-modal', 'seleccionar'])
 /*********
  * Stores
  *********/
-const trabajoStore = useTrabajoStore()
+const subtareaStore = useSubtareaStore()
 
 /************
  * Variables
  ************/
-const codigoTrabajoSeleccionado = trabajoStore.codigoTrabajoSeleccionado
+const codigoTrabajoSeleccionado = subtareaStore.codigoTrabajoSeleccionado
 const listado = ref([])
 
 /*************
@@ -54,7 +54,7 @@ async function obtenerPausas() {
   const ruta =
     axios.getEndpoint(endpoints.pausas_trabajos) +
     '/' +
-    trabajoStore.idTrabajoSeleccionado
+    subtareaStore.idSubtareaSeleccionada
   const response: AxiosResponse = await axios.get(ruta)
   listado.value = response.data.results
 

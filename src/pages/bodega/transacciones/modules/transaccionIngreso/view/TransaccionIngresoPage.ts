@@ -1,5 +1,6 @@
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
+import { configuracionColumnasListadoProductosDevolucion } from '../../transaccionContent/domain/configuracionColumnasListadoProductosDevolucion'
 import { configuracionColumnasDetallesProductosSeleccionables } from '../domain/configuracionColumnasDetallesSeleccionables'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -35,7 +36,6 @@ import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraes
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 import { Cliente } from 'sistema/clientes/domain/Cliente'
 import { ordernarListaString } from 'shared/utils'
 import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
@@ -51,7 +51,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer } = mixin.useHooks()
+    const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
     //stores
@@ -64,6 +64,9 @@ export default defineComponent({
     const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
 
+    onGuardado(()=>{
+      listadoDevolucion.value = []
+    })
     onConsultado(() => {
       transaccion.solicitante = transaccion.solicitante_id
       console.log('la accion actual es: ', accion.value)
@@ -93,6 +96,7 @@ export default defineComponent({
     const estaInventariando = ref(true)
     const esVisibleComprobante = ref(false)
     const esVisibleTarea = ref(false)
+    let listadoDevolucion = ref()
 
     const opciones_autorizaciones = ref([])
     const opciones_sucursales = ref([])
@@ -144,6 +148,12 @@ export default defineComponent({
       condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
     }
 
+
+    /**
+     * It takes an id, loads a devolucion from the server, and then populates a form with the data from
+     * the devolucion.
+     * @param {number} id - number
+     */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
       await devolucionStore.cargarDevolucion(id)
@@ -152,7 +162,13 @@ export default defineComponent({
       transaccion.justificacion = devolucionStore.devolucion.justificacion
       transaccion.solicitante = devolucionStore.devolucion.solicitante
       transaccion.sucursal = devolucionStore.devolucion.sucursal
-      transaccion.listadoProductosTransaccion = devolucionStore.devolucion.listadoProductos
+      listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
+      listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
+      if (devolucionStore.devolucion.tarea) {
+        transaccion.es_tarea = true
+        transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea : devolucionStore.devolucion.tarea_id
+        filtroTareas(transaccion.tarea)
+      }
     }
 
     async function llenarTransferencia(id: number) {
@@ -175,6 +191,7 @@ export default defineComponent({
       transaccion.solicitante = null
       transaccion.sucursal = null
       transaccion.listadoProductosTransaccion = []
+      listadoDevolucion.value = []
     }
 
     const v$ = useVuelidate(reglas, transaccion)
@@ -240,7 +257,7 @@ export default defineComponent({
 
 
 
-    const configuracionColumnasProductosSeleccionadosAccion = computed(()=>[...configuracionColumnasProductosSeleccionados,
+    const configuracionColumnasProductosSeleccionadosAccion = computed(() => [...configuracionColumnasProductosSeleccionados,
     {
       name: 'condiciones',
       field: 'condiciones',
@@ -249,7 +266,7 @@ export default defineComponent({
       sortable: false,
       visible: true,
       type: 'select',
-      options: opciones_condiciones.value.map((v:Condicion)=>{return {label:v.nombre}})
+      options: opciones_condiciones.value.map((v: Condicion) => { return { label: v.nombre } })
     },
     {
       name: 'cantidad',
@@ -285,7 +302,8 @@ export default defineComponent({
       opciones_clientes,
       opciones_empleados,
       opciones_condiciones,
-      DetalleProducto,
+
+      listadoDevolucion,
 
 
       acciones,
@@ -325,6 +343,8 @@ export default defineComponent({
       // botonDespachar,
       eliminarItem,
 
+      //listado de devoluciones
+      configuracionColumnasListadoProductosDevolucion,
 
       //selector
       refListadoSeleccionableProductos,

@@ -22,6 +22,7 @@ export class Emergencia extends EntidadAuditable {
   materiales_ocupados: MaterialOcupadoFormulario[]
   imagen_lectura_antes: string | null
   trabajo: number | null
+  materiales_devolucion: []
 
   constructor() {
     super()
@@ -43,5 +44,6 @@ export class Emergencia extends EntidadAuditable {
     this.imagen_lectura_antes = null
     this.materiales_ocupados = []
     this.trabajo = null
+    this.materiales_devolucion = []
   }
 }

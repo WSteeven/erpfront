@@ -431,6 +431,7 @@
           separador="cell"
           :accion1Header="agregarActividadRealizada"
           @eliminar="eliminarTrabajoRealizado"
+          :modalMaximized="$q.screen.xs"
         ></essential-table>
       </div>
 
@@ -448,6 +449,7 @@
           separador="cell"
           :accion1Header="agregarObservacion"
           @eliminar="eliminarObservacion"
+          :modalMaximized="$q.screen.xs"
         ></essential-table>
       </div>
 
@@ -466,6 +468,17 @@
           separador="cell"
           :accion1="botonEditarCantidad"
         ></essential-table>
+      </div>
+
+      <div class="q-mb-md">
+        <tabla-devolucion-producto
+          :listado="emergencia.materiales_devolucion"
+          :listadoProductos="listadosAuxiliares.productos"
+          @actualizar="(data) => (emergencia.materiales_devolucion = data)"
+          :alto-fijo="false"
+          :mostrarFooter="!emergencia.materiales_devolucion.length"
+        >
+        </tabla-devolucion-producto>
       </div>
     </div>
 
