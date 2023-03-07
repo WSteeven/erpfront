@@ -19,7 +19,6 @@ import { CantonController } from "sistema/ciudad/infraestructure/CantonControlle
 import { ParroquiaController } from "sistema/parroquia/infraestructure/ParroquiaController";
 import { Parroquia } from "sistema/parroquia/domain/Parroquia";
 import { ComportamientoModalesCliente } from "../application/ComportamientoModalesCliente";
-import { watch } from "fs";
 
 
 export default defineComponent({
@@ -43,7 +42,6 @@ export default defineComponent({
                 cantones: new CantonController(),
                 parroquias: new ParroquiaController(),
             })
-            console.log(cliente)
         })
 
         /**************************************************************
@@ -72,7 +70,7 @@ export default defineComponent({
             mixin, cliente, disabled, v$, accion,
             configuracionColumnas: configuracionColumnasClientes,
 
-            //listado tipos_contribuyentes
+            //listados
             opciones_empresas,
             opciones_cantones,
             opciones_parroquias,
