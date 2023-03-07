@@ -438,6 +438,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       }, */
+      {
+        path: '/cambiar-contrasena',
+        name: 'cambiar_contrasena',
+        component: () =>
+          import(
+            'pages/administracion/cambiarContrasena/view/cambiarContrasenaPage.vue',
+          ),
+        meta: { requiresAuth: true },
+      },
       //Fondos Rotativos
       {
         path: '/gasto',

@@ -82,10 +82,12 @@ export default defineComponent({
       },
     ]
 
-    if (!listadoCargado) {
+    if (!listadoCargado && props.mostrarListado) {
       listar()
       listadoCargado = true
     }
+
+
 
     const seleccionado = ref()
 

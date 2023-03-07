@@ -252,6 +252,12 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    {
+      title: 'Cambiar contraseña',
+      icon: 'bi-lock',
+      link: 'cambiar-contrasena',
+      can: store.can('puede.ver.cambiar_contrasena'),
+    },
     //Modulo Fondos Rotativos
     {
       title: 'Fondos Rotativos',
@@ -324,13 +330,13 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Saldo Consolidado con Filtro',
               link: 'reporte-consolidado-filtrado',
               icon: 'bi-circle',
-              can: true,//store.can('puede.ver.reporte_consolidado_filtrado'),
+              can: store.can('puede.ver.reporte_consolidado_filtrado'),
             },
             {
               title: 'Contabilidad',
               link: 'reporte-contabilidad',
               icon: 'bi-circle',
-              can: true,//store.can('puede.ver.reporte_contabilidad'),
+              can: store.can('puede.ver.reporte_contabilidad'),
             }
           ]
         },
