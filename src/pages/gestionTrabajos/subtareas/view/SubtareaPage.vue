@@ -530,15 +530,17 @@
       </div>
     </q-expansion-item>
 
-    <b class="block q-mb-md">Compartir archivos</b>
-    <div class="col-12 q-mb-md">
+    <b v-if="accion === acciones.nuevo" class="block q-mb-md"
+      >Compartir archivos</b
+    >
+    <div v-if="accion === acciones.nuevo" class="col-12 q-mb-md">
       <q-uploader
         ref="refUploader"
         label="Selecciona o arrastra tus archivos aquí"
         multiple
         style="width: 100%"
         flat
-        :factory="subirArchivo"
+        :factory="factoryFn"
         color="white"
         text-color="black"
         class="bg-header-collapse expansion"
@@ -546,9 +548,9 @@
       />
     </div>
 
-    <!--<div class="col-12">
+    <div v-if="archivos.length && accion !== acciones.nuevo" class="col-12">
       <essential-table
-        titulo="Archivos compartidos hasta el momento"
+        titulo="Archivos compartidos"
         :configuracionColumnas="columnasArchivos"
         :datos="archivos"
         :alto-fijo="false"
@@ -558,11 +560,9 @@
         :mostrar-footer="false"
         :mostrar-botones="false"
         :permitir-buscar="false"
-        :accion1="botonDescargar"
-        :accion2="botonComentar"
-        :accion3="botonEliminar"
+        :accion1="btnDescargarArchivo"
       ></essential-table>
-    </div> -->
+    </div>
 
     <button-submits
       :accion="accion"

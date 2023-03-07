@@ -5,7 +5,7 @@ import { configuracionColumnasClientes } from 'sistema/clientes/domain/configura
 import { configuracionColumnasTarea } from '../domain/configuracionColumnasTarea'
 import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, accionesTabla, rolesSistema } from 'config/utils'
+import { acciones, accionesTabla, maskFecha, rolesSistema } from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
@@ -198,11 +198,7 @@ export default defineComponent({
     })
 
     function verificarEsVentana() {
-      if (!tarea.es_ventana) {
-        // trabajo.fecha_agendado = null
-        // trabajo.hora_inicio_ventana = null
-        tarea.hora_fin_agendado = null
-      }
+      if (!tarea.es_ventana) tarea.hora_fin_agendado = null
     }
 
     // Informacion de cliente final
@@ -238,6 +234,15 @@ export default defineComponent({
         tarea.subtarea = new Subtarea()
         tarea.subtarea.titulo = tarea.titulo
         tarea.subtarea.observacion = tarea.observacion
+        tarea.subtarea.descripcion_completa = tarea.descripcion_completa
+        tarea.subtarea.tipo_trabajo = tarea.tipo_trabajo
+        tarea.subtarea.es_ventana = tarea.es_ventana
+        tarea.subtarea.fecha_agendado = tarea.fecha_agendado
+        tarea.subtarea.hora_inicio_agendado = tarea.hora_inicio_agendado
+        tarea.subtarea.hora_fin_agendado = tarea.hora_fin_agendado
+        tarea.subtarea.grupo = tarea.grupo
+        tarea.subtarea.empleado = tarea.empleado
+        tarea.subtarea.modo_asignacion_trabajo = tarea.modo_asignacion_trabajo
       }
     })
 
@@ -331,7 +336,8 @@ export default defineComponent({
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
       botonFormulario, botonSubirArchivos, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
       tabOptionsEstadosSubtareas,
-      indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white')
+      indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white'),
+      maskFecha,
     }
   },
 })

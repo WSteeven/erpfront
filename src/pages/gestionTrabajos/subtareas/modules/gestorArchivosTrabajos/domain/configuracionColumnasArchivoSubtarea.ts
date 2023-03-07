@@ -15,11 +15,4 @@ export const configuracionColumnasArchivoSubtarea: ColumnConfig<Archivo>[] = [
     align: 'left',
     editable: false,
   },
-  {
-    name: 'comentario',
-    field: 'comentario',
-    label: 'Comentario',
-    align: 'left',
-    editable: false,
-  },
 ]

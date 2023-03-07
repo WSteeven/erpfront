@@ -49,9 +49,14 @@ import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFina
 import { useBotonesTablaSubtarea } from '../application/BotonesTablaSubtarea'
 import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { Subtarea } from '../domain/Subtarea'
-import { useSubirArchivos } from '../application/SubirArchivos'
 import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { Subtarea } from '../domain/Subtarea'
+import { AxiosError } from 'axios'
+import { ArchivoSubtareaController } from '../modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
+import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
+import { descargarArchivoUrl } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad },
@@ -77,6 +82,11 @@ export default defineComponent({
     const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador, filtrar } = props.mixinModal.useComportamiento()
     const { onBeforeGuardar, onConsultado } = props.mixinModal.useHooks()
 
+    const mixinArchivo = new ContenedorSimpleMixin(Archivo, new ArchivoSubtareaController())
+    const { listado: archivos } = mixinArchivo.useReferencias()
+    const { listar: listarArchivos } = mixinArchivo.useComportamiento()
+
+
     cargarVista(async () => {
       await obtenerListados({
         tiposTrabajos: new TipoTrabajoController(),
@@ -101,9 +111,11 @@ export default defineComponent({
 
     /*******
      * Init
-     *******/
-    if (subtareaStore.idSubtareaSeleccionada) consultar({ id: subtareaStore.idSubtareaSeleccionada })
-    else subtarea.hydrate(new Subtarea())
+    *******/
+    if (subtareaStore.idSubtareaSeleccionada) {
+      consultar({ id: subtareaStore.idSubtareaSeleccionada })
+      listarArchivos({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
+    } else subtarea.hydrate(new Subtarea())
 
     subtarea.tarea = subtareaStore.codigoTarea
     subtarea.observacion = subtareaStore.observacionTarea
@@ -116,7 +128,7 @@ export default defineComponent({
     const asignarSecretario = ref(false)
     const tipoSeleccion = computed(() => asignarJefe.value || asignarSecretario.value ? 'single' : 'none')
     const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
-    const { notificarAdvertencia } = useNotificaciones()
+    const { notificarError, notificarCorrecto } = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
     const tecnicoSeleccionado = ref()
     const busqueda = ref()
@@ -326,42 +338,41 @@ export default defineComponent({
       return listado !== '' ? listado : null
     }*/
 
-    const archivos = ref()
     const refUploader = ref()
 
-    let botonEliminar, botonComentar, botonDescargar, subirArchivo
-    const columnasArchivos = ref()
+    //const columnasArchivos = ref()
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
+    let idSubtarea
+
+    async function factoryFn(files) {
+      const fd = new FormData()
+      fd.append('file', files[0])
+      fd.append('subtarea_id', idSubtarea)
+
+      try {
+        const response: any = await axios.post(ruta, fd)
+        notificarCorrecto(response.data.mensaje)
+      } catch (error: any) {
+        const axiosError = error as AxiosError
+        notificarError(axiosError.response?.data.mensaje)
+      }
+    }
 
     async function guardarDatos(subtarea: Subtarea) {
       try {
-        //const idSubtarea = subtarea.id
         const entidad: Subtarea = await guardar(subtarea, false)
-
-        /*console.log('trabajo guardado')
-        console.log(subtarea)
-        listado.value = [subtarea, ...listado.value]*/
         const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
 
-        console.log(entidad)
-
         if (entidad.id) {
-          console.log(entidad)
           const { result } = await cambiarEstadoTrabajo.asignar(entidad.id)
           entidad.estado = estadosTrabajos.ASIGNADO
           entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
           listado.value = [...listado.value, entidad]
-          //actualizarElemento(posicion, entidad)
 
           // Subir archivos
+          idSubtarea = entidad.id
           refUploader.value.upload()
-          const { listado: listadoArchivos, btnEliminar, btnComentar, btnDescargar, factoryFn } = useSubirArchivos(entidad.id)
-          /*archivos.value = listadoArchivos.value
-          botonEliminar = btnEliminar
-          botonComentar = btnComentar
-          botonDescargar = btnDescargar*/
-          subirArchivo = factoryFn
-          // columnasArchivos.value = columnas
-          // console.log(columnas)
         }
 
         emit('cerrar-modal')
@@ -369,7 +380,12 @@ export default defineComponent({
       } catch (e) { }
     }
 
-
+    const btnDescargarArchivo: CustomActionTable = {
+      titulo: 'Descargar',
+      icono: 'bi-download',
+      color: 'positive',
+      accion: ({ entidad }) => descargarArchivoUrl(entidad.ruta)
+    }
 
     /* async function editarDatos(subtarea: Subtarea) {
       try {
@@ -584,8 +600,9 @@ export default defineComponent({
       botonEditarTrabajo,
       configuracionColumnasEmpleadoSeleccionado,
       archivos,
-      botonEliminar, botonComentar, botonDescargar, subirArchivo,
+      factoryFn,
       columnasArchivos: [...configuracionColumnasArchivoSubtarea, accionesTabla],
+      btnDescargarArchivo,
       // Filtros
       clientes,
       filtrarClientes,
