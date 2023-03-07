@@ -264,7 +264,6 @@ export default defineComponent({
             // addRow,
 
             //tabla
-            configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
             botonEditarCantidad,
             eliminar,
