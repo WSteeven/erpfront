@@ -267,6 +267,7 @@ import moment from 'moment'
 import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacionRealtime'
 import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusherEvent'
 import { useNotificaciones } from 'shared/notificaciones'
+import { GastoPusherEvent } from 'pages/fondosRotativos/gasto/application/GastoPusherEvent'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -321,8 +322,10 @@ export default defineComponent({
     pedidoPusherEvent.start()
     //subtareas
 
-    //....
-    
+    //fondos rotativos
+    const fondosRotativoPusherEvent = new GastoPusherEvent();
+    fondosRotativoPusherEvent.start();
+
 
 
 
