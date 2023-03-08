@@ -1,6 +1,5 @@
 <template>
-  <tab-layout :mixin="mixin" :mostrarListado="false">
-    <template #formulario>
+
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
           <!-- Contraseña Actual -->
@@ -91,8 +90,13 @@
             </q-input>
           </div>
         </div>
+
+        <button-submits
+            accion="NUEVO"
+            :permitirCancelar="false"
+            @guardar="cambiar(entidad)"
+          />
       </q-form>
-    </template>
-  </tab-layout>
+
 </template>
 <script src="./cambiarContrasenaPage.ts"></script>
