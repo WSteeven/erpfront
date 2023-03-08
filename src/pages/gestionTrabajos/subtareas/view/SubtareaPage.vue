@@ -413,6 +413,34 @@
             </template>
           </q-select>
         </div>
+
+        <div class="col-12">
+          <essential-table
+            v-if="
+              subtarea.modo_asignacion_trabajo ===
+              modosAsignacionTrabajo.por_grupo
+            "
+            titulo="Empleado de los grupo seleccionado"
+            estilos="margin-bottom: 14px;"
+            :configuracionColumnas="columnasEmpleado"
+            :datos="empleadosSeleccionados"
+            :accion1Header="asignarNuevoTecnicoLider"
+            :accion2Header="designarNuevoSecretario"
+            :accion3Header="cancelarDesignacion"
+            :accion1="quitarEmpleado"
+            :mostrarBotones="false"
+            :permitirConsultar="false"
+            :permitirEditar="false"
+            :permitirEliminar="false"
+            :alto-fijo="false"
+            :mostrar-header="true"
+            :permitir-buscar="false"
+            :tipo-seleccion="tipoSeleccion"
+            :mostrar-footer="!empleadosSeleccionados.length"
+          >
+            <!--@selected="entidadSeleccionada" -->
+          </essential-table>
+        </div>
       </div>
     </q-expansion-item>
 

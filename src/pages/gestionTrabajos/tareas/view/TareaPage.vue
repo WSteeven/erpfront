@@ -316,6 +316,16 @@
                   ></q-checkbox>
                 </div>
 
+                <!--<div class="col-12 col-md-3">
+                  <br />
+                  <q-toggle
+                    v-model="tarea.finalizado"
+                    checked-icon="check"
+                    color="positive"
+                    label="Marcar tarea como finalizada"
+                  />
+                </div> -->
+
                 <!-- Titulo -->
                 <div class="col-12">
                   <label class="q-mb-sm block">Título de la tarea</label>
@@ -441,11 +451,13 @@
                 </div>
 
                 <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Fecha de agendamiento</label>
+                  <label class="q-mb-sm block"
+                    >Fecha de inicio del trabajo</label
+                  >
                   <q-input
-                    v-model="tarea.fecha_agendado"
+                    v-model="tarea.fecha_inicio_trabajo"
                     :placeholder="tarea.es_ventana ? 'Obligatorio' : 'Opcional'"
-                    :error="!!v$.fecha_agendado.$errors.length"
+                    :error="!!v$.fecha_inicio_trabajo.$errors.length"
                     outlined
                     :disable="disabled"
                     dense
@@ -458,7 +470,7 @@
                           transition-hide="scale"
                         >
                           <q-date
-                            v-model="tarea.fecha_agendado"
+                            v-model="tarea.fecha_inicio_trabajo"
                             :mask="maskFecha"
                             today-btn
                           >
@@ -477,7 +489,7 @@
 
                     <template v-slot:error>
                       <div
-                        v-for="error of v$.fecha_agendado.$errors"
+                        v-for="error of v$.fecha_inicio_trabajo.$errors"
                         :key="error.$uid"
                       >
                         <div class="error-msg">{{ error.$message }}</div>
@@ -492,8 +504,8 @@
                     >Hora inicio de agendamiento (24H)</label
                   >
                   <q-input
-                    v-model="tarea.hora_inicio_agendado"
-                    :error="!!v$.hora_inicio_agendado.$errors.length"
+                    v-model="tarea.hora_inicio_trabajo"
+                    :error="!!v$.hora_inicio_trabajo.$errors.length"
                     type="time"
                     :disable="disabled"
                     stack-label
@@ -502,7 +514,7 @@
                   >
                     <template v-slot:error>
                       <div
-                        v-for="error of v$.hora_inicio_agendado.$errors"
+                        v-for="error of v$.hora_inicio_trabajo.$errors"
                         :key="error.$uid"
                       >
                         <div class="error-msg">{{ error.$message }}</div>
@@ -517,8 +529,8 @@
                     >Hora fin de agendamiento (24H)</label
                   >
                   <q-input
-                    v-model="tarea.hora_fin_agendado"
-                    :error="!!v$.hora_fin_agendado.$errors.length"
+                    v-model="tarea.hora_fin_trabajo"
+                    :error="!!v$.hora_fin_trabajo.$errors.length"
                     type="time"
                     stack-label
                     outlined
@@ -527,7 +539,7 @@
                   >
                     <template v-slot:error>
                       <div
-                        v-for="error of v$.hora_fin_agendado.$errors"
+                        v-for="error of v$.hora_fin_trabajo.$errors"
                         :key="error.$uid"
                       >
                         <div class="error-msg">{{ error.$message }}</div>

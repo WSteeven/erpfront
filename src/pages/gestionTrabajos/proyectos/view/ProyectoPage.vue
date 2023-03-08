@@ -285,6 +285,16 @@
               </template>
             </q-select>
           </div>
+
+          <div class="col-12 col-md-3">
+            <br />
+            <q-toggle
+              v-model="proyecto.finalizado"
+              checked-icon="check"
+              color="positive"
+              label="Marcar proyecto como finalizado"
+            />
+          </div>
         </div>
       </q-form>
     </template>

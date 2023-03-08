@@ -65,17 +65,18 @@
                   round
                   :class="{
                     'bg-grey-9': $q.dark.isActive,
-                    'bg-white': !$q.dark.isActive,
+                    'bg-grey-6': !$q.dark.isActive,
                   }"
                   unelevated
                   @click="mostrarNotificaciones = false"
                 ></q-btn>
               </div>
               <q-list style="min-width: 120px; max-width: 400px">
-                <q-item class="text-center" v-if="notificaciones.length===0">
-                <q-item-section>
-                  <q-item-label>No tienes notificaciones nuevas</q-item-label>
-                </q-item-section></q-item>
+                <q-item class="text-center" v-if="notificaciones.length === 0">
+                  <q-item-section>
+                    <q-item-label>No tienes notificaciones nuevas</q-item-label>
+                  </q-item-section></q-item
+                >
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
@@ -85,7 +86,12 @@
                     <q-icon color="info" :name="notificacion.icono" size="sm" />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label><q-breadcrumbs><q-breadcrumbs-el :label="notificacion.mensaje" :href="notificacion.link" /></q-breadcrumbs></q-item-label>
+                    <q-item-label
+                      ><q-breadcrumbs
+                        ><q-breadcrumbs-el
+                          :label="notificacion.mensaje"
+                          :href="notificacion.link" /></q-breadcrumbs
+                    ></q-item-label>
                   </q-item-section>
 
                   <q-item-section side top
@@ -93,7 +99,7 @@
                     <q-item-label caption
                       ><q-breadcrumbs class="text-blue text-right">
                         <q-breadcrumbs-el
-                        icon="bi-check"
+                          icon="bi-check"
                           label="leída"
                           @click="marcarLeida(notificacion.id)"
                         /> </q-breadcrumbs
@@ -114,8 +120,10 @@
           </q-btn>
 
           <q-btn dense round flat @click.self="mostrarMenu = true">
-            <q-avatar size="32px" class="double-border">
-              <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+            <q-avatar size="36px" class="double-border">
+              <img
+                src="https://ui-avatars.com/api/?name=John+Doe&bold=true&background=99c3e7"
+              />
             </q-avatar>
 
             <q-menu
@@ -230,7 +238,7 @@
           <essential-loading></essential-loading>
         </transition>
 
-        <component :is="Component" @notificar="actualizarNotificaciones" />
+        <component :is="Component" />
         <!--<footer-component></footer-component> -->
       </router-view>
     </q-page-container>
@@ -240,7 +248,7 @@
 <script lang="ts">
 // Dependencias
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, Ref } from 'vue'
 import { useMenuStore } from 'src/stores/menu'
 import { useRouter } from 'vue-router'
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
@@ -299,23 +307,13 @@ export default defineComponent({
     notificacionesPusherStore.listar() //cargar las notificaciones de la base de datos
 
     //configuracion de las notificaciones
-    const notificaciones = computed(
+    const notificaciones: Ref<Notificacion[]> = computed(
       () => notificacionesPusherStore.listadoNotificaciones
     )
 
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
       await notificacionesPusherStore.marcarLeida()
-    }
-
-    async function actualizarNotificaciones(val) {
-      /* notificaciones.value.push({
-        id: notificaciones.value.length + 1,
-        title: val,
-      }) */
-      console.log(notificacionesPusherStore.listadoNotificaciones)
-      // notificaciones.value = notificacionesPusherStore.listadoNotificaciones
-      // console.log('entró aqui?',val, notificaciones.value.length);
     }
 
     return {
@@ -334,7 +332,6 @@ export default defineComponent({
       mostrarNotificaciones: ref(false),
       notificaciones,
       marcarLeida,
-      actualizarNotificaciones,
       ordenarNotificaciones() {
         notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
           return b.id! - a.id!

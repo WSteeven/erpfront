@@ -1,9 +1,11 @@
 // Dependencias
-import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
+import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
+// import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
+import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, Ref, ref, watchEffect } from 'vue'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,
@@ -27,6 +29,7 @@ import { useSubtareaStore } from 'stores/subtarea'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
+
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
@@ -36,20 +39,16 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { ClienteFinalController } from 'gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ProyectoController } from 'gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
 import { TareaController } from 'gestionTrabajos/tareas/infraestructure/TareaController'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
-import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { useBotonesTablaSubtarea } from '../application/BotonesTablaSubtarea'
 import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
@@ -130,10 +129,11 @@ export default defineComponent({
     const asignarSecretario = ref(false)
     const tipoSeleccion = computed(() => asignarJefe.value || asignarSecretario.value ? 'single' : 'none')
     const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
-    const { notificarError, notificarCorrecto } = useNotificaciones()
+    const { notificarError, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
     const tecnicoSeleccionado = ref()
     const busqueda = ref()
+    const empleadosSeleccionados: Ref<Empleado[]> = ref([])
 
     /**************
      * Referencias
@@ -222,22 +222,22 @@ export default defineComponent({
       visible: () => [acciones.editar, acciones.nuevo].includes(accion.value) && !(asignarJefe.value || asignarSecretario.value),
       accion: ({ entidad, posicion }) => {
         // NO BORRAR
-        /* if (subtarea.modo_asignacion_trabajo === opcionesModoAsignacionTrabajo.por_grupo) {
-          if (esLider(entidad)) {
+        if (subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
+          if (entidad.roles.includes(rolesSistema.tecnico_lider)) {
             asignarJefe.value = true
             asignarSecretario.value = false
-            empleadoSeleccionadoAsignacionQuitar.value = entidad
-            return notificaciones.notificarAdvertencia('Debes asignar a un reemplazo para el jefe de cuadrilla seleccionado!')
+            // empleadoSeleccionadoAsignacionQuitar.value = entidad
+            return notificarAdvertencia('Debes asignar a un reemplazo para el jefe de cuadrilla seleccionado!')
           }
-          if (esSecretario(entidad)) {
+          if (entidad.roles.includes(rolesSistema.secretario)) {
             asignarJefe.value = false
             asignarSecretario.value = true
-            empleadoSeleccionadoAsignacionQuitar.value = entidad
-            return notificaciones.notificarAdvertencia('Debes asignar a un reemplazo para el secretario de cuadrilla seleccionado')
+            // empleadoSeleccionadoAsignacionQuitar.value = entidad
+            return notificarAdvertencia('Debes asignar a un reemplazo para el secretario de cuadrilla seleccionado')
           }
-        } */
+        }
 
-        // subtarea.empleados_seleccionados.splice(posicion, 1)
+        empleadosSeleccionados.value.splice(posicion, 1)
       },
     }
 
@@ -470,24 +470,20 @@ export default defineComponent({
         subtarea.grupo = null
 
       } else notificarAdvertencia('Debe seleccionar un grupo')
-    }
+    }*/
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      subtarea.empleados_seleccionados.push(...result)
-    } */
+      empleadosSeleccionados.value.push(...result)
+    }
 
     /* function cargarArchivos(files: File[]) {
       subtarea.archivos = files
     } */
 
     function verificarEsVentana() {
-      if (!subtarea.es_ventana) {
-        // subtarea.fecha_agendado = null
-        // subtarea.hora_inicio_ventana = null
-        subtarea.hora_fin_trabajo = null
-      }
+      if (!subtarea.es_ventana) subtarea.hora_fin_trabajo = null
     }
 
     /************
@@ -495,6 +491,9 @@ export default defineComponent({
     ************/
     // const controller = new ClienteFinalController()
 
+    watchEffect(() => {
+      if (subtarea.grupo) obtenerTecnicosGrupo(subtarea.grupo)
+    })
     /*watchEffect(async () => {
       if (subtarea.cliente) {
         clientesFinalesSource.value = (await controller.listar({ cliente: subtarea.cliente })).result
@@ -549,13 +548,10 @@ export default defineComponent({
     } */
 
     return {
-      // filtrarTodos,
-      // Referencias
+      v$,
       refEmpleadosAsignados,
       refUploader,
-      // Others
-      v$,
-      //mixin,
+      empleadosSeleccionados,
       listado,
       subtarea,
       seleccionBusqueda,
@@ -566,47 +562,35 @@ export default defineComponent({
       quitarEmpleado,
       asignarNuevoTecnicoLider,
       designarNuevoSecretario,
-      // designarEmpleadoResponsable,
       listadosAuxiliares,
       tecnicosGrupoPrincipal,
       tiposInstalaciones,
       tiposTareasTelconet,
       tiposTareasNedetel,
       fab: ref(false),
-      // listados predefinidos
       regiones,
       atenciones,
       tiposIntervenciones,
       causaIntervencion,
-      //agregarGrupoSeleccionado,
       guardarDatos,
       reestablecerDatos,
       accion,
       disabled,
-      configuracionColumnasEmpleadoGrupo,
+      columnasEmpleado: [...configuracionColumnasEmpleadoGrupo, accionesTabla],
+      columnasArchivos: [...configuracionColumnasArchivoSubtarea, accionesTabla],
       tipoSeleccion,
-      // quitarGrupo,
-      // cargarArchivos,
       modosAsignacionTrabajo,
       cancelarDesignacion,
       verificarEsVentana,
       Empleado,
-      // designarGrupoPrincipal,
       destinosTareas,
-      // paraProyecto,
-      // paraClienteFinal,
       guardar,
       editar,
       reestablecer,
-      // obtenerClienteFinal,
-      // setCliente,
-      // mostrarLabelModal,
       modales,
-      //configuracionColumnasTrabajo,
       subtareaStore,
       nivelesTrabajos,
       acciones,
-      // clienteFinal,
       maskFecha,
       botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
       accionesTabla,
@@ -614,7 +598,6 @@ export default defineComponent({
       configuracionColumnasEmpleadoSeleccionado,
       archivos,
       factoryFn,
-      columnasArchivos: [...configuracionColumnasArchivoSubtarea, accionesTabla],
       btnDescargarArchivo,
       // Filtros
       clientes,

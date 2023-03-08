@@ -49,7 +49,7 @@ export class Subtarea extends EntidadAuditable {
   subtarea_dependiente_id: number | null
 
   empleado: number | string | null
-  grupo: number | string | null
+  grupo: number | null
 
   canton: string | null
   cantidad_subtareas: number | null
