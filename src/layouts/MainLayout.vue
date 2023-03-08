@@ -46,7 +46,7 @@
             color="grey-8"
             @click.self="mostrarNotificaciones = true"
           >
-            <q-badge color="info" floating
+            <q-badge v-if="notificaciones.length > 0" color="info" floating
               >{{ notificaciones.length }}
             </q-badge>
             <q-menu
@@ -59,30 +59,46 @@
               class="window-height"
               max-height="100vh"
             >
-                <div class="full-width text-right q-pr-md">
-                  <q-btn
-                    icon="bi-x"
-                    round
-                    :class="{
-                      'bg-grey-9': $q.dark.isActive,
-                      'bg-white': !$q.dark.isActive,
-                    }"
-                    unelevated
-                    @click="mostrarNotificaciones = false"
-                  ></q-btn>
-                </div>
+              <div class="full-width text-right q-pr-md">
+                <q-btn
+                  icon="bi-x"
+                  round
+                  :class="{
+                    'bg-grey-9': $q.dark.isActive,
+                    'bg-white': !$q.dark.isActive,
+                  }"
+                  unelevated
+                  @click="mostrarNotificaciones = false"
+                ></q-btn>
+              </div>
               <q-list style="min-width: 120px; max-width: 400px">
+                <q-item class="text-center" v-if="notificaciones.length===0">
+                <q-item-section>
+                  <q-item-label>No tienes notificaciones nuevas</q-item-label>
+                </q-item-section></q-item>
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
-                  clickable
-                  :to="notificacion.link"
                   v-ripple
                 >
                   <q-item-section avatar>
-                    <q-icon color="info" name="bi-app" size="xs" />
+                    <q-icon color="info" :name="notificacion.icono" size="sm" />
                   </q-item-section>
-                  <q-item-section>{{ notificacion.mensaje }}</q-item-section>
+                  <q-item-section>
+                    <q-item-label><q-breadcrumbs><q-breadcrumbs-el :label="notificacion.mensaje" :href="notificacion.link" /></q-breadcrumbs></q-item-label>
+                  </q-item-section>
+
+                  <q-item-section side top
+                    >{{ moment(notificacion.created_at).fromNow() }}
+                    <q-item-label caption
+                      ><q-breadcrumbs class="text-blue text-right">
+                        <q-breadcrumbs-el
+                        icon="bi-check"
+                          label="leída"
+                          @click="marcarLeida(notificacion.id)"
+                        /> </q-breadcrumbs
+                    ></q-item-label>
+                  </q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -235,6 +251,7 @@ import FooterComponent from 'components/FooterComponent.vue'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
+import moment from 'moment'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -286,6 +303,11 @@ export default defineComponent({
       () => notificacionesPusherStore.listadoNotificaciones
     )
 
+    async function marcarLeida(id) {
+      notificacionesPusherStore.idNotificacion = id
+      await notificacionesPusherStore.marcarLeida()
+    }
+
     async function actualizarNotificaciones(val) {
       /* notificaciones.value.push({
         id: notificaciones.value.length + 1,
@@ -311,12 +333,14 @@ export default defineComponent({
       mostrarMenu: ref(false),
       mostrarNotificaciones: ref(false),
       notificaciones,
+      marcarLeida,
       actualizarNotificaciones,
       ordenarNotificaciones() {
         notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
           return b.id! - a.id!
         })
       },
+      moment,
     }
   },
 })
