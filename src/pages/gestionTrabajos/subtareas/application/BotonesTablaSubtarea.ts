@@ -104,6 +104,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
       subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
       subtareaStore.idSubtareaSeleccionada = entidad.id
+      subtareaStore.posicionSubtareaSeleccionada = posicion
       subtareaStore.subtareaEsVentana = entidad.es_ventana
       subtareaStore.fechaInicioTrabajo = entidad.fecha_inicio_trabajo
       subtareaStore.horaInicioTrabajo = entidad.hora_inicio_trabajo
