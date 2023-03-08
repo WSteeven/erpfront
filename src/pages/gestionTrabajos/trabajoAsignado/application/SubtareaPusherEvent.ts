@@ -23,7 +23,7 @@ export class SubtareaPusherEvent {
 
     pusher.subscribe('subtareas-tracker')
     pusher.bind('subtarea-event', function (e) {
-      if (puedeEjecutar.value) accion(estadosTrabajos.ASIGNADO)
+      if (puedeEjecutar.value) accion(estadosTrabajos.AGENDADO)
     })
   }
 }

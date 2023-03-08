@@ -102,11 +102,18 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     icono: 'bi-calendar-check',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.PENDIENTE,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
-      const config: CustomActionPrompt = {
+      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
+      subtareaStore.idSubtareaSeleccionada = entidad.id
+      subtareaStore.subtareaEsVentana = entidad.es_ventana
+      subtareaStore.fechaInicioTrabajo = entidad.fecha_inicio_trabajo
+      subtareaStore.horaInicioTrabajo = entidad.hora_inicio_trabajo
+      subtareaStore.horaFinTrabajo = entidad.hora_fin_trabajo
+      modales.abrirModalEntidad('ReagendarPage')
+      /* const config: CustomActionPrompt = {
         mensaje: 'Ingrese la nueva fecha',
         tipo: 'date',
         accion: async (data) => {
-          const { result } = await cambiarEstadoTrabajo.reagendar(entidad.id, data)
+           const { result } = await cambiarEstadoTrabajo.reagendar(entidad.id, data)
           entidad.estado = estadosTrabajos.CREADO
           entidad.fecha_hora_creacion = result.fecha_hora_creacion
           notificarCorrecto('Trabajo reagendado exitosamente!')
@@ -114,7 +121,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
         }
       }
 
-      prompt(config)
+      prompt(config) */
     }),
   }
 

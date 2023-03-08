@@ -2,8 +2,8 @@
 import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
-import { computed, defineComponent, reactive, Ref, ref, watch, watchEffect } from 'vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { computed, defineComponent, Ref, ref } from 'vue'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,
@@ -368,10 +368,18 @@ export default defineComponent({
         const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
 
         if (entidad.id) {
+          // Por el momento se asigna automaticamente pero a futuro quienes lo harán serán los trabajadores de la torre de control
+          // hacia los coordinadores
           const { result } = await cambiarEstadoTrabajo.asignar(entidad.id)
           entidad.estado = estadosTrabajos.ASIGNADO
           entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
+
+          const { result: resultAgendado } = await cambiarEstadoTrabajo.agendar(entidad.id)
+          entidad.estado = estadosTrabajos.AGENDADO
+          entidad.fecha_hora_agendado = resultAgendado.fecha_hora_agendado
+
           listado.value = [...listado.value, entidad]
+
 
           // Subir archivos
           idSubtarea = entidad.id
@@ -420,9 +428,11 @@ export default defineComponent({
       descripcion_completa: { required },
       tipo_trabajo: { required },
       tarea: { required },
-      fecha_agendado: { required: requiredIf(() => subtarea.es_ventana) },
-      hora_inicio_agendado: { required: requiredIf(() => subtarea.es_ventana) },
-      hora_fin_agendado: { required: requiredIf(() => subtarea.es_ventana) },
+      grupo: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) },
+      empleado: { required: requiredIf(() => subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_empleado) },
+      fecha_inicio_trabajo: { required },
+      hora_inicio_trabajo: { required: requiredIf(() => subtarea.es_ventana) },
+      hora_fin_trabajo: { required: requiredIf(() => subtarea.es_ventana) },
       subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
     }
 
@@ -476,7 +486,7 @@ export default defineComponent({
       if (!subtarea.es_ventana) {
         // subtarea.fecha_agendado = null
         // subtarea.hora_inicio_ventana = null
-        subtarea.hora_fin_agendado = null
+        subtarea.hora_fin_trabajo = null
       }
     }
 

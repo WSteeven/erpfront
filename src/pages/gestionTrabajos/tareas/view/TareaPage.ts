@@ -228,7 +228,7 @@ export default defineComponent({
     onConsultado(() => {
       filtrarSubtareas('')
 
-      if (tarea.subtarea) {
+      if (tarea.subtarea && !tarea.tiene_subtareas) {
         tarea.titulo = tarea.subtarea.titulo
         tarea.observacion = tarea.subtarea.observacion
         tarea.descripcion_completa = tarea.subtarea.descripcion_completa

@@ -19,6 +19,16 @@
     >{{ estadosTrabajos.ASIGNADO }}
   </q-chip>
 
+  <!-- AGENDADO -->
+  <q-chip
+    v-if="props.propsTable.value === estadosTrabajos.AGENDADO"
+    :class="{ 'bg-deep-purple-1': !$q.dark.isActive }"
+    class="text-deep-purple q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="deep-purple-5" class="q-mr-xs"></q-icon
+    >{{ estadosTrabajos.AGENDADO }}
+  </q-chip>
+
   <!-- EJECUTANDO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.EJECUTANDO"

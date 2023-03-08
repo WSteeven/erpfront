@@ -253,6 +253,7 @@ export const estadosDevoluciones = {
 export const estadosTrabajos = {
   CREADO: 'CREADO',
   ASIGNADO: 'ASIGNADO',
+  AGENDADO: 'AGENDADO',
   EJECUTANDO: 'EJECUTANDO',
   PAUSADO: 'PAUSADO',
   SUSPENDIDO: 'SUSPENDIDO',

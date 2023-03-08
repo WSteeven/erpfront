@@ -49,7 +49,7 @@ export default defineComponent({
     /*********
      * Pusher
      *********/
-    const puedeEjecutar = computed(() => tabActual.value === estadosTrabajos.ASIGNADO)
+    const puedeEjecutar = computed(() => tabActual.value === estadosTrabajos.AGENDADO)
 
     const subtareaPusherEvent = new SubtareaPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
     subtareaPusherEvent.start()
@@ -73,10 +73,10 @@ export default defineComponent({
     }
 
     const botonIniciar: CustomActionTable = {
-      titulo: 'Iniciar',
+      titulo: 'Ejecutar',
       icono: 'bi-play-fill',
       color: 'positive',
-      visible: ({ entidad }) => [estadosTrabajos.ASIGNADO].includes(entidad.estado) && entidad.es_responsable,
+      visible: ({ entidad }) => [estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de iniciar el trabajo?', async () => {
           const { fecha, hora } = await obtenerTiempoActual()
@@ -150,7 +150,7 @@ export default defineComponent({
       titulo: 'Formulario',
       icono: 'bi-check2-square',
       color: 'indigo',
-      visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.es_responsable,
+      visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO].includes(entidad.estado) && entidad.es_responsable,
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
           trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
@@ -165,7 +165,7 @@ export default defineComponent({
       titulo: 'Suspender',
       icono: 'bi-power',
       color: 'negative',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.ASIGNADO && entidad.es_responsable,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de suspender el trabajo?', () => {
           const config: CustomActionPrompt = {
@@ -188,16 +188,16 @@ export default defineComponent({
       titulo: 'Pendiente',
       icono: 'bi-clock',
       color: 'orange-8',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.ASIGNADO && entidad.es_responsable,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de marcar como pendiente el trabajo?', () => {
           const config: CustomActionPrompt = {
             mensaje: 'Ingrese el motivo por el que se mantiene como pendiente',
             accion: async (data) => {
-              const { result } = await new CambiarEstadoSubtarea().pendiente(entidad.id, data)
+              const { response, result } = await new CambiarEstadoSubtarea().pendiente(entidad.id, data)
               entidad.estado = estadosTrabajos.PENDIENTE
               entidad.fecha_hora_pendiente = result.fecha_hora_pendiente
-              notificarCorrecto('Trabajo marcado como pendiente exitosamente!')
+              notificarCorrecto(response.data.mensaje)
               actualizarElemento(posicion, entidad)
             }
           }
@@ -249,7 +249,7 @@ export default defineComponent({
       cargando.desactivar()
     }
 
-    filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)
+    filtrarTrabajoAsignado(estadosTrabajos.AGENDADO)
 
     // - Mostrar formulario modal de acuerdo a su tipo de trabajo
     const listadoModales = modales.getModales()
