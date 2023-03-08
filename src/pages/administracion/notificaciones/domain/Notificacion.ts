@@ -7,7 +7,7 @@ export class Notificacion extends EntidadAuditable {
   per_originador: number
   per_destinatario: number
   leida: boolean
-  icono: string
+  tipo_notificacion: string
   created_at: string
 
   constructor() {
@@ -18,7 +18,8 @@ export class Notificacion extends EntidadAuditable {
     this.per_originador = 0
     this.per_destinatario = 0
     this.leida = false
-    this.icono = ''
+    this.tipo_notificacion = ''
     this.created_at = ''
+
   }
 }

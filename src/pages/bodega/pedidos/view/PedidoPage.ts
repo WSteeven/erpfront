@@ -32,7 +32,6 @@ import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { LocalStorage } from 'quasar'
-import { PedidoPageEvent } from '../application/PedidoPageEvent'
 
 
 export default defineComponent({
@@ -45,13 +44,6 @@ export default defineComponent({
     const { onReestablecer, onConsultado, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
-
-    /**
-     * Pusher
-     */
-
-    const pedidoPusherEvent = new PedidoPageEvent()
-    pedidoPusherEvent.start()
 
     // Stores
     const pedidoStore = usePedidoStore()

@@ -8,7 +8,7 @@ import { defineStore } from 'pinia';
 import Pusher from 'pusher-js';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { useNotificaciones } from 'shared/notificaciones';
-import { reactive, ref } from 'vue';
+import { reactive, Ref, ref } from 'vue';
 
 
 export const useNotificationRealtimeStore = defineStore('notificaciones', () => {
@@ -20,7 +20,7 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
   const notificacion = reactive(new Notificacion())
   const notificacionReset = new Notificacion()
   const idNotificacion = ref()
-  const listadoNotificaciones = ref([])
+  const listadoNotificaciones:Ref<Notificacion[]> = ref([])
 
   const { notificarAdvertencia } = useNotificaciones()
   const accionNotificacion = acciones.nuevo
@@ -30,7 +30,7 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
    * Consulta el listado de notificaciones en la base de datos y lo agrega a una variable listadoNotificaciones.
    */
   async function all() {
-    const { result } = await new NotificacionController().listar({ campos: 'id,mensaje,link,icono,leida,created_at', leida: 0 })
+    const { result } = await new NotificacionController().listar({ campos: 'id,mensaje,link,tipo_notificacion,leida,created_at', leida: 0 })
     listadoNotificaciones.value = result
   }
   /**
@@ -56,15 +56,12 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
   }
 
   async function marcarLeida() {
+    const indiceEncontrado = listadoNotificaciones.value.findIndex((v:Notificacion)=>v.id===idNotificacion.value)
     const axios = AxiosHttpRepository.getInstance()
     const ruta = axios.getEndpoint(endpoints.notificaciones) + '/marcar-leida/' + idNotificacion.value
     const response: AxiosResponse = await axios.post(ruta)
     if(response.data.modelo.leida){
-      // console.log('se marcó como true la notificacion', idNotificacion.value)
-      // console.log('antes de eliminar',listadoNotificaciones.value);
-      const indiceEncontrado = listadoNotificaciones.value.findIndex((v:Notificacion)=>v.id===idNotificacion.value)
       listadoNotificaciones.value.splice(indiceEncontrado,1)
-      // console.log('despues de eliminar',listadoNotificaciones.value);
 
     }
   }
