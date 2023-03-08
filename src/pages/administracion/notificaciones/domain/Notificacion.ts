@@ -1,18 +1,25 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class Notificacion extends EntidadAuditable {
-  mensaje: string | null
-  link: string | null
-  per_originador: number | null
-  per_destinatario: number | null
+  id: number 
+  mensaje: string 
+  link: string
+  per_originador: number 
+  per_destinatario: number 
   leida:boolean
+  tipo_notificacion: string
+  created_at: string
 
   constructor() {
     super()
-    this.mensaje = null
-    this.link = null
-    this.per_originador = null
-    this.per_destinatario = null
+    this.id = 0
+    this.mensaje =''
+    this.link = ''
+    this.per_originador =0
+    this.per_destinatario =0
     this.leida = false
+    this.tipo_notificacion =''
+    this.created_at=''
+
   }
 }

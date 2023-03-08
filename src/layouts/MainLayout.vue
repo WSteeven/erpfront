@@ -72,20 +72,32 @@
                 ></q-btn>
               </div>
               <q-list style="min-width: 120px; max-width: 400px">
-                <q-item class="text-center" v-if="notificaciones.length===0">
-                <q-item-section>
-                  <q-item-label>No tienes notificaciones nuevas</q-item-label>
-                </q-item-section></q-item>
+                <q-item class="text-center" v-if="notificaciones.length === 0">
+                  <q-item-section>
+                    <q-item-label>No tienes notificaciones nuevas</q-item-label>
+                  </q-item-section></q-item
+                >
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
                   v-ripple
                 >
                   <q-item-section avatar>
-                    <q-icon color="info" :name="notificacion.icono" size="sm" />
+                    <q-icon
+                      color="info"
+                      :name="
+                        obtenerIcono.obtener(notificacion.tipo_notificacion)
+                      "
+                      size="sm"
+                    />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label><q-breadcrumbs><q-breadcrumbs-el :label="notificacion.mensaje" :href="notificacion.link" /></q-breadcrumbs></q-item-label>
+                    <q-item-label
+                      ><q-breadcrumbs
+                        ><q-breadcrumbs-el
+                          :label="notificacion.mensaje"
+                          :href="notificacion.link" /></q-breadcrumbs
+                    ></q-item-label>
                   </q-item-section>
 
                   <q-item-section side top
@@ -93,7 +105,7 @@
                     <q-item-label caption
                       ><q-breadcrumbs class="text-blue text-right">
                         <q-breadcrumbs-el
-                        icon="bi-check"
+                          icon="bi-check"
                           label="leída"
                           @click="marcarLeida(notificacion.id)"
                         /> </q-breadcrumbs
@@ -252,6 +264,9 @@ import { LocalStorage, useQuasar } from 'quasar'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import moment from 'moment'
+import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacionRealtime'
+import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusherEvent'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -295,7 +310,26 @@ export default defineComponent({
       LocalStorage.set('dark', modoOscuro.value)
     }
 
+    const { notificarCorrecto } = useNotificaciones()
+
+    /**********************************************
+     * PUSHER
+     * En esta sección agregan todas las llamadas al metodo start de sus archivos PusherEvent
+     **********************************************/
+    //pedidos
+    const pedidoPusherEvent = new PedidoPusherEvent()
+    pedidoPusherEvent.start()
+    //subtareas
+
+    //....
+    
+
+
+
+
     const notificacionesPusherStore = useNotificationRealtimeStore()
+    const obtenerIconoNotificacion = new ObtenerIconoNotificacionRealtime()
+
     notificacionesPusherStore.listar() //cargar las notificaciones de la base de datos
 
     //configuracion de las notificaciones
@@ -341,6 +375,7 @@ export default defineComponent({
         })
       },
       moment,
+      obtenerIcono: obtenerIconoNotificacion,
     }
   },
 })
