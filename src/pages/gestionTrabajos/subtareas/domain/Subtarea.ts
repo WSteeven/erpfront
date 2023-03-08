@@ -16,9 +16,12 @@ export class Subtarea extends EntidadAuditable {
   // Tiempos
   fecha_hora_creacion: string | null
   fecha_hora_asignacion: string | null
+  fecha_hora_agendado: string | null
   fecha_hora_ejecucion: string | null
   fecha_hora_realizado: string | null
   fecha_hora_finalizacion: string | null
+  fecha_hora_pendiente: string | null
+  causa_pendiente: string | null
   fecha_hora_suspendido: string | null
   causa_suspencion: string | null
   fecha_hora_cancelacion: string | null
@@ -27,9 +30,9 @@ export class Subtarea extends EntidadAuditable {
 
   es_dependiente: boolean
   es_ventana: boolean
-  fecha_agendado: string | null
-  hora_inicio_agendado: string | null
-  hora_fin_agendado: string | null
+  fecha_inicio_trabajo: string | null
+  hora_inicio_trabajo: string | null
+  hora_fin_trabajo: string | null
 
   // Foreign keys
   tipo_trabajo: number | null
@@ -68,10 +71,13 @@ export class Subtarea extends EntidadAuditable {
     // Tiempos
     this.fecha_hora_creacion = null
     this.fecha_hora_asignacion = null
+    this.fecha_hora_agendado = null
     this.fecha_hora_ejecucion = null
     this.fecha_hora_finalizacion = null
     this.fecha_hora_realizado = null
     this.fecha_hora_suspendido = null
+    this.fecha_hora_pendiente = null
+    this.causa_pendiente = null
     this.causa_suspencion = null
     this.fecha_hora_cancelacion = null
     this.causa_cancelacion = null
@@ -80,9 +86,9 @@ export class Subtarea extends EntidadAuditable {
     this.es_dependiente = false
     this.es_ventana = false
 
-    this.fecha_agendado = null
-    this.hora_inicio_agendado = null
-    this.hora_fin_agendado = null
+    this.fecha_inicio_trabajo = null
+    this.hora_inicio_trabajo = null
+    this.hora_fin_trabajo = null
     this.tarea = null
 
     // Foreign keys

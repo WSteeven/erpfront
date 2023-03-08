@@ -31,7 +31,7 @@
       :mostrar-botones="false"
       :tab-options="tabTrabajoAsignado"
       @tab-seleccionado="filtrarTrabajoAsignado"
-      tab-defecto="ASIGNADO"
+      tab-defecto="AGENDADO"
     ></essential-table-tabs>
 
     <modales-entidad :comportamiento="modales" :confirmar-cerrar="true" />

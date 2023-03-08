@@ -9,6 +9,7 @@ import PausasRealizadasPage from 'gestionTrabajos/subtareas/modules/pausasRealiz
 import GestorArchivoTrabajo from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/GestorArchivoSubtareaPage.vue'
 import EmergenciasPage from 'gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
 import ClienteFinalPage from 'clientesFinales/view/ClienteFinalPage.vue'
+import ReagendarPage from 'gestionTrabajos/subtareas/modules/reagendar/view/ReagendarPage.vue'
 
 export class SubtareaModales {
   SubtareaPage: ComponenteModal
@@ -16,6 +17,7 @@ export class SubtareaModales {
   GestorArchivoTrabajo: ComponenteModal
   PausasRealizadasPage: ComponenteModal
   ClienteFinalPage: ComponenteModal
+  ReagendarPage: ComponenteModal
 
   constructor() {
     this.SubtareaPage = markRaw(
@@ -33,5 +35,6 @@ export class SubtareaModales {
     this.ClienteFinalPage = markRaw(
       new ComponenteModal('Clientes finales', ClienteFinalPage)
     )
+    this.ReagendarPage = markRaw(new ComponenteModal('Reagendar subtarea', ReagendarPage))
   }
 }

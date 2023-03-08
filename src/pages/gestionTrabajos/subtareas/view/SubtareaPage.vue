@@ -108,6 +108,7 @@
             emit-value
             map-options
             :error="!!v$.tipo_trabajo.$errors.length"
+            @blur="v$.tipo_trabajo.$touch"
           >
             <template v-slot:no-option>
               <q-item>
@@ -201,11 +202,12 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha de agendamiento</label>
+          <label class="q-mb-sm block">Fecha de inicio de trabajo</label>
           <q-input
-            v-model="subtarea.fecha_agendado"
-            :placeholder="subtarea.es_ventana ? 'Obligatorio' : 'Opcional'"
-            :error="!!v$.fecha_agendado.$errors.length"
+            v-model="subtarea.fecha_inicio_trabajo"
+            placeholder="Obligatorio"
+            :error="!!v$.fecha_inicio_trabajo.$errors.length"
+            @blur="v$.fecha_inicio_trabajo.$touch"
             outlined
             :disable="disabled"
             dense
@@ -218,7 +220,7 @@
                   transition-hide="scale"
                 >
                   <q-date
-                    v-model="subtarea.fecha_agendado"
+                    v-model="subtarea.fecha_inicio_trabajo"
                     :mask="maskFecha"
                     today-btn
                   >
@@ -236,7 +238,10 @@
             </template>
 
             <template v-slot:error>
-              <div v-for="error of v$.fecha_agendado.$errors" :key="error.$uid">
+              <div
+                v-for="error of v$.fecha_inicio_trabajo.$errors"
+                :key="error.$uid"
+              >
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -245,10 +250,10 @@
 
         <!-- Hora inicio de agendamiento -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Hora inicio de agendamiento (24H)</label>
+          <label class="q-mb-sm block">Hora inicio de trabajo (24 horas)</label>
           <q-input
-            v-model="subtarea.hora_inicio_agendado"
-            :error="!!v$.hora_inicio_agendado.$errors.length"
+            v-model="subtarea.hora_inicio_trabajo"
+            :error="!!v$.hora_inicio_trabajo.$errors.length"
             type="time"
             :disable="disabled"
             stack-label
@@ -257,7 +262,7 @@
           >
             <template v-slot:error>
               <div
-                v-for="error of v$.hora_inicio_agendado.$errors"
+                v-for="error of v$.hora_inicio_trabajo.$errors"
                 :key="error.$uid"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -268,10 +273,10 @@
 
         <!-- Hora fin de agendamiento -->
         <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Hora fin de agendamiento (24H)</label>
+          <label class="q-mb-sm block">Hora fin de trabajo (24 horas)</label>
           <q-input
-            v-model="subtarea.hora_fin_agendado"
-            :error="!!v$.hora_fin_agendado.$errors.length"
+            v-model="subtarea.hora_fin_trabajo"
+            :error="!!v$.hora_fin_trabajo.$errors.length"
             type="time"
             stack-label
             outlined
@@ -280,7 +285,7 @@
           >
             <template v-slot:error>
               <div
-                v-for="error of v$.hora_fin_agendado.$errors"
+                v-for="error of v$.hora_fin_trabajo.$errors"
                 :key="error.$uid"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -347,6 +352,8 @@
             emit-value
             map-options
             :disable="disabled"
+            :error="!!v$.grupo.$errors.length"
+            @blur="v$.grupo.$touch"
           >
             <template v-slot:no-option>
               <q-item>
@@ -354,6 +361,12 @@
                   No hay resultados
                 </q-item-section>
               </q-item>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.grupo.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
             </template>
           </q-select>
         </div>
@@ -382,6 +395,8 @@
             emit-value
             map-options
             :disable="disabled"
+            :error="!!v$.empleado.$errors.length"
+            @blur="v$.empleado.$touch"
           >
             <template v-slot:no-option>
               <q-item>
@@ -389,6 +404,12 @@
                   No hay resultados
                 </q-item-section>
               </q-item>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.empleado.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
             </template>
           </q-select>
         </div>
@@ -566,7 +587,7 @@
 
     <button-submits
       :accion="accion"
-      label-guardar="Guardar y asignar"
+      label-guardar="Guardar y agendar"
       @cancelar="reestablecerDatos()"
       @guardar="guardarDatos(subtarea)"
     />

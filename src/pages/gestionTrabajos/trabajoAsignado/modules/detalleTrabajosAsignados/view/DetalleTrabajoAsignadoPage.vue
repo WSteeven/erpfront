@@ -86,27 +86,22 @@
         >Es ventana de trabajo
       </div>
 
-      <div v-if="trabajo.fecha_agendado" class="col-12 col-md-3">
-        <label class="q-mb-sm block">Fecha de agendamiento</label>
-        <q-input v-model="trabajo.fecha_agendado" outlined dense disable>
+      <div v-if="trabajo.fecha_inicio_trabajo" class="col-12 col-md-3">
+        <label class="q-mb-sm block">Fecha de inicio de trabajo</label>
+        <q-input v-model="trabajo.fecha_inicio_trabajo" outlined dense disable>
         </q-input>
       </div>
 
       <!-- Hora inicio de ventana -->
-      <div v-if="trabajo.hora_inicio_agendado" class="col-12 col-md-3">
-        <label class="q-mb-sm block">Hora inicio de agendamiento</label>
-        <q-input
-          v-model="trabajo.hora_inicio_agendado"
-          outlined
-          dense
-          disable
-        />
+      <div v-if="trabajo.hora_inicio_trabajo" class="col-12 col-md-3">
+        <label class="q-mb-sm block">Hora inicio de trabajo</label>
+        <q-input v-model="trabajo.hora_inicio_trabajo" outlined dense disable />
       </div>
 
       <!-- Hora fin de ventana -->
       <div v-if="trabajo.es_ventana" class="col-12 col-md-3">
-        <label class="q-mb-sm block">Hora fin de agendamiento</label>
-        <q-input v-model="trabajo.hora_fin_agendado" outlined dense disable />
+        <label class="q-mb-sm block">Hora fin de trabajo</label>
+        <q-input v-model="trabajo.hora_fin_trabajo" outlined dense disable />
       </div>
 
       <!--<div class="col-12">

@@ -15,6 +15,10 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/asignar', idTrabajo)
   }
 
+  async agendar(idTrabajo: number) {
+    return this.solicitud('/agendar', idTrabajo)
+  }
+
   async ejecutar(idTrabajo: number) {
     return this.solicitud('/ejecutar', idTrabajo)
   }
