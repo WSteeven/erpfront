@@ -24,6 +24,8 @@ export const endpoints = {
   hora: new Endpoint('obtener-hora'),
   //configuraciones: new Endpoint('configuraciones'),
   tablero: new Endpoint('tablero'),
+  // Permisos
+  permisos_administrar: new Endpoint('permisos'),
   // Ubicacion
   paises: new Endpoint('paises'),
   provincias: new Endpoint('provincias'),

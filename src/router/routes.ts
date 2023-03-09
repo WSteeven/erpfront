@@ -525,7 +525,7 @@ const routes: RouteRecordRaw[] = [
             'pages/fondosRotativos/reportes/consolidado_filtrado/view/Reporte_consolidado_filtradoPage.vue'
           ),
         //cambiar a true cuando este listo
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/reporte-contabilidad',
@@ -534,6 +534,16 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/fondosRotativos/reportes/fondo_rotativo_contabilidad/view/Reporte_contabilidadPage.vue'
           ),
+        //cambiar a true cuando este listo
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/permisos',
+        name: 'permisos',
+        component: () =>
+        import(
+          'pages/permisos/view/PermisoPage.vue'
+        ),
         //cambiar a true cuando este listo
         meta: { requiresAuth: false },
       },
