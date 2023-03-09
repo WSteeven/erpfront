@@ -128,7 +128,7 @@
           <q-btn dense round flat @click.self="mostrarMenu = true">
             <q-avatar size="36px" class="double-border">
               <img
-                src="https://ui-avatars.com/api/?name=John+Doe&bold=true&background=99c3e7"
+               v-bind:src="imagenPerfil"
               />
             </q-avatar>
 
@@ -312,7 +312,6 @@ export default defineComponent({
       LocalStorage.set('dark', modoOscuro.value)
     }
 
-    const { notificarCorrecto } = useNotificaciones()
 
     /**********************************************
      * PUSHER
@@ -326,6 +325,8 @@ export default defineComponent({
     //....
     
 
+    //Poner la imagen de perfil
+    const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres}+${authenticationStore.user.apellidos}&bold=true&background=99c3e7`
 
 
 
@@ -367,6 +368,7 @@ export default defineComponent({
       },
       moment,
       obtenerIcono: obtenerIconoNotificacion,
+      imagenPerfil,
     }
   },
 })

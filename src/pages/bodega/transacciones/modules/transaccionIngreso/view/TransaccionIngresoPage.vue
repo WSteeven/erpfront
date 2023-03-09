@@ -231,7 +231,7 @@
 
           <!-- Solicitante -->
           <div
-            v-if="transaccion.solicitante || esBodeguero"
+            v-if="transaccion.solicitante || !esBodeguero"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Solicitante</label>
@@ -243,7 +243,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled || soloLectura"
+              :disable="true"
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"

@@ -253,7 +253,7 @@
             </q-input>
           </div>
           <!-- Tiene serial -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <br />
             <q-checkbox
               v-model="detalle.tiene_serial"
@@ -264,7 +264,7 @@
             ></q-checkbox>
           </div>
           <!-- Es fibra -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <br />
             <q-checkbox
               v-model="detalle.es_fibra"
@@ -276,7 +276,7 @@
             ></q-checkbox>
           </div>
           <!-- Es fibra -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4">
             <br />
             <q-checkbox
               v-model="detalle.tiene_adicionales"
