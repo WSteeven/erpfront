@@ -56,7 +56,7 @@
               transition-show="jump-down"
               transition-hide="jump-out"
               :style="{ 'min-width': width }"
-              class="window-height"
+              class="window-height bg-desenfoque"
               max-height="100vh"
             >
               <div class="full-width text-right q-pr-md">
@@ -65,14 +65,21 @@
                   round
                   :class="{
                     'bg-grey-9': $q.dark.isActive,
-                    'bg-grey-6': !$q.dark.isActive,
+                    'bg-white': !$q.dark.isActive,
                   }"
                   unelevated
+                  class="q-mt-sm"
                   @click="mostrarNotificaciones = false"
                 ></q-btn>
               </div>
               <q-list style="min-width: 120px; max-width: 400px">
-                <q-item class="text-center" v-if="notificaciones.length === 0">
+                <q-item
+                  class="q-mb-md text-grey-7"
+                  v-if="notificaciones.length === 0"
+                >
+                  <q-avatar>
+                    <q-icon name="bi-bell-slash"></q-icon>
+                  </q-avatar>
                   <q-item-section>
                     <q-item-label>No tienes notificaciones nuevas</q-item-label>
                   </q-item-section></q-item
@@ -80,7 +87,7 @@
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
-                  v-ripple
+                  class="bg-desenfoque"
                 >
                   <q-item-section avatar>
                     <q-icon
@@ -115,10 +122,10 @@
 
                 <q-separator />
 
-                <q-item clickable v-ripple to="notificaciones">
-                  <q-item-section avatar>
-                    <q-icon color="info" name="bi-bell" size="xs" />
-                  </q-item-section>
+                <q-item clickable to="notificaciones">
+                  <q-avatar>
+                    <q-icon name="bi-bell" />
+                  </q-avatar>
                   <q-item-section>Ver todas las notificaciones</q-item-section>
                 </q-item>
               </q-list>
@@ -127,9 +134,7 @@
 
           <q-btn dense round flat @click.self="mostrarMenu = true">
             <q-avatar size="36px" class="double-border">
-              <img
-               v-bind:src="imagenPerfil"
-              />
+              <img v-bind:src="imagenPerfil" />
             </q-avatar>
 
             <q-menu
@@ -155,6 +160,7 @@
                     @click="mostrarMenu = false"
                   ></q-btn>
                 </div>
+
                 <q-avatar size="72px" class="q-mb-md">
                   <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
                 </q-avatar>
@@ -312,7 +318,6 @@ export default defineComponent({
       LocalStorage.set('dark', modoOscuro.value)
     }
 
-
     /**********************************************
      * PUSHER
      * En esta sección agregan todas las llamadas al metodo start de sus archivos PusherEvent
@@ -323,12 +328,9 @@ export default defineComponent({
     //subtareas
 
     //....
-    
 
     //Poner la imagen de perfil
     const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres}+${authenticationStore.user.apellidos}&bold=true&background=99c3e7`
-
-
 
     const notificacionesPusherStore = useNotificationRealtimeStore()
     const obtenerIconoNotificacion = new ObtenerIconoNotificacionRealtime()

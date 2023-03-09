@@ -261,7 +261,7 @@ export default defineComponent({
     })
 
     // Subtareas
-    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
+    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
@@ -299,6 +299,7 @@ export default defineComponent({
       filtrarSubtareas,
       btnAgregarSubtarea,
       btnConsultarSubtarea,
+      btnAnular,
       subtareas,
       v$,
       tarea,

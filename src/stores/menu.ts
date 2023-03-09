@@ -389,6 +389,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
     },
     {
+      title: 'Permisos',
+      link: 'permisos',
+      icon: 'bi-circle',
+      can: true //store.can('puede.ver.autorizaciones') && store.esActivosFijos,
+    },
+    {
       title: 'Bodega',
       icon: 'bi-ui-checks-grid',
       can: store.can('puede.ver.modulo_administracion'),

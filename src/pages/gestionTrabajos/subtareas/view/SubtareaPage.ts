@@ -1,6 +1,5 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
-// import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
@@ -20,6 +19,7 @@ import {
   causaIntervencion,
   maskFecha,
 } from 'config/utils'
+import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
 import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -28,7 +28,6 @@ import { nivelesTrabajos } from 'config/tareas.utils'
 import { useSubtareaStore } from 'stores/subtarea'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
-import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -39,6 +38,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
+import { ArchivoSubtareaController } from '../modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -46,20 +46,20 @@ import { ComportamientoModalesSubtarea } from '../application/ComportamientoModa
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
 import { TareaController } from 'gestionTrabajos/tareas/infraestructure/TareaController'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
-import { useBotonesTablaSubtarea } from '../application/BotonesTablaSubtarea'
-import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
-import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
+import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
+import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
+import { descargarArchivoUrl, isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray } from 'shared/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
-import { ArchivoSubtareaController } from '../modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
-import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
-import { descargarArchivoUrl } from 'shared/utils'
+import { DesignarLiderGrupoController } from '../infraestructure/DesignarLiderGrupoController'
+import { DesignarSecretarioGrupoController } from '../infraestructure/DesignarSecretarioGrupoController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad },
-  emits: ['cerrar-modal'],
+  emits: ['cerrar-modal', 'guardado'],
   props: {
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<Subtarea>,
@@ -125,20 +125,21 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const asignarJefe = ref(false)
+    const asignarLider = ref(false)
     const asignarSecretario = ref(false)
-    const tipoSeleccion = computed(() => asignarJefe.value || asignarSecretario.value ? 'single' : 'none')
+    const tipoSeleccion = computed(() => asignarLider.value || asignarSecretario.value ? 'single' : 'none')
     const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
     const { notificarError, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
     const tecnicoSeleccionado = ref()
     const busqueda = ref()
     const empleadosSeleccionados: Ref<Empleado[]> = ref([])
+    const empleadoGrupoQuitar = ref()
 
     /**************
      * Referencias
      **************/
-    const refEmpleadosAsignados = ref()
+    const refEmpleadosGrupo = ref()
 
     /***************************
     * Configuracion de columnas
@@ -171,69 +172,24 @@ export default defineComponent({
     /***************
     * Botones tabla
     ***************/
-    /*const designarGrupoPrincipal: CustomActionTable = {
-      titulo: 'Designar como responsable',
-      icono: 'bi-check',
-      color: 'positive',
-      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion.value) && !entidad.es_responsable && !disabled.value,
-      accion: ({ posicion }) => {
-        subtarea.grupos_seleccionados = subtarea.grupos_seleccionados.map((grupo: GrupoSeleccionado) => {
-          const grupoSeleccionado = new GrupoSeleccionado()
-          grupoSeleccionado.hydrate(grupo)
-          grupoSeleccionado.es_responsable = false
-          return grupoSeleccionado
-        })
-        subtarea.grupos_seleccionados[posicion].es_responsable = true
-      },
-    }*/
-
-    // Quitar elemento de grupos seleccionados
-    /*const quitarGrupo: CustomActionTable = {
-      titulo: 'Quitar',
-      icono: 'bi-x',
-      color: 'negative',
-      visible: () => !disabled.value,//[acciones.editar, acciones.nuevo].includes(accion.value), //accion),
-      accion: ({ entidad, posicion }) => {
-        entidad.principal = false
-        subtarea.grupos_seleccionados.splice(posicion, 1)
-      },
-    }
-
-    const designarEmpleadoResponsable: CustomActionTable = {
-      titulo: 'Designar como responsable',
-      icono: 'bi-check',
-      color: 'positive',
-      visible: ({ entidad }) => [acciones.editar, acciones.nuevo].includes(accion.value) && !entidad.es_responsable,
-      accion: ({ posicion }) => {
-        subtarea.empleados_seleccionados = subtarea.empleados_seleccionados.map((empleado: EmpleadoSeleccionado) => {
-          const empleadoSeleccionado = new EmpleadoSeleccionado()
-          empleadoSeleccionado.hydrate(empleado)
-          empleadoSeleccionado.es_responsable = false
-          return empleadoSeleccionado
-        })
-        subtarea.empleados_seleccionados[posicion].es_responsable = true
-      },
-    } */
-
     const quitarEmpleado: CustomActionTable = {
       titulo: 'Quitar',
       icono: 'bi-x',
       color: 'negative',
-      visible: () => [acciones.editar, acciones.nuevo].includes(accion.value) && !(asignarJefe.value || asignarSecretario.value),
+      visible: () => [acciones.editar, acciones.nuevo].includes(accion.value) && !(asignarLider.value || asignarSecretario.value),
       accion: ({ entidad, posicion }) => {
-        // NO BORRAR
         if (subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
           if (entidad.roles.includes(rolesSistema.tecnico_lider)) {
-            asignarJefe.value = true
+            asignarLider.value = true
             asignarSecretario.value = false
-            // empleadoSeleccionadoAsignacionQuitar.value = entidad
-            return notificarAdvertencia('Debes asignar a un reemplazo para el jefe de cuadrilla seleccionado!')
+            empleadoGrupoQuitar.value = entidad
+            return notificarAdvertencia('Debes asignar a un reemplazo para el líder a eliminar.')
           }
           if (entidad.roles.includes(rolesSistema.secretario)) {
-            asignarJefe.value = false
+            asignarLider.value = false
             asignarSecretario.value = true
-            // empleadoSeleccionadoAsignacionQuitar.value = entidad
-            return notificarAdvertencia('Debes asignar a un reemplazo para el secretario de cuadrilla seleccionado')
+            empleadoGrupoQuitar.value = entidad
+            return notificarAdvertencia('Debes asignar a un reemplazo para el secretario a eliminar.')
           }
         }
 
@@ -241,36 +197,52 @@ export default defineComponent({
       },
     }
 
-    const asignarNuevoTecnicoLider: CustomActionTable = {
-      titulo: 'Designar como nuevo jefe de cuadrilla',
-      icono: 'bi-arrow-left-right',
-      color: 'positive',
-      visible: () => asignarJefe.value,
+    const designarLider: CustomActionTable = {
+      titulo: 'Designar como líder de grupo para este trabajo',
+      icono: 'bi-clock-history',
+      color: 'accent',
+      visible: () => asignarLider.value,
       accion: async ({ entidad }) => {
-        refEmpleadosAsignados.value.seleccionar()
+        refEmpleadosGrupo.value.seleccionar()
       },
     }
 
-    const designarNuevoSecretario: CustomActionTable = {
-      titulo: 'Designar como nuevo secretario de cuadrilla',
+    const designarLiderDefinitivo: CustomActionTable = {
+      titulo: 'Designar como líder de grupo en el sistema',
+      icono: 'bi-arrow-left-right',
+      color: 'positive',
+      visible: () => asignarLider.value,
+      accion: async ({ entidad }) => {
+        refEmpleadosGrupo.value.seleccionar()
+      },
+    }
+
+    const designarSecretario: CustomActionTable = {
+      titulo: 'Designar como nuevo secretario para este trabajo',
+      icono: 'bi-clock-history',
+      color: 'accent',
+      visible: () => asignarSecretario.value,
+      accion: () => refEmpleadosGrupo.value.seleccionar()
+    }
+
+    const designarSecretarioDefinitivo: CustomActionTable = {
+      titulo: 'Designar como nuevo secretario en el sistema',
       icono: 'bi-arrow-left-right',
       color: 'positive',
       visible: () => asignarSecretario.value,
-      accion: () => refEmpleadosAsignados.value.seleccionar()
+      accion: () => refEmpleadosGrupo.value.seleccionar()
     }
 
     const cancelarDesignacion: CustomActionTable = {
       titulo: 'Cancelar',
       icono: 'bi-x',
       color: 'negative',
-      visible: () => asignarJefe.value || asignarSecretario.value,
+      visible: () => asignarLider.value || asignarSecretario.value,
       accion: () => {
-        asignarJefe.value = false
+        asignarLider.value = false
         asignarSecretario.value = false
       },
     }
-
-    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas } = useBotonesTablaSubtarea(listado, modales)
 
     const botonEditarTrabajo: CustomActionTable = {
       titulo: 'Editar',
@@ -299,8 +271,6 @@ export default defineComponent({
       filtrarFiscalizadores,
       coordinadores,
       filtrarCoordinadores,
-      // provincias,
-      // cantones,
       proyectos,
       filtrarProyectos,
       tiposTrabajos,
@@ -442,6 +412,66 @@ export default defineComponent({
     /************
     * Funciones
     *************/
+    async function entidadSeleccionada(itemsSeleccionados: Empleado[]) {
+      if (itemsSeleccionados.length) {
+        const id = itemsSeleccionados[0].id
+
+        try {
+          // Jefe de cuadrilla --
+          if (asignarLider.value) {
+            const em = new Empleado()
+            em.id = id
+            em.grupo = subtarea.grupo
+
+            const { response } = await new DesignarLiderGrupoController().editar(em)
+            asignarLider.value = false
+
+            notificarCorrecto(response.data.mensaje)
+
+            // Quitar rol tabla Jefe cuadrilla
+            const roles = stringToArray(empleadoGrupoQuitar.value.roles)
+            empleadoGrupoQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.tecnico_lider).join(',')
+
+            // Designar rol tabla Secretario cuadrilla
+            const posicion: any = tecnicosGrupoPrincipal.value.findIndex((empleado: Empleado) => empleado.id === id)
+            const entidad: Empleado = tecnicosGrupoPrincipal.value[posicion]
+            entidad.roles = entidad.roles + ', ' + rolesSistema.tecnico_lider
+            tecnicosGrupoPrincipal.value.splice(posicion, 1, entidad)
+
+          }
+
+          // Secretario de cuadrilla --
+          if (asignarSecretario.value) {
+
+            const em2 = new Empleado()
+            em2.id = id
+            em2.grupo = subtarea.grupo
+
+            await new DesignarSecretarioGrupoController().editar(em2)
+            asignarSecretario.value = false
+
+            // Quitar rol secretario cuadrilla
+            const roles = stringToArray(empleadoGrupoQuitar.value.roles)
+            empleadoGrupoQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.secretario).join(',')
+
+            // Designar rol tabla Secretario cuadrilla
+            const posicion: any = tecnicosGrupoPrincipal.value.findIndex((empleado: Empleado) => empleado.id === id)
+            const entidad: Empleado = tecnicosGrupoPrincipal.value[posicion]
+
+            entidad.roles = entidad.roles + ', ' + rolesSistema.secretario
+            tecnicosGrupoPrincipal.value.splice(posicion, 1, entidad)
+
+            notificarCorrecto('Asignado como secretario de cuadrilla')
+          }
+        } catch (e) {
+          if (isAxiosError(e)) {
+            const mensajes: string[] = e.erroresValidacion
+            notificarMensajesError(mensajes, useNotificaciones())
+          }
+        }
+      }
+    }
+
     /* async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
       const { result } = await clienteFinalController.consultar(clienteFinalId)
@@ -475,7 +505,7 @@ export default defineComponent({
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      empleadosSeleccionados.value.push(...result)
+      empleadosSeleccionados.value = result
     }
 
     /* function cargarArchivos(files: File[]) {
@@ -549,7 +579,7 @@ export default defineComponent({
 
     return {
       v$,
-      refEmpleadosAsignados,
+      refEmpleadosGrupo,
       refUploader,
       empleadosSeleccionados,
       listado,
@@ -560,8 +590,10 @@ export default defineComponent({
       tecnicoSeleccionado,
       busqueda,
       quitarEmpleado,
-      asignarNuevoTecnicoLider,
-      designarNuevoSecretario,
+      designarLider,
+      designarLiderDefinitivo,
+      designarSecretario,
+      designarSecretarioDefinitivo,
       listadosAuxiliares,
       tecnicosGrupoPrincipal,
       tiposInstalaciones,
@@ -592,13 +624,15 @@ export default defineComponent({
       nivelesTrabajos,
       acciones,
       maskFecha,
-      botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
+      // botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
       accionesTabla,
       botonEditarTrabajo,
       configuracionColumnasEmpleadoSeleccionado,
       archivos,
       factoryFn,
       btnDescargarArchivo,
+      entidadSeleccionada,
+      // btnAnular,
       // Filtros
       clientes,
       filtrarClientes,
