@@ -96,6 +96,28 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     }),
   }
 
+  const btnAnular: CustomActionTable = {
+    titulo: 'Anular',
+    color: 'negative',
+    icono: 'bi-x',
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO,
+    accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de anular la subtarea?'], async () => {
+      const config: CustomActionPrompt = {
+        mensaje: 'Ingrese el motivo de la cancelación',
+        accion: async (data) => {
+          const { result } = await cambiarEstadoTrabajo.cancelar(entidad.id, data)
+          entidad.estado = estadosTrabajos.CANCELADO
+          entidad.fecha_hora_cancelacion = result.fecha_hora_cancelacion
+          entidad.causa_cancelacion = result.causa_cancelacion
+          notificarCorrecto('Trabajo cancelado exitosamente!')
+          actualizarElemento(posicion, entidad)
+        }
+      }
+
+      prompt(config)
+    }),
+  }
+
   const botonReagendar: CustomActionTable = {
     titulo: 'Reagendar',
     color: 'orange-8',
@@ -152,6 +174,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     // botonSubirArchivos,
     botonCancelar,
     botonReagendar,
+    btnAnular,
     // botonAsignar,
     botonFinalizar,
     botonVerPausas,

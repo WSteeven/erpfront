@@ -420,13 +420,16 @@
               subtarea.modo_asignacion_trabajo ===
               modosAsignacionTrabajo.por_grupo
             "
-            titulo="Empleado de los grupo seleccionado"
+            ref="refEmpleadosGrupo"
+            titulo="Empleados del grupo seleccionado"
             estilos="margin-bottom: 14px;"
             :configuracionColumnas="columnasEmpleado"
             :datos="empleadosSeleccionados"
-            :accion1Header="asignarNuevoTecnicoLider"
-            :accion2Header="designarNuevoSecretario"
-            :accion3Header="cancelarDesignacion"
+            :accion1Header="designarLider"
+            :accion2Header="designarLiderDefinitivo"
+            :accion3Header="designarSecretario"
+            :accion4Header="designarSecretarioDefinitivo"
+            :accion5Header="cancelarDesignacion"
             :accion1="quitarEmpleado"
             :mostrarBotones="false"
             :permitirConsultar="false"
@@ -437,8 +440,8 @@
             :permitir-buscar="false"
             :tipo-seleccion="tipoSeleccion"
             :mostrar-footer="!empleadosSeleccionados.length"
+            @selected="entidadSeleccionada"
           >
-            <!--@selected="entidadSeleccionada" -->
           </essential-table>
         </div>
       </div>

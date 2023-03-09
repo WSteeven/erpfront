@@ -3,7 +3,7 @@ import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasE
 import { maxLength, minLength, numeric, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { opcionesEstados } from 'config/utils'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -94,11 +94,21 @@ export default defineComponent({
         opciones_cargos.value = listadosAuxiliares.cargos
         opciones_empleados.value = listadosAuxiliares.empleados
 
+        /********
+         * Hooks
+         ********/
         onBeforeModificar(() => {
-            if (!empleado.tiene_grupo) empleado.grupo = null
+
         })
 
         onConsultado(() => empleado.tiene_grupo = !!empleado.grupo)
+
+        /************
+         * Observers
+         ************/
+        watchEffect(() => {
+            if (!empleado.tiene_grupo) empleado.grupo = null
+        })
 
         return {
             mixin, empleado, disabled, accion, v$,

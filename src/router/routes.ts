@@ -32,12 +32,6 @@ const routes: RouteRecordRaw[] = [
         // component: () => import('pages/tareas/controlTareas/view/ControlTareaPage.vue'),
       },
       {
-        path: '/hoja-control-trabajos',
-        name: 'hoja_control_trabajos',
-        component: () => import('trabajos/view/TrabajoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/tipos-trabajos',
         name: 'tipos_trabajos',
         component: () =>
@@ -51,22 +45,6 @@ const routes: RouteRecordRaw[] = [
           import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
         meta: { requiresAuth: true },
       },*/
-      {
-        path: '/propietarios-elementos',
-        name: 'propietarios_elementos',
-        component: () =>
-          import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/control-tendidos',
-        name: 'control_tendidos',
-        component: () =>
-          import(
-            'gestionTrabajos/formulariosTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
       {
         path: '/control-cambios',
         name: 'control_cambios',
@@ -516,36 +494,36 @@ const routes: RouteRecordRaw[] = [
         path: '/reporte-saldo-actual',
         name: 'reporte_saldo_actual',
         component: () =>
-        import(
-          'pages/fondosRotativos/reportes/reporteSaldoActual/view/Reporte_saldo_actualPage.vue'
-        ),
+          import(
+            'pages/fondosRotativos/reportes/reporteSaldoActual/view/Reporte_saldo_actualPage.vue'
+          ),
         meta: { requiresAuth: true },
       },
       {
         path: '/reporte-autorizaciones',
         name: 'reporte_autorizaciones',
         component: () =>
-        import(
-          'pages/fondosRotativos/reportes/fondo_rotativo_autorizaciones_fecha/view/Reporte_autorizaciones_fechaPage.vue'
-        ),
+          import(
+            'pages/fondosRotativos/reportes/fondo_rotativo_autorizaciones_fecha/view/Reporte_autorizaciones_fechaPage.vue'
+          ),
         meta: { requiresAuth: true },
       },
       {
         path: '/reporte-consolidado',
         name: 'reporte_consolidado',
         component: () =>
-        import(
-          'pages/fondosRotativos/reportes/consolidado/view/Reporte_consolidadoPage.vue'
-        ),
+          import(
+            'pages/fondosRotativos/reportes/consolidado/view/Reporte_consolidadoPage.vue'
+          ),
         meta: { requiresAuth: true },
       },
       {
         path: '/reporte-consolidado-filtrado',
         name: 'reporte_consolidado_filtrado',
         component: () =>
-        import(
-          'pages/fondosRotativos/reportes/consolidado_filtrado/view/Reporte_consolidado_filtradoPage.vue'
-        ),
+          import(
+            'pages/fondosRotativos/reportes/consolidado_filtrado/view/Reporte_consolidado_filtradoPage.vue'
+          ),
         //cambiar a true cuando este listo
         meta: { requiresAuth: true },
       },
@@ -553,9 +531,9 @@ const routes: RouteRecordRaw[] = [
         path: '/reporte-contabilidad',
         name: 'reporte_contabilidad',
         component: () =>
-        import(
-          'pages/fondosRotativos/reportes/fondo_rotativo_contabilidad/view/Reporte_contabilidadPage.vue'
-        ),
+          import(
+            'pages/fondosRotativos/reportes/fondo_rotativo_contabilidad/view/Reporte_contabilidadPage.vue'
+          ),
         //cambiar a true cuando este listo
         meta: { requiresAuth: true },
       },
