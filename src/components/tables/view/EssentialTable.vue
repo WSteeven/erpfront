@@ -277,6 +277,42 @@
           ></q-icon>
           <span>{{ accion3Header.titulo }}</span>
         </q-btn>
+
+        <!-- Boton 4 Header -->
+        <q-btn
+          v-if="extraerVisible(accion4Header, props)"
+          :color="accion4Header?.color ?? 'primary'"
+          :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+          push
+          rounded
+          no-caps
+          @click="accion4Header.accion"
+        >
+          <q-icon
+            :name="extraerIcono(accion4Header) ?? ''"
+            size="xs"
+            class="q-pr-sm"
+          ></q-icon>
+          <span>{{ accion4Header.titulo }}</span>
+        </q-btn>
+
+        <!-- Boton 5 Header -->
+        <q-btn
+          v-if="extraerVisible(accion5Header, props)"
+          :color="accion5Header?.color ?? 'primary'"
+          :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+          push
+          rounded
+          no-caps
+          @click="accion5Header.accion"
+        >
+          <q-icon
+            :name="extraerIcono(accion5Header) ?? ''"
+            size="xs"
+            class="q-pr-sm"
+          ></q-icon>
+          <span>{{ accion5Header.titulo }}</span>
+        </q-btn>
       </div>
     </template>
 
@@ -677,10 +713,7 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
-        <q-chip
-          v-if="props.value === 'SI'"
-          class="bg-yellow-1"
-        >
+        <q-chip v-if="props.value === 'SI'" class="bg-yellow-1">
           <q-icon
             name="bi-circle-fill"
             color="primary"
@@ -688,10 +721,7 @@
           ></q-icon>
           SI
         </q-chip>
-        <q-chip
-          v-if="props.value === 'NO'"
-          class="bg-yellow-1"
-        >
+        <q-chip v-if="props.value === 'NO'" class="bg-yellow-1">
           <q-icon
             name="bi-circle-fill"
             color="negative"
@@ -740,8 +770,7 @@
     <template #body-cell-leida="props">
       <q-td :props="props">
         <span v-if="props.value == false || props.value == 0">
-          <q-icon class="bi-x-circle-fill" color="negative" size="sm">
-          </q-icon>
+          <q-icon class="bi-x-circle-fill" color="negative" size="sm"> </q-icon>
         </span>
         <span v-else>
           <q-icon class="bi-check-circle-fill" color="positive" size="sm">
