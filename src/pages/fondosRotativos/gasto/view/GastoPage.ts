@@ -22,6 +22,7 @@ import { TareaController } from 'tareas/infraestructure/TareaController'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -299,6 +300,7 @@ export default defineComponent({
     }
 
     const listadoTareas = computed(() => listadosAuxiliares.tareas.filter((tarea: Tarea) => tarea.proyecto_id === gasto.proyecto))
+    const listadoSubdetalles = computed(() => listadosAuxiliares.sub_detalles.filter((subdetalle: SubDetalleFondo) => subdetalle.id_detalle_viatico === gasto.detalle))
     /*********
     * Pusher
     *********/
@@ -329,6 +331,7 @@ export default defineComponent({
       filtrarProyectos,
       filtrarTareas,
       listadosAuxiliares,
+      listadoSubdetalles,
       mostrarListado,
       listadoTareas,
     }

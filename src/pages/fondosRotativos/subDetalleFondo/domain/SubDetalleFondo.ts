@@ -1,6 +1,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class SubDetalleFondo extends EntidadAuditable {
   detalle_viatico: string | null
+  id_detalle_viatico: number | null
   descripcion: string | null
   sub_detalle: string | null
   transcriptor: string | null
@@ -11,6 +12,7 @@ export class SubDetalleFondo extends EntidadAuditable {
   constructor() {
     super()
     this.detalle_viatico = null
+    this.id_detalle_viatico = null
     this.descripcion = null
     this.sub_detalle = null
     this.transcriptor=null

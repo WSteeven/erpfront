@@ -123,6 +123,7 @@ export const endpoints = {
   consolidado_excel: new Endpoint('fondos-rotativos/consolidado/excel'),
   consolidado_filtrado_pdf: new Endpoint('fondos-rotativos/consolidado_filtrado/pdf'),
   consolidado_filtrado_excel: new Endpoint('fondos-rotativos/consolidado_filtrado/excel'),
+  autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
 
 
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),

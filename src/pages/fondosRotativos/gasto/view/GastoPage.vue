@@ -364,11 +364,11 @@
             </q-select>
           </div>
           <!-- Subdetalle-->
-          <div class="col-12 col-md-4 q-mb-md" v-if="gasto.detalle != null">
+          <div class="col-12 col-md-3 q-mb-md" v-if="gasto.detalle != null">
             <label class="q-mb-sm block">SubDetalle</label>
             <q-select
               v-model="gasto.sub_detalle"
-              :options="sub_detalles"
+              :options="listadoSubdetalles"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -377,7 +377,7 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.sub_detalle.$errors.length"
-              error-message="Debes seleccionar un canton"
+              error-message="Debes seleccionar un sub detalle"
               use-input
               input-debounce="0"
               @filter="filtarSubdetalles"
