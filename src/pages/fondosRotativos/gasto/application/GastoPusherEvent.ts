@@ -12,7 +12,8 @@ export class GastoPusherEvent {
     const { notificarCorrecto } = useNotificaciones()
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
-    pusher.subscribe('fondo-rotativo-'+this.usuario.id)
+    console.log('fondo-rotativo-'+this.usuario.usuario_id);
+    pusher.subscribe('fondo-rotativo-'+this.usuario.usuario_id)
     pusher.bind('fondo-rotativo-event', function (e) {
       console.log('fondo-rotativo-event', e);
       notificacionStore.agregar(e.notificacion)

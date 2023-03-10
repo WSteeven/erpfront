@@ -119,7 +119,7 @@
           <!-- Saldo depositado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Saldo Anterior(*):</label>
-            <q-input v-model="acreditacion.saldo_anterior" placeholder="Obligatorio" :disable="disabled"
+            <q-input v-model="acreditacion.saldo_anterior" placeholder="Obligatorio" disable
               :error="!!v$.saldo_anterior.$errors.length" @blur="v$.saldo_anterior.$touch" outlined dense type="number">
               <template v-slot:error>
                 <div v-for="error of v$.saldo_anterior.$errors" :key="error.$uid">

@@ -275,7 +275,7 @@
               v-model="gasto.total"
               placeholder="Obligatorio"
               type="number"
-              :disable="disabled"
+              disable
               :error="!!v$.total.$errors.length"
               @blur="v$.total.$touch"
               outlined

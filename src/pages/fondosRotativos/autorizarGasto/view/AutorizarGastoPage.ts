@@ -3,7 +3,7 @@
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { defineComponent, ref } from 'vue'
-import {  accionesTabla, tabAutorizarGasto,estadosGastos } from 'config/utils'
+import { accionesTabla, tabAutorizarGasto, estadosGastos } from 'config/utils'
 
 // Componentes
 import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
@@ -15,6 +15,7 @@ import { configuracionColumnasAutorizarGasto } from '../domain/configuracionColu
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
 import { AprobarGastoController } from '../infrestructure/AprobarGastoController'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -24,8 +25,13 @@ export default defineComponent({
   setup() {
     const controller = new AutorizarGastoController()
     const aprobarController = new AprobarGastoController()
-    const { confirmar, prompt, notificarCorrecto, notificarAdvertencia } =
-      useNotificaciones()
+    const {
+      confirmar,
+      prompt,
+      notificarCorrecto,
+      notificarAdvertencia,
+      notificarError,
+    } = useNotificaciones()
     const tabActual = ref()
     /***********
      * Mixin
@@ -43,7 +49,23 @@ export default defineComponent({
       titulo: 'Aprobar',
       icono: ' bi-check-circle',
       accion: async ({ entidad }) => {
-        await aprobarController.aprobarGasto(entidad)
+        const data: CustomActionPrompt = {
+          titulo: 'Aprobar gasto',
+          mensaje: 'Ingrese motivo de aprobación',
+          accion: async (data) => {
+            try {
+              entidad.detalle_estado = data
+              await aprobarController.aprobarGasto(entidad)
+              notificarCorrecto('Se aprobado Gasto Exitosamente')
+              filtrarAutorizacionesGasto(tabActual.value)
+            } catch (e: any) {
+              notificarError(
+                'No se pudo aprobar, debes ingresar un motivo para la anulación'
+              )
+            }
+          },
+        }
+        prompt(data)
       },
     }
 
@@ -51,7 +73,25 @@ export default defineComponent({
       titulo: 'Rechazar',
       icono: 'bi-x-circle',
       accion: async ({ entidad }) => {
-        await aprobarController.rechazarGasto(entidad)
+        confirmar('¿Está seguro de rechazar el gasto?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Rechazar gasto',
+            mensaje: 'Ingrese motivo de aprobación',
+            accion: async (data) => {
+              try {
+                entidad.detalle_estado = data
+                await aprobarController.rechazarGasto(entidad)
+                notificarAdvertencia('Se rechazado Gasto Exitosamente')
+                filtrarAutorizacionesGasto(tabActual.value)
+              } catch (e: any) {
+                notificarError(
+                  'No se pudo rechazar, debes ingresar un motivo para la anulación'
+                )
+              }
+            },
+          }
+          prompt(data)
+        })
       },
     }
     const autorizarGastoController = new AutorizarGastoController()
@@ -60,13 +100,15 @@ export default defineComponent({
 
       cargando.activar()
 
-      const { result } = await autorizarGastoController.listar({ estado: tabSeleccionado })
+      const { result } = await autorizarGastoController.listar({
+        estado: tabSeleccionado,
+      })
       listado.value = result
       tabActual.value = tabSeleccionado
 
       cargando.desactivar()
     }
-    filtrarAutorizacionesGasto(estadosGastos.PENDIENTE);
+    filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
     return {
       configuracionColumnasAutorizarGasto,
       listado,

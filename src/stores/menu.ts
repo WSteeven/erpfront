@@ -267,6 +267,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Detalle Fondos',
           icon: 'bi-list-task',
+          can: store.can('puede.ver.menu.detalle_fondo'),
           children: [ {
             title: 'Detalle',
             link: 'detalle_fondo',
@@ -283,6 +284,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Saldo',
           icon: 'bi-cash',
+          can: store.can('puede.ver.menu.saldos'),
           children:[
             {
               title: 'Acreditacion',
