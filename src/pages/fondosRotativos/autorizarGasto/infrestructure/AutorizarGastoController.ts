@@ -4,6 +4,6 @@ import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
 
 export class AutorizarGastoController extends TransaccionSimpleController<Gasto> {
   constructor() {
-    super(endpoints.gastos)
+    super(endpoints.autorizaciones_gastos)
   }
 }

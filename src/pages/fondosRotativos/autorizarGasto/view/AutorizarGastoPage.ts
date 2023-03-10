@@ -10,11 +10,11 @@ import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialo
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
-import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { configuracionColumnasAutorizarGasto } from '../domain/configuracionColumnasAutorizarGasto'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
+import { AprobarGastoController } from '../infrestructure/AprobarGastoController'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -22,7 +22,8 @@ export default defineComponent({
     ConfirmarDialog,
   },
   setup() {
-    const controller = new GastoController()
+    const controller = new AutorizarGastoController()
+    const aprobarController = new AprobarGastoController()
     const { confirmar, prompt, notificarCorrecto, notificarAdvertencia } =
       useNotificaciones()
     const tabActual = ref()
@@ -42,8 +43,7 @@ export default defineComponent({
       titulo: 'Aprobar',
       icono: ' bi-check-circle',
       accion: async ({ entidad }) => {
-        //await controller.aprobarGasto(entidad)
-        // await listado.value.refrescar()
+        await aprobarController.aprobarGasto(entidad)
       },
     }
 
@@ -51,8 +51,7 @@ export default defineComponent({
       titulo: 'Rechazar',
       icono: 'bi-x-circle',
       accion: async ({ entidad }) => {
-        //await controller.aprobarGasto(entidad)
-        // await listado.value.refrescar()
+        await aprobarController.rechazarGasto(entidad)
       },
     }
     const autorizarGastoController = new AutorizarGastoController()
