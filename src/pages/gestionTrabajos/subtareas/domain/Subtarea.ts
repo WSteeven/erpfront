@@ -53,6 +53,7 @@ export class Subtarea extends EntidadAuditable {
 
   canton: string | null
   cantidad_subtareas: number | null
+  mas_empleados: boolean
 
   constructor() {
     super()
@@ -112,5 +113,6 @@ export class Subtarea extends EntidadAuditable {
 
     this.canton = null
     this.cantidad_subtareas = null
+    this.mas_empleados = false
   }
 }

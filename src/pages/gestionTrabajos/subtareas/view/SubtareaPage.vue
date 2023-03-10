@@ -414,6 +414,54 @@
           </q-select>
         </div>
 
+        <!-- Es dependiente -->
+        <div v-if="subtarea.grupo" class="col-12 col-md-3">
+          <br />
+          <q-checkbox
+            v-model="subtarea.mas_empleados"
+            label="Quiero agregar más empleados"
+            outlined
+            :disable="disabled"
+            dense
+          ></q-checkbox>
+        </div>
+
+        <div
+          v-if="subtarea.mas_empleados"
+          class="col-12 row q-col-gutter-xs q-mb-md"
+        >
+          <div class="col-12 col-md-10">
+            <q-input
+              v-model="criterioBusquedaEmpleadosGrupo"
+              placeholder="Nombres / Apellidos / Identificación"
+              hint="Ingrese los datos del empleado y presione Enter para buscar"
+              @keydown.enter="listarEmpleadosGrupo()"
+              @blur="
+                criterioBusquedaEmpleadosGrupo === '' ? limpiarTecnico() : null
+              "
+              :disable="disabled"
+              clearable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-2">
+            <q-btn
+              color="positive"
+              class="full-width"
+              :disable="disable"
+              no-caps
+              push
+              @click="listarEmpleadosGrupo()"
+            >
+              <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>Buscar
+              empleado
+            </q-btn>
+          </div>
+        </div>
+
         <div class="col-12">
           <essential-table
             v-if="
@@ -623,13 +671,13 @@
       @guardar="guardarDatos(subtarea)"
     />
 
-    <!--<essential-selectable-table
-          ref="refListadoSeleccionableTecnicos"
-          :configuracion-columnas="configuracionColumnasEmpleadoGrupo"
-          :datos="listadoTecnicos"
-          tipo-seleccion="multiple"
-          @selected="seleccionarEmpleado"
-        ></essential-selectable-table> -->
+    <essential-selectable-table
+      ref="refListadoSeleccionableEmpleadosGrupo"
+      :configuracion-columnas="configuracionColumnasEmpleadoGrupo"
+      :datos="listadoEmpleadosGrupo"
+      tipo-seleccion="multiple"
+      @selected="seleccionarEmpleadosGrupo"
+    ></essential-selectable-table>
   </div>
 
   <modales-entidad :comportamiento="modales" />

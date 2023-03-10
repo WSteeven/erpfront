@@ -56,6 +56,7 @@ import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
 import { DesignarLiderGrupoController } from '../infraestructure/DesignarLiderGrupoController'
 import { DesignarSecretarioGrupoController } from '../infraestructure/DesignarSecretarioGrupoController'
+import { useOrquestadorSelectorEmpleadosGrupo } from '../application/useOrquestadorSelectorEmpleadosGrupo'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad },
@@ -406,6 +407,18 @@ export default defineComponent({
       subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
     }
 
+    /*****************
+     * Orquestadores
+     *****************/
+    const {
+      refListadoSeleccionable: refListadoSeleccionableEmpleadosGrupo,
+      criterioBusqueda: criterioBusquedaEmpleadosGrupo,
+      listado: listadoEmpleadosGrupo,
+      listar: listarEmpleadosGrupo,
+      limpiar: limpiarEmlpeadosGrupo,
+      seleccionar: seleccionarEmlpeadosGrupo,
+    } = useOrquestadorSelectorEmpleadosGrupo(empleadosSeleccionados, 'empleados')
+
     const v$ = useVuelidate(rules, subtarea)
     setValidador(v$.value)
 
@@ -650,6 +663,13 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
+      // Orquesatdor
+      refListadoSeleccionableEmpleadosGrupo,
+      criterioBusquedaEmpleadosGrupo,
+      listadoEmpleadosGrupo,
+      listarEmpleadosGrupo,
+      limpiarEmlpeadosGrupo,
+      seleccionarEmlpeadosGrupo,
     }
   },
 })

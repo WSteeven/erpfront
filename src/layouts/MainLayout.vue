@@ -161,8 +161,8 @@
                   ></q-btn>
                 </div>
 
-                <q-avatar size="72px" class="q-mb-md">
-                  <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+                <q-avatar size="72px" class="double-border q-mb-md">
+                  <img v-bind:src="imagenPerfil" />
                 </q-avatar>
 
                 <div class="text-subtitle1 text-center">
@@ -330,7 +330,7 @@ export default defineComponent({
     //....
 
     //Poner la imagen de perfil
-    const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres}+${authenticationStore.user.apellidos}&bold=true&background=99c3e7`
+    const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres}+${authenticationStore.user.apellidos}&bold=true&background=bfcedb&color=0879dc`
 
     const notificacionesPusherStore = useNotificationRealtimeStore()
     const obtenerIconoNotificacion = new ObtenerIconoNotificacionRealtime()
