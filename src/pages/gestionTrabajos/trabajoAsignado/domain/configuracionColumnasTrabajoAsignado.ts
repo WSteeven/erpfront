@@ -3,6 +3,13 @@ import { Subtarea } from 'gestionTrabajos/subtareas/domain/Subtarea'
 
 export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
   {
+    name: 'proyecto',
+    field: 'proyecto',
+    label: 'Proyecto',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'tarea',
     field: 'tarea',
     label: 'Cód. Tarea',
@@ -49,9 +56,9 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'fecha_hora_asignacion',
-    field: 'fecha_hora_asignacion',
-    label: 'Fecha hora asignación',
+    name: 'fecha_hora_agendado',
+    field: 'fecha_hora_agendado',
+    label: 'Fecha hora agendado',
     align: 'left',
     sortable: true,
   },
@@ -62,21 +69,21 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'fecha_agendado',
-    field: 'fecha_agendado',
-    label: 'Fecha agendado',
+    name: 'fecha_inicio_trabajo',
+    field: 'fecha_inicio_trabajo',
+    label: 'Fecha inicio de trabajo',
     align: 'left',
   },
   {
-    name: 'hora_inicio_agendado',
-    field: 'hora_inicio_agendado',
-    label: 'Hora inicio agendado',
+    name: 'hora_inicio_trabajo',
+    field: 'hora_inicio_trabajo',
+    label: 'Hora inicio de trabajo',
     align: 'left',
   },
   {
-    name: 'hora_fin_agendado',
-    field: 'hora_fin_agendado',
-    label: 'Hora fin agendado',
+    name: 'hora_fin_trabajo',
+    field: 'hora_fin_trabajo',
+    label: 'Hora fin de trabajo',
     align: 'left',
   },
   {

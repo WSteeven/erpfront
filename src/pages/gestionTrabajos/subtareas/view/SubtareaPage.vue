@@ -526,6 +526,17 @@
           </q-input>
         </div>
 
+        <div v-if="subtarea.fecha_hora_agendado" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora de agendamiento</label>
+          <q-input
+            v-model="subtarea.fecha_hora_agendado"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+        </div>
+
         <!-- Fecha de inicio -->
         <div v-if="subtarea.fecha_hora_ejecucion" class="col-12 col-md-3">
           <label class="q-mb-sm block"
@@ -533,6 +544,18 @@
           >
           <q-input
             v-model="subtarea.fecha_hora_ejecucion"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+        </div>
+
+        <!-- Fecha y hora de estado realizado -->
+        <div v-if="subtarea.fecha_hora_realizado" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora realizado</label>
+          <q-input
+            v-model="subtarea.fecha_hora_realizado"
             outlined
             dense
             disable
@@ -565,16 +588,29 @@
           ></q-input>
         </div>
 
-        <!-- Fecha y hora de estado realizado -->
-        <div v-if="subtarea.fecha_hora_realizado" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha y hora realizado</label>
+        <!-- Fecha y hora de estado suspendido -->
+        <div v-if="subtarea.fecha_hora_pendiente" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora de estado pendiente</label>
           <q-input
-            v-model="subtarea.fecha_hora_realizado"
+            v-model="subtarea.fecha_hora_pendiente"
             outlined
             dense
             disable
           >
           </q-input>
+        </div>
+
+        <!-- Causa de pendiente -->
+        <div v-if="subtarea.causa_pendiente" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Causa de pendiente</label>
+          <q-input
+            v-model="subtarea.causa_pendiente"
+            disable
+            outlined
+            type="textarea"
+            autogrow
+            dense
+          ></q-input>
         </div>
 
         <!-- Fecha y hora de estado suspendido -->

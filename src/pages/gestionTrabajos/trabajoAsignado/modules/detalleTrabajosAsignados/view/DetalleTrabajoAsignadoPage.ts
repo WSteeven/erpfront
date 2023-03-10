@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasArchivoTrabajo } from 'trabajos/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoTrabajo'
-import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/trabajos/domain/configuracionColumnasEmpleadoGrupo'
+import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
 import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
 import { tiposTareasTelconet, accionesTabla } from 'config/utils'
@@ -31,9 +31,11 @@ import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestruct
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { ArchivoSubtareaController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
 import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: { EssentialTable },
+  emits: ['cerrar-modal', 'guardado'],
   setup() {
     /*********
     * Stores
@@ -79,6 +81,7 @@ export default defineComponent({
     const clientesFinales = ref([])
     const clienteFinal = reactive(new ClienteFinal())
     const archivos = ref([])
+    const empleadosDesignados = ref([])
 
     consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
 
@@ -90,12 +93,10 @@ export default defineComponent({
         obtenerClienteFinal(trabajo.cliente_final)
       }
 
-      /* if (trabajo.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
-        trabajo.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
-          console.log(grupo)
-          if (grupo.id) obtenerTecnicosGrupo(grupo.id)
-        })
-      } */
+      if (trabajo.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo && trabajo.grupo) {
+
+        obtenerTecnicosGrupo(trabajo.grupo)
+      }
     })
 
     /***************
@@ -113,21 +114,22 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    /*async function obtenerTecnicosGrupo(grupo_id: number) {
+    async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
+
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      trabajo.empleados_seleccionados.push(...result)*/
+      empleadosDesignados.value = result
 
-    /* trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
-      const tecnico = new Empleado()
-      tecnico.hydrate(empleado)
-
-      const roles = stringToArray(tecnico.roles ?? '')
-      tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
-
-      return tecnico
-    }) */
-    // }
+      /* trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
+        const tecnico = new Empleado()
+        tecnico.hydrate(empleado)
+  
+        const roles = stringToArray(tecnico.roles ?? '')
+        tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
+  
+        return tecnico
+      }) */
+    }
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
@@ -158,7 +160,8 @@ export default defineComponent({
       botonDescargar,
       clientesFinales,
       modosAsignacionTrabajo,
-      nombresClienteFinal: computed(() => clienteFinal.nombres + ' ' + clienteFinal.apellidos)
+      nombresClienteFinal: computed(() => clienteFinal.nombres + ' ' + clienteFinal.apellidos),
+      empleadosDesignados,
     }
   }
 })

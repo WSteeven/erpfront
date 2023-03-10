@@ -76,7 +76,7 @@ export default defineComponent({
       titulo: 'Ejecutar',
       icono: 'bi-play-fill',
       color: 'positive',
-      visible: ({ entidad }) => [estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.es_responsable,
+      visible: ({ entidad }) => [estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.es_responsable && entidad.ejecutar_hoy && entidad.puede_ejecutar,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de iniciar el trabajo?', async () => {
           const { fecha, hora } = await obtenerTiempoActual()
@@ -165,7 +165,7 @@ export default defineComponent({
       titulo: 'Suspender',
       icono: 'bi-power',
       color: 'negative',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable && entidad.ejecutar_hoy,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de suspender el trabajo?', () => {
           const config: CustomActionPrompt = {
@@ -188,7 +188,7 @@ export default defineComponent({
       titulo: 'Pendiente',
       icono: 'bi-clock',
       color: 'orange-8',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable && entidad.ejecutar_hoy,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de marcar como pendiente el trabajo?', () => {
           const config: CustomActionPrompt = {

@@ -39,7 +39,7 @@ export const tabTrabajoAsignado: TabOption[] = [
   { label: 'Agendado', value: 'AGENDADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },
-  { label: 'Próximos trabajos', value: '  PROXIMO' },
+  { label: 'Próximos trabajos', value: 'PROXIMO' },
   // { label: 'Realizado', value: 'REALIZADO' },
   /*{ label: 'Suspendido', value: 'SUSPENDIDO' },
   { label: 'Cancelado', value: 'CANCELADO' },*/

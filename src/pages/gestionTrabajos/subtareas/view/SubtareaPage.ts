@@ -129,7 +129,6 @@ export default defineComponent({
     const asignarLider = ref(false)
     const asignarSecretario = ref(false)
     const tipoSeleccion = computed(() => asignarLider.value || asignarSecretario.value ? 'single' : 'none')
-    const tecnicosGrupoPrincipal: Ref<Empleado[]> = ref([])
     const { notificarError, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
     const tecnicoSeleccionado = ref()
@@ -416,7 +415,7 @@ export default defineComponent({
       listado: listadoEmpleadosGrupo,
       listar: listarEmpleadosGrupo,
       limpiar: limpiarEmlpeadosGrupo,
-      seleccionar: seleccionarEmlpeadosGrupo,
+      seleccionar: seleccionarEmpleadosGrupo,
     } = useOrquestadorSelectorEmpleadosGrupo(empleadosSeleccionados, 'empleados')
 
     const v$ = useVuelidate(rules, subtarea)
@@ -425,56 +424,61 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    async function entidadSeleccionada(itemsSeleccionados: Empleado[]) {
-      if (itemsSeleccionados.length) {
-        const id = itemsSeleccionados[0].id
+    async function entidadSeleccionada(empleadoSeleccionado: Empleado[]) {
+      if (empleadoSeleccionado.length) {
+        const idEmpleadoSeleccionado = empleadoSeleccionado[0].id
 
         try {
-          // Jefe de cuadrilla --
+          // Lider de grupo
           if (asignarLider.value) {
-            const em = new Empleado()
-            em.id = id
-            em.grupo = subtarea.grupo
+            const empleado = {
+              id: idEmpleadoSeleccionado,
+              grupo: subtarea.grupo,
+            }
 
-            const { response } = await new DesignarLiderGrupoController().editar(em)
+            console.log(empleadoGrupoQuitar.value)
+            const { response, result: nuevoLider } = await new DesignarLiderGrupoController().editar(empleado)
             asignarLider.value = false
 
             notificarCorrecto(response.data.mensaje)
 
-            // Quitar rol tabla Jefe cuadrilla
+            // Quitar rol de lider de grupo a antiguo lider
             const roles = stringToArray(empleadoGrupoQuitar.value.roles)
             empleadoGrupoQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.tecnico_lider).join(',')
 
-            // Designar rol tabla Secretario cuadrilla
-            const posicion: any = tecnicosGrupoPrincipal.value.findIndex((empleado: Empleado) => empleado.id === id)
-            const entidad: Empleado = tecnicosGrupoPrincipal.value[posicion]
-            entidad.roles = entidad.roles + ', ' + rolesSistema.tecnico_lider
-            tecnicosGrupoPrincipal.value.splice(posicion, 1, entidad)
+            // Designar rol lider de grupo al nuevo lider
+            const posicionNuevoLider: any = empleadosSeleccionados.value.findIndex((empleado: Empleado) => empleado.id === idEmpleadoSeleccionado)
+            empleadosSeleccionados.value.splice(posicionNuevoLider, 1, nuevoLider)
+
+            /* const nuevoLider: Empleado = empleadosSeleccionados.value[posicionNuevoLider]
+            nuevoLider.roles = nuevoLider.roles + ', ' + rolesSistema.tecnico_lider
+            empleadosSeleccionados.value.splice(posicionNuevoLider, 1, nuevoLider) */
 
           }
 
-          // Secretario de cuadrilla --
+          // Secretario de grupo
           if (asignarSecretario.value) {
 
-            const em2 = new Empleado()
-            em2.id = id
-            em2.grupo = subtarea.grupo
+            const empleado = {
+              id: idEmpleadoSeleccionado,
+              grupo: subtarea.grupo
+            }
 
-            await new DesignarSecretarioGrupoController().editar(em2)
+            const { response } = await new DesignarSecretarioGrupoController().editar(empleado)
             asignarSecretario.value = false
+            notificarCorrecto(response.data.mensaje)
 
-            // Quitar rol secretario cuadrilla
+            // Quitar rol de secretario de grupo al antiguo secretario
             const roles = stringToArray(empleadoGrupoQuitar.value.roles)
             empleadoGrupoQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.secretario).join(',')
 
-            // Designar rol tabla Secretario cuadrilla
-            const posicion: any = tecnicosGrupoPrincipal.value.findIndex((empleado: Empleado) => empleado.id === id)
-            const entidad: Empleado = tecnicosGrupoPrincipal.value[posicion]
+            // Designar rol de secretario de grupo al nuevo secretario
+            const posicionNuevoSecretario: any = empleadosSeleccionados.value.findIndex((empleado: Empleado) => empleado.id === idEmpleadoSeleccionado)
+            const nuevoSecretario: Empleado = empleadosSeleccionados.value[posicionNuevoSecretario]
+            nuevoSecretario.roles = nuevoSecretario.roles + ', ' + rolesSistema.secretario
+            empleadosSeleccionados.value.splice(posicionNuevoSecretario, 1, nuevoSecretario)
 
-            entidad.roles = entidad.roles + ', ' + rolesSistema.secretario
-            tecnicosGrupoPrincipal.value.splice(posicion, 1, entidad)
-
-            notificarCorrecto('Asignado como secretario de cuadrilla')
+            // notificarCorrecto('Asignado como secretario de cuadrilla')
           }
         } catch (e) {
           if (isAxiosError(e)) {
@@ -608,7 +612,6 @@ export default defineComponent({
       designarSecretario,
       designarSecretarioDefinitivo,
       listadosAuxiliares,
-      tecnicosGrupoPrincipal,
       tiposInstalaciones,
       tiposTareasTelconet,
       tiposTareasNedetel,
@@ -669,7 +672,7 @@ export default defineComponent({
       listadoEmpleadosGrupo,
       listarEmpleadosGrupo,
       limpiarEmlpeadosGrupo,
-      seleccionarEmlpeadosGrupo,
+      seleccionarEmpleadosGrupo,
     }
   },
 })

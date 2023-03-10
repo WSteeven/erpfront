@@ -123,26 +123,27 @@
             :permitir-buscar="false"
             :mostrar-footer="!trabajo.grupos_seleccionados.length"
           >
-          </essential-table>
+          </essential-table> -->
 
-          <essential-table
-            v-if="
-              trabajo.modo_asignacion_trabajo ===
-              modosAsignacionTrabajo.por_grupo
-            "
-            titulo="Empleados que ejecutarán el trabajo"
-            :configuracionColumnas="configuracionColumnasEmpleadoGrupo"
-            :datos="trabajo.empleados_seleccionados"
-            :mostrarBotones="false"
-            :permitirConsultar="false"
-            :permitirEditar="false"
-            :alto-fijo="false"
-            :mostrar-footer="false"
-            :permitir-buscar="false"
-          >
-          </essential-table>
+      <div class="col-12">
+        <essential-table
+          v-if="
+            trabajo.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo
+          "
+          titulo="Empleados designados para ejecutar el trabajo"
+          :configuracionColumnas="configuracionColumnasEmpleadoGrupo"
+          :datos="empleadosDesignados"
+          :mostrarBotones="false"
+          :permitirConsultar="false"
+          :permitirEditar="false"
+          :alto-fijo="false"
+          :mostrar-footer="false"
+          :permitir-buscar="false"
+        >
+        </essential-table>
+      </div>
 
-          <essential-table
+      <!--<essential-table
             v-if="
               trabajo.modo_asignacion_trabajo ===
               modosAsignacionTrabajo.por_trabajador

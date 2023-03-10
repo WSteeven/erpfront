@@ -18,6 +18,7 @@ export function useOrquestadorSelectorEmpleadosGrupo(empleados: Ref<Empleado[]>,
       criterioBusqueda.value = null
     },
     seleccionarMultiple: (items: EmpleadoSeleccionado[]) => {
+      console.log(items)
       empleados.value = [...empleados.value, ...items]
       // console.log('Seleccionado 48564')
       //console.log(tecnicosOtrosGrupos)
