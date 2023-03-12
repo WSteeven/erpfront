@@ -61,16 +61,16 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
-        name: 'cargo',
-        field: 'cargo',
-        label: 'Cargo',
+        name: 'grupo',
+        field: 'grupo',
+        label: 'Grupo',
         align: 'left',
         sortable: true
     },
     {
-        name: 'grupo',
-        field: 'grupo',
-        label: 'Grupo',
+        name: 'cargo',
+        field: 'cargo',
+        label: 'Cargo',
         align: 'left',
         sortable: true
     },

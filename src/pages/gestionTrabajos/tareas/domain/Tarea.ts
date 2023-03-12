@@ -35,9 +35,9 @@ export class Tarea extends EntidadAuditable {
 
   es_dependiente: boolean
   es_ventana: boolean
-  fecha_agendado: string | null
-  hora_inicio_agendado: string | null
-  hora_fin_agendado: string | null
+  fecha_inicio_trabajo: string | null
+  hora_inicio_trabajo: string | null
+  hora_fin_trabajo: string | null
 
   // Foreign keys
   tipo_trabajo: number | null
@@ -64,6 +64,7 @@ export class Tarea extends EntidadAuditable {
   grupos: string | null
   canton: string | null
   cantidad_subtareas: number | null
+  finalizado: boolean
 
   constructor() {
     super()
@@ -110,9 +111,9 @@ export class Tarea extends EntidadAuditable {
     this.es_dependiente = false
     this.es_ventana = false
 
-    this.fecha_agendado = null
-    this.hora_inicio_agendado = null
-    this.hora_fin_agendado = null
+    this.fecha_inicio_trabajo = null
+    this.hora_inicio_trabajo = null
+    this.hora_fin_trabajo = null
     this.tarea = null
 
     // Foreign keys
@@ -138,5 +139,6 @@ export class Tarea extends EntidadAuditable {
     this.grupos = null
     this.canton = null
     this.cantidad_subtareas = null
+    this.finalizado = false
   }
 }

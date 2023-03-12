@@ -34,12 +34,6 @@ const routes: RouteRecordRaw[] = [
         // component: () => import('pages/tareas/controlTareas/view/ControlTareaPage.vue'),
       },
       {
-        path: '/hoja-control-trabajos',
-        name: 'hoja_control_trabajos',
-        component: () => import('trabajos/view/TrabajoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/tipos-trabajos',
         name: 'tipos_trabajos',
         component: () =>
@@ -53,22 +47,6 @@ const routes: RouteRecordRaw[] = [
           import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
         meta: { requiresAuth: true },
       },*/
-      {
-        path: '/propietarios-elementos',
-        name: 'propietarios_elementos',
-        component: () =>
-          import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/control-tendidos',
-        name: 'control_tendidos',
-        component: () =>
-          import(
-            'gestionTrabajos/formulariosTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
       {
         path: '/control-cambios',
         name: 'control_cambios',
@@ -510,7 +488,7 @@ const routes: RouteRecordRaw[] = [
             'pages/fondosRotativos/reportes/consolidado_filtrado/view/Reporte_consolidado_filtradoPage.vue'
           ),
         //cambiar a true cuando este listo
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/reporte-contabilidad',

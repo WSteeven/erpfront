@@ -61,7 +61,7 @@ export default defineComponent({
     const devolucionStore = useDevolucionStore()
     const transferenciaStore = useTransferenciaStore()
 
-    const rolSeleccionado = (store.user.rol.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
+    const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
 
     onGuardado(()=>{

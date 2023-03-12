@@ -285,7 +285,7 @@
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="pedido.autorizacion || esCoordinador"
+            v-if="pedido.autorizacion || esCoordinador||esActivosFijos"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>

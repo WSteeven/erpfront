@@ -45,4 +45,11 @@ export const configuracionColumnasEmpleadoGrupo: ColumnConfig<Empleado>[] = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'roles',
+    field: 'roles',
+    label: 'Roles',
+    align: 'left',
+    sortable: true,
+  },
 ]

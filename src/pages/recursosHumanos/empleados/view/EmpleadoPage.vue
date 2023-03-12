@@ -419,6 +419,7 @@
               </template>
             </q-select>
           </div>
+
           <!-- Foto de perfil -->
           <div class="col-12 col-md-3">
             <label for="q-mb-sm block">Foto de perfil</label>
@@ -428,6 +429,7 @@
               @update:model-value="(data) => (empleado.foto_url = data)"
             ></selector-imagen>
           </div>
+
           <!-- Firma del empleado -->
           <div class="col-12 col-md-3">
             <label for="q-mb-sm block">Firma</label>
@@ -437,6 +439,7 @@
               @update:model-value="(data) => (empleado.firma_url = data)"
             ></selector-imagen>
           </div>
+
           <!--<div v-if="empleado.tiene_grupo" class="col-12 col-md-3 q-mb-md">
             <br />
             <q-toggle

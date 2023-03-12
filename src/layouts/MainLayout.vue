@@ -56,7 +56,7 @@
               transition-show="jump-down"
               transition-hide="jump-out"
               :style="{ 'min-width': width }"
-              class="window-height"
+              class="window-height bg-desenfoque"
               max-height="100vh"
             >
               <div class="full-width text-right q-pr-md">
@@ -68,11 +68,18 @@
                     'bg-white': !$q.dark.isActive,
                   }"
                   unelevated
+                  class="q-mt-sm"
                   @click="mostrarNotificaciones = false"
                 ></q-btn>
               </div>
               <q-list style="min-width: 120px; max-width: 400px">
-                <q-item class="text-center" v-if="notificaciones.length === 0">
+                <q-item
+                  class="q-mb-md text-grey-7"
+                  v-if="notificaciones.length === 0"
+                >
+                  <q-avatar>
+                    <q-icon name="bi-bell-slash"></q-icon>
+                  </q-avatar>
                   <q-item-section>
                     <q-item-label>No tienes notificaciones nuevas</q-item-label>
                   </q-item-section></q-item
@@ -80,7 +87,7 @@
                 <q-item
                   v-for="notificacion in notificaciones"
                   :key="notificacion.id"
-                  v-ripple
+                  class="bg-desenfoque"
                 >
                   <q-item-section avatar>
                     <q-icon
@@ -115,10 +122,10 @@
 
                 <q-separator />
 
-                <q-item clickable v-ripple to="notificaciones">
-                  <q-item-section avatar>
-                    <q-icon color="info" name="bi-bell" size="xs" />
-                  </q-item-section>
+                <q-item clickable to="notificaciones">
+                  <q-avatar>
+                    <q-icon name="bi-bell" />
+                  </q-avatar>
                   <q-item-section>Ver todas las notificaciones</q-item-section>
                 </q-item>
               </q-list>
@@ -126,8 +133,8 @@
           </q-btn>
 
           <q-btn dense round flat @click.self="mostrarMenu = true">
-            <q-avatar size="32px" class="double-border">
-              <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+            <q-avatar size="36px" class="double-border">
+              <img v-bind:src="imagenPerfil" />
             </q-avatar>
 
             <q-menu
@@ -153,8 +160,9 @@
                     @click="mostrarMenu = false"
                   ></q-btn>
                 </div>
-                <q-avatar size="72px" class="q-mb-md">
-                  <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+
+                <q-avatar size="72px" class="double-border q-mb-md">
+                  <img v-bind:src="imagenPerfil" />
                 </q-avatar>
 
                 <div class="text-subtitle1 text-center">
@@ -242,7 +250,7 @@
           <essential-loading></essential-loading>
         </transition>
 
-        <component :is="Component" @notificar="actualizarNotificaciones" />
+        <component :is="Component" />
         <!--<footer-component></footer-component> -->
       </router-view>
     </q-page-container>
@@ -252,7 +260,7 @@
 <script lang="ts">
 // Dependencias
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, Ref } from 'vue'
 import { useMenuStore } from 'src/stores/menu'
 import { useRouter } from 'vue-router'
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
@@ -311,8 +319,6 @@ export default defineComponent({
       LocalStorage.set('dark', modoOscuro.value)
     }
 
-    const { notificarCorrecto } = useNotificaciones()
-
     /**********************************************
      * PUSHER
      * En esta sección agregan todas las llamadas al metodo start de sus archivos PusherEvent
@@ -329,6 +335,8 @@ export default defineComponent({
 
 
 
+    //Poner la imagen de perfil
+    const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres}+${authenticationStore.user.apellidos}&bold=true&background=bfcedb&color=0879dc`
 
     const notificacionesPusherStore = useNotificationRealtimeStore()
     const obtenerIconoNotificacion = new ObtenerIconoNotificacionRealtime()
@@ -336,23 +344,13 @@ export default defineComponent({
     notificacionesPusherStore.listar() //cargar las notificaciones de la base de datos
 
     //configuracion de las notificaciones
-    const notificaciones = computed(
+    const notificaciones: Ref<Notificacion[]> = computed(
       () => notificacionesPusherStore.listadoNotificaciones
     )
 
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
       await notificacionesPusherStore.marcarLeida()
-    }
-
-    async function actualizarNotificaciones(val) {
-      /* notificaciones.value.push({
-        id: notificaciones.value.length + 1,
-        title: val,
-      }) */
-      console.log(notificacionesPusherStore.listadoNotificaciones)
-      // notificaciones.value = notificacionesPusherStore.listadoNotificaciones
-      // console.log('entró aqui?',val, notificaciones.value.length);
     }
 
     return {
@@ -371,7 +369,6 @@ export default defineComponent({
       mostrarNotificaciones: ref(false),
       notificaciones,
       marcarLeida,
-      actualizarNotificaciones,
       ordenarNotificaciones() {
         notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
           return b.id! - a.id!
@@ -379,6 +376,7 @@ export default defineComponent({
       },
       moment,
       obtenerIcono: obtenerIconoNotificacion,
+      imagenPerfil,
     }
   },
 })

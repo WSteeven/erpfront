@@ -294,7 +294,8 @@ export const rolesSistema = {
   bodega: 'BODEGA',
   activos_fijos: 'ACTIVOS FIJOS',
   tecnico: 'TECNICO',
-  tecnico_lider: 'TECNICO LIDER DE GRUPO',
+  tecnico_lider: 'LIDER DE GRUPO',
+  secretario: 'SECRETARIO',
 }
 
 export const cargosSistema = {

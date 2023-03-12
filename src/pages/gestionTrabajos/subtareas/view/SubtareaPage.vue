@@ -413,6 +413,85 @@
             </template>
           </q-select>
         </div>
+
+        <!-- Es dependiente -->
+        <div v-if="subtarea.grupo" class="col-12 col-md-3">
+          <br />
+          <q-checkbox
+            v-model="subtarea.mas_empleados"
+            label="Quiero agregar más empleados"
+            outlined
+            :disable="disabled"
+            dense
+          ></q-checkbox>
+        </div>
+
+        <div
+          v-if="subtarea.mas_empleados"
+          class="col-12 row q-col-gutter-xs q-mb-md"
+        >
+          <div class="col-12 col-md-10">
+            <q-input
+              v-model="criterioBusquedaEmpleadosGrupo"
+              placeholder="Nombres / Apellidos / Identificación"
+              hint="Ingrese los datos del empleado y presione Enter para buscar"
+              @keydown.enter="listarEmpleadosGrupo()"
+              @blur="
+                criterioBusquedaEmpleadosGrupo === '' ? limpiarTecnico() : null
+              "
+              :disable="disabled"
+              clearable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-2">
+            <q-btn
+              color="positive"
+              class="full-width"
+              :disable="disable"
+              no-caps
+              push
+              @click="listarEmpleadosGrupo()"
+            >
+              <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>Buscar
+              empleado
+            </q-btn>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <essential-table
+            v-if="
+              subtarea.modo_asignacion_trabajo ===
+              modosAsignacionTrabajo.por_grupo
+            "
+            ref="refEmpleadosGrupo"
+            titulo="Empleados del grupo seleccionado"
+            estilos="margin-bottom: 14px;"
+            :configuracionColumnas="columnasEmpleado"
+            :datos="empleadosSeleccionados"
+            :accion1Header="designarLider"
+            :accion2Header="designarLiderDefinitivo"
+            :accion3Header="designarSecretario"
+            :accion4Header="designarSecretarioDefinitivo"
+            :accion5Header="cancelarDesignacion"
+            :accion1="quitarEmpleado"
+            :mostrarBotones="false"
+            :permitirConsultar="false"
+            :permitirEditar="false"
+            :permitirEliminar="false"
+            :alto-fijo="false"
+            :mostrar-header="true"
+            :permitir-buscar="false"
+            :tipo-seleccion="tipoSeleccion"
+            :mostrar-footer="!empleadosSeleccionados.length"
+            @selected="entidadSeleccionada"
+          >
+          </essential-table>
+        </div>
       </div>
     </q-expansion-item>
 
@@ -447,6 +526,17 @@
           </q-input>
         </div>
 
+        <div v-if="subtarea.fecha_hora_agendado" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora de agendamiento</label>
+          <q-input
+            v-model="subtarea.fecha_hora_agendado"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+        </div>
+
         <!-- Fecha de inicio -->
         <div v-if="subtarea.fecha_hora_ejecucion" class="col-12 col-md-3">
           <label class="q-mb-sm block"
@@ -454,6 +544,18 @@
           >
           <q-input
             v-model="subtarea.fecha_hora_ejecucion"
+            outlined
+            dense
+            disable
+          >
+          </q-input>
+        </div>
+
+        <!-- Fecha y hora de estado realizado -->
+        <div v-if="subtarea.fecha_hora_realizado" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora realizado</label>
+          <q-input
+            v-model="subtarea.fecha_hora_realizado"
             outlined
             dense
             disable
@@ -486,16 +588,29 @@
           ></q-input>
         </div>
 
-        <!-- Fecha y hora de estado realizado -->
-        <div v-if="subtarea.fecha_hora_realizado" class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha y hora realizado</label>
+        <!-- Fecha y hora de estado suspendido -->
+        <div v-if="subtarea.fecha_hora_pendiente" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha y hora de estado pendiente</label>
           <q-input
-            v-model="subtarea.fecha_hora_realizado"
+            v-model="subtarea.fecha_hora_pendiente"
             outlined
             dense
             disable
           >
           </q-input>
+        </div>
+
+        <!-- Causa de pendiente -->
+        <div v-if="subtarea.causa_pendiente" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Causa de pendiente</label>
+          <q-input
+            v-model="subtarea.causa_pendiente"
+            disable
+            outlined
+            type="textarea"
+            autogrow
+            dense
+          ></q-input>
         </div>
 
         <!-- Fecha y hora de estado suspendido -->
@@ -592,13 +707,13 @@
       @guardar="guardarDatos(subtarea)"
     />
 
-    <!--<essential-selectable-table
-          ref="refListadoSeleccionableTecnicos"
-          :configuracion-columnas="configuracionColumnasEmpleadoGrupo"
-          :datos="listadoTecnicos"
-          tipo-seleccion="multiple"
-          @selected="seleccionarEmpleado"
-        ></essential-selectable-table> -->
+    <essential-selectable-table
+      ref="refListadoSeleccionableEmpleadosGrupo"
+      :configuracion-columnas="configuracionColumnasEmpleadoGrupo"
+      :datos="listadoEmpleadosGrupo"
+      tipo-seleccion="multiple"
+      @selected="seleccionarEmpleadosGrupo"
+    ></essential-selectable-table>
   </div>
 
   <modales-entidad :comportamiento="modales" />

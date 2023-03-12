@@ -117,9 +117,9 @@ export default defineComponent({
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       descripcion_completa: { required: requiredIf(() => !tarea.tiene_subtareas) },
       tipo_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
-      fecha_agendado: { required: requiredIf(() => !tarea.tiene_subtareas) },
-      hora_inicio_agendado: { required: requiredIf(() => !tarea.tiene_subtareas) },
-      hora_fin_agendado: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      fecha_inicio_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      hora_inicio_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      hora_fin_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
       grupo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) },
       empleado: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_empleado) },
     }
@@ -174,7 +174,7 @@ export default defineComponent({
 
     watch(computed(() => tarea.cliente), async () => {
       clienteFinal.hydrate(new ClienteFinal())
-      tarea.cliente_final = null
+      // tarea.cliente_final = null
 
       if (tarea.cliente) {
         cargando.activar()
@@ -198,7 +198,7 @@ export default defineComponent({
     })
 
     function verificarEsVentana() {
-      if (!tarea.es_ventana) tarea.hora_fin_agendado = null
+      if (!tarea.es_ventana) tarea.hora_fin_trabajo = null
     }
 
     // Informacion de cliente final
@@ -234,9 +234,9 @@ export default defineComponent({
         tarea.descripcion_completa = tarea.subtarea.descripcion_completa
         tarea.tipo_trabajo = tarea.subtarea.tipo_trabajo
         tarea.es_ventana = tarea.subtarea.es_ventana
-        tarea.fecha_agendado = tarea.subtarea.fecha_agendado
-        tarea.hora_inicio_agendado = tarea.subtarea.hora_inicio_agendado
-        tarea.hora_fin_agendado = tarea.subtarea.hora_fin_agendado
+        tarea.fecha_inicio_trabajo = tarea.subtarea.fecha_agendado
+        tarea.hora_inicio_trabajo = tarea.subtarea.hora_inicio_agendado
+        tarea.hora_fin_trabajo = tarea.subtarea.hora_fin_agendado
         tarea.grupo = tarea.subtarea.grupo
         tarea.empleado = tarea.subtarea.empleado
         tarea.modo_asignacion_trabajo = tarea.subtarea.modo_asignacion_trabajo
@@ -251,9 +251,9 @@ export default defineComponent({
         tarea.subtarea.descripcion_completa = tarea.descripcion_completa
         tarea.subtarea.tipo_trabajo = tarea.tipo_trabajo
         tarea.subtarea.es_ventana = tarea.es_ventana
-        tarea.subtarea.fecha_agendado = tarea.fecha_agendado
-        tarea.subtarea.hora_inicio_agendado = tarea.hora_inicio_agendado
-        tarea.subtarea.hora_fin_agendado = tarea.hora_fin_agendado
+        tarea.subtarea.fecha_inicio_trabajo = tarea.fecha_inicio_trabajo
+        tarea.subtarea.hora_inicio_trabajo = tarea.hora_inicio_trabajo
+        tarea.subtarea.hora_fin_trabajo = tarea.hora_fin_trabajo
         tarea.subtarea.grupo = tarea.grupo
         tarea.subtarea.empleado = tarea.empleado
         tarea.subtarea.modo_asignacion_trabajo = tarea.modo_asignacion_trabajo
@@ -261,7 +261,7 @@ export default defineComponent({
     })
 
     // Subtareas
-    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
+    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
@@ -299,6 +299,7 @@ export default defineComponent({
       filtrarSubtareas,
       btnAgregarSubtarea,
       btnConsultarSubtarea,
+      btnAnular,
       subtareas,
       v$,
       tarea,
