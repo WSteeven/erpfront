@@ -43,7 +43,7 @@ export const useBotonesTablaDesignacionTrabajo = (empleadosSeleccionados: Ref<Em
     },
   }
 
-  const designarLiderTemporal: CustomActionTable = {
+  /* const designarLiderTemporal: CustomActionTable = {
     titulo: 'Designar como líder de grupo para este trabajo',
     icono: 'bi-clock-history',
     color: 'accent',
@@ -52,10 +52,10 @@ export const useBotonesTablaDesignacionTrabajo = (empleadosSeleccionados: Ref<Em
       console.log(data.value)
       refEmpleadosGrupo.value.seleccionar()
     },
-  }
+  } */
 
-  const designarLiderDefinitivo: CustomActionTable = {
-    titulo: 'Designar como líder de grupo en el sistema',
+  const designarLider: CustomActionTable = {
+    titulo: 'Designar como líder de grupo',
     icono: 'bi-arrow-left-right',
     color: 'positive',
     visible: () => asignarLider.value,
