@@ -6,6 +6,9 @@ import { ref, reactive, defineComponent, onMounted } from 'vue'
 import { required, requiredIf } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 
+// Componentes
+import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
+
 // Logica y controladores
 import { useSubtareaStore } from 'stores/subtarea'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -13,15 +16,19 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { maskFecha } from 'config/utils'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { modosAsignacionTrabajo } from 'config/tareas.utils'
 
 export default defineComponent({
+  components: {
+    DesignarResponsableTrabajo
+  },
   props: {
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<Subtarea>,
       required: true,
     },
   },
-  emits: ['cerrar-modal', 'seleccionar'],
+  emits: ['cerrar-modal', 'seleccionar', 'guardado'],
   setup(props, { emit }) {
     /*********
      * Stores
@@ -37,6 +44,8 @@ export default defineComponent({
      * Variables
      ************/
     const codigoTrabajoSeleccionado = subtareaStore.codigoTrabajoSeleccionado
+    const motivoPendiente = subtareaStore.motivoPendiente
+    const fechaHoraPendiente = subtareaStore.fechaHoraPendiente
     const subtarea = reactive(new Subtarea())
     const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
 
@@ -69,6 +78,9 @@ export default defineComponent({
         fecha_inicio_trabajo: subtarea.fecha_inicio_trabajo,
         hora_inicio_trabajo: subtarea.hora_inicio_trabajo,
         hora_fin_trabajo: subtarea.hora_fin_trabajo,
+        grupo: subtarea.grupo,
+        empleado: subtarea.empleado,
+        modo_asignacion_trabajo: subtarea.modo_asignacion_trabajo,
       }
 
       try {
@@ -94,12 +106,28 @@ export default defineComponent({
       }
     }
 
+    function seleccionarGrupo(grupo_id) {
+      subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
+      subtarea.grupo = grupo_id
+      subtarea.empleado = null
+    }
+
+    function seleccionarEmpleado(empleado_id) {
+      subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
+      subtarea.empleado = empleado_id
+      subtarea.grupo = null
+    }
+
     return {
       v$,
       subtarea,
       codigoTrabajoSeleccionado,
+      motivoPendiente,
+      fechaHoraPendiente,
       reagendar,
       maskFecha,
+      seleccionarGrupo,
+      seleccionarEmpleado,
     }
   }
 })

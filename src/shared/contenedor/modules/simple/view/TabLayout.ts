@@ -60,7 +60,11 @@ export default defineComponent({
     full: {
       type: Boolean,
       default: false,
-    }
+    },
+    labelGuardar: {
+      type: String,
+      default: 'Guardar',
+    },
   },
   components: { EssentialTable, ButtonSubmits },
   setup(props) {

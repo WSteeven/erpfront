@@ -102,9 +102,9 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'causa_pendiente',
-    field: 'causa_pendiente',
-    label: 'Causa de pendiente',
+    name: 'motivo_pendiente',
+    field: 'motivo_pendiente',
+    label: 'Motivo de pendiente',
     align: 'left',
   },
   {
@@ -139,21 +139,21 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'causa_suspencion',
-    field: 'causa_suspencion',
-    label: 'Causa de suspención',
+    name: 'motivo_suspendido',
+    field: 'motivo_suspendido',
+    label: 'Motivo de suspención',
     align: 'left',
   },
   {
-    name: 'fecha_hora_cancelacion',
-    field: 'fecha_hora_cancelacion',
+    name: 'fecha_hora_cancelado',
+    field: 'fecha_hora_cancelado',
     label: 'Fecha y hora de cancelación',
     align: 'left',
   },
   {
-    name: 'causa_cancelacion',
-    field: 'causa_cancelacion',
-    label: 'Causa de cancelación',
+    name: 'motivo_cancelado',
+    field: 'motivo_cancelado',
+    label: 'Motivo de cancelación',
     align: 'left',
   },
   {

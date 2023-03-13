@@ -92,6 +92,28 @@ export function useNotificaciones() {
       })
   }
 
+  function promptItems(config: CustomActionPrompt) {
+    $q.dialog({
+      html: true,
+      title: config.titulo ?? 'Confirmación',
+      message: config.mensaje,
+      cancel: true,
+      persistent: true,
+      options: {
+        type: config.tipo,
+        model: config.defecto,
+        // inline: true
+        items: config.items,
+      },
+    })
+      .onOk((data) => {
+        config.accion(config.tipo === 'number' ? parseInt(data) : data)
+        // console.log('dentro d not: ' + data)
+      })
+      .onCancel(() => {
+        // console.log('>>>> Cancel')
+      })
+  }
 
   return {
     // Notificaciones
@@ -101,5 +123,6 @@ export function useNotificaciones() {
     // Confirmaciones
     confirmar,
     prompt,
+    promptItems,
   }
 }

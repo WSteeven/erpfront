@@ -6,6 +6,7 @@
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"
+    labelGuardar="Guardar y agendar"
   >
     <template #formulario>
       <q-tabs
@@ -23,7 +24,7 @@
           v-if="tarea.tiene_subtareas"
           name="subtareas"
           label="Subtareas"
-          icon="bi-check2-square"
+          icon="bi-ui-checks-grid"
         >
           <q-badge color="accent" floating>{{ subtareas.length }}</q-badge>
         </q-tab>
@@ -456,7 +457,7 @@
                   >
                   <q-input
                     v-model="tarea.fecha_inicio_trabajo"
-                    :placeholder="tarea.es_ventana ? 'Obligatorio' : 'Opcional'"
+                    placeholder="Obligatorio"
                     :error="!!v$.fecha_inicio_trabajo.$errors.length"
                     outlined
                     :disable="disabled"
@@ -501,7 +502,7 @@
                 <!-- Hora inicio de agendamiento -->
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block"
-                    >Hora inicio de agendamiento (24H)</label
+                    >Hora inicio de inicio de trabajo (24H)</label
                   >
                   <q-input
                     v-model="tarea.hora_inicio_trabajo"
@@ -1042,7 +1043,6 @@
             :accion4="botonFormulario"
             :accion5="botonVerPausas"
             :accion6="botonFinalizar"
-            :accion7="btnAnular"
             :accion1Header="btnAgregarSubtarea"
             separador="cell"
             :permitirConsultar="false"
@@ -1056,6 +1056,7 @@
             tabDefecto=""
             :alto-fijo="false"
           ></essential-table-tabs>
+          <!--:accion7="btnAnular" -->
           <!--:accion2="botonSubirArchivos" -->
         </q-tab-panel>
       </q-tab-panels>

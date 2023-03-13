@@ -210,7 +210,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         await notificarMensajesError(mensajes, this.notificaciones)
       }
       //})
-    }finally{
+    } finally {
       this.statusEssentialLoading.desactivar()
     }
   }

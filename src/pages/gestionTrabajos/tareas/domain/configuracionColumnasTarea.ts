@@ -1,8 +1,9 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Subtarea } from 'gestionTrabajos/subtareas/domain/Subtarea'
 import { estadosTrabajoArray } from 'config/utils'
+import { Tarea } from './Tarea'
 
-export const configuracionColumnasTarea: ColumnConfig<Subtarea>[] = [
+export const configuracionColumnasTarea: ColumnConfig<Tarea>[] = [
   {
     name: 'codigo_tarea_cliente',
     field: 'codigo_tarea_cliente',
@@ -36,6 +37,13 @@ export const configuracionColumnasTarea: ColumnConfig<Subtarea>[] = [
     field: 'tipo_trabajo',
     label: 'Tipo de trabajo',
     align: 'left',
+  },
+  {
+    name: 'tiene_subtareas',
+    field: 'tiene_subtareas',
+    label: 'Tiene de subtareas',
+    align: 'left',
+    sortable: true,
   },
   {
     name: 'cantidad_subtareas',
@@ -127,21 +135,21 @@ export const configuracionColumnasTarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'causa_suspencion',
-    field: 'causa_suspencion',
-    label: 'Causa de suspención',
+    name: 'motivo_suspendido',
+    field: 'motivo_suspendido',
+    label: 'Motivo de suspención',
     align: 'left',
   },
   {
-    name: 'fecha_hora_cancelacion',
-    field: 'fecha_hora_cancelacion',
+    name: 'fecha_hora_cancelado',
+    field: 'fecha_hora_cancelado',
     label: 'Fecha y hora de cancelación',
     align: 'left',
   },
   {
-    name: 'causa_cancelacion',
-    field: 'causa_cancelacion',
-    label: 'Causa de cancelación',
+    name: 'motivo_cancelado',
+    field: 'motivo_cancelado',
+    label: 'Motivo de cancelación',
     align: 'left',
   },
   {
