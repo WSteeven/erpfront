@@ -1,6 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Acreditacion extends EntidadAuditable {
-  fecha: Date | null
   id_tipo_saldo:number|null
   tipo_saldo:string|null
   id_saldo:number |null
@@ -27,7 +26,6 @@ export class Acreditacion extends EntidadAuditable {
 
   constructor() {
     super()
-    this.fecha=null
     this.id_tipo_saldo=null
     this.id_saldo=null
     this.tipo_saldo_info=null
