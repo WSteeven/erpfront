@@ -58,11 +58,19 @@ export default defineComponent({
      ************/
     const refTrabajos = ref()
     const refObservaciones = ref()
+    const { notificarCorrecto } = useNotificaciones()
 
     /************
      * Init
      ************/
-    listar({ trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada })
+    async function obtenerFormularioEmergencia() {
+      await listar({ subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada })
+      notificarCorrecto('Formulario iniciado exitosamente!')
+      console.log(listado.value[0])
+      emergencia.hydrate(listado.value[0])
+    }
+
+    obtenerFormularioEmergencia()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -199,7 +207,7 @@ export default defineComponent({
 
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada })
+      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
     }

@@ -13,14 +13,15 @@ import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
+import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
+import { MotivoSuspendidoController } from 'gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
@@ -40,14 +41,13 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
-import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 
 export default defineComponent({
   components: {
     EssentialSelectableTable,
     LabelAbrirModal,
     ModalesEntidad,
-    TabLayout,
+    TabLayoutFilterTabs,
     EstadosSubtareas,
     EssentialTableTabs,
   },

@@ -1,24 +1,24 @@
 import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
+import { computed, defineComponent, Ref, ref, UnwrapRef, watchEffect } from 'vue'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
-import { computed, defineComponent, onMounted, Ref, ref, UnwrapRef, watchEffect } from 'vue'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { requiredIf } from 'shared/i18n-validators'
-import useVuelidate from '@vuelidate/core'
 import { accionesTabla } from 'config/utils'
+import useVuelidate from '@vuelidate/core'
 
 // Componentes
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
+import { useOrquestadorSelectorEmpleadosGrupo } from 'pages/gestionTrabajos/subtareas/application/useOrquestadorSelectorEmpleadosGrupo'
+import { useBotonesTablaDesignacionTrabajo } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaDesignacionTrabajo'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { useBotonesTablaDesignacionTrabajo } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaDesignacionTrabajo'
-import { useOrquestadorSelectorEmpleadosGrupo } from 'pages/gestionTrabajos/subtareas/application/useOrquestadorSelectorEmpleadosGrupo'
 
 export default defineComponent({
   components: {
@@ -30,29 +30,21 @@ export default defineComponent({
     disable: Boolean,
     accion: String,
     v$: Object,
-    subtarea: {
+    subtareaInicial: {
       type: Object as () => UnwrapRef<Subtarea>,
       default: null,
     },
-    /* empleado: {
-      type: Number,
-      default: null,
-    },
-    modo_asignacion_trabajo: {
-      type: String,
-      required: true,
-    } */
   },
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { cargarVista, obtenerListados } = mixin.useComportamiento()
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
 
-    watchEffect(() => {
-      if (props.subtarea) {
-        subtarea.hydrate(props.subtarea)
+    /*watchEffect(() => {
+      if (props.subtareaInicial) {
+        subtarea.hydrate(props.subtareaInicial)
       }
-    })
+    })*/
 
     cargarVista(async () => {
       await obtenerListados({
@@ -71,7 +63,7 @@ export default defineComponent({
      * Variables
      ************/
     const empleadosSeleccionados: Ref<Empleado[]> = ref([])
-    const tipoSeleccion = computed(() => asignarLider.value || asignarSecretario.value ? 'single' : 'none')
+    const tipoSeleccion = computed(() => asignarLider.value ? 'single' : 'none')
 
     /*************
     * Validaciones
@@ -125,12 +117,9 @@ export default defineComponent({
       quitarEmpleado,
       entidadSeleccionada,
       cancelarDesignacion,
-      designarLider,
+      designarLiderTemporal,
       designarLiderDefinitivo,
-      designarSecretario,
-      designarSecretarioDefinitivo,
       asignarLider,
-      asignarSecretario,
     } = useBotonesTablaDesignacionTrabajo(empleadosSeleccionados, data)
 
     /*****************
@@ -162,12 +151,9 @@ export default defineComponent({
       quitarEmpleado,
       entidadSeleccionada,
       cancelarDesignacion,
-      designarLider,
+      designarLiderTemporal,
       designarLiderDefinitivo,
-      designarSecretario,
-      designarSecretarioDefinitivo,
       asignarLider,
-      asignarSecretario,
       // Orquesatdor
       refListadoSeleccionableEmpleadosGrupo,
       criterioBusquedaEmpleadosGrupo,

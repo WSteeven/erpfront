@@ -12,6 +12,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
 import { markRaw } from 'vue'
 import { ParamsType } from 'config/types'
+import { Usuario } from 'pages/fondosRotativos/usuario/domain/Usuario'
 
 export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
@@ -85,12 +86,19 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           data.id,
           this.argsDefault
         )
+        console.log('Antes...')
         console.log(result)
         this.entidad.hydrate(result)
+        console.log('Despues...')
+        console.log(this.entidad)
         this.entidad_copia.hydrate(this.entidad)
         this.refs.tabs.value = 'formulario'
 
+        const usuario = new Usuario()
+        usuario.hydrate(result)
+
       } catch (error) {
+        console.log(error)
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
           await notificarMensajesError(mensajes, this.notificaciones)

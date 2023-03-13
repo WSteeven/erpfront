@@ -1,5 +1,5 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTarea"
     :full="true"
@@ -7,6 +7,7 @@
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"
     labelGuardar="Guardar y agendar"
+    :tabOptions="tabOptionsEstadosSubtareas"
   >
     <template #formulario>
       <q-tabs
@@ -1061,7 +1062,7 @@
         </q-tab-panel>
       </q-tab-panels>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs>
 
   <modales-entidad :comportamiento="modales" />
   <modales-entidad

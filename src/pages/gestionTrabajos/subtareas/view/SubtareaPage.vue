@@ -306,7 +306,7 @@
         :disable="disabled"
         :accion="accion"
         :v$="v$"
-        :subtarea="subtarea"
+        :subtarea-inicial="subtarea"
         @seleccionarGrupo="seleccionarGrupo"
         @seleccionarEmpleado="seleccionarEmpleado"
       ></designar-responsable-trabajo>

@@ -52,7 +52,14 @@ module.exports = configure(function (/* ctx */) {
     build: {
       env: require('dotenv').config().parsed,
       target: {
-        browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
+        browser: [
+          'ES6',
+          'es2019',
+          'edge88',
+          'firefox78',
+          'chrome87',
+          'safari13.1',
+        ],
         node: 'node16',
       },
 

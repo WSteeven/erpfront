@@ -40,6 +40,7 @@ export default defineComponent({
     ModalesEntidad,
     EssentialTable,
   },
+  emits: ['cerrar-modal', 'guardado'],
   setup() {
     /*********
     * Stores
@@ -68,6 +69,7 @@ export default defineComponent({
     ************/
     const modales = new ComportamientoModalesProgresiva()
     const entidadReset = new RegistroTendido()
+    const tendidoIniciado = computed(() => tendido.id !== null)
 
     consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
 
@@ -84,7 +86,7 @@ export default defineComponent({
       await obtenerListados({
         bobinas: {
           controller: new BobinaController(),
-          params: { trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada }
+          params: { subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada }
         },
       })
     })
@@ -168,6 +170,11 @@ export default defineComponent({
     const marcaFinal = computed(() => listadoRegistrosTendidos.value.length ? listadoRegistrosTendidos.value[listadoRegistrosTendidos.value.length - 1].progresiva_salida : 0)
     const metrajeTendido = computed(() => marcaInicial.value - marcaFinal.value)
 
+    async function iniciarRegistros() {
+      const modelo = await guardar(tendido)
+      tendido.hydrate(modelo)
+    }
+
     return {
       v$,
       mixin,
@@ -188,6 +195,8 @@ export default defineComponent({
       marcaInicial,
       marcaFinal,
       metrajeTendido,
+      tendidoIniciado,
+      iniciarRegistros,
       // listados
       tiposElementos,
       propietariosElementos,

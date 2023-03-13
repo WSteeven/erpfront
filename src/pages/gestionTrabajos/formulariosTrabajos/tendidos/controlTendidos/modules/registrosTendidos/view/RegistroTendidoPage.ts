@@ -126,7 +126,7 @@ export default defineComponent({
 
     async function guardarDatos(entidad: RegistroTendido) {
       try {
-        await guardar(entidad, false)
+        await guardar(entidad)
         emit('cerrar-modal')
       } catch (e) { }
     }
@@ -134,7 +134,7 @@ export default defineComponent({
 
     async function editarDatos(entidad: RegistroTendido) {
       try {
-        await editar(entidad, false)
+        await editar(entidad)
         emit('cerrar-modal')
       } catch (e) { }
     }
@@ -175,7 +175,7 @@ export default defineComponent({
       const cargando = new StatusEssentialLoading()
       cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { trabajo_id: trabajoAsignadoStore.idSubtareaSeleccionada })
+      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
       cargando.desactivar()

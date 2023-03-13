@@ -129,10 +129,10 @@
 
   <!--<div class="row justify-center q-mb-md q-gutter-xs"> -->
   <q-btn
-    v-if="!tendido.id"
+    v-if="!tendidoIniciado"
     class="col-12 col-md-3"
     color="positive"
-    @click="guardar(tendido, false)"
+    @click="iniciarRegistros()"
     no-caps
     no-wrap
     rounded
@@ -155,7 +155,7 @@
     </q-btn> -->
   <!--</div> -->
 
-  <q-card v-if="tendido.id" class="rounded q-mb-md">
+  <q-card v-if="tendidoIniciado" class="rounded q-mb-md">
     <q-card-section>
       <div class="row q-mb-xl">
         <div class="col-12">
@@ -177,7 +177,10 @@
     </q-card-section>
   </q-card>
 
-  <modales-entidad :comportamiento="modales" :mixin="mixinRegistroTendido" />
+  <modales-entidad
+    :comportamiento="modales"
+    :mixinModal="mixinRegistroTendido"
+  />
   <!--</q-page> -->
 </template>
 

@@ -43,7 +43,7 @@ export const useBotonesTablaDesignacionTrabajo = (empleadosSeleccionados: Ref<Em
     },
   }
 
-  const designarLider: CustomActionTable = {
+  const designarLiderTemporal: CustomActionTable = {
     titulo: 'Designar como líder de grupo para este trabajo',
     icono: 'bi-clock-history',
     color: 'accent',
@@ -62,22 +62,6 @@ export const useBotonesTablaDesignacionTrabajo = (empleadosSeleccionados: Ref<Em
     accion: async ({ entidad }) => {
       refEmpleadosGrupo.value.seleccionar()
     },
-  }
-
-  const designarSecretario: CustomActionTable = {
-    titulo: 'Designar como nuevo secretario para este trabajo',
-    icono: 'bi-clock-history',
-    color: 'accent',
-    visible: () => asignarSecretario.value,
-    accion: () => refEmpleadosGrupo.value.seleccionar()
-  }
-
-  const designarSecretarioDefinitivo: CustomActionTable = {
-    titulo: 'Designar como nuevo secretario en el sistema',
-    icono: 'bi-arrow-left-right',
-    color: 'positive',
-    visible: () => asignarSecretario.value,
-    accion: () => refEmpleadosGrupo.value.seleccionar()
   }
 
   const cancelarDesignacion: CustomActionTable = {
@@ -116,34 +100,6 @@ export const useBotonesTablaDesignacionTrabajo = (empleadosSeleccionados: Ref<Em
           // Designar rol lider de grupo al nuevo lider
           const posicionNuevoLider: any = empleadosSeleccionados.value.findIndex((empleado: Empleado) => empleado.id === idEmpleadoSeleccionado)
           empleadosSeleccionados.value.splice(posicionNuevoLider, 1, nuevoLider)
-
-          /* const nuevoLider: Empleado = empleadosSeleccionados.value[posicionNuevoLider]
-          nuevoLider.roles = nuevoLider.roles + ', ' + rolesSistema.tecnico_lider
-          empleadosSeleccionados.value.splice(posicionNuevoLider, 1, nuevoLider) */
-
-        }
-
-        // Secretario de grupo
-        if (asignarSecretario.value) {
-
-          const empleado = {
-            id: idEmpleadoSeleccionado,
-            grupo: grupo
-          }
-
-          const { response } = await new DesignarSecretarioGrupoController().editar(empleado)
-          asignarSecretario.value = false
-          notificarCorrecto(response.data.mensaje)
-
-          // Quitar rol de secretario de grupo al antiguo secretario
-          const roles = stringToArray(empleadoGrupoQuitar.value.roles)
-          empleadoGrupoQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.secretario).join(',')
-
-          // Designar rol de secretario de grupo al nuevo secretario
-          const posicionNuevoSecretario: any = empleadosSeleccionados.value.findIndex((empleado: Empleado) => empleado.id === idEmpleadoSeleccionado)
-          const nuevoSecretario: Empleado = empleadosSeleccionados.value[posicionNuevoSecretario]
-          nuevoSecretario.roles = nuevoSecretario.roles + ', ' + rolesSistema.secretario
-          empleadosSeleccionados.value.splice(posicionNuevoSecretario, 1, nuevoSecretario)
         }
       } catch (e) {
         if (isAxiosError(e)) {
@@ -160,10 +116,8 @@ export const useBotonesTablaDesignacionTrabajo = (empleadosSeleccionados: Ref<Em
     quitarEmpleado,
     entidadSeleccionada,
     cancelarDesignacion,
-    designarLider,
+    designarLiderTemporal,
     designarLiderDefinitivo,
-    designarSecretario,
-    designarSecretarioDefinitivo,
     asignarLider,
     asignarSecretario,
   }

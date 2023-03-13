@@ -107,6 +107,7 @@ export const endpoints = {
   registros_tendidos: new Endpoint('tareas/registros-tendidos'),
   reportes_control_materiales: new Endpoint('tareas/reportes-control-materiales'),
   resumen_tendidos: new Endpoint('tareas/resumen-tendidos'),
+  emergencias: new Endpoint('tareas/emergencias'),
   clientes: new Endpoint('clientes'),
   grupos: new Endpoint('grupos'),
 
@@ -134,5 +135,4 @@ export const endpoints = {
   reporte_saldo_actual_excel: new Endpoint('fondos-rotativos/reporte/saldo_actual/excel'),
   reporte_saldo_actual_pdf: new Endpoint('fondos-rotativos/reporte/saldo_actual/pdf'),
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
-  emergencias: new Endpoint('emergencias'),
 }
