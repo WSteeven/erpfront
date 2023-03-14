@@ -46,12 +46,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/motivos-pendientes',
-        name: 'motivos_pendientes',
-        component: () => import('gestionTrabajos/motivosPendientes/view/MotivoPendientePage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/motivos-suspendidos',
         name: 'motivos_suspendidos',
         component: () => import('gestionTrabajos/motivosSuspendidos/view/MotivoSuspendidoPage.vue'),

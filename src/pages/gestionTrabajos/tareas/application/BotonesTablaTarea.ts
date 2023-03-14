@@ -19,9 +19,9 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
 
   // const cargando = new StatusEssentialLoading()
 
-  const botonFormulario: CustomActionTable = {
+  const btnFormulario: CustomActionTable = {
     titulo: 'Formulario',
-    icono: 'bi-check2-square',
+    icono: 'bi-pencil-square',
     color: 'indigo',
     visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
     accion: ({ entidad }) => {
@@ -34,10 +34,10 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     titulo: 'Ver pausas',
     icono: 'bi-pause-circle',
     color: 'blue-6',
-    visible: ({ entidad }) => true,//entidad.estado !== estadosTrabajos.CREADO,
+    visible: ({ entidad }) => !entidad.tiene_subtareas,//entidad.estado !== estadosTrabajos.CREADO,
     accion: ({ entidad }) => {
-      subtareaStore.idSubtareaSeleccionada = entidad.id
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
+      subtareaStore.idSubtareaSeleccionada = entidad.subtarea.id
+      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_tarea
       modales.abrirModalEntidad('PausasRealizadasPage')
     }
   }
@@ -45,7 +45,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
   const btnFinalizar: CustomActionTable = {
     titulo: 'Finalizar',
     color: 'positive',
-    icono: 'bi-check',
+    icono: 'bi-check-circle',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
     accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
       const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id)
@@ -127,15 +127,15 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     }),
   }
 
-  const botonReagendar: CustomActionTable = {
+  const btnReagendar: CustomActionTable = {
     titulo: 'Reagendar',
     color: 'orange-8',
     icono: 'bi-calendar-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.PENDIENTE,
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
-      subtareaStore.fechaHoraPendiente = entidad.fecha_hora_pendiente
-      subtareaStore.motivoPendiente = entidad.motivo_pendiente
+      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_tarea
+      subtareaStore.fechaHoraPendiente = entidad.subtarea.fecha_hora_suspendido
+      subtareaStore.motivoPendiente = entidad.subtarea.motivo_suspendido
       subtareaStore.idSubtareaSeleccionada = entidad.id
       subtareaStore.posicionSubtareaSeleccionada = posicion
       subtareaStore.subtareaEsVentana = entidad.es_ventana
@@ -168,10 +168,10 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
   }
 
   return {
-    botonFormulario,
+    btnFormulario,
     // botonSubirArchivos,
     botonCancelar,
-    botonReagendar,
+    btnReagendar,
     btnAnular,
     // botonAsignar,
     btnFinalizar,

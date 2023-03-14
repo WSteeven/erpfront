@@ -26,7 +26,6 @@ import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { MotivoPausa } from 'pages/gestionTrabajos/motivosPausas/domain/MotivoPausa'
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
-import { MotivoPendienteController } from 'pages/gestionTrabajos/motivosPendientes/infraestructure/MotivoPausaController'
 import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
 import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 
@@ -52,7 +51,6 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         motivosPausas: new MotivoPausaController(),
-        motivosPendientes: new MotivoPendienteController(),
         motivosSuspendidos: new MotivoSuspendidoController(),
       })
     })
@@ -197,36 +195,6 @@ export default defineComponent({
       },
     }
 
-    const btnPendiente: CustomActionTable = {
-      titulo: 'Pendiente',
-      icono: 'bi-clock',
-      color: 'orange-8',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable,
-      accion: ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de marcar como pendiente el trabajo?', () => {
-          const config: CustomActionPrompt = {
-            mensaje: 'Seleccione el motivo por el que se marca el trabajo como pendiente',
-            accion: async (idMotivoPendiente) => {
-              const { response, result } = await new CambiarEstadoSubtarea().pendiente(entidad.id, idMotivoPendiente)
-              entidad.estado = estadosTrabajos.PENDIENTE
-              entidad.fecha_hora_pendiente = result.fecha_hora_pendiente
-              notificarCorrecto(response.data.mensaje)
-              eliminarElemento(posicion, entidad)
-            },
-            tipo: 'radio',
-            items: listadosAuxiliares.motivosPendientes.map((motivo: MotivoPausa) => {
-              return {
-                label: motivo.motivo,
-                value: motivo.id
-              }
-            })
-          }
-
-          promptItems(config)
-        })
-      },
-    }
-
     const botonRealizar: CustomActionTable = {
       titulo: 'Realizado',
       icono: 'bi-check-circle',
@@ -292,7 +260,6 @@ export default defineComponent({
       mostrarDialogPlantilla,
       plantillaSeleccionada,
       botonPausar,
-      btnPendiente,
       botonReanudar,
       botonFormulario,
       botonSuspender,

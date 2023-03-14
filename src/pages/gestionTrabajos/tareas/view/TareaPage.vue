@@ -8,10 +8,10 @@
     :mostrarButtonSubmits="tab === 'tarea'"
     :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'"
     :tabOptions="tabOptionsEstadosSubtareas"
-    :accion1="botonCancelar"
-    :accion2="botonReagendar"
-    :accion3="botonFormulario"
-    :accion4="btnVerPausasTarea"
+    :accion1="btnFormularioTarea"
+    :accion2="btnVerPausasTarea"
+    :accion3="botonCancelar"
+    :accion4="btnReagendarTarea"
     :accion5="btnFinalizarTarea"
   >
     <template #formulario>
@@ -63,7 +63,7 @@
                         value: destinosTareas.paraProyecto,
                       },
                       {
-                        label: 'Tarea para cliente final',
+                        label: 'Tarea para cliente final y mantenimiento',
                         value: destinosTareas.paraClienteFinal,
                       },
                     ]"

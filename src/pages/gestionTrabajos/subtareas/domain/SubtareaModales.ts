@@ -35,6 +35,6 @@ export class SubtareaModales {
     this.ClienteFinalPage = markRaw(
       new ComponenteModal('Clientes finales', ClienteFinalPage)
     )
-    this.ReagendarPage = markRaw(new ComponenteModal('Reagendar subtarea', ReagendarPage))
+    this.ReagendarPage = markRaw(new ComponenteModal('Reagendar', ReagendarPage))
   }
 }

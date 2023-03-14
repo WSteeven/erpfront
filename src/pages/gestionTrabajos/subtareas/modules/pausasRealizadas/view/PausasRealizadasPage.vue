@@ -27,9 +27,18 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import { useSubtareaStore } from 'stores/subtarea'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+
+// Se declara el props porque asi está en ModalEntidad
+defineProps({
+  mixinModal: {
+    type: Object as () => ContenedorSimpleMixin<any>,
+    required: false,
+  },
+})
 
 // Emits
-defineEmits(['cerrar-modal', 'seleccionar'])
+defineEmits(['cerrar-modal', 'seleccionar', 'guardado'])
 
 /*********
  * Stores

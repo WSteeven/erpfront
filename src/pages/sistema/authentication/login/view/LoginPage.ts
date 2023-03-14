@@ -32,7 +32,6 @@ export default defineComponent({
     const login = async () => {
       try {
         cargando.activar()
-        console.log('logenado')
         await loginController.login(loginUser)
 
         notificaciones.notificarCorrecto('Bienvenido a JPCONSTRUCRED CIA. LTDA') //response.data.mensaje)
@@ -46,8 +45,8 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
-    const recuperarPassword =() => {
-        Router.replace('/recuperar-contrasena')
+    const recuperarPassword = () => {
+      Router.replace('/recuperar-contrasena')
     }
 
 

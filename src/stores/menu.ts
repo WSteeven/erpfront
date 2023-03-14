@@ -400,12 +400,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.motivos_pausas'),
         },
         {
-          title: 'Motivos de trabajo pendiente',
-          link: 'motivos-pendientes',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.motivos_pendientes'),
-        },
-        {
           title: 'Motivos de trabajo suspendido',
           link: 'motivos-suspendidos',
           icon: 'bi-circle',

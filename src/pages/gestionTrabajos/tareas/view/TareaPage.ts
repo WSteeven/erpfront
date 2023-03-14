@@ -248,7 +248,7 @@ export default defineComponent({
 
     onBeforeGuardar(() => {
       if (!tarea.tiene_subtareas) {
-        tarea.subtarea = new Subtarea()
+        // tarea.subtarea = new Subtarea()
         tarea.subtarea.titulo = tarea.titulo
         tarea.subtarea.observacion = tarea.observacion
         tarea.subtarea.descripcion_completa = tarea.descripcion_completa
@@ -264,7 +264,7 @@ export default defineComponent({
     })
 
     // Subtareas
-    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea } = useBotonesTablaTarea(listado, modalesSubtarea, listadosAuxiliares)
+    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea } = useBotonesTablaTarea(listado, modalesSubtarea, listadosAuxiliares)
     const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
 
     const btnAgregarSubtarea: CustomActionTable = {
@@ -361,6 +361,8 @@ export default defineComponent({
       // Botones tareas
       btnVerPausasTarea,
       btnFinalizarTarea,
+      btnFormularioTarea,
+      btnReagendarTarea,
     }
   },
 })
