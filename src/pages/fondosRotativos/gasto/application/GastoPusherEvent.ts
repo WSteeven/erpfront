@@ -1,19 +1,23 @@
 import Pusher from 'pusher-js'
+import { useNotificaciones } from 'shared/notificaciones'
 import { useAuthenticationStore } from 'stores/authentication'
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { Ref } from 'vue'
 
 export class GastoPusherEvent {
    authenticationStore = useAuthenticationStore()
+   notificacionesPusherStore = useNotificationRealtimeStore()
    usuario = this.authenticationStore.user
   start() {
-    Pusher.logToConsole = true
-
-    const pusher = new Pusher('0df833686e4616dd7444', {
-      cluster: 'sa1',
-    })
-    pusher.subscribe('fondo-rotativo-'+this.usuario.id)
+    const { notificarCorrecto } = useNotificaciones()
+    const notificacionStore = this.notificacionesPusherStore
+    const pusher = notificacionStore.pusher
+    console.log('fondo-rotativo-'+this.usuario.usuario_id);
+    pusher.subscribe('fondo-rotativo-'+this.usuario.usuario_id)
     pusher.bind('fondo-rotativo-event', function (e) {
       console.log('fondo-rotativo-event', e);
+      notificacionStore.agregar(e.notificacion)
+      notificarCorrecto('Tienes un gasto esperando ser aprobado')
 
     })
   }

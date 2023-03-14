@@ -2,18 +2,24 @@ import { computed, defineComponent, reactive, ref } from 'vue'
 import { CambiarContrasena } from '../domain/CambiarContrasena.domain'
 import { CambiarContrasenaController } from '../infraestructure/CambiarContrasena.controller'
 import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
 import { useQuasar } from 'quasar'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import useVuelidate from '@vuelidate/core'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayout, ButtonSubmits },
   setup() {
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    const notificaciones = useNotificaciones()
     /***********
      * Mixin
      ************/
@@ -54,6 +60,19 @@ export default defineComponent({
     const onSubmit = () => {
       //mixin.onSubmit()
     }
+
+    async function cambiar() {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.cambiarContrasena)
+         await axios.post(ruta, cambiarContrasena)
+        .then(function (response:any) {
+          notificaciones.notificarCorrecto(response.data.mensaje)
+        })
+        .catch((error) => {
+          notificaciones.notificarError(error.response.data.errors.password[0])
+        });
+    }
+
     return {
       mixin,
       onSubmit,
@@ -64,6 +83,7 @@ export default defineComponent({
       habilitarBoton,
       disabled,
       v$,
+      cambiar,
     }
   },
 })

@@ -4,7 +4,7 @@ export const iconos ={
         icono:'bi-file-earmark-text'
     },
     autorizacion_gasto:{
-        label: "AUTORIZACION_GASTO",
+        label: "AUTORIZACION GASTO",
         icono:'bi-plus-circle-fill'
     },
     tarea:{

@@ -183,9 +183,58 @@
               </template>
             </q-select>
           </div>
-
-          <!-- Factura -->
+          <!--SubTareas-->
+          <div class="col-12 col-md-3" v-if="gasto.proyecto >= 0">
+            <label class="q-mb-sm block">Sub Tareas</label>
+            <q-select
+              v-model="gasto.subTarea"
+              :options="listadoSubTareas"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.subTarea.$errors.length"
+              error-message="Debes seleccionar una Tarea"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.titulo"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.subTarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_subtarea
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!--Tiene Factura-->
           <div class="col-12 col-md-3">
+            <q-checkbox v-model="esFactura" label="¿Tiene Factura?" />
+          </div>
+          <!-- Factura -->
+          <div class="col-12 col-md-3" v-if="esFactura">
             <label class="q-mb-sm block">#Factura</label>
             <q-input
               v-model="gasto.factura"
@@ -206,7 +255,29 @@
               </template>
             </q-input>
           </div>
-
+          <!-- Numero de Comprobante -->
+          <div class="col-12 col-md-3" v-if="esFactura==false">
+            <label class="q-mb-sm block">Numero de Comprobante</label>
+            <q-input
+              v-model="gasto.numComprobante"
+              placeholder="Obligatorio"
+              type="number"
+              :disable="disabled"
+              :error="!!v$.numComprobante.$errors.length"
+              @blur="v$.numComprobante.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.numComprobante.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
           <!-- RUC -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">RUC</label>
@@ -275,7 +346,7 @@
               v-model="gasto.total"
               placeholder="Obligatorio"
               type="number"
-              :disable="disabled"
+              disable
               :error="!!v$.total.$errors.length"
               @blur="v$.total.$touch"
               outlined
@@ -364,28 +435,42 @@
             </q-select>
           </div>
           <!-- Subdetalle-->
-          <div class="col-12 col-md-4 q-mb-md" v-if="gasto.detalle != null">
-            <label class="q-mb-sm block">SubDetalle</label>
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Subdetalle</label>
             <q-select
               v-model="gasto.sub_detalle"
-              :options="sub_detalles"
+              :options="listadoSubdetalles"
               transition-show="jump-up"
               transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
               :disable="disabled"
-              :readonly="disabled"
+              options-dense
+              multiple
+              dense
+              use-chips
+              outlined
               :error="!!v$.sub_detalle.$errors.length"
-              error-message="Debes seleccionar un canton"
-              use-input
-              input-debounce="0"
-              @filter="filtarSubdetalles"
+              error-message="Debes seleccionar uno o varios sub_detalle"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"
               emit-value
               map-options
             >
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.descripcion }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.descripcion" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.sub_detalle.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>

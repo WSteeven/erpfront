@@ -114,6 +114,8 @@ export const endpoints = {
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   gastos: new Endpoint('fondos-rotativos/gastos'),
+  aprobar_gasto: new Endpoint('fondos-rotativos/aprobar-gasto'),
+  rechazar_gasto: new Endpoint('fondos-rotativos/rechazar-gasto'),
   detalle_fondo: new Endpoint('fondos-rotativos/detalles-viaticos'),
   sub_detalle_fondo: new Endpoint('fondos-rotativos/sub-detalles-viaticos'),
   saldo: new Endpoint('fondos-rotativos/saldo-grupo'),
@@ -128,9 +130,11 @@ export const endpoints = {
   consolidado_excel: new Endpoint('fondos-rotativos/consolidado/excel'),
   consolidado_filtrado_pdf: new Endpoint('fondos-rotativos/consolidado_filtrado/pdf'),
   consolidado_filtrado_excel: new Endpoint('fondos-rotativos/consolidado_filtrado/excel'),
+  autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
 
 
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
+  transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
   reporte_saldo_actual_excel: new Endpoint('fondos-rotativos/reporte/saldo_actual/excel'),
   reporte_saldo_actual_pdf: new Endpoint('fondos-rotativos/reporte/saldo_actual/pdf'),

@@ -22,6 +22,9 @@ import { TareaController } from 'tareas/infraestructure/TareaController'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
+import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -70,6 +73,11 @@ export default defineComponent({
         minLength: 2,
         maxLength: 25,
       },
+      subTarea: {
+        required: true,
+        minLength: 2,
+        maxLength: 25,
+      },
       proyecto: {
         required: true,
         minLength: 2,
@@ -85,7 +93,12 @@ export default defineComponent({
         ),
       },
       factura: {
-        required: true,
+        required: false,
+        minLength: 3,
+        maxLength: 15,
+      },
+      numComprobante: {
+        required: false,
         minLength: 3,
         maxLength: 15,
       },
@@ -145,6 +158,8 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizacionesEspeciales = ref([])
     const tareas = ref([])
+    const subTareas = ref([])
+    const esFactura = ref(true)
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -172,6 +187,10 @@ export default defineComponent({
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
         },
+        subTareas: {
+          controller: new SubtareaController(),
+          params: { campos: 'id,codigo_sub_tarea,titulo,tarea_id' },
+        },
       })
       cantones.value = listadosAuxiliares.cantones
       detalles.value = listadosAuxiliares.detalles
@@ -180,8 +199,8 @@ export default defineComponent({
       sub_detalles.value = listadosAuxiliares.sub_detalles
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
-      listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
       tareas.value = listadosAuxiliares.tareas
+      subTareas.value = listadosAuxiliares.subTareas
     })
 
     /*********
@@ -238,6 +257,7 @@ export default defineComponent({
         )
       })
     }
+    /**Filtro de Sub detalles */
     function filtarSubdetalles(val, update) {
       if (val === '') {
         update(() => {
@@ -254,6 +274,7 @@ export default defineComponent({
         )
       })
     }
+    /**Filtro de proyectos */
     function filtrarProyectos(val, update) {
       if (val === '') {
         update(() => {
@@ -270,7 +291,7 @@ export default defineComponent({
         )
       })
     }
-
+/**Filtro de Tareas */
     function filtrarTareas(val, update) {
       if (gasto.proyecto == 0) {
         update(() => {
@@ -297,8 +318,12 @@ export default defineComponent({
         )
       })
     }
+    listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
+    listadosAuxiliares.subTareas.unshift({ id: 0, titulo: 'Sin Subtarea' })
+    const listadoTareas = computed(() => listadosAuxiliares.tareas.filter((tarea: Tarea) => tarea.proyecto_id === gasto.proyecto ||  tarea.id==0))
+    const listadoSubTareas = computed(() => listadosAuxiliares.subTareas.filter((subtarea: Subtarea) => subtarea.tarea_id === gasto.num_tarea || subtarea.id==0))
+    const listadoSubdetalles = computed(() => listadosAuxiliares.sub_detalles.filter((subdetalle: SubDetalleFondo) => subdetalle.id_detalle_viatico === gasto.detalle))
 
-    const listadoTareas = computed(() => listadosAuxiliares.tareas.filter((tarea: Tarea) => tarea.proyecto_id === gasto.proyecto))
     /*********
     * Pusher
     *********/
@@ -313,6 +338,7 @@ export default defineComponent({
       gasto,
       cantones,
       detalles,
+      esFactura,
       sub_detalles,
       proyectos,
       tareas,
@@ -329,6 +355,8 @@ export default defineComponent({
       filtrarProyectos,
       filtrarTareas,
       listadosAuxiliares,
+      listadoSubdetalles,
+      listadoSubTareas,
       mostrarListado,
       listadoTareas,
     }

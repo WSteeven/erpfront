@@ -41,12 +41,6 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     {
-      title: 'Cambiar contraseña',
-      icon: 'bi-lock-fill',
-      link: 'cambiar-contrasena',
-      can: store.can('puede.ver.cambiar_contrasena'),
-    },
-    {
       title: 'Proyectos y tareas',
       icon: 'bi-pin-angle-fill',
       can: store.can('puede.ver.modulo_tareas'),
@@ -273,7 +267,8 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Detalle Fondos',
           icon: 'bi-list-task',
-          children: [{
+          can: store.can('puede.ver.menu.detalle_fondo'),
+          children: [ {
             title: 'Detalle',
             link: 'detalle_fondo',
             icon: 'bi-circle',
@@ -289,12 +284,19 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Saldo',
           icon: 'bi-cash',
-          children: [
+          can: store.can('puede.ver.menu.saldos'),
+          children:[
             {
               title: 'Acreditacion',
               link: 'acreditacion',
               icon: 'bi-circle',
               can: store.can('puede.ver.acreditacion'),
+            },
+            {
+              title: 'Transferencia',
+              link: 'transferencia',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.transferencia'),
             },
           ]
         },

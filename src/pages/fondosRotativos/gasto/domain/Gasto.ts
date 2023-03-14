@@ -4,10 +4,12 @@ export class Gasto extends EntidadAuditable {
   lugar: number | null
   num_tarea: string | null
   tarea_info: string | null
+  subTarea: string | null
   proyecto: number | null
   proyecto_info: string | null
   ruc: string | null
   factura: string | null
+  numComprobante: string | null
   aut_especial: number | null
   aut_especial_user: string | null
   detalle: string | null
@@ -32,10 +34,12 @@ export class Gasto extends EntidadAuditable {
     this.lugar = null
     this.num_tarea = null
     this.tarea_info = null
+    this.subTarea = null
     this.proyecto = null
     this.proyecto_info = null
     this.ruc = null
     this.factura = null
+    this.numComprobante = null
     this.aut_especial = null
     this.aut_especial_user = null
     this.detalle = null
