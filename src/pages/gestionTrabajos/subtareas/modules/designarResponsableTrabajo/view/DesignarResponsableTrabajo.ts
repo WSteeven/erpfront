@@ -117,7 +117,7 @@ export default defineComponent({
       quitarEmpleado,
       entidadSeleccionada,
       cancelarDesignacion,
-      designarLiderTemporal,
+      // designarLiderTemporal,
       designarLiderDefinitivo,
       asignarLider,
     } = useBotonesTablaDesignacionTrabajo(empleadosSeleccionados, data)
@@ -151,7 +151,7 @@ export default defineComponent({
       quitarEmpleado,
       entidadSeleccionada,
       cancelarDesignacion,
-      designarLiderTemporal,
+      // designarLiderTemporal,
       designarLiderDefinitivo,
       asignarLider,
       // Orquesatdor

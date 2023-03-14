@@ -6,8 +6,13 @@
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"
-    labelGuardar="Guardar y agendar"
+    :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'"
     :tabOptions="tabOptionsEstadosSubtareas"
+    :accion1="botonCancelar"
+    :accion2="botonReagendar"
+    :accion3="botonFormulario"
+    :accion4="btnVerPausasTarea"
+    :accion5="btnFinalizarTarea"
   >
     <template #formulario>
       <q-tabs
