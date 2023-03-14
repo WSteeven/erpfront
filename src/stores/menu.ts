@@ -20,7 +20,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Trabajo asignado',
       link: 'trabajo-asignado',
-      icon: 'bi-check2-square',
+      icon: 'bi-ui-checks-grid',
       can: store.can('puede.ver.trabajo_asignado'),
     },
     /* {
@@ -36,13 +36,19 @@ export const useMenuStore = defineStore('menu', () => {
     }, */
     {
       title: 'Notificaciones',
-      icon: 'bi-bell',
+      icon: 'bi-bell-fill',
       link: 'notificaciones',
       can: true
     },
     {
+      title: 'Cambiar contraseña',
+      icon: 'bi-lock-fill',
+      link: 'cambiar-contrasena',
+      can: store.can('puede.ver.cambiar_contrasena'),
+    },
+    {
       title: 'Proyectos y tareas',
-      icon: 'bi-pin-angle',
+      icon: 'bi-pin-angle-fill',
       can: store.can('puede.ver.modulo_tareas'),
       children: [
         /*{
@@ -128,7 +134,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Bodega',
-      icon: 'bi-building',
+      icon: 'bi-building-fill',
       can: store.can('puede.ver.modulo_bodega'),
       children: [
         {
@@ -297,7 +303,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-clipboard2-data-fill',
-          children:[
+          children: [
             {
               title: 'Fondo Rotativo',
               link: 'reporte-fondo-fecha',
@@ -385,14 +391,33 @@ export const useMenuStore = defineStore('menu', () => {
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
     },
     {
-      title: 'Permisos',
-      link: 'permisos',
-      icon: 'bi-circle',
-      can: true //store.can('puede.ver.autorizaciones') && store.esActivosFijos,
+      title: 'Proyectos y tareas',
+      icon: 'bi-pin-angle-fill',
+      can: store.can('puede.ver.motivos_pausas'),
+      children: [
+        {
+          title: 'Motivos de trabajo pausado',
+          link: 'motivos-pausas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.motivos_pausas'),
+        },
+        {
+          title: 'Motivos de trabajo pendiente',
+          link: 'motivos-pendientes',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.motivos_pendientes'),
+        },
+        {
+          title: 'Motivos de trabajo suspendido',
+          link: 'motivos-suspendidos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.motivos_suspendidos'),
+        },
+      ]
     },
     {
       title: 'Bodega',
-      icon: 'bi-ui-checks-grid',
+      icon: 'bi-building-fill',
       can: store.can('puede.ver.modulo_administracion'),
       children: [
         {
@@ -493,6 +518,12 @@ export const useMenuStore = defineStore('menu', () => {
           // can: true,
         },
       ]
+    },
+    {
+      title: 'Permisos',
+      link: 'permisos',
+      icon: 'bi-person-fill-check',
+      can: true //store.can('puede.ver.autorizaciones') && store.esActivosFijos,
     },
     /* {
       header: 'Sistema',

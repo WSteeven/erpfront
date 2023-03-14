@@ -13,14 +13,15 @@ import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
+import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
+import { MotivoSuspendidoController } from 'gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
@@ -46,7 +47,7 @@ export default defineComponent({
     EssentialSelectableTable,
     LabelAbrirModal,
     ModalesEntidad,
-    TabLayout,
+    TabLayoutFilterTabs,
     EstadosSubtareas,
     EssentialTableTabs,
   },
@@ -90,7 +91,8 @@ export default defineComponent({
           params: { cliente: tareaStore.tarea.cliente ?? tareaStore.idCliente }
         },
         grupos: new GrupoController(),
-        empleados: new EmpleadoController()
+        empleados: new EmpleadoController(),
+        motivosSuspendidos: new MotivoSuspendidoController(),
       })
 
       // Necesario al consultar
@@ -118,8 +120,8 @@ export default defineComponent({
       descripcion_completa: { required: requiredIf(() => !tarea.tiene_subtareas) },
       tipo_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
       fecha_inicio_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
-      hora_inicio_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
-      hora_fin_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
+      hora_inicio_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.es_ventana) },
+      hora_fin_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.es_ventana) },
       grupo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) },
       empleado: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_empleado) },
     }
@@ -234,9 +236,9 @@ export default defineComponent({
         tarea.descripcion_completa = tarea.subtarea.descripcion_completa
         tarea.tipo_trabajo = tarea.subtarea.tipo_trabajo
         tarea.es_ventana = tarea.subtarea.es_ventana
-        tarea.fecha_inicio_trabajo = tarea.subtarea.fecha_agendado
-        tarea.hora_inicio_trabajo = tarea.subtarea.hora_inicio_agendado
-        tarea.hora_fin_trabajo = tarea.subtarea.hora_fin_agendado
+        tarea.fecha_inicio_trabajo = tarea.subtarea.fecha_inicio_trabajo
+        tarea.hora_inicio_trabajo = tarea.subtarea.hora_inicio_trabajo
+        tarea.hora_fin_trabajo = tarea.subtarea.hora_fin_trabajo
         tarea.grupo = tarea.subtarea.grupo
         tarea.empleado = tarea.subtarea.empleado
         tarea.modo_asignacion_trabajo = tarea.subtarea.modo_asignacion_trabajo
@@ -261,7 +263,7 @@ export default defineComponent({
     })
 
     // Subtareas
-    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
+    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',

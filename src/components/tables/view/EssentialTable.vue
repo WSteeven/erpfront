@@ -562,7 +562,7 @@
 
     <template #body-cell-cantidad_subtareas="props">
       <q-td>
-        <q-chip v-if="props.value != 0" dense class="q-px-md bg-accent-5">
+        <q-chip v-if="props.value" dense class="q-px-md bg-accent-5">
           {{ props.value }}
         </q-chip>
       </q-td>
@@ -713,6 +713,7 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
+        -->
         <q-chip v-if="props.value === 'SI'" class="bg-yellow-1">
           <q-icon
             name="bi-circle-fill"
@@ -814,7 +815,7 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <q-chip
+        <!--<q-chip
           v-if="props.value === estadosTransacciones['pendiente']"
           :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
@@ -824,7 +825,7 @@
             class="q-mr-xs"
           ></q-icon>
           PENDIENTE
-        </q-chip>
+        </q-chip> -->
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
@@ -961,6 +962,24 @@
 
     <!-- tiene firma -->
     <template #body-cell-firma_url="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+
+    <!-- Tiene subtareas -->
+    <template #body-cell-tiene_subtareas="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

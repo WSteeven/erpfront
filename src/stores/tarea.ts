@@ -1,24 +1,24 @@
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { Tarea } from 'tareas/domain/Tarea'
-import { Trabajo } from 'trabajos/domain/Trabajo'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { acciones } from 'config/utils'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 
 export const useTareaStore = defineStore('tarea', () => {
   // State - Coordinador
   const tarea = reactive(new Tarea())
-  const subtarea = reactive(new Trabajo())
+  const subtarea = reactive(new Subtarea())
   const idCliente = ref() // al guardar show retorna string pero necesito id
 
   // Tecnico
-  const subtareaAsignada = reactive(new Trabajo())
+  const subtareaAsignada = reactive(new Subtarea())
   const idSubtareaAsignada = ref()
 
-  const subtareaReset = new Trabajo()
+  const subtareaReset = new Subtarea()
   const accionTarea = acciones.nuevo
   const accionSubtarea = acciones.nuevo
 

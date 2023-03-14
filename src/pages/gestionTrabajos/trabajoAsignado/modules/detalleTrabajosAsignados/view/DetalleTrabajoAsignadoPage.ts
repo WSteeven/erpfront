@@ -1,8 +1,7 @@
 // Dependencias
-import { configuracionColumnasArchivoTrabajo } from 'trabajos/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoTrabajo'
 import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
-import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
-import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
+// import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
+// import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
 import { tiposTareasTelconet, accionesTabla } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
@@ -14,24 +13,19 @@ import { useTareaStore } from 'stores/tarea'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ArchivoTrabajoController } from 'trabajos/modules/gestorArchivosTrabajos/infraestructure/ArchivoTrabajoController'
 import { TipoTrabajoController } from 'pages/gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { TrabajoController } from 'pages/gestionTrabajos/trabajos/infraestructure/TrabajoController'
 import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
 import { ClienteFinal } from 'gestionTrabajos/clientesFinales/domain/ClienteFinal'
-import { Trabajo } from 'pages/gestionTrabajos/trabajos/domain/Trabajo'
-import { GrupoSeleccionado } from 'trabajos/domain/GrupoSeleccionado'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { ArchivoSubtareaController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
 import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -123,10 +117,10 @@ export default defineComponent({
       /* trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
         const tecnico = new Empleado()
         tecnico.hydrate(empleado)
-  
+
         const roles = stringToArray(tecnico.roles ?? '')
         tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
-  
+
         return tecnico
       }) */
     }
@@ -148,8 +142,6 @@ export default defineComponent({
       trabajo,
       tiposTareasTelconet,
       configuracionColumnasEmpleadoGrupo,
-      configuracionColumnasGrupoSeleccionado,
-      configuracionColumnasEmpleadoSeleccionado,
       columnasGestor: [...configuracionColumnasArchivoSubtarea, accionesTabla],
       tiposTrabajos,
       grupos,

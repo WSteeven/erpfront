@@ -21,11 +21,11 @@ export class Subtarea extends EntidadAuditable {
   fecha_hora_realizado: string | null
   fecha_hora_finalizacion: string | null
   fecha_hora_pendiente: string | null
-  causa_pendiente: string | null
+  motivo_pendiente: string | null
   fecha_hora_suspendido: string | null
-  causa_suspencion: string | null
-  fecha_hora_cancelacion: string | null
-  causa_cancelacion: string | null
+  motivo_suspendido: string | null
+  fecha_hora_cancelado: string | null
+  motivo_cancelado: string | null
   dias_ocupados: number | null
 
   es_dependiente: boolean
@@ -49,13 +49,13 @@ export class Subtarea extends EntidadAuditable {
   // archivos: File[]
   subtarea_dependiente_id: number | null
 
-  empleado: number | string | null
+  empleado: number | null
   grupo: number | null
 
   canton: string | null
   cantidad_subtareas: number | null
   mas_empleados: boolean
-  ejecutar_hoy: boolean
+  designar_otro_responsable: boolean // reagendar
   puede_ejecutar: boolean
 
   constructor() {
@@ -81,10 +81,10 @@ export class Subtarea extends EntidadAuditable {
     this.fecha_hora_realizado = null
     this.fecha_hora_suspendido = null
     this.fecha_hora_pendiente = null
-    this.causa_pendiente = null
-    this.causa_suspencion = null
-    this.fecha_hora_cancelacion = null
-    this.causa_cancelacion = null
+    this.motivo_pendiente = null
+    this.motivo_suspendido = null
+    this.fecha_hora_cancelado = null
+    this.motivo_cancelado = null
     this.dias_ocupados = null
 
     this.es_dependiente = false
@@ -117,7 +117,7 @@ export class Subtarea extends EntidadAuditable {
     this.canton = null
     this.cantidad_subtareas = null
     this.mas_empleados = false
-    this.ejecutar_hoy = false
+    this.designar_otro_responsable = false
     this.puede_ejecutar = false
   }
 }

@@ -7,5 +7,6 @@ export interface CustomActionPrompt {
   defecto?: string | number | null
   tipo?: string
   validacion?: funcion
+  items?: any[]
 }
 

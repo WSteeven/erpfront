@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 // Dependencias
-import { configuracionColumnasPausas } from 'trabajos/modules/pausasRealizadas/domain/configuracionColumnasPausas'
+import { configuracionColumnasPausas } from '../domain/configuracionColumnasPausas'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'

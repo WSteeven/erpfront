@@ -40,6 +40,25 @@ const routes: RouteRecordRaw[] = [
           import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/motivos-pausas',
+        name: 'motivos_pausas',
+        component: () =>
+          import('gestionTrabajos/motivosPausas/view/MotivoPausaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/motivos-pendientes',
+        name: 'motivos_pendientes',
+        component: () => import('gestionTrabajos/motivosPendientes/view/MotivoPendientePage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/motivos-suspendidos',
+        name: 'motivos_suspendidos',
+        component: () => import('gestionTrabajos/motivosSuspendidos/view/MotivoSuspendidoPage.vue'),
+        meta: { requiresAuth: true },
+      },
       /*{
         path: '/tipos-elementos',
         name: 'tipos_elementos',

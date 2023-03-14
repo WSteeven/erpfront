@@ -14,7 +14,7 @@ export class SubtareaPusherEvent {
   start() {
     //Pusher.logToConsole = true
 
-    const pusher = new Pusher('0df833686e4616dd7444', {
+    /*const pusher = new Pusher('0df833686e4616dd7444', {
       cluster: 'sa1',
     })
 
@@ -24,6 +24,6 @@ export class SubtareaPusherEvent {
     pusher.subscribe('subtareas-tracker')
     pusher.bind('subtarea-event', function (e) {
       if (puedeEjecutar.value) accion(estadosTrabajos.AGENDADO)
-    })
+    }) */
   }
 }

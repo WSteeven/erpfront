@@ -1,4 +1,4 @@
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+// import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesSubtarea } from './ComportamientoModalesSubtarea'
@@ -8,14 +8,15 @@ import { useSubtareaStore } from 'stores/subtarea'
 import { estadosTrabajos } from 'config/utils'
 import { Subtarea } from '../domain/Subtarea'
 import { Ref } from 'vue'
+import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
 
-export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: ComportamientoModalesSubtarea) => {
+export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: ComportamientoModalesSubtarea, listadosAuxiliares: any) => {
   const subtareaStore = useSubtareaStore()
 
-  const { confirmar, notificarCorrecto, prompt } = useNotificaciones()
+  const { confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
 
-  const cargando = new StatusEssentialLoading()
+  // const cargando = new StatusEssentialLoading()
 
   const botonFormulario: CustomActionTable = {
     titulo: 'Formulario',
@@ -30,7 +31,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
 
   const botonVerPausas: CustomActionTable = {
     titulo: 'Ver pausas',
-    icono: 'bi-pause',
+    icono: 'bi-pause-circle',
     color: 'blue-6',
     visible: ({ entidad }) => entidad.estado !== estadosTrabajos.CREADO,
     accion: ({ entidad }) => {
@@ -75,24 +76,31 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   } */
 
   const botonCancelar: CustomActionTable = {
-    titulo: ({ entidad }) => entidad.estado === estadosTrabajos.ASIGNADO,
+    titulo: 'Cancelar',
     color: 'negative',
-    icono: 'bi-x-circle-fill',
+    icono: 'bi-x-circle',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
     accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de cancelar definitivamente la subtarea?'], async () => {
       const config: CustomActionPrompt = {
-        mensaje: 'Ingrese el motivo de la cancelación',
+        mensaje: 'Seleccione el motivo de la cancelación',
         accion: async (data) => {
           const { result } = await cambiarEstadoTrabajo.cancelar(entidad.id, data)
           entidad.estado = estadosTrabajos.CANCELADO
-          entidad.fecha_hora_cancelacion = result.fecha_hora_cancelacion
-          entidad.causa_cancelacion = result.causa_cancelacion
+          entidad.fecha_hora_cancelado = result.fecha_hora_cancelado
+          entidad.motivo_cancelado = result.motivo_cancelado
           notificarCorrecto('Trabajo cancelado exitosamente!')
           actualizarElemento(posicion, entidad)
-        }
+        },
+        tipo: 'radio',
+        items: listadosAuxiliares.motivosSuspendidos.map((motivo: MotivoSuspendido) => {
+          return {
+            label: motivo.motivo,
+            value: motivo.id
+          }
+        })
       }
 
-      prompt(config)
+      promptItems(config)
     }),
   }
 
@@ -125,6 +133,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.PENDIENTE,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
       subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
+      subtareaStore.fechaHoraPendiente = entidad.fecha_hora_pendiente
+      subtareaStore.motivoPendiente = entidad.motivo_pendiente
       subtareaStore.idSubtareaSeleccionada = entidad.id
       subtareaStore.posicionSubtareaSeleccionada = posicion
       subtareaStore.subtareaEsVentana = entidad.es_ventana
@@ -132,19 +142,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
       subtareaStore.horaInicioTrabajo = entidad.hora_inicio_trabajo
       subtareaStore.horaFinTrabajo = entidad.hora_fin_trabajo
       modales.abrirModalEntidad('ReagendarPage')
-      /* const config: CustomActionPrompt = {
-        mensaje: 'Ingrese la nueva fecha',
-        tipo: 'date',
-        accion: async (data) => {
-           const { result } = await cambiarEstadoTrabajo.reagendar(entidad.id, data)
-          entidad.estado = estadosTrabajos.CREADO
-          entidad.fecha_hora_creacion = result.fecha_hora_creacion
-          notificarCorrecto('Trabajo reagendado exitosamente!')
-          actualizarElemento(posicion, entidad)
-        }
-      }
-
-      prompt(config) */
     }),
   }
 

@@ -4,6 +4,8 @@
     "baseUrl": ".",
     "noImplicitAny": false,
     "strictFunctionTypes": false,
+    "module": "esnext",
+    "target": "esnext",
     "paths": {
       "config/*": ["src/config/*"],
       "shared/*": ["src/shared/*"],

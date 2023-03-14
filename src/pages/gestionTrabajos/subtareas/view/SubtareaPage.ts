@@ -1,10 +1,8 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
-import { configuracionColumnasEmpleadoSeleccionado } from 'trabajos/domain/configuracionColumnasEmpleadoSeleccionado'
-import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { computed, defineComponent, Ref, ref, watchEffect } from 'vue'
+import { defineComponent, Ref, ref, watchEffect } from 'vue'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,
@@ -30,6 +28,7 @@ import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 
 // Componentes
+import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -54,12 +53,9 @@ import { descargarArchivoUrl, isAxiosError, notificarMensajesError, quitarItemDe
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
-import { DesignarLiderGrupoController } from '../infraestructure/DesignarLiderGrupoController'
-import { DesignarSecretarioGrupoController } from '../infraestructure/DesignarSecretarioGrupoController'
-import { useOrquestadorSelectorEmpleadosGrupo } from '../application/useOrquestadorSelectorEmpleadosGrupo'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad },
+  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo },
   emits: ['cerrar-modal', 'guardado'],
   props: {
     mixinModal: {
@@ -118,7 +114,6 @@ export default defineComponent({
       })
     } else subtarea.hydrate(new Subtarea())
 
-
     subtarea.tarea = subtareaStore.codigoTarea
     subtarea.observacion = subtareaStore.observacionTarea
     accion.value = subtareaStore.accion
@@ -126,43 +121,19 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const asignarLider = ref(false)
-    const asignarSecretario = ref(false)
-    const tipoSeleccion = computed(() => asignarLider.value || asignarSecretario.value ? 'single' : 'none')
+    // const tipoSeleccion = computed(() => asignarLider.value || asignarSecretario.value ? 'single' : 'none')
+
     const { notificarError, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
     const tecnicoSeleccionado = ref()
     const busqueda = ref()
     const empleadosSeleccionados: Ref<Empleado[]> = ref([])
-    const empleadoGrupoQuitar = ref()
+    //    const empleadoGrupoQuitar = ref()
 
     /**************
      * Referencias
      **************/
-    const refEmpleadosGrupo = ref()
-
-    /***************************
-    * Configuracion de columnas
-    ****************************/
-    const columnasEmpleadoSeleccionado = [
-      ...configuracionColumnasEmpleadoSeleccionado,
-      {
-        name: 'acciones',
-        field: 'acciones',
-        label: 'Acciones',
-        align: 'center',
-      },
-    ]
-
-    const columnasGrupoSeleccionado = [
-      ...configuracionColumnasGrupoSeleccionado,
-      {
-        name: 'acciones',
-        field: 'acciones',
-        label: 'Acciones',
-        align: 'center',
-      },
-    ]
+    //     const refEmpleadosGrupo = ref()
 
     /**********
      * Modales
@@ -172,78 +143,6 @@ export default defineComponent({
     /***************
     * Botones tabla
     ***************/
-    const quitarEmpleado: CustomActionTable = {
-      titulo: 'Quitar',
-      icono: 'bi-x',
-      color: 'negative',
-      visible: () => [acciones.editar, acciones.nuevo].includes(accion.value) && !(asignarLider.value || asignarSecretario.value),
-      accion: ({ entidad, posicion }) => {
-        if (subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
-          if (entidad.roles.includes(rolesSistema.tecnico_lider)) {
-            asignarLider.value = true
-            asignarSecretario.value = false
-            empleadoGrupoQuitar.value = entidad
-            return notificarAdvertencia('Debes asignar a un reemplazo para el líder a eliminar.')
-          }
-          if (entidad.roles.includes(rolesSistema.secretario)) {
-            asignarLider.value = false
-            asignarSecretario.value = true
-            empleadoGrupoQuitar.value = entidad
-            return notificarAdvertencia('Debes asignar a un reemplazo para el secretario a eliminar.')
-          }
-        }
-
-        empleadosSeleccionados.value.splice(posicion, 1)
-      },
-    }
-
-    const designarLider: CustomActionTable = {
-      titulo: 'Designar como líder de grupo para este trabajo',
-      icono: 'bi-clock-history',
-      color: 'accent',
-      visible: () => asignarLider.value,
-      accion: async ({ entidad }) => {
-        refEmpleadosGrupo.value.seleccionar()
-      },
-    }
-
-    const designarLiderDefinitivo: CustomActionTable = {
-      titulo: 'Designar como líder de grupo en el sistema',
-      icono: 'bi-arrow-left-right',
-      color: 'positive',
-      visible: () => asignarLider.value,
-      accion: async ({ entidad }) => {
-        refEmpleadosGrupo.value.seleccionar()
-      },
-    }
-
-    const designarSecretario: CustomActionTable = {
-      titulo: 'Designar como nuevo secretario para este trabajo',
-      icono: 'bi-clock-history',
-      color: 'accent',
-      visible: () => asignarSecretario.value,
-      accion: () => refEmpleadosGrupo.value.seleccionar()
-    }
-
-    const designarSecretarioDefinitivo: CustomActionTable = {
-      titulo: 'Designar como nuevo secretario en el sistema',
-      icono: 'bi-arrow-left-right',
-      color: 'positive',
-      visible: () => asignarSecretario.value,
-      accion: () => refEmpleadosGrupo.value.seleccionar()
-    }
-
-    const cancelarDesignacion: CustomActionTable = {
-      titulo: 'Cancelar',
-      icono: 'bi-x',
-      color: 'negative',
-      visible: () => asignarLider.value || asignarSecretario.value,
-      accion: () => {
-        asignarLider.value = false
-        asignarSecretario.value = false
-      },
-    }
-
     const botonEditarTrabajo: CustomActionTable = {
       titulo: 'Editar',
       icono: 'bi-pencil',
@@ -253,6 +152,28 @@ export default defineComponent({
         consultar(entidad)
       },
     }
+
+    /* const data = computed(() => {
+      return {
+        accion: accion.value,
+        modo_asignacion_trabajo: subtarea.modo_asignacion_trabajo,
+        grupo: computed(() => subtarea.grupo),
+      }
+    })
+
+    const {
+      refEmpleadosGrupo,
+      empleadoGrupoQuitar,
+      quitarEmpleado,
+      entidadSeleccionada,
+      cancelarDesignacion,
+      designarLider,
+      designarLiderDefinitivo,
+      designarSecretario,
+      designarSecretarioDefinitivo,
+      asignarLider,
+      asignarSecretario,
+    } = useBotonesTablaDesignacionTrabajo(empleadosSeleccionados, data) */
 
     /*********
     * Filtros
@@ -288,35 +209,13 @@ export default defineComponent({
       subtarea.tarea = subtareaStore.idTarea
     })
 
-    /* onBeforeModificar(() => {
-      // subtarea.tecnicos_grupo_principal = validarString(tecnicosGrupoPrincipal.value.map((tecnico: Empleado) => tecnico.id).toString())
-    }) */
-
-    onConsultado(() => {
-      subtarea.tarea = subtareaStore.codigoTarea
-      /* if (subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
-        subtarea.grupos_seleccionados.forEach((grupo: GrupoSeleccionado) => {
-          console.log(grupo)
-          if (grupo.id) obtenerTecnicosGrupo(grupo.id)
-        })
-      }*/
-      // tecnicosGrupoPrincipal.value = subtarea.tecnicos_grupo_principal
-    })
-
-    /* onGuardado(() => {
-      const subirArchivos = useSubirArchivos(subtarea.id)
-    }) */
-
-    /*function validarString(listado: string) {
-      return listado !== '' ? listado : null
-    }*/
+    onConsultado(() => subtarea.tarea = subtareaStore.codigoTarea)
 
     const refUploader = ref()
 
-    //const columnasArchivos = ref()
     const axios = AxiosHttpRepository.getInstance()
     const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
-    let idSubtarea
+    let idSubtarea: any
 
     async function factoryFn(files) {
       const fd = new FormData()
@@ -349,7 +248,6 @@ export default defineComponent({
           entidad.fecha_hora_agendado = resultAgendado.fecha_hora_agendado
 
           listado.value = [...listado.value, entidad]
-
 
           // Subir archivos
           idSubtarea = entidad.id
@@ -385,11 +283,6 @@ export default defineComponent({
       emit('cerrar-modal')
     }
 
-    // const paraProyecto = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraProyecto)
-    // const paraClienteFinal = computed(() => subtarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
-
-
-
     /*************
     * Validaciones
     **************/
@@ -406,211 +299,50 @@ export default defineComponent({
       subtarea_dependiente: { required: requiredIf(() => subtarea.es_dependiente) },
     }
 
-    /*****************
-     * Orquestadores
-     *****************/
-    const {
-      refListadoSeleccionable: refListadoSeleccionableEmpleadosGrupo,
-      criterioBusqueda: criterioBusquedaEmpleadosGrupo,
-      listado: listadoEmpleadosGrupo,
-      listar: listarEmpleadosGrupo,
-      limpiar: limpiarEmlpeadosGrupo,
-      seleccionar: seleccionarEmpleadosGrupo,
-    } = useOrquestadorSelectorEmpleadosGrupo(empleadosSeleccionados, 'empleados')
-
     const v$ = useVuelidate(rules, subtarea)
     setValidador(v$.value)
 
     /************
     * Funciones
     *************/
-    async function entidadSeleccionada(empleadoSeleccionado: Empleado[]) {
-      if (empleadoSeleccionado.length) {
-        const idEmpleadoSeleccionado = empleadoSeleccionado[0].id
-
-        try {
-          // Lider de grupo
-          if (asignarLider.value) {
-            const empleado = {
-              id: idEmpleadoSeleccionado,
-              grupo: subtarea.grupo,
-            }
-
-            console.log(empleadoGrupoQuitar.value)
-            const { response, result: nuevoLider } = await new DesignarLiderGrupoController().editar(empleado)
-            asignarLider.value = false
-
-            notificarCorrecto(response.data.mensaje)
-
-            // Quitar rol de lider de grupo a antiguo lider
-            const roles = stringToArray(empleadoGrupoQuitar.value.roles)
-            empleadoGrupoQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.tecnico_lider).join(',')
-
-            // Designar rol lider de grupo al nuevo lider
-            const posicionNuevoLider: any = empleadosSeleccionados.value.findIndex((empleado: Empleado) => empleado.id === idEmpleadoSeleccionado)
-            empleadosSeleccionados.value.splice(posicionNuevoLider, 1, nuevoLider)
-
-            /* const nuevoLider: Empleado = empleadosSeleccionados.value[posicionNuevoLider]
-            nuevoLider.roles = nuevoLider.roles + ', ' + rolesSistema.tecnico_lider
-            empleadosSeleccionados.value.splice(posicionNuevoLider, 1, nuevoLider) */
-
-          }
-
-          // Secretario de grupo
-          if (asignarSecretario.value) {
-
-            const empleado = {
-              id: idEmpleadoSeleccionado,
-              grupo: subtarea.grupo
-            }
-
-            const { response } = await new DesignarSecretarioGrupoController().editar(empleado)
-            asignarSecretario.value = false
-            notificarCorrecto(response.data.mensaje)
-
-            // Quitar rol de secretario de grupo al antiguo secretario
-            const roles = stringToArray(empleadoGrupoQuitar.value.roles)
-            empleadoGrupoQuitar.value.roles = quitarItemDeArray(roles, rolesSistema.secretario).join(',')
-
-            // Designar rol de secretario de grupo al nuevo secretario
-            const posicionNuevoSecretario: any = empleadosSeleccionados.value.findIndex((empleado: Empleado) => empleado.id === idEmpleadoSeleccionado)
-            const nuevoSecretario: Empleado = empleadosSeleccionados.value[posicionNuevoSecretario]
-            nuevoSecretario.roles = nuevoSecretario.roles + ', ' + rolesSistema.secretario
-            empleadosSeleccionados.value.splice(posicionNuevoSecretario, 1, nuevoSecretario)
-
-            // notificarCorrecto('Asignado como secretario de cuadrilla')
-          }
-        } catch (e) {
-          if (isAxiosError(e)) {
-            const mensajes: string[] = e.erroresValidacion
-            notificarMensajesError(mensajes, useNotificaciones())
-          }
-        }
-      }
-    }
-
-    /* async function obtenerClienteFinal(clienteFinalId: number) {
-      const clienteFinalController = new ClienteFinalController()
-      const { result } = await clienteFinalController.consultar(clienteFinalId)
-      return result
-    } */
-
-    /*function establecerCliente() {
-      tareaStore.tarea.cliente = subtarea.cliente
-    }*/
-
-    /*function agregarGrupoSeleccionado(grupo_id: number) {
-      if (grupo_id) {
-        const existe = subtarea.grupos_seleccionados.some((grupo: GrupoSeleccionado) => grupo.id === grupo_id)
-
-        if (existe) return notificarAdvertencia('El grupo seleccionado ya ha sido agregado')
-
-        obtenerTecnicosGrupo(grupo_id)
-        const index = grupos.value.findIndex((item: Grupo) => item.id === grupo_id)
-        const grupoSeleccionado: GrupoSeleccionado = grupos.value[index]
-
-        if (subtarea.grupos_seleccionados.length === 0) {
-          grupoSeleccionado.es_responsable = true
-          //console.log(subtarea.grupos_seleccionados.length)
-        }
-        subtarea.grupos_seleccionados.push(grupoSeleccionado)
-        subtarea.grupo = null
-
-      } else notificarAdvertencia('Debe seleccionar un grupo')
-    }*/
-
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
       empleadosSeleccionados.value = result
     }
 
-    /* function cargarArchivos(files: File[]) {
-      subtarea.archivos = files
-    } */
-
     function verificarEsVentana() {
       if (!subtarea.es_ventana) subtarea.hora_fin_trabajo = null
+    }
+
+    function seleccionarGrupo(grupo_id) {
+      subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
+      subtarea.grupo = grupo_id
+      subtarea.empleado = null
+    }
+
+    function seleccionarEmpleado(empleado_id) {
+      subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
+      subtarea.empleado = empleado_id
+      subtarea.grupo = null
     }
 
     /************
     * Observers
     ************/
-    // const controller = new ClienteFinalController()
-
     watchEffect(() => {
       if (subtarea.grupo) obtenerTecnicosGrupo(subtarea.grupo)
     })
-    /*watchEffect(async () => {
-      if (subtarea.cliente) {
-        clientesFinalesSource.value = (await controller.listar({ cliente: subtarea.cliente })).result
-        clientesFinales.value = clientesFinalesSource.value
-      }
-    })*/
-
-    /* watchEffect(async () => {
-      if (subtarea.cliente_final) {
-        const res = await obtenerClienteFinal(subtarea.cliente_final)
-        clienteFinal.hydrate(res)
-      }
-    }) */
-
-    // Informacion de ubicacion
-    // const clienteFinal = reactive(new ClienteFinal())
-
-    /* watch(computed(() => subtarea.para_cliente_proyecto), (valor) => {
-      if (accion.value !== acciones.editar) {
-        subtarea.hydrate(new Subtarea())
-        clienteFinal.hydrate(new ClienteFinal())
-        subtarea.para_cliente_proyecto = valor
-      }
-    }) */
-
-    /* async function setCliente() {
-      if (subtarea.proyecto) {
-        const proyectoController = new ProyectoController()
-        const { result } = await proyectoController.consultar(subtarea.proyecto)
-        subtarea.cliente = result.cliente
-      }
-    } */
-
-    // const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
-
-    /* function filtrarTodos(filtros) {
-      filtrar(filtros)
-    } */
-
-    /* watchEffect(async () => {
-      if (subtarea.tarea) {
-        const idCliente = obtenerIdCliente(subtarea.tarea)
-        const { result } = await new TipoTrabajoController().listar({ cliente_id: idCliente })
-        tiposTrabajosSource.value = result
-        subtarea.tipo_trabajo = null
-      }
-    }) */
-
-    /* function obtenerIdCliente(idTarea: number) {
-      const tarea: Tarea = tareas.value.filter((tarea: Tarea) => tarea.id === idTarea)[0]
-      return tarea.cliente_id
-    } */
 
     return {
       v$,
-      refEmpleadosGrupo,
       refUploader,
       empleadosSeleccionados,
       listado,
       subtarea,
       seleccionBusqueda,
-      columnasEmpleadoSeleccionado,
-      columnasGrupoSeleccionado,
       tecnicoSeleccionado,
       busqueda,
-      quitarEmpleado,
-      designarLider,
-      designarLiderDefinitivo,
-      designarSecretario,
-      designarSecretarioDefinitivo,
       listadosAuxiliares,
       tiposInstalaciones,
       tiposTareasTelconet,
@@ -626,9 +358,8 @@ export default defineComponent({
       disabled,
       columnasEmpleado: [...configuracionColumnasEmpleadoGrupo, accionesTabla],
       columnasArchivos: [...configuracionColumnasArchivoSubtarea, accionesTabla],
-      tipoSeleccion,
+      configuracionColumnasEmpleadoGrupo,
       modosAsignacionTrabajo,
-      cancelarDesignacion,
       verificarEsVentana,
       Empleado,
       destinosTareas,
@@ -640,15 +371,13 @@ export default defineComponent({
       nivelesTrabajos,
       acciones,
       maskFecha,
-      // botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
       accionesTabla,
       botonEditarTrabajo,
-      configuracionColumnasEmpleadoSeleccionado,
       archivos,
       factoryFn,
       btnDescargarArchivo,
-      entidadSeleccionada,
-      // btnAnular,
+      seleccionarGrupo,
+      seleccionarEmpleado,
       // Filtros
       clientes,
       filtrarClientes,
@@ -666,13 +395,6 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
-      // Orquesatdor
-      refListadoSeleccionableEmpleadosGrupo,
-      criterioBusquedaEmpleadosGrupo,
-      listadoEmpleadosGrupo,
-      listarEmpleadosGrupo,
-      limpiarEmlpeadosGrupo,
-      seleccionarEmpleadosGrupo,
     }
   },
 })

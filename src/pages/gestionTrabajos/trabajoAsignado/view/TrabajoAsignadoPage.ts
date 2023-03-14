@@ -5,7 +5,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla, estadosTrabajos } from 'config/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { tabTrabajoAsignado } from 'config/tareas.utils'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref } from 'vue'
 import { date } from 'quasar'
 
 // Componentes
@@ -19,13 +19,16 @@ import { ComportamientoModalesTrabajoAsignado } from '../application/Comportamie
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CambiarEstadoSubtarea } from 'pages/gestionTrabajos/subtareas/application/CambiarEstadoSubtarea'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
 import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
-import { obtenerTiempoActual } from 'shared/utils'
-import { Trabajo } from 'trabajos/domain/Trabajo'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { MotivoPausa } from 'pages/gestionTrabajos/motivosPausas/domain/MotivoPausa'
+import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
+import { MotivoPendienteController } from 'pages/gestionTrabajos/motivosPendientes/infraestructure/MotivoPausaController'
+import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
+import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 
 export default defineComponent({
   components: {
@@ -34,17 +37,25 @@ export default defineComponent({
     ConfirmarDialog,
   },
   setup() {
-    const controller = new SubtareaController()
     const mostrarDialogPlantilla = ref(false)
-    const { confirmar, prompt, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
+    const { confirmar, promptItems, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const modales = new ComportamientoModalesTrabajoAsignado()
     const tabActual = ref()
 
     /***********
-    * Mixin
+    * Variables
     ************/
-    const mixin = new ContenedorSimpleMixin(Trabajo, controller)
-    const { listado } = mixin.useReferencias()
+    const mixin = new ContenedorSimpleMixin(Subtarea, new TrabajoAsignadoController())
+    const { listado, listadosAuxiliares } = mixin.useReferencias()
+    const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        motivosPausas: new MotivoPausaController(),
+        motivosPendientes: new MotivoPendienteController(),
+        motivosSuspendidos: new MotivoSuspendidoController(),
+      })
+    })
 
     /*********
      * Pusher
@@ -76,24 +87,11 @@ export default defineComponent({
       titulo: 'Ejecutar',
       icono: 'bi-play-fill',
       color: 'positive',
-      visible: ({ entidad }) => [estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.es_responsable && entidad.ejecutar_hoy && entidad.puede_ejecutar,
-      accion: ({ entidad, posicion }) => {
+      visible: ({ entidad }) => [estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.es_responsable && entidad.puede_ejecutar,
+      accion: ({ entidad }) => {
         confirmar('¿Está seguro de iniciar el trabajo?', async () => {
-          const { fecha, hora } = await obtenerTiempoActual()
-          if (entidad.es_ventana) {
-            if (fecha < entidad.fecha_agendado) {
-              notificarAdvertencia('No puedes proceder. La ejecución del trabajo empieza el ' + entidad.fecha_agendado)
-              return
-            }
-
-            if (hora < entidad.hora_inicio_agendado) {
-              notificarAdvertencia('No puedes proceder. La ejecución del trabajo empieza a las ' + entidad.hora_inicio_agendado)
-              return
-            }
-          }
-
           if (entidad.es_dependiente) {
-            const { result: subtareaDependiente } = await controller.consultar(entidad.subtarea_dependiente_id)
+            const { result: subtareaDependiente } = await new SubtareaController().consultar(entidad.subtarea_dependiente_id)
             if (subtareaDependiente.estado !== estadosTrabajos.REALIZADO) {
               notificarAdvertencia('No puedes proceder. Primero debes finalizar con el trabajo ' + subtareaDependiente.codigo_subtarea)
               return
@@ -104,29 +102,37 @@ export default defineComponent({
           entidad.estado = estadosTrabajos.EJECUTANDO
           entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
           notificarCorrecto('Trabajo iniciado exitosamente!')
-          actualizarElemento(posicion, entidad)
+          filtrarTrabajoAsignado(estadosTrabajos.AGENDADO)
         })
       }
     }
 
     const botonPausar: CustomActionTable = {
       titulo: 'Pausar',
-      icono: 'bi-pause',
+      icono: 'bi-pause-circle',
       color: 'blue-6',
       visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de pausar el trabajo?', () => {
-          const config: CustomActionPrompt = {
-            mensaje: 'Ingrese el motivo de la pausa',
-            accion: (data) => {
-              new CambiarEstadoSubtarea().pausar(entidad.id, data)
+          const config: CustomActionPrompt = reactive({
+            mensaje: 'Seleccione el motivo de la pausa',
+            accion: (idMotivoPausa) => {
+              console.log(idMotivoPausa)
+              new CambiarEstadoSubtarea().pausar(entidad.id, idMotivoPausa)
               entidad.estado = estadosTrabajos.PAUSADO
               notificarCorrecto('Trabajo pausado exitosamente!')
-              actualizarElemento(posicion, entidad)
-            }
-          }
+              eliminarElemento(posicion, entidad)
+            },
+            tipo: 'radio',
+            items: listadosAuxiliares.motivosPausas.map((motivo: MotivoPausa) => {
+              return {
+                label: motivo.motivo,
+                value: motivo.id
+              }
+            })
+          })
 
-          prompt(config)
+          promptItems(config)
         })
       },
     }
@@ -141,7 +147,7 @@ export default defineComponent({
           new CambiarEstadoSubtarea().reanudar(entidad.id)
           entidad.estado = estadosTrabajos.EJECUTANDO
           notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
-          actualizarElemento(posicion, entidad)
+          eliminarElemento(posicion, entidad)
         })
       }
     }
@@ -165,21 +171,28 @@ export default defineComponent({
       titulo: 'Suspender',
       icono: 'bi-power',
       color: 'negative',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable && entidad.ejecutar_hoy,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable && entidad.puede_ejecutar,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de suspender el trabajo?', () => {
           const config: CustomActionPrompt = {
-            mensaje: 'Ingrese el motivo de la suspención',
+            mensaje: 'Seleccione el motivo de la suspención del trabajo',
             accion: async (data) => {
               const { result } = await new CambiarEstadoSubtarea().suspender(entidad.id, data)
               entidad.estado = estadosTrabajos.SUSPENDIDO
               entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
               notificarCorrecto('Trabajo suspendido exitosamente!')
-              actualizarElemento(posicion, entidad)
-            }
+              eliminarElemento(posicion, entidad)
+            },
+            tipo: 'radio',
+            items: listadosAuxiliares.motivosSuspendidos.map((motivo: MotivoSuspendido) => {
+              return {
+                label: motivo.motivo,
+                value: motivo.id
+              }
+            })
           }
 
-          prompt(config)
+          promptItems(config)
         })
       },
     }
@@ -188,28 +201,35 @@ export default defineComponent({
       titulo: 'Pendiente',
       icono: 'bi-clock',
       color: 'orange-8',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable && entidad.ejecutar_hoy,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de marcar como pendiente el trabajo?', () => {
           const config: CustomActionPrompt = {
-            mensaje: 'Ingrese el motivo por el que se mantiene como pendiente',
-            accion: async (data) => {
-              const { response, result } = await new CambiarEstadoSubtarea().pendiente(entidad.id, data)
+            mensaje: 'Seleccione el motivo por el que se marca el trabajo como pendiente',
+            accion: async (idMotivoPendiente) => {
+              const { response, result } = await new CambiarEstadoSubtarea().pendiente(entidad.id, idMotivoPendiente)
               entidad.estado = estadosTrabajos.PENDIENTE
               entidad.fecha_hora_pendiente = result.fecha_hora_pendiente
               notificarCorrecto(response.data.mensaje)
-              actualizarElemento(posicion, entidad)
-            }
+              eliminarElemento(posicion, entidad)
+            },
+            tipo: 'radio',
+            items: listadosAuxiliares.motivosPendientes.map((motivo: MotivoPausa) => {
+              return {
+                label: motivo.motivo,
+                value: motivo.id
+              }
+            })
           }
 
-          prompt(config)
+          promptItems(config)
         })
       },
     }
 
     const botonRealizar: CustomActionTable = {
       titulo: 'Realizado',
-      icono: 'bi-check',
+      icono: 'bi-check-circle',
       color: 'positive',
       visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.es_responsable,
       accion: ({ entidad, posicion }) => {
@@ -217,7 +237,7 @@ export default defineComponent({
           const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id)
           entidad.estado = estadosTrabajos.REALIZADO
           entidad.fecha_hora_realizado = result.fecha_hora_realizado
-          actualizarElemento(posicion, entidad)
+          eliminarElemento(posicion, entidad)
           notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
         })
       }
@@ -227,7 +247,7 @@ export default defineComponent({
     * Funciones
     *************/
     // - Actualizar un elemento del listado de trabajo asignado
-    function actualizarElemento(posicion: number, entidad: any): void {
+    function eliminarElemento(posicion: number, entidad: any): void {
       if (posicion >= 0) {
         listado.value.splice(posicion, 1)
         // listado.value = [...listado.value]
@@ -235,18 +255,19 @@ export default defineComponent({
     }
 
     // - Filtrar trabajo asignado
-    const trabajoAsignadoController = new TrabajoAsignadoController()
+    // const trabajoAsignadoController = new TrabajoAsignadoController()
 
     async function filtrarTrabajoAsignado(tabSeleccionado) {
-      const cargando = new StatusEssentialLoading()
-
-      cargando.activar()
-
-      const { result } = await trabajoAsignadoController.listar({ estado: tabSeleccionado })
-      listado.value = result
+      listar({ estado: tabSeleccionado })
       tabActual.value = tabSeleccionado
+      //  const cargando = new StatusEssentialLoading()
 
-      cargando.desactivar()
+      // cargando.activar()
+
+      // const { result } = await trabajoAsignadoController.
+      //listado.value = result
+
+      // cargando.desactivar()
     }
 
     filtrarTrabajoAsignado(estadosTrabajos.AGENDADO)

@@ -144,7 +144,7 @@ export default defineComponent({
       store.can(`puede.editar.${router.name?.toString()}`) && props.permitirEditar
     )
     const puedeEliminar = computed(() =>
-      store.can(`puede.eliminar.${router.name?.toString()}`)
+      store.can(`puede.eliminar.${router.name?.toString()}`) && props.permitirEliminar
     )
 
     const esBodeguero = store.esBodeguero

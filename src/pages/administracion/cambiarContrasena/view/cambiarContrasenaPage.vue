@@ -34,7 +34,7 @@
           </div>
           <!-- Contraseña Nueva -->
           <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Contraseña Nuevo</label>
+            <label class="q-mb-sm block">Nueva contraseña</label>
             <q-input
               v-model="cambiarContrasena.password"
               placeholder="Obligatorio"
@@ -61,7 +61,7 @@
           </div>
           <!-- Contraseña Confirmacion -->
           <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Contraseña actual</label>
+            <label class="q-mb-sm block">Repita la nueva contraseña</label>
             <q-input
               v-model="cambiarContrasena.password_confirmation"
               placeholder="Obligatorio"

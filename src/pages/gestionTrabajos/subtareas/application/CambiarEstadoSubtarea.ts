@@ -31,24 +31,24 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/finalizar', idTrabajo)
   }
 
-  async pausar(idTrabajo: number, mensaje: string) {
-    return this.solicitud('/pausar', idTrabajo, { motivo: mensaje })
+  async pausar(idTrabajo: number, idMotivoPausa: number) {
+    return this.solicitud('/pausar', idTrabajo, { motivo_pausa_id: idMotivoPausa })
   }
 
   async reanudar(idTrabajo: number) {
     return this.solicitud('/reanudar', idTrabajo)
   }
 
-  async suspender(idTrabajo: number, mensaje: string) {
-    return this.solicitud('/suspender', idTrabajo, { motivo: mensaje })
+  async suspender(idTrabajo: number, idMotivoSuspendido: number) {
+    return this.solicitud('/suspender', idTrabajo, { motivo_suspendido_id: idMotivoSuspendido })
   }
 
-  async pendiente(idTrabajo: number, mensaje: string) {
-    return this.solicitud('/pendiente', idTrabajo, { motivo: mensaje })
+  async pendiente(idTrabajo: number, idMotivoPendiente: string) {
+    return this.solicitud('/pendiente', idTrabajo, { motivo_pendiente_id: idMotivoPendiente })
   }
 
-  async cancelar(idTrabajo: number, mensaje: string) {
-    return this.solicitud('/cancelar', idTrabajo, { motivo: mensaje })
+  async cancelar(idTrabajo: number, idMotivoCancelado: number) {
+    return this.solicitud('/cancelar', idTrabajo, { motivo_suspendido_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
   }
 
   async reagendar(idTrabajo: number, nuevaFecha: string) {
@@ -56,15 +56,14 @@ export class CambiarEstadoSubtarea {
   }
 
   async solicitud(accion, tarea, data?) {
-    try {
-      const cargando = new StatusEssentialLoading()
+    const cargando = new StatusEssentialLoading()
 
+    try {
       const ruta =
         this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + tarea
 
       cargando.activar()
       const response: AxiosResponse = await this.axios.post(ruta, data)
-      cargando.desactivar()
 
       return {
         response,
@@ -73,6 +72,8 @@ export class CambiarEstadoSubtarea {
     } catch (e: unknown) {
       const axiosError = e as AxiosError
       throw new ApiError(axiosError)
+    } finally {
+      cargando.desactivar()
     }
   }
 }
