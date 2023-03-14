@@ -231,7 +231,7 @@
           </div>
           <!--Tiene Factura-->
           <div class="col-12 col-md-3">
-            <q-checkbox v-model="esFactura" label="¿Tene Factura?" />
+            <q-checkbox v-model="esFactura" label="¿Tiene Factura?" />
           </div>
           <!-- Factura -->
           <div class="col-12 col-md-3" v-if="esFactura">

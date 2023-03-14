@@ -41,12 +41,6 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     {
-      title: 'Cambiar contraseña',
-      icon: 'bi-lock-fill',
-      link: 'cambiar-contrasena',
-      can: store.can('puede.ver.cambiar_contrasena'),
-    },
-    {
       title: 'Proyectos y tareas',
       icon: 'bi-pin-angle-fill',
       can: store.can('puede.ver.modulo_tareas'),
