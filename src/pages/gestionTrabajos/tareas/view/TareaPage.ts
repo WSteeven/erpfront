@@ -41,6 +41,7 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
+import { useBotonesTablaTarea } from '../application/BotonesTablaTarea'
 
 export default defineComponent({
   components: {
@@ -62,7 +63,7 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
-    const { entidad: tarea, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
+    const { entidad: tarea, listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
     const { onReestablecer, onConsultado, onBeforeGuardar } = mixin.useHooks()
@@ -263,6 +264,7 @@ export default defineComponent({
     })
 
     // Subtareas
+    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea } = useBotonesTablaTarea(listado, modalesSubtarea, listadosAuxiliares)
     const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
 
     const btnAgregarSubtarea: CustomActionTable = {
@@ -356,6 +358,9 @@ export default defineComponent({
       tabOptionsEstadosSubtareas,
       indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white'),
       maskFecha,
+      // Botones tareas
+      btnVerPausasTarea,
+      btnFinalizarTarea,
     }
   },
 })

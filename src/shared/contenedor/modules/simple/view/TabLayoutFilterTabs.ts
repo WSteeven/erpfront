@@ -4,14 +4,14 @@ import { useRoute, useRouter } from 'vue-router'
 
 // Componentes
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import { useAuthenticationStore } from 'stores/authentication'
-import { acciones } from 'config/utils'
-import { TabOption } from 'components/tables/domain/TabOption'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { useAuthenticationStore } from 'stores/authentication'
+import { TabOption } from 'components/tables/domain/TabOption'
+import { acciones } from 'config/utils'
 
 export default defineComponent({
   props: {
@@ -54,6 +54,14 @@ export default defineComponent({
       type: Array as () => TabOption[],
       required: true,
     },
+    full: {
+      type: Boolean,
+      default: false,
+    },
+    labelGuardar: {
+      type: String,
+      default: 'Guardar',
+    },
     accion1: {
       type: Object as () => CustomActionTable,
       required: false,
@@ -62,10 +70,42 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
-    full: {
-      type: Boolean,
-      default: false,
-    }
+    accion3: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion4: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion5: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion6: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion7: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion8: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion1Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion2Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion3Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
