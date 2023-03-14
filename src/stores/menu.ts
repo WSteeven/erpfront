@@ -298,6 +298,12 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-circle',
               can: store.can('puede.ver.acreditacion'),
             },
+            {
+              title: 'Transferencia',
+              link: 'transferencia',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.transferencia'),
+            },
           ]
         },
         {

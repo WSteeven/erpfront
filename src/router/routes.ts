@@ -464,6 +464,16 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/transferencia',
+        name: 'transferencia',
+        component: () =>
+          import(
+            'pages/fondosRotativos/transferencias/view/TransferenciaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+
+      {
         path: '/reporte-fondo-fecha',
         name: 'reporte_fondo_fecha',
         component: () =>
