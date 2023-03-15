@@ -56,6 +56,7 @@ export default defineComponent({
     const usuarios = ref([])
     const tiposFondos = ref([])
     const tiposFondoRotativoFechas = ref([])
+    
     usuarios.value = listadosAuxiliares.usuarios
 
     cargarVista(async () => {

@@ -12,7 +12,7 @@
         <q-card-section>
           <!-- Fecha Inicio -->
           <div class="col-6 col-md-3">
-            <label class="q-mb-sm block">Fecha Fondo Rotativo:</label>
+            <label class="q-mb-sm block">Fecha Inicio:</label>
             <q-input v-model="fondo_rotativo_fecha.fecha_inicio" placeholder="Obligatorio"
               :error="!!v$.fecha_inicio.$errors.length" :disable="disabled" outlined dense>
               <template v-slot:append>
@@ -36,7 +36,7 @@
           </div>
           <!-- Fecha Fin -->
           <div class="col-6 col-md-3">
-            <label class="q-mb-sm block">Fecha Fondo Rotativo:</label>
+            <label class="q-mb-sm block">Fecha Fin:</label>
             <q-input v-model="fondo_rotativo_fecha.fecha_fin" placeholder="Obligatorio"
               :error="!!v$.fecha_fin.$errors.length" :disable="disabled" outlined dense>
               <template v-slot:append>
