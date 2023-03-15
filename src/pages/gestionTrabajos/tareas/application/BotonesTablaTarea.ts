@@ -136,12 +136,12 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
       subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_tarea
       subtareaStore.fechaHoraPendiente = entidad.subtarea.fecha_hora_suspendido
       subtareaStore.motivoPendiente = entidad.subtarea.motivo_suspendido
-      subtareaStore.idSubtareaSeleccionada = entidad.id
+      subtareaStore.idSubtareaSeleccionada = entidad.subtarea.id
       subtareaStore.posicionSubtareaSeleccionada = posicion
-      subtareaStore.subtareaEsVentana = entidad.es_ventana
-      subtareaStore.fechaInicioTrabajo = entidad.fecha_inicio_trabajo
-      subtareaStore.horaInicioTrabajo = entidad.hora_inicio_trabajo
-      subtareaStore.horaFinTrabajo = entidad.hora_fin_trabajo
+      subtareaStore.subtareaEsVentana = entidad.subtarea.es_ventana
+      subtareaStore.fechaInicioTrabajo = entidad.subtarea.fecha_inicio_trabajo
+      subtareaStore.horaInicioTrabajo = entidad.subtarea.hora_inicio_trabajo
+      subtareaStore.horaFinTrabajo = entidad.subtarea.hora_fin_trabajo
       modales.abrirModalEntidad('ReagendarPage')
     }),
   }

@@ -118,5 +118,6 @@ export const useBotonesTablaDesignacionTrabajo = (empleadosSeleccionados: Ref<Em
     cancelarDesignacion,
     asignarLider,
     asignarSecretario,
+    designarLider,
   }
 }

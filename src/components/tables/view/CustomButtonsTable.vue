@@ -9,7 +9,8 @@
   <span class="text-left">
     <q-btn-group
       :rounded="$q.screen.md || $q.screen.lg || $q.screen.xl"
-      :unelevated="$q.screen.xs"
+      :unelevated="true"
+      dense
       :class="{ 'column q-gutter-y-xs': $q.screen.xs }"
     >
       <q-btn

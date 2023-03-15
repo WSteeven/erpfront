@@ -243,7 +243,7 @@
               options-dense
               dense
               outlined
-              :disable="true"
+              :disable="disabled||soloLectura"
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"

@@ -130,7 +130,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Reagendar',
     color: 'orange-8',
     icono: 'bi-calendar-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.PENDIENTE,
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
       subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
       subtareaStore.fechaHoraPendiente = entidad.fecha_hora_pendiente

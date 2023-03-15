@@ -10,8 +10,8 @@
     :tabOptions="tabOptionsEstadosSubtareas"
     :accion1="btnFormularioTarea"
     :accion2="btnVerPausasTarea"
-    :accion3="botonCancelar"
-    :accion4="btnReagendarTarea"
+    :accion3="btnReagendarTarea"
+    :accion4="botonCancelar"
     :accion5="btnFinalizarTarea"
   >
     <template #formulario>
@@ -564,126 +564,14 @@
               header-class="text-bold bg-header-collapse"
               default-opened
             >
-              <div
-                v-if="!tarea.tiene_subtareas"
-                class="row q-col-gutter-xs q-pa-sm"
-              >
-                <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Trabajo designado</label>
-                  <q-btn-toggle
-                    v-model="tarea.modo_asignacion_trabajo"
-                    class="toggle-button"
-                    :disable="disabled"
-                    spread
-                    no-caps
-                    rounded
-                    glossy
-                    toggle-color="positive"
-                    unelevated
-                    :options="[
-                      {
-                        label: 'Para un grupo',
-                        value: modosAsignacionTrabajo.por_grupo,
-                      },
-                      {
-                        label: 'Para un empleado',
-                        value: modosAsignacionTrabajo.por_empleado,
-                      },
-                    ]"
-                  />
-                </div>
-
-                <div
-                  v-if="
-                    tarea.modo_asignacion_trabajo ===
-                    modosAsignacionTrabajo.por_grupo
-                  "
-                  class="col-12 col-md-3"
-                >
-                  <label class="q-mb-sm block">Grupo seleccionado</label>
-                  <q-select
-                    v-model="tarea.grupo"
-                    :options="grupos"
-                    @filter="filtrarGrupos"
-                    transition-show="scale"
-                    transition-hide="scale"
-                    options-dense
-                    dense
-                    outlined
-                    :option-label="(item) => item.nombre"
-                    :option-value="(item) => item.id"
-                    use-input
-                    input-debounce="0"
-                    emit-value
-                    map-options
-                    :disable="disabled"
-                    :error="!!v$.grupo.$errors.length"
-                    @blur="v$.grupo.$touch"
-                  >
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No hay resultados
-                        </q-item-section>
-                      </q-item>
-                    </template>
-
-                    <template v-slot:error>
-                      <div v-for="error of v$.grupo.$errors" :key="error.$uid">
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-select>
-                </div>
-
-                <div
-                  v-if="
-                    tarea.modo_asignacion_trabajo ===
-                    modosAsignacionTrabajo.por_empleado
-                  "
-                  class="col-12 col-md-3"
-                >
-                  <label class="q-mb-sm block">Empleado seleccionado</label>
-                  <q-select
-                    v-model="tarea.empleado"
-                    :options="empleados"
-                    @filter="filtrarEmpleados"
-                    transition-show="scale"
-                    transition-hide="scale"
-                    options-dense
-                    dense
-                    outlined
-                    :option-label="
-                      (item) => item.nombres + ' ' + item.apellidos
-                    "
-                    :option-value="(item) => item.id"
-                    use-input
-                    input-debounce="0"
-                    emit-value
-                    map-options
-                    :disable="disabled"
-                    :error="!!v$.empleado.$errors.length"
-                    @blur="v$.empleado.$touch"
-                  >
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No hay resultados
-                        </q-item-section>
-                      </q-item>
-                    </template>
-
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.empleado.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-select>
-                </div>
-              </div>
+              <designar-responsable-trabajo
+                :disable="disabled"
+                :accion="accion"
+                :v$="v$"
+                :subtarea-inicial="tarea.subtarea"
+                @seleccionarGrupo="seleccionarGrupo"
+                @seleccionarEmpleado="seleccionarEmpleado"
+              ></designar-responsable-trabajo>
             </q-expansion-item>
 
             <q-expansion-item
@@ -886,154 +774,16 @@
             </q-expansion-item>
 
             <q-expansion-item
-              v-if="!tarea.tiene_subtareas"
+              v-if="!tarea.tiene_subtareas && tarea.subtarea.id"
               class="overflow-hidden q-mb-md expansion"
               label="Tiempos"
               header-class="text-bold bg-header-collapse"
               default-opened
             >
-              <div class="row q-col-gutter-sm q-pa-sm">
-                <div v-if="!tarea.tiene_subtareas" class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Estado de la tarea</label>
-                  <estados-subtareas
-                    :propsTable="{ value: 'CREADO' }"
-                  ></estados-subtareas>
-                </div>
-
-                <!-- Fecha de creacion -->
-                <div v-if="tarea.fecha_hora_creacion" class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Fecha y hora de creación</label>
-                  <q-input
-                    v-model="tarea.fecha_hora_creacion"
-                    outlined
-                    dense
-                    disable
-                  >
-                  </q-input>
-                </div>
-
-                <div v-if="tarea.fecha_hora_asignacion" class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Fecha y hora de asignación</label
-                  >
-                  <q-input
-                    v-model="tarea.fecha_hora_asignacion"
-                    outlined
-                    dense
-                    disable
-                  >
-                  </q-input>
-                </div>
-
-                <!-- Fecha de inicio -->
-                <div v-if="tarea.fecha_hora_ejecucion" class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Fecha y hora de ejecución del trabajo</label
-                  >
-                  <q-input
-                    v-model="tarea.fecha_hora_ejecucion"
-                    outlined
-                    dense
-                    disable
-                  >
-                  </q-input>
-                </div>
-
-                <!-- Fecha de finalizacion -->
-                <div
-                  v-if="tarea.fecha_hora_finalizacion"
-                  class="col-12 col-md-3"
-                >
-                  <label class="q-mb-sm block"
-                    >Fecha y hora de finalización de trabajo</label
-                  >
-                  <q-input
-                    v-model="tarea.fecha_hora_finalizacion"
-                    outlined
-                    dense
-                    disable
-                  >
-                  </q-input>
-                </div>
-
-                <!-- Técnico responsable -->
-                <div v-if="tarea.cantidad_dias" class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Cantidad de días</label>
-                  <q-input
-                    v-model="tarea.cantidad_dias"
-                    outlined
-                    disable
-                    dense
-                  ></q-input>
-                </div>
-
-                <!-- Fecha y hora de estado realizado -->
-                <div v-if="tarea.fecha_hora_realizado" class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Fecha y hora realizado</label>
-                  <q-input
-                    v-model="tarea.fecha_hora_realizado"
-                    outlined
-                    dense
-                    disable
-                  >
-                  </q-input>
-                </div>
-
-                <!-- Fecha y hora de estado suspendido -->
-                <div v-if="tarea.fecha_hora_suspendido" class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Fecha y hora de estado suspendido</label
-                  >
-                  <q-input
-                    v-model="tarea.fecha_hora_suspendido"
-                    outlined
-                    dense
-                    disable
-                  >
-                  </q-input>
-                </div>
-
-                <!-- Causa de la suspencion -->
-                <div v-if="tarea.causa_suspencion" class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Causa de la suspención</label>
-                  <q-input
-                    v-model="tarea.causa_suspencion"
-                    disable
-                    outlined
-                    type="textarea"
-                    autogrow
-                    dense
-                  ></q-input>
-                </div>
-
-                <!-- Fecha y hora de estado cancelacion -->
-                <div v-if="tarea.fecha_hora_cancelado" class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Fecha y hora de cancelación</label
-                  >
-                  <q-input
-                    v-model="tarea.fecha_hora_cancelado"
-                    outlined
-                    dense
-                    disable
-                  >
-                  </q-input>
-                </div>
-
-                <!-- Causa de la suspencion -->
-                <div
-                  v-if="tarea.fecha_hora_estado_cancelado"
-                  class="col-12 col-md-3"
-                >
-                  <label class="q-mb-sm block">Causa de la cancelación</label>
-                  <q-input
-                    v-model="tarea.causa_cancelacion"
-                    placeholder="Opcional"
-                    outlined
-                    dense
-                  ></q-input>
-                </div>
-              </div>
+              <tiempo-subtarea
+                :disable="disabled"
+                :subtarea="tarea.subtarea"
+              ></tiempo-subtarea>
             </q-expansion-item>
           </q-form>
         </q-tab-panel>

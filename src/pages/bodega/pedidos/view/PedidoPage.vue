@@ -151,7 +151,7 @@
             </q-select>
           </div>
           <!-- Requiere Fecha -->
-          <div
+          <!-- <div
             v-if="pedido.tiene_fecha_limite || accion === acciones.nuevo"
             class="col-12 col-md-3"
           >
@@ -164,9 +164,9 @@
               outlined
               dense
             ></q-checkbox>
-          </div>
+          </div> -->
           <!-- Fecha límite -->
-          <div v-if="pedido.tiene_fecha_limite" class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha limite</label>
             <q-input
               v-model="pedido.fecha_limite"
@@ -325,7 +325,7 @@
             </q-select>
           </div>
           <!-- Tiene observacion de autorizacion -->
-          <div v-if="esCoordinador || esActivosFijos" class="col-12 col-md-3">
+          <!-- <div v-if="esCoordinador || esActivosFijos" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.tiene_observacion_aut"
@@ -336,10 +336,10 @@
               outlined
               dense
             ></q-checkbox>
-          </div>
+          </div> -->
           <!-- observacion autorizacion -->
+            <!-- v-if="pedido.tiene_observacion_aut || pedido.observacion_aut" -->
           <div
-            v-if="pedido.tiene_observacion_aut || pedido.observacion_aut"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
