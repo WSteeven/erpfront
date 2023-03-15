@@ -128,6 +128,7 @@
       <div class="col-12">
         <designar-responsable-trabajo
           accion="NUEVO"
+          :subtarea-inicial="subtarea"
           @seleccionarGrupo="seleccionarGrupo"
           @seleccionarEmpleado="seleccionarEmpleado"
         ></designar-responsable-trabajo>

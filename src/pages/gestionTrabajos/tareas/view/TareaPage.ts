@@ -13,12 +13,13 @@ import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
+import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
-import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/view/TiempoSubtarea.vue'
 
 // Logica y controladores
 import { MotivoSuspendidoController } from 'gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
@@ -38,10 +39,10 @@ import { ComportamientoModalesTarea } from '../application/ComportamientoModales
 import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
 import { useFiltrosListadosTarea } from '../application/FiltrosListadosTarea'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { useBotonesTablaTarea } from '../application/BotonesTablaTarea'
 import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
-import { useBotonesTablaTarea } from '../application/BotonesTablaTarea'
 
 export default defineComponent({
   components: {
@@ -49,8 +50,9 @@ export default defineComponent({
     LabelAbrirModal,
     ModalesEntidad,
     TabLayoutFilterTabs,
-    EstadosSubtareas,
     EssentialTableTabs,
+    DesignarResponsableTrabajo,
+    TiempoSubtarea,
   },
   setup() {
     /*********
@@ -298,7 +300,27 @@ export default defineComponent({
       listarSubtareas({ tarea_id: tarea.id, estado: estado })
     }
 
+    function seleccionarGrupo(grupo_id) {
+      tarea.subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
+      tarea.subtarea.grupo = grupo_id
+      // tarea.subtarea.empleado = null
+
+      tarea.grupo = grupo_id
+      // tarea.empleado = null
+    }
+
+    function seleccionarEmpleado(empleado_id) {
+      tarea.subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
+      tarea.subtarea.empleado = empleado_id
+      // tarea.subtarea.grupo = null
+
+      tarea.empleado = empleado_id
+      //tarea.grupo = null
+    }
+
     return {
+      seleccionarGrupo,
+      seleccionarEmpleado,
       mixinSubtarea,
       filtrarSubtareas,
       btnAgregarSubtarea,

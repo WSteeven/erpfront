@@ -1,22 +1,22 @@
 // Dependencias
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { endpoints } from 'config/api'
-import { AxiosResponse } from 'axios'
 import { ref, reactive, defineComponent, onMounted } from 'vue'
 import { required, requiredIf } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
+import { AxiosResponse } from 'axios'
+import { endpoints } from 'config/api'
 
 // Componentes
 import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
 
 // Logica y controladores
-import { useSubtareaStore } from 'stores/subtarea'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
-import { useNotificaciones } from 'shared/notificaciones'
-import { maskFecha } from 'config/utils'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useSubtareaStore } from 'stores/subtarea'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: {
