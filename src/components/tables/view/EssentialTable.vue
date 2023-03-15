@@ -713,7 +713,7 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
-        -->
+        
         <q-chip v-if="props.value === 'SI'" class="bg-yellow-1">
           <q-icon
             name="bi-circle-fill"

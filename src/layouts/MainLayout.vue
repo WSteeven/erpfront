@@ -103,7 +103,7 @@
                       ><q-breadcrumbs
                         ><q-breadcrumbs-el
                           :label="notificacion.mensaje"
-                          :href="notificacion.link" /></q-breadcrumbs
+                          :to="notificacion.link" /></q-breadcrumbs
                     ></q-item-label>
                   </q-item-section>
 

@@ -123,8 +123,12 @@ export default defineComponent({
       sucursal: { required },
       responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico || esRRHH) },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
+      // fecha_limite: {
+      //   required: requiredIf(() => pedido.tiene_fecha_limite!),
+      //   fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
+      // },
       fecha_limite: {
-        required: requiredIf(() => pedido.tiene_fecha_limite!),
+        required: requiredIf(()=>accion.value===acciones.nuevo),
         fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
       },
     }
