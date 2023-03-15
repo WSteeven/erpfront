@@ -41,7 +41,7 @@
     <!-- wrap-cells -->
     <!--@virtual-scroll="onScroll" -->
     <template v-slot:no-data="{ message }">
-      <div class="full-width row flex-center text-grey-8 q-gutter-sm">
+      <div class="full-width row flex-center text-primary q-gutter-sm">
         <q-icon size="2em" name="bi-exclamation-triangle-fill" />
         <span> {{ message }} </span>
       </div>
@@ -713,7 +713,7 @@
           ></q-icon>
           PENDIENTE
         </q-chip>
-        
+
         <q-chip v-if="props.value === 'SI'" class="bg-yellow-1">
           <q-icon
             name="bi-circle-fill"

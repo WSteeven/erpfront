@@ -37,7 +37,8 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     visible: ({ entidad }) => !entidad.tiene_subtareas,//entidad.estado !== estadosTrabajos.CREADO,
     accion: ({ entidad }) => {
       subtareaStore.idSubtareaSeleccionada = entidad.subtarea.id
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_tarea
+      subtareaStore.codigoTareaSeleccionada = entidad.codigo_tarea
+      subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
       modales.abrirModalEntidad('PausasRealizadasPage')
     }
   }
@@ -133,7 +134,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     icono: 'bi-calendar-check',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_tarea
+      subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_tarea
       subtareaStore.fechaHoraPendiente = entidad.subtarea.fecha_hora_suspendido
       subtareaStore.motivoPendiente = entidad.subtarea.motivo_suspendido
       subtareaStore.idSubtareaSeleccionada = entidad.subtarea.id
@@ -155,7 +156,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     visible: () => true,
     accion: async ({ entidad }) => {
       subtareaStore.idSubtareaSeleccionada = entidad.id
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
+      subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_subtarea
       modales.abrirModalEntidad('GestorArchivoTrabajo')
     }
   } */

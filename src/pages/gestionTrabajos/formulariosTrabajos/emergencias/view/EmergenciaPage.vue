@@ -418,7 +418,8 @@
 
     <div>
       <div class="q-mb-md">
-        <essential-table
+        <trabajo-realizado></trabajo-realizado>
+        <!--<essential-table
           ref="refTrabajos"
           titulo="Cronología de trabajos realizados"
           :configuracionColumnas="columnasTrabajoRealizado"
@@ -432,11 +433,12 @@
           :accion1Header="agregarActividadRealizada"
           @eliminar="eliminarTrabajoRealizado"
           :modalMaximized="$q.screen.xs"
-        ></essential-table>
+        ></essential-table> -->
       </div>
 
       <div class="q-mb-md">
-        <essential-table
+        <tabla-observaciones></tabla-observaciones>
+        <!--<essential-table
           ref="refObservaciones"
           titulo="Observaciones / Mejoras / Pendientes"
           :configuracionColumnas="columnasObservacion"
@@ -450,7 +452,7 @@
           :accion1Header="agregarObservacion"
           @eliminar="eliminarObservacion"
           :modalMaximized="$q.screen.xs"
-        ></essential-table>
+        ></essential-table> -->
       </div>
 
       <div class="q-mb-md">

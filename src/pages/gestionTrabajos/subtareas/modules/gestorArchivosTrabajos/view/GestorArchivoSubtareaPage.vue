@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="col-12">
-      <b>Código de trabajo: </b>{{ codigoTrabajoSeleccionado }}
+      <b>Código de trabajo: </b>{{ codigoSubtareaSeleccionada }}
     </div>
     <div class="col-12 col-md-3 text-center q-mb-lg">
       <br />

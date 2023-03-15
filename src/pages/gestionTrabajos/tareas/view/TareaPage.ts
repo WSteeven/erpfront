@@ -102,6 +102,7 @@ export default defineComponent({
       clientes.value = listadosAuxiliares.clientes
       fiscalizadores.value = listadosAuxiliares.fiscalizadores
       coordinadores.value = listadosAuxiliares.coordinadores
+      tiposTrabajos.value = listadosAuxiliares.tiposTrabajos
       listadosAuxiliares.clientesFinales = []
     })
 
@@ -111,6 +112,7 @@ export default defineComponent({
     const { notificarAdvertencia } = useNotificaciones()
     const paraProyecto = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
+    const tab = ref('tarea')
 
     /*************
     * Validaciones
@@ -233,6 +235,7 @@ export default defineComponent({
     onConsultado(() => {
       filtrarSubtareas('')
 
+      if (!tarea.tiene_subtareas) tab.value = 'tarea'
       if (tarea.subtarea && !tarea.tiene_subtareas) {
         tarea.titulo = tarea.subtarea.titulo
         tarea.observacion = tarea.subtarea.observacion
@@ -367,7 +370,7 @@ export default defineComponent({
       configuracionColumnasTarea,
       mixin,
       mediosNotificacion,
-      tab: ref('tarea'),
+      tab,
       verificarEsVentana,
       grupos,
       filtrarGrupos,

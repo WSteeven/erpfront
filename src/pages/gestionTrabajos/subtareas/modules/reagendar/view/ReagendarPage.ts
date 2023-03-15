@@ -43,7 +43,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const codigoTrabajoSeleccionado = subtareaStore.codigoTrabajoSeleccionado
+    const codigoSubtareaSeleccionada = subtareaStore.codigoSubtareaSeleccionada
     const motivoPendiente = subtareaStore.motivoPendiente
     const fechaHoraPendiente = subtareaStore.fechaHoraPendiente
     const subtarea = reactive(new Subtarea())
@@ -121,7 +121,7 @@ export default defineComponent({
     return {
       v$,
       subtarea,
-      codigoTrabajoSeleccionado,
+      codigoSubtareaSeleccionada,
       motivoPendiente,
       fechaHoraPendiente,
       reagendar,

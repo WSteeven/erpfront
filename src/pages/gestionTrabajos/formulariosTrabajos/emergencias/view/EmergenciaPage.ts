@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasMaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasMaterialOcupadoFormulario'
-import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
-import { configuracionColumnasObservacion } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasObservacion'
+// import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
+// import { configuracionColumnasObservacion } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasObservacion'
 import { regiones, atenciones, tiposIntervenciones, causaIntervencion, accionesTabla, acciones } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
@@ -14,6 +14,8 @@ import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 
 // Componentes
+import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/trabajosRealizados/view/TrabajoRealizadoPage.vue'
+import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
 import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
@@ -22,7 +24,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 // Logica y controladores
 import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
+// import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
 import Observacion from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/Observacion'
 import { EmergenciaController } from '../infraestructure/EmergenciaController'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
@@ -37,6 +39,8 @@ export default defineComponent({
     SelectorImagen,
     ButtonSubmits,
     TablaDevolucionProducto,
+    TrabajoRealizado,
+    TablaObservaciones,
   },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -96,19 +100,19 @@ export default defineComponent({
     /***************************
     * Configuracion de columnas
     ****************************/
-    const columnasTrabajoRealizado = [
+    /* const columnasTrabajoRealizado = [
       ...configuracionColumnasTrabajoRealizado,
       accionesTabla
-    ]
+    ] */
 
-    const columnasObservacion = [...configuracionColumnasObservacion, accionesTabla]
+    //     const columnasObservacion = [...configuracionColumnasObservacion, accionesTabla]
 
     const columnasMaterial = [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
 
     /***************
      * Botones tabla
      ***************/
-    const agregarActividadRealizada: CustomActionTable = {
+    /* const agregarActividadRealizada: CustomActionTable = {
       titulo: 'Agregar ítem',
       icono: 'bi-arrow-bar-down',
       accion: async () => {
@@ -121,9 +125,9 @@ export default defineComponent({
         }
 
       }
-    }
+    } */
 
-    const agregarObservacion: CustomActionTable = {
+    /* const agregarObservacion: CustomActionTable = {
       titulo: 'Agregar ítem',
       icono: 'bi-arrow-bar-down',
       accion: () => {
@@ -135,7 +139,7 @@ export default defineComponent({
           refObservaciones.value.abrirModalEntidad(fila, emergencia.observaciones.length - 1)
         }
       }
-    }
+    } */
 
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad utilizada',
@@ -193,13 +197,13 @@ export default defineComponent({
     *************/
     const { prompt } = useNotificaciones()
 
-    const eliminarTrabajoRealizado = ({ posicion }) => {
+    /* const eliminarTrabajoRealizado = ({ posicion }) => {
       if (typeof emergencia.trabajo_realizado === 'object') emergencia.trabajo_realizado.splice(posicion, 1)
-    }
+    } */
 
-    const eliminarObservacion = ({ posicion }) => {
+    /* const eliminarObservacion = ({ posicion }) => {
       if (typeof emergencia.observaciones === 'object') emergencia.observaciones.splice(posicion, 1)
-    }
+    } */
 
     const causasIntervencion = computed(() => causaIntervencion.filter((causa: CausaIntervencion) => causa.categoria === emergencia.tipo_intervencion))
 
@@ -242,20 +246,20 @@ export default defineComponent({
       accion,
       causasIntervencion,
       // columnas
-      columnasTrabajoRealizado,
-      columnasObservacion,
+      // columnasTrabajoRealizado,
+      // columnasObservacion,
       columnasMaterial,
       // listados
       materiales,
-      agregarActividadRealizada,
-      agregarObservacion,
+      // agregarActividadRealizada,
+      // agregarObservacion,
       botonEditarCantidad,
       // config
       regiones,
       atenciones,
       tiposIntervenciones,
-      eliminarTrabajoRealizado,
-      eliminarObservacion,
+      // eliminarTrabajoRealizado,
+      // eliminarObservacion,
       guardar,
       editar,
       reestablecer,

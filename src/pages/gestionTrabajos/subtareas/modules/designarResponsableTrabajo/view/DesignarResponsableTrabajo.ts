@@ -40,14 +40,17 @@ export default defineComponent({
     const { cargarVista, obtenerListados } = mixin.useComportamiento()
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
 
-    /*watchEffect(() => {
-      if (props.subtareaInicial) {
+    watchEffect(() => {
+      /* if (props.subtareaInicial) {
         subtarea.hydrate(props.subtareaInicial)
-      }
-    })*/
-    subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
+      } */
+      subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
+      subtarea.grupo = props.subtareaInicial.grupo
+      subtarea.empleado = props.subtareaInicial.empleado
+    })
+    /* subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
     subtarea.grupo = props.subtareaInicial.grupo
-    subtarea.empleado = props.subtareaInicial.empleado
+    subtarea.empleado = props.subtareaInicial.empleado */
 
     cargarVista(async () => {
       await obtenerListados({

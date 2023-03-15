@@ -319,6 +319,10 @@
       header-class="text-bold bg-header-collapse"
       default-opened
     >
+      <tiempo-subtarea
+        :disable="disabled"
+        :subtarea="subtarea"
+      ></tiempo-subtarea>
     </q-expansion-item>
 
     <b v-if="accion === acciones.nuevo" class="block q-mb-md"

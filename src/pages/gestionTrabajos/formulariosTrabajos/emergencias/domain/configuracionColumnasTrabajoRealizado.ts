@@ -14,7 +14,7 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizad
   {
     name: 'actividad',
     field: 'actividad',
-    label: 'Acciones realizadas',
+    label: 'Acción realizadas',
     align: 'left',
     type: 'text',
   },

@@ -7,7 +7,7 @@
   >
     <q-card
       flat
-      class="bg-desenfoque"
+      class="bg-transparent rounded-card no-border"
       :class="{ 'q-py-md q-px-xl': !$q.screen.xs }"
     >
       <q-toolbar class="bg-body rounded-header">
@@ -79,7 +79,7 @@
           <div
             v-for="field in fields"
             :key="field.field"
-            class="col-12 col-md-3 q-mb-sm"
+            :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }"
           >
             <label class="block q-mb-sm">{{ field.label }}</label>
             <q-input

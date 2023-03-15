@@ -1,7 +1,8 @@
 <template>
   <div class="col-12 q-mb-lg">
-    <b>Código de trabajo: </b>{{ codigoTrabajoSeleccionado }}
+    <b>{{ labelCodigo }} </b>{{ codigo }}
   </div>
+
   <essential-table
     titulo="Pausas realizadas"
     :configuracionColumnas="(configuracionColumnasPausas as any)"
@@ -19,15 +20,15 @@ import { configuracionColumnasPausas } from '../domain/configuracionColumnasPaus
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { useSubtareaStore } from 'stores/subtarea'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useSubtareaStore } from 'stores/subtarea'
 
 // Se declara el props porque asi está en ModalEntidad
 defineProps({
@@ -48,13 +49,22 @@ const subtareaStore = useSubtareaStore()
 /************
  * Variables
  ************/
-const codigoTrabajoSeleccionado = subtareaStore.codigoTrabajoSeleccionado
+const tareaTieneSubtareas = subtareaStore.tareaTieneSubtareas
+const codigoTareaSeleccionada = subtareaStore.codigoTareaSeleccionada
+const codigoSubtareaSeleccionada = subtareaStore.codigoSubtareaSeleccionada
 const listado = ref([])
+
+const labelCodigo = computed(
+  () => 'Código de ' + (!tareaTieneSubtareas ? 'tarea: ' : 'subtarea: ')
+)
+
+const codigo = computed(() =>
+  !tareaTieneSubtareas ? codigoTareaSeleccionada : codigoSubtareaSeleccionada
+)
 
 /*************
  * Funciones
  *************/
-
 async function obtenerPausas() {
   const statusEssentialLoading = new StatusEssentialLoading()
   statusEssentialLoading.activar()

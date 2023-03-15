@@ -29,6 +29,7 @@ import { useQuasar } from 'quasar'
 
 // Componentes
 import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
+import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/view/TiempoSubtarea.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -55,7 +56,7 @@ import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo },
+  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea },
   emits: ['cerrar-modal', 'guardado'],
   props: {
     mixinModal: {
