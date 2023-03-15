@@ -45,6 +45,9 @@ export default defineComponent({
         subtarea.hydrate(props.subtareaInicial)
       }
     })*/
+    subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
+    subtarea.grupo = props.subtareaInicial.grupo
+    subtarea.empleado = props.subtareaInicial.empleado
 
     cargarVista(async () => {
       await obtenerListados({
@@ -118,7 +121,7 @@ export default defineComponent({
       entidadSeleccionada,
       cancelarDesignacion,
       // designarLiderTemporal,
-      designarLiderDefinitivo,
+      designarLider,
       asignarLider,
     } = useBotonesTablaDesignacionTrabajo(empleadosSeleccionados, data)
 
@@ -152,7 +155,7 @@ export default defineComponent({
       entidadSeleccionada,
       cancelarDesignacion,
       // designarLiderTemporal,
-      designarLiderDefinitivo,
+      designarLider,
       asignarLider,
       // Orquesatdor
       refListadoSeleccionableEmpleadosGrupo,

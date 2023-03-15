@@ -167,7 +167,7 @@
         estilos="margin-bottom: 14px;"
         :configuracionColumnas="columnasEmpleado"
         :datos="empleadosSeleccionados"
-        :accion2Header="designarLiderDefinitivo"
+        :accion2Header="designarLider"
         :accion5Header="cancelarDesignacion"
         :accion1="quitarEmpleado"
         :mostrarBotones="false"
