@@ -60,11 +60,6 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-      fecha: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
       saldo_anterior: {
         required: true,
         minLength: 3,
