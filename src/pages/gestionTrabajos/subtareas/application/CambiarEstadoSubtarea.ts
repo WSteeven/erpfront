@@ -11,48 +11,48 @@ export class CambiarEstadoSubtarea {
     this.axios = AxiosHttpRepository.getInstance()
   }
 
-  async asignar(idTrabajo: number) {
-    return this.solicitud('/asignar', idTrabajo)
+  async asignar(idSubtarea: number) {
+    return this.solicitud('/asignar', idSubtarea)
   }
 
-  async agendar(idTrabajo: number) {
-    return this.solicitud('/agendar', idTrabajo)
+  async agendar(idSubtarea: number) {
+    return this.solicitud('/agendar', idSubtarea)
   }
 
-  async ejecutar(idTrabajo: number) {
-    return this.solicitud('/ejecutar', idTrabajo)
+  async ejecutar(idSubtarea: number) {
+    return this.solicitud('/ejecutar', idSubtarea)
   }
 
-  async realizar(idTrabajo: number) {
-    return this.solicitud('/realizar', idTrabajo)
+  async realizar(idSubtarea: number) {
+    return this.solicitud('/realizar', idSubtarea)
   }
 
-  async finalizar(idTrabajo: number) {
-    return this.solicitud('/finalizar', idTrabajo)
+  async finalizar(idSubtarea: number) {
+    return this.solicitud('/finalizar', idSubtarea)
   }
 
-  async pausar(idTrabajo: number, idMotivoPausa: number) {
-    return this.solicitud('/pausar', idTrabajo, { motivo_pausa_id: idMotivoPausa })
+  async pausar(idSubtarea: number, idMotivoPausa: number) {
+    return this.solicitud('/pausar', idSubtarea, { motivo_pausa_id: idMotivoPausa })
   }
 
-  async reanudar(idTrabajo: number) {
-    return this.solicitud('/reanudar', idTrabajo)
+  async reanudar(idSubtarea: number) {
+    return this.solicitud('/reanudar', idSubtarea)
   }
 
-  async suspender(idTrabajo: number, idMotivoSuspendido: number) {
-    return this.solicitud('/suspender', idTrabajo, { motivo_suspendido_id: idMotivoSuspendido })
+  async suspender(idSubtarea: number, idMotivoSuspendido: number) {
+    return this.solicitud('/suspender', idSubtarea, { motivo_suspendido_id: idMotivoSuspendido })
   }
 
-  async pendiente(idTrabajo: number, idMotivoPendiente: string) {
-    return this.solicitud('/pendiente', idTrabajo, { motivo_pendiente_id: idMotivoPendiente })
+  async pendiente(idSubtarea: number, idMotivoPendiente: string) {
+    return this.solicitud('/pendiente', idSubtarea, { motivo_pendiente_id: idMotivoPendiente })
   }
 
-  async cancelar(idTrabajo: number, idMotivoCancelado: number) {
-    return this.solicitud('/cancelar', idTrabajo, { motivo_suspendido_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
+  async cancelar(idSubtarea: number, idMotivoCancelado: number) {
+    return this.solicitud('/cancelar', idSubtarea, { motivo_suspendido_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
   }
 
-  async reagendar(idTrabajo: number, nuevaFecha: string) {
-    return this.solicitud('/reagendar', idTrabajo, { nueva_fecha: nuevaFecha })
+  async reagendar(idSubtarea: number, nuevaFecha: string) {
+    return this.solicitud('/reagendar', idSubtarea, { nueva_fecha: nuevaFecha })
   }
 
   async solicitud(accion, tarea, data?) {

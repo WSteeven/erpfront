@@ -8,7 +8,7 @@ import { acciones, rolesSistema } from 'config/utils'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { ComputedRef, ref, Ref } from 'vue'
 
-export const useBotonesTablaDesignacionTrabajo = (empleadosSeleccionados: Ref<Empleado[]>, data: ComputedRef) => {
+export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<Empleado[]>, data: ComputedRef) => {
   const refEmpleadosGrupo = ref()
   const empleadoGrupoQuitar = ref()
   const asignarLider = ref(false)

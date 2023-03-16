@@ -13,7 +13,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { useOrquestadorSelectorEmpleadosGrupo } from 'pages/gestionTrabajos/subtareas/application/useOrquestadorSelectorEmpleadosGrupo'
-import { useBotonesTablaDesignacionTrabajo } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaDesignacionTrabajo'
+import { useBotonesTablaDesignacionSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaDesignacionSubtarea'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -126,7 +126,7 @@ export default defineComponent({
       // designarLiderTemporal,
       designarLider,
       asignarLider,
-    } = useBotonesTablaDesignacionTrabajo(empleadosSeleccionados, data)
+    } = useBotonesTablaDesignacionSubtarea(empleadosSeleccionados, data)
 
     /*****************
      * Orquestadores
