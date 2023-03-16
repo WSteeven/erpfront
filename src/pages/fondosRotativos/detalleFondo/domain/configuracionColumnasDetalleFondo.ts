@@ -17,20 +17,6 @@ export const configuracionColumnasDetalleFondo: ColumnConfig<DetalleFondo>[] = [
     sortable: true
   },
   {
-    name: 'transcriptor',
-    field: 'transcriptor',
-    label: 'Transcriptor',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'fecha_trans',
-    field: 'fecha_trans',
-    label: 'Fecha',
-    align: 'left',
-    sortable: true
-  },
-  {
     name: 'estatus',
     field: 'estatus',
     label: 'Estatus',

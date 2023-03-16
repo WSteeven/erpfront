@@ -231,7 +231,7 @@
           </div>
           <!--Tiene Factura-->
           <div class="col-12 col-md-3">
-            <q-checkbox v-model="esFactura" label="¿Tiene Factura?" />
+            <q-checkbox v-model="esFactura" label="¿Tiene Factura?" @update:model-value="existeComprobante()" />
           </div>
           <!-- Factura -->
           <div class="col-12 col-md-3" v-if="esFactura">
@@ -279,7 +279,7 @@
             </q-input>
           </div>
           <!-- RUC -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="esFactura">
             <label class="q-mb-sm block">RUC</label>
             <q-input
               v-model="gasto.ruc"

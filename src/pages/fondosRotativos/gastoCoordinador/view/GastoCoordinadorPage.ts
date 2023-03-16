@@ -1,5 +1,5 @@
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
-import { Gasto } from '../domain/Gasto'
+import {  GastoCoordinadores } from '../domain/GastoCoordinadores'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -10,7 +10,7 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { GastoController } from '../infrestructure/GastoController'
+import { GastoCoordinadoresController } from '../infrestructure/GastoCoordinadoresController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
@@ -19,7 +19,6 @@ import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/in
 import { validarIdentificacion } from 'shared/validadores/validaciones'
 import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'tareas/infraestructure/TareaController'
-import { GastoPusherEvent } from '../application/GastoPusherEvent'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
@@ -36,7 +35,7 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Gasto, new GastoController())
+    const mixin = new ContenedorSimpleMixin(GastoCoordinadores, new GastoCoordinadoresController())
     const {
       entidad: gasto,
       disabled,
@@ -60,7 +59,7 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-      fecha_viat: {
+      fecha_gasto: {
         required: true,
         minLength: 3,
         maxLength: 50,
@@ -68,51 +67,7 @@ export default defineComponent({
       lugar: {
         required: true,
       },
-      num_tarea: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
-      },
-      subTarea: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
-      },
-      proyecto: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
-      },
-      ruc: {
-        required: true,
-        minLength: 13,
-        maxLength: 13,
-        helper: helpers.withMessage(
-          'El RUC ingresado es Invalido',
-          validarIdentificacion
-        ),
-      },
-      factura: {
-        required: false,
-        minLength: 3,
-        maxLength: 15,
-      },
-      numComprobante: {
-        required: false,
-        minLength: 3,
-        maxLength: 15,
-      },
       aut_especial: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      detalle: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      sub_detalle: {
         required: true,
         minLength: 3,
         maxLength: 50,
@@ -127,17 +82,10 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
+      motivo:{
+        required: true,
+      },
       total: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      comprobante1: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      comprobante2: {
         required: true,
         minLength: 3,
         maxLength: 50,
@@ -151,15 +99,8 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, gasto)
     setValidador(v$.value)
-
     const cantones = ref([])
-    const detalles = ref([])
-    const sub_detalles = ref([])
-    const proyectos = ref([])
     const autorizacionesEspeciales = ref([])
-    const tareas = ref([])
-    const subTareas = ref([])
-    const esFactura = ref(true)
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -193,14 +134,9 @@ export default defineComponent({
         },
       })
       cantones.value = listadosAuxiliares.cantones
-      detalles.value = listadosAuxiliares.detalles
       autorizacionesEspeciales.value =
         listadosAuxiliares.autorizacionesEspeciales
-      sub_detalles.value = listadosAuxiliares.sub_detalles
-      listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
-      proyectos.value = listadosAuxiliares.proyectos
-      tareas.value = listadosAuxiliares.tareas
-      subTareas.value = listadosAuxiliares.subTareas
+
     })
 
     /*********
@@ -224,25 +160,7 @@ export default defineComponent({
           )
       })
     }
-    // - Filtro Detalles
-
-    function filtrarDetalles(val, update) {
-      if (val === '') {
-        update(() => {
-          detalles.value = listadosAuxiliares.detalles
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        detalles.value = listadosAuxiliares.detalles.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    // - Filtro Lugares
-
+      // - Filtro Lugares
     function filtrarCantones(val, update) {
       if (val === '') {
         update(() => {
@@ -257,98 +175,13 @@ export default defineComponent({
         )
       })
     }
-    /**Filtro de Sub detalles */
-    function filtarSubdetalles(val, update) {
-      if (val === '') {
-        update(() => {
-          sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-            (v) => v.id_detalle_viatico == gasto.detalle
-          )
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-          (v) => v.detalle.indexOf(needle) > -1
-        )
-      })
-    }
-    /**Filtro de proyectos */
-    function filtrarProyectos(val, update) {
-      if (val === '') {
-        update(() => {
-          proyectos.value = listadosAuxiliares.proyectos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        proyectos.value = listadosAuxiliares.proyectos.filter(
-          (v) =>
-            v.codigo_proyecto.toLowerCase().indexOf(needle) > -1 ||
-            v.nombre.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-/**Filtro de Tareas */
-    function filtrarTareas(val, update) {
-      if (gasto.proyecto == 0) {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == null
-          )
-        })
-        return
-      }
-      if (val === '') {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == gasto.proyecto
-          )
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tareas.value = listadosAuxiliares.tareas.filter(
-          (v) =>
-            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
-            v.detalle.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-    listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
-    listadosAuxiliares.subTareas.unshift({ id: 0, titulo: 'Sin Subtarea' })
-    const listadoTareas = computed(() => listadosAuxiliares.tareas.filter((tarea: Tarea) => tarea.proyecto_id === gasto.proyecto ||  tarea.id==0))
-    const listadoSubTareas = computed(() => listadosAuxiliares.subTareas.filter((subtarea: Subtarea) => subtarea.tarea_id === gasto.num_tarea || subtarea.id==0))
-    const listadoSubdetalles = computed(() => listadosAuxiliares.sub_detalles.filter((subdetalle: SubDetalleFondo) => subdetalle.id_detalle_viatico === gasto.detalle))
-
-    /*********
-    * Pusher
-    *********/
-
-    const gastoPusherEvent = new GastoPusherEvent()
-    gastoPusherEvent.start()
 
     watchEffect(() => (gasto.total = gasto.cantidad! * gasto.valor_u!))
-      function existeComprobante() {
-        gasto.factura= null
-       if(esFactura.value == false){
-        gasto.ruc= '999999999999'
-      }else{
-        gasto.ruc= null
-      }
-    }
+
     return {
       mixin,
       gasto,
       cantones,
-      detalles,
-      esFactura,
-      sub_detalles,
-      proyectos,
-      tareas,
       disabled,
       accion,
       v$,
@@ -357,16 +190,6 @@ export default defineComponent({
       watchEffect,
       filtrarAutorizacionesEspeciales,
       filtrarCantones,
-      filtrarDetalles,
-      filtarSubdetalles,
-      filtrarProyectos,
-      existeComprobante,
-      filtrarTareas,
-      listadosAuxiliares,
-      listadoSubdetalles,
-      listadoSubTareas,
-      mostrarListado,
-      listadoTareas,
     }
   },
 })

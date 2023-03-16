@@ -420,6 +420,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path:'/gasto-coordinador',
+        name:'gasto_coordinador',
+        component: () =>
+          import('pages/fondosRotativos/gastoCoordinador/view/GastoCoordinadorPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/autorizar-gasto',
         name: 'autorizar_gasto',
         component: () =>

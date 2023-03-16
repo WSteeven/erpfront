@@ -260,9 +260,21 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Gastos',
-          link: 'gasto',
           icon: 'bi-circle',
-          can: store.can('puede.ver.gasto'),
+          children: [
+            {
+              title: 'Registrar Gastos',
+              link: 'gasto',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.gasto'),
+            },
+            {
+              title: 'Registrar Gastos Coordinadores',
+              link: 'gasto-coordinador',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.gasto_coordinador'),
+            },
+          ],
         },
         {
           title: 'Detalle Fondos',
