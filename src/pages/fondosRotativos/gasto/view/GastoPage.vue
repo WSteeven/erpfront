@@ -24,6 +24,7 @@
               error-message="Debes seleccionar un canton"
               use-input
               input-debounce="0"
+              @blur="v$.lugar.$touch"
               @filter="filtrarCantones"
               :option-value="(v) => v.id"
               :option-label="(v) => v.canton"
@@ -53,6 +54,7 @@
               placeholder="Obligatorio"
               :error="!!v$.fecha_viat.$errors.length"
               :disable="disabled"
+              @blur="v$.fecha_viat.$touch"
               outlined
               dense
             >
@@ -106,6 +108,7 @@
               error-message="Debes seleccionar un canton"
               use-input
               input-debounce="0"
+              @blur="v$.proyecto.$touch"
               @filter="filtrarProyectos"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
@@ -151,6 +154,7 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.num_tarea.$errors.length"
+              @blur="v$.num_tarea.$touch"
               error-message="Debes seleccionar una Tarea"
               use-input
               input-debounce="0"
@@ -197,6 +201,7 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.subTarea.$errors.length"
+              @blur="v$.subTarea.$touch"
               error-message="Debes seleccionar una Tarea"
               use-input
               input-debounce="0"
@@ -260,7 +265,7 @@
             <label class="q-mb-sm block">Numero de Comprobante</label>
             <q-input
               v-model="gasto.numComprobante"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               type="number"
               :disable="disabled"
               :error="!!v$.numComprobante.$errors.length"
@@ -377,6 +382,7 @@
               error-message="Debes seleccionar un canton"
               use-input
               input-debounce="0"
+              @blur="v$.aut_especial.$touch"
               @filter="filtrarAutorizacionesEspeciales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.usuario"
@@ -414,6 +420,7 @@
               error-message="Debes seleccionar un canton"
               use-input
               input-debounce="0"
+              @blur="v$.detalle.$touch"
               @filter="filtrarDetalles"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"
@@ -448,6 +455,7 @@
               dense
               use-chips
               outlined
+              @blur="v$.sub_detalle.$touch"
               :error="!!v$.sub_detalle.$errors.length"
               error-message="Debes seleccionar uno o varios sub_detalle"
               :option-value="(v) => v.id"
@@ -491,6 +499,7 @@
             <label class="q-mb-sm block">Comprobante 1</label>
             <selector-imagen
               :imagen="gasto.comprobante1"
+              @blur="v$.comprobante1.$touch"
               @update:modelValue="(data) => (gasto.comprobante1 = data)"
             >
             </selector-imagen>
@@ -501,6 +510,7 @@
             <label class="q-mb-sm block">Comprobante 2</label>
             <selector-imagen
               :imagen="gasto.comprobante2"
+              @blur="v$.comprobante2.$touch"
               @update:modelValue="(data) => (gasto.comprobante2 = data)"
             >
             </selector-imagen>
@@ -514,16 +524,10 @@
               placeholder="Obligatorio"
               type="textarea"
               :disable="disabled"
-              :error="!!v$.observacion.$errors.length"
-              @blur="v$.observacion.$touch"
+              autogrow
               outlined
               dense
             >
-              <template v-slot:error>
-                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-input>
           </div>
         </div>

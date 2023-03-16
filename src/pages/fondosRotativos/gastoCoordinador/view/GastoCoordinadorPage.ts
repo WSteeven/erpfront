@@ -1,4 +1,4 @@
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import {  defineComponent,ref } from 'vue'
 import {  GastoCoordinadores } from '../domain/GastoCoordinadores'
 
 // Componentes
@@ -8,22 +8,13 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { helpers } from 'shared/i18n-validators'
+import { required,maxLength, minLength } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoCoordinadoresController } from '../infrestructure/GastoCoordinadoresController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
-import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
-import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
-import { validarIdentificacion } from 'shared/validadores/validaciones'
-import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
-import { TareaController } from 'tareas/infraestructure/TareaController'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
-import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
-import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
-import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
-import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -60,40 +51,25 @@ export default defineComponent({
      **************/
     const reglas = {
       fecha_gasto: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength:minLength(3),
+        maxLength: maxLength(50),
       },
       lugar: {
-        required: true,
+        required
       },
-      aut_especial: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      cantidad: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      valor_u: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+      monto: {
+        required,
+        minLength:minLength(3),
+        maxLength: maxLength(50),
       },
       motivo:{
-        required: true,
-      },
-      total: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       observacion: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
     }
 
@@ -108,30 +84,6 @@ export default defineComponent({
           controller: new CantonController(),
           params: { campos: 'id,canton' },
         },
-        detalles: {
-          controller: new DetalleFondoController(),
-          params: { campos: 'id,descripcion' },
-        },
-        autorizacionesEspeciales: {
-          controller: new UsuarioAutorizadoresController(),
-          params: { campos: 'id,name' },
-        },
-        sub_detalles: {
-          controller: new SubDetalleFondoController(),
-          params: { campos: 'id,descripcion' },
-        },
-        proyectos: {
-          controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto' },
-        },
-        tareas: {
-          controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
-        },
-        subTareas: {
-          controller: new SubtareaController(),
-          params: { campos: 'id,codigo_sub_tarea,titulo,tarea_id' },
-        },
       })
       cantones.value = listadosAuxiliares.cantones
       autorizacionesEspeciales.value =
@@ -142,24 +94,7 @@ export default defineComponent({
     /*********
      * Filtros
      **********/
-    // - Filtro AUTORIZACIONES ESPECIALES
 
-    function filtrarAutorizacionesEspeciales(val, update) {
-      if (val === '') {
-        update(() => {
-          autorizacionesEspeciales.value =
-            listadosAuxiliares.autorizacionesEspeciales
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        autorizacionesEspeciales.value =
-          listadosAuxiliares.autorizacionesEspeciales.filter(
-            (v) => v.usuario.toLowerCase().indexOf(needle) > -1
-          )
-      })
-    }
       // - Filtro Lugares
     function filtrarCantones(val, update) {
       if (val === '') {
@@ -176,8 +111,6 @@ export default defineComponent({
       })
     }
 
-    watchEffect(() => (gasto.total = gasto.cantidad! * gasto.valor_u!))
-
     return {
       mixin,
       gasto,
@@ -187,8 +120,6 @@ export default defineComponent({
       v$,
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
-      watchEffect,
-      filtrarAutorizacionesEspeciales,
       filtrarCantones,
     }
   },

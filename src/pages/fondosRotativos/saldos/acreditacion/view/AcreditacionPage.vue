@@ -8,6 +8,7 @@
             <label class="q-mb-sm block">Usuario</label>
             <q-select v-model="acreditacion.usuario" :options="usuarios" transition-show="jump-up" transition-hide="jump-down"
               options-dense dense outlined :disable="disabled" :readonly="disabled" :error="!!v$.usuario.$errors.length"
+              @blur="v$.usuario.$touch"
               error-message="Debes seleccionar un usuario" use-input input-debounce="0" @filter="filtrarUsuarios" @update:model-value="saldo_anterior()"
               :option-value="(v) => v.usuario_id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
               <template v-slot:error>
@@ -31,6 +32,7 @@
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.tipo_fondo.$errors.length" error-message="Debes seleccionar un tipo de fondo" use-input
               input-debounce="0" @filter="filtrarTiposFondos" :option-value="(v) => v.id"
+              @blur="v$.tipo_fondo.$touch"
               :option-label="(v) => v.descripcion" emit-value map-options>
               <template v-slot:error>
                 <div v-for="error of v$.tipo_fondo.$errors" :key="error.$uid">
@@ -52,6 +54,7 @@
             <q-select v-model="acreditacion.tipo_saldo" :options="tiposSaldos" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.tipo_saldo.$errors.length" error-message="Debes seleccionar un tipo de saldo" use-input
+              @blur="v$.tipo_saldo.$touch"
               input-debounce="0" @filter="filtrarTiposSaldos" :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion" emit-value map-options>
               <template v-slot:error>

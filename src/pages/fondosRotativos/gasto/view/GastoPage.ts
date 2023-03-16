@@ -8,7 +8,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { helpers } from 'shared/i18n-validators'
+import { helpers, maxLength,minLength,required } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
@@ -61,91 +61,72 @@ export default defineComponent({
      **************/
     const reglas = {
       fecha_viat: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
       lugar: {
-        required: true,
+        required,
       },
       num_tarea: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
+        required,
       },
       subTarea: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
+        required
       },
       proyecto: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
+        required
       },
       ruc: {
-        required: true,
-        minLength: 13,
-        maxLength: 13,
+        required,
+        minLength: minLength(13),
+        maxLength: maxLength(13),
         helper: helpers.withMessage(
           'El RUC ingresado es Invalido',
           validarIdentificacion
         ),
       },
       factura: {
-        required: false,
-        minLength: 3,
-        maxLength: 15,
+        minLength: minLength(3),
+        maxLength: maxLength(15),
       },
       numComprobante: {
-        required: false,
-        minLength: 3,
-        maxLength: 15,
+        minLength: minLength(3),
+        maxLength: maxLength(15),
       },
       aut_especial: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       detalle: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       sub_detalle: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       cantidad: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
       valor_u: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
       total: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
       comprobante1: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
       comprobante2: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      observacion: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
     }
 

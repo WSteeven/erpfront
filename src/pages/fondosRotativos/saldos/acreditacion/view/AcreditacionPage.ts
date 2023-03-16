@@ -1,10 +1,11 @@
-import { defineComponent, reactive ,ref, watchEffect} from 'vue'
+import { defineComponent, ref, watchEffect} from 'vue'
 import { Acreditacion } from '../domain/Acreditacion'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
+import { required,maxLength, minLength } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AcreditacionController } from '../infrestructure/AcreditacionController'
 import { configuracionColumnasAcreditacion } from '../domain/configuracionColumnasAcreditacion'
@@ -14,7 +15,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { TipoSaldoController } from 'pages/fondosRotativos/tipo_saldo/infrestructure/TipoSaldoController'
-import axios, { AxiosResponse, Method, ResponseType } from 'axios'
+import axios from 'axios'
 
 
 export default defineComponent({
@@ -36,49 +37,43 @@ export default defineComponent({
     **************/
     const reglas = {
       usuario: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       tipo_fondo: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       tipo_saldo: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       id_saldo: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
       descripcion_acreditacion: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength:minLength(3),
+        maxLength: maxLength(50),
       },
       saldo_anterior: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
      saldo_depositado: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
       monto: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
       saldo_actual: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(50),
       },
     }
     const v$ = useVuelidate(reglas, acreditacion)
