@@ -5,6 +5,6 @@ import { GastoCoordinadores } from "../domain/GastoCoordinadores";
 
 export class GastoCoordinadoresController extends TransaccionSimpleController<GastoCoordinadores>{
   constructor() {
-    super(endpoints.gastos)
+    super(endpoints.gasto_coordinador)
   }
 }

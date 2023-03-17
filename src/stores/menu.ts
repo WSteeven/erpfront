@@ -531,6 +531,12 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-person-fill-check',
       can: true //store.can('puede.ver.autorizaciones') && store.esActivosFijos,
     },
+    {
+      title: 'Motivo Gasto',
+      link: 'motivo-gasto',
+      icon: 'bi-circle',
+      can: store.can('puede.ver.motivo_gasto'),
+    },
     /* {
       header: 'Sistema',
     },

@@ -14,6 +14,7 @@ import { GastoCoordinadoresController } from '../infrestructure/GastoCoordinador
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { MotivoGastoController } from 'pages/fondosRotativos/MotivoGasto/infrestructure/MotivoGastoController'
 
 
 export default defineComponent({
@@ -50,32 +51,26 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-      fecha_gasto: {
-        required,
-        minLength:minLength(3),
-        maxLength: maxLength(50),
-      },
       lugar: {
         required
       },
       monto: {
         required,
-        minLength:minLength(3),
-        maxLength: maxLength(50),
       },
       motivo:{
         required,
       },
       observacion: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
+        minLength: minLength(100),
+        maxLength: maxLength(250),
       },
     }
 
     const v$ = useVuelidate(reglas, gasto)
     setValidador(v$.value)
     const cantones = ref([])
+    const motivos = ref([])
     const autorizacionesEspeciales = ref([])
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -84,11 +79,13 @@ export default defineComponent({
           controller: new CantonController(),
           params: { campos: 'id,canton' },
         },
+        motivos: {
+          controller: new MotivoGastoController(),
+          params: { campos: 'id,nombre' },
+        },
       })
       cantones.value = listadosAuxiliares.cantones
-      autorizacionesEspeciales.value =
-        listadosAuxiliares.autorizacionesEspeciales
-
+      motivos.value = listadosAuxiliares.motivos
     })
 
     /*********
@@ -110,17 +107,33 @@ export default defineComponent({
         )
       })
     }
+    function filtarMotivos(val, update) {
+      if (val === '') {
+        update(() => {
+          motivos.value = listadosAuxiliares.motivos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        motivos.value = listadosAuxiliares.motivos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
 
     return {
       mixin,
       gasto,
       cantones,
+      motivos,
       disabled,
       accion,
       v$,
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
       filtrarCantones,
+      filtarMotivos
     }
   },
 })

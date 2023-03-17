@@ -62,8 +62,6 @@ export default defineComponent({
     const reglas = {
       fecha_viat: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
       lugar: {
         required,
@@ -78,7 +76,6 @@ export default defineComponent({
         required
       },
       ruc: {
-        required,
         minLength: minLength(13),
         maxLength: maxLength(13),
         helper: helpers.withMessage(
@@ -105,28 +102,18 @@ export default defineComponent({
       },
       cantidad: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
       valor_u: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
       total: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
       comprobante1: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
       comprobante2: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
     }
 
@@ -316,7 +303,7 @@ export default defineComponent({
       function existeComprobante() {
         gasto.factura= null
        if(esFactura.value == false){
-        gasto.ruc= '999999999999'
+        gasto.ruc= '9999999999999'
       }else{
         gasto.ruc= null
       }

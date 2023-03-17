@@ -47,33 +47,12 @@ export default defineComponent({
       },
       id_saldo: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
       descripcion_acreditacion: {
         required,
-        minLength:minLength(3),
-        maxLength: maxLength(50),
-      },
-      saldo_anterior: {
-        required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
-      },
-     saldo_depositado: {
-        required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
       monto: {
         required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
-      },
-      saldo_actual: {
-        required,
-        minLength: minLength(3),
-        maxLength: maxLength(50),
       },
     }
     const v$ = useVuelidate(reglas, acreditacion)
