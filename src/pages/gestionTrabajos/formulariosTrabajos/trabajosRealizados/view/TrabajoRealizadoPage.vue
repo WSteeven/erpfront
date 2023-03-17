@@ -50,7 +50,7 @@ const columnasTrabajoRealizado: any = [
  * Funciones
  ************/
 const agregarActividadRealizada: CustomActionTable = {
-  titulo: 'Agregar ítem',
+  titulo: 'Agregar actividad',
   icono: 'bi-arrow-bar-down',
   accion: async () => {
     const fila: TrabajoRealizado = new TrabajoRealizado()

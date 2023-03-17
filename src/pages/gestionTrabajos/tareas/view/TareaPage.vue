@@ -9,10 +9,9 @@
     :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'"
     :tabOptions="tabOptionsEstadosSubtareas"
     :accion1="btnFormularioTarea"
-    :accion2="btnVerPausasTarea"
-    :accion3="btnReagendarTarea"
-    :accion4="botonCancelar"
-    :accion5="btnFinalizarTarea"
+    :accion2="btnReagendarTarea"
+    :accion3="botonCancelar"
+    :accion4="btnFinalizarTarea"
   >
     <template #formulario>
       <q-tabs
@@ -412,7 +411,12 @@
                     @filter="filtrarTiposTrabajos"
                     transition-show="scale"
                     transition-hide="scale"
-                    hint="Seleccione primero una tarea"
+                    :hint="
+                      'Seleccione primero un' +
+                      (tarea.para_cliente_proyecto === 'PARA_PROYECTO'
+                        ? ' proyecto'
+                        : ' cliente corporativo')
+                    "
                     options-dense
                     dense
                     outlined
@@ -780,16 +784,27 @@
               header-class="text-bold bg-header-collapse"
               default-opened
             >
-              <tiempo-subtarea
-                :disable="disabled"
-                :subtarea="tarea.subtarea"
-              ></tiempo-subtarea>
+              <div class="q-pa-md q-gutter-y-md">
+                <tiempo-subtarea
+                  :disable="disabled"
+                  :subtarea="tarea.subtarea"
+                ></tiempo-subtarea>
+
+                <tabla-subtarea-pausas
+                  :id-subtarea="tarea.subtarea.id"
+                ></tabla-subtarea-pausas>
+
+                <tabla-subtarea-suspendida
+                  :id-subtarea="tarea.subtarea.id"
+                ></tabla-subtarea-suspendida>
+              </div>
             </q-expansion-item>
           </q-form>
         </q-tab-panel>
 
         <q-tab-panel name="subtareas">
           <essential-table-tabs
+            titulo="Subtareas"
             :configuracionColumnas="columnasSubtareas"
             :datos="subtareas"
             :tabOptions="tabOptionsEstadosSubtareas"
@@ -797,8 +812,7 @@
             :accion2="botonCancelar"
             :accion3="botonReagendar"
             :accion4="botonFormulario"
-            :accion5="botonVerPausas"
-            :accion6="botonFinalizar"
+            :accion5="botonFinalizar"
             :accion1Header="btnAgregarSubtarea"
             separador="cell"
             :permitirConsultar="false"
@@ -819,7 +833,7 @@
     </template>
   </tab-layout-filter-tabs>
 
-  <modales-entidad :comportamiento="modales" />
+  <modales-entidad :comportamiento="modalesTarea" :mixin-modal="mixin" />
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"

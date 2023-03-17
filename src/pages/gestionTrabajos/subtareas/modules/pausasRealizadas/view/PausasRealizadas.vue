@@ -1,10 +1,6 @@
 <template>
-  <div class="col-12 q-mb-lg">
-    <b>{{ labelCodigo }} </b>{{ codigo }}
-  </div>
-
   <essential-table
-    titulo="Pausas realizadas"
+    titulo="Registro de pausas realizadas"
     :configuracionColumnas="(configuracionColumnasPausas as any)"
     :datos="listado"
     separador="cell"
@@ -20,22 +16,17 @@ import { configuracionColumnasPausas } from '../domain/configuracionColumnasPaus
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
-import { ref, computed } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useSubtareaStore } from 'stores/subtarea'
 
-// Se declara el props porque asi está en ModalEntidad
-defineProps({
-  mixinModal: {
-    type: Object as () => ContenedorSimpleMixin<any>,
-    required: false,
-  },
+const props = defineProps({
+  idSubtarea: Number,
 })
 
 // Emits
@@ -71,14 +62,14 @@ async function obtenerPausas() {
 
   const axios = AxiosHttpRepository.getInstance()
   const ruta =
-    axios.getEndpoint(endpoints.pausas_subtareas) +
-    '/' +
-    subtareaStore.idSubtareaSeleccionada
+    axios.getEndpoint(endpoints.pausas_subtareas) + '/' + props.idSubtarea
   const response: AxiosResponse = await axios.get(ruta)
   listado.value = response.data.results
 
   statusEssentialLoading.desactivar()
 }
 
-obtenerPausas()
+watchEffect(() => {
+  if (props.idSubtarea) obtenerPausas()
+})
 </script>

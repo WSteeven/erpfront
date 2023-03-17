@@ -1,17 +1,18 @@
 // import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { ComportamientoModalesSubtarea } from '../../subtareas/application/ComportamientoModalesSubtarea'
+// import { ComportamientoModalesSubtarea } from '../../subtareas/application/ComportamientoModalesSubtarea'
 import { CambiarEstadoSubtarea } from '../../subtareas/application/CambiarEstadoSubtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
 import { estadosTrabajos } from 'config/utils'
-import { Subtarea } from '../../subtareas/domain/Subtarea'
+// import { Subtarea } from '../../subtareas/domain/Subtarea'
 import { Ref } from 'vue'
 import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
 import { Tarea } from '../domain/Tarea'
+import { ComportamientoModalesTarea } from './ComportamientoModalesTarea'
 
-export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: ComportamientoModalesSubtarea, listadosAuxiliares: any) => {
+export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: ComportamientoModalesTarea, listadosAuxiliares: any) => {
   const subtareaStore = useSubtareaStore()
 
   const { confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
@@ -23,7 +24,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     titulo: 'Formulario',
     icono: 'bi-pencil-square',
     color: 'indigo',
-    visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
+    visible: ({ entidad }) => !entidad.tiene_subtareas && [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
     accion: ({ entidad }) => {
       subtareaStore.idSubtareaSeleccionada = entidad.id
       modales.abrirModalEntidad('EmergenciasPage')

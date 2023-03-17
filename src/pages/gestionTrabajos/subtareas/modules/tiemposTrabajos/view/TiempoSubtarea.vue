@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-col-gutter-sm q-pa-md">
+  <div class="row q-col-gutter-sm">
     <!-- Estado -->
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Estado del trabajo</label>

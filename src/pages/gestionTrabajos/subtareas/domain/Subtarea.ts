@@ -57,6 +57,7 @@ export class Subtarea extends EntidadAuditable {
   mas_empleados: boolean
   designar_otro_responsable: boolean // reagendar
   puede_ejecutar: boolean
+  tiene_subtareas: boolean
 
   constructor() {
     super()
@@ -94,6 +95,7 @@ export class Subtarea extends EntidadAuditable {
     this.hora_inicio_trabajo = null
     this.hora_fin_trabajo = null
     this.tarea = null
+    this.codigo_tarea = null
     this.tarea_id = null
     // Foreign keys
     this.tipo_trabajo = null
@@ -119,5 +121,6 @@ export class Subtarea extends EntidadAuditable {
     this.mas_empleados = false
     this.designar_otro_responsable = false
     this.puede_ejecutar = false
+    this.tiene_subtareas = false
   }
 }

@@ -49,7 +49,7 @@ const columnasObservacion: any = [
  * Funciones
  ************/
 const agregarObservacion: CustomActionTable = {
-  titulo: 'Agregar ítem',
+  titulo: 'Agregar observación',
   icono: 'bi-arrow-bar-down',
   accion: () => {
     const fila: Observacion = new Observacion()

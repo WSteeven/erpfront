@@ -39,6 +39,10 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/reanudar', idSubtarea)
   }
 
+  async corregir(idSubtarea: number) {
+    return this.solicitud('/corregir', idSubtarea)
+  }
+
   async suspender(idSubtarea: number, idMotivoSuspendido: number) {
     return this.solicitud('/suspender', idSubtarea, { motivo_suspendido_id: idMotivoSuspendido })
   }

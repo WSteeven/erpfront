@@ -29,7 +29,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     }
   }
 
-  const botonVerPausas: CustomActionTable = {
+  /* const botonVerPausas: CustomActionTable = {
     titulo: 'Ver pausas',
     icono: 'bi-pause-circle',
     color: 'blue-6',
@@ -40,7 +40,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
       subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
       modales.abrirModalEntidad('PausasRealizadasPage')
     }
-  }
+  } */
 
   const botonFinalizar: CustomActionTable = {
     titulo: 'Finalizar',
@@ -175,6 +175,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     btnAnular,
     // botonAsignar,
     botonFinalizar,
-    botonVerPausas,
+    // botonVerPausas,
   }
 }

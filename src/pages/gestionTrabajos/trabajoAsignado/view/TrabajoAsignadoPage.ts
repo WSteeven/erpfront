@@ -150,6 +150,21 @@ export default defineComponent({
       }
     }
 
+    const botonCorregir: CustomActionTable = {
+      titulo: 'Corregir',
+      icono: 'bi-play-circle',
+      color: 'positive',
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO && entidad.es_responsable,
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de corregir el trabajo?', () => {
+          new CambiarEstadoSubtarea().corregir(entidad.id)
+          entidad.estado = estadosTrabajos.EJECUTANDO
+          notificarCorrecto('El trabajo está disponible en la pestaña EJECUTANDO para su correción')
+          eliminarElemento(posicion, entidad)
+        })
+      }
+    }
+
     const botonFormulario: CustomActionTable = {
       titulo: 'Formulario',
       icono: 'bi-check2-square',
@@ -264,6 +279,7 @@ export default defineComponent({
       botonFormulario,
       botonSuspender,
       botonRealizar,
+      botonCorregir,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
       authenticationStore,
     }

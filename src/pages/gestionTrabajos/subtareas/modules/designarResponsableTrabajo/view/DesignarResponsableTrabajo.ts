@@ -19,6 +19,9 @@ import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestruct
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: {
@@ -70,6 +73,7 @@ export default defineComponent({
      ************/
     const empleadosSeleccionados: Ref<Empleado[]> = ref([])
     const tipoSeleccion = computed(() => asignarLider.value ? 'single' : 'none')
+    const notificaciones = useNotificaciones()
 
     /*************
     * Validaciones
@@ -101,9 +105,21 @@ export default defineComponent({
     })
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
-      const empleadoController = new EmpleadoController()
-      const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      empleadosSeleccionados.value = result
+      const cargando = new StatusEssentialLoading()
+
+      try {
+        cargando.activar()
+        const empleadoController = new EmpleadoController()
+        const { result } = await empleadoController.listar({ grupo_id: grupo_id })
+        empleadosSeleccionados.value = result
+      } catch (error) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     /**********

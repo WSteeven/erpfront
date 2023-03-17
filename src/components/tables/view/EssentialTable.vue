@@ -570,7 +570,7 @@
 
     <template #body-cell-tipo_trabajo="props">
       <q-td :props="props">
-        <span :class="{ 'text-red text-bold': resaltar(props.value) }">
+        <span :class="{ 'text-negative text-bold': resaltar(props.value) }">
           {{ props.value }}
         </span>
       </q-td>

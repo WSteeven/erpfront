@@ -6,9 +6,19 @@
     default-opened
   >
     <div class="row q-col-gutter-sm q-pa-md">
-      <!-- Codigo -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Código del trabajo</label>
+        <label class="q-mb-sm block">Tarea</label>
+        <q-input
+          v-model="trabajo.codigo_tarea"
+          disable
+          outlined
+          dense
+        ></q-input>
+      </div>
+
+      <!-- Codigo -->
+      <div v-if="trabajo.codigo_subtarea" class="col-12 col-md-3">
+        <label class="q-mb-sm block">Subtarea</label>
         <q-input
           v-model="trabajo.codigo_subtarea"
           disable
