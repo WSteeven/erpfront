@@ -17,6 +17,7 @@ import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
 import { maskFecha } from 'config/utils'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
   components: {
@@ -24,7 +25,7 @@ export default defineComponent({
   },
   props: {
     mixinModal: {
-      type: Object as () => ContenedorSimpleMixin<Subtarea>,
+      type: Object as () => ContenedorSimpleMixin<Tarea | Subtarea>,
       required: true,
     },
   },
@@ -43,7 +44,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const codigoTrabajoSeleccionado = subtareaStore.codigoTrabajoSeleccionado
+    const codigoSubtareaSeleccionada = subtareaStore.codigoSubtareaSeleccionada
     const motivoPendiente = subtareaStore.motivoPendiente
     const fechaHoraPendiente = subtareaStore.fechaHoraPendiente
     const subtarea = reactive(new Subtarea())
@@ -66,12 +67,13 @@ export default defineComponent({
     }
 
     const v$ = useVuelidate(rules, subtarea)
+    const statusEssentialLoading = new StatusEssentialLoading()
+    const axios = AxiosHttpRepository.getInstance()
 
     /*************
      * Funciones
      *************/
     async function reagendar() {
-      const statusEssentialLoading = new StatusEssentialLoading()
 
       const data = {
         es_ventana: subtarea.es_ventana,
@@ -84,14 +86,17 @@ export default defineComponent({
       }
 
       try {
-
-        statusEssentialLoading.activar()
+        /* statusEssentialLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.actualizar_fechas_reagendar) + '/' + subtareaStore.idSubtareaSeleccionada
         const response: AxiosResponse = await axios.put(ruta, data)
-        actualizarElemento(subtareaStore.posicionSubtareaSeleccionada, response.data.modelo)
+        console.log(subtareaStore.posicionSubtareaSeleccionada)*/
+        // actualizarElemento(subtareaStore.posicionSubtareaSeleccionada, response.data.modelo)
+        if (subtarea.tiene_subtareas) reagendarSubtarea(data)
+        else reagendarTarea(data)
+
         emit('cerrar-modal')
-        notificarCorrecto(response.data.mensaje)
+        // notificarCorrecto(response.data.mensaje)
       } catch (e) {
         notificarAdvertencia('No se pudo agendar la subtarea')
       } finally {
@@ -99,11 +104,29 @@ export default defineComponent({
       }
     }
 
+    async function reagendarTarea(data) {
+      statusEssentialLoading.activar()
+      const ruta = axios.getEndpoint(endpoints.actualizar_fechas_reagendar_tarea) + '/' + subtareaStore.idSubtareaSeleccionada
+      const response: AxiosResponse = await axios.put(ruta, data)
+      console.log(subtareaStore.posicionSubtareaSeleccionada)
+      actualizarElemento(subtareaStore.posicionSubtareaSeleccionada, response.data.modelo)
+      notificarCorrecto(response.data.mensaje)
+    }
+
+    async function reagendarSubtarea(data) {
+      statusEssentialLoading.activar()
+      const ruta = axios.getEndpoint(endpoints.actualizar_fechas_reagendar) + '/' + subtareaStore.idSubtareaSeleccionada
+      const response: AxiosResponse = await axios.put(ruta, data)
+      console.log(subtareaStore.posicionSubtareaSeleccionada)
+      actualizarElemento(subtareaStore.posicionSubtareaSeleccionada, response.data.modelo)
+      notificarCorrecto(response.data.mensaje)
+    }
+
     function actualizarElemento(posicion: number, entidad: Subtarea): void {
-      if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad)
-        listado.value = [...listado.value]
-      }
+      console.log(entidad)
+      listado.value.splice(posicion, 1, entidad)
+      console.log(listado.value)
+      // listado.value = [...listado.value]
     }
 
     function seleccionarGrupo(grupo_id) {
@@ -121,7 +144,7 @@ export default defineComponent({
     return {
       v$,
       subtarea,
-      codigoTrabajoSeleccionado,
+      codigoSubtareaSeleccionada,
       motivoPendiente,
       fechaHoraPendiente,
       reagendar,

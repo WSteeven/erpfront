@@ -11,7 +11,7 @@ export class ObtenerPlantilla {
         return 'EmergenciaPage'
       case plantillas.DESMONTAJE:
         return 'DesmontajePage'
-      default: return 'ControlTendido'
+      default: return 'AvanceGenericoPage'
     }
   }
 }

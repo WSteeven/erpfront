@@ -29,12 +29,15 @@ import { useQuasar } from 'quasar'
 
 // Componentes
 import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
+import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/view/TiempoSubtarea.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import TablaSubtareaSuspendida from 'gestionTrabajos/subtareas/modules/tablaSubtareasSuspendidas/view/TablaSubtareaSuspendida.vue'
+import TablaSubtareaPausas from 'gestionTrabajos/subtareas/modules/pausasRealizadas/view/PausasRealizadas.vue'
 
 // Logica y controladores
 import { ArchivoSubtareaController } from '../modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
@@ -49,13 +52,13 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { descargarArchivoUrl, isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray } from 'shared/utils'
+import { descargarArchivoUrl } from 'shared/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo },
+  components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
   emits: ['cerrar-modal', 'guardado'],
   props: {
     mixinModal: {
@@ -116,6 +119,7 @@ export default defineComponent({
 
     subtarea.tarea = subtareaStore.codigoTarea
     subtarea.observacion = subtareaStore.observacionTarea
+    subtarea.cliente = subtareaStore.idCliente
     accion.value = subtareaStore.accion
 
     /************
@@ -200,7 +204,7 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
-    } = useFiltrosListadosTarea(listadosAuxiliares)
+    } = useFiltrosListadosTarea(listadosAuxiliares, subtarea)
 
     /********
     * Hooks

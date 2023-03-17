@@ -23,6 +23,7 @@
       :accion5="botonReanudar"
       :accion6="botonSuspender"
       :accion7="botonRealizar"
+      :accion8="botonCorregir"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"

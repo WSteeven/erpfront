@@ -1,7 +1,9 @@
 import { TipoTrabajo } from 'gestionTrabajos/tiposTareas/domain/TipoTrabajo'
-import { Ref, ref } from 'vue'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { computed, Ref, ref, UnwrapRef } from 'vue'
+import { Tarea } from '../domain/Tarea'
 
-export const useFiltrosListadosTarea = (listadosAuxiliares) => {
+export const useFiltrosListadosTarea = (listadosAuxiliares, entidad: UnwrapRef<Tarea | Subtarea>) => {
   // - Filtro clientes corporativos
   const clientes = ref()
   function filtrarClientes(val, update) {
@@ -95,12 +97,17 @@ export const useFiltrosListadosTarea = (listadosAuxiliares) => {
 
   // - Filtro tipos de trabajos
   const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
+  const tiposTrabajosSource = computed(() =>
+    listadosAuxiliares.tiposTrabajos.filter((tipo: TipoTrabajo) => tipo.cliente_id === (entidad.cliente ? entidad.cliente : false))
+  )
+
   function filtrarTiposTrabajos(val, update) {
-    if (val === '') update(() => tiposTrabajos.value = listadosAuxiliares.tiposTrabajos)
+    if (val === '') update(() => tiposTrabajos.value = []) //listadosAuxiliares.tiposTrabajos)
+    // if (val === '') update(() => tiposTrabajos.value = listadosAuxiliares.tiposTrabajos)
 
     update(() => {
       const needle = val.toLowerCase()
-      tiposTrabajos.value = listadosAuxiliares.tiposTrabajos.filter(
+      tiposTrabajos.value = tiposTrabajosSource.value.filter(
         (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
       )
     })

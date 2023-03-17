@@ -117,7 +117,7 @@ export default defineComponent({
       formatBytes,
       quiero_subir_archivos,
       columnas: [...configuracionColumnasArchivoSubtarea, accionesTabla],
-      codigoTrabajoSeleccionado: subtareaStore.codigoTrabajoSeleccionado,
+      codigoSubtareaSeleccionada: subtareaStore.codigoSubtareaSeleccionada,
       btnEliminar,
       btnComentar,
       btnDescargar,

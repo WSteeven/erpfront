@@ -311,6 +311,7 @@
         @seleccionarEmpleado="seleccionarEmpleado"
       ></designar-responsable-trabajo>
     </q-expansion-item>
+    {{ subtarea }}
 
     <q-expansion-item
       v-if="accion !== acciones.nuevo"
@@ -319,6 +320,20 @@
       header-class="text-bold bg-header-collapse"
       default-opened
     >
+      <div class="q-pa-md q-gutter-y-md">
+        <tiempo-subtarea
+          :disable="disabled"
+          :subtarea="subtarea"
+        ></tiempo-subtarea>
+
+        <tabla-subtarea-pausas
+          :id-subtarea="subtarea.id"
+        ></tabla-subtarea-pausas>
+
+        <tabla-subtarea-suspendida
+          :id-subtarea="subtarea.id"
+        ></tabla-subtarea-suspendida>
+      </div>
     </q-expansion-item>
 
     <b v-if="accion === acciones.nuevo" class="block q-mb-md"

@@ -13,12 +13,15 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { useOrquestadorSelectorEmpleadosGrupo } from 'pages/gestionTrabajos/subtareas/application/useOrquestadorSelectorEmpleadosGrupo'
-import { useBotonesTablaDesignacionTrabajo } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaDesignacionTrabajo'
+import { useBotonesTablaDesignacionSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaDesignacionSubtarea'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: {
@@ -40,14 +43,17 @@ export default defineComponent({
     const { cargarVista, obtenerListados } = mixin.useComportamiento()
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
 
-    /*watchEffect(() => {
-      if (props.subtareaInicial) {
+    watchEffect(() => {
+      /* if (props.subtareaInicial) {
         subtarea.hydrate(props.subtareaInicial)
-      }
-    })*/
-    subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
+      } */
+      subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
+      subtarea.grupo = props.subtareaInicial.grupo
+      subtarea.empleado = props.subtareaInicial.empleado
+    })
+    /* subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
     subtarea.grupo = props.subtareaInicial.grupo
-    subtarea.empleado = props.subtareaInicial.empleado
+    subtarea.empleado = props.subtareaInicial.empleado */
 
     cargarVista(async () => {
       await obtenerListados({
@@ -67,6 +73,7 @@ export default defineComponent({
      ************/
     const empleadosSeleccionados: Ref<Empleado[]> = ref([])
     const tipoSeleccion = computed(() => asignarLider.value ? 'single' : 'none')
+    const notificaciones = useNotificaciones()
 
     /*************
     * Validaciones
@@ -98,9 +105,21 @@ export default defineComponent({
     })
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
-      const empleadoController = new EmpleadoController()
-      const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-      empleadosSeleccionados.value = result
+      const cargando = new StatusEssentialLoading()
+
+      try {
+        cargando.activar()
+        const empleadoController = new EmpleadoController()
+        const { result } = await empleadoController.listar({ grupo_id: grupo_id })
+        empleadosSeleccionados.value = result
+      } catch (error) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     /**********
@@ -123,7 +142,7 @@ export default defineComponent({
       // designarLiderTemporal,
       designarLider,
       asignarLider,
-    } = useBotonesTablaDesignacionTrabajo(empleadosSeleccionados, data)
+    } = useBotonesTablaDesignacionSubtarea(empleadosSeleccionados, data)
 
     /*****************
      * Orquestadores

@@ -10,6 +10,13 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     sortable: true,
   },
   {
+    name: 'cliente_final',
+    field: 'cliente_final',
+    label: 'Cliente final',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'tarea',
     field: 'tarea',
     label: 'Cód. Tarea',
@@ -53,6 +60,12 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     name: 'grupo',
     field: 'grupo',
     label: 'Grupo designado',
+    align: 'left',
+  },
+  {
+    name: 'coordinador',
+    field: 'coordinador',
+    label: 'Coordinador',
     align: 'left',
   },
   {
