@@ -4,32 +4,9 @@
 
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
-          <!-- Usuarios envia -->
-          <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Enviado Por:</label>
-            <q-select v-model="transferencia.usuario_envia" :options="usuarios" transition-show="jump-up"
-              transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
-              :error="!!v$.usuario_envia.$errors.length" @blur="v$.usuario_envia.$touch"
-              error-message="Debes seleccionar un usuario" use-input input-debounce="0" @filter="filtrarUsuarios"
-              :option-value="(v) => v.usuario_id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value
-              map-options>
-              <template v-slot:error>
-                <div v-for="error of v$.usuario_envia.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
           <!-- Usuarios Reciben -->
           <div class="col-12 col-md-3 q-mb-md" v-if="!esDevolucion">
-            <label class="q-mb-sm block">Recivido Por:</label>
+            <label class="q-mb-sm block">Recibido Por:</label>
             <q-select v-model="transferencia.usuario_recibe" :options="usuarios" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.usuario_recibe.$errors.length" error-message="Debes seleccionar un usuario" use-input

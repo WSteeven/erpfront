@@ -16,8 +16,7 @@
         accionesTabla,
       ]"
       :datos="listado"
-      :accion1="botonAprobar"
-      :accion2="botonRechazar"
+      :accion1="botonVerModalGasto"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
@@ -27,6 +26,9 @@
       @tab-seleccionado="filtrarAutorizacionesGasto"
       tab-defecto="PENDIENTE"
     ></essential-table-tabs>
+    <modal-entidad
+    :comportamiento="modales"
+    >  </modal-entidad>
   </q-page>
 </template>
 

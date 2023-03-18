@@ -16,11 +16,16 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
 import { AprobarGastoController } from '../infrestructure/AprobarGastoController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { AutorizarGasto } from '../domain/AutorizarGasto'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
+import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
     EssentialTableTabs,
     ConfirmarDialog,
+    ModalEntidad,
   },
   setup() {
     const controller = new AutorizarGastoController()
@@ -38,61 +43,23 @@ export default defineComponent({
      ************/
     const mixin = new ContenedorSimpleMixin(Gasto, controller)
     const { listado } = mixin.useReferencias()
+    const {listar } =
+    mixin.useComportamiento()
     /***********
      * Stores
      ***********/
     const authenticationStore = useAuthenticationStore()
+    const fondoRotativoStore = useFondoRotativoStore()
     /***************
      * Botones tabla
      ***************/
-    const botonAprobar: CustomActionTable = {
-      titulo: 'Aprobar',
-      icono: ' bi-check-circle',
-      accion: async ({ entidad }) => {
-        const data: CustomActionPrompt = {
-          titulo: 'Aprobar gasto',
-          mensaje: 'Ingrese motivo de aprobación',
-          accion: async (data) => {
-            try {
-              entidad.detalle_estado = data
-              await aprobarController.aprobarGasto(entidad)
-              notificarCorrecto('Se aprobado Gasto Exitosamente')
-              filtrarAutorizacionesGasto(tabActual.value)
-            } catch (e: any) {
-              notificarError(
-                'No se pudo aprobar, debes ingresar un motivo para la anulación'
-              )
-            }
-          },
-        }
-        prompt(data)
-      },
-    }
+    async function abrir_reporte(
+      valor: AutorizarGasto
+    ): Promise<void> {
+      listar({ usuario: valor.usuario,
+         fecha_inicio: valor.fecha_inicio,
+          fecha_fin: valor.fecha_fin })
 
-    const botonRechazar: CustomActionTable = {
-      titulo: 'Rechazar',
-      icono: 'bi-x-circle',
-      accion: async ({ entidad }) => {
-        confirmar('¿Está seguro de rechazar el gasto?', () => {
-          const data: CustomActionPrompt = {
-            titulo: 'Rechazar gasto',
-            mensaje: 'Ingrese motivo de aprobación',
-            accion: async (data) => {
-              try {
-                entidad.detalle_estado = data
-                await aprobarController.rechazarGasto(entidad)
-                notificarAdvertencia('Se rechazado Gasto Exitosamente')
-                filtrarAutorizacionesGasto(tabActual.value)
-              } catch (e: any) {
-                notificarError(
-                  'No se pudo rechazar, debes ingresar un motivo para la anulación'
-                )
-              }
-            },
-          }
-          prompt(data)
-        })
-      },
     }
     const autorizarGastoController = new AutorizarGastoController()
     async function filtrarAutorizacionesGasto(tabSeleccionado) {
@@ -109,15 +76,28 @@ export default defineComponent({
       cargando.desactivar()
     }
     filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
+
+    /**Modales */
+    const modales = new ComportamientoModalesAutorizarGasto()
+    const botonVerModalGasto: CustomActionTable = {
+      titulo: 'Consultar',
+      icono: 'bi-eye',
+      color: 'indigo',
+      accion: ({ entidad }) => {
+        fondoRotativoStore.id_gasto = entidad.id
+        modales.abrirModalEntidad('GastoPage')
+      }
+    }
+
     return {
       configuracionColumnasAutorizarGasto,
       listado,
       tabAutorizarGasto,
+      botonVerModalGasto,
       accionesTabla,
-      botonAprobar,
-      botonRechazar,
       filtrarAutorizacionesGasto,
       authenticationStore,
+      modales,
     }
   },
 })

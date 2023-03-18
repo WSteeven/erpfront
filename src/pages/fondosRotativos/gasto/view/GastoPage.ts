@@ -8,7 +8,8 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { helpers, maxLength,minLength,required } from 'shared/i18n-validators'
+import { helpers, maxLength, minLength, required } from 'shared/i18n-validators'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
@@ -25,6 +26,8 @@ import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { useNotificaciones } from 'shared/notificaciones'
+import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -45,15 +48,26 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
+    const {
+      confirmar,
+      prompt,
+      notificarCorrecto,
+      notificarAdvertencia,
+      notificarError,
+    } = useNotificaciones()
 
     /*******
      * Init
      ******/
     const fondoRotativoStore = useFondoRotativoStore()
+    const aprobarController = new AprobarGastoController()
+
     const mostrarListado = ref(true)
+    const mostrarAprobacion = ref(false)
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
+      mostrarAprobacion.value = true
     }
 
     /*************
@@ -70,10 +84,10 @@ export default defineComponent({
         required,
       },
       subTarea: {
-        required
+        required,
       },
       proyecto: {
-        required
+        required,
       },
       ruc: {
         minLength: minLength(13),
@@ -92,13 +106,13 @@ export default defineComponent({
         maxLength: maxLength(15),
       },
       aut_especial: {
-        required
+        required,
       },
       detalle: {
-        required
+        required,
       },
       sub_detalle: {
-        required
+        required,
       },
       cantidad: {
         required,
@@ -259,7 +273,7 @@ export default defineComponent({
         )
       })
     }
-/**Filtro de Tareas */
+    /**Filtro de Tareas */
     function filtrarTareas(val, update) {
       if (gasto.proyecto == 0) {
         update(() => {
@@ -288,24 +302,81 @@ export default defineComponent({
     }
     listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
     listadosAuxiliares.subTareas.unshift({ id: 0, titulo: 'Sin Subtarea' })
-    const listadoTareas = computed(() => listadosAuxiliares.tareas.filter((tarea: Tarea) => tarea.proyecto_id === gasto.proyecto ||  tarea.id==0))
-    const listadoSubTareas = computed(() => listadosAuxiliares.subTareas.filter((subtarea: Subtarea) => subtarea.tarea_id === gasto.num_tarea || subtarea.id==0))
-    const listadoSubdetalles = computed(() => listadosAuxiliares.sub_detalles.filter((subdetalle: SubDetalleFondo) => subdetalle.id_detalle_viatico === gasto.detalle))
+    const listadoTareas = computed(() =>
+      listadosAuxiliares.tareas.filter(
+        (tarea: Tarea) => tarea.proyecto_id === gasto.proyecto || tarea.id == 0
+      )
+    )
+    const listadoSubTareas = computed(() =>
+      listadosAuxiliares.subTareas.filter(
+        (subtarea: Subtarea) =>
+          subtarea.tarea_id === gasto.num_tarea || subtarea.id == 0
+      )
+    )
+    const listadoSubdetalles = computed(() =>
+      listadosAuxiliares.sub_detalles.filter(
+        (subdetalle: SubDetalleFondo) =>
+          subdetalle.id_detalle_viatico === gasto.detalle
+      )
+    )
 
     /*********
-    * Pusher
-    *********/
+     * Pusher
+     *********/
 
     const gastoPusherEvent = new GastoPusherEvent()
     gastoPusherEvent.start()
 
     watchEffect(() => (gasto.total = gasto.cantidad! * gasto.valor_u!))
-      function existeComprobante() {
-        gasto.factura= null
-       if(esFactura.value == false){
-        gasto.ruc= '9999999999999'
-      }else{
-        gasto.ruc= null
+    function existeComprobante() {
+      gasto.factura = null
+      if (esFactura.value == false) {
+        gasto.ruc = '9999999999999'
+      } else {
+        gasto.ruc = null
+      }
+    }
+    function aprobar_gasto(entidad, tipo_aprobacion: string) {
+      switch (tipo_aprobacion) {
+        case 'Aprobado':
+          const data: CustomActionPrompt = {
+            titulo: 'Aprobar gasto',
+            mensaje: 'Ingrese motivo de aprobación',
+            accion: async (data) => {
+              try {
+                entidad.detalle_estado = data
+                await aprobarController.aprobarGasto(entidad)
+                notificarCorrecto('Se aprobado Gasto Exitosamente')
+              } catch (e: any) {
+                notificarError(
+                  'No se pudo aprobar, debes ingresar un motivo para la anulación'
+                )
+              }
+            },
+          }
+          prompt(data)
+          break
+        case 'Rechazado':
+          confirmar('¿Está seguro de rechazar el gasto?', () => {
+            const data: CustomActionPrompt = {
+              titulo: 'Rechazar gasto',
+              mensaje: 'Ingrese motivo de aprobación',
+              accion: async (data) => {
+                try {
+                  entidad.detalle_estado = data
+                  await aprobarController.rechazarGasto(entidad)
+                  notificarAdvertencia('Se rechazado Gasto Exitosamente')
+                } catch (e: any) {
+                  notificarError(
+                    'No se pudo rechazar, debes ingresar un motivo para la anulación'
+                  )
+                }
+              },
+            }
+            prompt(data)
+          })
+        default:
+          break
       }
     }
     return {
@@ -330,6 +401,7 @@ export default defineComponent({
       filtrarProyectos,
       existeComprobante,
       filtrarTareas,
+      aprobar_gasto,
       listadosAuxiliares,
       listadoSubdetalles,
       listadoSubTareas,

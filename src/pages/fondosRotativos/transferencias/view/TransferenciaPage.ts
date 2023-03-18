@@ -39,11 +39,6 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-      usuario_envia : {
-        required,
-        requiredIf: requiredIf(() => transferencia.usuario_envia !== transferencia.usuario_recibe? false : true),
-        maxLength: maxLength(50),
-      },
       usuario_recibe: {
         requiredIf: requiredIf(() => transferencia.usuario_envia !== transferencia.usuario_recibe? false : true),
         maxLength: maxLength(50),
