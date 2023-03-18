@@ -137,6 +137,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
       subtareaStore.fechaHoraPendiente = entidad.fecha_hora_pendiente
       subtareaStore.motivoPendiente = entidad.motivo_pendiente
       subtareaStore.idSubtareaSeleccionada = entidad.id
+      subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
       subtareaStore.posicionSubtareaSeleccionada = posicion
       subtareaStore.subtareaEsVentana = entidad.es_ventana
       subtareaStore.fechaInicioTrabajo = entidad.fecha_inicio_trabajo

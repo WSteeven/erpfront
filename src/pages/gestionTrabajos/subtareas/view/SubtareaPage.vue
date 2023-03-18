@@ -311,7 +311,6 @@
         @seleccionarEmpleado="seleccionarEmpleado"
       ></designar-responsable-trabajo>
     </q-expansion-item>
-    {{ subtarea }}
 
     <q-expansion-item
       v-if="accion !== acciones.nuevo"

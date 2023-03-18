@@ -282,7 +282,7 @@ export default defineComponent({
     })
 
     // Subtareas
-    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
+    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea, botonCancelar: btnCancelarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
     const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
 
     const btnAgregarSubtarea: CustomActionTable = {
@@ -402,6 +402,7 @@ export default defineComponent({
       btnFinalizarTarea,
       btnFormularioTarea,
       btnReagendarTarea,
+      btnCancelarTarea,
     }
   },
 })

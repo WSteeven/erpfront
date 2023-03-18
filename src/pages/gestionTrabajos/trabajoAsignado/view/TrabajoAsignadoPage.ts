@@ -154,7 +154,7 @@ export default defineComponent({
       titulo: 'Corregir',
       icono: 'bi-play-circle',
       color: 'positive',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO && entidad.es_responsable,
+      visible: ({ entidad }) => true,//entidad.estado === estadosTrabajos.REALIZADO && entidad.es_responsable,
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de corregir el trabajo?', () => {
           new CambiarEstadoSubtarea().corregir(entidad.id)
@@ -184,7 +184,7 @@ export default defineComponent({
       titulo: 'Suspender',
       icono: 'bi-power',
       color: 'negative',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable && entidad.puede_ejecutar,
+      visible: ({ entidad }) => true, //entidad.estado === estadosTrabajos.EJECUTANDO && entidad.estado === estadosTrabajos.AGENDADO && entidad.es_responsable && entidad.puede_ejecutar,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de suspender el trabajo?', () => {
           const config: CustomActionPrompt = {

@@ -55,6 +55,7 @@ export default defineComponent({
       subtarea.fecha_inicio_trabajo = subtareaStore.fechaInicioTrabajo
       subtarea.hora_inicio_trabajo = subtareaStore.horaInicioTrabajo
       subtarea.hora_fin_trabajo = subtareaStore.horaFinTrabajo
+      subtarea.tiene_subtareas = subtareaStore.tareaTieneSubtareas
     })
 
     /*************
@@ -92,6 +93,7 @@ export default defineComponent({
         const response: AxiosResponse = await axios.put(ruta, data)
         console.log(subtareaStore.posicionSubtareaSeleccionada)*/
         // actualizarElemento(subtareaStore.posicionSubtareaSeleccionada, response.data.modelo)
+        console.log(subtarea)
         if (subtarea.tiene_subtareas) reagendarSubtarea(data)
         else reagendarTarea(data)
 

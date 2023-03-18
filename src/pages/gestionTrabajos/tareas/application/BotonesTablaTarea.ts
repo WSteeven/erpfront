@@ -11,6 +11,11 @@ import { Ref } from 'vue'
 import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
 import { Tarea } from '../domain/Tarea'
 import { ComportamientoModalesTarea } from './ComportamientoModalesTarea'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosError, AxiosResponse } from 'axios'
+import { ApiError } from 'shared/error/domain/ApiError'
 
 export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: ComportamientoModalesTarea, listadosAuxiliares: any) => {
   const subtareaStore = useSubtareaStore()
@@ -77,17 +82,43 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
       })
     },
   } */
+  async function solicitud(accion, tarea, data?) {
+    const cargando = new StatusEssentialLoading()
+    const axios = AxiosHttpRepository.getInstance()
+
+    try {
+      const ruta =
+        axios.getEndpoint(endpoints.tareas) + accion + '/' + tarea
+
+      cargando.activar()
+      const response: AxiosResponse = await axios.post(ruta, data)
+
+      return {
+        response,
+        result: response.data.modelo,
+      }
+    } catch (e: unknown) {
+      const axiosError = e as AxiosError
+      throw new ApiError(axiosError)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
+  async function cancelar(idTarea: number, idMotivoCancelado: number) {
+    return solicitud('/cancelar', idTarea, { motivo_suspendido_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
+  }
 
   const botonCancelar: CustomActionTable = {
     titulo: 'Cancelar',
     color: 'negative',
     icono: 'bi-x-circle',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
+    visible: ({ entidad }) => !entidad.tiene_subtareas && entidad.estado === estadosTrabajos.SUSPENDIDO,
     accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de cancelar definitivamente la tarea?'], async () => {
       const config: CustomActionPrompt = {
         mensaje: 'Seleccione el motivo de la cancelación',
         accion: async (data) => {
-          const { result } = await cambiarEstadoSubtarea.cancelar(entidad.id, data)
+          const { result } = await cancelar(entidad.id, data) //cambiarEstadoSubtarea.cancelar(entidad.id, data)
           entidad.estado = estadosTrabajos.CANCELADO
           entidad.fecha_hora_cancelado = result.fecha_hora_cancelado
           entidad.motivo_cancelado = result.motivo_cancelado
@@ -133,12 +164,13 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     titulo: 'Reagendar',
     color: 'orange-8',
     icono: 'bi-calendar-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
+    visible: ({ entidad }) => !entidad.tiene_subtareas && entidad.estado === estadosTrabajos.SUSPENDIDO,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la tarea?', () => {
       subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_tarea
       subtareaStore.fechaHoraPendiente = entidad.subtarea.fecha_hora_suspendido
       subtareaStore.motivoPendiente = entidad.subtarea.motivo_suspendido
-      subtareaStore.idSubtareaSeleccionada = entidad.subtarea.id
+      subtareaStore.idSubtareaSeleccionada = entidad.id
+      subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
       subtareaStore.posicionSubtareaSeleccionada = posicion
       subtareaStore.subtareaEsVentana = entidad.subtarea.es_ventana
       subtareaStore.fechaInicioTrabajo = entidad.subtarea.fecha_inicio_trabajo

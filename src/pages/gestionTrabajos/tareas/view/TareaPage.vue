@@ -10,7 +10,7 @@
     :tabOptions="tabOptionsEstadosSubtareas"
     :accion1="btnFormularioTarea"
     :accion2="btnReagendarTarea"
-    :accion3="botonCancelar"
+    :accion3="btnCancelarTarea"
     :accion4="btnFinalizarTarea"
   >
     <template #formulario>
