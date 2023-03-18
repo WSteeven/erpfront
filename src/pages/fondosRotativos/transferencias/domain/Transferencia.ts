@@ -7,6 +7,7 @@ export class Transferencia extends EntidadAuditable {
   monto:number |null
   motivo: string | null
   cuenta:number|null
+  tarea:number|null
   comprobante:string|null
 
   constructor() {
@@ -18,6 +19,7 @@ export class Transferencia extends EntidadAuditable {
     this.monto=null
     this.motivo='DEVOLUCION'
     this.cuenta=null
+    this.tarea=null
     this.comprobante=null
   }
 }

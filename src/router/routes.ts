@@ -74,6 +74,7 @@ const routes: RouteRecordRaw[] = [
           import('gestionTrabajos/clientesFinales/view/ClienteFinalPage.vue'),
         meta: { requiresAuth: true },
       },
+
       {
         path: '/control-asistencia',
         name: 'control_asistencia',
@@ -420,6 +421,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path:'/gasto-coordinador',
+        name:'gasto_coordinador',
+        component: () =>
+          import('pages/fondosRotativos/gastoCoordinador/view/GastoCoordinadorPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/autorizar-gasto',
         name: 'autorizar_gasto',
         component: () =>
@@ -466,6 +474,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/motivo-gasto',
+        name: 'motivo_gasto',
+        component: () =>
+
+          import('pages/fondosRotativos/MotivoGasto/view/MotivoGastoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+
 
       {
         path: '/reporte-fondo-fecha',

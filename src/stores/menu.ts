@@ -260,9 +260,21 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Gastos',
-          link: 'gasto',
           icon: 'bi-circle',
-          can: store.can('puede.ver.gasto'),
+          children: [
+            {
+              title: 'Registrar Gastos',
+              link: 'gasto',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.gasto'),
+            },
+            {
+              title: 'Registrar Gastos Coordinadores',
+              link: 'gasto-coordinador',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.gasto_coordinador'),
+            },
+          ],
         },
         {
           title: 'Detalle Fondos',
@@ -518,6 +530,12 @@ export const useMenuStore = defineStore('menu', () => {
       link: 'permisos',
       icon: 'bi-person-fill-check',
       can: true //store.can('puede.ver.autorizaciones') && store.esActivosFijos,
+    },
+    {
+      title: 'Motivo Gasto',
+      link: 'motivo-gasto',
+      icon: 'bi-circle',
+      can: store.can('puede.ver.motivo_gasto'),
     },
     /* {
       header: 'Sistema',

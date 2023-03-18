@@ -13,6 +13,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TransferenciaController } from '../infrestructure/TransferenciaController'
 import { configuracionColumnasTransferencia } from '../domain/configuracionColumnasTransferencia'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -55,6 +56,10 @@ export default defineComponent({
         required,
         maxLength: maxLength(50),
       },
+      tarea: {
+        required,
+        maxLength: maxLength(50),
+      },
       comprobante: {
         required,
       },
@@ -65,6 +70,7 @@ export default defineComponent({
 
     const usuarios = ref([])
     const esDevolucion = ref(true)
+    const tareas = ref([])
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -72,7 +78,12 @@ export default defineComponent({
           controller: new UsuarioController(),
           params: { campos: 'id,canton' },
         },
+        tareas: {
+          controller: new TareaController(),
+          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
+        },
       })
+      tareas.value = listadosAuxiliares.tareas
       usuarios.value = listadosAuxiliares.usuarios
     })
 
@@ -95,6 +106,23 @@ export default defineComponent({
           )
       })
     }
+    /**Filtro de Tareas */
+    function filtrarTareas(val, update) {
+      if (val === '') {
+        update(() => {
+         tareas.value = listadosAuxiliares.tareas
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tareas.value = listadosAuxiliares.tareas.filter(
+          (v) =>
+            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
+            v.detalle.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
     function existeDevolucion(){
       if(esDevolucion.value ==true){
         transferencia.usuario_recibe = null
@@ -109,7 +137,9 @@ export default defineComponent({
       esDevolucion,
       disabled, accion, v$,
       usuarios,
+      tareas,
       filtrarUsuarios,
+      filtrarTareas,
       existeDevolucion,
       configuracionColumnas: configuracionColumnasTransferencia,
     }

@@ -74,6 +74,53 @@
               </template>
             </q-input>
           </div>
+            <!-- Tareas -->
+            <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tareas</label>
+            <q-select
+              v-model="transferencia.tarea"
+              :options="tareas"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.tarea.$errors.length"
+              @blur="v$.tarea.$touch"
+              error-message="Debes seleccionar una Tarea"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.titulo"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_tarea
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!--Comprobante-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante </label>

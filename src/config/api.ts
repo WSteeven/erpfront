@@ -116,6 +116,8 @@ export const endpoints = {
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   gastos: new Endpoint('fondos-rotativos/gastos'),
+  motivo_gasto: new Endpoint('fondos-rotativos/motivo-gasto'),
+  gasto_coordinador: new Endpoint('fondos-rotativos/gasto-coordinador'),
   aprobar_gasto: new Endpoint('fondos-rotativos/aprobar-gasto'),
   rechazar_gasto: new Endpoint('fondos-rotativos/rechazar-gasto'),
   detalle_fondo: new Endpoint('fondos-rotativos/detalles-viaticos'),

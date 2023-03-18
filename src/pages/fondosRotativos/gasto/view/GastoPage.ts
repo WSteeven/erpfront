@@ -8,7 +8,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { helpers } from 'shared/i18n-validators'
+import { helpers, maxLength,minLength,required } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
@@ -61,91 +61,59 @@ export default defineComponent({
      **************/
     const reglas = {
       fecha_viat: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       lugar: {
-        required: true,
+        required,
       },
       num_tarea: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
+        required,
       },
       subTarea: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
+        required
       },
       proyecto: {
-        required: true,
-        minLength: 2,
-        maxLength: 25,
+        required
       },
       ruc: {
-        required: true,
-        minLength: 13,
-        maxLength: 13,
+        minLength: minLength(13),
+        maxLength: maxLength(13),
         helper: helpers.withMessage(
           'El RUC ingresado es Invalido',
           validarIdentificacion
         ),
       },
       factura: {
-        required: false,
-        minLength: 3,
-        maxLength: 15,
+        minLength: minLength(3),
+        maxLength: maxLength(15),
       },
       numComprobante: {
-        required: false,
-        minLength: 3,
-        maxLength: 15,
+        minLength: minLength(3),
+        maxLength: maxLength(15),
       },
       aut_especial: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       detalle: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       sub_detalle: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required
       },
       cantidad: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       valor_u: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       total: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       comprobante1: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       comprobante2: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      observacion: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
     }
 
@@ -332,7 +300,14 @@ export default defineComponent({
     gastoPusherEvent.start()
 
     watchEffect(() => (gasto.total = gasto.cantidad! * gasto.valor_u!))
-
+      function existeComprobante() {
+        gasto.factura= null
+       if(esFactura.value == false){
+        gasto.ruc= '9999999999999'
+      }else{
+        gasto.ruc= null
+      }
+    }
     return {
       mixin,
       gasto,
@@ -353,6 +328,7 @@ export default defineComponent({
       filtrarDetalles,
       filtarSubdetalles,
       filtrarProyectos,
+      existeComprobante,
       filtrarTareas,
       listadosAuxiliares,
       listadoSubdetalles,

@@ -8,6 +8,7 @@
             <label class="q-mb-sm block">Usuario</label>
             <q-select v-model="acreditacion.usuario" :options="usuarios" transition-show="jump-up" transition-hide="jump-down"
               options-dense dense outlined :disable="disabled" :readonly="disabled" :error="!!v$.usuario.$errors.length"
+              @blur="v$.usuario.$touch"
               error-message="Debes seleccionar un usuario" use-input input-debounce="0" @filter="filtrarUsuarios" @update:model-value="saldo_anterior()"
               :option-value="(v) => v.usuario_id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
               <template v-slot:error>
@@ -31,6 +32,7 @@
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.tipo_fondo.$errors.length" error-message="Debes seleccionar un tipo de fondo" use-input
               input-debounce="0" @filter="filtrarTiposFondos" :option-value="(v) => v.id"
+              @blur="v$.tipo_fondo.$touch"
               :option-label="(v) => v.descripcion" emit-value map-options>
               <template v-slot:error>
                 <div v-for="error of v$.tipo_fondo.$errors" :key="error.$uid">
@@ -52,6 +54,7 @@
             <q-select v-model="acreditacion.tipo_saldo" :options="tiposSaldos" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.tipo_saldo.$errors.length" error-message="Debes seleccionar un tipo de saldo" use-input
+              @blur="v$.tipo_saldo.$touch"
               input-debounce="0" @filter="filtrarTiposSaldos" :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion" emit-value map-options>
               <template v-slot:error>
@@ -92,40 +95,11 @@
               </template>
             </q-input>
           </div>
-          <!-- Fecha -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha Fondo Rotativo:</label>
-            <q-input v-model="acreditacion.fecha" placeholder="Obligatorio" :error="!!v$.fecha.$errors.length"
-              :disable="disabled" outlined dense>
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="acreditacion.fecha" mask="DD-MM-YYYY" today-btn>
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-
-              <template v-slot:error>
-                <div v-for="error of v$.fecha.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
           <!-- Saldo depositado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Saldo Anterior(*):</label>
             <q-input v-model="acreditacion.saldo_anterior" placeholder="Obligatorio" disable
-              :error="!!v$.saldo_anterior.$errors.length" @blur="v$.saldo_anterior.$touch" outlined dense type="number">
-              <template v-slot:error>
-                <div v-for="error of v$.saldo_anterior.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+              outlined dense type="number">
             </q-input>
           </div>
           <!--  Saldo Disponible -->
