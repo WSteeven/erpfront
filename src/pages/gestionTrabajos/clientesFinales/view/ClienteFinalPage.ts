@@ -23,7 +23,8 @@ export default defineComponent({
     TabLayout,
     EssentialTable,
   },
-  setup() {
+  emits: ['guardado', 'cerrar-modal'],
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
       ClienteFinal,
       new ClienteFinalController()
@@ -31,6 +32,7 @@ export default defineComponent({
     const { entidad: clienteFinal, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
+    const { onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -116,6 +118,14 @@ export default defineComponent({
       { label: 'Visto', value: 'VISTO' },
       { label: 'Canaleta', value: 'CANALETA' },
     ]
+
+    /********
+     * Hooks
+     ********/
+    onGuardado(() => {
+      emit('cerrar-modal')
+      emit('guardado', 'ClienteFinalPage')
+    })
 
     return {
       // mixin

@@ -270,7 +270,12 @@
 
                 <!-- Codigo de proyecto -->
                 <div v-if="paraProyecto" class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Código de proyecto</label>
+                  <label-abrir-modal
+                    v-if="mostrarLabelModal"
+                    label="Proyecto"
+                    @click="modalesTarea.abrirModalEntidad('ProyectoPage')"
+                  />
+                  <label v-else class="q-mb-sm block">Proyecto</label>
                   <q-select
                     v-model="tarea.proyecto"
                     :options="proyectos"
@@ -591,7 +596,7 @@
                   <label-abrir-modal
                     v-if="mostrarLabelModal"
                     label="Cliente final"
-                    @click="modales.abrirModalEntidad('ClienteFinalPage')"
+                    @click="modalesTarea.abrirModalEntidad('ClienteFinalPage')"
                   />
                   <label v-else class="q-mb-sm block">Cliente final</label>
                   <q-select
@@ -833,7 +838,7 @@
     </template>
   </tab-layout-filter-tabs>
 
-  <modales-entidad :comportamiento="modalesTarea" :mixin-modal="mixin" />
+  <modales-entidad :comportamiento="modalesTarea" :mixin-modal="mixin" @guardado="guardado" />
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"

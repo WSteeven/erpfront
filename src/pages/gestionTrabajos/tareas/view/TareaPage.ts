@@ -46,6 +46,7 @@ import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
 import { TipoTrabajo } from 'pages/gestionTrabajos/tiposTareas/domain/TipoTrabajo'
+import { TareaModales } from '../domain/TareaModales'
 
 export default defineComponent({
   components: {
@@ -183,6 +184,23 @@ export default defineComponent({
       tarea.tipo_trabajo = null
     }
 
+    async function guardado(paginaModal: keyof TareaModales) {
+      switch (paginaModal) {
+        case 'ProyectoPage':
+          const { result } = await new ProyectoController().listar()
+          console.log(result)
+          listadosAuxiliares.proyectos = result
+          proyectos.value = result
+          break
+        case 'ClienteFinalPage':
+          if (tarea.cliente) {
+            obtenerClientesFinales()
+          }
+          break
+      }
+      modalesTarea.cerrarModalEntidad()
+    }
+
     /************
     * Observers
     ************/
@@ -194,12 +212,16 @@ export default defineComponent({
       // tarea.cliente_final = null
 
       if (tarea.cliente) {
-        cargando.activar()
-        listadosAuxiliares.clientesFinales = (await controller.listar({ cliente: tarea.cliente })).result
-        clientesFinales.value = listadosAuxiliares.clientesFinales
-        cargando.desactivar()
+        obtenerClientesFinales()
       }
     })
+
+    async function obtenerClientesFinales() {
+      cargando.activar()
+      listadosAuxiliares.clientesFinales = (await controller.listar({ cliente: tarea.cliente })).result
+      clientesFinales.value = listadosAuxiliares.clientesFinales
+      cargando.desactivar()
+    }
 
     watchEffect(async () => {
       if (tarea.cliente_final) {
@@ -397,6 +419,7 @@ export default defineComponent({
       tabOptionsEstadosSubtareas,
       indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white'),
       maskFecha,
+      guardado,
       // Botones tareas
       btnVerPausasTarea,
       btnFinalizarTarea,

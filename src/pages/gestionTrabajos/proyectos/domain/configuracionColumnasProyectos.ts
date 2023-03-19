@@ -26,14 +26,14 @@ export const configuracionColumnasProyecto: ColumnConfig<Proyecto>[] = [
   {
     name: 'canton',
     field: 'canton',
-    label: 'Ciudad',
+    label: 'Cantón',
     align: 'left',
     sortable: true,
   },
   {
     name: 'coordinador',
     field: 'coordinador',
-    label: 'Supervisor JP',
+    label: 'Coordinador',
     align: 'left',
     sortable: true,
   },

@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasProyecto } from '../domain/configuracionColumnasProyectos'
-import { required, maxLength, helpers } from 'shared/i18n-validators'
+import { required, requiredIf, maxLength, helpers } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 
@@ -18,13 +18,15 @@ import { ClienteController } from 'pages/sistema/clientes/infraestructure/Client
 import { ProyectoController } from '../infraestructure/ProyectoController'
 import { Proyecto } from '../domain/Proyecto'
 import { rolesSistema } from 'config/utils'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: {
     TabLayout,
     EssentialTable,
   },
-  setup() {
+  emits: ['guardado', 'cerrar-modal'],
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
       Proyecto,
       new ProyectoController()
@@ -32,6 +34,7 @@ export default defineComponent({
     const { entidad: proyecto, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
+    const { onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -41,11 +44,22 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
+        fiscalizadores: {
+          controller: new EmpleadoController(),
+          params: { rol: rolesSistema.fiscalizador },
+        },
       })
       clientes.value = listadosAuxiliares.clientes
       cantones.value = listadosAuxiliares.cantones
       coordinadores.value = listadosAuxiliares.coordinadores
+      fiscalizadores.value = listadosAuxiliares.fiscalizadores
     })
+
+    /************
+     * Variables
+     ************/
+    const authenticationStore = useAuthenticationStore()
+    const mostrarCoordinador = computed(() => authenticationStore.esJefeTecnico)
 
     // Validaciones
     const fechaFinMayor = (valor: string) => valor > (proyecto.fecha_inicio ?? 0)
@@ -58,7 +72,7 @@ export default defineComponent({
       fecha_fin: { required, fechaMayor: helpers.withMessage('La fecha de fin de proyecto no puede ser mayor o igual que su fecha de inicio', fechaFinMayor) },
       nombre: { required },
       canton: { required },
-      coordinador: { required },
+      coordinador: { required: requiredIf(() => mostrarCoordinador.value) },
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -117,6 +131,26 @@ export default defineComponent({
       })
     }
 
+    // Filtro fiscalizadores
+    const fiscalizadores = ref()
+    function filtrarFiscalizadores(val, update) {
+      if (val === '') update(() => fiscalizadores.value = listadosAuxiliares.fiscalizadores)
+      update(() => {
+        const needle = val.toLowerCase()
+        fiscalizadores.value = listadosAuxiliares.fiscalizadores.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    /********
+     * Hooks
+     ********/
+    onGuardado(() => {
+      emit('cerrar-modal')
+      emit('guardado', 'ProyectoPage')
+    })
+
     return {
       mixin,
       proyecto,
@@ -127,9 +161,12 @@ export default defineComponent({
       clientes,
       cantones,
       coordinadores,
+      fiscalizadores,
       filtrarClientes,
       filtrarCantones,
       filtrarCoordinadores,
+      filtrarFiscalizadores,
+      mostrarCoordinador,
     }
   },
 })
