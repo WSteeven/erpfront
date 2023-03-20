@@ -12,6 +12,8 @@ import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { ReporteSaldoActual } from '../domain/ReporteSaldoActual'
 import { ReporteSaldoActualController } from '../infrestucture/ReporteSaldoActualController'
+import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import axios from 'axios'
 
 export default defineComponent({
   components: { TabLayout },
@@ -29,6 +31,7 @@ export default defineComponent({
       ReporteSaldoActual,
       new ReporteSaldoActualController()
     )
+    const visualizar_saldo_usuario = ref( false )
     const {
       entidad: reporte_saldo_actual,
       disabled,
@@ -111,10 +114,35 @@ export default defineComponent({
           break
       }
     }
+    function saldo_anterior (){
+
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const url_acreditacion =
+                apiConfig.URL_BASE +
+                '/' +
+                axiosHttpRepository.getEndpoint(endpoints.ultimo_saldo)+ reporte_saldo_actual.usuario;
+      axios({
+        url: url_acreditacion,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          'Authorization': axiosHttpRepository.getOptions().headers.Authorization
+        }
+      }).then((response: HttpResponseGet) => {
+        const { data } = response
+        if (data) {
+          visualizar_saldo_usuario.value = true
+          reporte_saldo_actual.saldo_anterior = data.saldo_actual
+        }
+
+      })
+
+    }
 
     return {
       mixin,
       reporte_saldo_actual,
+      saldo_anterior,
       disabled,
       accion,
       v$,
@@ -123,6 +151,7 @@ export default defineComponent({
       mostrarUsuarios,
       generar_reporte,
       filtrarUsuarios,
+      visualizar_saldo_usuario,
       watchEffect,
     }
   },

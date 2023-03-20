@@ -28,10 +28,14 @@ import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestruct
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
+import { useAuthenticationStore } from 'stores/authentication'
+
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
   setup() {
+    const authenticationStore = useAuthenticationStore()
+    const usuario = authenticationStore.user
     /*********
      * Stores
      *********/
@@ -63,11 +67,9 @@ export default defineComponent({
     const aprobarController = new AprobarGastoController()
 
     const mostrarListado = ref(true)
-    const mostrarAprobacion = ref(false)
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
-      mostrarAprobacion.value = true
     }
 
     /*************
@@ -129,6 +131,11 @@ export default defineComponent({
       comprobante2: {
         required,
       },
+      observacion: {
+        required,
+        minLength: minLength(100),
+      }
+
     }
 
     const v$ = useVuelidate(reglas, gasto)
@@ -327,7 +334,11 @@ export default defineComponent({
     const gastoPusherEvent = new GastoPusherEvent()
     gastoPusherEvent.start()
 
-    watchEffect(() => (gasto.total = gasto.cantidad! * gasto.valor_u!))
+    watchEffect(() => {
+      gasto.total = gasto.cantidad! * gasto.valor_u!
+      existeComprobante();
+
+    })
     function existeComprobante() {
       gasto.factura = null
       if (esFactura.value == false) {
@@ -338,7 +349,7 @@ export default defineComponent({
     }
     function aprobar_gasto(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
-        case 'Aprobado':
+        case 'aprobar':
           const data: CustomActionPrompt = {
             titulo: 'Aprobar gasto',
             mensaje: 'Ingrese motivo de aprobación',
@@ -347,6 +358,7 @@ export default defineComponent({
                 entidad.detalle_estado = data
                 await aprobarController.aprobarGasto(entidad)
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
+                setInterval("location.reload()", 2500);
               } catch (e: any) {
                 notificarError(
                   'No se pudo aprobar, debes ingresar un motivo para la anulación'
@@ -356,7 +368,7 @@ export default defineComponent({
           }
           prompt(data)
           break
-        case 'Rechazado':
+        case 'rechazar':
           confirmar('¿Está seguro de rechazar el gasto?', () => {
             const data: CustomActionPrompt = {
               titulo: 'Rechazar gasto',
@@ -366,6 +378,7 @@ export default defineComponent({
                   entidad.detalle_estado = data
                   await aprobarController.rechazarGasto(entidad)
                   notificarAdvertencia('Se rechazado Gasto Exitosamente')
+                  setInterval("location.reload()", 2500);
                 } catch (e: any) {
                   notificarError(
                     'No se pudo rechazar, debes ingresar un motivo para la anulación'
@@ -388,6 +401,7 @@ export default defineComponent({
       sub_detalles,
       proyectos,
       tareas,
+      usuario,
       disabled,
       accion,
       v$,

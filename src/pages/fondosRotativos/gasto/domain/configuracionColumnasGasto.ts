@@ -24,6 +24,12 @@ export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
     sortable: true
   },
   {
+    name: 'numComprobante',
+    field: 'numComprobante',
+    label: '#Comprobante',
+    align: 'left',
+    sortable: true },
+  {
     name: 'ruc',
     field: 'ruc',
     label: 'RUC.',
