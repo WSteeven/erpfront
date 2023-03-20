@@ -118,6 +118,8 @@ export const endpoints = {
   gasto_coordinador: new Endpoint('fondos-rotativos/gasto-coordinador'),
   aprobar_gasto: new Endpoint('fondos-rotativos/aprobar-gasto'),
   rechazar_gasto: new Endpoint('fondos-rotativos/rechazar-gasto'),
+  aprobar_trnasferencia: new Endpoint('fondos-rotativos/aprobar-transferencia'),
+  rechazar_transferencia: new Endpoint('fondos-rotativos/rechazar-transferencia'),
   detalle_fondo: new Endpoint('fondos-rotativos/detalles-viaticos'),
   sub_detalle_fondo: new Endpoint('fondos-rotativos/sub-detalles-viaticos'),
   saldo: new Endpoint('fondos-rotativos/saldo-grupo'),
@@ -133,6 +135,7 @@ export const endpoints = {
   consolidado_filtrado_pdf: new Endpoint('fondos-rotativos/consolidado_filtrado/pdf'),
   consolidado_filtrado_excel: new Endpoint('fondos-rotativos/consolidado_filtrado/excel'),
   autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
+  autorizaciones_transferencia: new Endpoint('fondos-rotativos/autorizaciones_transferencia'),
 
 
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),

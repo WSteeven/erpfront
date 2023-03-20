@@ -276,6 +276,7 @@ import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacio
 import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusherEvent'
 import { useNotificaciones } from 'shared/notificaciones'
 import { GastoPusherEvent } from 'pages/fondosRotativos/gasto/application/GastoPusherEvent'
+import { TransferenciaSaldoPusherEvent } from 'pages/fondosRotativos/autorizarTransferencia/application/TransferenciaSaldoPusherEvent'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -331,6 +332,9 @@ export default defineComponent({
     //fondos rotativos
     const fondosRotativoPusherEvent = new GastoPusherEvent();
     fondosRotativoPusherEvent.start();
+    //saldos
+    const transferenciaSaldoPusherEvent = new TransferenciaSaldoPusherEvent();
+    transferenciaSaldoPusherEvent.start();
 
 
 

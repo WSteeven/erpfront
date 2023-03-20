@@ -3,7 +3,7 @@
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { defineComponent, ref } from 'vue'
-import { accionesTabla, tabAutorizarGasto, estadosGastos } from 'config/utils'
+import { accionesTabla, tabAutorizarTransferenciaSaldo, estadosGastos, estadosTransferencias } from 'config/utils'
 
 // Componentes
 import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
@@ -11,14 +11,15 @@ import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { configuracionColumnasAutorizarGasto } from '../domain/configuracionColumnasAutorizarGasto'
+import { configuracionColumnasAutorizarTransferencia } from '../domain/configuracionColumnasAutorizarTransferencia'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
-import { AprobarGastoController } from '../infrestructure/AprobarGastoController'
-import { AutorizarGasto } from '../domain/AutorizarGasto'
+import { AprobarTransferenciaController } from '../infrestructure/AprobarTransferenciaController'
+import { AutorizarTransferencia } from '../domain/AutorizarTransferencia'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
-import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
+import { ComportamientoModalesTransferencia } from '../application/ComportamientoModalesTransferencia'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { AutorizarTransferenciaController } from '../infrestructure/AutorizarTransferenciaController'
+import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -27,8 +28,8 @@ export default defineComponent({
     ModalEntidad,
   },
   setup() {
-    const controller = new AutorizarGastoController()
-    const aprobarController = new AprobarGastoController()
+    const controller = new AutorizarTransferenciaController()
+    const aprobarController = new AprobarTransferenciaController()
     const {
       confirmar,
       prompt,
@@ -48,17 +49,17 @@ export default defineComponent({
      * Stores
      ***********/
     const authenticationStore = useAuthenticationStore()
-    const fondoRotativoStore = useFondoRotativoStore()
+    const transferenciaSaldoStore = useTransferenciaSaldoStore()
     /***************
      * Botones tabla
      ***************/
-    const autorizarGastoController = new AutorizarGastoController()
-    async function filtrarAutorizacionesGasto(tabSeleccionado) {
+    const autorizarTransferenciaController = new AutorizarTransferenciaController()
+    async function filtrarAutorizacionesTransferencia(tabSeleccionado) {
       const cargando = new StatusEssentialLoading()
 
       cargando.activar()
 
-      const { result } = await autorizarGastoController.listar({
+      const { result } = await autorizarTransferenciaController.listar({
         estado: tabSeleccionado,
       })
       listado.value = result
@@ -66,27 +67,27 @@ export default defineComponent({
 
       cargando.desactivar()
     }
-    filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
+    filtrarAutorizacionesTransferencia(estadosTransferencias.PENDIENTE)
 
     /**Modales */
-    const modales = new ComportamientoModalesAutorizarGasto()
-    const botonVerModalGasto: CustomActionTable = {
+    const modales = new ComportamientoModalesTransferencia()
+    const botonVerModalTransferencia: CustomActionTable = {
       titulo: 'Consultar',
       icono: 'bi-eye',
       color: 'indigo',
       accion: ({ entidad }) => {
-        fondoRotativoStore.id_gasto = entidad.id
-        modales.abrirModalEntidad('GastoPage')
+        transferenciaSaldoStore.id_transferencia = entidad.id
+        modales.abrirModalEntidad('TransferenciaPage')
       }
     }
 
     return {
-      configuracionColumnasAutorizarGasto,
+      configuracionColumnasAutorizarTransferencia,
       listado,
-      tabAutorizarGasto,
-      botonVerModalGasto,
+      tabAutorizarTransferenciaSaldo,
+      botonVerModalTransferencia,
       accionesTabla,
-      filtrarAutorizacionesGasto,
+      filtrarAutorizacionesTransferencia,
       authenticationStore,
       modales,
     }

@@ -8,12 +8,13 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import {  required,maxLength, requiredIf } from 'shared/i18n-validators'
+import { required, maxLength, requiredIf } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TransferenciaController } from '../infrestructure/TransferenciaController'
 import { configuracionColumnasTransferencia } from '../domain/configuracionColumnasTransferencia'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -22,25 +23,42 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    const transferenciaSaldoStore = useTransferenciaSaldoStore()
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Transferencia, new TransferenciaController())
+    const mixin = new ContenedorSimpleMixin(
+      Transferencia,
+      new TransferenciaController()
+    )
     const {
       entidad: transferencia,
       disabled,
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
+    const esDevolucion = ref(true)
+    const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
+    const mostrarListado = ref(true)
+    const mostrarAprobacion = ref(false)
+    if (transferenciaSaldoStore.id_transferencia) {
+      consultar({ id: transferenciaSaldoStore.id_transferencia })
+      mostrarListado.value = false
+      mostrarAprobacion.value = true
+      esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
+    }
 
     /*************
      * Validaciones
      **************/
     const reglas = {
       usuario_recibe: {
-        requiredIf: requiredIf(() => transferencia.usuario_envia !== transferencia.usuario_recibe? false : true),
+        requiredIf: requiredIf(() =>
+          transferencia.usuario_envia !== transferencia.usuario_recibe
+            ? false
+            : true
+        ),
         maxLength: maxLength(50),
       },
       monto: {
@@ -64,7 +82,6 @@ export default defineComponent({
     setValidador(v$.value)
 
     const usuarios = ref([])
-    const esDevolucion = ref(true)
     const tareas = ref([])
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -88,24 +105,24 @@ export default defineComponent({
     function filtrarUsuarios(val, update) {
       if (val === '') {
         update(() => {
-          usuarios.value =
-            listadosAuxiliares.usuarios
+          usuarios.value = listadosAuxiliares.usuarios
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        usuarios.value =
-          listadosAuxiliares.usuarios.filter(
-            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
+        usuarios.value = listadosAuxiliares.usuarios.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
       })
     }
     /**Filtro de Tareas */
     function filtrarTareas(val, update) {
       if (val === '') {
         update(() => {
-         tareas.value = listadosAuxiliares.tareas
+          tareas.value = listadosAuxiliares.tareas
         })
         return
       }
@@ -118,11 +135,11 @@ export default defineComponent({
         )
       })
     }
-    function existeDevolucion(){
-      if(esDevolucion.value ==true){
+    function existeDevolucion() {
+      if ((esDevolucion.value = true)) {
         transferencia.usuario_recibe = null
         transferencia.motivo = 'DEVOLUCION'
-      }else{
+      } else {
         transferencia.motivo = 'TRANSFERENCIA ENTRE USUARIOS'
       }
     }
@@ -130,13 +147,16 @@ export default defineComponent({
       mixin,
       transferencia,
       esDevolucion,
-      disabled, accion, v$,
+      disabled,
+      accion,
+      v$,
       usuarios,
       tareas,
       filtrarUsuarios,
       filtrarTareas,
       existeDevolucion,
       configuracionColumnas: configuracionColumnasTransferencia,
+      mostrarListado,
     }
   },
 })

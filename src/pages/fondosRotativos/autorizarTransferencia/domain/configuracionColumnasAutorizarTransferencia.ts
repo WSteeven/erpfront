@@ -1,7 +1,8 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Transferencia } from "./Transferencia";
+import { AutorizarTransferencia } from "./AutorizarTransferencia";
 
-export const configuracionColumnasTransferencia: ColumnConfig<Transferencia>[] = [
+
+export const configuracionColumnasAutorizarTransferencia: ColumnConfig<AutorizarTransferencia>[] = [
   {
     name: 'usuario_envia_info',
     field: 'usuario_envia_info',

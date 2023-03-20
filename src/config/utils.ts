@@ -166,6 +166,11 @@ export const tabAutorizarGasto: TabOption[] = [
   { label: 'Rechazada', value: '2' },
   { label: 'Pendiente', value: '3' },
 ]
+export const tabAutorizarTransferenciaSaldo: TabOption[] = [
+  { label: 'Aprobada', value: '1' },
+  { label: 'Rechazada', value: '2' },
+  { label: 'Pendiente', value: '3' },
+]
 
 export const accionesTabla = {
   name: 'acciones',
@@ -269,6 +274,11 @@ export const estadosTrabajos = {
   REAGENDADO: 'REAGENDADO',
 }
 export const estadosGastos = {
+  APROBADO: 1,
+  RECHAZADO: 2,
+  PENDIENTE: 3,
+}
+export const estadosTransferencias = {
   APROBADO: 1,
   RECHAZADO: 2,
   PENDIENTE: 3,

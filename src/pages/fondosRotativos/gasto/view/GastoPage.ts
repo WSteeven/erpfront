@@ -67,9 +67,11 @@ export default defineComponent({
     const aprobarController = new AprobarGastoController()
 
     const mostrarListado = ref(true)
+    const mostrarAprobacion = ref(false)
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
+      mostrarAprobacion.value = true
     }
 
     /*************

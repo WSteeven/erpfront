@@ -436,6 +436,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: false },
       },
+      {
+        path: '/autorizar-transferencia',
+        name: 'autorizar_transferencia',
+        component: () =>
+          import(
+            'pages/fondosRotativos/autorizarTransferencia/view/AutorizarTransferenciaPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
 
       {
         path: '/detalle_fondo',
