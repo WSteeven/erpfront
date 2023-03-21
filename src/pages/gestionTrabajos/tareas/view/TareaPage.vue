@@ -9,10 +9,9 @@
     :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'"
     :tabOptions="tabOptionsEstadosSubtareas"
     :accion1="btnFormularioTarea"
-    :accion2="btnVerPausasTarea"
-    :accion3="btnReagendarTarea"
-    :accion4="botonCancelar"
-    :accion5="btnFinalizarTarea"
+    :accion2="btnReagendarTarea"
+    :accion3="btnCancelarTarea"
+    :accion4="btnFinalizarTarea"
   >
     <template #formulario>
       <q-tabs
@@ -271,7 +270,12 @@
 
                 <!-- Codigo de proyecto -->
                 <div v-if="paraProyecto" class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Código de proyecto</label>
+                  <label-abrir-modal
+                    v-if="mostrarLabelModal"
+                    label="Proyecto"
+                    @click="modalesTarea.abrirModalEntidad('ProyectoPage')"
+                  />
+                  <label v-else class="q-mb-sm block">Proyecto</label>
                   <q-select
                     v-model="tarea.proyecto"
                     :options="proyectos"
@@ -412,7 +416,12 @@
                     @filter="filtrarTiposTrabajos"
                     transition-show="scale"
                     transition-hide="scale"
-                    hint="Seleccione primero una tarea"
+                    :hint="
+                      'Seleccione primero un' +
+                      (tarea.para_cliente_proyecto === 'PARA_PROYECTO'
+                        ? ' proyecto'
+                        : ' cliente corporativo')
+                    "
                     options-dense
                     dense
                     outlined
@@ -587,7 +596,7 @@
                   <label-abrir-modal
                     v-if="mostrarLabelModal"
                     label="Cliente final"
-                    @click="modales.abrirModalEntidad('ClienteFinalPage')"
+                    @click="modalesTarea.abrirModalEntidad('ClienteFinalPage')"
                   />
                   <label v-else class="q-mb-sm block">Cliente final</label>
                   <q-select
@@ -780,16 +789,27 @@
               header-class="text-bold bg-header-collapse"
               default-opened
             >
-              <tiempo-subtarea
-                :disable="disabled"
-                :subtarea="tarea.subtarea"
-              ></tiempo-subtarea>
+              <div class="q-pa-md q-gutter-y-md">
+                <tiempo-subtarea
+                  :disable="disabled"
+                  :subtarea="tarea.subtarea"
+                ></tiempo-subtarea>
+
+                <tabla-subtarea-pausas
+                  :id-subtarea="tarea.subtarea.id"
+                ></tabla-subtarea-pausas>
+
+                <tabla-subtarea-suspendida
+                  :id-subtarea="tarea.subtarea.id"
+                ></tabla-subtarea-suspendida>
+              </div>
             </q-expansion-item>
           </q-form>
         </q-tab-panel>
 
         <q-tab-panel name="subtareas">
           <essential-table-tabs
+            titulo="Subtareas"
             :configuracionColumnas="columnasSubtareas"
             :datos="subtareas"
             :tabOptions="tabOptionsEstadosSubtareas"
@@ -797,8 +817,7 @@
             :accion2="botonCancelar"
             :accion3="botonReagendar"
             :accion4="botonFormulario"
-            :accion5="botonVerPausas"
-            :accion6="botonFinalizar"
+            :accion5="botonFinalizar"
             :accion1Header="btnAgregarSubtarea"
             separador="cell"
             :permitirConsultar="false"
@@ -819,7 +838,7 @@
     </template>
   </tab-layout-filter-tabs>
 
-  <modales-entidad :comportamiento="modales" />
+  <modales-entidad :comportamiento="modalesTarea" :mixin-modal="mixin" @guardado="guardado" />
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"

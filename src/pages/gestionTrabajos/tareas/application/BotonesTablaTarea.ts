@@ -1,21 +1,27 @@
 // import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { ComportamientoModalesSubtarea } from '../../subtareas/application/ComportamientoModalesSubtarea'
+// import { ComportamientoModalesSubtarea } from '../../subtareas/application/ComportamientoModalesSubtarea'
 import { CambiarEstadoSubtarea } from '../../subtareas/application/CambiarEstadoSubtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
 import { estadosTrabajos } from 'config/utils'
-import { Subtarea } from '../../subtareas/domain/Subtarea'
+// import { Subtarea } from '../../subtareas/domain/Subtarea'
 import { Ref } from 'vue'
 import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
 import { Tarea } from '../domain/Tarea'
+import { ComportamientoModalesTarea } from './ComportamientoModalesTarea'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosError, AxiosResponse } from 'axios'
+import { ApiError } from 'shared/error/domain/ApiError'
 
-export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: ComportamientoModalesSubtarea, listadosAuxiliares: any) => {
+export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: ComportamientoModalesTarea, listadosAuxiliares: any) => {
   const subtareaStore = useSubtareaStore()
 
   const { confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
-  const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
+  const cambiarEstadoSubtarea = new CambiarEstadoSubtarea()
 
   // const cargando = new StatusEssentialLoading()
 
@@ -23,7 +29,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     titulo: 'Formulario',
     icono: 'bi-pencil-square',
     color: 'indigo',
-    visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
+    visible: ({ entidad }) => !entidad.tiene_subtareas && [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
     accion: ({ entidad }) => {
       subtareaStore.idSubtareaSeleccionada = entidad.id
       modales.abrirModalEntidad('EmergenciasPage')
@@ -37,7 +43,8 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     visible: ({ entidad }) => !entidad.tiene_subtareas,//entidad.estado !== estadosTrabajos.CREADO,
     accion: ({ entidad }) => {
       subtareaStore.idSubtareaSeleccionada = entidad.subtarea.id
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_tarea
+      subtareaStore.codigoTareaSeleccionada = entidad.codigo_tarea
+      subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
       modales.abrirModalEntidad('PausasRealizadasPage')
     }
   }
@@ -48,7 +55,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     icono: 'bi-check-circle',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
     accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
-      const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id)
+      const { result } = await cambiarEstadoSubtarea.finalizar(entidad.id)
       entidad.estado = estadosTrabajos.FINALIZADO
       entidad.fecha_hora_finalizacion = result.fecha_hora_finalizacion
       entidad.dias_ocupados = result.dias_ocupados
@@ -66,7 +73,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     accion: ({ entidad, posicion }) => {
       confirmar('¿Está seguro de asignar el trabajo?', async () => {
         cargando.activar();
-        const { result } = await cambiarEstadoTrabajo.asignar(entidad.id)
+        const { result } = await cambiarEstadoSubtarea.asignar(entidad.id)
         entidad.estado = estadosTrabajos.ASIGNADO
         entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
         actualizarElemento(posicion, entidad)
@@ -75,17 +82,43 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
       })
     },
   } */
+  async function solicitud(accion, tarea, data?) {
+    const cargando = new StatusEssentialLoading()
+    const axios = AxiosHttpRepository.getInstance()
+
+    try {
+      const ruta =
+        axios.getEndpoint(endpoints.tareas) + accion + '/' + tarea
+
+      cargando.activar()
+      const response: AxiosResponse = await axios.post(ruta, data)
+
+      return {
+        response,
+        result: response.data.modelo,
+      }
+    } catch (e: unknown) {
+      const axiosError = e as AxiosError
+      throw new ApiError(axiosError)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
+  async function cancelar(idTarea: number, idMotivoCancelado: number) {
+    return solicitud('/cancelar', idTarea, { motivo_suspendido_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
+  }
 
   const botonCancelar: CustomActionTable = {
     titulo: 'Cancelar',
     color: 'negative',
     icono: 'bi-x-circle',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
-    accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de cancelar definitivamente la subtarea?'], async () => {
+    visible: ({ entidad }) => !entidad.tiene_subtareas && entidad.estado === estadosTrabajos.SUSPENDIDO,
+    accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de cancelar definitivamente la tarea?'], async () => {
       const config: CustomActionPrompt = {
         mensaje: 'Seleccione el motivo de la cancelación',
         accion: async (data) => {
-          const { result } = await cambiarEstadoTrabajo.cancelar(entidad.id, data)
+          const { result } = await cancelar(entidad.id, data) //cambiarEstadoSubtarea.cancelar(entidad.id, data)
           entidad.estado = estadosTrabajos.CANCELADO
           entidad.fecha_hora_cancelado = result.fecha_hora_cancelado
           entidad.motivo_cancelado = result.motivo_cancelado
@@ -110,11 +143,11 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     color: 'negative',
     icono: 'bi-x',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.AGENDADO,
-    accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de anular la subtarea?'], async () => {
+    accion: ({ entidad, posicion }) => confirmar(['¿Está seguro de anular la tarea?'], async () => {
       const config: CustomActionPrompt = {
         mensaje: 'Ingrese el motivo de la cancelación',
         accion: async (data) => {
-          const { result } = await cambiarEstadoTrabajo.cancelar(entidad.id, data)
+          const { result } = await cambiarEstadoSubtarea.cancelar(entidad.id, data)
           entidad.estado = estadosTrabajos.CANCELADO
           entidad.fecha_hora_cancelacion = result.fecha_hora_cancelacion
           entidad.causa_cancelacion = result.causa_cancelacion
@@ -131,12 +164,13 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     titulo: 'Reagendar',
     color: 'orange-8',
     icono: 'bi-calendar-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
-    accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_tarea
+    visible: ({ entidad }) => !entidad.tiene_subtareas && entidad.estado === estadosTrabajos.SUSPENDIDO,
+    accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la tarea?', () => {
+      subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_tarea
       subtareaStore.fechaHoraPendiente = entidad.subtarea.fecha_hora_suspendido
       subtareaStore.motivoPendiente = entidad.subtarea.motivo_suspendido
-      subtareaStore.idSubtareaSeleccionada = entidad.subtarea.id
+      subtareaStore.idSubtareaSeleccionada = entidad.id
+      subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
       subtareaStore.posicionSubtareaSeleccionada = posicion
       subtareaStore.subtareaEsVentana = entidad.subtarea.es_ventana
       subtareaStore.fechaInicioTrabajo = entidad.subtarea.fecha_inicio_trabajo
@@ -155,7 +189,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     visible: () => true,
     accion: async ({ entidad }) => {
       subtareaStore.idSubtareaSeleccionada = entidad.id
-      subtareaStore.codigoTrabajoSeleccionado = entidad.codigo_subtarea
+      subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_subtarea
       modales.abrirModalEntidad('GestorArchivoTrabajo')
     }
   } */

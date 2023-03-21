@@ -14,12 +14,14 @@ import useVuelidate from '@vuelidate/core'
 
 // Componentes
 import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
+import TablaSubtareaSuspendida from 'gestionTrabajos/subtareas/modules/tablaSubtareasSuspendidas/view/TablaSubtareaSuspendida.vue'
+import TablaSubtareaPausas from 'gestionTrabajos/subtareas/modules/pausasRealizadas/view/PausasRealizadas.vue'
+import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/view/TiempoSubtarea.vue'
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
-import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/view/TiempoSubtarea.vue'
 
 // Logica y controladores
 import { MotivoSuspendidoController } from 'gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
@@ -43,6 +45,8 @@ import { useBotonesTablaTarea } from '../application/BotonesTablaTarea'
 import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
+import { TipoTrabajo } from 'pages/gestionTrabajos/tiposTareas/domain/TipoTrabajo'
+import { TareaModales } from '../domain/TareaModales'
 
 export default defineComponent({
   components: {
@@ -53,6 +57,8 @@ export default defineComponent({
     EssentialTableTabs,
     DesignarResponsableTrabajo,
     TiempoSubtarea,
+    TablaSubtareaSuspendida,
+    TablaSubtareaPausas,
   },
   setup() {
     /*********
@@ -102,6 +108,7 @@ export default defineComponent({
       clientes.value = listadosAuxiliares.clientes
       fiscalizadores.value = listadosAuxiliares.fiscalizadores
       coordinadores.value = listadosAuxiliares.coordinadores
+      // tiposTrabajosSource.value = listadosAuxiliares.tiposTrabajos
       listadosAuxiliares.clientesFinales = []
     })
 
@@ -111,6 +118,11 @@ export default defineComponent({
     const { notificarAdvertencia } = useNotificaciones()
     const paraProyecto = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
+    const tab = ref('tarea')
+    /*const tiposTrabajosSource = ref([])
+    listadosAuxiliares.tiposTrabajos = computed(() =>
+      tiposTrabajosSource.value.filter((tipo: TipoTrabajo) => tipo.cliente_id === (tarea.cliente ? tarea.cliente : false))
+    ).value*/
 
     /*************
     * Validaciones
@@ -156,7 +168,7 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
-    } = useFiltrosListadosTarea(listadosAuxiliares)
+    } = useFiltrosListadosTarea(listadosAuxiliares, tarea)
 
     /************
     * Funciones
@@ -169,6 +181,24 @@ export default defineComponent({
 
     function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
+      tarea.tipo_trabajo = null
+    }
+
+    async function guardado(paginaModal: keyof TareaModales) {
+      switch (paginaModal) {
+        case 'ProyectoPage':
+          const { result } = await new ProyectoController().listar()
+          console.log(result)
+          listadosAuxiliares.proyectos = result
+          proyectos.value = result
+          break
+        case 'ClienteFinalPage':
+          if (tarea.cliente) {
+            obtenerClientesFinales()
+          }
+          break
+      }
+      modalesTarea.cerrarModalEntidad()
     }
 
     /************
@@ -182,12 +212,16 @@ export default defineComponent({
       // tarea.cliente_final = null
 
       if (tarea.cliente) {
-        cargando.activar()
-        listadosAuxiliares.clientesFinales = (await controller.listar({ cliente: tarea.cliente })).result
-        clientesFinales.value = listadosAuxiliares.clientesFinales
-        cargando.desactivar()
+        obtenerClientesFinales()
       }
     })
+
+    async function obtenerClientesFinales() {
+      cargando.activar()
+      listadosAuxiliares.clientesFinales = (await controller.listar({ cliente: tarea.cliente })).result
+      clientesFinales.value = listadosAuxiliares.clientesFinales
+      cargando.desactivar()
+    }
 
     watchEffect(async () => {
       if (tarea.cliente_final) {
@@ -219,7 +253,10 @@ export default defineComponent({
 
     const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
 
-    const modales = new ComportamientoModalesTarea()
+    /**********
+    * Modales
+    **********/
+    const modalesTarea = new ComportamientoModalesTarea()
     const modalesSubtarea = new ComportamientoModalesSubtarea()
 
     /*********
@@ -233,6 +270,7 @@ export default defineComponent({
     onConsultado(() => {
       filtrarSubtareas('')
 
+      if (!tarea.tiene_subtareas) tab.value = 'tarea'
       if (tarea.subtarea && !tarea.tiene_subtareas) {
         tarea.titulo = tarea.subtarea.titulo
         tarea.observacion = tarea.subtarea.observacion
@@ -266,8 +304,8 @@ export default defineComponent({
     })
 
     // Subtareas
-    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea } = useBotonesTablaTarea(listado, modalesSubtarea, listadosAuxiliares)
-    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
+    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea, botonCancelar: btnCancelarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
+    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
@@ -280,6 +318,7 @@ export default defineComponent({
         subtareaStore.observacionTarea = tarea.observacion
         subtareaStore.accion = acciones.nuevo
         subtareaStore.idSubtareaSeleccionada = null
+        subtareaStore.idCliente = tarea.cliente
         modalesSubtarea.abrirModalEntidad('SubtareaPage')
       },
     }
@@ -361,13 +400,13 @@ export default defineComponent({
       establecerCliente,
       configuracionColumnasClientes,
       setCliente,
-      modales,
+      modalesTarea,
       modalesSubtarea,
       mostrarLabelModal,
       configuracionColumnasTarea,
       mixin,
       mediosNotificacion,
-      tab: ref('tarea'),
+      tab,
       verificarEsVentana,
       grupos,
       filtrarGrupos,
@@ -376,15 +415,17 @@ export default defineComponent({
       modosAsignacionTrabajo,
       configuracionColumnasSubtarea,
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
-      botonFormulario, botonReagendar, botonCancelar, botonFinalizar, botonVerPausas,
+      botonFormulario, botonReagendar, botonCancelar, botonFinalizar,
       tabOptionsEstadosSubtareas,
       indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white'),
       maskFecha,
+      guardado,
       // Botones tareas
       btnVerPausasTarea,
       btnFinalizarTarea,
       btnFormularioTarea,
       btnReagendarTarea,
+      btnCancelarTarea,
     }
   },
 })

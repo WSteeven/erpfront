@@ -5,17 +5,15 @@ import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { Ref } from 'vue'
 
 export class GastoPusherEvent {
-   authenticationStore = useAuthenticationStore()
-   notificacionesPusherStore = useNotificationRealtimeStore()
-   usuario = this.authenticationStore.user
+  authenticationStore = useAuthenticationStore()
+  notificacionesPusherStore = useNotificationRealtimeStore()
+  usuario = this.authenticationStore.user
   start() {
     const { notificarCorrecto } = useNotificaciones()
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
-    console.log('fondo-rotativo-'+this.usuario.usuario_id);
-    pusher.subscribe('fondo-rotativo-'+this.usuario.usuario_id)
+    pusher.subscribe('fondo-rotativo-' + this.usuario.usuario_id)
     pusher.bind('fondo-rotativo-event', function (e) {
-      console.log('fondo-rotativo-event', e);
       notificacionStore.agregar(e.notificacion)
       notificarCorrecto('Tienes un gasto esperando ser aprobado')
 

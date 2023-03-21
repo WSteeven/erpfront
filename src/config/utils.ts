@@ -300,6 +300,7 @@ export const rolesSistema = {
   rrhh: 'RECURSOS HUMANOS',
   empleado: 'EMPLEADO',
   coordinador: 'COORDINADOR',
+  jefe_tecnico: 'JEFE TECNICO',
   fiscalizador: 'FISCALIZADOR',
   bodega: 'BODEGA',
   activos_fijos: 'ACTIVOS FIJOS',

@@ -218,7 +218,7 @@
           </div>
 
           <!-- Coordinador -->
-          <div class="col-12 col-md-3">
+          <div v-if="mostrarCoordinador" class="col-12 col-md-3">
             <label class="q-mb-sm block">Coordinador</label>
             <q-select
               v-model="proyecto.coordinador"
@@ -260,9 +260,8 @@
             <label class="q-mb-sm block">Fiscalizador</label>
             <q-select
               v-model="proyecto.fiscalizador"
-              :options="coordinadores"
-              @filter="filtrarCoordinadores"
-              @blur="v$.coordinador.$touch"
+              :options="fiscalizadores"
+              @filter="filtrarFiscalizadores"
               :disable="disabled"
               transition-show="scale"
               transition-hide="scale"

@@ -1,6 +1,6 @@
 <template>
   <div class="col-12 q-gutter-sm q-mb-lg">
-    <div><b>Código de trabajo: </b>{{ codigoTrabajoSeleccionado }}</div>
+    <div><b>Código de trabajo: </b>{{ codigoSubtareaSeleccionada }}</div>
     <div><b>Fecha y hora de suspención: </b> {{ fechaHoraPendiente }}</div>
     <div><b>Motivo del suspenso: </b> {{ motivoPendiente }}</div>
   </div>

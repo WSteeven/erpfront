@@ -11,7 +11,7 @@ export class PerfilModales {
 
   constructor() {
     this.CambiarContrasenaPage = markRaw(
-      new ComponenteModal('CambiarContrasenas', cambiarContrasenaPage)
+      new ComponenteModal('Cambiar contraseña', cambiarContrasenaPage)
     )
   }
 }
