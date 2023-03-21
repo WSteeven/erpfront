@@ -69,7 +69,7 @@ export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
   {
     name: 'detalle_estado',
     field: 'detalle_estado',
-    label: 'Detalle Estado',
+    label: 'Descripcion',
     align: 'left',
     sortable: true
   },

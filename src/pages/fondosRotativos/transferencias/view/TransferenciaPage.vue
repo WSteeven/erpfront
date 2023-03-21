@@ -1,12 +1,11 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas"  :mostrarListado="mostrarListado"
-    :mostrarButtonSubmits="!mostrarAprobacion">
+  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
     <template #formulario>
 
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
           <!-- Usuarios Reciben -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="!esDevolucion || transferencia.usuario_recibe !== null">
+          <div class="col-12 col-md-3 q-mb-md"  v-if="!esDevolucion || transferencia.usuario_recibe !== null">
             <label class="q-mb-sm block">Recibido Por:</label>
             <q-select v-model="transferencia.usuario_recibe" :options="usuarios" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
@@ -113,6 +112,12 @@
           </div>
         </div>
       </q-form>
+      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.usuario_id == transferencia.usuario_recibe">
+        <q-btn color="positive" @click="aprobar_transferencia(transferencia, 'aprobar')">
+          <q-icon name="bi-check-circle" size="xs"></q-icon>Aceptar</q-btn>
+        <q-btn color="negative" @click="aprobar_transferencia(transferencia, 'rechazar')">
+          <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn>
+      </div>
     </template>
   </tab-layout>
 </template>

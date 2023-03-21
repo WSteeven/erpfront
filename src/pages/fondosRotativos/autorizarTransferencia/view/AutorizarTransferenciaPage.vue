@@ -22,7 +22,7 @@
       :permitirEliminar="false"
       :permitirBuscar="false"
       :mostrar-botones="false"
-      :tab-options="tabAutorizarTransferencia"
+      :tab-options="tabAutorizarTransferenciaSaldo"
       @tab-seleccionado="filtrarAutorizacionesTransferencia"
       tab-defecto="PENDIENTE"
     ></essential-table-tabs>
