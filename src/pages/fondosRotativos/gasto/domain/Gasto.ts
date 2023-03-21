@@ -54,7 +54,7 @@ export class Gasto extends EntidadAuditable {
     this.observacion = null
     this.id_usuario = null
     this.estado = null
-    this.estado_info = null
+    this.estado_info = 'POR APROBAR'
     this.detalle_estado = null
 
   }

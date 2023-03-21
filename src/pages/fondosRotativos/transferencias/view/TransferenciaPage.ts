@@ -93,6 +93,7 @@ export default defineComponent({
       esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
     }
 
+
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({

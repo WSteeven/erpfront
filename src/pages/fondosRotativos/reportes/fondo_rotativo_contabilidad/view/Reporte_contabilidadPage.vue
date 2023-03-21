@@ -41,7 +41,7 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="fondo_rotativo_contabilidad.fecha_inicio" mask="DD-MM-YYYY" today-btn>
+                    <q-date v-model="fondo_rotativo_contabilidad.fecha_inicio"  mask="DD/MM/YYYY" today-btn>
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
@@ -65,7 +65,7 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="fondo_rotativo_contabilidad.fecha_fin" mask="DD-MM-YYYY" today-btn>
+                    <q-date v-model="fondo_rotativo_contabilidad.fecha_fin"  mask="DD/MM/YYYY" today-btn>
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
