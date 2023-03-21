@@ -11,7 +11,7 @@
 
       <q-card-section>
         <!-- Usuarios -->
-        <div class="col-12 col-md-3" v-if="is_all_users == 'false'">
+        <div class="col-12 col-md-3" v-if="is_all_users == 'false' && store.can('puede.buscar.saldo.usuarios')">
           <label class="q-mb-sm block">Usuario</label>
           <q-select
             v-model="reporte_saldo_actual.usuario"
@@ -60,7 +60,7 @@
             {{ reporte_saldo_actual.saldo_anterior }}
           </q-chip>
         </div>
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3" v-if="store.can('puede.buscar.saldo.usuarios')">
           <q-checkbox
             v-model="is_all_users"
             color="secondary"

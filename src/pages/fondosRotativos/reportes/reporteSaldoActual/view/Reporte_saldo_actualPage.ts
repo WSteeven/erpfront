@@ -14,6 +14,7 @@ import { ReporteSaldoActual } from '../domain/ReporteSaldoActual'
 import { ReporteSaldoActualController } from '../infrestucture/ReporteSaldoActualController'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { TabLayout },
@@ -24,6 +25,7 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    const store = useAuthenticationStore()
     /***********
      * Mixin
      ************/
@@ -114,6 +116,11 @@ export default defineComponent({
           break
       }
     }
+    if(store.can('puede.buscar.saldo.usuarios')==false){
+      reporte_saldo_actual.usuario = store.user.id
+      visualizar_saldo_usuario.value = true
+      saldo_anterior();
+    }
     function saldo_anterior (){
 
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
@@ -141,6 +148,7 @@ export default defineComponent({
 
     return {
       mixin,
+      store,
       reporte_saldo_actual,
       saldo_anterior,
       disabled,
