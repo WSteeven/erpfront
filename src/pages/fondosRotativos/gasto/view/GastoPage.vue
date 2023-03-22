@@ -173,10 +173,10 @@
           <!-- Numero de Comprobante -->
           <div class="col-12 col-md-3" v-if="esFactura == false">
             <label class="q-mb-sm block">Numero de Comprobante</label>
-            <q-input v-model="gasto.numComprobante" placeholder="Opcional" type="number" :disable="disabled"
-              :error="!!v$.numComprobante.$errors.length" @blur="v$.numComprobante.$touch" outlined dense>
+            <q-input v-model="gasto.num_comprobante" placeholder="Opcional" type="number" :disable="disabled"
+              :error="!!v$.num_comprobante.$errors.length" @blur="v$.num_comprobante.$touch" outlined dense>
               <template v-slot:error>
-                <div v-for="error of v$.numComprobante.$errors" :key="error.$uid">
+                <div v-for="error of v$.num_comprobante.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -358,7 +358,7 @@
           </div>
         </div>
       </q-form>
-      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.usuario_id == gasto.aut_especial">
+      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.usuario_id == gasto.aut_especial && gasto.estado_info=='POR APROBAR'">
         <q-btn color="positive" @click="aprobar_gasto(gasto, 'aprobar')">
           <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobar</q-btn>
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'rechazar')">

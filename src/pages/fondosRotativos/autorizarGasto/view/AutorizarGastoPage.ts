@@ -75,6 +75,7 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'indigo',
       accion: ({ entidad }) => {
+        fondoRotativoStore.existeFactura = entidad.factura ==null? false:true
         fondoRotativoStore.id_gasto = entidad.id
         modales.abrirModalEntidad('GastoPage')
       }

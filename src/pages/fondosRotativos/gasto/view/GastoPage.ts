@@ -8,7 +8,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { helpers, maxLength, minLength, required } from 'shared/i18n-validators'
+import { requiredIf, maxLength, minLength, required } from 'shared/i18n-validators'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
@@ -17,7 +17,6 @@ import { CantonController } from 'sistema/ciudad/infraestructure/CantonControlle
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
-import { validarIdentificacion } from 'shared/validadores/validaciones'
 import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
@@ -66,13 +65,18 @@ export default defineComponent({
     const fondoRotativoStore = useFondoRotativoStore()
     const aprobarController = new AprobarGastoController()
 
+    const esFactura = ref(true)
+
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
       mostrarAprobacion.value = true
+      esFactura.value = fondoRotativoStore.existeFactura
+
     }
+
 
     /*************
      * Validaciones
@@ -96,17 +100,13 @@ export default defineComponent({
       ruc: {
         minLength: minLength(13),
         maxLength: maxLength(13),
-        helper: helpers.withMessage(
-          'El RUC ingresado es Invalido',
-          validarIdentificacion
-        ),
+        requiredIfFactura: requiredIf(()=>esFactura.value)
       },
       factura: {
-        minLength: minLength(3),
-        maxLength: maxLength(15),
+        maxLength: maxLength(17),
       },
-      numComprobante: {
-        minLength: minLength(3),
+      num_comprobante: {
+        minLength: minLength(10),
         maxLength: maxLength(15),
       },
       aut_especial: {
@@ -135,7 +135,6 @@ export default defineComponent({
       },
       observacion: {
         required,
-        minLength: minLength(100),
       }
 
     }
@@ -150,7 +149,6 @@ export default defineComponent({
     const autorizacionesEspeciales = ref([])
     const tareas = ref([])
     const subTareas = ref([])
-    const esFactura = ref(true)
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -338,16 +336,9 @@ export default defineComponent({
 
     watchEffect(() => {
       gasto.total = gasto.cantidad! * gasto.valor_u!
-      existeComprobante();
-
     })
     function existeComprobante() {
       gasto.factura = null
-      if (esFactura.value == false) {
-        gasto.ruc = '9999999999999'
-      } else {
-        gasto.ruc = null
-      }
     }
     function aprobar_gasto(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {

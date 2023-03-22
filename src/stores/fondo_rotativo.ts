@@ -3,8 +3,10 @@ import { ref } from "vue";
 
 export const useFondoRotativoStore = defineStore('fondo_rotativo', ()=>{
   const id_gasto = ref()
+  const existeFactura =ref()
 
   return {
-    id_gasto
+    id_gasto,
+    existeFactura
   }
 })
