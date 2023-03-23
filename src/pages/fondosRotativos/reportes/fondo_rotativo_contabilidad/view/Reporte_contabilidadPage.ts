@@ -123,7 +123,7 @@ export default defineComponent({
       accion: ({ entidad }) => {
         fondoRotativoStore.id_gasto = entidad.id
         fondoRotativoStore.existeFactura = entidad.factura ==null? false:true
-        modales.abrirModalEntidad('GastoPage')
+        modales.abrirModalEntidad('VisualizarGastoPage')
       }
     }
 

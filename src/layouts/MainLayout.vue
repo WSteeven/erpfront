@@ -96,7 +96,7 @@
                   {{ nombreUsuario }}
                 </div>
                 <div class="text-subtitle2 text-center">
-                  Saldo Actual: {{ saldo_actual }}
+                  Saldo Actual: $ {{ saldo_actual }}
                 </div>
 
 
@@ -193,6 +193,7 @@ import { apiConfig, endpoints } from 'config/api'
 import axios from 'axios'
 import { Usuario } from 'pages/fondosRotativos/usuario/domain/Usuario'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import { GastoCoordinadorPusherEvent } from 'pages/fondosRotativos/gastoCoordinador/application/GastoCoordinadorPusherEvent'
 export default defineComponent({
   name: 'MainLayout',
 
@@ -250,6 +251,9 @@ export default defineComponent({
     //saldos
     const transferenciaSaldoPusherEvent = new TransferenciaSaldoPusherEvent();
     transferenciaSaldoPusherEvent.start();
+    //solicitud de fondos
+    const solicitudFondosPusherEvent = new GastoCoordinadorPusherEvent();
+    solicitudFondosPusherEvent.start();
 
 
 

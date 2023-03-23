@@ -1,17 +1,18 @@
 // Dependencias
 import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain'
-import TransferenciaPage from 'pages/fondosRotativos/transferencias/view/TransferenciaPage.vue'
+import VisualizarTransferenciaPage from 'pages/fondosRotativos/transferencias/view/VisualizarTransferenciaPage.vue'
+
 import { markRaw } from 'vue'
 
 // Paginas
 
 
 export class AutorizarTransferenciaModales {
-  TransferenciaPage: ComponenteModal
+  VisualizarTransferenciaPage: ComponenteModal
 
   constructor() {
-    this.TransferenciaPage = markRaw(
-      new ComponenteModal('Transferencia', TransferenciaPage)
+    this.VisualizarTransferenciaPage = markRaw(
+      new ComponenteModal('Transferencia', VisualizarTransferenciaPage)
     )
   }
 }

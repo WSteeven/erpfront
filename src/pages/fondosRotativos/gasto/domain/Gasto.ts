@@ -12,6 +12,8 @@ export class Gasto extends EntidadAuditable {
   num_comprobante: string | null
   aut_especial: number | null
   aut_especial_user: string | null
+  lugar_info: string | null
+  subTarea_info: string | null
   detalle: string | null
   detalle_info: string | null
   sub_detalle: string | null
@@ -32,9 +34,11 @@ export class Gasto extends EntidadAuditable {
     super()
     this.fecha_viat = null
     this.lugar = null
+    this.lugar_info = null
     this.num_tarea = null
     this.tarea_info = null
     this.subTarea = null
+    this.subTarea_info = null
     this.proyecto = null
     this.proyecto_info = null
     this.ruc = null

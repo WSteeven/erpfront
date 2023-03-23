@@ -77,7 +77,7 @@ export default defineComponent({
       color: 'indigo',
       accion: ({ entidad }) => {
         transferenciaSaldoStore.id_transferencia = entidad.id
-        modales.abrirModalEntidad('TransferenciaPage')
+        modales.abrirModalEntidad('VisualizarTransferenciaPage')
       }
     }
 
