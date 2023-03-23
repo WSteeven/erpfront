@@ -6,7 +6,7 @@
         <div class="row q-col-gutter-sm q-mb-md">
           <!-- Usuarios Reciben -->
           <div class="col-12 col-md-3 q-mb-md" v-if="!esDevolucion || transferencia.usuario_recibe !== null">
-            <label class="q-mb-sm block">Recibido Por:</label>
+            <label class="q-mb-sm block">Destinatario:</label>
             <q-select v-model="transferencia.usuario_recibe" :options="usuarios" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.usuario_recibe.$errors.length" error-message="Debes seleccionar un usuario" use-input
@@ -52,7 +52,7 @@
             </q-input>
           </div>
           <!-- Tareas -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="esDevolucion === false">
             <label class="q-mb-sm block">Tareas</label>
             <q-select v-model="transferencia.tarea" :options="tareas" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
@@ -86,13 +86,13 @@
           <!--Comprobante-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante </label>
-            <selector-imagen :imagen="transferencia.comprobante" @blur="v$.comprobante.$touch"
+            <selector-imagen-modal :imagen="transferencia.comprobante" @blur="v$.comprobante.$touch"
               @update:modelValue="(data) => (transferencia.comprobante = data)">
-            </selector-imagen>
+            </selector-imagen-modal>
           </div>
           <!--Es devolucion-->
           <div class="col-12 col-md-3 q-mb-xl">
-          <q-checkbox class="q-mt-lg q-pt-md" v-model="esDevolucion" label="¿Es devolucion?"
+          <q-checkbox class="q-mt-lg q-pt-md" v-model="esDevolucion" label="¿Es devolucion?" :disable="disabled"
             @update:model-value="existeDevolucion()" outlined dense></q-checkbox>
         </div>
         </div>

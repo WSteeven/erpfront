@@ -16,6 +16,7 @@ import { apiConfig, endpoints } from 'config/api'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { TipoSaldoController } from 'pages/fondosRotativos/tipo_saldo/infrestructure/TipoSaldoController'
 import axios from 'axios'
+import { acciones } from 'config/utils'
 
 
 export default defineComponent({
@@ -165,7 +166,10 @@ function saldo_anterior (){
     return {
       mixin,
       acreditacion,
-      disabled, accion, v$,
+      disabled,
+       accion,
+       acciones,
+        v$,
       usuarios,
       tiposFondos,
       tiposSaldos,

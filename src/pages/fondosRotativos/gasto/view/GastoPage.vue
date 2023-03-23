@@ -153,6 +153,7 @@
           <!--Tiene Factura-->
           <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox class="q-mt-lg q-pt-md" v-model="esFactura" label="¿Tiene Factura?"
+            :disable="disabled"
               @update:model-value="existeComprobante()" outlined dense></q-checkbox>
           </div>
 
@@ -313,7 +314,7 @@
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
-            <selector-imagen :imagen="gasto.comprobante1" :error="!!v$.comprobante1.$errors.length"
+            <selector-imagen-modal :imagen="gasto.comprobante1" :error="!!v$.comprobante1.$errors.length"
               error-message="Debes de cargar imagen de comprobante" @blur="v$.comprobante1.$touch"
               @update:modelValue="(data) => (gasto.comprobante1 = data)">
               <template v-slot:error>
@@ -321,13 +322,13 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </selector-imagen>
+            </selector-imagen-modal>
           </div>
 
           <!-- Comprobante 2 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
-            <selector-imagen :imagen="gasto.comprobante2" :error="!!v$.comprobante2.$errors.length"
+            <selector-imagen-modal :imagen="gasto.comprobante2" :error="!!v$.comprobante2.$errors.length"
               error-message="Debes de cargar reverso imagen de comprobante" @blur="v$.comprobante2.$touch"
               @update:modelValue="(data) => (gasto.comprobante2 = data)">
               <template v-slot:error>
@@ -335,7 +336,7 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </selector-imagen>
+            </selector-imagen-modal>
           </div>
 
           <!-- Observacion -->

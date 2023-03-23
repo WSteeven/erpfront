@@ -12,7 +12,6 @@ export class Acreditacion extends EntidadAuditable {
   saldo_depositado:number | null
   monto:number | null
   saldo_actual:number | null
-  gasto:number | null
   fecha_inicio:Date |null
   fecha_fin:Date|null
   id_usuario:number|null
@@ -38,7 +37,6 @@ export class Acreditacion extends EntidadAuditable {
     this.saldo_depositado=null
     this.saldo_actual=null
     this.monto=null
-    this.gasto=null
     this.fecha_inicio=null
     this.fecha_fin=null
     this.id_usuario=null

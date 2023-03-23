@@ -96,7 +96,7 @@
             </q-input>
           </div>
           <!-- Saldo depositado -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="accion !== acciones.consultar">
             <label class="q-mb-sm block">Saldo Anterior(*):</label>
             <q-input v-model="acreditacion.saldo_anterior" placeholder="Obligatorio" disable
               outlined dense type="number">
@@ -116,7 +116,7 @@
             </q-input>
           </div>
           <!--  Saldo Disponible -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3"  v-if="accion !== acciones.consultar">
             <label class="q-mb-sm block">Saldo Disponible:</label>
             <q-chip square>
               <q-avatar icon="bi-currency-dollar" color="green" text-color="white"></q-avatar>

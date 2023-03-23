@@ -10,33 +10,42 @@ export const configuracionColumnasGasto: ColumnConfig<GastoCoordinadores>[] = [
     sortable: true
   },
   {
-    name: 'aut_especial_user',
-    field: 'aut_especial_user',
-    label: 'Autorización Especial',
+    name: 'lugar_info',
+    field: 'lugar_info',
+    label: 'Lugar',
     align: 'left',
     sortable: true
   },
   {
-    name: 'motivo',
-    field: 'motivo',
+    name: 'usuario_info',
+    field: 'usuario_info',
+    label: 'Usuario',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'monto',
+    field: 'monto',
+    label: 'Monto',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'motivo_info',
+    field: 'motivo_info',
     label: 'Motivo',
     align: 'left',
     sortable: true
   },
 
   {
-    name: 'estado_info',
-    field: 'estado_info',
-    label: 'Estado	',
+    name: 'observacion',
+    field: 'observacion',
+    label: 'Observacion',
     align: 'left',
     sortable: true
   },
-  {
-    name: 'detalle_estado',
-    field: 'detalle_estado',
-    label: 'Detalle Estado',
-    align: 'left',
-    sortable: true
-  },
+
+
 
 ]

@@ -2,19 +2,25 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class GastoCoordinadores extends EntidadAuditable {
   fecha_gasto: Date | null
   lugar: string | null
+  lugar_info: string | null
    motivo: string | null
+  motivo_info: string | null
   monto: number | null
   observacion: string | null
   id_usuario: number | null
+  usuario_info: string | null
 
 
   constructor() {
     super()
     this.fecha_gasto = null
     this.lugar = null
+    this.lugar_info = null
     this.motivo = null
+    this.motivo_info = null
     this.monto = null
     this.observacion = null
     this.id_usuario = null
+    this.usuario_info = null
   }
 }

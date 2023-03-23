@@ -269,7 +269,7 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.ver.gasto'),
             },
             {
-              title: 'Solicitar Gastos',
+              title: 'Solicitar Fondos',
               link: 'gasto-coordinador',
               icon: 'bi-circle',
               can: store.can('puede.ver.gasto_coordinador'),

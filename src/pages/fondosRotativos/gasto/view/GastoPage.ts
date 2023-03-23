@@ -3,7 +3,7 @@ import { Gasto } from '../domain/Gasto'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
+import SelectorImagenModal from 'components/SelectorImagenModal.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -28,11 +28,13 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
+import { emit } from 'process'
 
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
-  setup() {
+  components: { TabLayout, SelectorImagenModal },
+  emits: ['guardado','cerrar-modal'],
+  setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
     const usuario = authenticationStore.user
     /*********
@@ -51,6 +53,8 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
+      const {onConsultado,onGuardado} = mixin.useHooks()
+
     const {
       confirmar,
       prompt,
@@ -69,6 +73,9 @@ export default defineComponent({
 
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
+    onConsultado(()=>{
+      esFactura.value = gasto.factura ==null? false:true
+    })
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
@@ -351,7 +358,7 @@ export default defineComponent({
                 entidad.detalle_estado = data
                 await aprobarController.aprobarGasto(entidad)
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
-                setInterval("location.reload()", 2500);
+                emit('cerrar-modal');
               } catch (e: any) {
                 notificarError(
                   'No se pudo aprobar, debes ingresar un motivo para la anulación'
@@ -371,7 +378,7 @@ export default defineComponent({
                   entidad.detalle_estado = data
                   await aprobarController.rechazarGasto(entidad)
                   notificarAdvertencia('Se rechazado Gasto Exitosamente')
-                  setInterval("location.reload()", 2500);
+                  emit('cerrar-modal');
                 } catch (e: any) {
                   notificarError(
                     'No se pudo rechazar, debes ingresar un motivo para la anulación'
@@ -384,6 +391,7 @@ export default defineComponent({
         default:
           break
       }
+
     }
     return {
       mixin,

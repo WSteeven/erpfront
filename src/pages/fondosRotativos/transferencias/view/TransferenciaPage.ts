@@ -3,7 +3,7 @@ import { Transferencia } from '../domain/Transferencia'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
+import SelectorImagenModal from 'components/SelectorImagenModal.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -20,7 +20,7 @@ import { AprobarTransferenciaController } from 'pages/fondosRotativos/autorizarT
 import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: { TabLayout, SelectorImagenModal },
   setup() {
     /*********
      * Stores
@@ -49,12 +49,17 @@ export default defineComponent({
         notificarAdvertencia,
         notificarError,
       } = useNotificaciones()
+      const usuarios = ref([])
+      const esDevolucion = ref(true)
+      const tareas = ref([])
+      const mostrarListado = ref(true)
+      const mostrarAprobacion = ref(false)
     /*************
      * Validaciones
      **************/
     const reglas = {
       usuario_recibe: {
-        required,
+        requiredIf:esDevolucion.value ? true : false,
       },
       monto: {
         required,
@@ -65,8 +70,7 @@ export default defineComponent({
         maxLength: maxLength(50),
       },
       tarea: {
-        required,
-        maxLength: maxLength(50),
+        requiredIf:esDevolucion.value ? true : false,
       },
       comprobante: {
         required,
@@ -76,11 +80,7 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, transferencia)
     setValidador(v$.value)
 
-    const usuarios = ref([])
-    const esDevolucion = ref(true)
-    const tareas = ref([])
-    const mostrarListado = ref(true)
-    const mostrarAprobacion = ref(false)
+
    /* Checking if the id_transferencia is not null, if it is not null, it is going to consult the
    transfer with the id_transferencia, it is going to set the value of mostrarListado to false and
    the value of mostrarAprobacion to true, and it is going to set the value of esDevolucion to true
