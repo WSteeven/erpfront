@@ -901,6 +901,7 @@
           <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
           >{{ estadosControlStock.reorden }}
         </q-chip>
+
         <q-chip
           v-if="props.value === estadosControlStock.suficiente"
           class="bg-green-1"
@@ -911,6 +912,30 @@
             class="q-mr-xs"
           ></q-icon
           >{{ estadosControlStock.suficiente }}
+        </q-chip>
+
+        <q-chip
+          v-if="props.value === 'EN CAMINO'"
+          class="bg-blue-2 text-primary"
+        >
+          <q-icon
+            name="bi-car-front-fill"
+            color="primary"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'En camino' }}
+        </q-chip>
+
+        <q-chip
+          v-if="props.value === 'RUTA COMPLETADA'"
+          class="bg-green-1 text-positive"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'RUTA COMPLETADA' }}
         </q-chip>
 
         <estados-subtareas :propsTable="props" />

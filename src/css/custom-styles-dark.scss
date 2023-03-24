@@ -6,6 +6,11 @@ $text-color-transparency: rgba($text-color, 0.6);
 $border-color: #464646;
 
 .body--dark {
+  .bg-toolbar {
+    background-color: #1f1f1f3a;
+    backdrop-filter: blur(10px);
+  }
+
   .bg-body {
     background-color: $bg-body;
   }
@@ -150,5 +155,14 @@ $border-color: #464646;
     border-radius: 8px;
     border: 1px solid $border-color;
     background-color: $dark-color;
+  }
+
+  // Drawer
+  .border-right {
+    border-right: 1px solid $grey-8;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid $grey-8;
   }
 }

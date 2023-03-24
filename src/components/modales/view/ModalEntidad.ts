@@ -24,7 +24,7 @@ export default defineComponent({
   },
   // emits: ['seleccionar', 'accion1'],
   emits: ['guardado'],
-  setup(props,{emit}) {
+  setup(props, { emit }) {
     const { componente, titulo, abierto } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
 

@@ -11,17 +11,17 @@ export const useMenuStore = defineStore('menu', () => {
     {
       header: 'Modulos',
     },
-    {
+    /* {
       title: 'Inicio',
       icon: 'bi-house-fill',
       link: '/',
       can: !store.can('puede.ver.trabajo_asignado'),
-    },
+    }, */
     {
-      title: 'Trabajo asignado',
-      link: 'trabajo-asignado',
+      title: 'Trabajo agendado',
+      link: 'trabajo-agendado',
       icon: 'bi-ui-checks-grid',
-      can: store.can('puede.ver.trabajo_asignado'),
+      can: true,//store.esTecnicoLider,// store.can('puede.ver.trabajo_asignado'),
     },
     /* {
       title: 'Reportes control de materiales',
@@ -85,16 +85,16 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'control-diario-materiales',
           icon: 'bi-circle',
         }, */
-        {
+        { //
           title: 'Control de cambios',
           link: 'control-cambios',
           icon: 'bi-circle',
         },
-        {
+        /* {
           title: 'Control de asistencia',
           link: 'control-asistencia',
           icon: 'bi-person-check',
-        },
+        }, */
         {
           title: 'Clientes finales',
           link: 'clientes-finales',
@@ -109,6 +109,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reportes-control-materiales',
               icon: 'bi-dash',
               can: store.can('puede.ver.reportes_control_materiales'),
+            },
+            {
+              title: 'Movilización entre trabajos',
+              link: 'reporte-movilizacion-subtarea',
+              icon: 'bi-dash',
+              can: store.can('puede.ver.reporte_movilizacion_subtarea'),
             },
             /* {
               title: 'Control de tendidos',
@@ -280,7 +286,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Detalle Fondos',
           icon: 'bi-list-task',
           can: store.can('puede.ver.menu.detalle_fondo'),
-          children: [ {
+          children: [{
             title: 'Detalle',
             link: 'detalle_fondo',
             icon: 'bi-circle',
@@ -297,7 +303,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Saldo',
           icon: 'bi-cash',
           can: store.can('puede.ver.menu.saldos'),
-          children:[
+          children: [
             {
               title: 'Acreditacion',
               link: 'acreditacion',

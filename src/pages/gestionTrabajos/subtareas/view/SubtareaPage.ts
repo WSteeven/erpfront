@@ -211,6 +211,7 @@ export default defineComponent({
     *********/
     onBeforeGuardar(() => {
       subtarea.tarea = subtareaStore.idTarea
+      //subtarea.empleados_adicionales = subtarea.empleados_adicionales.map((empleado: Empleado) => empleado.id)
     })
 
     onConsultado(() => subtarea.tarea = subtareaStore.codigoTarea)

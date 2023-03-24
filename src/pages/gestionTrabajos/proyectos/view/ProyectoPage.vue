@@ -272,6 +272,7 @@
               :option-value="(item) => item.id"
               use-input
               input-debounce="0"
+              clearable
               emit-value
               map-options
             >

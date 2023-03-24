@@ -160,13 +160,14 @@
     <div class="col-12">
       <essential-table
         v-if="
-          subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo
+          subtarea.modo_asignacion_trabajo ===
+            modosAsignacionTrabajo.por_grupo && empleadosGrupo.length
         "
         ref="refEmpleadosGrupo"
         titulo="Empleados del grupo seleccionado"
         estilos="margin-bottom: 14px;"
         :configuracionColumnas="columnasEmpleado"
-        :datos="empleadosSeleccionados"
+        :datos="empleadosGrupo"
         :accion2Header="designarLider"
         :accion5Header="cancelarDesignacion"
         :accion1="quitarEmpleado"
@@ -178,8 +179,32 @@
         :mostrar-header="true"
         :permitir-buscar="false"
         :tipo-seleccion="tipoSeleccion"
-        :mostrar-footer="!empleadosSeleccionados.length"
+        :mostrar-footer="!empleadosGrupo.length"
         @selected="entidadSeleccionada"
+      >
+      </essential-table>
+    </div>
+
+    <div class="col-12">
+      <essential-table
+        v-if="
+          subtarea.modo_asignacion_trabajo ===
+            modosAsignacionTrabajo.por_grupo && empleadosAdicionales.length
+        "
+        ref="refEmpleadosGrupo"
+        titulo="Empleados adicionales"
+        estilos="margin-bottom: 14px;"
+        :configuracionColumnas="columnasEmpleado"
+        :datos="empleadosAdicionales"
+        :accion1="quitarEmpleadoAdicional"
+        :mostrarBotones="false"
+        :permitirConsultar="false"
+        :permitirEditar="false"
+        :permitirEliminar="false"
+        :alto-fijo="false"
+        :mostrar-header="true"
+        :permitir-buscar="false"
+        :mostrar-footer="!empleadosAdicionales.length"
       >
       </essential-table>
     </div>

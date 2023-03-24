@@ -53,7 +53,7 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     titulo: 'Finalizar',
     color: 'positive',
     icono: 'bi-check-circle',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
+    visible: ({ entidad }) => !entidad.tiene_subtareas && entidad.estado === estadosTrabajos.REALIZADO,
     accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
       const { result } = await cambiarEstadoSubtarea.finalizar(entidad.id)
       entidad.estado = estadosTrabajos.FINALIZADO

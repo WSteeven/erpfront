@@ -3,6 +3,7 @@
     v-model="abierto"
     :maximized="$q.screen.xs"
     :full-width="true"
+    :full-height="true"
     :persistent="confirmarCerrar"
   >
     <q-card class="bg-transparent rounded-card no-border" flat>

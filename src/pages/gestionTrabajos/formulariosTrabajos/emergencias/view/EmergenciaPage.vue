@@ -1,8 +1,7 @@
 <template>
   <q-page padding>
-    <div class="full-width text-bold q-mb-md">Información general</div>
-    <div class="row q-col-gutter-sm q-mb-md">
-      <!-- Regional -->
+    <!-- <div class="full-width text-bold q-mb-md">Información general</div> -->
+    <!-- <div class="row q-col-gutter-sm q-mb-md">
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Regional</label>
         <q-select
@@ -26,7 +25,6 @@
         </q-select>
       </div>
 
-      <!-- Atenciones -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Atención (URBANO / INTERURBANO)</label>
         <q-select
@@ -50,8 +48,7 @@
         </q-select>
       </div>
 
-      <!-- Tipo de intervencion -->
-      <div class="col-12 col-md-3">
+       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Tipo de intervención</label>
         <q-select
           v-model="emergencia.tipo_intervencion"
@@ -89,7 +86,6 @@
         </q-select>
       </div>
 
-      <!-- Causa de intervencion -->
       <div class="col-12 col-md-3 q-mb-md">
         <label class="q-mb-sm block">Causa de intervención</label>
         <q-select
@@ -130,7 +126,6 @@
 
       <div class="full-width text-bold q-mb-md">Fechas y horas</div>
 
-      <!-- Fecha del reporte del problema -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha de reporte del problema</label>
         <q-input
@@ -171,7 +166,6 @@
         </q-input>
       </div>
 
-      <!-- Hora reporte problema -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora de reporte de problema (24H)</label>
         <q-input
@@ -194,7 +188,6 @@
         </q-input>
       </div>
 
-      <!-- Fecha de arribo -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha de arribo</label>
         <q-input
@@ -232,7 +225,6 @@
         </q-input>
       </div>
 
-      <!-- Hora de arribo -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora de arribo (24H)</label>
         <q-input
@@ -252,7 +244,6 @@
         </q-input>
       </div>
 
-      <!-- Fecha de fin reparacion -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha de fin de reparación</label>
         <q-input
@@ -293,7 +284,6 @@
         </q-input>
       </div>
 
-      <!-- Hora fin reparacion -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora de fin de reparación (24H)</label>
         <q-input
@@ -316,7 +306,6 @@
         </q-input>
       </div>
 
-      <!-- Fecha de retiro de personal -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha de retiro de personal</label>
         <q-input
@@ -357,7 +346,6 @@
         </q-input>
       </div>
 
-      <!-- Hora retiro personal -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora de retiro de personal (24H)</label>
         <q-input
@@ -380,7 +368,6 @@
         </q-input>
       </div>
 
-      <!-- Tiempo de espera adicional -->
       <div class="col-12 col-md-3 q-mb-md">
         <label class="q-mb-sm block">Tiempo de espera adicionales</label>
         <q-input
@@ -393,7 +380,6 @@
 
       <div class="col-12 q-mb-sm text-bold">Distancia de la afectación</div>
 
-      <!-- Estación de referencia -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Estación de referencia</label>
         <q-input
@@ -404,7 +390,6 @@
         ></q-input>
       </div>
 
-      <!-- Distancia -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Distancia</label>
         <q-input
@@ -414,7 +399,7 @@
           dense
         ></q-input>
       </div>
-    </div>
+    </div> -->
 
     <div>
       <div class="q-mb-md">

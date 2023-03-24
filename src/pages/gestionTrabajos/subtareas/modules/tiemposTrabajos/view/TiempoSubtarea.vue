@@ -67,34 +67,14 @@
     </div>
 
     <!-- Fecha y hora de estado suspendido -->
-    <div v-if="subtarea.fecha_hora_pendiente" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Fecha y hora de estado pendiente</label>
-      <q-input v-model="subtarea.fecha_hora_pendiente" outlined dense disable>
-      </q-input>
-    </div>
-
-    <!-- Causa de pendiente -->
-    <div v-if="subtarea.motivo_pendiente" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Motivo de pendiente</label>
-      <q-input
-        v-model="subtarea.motivo_pendiente"
-        disable
-        outlined
-        type="textarea"
-        autogrow
-        dense
-      ></q-input>
-    </div>
-
-    <!-- Fecha y hora de estado suspendido -->
-    <div v-if="subtarea.fecha_hora_suspendido" class="col-12 col-md-3">
+    <!-- <div v-if="subtarea.fecha_hora_suspendido" class="col-12 col-md-3">
       <label class="q-mb-sm block">Fecha y hora de estado suspendido</label>
       <q-input v-model="subtarea.fecha_hora_suspendido" outlined dense disable>
       </q-input>
-    </div>
+    </div> -->
 
     <!-- Causa de la suspencion -->
-    <div v-if="subtarea.motivo_suspendido" class="col-12 col-md-3">
+    <!-- <div v-if="subtarea.motivo_suspendido" class="col-12 col-md-3">
       <label class="q-mb-sm block">Motivo de la suspención</label>
       <q-input
         v-model="subtarea.motivo_suspendido"
@@ -104,7 +84,7 @@
         autogrow
         dense
       ></q-input>
-    </div>
+    </div> -->
 
     <!-- Fecha y hora de estado cancelacion -->
     <div v-if="subtarea.fecha_hora_cancelado" class="col-12 col-md-3">

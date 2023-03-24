@@ -296,6 +296,19 @@
                     @update:modelValue="setCliente"
                     :disable="disabled"
                   >
+                    <template v-slot:option="scope">
+                      <q-item v-bind="scope.itemProps" class="q-my-sm">
+                        <q-item-section>
+                          <q-item-label class="text-bold text-primary">{{
+                            scope.opt.codigo_proyecto
+                          }}</q-item-label>
+                          <q-item-label caption
+                            >{{ scope.opt.nombre }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </template>
+
                     <template v-slot:no-option>
                       <q-item>
                         <q-item-section class="text-grey">
@@ -517,7 +530,7 @@
                 <!-- Hora inicio de agendamiento -->
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block"
-                    >Hora inicio de inicio de trabajo (24H)</label
+                    >Hora de inicio de trabajo (24H)</label
                   >
                   <q-input
                     v-model="tarea.hora_inicio_trabajo"
@@ -527,6 +540,7 @@
                     stack-label
                     outlined
                     dense
+                    clearable
                   >
                     <template v-slot:error>
                       <div
@@ -552,6 +566,7 @@
                     outlined
                     :disable="disabled"
                     dense
+                    clearable
                   >
                     <template v-slot:error>
                       <div
@@ -838,10 +853,15 @@
     </template>
   </tab-layout-filter-tabs>
 
-  <modales-entidad :comportamiento="modalesTarea" :mixin-modal="mixin" @guardado="guardado" />
+  <modales-entidad
+    :comportamiento="modalesTarea"
+    :mixin-modal="mixin"
+    @guardado="guardado"
+  />
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"
+    :confirmar-cerrar="true"
   />
 </template>
 

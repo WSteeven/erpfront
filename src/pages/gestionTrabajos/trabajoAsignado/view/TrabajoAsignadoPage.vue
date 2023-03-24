@@ -1,16 +1,17 @@
 <template>
   <q-page :padding="!$q.screen.xs">
-    <div class="text-center q-pb-md">
-      <div class="q-mb-md">{{ fecha }}</div>
+    <div class="text-center q-my-md">
       <div class="q-mb-md">
         Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>
       </div>
-      <div v-if="authenticationStore.user?.grupo" class="q-mb-md">
+      <div class="q-mb-md">{{ fecha }}</div>
+      <!--<div v-if="authenticationStore.user?.grupo" class="q-mb-md">
         Grupo, <strong>{{ authenticationStore.user.grupo }}</strong>
-      </div>
+      </div> -->
     </div>
 
     <essential-table-tabs
+      titulo="Listado de trabajos"
       :configuracionColumnas="[
         ...configuracionColumnasTrabajoAsignado,
         accionesTabla,
@@ -23,7 +24,6 @@
       :accion5="botonReanudar"
       :accion6="botonSuspender"
       :accion7="botonRealizar"
-      :accion8="botonCorregir"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"

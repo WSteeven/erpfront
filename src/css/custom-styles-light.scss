@@ -1,4 +1,9 @@
 .body--light {
+  .bg-toolbar {
+    background-color: #ffffff10;
+    backdrop-filter: blur(10px);
+  }
+
   .bg-body {
     background-color: $grey-3;
   }
@@ -204,5 +209,14 @@
   //Notificacion personalizada
   .advertencia-personalizada {
     background: red;
+  }
+
+  // Drawer
+  .border-right {
+    border-right: 1px solid $grey-4;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid $grey-4;
   }
 }

@@ -1,5 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export class Subtarea extends EntidadAuditable {
   codigo_tarea: string | null
@@ -58,6 +59,7 @@ export class Subtarea extends EntidadAuditable {
   designar_otro_responsable: boolean // reagendar
   puede_ejecutar: boolean
   tiene_subtareas: boolean
+  empleados_adicionales: Empleado[]
 
   constructor() {
     super()
@@ -122,5 +124,6 @@ export class Subtarea extends EntidadAuditable {
     this.designar_otro_responsable = false
     this.puede_ejecutar = false
     this.tiene_subtareas = false
+    this.empleados_adicionales = []
   }
 }

@@ -246,9 +246,9 @@
 
             <!-- Coordenada longitud -->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Coordenada longitud</label>
+              <label class="q-mb-sm block">Coordenadas</label>
               <q-input
-                v-model="clienteFinal.coordenada_longitud"
+                v-model="clienteFinal.coordenadas"
                 placeholder="Opcional"
                 :disable="disabled"
                 outlined
@@ -258,7 +258,7 @@
             </div>
 
             <!-- Coordenada latitud -->
-            <div class="col-12 col-md-3">
+            <!--<div class="col-12 col-md-3">
               <label class="q-mb-sm block">Coordenada latitud</label>
               <q-input
                 v-model="clienteFinal.coordenada_latitud"
@@ -268,7 +268,7 @@
                 dense
               >
               </q-input>
-            </div>
+            </div> -->
           </div>
         </q-expansion-item>
 

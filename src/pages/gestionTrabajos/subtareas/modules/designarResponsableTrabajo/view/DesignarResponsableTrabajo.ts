@@ -1,10 +1,10 @@
 import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
-import { computed, defineComponent, Ref, ref, UnwrapRef, watchEffect } from 'vue'
+import { computed, defineComponent, Ref, ref, UnwrapRef, watch, watchEffect } from 'vue'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { requiredIf } from 'shared/i18n-validators'
-import { accionesTabla } from 'config/utils'
+import { acciones, accionesTabla } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
@@ -22,13 +22,14 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
   components: {
     EssentialTable,
     EssentialSelectableTable,
   },
-  emits: ['seleccionar-grupo', 'seleccionar-empleado'],
+  emits: ['seleccionar-grupo', 'seleccionar-empleado', 'actualizar-empleados'],
   props: {
     disable: Boolean,
     accion: String,
@@ -71,9 +72,18 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const empleadosSeleccionados: Ref<Empleado[]> = ref([])
     const tipoSeleccion = computed(() => asignarLider.value ? 'single' : 'none')
     const notificaciones = useNotificaciones()
+    const empleadosGrupo: Ref<Empleado[]> = ref([])
+    const empleadosAdicionales: Ref<Empleado[]> = ref([])
+    /* const empleadosTodos = computed({
+      get() {
+        return [...empleadosSeleccionados.value, ...empleadosAdicionales.value]
+      },
+      set(newValue) {
+        empleadosSeleccionados.value = newValue
+      }
+    }) */
 
     /*************
     * Validaciones
@@ -90,7 +100,7 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
-    } = useFiltrosListadosTarea(listadosAuxiliares)
+    } = useFiltrosListadosTarea(listadosAuxiliares, subtarea)
 
     /************
     * Observers
@@ -111,7 +121,7 @@ export default defineComponent({
         cargando.activar()
         const empleadoController = new EmpleadoController()
         const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-        empleadosSeleccionados.value = result
+        empleadosGrupo.value = result
       } catch (error) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
@@ -139,10 +149,9 @@ export default defineComponent({
       quitarEmpleado,
       entidadSeleccionada,
       cancelarDesignacion,
-      // designarLiderTemporal,
       designarLider,
       asignarLider,
-    } = useBotonesTablaDesignacionSubtarea(empleadosSeleccionados, data)
+    } = useBotonesTablaDesignacionSubtarea(empleadosGrupo, data)
 
     /*****************
      * Orquestadores
@@ -154,7 +163,24 @@ export default defineComponent({
       listar: listarEmpleadosGrupo,
       limpiar: limpiarEmlpeadosGrupo,
       seleccionar: seleccionarEmpleadosGrupo,
-    } = useOrquestadorSelectorEmpleadosGrupo(empleadosSeleccionados, 'empleados')
+    } = useOrquestadorSelectorEmpleadosGrupo(empleadosAdicionales, 'empleados')
+
+    // empleados_adicinoales
+    //watchEffect(() => emit('actualizar-empleados', [...empleadosGrupo.value, ...empleadosAdicionales.value]))
+    watch(empleadosAdicionales, () => emit('actualizar-empleados', empleadosAdicionales.value))
+
+    /************
+     * Funciones
+     ************/
+    const quitarEmpleadoAdicional: CustomActionTable = {
+      titulo: 'Quitar',
+      icono: 'bi-x',
+      color: 'negative',
+      visible: () => [acciones.editar, acciones.nuevo].includes(props.accion + ""),
+      accion: ({ posicion }) => {
+        empleadosAdicionales.value.splice(posicion, 1)
+      },
+    }
 
     return {
       validate$,
@@ -162,7 +188,8 @@ export default defineComponent({
       modosAsignacionTrabajo,
       columnasEmpleado: [...configuracionColumnasEmpleadoGrupo, accionesTabla],
       configuracionColumnasEmpleadoGrupo,
-      empleadosSeleccionados,
+      empleadosGrupo,
+      empleadosAdicionales,
       grupos,
       filtrarGrupos,
       empleados,
@@ -173,6 +200,7 @@ export default defineComponent({
       quitarEmpleado,
       entidadSeleccionada,
       cancelarDesignacion,
+      quitarEmpleadoAdicional,
       // designarLiderTemporal,
       designarLider,
       asignarLider,

@@ -1,7 +1,7 @@
 // Dependencias
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRoute, useRouter } from 'vue-router'
 import { acciones } from 'config/utils'

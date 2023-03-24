@@ -1,5 +1,6 @@
 <template>
   <essential-table
+    v-if="listado.length"
     titulo="Registro de pausas realizadas"
     :configuracionColumnas="(configuracionColumnasPausas as any)"
     :datos="listado"

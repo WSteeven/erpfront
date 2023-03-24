@@ -85,8 +85,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/trabajo-asignado',
-        name: 'trabajo_asignado',
+        path: '/trabajo-agendado',
+        name: 'trabajo_agendado',
         component: () =>
           import(
             'gestionTrabajos/trabajoAsignado/view/TrabajoAsignadoPage.vue'
@@ -100,6 +100,22 @@ const routes: RouteRecordRaw[] = [
           import(
             'gestionTrabajos/reportesControlMateriales/view/ReporteControlMaterialPage.vue'
           ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporte-movilizacion-subtarea',
+        name: 'reporte_movilizacion_subtarea',
+        component: () =>
+          import(
+            'gestionTrabajos/reporteMovilizacionSubtareas/view/ReporteMovilizacionSubtareaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      // src\pages\
+      {
+        path: '/mi-bodega',
+        name: 'mi_bodega',
+        component: () => import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -421,8 +437,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path:'/gasto-coordinador',
-        name:'gasto_coordinador',
+        path: '/gasto-coordinador',
+        name: 'gasto_coordinador',
         component: () =>
           import('pages/fondosRotativos/gastoCoordinador/view/GastoCoordinadorPage.vue'),
         meta: { requiresAuth: true },

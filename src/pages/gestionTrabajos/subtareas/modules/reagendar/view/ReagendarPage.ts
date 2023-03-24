@@ -81,8 +81,8 @@ export default defineComponent({
         fecha_inicio_trabajo: subtarea.fecha_inicio_trabajo,
         hora_inicio_trabajo: subtarea.hora_inicio_trabajo,
         hora_fin_trabajo: subtarea.hora_fin_trabajo,
-        grupo: subtarea.grupo,
-        empleado: subtarea.empleado,
+        grupo: subtarea.designar_otro_responsable ? subtarea.grupo : null,
+        empleado: subtarea.designar_otro_responsable ? subtarea.empleado : null,
         modo_asignacion_trabajo: subtarea.modo_asignacion_trabajo,
       }
 
@@ -93,7 +93,12 @@ export default defineComponent({
         const response: AxiosResponse = await axios.put(ruta, data)
         console.log(subtareaStore.posicionSubtareaSeleccionada)*/
         // actualizarElemento(subtareaStore.posicionSubtareaSeleccionada, response.data.modelo)
-        console.log(subtarea)
+        // console.log(subtarea)
+        /*if (!subtarea.designar_otro_responsable) {
+          data.grupo
+          data.empleado
+        }*/
+
         if (subtarea.tiene_subtareas) reagendarSubtarea(data)
         else reagendarTarea(data)
 

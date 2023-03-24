@@ -14,4 +14,10 @@ export const configuracionColumnasSuspendido: ColumnConfig<Suspendido>[] = [
     label: 'Motivo',
     align: 'left',
   },
+  {
+    name: 'empleado',
+    field: 'empleado',
+    label: 'Responsable',
+    align: 'left',
+  },
 ]

@@ -39,9 +39,13 @@ export const tabTrabajoAsignado: TabOption[] = [
   { label: 'Agendado', value: 'AGENDADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },
-  { label: 'Pendientes de aprobación', value: 'REALIZADO' },
   { label: 'Próximos trabajos', value: 'PROXIMO' },
   // { label: 'Realizado', value: 'REALIZADO' },
   /*{ label: 'Suspendido', value: 'SUSPENDIDO' },
   { label: 'Cancelado', value: 'CANCELADO' },*/
+]
+
+export const modosStock: TabOption[] = [
+  { label: 'Para tareas', value: 'TAREAS' },
+  { label: 'Stock personal', value: 'PERSONAL' },
 ]

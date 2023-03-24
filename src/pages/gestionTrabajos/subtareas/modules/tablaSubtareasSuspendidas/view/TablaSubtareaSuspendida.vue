@@ -1,5 +1,6 @@
 <template>
   <essential-table
+    v-if="listado.length"
     titulo="Registro de suspensiones"
     :configuracionColumnas="(configuracionColumnasSuspendido as any)"
     :datos="listado"

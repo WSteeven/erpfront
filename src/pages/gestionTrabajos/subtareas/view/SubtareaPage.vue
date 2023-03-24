@@ -258,6 +258,7 @@
             :disable="disabled"
             stack-label
             outlined
+            clearable
             dense
           >
             <template v-slot:error>
@@ -281,6 +282,7 @@
             stack-label
             outlined
             :disable="disabled"
+            clearable
             dense
           >
             <template v-slot:error>
@@ -309,6 +311,9 @@
         :subtarea-inicial="subtarea"
         @seleccionarGrupo="seleccionarGrupo"
         @seleccionarEmpleado="seleccionarEmpleado"
+        @actualizar-empleados="
+          (empleados) => (subtarea.empleados_adicionales = empleados)
+        "
       ></designar-responsable-trabajo>
     </q-expansion-item>
 

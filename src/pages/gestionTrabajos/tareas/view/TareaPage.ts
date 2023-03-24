@@ -20,6 +20,7 @@ import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/vi
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
@@ -59,6 +60,7 @@ export default defineComponent({
     TiempoSubtarea,
     TablaSubtareaSuspendida,
     TablaSubtareaPausas,
+    EssentialTable,
   },
   setup() {
     /*********

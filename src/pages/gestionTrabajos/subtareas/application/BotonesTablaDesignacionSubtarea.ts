@@ -40,6 +40,7 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
       }
 
       empleadosSeleccionados.value.splice(posicion, 1)
+      //empleadosSeleccionados.value = empleadosSeleccionados.value // Necesario porque es computado get - set
     },
   }
 
