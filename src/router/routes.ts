@@ -565,6 +565,15 @@ const routes: RouteRecordRaw[] = [
         //cambiar a true cuando este listo
         meta: { requiresAuth: false },
       },
+      {
+        path: '/reporte-solicitud-fondo',
+        name: 'reporte_solicitud_fondo',
+        component: () =>
+          import(
+            'pages/fondosRotativos/reportes/reporte_solicitud_fondos/view/Reporte_solicitud_fondoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

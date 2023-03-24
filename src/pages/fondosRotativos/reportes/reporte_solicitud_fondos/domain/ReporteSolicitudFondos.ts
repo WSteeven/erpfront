@@ -1,0 +1,12 @@
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+export class ReporteSolicitudFondos extends EntidadAuditable {
+  usuario: number | null
+  fecha_inicio:Date | null
+  fecha_fin: Date | null
+  constructor() {
+    super()
+    this.usuario = null
+    this.fecha_inicio = null
+    this.fecha_fin = null
+  }
+}

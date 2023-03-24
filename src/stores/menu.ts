@@ -353,6 +353,12 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.ver.reporte_consolidado_filtrado'),
             },
             {
+              title: 'Solicitud de Fondos',
+              link: 'reporte-solicitud-fondo',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_solicitud_fondo'),
+            },
+            {
               title: 'Contabilidad',
               link: 'reporte-contabilidad',
               icon: 'bi-circle',

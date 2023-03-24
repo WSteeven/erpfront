@@ -88,7 +88,7 @@ export default defineComponent({
       mostrarAprobacion.value = true
     }
     onConsultado(()=>{
-      esDevolucion.value = transferencia.usuario_recibe ==null? false:true
+      esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
     })
 
 

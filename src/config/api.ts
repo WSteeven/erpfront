@@ -149,5 +149,7 @@ export const endpoints = {
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
   reporte_saldo_actual_excel: new Endpoint('fondos-rotativos/reporte/saldo_actual/excel'),
   reporte_saldo_actual_pdf: new Endpoint('fondos-rotativos/reporte/saldo_actual/pdf'),
+  reporte_solicitud_fondo_pdf: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/pdf'),
+  reporte_solicitud_fondo_excel: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/excel'),
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
 }
