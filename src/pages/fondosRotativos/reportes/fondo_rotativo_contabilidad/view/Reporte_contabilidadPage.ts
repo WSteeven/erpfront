@@ -15,7 +15,7 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesFondoRotativoContabilidad } from '../application/ComportamientoModalesFondoRotativoContabilidad'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { accionesTabla } from 'config/utils'
+import { accionesTabla, maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ModalEntidad },
@@ -123,7 +123,7 @@ export default defineComponent({
       accion: ({ entidad }) => {
         fondoRotativoStore.id_gasto = entidad.id
         fondoRotativoStore.existeFactura = entidad.factura ==null? false:true
-        modales.abrirModalEntidad('GastoPage')
+        modales.abrirModalEntidad('VisualizarGastoPage')
       }
     }
 
@@ -134,6 +134,7 @@ export default defineComponent({
       disabled,
       accion,
       v$,
+      maskFecha,
       usuarios,
       opened,
       tiposFondos,

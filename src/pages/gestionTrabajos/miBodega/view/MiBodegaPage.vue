@@ -108,7 +108,7 @@
                 :permitir-buscar="false"
                 :alto-fijo="false"
               ></essential-table>
-              <div v-else>No tienes materiales asignados.</div>
+              <div v-else>Aún no tienes materiales asignados.</div>
             </div>
           </div>
         </q-tab-panel>

@@ -22,6 +22,8 @@ import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacio
 import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusherEvent'
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
+import { TransferenciaSaldoPusherEvent } from 'pages/fondosRotativos/autorizarTransferencia/application/TransferenciaSaldoPusherEvent'
+import { GastoCoordinadorPusherEvent } from 'pages/fondosRotativos/gastoCoordinador/application/GastoCoordinadorPusherEvent'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -56,6 +58,11 @@ export default defineComponent({
 
     const grupo = authenticationStore.user.grupo
 
+    const saldo = computed(() => {
+      authenticationStore.consultar_saldo_actual()
+      return `${authenticationStore.saldo_actual ?? 0} `
+    })
+
     const nombreUsuario = computed(() => {
       const usuario = authenticationStore.user
       if (usuario) {
@@ -84,14 +91,23 @@ export default defineComponent({
      * PUSHER
      * En esta sección agregan todas las llamadas al metodo start de sus archivos PusherEvent
      **********************************************/
-    //pedidos
+    // Pedidos
     const pedidoPusherEvent = new PedidoPusherEvent()
     pedidoPusherEvent.start()
     //subtareas
 
-    //fondos rotativos
+    // Fondos rotativos
     const fondosRotativoPusherEvent = new GastoPusherEvent()
     fondosRotativoPusherEvent.start()
+
+    // Saldos
+    const transferenciaSaldoPusherEvent = new TransferenciaSaldoPusherEvent();
+    transferenciaSaldoPusherEvent.start();
+
+    // Solicitud de fondos
+
+    const solicitudFondosPusherEvent = new GastoCoordinadorPusherEvent();
+    solicitudFondosPusherEvent.start();
 
     //Poner la imagen de perfil
     const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres}+${authenticationStore.user.apellidos}&bold=true&background=0879dc28&color=0879dc`
@@ -140,6 +156,7 @@ export default defineComponent({
       },
       logout,
       nombreUsuario,
+      saldo,
       menuVisible,
       modoOscuro,
       toggleDarkMode,

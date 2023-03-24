@@ -12,6 +12,7 @@ import { imprimirArchivo } from 'shared/utils'
 import { Consolidado } from '../domain/Consolidado'
 import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout },
@@ -191,6 +192,7 @@ export default defineComponent({
       disabled,
       accion,
       v$,
+      maskFecha,
       usuarios,
       tiposFondos,
       tiposFondoRotativoFechas,

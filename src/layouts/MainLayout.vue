@@ -205,8 +205,8 @@
                   Grupo <strong>{{ grupo }}</strong>
                 </div>
 
-                <div class="text-subtitle2 text-center">
-                  Saldo Actual: {{ saldo_actual }}
+                <div class="text-subtitle2 text-center q-mb-md">
+                  Saldo Actual: $ {{ saldo }}
                 </div>
 
                 <q-item clickable :to="{ name: 'perfil' }" class="full-width">

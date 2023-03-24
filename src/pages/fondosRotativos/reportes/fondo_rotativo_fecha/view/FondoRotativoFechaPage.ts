@@ -12,6 +12,7 @@ import { FondoRotativoFecha } from '../domain/FondoRotativoFecha'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout },
@@ -163,6 +164,7 @@ export default defineComponent({
       usuarios,
       tiposFondos,
       tiposFondoRotativoFechas,
+      maskFecha,
       generar_reporte,
       filtrarUsuarios,
       filtrarTiposFondos,

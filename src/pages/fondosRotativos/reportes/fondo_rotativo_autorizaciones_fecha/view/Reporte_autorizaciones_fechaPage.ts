@@ -12,6 +12,7 @@ import { imprimirArchivo } from 'shared/utils'
 import { FondoRotativoAutorizacionesFecha } from '../domain/FondoRotativoAutorizacionesFecha'
 import { FondoRotativoAutorizacionesFechaController } from '../infrestructure/FondoRotativoAutorizacionesFechaController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout },
@@ -169,6 +170,7 @@ export default defineComponent({
       disabled,
       accion,
       v$,
+      maskFecha,
       usuarios,
       tiposFondos,
       tiposFondoRotativoFechas,
