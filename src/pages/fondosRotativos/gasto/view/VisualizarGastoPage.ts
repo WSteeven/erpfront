@@ -19,6 +19,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { emit } from 'process'
+import { maskFecha } from 'config/utils'
 
 
 export default defineComponent({
@@ -205,6 +206,7 @@ export default defineComponent({
       esFactura,
       usuario,
       disabled,
+      maskFecha,
       accion,
       v$,
       configuracionColumnas: configuracionColumnasGasto,
