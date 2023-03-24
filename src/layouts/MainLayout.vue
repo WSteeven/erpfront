@@ -96,7 +96,7 @@
                   {{ nombreUsuario }}
                 </div>
                 <div class="text-subtitle2 text-center">
-                  Saldo Actual: $ {{ saldo_actual }}
+                  Saldo Actual: $ {{ saldo }}
                 </div>
 
 
@@ -206,7 +206,6 @@ export default defineComponent({
   setup() {
     const leftDrawerOpen = ref(false)
     const menu = useMenuStore()
-    const saldo_actual = ref(0)
     const menuVisible = ref(false)
 
     const authenticationStore = useAuthenticationStore()
@@ -218,6 +217,10 @@ export default defineComponent({
         return `${usuario.nombres} ${usuario.apellidos ?? ''} `
       }
       return ''
+    })
+    const saldo = computed(() => {
+      authenticationStore.consultar_saldo_actual()
+      return `${authenticationStore.saldo_actual ?? 0} `
     })
 
     async function logout() {
@@ -275,29 +278,7 @@ export default defineComponent({
       notificacionesPusherStore.idNotificacion = id
       await notificacionesPusherStore.marcarLeida()
     }
-    function consultar_saldo_actual() {
 
-      const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =
-        apiConfig.URL_BASE +
-        '/' +
-        axiosHttpRepository.getEndpoint(endpoints.ultimo_saldo) + authenticationStore.user.id;
-      axios({
-        url: url_acreditacion,
-        method: 'GET',
-        responseType: 'json',
-        headers: {
-          'Authorization': axiosHttpRepository.getOptions().headers.Authorization
-        }
-      }).then((response: HttpResponseGet) => {
-        const { data } = response
-        if (data) {
-          saldo_actual.value = data.saldo_actual
-        }
-
-      })
-
-    }
 
     return {
       links: menu.links,
@@ -307,6 +288,7 @@ export default defineComponent({
       },
       logout,
       nombreUsuario,
+      saldo,
       menuVisible,
       modoOscuro,
       toggleDarkMode,
@@ -323,8 +305,6 @@ export default defineComponent({
       moment,
       obtenerIcono: obtenerIconoNotificacion,
       imagenPerfil,
-      saldo_actual,
-      consultar_saldo_actual,
     }
   },
 })

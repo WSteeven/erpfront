@@ -12,7 +12,6 @@ export class GastoCoordinadorPusherEvent {
     const { notificarCorrecto } = useNotificaciones()
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
-    console.log('pusher', 'solicitud-fondos-' + this.usuario.usuario_id);
 
     pusher.subscribe('solicitud-fondos-' + this.usuario.usuario_id)
     pusher.bind('solicitud-fondos-event', function (e) {

@@ -25,6 +25,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const auth = ref(false)
   const permisos = ref()
   const nombre_usuario = ref()
+  const saldo_actual = ref(0)
   const nombreUsuario = computed(
     () =>
       `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
@@ -84,6 +85,21 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       throw new ApiError(axiosError)
     }
   }
+  async function consultar_saldo_actual() {
+    try {
+      const userApi = axios.getEndpoint(endpoints.ultimo_saldo)+user.value?.usuario_id
+
+      const response = await axios.get<AxiosResponse>(userApi)
+
+      setSaldo(response.data.saldo_actual)
+      return response.data.saldo_actual
+
+    } catch (e) {
+      setSaldo(null)
+    }
+
+  }
+
 
   /**
    * Función para cargar datos en el Local Storage
@@ -119,6 +135,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     user.value = userData
     auth.value = Boolean(userData)
   }
+  const setSaldo =(saldo: number) =>{
+    saldo_actual.value = saldo
+  }
+
   const setNombreusuario = (email: string) => {
     nombre_usuario.value = email
   }
@@ -175,6 +195,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   return {
     user,
     nombre_usuario,
+    saldo_actual,
     login,
     enviarCorreoRecuperacion,
     recuperacionCuenta,
@@ -194,7 +215,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esBodeguero,
     esActivosFijos,
     esRecursosHumanos,
+    consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,
   }
 })
+
