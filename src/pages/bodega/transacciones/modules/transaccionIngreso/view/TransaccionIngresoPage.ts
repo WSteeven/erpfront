@@ -64,7 +64,7 @@ export default defineComponent({
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
 
-    onGuardado(()=>{
+    onGuardado(() => {
       listadoDevolucion.value = []
     })
     onConsultado(() => {

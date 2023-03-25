@@ -105,10 +105,7 @@ export default defineComponent({
             estado: 1,
           }
         },
-        tareas: {
-          controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
-        },
+        tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,titulo,cliente_id' } },
       })
     })
 
@@ -118,7 +115,7 @@ export default defineComponent({
      ****************************************************************************************/
     const reglas = {
       justificacion: { required },
-      autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
+      // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
       observacion_aut: { requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!) },
       sucursal: { required },
       responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico || esRRHH) },
@@ -128,7 +125,7 @@ export default defineComponent({
       //   fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
       // },
       fecha_limite: {
-        required: requiredIf(()=>accion.value===acciones.nuevo),
+        required: requiredIf(() => accion.value === acciones.nuevo),
         fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
       },
     }
