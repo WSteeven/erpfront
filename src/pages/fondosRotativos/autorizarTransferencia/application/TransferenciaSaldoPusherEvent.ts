@@ -14,10 +14,11 @@ export class TransferenciaSaldoPusherEvent {
     const pusher = notificacionStore.pusher
     pusher.subscribe('transferencia-saldo-'+this.usuario.usuario_id)
     pusher.bind('transferencia-saldo-event', function (e) {
-      console.log('transferencia-saldo-event', e);
       notificacionStore.agregar(e.notificacion)
       notificarCorrecto('Tienes una transferencia esperando ser aceptada')
+   })
 
-    })
   }
 }
+
+
