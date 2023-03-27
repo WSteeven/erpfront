@@ -1,5 +1,5 @@
 import {  defineComponent,  ref, watchEffect } from 'vue'
-import { Gasto } from '../domain/Gasto'
+
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -11,7 +11,6 @@ import { useVuelidate } from '@vuelidate/core'
 import { requiredIf, maxLength, minLength, required } from 'shared/i18n-validators'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { GastoController } from '../infrestructure/GastoController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
@@ -20,6 +19,8 @@ import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/inf
 import { useAuthenticationStore } from 'stores/authentication'
 import { emit } from 'process'
 import { maskFecha } from 'config/utils'
+import { VisualizarGasto } from '../domain/VisualizarGasto'
+import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 
 
 export default defineComponent({
@@ -35,7 +36,7 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Gasto, new GastoController())
+    const mixin = new ContenedorSimpleMixin(VisualizarGasto, new VisualizarGastoController())
     const {
       entidad: gasto,
       disabled,

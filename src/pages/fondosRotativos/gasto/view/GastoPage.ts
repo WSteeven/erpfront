@@ -86,6 +86,12 @@ export default defineComponent({
     }
 
 
+    const cargo =  ref(usuario.cargo)
+    const esTecnico = ref(false)
+    if(cargo.value !== null){
+      esTecnico.value = cargo.value.indexOf('TÉCNICO') >= 0?true:false
+    }
+
     /*************
      * Validaciones
      **************/
@@ -112,6 +118,9 @@ export default defineComponent({
       },
       factura: {
         maxLength: maxLength(17),
+      },
+      aut_especial: {
+        requiredIfTecnico: requiredIf(()=>esTecnico.value),
       },
       num_comprobante: {
         minLength: minLength(10),
@@ -154,11 +163,7 @@ export default defineComponent({
     const autorizacionesEspeciales = ref([])
     const tareas = ref([])
     const subTareas = ref([])
-    const cargo =  ref(usuario.cargo)
-    const esTecnico = ref(false)
-    if(cargo.value !== null){
-      esTecnico.value = cargo.value.indexOf('TÉCNICO') >= 0?true:false
-    }
+
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({

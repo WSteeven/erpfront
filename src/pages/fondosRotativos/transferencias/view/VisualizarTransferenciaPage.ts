@@ -1,5 +1,5 @@
 import { defineComponent, ref } from 'vue'
-import { Transferencia } from '../domain/Transferencia'
+
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -10,12 +10,13 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import {  required,maxLength, requiredIf } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TransferenciaController } from '../infrestructure/TransferenciaController'
 import { configuracionColumnasTransferencia } from '../domain/configuracionColumnasTransferencia'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 import { AprobarTransferenciaController } from 'pages/fondosRotativos/autorizarTransferencia/infrestructure/AprobarTransferenciaController'
 import { useNotificaciones } from 'shared/notificaciones'
+import { VisualizarTransferenciaController } from '../infrestructure/VisualizarTransferenciaController'
+import { VisualizarTransferencia } from '../domain/VisualizarTransferencia'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagenModal },
@@ -30,7 +31,7 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Transferencia, new TransferenciaController())
+    const mixin = new ContenedorSimpleMixin(VisualizarTransferencia, new VisualizarTransferenciaController())
     const aprobarController = new AprobarTransferenciaController()
     const {
       entidad: transferencia,
