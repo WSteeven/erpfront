@@ -24,7 +24,7 @@
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table"
+    class="bg-body-table my-sticky-column-table borde"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -32,6 +32,7 @@
       'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
       'my-sticky-column-table-dark': $q.dark.isActive,
       'my-sticky-column-table-light': !$q.dark.isActive,
+      'rounded-header': $q.screen.xs,
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
@@ -388,7 +389,7 @@
       <q-card
         v-if="$q.screen.xs"
         :class="props.selected ? 'bg-grey-2' : ''"
-        class="q-py-xs custom-shwadow q-mb-md full-width rounded-card"
+        class="q-py-xs q-my-none custom-shadows full-width border-bottom no-border srodunded-card"
         :style="props.selected ? 'transform: scale(0.95);' : ''"
       >
         <q-card-section v-if="tipoSeleccion !== 'none'">
@@ -417,7 +418,7 @@
                   v-if="permitirConsultar"
                   class="bg-btn-table"
                   round
-                  unelevated
+                  glossy
                   dense
                   @click="
                     consultar({ entidad: props.row, posicion: props.rowIndex })
@@ -432,7 +433,7 @@
                   v-if="permitirEditar"
                   class="bg-btn-table"
                   round
-                  unelevated
+                  glossy
                   dense
                   @click="
                     editar({ entidad: props.row, posicion: props.rowIndex })
@@ -447,7 +448,7 @@
                   v-if="permitirEliminar"
                   class="bg-btn-table"
                   round
-                  unelevated
+                  glossy
                   dense
                   @click="
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
@@ -526,11 +527,44 @@
                   {{ formatBytes(col.value) }}
                 </span>
 
+                <span v-if="col.name === 'tiene_subtareas'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check-circle-fill"
+                    color="positive"
+                    size="sm"
+                  ></q-icon>
+                </span>
+
                 <div :class="{ 'q-mb-xs': $q.screen.xs }">
                   <estados-subtareas
                     v-if="col.name === 'estado'"
                     :propsTable="col"
                   />
+
+                  <q-chip
+                    v-if="col.value === 'EN CAMINO'"
+                    class="bg-blue-2 text-primary"
+                  >
+                    <q-icon
+                      name="bi-car-front-fill"
+                      color="primary"
+                      class="q-mr-xs"
+                    ></q-icon
+                    >{{ 'En camino' }}
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'RUTA COMPLETADA'"
+                    class="bg-green-1 text-positive"
+                  >
+                    <q-icon
+                      name="bi-check-circle-fill"
+                      color="positive"
+                      class="q-mr-xs"
+                    ></q-icon
+                    >{{ 'RUTA COMPLETADA' }}
+                  </q-chip>
                 </div>
 
                 <span
@@ -543,6 +577,7 @@
                       'estado',
                       'es_responsable',
                       'tamanio_bytes',
+                      'tiene_subtareas',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -1012,12 +1047,6 @@
           color="positive"
           size="sm"
         ></q-icon>
-        <q-icon
-          v-if="!props.value"
-          name="bi-x-circle-fill"
-          color="negative"
-          size="sm"
-        ></q-icon>
       </q-td>
     </template>
   </q-table>
@@ -1080,13 +1109,6 @@
 
 .custom-border {
   border-radius: 0 0 8px 8px;
-}
-
-.titulo-tabla {
-  border-top: 1px solid $grey-4;
-  border-right: 1px solid $grey-4;
-  border-left: 1px solid $grey-4;
-  border-radius: 4px 4px 0 0;
 }
 
 // Columna estatica ---

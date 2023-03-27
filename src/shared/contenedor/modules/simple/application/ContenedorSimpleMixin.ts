@@ -74,39 +74,40 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     this.hooks.onBeforeConsultar()
 
-    this.cargarVista(async () => {
-      if (data.id === null) {
-        return this.notificaciones.notificarAdvertencia(
-          'No se puede consultar el recurso con id null'
-        )
+    // this.cargarVista(async () => {
+    if (data.id === null) {
+      return this.notificaciones.notificarAdvertencia(
+        'No se puede consultar el recurso con id null'
+      )
+    }
+
+    try {
+      this.statusEssentialLoading.activar()
+      const { result } = await this.controller.consultar(
+        data.id,
+        this.argsDefault
+      )
+      console.log('Antes...')
+      console.log(result)
+      this.entidad.hydrate(result)
+      console.log('Despues...')
+      console.log(this.entidad)
+      this.entidad_copia.hydrate(this.entidad)
+      this.refs.tabs.value = 'formulario'
+
+      const usuario = new Usuario()
+      usuario.hydrate(result)
+
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
       }
-
-      try {
-        const { result } = await this.controller.consultar(
-          data.id,
-          this.argsDefault
-        )
-        console.log('Antes...')
-        console.log(result)
-        this.entidad.hydrate(result)
-        console.log('Despues...')
-        console.log(this.entidad)
-        this.entidad_copia.hydrate(this.entidad)
-        this.refs.tabs.value = 'formulario'
-
-        const usuario = new Usuario()
-        usuario.hydrate(result)
-
-      } catch (error) {
-        console.log(error)
-        if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          await notificarMensajesError(mensajes, this.notificaciones)
-        }
-      } finally {
-        this.hooks.onConsultado()
-      }
-    })
+    } finally {
+      this.hooks.onConsultado()
+      this.statusEssentialLoading.desactivar()
+    }
+    // })
 
     /*const stop = watch(this.entidad, () => {
       if (this.entidad.id !== null) {

@@ -97,8 +97,8 @@ export default defineComponent({
       color: 'positive',
       accion: () => {
         modales.abrirModalEntidad('RegistroTendidoPage')
-        // tendidoStore.idTendido = progresiva.id
         registroTendido.hydrate(entidadReset)
+        tendidoStore.idTendido = tendido.id
         tendidoStore.idRegistroTendido = null
         tendidoStore.accion = acciones.nuevo
         tendidoStore.numeroElemento = listadoRegistrosTendidos.value.length + 1
@@ -135,7 +135,7 @@ export default defineComponent({
       tendidoStore.idTarea = tendido.tarea
     })
 
-    onBeforeGuardar(() => tendido.trabajo = trabajoAsignadoStore.idSubtareaSeleccionada)
+    onBeforeGuardar(() => tendido.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada)
 
     onGuardado(() => tendidoStore.idTendido = tendido.id)
 

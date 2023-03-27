@@ -243,7 +243,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
@@ -263,10 +263,7 @@
             </q-select>
           </div>
           <!-- Tarea -->
-          <div
-            v-if="esVisibleTarea"
-            class="col-12 col-md-3"
-          >
+          <div v-if="esVisibleTarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="transaccion.tarea"
@@ -471,7 +468,7 @@
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
-            <div class="row">
+            <div class="row q-col-gutter-xs">
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaProducto"
@@ -493,10 +490,11 @@
                   icon="search"
                   unelevated
                   :disable="disabled || soloLectura"
-                  color="secondary"
+                  color="positive"
                   class="full-width"
                   style="height: 40px"
                   no-caps
+                  glossy
                   >Buscar</q-btn
                 >
               </div>

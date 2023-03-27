@@ -46,7 +46,6 @@ import { useBotonesTablaTarea } from '../application/BotonesTablaTarea'
 import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
-import { TipoTrabajo } from 'pages/gestionTrabajos/tiposTareas/domain/TipoTrabajo'
 import { TareaModales } from '../domain/TareaModales'
 
 export default defineComponent({
@@ -336,6 +335,16 @@ export default defineComponent({
       },
     }
 
+    const botonFinalizarTarea: CustomActionTable = {
+      titulo: 'Finalizar tarea',
+      icono: 'bi-check-circle-fill',
+      color: 'positive',
+      visible: () => !!tarea.id && tarea.tiene_subtareas,
+      accion: ({ entidad }) => {
+        console.log('finalizado')
+      }
+    }
+
     function filtrarSubtareas(estado) {
       console.log(estado)
       listarSubtareas({ tarea_id: tarea.id, estado: estado })
@@ -422,6 +431,7 @@ export default defineComponent({
       indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white'),
       maskFecha,
       guardado,
+      botonFinalizarTarea,
       // Botones tareas
       btnVerPausasTarea,
       btnFinalizarTarea,

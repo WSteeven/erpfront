@@ -1,10 +1,14 @@
 // Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
+import loginJson from 'src/assets/lottie/login7.json'
 import { defineComponent, reactive, ref } from 'vue'
 import { date } from 'quasar'
 
+
 // Componentes
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import { Vue3Lottie } from 'vue3-lottie'
+import 'vue3-lottie/dist/style.css'
 
 // Logica y controladores
 import { ComportamientoModalesTableroPersonal } from '../application/ComportamientoModalesTableroPersonal'
@@ -15,6 +19,7 @@ import { TableroPersonal } from '../domain/TableroPersonal'
 export default defineComponent({
   components: {
     ModalesEntidad,
+    LottiePlayer: Vue3Lottie,
   },
   setup() {
     const store = useAuthenticationStore()
@@ -58,6 +63,7 @@ export default defineComponent({
       tablero,
       store,
       usuarios,
+      loginJson,
       /* tab: ref(
           store.esTecnicoLider
               ? 'asignadas'

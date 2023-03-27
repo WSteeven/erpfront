@@ -11,12 +11,12 @@ export const useMenuStore = defineStore('menu', () => {
     {
       header: 'Modulos',
     },
-    /* {
+    {
       title: 'Inicio',
       icon: 'bi-house-fill',
       link: '/',
-      can: !store.can('puede.ver.trabajo_asignado'),
-    }, */
+      can: true, //!store.can('puede.ver.trabajo_asignado'),
+    },
     {
       title: 'Trabajo agendado',
       link: 'trabajo-agendado',

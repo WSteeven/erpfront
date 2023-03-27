@@ -105,8 +105,11 @@ export default defineComponent({
     /************
     * Observers
     ************/
+    let grupoConsultado: number
+
     watchEffect(() => {
       if (subtarea.grupo) {
+        grupoConsultado = subtarea.grupo
         obtenerTecnicosGrupo(subtarea.grupo)
         emit('seleccionar-grupo', subtarea.grupo)
       } else if (subtarea.empleado) {

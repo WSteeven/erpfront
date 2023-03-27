@@ -16,14 +16,6 @@
         :class="{ 'bg-grey-2': !$q.dark.isActive }"
       >
         <div class="imagen d-flex align-items-center justify-content-center">
-          <!-- <lottie-player
-            :animationData="loginJson"
-            background="transparent"
-            :speed="1"
-            style="width: 400px; height: 400px"
-            loop
-            autoplay
-          ></lottie-player> -->
           <q-avatar square size="400px">
             <img src="~assets/logo.svg" />
           </q-avatar>

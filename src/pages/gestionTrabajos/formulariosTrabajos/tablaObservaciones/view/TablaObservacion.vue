@@ -30,11 +30,20 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import Observacion from '../../emergencias/domain/Observacion'
 
+const props = defineProps({
+  listado: {
+    type: Object as () => Observacion[],
+    required: true,
+  },
+})
+
+const emit = defineEmits(['actualizar'])
+
 /************
  * Variables
  ************/
 const refObservaciones = ref()
-const observaciones: Ref<Observacion[]> = ref([])
+const observaciones: Ref<Observacion[]> = ref(props.listado)
 const { confirmar } = useNotificaciones()
 
 /***************************
@@ -51,6 +60,7 @@ const columnasObservacion: any = [
 const agregarObservacion: CustomActionTable = {
   titulo: 'Agregar observación',
   icono: 'bi-arrow-bar-down',
+  color: 'positive',
   accion: () => {
     const fila: Observacion = new Observacion()
 
@@ -59,6 +69,7 @@ const agregarObservacion: CustomActionTable = {
       fila,
       observaciones.value.length - 1
     )
+    emit('actualizar', observaciones.value)
   },
 }
 

@@ -245,10 +245,11 @@
                   :disable="disabled || soloLectura"
                   icon="search"
                   unelevated
-                  color="primary"
+                  color="positive"
                   class="full-width"
                   style="height: 40px"
                   no-caps
+                  glossy
                   >Buscar</q-btn
                 >
               </div>

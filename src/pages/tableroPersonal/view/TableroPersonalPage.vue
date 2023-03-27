@@ -1,11 +1,24 @@
 <template>
   <q-page padding>
     <div class="text-center q-py-md">
-      <div class="text-bold q-mb-md">{{ fecha }}</div>
-      <div class="text-h5 q-mb-md">Bienvenido, {{ store.nombreUsuario }}.</div>
-      <div v-if="store.user?.grupo" class="text-h6 q-mb-md">
+      <div class="text-subtitle2 q-mb-md">{{ fecha }}</div>
+      <div class="text-subtitle1 q-mb-md">
+        Bienvenido, {{ store.nombreUsuario }}.
+      </div>
+      <div v-if="store.user?.grupo" class="text-subtitle2 q-mb-md">
         Grupo, {{ store.user.grupo }}.
       </div>
+
+      <lottie-player
+        :animationData="loginJson"
+        background="transparent"
+        :speed="1"
+        style="width: 400px; height: 400px"
+        loop
+        autoplay
+      ></lottie-player>
+
+      <q-btn color="primary" no-caps push glossy>Manual de usuario</q-btn>
 
       <!--<q-chip
         v-if="store.esCoordinador || store.esTecnicoLider"

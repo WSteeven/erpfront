@@ -332,6 +332,10 @@ export default defineComponent({
       subtarea.grupo = null
     }
 
+    function onRejected(rejectedEntries) {
+      notificarAdvertencia('El tamaño total de los archivos no deben exceder los 10mb.')
+    }
+
     /************
     * Observers
     ************/
@@ -342,6 +346,7 @@ export default defineComponent({
     return {
       v$,
       refUploader,
+      onRejected,
       empleadosSeleccionados,
       listado,
       subtarea,

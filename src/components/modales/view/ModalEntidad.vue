@@ -21,6 +21,7 @@
           round
           glossy
           push
+          dense
           color="negative"
           icon="bi-x"
           @click="cerrarModalEntidad()"
@@ -52,4 +53,5 @@
     </q-card>
   </q-dialog>
 </template>
+
 <script src="./ModalEntidad.ts"></script>

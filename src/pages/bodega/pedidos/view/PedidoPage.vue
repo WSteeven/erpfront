@@ -285,10 +285,7 @@
           </div>
           <!-- Select autorizacion -->
           <!-- v-if="pedido.autorizacion || esCoordinador||esActivosFijos" -->
-          <div
-            v-if="pedido.autorizacion"
-            class="col-12 col-md-3 q-mb-md"
-          >
+          <div v-if="pedido.autorizacion" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="pedido.autorizacion"
@@ -308,11 +305,11 @@
               :option-label="(v) => v.nombre"
               emit-value
               map-options
-              >
+            >
               <!--
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
-               
+
               <template v-slot:error>
                 <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
@@ -341,10 +338,8 @@
             ></q-checkbox>
           </div> -->
           <!-- observacion autorizacion -->
-            <!-- v-if="pedido.tiene_observacion_aut || pedido.observacion_aut" -->
-          <div
-            class="col-12 col-md-3"
-          >
+          <!-- v-if="pedido.tiene_observacion_aut || pedido.observacion_aut" -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
@@ -433,11 +428,12 @@
                   @click="listarProductos()"
                   icon="search"
                   unelevated
-                  color="primary"
+                  color="positive"
                   class="full-width"
                   style="height: 40px"
                   :disable="disabled || (soloLectura && !esCoordinador)"
                   no-caps
+                  glossy
                   >Buscar</q-btn
                 >
               </div>

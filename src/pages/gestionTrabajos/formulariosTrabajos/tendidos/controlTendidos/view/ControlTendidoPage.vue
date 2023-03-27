@@ -3,11 +3,11 @@
   <q-card class="rounded q-mb-md">
     <q-card-section>
       <q-form @submit.prevent>
-        <div class="text-bold q-mb-lg">1. Información general</div>
+        <!-- <div class="text-bold q-mb-lg">1. Información general</div> -->
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Bobina -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Bobina</label>
+            <label class="q-mb-sm block">Seleccione una bobina</label>
             <q-select
               v-model="tendido.bobina"
               :options="listadosAuxiliares.bobinas"
@@ -51,7 +51,7 @@
           </div>
 
           <!-- Cantidad postes -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cantidad de postes</label>
             <q-input
               v-model="
@@ -67,7 +67,7 @@
           </div>
 
           <!-- Cantidad pozos -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cantidad de pozos</label>
             <q-input
               v-model="
@@ -130,13 +130,14 @@
   <!--<div class="row justify-center q-mb-md q-gutter-xs"> -->
   <q-btn
     v-if="!tendidoIniciado"
-    class="col-12 col-md-3"
+    class="col-12 full-width"
     color="positive"
     @click="iniciarRegistros()"
     no-caps
     no-wrap
     rounded
     push
+    glossy
   >
     <q-icon name="bi-play-fill" size="xs" class="q-pr-sm"></q-icon>
     Comenzar a agregar elementos
@@ -168,6 +169,7 @@
             :datos="listadoRegistrosTendidos"
             :alto-fijo="false"
             :permitirEliminar="false"
+            :permitirBuscar="false"
             :accion1Header="agregarProgresiva"
             @consultar="consultarRegistro"
             @editar="editarRegistro"

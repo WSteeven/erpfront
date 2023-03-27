@@ -13,12 +13,12 @@ const routes: RouteRecordRaw[] = [
           import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
+      /* {
         path: '',
         name: 'tablero',
         component: () => import('pages/tablero/view/TableroPage.vue'),
         meta: { requiresAuth: true },
-      },
+      }, */
       {
         path: '/proyectos',
         name: 'proyectos',

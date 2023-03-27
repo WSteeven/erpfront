@@ -8,9 +8,25 @@ body {
   &::-webkit-scrollbar-thumb {
     border-radius: 50px;
 
-    background: #009fff;
-    background: -webkit-linear-gradient(to top, #2f4d81, #009fff);
-    background: linear-gradient(to top, #2f4d81, #009fff);
+    background: #aaaaaa;
+    // background: -webkit-linear-gradient(to top, #2f4d81, #009fff);
+    // background: linear-gradient(to top, #2f4d81, #009fff);
+  }
+}
+
+.q-virtual-scroll {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+    border-radius: 16px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: #aaa;
+    // background: -webkit-linear-gradient(45deg, #2f4d81, #009fff);
+    // background: linear-gradient(45deg, #2f4d81, #009fff);
   }
 }
 
@@ -50,23 +66,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
   filter: invert(70%);
 }
 
-.q-virtual-scroll {
-  &::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-    background-color: transparent;
-    border-radius: 16px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 50px;
-    background: #009fff;
-    background: -webkit-linear-gradient(45deg, #2f4d81, #009fff);
-    background: linear-gradient(45deg, #2f4d81, #009fff);
-  }
-
-  /* .bg-transparent {
+/* .bg-transparent {
     background-color: transparent !important;
     border: none !important;
   } */
-}

@@ -10,8 +10,8 @@ export const useSubtareaStore = defineStore('subtarea', () => {
   const codigoSubtareaSeleccionada = ref()
   const idCliente = ref()
   const tareaTieneSubtareas = ref()
-  const fechaHoraPendiente = ref()
-  const motivoPendiente = ref()
+  const fechaHoraSuspendido = ref()
+  const motivoSuspendido = ref()
   const accion = ref()
   const observacionTarea = ref()
   // Reagendar
@@ -28,8 +28,8 @@ export const useSubtareaStore = defineStore('subtarea', () => {
     codigoSubtareaSeleccionada,
     tareaTieneSubtareas,
     idCliente,
-    fechaHoraPendiente,
-    motivoPendiente,
+    fechaHoraSuspendido,
+    motivoSuspendido,
     posicionSubtareaSeleccionada,
     accion,
     observacionTarea,

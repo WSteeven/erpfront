@@ -428,7 +428,7 @@
               options-dense
               dense
               outlined
-              :disable="transaccion.es_tarea ||disabled"
+              :disable="transaccion.es_tarea || disabled"
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
@@ -511,10 +511,11 @@
                   icon="search"
                   unelevated
                   :disable="disabled || soloLectura"
-                  color="primary"
+                  color="positive"
                   class="full-width"
                   style="height: 40px"
                   no-caps
+                  glossy
                   >Buscar</q-btn
                 >
               </div>
