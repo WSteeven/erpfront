@@ -118,7 +118,7 @@ export default defineComponent({
         maxLength: maxLength(15),
       },
       aut_especial: {
-        required,
+        requiredIfFactura: requiredIf(()=>authenticationStore.user.cargo.indexOf('TÉCNICO') >= 0),
       },
       detalle: {
         required,
@@ -157,6 +157,11 @@ export default defineComponent({
     const autorizacionesEspeciales = ref([])
     const tareas = ref([])
     const subTareas = ref([])
+    const cargo =  ref(usuario.cargo)
+    const esTecnico = ref(false)
+    if(cargo.value !== null){
+      esTecnico.value = cargo.value.indexOf('TÉCNICO') >= 0?true:false
+    }
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -335,6 +340,7 @@ export default defineComponent({
       )
     )
 
+
     /*********
      * Pusher
      *********/
@@ -397,6 +403,7 @@ export default defineComponent({
     return {
       mixin,
       gasto,
+      authenticationStore,
       cantones,
       detalles,
       esFactura,
@@ -410,6 +417,7 @@ export default defineComponent({
       maskFecha,
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
+      esTecnico,
       watchEffect,
       filtrarAutorizacionesEspeciales,
       filtrarCantones,

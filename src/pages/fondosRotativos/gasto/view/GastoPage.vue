@@ -232,9 +232,8 @@
               </template>
             </q-input>
           </div>
-
-          <!-- Autorizacion -->
-          <div class="col-12 col-md-3">
+             <!-- Autorizacion -->
+          <div class="col-12 col-md-3" v-if="esTecnico" >
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-select v-model="gasto.aut_especial" :options="autorizacionesEspeciales" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
@@ -342,7 +341,7 @@
           <!-- Observacion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación</label>
-            <q-input v-model="gasto.observacion" placeholder="Opcional" type="textarea" :disable="disabled"
+            <q-input v-model="gasto.observacion" placeholder="obligatorio" type="textarea" :disable="disabled"
               :error="!!v$.observacion.$errors.length" autogrow @blur="v$.observacion.$touch" outlined dense>
               <template v-slot:error>
                 <div v-for="error of v$.observacion.$errors" :key="error.$uid">
