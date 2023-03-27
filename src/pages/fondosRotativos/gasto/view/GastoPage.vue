@@ -237,7 +237,7 @@
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-select v-model="gasto.aut_especial" :options="autorizacionesEspeciales" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
-              :error="!!v$.aut_especial.$errors.length" error-message="Debes seleccionar un canton" use-input
+              :error="!!v$.aut_especial.$errors.length" error-message="Debes seleccionar un autorizador" use-input
               input-debounce="0" @blur="v$.aut_especial.$touch" @filter="filtrarAutorizacionesEspeciales"
               :option-value="(v) => v.id" :option-label="(v) => v.usuario" emit-value map-options>
               <template v-slot:error>

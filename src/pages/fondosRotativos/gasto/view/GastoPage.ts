@@ -117,9 +117,6 @@ export default defineComponent({
         minLength: minLength(10),
         maxLength: maxLength(15),
       },
-      aut_especial: {
-        requiredIfFactura: requiredIf(()=>authenticationStore.user.cargo.indexOf('TÉCNICO') >= 0),
-      },
       detalle: {
         required,
       },
