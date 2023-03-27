@@ -1,7 +1,9 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class DetalleProducto extends EntidadAuditable {
+    id:number | null
     categoria: string | null
+    codigo: string | null
     producto: string | null
     producto_id: number | null
     descripcion: string | null
@@ -42,6 +44,7 @@ export class DetalleProducto extends EntidadAuditable {
 
     constructor() {
         super()
+        this.id = null
         this.producto = null
         this.producto_id = null
         this.descripcion = null
@@ -59,6 +62,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.span = null
         this.tipo_fibra = null
         this.categoria = null
+        this.codigo = null
         this.hilos = null
         this.punta_inicial = null
         this.punta_final = null

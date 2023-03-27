@@ -230,8 +230,8 @@
           </div>
 
           <!-- Solicitante -->
+          <!-- v-if="transaccion.solicitante || !esBodeguero" -->
           <div
-            v-if="transaccion.solicitante || !esBodeguero"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Solicitante</label>
@@ -514,7 +514,7 @@
               :permitirEditar="
                 !transaccion.ingreso_masivo && accion === acciones.nuevo
               "
-              :permitirEliminar="true"
+              :permitirEliminar="accion==acciones.nuevo||accion==acciones.editar?true:false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               @eliminar="eliminarItem"

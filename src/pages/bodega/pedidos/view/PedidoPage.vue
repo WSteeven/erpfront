@@ -284,8 +284,9 @@
             />
           </div>
           <!-- Select autorizacion -->
+          <!-- v-if="pedido.autorizacion || esCoordinador||esActivosFijos" -->
           <div
-            v-if="pedido.autorizacion || esCoordinador||esActivosFijos"
+            v-if="pedido.autorizacion"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -303,18 +304,20 @@
               :readonly="
                 disabled || (soloLectura && !(esCoordinador || esActivosFijos))
               "
-              :error="!!v$.autorizacion.$errors.length"
-              error-message="Debes seleccionar una autorizacion"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
-            >
+              >
+              <!--
+              :error="!!v$.autorizacion.$errors.length"
+              error-message="Debes seleccionar una autorizacion"
+               
               <template v-slot:error>
                 <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
-              </template>
+              </template> -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
