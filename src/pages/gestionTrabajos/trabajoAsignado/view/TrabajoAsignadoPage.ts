@@ -142,41 +142,28 @@ export default defineComponent({
       titulo: 'Reanudar',
       icono: 'bi-play-circle',
       color: 'positive',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.es_responsable,
+      visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.es_responsable && entidad.puede_ejecutar,
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro de reanudar el trabajo?', () => {
           new CambiarEstadoSubtarea().reanudar(entidad.id)
           entidad.estado = estadosTrabajos.EJECUTANDO
           notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
-          eliminarElemento(posicion, entidad)
+          // eliminarElemento(posicion, entidad)
+          filtrarTrabajoAsignado(estadosTrabajos.PAUSADO)
         })
       }
     }
 
-    /* const botonCorregir: CustomActionTable = {
-      titulo: 'Corregir',
-      icono: 'bi-play-circle',
-      color: 'positive',
-      visible: ({ entidad }) => true,//entidad.estado === estadosTrabajos.REALIZADO ,
-      accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de corregir el trabajo?', () => {
-          new CambiarEstadoSubtarea().corregir(entidad.id)
-          entidad.estado = estadosTrabajos.EJECUTANDO
-          notificarCorrecto('El trabajo está disponible en la pestaña EJECUTANDO para su correción')
-          eliminarElemento(posicion, entidad)
-        })
-      }
-    } */
-
     const botonFormulario: CustomActionTable = {
-      titulo: 'Formulario',
+      titulo: 'Seguimiento',
       icono: 'bi-check2-square',
       color: 'indigo',
       visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO].includes(entidad.estado) && entidad.es_responsable,
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
           trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
-
+          trabajoAsignadoStore.idEmergencia = entidad.emergencia
+          trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
           const obtenerPlantilla = new ObtenerPlantilla()
           modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
         })
@@ -187,7 +174,7 @@ export default defineComponent({
       titulo: 'Suspender',
       icono: 'bi-power',
       color: 'negative',
-      visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.es_responsable,// && entidad.puede_ejecutar,
+      visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.es_responsable && entidad.puede_suspender,
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de suspender el trabajo?', () => {
           const config: CustomActionPrompt = {

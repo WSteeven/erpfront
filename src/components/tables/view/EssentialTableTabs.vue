@@ -1,66 +1,70 @@
 <template>
-  <q-tabs
-    v-model="tabSeleccionado"
-    no-caps
-    bordered
-    dense
-    narrow-indicator
-    active-color="white"
-    active-bg-color="primary"
-    indicator-color="primary"
-    :class="{
-      'borde-header-tabla': !$q.screen.xs,
-    }"
-    class="bg-table-tabs"
-    align="justify"
-    @click="emit('tab-seleccionado', tabSeleccionado)"
-  >
-    <q-tab
-      v-for="opcion in tabOptions"
-      :key="opcion.label"
-      :label="opcion.label"
-      :name="opcion.value"
-      class=""
-      :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
+  <div class="bg-white">
+    <q-tabs
+      v-model="tabSeleccionado"
+      no-caps
+      bordered
+      dense
+      narrow-indicator
+      active-color="white"
+      active-bg-color="primary"
+      indicator-color="primary"
+      :class="{
+        'borde-header-tabla': !$q.screen.xs,
+      }"
+      class="bg-table-tabs"
+      align="justify"
+      @click="emit('tab-seleccionado', tabSeleccionado)"
     >
-    </q-tab>
-  </q-tabs>
+      <q-tab
+        v-for="opcion in tabOptions"
+        :key="opcion.label"
+        :label="opcion.label"
+        :name="opcion.value"
+        class=""
+        :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
+      >
+      </q-tab>
+    </q-tabs>
 
-  <essential-table
-    :titulo="titulo"
-    :configuracionColumnas="configuracionColumnas"
-    :datos="datos"
-    :permitirConsultar="permitirConsultar"
-    :permitirEditar="permitirEditar"
-    :permitirEliminar="permitirEliminar"
-    :mostrar-botones="mostrarBotones"
-    :accion1="accion1"
-    :accion2="accion2"
-    :accion3="accion3"
-    :accion4="accion4"
-    :accion5="accion5"
-    :accion6="accion6"
-    :accion7="accion7"
-    :accion8="accion8"
-    :accion1Header="accion1Header"
-    :accion2Header="accion2Header"
-    :accion3Header="accion3Header"
-    :alto-fijo="altoFijo"
-    :mostrarFooter="mostrarFooter"
-    @consultar="consultar"
-    @editar="editar"
-    @eliminar="eliminar"
-    @accion1="emitAccion1"
-    @accion2="emitAccion2"
-    @accion3="emitAccion3"
-    @accion4="emitAccion4"
-    @accion5="emitAccion5"
-    @accion6="emitAccion6"
-    @accion7="emitAccion7"
-    @accion8="emitAccion8"
-    :permitir-filtrar="permitirFiltrar"
-    :permitir-buscar="permitirBuscar"
-  ></essential-table>
+    <div :class="{ 'q-mx-sm': $q.screen.xs }">
+      <essential-table
+        :titulo="titulo"
+        :configuracionColumnas="configuracionColumnas"
+        :datos="datos"
+        :permitirConsultar="permitirConsultar"
+        :permitirEditar="permitirEditar"
+        :permitirEliminar="permitirEliminar"
+        :mostrar-botones="mostrarBotones"
+        :accion1="accion1"
+        :accion2="accion2"
+        :accion3="accion3"
+        :accion4="accion4"
+        :accion5="accion5"
+        :accion6="accion6"
+        :accion7="accion7"
+        :accion8="accion8"
+        :accion1Header="accion1Header"
+        :accion2Header="accion2Header"
+        :accion3Header="accion3Header"
+        :alto-fijo="altoFijo"
+        :mostrarFooter="mostrarFooter"
+        @consultar="consultar"
+        @editar="editar"
+        @eliminar="eliminar"
+        @accion1="emitAccion1"
+        @accion2="emitAccion2"
+        @accion3="emitAccion3"
+        @accion4="emitAccion4"
+        @accion5="emitAccion5"
+        @accion6="emitAccion6"
+        @accion7="emitAccion7"
+        @accion8="emitAccion8"
+        :permitir-filtrar="permitirFiltrar"
+        :permitir-buscar="permitirBuscar"
+      ></essential-table>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>

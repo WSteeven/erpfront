@@ -1,7 +1,19 @@
 <template>
   <q-page padding>
-    <div class="q-mb-md text-bold text-dark text-center">
+    <div class="q-mb-md text-bold text-secondary text-center">
       <span>Mi Bodega</span>
+    </div>
+    <div
+      class="col-12 rounded-card q-py-md text-center text-white bg-secondary q-mb-sm"
+    >
+      <div class="q-mb-md text-shadow">
+        Mantenga siempre actualizada su base de datos de materiales.
+      </div>
+      <div class="q-mb-md text-bold">Modo offline.</div>
+      <q-btn color="white" outline no-caps>
+        <q-icon name="bi-cloud-download-fill" class="q-mr-sm"></q-icon>
+        Sincronizar ahora</q-btn
+      >
     </div>
     <q-card class="rounded-card custom-shadow">
       <q-tabs

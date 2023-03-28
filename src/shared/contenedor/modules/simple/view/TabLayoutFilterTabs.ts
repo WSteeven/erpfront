@@ -106,6 +106,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accionButtonSubmit: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },

@@ -39,16 +39,34 @@
       <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
         <slot name="formulario" />
         <div :class="{ 'q-pa-md': full }">
-          <button-submits
-            v-if="mostrarButtonSubmits"
-            :accion="accion"
-            :permitirGuardar="puedeCrear"
-            :labelGuardar="labelGuardar"
-            @cancelar="reestablecer()"
-            @editar="editar(entidad, resetFormularioOnUpdate)"
-            @eliminar="eliminar(entidad, cbEliminar)"
-            @guardar="guardar(entidad)"
-          />
+          <div class="row justify-end">
+            <q-btn
+              v-if="accionButtonSubmit && accionButtonSubmit.visible()"
+              :color="accionButtonSubmit.color"
+              no-caps
+              push
+              class="q-mr-sm"
+              @click="accionButtonSubmit.accion()"
+            >
+              <q-icon
+                :name="accionButtonSubmit.icono"
+                size="xs"
+                class="q-pr-sm"
+              ></q-icon>
+              <span>{{ accionButtonSubmit.titulo }}</span>
+            </q-btn>
+
+            <button-submits
+              v-if="mostrarButtonSubmits"
+              :accion="accion"
+              :permitirGuardar="puedeCrear"
+              :labelGuardar="labelGuardar"
+              @cancelar="reestablecer()"
+              @editar="editar(entidad, resetFormularioOnUpdate)"
+              @eliminar="eliminar(entidad, cbEliminar)"
+              @guardar="guardar(entidad)"
+            />
+          </div>
         </div>
       </q-tab-panel>
       <!-- Listado -->

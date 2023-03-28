@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasControlAsistencia } from '../domain/configuracionColumnasReporte'
-import { required } from '@vuelidate/validators'
+import { required } from 'shared/i18n-validators'
 import { defineComponent, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { tiposJornadas } from 'config/utils'

@@ -1,6 +1,6 @@
 <template>
   <!-- submit and reset -->
-  <div class="row justify-end q-gutter-sm q-pt-md">
+  <div class="row inline justify-end q-gutter-sm">
     <!-- Boton guardar -->
     <q-btn
       form="formulario"

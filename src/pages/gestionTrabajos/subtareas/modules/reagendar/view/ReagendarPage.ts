@@ -45,8 +45,8 @@ export default defineComponent({
      * Variables
      ************/
     const codigoSubtareaSeleccionada = subtareaStore.codigoSubtareaSeleccionada
-    const motivoPendiente = subtareaStore.motivoPendiente
-    const fechaHoraPendiente = subtareaStore.fechaHoraPendiente
+    const motivoSuspendido = subtareaStore.motivoSuspendido
+    const fechaHoraSuspendido = subtareaStore.fechaHoraSuspendido
     const subtarea = reactive(new Subtarea())
     const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
 
@@ -152,8 +152,8 @@ export default defineComponent({
       v$,
       subtarea,
       codigoSubtareaSeleccionada,
-      motivoPendiente,
-      fechaHoraPendiente,
+      motivoSuspendido,
+      fechaHoraSuspendido,
       reagendar,
       maskFecha,
       seleccionarGrupo,

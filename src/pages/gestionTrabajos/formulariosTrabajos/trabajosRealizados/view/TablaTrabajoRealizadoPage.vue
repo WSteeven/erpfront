@@ -23,7 +23,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { obtenerTiempoActual } from 'shared/utils'
 import { accionesTabla } from 'config/utils'
-import { Ref, ref } from 'vue'
+import { Ref, ref, watchEffect } from 'vue'
 
 // Componentes
 import TrabajoRealizado from '../../emergencias/domain/TrabajoRealizado'
@@ -31,12 +31,23 @@ import TrabajoRealizado from '../../emergencias/domain/TrabajoRealizado'
 // Logica y controladores
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
+const props = defineProps({
+  listado: {
+    type: Object as () => TrabajoRealizado[],
+    required: true,
+  },
+})
+
+const emit = defineEmits(['actualizar'])
+
 /************
  * Variables
  ************/
-const trabajoRealizado: Ref<TrabajoRealizado[]> = ref([])
+const trabajoRealizado: Ref<TrabajoRealizado[]> = ref(props.listado)
 const { confirmar } = useNotificaciones()
 const refTrabajos = ref()
+
+watchEffect(() => (trabajoRealizado.value = props.listado))
 
 /***************************
  * Configuracion de columnas
@@ -52,12 +63,14 @@ const columnasTrabajoRealizado: any = [
 const agregarActividadRealizada: CustomActionTable = {
   titulo: 'Agregar actividad',
   icono: 'bi-arrow-bar-down',
+  color: 'positive',
   accion: async () => {
     const fila: TrabajoRealizado = new TrabajoRealizado()
     const { hora } = await obtenerTiempoActual()
     fila.hora = hora
     trabajoRealizado.value.push(fila)
     refTrabajos.value.abrirModalEntidad(fila, trabajoRealizado.value.length - 1)
+    emit('actualizar', trabajoRealizado.value)
   },
 }
 

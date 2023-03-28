@@ -99,7 +99,7 @@ const configuracionColumnas: any = computed(() => [
 const addRow: CustomActionTable = {
   titulo: 'Agregar ítem',
   icono: 'bi-arrow-bar-down',
-
+  color: 'positive',
   accion: () => {
     const fila = new DetalleProducto()
     // props.listado.push(fila)

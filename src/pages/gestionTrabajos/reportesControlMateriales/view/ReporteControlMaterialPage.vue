@@ -1,7 +1,9 @@
 <template>
   <q-page padding>
-    <div class="text-primary text-bold q-mb-lg">Control de material diario</div>
-    <q-card flat bordered class="rounded q-mb-md">
+    <div class="text-secondary text-center text-bold q-mb-lg">
+      Control de material diario
+    </div>
+    <q-card flat bordered class="rounded-card custom-shadow q-mb-md">
       <div class="row q-col-gutter-sm q-pa-md">
         <!-- Tarea -->
         <div class="col-12 col-md-4">
@@ -14,7 +16,7 @@
             options-dense
             dense
             outlined
-            :option-label="(item) => item.titulo"
+            :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
             :option-value="(item) => item.id"
             emit-value
             map-options
@@ -130,7 +132,7 @@
 
     <essential-table
       v-if="listado.length"
-      titulo="Listado de materiales"
+      titulo="Resultado de la búsqueda"
       :configuracionColumnas="configuracionColumnasControlAsistencia"
       :datos="listado"
       :permitirConsultar="false"

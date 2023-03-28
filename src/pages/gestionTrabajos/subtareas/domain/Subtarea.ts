@@ -60,6 +60,7 @@ export class Subtarea extends EntidadAuditable {
   puede_ejecutar: boolean
   tiene_subtareas: boolean
   empleados_adicionales: Empleado[]
+  emergencia: number | null
 
   constructor() {
     super()
@@ -125,5 +126,6 @@ export class Subtarea extends EntidadAuditable {
     this.puede_ejecutar = false
     this.tiene_subtareas = false
     this.empleados_adicionales = []
+    this.emergencia = null
   }
 }

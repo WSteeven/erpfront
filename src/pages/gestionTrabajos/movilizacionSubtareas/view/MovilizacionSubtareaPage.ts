@@ -1,7 +1,6 @@
 // Dependencias
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from 'shared/i18n-validators'
-import { accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
@@ -11,20 +10,21 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
+import { TrabajoAsignadoController } from 'pages/gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { MovilizacionSubtareaController } from '../infraestructure/MovilizacionSubtareaController'
 import { MovilizacionSubtarea } from '../domain/MovilizacionSubtarea'
-import { TrabajoAsignadoController } from 'pages/gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { useAuthenticationStore } from 'stores/authentication'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: {
     TabLayout,
     EssentialTable,
   },
-  setup() {
+  emits: ['cerrar-modal'],
+  setup(props, { emit }) {
     /*********
      * Stores
      *********/
@@ -49,6 +49,11 @@ export default defineComponent({
       })
       subtareas.value = listadosAuxiliares.subtareas
     })
+
+    /************
+     * Variables
+     ************/
+    const { confirmar } = useNotificaciones()
 
     /***************
      * Validaciones
@@ -78,9 +83,14 @@ export default defineComponent({
       })
     }
 
-    async function comenzar() {
-      const entidad = await guardar(movilizacion)
-      if (entidad) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+    function comenzar() {
+      confirmar('¿Está seguro de continuar?', async () => {
+        const entidad = await guardar(movilizacion)
+        if (entidad) {
+          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+          emit('cerrar-modal')
+        }
+      })
     }
 
     return {

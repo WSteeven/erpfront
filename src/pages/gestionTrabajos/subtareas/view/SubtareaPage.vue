@@ -346,7 +346,7 @@
     <div v-if="accion === acciones.nuevo" class="col-12 q-mb-md">
       <q-uploader
         ref="refUploader"
-        label="Selecciona o arrastra tus archivos aquí"
+        label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
         multiple
         style="width: 100%"
         flat
@@ -355,6 +355,8 @@
         text-color="black"
         class="bg-header-collapse expansion"
         hide-upload-btn
+        max-total-size="10485760"
+        @rejected="onRejected"
       />
     </div>
 
@@ -374,12 +376,15 @@
       ></essential-table>
     </div>
 
-    <button-submits
-      :accion="accion"
-      label-guardar="Guardar y agendar"
-      @cancelar="reestablecerDatos()"
-      @guardar="guardarDatos(subtarea)"
-    />
+    <div class="row justify-end q-col-gutter-x-xs">
+      <button-submits
+        :accion="accion"
+        label-guardar="Guardar y agendar"
+        :permitirCancelar="false"
+        @cancelar="reestablecerDatos()"
+        @guardar="guardarDatos(subtarea)"
+      />
+    </div>
 
     <!--<essential-selectable-table
       ref="refListadoSeleccionableEmpleadosGrupo"

@@ -23,11 +23,11 @@ export class TrabajoAsignadoModales {
     )
 
     this.ControlTendido = markRaw(
-      new ComponenteModal('Control de tendidos', ControlTendidoPage)
+      new ComponenteModal('Construcción', ControlTendidoPage)
     )
 
     this.EmergenciaPage = markRaw(
-      new ComponenteModal('Emergencias', EmergenciaPage)
+      new ComponenteModal('Seguimiento', EmergenciaPage)
     )
 
     this.DesmontajePage = markRaw(

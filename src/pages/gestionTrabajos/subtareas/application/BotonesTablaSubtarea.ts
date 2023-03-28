@@ -9,9 +9,12 @@ import { estadosTrabajos } from 'config/utils'
 import { Subtarea } from '../domain/Subtarea'
 import { Ref } from 'vue'
 import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { ObtenerPlantilla } from 'pages/gestionTrabajos/trabajoAsignado/application/ObtenerPlantilla'
 
 export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: ComportamientoModalesSubtarea, listadosAuxiliares: any) => {
   const subtareaStore = useSubtareaStore()
+  const trabajoAsignadoStore = useTrabajoAsignadoStore()
 
   const { confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
@@ -19,13 +22,20 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   // const cargando = new StatusEssentialLoading()
 
   const botonFormulario: CustomActionTable = {
-    titulo: 'Formulario',
+    titulo: 'Seguimiento',
     icono: 'bi-check2-square',
     color: 'indigo',
     visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
     accion: ({ entidad }) => {
-      subtareaStore.idSubtareaSeleccionada = entidad.id
-      modales.abrirModalEntidad('EmergenciasPage')
+      // subtareaStore.idSubtareaSeleccionada = entidad.id
+      // modales.abrirModalEntidad('EmergenciasPage')
+      trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
+      trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable
+      trabajoAsignadoStore.idEmergencia = entidad.emergencia
+      trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
+      const obtenerPlantilla = new ObtenerPlantilla()
+      modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
+      console.log(obtenerPlantilla.obtener(entidad.tipo_trabajo))
     }
   }
 
@@ -134,8 +144,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
       subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_subtarea
-      subtareaStore.fechaHoraPendiente = entidad.fecha_hora_pendiente
-      subtareaStore.motivoPendiente = entidad.motivo_pendiente
+      subtareaStore.fechaHoraSuspendido = entidad.fecha_hora_suspendido
+      subtareaStore.motivoSuspendido = entidad.motivo_suspendido
       subtareaStore.idSubtareaSeleccionada = entidad.id
       subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
       subtareaStore.posicionSubtareaSeleccionada = posicion

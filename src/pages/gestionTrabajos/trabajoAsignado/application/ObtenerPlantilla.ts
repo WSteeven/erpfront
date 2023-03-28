@@ -3,7 +3,7 @@ import { plantillas } from 'config/plantillas'
 
 export class ObtenerPlantilla {
 
-  obtener(tipoTrabajo: string): keyof TrabajoAsignadoModales {
+  obtener(tipoTrabajo: string): any {//keyof TrabajoAsignadoModales {
     switch (tipoTrabajo) {
       case plantillas.INSTALACION:
         return 'ControlTendido'
@@ -11,7 +11,7 @@ export class ObtenerPlantilla {
         return 'EmergenciaPage'
       case plantillas.DESMONTAJE:
         return 'DesmontajePage'
-      default: return 'AvanceGenericoPage'
+      default: return 'EmergenciaPage'
     }
   }
 }

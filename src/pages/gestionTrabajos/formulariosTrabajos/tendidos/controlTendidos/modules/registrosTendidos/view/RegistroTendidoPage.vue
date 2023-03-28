@@ -573,6 +573,7 @@
           :permitirEliminar="false"
           :mostrarBotones="false"
           :alto-fijo="false"
+          :permitirBuscar="false"
           :accion1="botonEditarCantidad"
           @eliminar="eliminar"
         ></essential-table>

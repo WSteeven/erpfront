@@ -12,6 +12,7 @@
     :accion2="btnReagendarTarea"
     :accion3="btnCancelarTarea"
     :accion4="btnFinalizarTarea"
+    :accionButtonSubmit="botonFinalizarTarea"
   >
     <template #formulario>
       <q-tabs
@@ -820,6 +821,13 @@
               </div>
             </q-expansion-item>
           </q-form>
+
+          <!-- <div class="row justify-end">
+            <q-btn color="positive" no-caps push @click="emitir('guardar')">
+              <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+              <span>Finalizar tarea</span>
+            </q-btn>
+          </div> -->
         </q-tab-panel>
 
         <q-tab-panel name="subtareas">
@@ -846,8 +854,6 @@
             tabDefecto=""
             :alto-fijo="false"
           ></essential-table-tabs>
-          <!--:accion7="btnAnular" -->
-          <!--:accion2="botonSubirArchivos" -->
         </q-tab-panel>
       </q-tab-panels>
     </template>
@@ -861,7 +867,6 @@
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"
-    :confirmar-cerrar="true"
   />
 </template>
 

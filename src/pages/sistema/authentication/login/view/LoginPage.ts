@@ -1,10 +1,5 @@
 // Dependencias
 import { computed, defineComponent, reactive, ref } from 'vue'
-// import loginJson from 'src/assets/lottie/login7.json'
-
-// Componentes
-import { Vue3Lottie } from 'vue3-lottie'
-import 'vue3-lottie/dist/style.css'
 
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -17,9 +12,6 @@ import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'LoginPage',
-  components: {
-    LottiePlayer: Vue3Lottie,
-  },
   setup() {
     const loginUser = reactive(new UserLogin())
 

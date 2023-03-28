@@ -3,8 +3,8 @@ import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/e
 
 export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<MaterialOcupadoFormulario>[] = [
   {
-    name: 'detalle',
-    field: 'detalle',
+    name: 'detalle_producto',
+    field: 'detalle_producto',
     label: 'Producto',
     align: 'left',
     sortable: true,

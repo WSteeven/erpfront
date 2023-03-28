@@ -95,6 +95,8 @@
   .q-table__top,
   thead tr:first-child th {
     background-color: $grey-2;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid #ddd;
   }
 
   .borde-header-tabla {
@@ -217,6 +219,6 @@
   }
 
   .border-bottom {
-    border-bottom: 1px solid $grey-4;
+    border-bottom: 1px solid $grey-4 !important;
   }
 }

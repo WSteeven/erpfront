@@ -117,7 +117,7 @@
               v-model="transferencia.observacion_aut"
               placeholder="Obligatorio"
               :disable="disabled || (soloLectura && !esActivos)"
-              :readonly="disabled || (soloLectura&&!esActivos)"
+              :readonly="disabled || (soloLectura && !esActivos)"
               :error="!!v$.observacion_aut.$errors.length"
               outlined
               dense
@@ -363,7 +363,7 @@
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
-                  :disable="disabled || (soloLectura&&!esActivos)"
+                  :disable="disabled || (soloLectura && !esActivos)"
                   @keydown.enter="
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
@@ -388,11 +388,12 @@
                   "
                   icon="search"
                   unelevated
-                  :disable="disabled || (soloLectura&&!esActivos)"
-                  color="primary"
+                  :disable="disabled || (soloLectura && !esActivos)"
+                  color="positive"
                   class="full-width"
                   style="height: 40px"
                   no-caps
+                  glossy
                   >Buscar</q-btn
                 >
               </div>

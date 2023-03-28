@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/trabajosRealizados/view/TrabajoRealizadoPage.vue'
+import TrabajoRealizado from 'pages/gestionTrabajos/formulariosTrabajos/trabajosRealizados/view/TablaTrabajoRealizadoPage.vue'
 import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
 defineEmits(['cerrar-modal', 'guardado'])
 </script>
