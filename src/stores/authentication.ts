@@ -95,7 +95,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       return response.data.saldo_actual
 
     } catch (e) {
-      setSaldo(null)
+      setSaldo(0)
     }
 
   }

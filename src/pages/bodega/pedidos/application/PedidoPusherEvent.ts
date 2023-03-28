@@ -1,32 +1,43 @@
 import { useNotificaciones } from 'shared/notificaciones';
-import Pusher from 'pusher-js'
 import { useAuthenticationStore } from 'stores/authentication';
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
+import { rolesSistema } from 'config/utils';
 
 export class PedidoPusherEvent {
 
   store = useAuthenticationStore()
   notificacionesPusherStore = useNotificationRealtimeStore()
-  // const emits=defineEmits(['notificar'])
 
   /**
    * It subscribes to a channel and listens for events.
   */
- start() {
-   const { notificarCorrecto } = useNotificaciones()
-   const notificacionStore = this.notificacionesPusherStore
-   const pusher = notificacionStore.pusher
-  //  console.log('se inicio el servicio de pusher', this.store.user.id)
-
-    const channel = pusher.subscribe('pedidos-tracker-'+this.store.user.id)
-    channel.bind('pedido-event', function (e) {
+ async start() {
+    console.log('iniciado el start en pedidopusherevent')
+    const { notificarCorrecto } = useNotificaciones()
+    const notificacionStore = this.notificacionesPusherStore
+    const pusher = notificacionStore.pusher
+    const user = this.store.user
+    
+    //suscripcion al canal del pedido creado
+    const pedidoCreado = pusher.subscribe('pedidos-tracker-' + this.store.user.id)
+    pedidoCreado.bind('pedido-event', function (e) {
       console.log(e)
       notificacionStore.agregar(e.notificacion)
       notificarCorrecto('Tienes un pedido esperando ser atendido')
-      // new Event('notificar', e.mensaje)
-      // new Event('notificar', 'Tienes un pedido pendiente de autorizar')//se crea el evento
-      // console.log('Mensaje',e.mensaje)
     })
+    
+    console.log(this.store.esBodeguero)
+    //suscripcion al canal del pedido aprobado
+    if(this.store.esBodeguero){
+      console.log('Este usuario es bodeguero!!!!')
+      const pedidoAutorizado = pusher.subscribe('pedidos-aprobados-'+rolesSistema.bodega) 
+      console.log(pedidoAutorizado)
+      pedidoAutorizado.bind('pedido-event', function(e){
+        console.log('0000000')
+        notificacionStore.agregar(e.notificacion)
+        notificarCorrecto('Tienes un pedido esperando ser despachado')
+      })
+    }
   }
 
 }

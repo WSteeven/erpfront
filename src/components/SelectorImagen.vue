@@ -3,11 +3,12 @@
     v-model="imagen"
     dense
     outlined
-    class="q-mb-sm"
+    class="q-mb-sm q-mt-sm"
     clearable
     @update:model-value="setBase64"
     @clear="limpiar()"
     :disable="disable"
+    :accept="file_extensiones"
     :error="error"
   >
     <template #prepend>
@@ -41,7 +42,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps(['modelValue', 'imagen', 'disable', 'error', 'alto'])
+const props = defineProps(['modelValue', 'imagen', 'disable', 'error',  'alto','file_extensiones'])
 const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()
