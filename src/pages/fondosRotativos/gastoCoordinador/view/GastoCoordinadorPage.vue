@@ -68,13 +68,12 @@
               </template>
             </q-input>
           </div>
-
-          <!-- Motivo -->
+          <!-- Grupos -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Motivo</label>
+            <label class="q-mb-sm block">Grupo</label>
             <q-select
-              v-model="gasto.motivo"
-              :options="motivos"
+              v-model="gasto.grupo"
+              :options="grupos"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -82,17 +81,50 @@
               outlined
               :disable="disabled"
               :readonly="disabled"
-              :error="!!v$.motivo.$errors.length"
-              error-message="Debes seleccionar un canton"
+              :error="!!v$.grupo.$errors.length"
+              error-message="Debes seleccionar un grupo"
               use-input
               input-debounce="0"
-              @filter="filtarMotivos"
-              @blur="v$.motivo.$touch"
+              @filter="filtrarGrupos"
+              @blur="v$.grupo.$touch"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
+              <template v-slot:error>
+                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Motivo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Motivo</label>
+            <q-select v-model="gasto.motivo" :options="motivos" transition-show="jump-up"
+              transition-hide="jump-down" :disable="disabled" options-dense multiple dense use-chips outlined
+              @blur="v$.motivo.$touch" :error="!!v$.motivo.$errors.length"
+              error-message="Debes seleccionar uno o varios sub_detalle" :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre" emit-value map-options>
+              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.nombre }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle :model-value="selected" @update:model-value="toggleOption(opt)" />
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.motivo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
@@ -107,6 +139,9 @@
               </template>
             </q-select>
           </div>
+
+
+
           <!-- Observacion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Descripcion</label>

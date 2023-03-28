@@ -4,7 +4,7 @@
       <q-card-section>
         <div class="row items-center no-wrap">
           <div class="col">
-            <div class="text-h6">Generar Reporte Saldo Actual</div>
+            <div class="text-h6">Generar Reporte Solicitudes de Fondos</div>
           </div>
         </div>
       </q-card-section>

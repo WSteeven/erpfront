@@ -123,8 +123,7 @@ export default defineComponent({
         requiredIfTecnico: requiredIf(()=>esTecnico.value),
       },
       num_comprobante: {
-        minLength: minLength(10),
-        maxLength: maxLength(15),
+        maxLength: maxLength(13),
       },
       detalle: {
         required,
