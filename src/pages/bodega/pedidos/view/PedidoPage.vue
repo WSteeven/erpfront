@@ -376,7 +376,7 @@
             <q-input
               autogrow
               v-model="pedido.observacion_est"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :disable="disabled || (soloLectura && !esCoordinador)"
               :readonly="disabled || (soloLectura && !esCoordinador)"
               outlined

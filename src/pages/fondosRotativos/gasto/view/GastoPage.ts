@@ -1,4 +1,4 @@
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
 import { Gasto } from '../domain/Gasto'
 
 // Componentes
@@ -30,11 +30,14 @@ import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/inf
 import { useAuthenticationStore } from 'stores/authentication'
 import { emit } from 'process'
 import { maskFecha } from 'config/utils'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import JSONPRequest from 'pusher-js/types/src/runtimes/web/dom/jsonp_request'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 
 export default defineComponent({
   components: { TabLayout, SelectorImagenModal },
-  emits: ['guardado','cerrar-modal'],
+  emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
     const usuario = authenticationStore.user
@@ -54,7 +57,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
-      const {onConsultado,onGuardado} = mixin.useHooks()
+    const { onConsultado, onGuardado } = mixin.useHooks()
 
     const {
       confirmar,
@@ -74,8 +77,8 @@ export default defineComponent({
 
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
-    onConsultado(()=>{
-      esFactura.value = gasto.factura ==null? false:true
+    onConsultado(() => {
+      esFactura.value = gasto.factura == null ? false : true
     })
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
@@ -86,10 +89,10 @@ export default defineComponent({
     }
 
 
-    const cargo =  ref(usuario.cargo)
+    const cargo = ref(usuario.cargo)
     const esTecnico = ref(false)
-    if(cargo.value !== null){
-      esTecnico.value = cargo.value.indexOf('TÉCNICO') >= 0?true:false
+    if (cargo.value !== null) {
+      esTecnico.value = cargo.value.indexOf('TÉCNICO') >= 0 ? true : false
     }
 
     /*************
@@ -114,13 +117,13 @@ export default defineComponent({
       ruc: {
         minLength: minLength(13),
         maxLength: maxLength(13),
-        requiredIfFactura: requiredIf(()=>esFactura.value)
+        requiredIfFactura: requiredIf(() => esFactura.value)
       },
       factura: {
         maxLength: maxLength(17),
       },
       aut_especial: {
-        requiredIfTecnico: requiredIf(()=>esTecnico.value),
+        requiredIfTecnico: requiredIf(() => esTecnico.value),
       },
       num_comprobante: {
         minLength: minLength(10),
@@ -160,7 +163,7 @@ export default defineComponent({
     const detalles = ref([])
     const sub_detalles = ref([])
     const proyectos = ref([])
-    const autorizacionesEspeciales = ref([])
+    const autorizacionesEspeciales: Ref<Empleado[]>=ref([])
     const tareas = ref([])
     const subTareas = ref([])
 
@@ -195,16 +198,21 @@ export default defineComponent({
           controller: new SubtareaController(),
           params: { campos: 'id,codigo_sub_tarea,titulo,tarea_id' },
         },
+        empleados: {
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id }
+        }
       })
       cantones.value = listadosAuxiliares.cantones
       detalles.value = listadosAuxiliares.detalles
-      autorizacionesEspeciales.value =
-        listadosAuxiliares.autorizacionesEspeciales
+      autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
       sub_detalles.value = listadosAuxiliares.sub_detalles
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
       subTareas.value = listadosAuxiliares.subTareas
+
+      autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
 
     /*********
@@ -215,8 +223,7 @@ export default defineComponent({
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
         update(() => {
-          autorizacionesEspeciales.value =
-            listadosAuxiliares.autorizacionesEspeciales
+          autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
         })
         return
       }

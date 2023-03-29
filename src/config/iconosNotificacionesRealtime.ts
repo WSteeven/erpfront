@@ -15,4 +15,8 @@ export const iconos ={
         label: "SUBTAREA",
         icono:'bi-check2-square'
     },
+    egreso:{
+        label: "EGRESO",
+        icono:'bi-box-seam'
+    }
 }

@@ -24,6 +24,7 @@ import { ComportamientoModalesMainLayout } from './modales/application/Comportam
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { TransferenciaSaldoPusherEvent } from 'pages/fondosRotativos/autorizarTransferencia/application/TransferenciaSaldoPusherEvent'
 import { GastoCoordinadorPusherEvent } from 'pages/fondosRotativos/gastoCoordinador/application/GastoCoordinadorPusherEvent'
+import { EgresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccionEgreso/application/EgresoPusherEvent'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -94,6 +95,9 @@ export default defineComponent({
     // Pedidos
     const pedidoPusherEvent = new PedidoPusherEvent()
     pedidoPusherEvent.start()
+    //Egresos
+    const egresoPusherEvent = new EgresoPusherEvent()
+    egresoPusherEvent.start()
     //subtareas
 
     // Fondos rotativos

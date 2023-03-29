@@ -68,6 +68,7 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
     if (response.data.modelo.leida) {
       listadoNotificaciones.value.splice(indiceEncontrado, 1)
     }
+    return response.data.modelo
   }
 
   return {

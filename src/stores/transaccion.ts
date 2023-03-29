@@ -6,7 +6,10 @@ import { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { acciones } from 'config/utils'
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, notificarMensajesError } from 'shared/utils'
+import { Comprobante } from 'pages/bodega/comprobantes/domain/Comprobante'
+import { ApiError } from 'shared/error/domain/ApiError'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export const useTransaccionStore = defineStore('transaccion', () => {
     //State
@@ -14,7 +17,7 @@ export const useTransaccionStore = defineStore('transaccion', () => {
     const transaccionReset = new Transaccion()
     const idTransaccion = ref()
 
-
+    const notificaciones = useNotificaciones()
     const accionTransaccion = acciones.nuevo
 
     const statusLoading = new StatusEssentialLoading()
@@ -63,6 +66,32 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         transaccion.hydrate(transaccionReset)
     }
 
+    async function actualizarComprobante(id: number, data) {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.comprobantes) + '/' + id
+            const response: AxiosResponse = await axios.put(url, data)
+            statusLoading.desactivar()
+            return response.data.modelo
+        } catch (e: any) {
+            const errorApi = new ApiError(e)
+            const mensajes: string[] = errorApi.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
+        } finally {
+            statusLoading.desactivar()
+        }
+    }
+
+    async function firmarComprobante(id:number, data:any){
+        const modelo = await actualizarComprobante(id, data)
+        if(modelo){
+            console.log('Se actualizó bien');
+            
+        }
+    }
+
+    
     return {
         // State
         transaccion,
@@ -73,6 +102,8 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         imprimirEgreso,
         idTransaccion,
         showPreview,
+        firmarComprobante,
+        
 
     }
 })

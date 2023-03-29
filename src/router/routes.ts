@@ -144,6 +144,15 @@ const routes: RouteRecordRaw[] = [
       },
       // Routes for bodega
       {
+        path: '/gestionar-egresos',
+        name: 'gestionar_egresos',
+        component: () =>
+          import(
+            'pages/bodega/transacciones/modules/GestionarEgreso/view/GestionarEgresoPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/notificaciones',
         name: 'notificaciones',
         component: () =>

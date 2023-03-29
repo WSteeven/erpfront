@@ -51,10 +51,24 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         align: 'left',
         sortable: true,
     },
+    // {
+    //     name: 'estado',
+    //     field: 'estado',
+    //     label: 'Estado del despacho',
+    //     align: 'left',
+    //     sortable: true,
+    // },
     {
-        name: 'estado',
-        field: 'estado',
-        label: 'Estado del despacho',
+        name: 'firmada',
+        field: 'firmada',
+        label: '¿Firmada?',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'estado_comprobante',
+        field: 'estado_comprobante',
+        label: 'Estado del comprobante',
         align: 'left',
         sortable: true,
     }

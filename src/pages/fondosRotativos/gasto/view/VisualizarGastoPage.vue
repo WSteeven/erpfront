@@ -1,5 +1,5 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" :mostrarListado="false"
+  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" :mostrarListado="true"
     :mostrarButtonSubmits="false">
     <template #formulario>
       <q-form @submit.prevent>
@@ -29,7 +29,7 @@
                 </q-icon>
               </template>
             </q-input>
-          </div>
+          </div> 
 
           <!-- Proyectos -->
           <div class="col-12 col-md-3">
