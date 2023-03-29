@@ -34,14 +34,14 @@
       tab-defecto="AGENDADO"
     ></essential-table-tabs>
 
-    <modales-entidad :comportamiento="modales" :confirmar-cerrar="true" />
+    <modales-entidad :comportamiento="modales" />
 
-    <confirmar-dialog
+    <!-- <confirmar-dialog
       :visible="mostrarDialogPlantilla"
       :comportamiento="modales"
       @seleccionar="plantillaSeleccionada"
       @cerrar="mostrarDialogPlantilla = false"
-    ></confirmar-dialog>
+    ></confirmar-dialog> -->
   </q-page>
 </template>
 

@@ -1,6 +1,15 @@
 <template>
-  <q-file v-model="imagen" dense outlined class="q-mb-sm" clearable @update:model-value="setBase64" @clear="limpiar()"
-    :disable="disable" :error="error">
+  <q-file
+    v-model="imagen"
+    dense
+    outlined
+    class="q-mb-sm"
+    clearable
+    @update:model-value="setBase64"
+    @clear="limpiar()"
+    :disable="disable"
+    :error="error"
+  >
     <template #prepend>
       <q-icon name="attach_file" />
     </template>
@@ -9,18 +18,33 @@
       <slot name="error"></slot>
     </template>
   </q-file>
-  <q-img v-show="imagenCodificada" :src="imagenCodificada" width="100%" :height="alto" fit="cover">
-    </q-img>
-  <q-dialog v-model="opened" maximized >
-    <q-img v-show="imagenCodificada" :src="imagenCodificada" width="100%" height="100vh">
-    </q-img>
-    </q-dialog>
 
+  <!-- Vista previa -->
+  <q-img
+    v-show="imagenCodificada"
+    :src="imagenCodificada"
+    width="100%"
+    :height="alto"
+    fit="cover"
+  >
+  </q-img>
 
+  <!-- Vista modal -->
+  <q-dialog v-model="opened" maximized>
+    <q-img
+      v-show="imagenCodificada"
+      :src="imagenCodificada"
+      width="80%"
+      height="80vh"
+      fit="contain"
+    >
+    </q-img>
+  </q-dialog>
 
   <small v-if="imagenCodificada" class="block text-center q-py-sm">
     <q-btn
-    flat color="primary"
+      flat
+      color="primary"
       @click="opened = true"
       label="Ver en pantalla completa"
     />
@@ -52,5 +76,4 @@ watch(imagenCodificada, () => {
 function limpiar() {
   emit('update:modelValue', null)
 }
-
 </script>

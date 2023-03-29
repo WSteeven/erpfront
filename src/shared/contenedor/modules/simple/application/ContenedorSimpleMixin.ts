@@ -70,7 +70,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   // Consultar
-  private async consultar(data: { [id: string]: number } | T) {//T) {
+  private async consultar(data: { [id: string]: number } | T, params?: ParamsType) {//T) {
 
     this.hooks.onBeforeConsultar()
 
@@ -85,7 +85,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.statusEssentialLoading.activar()
       const { result } = await this.controller.consultar(
         data.id,
-        this.argsDefault
+        {
+          ...this.argsDefault,
+          ...params
+        }
       )
       console.log('Antes...')
       console.log(result)

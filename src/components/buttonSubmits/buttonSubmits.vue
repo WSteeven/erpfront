@@ -56,8 +56,8 @@
         }
       "
     >
-      <q-icon name="bi-eraser" size="xs" class="q-pr-sm"></q-icon>
-      <span>Limpiar formulario</span>
+      <q-icon name="bi-x-lg" size="xs" class="q-pr-sm"></q-icon>
+      <span>Cancelar</span>
     </q-btn>
   </div>
 </template>

@@ -90,7 +90,7 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad: UnwrapRef<T
     update(() => {
       const needle = val.toLowerCase()
       proyectos.value = listadosAuxiliares.proyectos.filter(
-        (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        (v) => v.codigo_proyecto.toLowerCase().indexOf(needle) > -1
       )
     })
   }

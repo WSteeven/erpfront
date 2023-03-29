@@ -4,7 +4,7 @@
     :maximized="$q.screen.xs"
     :full-width="true"
     :full-height="true"
-    :persistent="confirmarCerrar"
+    :persistent="true"
   >
     <q-card class="bg-transparent rounded-card no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
@@ -36,7 +36,9 @@
           v-if="mixinModal"
           :is="componente"
           :mixin-modal="mixinModal"
-          @cerrar-modal="cerrarModalEntidad()"
+          @cerrar-modal="
+            (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
+          "
           @guardado="(data) => emit('guardado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
@@ -44,7 +46,9 @@
         <component
           v-else
           :is="componente"
-          @cerrar-modal="cerrarModalEntidad()"
+          @cerrar-modal="
+            (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
+          "
           @guardado="(data) => emit('guardado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->

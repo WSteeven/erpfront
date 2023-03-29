@@ -43,7 +43,7 @@ export default defineComponent({
      *********/
     const tendidoStore = useTendidoStore()
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
-    // const authenticationStore = useAuthenticationStore()
+    const authenticationStore = useAuthenticationStore()
 
     /********
      * Mixin
@@ -62,6 +62,8 @@ export default defineComponent({
      ************/
     const { confirmar, prompt } = useNotificaciones()
     const materiales: any = ref([])
+    const esLider = authenticationStore.esTecnicoLider
+    const esCoordinador = authenticationStore.esCoordinador
 
     /*************
     * Validaciones
@@ -127,7 +129,7 @@ export default defineComponent({
     async function guardarDatos(entidad: RegistroTendido) {
       try {
         await guardar(entidad)
-        emit('cerrar-modal')
+        emit('cerrar-modal', false)
       } catch (e) { }
     }
 
@@ -135,7 +137,7 @@ export default defineComponent({
     async function editarDatos(entidad: RegistroTendido) {
       try {
         await editar(entidad)
-        emit('cerrar-modal')
+        emit('cerrar-modal', false)
       } catch (e) { }
     }
 
@@ -171,11 +173,16 @@ export default defineComponent({
       })
     }
 
+    function obtenerIdEmpleadoResponsable() {
+      if (esLider) return authenticationStore.user.id
+      if (esCoordinador) return trabajoAsignadoStore.idEmpleadoResponsable
+    }
+
     async function obtenerMateriales() {
       const cargando = new StatusEssentialLoading()
       cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada })
+      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
       cargando.desactivar()

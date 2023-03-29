@@ -3,7 +3,7 @@
     <div class="q-mb-md text-secondary">
       Código de subtarea: <b>{{ codigoSubtarea }}</b>
     </div>
-    <div
+    <!-- <div
       v-if="esLider"
       class="col-12 rounded-card q-py-md text-center text-white bg-warning q-mb-sm"
     >
@@ -15,7 +15,7 @@
         <q-icon name="bi-cloud-upload-fill" class="q-mr-sm"></q-icon>
         Sincronizar ahora</q-btn
       >
-    </div>
+    </div> -->
 
     <q-card class="rounded-card custom-shadow q-pa-md">
       <div class="row">

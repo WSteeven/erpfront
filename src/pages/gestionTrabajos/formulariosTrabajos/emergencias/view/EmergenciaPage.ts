@@ -7,7 +7,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { computed, defineComponent, Ref, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { endpoints } from 'config/api'
+import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 
 // Componentes
@@ -27,6 +27,7 @@ import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { Emergencia } from '../domain/Emergencia'
 import { MaterialEmpleadoController } from 'pages/gestionTrabajos/miBodega/infraestructure/MaterialEmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
+import { descargarArchivo, imprimirArchivo } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -51,7 +52,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Emergencia, new EmergenciaController())
     const { entidad: emergencia, accion, listadosAuxiliares } = mixin.useReferencias()
     const { consultar, guardar, editar, reestablecer, setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
-    const { onBeforeGuardar, onConsultado, onBeforeModificar } = mixin.useHooks()
+    const { onBeforeGuardar, onConsultado, onBeforeModificar, onGuardado, onModificado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -96,7 +97,7 @@ export default defineComponent({
      ****************/
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad utilizada',
-      icono: 'bi-pencil',
+      icono: 'bi-pencil-square',
       color: 'primary',
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
@@ -114,7 +115,7 @@ export default defineComponent({
 
     const botonEditarCantidadStock: CustomActionTable = {
       titulo: 'Cantidad utilizada',
-      icono: 'bi-pencil',
+      icono: 'bi-pencil-square',
       color: 'primary',
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
@@ -191,6 +192,17 @@ export default defineComponent({
       return listadoBuscar.findIndex((item) => item.detalle_producto_id === id)
     }
 
+    async function descargarExcel() {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + emergencia.id
+      console.log(ruta)
+      // const response: any = await consultar({ id: trabajoAsignadoStore.idEmergencia }, { export: 'excel' })
+      //const response: Axios
+      // console.log(response)
+      // descargarArchivo(response, 'titulo', 'xlsx')
+      imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
+    }
+
     /********
     * Hooks
     *********/
@@ -209,6 +221,11 @@ export default defineComponent({
     onBeforeModificar(() => {
       emergencia.materiales_ocupados = filtrarMaterialesOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
+    })
+
+    onGuardado(() => emit('cerrar-modal'))
+    onModificado(() => {
+      emit('cerrar-modal', false)
     })
 
     return {
@@ -238,6 +255,7 @@ export default defineComponent({
       codigoSubtarea,
       esLider,
       esCoordinador,
+      descargarExcel,
     }
   }
 })

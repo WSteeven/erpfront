@@ -10,6 +10,7 @@ import GestorArchivoTrabajo from 'gestionTrabajos/subtareas/modules/gestorArchiv
 import EmergenciaPage from 'formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
 import ClienteFinalPage from 'clientesFinales/view/ClienteFinalPage.vue'
 import ReagendarPage from 'gestionTrabajos/subtareas/modules/reagendar/view/ReagendarPage.vue'
+import ControlTendidoPage from 'formulariosTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
 
 export class SubtareaModales {
   SubtareaPage: ComponenteModal
@@ -18,23 +19,32 @@ export class SubtareaModales {
   PausasRealizadasPage: ComponenteModal
   ClienteFinalPage: ComponenteModal
   ReagendarPage: ComponenteModal
+  ControlTendido: ComponenteModal
 
   constructor() {
     this.SubtareaPage = markRaw(
       new ComponenteModal('Detalles de la subtarea', SubtareaPage)
     )
+
     this.EmergenciaPage = markRaw(
       new ComponenteModal('Gestionar avances', EmergenciaPage)
     )
+
     this.GestorArchivoTrabajo = markRaw(
       new ComponenteModal('Compartir archivos para el trabajo', GestorArchivoTrabajo)
     )
+
     this.PausasRealizadasPage = markRaw(
       new ComponenteModal('Pausas realizadas', PausasRealizadasPage)
     )
+
     this.ClienteFinalPage = markRaw(
       new ComponenteModal('Clientes finales', ClienteFinalPage)
     )
     this.ReagendarPage = markRaw(new ComponenteModal('Reagendar', ReagendarPage))
+
+    this.ControlTendido = markRaw(
+      new ComponenteModal('Construcción', ControlTendidoPage)
+    )
   }
 }
