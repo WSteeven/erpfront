@@ -295,11 +295,8 @@
               options-dense
               dense
               outlined
-              :disable="
-                disabled || (soloLectura && !(esCoordinador || esActivosFijos))
-              "
               :readonly="
-                disabled || (soloLectura && !(esCoordinador || esActivosFijos))
+                disabled || (soloLectura && !(esCoordinador || esActivosFijos ||store.user.id==pedido.per_autoriza_id))
               "
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
@@ -324,29 +321,17 @@
               </template>
             </q-select>
           </div>
-          <!-- Tiene observacion de autorizacion -->
-          <!-- <div v-if="esCoordinador || esActivosFijos" class="col-12 col-md-3">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="pedido.tiene_observacion_aut"
-              label="Tiene observación"
-              :disable="
-                disabled || (soloLectura && !(esCoordinador || esActivosFijos))
-              "
-              outlined
-              dense
-            ></q-checkbox>
-          </div> -->
-          <!-- observacion autorizacion -->
-          <!-- v-if="pedido.tiene_observacion_aut || pedido.observacion_aut" -->
-          <div class="col-12 col-md-3">
+          <!-- Observacion de autorizacion -->
+          <div v-if="store.user.id===pedido.per_autoriza_id"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
               v-model="pedido.observacion_aut"
               placeholder="Opcional"
               :disable="
-                disabled || (soloLectura && !(esCoordinador || esActivosFijos))
+                disabled || (soloLectura && !(esCoordinador || esActivosFijos||store.user.id==pedido.per_autoriza_id))
               "
               :error="!!v$.observacion_aut.$errors.length"
               outlined
@@ -362,10 +347,6 @@
               </template>
             </q-input>
           </div>
-          <!-- boton para emitir un evento -->
-          <!-- <q-btn flat  label="Emitir " type="submit" color="primary" @click="$emit('notificar', 'mensaje para mostrar en la campanita')">
-          <q-icon name="bi-send" size="xs" class="q-pr-sm"></q-icon>
-          </q-btn> -->
           <!-- Select estado -->
           <div
             v-if="pedido.estado || accion === acciones.consultar"
@@ -390,12 +371,12 @@
             </q-select>
           </div>
           <!-- observacion estado -->
-          <div v-if="pedido.observacion_est" class="col-12 col-md-3">
+          <div v-if="pedido.observacion_est||accion===acciones.nuevo" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
               v-model="pedido.observacion_est"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :disable="disabled || (soloLectura && !esCoordinador)"
               :readonly="disabled || (soloLectura && !esCoordinador)"
               outlined
@@ -411,7 +392,7 @@
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaProducto"
-                  :disable="disabled || (soloLectura && !esCoordinador)"
+                  :disable="disabled"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="listarProductos()"
@@ -431,7 +412,7 @@
                   color="positive"
                   class="full-width"
                   style="height: 40px"
-                  :disable="disabled || (soloLectura && !esCoordinador)"
+                  :disable="disabled"
                   no-caps
                   glossy
                   >Buscar</q-btn

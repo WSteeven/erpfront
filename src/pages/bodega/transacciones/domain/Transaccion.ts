@@ -44,6 +44,9 @@ export class Transaccion extends EntidadAuditable {
     // producto: string|null
     listadoProductosTransaccion: any[]
 
+    firmada: boolean
+    estado_comprobante: string|null
+
     constructor() {
         super()
         this.id = null
@@ -87,5 +90,8 @@ export class Transaccion extends EntidadAuditable {
 
         // this.producto=null
         this.listadoProductosTransaccion = []
+
+        this.firmada = false
+        this.estado_comprobante = null
     }
 }

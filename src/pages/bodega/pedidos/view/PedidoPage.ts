@@ -2,7 +2,7 @@
 import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos'
 import { helpers, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, Ref, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -18,7 +18,7 @@ import { Pedido } from '../domain/Pedido'
 
 import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain/configuracionColumnasProductosSeleccionadosDespachado'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { acciones, estadosTransacciones, tabOptionsPedidos, } from 'config/utils'
+import { acciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { TareaController } from 'tareas/infraestructure/TareaController'
@@ -76,8 +76,7 @@ export default defineComponent({
     })
     onConsultado(() => {
       opciones_empleados.value = listadosAuxiliares.empleados
-      console.log(accion.value)
-      if (accion.value === acciones.editar && (esCoordinador || esActivosFijos)) {
+      if (accion.value === acciones.editar && (esCoordinador || esActivosFijos||store.user.id===pedido.per_autoriza_id)) {
         soloLectura.value = true
       }
     })
@@ -278,9 +277,8 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador && tabSeleccionado.value === estadosTransacciones.pendiente) || (esActivosFijos && tabSeleccionado.value === estadosTransacciones.pendiente)
-          ? true
-          : false
+        puedeEditar.value = (esCoordinador||esActivosFijos||store.esJefeTecnico) && tabSeleccionado.value === estadosTransacciones.pendiente
+          ? true  : false
       },
 
       //Filtros

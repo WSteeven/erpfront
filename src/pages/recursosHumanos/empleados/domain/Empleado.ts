@@ -21,6 +21,13 @@ export class Empleado extends EntidadAuditable {
   firma_url: string | null
   foto_url: string | null
   // es_responsable_grupo: boolean
+  convencional: number | null
+  telefono_empresa: number | null
+  extension: number | null
+  coordenadas: number | null
+  casa_propia: boolean
+  vive_con_discapacitados:boolean
+  responsable_discapacitados: boolean 
 
   grupo_id: number | null
 
@@ -47,5 +54,12 @@ export class Empleado extends EntidadAuditable {
     this.firma_url = null
     this.foto_url = null
     // this.es_responsable_grupo = false
+    this.convencional = null
+    this.telefono_empresa = null
+    this.extension = null
+    this.coordenadas = null
+    this.casa_propia = true
+    this.vive_con_discapacitados = false
+    this.responsable_discapacitados = false
   }
 }

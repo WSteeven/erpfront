@@ -2,7 +2,7 @@
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import { maxLength, minLength, numeric, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { opcionesEstados } from 'config/utils'
+import { maskFecha, opcionesEstados } from 'config/utils'
 import { defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
@@ -121,6 +121,7 @@ export default defineComponent({
             opciones_cargos,
             opciones_empleados,
             opcionesEstados,
+            maskFecha,
 
             //  FILTROS
             //filtro de empleados

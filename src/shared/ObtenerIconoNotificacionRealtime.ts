@@ -11,6 +11,8 @@ export class ObtenerIconoNotificacionRealtime {
                 return iconos.tarea.icono
             case iconos.subtarea.label:
                 return iconos.subtarea.icono
+            case iconos.egreso.label:
+                return iconos.egreso.icono
         }
     }
 }

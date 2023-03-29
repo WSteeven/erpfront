@@ -8,6 +8,8 @@ import { Notificacion } from "../domain/Notificacion";
 import { NotificacionController } from "../infraestructure/NotificacionController";
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { useNotificationRealtimeStore } from "stores/notificationRealtime";
+import { useNotificaciones } from "shared/notificaciones";
 
 //Logica y controladores
 
@@ -17,19 +19,31 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Notificacion, new NotificacionController())
     const {entidad: notificacion, disabled, accion, listado} = mixin.useReferencias()
     const {listar} = mixin.useComportamiento()
+    const {notificarCorrecto } = useNotificaciones()
 
     /* A function that is defined in the mixin. It is a function that is used to list all the entities. */
     listar()
 
+    const notificacionesPusher = useNotificationRealtimeStore()
 
     /* A custom action button that will be added to the table. */
     const BotonMarcarLeido: CustomActionTable={
       titulo: 'Marcar como leído',
       color:'primary',
       icono: 'bi-file-check',
-      accion:({entidad, posicion})=>{
-        console.log('Marcaste el boton de leído')
-        console.log(posicion, entidad)
+      accion:async({entidad, posicion})=>{
+        notificacionesPusher.idNotificacion = entidad.id
+        const modelo = await notificacionesPusher.marcarLeida()
+        if(modelo){
+          notificarCorrecto('Notificación marcada como leída')
+          listado.value.splice(posicion, 1, modelo)
+        }
+      }
+    }
+    function actualizarElemento(posicion: number, entidad: any): void {
+      if (posicion >= 0) {
+        listado.value.splice(posicion, 1, entidad)
+        listado.value = [...listado.value]
       }
     }
 

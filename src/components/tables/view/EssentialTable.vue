@@ -623,6 +623,24 @@
       </q-td>
     </template>
 
+
+    <template #body-cell-firmada="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="xs"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="xs"
+        ></q-icon>
+      </q-td>
+    </template>
+    
     <template #body-cell-es_ventana="props">
       <q-td :props="props">
         <q-icon

@@ -2,7 +2,7 @@
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
@@ -73,7 +73,7 @@ export default defineComponent({
     const esCoordinador = store.esCoordinador
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
-    console.log('rol seleccionado: ', rolSeleccionado)
+    // console.log('rol seleccionado: ', rolSeleccionado)
 
     let soloLectura = ref(false)
     let puedeEditarCantidad = ref(true)
@@ -126,12 +126,12 @@ export default defineComponent({
 
     //hooks
     onReestablecer(() => {
-      console.log('se reestableció')
+      // console.log('se reestableció')
       puedeEditarCantidad.value = true
       soloLectura.value = false
     })
     onConsultado(() => {
-      console.log('Transaccion', transaccion)
+      // console.log('Transaccion', transaccion)
       if (transaccion.per_retira) {
         transaccion.retira_tercero = true
       }

@@ -8,6 +8,7 @@
     @update:model-value="setBase64"
     @clear="limpiar()"
     :disable="disable"
+    :accept="file_extensiones"
     :error="error"
   >
     <template #prepend>
@@ -18,8 +19,6 @@
       <slot name="error"></slot>
     </template>
   </q-file>
-
-  <!-- Vista previa -->
   <q-img
     v-show="imagenCodificada"
     :src="imagenCodificada"
@@ -28,8 +27,6 @@
     fit="cover"
   >
   </q-img>
-
-  <!-- Vista modal -->
   <q-dialog v-model="opened" maximized>
     <q-img
       v-show="imagenCodificada"
@@ -54,7 +51,14 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps(['modelValue', 'imagen', 'disable', 'error', 'alto'])
+const props = defineProps([
+  'modelValue',
+  'imagen',
+  'disable',
+  'file_extensiones',
+  'error',
+  'alto',
+])
 const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()

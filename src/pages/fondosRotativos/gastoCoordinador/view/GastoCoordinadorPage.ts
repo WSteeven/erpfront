@@ -15,6 +15,7 @@ import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { MotivoGastoController } from 'pages/fondosRotativos/MotivoGasto/infrestructure/MotivoGastoController'
+import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 
 
 export default defineComponent({
@@ -54,6 +55,9 @@ export default defineComponent({
       lugar: {
         required
       },
+      grupo:{
+        required
+      },
       monto: {
         required,
       },
@@ -62,7 +66,7 @@ export default defineComponent({
       },
       observacion: {
         required,
-        minLength: minLength(100),
+        minLength: minLength(25),
       },
     }
 
@@ -70,6 +74,7 @@ export default defineComponent({
     setValidador(v$.value)
     const cantones = ref([])
     const motivos = ref([])
+    const grupos = ref([])
     const autorizacionesEspeciales = ref([])
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -82,9 +87,14 @@ export default defineComponent({
           controller: new MotivoGastoController(),
           params: { campos: 'id,nombre' },
         },
+        grupos:{
+          controller: new GrupoController(),
+          params: { campos: 'id,nombre' },
+        }
       })
       cantones.value = listadosAuxiliares.cantones
       motivos.value = listadosAuxiliares.motivos
+      grupos.value = listadosAuxiliares.grupos
     })
 
     /*********
@@ -106,6 +116,22 @@ export default defineComponent({
         )
       })
     }
+    // filtro de grupos
+    function filtrarGrupos(val, update) {
+      if (val === '') {
+        update(() => {
+          grupos.value = listadosAuxiliares.grupos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        grupos.value = listadosAuxiliares.grupos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
     function filtarMotivos(val, update) {
       if (val === '') {
         update(() => {
@@ -125,12 +151,14 @@ export default defineComponent({
       mixin,
       gasto,
       cantones,
+      grupos,
       motivos,
       disabled,
       accion,
       v$,
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
+      filtrarGrupos,
       filtrarCantones,
       filtarMotivos
     }

@@ -1,32 +1,37 @@
 import { useNotificaciones } from 'shared/notificaciones';
-import Pusher from 'pusher-js'
 import { useAuthenticationStore } from 'stores/authentication';
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
+import { rolesSistema } from 'config/utils';
 
 export class PedidoPusherEvent {
 
   store = useAuthenticationStore()
   notificacionesPusherStore = useNotificationRealtimeStore()
-  // const emits=defineEmits(['notificar'])
 
   /**
    * It subscribes to a channel and listens for events.
   */
- start() {
-   const { notificarCorrecto } = useNotificaciones()
-   const notificacionStore = this.notificacionesPusherStore
-   const pusher = notificacionStore.pusher
-  //  console.log('se inicio el servicio de pusher', this.store.user.id)
+  start() {
+    const { notificarCorrecto } = useNotificaciones()
+    const notificacionStore = this.notificacionesPusherStore
+    const pusher = notificacionStore.pusher
+    const user = this.store.user
 
-    const channel = pusher.subscribe('pedidos-tracker-'+this.store.user.id)
-    channel.bind('pedido-event', function (e) {
-      console.log(e)
+    //suscripcion al canal del pedido creado
+    const pedidoCreado = pusher.subscribe('pedidos-tracker-' + this.store.user.id)
+    pedidoCreado.bind('pedido-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificarCorrecto('Tienes un pedido esperando ser atendido')
-      // new Event('notificar', e.mensaje)
-      // new Event('notificar', 'Tienes un pedido pendiente de autorizar')//se crea el evento
-      // console.log('Mensaje',e.mensaje)
     })
+
+    //suscripcion al canal del pedido aprobado
+    if (this.store.esBodeguero) {
+      const pedidoAutorizado = pusher.subscribe('pedidos-aprobados-' + rolesSistema.bodega)
+      pedidoAutorizado.bind('pedido-event', function (e) {
+        notificacionStore.agregar(e.notificacion)
+        notificarCorrecto('Tienes un pedido esperando ser despachado')
+      })
+    }
   }
 
 }
