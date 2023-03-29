@@ -31,6 +31,7 @@ import { ControlTendidoController } from '../infraestructure/ControlTendidoContr
 import { RegistroTendido } from '../modules/registrosTendidos/domain/RegistroTendido'
 import { BobinaController } from '../infraestructure/BobinaController'
 import { Tendido } from '../domain/Tendido'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: {
@@ -47,6 +48,7 @@ export default defineComponent({
     *********/
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
     const tendidoStore = useTendidoStore()
+    const authenticationStore = useAuthenticationStore()
 
     /********
     * Mixin
@@ -70,6 +72,7 @@ export default defineComponent({
     const modales = new ComportamientoModalesProgresiva()
     const entidadReset = new RegistroTendido()
     const tendidoIniciado = computed(() => tendido.id !== null)
+    const esLider = authenticationStore.esTecnicoLider
 
     consultar({ id: trabajoAsignadoStore.idSubtareaSeleccionada })
 
@@ -95,6 +98,7 @@ export default defineComponent({
       titulo: 'Agregar nuevo elemento',
       icono: 'bi-plus',
       color: 'positive',
+      visible: () => esLider,
       accion: () => {
         modales.abrirModalEntidad('RegistroTendidoPage')
         registroTendido.hydrate(entidadReset)
@@ -119,9 +123,9 @@ export default defineComponent({
       tendidoStore.idRegistroTendido = entidad.id
     }
 
-    function verResumen() {
-      modales.abrirModalEntidad('ResumenTendidoPage')
-    }
+    // function verResumen() {
+    //   modales.abrirModalEntidad('ResumenTendidoPage')
+    // }
 
     /********
      * Hooks
@@ -182,7 +186,6 @@ export default defineComponent({
       listadosAuxiliares,
       guardar,
       tendido,
-      verResumen,
       // mixin 2
       listadoRegistrosTendidos,
       configuracionColumnasControlTendido,
@@ -197,6 +200,7 @@ export default defineComponent({
       metrajeTendido,
       tendidoIniciado,
       iniciarRegistros,
+      esLider,
       // listados
       tiposElementos,
       propietariosElementos,

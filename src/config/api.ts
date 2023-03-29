@@ -119,6 +119,7 @@ export const endpoints = {
   movilizacion_subtarea_destino_actual: new Endpoint('tareas/movilizacion-subtarea-destino-actual'),
   clientes: new Endpoint('clientes'),
   grupos: new Endpoint('grupos'),
+  exportExcelSeguimiento: new Endpoint('tareas/export-seguimiento'),
 
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),

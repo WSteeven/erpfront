@@ -18,7 +18,7 @@
         autoplay
       ></lottie-player>
 
-      <q-btn color="primary" no-caps push glossy>Manual de usuario</q-btn>
+      <q-btn color="primary" no-caps push glossy>Manuales de usuario</q-btn>
 
       <!--<q-chip
         v-if="store.esCoordinador || store.esTecnicoLider"

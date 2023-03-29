@@ -76,7 +76,7 @@
     <template v-if="mostrarHeader" v-slot:top="props">
       <div
         v-if="titulo"
-        class="row text-bold text-info q-mb-lg items-center justify-center block"
+        class="row text-bold text-primary q-mb-lg items-center justify-center block"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,

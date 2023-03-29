@@ -259,7 +259,7 @@ export default defineComponent({
           refUploader.value.upload()
         }
 
-        emit('cerrar-modal')
+        emit('cerrar-modal', false)
 
       } catch (e) { }
     }

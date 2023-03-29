@@ -116,6 +116,12 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-dash',
               can: store.can('puede.ver.reporte_movilizacion_subtarea'),
             },
+            {
+              title: 'Resumen de tendidos',
+              link: 'reportes-control-tendidos',
+              icon: 'bi-dash',
+              can: store.can('puede.ver.reportes_control_tendidos'),
+            },
             /* {
               title: 'Control de tendidos',
               link: 'reportes-control-tendidos',

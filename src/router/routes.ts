@@ -111,7 +111,13 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
-      // src\pages\
+      {
+        path: '/reportes-control-tendidos',
+        name: 'reportes_control_tendidos',
+        component: () =>
+          import('gestionTrabajos/reporteResumenTendidos/view/ReporteResumenTendidoPage.vue'),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/mi-bodega',
         name: 'mi_bodega',

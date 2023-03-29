@@ -3,7 +3,7 @@
     <div class="q-mb-md text-bold text-secondary text-center">
       <span>Mi Bodega</span>
     </div>
-    <div
+    <!-- <div
       class="col-12 rounded-card q-py-md text-center text-white bg-secondary q-mb-sm"
     >
       <div class="q-mb-md text-shadow">
@@ -14,7 +14,7 @@
         <q-icon name="bi-cloud-download-fill" class="q-mr-sm"></q-icon>
         Sincronizar ahora</q-btn
       >
-    </div>
+    </div> -->
     <q-card class="rounded-card custom-shadow">
       <q-tabs
         v-model="tab"

@@ -31,8 +31,9 @@
     <q-img
       v-show="imagenCodificada"
       :src="imagenCodificada"
-      width="100%"
-      height="100vh"
+      width="80%"
+      height="80vh"
+      fit="contain"
     >
     </q-img>
   </q-dialog>
@@ -50,7 +51,14 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps(['modelValue', 'imagen', 'disable', 'file_extensiones', 'error', 'alto'])
+const props = defineProps([
+  'modelValue',
+  'imagen',
+  'disable',
+  'file_extensiones',
+  'error',
+  'alto',
+])
 const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()

@@ -9,8 +9,8 @@ import { estadosTrabajos } from 'config/utils'
 import { Subtarea } from '../domain/Subtarea'
 import { Ref } from 'vue'
 import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { ObtenerPlantilla } from 'pages/gestionTrabajos/trabajoAsignado/application/ObtenerPlantilla'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: ComportamientoModalesSubtarea, listadosAuxiliares: any) => {
   const subtareaStore = useSubtareaStore()
@@ -18,8 +18,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
 
   const { confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
-
-  // const cargando = new StatusEssentialLoading()
 
   const botonFormulario: CustomActionTable = {
     titulo: 'Seguimiento',
@@ -39,19 +37,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     }
   }
 
-  /* const botonVerPausas: CustomActionTable = {
-    titulo: 'Ver pausas',
-    icono: 'bi-pause-circle',
-    color: 'blue-6',
-    visible: ({ entidad }) => entidad.estado !== estadosTrabajos.CREADO,
-    accion: ({ entidad }) => {
-      subtareaStore.idSubtareaSeleccionada = entidad.id
-      subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_subtarea
-      subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
-      modales.abrirModalEntidad('PausasRealizadasPage')
-    }
-  } */
-
   const botonFinalizar: CustomActionTable = {
     titulo: 'Finalizar',
     color: 'positive',
@@ -66,25 +51,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
       notificarCorrecto('Trabajo finalizada exitosamente!')
     }),
   }
-
-  // x - Se va porque las subtareas se guardan y se asignan en el mismo paso
-  /* const botonAsignar: CustomActionTable = {
-    titulo: 'Asignar',
-    color: 'indigo',
-    icono: 'bi-person-fill-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.CREADO,
-    accion: ({ entidad, posicion }) => {
-      confirmar('¿Está seguro de asignar el trabajo?', async () => {
-        cargando.activar();
-        const { result } = await cambiarEstadoTrabajo.asignar(entidad.id)
-        entidad.estado = estadosTrabajos.ASIGNADO
-        entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
-        actualizarElemento(posicion, entidad)
-        cargando.desactivar()
-        notificarCorrecto('Trabajo asignada exitosamente!')
-      })
-    },
-  } */
 
   const botonCancelar: CustomActionTable = {
     titulo: 'Cancelar',
@@ -157,20 +123,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     }),
   }
 
-
-
-  /* const botonSubirArchivos: CustomActionTable = {
-    titulo: 'Archivos',
-    color: 'yellow-9',
-    icono: 'bi-folder-fill',
-    visible: () => true,
-    accion: async ({ entidad }) => {
-      subtareaStore.idSubtareaSeleccionada = entidad.id
-      subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_subtarea
-      modales.abrirModalEntidad('GestorArchivoTrabajo')
-    }
-  } */
-
   function actualizarElemento(posicion: number, entidad: Subtarea): void {
     if (posicion >= 0) {
       listado.value.splice(posicion, 1, entidad)
@@ -180,12 +132,9 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
 
   return {
     botonFormulario,
-    // botonSubirArchivos,
     botonCancelar,
     botonReagendar,
     btnAnular,
-    // botonAsignar,
     botonFinalizar,
-    // botonVerPausas,
   }
 }

@@ -223,24 +223,12 @@ export default defineComponent({
     function eliminarElemento(posicion: number, entidad: any): void {
       if (posicion >= 0) {
         listado.value.splice(posicion, 1)
-        // listado.value = [...listado.value]
       }
     }
-
-    // - Filtrar trabajo asignado
-    // const trabajoAsignadoController = new TrabajoAsignadoController()
 
     async function filtrarTrabajoAsignado(tabSeleccionado) {
       listar({ estado: tabSeleccionado })
       tabActual.value = tabSeleccionado
-      //  const cargando = new StatusEssentialLoading()
-
-      // cargando.activar()
-
-      // const { result } = await trabajoAsignadoController.
-      //listado.value = result
-
-      // cargando.desactivar()
     }
 
     filtrarTrabajoAsignado(estadosTrabajos.AGENDADO)
