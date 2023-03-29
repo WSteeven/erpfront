@@ -27,15 +27,26 @@
     fit="cover"
   >
   </q-img>
+
   <q-dialog v-model="opened" maximized>
-    <q-img
-      v-show="imagenCodificada"
-      :src="imagenCodificada"
-      width="80%"
-      height="80vh"
-      fit="contain"
-    >
-    </q-img>
+    <q-card class="bg-grey-10 rounded-card no-border" flat>
+      <q-toolbar class="bg-grey-10 rounded-header" rounded>
+        <q-avatar square>
+          <q-icon name="bi-image" color="white"></q-icon>
+        </q-avatar>
+
+        <q-toolbar-title class="text-grey-4"
+          ><span>Vista previa</span></q-toolbar-title
+        >
+
+        <q-btn round push color="white" flat icon="bi-x-lg" v-close-popup />
+      </q-toolbar>
+
+      <q-card-section class="bg-grey-10 rounded-footer">
+        <q-img v-show="imagenCodificada" :src="imagenCodificada" fit="contain">
+        </q-img>
+      </q-card-section>
+    </q-card>
   </q-dialog>
 
   <small v-if="imagenCodificada" class="block text-center q-py-sm">
