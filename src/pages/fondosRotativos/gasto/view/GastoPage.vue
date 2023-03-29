@@ -188,53 +188,6 @@
               </template>
             </q-select>
           </div>
-          <!--SubTareas-->
-          <div class="col-12 col-md-3" v-if="gasto.proyecto >= 0">
-            <label class="q-mb-sm block">Sub Tareas</label>
-            <q-select
-              v-model="gasto.subTarea"
-              :options="listadoSubTareas"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="disabled"
-              :readonly="disabled"
-              :error="!!v$.subTarea.$errors.length"
-              @blur="v$.subTarea.$touch"
-              error-message="Debes seleccionar una Tarea"
-              use-input
-              input-debounce="0"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.titulo"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.subTarea.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps" class="q-my-sm">
-                  <q-item-section>
-                    <q-item-label class="text-bold text-primary">{{
-                      scope.opt.codigo_subtarea
-                    }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.titulo }} </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
           <!--Tiene Factura-->
           <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox
@@ -507,6 +460,7 @@
             <label class="q-mb-sm block">Comprobante 1</label>
             <selector-imagen-modal
               :imagen="gasto.comprobante1"
+              file_extensiones=".jpg, image/"
               :error="!!v$.comprobante1.$errors.length"
               error-message="Debes de cargar imagen de comprobante"
               @blur="v$.comprobante1.$touch"
@@ -525,6 +479,7 @@
             <label class="q-mb-sm block">Comprobante 2</label>
             <selector-imagen-modal
               :imagen="gasto.comprobante2"
+              file_extensiones=".jpg, image/*"
               :error="!!v$.comprobante2.$errors.length"
               error-message="Debes de cargar reverso imagen de comprobante"
               @blur="v$.comprobante2.$touch"

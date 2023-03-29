@@ -2,6 +2,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class GastoCoordinadores extends EntidadAuditable {
   fecha_gasto: Date | null
   lugar: string | null
+  grupo: string | null
   lugar_info: string | null
    motivo: string | null
   motivo_info: string | null
@@ -15,6 +16,7 @@ export class GastoCoordinadores extends EntidadAuditable {
     super()
     this.fecha_gasto = null
     this.lugar = null
+    this.grupo = null
     this.lugar_info = null
     this.motivo = null
     this.motivo_info = null

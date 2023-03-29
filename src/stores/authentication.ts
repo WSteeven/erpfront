@@ -14,6 +14,13 @@ import { SucursalController } from 'pages/administracion/sucursales/infraestruct
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
+import { DetalleFondo } from 'pages/fondosRotativos/detalleFondo/domain/DetalleFondo'
+import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
+import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
+import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -113,6 +120,20 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.set('condiciones', JSON.stringify(condiciones))
     const estados_transacciones = (await new EstadosTransaccionController().listar({ campos: 'id,nombre' })).result
     LocalStorage.set('estados_transacciones', JSON.stringify(estados_transacciones))
+    const cantones = (await new CantonController().listar({ campos: 'id,canton' })).result
+    LocalStorage.set('cantones', JSON.stringify(cantones))
+    const detalles = (await new DetalleFondoController().listar({ campos: 'id,descripcion' })).result
+    LocalStorage.set('detalles', JSON.stringify(detalles))
+    const sub_detalles = (await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })).result
+    LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
+    const autorizacionesEspeciales = (await new UsuarioAutorizadoresController().listar({ campos: 'id,nombre' })).result
+    LocalStorage.set('autorizaciones_especiales', JSON.stringify(autorizacionesEspeciales))
+    const tareas = (await new TareaController().listar({ campos: 'id,nombre' })).result
+    LocalStorage.set('tareas', JSON.stringify(tareas))
+    const sub_tareas = (await new SubtareaController().listar({ campos: 'id,nombre' })).result
+    LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
+
+
   }
   /**
    * Función para limpiar los datos del Local Storage
@@ -122,6 +143,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.remove('sucursales')
     LocalStorage.remove('condiciones')
     LocalStorage.remove('estados_transacciones')
+    LocalStorage.remove('lugares')
+    LocalStorage.remove('detalles')
   }
 
   async function logout() {

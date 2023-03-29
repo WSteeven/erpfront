@@ -6,7 +6,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagenModal from 'components/SelectorImagenModal.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { requiredIf, maxLength, minLength, required } from 'shared/i18n-validators'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
@@ -108,9 +108,6 @@ export default defineComponent({
       num_tarea: {
         required,
       },
-      subTarea: {
-        required,
-      },
       proyecto: {
         required,
       },
@@ -126,8 +123,7 @@ export default defineComponent({
         requiredIfTecnico: requiredIf(() => esTecnico.value),
       },
       num_comprobante: {
-        minLength: minLength(10),
-        maxLength: maxLength(15),
+        maxLength: maxLength(13),
       },
       detalle: {
         required,
@@ -163,28 +159,15 @@ export default defineComponent({
     const detalles = ref([])
     const sub_detalles = ref([])
     const proyectos = ref([])
-    const autorizacionesEspeciales: Ref<Empleado[]>=ref([])
+    const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
-    const subTareas = ref([])
 
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
-        cantones: {
-          controller: new CantonController(),
-          params: { campos: 'id,canton' },
-        },
-        detalles: {
-          controller: new DetalleFondoController(),
-          params: { campos: 'id,descripcion' },
-        },
         autorizacionesEspeciales: {
           controller: new UsuarioAutorizadoresController(),
           params: { campos: 'id,name' },
-        },
-        sub_detalles: {
-          controller: new SubDetalleFondoController(),
-          params: { campos: 'id,descripcion' },
         },
         proyectos: {
           controller: new ProyectoController(),
@@ -203,17 +186,22 @@ export default defineComponent({
           params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id }
         }
       })
-      cantones.value = listadosAuxiliares.cantones
-      detalles.value = listadosAuxiliares.detalles
       autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
-      sub_detalles.value = listadosAuxiliares.sub_detalles
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
-      subTareas.value = listadosAuxiliares.subTareas
 
       autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
+
+
+
+    cantones.value = LocalStorage.getItem('cantones') == null ? [] : JSON.parse(LocalStorage.getItem('cantones')!.toString())
+    detalles.value = LocalStorage.getItem('detalles') == null ? [] : JSON.parse(LocalStorage.getItem('detalles')!.toString())
+    sub_detalles.value = LocalStorage.getItem('sub_detalles') == null ? [] : JSON.parse(LocalStorage.getItem('sub_detalles')!.toString())
+    listadosAuxiliares.cantones = cantones.value
+    listadosAuxiliares.detalles = detalles.value
+    listadosAuxiliares.sub_detalles = sub_detalles.value
 
     /*********
      * Filtros
@@ -330,18 +318,12 @@ export default defineComponent({
       })
     }
     listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
-    listadosAuxiliares.subTareas.unshift({ id: 0, titulo: 'Sin Subtarea' })
     const listadoTareas = computed(() =>
       listadosAuxiliares.tareas.filter(
         (tarea: Tarea) => tarea.proyecto_id === gasto.proyecto || tarea.id == 0
       )
     )
-    const listadoSubTareas = computed(() =>
-      listadosAuxiliares.subTareas.filter(
-        (subtarea: Subtarea) =>
-          subtarea.tarea_id === gasto.num_tarea || subtarea.id == 0
-      )
-    )
+
     const listadoSubdetalles = computed(() =>
       listadosAuxiliares.sub_detalles.filter(
         (subdetalle: SubDetalleFondo) =>
@@ -438,7 +420,6 @@ export default defineComponent({
       aprobar_gasto,
       listadosAuxiliares,
       listadoSubdetalles,
-      listadoSubTareas,
       mostrarListado,
       listadoTareas,
     }
