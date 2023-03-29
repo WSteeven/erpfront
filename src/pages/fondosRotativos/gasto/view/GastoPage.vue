@@ -460,7 +460,7 @@
             <label class="q-mb-sm block">Comprobante 1</label>
             <selector-imagen-modal
               :imagen="gasto.comprobante1"
-              file_extensiones=".jpg, image/"
+              file_extensiones=".jpg, image/*"
               :error="!!v$.comprobante1.$errors.length"
               error-message="Debes de cargar imagen de comprobante"
               @blur="v$.comprobante1.$touch"
