@@ -12,7 +12,7 @@ export class TransferenciaSaldoPusherEvent {
     const { notificarCorrecto } = useNotificaciones()
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
-    pusher.subscribe('transferencia-saldo-'+this.usuario.usuario_id)
+    pusher.subscribe('transferencia-saldo-'+this.usuario.id)
     pusher.bind('transferencia-saldo-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificarCorrecto('Tienes una transferencia esperando ser aceptada')

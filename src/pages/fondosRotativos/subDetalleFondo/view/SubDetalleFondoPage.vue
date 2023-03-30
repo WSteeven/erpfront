@@ -84,8 +84,8 @@
             <label class="q-mb-xs">Estatus del Detalle(*): </label>
             <q-toggle
               :label="subDetalleFondo.estatus"
-              false-value="Inactivo"
-              true-value="Activo"
+              false-value="INACTIVO"
+              true-value="ACTIVO"
               color="blue"
               v-model="subDetalleFondo.estatus"
               :disable="disabled"

@@ -230,7 +230,7 @@
             <q-input
               v-model="gasto.num_comprobante"
               placeholder="Opcional"
-              type="number"
+              mask="#################"
               :disable="disabled"
               :error="!!v$.num_comprobante.$errors.length"
               @blur="v$.num_comprobante.$touch"

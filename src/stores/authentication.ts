@@ -214,6 +214,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       throw new ApiError(axiosError)
     }
   }
+  console.log(user);
+
 
   return {
     user,

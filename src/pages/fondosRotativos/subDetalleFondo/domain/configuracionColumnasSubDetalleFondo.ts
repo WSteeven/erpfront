@@ -3,8 +3,8 @@ import { SubDetalleFondo } from "./SubDetalleFondo";
 
 export const configuracionColumnasSubDetalleFondo: ColumnConfig<SubDetalleFondo>[] = [
   {
-    name: 'detalle_viatico',
-    field: 'detalle_viatico',
+    name: 'detalle_viatico_info',
+    field: 'detalle_viatico_info',
     label: 'Detalle',
     align: 'left',
     sortable: true
