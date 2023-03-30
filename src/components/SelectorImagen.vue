@@ -3,7 +3,7 @@
     v-model="imagen"
     dense
     outlined
-    class="q-mb-sm q-mt-sm"
+    class="q-mb-sm"
     clearable
     @update:model-value="setBase64"
     @clear="limpiar()"
@@ -19,7 +19,6 @@
       <slot name="error"></slot>
     </template>
   </q-file>
-
   <q-img
     v-show="imagenCodificada"
     :src="imagenCodificada"
@@ -29,26 +28,54 @@
   >
   </q-img>
 
+  <q-dialog v-model="opened" maximized>
+    <q-card class="bg-grey-10 rounded-card no-border" flat>
+      <q-toolbar class="bg-grey-10 rounded-header" rounded>
+        <q-avatar square>
+          <q-icon name="bi-image" color="white"></q-icon>
+        </q-avatar>
+
+        <q-toolbar-title class="text-grey-4"
+          ><span>Vista previa</span></q-toolbar-title
+        >
+
+        <q-btn round push color="white" flat icon="bi-x-lg" v-close-popup />
+      </q-toolbar>
+
+      <q-card-section class="bg-grey-10 rounded-footer">
+        <q-img v-show="imagenCodificada" :src="imagenCodificada" fit="contain">
+        </q-img>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
+
   <small v-if="imagenCodificada" class="block text-center q-py-sm">
-    <a
-      class="text-positive text-decoration-none"
-      :href="imagenCodificada"
-      target="_blank"
-      >Ver en pantalla completa</a
-    >
+    <q-btn
+      flat
+      color="primary"
+      @click="opened = true"
+      label="Ver en pantalla completa"
+    />
   </small>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps(['modelValue', 'imagen', 'disable', 'error',  'alto','file_extensiones'])
+const props = defineProps([
+  'modelValue',
+  'imagen',
+  'disable',
+  'file_extensiones',
+  'error',
+  'alto',
+])
 const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()
 const imagenCodificada = computed(() => props.imagen)
-const alto =computed(() => props.alto??'150px')
-
+const alto = computed(() => props.alto ?? '150px')
+const opened = ref(false)
 const setBase64 = (file: File) => {
   if (file !== null && file !== undefined) {
     const reader = new FileReader()
