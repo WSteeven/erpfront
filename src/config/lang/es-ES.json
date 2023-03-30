@@ -3,7 +3,7 @@
   "success": "Aktion erfolgreich",
   "validations": {
     "required": "Campo requerido",
-    "maxLength": "No te pases",
+    "maxLength": "ha exedido el número máximo de caracteres",
     "numeric": "Debe ser un número"
   }
 }
