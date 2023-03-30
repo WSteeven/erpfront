@@ -141,10 +141,11 @@ export default defineComponent({
         required,
       },
       comprobante1: {
-        required,
+        required: requiredIf(() => gasto.comprobante1 !== gasto.comprobante2)
+
       },
       comprobante2: {
-        required,
+        required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1)
       },
       observacion: {
         required,
@@ -341,6 +342,7 @@ export default defineComponent({
     })
     function existeComprobante() {
       gasto.factura = null
+      gasto.ruc=null
     }
     function aprobar_gasto(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
