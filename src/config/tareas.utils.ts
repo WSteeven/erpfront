@@ -20,6 +20,17 @@ export const destinosTareas = {
   paraClienteFinal: 'PARA_CLIENTE_FINAL',
 }
 
+export const ubicacionesTrabajo = {
+  clienteFinal: 'CLIENTE_FINAL',
+  ruta: 'RUTA',
+}
+
+export const tabOptionsEstadosTareas: TabOption[] = [
+  { label: 'Todo', value: '' },
+  { label: 'Activas', value: 'false' },
+  { label: 'Finalizadas', value: 'true' },
+];
+
 export const tabOptionsEstadosSubtareas: TabOption[] = [
   { label: 'Todo', value: '' },
   // { label: 'Creado', value: 'CREADO' },

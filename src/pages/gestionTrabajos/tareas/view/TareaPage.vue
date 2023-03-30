@@ -7,7 +7,7 @@
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"
     :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'"
-    :tabOptions="tabOptionsEstadosSubtareas"
+    :tabOptions="tabOptionsEstadosTareas"
     :accion1="btnFormularioTarea"
     :accion2="btnReagendarTarea"
     :accion3="btnCancelarTarea"
@@ -100,23 +100,13 @@
                   <label class="q-mb-sm block">Código de tarea cliente</label>
                   <q-input
                     v-model="tarea.codigo_tarea_cliente"
-                    placeholder="Obligatorio"
+                    placeholder="Opcional"
                     hint="Ticket, OT, Tarea"
-                    :error="!!v$.codigo_tarea_cliente.$errors.length"
-                    @blur="v$.codigo_tarea_cliente.$touch"
                     :disable="disabled"
                     outlined
                     dense
                     autofocus
                   >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.codigo_tarea_cliente.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
                   </q-input>
                 </div>
 
@@ -196,7 +186,7 @@
                 </div>
 
                 <!-- Coordinador -->
-                <div
+                <!-- <div
                   v-if="paraClienteFinal && tarea.coordinador"
                   class="col-12 col-md-3"
                 >
@@ -229,7 +219,7 @@
                       </q-item>
                     </template>
                   </q-select>
-                </div>
+                </div> -->
 
                 <!-- Fecha de solicitud -->
                 <div v-if="paraClienteFinal" class="col-12 col-md-3">
@@ -330,7 +320,7 @@
                 </div>
 
                 <!-- Tiene subtareas -->
-                <div class="col-12 col-md-3">
+                <!-- <div class="col-12 col-md-3">
                   <br />
                   <q-checkbox
                     v-model="tarea.tiene_subtareas"
@@ -339,7 +329,7 @@
                     :disable="disabled"
                     dense
                   ></q-checkbox>
-                </div>
+                </div> -->
 
                 <!--<div class="col-12 col-md-3">
                   <br />
@@ -602,11 +592,43 @@
             <q-expansion-item
               v-if="paraClienteFinal"
               class="overflow-hidden q-mb-md expansion"
-              label="Ubicación del trabajo para cliente final"
+              label="Ubicación del trabajo"
               header-class="text-bold bg-header-collapse"
               default-opened
             >
-              <div v-if="paraClienteFinal" class="row q-col-gutter-sm q-pa-sm">
+              <div class="row q-col-gutter-sm q-pa-sm">
+                <div class="col-12">
+                  <q-btn-toggle
+                    v-model="tarea.ubicacion_trabajo"
+                    class="toggle-button"
+                    :disable="disabled"
+                    spread
+                    no-caps
+                    rounded
+                    glossy
+                    toggle-color="positive"
+                    unelevated
+                    :options="[
+                      {
+                        label: 'Seleccionar cliente final',
+                        value: ubicacionesTrabajo.clienteFinal,
+                      },
+                      {
+                        label: 'Seleccionar una ruta',
+                        value: ubicacionesTrabajo.ruta,
+                      },
+                    ]"
+                  />
+                </div>
+              </div>
+
+              <div
+                v-if="
+                  paraClienteFinal &&
+                  tarea.ubicacion_trabajo === ubicacionesTrabajo.clienteFinal
+                "
+                class="row q-col-gutter-sm q-pa-sm"
+              >
                 <!-- Nombre -->
                 <div class="col-12">
                   <label-abrir-modal
@@ -794,6 +816,45 @@
                     dense
                   >
                   </q-input>
+                </div>
+              </div>
+
+              <div
+                v-if="
+                  paraClienteFinal &&
+                  tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta
+                "
+                class="row q-col-gutter-sm q-pa-sm"
+              >
+                <!-- Nombre -->
+                <div class="col-12">
+                  <label class="q-mb-sm block">Ruta</label>
+                  <q-select
+                    v-model="tarea.ruta_tarea"
+                    :options="rutas"
+                    @filter="filtrarRutas"
+                    hint="Primero seleccione al cliente corporativo"
+                    transition-show="scale"
+                    transition-hide="scale"
+                    options-dense
+                    dense
+                    outlined
+                    :option-label="(item) => item.ruta"
+                    :option-value="(item) => item.id"
+                    use-input
+                    input-debounce="0"
+                    emit-value
+                    map-options
+                    :disable="disabled"
+                  >
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No hay resultados
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
                 </div>
               </div>
             </q-expansion-item>

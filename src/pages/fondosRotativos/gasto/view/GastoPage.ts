@@ -171,7 +171,7 @@ export default defineComponent({
         },
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto' },
+          params: { campos: 'id,nombre,codigo_proyecto', finalizado:0 },
         },
         tareas: {
           controller: new TareaController(),
@@ -193,9 +193,6 @@ export default defineComponent({
 
       autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
-
-
-
     cantones.value = LocalStorage.getItem('cantones') == null ? [] : JSON.parse(LocalStorage.getItem('cantones')!.toString())
     detalles.value = LocalStorage.getItem('detalles') == null ? [] : JSON.parse(LocalStorage.getItem('detalles')!.toString())
     sub_detalles.value = LocalStorage.getItem('sub_detalles') == null ? [] : JSON.parse(LocalStorage.getItem('sub_detalles')!.toString())
