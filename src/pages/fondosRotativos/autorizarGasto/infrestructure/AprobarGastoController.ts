@@ -27,4 +27,12 @@ export class AprobarGastoController  {
       throw new ApiError(axiosError)
     }
     }
+    async anularGasto(gasto: Gasto): Promise<void> {
+      try {
+        await this.axios.post(this.axios.getEndpoint(endpoints.anular_gasto), gasto)
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError
+        throw new ApiError(axiosError)
+      }
+      }
 }

@@ -196,6 +196,27 @@ export default defineComponent({
             }
             prompt(data)
           })
+          break
+          case 'anular':
+            confirmar('¿Está seguro de anular el gasto?', () => {
+              const data: CustomActionPrompt = {
+                titulo: 'Anular gasto',
+                mensaje: 'Ingrese motivo de anulacion',
+                accion: async (data) => {
+                  try {
+                    entidad.detalle_estado = data
+                    await aprobarController.anularGasto(entidad)
+                    notificarAdvertencia('Se anulado Gasto Exitosamente')
+                    emit('cerrar-modal');
+                  } catch (e: any) {
+                    notificarError(
+                      'No se pudo anular, debes ingresar un motivo para la anulación'
+                    )
+                  }
+                },
+              }
+              prompt(data)
+            })
         default:
           break
       }

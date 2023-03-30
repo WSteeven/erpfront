@@ -29,7 +29,7 @@
                 </q-icon>
               </template>
             </q-input>
-          </div> 
+          </div>
 
           <!-- Proyectos -->
           <div class="col-12 col-md-3">
@@ -158,6 +158,8 @@
           <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobar</q-btn>
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'rechazar')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn>
+          <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">
+          <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn>
       </div>
     </template>
   </tab-layout>

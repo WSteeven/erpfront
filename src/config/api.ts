@@ -128,6 +128,7 @@ export const endpoints = {
   gasto_coordinador: new Endpoint('fondos-rotativos/gasto-coordinador'),
   aprobar_gasto: new Endpoint('fondos-rotativos/aprobar-gasto'),
   rechazar_gasto: new Endpoint('fondos-rotativos/rechazar-gasto'),
+  anular_gasto: new Endpoint('fondos-rotativos/anular-gasto'),
   aprobar_trnasferencia: new Endpoint('fondos-rotativos/aprobar-transferencia'),
   rechazar_transferencia: new Endpoint('fondos-rotativos/rechazar-transferencia'),
   detalle_fondo: new Endpoint('fondos-rotativos/detalles-viaticos'),

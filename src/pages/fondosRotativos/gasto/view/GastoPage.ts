@@ -171,7 +171,7 @@ export default defineComponent({
         },
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto' },
+          params: { campos: 'id,nombre,codigo_proyecto', finalizado:1 },
         },
         tareas: {
           controller: new TareaController(),
