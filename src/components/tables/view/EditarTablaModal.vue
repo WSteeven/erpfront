@@ -95,6 +95,20 @@
               dense
             ></q-input>
           </div>
+
+          <div
+            v-for="field in fieldsImagen"
+            :key="field.field"
+            :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }"
+          >
+            <label class="q-mb-sm block">{{ field.label }}</label>
+            <selector-imagen
+              :imagen="field.valor"
+              file_extensiones=".jpg, image/*"
+              @update:modelValue="(data) => (field.valor = data)"
+            >
+            </selector-imagen>
+          </div>
         </div>
 
         <!-- Botones formulario -->
@@ -119,8 +133,12 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { computed, reactive, ref, defineComponent } from 'vue'
 import console from 'console'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 export default defineComponent({
+  components: {
+    SelectorImagen,
+  },
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
@@ -152,7 +170,10 @@ export default defineComponent({
         })
         .filter(
           (fila) =>
-            fila.field !== 'acciones' && fila.type !== 'select' && fila.editable
+            fila.field !== 'acciones' &&
+            fila.type !== 'imagen' &&
+            fila.type !== 'select' &&
+            fila.editable
         )
     )
 
@@ -187,6 +208,24 @@ export default defineComponent({
           })
         })
         .filter((fila) => fila.field !== 'acciones')
+    )
+
+    // imagenes
+    const fieldsImagen = computed(() =>
+      props.configuracionColumnas
+        .map((fila: ColumnConfig<any>) => {
+          return reactive({
+            label: fila.label,
+            field: fila.field,
+            type: fila.type ?? 'text',
+            editable: fila.editable ?? true,
+            valor: props.fila ? props.fila[fila.field] : '',
+          })
+        })
+        .filter(
+          (fila) =>
+            fila.field !== 'acciones' && fila.type === 'imagen' && fila.editable
+        )
     )
 
     const abierto = ref(false) //computed(() => !!props.fila)
@@ -237,6 +276,7 @@ export default defineComponent({
       fields,
       fieldsSelect,
       fieldsAll,
+      fieldsImagen,
       abierto,
       abrir,
       guardar,

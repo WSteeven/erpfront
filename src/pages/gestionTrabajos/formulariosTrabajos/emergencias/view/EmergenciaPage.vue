@@ -104,7 +104,7 @@
         </div>
       </div>
 
-      <div class="full-width text-bold q-my-md">Evidencia fotográfica</div>
+      <!-- <div class="full-width text-bold q-my-md">Evidencia fotográfica</div>
       <div class="row q-col-gutter-sm q-mb-md">
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block"
@@ -159,7 +159,7 @@
           <selector-imagen :imagen="emergencia.imagen_mangas_tejidas">
           </selector-imagen>
         </div>
-      </div>
+      </div> -->
 
       <div class="row justify-end q-col-gutter-x-xs">
         <q-btn

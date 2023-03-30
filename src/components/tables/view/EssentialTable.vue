@@ -512,6 +512,12 @@
                     color="positive"
                     size="xs"
                   ></q-icon>
+                  <q-icon
+                    v-else
+                    name="bi-check-circle"
+                    color="grey-6"
+                    size="xs"
+                  ></q-icon>
                 </span>
 
                 <span v-if="col.name === 'es_responsable'">
@@ -623,7 +629,6 @@
       </q-td>
     </template>
 
-
     <template #body-cell-firmada="props">
       <q-td :props="props">
         <q-icon
@@ -640,7 +645,7 @@
         ></q-icon>
       </q-td>
     </template>
-    
+
     <template #body-cell-es_ventana="props">
       <q-td :props="props">
         <q-icon
@@ -660,6 +665,7 @@
           color="positive"
           size="xs"
         ></q-icon>
+        <q-icon v-else name="bi-check-circle" color="grey-6" size="xs"></q-icon>
       </q-td>
     </template>
 

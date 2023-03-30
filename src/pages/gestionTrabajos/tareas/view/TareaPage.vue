@@ -36,7 +36,18 @@
         </q-tab>
       </q-tabs>
 
-      <q-tab-panels v-model="tab" animated keep-alive>
+      <div
+        v-if="tarea.finalizado"
+        class="col-12 rounded-card q-mt-md q-mx-md q-py-sm text-center text-positive bg-green-2"
+      >
+        <div>
+          <q-icon name="bi-check-circle-fill" class="q-mr-sm"></q-icon>
+          La tarea ha finalizado
+        </div>
+      </div>
+
+      <q-tab-panels v-model="tab" animated keep-alive
+        >dd
         <q-tab-panel name="tarea">
           <q-form @submit.prevent>
             <q-expansion-item

@@ -1,4 +1,4 @@
-type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search'
+type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen'
 type align = 'left' | 'center' | 'right'
 
 export interface ColumnConfig<T> {

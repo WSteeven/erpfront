@@ -18,4 +18,12 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizad
     align: 'left',
     type: 'text',
   },
+  {
+    name: 'fotografia',
+    field: 'fotografia',
+    label: 'Fotografia',
+    align: 'left',
+    type: 'imagen',
+    visible: false,
+  },
 ]

@@ -55,6 +55,7 @@
       color="primary"
       @click="opened = true"
       label="Ver en pantalla completa"
+      no-caps
     />
   </small>
 </template>

@@ -48,6 +48,7 @@ import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
 import { TareaModales } from '../domain/TareaModales'
 import { RutaTareaController } from 'pages/gestionTrabajos/rutas/infraestructure/RutaTareaController'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: {
@@ -118,7 +119,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { notificarAdvertencia } = useNotificaciones()
+    const { notificarAdvertencia, prompt, confirmar } = useNotificaciones()
     const paraProyecto = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
     const tab = ref('tarea')
@@ -316,6 +317,10 @@ export default defineComponent({
       }
     })
 
+    /* onGuardado(() => {
+
+    }) */
+
     // Subtareas
     const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea, botonCancelar: btnCancelarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
     const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
@@ -326,6 +331,7 @@ export default defineComponent({
       color: 'positive',
       accion: () => {
         if (!tarea.id) return notificarAdvertencia('Primero debe seleccionar una tarea.')
+        if (tarea.finalizado) return notificarAdvertencia('No puede agregar más subtareas porque la tarea ha finalizado.')
         subtareaStore.idTarea = tarea.id
         subtareaStore.codigoTarea = tarea.codigo_tarea
         subtareaStore.observacionTarea = tarea.observacion
@@ -351,9 +357,31 @@ export default defineComponent({
       titulo: 'Finalizar tarea',
       icono: 'bi-check-circle-fill',
       color: 'positive',
-      visible: () => !!tarea.id && tarea.tiene_subtareas,
-      accion: ({ entidad }) => {
+      visible: () => !!tarea.id && tarea.tiene_subtareas && !tarea.finalizado && tab.value === 'tarea',
+      accion: () => {
         console.log('finalizado')
+        console.log(tarea)
+        if (!tarea.codigo_tarea_cliente) {
+          const data: CustomActionPrompt = {
+            titulo: 'Finalizar tarea',
+            mensaje: 'Ingrese el código de tarea que le otorgó el cliente',
+            accion: (data) => {
+              tarea.codigo_tarea_cliente = data
+
+              confirmar('¿Está seguro de finalizar la tarea', () => {
+                tarea.finalizado = true
+                editar(tarea)
+              })
+            },
+          }
+
+          prompt(data)
+        }
+
+        confirmar('¿Está seguro de finalizar la tarea', () => {
+          tarea.finalizado = true
+          editar(tarea)
+        })
       }
     }
 

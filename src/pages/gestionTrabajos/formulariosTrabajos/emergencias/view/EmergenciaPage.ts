@@ -223,7 +223,7 @@ export default defineComponent({
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
     })
 
-    onGuardado(() => emit('cerrar-modal'))
+    onGuardado(() => emit('cerrar-modal', false))
     onModificado(() => {
       emit('cerrar-modal', false)
     })
