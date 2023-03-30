@@ -328,6 +328,9 @@ export default defineComponent({
           subdetalle.id_detalle_viatico === gasto.detalle
       )
     )
+    function cambiar_proyecto() {
+      gasto.num_tarea = null
+    }
     function cambiar_detalle(){
       gasto.sub_detalle=null;
     }
@@ -421,6 +424,7 @@ export default defineComponent({
       filtrarTareas,
       aprobar_gasto,
       cambiar_detalle,
+      cambiar_proyecto,
       listadosAuxiliares,
       listadoSubdetalles,
       mostrarListado,

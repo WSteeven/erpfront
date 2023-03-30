@@ -111,6 +111,7 @@
               input-debounce="0"
               @blur="v$.proyecto.$touch"
               @filter="filtrarProyectos"
+              @update:model-value="cambiar_proyecto()"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
