@@ -1,5 +1,5 @@
 // Dependencias
-import { mediosNotificacion, modosAsignacionTrabajo, destinosTareas, tabOptionsEstadosSubtareas } from 'config/tareas.utils'
+import { mediosNotificacion, modosAsignacionTrabajo, destinosTareas, tabOptionsEstadosSubtareas, ubicacionesTrabajo, tabOptionsEstadosTareas } from 'config/tareas.utils'
 import { configuracionColumnasSubtarea } from 'gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
@@ -47,6 +47,7 @@ import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { Tarea } from '../domain/Tarea'
 import { TareaModales } from '../domain/TareaModales'
+import { RutaTareaController } from 'pages/gestionTrabajos/rutas/infraestructure/RutaTareaController'
 
 export default defineComponent({
   components: {
@@ -103,13 +104,14 @@ export default defineComponent({
         grupos: new GrupoController(),
         empleados: new EmpleadoController(),
         motivosSuspendidos: new MotivoSuspendidoController(),
+        rutas: new RutaTareaController(),
       })
 
       // Necesario al consultar
       clientes.value = listadosAuxiliares.clientes
       fiscalizadores.value = listadosAuxiliares.fiscalizadores
       coordinadores.value = listadosAuxiliares.coordinadores
-      // tiposTrabajosSource.value = listadosAuxiliares.tiposTrabajos
+      rutas.value = listadosAuxiliares.rutas
       listadosAuxiliares.clientesFinales = []
     })
 
@@ -131,7 +133,6 @@ export default defineComponent({
     const reglas = {
       cliente: { requiredIfCliente: requiredIf(() => paraClienteFinal.value) },
       titulo: { required },
-      codigo_tarea_cliente: { required },
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       descripcion_completa: { required: requiredIf(() => !tarea.tiene_subtareas) },
       tipo_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
@@ -169,6 +170,8 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
+      rutas,
+      filtrarRutas,
     } = useFiltrosListadosTarea(listadosAuxiliares, tarea)
 
     /************
@@ -180,9 +183,10 @@ export default defineComponent({
       return result
     }
 
-    function establecerCliente() {
+    async function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
       tarea.tipo_trabajo = null
+      await obtenerRutas()
     }
 
     async function guardado(paginaModal: keyof TareaModales) {
@@ -202,10 +206,25 @@ export default defineComponent({
       modalesTarea.cerrarModalEntidad()
     }
 
+    const controller = new ClienteFinalController()
+    async function obtenerClientesFinales() {
+      cargando.activar()
+      listadosAuxiliares.clientesFinales = (await controller.listar({ cliente: tarea.cliente })).result
+      clientesFinales.value = listadosAuxiliares.clientesFinales
+      cargando.desactivar()
+    }
+
+    const rutaTareaController = new RutaTareaController()
+    async function obtenerRutas() {
+      cargando.activar()
+      listadosAuxiliares.rutas = (await rutaTareaController.listar({ cliente_id: tarea.cliente })).result
+      rutas.value = listadosAuxiliares.rutas
+      cargando.desactivar()
+    }
+
     /************
     * Observers
     ************/
-    const controller = new ClienteFinalController()
     const cargando = new StatusEssentialLoading()
 
     watch(computed(() => tarea.cliente), async () => {
@@ -216,13 +235,6 @@ export default defineComponent({
         obtenerClientesFinales()
       }
     })
-
-    async function obtenerClientesFinales() {
-      cargando.activar()
-      listadosAuxiliares.clientesFinales = (await controller.listar({ cliente: tarea.cliente })).result
-      clientesFinales.value = listadosAuxiliares.clientesFinales
-      cargando.desactivar()
-    }
 
     watchEffect(async () => {
       if (tarea.cliente_final) {
@@ -403,6 +415,8 @@ export default defineComponent({
       fiscalizadores,
       coordinadores,
       filtrarCoordinadores,
+      rutas,
+      filtrarRutas,
       proyectos,
       clienteFinal,
       paraProyecto,
@@ -432,6 +446,8 @@ export default defineComponent({
       maskFecha,
       guardado,
       botonFinalizarTarea,
+      ubicacionesTrabajo,
+      tabOptionsEstadosTareas,
       // Botones tareas
       btnVerPausasTarea,
       btnFinalizarTarea,

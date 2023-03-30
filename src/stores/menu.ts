@@ -437,6 +437,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.motivos_suspendidos'),
         },
+        {
+          title: 'Rutas para tareas',
+          link: 'rutas-tareas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.rutas_tareas'),
+        },
       ]
     },
     {

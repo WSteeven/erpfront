@@ -104,29 +104,7 @@
         </div>
       </div>
 
-      <div class="row justify-end q-col-gutter-x-xs">
-        <q-btn
-          v-if="esCoordinador"
-          color="positive"
-          no-caps
-          push
-          class="q-mr-sm"
-          @click="descargarExcel()"
-        >
-          <q-icon name="bi-file-spreadsheet" size="xs" class="q-pr-sm"></q-icon>
-          <span>Descargar Excel</span>
-        </q-btn>
-
-        <button-submits
-          :accion="accion"
-          @cerrar-modal="emit('cerrar-modal')"
-          @cancelar="reestablecer()"
-          @editar="editar(emergencia)"
-          @guardar="guardar(emergencia)"
-        />
-      </div>
-
-      <!--<div class="full-width text-bold q-my-md">Evidencia fotográfica</div>
+      <div class="full-width text-bold q-my-md">Evidencia fotográfica</div>
       <div class="row q-col-gutter-sm q-mb-md">
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block"
@@ -156,7 +134,7 @@
         </div>
       </div>
 
-     <div class="full-width text-bold q-mb-md">Fotográfia del cableado</div>
+      <div class="full-width text-bold q-mb-md">Fotográfia del cableado</div>
       <div class="row q-col-gutter-sm">
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Punta inicial</label>
@@ -181,7 +159,29 @@
           <selector-imagen :imagen="emergencia.imagen_mangas_tejidas">
           </selector-imagen>
         </div>
-      </div> -->
+      </div>
+
+      <div class="row justify-end q-col-gutter-x-xs">
+        <q-btn
+          v-if="esCoordinador"
+          color="positive"
+          no-caps
+          push
+          class="q-mr-sm"
+          @click="descargarExcel()"
+        >
+          <q-icon name="bi-file-spreadsheet" size="xs" class="q-pr-sm"></q-icon>
+          <span>Descargar Excel</span>
+        </q-btn>
+
+        <button-submits
+          :accion="accion"
+          @cerrar-modal="emit('cerrar-modal')"
+          @cancelar="reestablecer()"
+          @editar="editar(emergencia)"
+          @guardar="guardar(emergencia)"
+        />
+      </div>
     </q-card>
   </q-page>
 </template>

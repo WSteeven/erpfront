@@ -53,13 +53,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('gestionTrabajos/motivosSuspendidos/view/MotivoSuspendidoPage.vue'),
         meta: { requiresAuth: true },
       },
-      /*{
-        path: '/tipos-elementos',
-        name: 'tipos_elementos',
-        component: () =>
-          import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
+      {
+        path: '/rutas-tareas',
+        name: 'rutas_tareas',
+        component: () => import('gestionTrabajos/rutas/view/RutaTareaPage.vue'),
         meta: { requiresAuth: true },
-      },*/
+      },
       {
         path: '/control-cambios',
         name: 'control_cambios',
