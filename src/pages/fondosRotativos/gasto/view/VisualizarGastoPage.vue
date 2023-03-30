@@ -158,7 +158,9 @@
           <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobar</q-btn>
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'rechazar')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn>
-          <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">
+      </div>
+      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.usuario_id == gasto.aut_especial && gasto.estado_info=='APROBADO'">
+        <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn>
       </div>
     </template>
