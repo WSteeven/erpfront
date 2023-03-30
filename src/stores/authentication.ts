@@ -94,7 +94,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
   async function consultar_saldo_actual() {
     try {
-      const userApi = axios.getEndpoint(endpoints.ultimo_saldo)+user.value?.usuario_id
+      const userApi = axios.getEndpoint(endpoints.ultimo_saldo) + user.value?.usuario_id
 
       const response = await axios.get<AxiosResponse>(userApi)
 
@@ -128,9 +128,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
     const autorizacionesEspeciales = (await new UsuarioAutorizadoresController().listar({ campos: 'id,nombre' })).result
     LocalStorage.set('autorizaciones_especiales', JSON.stringify(autorizacionesEspeciales))
-    const tareas = (await new TareaController().listar({ campos: 'id,nombre' })).result
+    const tareas = (await new TareaController().listar({ campos: 'id,titulo' })).result
     LocalStorage.set('tareas', JSON.stringify(tareas))
-    const sub_tareas = (await new SubtareaController().listar({ campos: 'id,nombre' })).result
+    const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
     LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
 
 
@@ -158,7 +158,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     user.value = userData
     auth.value = Boolean(userData)
   }
-  const setSaldo =(saldo: number) =>{
+  const setSaldo = (saldo: number) => {
     saldo_actual.value = saldo
   }
 

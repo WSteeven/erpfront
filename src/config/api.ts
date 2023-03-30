@@ -95,6 +95,7 @@ export const endpoints = {
   pausas_subtareas: new Endpoint('tareas/subtareas/obtener-pausas'),
   suspendidos_subtareas: new Endpoint('tareas/subtareas/obtener-suspendidos'),
   tipos_trabajos: new Endpoint('tareas/tipos-trabajos'),
+  rutas_tareas: new Endpoint('tareas/rutas-tareas'),
   motivos_pausas: new Endpoint('tareas/motivos-pausas'),
   motivos_pendientes: new Endpoint('tareas/motivos-pendientes'),
   motivos_suspendidos: new Endpoint('tareas/motivos-suspendidos'),

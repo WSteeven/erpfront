@@ -139,6 +139,19 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad: UnwrapRef<T
     })
   }
 
+  // - Filtro rutas tareas
+  const rutas = ref([])
+  function filtrarRutas(val, update) {
+    if (val === '') update(() => rutas.value = listadosAuxiliares.rutas)
+
+    update(() => {
+      const needle = val.toLowerCase()
+      rutas.value = listadosAuxiliares.rutas.filter(
+        (v) => v.ruta.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
   return {
     clientes,
     filtrarClientes,
@@ -160,5 +173,7 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad: UnwrapRef<T
     filtrarGrupos,
     empleados,
     filtrarEmpleados,
+    rutas,
+    filtrarRutas,
   }
 }

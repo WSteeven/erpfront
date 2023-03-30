@@ -1,4 +1,4 @@
-import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
+import { destinosTareas, modosAsignacionTrabajo, ubicacionesTrabajo } from 'config/tareas.utils'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
@@ -68,6 +68,8 @@ export class Tarea extends EntidadAuditable {
   canton: string | null
   cantidad_subtareas: number | null
   finalizado: boolean
+  ubicacion_trabajo: string
+  ruta_tarea: number | null
 
   constructor() {
     super()
@@ -76,6 +78,7 @@ export class Tarea extends EntidadAuditable {
     this.fecha_solicitud = null
     this.titulo = null
     this.para_cliente_proyecto = destinosTareas.paraProyecto
+    this.ubicacion_trabajo = ubicacionesTrabajo.clienteFinal
     this.cantidad_trabajos = null
     this.medio_notificacion = 'CORREO'
     this.tiene_subtareas = true
@@ -146,5 +149,6 @@ export class Tarea extends EntidadAuditable {
     this.canton = null
     this.cantidad_subtareas = null
     this.finalizado = false
+    this.ruta_tarea = null
   }
 }
