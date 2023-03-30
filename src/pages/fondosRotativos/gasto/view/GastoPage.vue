@@ -382,6 +382,7 @@
               use-input
               input-debounce="0"
               @blur="v$.detalle.$touch"
+              @update:model-value="cambiar_detalle()"
               @filter="filtrarDetalles"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"
