@@ -290,11 +290,15 @@ export default defineComponent({
     }
     /**Filtro de Tareas */
     function filtrarTareas(val, update) {
+      console.log(gasto.proyecto);
+
       if (gasto.proyecto == 0) {
         update(() => {
           tareas.value = listadosAuxiliares.tareas.filter(
             (v) => v.proyecto_id == null
           )
+          console.log(tareas.value);
+
         })
         return
       }
@@ -303,6 +307,7 @@ export default defineComponent({
           tareas.value = listadosAuxiliares.tareas.filter(
             (v) => v.proyecto_id == gasto.proyecto
           )
+          console.log(tareas.value);
         })
         return
       }
@@ -316,23 +321,35 @@ export default defineComponent({
       })
     }
     listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
-    const listadoTareas = computed(() =>
-      listadosAuxiliares.tareas.filter(
+    const listadoTareas = computed(() =>{
+      if(gasto.proyecto==0){
+        return listadosAuxiliares.tareas.filter(
+          (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
+        )
+
+      }
+      return listadosAuxiliares.tareas.filter(
         (tarea: Tarea) => tarea.proyecto_id === gasto.proyecto || tarea.id == 0
       )
-    )
+    })
 
-    const listadoSubdetalles = computed(() =>
-      listadosAuxiliares.sub_detalles.filter(
-        (subdetalle: SubDetalleFondo) =>
-          subdetalle.id_detalle_viatico === gasto.detalle
-      )
+
+    const listadoSubdetalles = computed(() => {
+      if(gasto.detalle=='0'){
+        return listadosAuxiliares.sub_detalles
+      }
+        return  listadosAuxiliares.sub_detalles.filter(
+          (subdetalle: SubDetalleFondo) =>
+            subdetalle.id_detalle_viatico === gasto.detalle
+        )
+      }
     )
     function cambiar_proyecto() {
       gasto.num_tarea = null
     }
     function cambiar_detalle(){
       gasto.sub_detalle=null;
+
     }
 
 
