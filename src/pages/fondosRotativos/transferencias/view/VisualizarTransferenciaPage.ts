@@ -17,6 +17,7 @@ import { AprobarTransferenciaController } from 'pages/fondosRotativos/autorizarT
 import { useNotificaciones } from 'shared/notificaciones'
 import { VisualizarTransferenciaController } from '../infrestructure/VisualizarTransferenciaController'
 import { VisualizarTransferencia } from '../domain/VisualizarTransferencia'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagenModal },
@@ -136,6 +137,28 @@ export default defineComponent({
                   )
                 }
           })
+          break;
+          case 'anular':
+            confirmar('¿Está seguro de anular el gasto?', () => {
+              const data: CustomActionPrompt = {
+                titulo: 'Anular gasto',
+                mensaje: 'Ingrese motivo de anulacion',
+                accion: async (data) => {
+                  try {
+                    entidad.detalle_estado = data
+                    await aprobarController.anularTransferencia(entidad)
+                    notificarAdvertencia('Se anulado Transferencia Exitosamente')
+                    emit('cerrar-modal');
+                  } catch (e: any) {
+                    notificarError(
+                      'No se pudo anular, debes ingresar un motivo para la anulación'
+                    )
+                  }
+                },
+              }
+              prompt(data)
+            })
+            break
         default:
           break
       }

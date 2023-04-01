@@ -59,6 +59,10 @@
         <q-btn color="negative" @click="aprobar_transferencia(transferencia, 'rechazar')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn>
       </div>
+      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.usuario_id == transferencia.usuario_recibe && transferencia.estado_info=='APROBADO'">
+        <q-btn color="negative" @click="aprobar_transferencia(transferencia, 'anular')">
+          <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn>
+      </div>
     </template>
   </tab-layout>
 </template>

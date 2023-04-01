@@ -8,7 +8,12 @@ import SelectorImagenModal from 'components/SelectorImagenModal.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { requiredIf, maxLength, minLength, required } from 'shared/i18n-validators'
+import {
+  requiredIf,
+  maxLength,
+  minLength,
+  required,
+} from 'shared/i18n-validators'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
@@ -33,7 +38,6 @@ import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import JSONPRequest from 'pusher-js/types/src/runtimes/web/dom/jsonp_request'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-
 
 export default defineComponent({
   components: { TabLayout, SelectorImagenModal },
@@ -85,9 +89,7 @@ export default defineComponent({
       mostrarListado.value = false
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
-
     }
-
 
     const cargo = ref(usuario.cargo)
     const esTecnico = ref(false)
@@ -114,7 +116,7 @@ export default defineComponent({
       ruc: {
         minLength: minLength(13),
         maxLength: maxLength(13),
-        requiredIfFactura: requiredIf(() => esFactura.value)
+        requiredIfFactura: requiredIf(() => esFactura.value),
       },
       factura: {
         maxLength: maxLength(17),
@@ -141,16 +143,14 @@ export default defineComponent({
         required,
       },
       comprobante1: {
-        required: requiredIf(() => gasto.comprobante1 !== gasto.comprobante2)
-
+        required: requiredIf(() => gasto.comprobante1 !== gasto.comprobante2),
       },
       comprobante2: {
-        required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1)
+        required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1),
       },
       observacion: {
         required,
-      }
-
+      },
     }
 
     const v$ = useVuelidate(reglas, gasto)
@@ -172,7 +172,7 @@ export default defineComponent({
         },
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto', finalizado:0 },
+          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0 },
         },
         tareas: {
           controller: new TareaController(),
@@ -184,19 +184,29 @@ export default defineComponent({
         },
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id }
-        }
+          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id },
+        },
       })
-      autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
+      autorizacionesEspeciales.value =
+        listadosAuxiliares.autorizacionesEspeciales
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
 
       autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
-    cantones.value = LocalStorage.getItem('cantones') == null ? [] : JSON.parse(LocalStorage.getItem('cantones')!.toString())
-    detalles.value = LocalStorage.getItem('detalles') == null ? [] : JSON.parse(LocalStorage.getItem('detalles')!.toString())
-    sub_detalles.value = LocalStorage.getItem('sub_detalles') == null ? [] : JSON.parse(LocalStorage.getItem('sub_detalles')!.toString())
+    cantones.value =
+      LocalStorage.getItem('cantones') == null
+        ? []
+        : JSON.parse(LocalStorage.getItem('cantones')!.toString())
+    detalles.value =
+      LocalStorage.getItem('detalles') == null
+        ? []
+        : JSON.parse(LocalStorage.getItem('detalles')!.toString())
+    sub_detalles.value =
+      LocalStorage.getItem('sub_detalles') == null
+        ? []
+        : JSON.parse(LocalStorage.getItem('sub_detalles')!.toString())
     listadosAuxiliares.cantones = cantones.value
     listadosAuxiliares.detalles = detalles.value
     listadosAuxiliares.sub_detalles = sub_detalles.value
@@ -209,7 +219,8 @@ export default defineComponent({
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
         update(() => {
-          autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
+          autorizacionesEspeciales.value =
+            listadosAuxiliares.autorizacionesEspeciales
         })
         return
       }
@@ -237,9 +248,33 @@ export default defineComponent({
         )
       })
     }
-
+    function optionsFechaGasto(date) {
+      const today = new Date()
+      const sabadoAnterior = convertir_fecha(new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7))))
+      const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
+      console.log(sabadoAnterior+' al '+sabadoSiguiente);
+      return date >= sabadoAnterior && date <= sabadoSiguiente
+    }
+    function siguienteSabado() {
+      const fecha = new Date() // Obtenemos la fecha actual
+      const diaSemana = fecha.getDay() // Obtenemos el día de la semana (0-6, siendo 0 domingo)
+      // Calculamos los días que faltan hasta el próximo sábado
+      const diasFaltantes = 6 - diaSemana
+      // Sumamos los días faltantes a la fecha actual para obtener el próximo sábado
+      fecha.setDate(fecha.getDate() + diasFaltantes)
+      // Retornamos la fecha formateada como una cadena de texto
+      return fecha
+    }
     // - Filtro Lugares
-
+    function convertir_fecha(fecha: Date) {
+      const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
+      const month =
+        fecha.getMonth() + 1 < 10
+          ? '0' + (fecha.getMonth() + 1)
+          : fecha.getMonth() + 1
+      const year = fecha.getFullYear()
+      return year +'/' + month + '/' + day
+    }
     function filtrarCantones(val, update) {
       if (val === '') {
         update(() => {
@@ -290,15 +325,14 @@ export default defineComponent({
     }
     /**Filtro de Tareas */
     function filtrarTareas(val, update) {
-      console.log(gasto.proyecto);
+      console.log(gasto.proyecto)
 
       if (gasto.proyecto == 0) {
         update(() => {
           tareas.value = listadosAuxiliares.tareas.filter(
             (v) => v.proyecto_id == null
           )
-          console.log(tareas.value);
-
+          console.log(tareas.value)
         })
         return
       }
@@ -307,7 +341,7 @@ export default defineComponent({
           tareas.value = listadosAuxiliares.tareas.filter(
             (v) => v.proyecto_id == gasto.proyecto
           )
-          console.log(tareas.value);
+          console.log(tareas.value)
         })
         return
       }
@@ -321,37 +355,32 @@ export default defineComponent({
       })
     }
     listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
-    const listadoTareas = computed(() =>{
-      if(gasto.proyecto==0){
+    const listadoTareas = computed(() => {
+      if (gasto.proyecto == 0) {
         return listadosAuxiliares.tareas.filter(
           (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
         )
-
       }
       return listadosAuxiliares.tareas.filter(
         (tarea: Tarea) => tarea.proyecto_id === gasto.proyecto || tarea.id == 0
       )
     })
 
-
     const listadoSubdetalles = computed(() => {
-      if(gasto.detalle=='0'){
+      if (gasto.detalle == '0') {
         return listadosAuxiliares.sub_detalles
       }
-        return  listadosAuxiliares.sub_detalles.filter(
-          (subdetalle: SubDetalleFondo) =>
-            subdetalle.id_detalle_viatico === gasto.detalle
-        )
-      }
-    )
+      return listadosAuxiliares.sub_detalles.filter(
+        (subdetalle: SubDetalleFondo) =>
+          subdetalle.id_detalle_viatico === gasto.detalle
+      )
+    })
     function cambiar_proyecto() {
       gasto.num_tarea = null
     }
-    function cambiar_detalle(){
-      gasto.sub_detalle=null;
-
+    function cambiar_detalle() {
+      gasto.sub_detalle = null
     }
-
 
     /*********
      * Pusher
@@ -365,7 +394,7 @@ export default defineComponent({
     })
     function existeComprobante() {
       gasto.factura = null
-      gasto.ruc=null
+      gasto.ruc = null
     }
     function aprobar_gasto(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
@@ -378,7 +407,7 @@ export default defineComponent({
                 entidad.detalle_estado = data
                 await aprobarController.aprobarGasto(entidad)
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
-                emit('cerrar-modal');
+                emit('cerrar-modal')
               } catch (e: any) {
                 notificarError(
                   'No se pudo aprobar, debes ingresar un motivo para la anulación'
@@ -398,7 +427,7 @@ export default defineComponent({
                   entidad.detalle_estado = data
                   await aprobarController.rechazarGasto(entidad)
                   notificarAdvertencia('Se rechazado Gasto Exitosamente')
-                  emit('cerrar-modal');
+                  emit('cerrar-modal')
                 } catch (e: any) {
                   notificarError(
                     'No se pudo rechazar, debes ingresar un motivo para la anulación'
@@ -411,7 +440,6 @@ export default defineComponent({
         default:
           break
       }
-
     }
     return {
       mixin,
@@ -442,6 +470,7 @@ export default defineComponent({
       aprobar_gasto,
       cambiar_detalle,
       cambiar_proyecto,
+      optionsFechaGasto,
       listadosAuxiliares,
       listadoSubdetalles,
       mostrarListado,

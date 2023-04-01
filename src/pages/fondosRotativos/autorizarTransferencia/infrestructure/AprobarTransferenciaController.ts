@@ -26,4 +26,12 @@ export class AprobarTransferenciaController  {
       throw new ApiError(axiosError)
     }
     }
+    async anularTransferencia(transferencia: Transferencia): Promise<void> {
+      try {
+        await this.axios.post(this.axios.getEndpoint(endpoints.anular_transferencia), transferencia)
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError
+        throw new ApiError(axiosError)
+      }
+      }
 }

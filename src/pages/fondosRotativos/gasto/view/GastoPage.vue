@@ -69,6 +69,7 @@
                     <q-date
                       v-model="gasto.fecha_viat"
                       :mask="maskFecha"
+                      :options="optionsFechaGasto"
                       today-btn
                     >
                       <div class="row items-center justify-end">
