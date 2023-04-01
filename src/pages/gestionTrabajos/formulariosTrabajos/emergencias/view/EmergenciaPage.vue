@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="q-mb-md text-secondary">
+    <div class="q-mb-md">
       Código de subtarea: <b>{{ codigoSubtarea }}</b>
     </div>
     <!-- <div
@@ -18,6 +18,18 @@
     </div> -->
 
     <q-card class="rounded-card custom-shadow q-pa-md">
+      <!-- <div
+        class="col-12 rounded-card q-py-sm q-mb-md text-center text-primary bg-blue-2"
+      >
+        <div>
+          <q-icon name="bi-info-circle-fill" class="q-mr-sm"></q-icon>
+          <div>
+            Espere a que el responsable de la subtarea la marque como REALIZADO
+            para proceder a editar el seguimiento.
+          </div>
+          <b>Acceso de sólo lectura</b>
+        </div>
+      </div> -->
       <div class="row">
         <div class="col-12 q-mb-md">
           <trabajo-realizado
@@ -27,6 +39,15 @@
         </div>
 
         <div class="col-12 q-mb-md">
+          <br />
+          <q-checkbox
+            v-model="usarMaterialTarea"
+            label="Utilizar material de la tarea"
+            dense
+          ></q-checkbox>
+        </div>
+
+        <div v-if="usarMaterialTarea" class="col-12 q-mb-md">
           <essential-table
             titulo="Materiales designados para la tarea"
             :configuracionColumnas="columnasMaterial"
@@ -87,7 +108,7 @@
           <br />
           <q-checkbox
             v-model="existeMaterialesDevolucion"
-            label="Seleccionar materiales para devolución"
+            label="Seleccionar materiales para devolución (Desmontaje)"
             dense
           ></q-checkbox>
         </div>
@@ -103,63 +124,6 @@
           </tabla-devolucion-producto>
         </div>
       </div>
-
-      <!-- <div class="full-width text-bold q-my-md">Evidencia fotográfica</div>
-      <div class="row q-col-gutter-sm q-mb-md">
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block"
-            >Lecturas del OTDR antes de iniciar los trabajos</label
-          >
-          <selector-imagen
-            :imagen="emergencia.imagen_lectura_antes"
-            @update:modelValue="
-              (data) => (emergencia.imagen_lectura_antes = data)
-            "
-          >
-          </selector-imagen>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block"
-            >Fotografía del incidente o lugar de afectación</label
-          >
-          <selector-imagen :imagen="emergencia.imagen_incidente">
-          </selector-imagen>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fotografía lecturas de reparación</label>
-          <selector-imagen :imagen="emergencia.imagen_reparacion">
-          </selector-imagen>
-        </div>
-      </div>
-
-      <div class="full-width text-bold q-mb-md">Fotográfia del cableado</div>
-      <div class="row q-col-gutter-sm">
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Punta inicial</label>
-          <selector-imagen :imagen="emergencia.imagen_punta_inicial">
-          </selector-imagen>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Punta final</label>
-          <selector-imagen :imagen="emergencia.imagen_punta_final">
-          </selector-imagen>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Evidencia del cableado</label>
-          <selector-imagen :imagen="emergencia.imagen_evidencia_cableado">
-          </selector-imagen>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Mangas tejidas</label>
-          <selector-imagen :imagen="emergencia.imagen_mangas_tejidas">
-          </selector-imagen>
-        </div>
-      </div> -->
 
       <div class="row justify-end q-col-gutter-x-xs">
         <q-btn
@@ -178,8 +142,8 @@
           :accion="accion"
           @cerrar-modal="emit('cerrar-modal')"
           @cancelar="reestablecer()"
-          @editar="editar(emergencia)"
-          @guardar="guardar(emergencia)"
+          @editar="editarSeguimiento()"
+          @guardar="guardarSeguimiento()"
         />
       </div>
     </q-card>

@@ -127,7 +127,7 @@ export default defineComponent({
               console.log(response)
               // transaccionStore.firmarComprobante(transaccionStore.idTransaccion, datos)
               notificarCorrecto('Documento aprobado y firmado correctamente')
-              emit('cerrar-modal')
+              emit('cerrar-modal', false)
             })
           } catch (e) {
             notificarError('No se pudo aprobar ni firmar el documento')

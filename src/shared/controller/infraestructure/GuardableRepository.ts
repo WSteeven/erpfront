@@ -17,6 +17,8 @@ export class GuardableRepository<T> {
   async guardar(entidad: T, params?: ParamsType): Promise<ResponseItem<T, HttpResponsePost<T>>> {
     try {
       const ruta = this.httpRepository.getEndpoint(this.endpoint, params)
+      console.log(ruta)
+      console.log(params)
       const response: AxiosResponse = await this.httpRepository.post(ruta, entidad)
 
       return {

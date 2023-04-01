@@ -29,8 +29,8 @@
   </q-img>
 
   <q-dialog v-model="opened" maximized>
-    <q-card class="bg-grey-10 rounded-card no-border" flat>
-      <q-toolbar class="bg-grey-10 rounded-header" rounded>
+    <q-card class="bg-desenfoque rounded-card no-border" flat>
+      <q-toolbar class="rounded-header" rounded>
         <q-avatar square>
           <q-icon name="bi-image" color="white"></q-icon>
         </q-avatar>
@@ -39,10 +39,18 @@
           ><span>Vista previa</span></q-toolbar-title
         >
 
-        <q-btn round push color="white" flat icon="bi-x-lg" v-close-popup />
+        <q-btn
+          round
+          push
+          color="negative"
+          glossy
+          dense
+          icon="bi-x"
+          v-close-popup
+        />
       </q-toolbar>
 
-      <q-card-section class="bg-grey-10 rounded-footer">
+      <q-card-section class="rounded-footer">
         <q-img v-show="imagenCodificada" :src="imagenCodificada" fit="contain">
         </q-img>
       </q-card-section>

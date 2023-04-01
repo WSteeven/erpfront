@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
-    <div class="q-mb-md text-bold text-secondary text-center">
-      <span>Mi Bodega</span>
+    <div class="q-mb-md text-bold text-center">
+      <span>Mi bodega</span>
     </div>
     <!-- <div
       class="col-12 rounded-card q-py-md text-center text-white bg-secondary q-mb-sm"

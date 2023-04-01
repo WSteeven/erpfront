@@ -13,10 +13,17 @@ import { MaterialEmpleadoTarea } from '../domain/MaterialEmpleadoTarea'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 export default defineComponent({
   components: { EssentialTable },
   setup() {
+    /*********
+     * Stores
+     *********/
+    const authenticationStore = useAuthenticationStore()
+
     /****************
      * Controladores
      ****************/
@@ -46,14 +53,14 @@ export default defineComponent({
      ************/
     async function filtrarStock(tipoStock: string | null) {
       if (tipoStock === 'personal') {
-        const { result } = await materialEmpleadoController.listar()
+        const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
         listadoStockPersonal.value = result
       } else {
         if (!filtro.tarea) {
           return notificarAdvertencia('Debe seleccionar una tarea')
         }
 
-        const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea })
+        const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id })
         if (result.length === 0) {
           notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
         }

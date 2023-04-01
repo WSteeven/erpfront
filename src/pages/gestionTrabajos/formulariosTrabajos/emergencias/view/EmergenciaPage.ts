@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasMaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasMaterialOcupadoFormulario'
-import { regiones, atenciones, tiposIntervenciones, accionesTabla, acciones } from 'config/utils'
+import { regiones, atenciones, tiposIntervenciones, accionesTabla, acciones, estadosTrabajos } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -28,6 +28,7 @@ import { Emergencia } from '../domain/Emergencia'
 import { MaterialEmpleadoController } from 'pages/gestionTrabajos/miBodega/infraestructure/MaterialEmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { descargarArchivo, imprimirArchivo } from 'shared/utils'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 
 export default defineComponent({
   components: {
@@ -37,6 +38,12 @@ export default defineComponent({
     TablaDevolucionProducto,
     TrabajoRealizado,
     TablaObservaciones,
+  },
+  props: {
+    mixinModal: {
+      type: Object as () => ContenedorSimpleMixin<Subtarea>,
+      required: true,
+    },
   },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -54,6 +61,8 @@ export default defineComponent({
     const { consultar, guardar, editar, reestablecer, setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado, onBeforeModificar, onGuardado, onModificado } = mixin.useHooks()
 
+    const { listar: listarSubtareas } = props.mixinModal.useComportamiento()
+
     cargarVista(async () => {
       await obtenerListados({
         productos: new ProductoController(),
@@ -68,6 +77,7 @@ export default defineComponent({
     const utilizarMateriales = ref(false)
     const existeMaterialesDevolucion = ref(false)
     const existeObservaciones = ref(false)
+    const usarMaterialTarea = ref(false)
     const usarStock = ref(false)
     const columnasMaterial = [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
     const { prompt } = useNotificaciones()
@@ -162,18 +172,22 @@ export default defineComponent({
 
     async function obtenerMateriales() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
+      const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
     }
 
     async function obtenerMaterialesStock() {
-      const { result } = await materialEmpleadoController.listar()
+      const { result } = await materialEmpleadoController.listar({ empleado_id: obtenerIdEmpleadoResponsable() })
       materialesStock.value = result
     }
 
     function filtrarMaterialesOcupados() {
-      return materiales.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada') && material.cantidad_utilizada > 0)
+      return materiales.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
+    }
+
+    function filtrarMaterialesStockOcupados() {
+      return materialesStock.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
     }
 
     function ajustarCantidadesUtilizadas() {
@@ -184,6 +198,20 @@ export default defineComponent({
         if (indexOcupado >= 0) {
           if (accion.value === acciones.consultar) materiales.value[i].stock_actual = materialesOcupados[indexOcupado].stock_actual
           materiales.value[i].cantidad_utilizada = materialesOcupados[indexOcupado].cantidad_utilizada
+          materiales.value[i].cantidad_old = materialesOcupados[indexOcupado].cantidad_utilizada
+        }
+      }
+    }
+
+    function ajustarStockCantidadesUtilizadas() {
+      const materialesStockOcupados = emergencia.materiales_stock_ocupados
+
+      for (let i = 0; i < materialesStock.value.length; i++) {
+        const indexOcupado = obtenerIndice(materialesStockOcupados, materialesStock.value[i].detalle_producto_id)
+        if (indexOcupado >= 0) {
+          if (accion.value === acciones.consultar) materialesStock.value[i].stock_actual = materialesStockOcupados[indexOcupado].stock_actual
+          materialesStock.value[i].cantidad_utilizada = materialesStockOcupados[indexOcupado].cantidad_utilizada
+          materialesStock.value[i].cantidad_old = materialesStockOcupados[indexOcupado].cantidad_utilizada
         }
       }
     }
@@ -203,11 +231,20 @@ export default defineComponent({
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
 
+    function guardarSeguimiento() {
+      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable() })
+    }
+
+    function editarSeguimiento() {
+      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable() })
+    }
+
     /********
     * Hooks
     *********/
     onConsultado(() => {
       obtenerMateriales().then(() => ajustarCantidadesUtilizadas())
+      obtenerMaterialesStock().then(() => ajustarStockCantidadesUtilizadas())
       existeObservaciones.value = !!emergencia.observaciones.length
       existeMaterialesDevolucion.value = !!emergencia.materiales_devolucion.length
       console.log(existeObservaciones.value)
@@ -215,15 +252,21 @@ export default defineComponent({
 
     onBeforeGuardar(() => {
       emergencia.materiales_ocupados = filtrarMaterialesOcupados()
+      emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
     })
 
     onBeforeModificar(() => {
       emergencia.materiales_ocupados = filtrarMaterialesOcupados()
+      emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
     })
 
-    onGuardado(() => emit('cerrar-modal', false))
+    onGuardado(() => {
+      listarSubtareas({ estado: estadosTrabajos.EJECUTANDO })
+      emit('cerrar-modal', false)
+    })
+
     onModificado(() => {
       emit('cerrar-modal', false)
     })
@@ -234,11 +277,14 @@ export default defineComponent({
       refObservaciones,
       emergencia,
       accion,
+      guardarSeguimiento,
+      editarSeguimiento,
       // causasIntervencion,
       utilizarMateriales,
       existeMaterialesDevolucion,
       existeObservaciones,
       usarStock,
+      usarMaterialTarea,
       columnasMaterial,
       materiales,
       materialesStock,

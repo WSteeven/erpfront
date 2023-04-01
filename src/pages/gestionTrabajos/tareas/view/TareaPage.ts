@@ -284,7 +284,7 @@ export default defineComponent({
     onConsultado(() => {
       filtrarSubtareas('')
 
-      if (!tarea.tiene_subtareas) tab.value = 'tarea'
+      /*if (!tarea.tiene_subtareas) tab.value = 'tarea'
       if (tarea.subtarea && !tarea.tiene_subtareas) {
         tarea.titulo = tarea.subtarea.titulo
         tarea.observacion = tarea.subtarea.observacion
@@ -297,12 +297,11 @@ export default defineComponent({
         tarea.grupo = tarea.subtarea.grupo
         tarea.empleado = tarea.subtarea.empleado
         tarea.modo_asignacion_trabajo = tarea.subtarea.modo_asignacion_trabajo
-      }
+      } */
     })
 
-    onBeforeGuardar(() => {
+    /* onBeforeGuardar(() => {
       if (!tarea.tiene_subtareas) {
-        // tarea.subtarea = new Subtarea()
         tarea.subtarea.titulo = tarea.titulo
         tarea.subtarea.observacion = tarea.observacion
         tarea.subtarea.descripcion_completa = tarea.descripcion_completa
@@ -315,7 +314,7 @@ export default defineComponent({
         tarea.subtarea.empleado = tarea.empleado
         tarea.subtarea.modo_asignacion_trabajo = tarea.modo_asignacion_trabajo
       }
-    })
+    }) */
 
     /* onGuardado(() => {
 
@@ -361,14 +360,16 @@ export default defineComponent({
       accion: () => {
         console.log('finalizado')
         console.log(tarea)
+
         if (!tarea.codigo_tarea_cliente) {
           const data: CustomActionPrompt = {
             titulo: 'Finalizar tarea',
-            mensaje: 'Ingrese el código de tarea que le otorgó el cliente',
+            mensaje: 'Para finalizar la tarea ingrese el código de tarea que le otorgó el cliente corporativo.',
+            validacion: (val) => !!val,
             accion: (data) => {
               tarea.codigo_tarea_cliente = data
 
-              confirmar('¿Está seguro de finalizar la tarea', () => {
+              confirmar('¿Está seguro de finalizar la tarea?', () => {
                 tarea.finalizado = true
                 editar(tarea)
               })
@@ -376,12 +377,12 @@ export default defineComponent({
           }
 
           prompt(data)
+        } else {
+          confirmar('¿Está seguro de finalizar la tarea?', () => {
+            tarea.finalizado = true
+            editar(tarea)
+          })
         }
-
-        confirmar('¿Está seguro de finalizar la tarea', () => {
-          tarea.finalizado = true
-          editar(tarea)
-        })
       }
     }
 

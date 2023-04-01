@@ -6,7 +6,6 @@
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"
-    :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'"
     :tabOptions="tabOptionsEstadosTareas"
     :accion1="btnFormularioTarea"
     :accion2="btnReagendarTarea"
@@ -14,6 +13,7 @@
     :accion4="btnFinalizarTarea"
     :accionButtonSubmit="botonFinalizarTarea"
   >
+    <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
       <q-tabs
         v-model="tab"
@@ -26,12 +26,8 @@
         inline-label
       >
         <q-tab name="tarea" label="Tarea" icon="bi-pin-angle" />
-        <q-tab
-          v-if="tarea.tiene_subtareas"
-          name="subtareas"
-          label="Subtareas"
-          icon="bi-ui-checks-grid"
-        >
+        <!-- v-if="tarea.tiene_subtareas" -->
+        <q-tab name="subtareas" label="Subtareas" icon="bi-ui-checks-grid">
           <q-badge color="accent" floating>{{ subtareas.length }}</q-badge>
         </q-tab>
       </q-tabs>
@@ -387,217 +383,6 @@
                 >
                 </q-input>
               </div>
-
-              <!-- Seccion subtarea -->
-              <div
-                v-if="!tarea.tiene_subtareas"
-                class="row q-col-gutter-sm q-px-sm"
-              >
-                <!-- Descripcion completa -->
-                <div class="col-12">
-                  <label class="q-mb-sm block"
-                    >Descripción completa del trabajo a realizar</label
-                  >
-                  <q-input
-                    v-model="tarea.descripcion_completa"
-                    placeholder="Obligatorio"
-                    outlined
-                    :disable="disabled"
-                    dense
-                    autogrow
-                    type="textarea"
-                    :error="!!v$.descripcion_completa.$errors.length"
-                    @blur="v$.descripcion_completa.$touch"
-                  >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.descripcion_completa.$errors"
-                        :key="error.$uid"
-                      >
-                        <div>{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-input>
-                </div>
-
-                <!-- Tipo trabajo -->
-                <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Tipo de trabajo a realizar</label
-                  >
-                  <q-select
-                    v-model="tarea.tipo_trabajo"
-                    :options="tiposTrabajos"
-                    @filter="filtrarTiposTrabajos"
-                    transition-show="scale"
-                    transition-hide="scale"
-                    :hint="
-                      'Seleccione primero un' +
-                      (tarea.para_cliente_proyecto === 'PARA_PROYECTO'
-                        ? ' proyecto'
-                        : ' cliente corporativo')
-                    "
-                    options-dense
-                    dense
-                    outlined
-                    :disable="disabled"
-                    :option-label="(item) => item.descripcion"
-                    :option-value="(item) => item.id"
-                    use-input
-                    input-debounce="0"
-                    emit-value
-                    map-options
-                    :error="!!v$.tipo_trabajo.$errors.length"
-                  >
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No hay resultados
-                        </q-item-section>
-                      </q-item>
-                    </template>
-
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.tipo_trabajo.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-select>
-                </div>
-
-                <!-- Es ventana -->
-                <div class="col-12 col-md-3 q-mb-md">
-                  <br />
-                  <q-checkbox
-                    v-model="tarea.es_ventana"
-                    label="Es ventana de trabajo"
-                    @blur="verificarEsVentana()"
-                    outlined
-                    :disable="disabled"
-                    dense
-                  ></q-checkbox>
-                </div>
-
-                <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Fecha de inicio del trabajo</label
-                  >
-                  <q-input
-                    v-model="tarea.fecha_inicio_trabajo"
-                    placeholder="Obligatorio"
-                    :error="!!v$.fecha_inicio_trabajo.$errors.length"
-                    outlined
-                    :disable="disabled"
-                    dense
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          cover
-                          transition-show="scale"
-                          transition-hide="scale"
-                        >
-                          <q-date
-                            v-model="tarea.fecha_inicio_trabajo"
-                            :mask="maskFecha"
-                            today-btn
-                          >
-                            <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Cerrar"
-                                color="primary"
-                                flat
-                              />
-                            </div>
-                          </q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.fecha_inicio_trabajo.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-input>
-                </div>
-
-                <!-- Hora inicio de agendamiento -->
-                <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Hora de inicio de trabajo (24H)</label
-                  >
-                  <q-input
-                    v-model="tarea.hora_inicio_trabajo"
-                    :error="!!v$.hora_inicio_trabajo.$errors.length"
-                    type="time"
-                    :disable="disabled"
-                    stack-label
-                    outlined
-                    dense
-                    clearable
-                  >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.hora_inicio_trabajo.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-input>
-                </div>
-
-                <!-- Hora fin de agendamiento -->
-                <div v-if="tarea.es_ventana" class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Hora fin de agendamiento (24H)</label
-                  >
-                  <q-input
-                    v-model="tarea.hora_fin_trabajo"
-                    :error="!!v$.hora_fin_trabajo.$errors.length"
-                    type="time"
-                    stack-label
-                    outlined
-                    :disable="disabled"
-                    dense
-                    clearable
-                  >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.hora_fin_trabajo.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-            </q-expansion-item>
-
-            <q-expansion-item
-              v-if="!tarea.tiene_subtareas"
-              class="overflow-hidden q-mb-md expansion"
-              label="Designación de trabajo"
-              header-class="text-bold bg-header-collapse"
-              default-opened
-            >
-              <designar-responsable-trabajo
-                :disable="disabled"
-                :accion="accion"
-                :v$="v$"
-                :subtarea-inicial="tarea.subtarea"
-                @seleccionarGrupo="seleccionarGrupo"
-                @seleccionarEmpleado="seleccionarEmpleado"
-              ></designar-responsable-trabajo>
             </q-expansion-item>
 
             <q-expansion-item
@@ -867,29 +652,6 @@
                     </template>
                   </q-select>
                 </div>
-              </div>
-            </q-expansion-item>
-
-            <q-expansion-item
-              v-if="!tarea.tiene_subtareas && tarea.subtarea.id"
-              class="overflow-hidden q-mb-md expansion"
-              label="Tiempos"
-              header-class="text-bold bg-header-collapse"
-              default-opened
-            >
-              <div class="q-pa-md q-gutter-y-md">
-                <tiempo-subtarea
-                  :disable="disabled"
-                  :subtarea="tarea.subtarea"
-                ></tiempo-subtarea>
-
-                <tabla-subtarea-pausas
-                  :id-subtarea="tarea.subtarea.id"
-                ></tabla-subtarea-pausas>
-
-                <tabla-subtarea-suspendida
-                  :id-subtarea="tarea.subtarea.id"
-                ></tabla-subtarea-suspendida>
               </div>
             </q-expansion-item>
           </q-form>

@@ -4,7 +4,7 @@ import { required } from 'shared/i18n-validators'
 import { defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
-
+import { motivosMovilizacion } from 'config/tareas.utils'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -60,6 +60,7 @@ export default defineComponent({
      ***************/
     const rules = {
       subtarea: { required },
+      motivo: { required },
     }
 
 
@@ -83,14 +84,14 @@ export default defineComponent({
       })
     }
 
-    function comenzar() {
-      confirmar('¿Está seguro de continuar?', async () => {
-        const entidad = await guardar(movilizacion)
-        if (entidad) {
-          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-          emit('cerrar-modal')
-        }
-      })
+    async function comenzar() {
+      // confirmar('¿Está seguro de continuar?', async () => {
+      const entidad = await guardar(movilizacion)
+      if (entidad) {
+        movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+        emit('cerrar-modal', false)
+      }
+      // })
     }
 
     return {
@@ -103,6 +104,7 @@ export default defineComponent({
       filtrarSubtareas,
       subtareas,
       comenzar,
+      motivosMovilizacion,
     }
   },
 })

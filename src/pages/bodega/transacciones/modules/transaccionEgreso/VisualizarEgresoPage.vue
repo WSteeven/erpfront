@@ -242,11 +242,12 @@
         </div>
       </q-form>
       <div
-      v-if="transaccion.estado_comprobante==='PENDIENTE'"
+        v-if="transaccion.estado_comprobante === 'PENDIENTE'"
         class="q-pa-md q-gutter-sm flex flex-center"
       >
-        <q-btn color="positive" @click="aprobarEgreso()">
-          <q-icon name="bi-check-circle" size="xs"> </q-icon> Aprobar y Firmar</q-btn
+        <q-btn color="positive" @click="aprobarEgreso()" no-caps glossy push>
+          <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
+          Aprobar y Firmar</q-btn
         >
       </div>
     </template>

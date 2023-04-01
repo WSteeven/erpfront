@@ -2,8 +2,8 @@
   <q-form @submit.prevent class="window-height">
     <q-card class="rounded-card custom-shadow">
       <q-card-section>
-        <div class="row">
-          <div class="col-12">
+        <div class="row q-col-gutter-xs">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Me dirijo al siguiente trabajo</label>
             <q-select
               v-model="movilizacion.subtarea"
@@ -50,6 +50,40 @@
               </template>
             </q-select>
           </div>
+
+          <!-- Tipo trabajo -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Motivo</label>
+            <q-select
+              v-model="movilizacion.motivo"
+              :options="motivosMovilizacion"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.descripcion"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              :error="!!v$.motivo.$errors.length"
+              @blur="v$.motivo.$touch"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.motivo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
         </div>
 
         <div class="row">
@@ -61,7 +95,7 @@
             push
             @click="comenzar()"
           >
-            <q-icon name="bi-clock-history" size="xs" class="q-pr-sm"></q-icon>
+            <q-icon name="bi-car-front-fill" size="xs" class="q-pr-sm"></q-icon>
             <span>Comenzar viaje</span>
           </q-btn>
         </div>

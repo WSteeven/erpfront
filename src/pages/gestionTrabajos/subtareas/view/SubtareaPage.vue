@@ -96,7 +96,6 @@
             @filter="filtrarTiposTrabajos"
             transition-show="scale"
             transition-hide="scale"
-            hint="Seleccione primero una tarea"
             options-dense
             dense
             outlined
@@ -124,6 +123,22 @@
               </div>
             </template>
           </q-select>
+        </div>
+
+        <!-- Tiempo estimado del trabajo -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Tiempo estimado del trabajo</label>
+          <q-input
+            v-model="subtarea.tiempo_estimado"
+            type="time"
+            :disable="disabled"
+            hint="Opcional"
+            stack-label
+            outlined
+            clearable
+            dense
+          >
+          </q-input>
         </div>
 
         <!-- Es dependiente -->

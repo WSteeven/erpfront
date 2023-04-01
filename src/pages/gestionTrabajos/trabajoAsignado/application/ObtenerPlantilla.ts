@@ -6,11 +6,11 @@ export class ObtenerPlantilla {
   obtener(tipoTrabajo: string): any {//keyof TrabajoAsignadoModales {
     switch (tipoTrabajo) {
       case plantillas.INSTALACION:
-        return 'ControlTendido'
+        return 'EmergenciaPage'
       case plantillas.EMERGENCIA:
         return 'EmergenciaPage'
       case plantillas.DESMONTAJE:
-        return 'DesmontajePage'
+        return 'EmergenciaPage'
       default: return 'EmergenciaPage'
     }
   }

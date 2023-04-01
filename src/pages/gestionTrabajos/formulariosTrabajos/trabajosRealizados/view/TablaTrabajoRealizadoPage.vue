@@ -66,8 +66,8 @@ const agregarActividadRealizada: CustomActionTable = {
   color: 'positive',
   accion: async () => {
     const fila: TrabajoRealizado = new TrabajoRealizado()
-    const { hora } = await obtenerTiempoActual()
-    fila.hora = hora
+    const { fecha_hora } = await obtenerTiempoActual()
+    fila.fecha_hora = fecha_hora
     trabajoRealizado.value.push(fila)
     refTrabajos.value.abrirModalEntidad(fila, trabajoRealizado.value.length - 1)
     emit('actualizar', trabajoRealizado.value)

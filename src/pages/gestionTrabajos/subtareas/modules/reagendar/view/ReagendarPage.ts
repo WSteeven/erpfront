@@ -99,10 +99,11 @@ export default defineComponent({
           data.empleado
         }*/
 
-        if (subtarea.tiene_subtareas) reagendarSubtarea(data)
-        else reagendarTarea(data)
+        // if (subtarea.tiene_subtareas)
+        reagendarSubtarea(data)
+        // else reagendarTarea(data)
 
-        emit('cerrar-modal')
+        emit('cerrar-modal', false)
         // notificarCorrecto(response.data.mensaje)
       } catch (e) {
         notificarAdvertencia('No se pudo agendar la subtarea')

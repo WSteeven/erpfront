@@ -3,18 +3,18 @@ import TrabajoRealizado from './TrabajoRealizado'
 
 export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizado>[] = [
   {
-    name: 'hora',
-    field: 'hora',
-    label: 'Hora',
+    name: 'fecha_hora',
+    field: 'fecha_hora',
+    label: 'Fecha hora',
     align: 'left',
     type: 'text',
     sortable: true,
     editable: false,
   },
   {
-    name: 'actividad',
-    field: 'actividad',
-    label: 'Acción realizadas',
+    name: 'trabajo_realizado',
+    field: 'trabajo_realizado',
+    label: 'Trabajo realizado',
     align: 'left',
     type: 'text',
   },

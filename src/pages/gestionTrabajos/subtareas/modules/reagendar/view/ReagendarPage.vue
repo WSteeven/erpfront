@@ -1,8 +1,8 @@
 <template>
   <div class="col-12 q-gutter-sm q-mb-lg">
     <div><b>Código de trabajo: </b>{{ codigoSubtareaSeleccionada }}</div>
-    <div><b>Fecha y hora de suspención: </b> {{ fechaHoraSuspendido }}</div>
-    <div><b>Motivo del suspenso: </b> {{ motivoSuspendido }}</div>
+    <!-- <div><b>Fecha y hora de suspención: </b> {{ fechaHoraSuspendido }}</div> -->
+    <!-- <div><b>Motivo del suspenso: </b> {{ motivoSuspendido }}</div> -->
   </div>
 
   <q-expansion-item
