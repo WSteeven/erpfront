@@ -10,7 +10,7 @@
               options-dense dense outlined :disable="disabled" :readonly="disabled" :error="!!v$.usuario.$errors.length"
               @blur="v$.usuario.$touch"
               error-message="Debes seleccionar un usuario" use-input input-debounce="0" @filter="filtrarUsuarios" @update:model-value="saldo_anterior()"
-              :option-value="(v) => v.usuario_id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
+              :option-value="(v) => v.id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
               <template v-slot:error>
                 <div v-for="error of v$.usuario.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>

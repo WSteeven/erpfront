@@ -17,6 +17,7 @@ import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { TipoSaldoController } from 'pages/fondosRotativos/tipo_saldo/infrestructure/TipoSaldoController'
 import axios from 'axios'
 import { acciones } from 'config/utils'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 
 export default defineComponent({
@@ -66,7 +67,7 @@ export default defineComponent({
    cargarVista(async () => {
     await obtenerListados({
       usuarios: {
-        controller: new UsuarioController(),
+        controller: new EmpleadoController(),
         params: { campos: 'id,name' },
       },
       tiposFondos: {
