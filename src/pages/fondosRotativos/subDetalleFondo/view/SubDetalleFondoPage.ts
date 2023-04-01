@@ -70,8 +70,6 @@ export default defineComponent({
         },
       })});
 
-    subDetalleFondo.autorizacion='NO';
-    subDetalleFondo.estatus='Inactivo';
     detalles.value = listadosAuxiliares.detalles
   /*********
    * Filtros

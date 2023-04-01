@@ -18,6 +18,7 @@ import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/in
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   components: { TabLayout },
@@ -109,7 +110,7 @@ export default defineComponent({
       { value: '3', name: 'Detalle' },
       { value: '4', name: 'SubDetalle' },
       { value: '5', name: 'Autorizacion' },
-      { value: '6', name: 'Usuario' },
+      { value: '6', name: 'Empleado' },
     ])
 
     listadosAuxiliares.tipos_saldos = tipos_saldos
@@ -141,8 +142,8 @@ export default defineComponent({
           params: { campos: 'id,descripcion' },
         },
         autorizacionesEspeciales: {
-          controller: new UsuarioAutorizadoresController(),
-          params: { campos: 'id,name' },
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos' },
         },
         sub_detalles: {
           controller: new SubDetalleFondoController(),
@@ -184,7 +185,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -302,7 +303,7 @@ export default defineComponent({
               { value: '3', name: 'Detalle' },
               { value: '4', name: 'SubDetalle' },
               { value: '5', name: 'Autorizacion' },
-              { value: '6', name: 'Usuario' },
+              { value: '6', name: 'Empleado' },
             ]
           })
           break

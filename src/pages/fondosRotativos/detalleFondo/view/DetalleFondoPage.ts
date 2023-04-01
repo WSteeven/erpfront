@@ -46,8 +46,6 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, detalleFondo)
     setValidador(v$.value)
-    detalleFondo.autorizacion='NO';
-    detalleFondo.estatus='Inactivo';
     return {
       mixin,
       detalleFondo,

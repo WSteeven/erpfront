@@ -25,8 +25,8 @@ export const configuracionColumnasAcreditacion: ColumnConfig<Acreditacion>[] = [
   },
 
   {
-    name: 'usuario_info',
-    field: 'usuario_info',
+    name: 'empleado_info',
+    field: 'empleado_info',
     label: 'Usuario',
     align: 'left',
     sortable: true

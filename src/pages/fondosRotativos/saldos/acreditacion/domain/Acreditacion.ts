@@ -16,7 +16,7 @@ export class Acreditacion extends EntidadAuditable {
   fecha_fin:Date|null
   id_usuario:number|null
   usuario:string|null
-  usuario_info:string|null
+  empleado_info:string|null
   id_estatus:number|null
   estatus:string|null
   estatus_info:string|null
@@ -41,7 +41,7 @@ export class Acreditacion extends EntidadAuditable {
     this.fecha_fin=null
     this.id_usuario=null
     this.usuario=null
-    this.usuario_info=null
+    this.empleado_info=null
     this.id_estatus=null
     this.estatus_info=null
     this.estatus=null

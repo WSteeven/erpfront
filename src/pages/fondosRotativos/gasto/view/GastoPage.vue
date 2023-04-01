@@ -69,6 +69,7 @@
                     <q-date
                       v-model="gasto.fecha_viat"
                       :mask="maskFecha"
+                      :options="optionsFechaGasto"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -111,6 +112,7 @@
               input-debounce="0"
               @blur="v$.proyecto.$touch"
               @filter="filtrarProyectos"
+              @update:model-value="cambiar_proyecto()"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -229,7 +231,7 @@
             <q-input
               v-model="gasto.num_comprobante"
               placeholder="Opcional"
-              type="number"
+              mask="#################"
               :disable="disabled"
               :error="!!v$.num_comprobante.$errors.length"
               @blur="v$.num_comprobante.$touch"
@@ -382,6 +384,7 @@
               use-input
               input-debounce="0"
               @blur="v$.detalle.$touch"
+              @update:model-value="cambiar_detalle()"
               @filter="filtrarDetalles"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"

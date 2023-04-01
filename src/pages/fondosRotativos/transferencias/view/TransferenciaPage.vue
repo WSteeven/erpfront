@@ -11,7 +11,7 @@
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.usuario_recibe.$errors.length" error-message="Debes seleccionar un usuario" use-input
               @blur="v$.usuario_recibe.$touch" input-debounce="0" @filter="filtrarUsuarios"
-              :option-value="(v) => v.usuario_id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value
+              :option-value="(v) => v.id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value
               map-options>
               <template v-slot:error>
                 <div v-for="error of v$.usuario_recibe.$errors" :key="error.$uid">

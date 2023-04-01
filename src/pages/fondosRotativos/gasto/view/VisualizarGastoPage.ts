@@ -217,6 +217,7 @@ export default defineComponent({
               }
               prompt(data)
             })
+            break
         default:
           break
       }

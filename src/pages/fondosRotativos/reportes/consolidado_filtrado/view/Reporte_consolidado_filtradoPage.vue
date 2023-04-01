@@ -102,13 +102,13 @@
             </template>
           </q-select>
         </div>
-        <!-- Usuarios -->
+        <!-- Empleados -->
         <div class="col-12 col-md-3" v-if="consolidadofiltrado.tipo_filtro == 6 || consolidadofiltrado.tipo_filtro == 0">
-          <label class="q-mb-sm block">Usuario</label>
+          <label class="q-mb-sm block">Empleado</label>
           <q-select v-model="consolidadofiltrado.usuario" :options="usuarios" transition-show="jump-up"
             transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
-            :error="!!v$.usuario.$errors.length" error-message="Debes seleccionar un usuario" use-input input-debounce="0"
-            @filter="filtrarUsuarios" :option-value="(v) => v.usuario_id"
+            :error="!!v$.usuario.$errors.length" error-message="Debes seleccionar un empleado" use-input input-debounce="0"
+            @filter="filtrarUsuarios" :option-value="(v) => v.id"
             :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
             <template v-slot:error>
               <div v-for="error of v$.usuario.$errors" :key="error.$uid">

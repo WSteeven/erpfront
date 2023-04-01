@@ -17,9 +17,9 @@ export const configuracionColumnasGasto: ColumnConfig<GastoCoordinadores>[] = [
     sortable: true
   },
   {
-    name: 'usuario_info',
-    field: 'usuario_info',
-    label: 'Usuario',
+    name: 'empleado_info',
+    field: 'empleado_info',
+    label: 'Empleado',
     align: 'left',
     sortable: true
   },

@@ -18,6 +18,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 import { AprobarTransferenciaController } from 'pages/fondosRotativos/autorizarTransferencia/infrestructure/AprobarTransferenciaController'
 import { useNotificaciones } from 'shared/notificaciones'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagenModal },
@@ -98,8 +99,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
-          controller: new UsuarioController(),
-          params: { campos: 'id,canton' },
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos'},
         },
         tareas: {
           controller: new TareaController(),

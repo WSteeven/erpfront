@@ -13,6 +13,7 @@ import { Consolidado } from '../domain/Consolidado'
 import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { maskFecha } from 'config/utils'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   components: { TabLayout },
@@ -78,8 +79,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
-          controller: new UsuarioController(),
-          params: { campos: 'id,name' },
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos' },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
@@ -107,7 +108,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 ||v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
