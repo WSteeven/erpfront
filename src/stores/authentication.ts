@@ -94,7 +94,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
   async function consultar_saldo_actual() {
     try {
-      const userApi = axios.getEndpoint(endpoints.ultimo_saldo) + user.value?.usuario_id
+      const userApi = axios.getEndpoint(endpoints.ultimo_saldo) + user.value?.id
 
       const response = await axios.get<AxiosResponse>(userApi)
 
