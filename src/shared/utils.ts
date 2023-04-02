@@ -270,7 +270,7 @@ export async function obtenerTiempoActual() {
 
     //const fechaArray = fecha.split('-') //.map(Number)
     console.log(fecha.data)
-    return { fecha: fecha.data, hora: hora.data }
+    return { fecha: fecha.data, hora: hora.data, fecha_hora: fecha.data + ' ' + hora.data }
   } catch (e: any) {
     throw new ApiError(e)
   } finally {

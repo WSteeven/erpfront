@@ -16,7 +16,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   const subtareaStore = useSubtareaStore()
   const trabajoAsignadoStore = useTrabajoAsignadoStore()
 
-  const { confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
+  const { notificarAdvertencia, confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
 
   const botonFormulario: CustomActionTable = {
@@ -25,11 +25,15 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     color: 'indigo',
     visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.REALIZADO, estadosTrabajos.PAUSADO, estadosTrabajos.FINALIZADO].includes(entidad.estado),
     accion: ({ entidad }) => {
+      if (entidad.seguimiento === null) {
+        return notificarAdvertencia('Espere a que el técnico responsable inicie el seguimiento.')
+      }
       // subtareaStore.idSubtareaSeleccionada = entidad.id
       // modales.abrirModalEntidad('EmergenciasPage')
       trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
+      trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
       trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable
-      trabajoAsignadoStore.idEmergencia = entidad.emergencia
+      trabajoAsignadoStore.idEmergencia = entidad.seguimiento
       trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
       const obtenerPlantilla = new ObtenerPlantilla()
       modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
@@ -107,7 +111,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Reagendar',
     color: 'orange-8',
     icono: 'bi-calendar-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.SUSPENDIDO,
+    visible: ({ entidad }) => [estadosTrabajos.AGENDADO, estadosTrabajos.SUSPENDIDO].includes(entidad.estado),
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la subtarea?', () => {
       subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_subtarea
       subtareaStore.fechaHoraSuspendido = entidad.fecha_hora_suspendido

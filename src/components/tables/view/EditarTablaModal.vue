@@ -29,10 +29,7 @@
         />
       </q-toolbar>
 
-      <q-card-section
-        class="bg-body rounded-footer"
-        :class="{ 'alto-fijo-mobile': $q.screen.xs }"
-      >
+      <q-card-section class="bg-body rounded-footer">
         <div class="row q-col-gutter-xs q-mb-md">
           <!-- Selects -->
           <div
@@ -96,6 +93,7 @@
             ></q-input>
           </div>
 
+          <!-- Imagenes -->
           <div
             v-for="field in fieldsImagen"
             :key="field.field"
@@ -239,13 +237,22 @@ export default defineComponent({
       var mappedSelect = fieldsSelect.value.map((item) => ({
         [item.field]: item.valor,
       }))
+      var mappedImagen = fieldsImagen.value.map((item) => ({
+        [item.field]: item.valor,
+      }))
       const mappedAll = fieldsAll.value.map((item) => ({
         [item.field]: item.valor,
       }))
-      const mappedLleno = [...mappedAll, ...mapped, ...mappedSelect]
+      const mappedLleno = [
+        ...mappedAll,
+        ...mapped,
+        ...mappedSelect,
+        ...mappedImagen,
+      ]
       const newObj = Object.assign({}, ...mapped)
 
       Object.assign(newObj, ...mappedSelect)
+      Object.assign(newObj, ...mappedImagen)
       Object.assign(newObj, ...mappedAll)
       Object.assign(newObj, ...mappedLleno)
 
@@ -286,9 +293,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.alto-fijo-mobile {
-  height: 100vh; //calc(100vh - 50px);
-}
-</style>

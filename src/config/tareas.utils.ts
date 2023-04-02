@@ -60,3 +60,9 @@ export const modosStock: TabOption[] = [
   { label: 'Para tareas', value: 'TAREAS' },
   { label: 'Stock personal', value: 'PERSONAL' },
 ]
+
+// Listados estaticos
+export const motivosMovilizacion = [
+  { id: 'IDA', descripcion: 'IDA AL TRABAJO' },
+  { id: 'REGRESO', descripcion: 'REGRESO DEL TRABAJO' },
+]

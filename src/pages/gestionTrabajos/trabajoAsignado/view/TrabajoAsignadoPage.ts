@@ -148,6 +148,7 @@ export default defineComponent({
           new CambiarEstadoSubtarea().reanudar(entidad.id)
           entidad.estado = estadosTrabajos.EJECUTANDO
           notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
+          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
           // eliminarElemento(posicion, entidad)
           filtrarTrabajoAsignado(estadosTrabajos.PAUSADO)
         })
@@ -162,7 +163,8 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         confirmar('¿Está seguro de abrir el formulario?', () => {
           trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
-          trabajoAsignadoStore.idEmergencia = entidad.emergencia
+          trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
+          trabajoAsignadoStore.idEmergencia = entidad.seguimiento
           trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
           const obtenerPlantilla = new ObtenerPlantilla()
           modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
@@ -185,6 +187,7 @@ export default defineComponent({
               entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
               notificarCorrecto('Trabajo suspendido exitosamente!')
               eliminarElemento(posicion, entidad)
+              movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
             },
             tipo: 'radio',
             items: listadosAuxiliares.motivosSuspendidos.map((motivo: MotivoSuspendido) => {
@@ -211,6 +214,7 @@ export default defineComponent({
           entidad.estado = estadosTrabajos.REALIZADO
           entidad.fecha_hora_realizado = result.fecha_hora_realizado
           eliminarElemento(posicion, entidad)
+          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
           notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
         })
       }
@@ -242,6 +246,7 @@ export default defineComponent({
     }
 
     return {
+      mixin,
       listado,
       configuracionColumnasTrabajoAsignado,
       botonIniciar,

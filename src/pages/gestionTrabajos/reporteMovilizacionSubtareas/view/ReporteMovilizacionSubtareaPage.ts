@@ -1,10 +1,10 @@
 // Dependencias
 import { configuracionColumnasMovilizacionSubtarea } from '../domain/configuracionColumnasMovilizacionSubtarea'
 import { useNotificacionStore } from 'stores/notificacion'
-import { required } from 'shared/i18n-validators'
-import { accionesTabla, maskFecha } from 'config/utils'
 import { defineComponent, reactive, ref } from 'vue'
+import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
+import { maskFecha } from 'config/utils'
 import { useQuasar } from 'quasar'
 
 // Componentes
@@ -13,8 +13,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
-import { TrabajoAsignadoController } from 'pages/gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
 import { MovilizacionSubtarea } from 'pages/gestionTrabajos/movilizacionSubtareas/domain/MovilizacionSubtarea'

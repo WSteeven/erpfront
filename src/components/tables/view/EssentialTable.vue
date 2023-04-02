@@ -349,7 +349,11 @@
               dense
               @click="editar({ entidad: props.row, posicion: props.rowIndex })"
             >
-              <q-icon name="bi-pencil-square" size="xs" color="white"></q-icon>
+              <q-icon
+                name="bi-pencil-square"
+                size="xs"
+                color="primary"
+              ></q-icon>
               <q-tooltip class="bg-dark"> Editar </q-tooltip>
             </q-btn>
 
@@ -434,12 +438,17 @@
                   class="bg-btn-table"
                   round
                   glossy
+                  color="secondary"
                   dense
                   @click="
                     editar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-pencil" size="xs"></q-icon>
+                  <q-icon
+                    name="bi-pencil-square"
+                    color="primary"
+                    size="xs"
+                  ></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
                 </q-btn>
 
@@ -448,13 +457,14 @@
                   v-if="permitirEliminar"
                   class="bg-btn-table"
                   round
+                  color="negative"
                   glossy
                   dense
                   @click="
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
                   "
                 >
-                  <q-icon name="bi-trash" size="xs"></q-icon>
+                  <q-icon name="bi-trash3" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
                 </q-btn>
 

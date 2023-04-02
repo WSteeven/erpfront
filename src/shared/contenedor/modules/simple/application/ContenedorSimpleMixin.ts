@@ -163,7 +163,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   // Guardar
   // @noImplicitAny: false
-  private async guardar(data: T, agregarAlListado = true): Promise<any> {
+  private async guardar(data: T, agregarAlListado = true, params?: ParamsType): Promise<any> {
 
     if (!this.seCambioEntidad(this.entidad_vacia)) {
       this.notificaciones.notificarAdvertencia(
@@ -182,12 +182,17 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     this.hooks.onBeforeGuardar()
 
+    console.log(params)
+
     //return this.cargarVista(async (): Promise<any> => {
     this.statusEssentialLoading.activar()
     try {
       const { response } = await this.controller.guardar(
         data,
-        this.argsDefault
+        {
+          ...params,
+          ...this.argsDefault
+        }
       )
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
@@ -225,7 +230,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   // Editar
-  private async editar(data: T, resetOnUpdated = true) {
+  private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {
     if (this.entidad.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'
@@ -249,7 +254,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       try {
         const { response, result: modelo } = await this.controller.editar(
           data,
-          this.argsDefault
+          {
+            ...params,
+            ...this.argsDefault
+          }
         )
 
         this.notificaciones.notificarCorrecto(response.data.mensaje)

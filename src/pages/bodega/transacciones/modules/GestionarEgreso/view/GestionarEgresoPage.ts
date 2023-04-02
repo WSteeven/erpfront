@@ -19,50 +19,50 @@ import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
-    components: { EssentialTableTabs, ModalEntidad, },
-    setup() {
-        const mixin = new ContenedorSimpleMixin(Transaccion, new GestionarEgresoController())
-        const { entidad: transaccion, disabled, listado } = mixin.useReferencias()
-        const { listar } = mixin.useComportamiento()
-        const statusLoading = new StatusEssentialLoading()
+  components: { EssentialTableTabs, ModalEntidad, },
+  setup() {
+    const mixin = new ContenedorSimpleMixin(Transaccion, new GestionarEgresoController())
+    const { entidad: transaccion, disabled, listado } = mixin.useReferencias()
+    const { listar } = mixin.useComportamiento()
+    const statusLoading = new StatusEssentialLoading()
 
-        listar()
-        const transaccionStore = useTransaccionEgresoStore()
-        async function filtrarTabs(tabSeleccionado) {
-            statusLoading.activar()
-            const result = await transaccionStore.filtrarEgresosComprobantes(tabSeleccionado)
-            listado.value = result
-        }
-
-        const modales = new ComportamientoModalesGestionarEgreso()
-        const botonVerTransaccion: CustomActionTable = {
-            titulo: '',
-            icono: 'bi-eye',
-            color: 'primary',
-            accion: async ({ entidad, posicion }) => {
-                transaccionStore.idTransaccion = entidad.id
-                await transaccionStore.showPreview()
-                modales.abrirModalEntidad('VisualizarEgresoPage')
-            }
-        }
-        const botonImprimir: CustomActionTable = {
-            titulo: 'Imprimir',
-            color: 'secondary',
-            icono: 'bi-printer',
-            accion: async ({ entidad }) => {
-                transaccionStore.idTransaccion = entidad.id;
-                await transaccionStore.imprimirEgreso()
-            }
-        }
-
-
-        return {
-            mixin, transaccion, disabled, listado,
-            configuracionColumnas: configuracionColumnasTransaccionEgreso,
-
-            tabGestionarEgresos, filtrarTabs,
-            botonVerTransaccion, accionesTabla, modales,
-            botonImprimir,
-        }
+    listar()
+    const transaccionStore = useTransaccionEgresoStore()
+    async function filtrarTabs(tabSeleccionado) {
+      statusLoading.activar()
+      const result = await transaccionStore.filtrarEgresosComprobantes(tabSeleccionado)
+      listado.value = result
     }
+
+    const modales = new ComportamientoModalesGestionarEgreso()
+    const botonVerTransaccion: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-eye',
+      color: 'primary',
+      accion: async ({ entidad, posicion }) => {
+        transaccionStore.idTransaccion = entidad.id
+        await transaccionStore.showPreview()
+        modales.abrirModalEntidad('VisualizarEgresoPage')
+      }
+    }
+    const botonImprimir: CustomActionTable = {
+      titulo: 'Imprimir',
+      color: 'positive',
+      icono: 'bi-printer',
+      accion: async ({ entidad }) => {
+        transaccionStore.idTransaccion = entidad.id;
+        await transaccionStore.imprimirEgreso()
+      }
+    }
+
+
+    return {
+      mixin, transaccion, disabled, listado,
+      configuracionColumnas: configuracionColumnasTransaccionEgreso,
+
+      tabGestionarEgresos, filtrarTabs,
+      botonVerTransaccion, accionesTabla, modales,
+      botonImprimir,
+    }
+  }
 })

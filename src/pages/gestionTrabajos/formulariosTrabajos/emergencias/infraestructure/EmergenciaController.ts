@@ -3,7 +3,7 @@ import { Emergencia } from '../domain/Emergencia'
 import { endpoints } from 'config/api'
 
 export class EmergenciaController extends TransaccionSimpleController<Emergencia> {
-    constructor() {
-        super(endpoints.emergencias)
-    }
+  constructor() {
+    super(endpoints.seguimientos)
+  }
 }

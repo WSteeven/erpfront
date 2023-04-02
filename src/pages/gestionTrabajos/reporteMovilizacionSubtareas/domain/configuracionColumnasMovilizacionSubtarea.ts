@@ -17,6 +17,13 @@ export const configuracionColumnasMovilizacionSubtarea: ColumnConfig<Movilizacio
     sortable: true,
   },
   {
+    name: 'motivo',
+    field: 'motivo',
+    label: 'Motivo',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'subtarea',
     field: 'subtarea',
     label: 'Subtarea destino',

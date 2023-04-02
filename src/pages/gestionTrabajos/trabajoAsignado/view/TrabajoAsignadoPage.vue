@@ -34,7 +34,7 @@
       tab-defecto="AGENDADO"
     ></essential-table-tabs>
 
-    <modales-entidad :comportamiento="modales" />
+    <modales-entidad :comportamiento="modales" :mixin-modal="mixin" />
 
     <!-- <confirmar-dialog
       :visible="mostrarDialogPlantilla"
