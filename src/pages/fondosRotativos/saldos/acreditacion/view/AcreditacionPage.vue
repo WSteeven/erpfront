@@ -120,11 +120,16 @@
             <label class="q-mb-sm block">Saldo Disponible:</label>
             <q-chip square>
               <q-avatar icon="bi-currency-dollar" color="green" text-color="white"></q-avatar>
-             {{ acreditacion.saldo_actual }}
+             {{ acreditacion.saldo_actual.toFixed(2) }}
             </q-chip>
           </div>
         </div>
       </q-form>
+      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="accion === acciones.consultar">
+          <q-btn color="negative" @click="anularAcreditacion(acreditacion)">
+          <q-icon class="q-pr-sm" name="bi-x-circle" size="xs"></q-icon>Anular</q-btn
+        >
+        </div>
     </template>
   </tab-layout>
 </template>

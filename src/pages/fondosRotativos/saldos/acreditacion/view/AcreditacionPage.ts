@@ -18,6 +18,9 @@ import { TipoSaldoController } from 'pages/fondosRotativos/tipo_saldo/infrestruc
 import axios from 'axios'
 import { acciones } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { AcreditacionCancelacionController } from '../infrestructure/AcreditacionCancelacionController'
 
 
 export default defineComponent({
@@ -33,6 +36,13 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Acreditacion, new AcreditacionController())
     const { entidad: acreditacion, disabled, accion,listadosAuxiliares } = mixin.useReferencias()
     const { setValidador ,obtenerListados, cargarVista} = mixin.useComportamiento()
+    const {
+      confirmar,
+      prompt,
+      notificarCorrecto,
+      notificarAdvertencia,
+      notificarError,
+    } = useNotificaciones()
 
     /*************
     * Validaciones
@@ -63,6 +73,7 @@ export default defineComponent({
    const tiposFondos= ref([]);
    const tiposSaldos= ref([]);
    usuarios.value=listadosAuxiliares.usuarios
+   const acreditacionCancelacionController = new AcreditacionCancelacionController()
 
    cargarVista(async () => {
     await obtenerListados({
@@ -163,6 +174,27 @@ function saldo_anterior (){
   })
 
 }
+ function anularAcreditacion(entidad){
+  confirmar('¿Está seguro de anular la acreditacion?', () => {
+    const data: CustomActionPrompt = {
+      titulo: 'Anular Acreditacion',
+      mensaje: 'Ingrese motivo de anulacion',
+      accion: async (data) => {
+        try {
+          entidad.descripcion_acreditacion = data
+          await acreditacionCancelacionController.anularAcreditacion(entidad)
+          notificarAdvertencia('Se anulado Acreditacion Exitosamente')
+        } catch (e: any) {
+          notificarError(
+            'No se pudo anular, debes ingresar un motivo para la anulación'
+          )
+        }
+      },
+    }
+    prompt(data)
+  })
+}
+
   watchEffect(() => acreditacion.saldo_actual =parseFloat(acreditacion.saldo_anterior!==null?acreditacion.saldo_anterior.toString():'0') + parseFloat(acreditacion.monto!==null?acreditacion.monto.toString():'0'))
     return {
       mixin,
@@ -178,6 +210,7 @@ function saldo_anterior (){
       filtrarUsuarios,
       filtrarTiposFondos,
       filtrarTiposSaldos,
+      anularAcreditacion,
       watchEffect,
       configuracionColumnas: configuracionColumnasAcreditacion,
     }
