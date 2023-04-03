@@ -12,7 +12,7 @@
         <q-card-section>
             <!-- Usuarios -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Usuario</label>
+          <label class="q-mb-sm block">Empleado</label>
           <q-select v-model="fondo_rotativo_autorizacion_fecha.usuario" :options="usuarios" transition-show="jump-up"
             transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
             :error="!!v$.usuario.$errors.length" error-message="Debes seleccionar un usuario" use-input input-debounce="0"
