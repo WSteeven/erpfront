@@ -29,6 +29,12 @@ import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subt
 
 export default defineComponent({
   components: { EssentialTable },
+  props: {
+    mixinModal: {
+      type: Object as () => ContenedorSimpleMixin<Subtarea>,
+      required: false,
+    },
+  },
   emits: ['cerrar-modal', 'guardado'],
   setup() {
     /*********

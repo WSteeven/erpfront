@@ -101,9 +101,9 @@ export default defineComponent({
           const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
           entidad.estado = estadosTrabajos.EJECUTANDO
           entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
+          filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
           notificarCorrecto('Trabajo iniciado exitosamente!')
           movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-          filtrarTrabajoAsignado(estadosTrabajos.AGENDADO)
         })
       }
     }
@@ -117,12 +117,14 @@ export default defineComponent({
         confirmar('¿Está seguro de pausar el trabajo?', () => {
           const config: CustomActionPrompt = reactive({
             mensaje: 'Seleccione el motivo de la pausa',
-            accion: (idMotivoPausa) => {
+            accion: async (idMotivoPausa) => {
               console.log(idMotivoPausa)
-              new CambiarEstadoSubtarea().pausar(entidad.id, idMotivoPausa)
+              await new CambiarEstadoSubtarea().pausar(entidad.id, idMotivoPausa)
               entidad.estado = estadosTrabajos.PAUSADO
+              filtrarTrabajoAsignado(estadosTrabajos.PAUSADO)
               notificarCorrecto('Trabajo pausado exitosamente!')
               eliminarElemento(posicion, entidad)
+              movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
             },
             tipo: 'radio',
             items: listadosAuxiliares.motivosPausas.map((motivo: MotivoPausa) => {
@@ -144,13 +146,13 @@ export default defineComponent({
       color: 'positive',
       visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.es_responsable && entidad.puede_ejecutar,
       accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de reanudar el trabajo?', () => {
-          new CambiarEstadoSubtarea().reanudar(entidad.id)
+        confirmar('¿Está seguro de reanudar el trabajo?', async () => {
+          await new CambiarEstadoSubtarea().reanudar(entidad.id)
           entidad.estado = estadosTrabajos.EJECUTANDO
+          filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
           notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
           movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
           // eliminarElemento(posicion, entidad)
-          filtrarTrabajoAsignado(estadosTrabajos.PAUSADO)
         })
       }
     }
@@ -262,6 +264,7 @@ export default defineComponent({
       botonFormulario,
       botonSuspender,
       botonRealizar,
+      tabActual,
       // botonCorregir,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
       authenticationStore,

@@ -349,11 +349,7 @@
               dense
               @click="editar({ entidad: props.row, posicion: props.rowIndex })"
             >
-              <q-icon
-                name="bi-pencil-square"
-                size="xs"
-                color="primary"
-              ></q-icon>
+              <q-icon name="bi-pencil-square" size="xs" color="white"></q-icon>
               <q-tooltip class="bg-dark"> Editar </q-tooltip>
             </q-btn>
 
@@ -446,7 +442,7 @@
                 >
                   <q-icon
                     name="bi-pencil-square"
-                    color="primary"
+                    color="white"
                     size="xs"
                   ></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
@@ -560,7 +556,7 @@
 
                   <q-chip
                     v-if="col.value === 'EN CAMINO'"
-                    class="bg-blue-2 text-primary"
+                    class="bg-blue-1 text-primary"
                   >
                     <q-icon
                       name="bi-car-front-fill"
@@ -985,7 +981,7 @@
 
         <q-chip
           v-if="props.value === 'EN CAMINO'"
-          class="bg-blue-2 text-primary"
+          class="bg-blue-1 text-primary"
         >
           <q-icon
             name="bi-car-front-fill"

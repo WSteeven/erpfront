@@ -38,6 +38,7 @@
         @filter="filtrarGrupos"
         transition-show="scale"
         transition-hide="scale"
+        hint="Obligatorio"
         options-dense
         dense
         outlined
@@ -80,6 +81,7 @@
         @filter="filtrarEmpleados"
         transition-show="scale"
         transition-hide="scale"
+        hint="Obligatorio"
         options-dense
         dense
         outlined

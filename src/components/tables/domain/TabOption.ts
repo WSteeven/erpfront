@@ -1,4 +1,4 @@
 export interface TabOption {
   label: string,
-  value: string
+  value: any
 }

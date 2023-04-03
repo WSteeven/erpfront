@@ -3,7 +3,6 @@
     <q-btn
       v-if="scope.pagesNumber > 2"
       icon="first_page"
-      color="grey-8"
       round
       dense
       flat
@@ -13,7 +12,7 @@
 
     <q-btn
       icon="chevron_left"
-      color="secondary"
+      color="primary"
       dense
       class="q-mr-xs"
       flat
@@ -23,7 +22,7 @@
 
     <q-btn
       icon="chevron_right"
-      color="secondary"
+      color="primary"
       dense
       flat
       :disable="scope.isLastPage"
@@ -33,7 +32,6 @@
     <q-btn
       v-if="scope.pagesNumber > 2"
       icon="last_page"
-      color="grey-8"
       round
       dense
       flat

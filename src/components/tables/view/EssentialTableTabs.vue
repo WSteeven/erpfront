@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white">
+  <div class="bg-body-table-dark-color">
     <q-tabs
       v-model="tabSeleccionado"
       no-caps
@@ -20,7 +20,7 @@
         v-for="opcion in tabOptions"
         :key="opcion.label"
         :label="opcion.label"
-        :name="opcion.value"
+        :name="opcion.value + ''"
         class=""
         :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
       >
@@ -74,7 +74,7 @@ import { TabOption } from 'components/tables/domain/TabOption'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import EssentialTable from './EssentialTable.vue'
 import { TipoSeleccion } from 'config/utils'
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 
 const props = defineProps({
   titulo: {
@@ -204,6 +204,11 @@ const emit = defineEmits([
 ])
 
 const tabSeleccionado = ref(props.tabDefecto)
+
+watchEffect(() => {
+  console.log(props.tabDefecto)
+  tabSeleccionado.value = props.tabDefecto
+})
 
 const consultar = (data) => emit('consultar', data)
 const editar = (data) => emit('editar', data)

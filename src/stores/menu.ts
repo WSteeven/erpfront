@@ -70,10 +70,10 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.hoja_control_trabajos'),
         }, */
         {
-          title: 'Tipos de trabajos',
-          link: 'tipos-trabajos',
+          title: 'Movilización entre trabajos',
+          link: 'reporte-movilizacion-subtarea',
           icon: 'bi-circle',
-          can: store.can('puede.ver.tipos_trabajos'),
+          can: store.can('puede.ver.reporte_movilizacion_subtarea'),
         },
         /* {
           title: 'Informes',
@@ -100,7 +100,7 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'clientes-finales',
           icon: 'bi-circle',
         },
-        {
+        /*{
           title: 'Reportes',
           icon: 'bi-circle',
           children: [
@@ -122,7 +122,7 @@ export const useMenuStore = defineStore('menu', () => {
             //   icon: 'bi-dash',
             //   can: store.can('puede.ver.reportes_control_tendidos'),
             // },
-            /* {
+             {
               title: 'Control de tendidos',
               link: 'reportes-control-tendidos',
               icon: 'bi-dash',
@@ -133,9 +133,9 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-trabajos-realizados',
               icon: 'bi-dash',
               can: store.can('puede.ver.reporte_trabajos_realizados'),
-            }, */
+            },
           ],
-        },
+        },*/
       ],
     },
     {
@@ -423,8 +423,14 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Proyectos y tareas',
       icon: 'bi-pin-angle-fill',
-      can: store.can('puede.ver.motivos_pausas'),
+      can: store.esJefeTecnico,
       children: [
+        {
+          title: 'Tipos de trabajos',
+          link: 'tipos-trabajos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.tipos_trabajos'),
+        },
         {
           title: 'Motivos de trabajo pausado',
           link: 'motivos-pausas',

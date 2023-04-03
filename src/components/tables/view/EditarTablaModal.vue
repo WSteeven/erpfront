@@ -78,10 +78,11 @@
           </div>
 
           <!-- Inputs normales -->
+          <!-- :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }" -->
           <div
             v-for="field in fields"
             :key="field.field"
-            :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }"
+            class="col-12 col-md-3"
           >
             <label class="block q-mb-sm">{{ field.label }}</label>
             <q-input
@@ -94,10 +95,11 @@
           </div>
 
           <!-- Imagenes -->
+          <!-- :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }" -->
           <div
             v-for="field in fieldsImagen"
             :key="field.field"
-            :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }"
+            class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">{{ field.label }}</label>
             <selector-imagen

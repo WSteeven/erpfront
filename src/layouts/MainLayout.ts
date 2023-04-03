@@ -114,7 +114,7 @@ export default defineComponent({
     solicitudFondosPusherEvent.start();
 
     //Poner la imagen de perfil
-    const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0,1)}+${authenticationStore.user.apellidos.substr(0,1)}&bold=true&background=0879dc28&color=0879dc`
+    const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
     const notificacionesPusherStore = useNotificationRealtimeStore()
     const obtenerIconoNotificacion = new ObtenerIconoNotificacionRealtime()
@@ -148,9 +148,11 @@ export default defineComponent({
     }
 
     const enCamino = computed(() => movilizacionSubtareaStore.subtareaDestino)
+    const motivo = computed(() => movilizacionSubtareaStore.motivo)
 
     return {
       enCamino,
+      motivo,
       modales,
       abrirMovilizacionSubtarea,
       links: menu.links,

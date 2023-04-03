@@ -9,6 +9,8 @@ export class MovilizacionSubtarea extends EntidadAuditable {
   tiempo_transcurrido: string | null
   estado: string | null
   motivo: string | null
+  longitud: number | null
+  latitud: number | null
 
   constructor() {
     super()
@@ -20,5 +22,7 @@ export class MovilizacionSubtarea extends EntidadAuditable {
     this.tiempo_transcurrido = null
     this.estado = null
     this.motivo = null
+    this.longitud = null
+    this.latitud = null
   }
 }

@@ -17,6 +17,7 @@ import { MovilizacionSubtarea } from '../domain/MovilizacionSubtarea'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
+import { obtenerUbicacion } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -61,6 +62,8 @@ export default defineComponent({
     const rules = {
       subtarea: { required },
       motivo: { required },
+      longitud: { required },
+      latitud: { required },
     }
 
 
@@ -94,6 +97,13 @@ export default defineComponent({
       // })
     }
 
+    function obtenerCoordenadas() {
+      obtenerUbicacion((ubicacion) => {
+        movilizacion.latitud = ubicacion.coords.latitude
+        movilizacion.longitud = ubicacion.coords.longitude
+      })
+    }
+
     return {
       // mixin
       mixin,
@@ -105,6 +115,7 @@ export default defineComponent({
       subtareas,
       comenzar,
       motivosMovilizacion,
+      obtenerCoordenadas,
     }
   },
 })
