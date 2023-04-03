@@ -16,6 +16,7 @@ import { ComportamientoModalesFondoRotativoContabilidad } from '../application/C
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { accionesTabla, maskFecha } from 'config/utils'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ModalEntidad },
@@ -73,8 +74,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
-          controller: new UsuarioController(),
-          params: { campos: 'id,name' },
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos' },
         },
         tiposFondos: {
           controller: new TipoFondoController(),

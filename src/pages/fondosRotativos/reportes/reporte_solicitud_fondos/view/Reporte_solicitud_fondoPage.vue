@@ -12,7 +12,7 @@
       <q-card-section>
         <!-- Usuarios -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Usuario</label>
+          <label class="q-mb-sm block">Empleado</label>
           <q-select
             v-model="reporte_solicitud_fondos.usuario"
             :options="usuarios"
