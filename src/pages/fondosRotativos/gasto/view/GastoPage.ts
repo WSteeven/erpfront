@@ -250,9 +250,11 @@ export default defineComponent({
     }
     function optionsFechaGasto(date) {
       const today = new Date()
-      const sabadoAnterior = convertir_fecha(new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7))))
+      const sabadoAnterior = convertir_fecha(
+        new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
+      )
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
-      console.log(sabadoAnterior+' al '+sabadoSiguiente);
+      console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
       return date >= sabadoAnterior && date <= sabadoSiguiente
     }
     function siguienteSabado() {
@@ -273,7 +275,7 @@ export default defineComponent({
           ? '0' + (fecha.getMonth() + 1)
           : fecha.getMonth() + 1
       const year = fecha.getFullYear()
-      return year +'/' + month + '/' + day
+      return year + '/' + month + '/' + day
     }
     function filtrarCantones(val, update) {
       if (val === '') {
@@ -396,6 +398,48 @@ export default defineComponent({
       gasto.factura = null
       gasto.ruc = null
     }
+    async function recargar_detalle(tipo: string) {
+      switch (tipo) {
+        case 'detalle':
+          const detalles = (
+            await new DetalleFondoController().listar({
+              campos: 'id,descripcion',
+            })
+          ).result
+          LocalStorage.set('detalles', JSON.stringify(detalles))
+          setTimeout(
+            () => setInterval(() => {
+              detalles.value =
+              LocalStorage.getItem('detalles') == null
+                ? []
+                : JSON.parse(LocalStorage.getItem('detalles')!.toString())
+            listadosAuxiliares.detalles = detalles.value
+            }, 100),
+            250
+          )
+
+          break
+        case 'sub_detalle':
+          const sub_detalles = (
+            await new SubDetalleFondoController().listar({
+              campos: 'id,descripcion',
+            })
+          ).result
+          LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
+          setTimeout(
+            () => setInterval(() => {
+              sub_detalles.value =
+              LocalStorage.getItem('sub_detalles') == null
+                ? []
+                : JSON.parse(LocalStorage.getItem('sub_detalles')!.toString())
+            listadosAuxiliares.sub_detalles = sub_detalles.value
+            }, 100),
+            250
+          )
+
+          break
+      }
+    }
     function aprobar_gasto(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
         case 'aprobar':
@@ -471,6 +515,7 @@ export default defineComponent({
       cambiar_detalle,
       cambiar_proyecto,
       optionsFechaGasto,
+      recargar_detalle,
       listadosAuxiliares,
       listadoSubdetalles,
       mostrarListado,

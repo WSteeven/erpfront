@@ -15,6 +15,7 @@ import { ReporteSaldoActualController } from '../infrestucture/ReporteSaldoActua
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
 import { useAuthenticationStore } from 'stores/authentication'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   components: { TabLayout },
@@ -62,8 +63,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
-          controller: new UsuarioController(),
-          params: { campos: 'id,name' },
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos' },
         }
       })
 

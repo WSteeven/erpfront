@@ -380,7 +380,7 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.detalle.$errors.length"
-              error-message="Debes seleccionar un canton"
+              error-message="Debes seleccionar un detalle"
               use-input
               input-debounce="0"
               @blur="v$.detalle.$touch"
@@ -404,6 +404,8 @@
                 </q-item>
               </template>
             </q-select>
+            <q-btn color="positive" @click="recargar_detalle('detalle')"><q-icon size="xs" class="q-mr-sm"
+                name="bi-arrow-clockwise" /></q-btn>
           </div>
           <!-- Subdetalle-->
           <div class="col-12 col-md-3">
@@ -456,6 +458,8 @@
                 </q-item>
               </template>
             </q-select>
+            <q-btn color="positive" @click="recargar_detalle('sub_detalle')"><q-icon size="xs" class="q-mr-sm"
+                name="bi-arrow-clockwise" /></q-btn>
           </div>
 
           <!-- Comprobante 1 Archivo -->
