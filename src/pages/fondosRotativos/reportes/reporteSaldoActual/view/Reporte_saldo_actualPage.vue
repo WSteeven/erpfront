@@ -12,7 +12,7 @@
       <q-card-section>
         <!-- Usuarios -->
         <div class="col-12 col-md-3" v-if="is_all_users == 'false' && store.can('puede.buscar.saldo.usuarios')">
-          <label class="q-mb-sm block">Usuario</label>
+          <label class="q-mb-sm block">Empleado</label>
           <q-select
             v-model="reporte_saldo_actual.usuario"
             :options="usuarios"
@@ -24,7 +24,7 @@
             :disable="disabled"
             :readonly="disabled"
             :error="!!v$.usuario.$errors.length"
-            error-message="Debes seleccionar un usuario"
+            error-message="Debes seleccionar un empleado"
             use-input
             input-debounce="0"
             @filter="filtrarUsuarios"
@@ -64,7 +64,7 @@
           <q-checkbox
             v-model="is_all_users"
             color="secondary"
-            label="Todos los usuarios"
+            label="Todos los empleados"
             true-value="true"
             false-value="false"
             @update:model-value="mostrarUsuarios()"

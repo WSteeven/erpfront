@@ -553,7 +553,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Permisos',
       link: 'permisos',
       icon: 'bi-person-fill-check',
-      can: true //store.can('puede.ver.autorizaciones') && store.esActivosFijos,
+      can: store.can('puede.ver.permisos'),
     },
     {
       title: 'Motivo Gasto',

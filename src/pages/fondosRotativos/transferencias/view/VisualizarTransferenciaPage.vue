@@ -53,13 +53,13 @@
         </div>
 
       </q-form>
-      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.usuario_id == transferencia.usuario_recibe && transferencia.estado_info=='POR APROBAR'">
+      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.id == transferencia.usuario_recibe && transferencia.estado_info=='POR APROBAR'">
         <q-btn color="positive" @click="aprobar_transferencia(transferencia, 'aprobar')">
           <q-icon name="bi-check-circle" size="xs"></q-icon>Aceptar</q-btn>
         <q-btn color="negative" @click="aprobar_transferencia(transferencia, 'rechazar')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn>
       </div>
-      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.usuario_id == transferencia.usuario_recibe && transferencia.estado_info=='APROBADO'">
+      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="usuario.id == transferencia.usuario_recibe && transferencia.estado_info=='APROBADO'">
         <q-btn color="negative" @click="aprobar_transferencia(transferencia, 'anular')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn>
       </div>

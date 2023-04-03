@@ -13,6 +13,7 @@ import { FondoRotativoAutorizacionesFecha } from '../domain/FondoRotativoAutoriz
 import { FondoRotativoAutorizacionesFechaController } from '../infrestructure/FondoRotativoAutorizacionesFechaController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
 import { maskFecha } from 'config/utils'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   components: { TabLayout },
@@ -71,8 +72,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
-          controller: new UsuarioAutorizadoresController(),
-          params: { campos: 'id,name' },
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos' },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
@@ -100,7 +101,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
