@@ -52,6 +52,18 @@ export const configuracionColumnasMovilizacionSubtarea: ColumnConfig<Movilizacio
     sortable: true,
   },
   {
+    name: 'latitud',
+    field: 'latitud',
+    label: 'Latitud',
+    align: 'left',
+  },
+  {
+    name: 'longitud',
+    field: 'longitud',
+    label: 'Longitud',
+    align: 'left',
+  },
+  {
     name: 'estado',
     field: 'estado',
     label: 'Estado',

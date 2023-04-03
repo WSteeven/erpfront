@@ -27,14 +27,14 @@ export const ubicacionesTrabajo = {
 
 export const tabOptionsEstadosTareas: TabOption[] = [
   { label: 'Todo', value: '' },
-  { label: 'Activas', value: 'false' },
-  { label: 'Finalizadas', value: 'true' },
+  { label: 'Activas', value: 0 },
+  { label: 'Finalizadas', value: 1 },
 ];
 
 export const tabOptionsEstadosSubtareas: TabOption[] = [
   { label: 'Todo', value: '' },
   // { label: 'Creado', value: 'CREADO' },
-  { label: 'Asignado', value: 'ASIGNADO' },
+  // { label: 'Asignado', value: 'ASIGNADO' },
   { label: 'Agendado', value: 'AGENDADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },

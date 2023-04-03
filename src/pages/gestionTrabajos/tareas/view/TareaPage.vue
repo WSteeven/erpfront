@@ -1,5 +1,5 @@
 <template>
-  <tab-layout-filter-tabs
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTarea"
     :full="true"
@@ -12,6 +12,8 @@
     :accion3="btnCancelarTarea"
     :accion4="btnFinalizarTarea"
     :accionButtonSubmit="botonFinalizarTarea"
+    :filtrar="filtrarTarea"
+    :tabDefecto="''"
   >
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
@@ -27,7 +29,12 @@
       >
         <q-tab name="tarea" label="Tarea" icon="bi-pin-angle" />
         <!-- v-if="tarea.tiene_subtareas" -->
-        <q-tab name="subtareas" label="Subtareas" icon="bi-ui-checks-grid">
+        <q-tab
+          v-if="tarea.id"
+          name="subtareas"
+          label="Subtareas"
+          icon="bi-ui-checks-grid"
+        >
           <q-badge color="accent" floating>{{ subtareas.length }}</q-badge>
         </q-tab>
       </q-tabs>
@@ -691,7 +698,7 @@
         </q-tab-panel>
       </q-tab-panels>
     </template>
-  </tab-layout-filter-tabs>
+  </tab-layout-filter-tabs2>
 
   <modales-entidad
     :comportamiento="modalesTarea"

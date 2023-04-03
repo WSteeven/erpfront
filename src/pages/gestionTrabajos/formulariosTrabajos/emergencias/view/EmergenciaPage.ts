@@ -82,30 +82,27 @@ export default defineComponent({
     const columnasMaterial = [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
     const { prompt } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
-    const materiales: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const materialesTarea: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialesStock: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialEmpleadoController = new MaterialEmpleadoController()
     const esLider = authenticationStore.esTecnicoLider
     const esCoordinador = authenticationStore.esCoordinador
-    // const causasIntervencion = computed(() => causaIntervencion.filter((causa: CausaIntervencion) => causa.categoria === emergencia.tipo_intervencion))
-    // const { notificarCorrecto } = useNotificaciones()
 
     /************
      * Init
      ************/
-    // obtenerFormularioEmergencia()
-    // console.log(trabajoAsignadoStore.idEmergencia)
     if (trabajoAsignadoStore.idEmergencia) {
       consultar({ id: trabajoAsignadoStore.idEmergencia })
       accion.value = acciones.editar
     }
-    obtenerMateriales()
+
+    obtenerMaterialesTarea()
     obtenerMaterialesStock()
 
     /****************
      * Botones tabla
      ****************/
-    const botonEditarCantidad: CustomActionTable = {
+    const botonEditarCantidadTarea: CustomActionTable = {
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil-square',
       color: 'primary',
@@ -113,10 +110,10 @@ export default defineComponent({
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
           mensaje: 'Ingresa la cantidad',
-          defecto: materiales.value[posicion].cantidad_utilizada,
+          defecto: materialesTarea.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => val >= 0 && val <= entidad.stock_actual,
-          accion: (data) => materiales.value[posicion].cantidad_utilizada = data
+          validacion: (val) => val >= 0 && (accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          accion: (data) => materialesTarea.value[posicion].cantidad_utilizada = data
         }
 
         prompt(config)
@@ -133,7 +130,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           defecto: materialesStock.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => val >= 0 && val <= entidad.stock_actual,
+          validacion: (val) => val >= 0 && (accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
           accion: (data) => materialesStock.value[posicion].cantidad_utilizada = data
         }
 
@@ -154,15 +151,6 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    /* async function obtenerFormularioEmergencia() {
-      await listar({ subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada })
-      notificarCorrecto('Formulario iniciado exitosamente!')
-      console.log(listado.value)
-      if (listado.value.length) {
-        emergencia.hydrate(listado.value[0])
-        accion.value = acciones.editar
-      }
-    } */
     function obtenerIdEmpleadoResponsable() {
       if (esLider) return authenticationStore.user.id
       if (esCoordinador) return trabajoAsignadoStore.idEmpleadoResponsable
@@ -170,11 +158,11 @@ export default defineComponent({
 
 
 
-    async function obtenerMateriales() {
+    async function obtenerMaterialesTarea() {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
       const response: AxiosResponse = await axios.get(ruta)
-      materiales.value = response.data.results
+      materialesTarea.value = response.data.results
     }
 
     async function obtenerMaterialesStock() {
@@ -182,28 +170,28 @@ export default defineComponent({
       materialesStock.value = result
     }
 
-    function filtrarMaterialesOcupados() {
-      return materiales.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
+    function filtrarMaterialesTareaOcupados() {
+      return materialesTarea.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
     }
 
     function filtrarMaterialesStockOcupados() {
       return materialesStock.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
     }
 
-    function ajustarCantidadesUtilizadas() {
-      const materialesOcupados = emergencia.materiales_ocupados
+    function ajustarCantidadesMaterialTareaUtilizadas() {
+      const materialesTareaOcupados = emergencia.materiales_tarea_ocupados
 
-      for (let i = 0; i < materiales.value.length; i++) {
-        const indexOcupado = obtenerIndice(materialesOcupados, materiales.value[i].detalle_producto_id)
+      for (let i = 0; i < materialesTarea.value.length; i++) {
+        const indexOcupado = obtenerIndice(materialesTareaOcupados, materialesTarea.value[i].detalle_producto_id)
         if (indexOcupado >= 0) {
-          if (accion.value === acciones.consultar) materiales.value[i].stock_actual = materialesOcupados[indexOcupado].stock_actual
-          materiales.value[i].cantidad_utilizada = materialesOcupados[indexOcupado].cantidad_utilizada
-          materiales.value[i].cantidad_old = materialesOcupados[indexOcupado].cantidad_utilizada
+          if (accion.value === acciones.consultar) materialesTarea.value[i].stock_actual = materialesTareaOcupados[indexOcupado].stock_actual
+          materialesTarea.value[i].cantidad_utilizada = materialesTareaOcupados[indexOcupado].cantidad_utilizada
+          materialesTarea.value[i].cantidad_old = materialesTareaOcupados[indexOcupado].cantidad_utilizada
         }
       }
     }
 
-    function ajustarStockCantidadesUtilizadas() {
+    function ajustarCantidadesMaterialStockUtilizadas() {
       const materialesStockOcupados = emergencia.materiales_stock_ocupados
 
       for (let i = 0; i < materialesStock.value.length; i++) {
@@ -223,41 +211,39 @@ export default defineComponent({
     async function descargarExcel() {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + emergencia.id
-      console.log(ruta)
-      // const response: any = await consultar({ id: trabajoAsignadoStore.idEmergencia }, { export: 'excel' })
-      //const response: Axios
-      // console.log(response)
-      // descargarArchivo(response, 'titulo', 'xlsx')
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
 
     function guardarSeguimiento() {
-      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable() })
+      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada })
     }
 
     function editarSeguimiento() {
-      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable() })
+      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada })
     }
 
     /********
     * Hooks
     *********/
-    onConsultado(() => {
-      obtenerMateriales().then(() => ajustarCantidadesUtilizadas())
-      obtenerMaterialesStock().then(() => ajustarStockCantidadesUtilizadas())
+    onConsultado(async () => {
+      await obtenerMaterialesTarea().then(() => ajustarCantidadesMaterialTareaUtilizadas())
+      await obtenerMaterialesStock().then(() => ajustarCantidadesMaterialStockUtilizadas())
       existeObservaciones.value = !!emergencia.observaciones.length
       existeMaterialesDevolucion.value = !!emergencia.materiales_devolucion.length
-      console.log(existeObservaciones.value)
+      // console.log(existeObservaciones.value)
+      usarMaterialTarea.value = materialesTarea.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
+      usarStock.value = materialesStock.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
+      console.log(usarMaterialTarea.value)
     })
 
     onBeforeGuardar(() => {
-      emergencia.materiales_ocupados = filtrarMaterialesOcupados()
+      emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
       emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
     })
 
     onBeforeModificar(() => {
-      emergencia.materiales_ocupados = filtrarMaterialesOcupados()
+      emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
       emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
     })
@@ -279,16 +265,15 @@ export default defineComponent({
       accion,
       guardarSeguimiento,
       editarSeguimiento,
-      // causasIntervencion,
       utilizarMateriales,
       existeMaterialesDevolucion,
       existeObservaciones,
       usarStock,
       usarMaterialTarea,
       columnasMaterial,
-      materiales,
+      materialesTarea,
       materialesStock,
-      botonEditarCantidad,
+      botonEditarCantidadTarea,
       botonEditarCantidadStock,
       regiones,
       atenciones,

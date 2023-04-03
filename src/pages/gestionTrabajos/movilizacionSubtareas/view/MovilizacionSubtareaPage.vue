@@ -84,6 +84,63 @@
               </template>
             </q-select>
           </div>
+
+          <!-- Coordenadas -->
+          <div class="col-12 col-md-4 q-mx-auto q-mb-xl">
+            <q-card flat class="custom-shadows nso-border q-pa-md">
+              <label class="q-mb-sm text-center block text-bold"
+                >Coordenadas</label
+              >
+              <div class="col-12">
+                <label class="q-mb-sm block">Longitud</label>
+                <q-input
+                  v-model="movilizacion.longitud"
+                  :error="!!v$.longitud.$errors.length"
+                  outlined
+                  dense
+                  disable
+                >
+                  <template v-slot:error>
+                    <div v-for="error of v$.longitud.$errors" :key="error.$uid">
+                      <div class="error-msg">{{ error.$message }}</div>
+                    </div>
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-12">
+                <label class="q-mb-sm block">Latitud</label>
+                <q-input
+                  v-model="movilizacion.latitud"
+                  :error="!!v$.latitud.$errors.length"
+                  outlined
+                  dense
+                  disable
+                >
+                  <template v-slot:error>
+                    <div v-for="error of v$.latitud.$errors" :key="error.$uid">
+                      <div class="error-msg">{{ error.$message }}</div>
+                    </div>
+                  </template>
+                </q-input>
+              </div>
+
+              <q-btn
+                color="positive"
+                no-caps
+                glossy
+                push
+                rounded
+                no-wrap
+                class="q-mx-auto block"
+                @click="obtenerCoordenadas()"
+                :disable="disabled"
+              >
+                <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
+                Actualizar ubicación</q-btn
+              >
+            </q-card>
+          </div>
         </div>
 
         <div class="row">

@@ -24,13 +24,13 @@
     :src="imagenCodificada"
     width="100%"
     :height="alto"
-    fit="cover"
+    fit="contain"
   >
   </q-img>
 
   <q-dialog v-model="opened" maximized>
-    <q-card class="bg-desenfoque rounded-card no-border" flat>
-      <q-toolbar class="rounded-header" rounded>
+    <q-card class="bg-black rounded-card no-border" flat>
+      <!-- <q-toolbar class="rounded-header" rounded>
         <q-avatar square>
           <q-icon name="bi-image" color="white"></q-icon>
         </q-avatar>
@@ -48,10 +48,26 @@
           icon="bi-x"
           v-close-popup
         />
-      </q-toolbar>
+      </q-toolbar> -->
 
-      <q-card-section class="rounded-footer">
-        <q-img v-show="imagenCodificada" :src="imagenCodificada" fit="contain">
+      <q-btn
+        round
+        push
+        color="negative"
+        glossy
+        icon="bi-x"
+        @click="() => (opened = false)"
+        class="closeButton"
+      />
+
+      <q-card-section class="rounded-footer text-center q-pa-none">
+        <q-img
+          v-show="imagenCodificada"
+          :src="imagenCodificada"
+          fit="contain"
+          width="80%"
+          height="100vh"
+        >
         </q-img>
       </q-card-section>
     </q-card>
@@ -59,7 +75,8 @@
 
   <small v-if="imagenCodificada" class="block text-center q-py-sm">
     <q-btn
-      flat
+      outline
+      glossy
       color="primary"
       @click="opened = true"
       label="Ver en pantalla completa"
@@ -83,7 +100,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const imagen = ref()
 const imagenCodificada = computed(() => props.imagen)
-const alto = computed(() => props.alto ?? '150px')
+const alto = computed(() => props.alto ?? '160px')
 const opened = ref(false)
 const setBase64 = (file: File) => {
   if (file !== null && file !== undefined) {
@@ -101,3 +118,12 @@ function limpiar() {
   emit('update:modelValue', null)
 }
 </script>
+
+<style lang="scss">
+.closeButton {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 9999;
+}
+</style>

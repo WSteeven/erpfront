@@ -182,7 +182,7 @@ export default defineComponent({
       const cargando = new StatusEssentialLoading()
       cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_despachados_sin_bobina, { subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
+      const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { subtarea_id: trabajoAsignadoStore.idSubtareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
       const response: AxiosResponse = await axios.get(ruta)
       materiales.value = response.data.results
       cargando.desactivar()

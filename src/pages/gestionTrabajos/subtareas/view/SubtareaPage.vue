@@ -96,6 +96,7 @@
             @filter="filtrarTiposTrabajos"
             transition-show="scale"
             transition-hide="scale"
+            hint="Obligatorio"
             options-dense
             dense
             outlined
@@ -271,6 +272,7 @@
             :error="!!v$.hora_inicio_trabajo.$errors.length"
             type="time"
             :disable="disabled"
+            :hint="subtarea.es_ventana ? 'Obligatorio' : 'Opcional'"
             stack-label
             outlined
             clearable
@@ -297,6 +299,7 @@
             stack-label
             outlined
             :disable="disabled"
+            :hint="subtarea.es_ventana ? 'Obligatorio' : 'Opcional'"
             clearable
             dense
           >

@@ -51,7 +51,7 @@
           <essential-table
             titulo="Materiales designados para la tarea"
             :configuracionColumnas="columnasMaterial"
-            :datos="materiales"
+            :datos="materialesTarea"
             :alto-fijo="false"
             :permitirConsultar="false"
             :permitirEliminar="false"
@@ -59,7 +59,7 @@
             :permitir-buscar="false"
             :permitirEditarModal="true"
             separador="cell"
-            :accion1="botonEditarCantidad"
+            :accion1="botonEditarCantidadTarea"
           ></essential-table>
         </div>
 

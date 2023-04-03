@@ -32,15 +32,6 @@
           </svg>
         </q-btn>
 
-        <q-chip v-if="enCamino" class="text-positive bg-grey-4">
-          <q-icon
-            name="bi-car-front-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
-          >Destino:&nbsp;<b>{{ enCamino }}</b>
-        </q-chip>
-
         <span
           class="row"
           :class="{
@@ -255,6 +246,21 @@
           </q-btn>
         </span>
       </q-toolbar>
+
+      <div class="text-center">
+        <q-chip v-if="enCamino" class="bg-grey-4 q-mx-auto q-mb-md">
+          <q-icon
+            name="bi-car-front-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+          <div class="text-positive">
+            Destino:&nbsp;<b>{{ enCamino }}</b>
+          </div>
+          <q-separator vertical class="q-mx-md"></q-separator>
+          <i class="">VIAJE DE {{ motivo }}</i>
+        </q-chip>
+      </div>
     </q-header>
 
     <!-- Drawer -->

@@ -17,7 +17,7 @@ import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/design
 import TablaSubtareaSuspendida from 'gestionTrabajos/subtareas/modules/tablaSubtareasSuspendidas/view/TablaSubtareaSuspendida.vue'
 import TablaSubtareaPausas from 'gestionTrabajos/subtareas/modules/pausasRealizadas/view/PausasRealizadas.vue'
 import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/view/TiempoSubtarea.vue'
-import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -55,7 +55,7 @@ export default defineComponent({
     EssentialSelectableTable,
     LabelAbrirModal,
     ModalesEntidad,
-    TabLayoutFilterTabs,
+    TabLayoutFilterTabs2,
     EssentialTableTabs,
     DesignarResponsableTrabajo,
     TiempoSubtarea,
@@ -75,7 +75,7 @@ export default defineComponent({
      *********/
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
     const { entidad: tarea, listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
-    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista } =
+    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
     const { onReestablecer, onConsultado, onBeforeGuardar } = mixin.useHooks()
 
@@ -178,6 +178,10 @@ export default defineComponent({
     /************
     * Funciones
     ************/
+    function filtrarTarea(tabSeleccionado: string) {
+      listar({ finalizado: tabSeleccionado }, false)
+    }
+
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
       const { result } = await clienteFinalController.consultar(clienteFinalId)
@@ -477,6 +481,7 @@ export default defineComponent({
       botonFinalizarTarea,
       ubicacionesTrabajo,
       tabOptionsEstadosTareas,
+      filtrarTarea,
       // Botones tareas
       btnVerPausasTarea,
       btnFinalizarTarea,
