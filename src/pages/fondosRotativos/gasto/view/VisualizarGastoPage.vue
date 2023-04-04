@@ -101,12 +101,6 @@
             <q-input v-model="gasto.aut_especial_user" placeholder="Obligatorio" disable outlined dense>
             </q-input>
           </div>
-          <!-- Empleado -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Empleado</label>
-            <q-input v-model="gasto.empleado_info" placeholder="Obligatorio" disable outlined dense>
-            </q-input>
-          </div>
           <!-- Detalle -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Detalle</label>
@@ -146,6 +140,12 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado</label>
             <q-input v-model="gasto.estado_info" placeholder="" disable outlined dense>
+            </q-input>
+          </div>
+          <!-- Empleado -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Empleado</label>
+            <q-input v-model="gasto.empleado_info" placeholder="Obligatorio" disable outlined dense>
             </q-input>
           </div>
         </div>

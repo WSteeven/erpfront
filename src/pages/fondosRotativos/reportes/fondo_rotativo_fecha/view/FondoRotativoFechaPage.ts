@@ -13,6 +13,8 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { maskFecha } from 'config/utils'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { TabLayout },
@@ -21,6 +23,7 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    const store = useAuthenticationStore()
     /***********
      * Mixin
      ************/
@@ -63,8 +66,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
-          controller: new UsuarioController(),
-          params: { campos: 'id,name' },
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos' },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
@@ -160,6 +163,7 @@ export default defineComponent({
       fondo_rotativo_fecha,
       disabled,
       accion,
+      store,
       v$,
       usuarios,
       tiposFondos,

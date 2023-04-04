@@ -25,6 +25,7 @@ export class VisualizarGasto extends EntidadAuditable {
   total: number | null
   observacion: string | null
   id_usuario: number | null
+  empleado_info: string | null
   estado: string | null
   estado_info: string | null
   detalle_estado: string | null
@@ -58,6 +59,7 @@ export class VisualizarGasto extends EntidadAuditable {
     this.observacion = null
     this.id_usuario = null
     this.estado = null
+    this.empleado_info = null
     this.estado_info = 'POR APROBAR'
     this.detalle_estado = null
 

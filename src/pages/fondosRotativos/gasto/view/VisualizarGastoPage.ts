@@ -65,9 +65,7 @@ export default defineComponent({
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     onConsultado(()=>{
-      console.log(gasto);
-
-      esFactura.value = gasto.factura ==null? false:true
+      esFactura.value = gasto.factura ==null  || gasto.factura==' '? false:true
     })
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
