@@ -49,6 +49,7 @@ import { Tarea } from '../domain/Tarea'
 import { TareaModales } from '../domain/TareaModales'
 import { RutaTareaController } from 'pages/gestionTrabajos/rutas/infraestructure/RutaTareaController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: {
@@ -69,6 +70,7 @@ export default defineComponent({
      *********/
     const tareaStore = useTareaStore()
     const subtareaStore = useSubtareaStore()
+    const authenticationStore = useAuthenticationStore()
 
     /*******
      * Mixin
@@ -123,6 +125,7 @@ export default defineComponent({
     const paraProyecto = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
     const tab = ref('tarea')
+    const esCoordinadorBackup = authenticationStore.esCoordinadorBackup
     /*const tiposTrabajosSource = ref([])
     listadosAuxiliares.tiposTrabajos = computed(() =>
       tiposTrabajosSource.value.filter((tipo: TipoTrabajo) => tipo.cliente_id === (tarea.cliente ? tarea.cliente : false))
@@ -132,7 +135,7 @@ export default defineComponent({
     * Validaciones
     **************/
     const reglas = {
-      cliente: { requiredIfCliente: requiredIf(() => paraClienteFinal.value) },
+      cliente: { required: requiredIf(() => paraClienteFinal.value) },
       titulo: { required },
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       descripcion_completa: { required: requiredIf(() => !tarea.tiene_subtareas) },
@@ -142,6 +145,9 @@ export default defineComponent({
       hora_fin_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.es_ventana) },
       grupo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) },
       empleado: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_empleado) },
+      coordinador: { required: requiredIf(() => esCoordinadorBackup) },
+      cliente_final: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.clienteFinal) },
+      ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -482,6 +488,7 @@ export default defineComponent({
       ubicacionesTrabajo,
       tabOptionsEstadosTareas,
       filtrarTarea,
+      esCoordinadorBackup,
       // Botones tareas
       btnVerPausasTarea,
       btnFinalizarTarea,

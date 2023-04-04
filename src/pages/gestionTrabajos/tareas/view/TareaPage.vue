@@ -200,8 +200,8 @@
                 </div>
 
                 <!-- Coordinador -->
-                <!-- <div
-                  v-if="paraClienteFinal && tarea.coordinador"
+                <div
+                  v-if="paraClienteFinal && esCoordinadorBackup"
                   class="col-12 col-md-3"
                 >
                   <label class="q-mb-sm block">Coordinador</label>
@@ -224,6 +224,8 @@
                     emit-value
                     map-options
                     :disable="disabled"
+                    @blur="v$.coordinador.$touch"
+                    :error="!!v$.coordinador.$errors.length"
                   >
                     <template v-slot:no-option>
                       <q-item>
@@ -232,8 +234,17 @@
                         </q-item-section>
                       </q-item>
                     </template>
+
+                    <template v-slot:error>
+                      <div
+                        v-for="error of v$.coordinador.$errors"
+                        :key="error.$uid"
+                      >
+                        <div class="error-msg">{{ error.$message }}</div>
+                      </div>
+                    </template>
                   </q-select>
-                </div> -->
+                </div>
 
                 <!-- Fecha de solicitud -->
                 <div v-if="paraClienteFinal" class="col-12 col-md-3">
@@ -462,6 +473,8 @@
                     @update:model-value="
                       (v) => obtenerClienteFinal(tarea.cliente_final)
                     "
+                    :error="!!v$.cliente_final.$errors.length"
+                    @blur="v$.cliente_final.$touch"
                   >
                     <template v-slot:no-option>
                       <q-item>
@@ -469,6 +482,15 @@
                           No hay resultados
                         </q-item-section>
                       </q-item>
+                    </template>
+
+                    <template v-slot:error>
+                      <div
+                        v-for="error of v$.cliente_final.$errors"
+                        :key="error.$uid"
+                      >
+                        <div class="error-msg">{{ error.$message }}</div>
+                      </div>
                     </template>
                   </q-select>
                 </div>
@@ -649,6 +671,8 @@
                     emit-value
                     map-options
                     :disable="disabled"
+                    :error="!!v$.ruta_tarea.$errors.length"
+                    @blur="v$.ruta_tarea.$touch"
                   >
                     <template v-slot:no-option>
                       <q-item>
@@ -656,6 +680,15 @@
                           No hay resultados
                         </q-item-section>
                       </q-item>
+                    </template>
+
+                    <template v-slot:error>
+                      <div
+                        v-for="error of v$.ruta_tarea.$errors"
+                        :key="error.$uid"
+                      >
+                        <div class="error-msg">{{ error.$message }}</div>
+                      </div>
                     </template>
                   </q-select>
                 </div>

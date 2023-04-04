@@ -54,7 +54,7 @@ export default route(function (/* { store, ssrContext } */) {
       sessionIniciada &&
       ['Login', 'ResetPassword', 'Register'].includes(to.name?.toString() ?? '')
     ) {
-      next({ name: 'tablero' })
+      next({ name: 'tablero_personal' })
     } else {
       next()
     }
