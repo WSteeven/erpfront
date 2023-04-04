@@ -535,20 +535,6 @@
           </div>
         </div>
       </q-form>
-      <div
-        class="q-pa-md q-gutter-sm flex flex-center"
-        v-if="
-          usuario.usuario_id == gasto.aut_especial &&
-          gasto.estado_info == 'POR APROBAR'
-        "
-      >
-        <q-btn color="positive" @click="aprobar_gasto(gasto, 'aprobar')">
-          <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobar</q-btn
-        >
-        <q-btn color="negative" @click="aprobar_gasto(gasto, 'rechazar')">
-          <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn
-        >
-      </div>
     </template>
   </tab-layout>
 </template>

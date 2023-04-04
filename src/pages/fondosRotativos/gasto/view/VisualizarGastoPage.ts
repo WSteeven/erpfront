@@ -17,7 +17,7 @@ import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { emit } from 'process'
+
 import { maskFecha } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'

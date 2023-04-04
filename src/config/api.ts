@@ -133,6 +133,7 @@ export const endpoints = {
   aprobar_trnasferencia: new Endpoint('fondos-rotativos/aprobar-transferencia'),
   rechazar_transferencia: new Endpoint('fondos-rotativos/rechazar-transferencia'),
   anular_transferencia: new Endpoint('fondos-rotativos/anular-transferencia'),
+  anular_acreditacion:  new Endpoint('fondos-rotativos/anular-acreditacion'),
   detalle_fondo: new Endpoint('fondos-rotativos/detalles-viaticos'),
   sub_detalle_fondo: new Endpoint('fondos-rotativos/sub-detalles-viaticos'),
   saldo: new Endpoint('fondos-rotativos/saldo-grupo'),

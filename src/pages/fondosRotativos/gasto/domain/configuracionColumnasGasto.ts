@@ -44,6 +44,13 @@ export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
     sortable: true
   },
   {
+    name: 'empleado_info',
+    field: 'empleado_info',
+    label: 'Empleado',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'detalle_info',
     field: 'detalle_info',
     label: 'Detalle',
