@@ -7,6 +7,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { acciones, rolesSistema } from 'config/utils'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { ComputedRef, ref, Ref } from 'vue'
+import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
 
 export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<Empleado[]>, data: ComputedRef) => {
   const refEmpleadosGrupo = ref()
@@ -16,30 +17,18 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
 
   const { accion, modo_asignacion_trabajo, grupo } = data.value
 
-  const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
+  const { notificarCorrecto, notificarAdvertencia, confirmar } = useNotificaciones()
 
   const quitarEmpleado: CustomActionTable = {
     titulo: 'Quitar',
     icono: 'bi-x',
     color: 'negative',
-    visible: () => [acciones.editar, acciones.nuevo].includes(accion) && !(asignarLider.value || asignarSecretario.value),
+    visible: () => [acciones.editar, acciones.nuevo].includes(accion) && !cambiarResponsable.value,
     accion: ({ entidad, posicion }) => {
-      if (modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) {
-        if (entidad.roles.includes(rolesSistema.tecnico_lider)) {
-          asignarLider.value = true
-          asignarSecretario.value = false
-          empleadoGrupoQuitar.value = entidad
-          return notificarAdvertencia('Debes asignar a un reemplazo para el líder a eliminar.')
-        }
-        if (entidad.roles.includes(rolesSistema.secretario)) {
-          asignarLider.value = false
-          asignarSecretario.value = true
-          empleadoGrupoQuitar.value = entidad
-          return notificarAdvertencia('Debes asignar a un reemplazo para el secretario a eliminar.')
-        }
-      }
-
-      empleadosSeleccionados.value.splice(posicion, 1)
+      confirmar('Este empleado no participará en la ejecución del trabajo. ¿Desea continuar?', () => {
+        if (entidad.es_responsable) notificarAdvertencia('No olvides designar a otro responsable.')
+        empleadosSeleccionados.value.splice(posicion, 1)
+      })
       //empleadosSeleccionados.value = empleadosSeleccionados.value // Necesario porque es computado get - set
     },
   }
@@ -55,7 +44,7 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
     },
   } */
 
-  const designarLider: CustomActionTable = {
+  /* const designarLider: CustomActionTable = {
     titulo: 'Designar como líder de grupo',
     icono: 'bi-arrow-left-right',
     color: 'positive',
@@ -74,9 +63,59 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
       asignarLider.value = false
       asignarSecretario.value = false
     },
+  } */
+
+  /***********************
+   * Designar responsable
+   ***********************/
+  const cambiarResponsable = ref(false)
+  const btnCambiarResponsable: CustomActionTable = {
+    titulo: 'Designar responsable',
+    icono: 'bi-arrow-left-right',
+    color: 'positive',
+    visible: () => false, //!cambiarResponsable.value && [acciones.editar, acciones.nuevo].includes(accion),
+    accion: async () => cambiarResponsable.value = true
   }
 
-  async function entidadSeleccionada(empleadoSeleccionado: Empleado[]) {
+  const btnConfirmarDesignarResponsable: CustomActionTable = {
+    titulo: 'Aceptar',
+    icono: 'bi-check-circle',
+    color: 'positive',
+    visible: () => cambiarResponsable.value,
+    accion: async () => {
+      refEmpleadosGrupo.value.seleccionar()
+      cambiarResponsable.value = false
+    }
+  }
+
+  const btnCancelarDesignacionResponsable: CustomActionTable = {
+    titulo: 'Cancelar',
+    icono: 'bi-x-circle',
+    color: 'negative',
+    visible: () => cambiarResponsable.value,
+    accion: () => cambiarResponsable.value = false
+  }
+
+  async function entidadSeleccionadaResponsable(empleados: EmpleadoGrupo[]) {
+    if (empleados.length) {
+
+      const empleadoSeleccionado = empleados[0]
+      empleadoSeleccionado.es_responsable = true
+      const index = empleadosSeleccionados.value.findIndex((emp: EmpleadoGrupo) => emp.id === empleadoSeleccionado.id)
+
+      empleadosSeleccionados.value = empleadosSeleccionados.value.map((empleado: EmpleadoGrupo) => {
+        const empleadoGrupo = new EmpleadoGrupo()
+        empleadoGrupo.hydrate(empleado)
+        empleadoGrupo.es_responsable = false
+        return empleadoGrupo
+      })
+
+      empleadosSeleccionados.value.splice(index, 1, empleadoSeleccionado)
+      empleados = []
+    }
+  }
+
+  /* async function entidadSeleccionada(empleadoSeleccionado: Empleado[]) {
     if (empleadoSeleccionado.length) {
       const idEmpleadoSeleccionado = empleadoSeleccionado[0].id
 
@@ -109,16 +148,21 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
         }
       }
     }
-  }
+  } */
 
   return {
     refEmpleadosGrupo,
     empleadoGrupoQuitar,
+    entidadSeleccionadaResponsable,
     quitarEmpleado,
-    entidadSeleccionada,
-    cancelarDesignacion,
-    asignarLider,
-    asignarSecretario,
-    designarLider,
+    // Designar responsable
+    cambiarResponsable,
+    btnCambiarResponsable,
+    btnConfirmarDesignarResponsable,
+    btnCancelarDesignacionResponsable,
+    // cancelarDesignacion,
+    // asignarLider,
+    // asignarSecretario,
+    // designarLider,
   }
 }

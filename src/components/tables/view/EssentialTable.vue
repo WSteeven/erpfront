@@ -250,6 +250,7 @@
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
           rounded
+          glossy
           no-caps
           @click="accion2Header.accion"
         >
@@ -267,6 +268,7 @@
           :color="accion3Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
+          glossy
           rounded
           no-caps
           @click="accion3Header.accion"
@@ -285,6 +287,7 @@
           :color="accion4Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
+          glossy
           rounded
           no-caps
           @click="accion4Header.accion"
@@ -303,6 +306,7 @@
           :color="accion5Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
+          glossy
           rounded
           no-caps
           @click="accion5Header.accion"

@@ -330,7 +330,7 @@
         @seleccionarGrupo="seleccionarGrupo"
         @seleccionarEmpleado="seleccionarEmpleado"
         @actualizar-empleados="
-          (empleados) => (subtarea.empleados_adicionales = empleados)
+          (empleados) => (subtarea.empleados_designados = empleados)
         "
       ></designar-responsable-trabajo>
     </q-expansion-item>

@@ -1,7 +1,13 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
+import { EmpleadoGrupo } from './EmpleadoGrupo'
 
-export const configuracionColumnasEmpleadoGrupo: ColumnConfig<Empleado>[] = [
+export const configuracionColumnasEmpleadoGrupo: ColumnConfig<EmpleadoGrupo>[] = [
+  {
+    name: 'es_responsable',
+    field: 'es_responsable',
+    label: 'Responsable',
+    align: 'left',
+  },
   {
     name: 'nombres',
     field: 'nombres',

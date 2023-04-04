@@ -170,8 +170,9 @@
         estilos="margin-bottom: 14px;"
         :configuracionColumnas="columnasEmpleado"
         :datos="empleadosGrupo"
-        :accion2Header="designarLider"
-        :accion5Header="cancelarDesignacion"
+        :accion1Header="btnCambiarResponsable"
+        :accion2Header="btnConfirmarDesignarResponsable"
+        :accion3Header="btnCancelarDesignacionResponsable"
         :accion1="quitarEmpleado"
         :mostrarBotones="false"
         :permitirConsultar="false"
@@ -182,12 +183,12 @@
         :permitir-buscar="false"
         :tipo-seleccion="tipoSeleccion"
         :mostrar-footer="!empleadosGrupo.length"
-        @selected="entidadSeleccionada"
+        @selected="entidadSeleccionadaResponsable"
       >
       </essential-table>
     </div>
 
-    <div class="col-12">
+    <!-- <div class="col-12">
       <essential-table
         v-if="
           subtarea.modo_asignacion_trabajo ===
@@ -209,7 +210,7 @@
         :mostrar-footer="!empleadosAdicionales.length"
       >
       </essential-table>
-    </div>
+    </div> -->
   </div>
 
   <essential-selectable-table
