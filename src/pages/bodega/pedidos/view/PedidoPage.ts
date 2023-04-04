@@ -41,7 +41,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onReestablecer, onConsultado, onGuardado } = mixin.useHooks()
+    const { onReestablecer, onConsultado, onGuardado, onBeforeGuardar } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
 
@@ -76,7 +76,7 @@ export default defineComponent({
     })
     onConsultado(() => {
       opciones_empleados.value = listadosAuxiliares.empleados
-      if (accion.value === acciones.editar && (esCoordinador || esActivosFijos||store.user.id===pedido.per_autoriza_id)) {
+      if (accion.value === acciones.editar && (esCoordinador || esActivosFijos || store.user.id === pedido.per_autoriza_id)) {
         soloLectura.value = true
       }
     })
@@ -125,7 +125,7 @@ export default defineComponent({
       // },
       fecha_limite: {
         required: requiredIf(() => accion.value === acciones.nuevo),
-        fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
+        fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual)) && accion.value === acciones.nuevo
       },
     }
 
@@ -277,8 +277,8 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador||esActivosFijos||store.esJefeTecnico) && tabSeleccionado.value === estadosTransacciones.pendiente
-          ? true  : false
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico) && tabSeleccionado.value === estadosTransacciones.pendiente
+          ? true : false
       },
 
       //Filtros

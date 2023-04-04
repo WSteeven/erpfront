@@ -322,7 +322,8 @@
             </q-select>
           </div>
           <!-- Observacion de autorizacion -->
-          <div v-if="store.user.id===pedido.per_autoriza_id"
+          <div
+            v-if="store.user.id === pedido.per_autoriza_id"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
@@ -331,7 +332,13 @@
               v-model="pedido.observacion_aut"
               placeholder="Opcional"
               :disable="
-                disabled || (soloLectura && !(esCoordinador || esActivosFijos||store.user.id==pedido.per_autoriza_id))
+                disabled ||
+                (soloLectura &&
+                  !(
+                    esCoordinador ||
+                    esActivosFijos ||
+                    store.user.id == pedido.per_autoriza_id
+                  ))
               "
               :error="!!v$.observacion_aut.$errors.length"
               outlined
@@ -371,7 +378,10 @@
             </q-select>
           </div>
           <!-- observacion estado -->
-          <div v-if="pedido.observacion_est||accion===acciones.nuevo" class="col-12 col-md-3">
+          <div
+            v-if="pedido.observacion_est || accion === acciones.nuevo"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
