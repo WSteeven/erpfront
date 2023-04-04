@@ -56,6 +56,8 @@ import { descargarArchivoUrl } from 'shared/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
+import { DesignadoEmpleadoResponsable } from '../application/validaciones/DesignadoEmpleadoResponsable'
+import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -78,7 +80,7 @@ export default defineComponent({
     * Mixin
     *********/
     const { entidad: subtarea, listadosAuxiliares, accion, listado, disabled } = props.mixinModal.useReferencias()
-    const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador, filtrar } = props.mixinModal.useComportamiento()
+    const { obtenerListados, cargarVista, consultar, guardar, editar, reestablecer, setValidador } = props.mixinModal.useComportamiento()
     const { onBeforeGuardar, onConsultado } = props.mixinModal.useHooks()
 
     const mixinArchivo = new ContenedorSimpleMixin(Archivo, new ArchivoSubtareaController())
@@ -125,8 +127,6 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    // const tipoSeleccion = computed(() => asignarLider.value || asignarSecretario.value ? 'single' : 'none')
-
     const { notificarError, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const seleccionBusqueda = ref('por_tecnico')
     const tecnicoSeleccionado = ref()
@@ -157,36 +157,9 @@ export default defineComponent({
       },
     }
 
-    /* const data = computed(() => {
-      return {
-        accion: accion.value,
-        modo_asignacion_trabajo: subtarea.modo_asignacion_trabajo,
-        grupo: computed(() => subtarea.grupo),
-      }
-    })
-
-    const {
-      refEmpleadosGrupo,
-      empleadoGrupoQuitar,
-      quitarEmpleado,
-      entidadSeleccionada,
-      cancelarDesignacion,
-      designarLider,
-      designarLiderDefinitivo,
-      designarSecretario,
-      designarSecretarioDefinitivo,
-      asignarLider,
-      asignarSecretario,
-    } = useBotonesTablaDesignacionTrabajo(empleadosSeleccionados, data) */
-
     /*********
     * Filtros
     **********/
-    // - Filtro tipos de trabajos
-    /*const tiposTrabajosSource = computed(() =>
-      listadosAuxiliares.tiposTrabajos.filter((tipo: TipoTrabajo) => tipo.cliente_id === (subtarea.tarea ? obtenerIdCliente(subtarea.tarea) : false))
-    ) */
-
     const {
       clientes,
       filtrarClientes,
@@ -211,6 +184,12 @@ export default defineComponent({
     *********/
     onBeforeGuardar(() => {
       subtarea.tarea = subtareaStore.idTarea
+      subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => {
+        const empleadoGrupo = new EmpleadoGrupo()
+        empleadoGrupo.hydrate(empleado)
+        empleadoGrupo.es_responsable = empleado.es_responsable ? 1 : 0
+        return empleadoGrupo
+      })
       //subtarea.empleados_adicionales = subtarea.empleados_adicionales.map((empleado: Empleado) => empleado.id)
     })
 
@@ -307,6 +286,9 @@ export default defineComponent({
     const v$ = useVuelidate(rules, subtarea)
     setValidador(v$.value)
 
+    const designadoEmpleadoResponsable = new DesignadoEmpleadoResponsable(subtarea)
+    props.mixinModal.agregarValidaciones(designadoEmpleadoResponsable)
+
     /************
     * Funciones
     *************/
@@ -320,13 +302,13 @@ export default defineComponent({
       if (!subtarea.es_ventana) subtarea.hora_fin_trabajo = null
     }
 
-    function seleccionarGrupo(grupo_id) {
+    function seleccionarGrupo(grupo_id: number) {
       subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
       subtarea.grupo = grupo_id
       subtarea.empleado = null
     }
 
-    function seleccionarEmpleado(empleado_id) {
+    function seleccionarEmpleado(empleado_id: number) {
       subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
       subtarea.empleado = empleado_id
       subtarea.grupo = null

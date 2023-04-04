@@ -377,3 +377,7 @@ export function obtenerUbicacion(onUbicacionConcedida) {
 
   navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud)
 }
+
+export function extraerRol(roles: string[], rolConsultar: string) {
+  return roles.some((rol: string) => rol === rolConsultar)
+}

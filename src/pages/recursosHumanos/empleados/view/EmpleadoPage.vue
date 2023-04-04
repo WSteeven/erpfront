@@ -293,59 +293,57 @@
           </div>
           <div class="col-12 col-md-12 q-ma-sm">
             <q-expansion-item
-            class="overflow-hidden q-mb-md expansion"
-            label="Datos adicionales"
-            header-class="text-bold bg-header-collapse"
-            default-opened
-          >
-            <div class="row q-col-gutter-sm q-pa-sm">
-              <!-- Casa propia -->
-              <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">La casa donde vive es</label>
-                <q-toggle
-                  :label="empleado.casa_propia ? 'PROPIA' : 'ALQUILADA'"
-                  v-model="empleado.casa_propia"
-                  color="primary"
-                  keep-color
-                  icon="bi-check2-circle"
-                  unchecked-icon="clear"
-                  :disable="disabled"
-                />
+              class="overflow-hidden q-mb-md expansion"
+              label="Datos adicionales"
+              header-class="text-bold bg-header-collapse"
+              default-opened
+            >
+              <div class="row q-col-gutter-sm q-pa-sm">
+                <!-- Casa propia -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">La casa donde vive es</label>
+                  <q-toggle
+                    :label="empleado.casa_propia ? 'PROPIA' : 'ALQUILADA'"
+                    v-model="empleado.casa_propia"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <!-- Vive con discapacitados -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block"
+                    >Convive con personas discapacitadas</label
+                  >
+                  <q-toggle
+                    :label="empleado.vive_con_discapacitados ? 'SI' : 'NO'"
+                    v-model="empleado.vive_con_discapacitados"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <!-- Casa propia -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block"
+                    >Tiene a su cargo personas discapacitadas</label
+                  >
+                  <q-toggle
+                    :label="empleado.responsable_discapacitados ? 'SI' : 'NO'"
+                    v-model="empleado.responsable_discapacitados"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
               </div>
-              <!-- Vive con discapacitados -->
-              <div class="col-12 col-md-3">
-                <label class="q-mb-sm block"
-                  >Convive con personas discapacitadas</label
-                >
-                <q-toggle
-                  :label="empleado.vive_con_discapacitados ? 'SI' : 'NO'"
-                  v-model="empleado.vive_con_discapacitados"
-                  color="primary"
-                  keep-color
-                  icon="bi-check2-circle"
-                  unchecked-icon="clear"
-                  :disable="disabled"
-                />
-              </div>
-              <!-- Casa propia -->
-              <div
-                class="col-12 col-md-3"
-              >
-                <label class="q-mb-sm block"
-                  >Tiene a su cargo personas discapacitadas</label
-                >
-                <q-toggle
-                  :label="empleado.responsable_discapacitados ? 'SI' : 'NO'"
-                  v-model="empleado.responsable_discapacitados"
-                  color="primary"
-                  keep-color
-                  icon="bi-check2-circle"
-                  unchecked-icon="clear"
-                  :disable="disabled"
-                />
-              </div>
-            </div>
-          </q-expansion-item>
+            </q-expansion-item>
           </div>
         </q-expansion-item>
         <q-expansion-item
@@ -503,6 +501,7 @@
                 options-dense
                 dense
                 outlined
+                clearable
                 :error="!!v$.grupo.$errors.length"
                 @blur="v$.grupo.$touch"
                 :option-value="(v) => v.id"

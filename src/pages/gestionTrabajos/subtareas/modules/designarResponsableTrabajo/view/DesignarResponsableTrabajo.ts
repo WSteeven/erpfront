@@ -4,7 +4,7 @@ import { computed, defineComponent, Ref, ref, UnwrapRef, watch, watchEffect } fr
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { requiredIf } from 'shared/i18n-validators'
-import { acciones, accionesTabla } from 'config/utils'
+import { acciones, accionesTabla, rolesSistema } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
@@ -20,9 +20,10 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { extraerRol, isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
 
 export default defineComponent({
   components: {
@@ -44,6 +45,7 @@ export default defineComponent({
     const { cargarVista, obtenerListados } = mixin.useComportamiento()
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
 
+    const empleadosGrupo: Ref<Empleado[]> = ref([])
     watchEffect(() => {
       /* if (props.subtareaInicial) {
         subtarea.hydrate(props.subtareaInicial)
@@ -72,10 +74,9 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const tipoSeleccion = computed(() => asignarLider.value ? 'single' : 'none')
+    const tipoSeleccion = computed(() => cambiarResponsable.value ? 'single' : 'none')
     const notificaciones = useNotificaciones()
-    const empleadosGrupo: Ref<Empleado[]> = ref([])
-    const empleadosAdicionales: Ref<Empleado[]> = ref([])
+    // const empleadosAdicionales: Ref<Empleado[]> = ref([])
     /* const empleadosTodos = computed({
       get() {
         return [...empleadosSeleccionados.value, ...empleadosAdicionales.value]
@@ -108,13 +109,22 @@ export default defineComponent({
     let grupoConsultado: number
 
     watchEffect(() => {
-      if (subtarea.grupo) {
-        grupoConsultado = subtarea.grupo
-        obtenerTecnicosGrupo(subtarea.grupo)
-        emit('seleccionar-grupo', subtarea.grupo)
-      } else if (subtarea.empleado) {
-        emit('seleccionar-empleado', subtarea.empleado)
+      if (props.accion === acciones.nuevo) {
+        if (subtarea.grupo) {
+          grupoConsultado = subtarea.grupo
+          obtenerTecnicosGrupo(subtarea.grupo)
+          emit('seleccionar-grupo', subtarea.grupo)
+        } else if (subtarea.empleado) {
+          emit('seleccionar-empleado', subtarea.empleado)
+        }
       }
+
+      /*if (props.accion === acciones.consultar) {
+        if (subtarea.grupo) {
+          console.log(props.subtareaInicial.empleados_designados)
+          empleadosGrupo.value = mapearResponsable(props.subtareaInicial.empleados_designados)
+        }
+      } */
     })
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
@@ -124,7 +134,7 @@ export default defineComponent({
         cargando.activar()
         const empleadoController = new EmpleadoController()
         const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-        empleadosGrupo.value = result
+        empleadosGrupo.value = mapearResponsable(result)
       } catch (error) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
@@ -133,6 +143,17 @@ export default defineComponent({
       } finally {
         cargando.desactivar()
       }
+    }
+
+    function mapearResponsable(empleados: Empleado[]) {
+      return empleados.map((empleado) => {
+        const empleadoGrupo = new EmpleadoGrupo()
+        empleadoGrupo.hydrate(empleado)
+        console.log(empleado.roles)
+        empleadoGrupo.es_responsable = typeof empleado.roles === 'string' ? extraerRol(empleado.roles.split(','), rolesSistema.tecnico_lider) : false
+        // empleadoGrupo.roles = typeof empleado.roles === 'object' ? empleado.roles.join(',') : ''
+        return empleadoGrupo
+      })
     }
 
     /**********
@@ -149,11 +170,12 @@ export default defineComponent({
     const {
       refEmpleadosGrupo,
       empleadoGrupoQuitar,
+      entidadSeleccionadaResponsable,
       quitarEmpleado,
-      entidadSeleccionada,
-      cancelarDesignacion,
-      designarLider,
-      asignarLider,
+      cambiarResponsable,
+      btnCambiarResponsable,
+      btnConfirmarDesignarResponsable,
+      btnCancelarDesignacionResponsable,
     } = useBotonesTablaDesignacionSubtarea(empleadosGrupo, data)
 
     /*****************
@@ -166,16 +188,16 @@ export default defineComponent({
       listar: listarEmpleadosGrupo,
       limpiar: limpiarEmlpeadosGrupo,
       seleccionar: seleccionarEmpleadosGrupo,
-    } = useOrquestadorSelectorEmpleadosGrupo(empleadosAdicionales, 'empleados')
+    } = useOrquestadorSelectorEmpleadosGrupo(empleadosGrupo, 'empleados')
 
     // empleados_adicinoales
     //watchEffect(() => emit('actualizar-empleados', [...empleadosGrupo.value, ...empleadosAdicionales.value]))
-    watch(empleadosAdicionales, () => emit('actualizar-empleados', empleadosAdicionales.value))
+    watch(empleadosGrupo, () => emit('actualizar-empleados', empleadosGrupo.value))
 
     /************
      * Funciones
      ************/
-    const quitarEmpleadoAdicional: CustomActionTable = {
+    /* const quitarEmpleadoAdicional: CustomActionTable = {
       titulo: 'Quitar',
       icono: 'bi-x',
       color: 'negative',
@@ -183,7 +205,7 @@ export default defineComponent({
       accion: ({ posicion }) => {
         empleadosAdicionales.value.splice(posicion, 1)
       },
-    }
+    } */
 
     return {
       validate$,
@@ -192,7 +214,7 @@ export default defineComponent({
       columnasEmpleado: [...configuracionColumnasEmpleadoGrupo, accionesTabla],
       configuracionColumnasEmpleadoGrupo,
       empleadosGrupo,
-      empleadosAdicionales,
+      // empleadosAdicionales,
       grupos,
       filtrarGrupos,
       empleados,
@@ -200,13 +222,12 @@ export default defineComponent({
       tipoSeleccion,
       refEmpleadosGrupo,
       empleadoGrupoQuitar,
+      entidadSeleccionadaResponsable,
+      // quitarEmpleadoAdicional,
       quitarEmpleado,
-      entidadSeleccionada,
-      cancelarDesignacion,
-      quitarEmpleadoAdicional,
-      // designarLiderTemporal,
-      designarLider,
-      asignarLider,
+      btnCambiarResponsable,
+      btnConfirmarDesignarResponsable,
+      btnCancelarDesignacionResponsable,
       // Orquesatdor
       refListadoSeleccionableEmpleadosGrupo,
       criterioBusquedaEmpleadosGrupo,

@@ -59,7 +59,7 @@ export class Subtarea extends EntidadAuditable {
   designar_otro_responsable: boolean // reagendar
   puede_ejecutar: boolean
   tiene_subtareas: boolean
-  empleados_adicionales: Empleado[]
+  empleados_designados: Empleado[]
   seguimiento: number | null
   tiempo_estimado: string | null
 
@@ -125,7 +125,7 @@ export class Subtarea extends EntidadAuditable {
     this.designar_otro_responsable = false
     this.puede_ejecutar = false
     this.tiene_subtareas = false
-    this.empleados_adicionales = []
+    this.empleados_designados = []
     this.seguimiento = null
     this.tiempo_estimado = null
   }
