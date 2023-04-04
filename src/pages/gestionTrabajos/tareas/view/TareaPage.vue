@@ -473,8 +473,6 @@
                     @update:model-value="
                       (v) => obtenerClienteFinal(tarea.cliente_final)
                     "
-                    :error="!!v$.cliente_final.$errors.length"
-                    @blur="v$.cliente_final.$touch"
                   >
                     <template v-slot:no-option>
                       <q-item>
@@ -482,15 +480,6 @@
                           No hay resultados
                         </q-item-section>
                       </q-item>
-                    </template>
-
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.cliente_final.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
                     </template>
                   </q-select>
                 </div>
