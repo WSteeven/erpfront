@@ -25,6 +25,12 @@ export const configuracionColumnasAutorizarGasto: ColumnConfig<Gasto>[] = [
     sortable: true
   },
   {
+    name: 'num_comprobante',
+    field: 'num_comprobante',
+    label: '#Comprobante',
+    align: 'left',
+    sortable: true },
+  {
     name: 'ruc',
     field: 'ruc',
     label: 'RUC.',
@@ -35,6 +41,13 @@ export const configuracionColumnasAutorizarGasto: ColumnConfig<Gasto>[] = [
     name: 'aut_especial_user',
     field: 'aut_especial_user',
     label: 'Autorización Especial',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'empleado_info',
+    field: 'empleado_info',
+    label: 'Empleado',
     align: 'left',
     sortable: true
   },
@@ -68,5 +81,4 @@ export const configuracionColumnasAutorizarGasto: ColumnConfig<Gasto>[] = [
     align: 'left',
     sortable: true
   },
-
 ]

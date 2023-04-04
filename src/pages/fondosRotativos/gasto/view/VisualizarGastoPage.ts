@@ -65,6 +65,8 @@ export default defineComponent({
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     onConsultado(()=>{
+      console.log(gasto);
+
       esFactura.value = gasto.factura ==null? false:true
     })
     if (fondoRotativoStore.id_gasto) {
@@ -108,6 +110,9 @@ export default defineComponent({
         maxLength: maxLength(15),
       },
       aut_especial: {
+        required,
+      },
+      empleado_info: {
         required,
       },
       detalle: {
