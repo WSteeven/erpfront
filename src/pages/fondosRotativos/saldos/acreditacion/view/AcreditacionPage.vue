@@ -125,7 +125,7 @@
           </div>
         </div>
       </q-form>
-      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="accion === acciones.consultar">
+      <div class="q-pa-md q-gutter-sm flex flex-center" v-if="accion === acciones.consultar && acreditacion.estado == 'REALIZADO'">
           <q-btn color="negative" @click="anularAcreditacion(acreditacion)">
           <q-icon class="q-pr-sm" name="bi-x-circle" size="xs"></q-icon>Anular</q-btn
         >
