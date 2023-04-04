@@ -118,7 +118,7 @@ export default defineComponent({
       }
     }
     if(store.can('puede.buscar.saldo.usuarios')==false){
-      reporte_saldo_actual.usuario = store.user.usuario_id
+      reporte_saldo_actual.usuario = store.user.id
       visualizar_saldo_usuario.value = true
       saldo_anterior();
     }
