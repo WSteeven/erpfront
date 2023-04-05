@@ -107,6 +107,7 @@ export default defineComponent({
           params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
         },
       })
+      listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
       tareas.value = listadosAuxiliares.tareas
       usuarios.value = listadosAuxiliares.usuarios
     })
