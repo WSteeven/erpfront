@@ -209,9 +209,9 @@
             <q-input
               v-model="gasto.factura"
               placeholder="Obligatorio"
-              mask="###-###-#########"
+              mask="###-###-#############"
               fill-mask
-              hint="###-###-#########"
+              hint="###-###-#############"
               :disable="disabled"
               :error="!!v$.factura.$errors.length"
               @blur="v$.factura.$touch"

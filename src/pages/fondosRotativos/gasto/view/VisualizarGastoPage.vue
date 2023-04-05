@@ -117,17 +117,19 @@
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
-            <selector-imagen-modal :imagen="gasto.comprobante1"
+            <selector-imagen-texto :imagen="gasto.comprobante1"
+            :texto1="'R.U.C.: '+gasto.ruc" :texto2="'Factura: '+gasto.factura" :texto3="'Comprobante: '+gasto.num_comprobante!=null?gasto.num_comprobante:''" :texto4="'Empleado: '+gasto.empleado_info"
               @update:modelValue="(data) => (gasto.comprobante1 = data)">
-            </selector-imagen-modal>
+            </selector-imagen-texto>
           </div>
 
           <!-- Comprobante 2 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
-            <selector-imagen-modal :imagen="gasto.comprobante2"
+            <selector-imagen-texto :imagen="gasto.comprobante2"
+            :texto1="'R.U.C.: '+gasto.ruc" :texto2="'Factura: '+gasto.factura" :texto3="'Comprobante: '+gasto.num_comprobante!=null?gasto.num_comprobante:''" :texto4="'Empleado: '+gasto.empleado_info"
               @update:modelValue="(data) => (gasto.comprobante2 = data)">
-            </selector-imagen-modal>
+            </selector-imagen-texto>
           </div>
 
           <!-- Observacion -->

@@ -119,7 +119,7 @@ export default defineComponent({
         requiredIfFactura: requiredIf(() => esFactura.value),
       },
       factura: {
-        maxLength: maxLength(17),
+        maxLength: maxLength(22),
       },
       aut_especial: {
         requiredIfTecnico: requiredIf(() => esTecnico.value),

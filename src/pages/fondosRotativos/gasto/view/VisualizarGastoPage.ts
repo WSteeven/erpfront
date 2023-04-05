@@ -4,7 +4,7 @@ import {  defineComponent,  ref, watchEffect } from 'vue'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagenModal from 'components/SelectorImagenModal.vue'
-
+import SelectorImagenTexto from 'components/SelectorImagenTexto.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -24,7 +24,7 @@ import { VisualizarGastoController } from '../infrestructure/VisualizarGastoCont
 
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagenModal },
+  components: { TabLayout, SelectorImagenModal,SelectorImagenTexto },
   emits: ['guardado','cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()

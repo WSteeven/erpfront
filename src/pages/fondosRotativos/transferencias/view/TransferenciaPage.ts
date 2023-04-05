@@ -51,7 +51,7 @@ export default defineComponent({
         notificarError,
       } = useNotificaciones()
       const usuarios = ref([])
-      const esDevolucion = ref(true)
+      const esDevolucion = ref(false)
       const tareas = ref([])
       const mostrarListado = ref(true)
       const mostrarAprobacion = ref(false)
