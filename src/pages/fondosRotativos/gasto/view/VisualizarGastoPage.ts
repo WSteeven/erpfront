@@ -21,6 +21,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { maskFecha } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
+import { AutorizarGastoModales } from 'pages/fondosRotativos/autorizarGasto/domain/AutorizarGastoModales'
 
 
 export default defineComponent({
@@ -170,6 +171,7 @@ export default defineComponent({
                 await aprobarController.aprobarGasto(entidad)
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
                 emit('cerrar-modal');
+                emit('guardado');
               } catch (e: any) {
                 notificarError(
                   'No se pudo aprobar, debes ingresar un motivo para la anulación'
@@ -190,6 +192,7 @@ export default defineComponent({
                   await aprobarController.rechazarGasto(entidad)
                   notificarAdvertencia('Se rechazado Gasto Exitosamente')
                   emit('cerrar-modal');
+                  emit('guardado');
                 } catch (e: any) {
                   notificarError(
                     'No se pudo rechazar, debes ingresar un motivo para la anulación'
@@ -211,6 +214,7 @@ export default defineComponent({
                     await aprobarController.anularGasto(entidad)
                     notificarAdvertencia('Se anulado Gasto Exitosamente')
                     emit('cerrar-modal');
+                    emit('guardado');
                   } catch (e: any) {
                     notificarError(
                       'No se pudo anular, debes ingresar un motivo para la anulación'

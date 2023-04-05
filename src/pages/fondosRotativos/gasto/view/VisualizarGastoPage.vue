@@ -113,25 +113,6 @@
             <q-input v-model="gasto.sub_detalle_info" placeholder="Obligatorio" type="textarea" autogrow disable outlined
               dense></q-input>
           </div>
-
-          <!-- Comprobante 1 Archivo -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Comprobante 1</label>
-            <selector-imagen-texto :imagen="gasto.comprobante1"
-            :texto1="'R.U.C.: '+gasto.ruc" :texto2="'Factura: '+gasto.factura" :texto3="'Comprobante: '+gasto.num_comprobante!=null?gasto.num_comprobante:''" :texto4="'Empleado: '+gasto.empleado_info"
-              @update:modelValue="(data) => (gasto.comprobante1 = data)">
-            </selector-imagen-texto>
-          </div>
-
-          <!-- Comprobante 2 Archivo -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Comprobante 2</label>
-            <selector-imagen-texto :imagen="gasto.comprobante2"
-            :texto1="'R.U.C.: '+gasto.ruc" :texto2="'Factura: '+gasto.factura" :texto3="'Comprobante: '+gasto.num_comprobante!=null?gasto.num_comprobante:''" :texto4="'Empleado: '+gasto.empleado_info"
-              @update:modelValue="(data) => (gasto.comprobante2 = data)">
-            </selector-imagen-texto>
-          </div>
-
           <!-- Observacion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación</label>
@@ -150,7 +131,26 @@
             <q-input v-model="gasto.empleado_info" placeholder="Obligatorio" disable outlined dense>
             </q-input>
           </div>
+           <!-- Comprobante 1 Archivo -->
+           <div class="col-6 col-md-3">
+            <label class="q-mb-sm block">Comprobante 1</label>
+            <selector-imagen-texto :imagen="gasto.comprobante1"
+            :texto1="'R.U.C.: '+gasto.ruc" :texto2="'Factura: '+gasto.factura" :texto3="'Comprobante: '+gasto.num_comprobante!=null?gasto.num_comprobante:''" :texto4="'Empleado: '+gasto.empleado_info"
+              @update:modelValue="(data) => (gasto.comprobante1 = data)">
+            </selector-imagen-texto>
+          </div>
+
+          <!-- Comprobante 2 Archivo -->
+          <div class="col-6 col-md-3">
+            <label class="q-mb-sm block">Comprobante 2</label>
+            <selector-imagen-texto :imagen="gasto.comprobante2"
+            :texto1="'R.U.C.: '+gasto.ruc" :texto2="'Factura: '+gasto.factura" :texto3="'Comprobante: '+gasto.num_comprobante!=null?gasto.num_comprobante:''" :texto4="'Empleado: '+gasto.empleado_info"
+              @update:modelValue="(data) => (gasto.comprobante2 = data)">
+            </selector-imagen-texto>
+          </div>
         </div>
+
+
       </q-form>
       <div class="q-pa-md q-gutter-sm flex flex-center"
         v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'POR APROBAR'">
