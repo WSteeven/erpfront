@@ -28,6 +28,7 @@
     ></essential-table-tabs>
     <modal-entidad
     :comportamiento="modales"
+    @guardado="guardado"
     >  </modal-entidad>
   </q-page>
 </template>

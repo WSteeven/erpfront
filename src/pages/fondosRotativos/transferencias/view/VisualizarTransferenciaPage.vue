@@ -66,4 +66,4 @@
     </template>
   </tab-layout>
 </template>
-<script src="./TransferenciaPage.ts"></script>
+<script src="./VisualizarTransferenciaPage.ts"></script>

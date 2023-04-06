@@ -12,7 +12,7 @@ export class AutorizarTransferenciaModales {
 
   constructor() {
     this.VisualizarTransferenciaPage = markRaw(
-      new ComponenteModal('Transferencia', VisualizarTransferenciaPage)
+      new ComponenteModal('VisualizarTransferencia', VisualizarTransferenciaPage)
     )
   }
 }

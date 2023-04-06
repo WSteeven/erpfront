@@ -490,8 +490,9 @@ export default defineComponent({
       //transferencia
       llenarTransferencia,
 
-
-
+      pagination: ref({
+        rowsPerPage: 0
+      })
     }
   }
 })

@@ -19,6 +19,7 @@ import { AutorizarGasto } from '../domain/AutorizarGasto'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { AutorizarGastoModales } from '../domain/AutorizarGastoModales'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -80,6 +81,9 @@ export default defineComponent({
         modales.abrirModalEntidad('VisualizarGastoPage')
       }
     }
+    async function guardado() {
+      filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
+    }
 
     return {
       configuracionColumnasAutorizarGasto,
@@ -87,6 +91,7 @@ export default defineComponent({
       tabAutorizarGasto,
       botonVerModalGasto,
       accionesTabla,
+      guardado,
       filtrarAutorizacionesGasto,
       authenticationStore,
       modales,
