@@ -30,7 +30,7 @@ export default defineComponent({
     EssentialTable,
     EssentialSelectableTable,
   },
-  emits: ['seleccionar-grupo', 'seleccionar-empleado', 'actualizar-empleados'],
+  emits: ['seleccionar-grupo', 'seleccionar-empleado', 'actualizar-empleados', 'seleccionar-modo-designacion'],
   props: {
     disable: Boolean,
     accion: String,
@@ -45,7 +45,6 @@ export default defineComponent({
     const { cargarVista, obtenerListados } = mixin.useComportamiento()
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
 
-    const empleadosGrupo: Ref<Empleado[]> = ref([])
     watchEffect(() => {
       /* if (props.subtareaInicial) {
         subtarea.hydrate(props.subtareaInicial)
@@ -73,9 +72,10 @@ export default defineComponent({
 
     /************
      * Variables
-     ************/
+    ************/
     const tipoSeleccion = computed(() => cambiarResponsable.value ? 'single' : 'none')
     const notificaciones = useNotificaciones()
+    const empleadosGrupo: Ref<Empleado[]> = ref([])
     // const empleadosAdicionales: Ref<Empleado[]> = ref([])
     /* const empleadosTodos = computed({
       get() {
@@ -108,24 +108,48 @@ export default defineComponent({
     ************/
     let grupoConsultado: number
 
-    watchEffect(() => {
+    function seleccionarGrupo() {
+      if (subtarea.grupo) {
+        // subtarea.empleado = null
+        obtenerTecnicosGrupo(subtarea.grupo)
+        return emit('seleccionar-grupo', subtarea.grupo)
+      }
+    }
+
+    function seleccionarEmpleado() {
+      // subtarea.grupo = null
+      return emit('seleccionar-empleado', subtarea.empleado)
+    }
+
+    function limpiarSelector() {
+      console.log(subtarea.modo_asignacion_trabajo)
+      subtarea.empleado = null
+      subtarea.grupo = null
+      empleadosGrupo.value = []
+      return emit('seleccionar-modo-designacion', subtarea.modo_asignacion_trabajo)
+    }
+    /*watchEffect(() => {
       if (props.accion === acciones.nuevo) {
         if (subtarea.grupo) {
-          grupoConsultado = subtarea.grupo
+          subtarea.empleado = null
+          // grupoConsultado = subtarea.grupo
           obtenerTecnicosGrupo(subtarea.grupo)
-          emit('seleccionar-grupo', subtarea.grupo)
-        } else if (subtarea.empleado) {
-          emit('seleccionar-empleado', subtarea.empleado)
+          return emit('seleccionar-grupo', subtarea.grupo)
         }
-      }
 
-      /*if (props.accion === acciones.consultar) {
-        if (subtarea.grupo) {
-          console.log(props.subtareaInicial.empleados_designados)
-          empleadosGrupo.value = mapearResponsable(props.subtareaInicial.empleados_designados)
+        if (subtarea.empleado) {
+          subtarea.grupo = null
+          return emit('seleccionar-empleado', subtarea.empleado)
         }
-      } */
-    })
+      }*/
+
+    /*if (props.accion === acciones.consultar) {
+      if (subtarea.grupo) {
+        console.log(props.subtareaInicial.empleados_designados)
+        empleadosGrupo.value = mapearResponsable(props.subtareaInicial.empleados_designados)
+      }
+    } */
+    // })
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
       const cargando = new StatusEssentialLoading()
@@ -208,6 +232,9 @@ export default defineComponent({
     } */
 
     return {
+      seleccionarGrupo,
+      seleccionarEmpleado,
+      limpiarSelector,
       validate$,
       subtarea,
       modosAsignacionTrabajo,

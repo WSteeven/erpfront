@@ -70,6 +70,19 @@
           </q-input>
         </div>
 
+        <!-- Titulo -->
+        <div v-if="subtarea.ruta_tarea" class="col-12">
+          <label class="q-mb-sm block">Ruta</label>
+          <q-input
+            v-model="subtarea.ruta_tarea"
+            :disable="disabled"
+            autofocus
+            outlined
+            dense
+          >
+          </q-input>
+        </div>
+
         <!-- Codigo tarea JP -->
         <div v-if="subtarea.codigo_trabajo" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de trabajo</label>
@@ -329,6 +342,7 @@
         :subtarea-inicial="subtarea"
         @seleccionarGrupo="seleccionarGrupo"
         @seleccionarEmpleado="seleccionarEmpleado"
+        @seleccionarModoDesignacion="seleccionarModoDesignacion"
         @actualizar-empleados="
           (empleados) => (subtarea.empleados_designados = empleados)
         "

@@ -11,6 +11,7 @@
         rounded
         glossy
         toggle-color="positive"
+        @update:model-value="limpiarSelector()"
         unelevated
         :options="[
           {
@@ -51,6 +52,7 @@
         :disable="disable"
         :error="!!validate$.grupo.$errors.length"
         @blur="validate$.grupo.$touch"
+        @update:model-value="seleccionarGrupo()"
       >
         <template v-slot:no-option>
           <q-item>
@@ -94,6 +96,7 @@
         :disable="disable"
         :error="!!validate$.empleado.$errors.length"
         @blur="validate$.empleado.$touch"
+        @update:model-value="seleccionarEmpleado()"
       >
         <template v-slot:no-option>
           <q-item>

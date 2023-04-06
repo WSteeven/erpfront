@@ -303,14 +303,22 @@ export default defineComponent({
     }
 
     function seleccionarGrupo(grupo_id: number) {
-      subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
+      console.log('Seleccionado grupo:  ' + grupo_id)
+      // subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
       subtarea.grupo = grupo_id
-      subtarea.empleado = null
+      // subtarea.empleado = null
     }
 
     function seleccionarEmpleado(empleado_id: number) {
-      subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
+      console.log('Seleccionado empleado: ' + empleado_id)
+      // subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
       subtarea.empleado = empleado_id
+      // subtarea.grupo = null
+    }
+
+    function seleccionarModoDesignacion(modo: string) {
+      subtarea.modo_asignacion_trabajo = modo
+      subtarea.empleado = null
       subtarea.grupo = null
     }
 
@@ -370,6 +378,7 @@ export default defineComponent({
       btnDescargarArchivo,
       seleccionarGrupo,
       seleccionarEmpleado,
+      seleccionarModoDesignacion,
       // Filtros
       clientes,
       filtrarClientes,

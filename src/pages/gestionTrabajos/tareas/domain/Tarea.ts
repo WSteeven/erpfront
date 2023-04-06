@@ -16,6 +16,7 @@ export class Tarea extends EntidadAuditable {
   titulo: string | null
   descripcion_completa: string | null
   observacion: string | null
+  novedad: string | null
   para_cliente_proyecto: string | null
   fecha_solicitud: string | null
   estado: string | null
@@ -97,6 +98,7 @@ export class Tarea extends EntidadAuditable {
     this.titulo = null
     this.descripcion_completa = null
     this.observacion = null
+    this.novedad = null
     this.para_cliente_proyecto = destinosTareas.paraProyecto
     this.fecha_solicitud = null
     this.estado = null

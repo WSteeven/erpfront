@@ -3,6 +3,7 @@ import { ApiError } from 'shared/error/domain/ApiError'
 import { AxiosError, AxiosResponse } from 'axios'
 import { endpoints } from 'config/api'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { UnwrapRef } from 'vue'
 
 export class CambiarEstadoSubtarea {
   axios: AxiosHttpRepository
@@ -19,8 +20,8 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/agendar', idSubtarea)
   }
 
-  async ejecutar(idSubtarea: number) {
-    return this.solicitud('/ejecutar', idSubtarea)
+  async ejecutar(idSubtarea: number, data: UnwrapRef<any>) {
+    return this.solicitud('/ejecutar', idSubtarea, data)
   }
 
   async realizar(idSubtarea: number) {
@@ -59,7 +60,7 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/reagendar', idSubtarea, { nueva_fecha: nuevaFecha })
   }
 
-  async solicitud(accion, tarea, data?) {
+  async solicitud(accion, tarea, data?: UnwrapRef<any>) {
     const cargando = new StatusEssentialLoading()
 
     try {
@@ -67,6 +68,7 @@ export class CambiarEstadoSubtarea {
         this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + tarea
 
       cargando.activar()
+      console.log(data)
       const response: AxiosResponse = await this.axios.post(ruta, data)
 
       return {

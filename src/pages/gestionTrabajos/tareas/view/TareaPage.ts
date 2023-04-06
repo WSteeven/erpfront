@@ -50,6 +50,7 @@ import { TareaModales } from '../domain/TareaModales'
 import { RutaTareaController } from 'pages/gestionTrabajos/rutas/infraestructure/RutaTareaController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useAuthenticationStore } from 'stores/authentication'
+import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 
 export default defineComponent({
   components: {
@@ -108,6 +109,7 @@ export default defineComponent({
         empleados: new EmpleadoController(),
         motivosSuspendidos: new MotivoSuspendidoController(),
         rutas: new RutaTareaController(),
+        motivosPausas: new MotivoPausaController(),
       })
 
       // Necesario al consultar
@@ -125,6 +127,7 @@ export default defineComponent({
     const paraProyecto = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
     const tab = ref('tarea')
+    const tabActual = ref()
     const esCoordinadorBackup = authenticationStore.esCoordinadorBackup
     /*const tiposTrabajosSource = ref([])
     listadosAuxiliares.tiposTrabajos = computed(() =>
@@ -331,7 +334,8 @@ export default defineComponent({
 
     // Subtareas
     const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea, botonCancelar: btnCancelarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
-    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar, btnAnular } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
+    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, botonFormulario, botonReagendar, botonCancelar, botonFinalizar, btnSeguimiento, btnAnular, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
+    setFiltrarTrabajoAsignado(filtrarSubtareas)
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
@@ -378,18 +382,41 @@ export default defineComponent({
             accion: (data) => {
               tarea.codigo_tarea_cliente = data
 
-              confirmar('¿Está seguro de finalizar la tarea?', () => {
-                tarea.finalizado = true
-                editar(tarea)
-              })
+              const data2: CustomActionPrompt = {
+                titulo: 'Novedad',
+                mensaje: 'Ingrese alguna novedad en caso de presentarse.',
+                accion: (data) => {
+                  tarea.novedad = data
+
+                  confirmar('¿Está seguro de finalizar la tarea?', () => {
+                    tarea.finalizado = true
+                    editar(tarea)
+                  })
+                },
+              }
+
+              prompt(data2)
+
             },
           }
 
           prompt(data)
         } else {
           confirmar('¿Está seguro de finalizar la tarea?', () => {
-            tarea.finalizado = true
-            editar(tarea)
+            const data: CustomActionPrompt = {
+              titulo: 'Novedad',
+              mensaje: 'Ingrese alguna novedad en caso de presentarse.',
+              accion: (data) => {
+                tarea.novedad = data
+
+                confirmar('¿Está seguro de finalizar la tarea?', () => {
+                  tarea.finalizado = true
+                  editar(tarea)
+                })
+              },
+            }
+
+            prompt(data)
           })
         }
       }
@@ -398,6 +425,7 @@ export default defineComponent({
     function filtrarSubtareas(estado) {
       console.log(estado)
       listarSubtareas({ tarea_id: tarea.id, estado: estado })
+      tabActual.value = estado
     }
 
     function seleccionarGrupo(grupo_id) {
@@ -423,6 +451,11 @@ export default defineComponent({
       seleccionarEmpleado,
       mixinSubtarea,
       filtrarSubtareas,
+      btnIniciar,
+      btnPausar,
+      btnReanudar,
+      btnRealizar,
+      btnSeguimiento,
       btnAgregarSubtarea,
       btnConsultarSubtarea,
       btnAnular,
@@ -470,6 +503,7 @@ export default defineComponent({
       mixin,
       mediosNotificacion,
       tab,
+      tabActual,
       verificarEsVentana,
       grupos,
       filtrarGrupos,

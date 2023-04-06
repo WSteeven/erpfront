@@ -45,6 +45,16 @@ export const tabOptionsEstadosSubtareas: TabOption[] = [
   { label: 'Finalizado', value: 'FINALIZADO' },
 ]
 
+export const tabOptionsEstadosSubtareasMonitor: TabOption[] = [
+  { label: 'Agendado', value: 'AGENDADO' },
+  { label: 'Ejecutando', value: 'EJECUTANDO' },
+  { label: 'Pausado', value: 'PAUSADO' },
+  { label: 'Suspendido', value: 'SUSPENDIDO' },
+  { label: 'Cancelado', value: 'CANCELADO' },
+  { label: 'Realizado', value: 'REALIZADO' },
+  { label: 'Finalizado', value: 'FINALIZADO' },
+]
+
 export const tabTrabajoAsignado: TabOption[] = [
   //{ label: 'Todo', value: '' },
   { label: 'Agendado', value: 'AGENDADO' },

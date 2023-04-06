@@ -86,7 +86,7 @@ export default defineComponent({
     const materialesStock: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialEmpleadoController = new MaterialEmpleadoController()
     const esLider = authenticationStore.esTecnicoLider
-    //    const esCoordinador = authenticationStore.esCoordinador
+    const esCoordinador = authenticationStore.esCoordinador
 
     /************
      * Init
@@ -285,7 +285,7 @@ export default defineComponent({
       listadosAuxiliares,
       codigoSubtarea,
       esLider,
-      // esCoordinador,
+      esCoordinador,
       descargarExcel,
     }
   }

@@ -44,6 +44,8 @@
         :accion6="accion6"
         :accion7="accion7"
         :accion8="accion8"
+        :accion9="accion9"
+        :accion10="accion10"
         :accion1Header="accion1Header"
         :accion2Header="accion2Header"
         :accion3Header="accion3Header"
@@ -60,6 +62,8 @@
         @accion6="emitAccion6"
         @accion7="emitAccion7"
         @accion8="emitAccion8"
+        @accion9="emitAccion9"
+        @accion10="emitAccion10"
         :permitir-filtrar="permitirFiltrar"
         :permitir-buscar="permitirBuscar"
       ></essential-table>
@@ -145,6 +149,14 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+  accion9: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  accion10: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
   accion1Header: {
     type: Object as () => CustomActionTable,
     required: false,
@@ -200,6 +212,8 @@ const emit = defineEmits([
   'accion6',
   'accion7',
   'accion8',
+  'accion9',
+  'accion10',
   'tab-seleccionado',
 ])
 
@@ -221,4 +235,6 @@ const emitAccion5 = (data) => emit('accion5', data)
 const emitAccion6 = (data) => emit('accion6', data)
 const emitAccion7 = (data) => emit('accion7', data)
 const emitAccion8 = (data) => emit('accion8', data)
+const emitAccion9 = (data) => emit('accion9', data)
+const emitAccion10 = (data) => emit('accion10', data)
 </script>

@@ -167,8 +167,8 @@ export const useBotonesTablaTarea = (listado: Ref<Tarea[]>, modales: Comportamie
     visible: ({ entidad }) => !entidad.tiene_subtareas && entidad.estado === estadosTrabajos.SUSPENDIDO,
     accion: async ({ entidad, posicion }) => confirmar('¿Está seguro de reagendar la tarea?', () => {
       subtareaStore.codigoSubtareaSeleccionada = entidad.codigo_tarea
-      subtareaStore.fechaHoraPendiente = entidad.subtarea.fecha_hora_suspendido
-      subtareaStore.motivoPendiente = entidad.subtarea.motivo_suspendido
+      // subtareaStore.fechaHoraPendiente = entidad.subtarea.fecha_hora_suspendido
+      // subtareaStore.motivoPendiente = entidad.subtarea.motivo_suspendido
       subtareaStore.idSubtareaSeleccionada = entidad.id
       subtareaStore.tareaTieneSubtareas = entidad.tiene_subtareas
       subtareaStore.posicionSubtareaSeleccionada = posicion

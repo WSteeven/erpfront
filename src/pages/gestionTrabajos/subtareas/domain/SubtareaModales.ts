@@ -23,7 +23,7 @@ export class SubtareaModales {
 
   constructor() {
     this.SubtareaPage = markRaw(
-      new ComponenteModal('Detalles de la subtarea', SubtareaPage)
+      new ComponenteModal('Detalles', SubtareaPage)
     )
 
     this.EmergenciaPage = markRaw(

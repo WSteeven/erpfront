@@ -45,6 +45,12 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
+    name: 'cantidad_adjuntos',
+    field: 'cantidad_adjuntos',
+    label: 'Cant. Adjuntos',
+    align: 'left',
+  },
+  {
     name: 'fecha_solicitud',
     field: 'fecha_solicitud',
     label: 'Fecha solicitud',

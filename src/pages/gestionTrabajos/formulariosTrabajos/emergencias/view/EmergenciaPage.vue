@@ -18,18 +18,26 @@
     </div> -->
 
     <q-card class="rounded-card custom-shadow q-pa-md">
-      <!-- <div
-        class="col-12 rounded-card q-py-sm q-mb-md text-center text-primary bg-blue-2"
+      <div
+        v-if="esCoordinador"
+        class="col-12 rounded-card q-py-sm q-mb-md text-center text-accent bg-yellow-2"
       >
         <div>
-          <q-icon name="bi-info-circle-fill" class="q-mr-sm"></q-icon>
+          <q-icon
+            name="bi-exclamation-triangle-fill
+"
+            class="q-mr-sm"
+          ></q-icon>
           <div>
-            Espere a que el responsable de la subtarea la marque como REALIZADO
-            para proceder a editar el seguimiento.
+            Cualquier cambio realizado aquí sobreescribirá el seguimiento hecho
+            por el técnico.
+            <br />
+            Se recomienda cerrar y abrir el seguimiento para tener las más
+            recientes actualizaciones ingresadas por el técnico.
           </div>
-          <b>Acceso de sólo lectura</b>
+          <b>Advertencia</b>
         </div>
-      </div> -->
+      </div>
       <div class="row">
         <div class="col-12 q-mb-md">
           <trabajo-realizado

@@ -382,6 +382,8 @@
             :accion6="accion6"
             :accion7="accion7"
             :accion8="accion8"
+            :accion9="accion9"
+            :accion10="accion10"
             :propsTable="props"
           ></CustomButtons>
         </div>
@@ -476,6 +478,9 @@
                   :accion5="accion5"
                   :accion6="accion6"
                   :accion7="accion7"
+                  :accion8="accion8"
+                  :accion9="accion9"
+                  :accion10="accion10"
                   :propsTable="props"
                 ></CustomButtons>
               </div>
@@ -615,6 +620,14 @@
       <q-td>
         <q-chip v-if="props.value" dense class="q-px-md bg-accent-5">
           {{ props.value }}
+        </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-cantidad_adjuntos="props">
+      <q-td>
+        <q-chip v-if="props.value" dense class="q-px-md bg-light-green-2">
+          <b class="text-green-8">{{ props.value }}</b>
         </q-chip>
       </q-td>
     </template>

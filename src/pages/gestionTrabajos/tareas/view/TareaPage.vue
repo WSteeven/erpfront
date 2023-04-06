@@ -401,6 +401,22 @@
                 >
                 </q-input>
               </div>
+
+              <!-- Noevedad -->
+              <div v-if="tarea.novedad" class="col-12 q-mb-md q-px-sm">
+                <label class="q-mb-sm block"
+                  >Novedad registrada al finalizar la tarea</label
+                >
+                <q-input
+                  v-model="tarea.novedad"
+                  outlined
+                  disable
+                  dense
+                  autogrow
+                  type="textarea"
+                >
+                </q-input>
+              </div>
             </q-expansion-item>
 
             <q-expansion-item
@@ -700,10 +716,14 @@
             :datos="subtareas"
             :tabOptions="tabOptionsEstadosSubtareas"
             :accion1="btnConsultarSubtarea"
-            :accion2="botonCancelar"
-            :accion3="botonReagendar"
-            :accion4="botonFormulario"
-            :accion5="botonFinalizar"
+            :accion2="btnIniciar"
+            :accion3="btnPausar"
+            :accion4="btnReanudar"
+            :accion5="btnRealizar"
+            :accion6="botonCancelar"
+            :accion7="botonReagendar"
+            :accion8="btnSeguimiento"
+            :accion9="botonFinalizar"
             :accion1Header="btnAgregarSubtarea"
             separador="cell"
             :permitirConsultar="false"
@@ -714,7 +734,7 @@
             :permitirFiltrar="false"
             :permitirBuscar="false"
             @tab-seleccionado="filtrarSubtareas"
-            tabDefecto=""
+            :tabDefecto="tabActual"
             :alto-fijo="false"
           ></essential-table-tabs>
         </q-tab-panel>

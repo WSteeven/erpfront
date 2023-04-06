@@ -29,6 +29,7 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
 import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
+import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 
 export default defineComponent({
   components: {
@@ -37,14 +38,16 @@ export default defineComponent({
     ConfirmarDialog,
   },
   setup() {
-    const mostrarDialogPlantilla = ref(false)
-    const { confirmar, promptItems, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
-    const modales = new ComportamientoModalesTrabajoAsignado()
-    const tabActual = ref()
-
     /***********
-    * Variables
-    ************/
+    * Stores
+    ***********/
+    const trabajoAsignadoStore = useTrabajoAsignadoStore()
+    const authenticationStore = useAuthenticationStore()
+    const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
+
+    /*******
+    * Mixin
+    ********/
     const mixin = new ContenedorSimpleMixin(Subtarea, new TrabajoAsignadoController())
     const { listado, listadosAuxiliares } = mixin.useReferencias()
     const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
@@ -56,6 +59,15 @@ export default defineComponent({
       })
     })
 
+    /************
+     * Variables
+     ************/
+    const mostrarDialogPlantilla = ref(false)
+    const { confirmar, promptItems, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
+    const modales = new ComportamientoModalesTrabajoAsignado()
+    const tabActual = ref()
+    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnSeguimiento, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(listado, modales, listadosAuxiliares)
+    setFiltrarTrabajoAsignado(filtrarTrabajoAsignado)
     /*********
      * Pusher
      *********/
@@ -63,13 +75,6 @@ export default defineComponent({
 
     const subtareaPusherEvent = new SubtareaPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
     subtareaPusherEvent.start()
-
-    /***********
-     * Stores
-     ***********/
-    const trabajoAsignadoStore = useTrabajoAsignadoStore()
-    const authenticationStore = useAuthenticationStore()
-    const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
 
     /***************
      * Botones tabla
@@ -83,7 +88,7 @@ export default defineComponent({
       },
     }
 
-    const botonIniciar: CustomActionTable = {
+    /* const botonIniciar: CustomActionTable = {
       titulo: 'Ejecutar',
       icono: 'bi-play-fill',
       color: 'positive',
@@ -106,9 +111,9 @@ export default defineComponent({
           movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
         })
       }
-    }
+    } */
 
-    const botonPausar: CustomActionTable = {
+    /* const botonPausar: CustomActionTable = {
       titulo: 'Pausar',
       icono: 'bi-pause-circle',
       color: 'blue-6',
@@ -138,9 +143,9 @@ export default defineComponent({
           promptItems(config)
         })
       },
-    }
+    } */
 
-    const botonReanudar: CustomActionTable = {
+    /* const botonReanudar: CustomActionTable = {
       titulo: 'Reanudar',
       icono: 'bi-play-circle',
       color: 'positive',
@@ -155,9 +160,9 @@ export default defineComponent({
           // eliminarElemento(posicion, entidad)
         })
       }
-    }
+    } */
 
-    const botonFormulario: CustomActionTable = {
+    /* const botonFormulario: CustomActionTable = {
       titulo: 'Seguimiento',
       icono: 'bi-check2-square',
       color: 'indigo',
@@ -172,7 +177,7 @@ export default defineComponent({
           modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
         })
       }
-    }
+    } */
 
     const botonSuspender: CustomActionTable = {
       titulo: 'Suspender',
@@ -205,7 +210,7 @@ export default defineComponent({
       },
     }
 
-    const botonRealizar: CustomActionTable = {
+    /*const botonRealizar: CustomActionTable = {
       titulo: 'Realizado',
       icono: 'bi-check-circle',
       color: 'positive',
@@ -220,7 +225,7 @@ export default defineComponent({
           notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
         })
       }
-    }
+    } */
 
     /************
     * Funciones
@@ -251,7 +256,7 @@ export default defineComponent({
       mixin,
       listado,
       configuracionColumnasTrabajoAsignado,
-      botonIniciar,
+      btnIniciar,
       botonVer,
       tabTrabajoAsignado,
       filtrarTrabajoAsignado,
@@ -259,11 +264,11 @@ export default defineComponent({
       modales,
       mostrarDialogPlantilla,
       plantillaSeleccionada,
-      botonPausar,
-      botonReanudar,
-      botonFormulario,
+      btnPausar,
+      btnReanudar,
+      btnSeguimiento,
       botonSuspender,
-      botonRealizar,
+      btnRealizar,
       tabActual,
       // botonCorregir,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),

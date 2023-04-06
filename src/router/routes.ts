@@ -27,11 +27,16 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/monitor-subtareas',
+        name: 'monitor_subtareas',
+        component: () => import('gestionTrabajos/monitorSubtareas/view/MonitorSubtareaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/tareas',
         name: 'tareas',
         component: () => import('tareas/view/TareaPage.vue'),
         meta: { requiresAuth: true },
-        // component: () => import('pages/tareas/controlTareas/view/ControlTareaPage.vue'),
       },
       {
         path: '/tipos-trabajos',

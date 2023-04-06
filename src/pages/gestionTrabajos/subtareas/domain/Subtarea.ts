@@ -62,6 +62,8 @@ export class Subtarea extends EntidadAuditable {
   empleados_designados: Empleado[]
   seguimiento: number | null
   tiempo_estimado: string | null
+  cantidad_adjuntos: number | null
+  ruta_tarea: string | null
 
   constructor() {
     super()
@@ -128,5 +130,7 @@ export class Subtarea extends EntidadAuditable {
     this.empleados_designados = []
     this.seguimiento = null
     this.tiempo_estimado = null
+    this.cantidad_adjuntos = null
+    this.ruta_tarea = null
   }
 }
