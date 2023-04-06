@@ -78,6 +78,9 @@ export default defineComponent({
         modales.abrirModalEntidad('VisualizarTransferenciaPage')
       }
     }
+    async function guardado() {
+      filtrarAutorizacionesTransferencia(estadosTransferencias.PENDIENTE)
+    }
 
     return {
       configuracionColumnasAutorizarTransferencia,
@@ -86,6 +89,7 @@ export default defineComponent({
       botonVerModalTransferencia,
       accionesTabla,
       filtrarAutorizacionesTransferencia,
+      guardado,
       authenticationStore,
       modales,
     }

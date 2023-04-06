@@ -21,6 +21,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagenModal },
+  emits: ['guardado','cerrar-modal'],
   setup(props, { emit }) {
     /*********
      * Stores
@@ -107,12 +108,8 @@ export default defineComponent({
         transferencia.motivo = 'TRANSFERENCIA ENTRE USUARIOS'
       }
     }
-   /**
-    * A function that is used to approve or reject a transfer.
-    * @param entidad - The entity to be approved or rejected.
-    * @param {string} tipo_aprobacion - string
-    */
-    async function  aprobar_transferencia(entidad, tipo_aprobacion: string) {
+
+    async function aprobar_transferencia(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {
@@ -131,6 +128,7 @@ export default defineComponent({
                   await aprobarController.rechazarTransferencia(entidad)
                   notificarAdvertencia('Se rechazado Transferencia Exitosamente')
                   emit('cerrar-modal');
+                  emit('guardado');
                 } catch (e: any) {
                   notificarError(
                     'No se pudo rechazar, debes ingresar un motivo para la anulación'
@@ -149,6 +147,7 @@ export default defineComponent({
                     await aprobarController.anularTransferencia(entidad)
                     notificarAdvertencia('Se anulado Transferencia Exitosamente')
                     emit('cerrar-modal');
+                    emit('guardado');
                   } catch (e: any) {
                     notificarError(
                       'No se pudo anular, debes ingresar un motivo para la anulación'

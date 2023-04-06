@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 import { Transferencia } from '../domain/Transferencia'
 
 // Componentes
@@ -19,9 +19,11 @@ import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 import { AprobarTransferenciaController } from 'pages/fondosRotativos/autorizarTransferencia/infrestructure/AprobarTransferenciaController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagenModal },
+
   setup() {
     /*********
      * Stores
@@ -148,6 +150,7 @@ export default defineComponent({
         )
       })
     }
+
 /**
  * It checks if the value of the checkbox is true, if it is, it sets the value of the user_recibe to
  * null and the value of the reason to DEVOLUCION. If it is not true, it sets the value of the reason
@@ -161,41 +164,9 @@ export default defineComponent({
         transferencia.motivo = 'TRANSFERENCIA ENTRE USUARIOS'
       }
     }
-   /**
-    * A function that is used to approve or reject a transfer.
-    * @param entidad - The entity to be approved or rejected.
-    * @param {string} tipo_aprobacion - string
-    */
-    async function  aprobar_transferencia(entidad, tipo_aprobacion: string) {
-      switch (tipo_aprobacion) {
-        case 'aprobar':
-          try {
-            await aprobarController.aprobarTransferencia(entidad)
-            notificarCorrecto('Se aprobado Transferencia Exitosamente')
-            setInterval("location.reload()", 2500);
-          } catch (e: any) {
-            notificarError(
-              'No se pudo aprobar, debes ingresar un motivo para la anulación'
-            )
-          }
-          break;
-        case 'rechazar':
-          confirmar('¿Está seguro de rechazar la transferencia?', async () => {
-                try {
-                  await aprobarController.rechazarTransferencia(entidad)
-                  notificarAdvertencia('Se rechazado Transferencia Exitosamente')
-                  setInterval("location.reload()", 2500);
-                } catch (e: any) {
-                  notificarError(
-                    'No se pudo rechazar, debes ingresar un motivo para la anulación'
-                  )
-                }
-          })
-        default:
-          break
-      }
-    }
-
+    watchEffect(() => {
+      existeDevolucion()
+    })
     return {
       mixin,
       transferencia,
@@ -208,7 +179,6 @@ export default defineComponent({
       filtrarTareas,
       existeDevolucion,
       mostrarListado,
-      aprobar_transferencia,
       configuracionColumnas: configuracionColumnasTransferencia,
     }
   },
