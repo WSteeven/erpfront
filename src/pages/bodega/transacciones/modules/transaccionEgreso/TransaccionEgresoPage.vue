@@ -457,16 +457,19 @@
             class="col-12 col-md-12"
           >
             <q-table
-              flat
+              flat-bordered
+              style="height: 300px"
               title="Listado del pedido"
               class="bg-body-table custom-border"
               :rows="listadoPedido"
               :columns="configuracionColumnasListadoProductosSeleccionados"
               row-key="id"
               :hide-bottom="true"
+              virtual-scroll
+              v-model:pagination="pagination"
+              :rows-per-page-options="[0]"
               dense
               v-model:selected="selected"
-              :pagination="{ rowsPerPage: 10 }"
               @selection="buscarProductoEnInventario"
             />
           </div>
