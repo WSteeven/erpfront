@@ -78,6 +78,9 @@ export default defineComponent({
       comprobante: {
         required,
       },
+      observacion: {
+        maxLength: maxLength(50),
+      },
     }
 
     const v$ = useVuelidate(reglas, transferencia)

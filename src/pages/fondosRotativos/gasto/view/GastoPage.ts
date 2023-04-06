@@ -90,12 +90,9 @@ export default defineComponent({
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
     }
-
-    const cargo = ref(usuario.cargo)
-    const esTecnico = ref(false)
-    if (cargo.value !== null) {
-      esTecnico.value = cargo.value.indexOf('TÉCNICO') >= 0 ? true : false
-    }
+    const esTecnico = computed(() => {
+      return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1 ? true : false
+    })
 
     /*************
      * Validaciones
@@ -408,13 +405,14 @@ export default defineComponent({
           ).result
           LocalStorage.set('detalles', JSON.stringify(detalles))
           setTimeout(
-            () => setInterval(() => {
-              detalles.value =
-              LocalStorage.getItem('detalles') == null
-                ? []
-                : JSON.parse(LocalStorage.getItem('detalles')!.toString())
-            listadosAuxiliares.detalles = detalles.value
-            }, 100),
+            () =>
+              setInterval(() => {
+                detalles.value =
+                  LocalStorage.getItem('detalles') == null
+                    ? []
+                    : JSON.parse(LocalStorage.getItem('detalles')!.toString())
+                listadosAuxiliares.detalles = detalles.value
+              }, 100),
             250
           )
 
@@ -427,13 +425,16 @@ export default defineComponent({
           ).result
           LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
           setTimeout(
-            () => setInterval(() => {
-              sub_detalles.value =
-              LocalStorage.getItem('sub_detalles') == null
-                ? []
-                : JSON.parse(LocalStorage.getItem('sub_detalles')!.toString())
-            listadosAuxiliares.sub_detalles = sub_detalles.value
-            }, 100),
+            () =>
+              setInterval(() => {
+                sub_detalles.value =
+                  LocalStorage.getItem('sub_detalles') == null
+                    ? []
+                    : JSON.parse(
+                        LocalStorage.getItem('sub_detalles')!.toString()
+                      )
+                listadosAuxiliares.sub_detalles = sub_detalles.value
+              }, 100),
             250
           )
 
