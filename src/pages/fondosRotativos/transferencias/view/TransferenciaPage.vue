@@ -10,9 +10,8 @@
             <q-select v-model="transferencia.usuario_recibe" :options="usuarios" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.usuario_recibe.$errors.length" error-message="Debes seleccionar un usuario" use-input
-              @blur="v$.usuario_recibe.$touch" input-debounce="0" @filter="filtrarUsuarios"
-              :option-value="(v) => v.id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value
-              map-options>
+              @blur="v$.usuario_recibe.$touch" input-debounce="0" @filter="filtrarUsuarios" :option-value="(v) => v.id"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
               <template v-slot:error>
                 <div v-for="error of v$.usuario_recibe.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
@@ -92,9 +91,21 @@
           </div>
           <!--Es devolucion-->
           <div class="col-12 col-md-3 q-mb-xl">
-          <q-checkbox class="q-mt-lg q-pt-md" v-model="esDevolucion" label="¿Es devolucion?" :disable="disabled"
-            @update:model-value="existeDevolucion()" outlined dense></q-checkbox>
-        </div>
+            <q-checkbox class="q-mt-lg q-pt-md" v-model="esDevolucion" label="¿Es devolucion?" :disable="disabled"
+              @update:model-value="existeDevolucion()" outlined dense></q-checkbox>
+          </div>
+          <!-- Observacion -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observación</label>
+            <q-input v-model="transferencia.observacion" placeholder="obligatorio" type="textarea" :disable="disabled"
+              :error="!!v$.observacion.$errors.length" autogrow @blur="v$.observacion.$touch" outlined dense>
+              <template v-slot:error>
+                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
         </div>
       </q-form>
     </template>
