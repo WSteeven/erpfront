@@ -124,7 +124,6 @@
               dense
             ></q-checkbox>
           </div>
-          <!-- {{ devolucion.listadoProductos }} -->
           <!-- Tarea -->
           <div
             v-if="esVisibleTarea || devolucion.es_tarea"
@@ -158,34 +157,55 @@
               </template>
             </q-select>
           </div>
-          <!-- {{ devolucion.listadoProductos }} -->
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
+          <div class="col-12 col-md-12">
+            <label class="q-mb-sm block">Agregar productos</label>
+            <div class="row q-col-gutter-x-xs">
+              <div class="col-12 col-md-10 q-mb-md">
+                <q-input
+                  v-model="criterioBusquedaProducto"
+                  placeholder="Nombre de producto"
+                  hint="Presiona Enter para seleccionar un producto"
+                  @keydown.enter="listarProductos()"
+                  @blur="
+                    criterioBusquedaProducto === '' ? limpiarProducto() : null
+                  "
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+              <div class="col-12 col-md-2">
+                <q-btn
+                  @click="listarProductos()"
+                  icon="search"
+                  unelevated
+                  color="primary"
+                  class="full-width"
+                  style="height: 40px"
+                  no-caps
+                  >Buscar</q-btn
+                >
+              </div>
+            </div>
+          </div>
           <!-- Tabla -->
-          <!-- <div class="col-12">
+          <div class="col-12">
             <essential-table
-              ref="refModalEditable"
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="devolucion.listadoProductos"
-              :accion1Header="addRow"
               :permitirConsultar="false"
-              :permitirEditar="true"
-              :permitirEliminar="true"
-              @eliminar="eliminar"
+              :permitirEditar="false"
+              :permitirEliminar="false"
               :mostrarBotones="false"
-              :permitirEditarModal="true"
-              :permitirFiltrar="true"
-              :modalMaximized="false"
-
+              :accion1="botonEditarCantidad"
+              :accion2="botonEliminar"
             ></essential-table>
-          </div> -->
-          <tabla-devolucion-producto
-            :listado="devolucion.listadoProductos"
-            :listadoProductos="opciones_productos"
-            @actualizar="(data)=>devolucion.listadoProductos = data"
-          >
-          </tabla-devolucion-producto>
+          </div>
         </div>
       </q-form>
 

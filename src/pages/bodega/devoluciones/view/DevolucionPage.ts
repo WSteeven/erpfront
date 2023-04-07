@@ -2,14 +2,13 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
 import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -18,6 +17,7 @@ import { Devolucion } from '../domain/Devolucion'
 
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -29,14 +29,12 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { LocalStorage } from 'quasar'
-import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
-import { Producto } from 'pages/bodega/productos/domain/Producto'
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs, EssentialTable, TablaDevolucionProducto, EssentialSelectableTable },
-    emits: ['editar'],
-    setup(props, { emit }) {
+    components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable },
+
+    setup() {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
         const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
@@ -59,7 +57,6 @@ export default defineComponent({
 
         //flags
         let tabSeleccionado = ref()
-        let refModalEditable = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
 
@@ -69,14 +66,12 @@ export default defineComponent({
             soloLectura.value = false
         })
 
-        const opciones_productos = ref([])
         const opciones_empleados = ref([])
         const opciones_sucursales = ref([])
         const opciones_tareas = ref([])
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
-                productos: new ProductoController(),
                 empleados: {
                     controller: new EmpleadoController(),
                     params: {
@@ -94,6 +89,7 @@ export default defineComponent({
         //reglas de validacion
         const reglas = {
             justificacion: { required },
+            // solicitante:{required},
             sucursal: { required },
             tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
         }
@@ -105,7 +101,7 @@ export default defineComponent({
             confirmar('¿Está seguro de continuar?',
                 () => devolucion.listadoProductos.splice(posicion, 1))
         }
-        /* const botonEliminar: CustomActionTable = {
+        const botonEliminar: CustomActionTable = {
             titulo: 'Quitar',
             color: 'negative',
             icono: 'bi-x',
@@ -115,7 +111,7 @@ export default defineComponent({
             visible: () => {
                 return accion.value == acciones.consultar ? false : true
             }
-        } */
+        }
         const botonEditarCantidad: CustomActionTable = {
             titulo: 'Cantidad',
             icono: 'bi-pencil',
@@ -145,18 +141,20 @@ export default defineComponent({
                             try {
                                 const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
                                 notificarCorrecto('Devolución anulada exitosamente!')
-                                actualizarElemento(posicion, entidad)//no sé que hace
-                                listado.value.splice(posicion, 1)
+                                actualizarElemento(posicion, entidad)
                             } catch (e: any) {
                                 notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
                             }
                         }
                     }
+
                     prompt(data)
                 })
+                console.log('entidad', entidad)
+                console.log('posicion', posicion)
             },
             visible: ({ entidad, posicion }) => {
-                // console.log(entidad)
+                console.log(entidad)
                 return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante ? true : false
             }
         }
@@ -179,77 +177,19 @@ export default defineComponent({
             }
         }
 
-        /* const addRow: CustomActionTable = {
-            titulo: 'Agregar ítem',
-            icono: 'bi-plus',
-            accion: () => {
-                const fila = []
-                devolucion.listadoProductos.push(fila)
-                refModalEditable.value.abrirModalEntidad(fila, devolucion.listadoProductos.length - 1)
-                notificarCorrecto('Diste clic en añadir fila')
-            }
-        } */
-
-
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
-        opciones_productos.value = listadosAuxiliares.productos
-
-
-        /* const configuracionColumnasProductosSeleccionadosAccion: any = computed(() => [
-            {
-                name: 'producto',
-                field: 'producto',
-                label: 'Producto',
-                align: 'left',
-                sortable: true,
-                type: 'select',
-                options: listadosAuxiliares.productos.map((v: Producto) => { return { label: v.nombre } })
-                // options: opciones_productos_modificados.value
-            },
-            {
-                name: 'descripcion',
-                field: 'descripcion',
-                label: 'Descripción',
-                align: 'left',
-                sortable: true,
-            },
-            {
-                name: 'serial',
-                field: 'serial',
-                label: 'serial',
-                align: 'left',
-                sortable: true,
-            },
-            {
-                name: 'cantidad',
-                field: 'cantidad',
-                label: 'Cantidad',
-                align: 'left',
-                type: 'number',
-                sortable: false,
-            },
-            {
-                name: 'acciones',
-                field: 'acciones',
-                label: 'Acciones',
-                align: 'right',
-                sortable: false,
-            }
-        ]) */
 
         return {
-            refModalEditable,
             mixin, devolucion, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasDevoluciones,
             //listados
             opciones_empleados,
             opciones_tareas,
             opciones_sucursales,
-            opciones_productos,
 
             //selector
             refListado,
@@ -260,13 +200,12 @@ export default defineComponent({
             seleccionarProducto,
             configuracionColumnasDetallesModal,
 
-            //boton de agregar fila
-            // addRow,
 
             //tabla
+            configuracionColumnasProductosSeleccionadosAccion,
             configuracionColumnasProductosSeleccionados,
             botonEditarCantidad,
-            eliminar,
+            botonEliminar,
             botonAnular,
             botonImprimir,
 
@@ -279,8 +218,8 @@ export default defineComponent({
             tabSeleccionado,
 
             tabEs(val) {
-                // console.log(tabSeleccionado.value)
-                // console.log(val)
+                console.log(tabSeleccionado.value)
+                console.log(val)
                 tabSeleccionado.value = val
             },
 
