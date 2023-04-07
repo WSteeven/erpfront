@@ -130,8 +130,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
-          controller: new UsuarioController(),
-          params: { campos: 'id,name' },
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos' },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
