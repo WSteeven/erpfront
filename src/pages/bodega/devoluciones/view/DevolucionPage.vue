@@ -30,12 +30,12 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="devolucion.created_at" disable outlined dense />
           </div>
-          <!-- Sucursal select -->
+          <!-- Canton select -->
           <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Sucursal</label>
+            <label class="q-mb-sm block">Canton</label>
             <q-select
-              v-model="devolucion.sucursal"
-              :options="opciones_sucursales"
+              v-model="devolucion.canton"
+              :options="opciones_cantones"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -43,9 +43,12 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :error="!!v$.sucursal.$errors.length"
-              error-message="Debes seleccionar una sucursal"
-              :option-label="(item) => item.lugar"
+              :error="!!v$.canton.$errors.length"
+              :input-debounce="0"
+              use-input
+              @filter="filtroCantones"
+              error-message="Debes seleccionar un cantón"
+              :option-label="(item) => item.canton"
               :option-value="(item) => item.id"
               emit-value
               map-options
@@ -109,6 +112,20 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <!-- Es devolucion para stock personal -->
+          <div
+            v-if="devolucion.stock_personal || accion === 'NUEVO'"
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="devolucion.stock_personal"
+              label="¿Es devolución al stock personal?"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
           </div>
           <!-- Es devolucion de tarea -->
           <div

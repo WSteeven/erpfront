@@ -67,7 +67,7 @@ export default defineComponent({
         })
 
         const opciones_empleados = ref([])
-        const opciones_sucursales = ref([])
+        const opciones_cantones = ref([])
         const opciones_tareas = ref([])
         //Obtener los listados
         cargarVista(async () => {
@@ -90,7 +90,7 @@ export default defineComponent({
         const reglas = {
             justificacion: { required },
             // solicitante:{required},
-            sucursal: { required },
+            canton: { required },
             tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
         }
 
@@ -180,7 +180,7 @@ export default defineComponent({
 
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
-        opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+        opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
 
         return {
@@ -189,7 +189,7 @@ export default defineComponent({
             //listados
             opciones_empleados,
             opciones_tareas,
-            opciones_sucursales,
+            opciones_cantones,
 
             //selector
             refListado,
@@ -228,6 +228,19 @@ export default defineComponent({
                 // const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
                 // console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
                 // devolucion.cliente = opcion_encontrada[0]['cliente_id']
+            },
+            //filtro de cantones
+            filtroCantones(val, update) {
+                if (val === '') {
+                    update(() => {
+                        opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+                    })
+                    return
+                }
+                update(() => {
+                    const needle = val.toLowerCase()
+                    opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString()).filter((v) => v.canton.toLowerCase().indexOf(needle) > -1)
+                })
             },
             filtroEmpleados(val, update) {
                 if (val === '') {
