@@ -8,11 +8,13 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useSubtareaStore } from 'stores/subtarea'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
+import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 
 export default defineComponent({
   components: {
@@ -31,13 +33,27 @@ export default defineComponent({
      * Mixin
      ********/
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
-    const { listado } = mixin.useReferencias()
-    const { listar } = mixin.useComportamiento()
+    const { listado, listadosAuxiliares } = mixin.useReferencias()
+    const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        motivosSuspendidos: new MotivoSuspendidoController(),
+        motivosPausas: new MotivoPausaController(),
+      })
+    })
 
     /**********
-   * Modales
-   **********/
+    * Modales
+    **********/
     const modalesSubtarea = new ComportamientoModalesSubtarea()
+    const { btnIniciar, btnPausar, btnReanudar, btnSeguimiento, btnReagendar, btnRealizar, btnSuspender, btnCancelar, btnFinalizar, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(listado, modalesSubtarea, listadosAuxiliares)
+    setFiltrarTrabajoAsignado(filtrarSubtareas)
+
+    /************
+     * Variables
+     ************/
+    const tabActual = ref()
 
     /****************
      * Botones tabla
@@ -53,26 +69,32 @@ export default defineComponent({
       },
     }
 
-    const { botonFormulario, botonReagendar, botonCancelar, botonFinalizar } = useBotonesTablaSubtarea(listado, modalesSubtarea)
 
     function filtrarSubtareas(estado: string) {
       console.log(estado)
       listar({ estado: estado })
+      tabActual.value = estado
     }
 
     filtrarSubtareas(estadosTrabajos.AGENDADO)
 
     return {
       mixin,
+      tabActual,
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
       listado,
       tabOptionsEstadosSubtareasMonitor,
       btnConsultarSubtarea,
+      btnIniciar,
+      btnPausar,
+      btnReanudar,
+      btnRealizar,
       modalesSubtarea,
-      botonFormulario,
-      botonReagendar,
-      botonCancelar,
-      botonFinalizar,
+      btnSeguimiento,
+      btnReagendar,
+      btnSuspender,
+      btnCancelar,
+      btnFinalizar,
       filtrarSubtareas,
     }
   }

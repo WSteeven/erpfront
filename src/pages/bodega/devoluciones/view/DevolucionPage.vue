@@ -160,7 +160,7 @@
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               @update:model-value="filtroTareas"
-              :option-label="(item) => item.titulo"
+              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               emit-value
               map-options
@@ -223,6 +223,12 @@
               :accion2="botonEliminar"
             ></essential-table>
           </div>
+          <tabla-devolucion-producto
+            :listado="devolucion.listadoProductos"
+            :listadoProductos="opciones_productos"
+            @actualizar="(data) => (devolucion.listadoProductos = data)"
+          >
+          </tabla-devolucion-producto>
         </div>
       </q-form>
 

@@ -90,8 +90,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         clientes: new ClienteController(),
-        provincias: new ProvinciaController(),
-        cantones: new CantonController(),
+        // provincias: new ProvinciaController(),
+        // cantones: new CantonController(),
         proyectos: new ProyectoController(),
         fiscalizadores: {
           controller: new EmpleadoController(),
@@ -101,15 +101,12 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
-        tiposTrabajos: {
-          controller: new TipoTrabajoController(),
-          params: { cliente: tareaStore.tarea.cliente ?? tareaStore.idCliente }
-        },
-        grupos: new GrupoController(),
-        empleados: new EmpleadoController(),
-        motivosSuspendidos: new MotivoSuspendidoController(),
         rutas: new RutaTareaController(),
-        motivosPausas: new MotivoPausaController(),
+
+        /*grupos: new GrupoController(),
+        empleados: new EmpleadoController(),
+        motivosSuspendidos: new MotivoSuspendidoController(), */
+        // motivosPausas: new MotivoPausaController(),
       })
 
       // Necesario al consultar
@@ -120,6 +117,12 @@ export default defineComponent({
       listadosAuxiliares.clientesFinales = []
     })
 
+    /**********
+    * Modales
+    **********/
+    const modalesTarea = new ComportamientoModalesTarea()
+    const modalesSubtarea = new ComportamientoModalesSubtarea()
+
     /************
      * Variables
      ************/
@@ -129,10 +132,10 @@ export default defineComponent({
     const tab = ref('tarea')
     const tabActual = ref()
     const esCoordinadorBackup = authenticationStore.esCoordinadorBackup
-    /*const tiposTrabajosSource = ref([])
-    listadosAuxiliares.tiposTrabajos = computed(() =>
-      tiposTrabajosSource.value.filter((tipo: TipoTrabajo) => tipo.cliente_id === (tarea.cliente ? tarea.cliente : false))
-    ).value*/
+
+    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea, botonCancelar: btnCancelarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
+    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
+    setFiltrarTrabajoAsignado(filtrarSubtareas)
 
     /*************
     * Validaciones
@@ -279,12 +282,6 @@ export default defineComponent({
 
     const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
 
-    /**********
-    * Modales
-    **********/
-    const modalesTarea = new ComportamientoModalesTarea()
-    const modalesSubtarea = new ComportamientoModalesSubtarea()
-
     /*********
      * Hooks
      *********/
@@ -293,49 +290,7 @@ export default defineComponent({
       clientesFinales.value = []
     })
 
-    onConsultado(() => {
-      filtrarSubtareas('')
-
-      /*if (!tarea.tiene_subtareas) tab.value = 'tarea'
-      if (tarea.subtarea && !tarea.tiene_subtareas) {
-        tarea.titulo = tarea.subtarea.titulo
-        tarea.observacion = tarea.subtarea.observacion
-        tarea.descripcion_completa = tarea.subtarea.descripcion_completa
-        tarea.tipo_trabajo = tarea.subtarea.tipo_trabajo
-        tarea.es_ventana = tarea.subtarea.es_ventana
-        tarea.fecha_inicio_trabajo = tarea.subtarea.fecha_inicio_trabajo
-        tarea.hora_inicio_trabajo = tarea.subtarea.hora_inicio_trabajo
-        tarea.hora_fin_trabajo = tarea.subtarea.hora_fin_trabajo
-        tarea.grupo = tarea.subtarea.grupo
-        tarea.empleado = tarea.subtarea.empleado
-        tarea.modo_asignacion_trabajo = tarea.subtarea.modo_asignacion_trabajo
-      } */
-    })
-
-    /* onBeforeGuardar(() => {
-      if (!tarea.tiene_subtareas) {
-        tarea.subtarea.titulo = tarea.titulo
-        tarea.subtarea.observacion = tarea.observacion
-        tarea.subtarea.descripcion_completa = tarea.descripcion_completa
-        tarea.subtarea.tipo_trabajo = tarea.tipo_trabajo
-        tarea.subtarea.es_ventana = tarea.es_ventana
-        tarea.subtarea.fecha_inicio_trabajo = tarea.fecha_inicio_trabajo
-        tarea.subtarea.hora_inicio_trabajo = tarea.hora_inicio_trabajo
-        tarea.subtarea.hora_fin_trabajo = tarea.hora_fin_trabajo
-        tarea.subtarea.grupo = tarea.grupo
-        tarea.subtarea.empleado = tarea.empleado
-        tarea.subtarea.modo_asignacion_trabajo = tarea.modo_asignacion_trabajo
-      }
-    }) */
-
-    /* onGuardado(() => {
-
-    }) */
-
-    // Subtareas
-    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea, botonCancelar: btnCancelarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
-    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, botonFormulario, botonReagendar, botonCancelar, botonFinalizar, btnSeguimiento, btnAnular, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
-    setFiltrarTrabajoAsignado(filtrarSubtareas)
+    onConsultado(() => filtrarSubtareas(''))
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
@@ -402,22 +357,21 @@ export default defineComponent({
 
           prompt(data)
         } else {
-          confirmar('¿Está seguro de finalizar la tarea?', () => {
-            const data: CustomActionPrompt = {
-              titulo: 'Novedad',
-              mensaje: 'Ingrese alguna novedad en caso de presentarse.',
-              accion: (data) => {
-                tarea.novedad = data
 
-                confirmar('¿Está seguro de finalizar la tarea?', () => {
-                  tarea.finalizado = true
-                  editar(tarea)
-                })
-              },
-            }
+          const data: CustomActionPrompt = {
+            titulo: 'Novedad',
+            mensaje: 'Ingrese alguna novedad en caso de presentarse.',
+            accion: (data) => {
+              tarea.novedad = data
 
-            prompt(data)
-          })
+              confirmar('¿Está seguro de finalizar la tarea?', () => {
+                tarea.finalizado = true
+                editar(tarea)
+              })
+            },
+          }
+
+          prompt(data)
         }
       }
     }
@@ -431,19 +385,13 @@ export default defineComponent({
     function seleccionarGrupo(grupo_id) {
       tarea.subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
       tarea.subtarea.grupo = grupo_id
-      // tarea.subtarea.empleado = null
-
       tarea.grupo = grupo_id
-      // tarea.empleado = null
     }
 
     function seleccionarEmpleado(empleado_id) {
       tarea.subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
       tarea.subtarea.empleado = empleado_id
-      // tarea.subtarea.grupo = null
-
       tarea.empleado = empleado_id
-      //tarea.grupo = null
     }
 
     return {
@@ -458,7 +406,7 @@ export default defineComponent({
       btnSeguimiento,
       btnAgregarSubtarea,
       btnConsultarSubtarea,
-      btnAnular,
+      btnSuspender,
       subtareas,
       v$,
       tarea,
@@ -512,7 +460,7 @@ export default defineComponent({
       modosAsignacionTrabajo,
       configuracionColumnasSubtarea,
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
-      botonFormulario, botonReagendar, botonCancelar, botonFinalizar,
+      btnReagendar, btnCancelar, btnFinalizar,
       tabOptionsEstadosSubtareas,
       indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white'),
       maskFecha,

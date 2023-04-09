@@ -1,6 +1,6 @@
 import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
-import { computed, defineComponent, Ref, ref, UnwrapRef, watch, watchEffect } from 'vue'
+import { computed, defineComponent, onMounted, Ref, ref, UnwrapRef, watch, watchEffect } from 'vue'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { requiredIf } from 'shared/i18n-validators'
@@ -45,18 +45,6 @@ export default defineComponent({
     const { cargarVista, obtenerListados } = mixin.useComportamiento()
     const { entidad: subtarea, listadosAuxiliares } = mixin.useReferencias()
 
-    watchEffect(() => {
-      /* if (props.subtareaInicial) {
-        subtarea.hydrate(props.subtareaInicial)
-      } */
-      subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
-      subtarea.grupo = props.subtareaInicial.grupo
-      subtarea.empleado = props.subtareaInicial.empleado
-    })
-    /* subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
-    subtarea.grupo = props.subtareaInicial.grupo
-    subtarea.empleado = props.subtareaInicial.empleado */
-
     cargarVista(async () => {
       await obtenerListados({
         grupos: {
@@ -76,15 +64,6 @@ export default defineComponent({
     const tipoSeleccion = computed(() => cambiarResponsable.value ? 'single' : 'none')
     const notificaciones = useNotificaciones()
     const empleadosGrupo: Ref<Empleado[]> = ref([])
-    // const empleadosAdicionales: Ref<Empleado[]> = ref([])
-    /* const empleadosTodos = computed({
-      get() {
-        return [...empleadosSeleccionados.value, ...empleadosAdicionales.value]
-      },
-      set(newValue) {
-        empleadosSeleccionados.value = newValue
-      }
-    }) */
 
     /*************
     * Validaciones
@@ -102,83 +81,6 @@ export default defineComponent({
       empleados,
       filtrarEmpleados,
     } = useFiltrosListadosTarea(listadosAuxiliares, subtarea)
-
-    /************
-    * Observers
-    ************/
-    let grupoConsultado: number
-
-    function seleccionarGrupo() {
-      if (subtarea.grupo) {
-        // subtarea.empleado = null
-        obtenerTecnicosGrupo(subtarea.grupo)
-        return emit('seleccionar-grupo', subtarea.grupo)
-      }
-    }
-
-    function seleccionarEmpleado() {
-      // subtarea.grupo = null
-      return emit('seleccionar-empleado', subtarea.empleado)
-    }
-
-    function limpiarSelector() {
-      console.log(subtarea.modo_asignacion_trabajo)
-      subtarea.empleado = null
-      subtarea.grupo = null
-      empleadosGrupo.value = []
-      return emit('seleccionar-modo-designacion', subtarea.modo_asignacion_trabajo)
-    }
-    /*watchEffect(() => {
-      if (props.accion === acciones.nuevo) {
-        if (subtarea.grupo) {
-          subtarea.empleado = null
-          // grupoConsultado = subtarea.grupo
-          obtenerTecnicosGrupo(subtarea.grupo)
-          return emit('seleccionar-grupo', subtarea.grupo)
-        }
-
-        if (subtarea.empleado) {
-          subtarea.grupo = null
-          return emit('seleccionar-empleado', subtarea.empleado)
-        }
-      }*/
-
-    /*if (props.accion === acciones.consultar) {
-      if (subtarea.grupo) {
-        console.log(props.subtareaInicial.empleados_designados)
-        empleadosGrupo.value = mapearResponsable(props.subtareaInicial.empleados_designados)
-      }
-    } */
-    // })
-
-    async function obtenerTecnicosGrupo(grupo_id: number) {
-      const cargando = new StatusEssentialLoading()
-
-      try {
-        cargando.activar()
-        const empleadoController = new EmpleadoController()
-        const { result } = await empleadoController.listar({ grupo_id: grupo_id })
-        empleadosGrupo.value = mapearResponsable(result)
-      } catch (error) {
-        if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          await notificarMensajesError(mensajes, notificaciones)
-        }
-      } finally {
-        cargando.desactivar()
-      }
-    }
-
-    function mapearResponsable(empleados: Empleado[]) {
-      return empleados.map((empleado) => {
-        const empleadoGrupo = new EmpleadoGrupo()
-        empleadoGrupo.hydrate(empleado)
-        console.log(empleado.roles)
-        empleadoGrupo.es_responsable = typeof empleado.roles === 'string' ? extraerRol(empleado.roles.split(','), rolesSistema.tecnico_lider) : false
-        // empleadoGrupo.roles = typeof empleado.roles === 'object' ? empleado.roles.join(',') : ''
-        return empleadoGrupo
-      })
-    }
 
     /**********
      * Botones
@@ -214,22 +116,69 @@ export default defineComponent({
       seleccionar: seleccionarEmpleadosGrupo,
     } = useOrquestadorSelectorEmpleadosGrupo(empleadosGrupo, 'empleados')
 
-    // empleados_adicinoales
-    //watchEffect(() => emit('actualizar-empleados', [...empleadosGrupo.value, ...empleadosAdicionales.value]))
+    /************
+     * Observers
+     ************/
+    watchEffect(() => {
+      subtarea.modo_asignacion_trabajo = props.subtareaInicial.modo_asignacion_trabajo
+      subtarea.grupo = props.subtareaInicial.grupo
+      subtarea.empleado = props.subtareaInicial.empleado
+    })
+
     watch(empleadosGrupo, () => emit('actualizar-empleados', empleadosGrupo.value))
+
+    watchEffect(() => {
+      empleadosGrupo.value = props.subtareaInicial.empleados_designados
+      console.log(props.subtareaInicial.empleados_designados)
+    })
 
     /************
      * Funciones
      ************/
-    /* const quitarEmpleadoAdicional: CustomActionTable = {
-      titulo: 'Quitar',
-      icono: 'bi-x',
-      color: 'negative',
-      visible: () => [acciones.editar, acciones.nuevo].includes(props.accion + ""),
-      accion: ({ posicion }) => {
-        empleadosAdicionales.value.splice(posicion, 1)
-      },
-    } */
+    function seleccionarGrupo() {
+      if (subtarea.grupo) {
+        obtenerTecnicosGrupo(subtarea.grupo)
+        return emit('seleccionar-grupo', subtarea.grupo)
+      }
+    }
+
+    function seleccionarEmpleado() {
+      return emit('seleccionar-empleado', subtarea.empleado)
+    }
+
+    function limpiarSelector() {
+      subtarea.empleado = null
+      subtarea.grupo = null
+      empleadosGrupo.value = []
+      return emit('seleccionar-modo-designacion', subtarea.modo_asignacion_trabajo)
+    }
+
+    async function obtenerTecnicosGrupo(grupo_id: number) {
+      const cargando = new StatusEssentialLoading()
+
+      try {
+        cargando.activar()
+        const empleadoController = new EmpleadoController()
+        const { result } = await empleadoController.listar({ grupo_id: grupo_id })
+        empleadosGrupo.value = mapearResponsable(result)
+      } catch (error) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    function mapearResponsable(empleados: Empleado[]) {
+      return empleados.map((empleado) => {
+        const empleadoGrupo = new EmpleadoGrupo()
+        empleadoGrupo.hydrate(empleado)
+        empleadoGrupo.es_responsable = typeof empleado.roles === 'string' ? extraerRol(empleado.roles.split(','), rolesSistema.tecnico_lider) : false
+        return empleadoGrupo
+      })
+    }
 
     return {
       seleccionarGrupo,

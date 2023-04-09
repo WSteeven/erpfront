@@ -33,6 +33,12 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     options: estadosTrabajoArray
   },
   {
+    name: 'coordinador',
+    field: 'coordinador',
+    label: 'Coordinador',
+    align: 'left',
+  },
+  {
     name: 'titulo',
     field: 'titulo',
     label: 'Título del trabajo',
@@ -178,12 +184,6 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     name: 'subtarea_dependiente',
     field: 'subtarea_dependiente',
     label: 'Depende de',
-    align: 'left',
-  },
-  {
-    name: 'coordinador',
-    field: 'coordinador',
-    label: 'Coordinador',
     align: 'left',
   },
   {

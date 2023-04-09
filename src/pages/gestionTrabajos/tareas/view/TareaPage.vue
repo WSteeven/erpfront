@@ -49,8 +49,7 @@
         </div>
       </div>
 
-      <q-tab-panels v-model="tab" animated keep-alive
-        >dd
+      <q-tab-panels v-model="tab" animated keep-alive>
         <q-tab-panel name="tarea">
           <q-form @submit.prevent>
             <q-expansion-item
@@ -528,61 +527,25 @@
                 </div>
 
                 <!-- Provincia -->
-                <div v-if="clienteFinal.provincia" class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Provincias</label>
-                  <q-select
-                    v-model="clienteFinal.provincia"
-                    :options="listadosAuxiliares.provincias"
-                    transition-show="scale"
-                    transition-hide="scale"
-                    options-dense
-                    dense
-                    outlined
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Provincia</label>
+                  <q-input
+                    v-model="clienteFinal.provincia_nombre"
                     disable
-                    :option-label="(item) => item.provincia"
-                    :option-value="(item) => item.id"
-                    use-input
-                    input-debounce="0"
-                    emit-value
-                    map-options
-                  >
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No hay resultados
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
+                    outlined
+                    dense
+                  ></q-input>
                 </div>
 
-                <!-- Ciudad -->
-                <div v-if="clienteFinal.canton" class="col-12 col-md-3">
+                <!-- Provincia -->
+                <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Cantón</label>
-                  <q-select
-                    v-model="clienteFinal.canton"
-                    :options="listadosAuxiliares.cantones"
-                    transition-show="scale"
-                    transition-hide="scale"
-                    options-dense
-                    dense
-                    outlined
+                  <q-input
+                    v-model="clienteFinal.canton_nombre"
                     disable
-                    :option-label="(item) => item.canton"
-                    :option-value="(item) => item.id"
-                    use-input
-                    input-debounce="0"
-                    emit-value
-                    map-options
-                  >
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No hay resultados
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
+                    outlined
+                    dense
+                  ></q-input>
                 </div>
 
                 <!-- Parroquia -->
@@ -623,7 +586,7 @@
                   v-if="clienteFinal.coordenada_latitud"
                   class="col-12 col-md-3"
                 >
-                  <label class="q-mb-sm block">Coordenada latitud</label>
+                  <label class="q-mb-sm block">Latitud</label>
                   <q-input
                     v-model="clienteFinal.coordenada_latitud"
                     disable
@@ -638,7 +601,7 @@
                   v-if="clienteFinal.coordenada_longitud"
                   class="col-12 col-md-3"
                 >
-                  <label class="q-mb-sm block">Coordenada longitud</label>
+                  <label class="q-mb-sm block">Longitud</label>
                   <q-input
                     v-model="clienteFinal.coordenada_longitud"
                     disable
@@ -720,10 +683,11 @@
             :accion3="btnPausar"
             :accion4="btnReanudar"
             :accion5="btnRealizar"
-            :accion6="botonCancelar"
-            :accion7="botonReagendar"
-            :accion8="btnSeguimiento"
-            :accion9="botonFinalizar"
+            :accion6="btnReagendar"
+            :accion7="btnSeguimiento"
+            :accion8="btnSuspender"
+            :accion9="btnCancelar"
+            :accion10="btnFinalizar"
             :accion1Header="btnAgregarSubtarea"
             separador="cell"
             :permitirConsultar="false"

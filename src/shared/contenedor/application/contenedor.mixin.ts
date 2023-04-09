@@ -78,7 +78,7 @@ export abstract class Contenedor<
   }
 
   protected agregarElementoListadoActual(modelo: T): void {
-    this.refs.listado.value = [...this.refs.listado.value, modelo]
+    this.refs.listado.value = [modelo, ...this.refs.listado.value]
   }
 
   protected eliminarElementoListaActual(modelo: T): void {

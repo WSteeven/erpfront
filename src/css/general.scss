@@ -39,7 +39,7 @@ body {
 }
 
 .rounded-toolbar {
-  border-radius: 0 0 16px 16px;
+  border-radius: 32px;
 }
 
 .rounded-header {
@@ -66,6 +66,9 @@ input[type='time']::-webkit-calendar-picker-indicator {
   filter: invert(70%);
 }
 
+.border-primary {
+  border: 1px solid $primary;
+}
 /* .bg-transparent {
     background-color: transparent !important;
     border: none !important;

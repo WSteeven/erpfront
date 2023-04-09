@@ -3,7 +3,13 @@
     <!-- Navbar -->
     <q-header class="bg-toolbar border-bottomd">
       <q-toolbar class="row justify-between">
-        <q-btn flat dense round aria-label="Menu" @click="toggleLeftDrawer">
+        <q-btn
+          flat
+          dense
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+          class="custom-shadow bg-white"
+        >
           <svg
             width="24"
             height="24"
@@ -14,20 +20,23 @@
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
-              d="M3 5C3 4.44772 3.44772 4 4 4H16C16.5523 4 17 4.44772 17 5C17 5.55228 16.5523 6 16 6H4C3.44772 6 3 5.55228 3 5Z"
+              d="m 4.9152545,6.3008475 c 0,-0.607508 0.44772,-1.1 1,-1.1 H 17.915255 c 0.5523,0 1,0.492492 1,1.1 0,0.607508 -0.4477,1.1 -1,1.1 H 5.9152545 c -0.55228,0 -1,-0.492492 -1,-1.1 z"
               fill="#575b6e"
+              id="path2"
+              style="fill: #575b6e; stroke-width: 1.04881"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
-              d="M3 10C3 9.44772 3.44772 9 4 9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H4C3.44772 11 3 10.5523 3 10Z"
+              d="m 1.7118644,12.182204 c 0,-0.607508 0.6526088,-1.1 1.457627,-1.1 H 20.661018 c 0.805046,0 1.457627,0.492492 1.457627,1.1 0,0.60753 -0.652581,1.1 -1.457627,1.1 H 3.1694914 c -0.8050182,0 -1.457627,-0.49247 -1.457627,-1.1 z"
               fill="#575b6e"
+              id="path4"
+              style="fill: #575b6e; stroke-width: 1.26625"
             />
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M3 15C3 14.4477 3.44772 14 4 14H10C10.5523 14 11 14.4477 11 15C11 15.5523 10.5523 16 10 16H4C3.44772 16 3 15.5523 3 15Z"
-              fill="#575b6e"
+              id="path6"
+              style="fill: #575b6e; stroke-width: 1.04881"
+              d="M 8.9160156 16.658203 C 8.3637368 16.658203 7.9160156 17.150284 7.9160156 17.757812 C 7.9160156 18.365342 8.3637368 18.859375 8.9160156 18.859375 L 14.916016 18.859375 C 15.468314 18.859375 15.916016 18.365342 15.916016 17.757812 C 15.916016 17.150284 15.468314 16.658203 14.916016 16.658203 L 8.9160156 16.658203 z "
             />
           </svg>
         </q-btn>
@@ -39,126 +48,144 @@
             'q-gutter-x-md': !$q.screen.xs,
           }"
         >
-          <!-- Boton movilizacion -->
-          <q-btn
-            dense
-            round
-            icon="bi-car-front"
-            flat
-            class="color-icono"
-            @click="abrirMovilizacionSubtarea()"
+          <span
+            class="row bg-body-table rounded q-px-sm"
+            :class="{
+              'q-gutter-x-sm': $q.screen.xs,
+              'q-gutter-x-md': !$q.screen.xs,
+            }"
           >
-            <q-tooltip class="bg-dark">Movilización entre trabajos</q-tooltip>
-          </q-btn>
-
-          <!-- Boton Mi bodega -->
-          <q-btn
-            dense
-            round
-            icon="bi-box-seam"
-            flat
-            class="color-icono"
-            :to="{ name: 'mi_bodega' }"
-          >
-            <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
-          </q-btn>
-
-          <!-- Boton notificaciones -->
-          <q-btn
-            dense
-            round
-            flat
-            icon="bi-bell"
-            class="color-icono"
-            @click.self="mostrarNotificaciones = true"
-          >
-            <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
-
-            <q-badge v-if="notificaciones.length > 0" color="info" floating
-              >{{ notificaciones.length }}
-            </q-badge>
-
-            <q-menu
-              v-model="mostrarNotificaciones"
-              :self="selfCenterMiddle"
-              transition-show="jump-down"
-              transition-hide="jump-out"
-              :style="{ 'min-width': width }"
-              class="window-height bg-desenfoque custom-shadow"
-              max-height="100vh"
+            <!-- Boton movilizacion -->
+            <q-btn
+              dense
+              round
+              unelevated
+              icon="bi-car-front"
+              class="text-shadow bg-body-table color-icono"
+              @click="abrirMovilizacionSubtarea()"
             >
-              <!-- anchor="center middle" -->
-              <div class="full-width text-right q-pr-md">
-                <q-btn
-                  icon="bi-x"
-                  round
-                  dense
-                  glossy
-                  class="q-mt-sm bg-negative text-white"
-                  @click="mostrarNotificaciones = false"
-                ></q-btn>
-              </div>
-              <q-list style="min-width: 120px; max-width: 400px">
-                <q-item
-                  class="q-mb-md text-grey-7"
-                  v-if="notificaciones.length === 0"
-                >
-                  <q-avatar>
-                    <q-icon name="bi-bell-slash"></q-icon>
-                  </q-avatar>
-                  <q-item-section>
-                    <q-item-label>No tienes notificaciones nuevas</q-item-label>
-                  </q-item-section></q-item
-                >
-                <q-item
-                  v-for="notificacion in notificaciones"
-                  :key="notificacion.id"
-                  class="bg-desenfoque"
-                >
-                  <q-item-section avatar>
-                    <q-icon
-                      color="info"
-                      :name="
-                        obtenerIcono.obtener(notificacion.tipo_notificacion)
-                      "
-                      size="sm"
-                    />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label
-                      ><q-breadcrumbs
-                        ><q-breadcrumbs-el
-                          :label="notificacion.mensaje"
-                          :to="notificacion.link" /></q-breadcrumbs
-                    ></q-item-label>
-                  </q-item-section>
+              <q-tooltip class="bg-dark">Movilización entre trabajos</q-tooltip>
+            </q-btn>
 
-                  <q-item-section side top
-                    >{{ moment(notificacion.created_at).fromNow() }}
-                    <q-item-label caption
-                      ><q-breadcrumbs class="text-blue text-right">
-                        <q-breadcrumbs-el
-                          icon="bi-check"
-                          label="leída"
-                          @click="marcarLeida(notificacion.id)"
-                        /> </q-breadcrumbs
-                    ></q-item-label>
-                  </q-item-section>
-                </q-item>
+            <q-separator vertical inset></q-separator>
 
-                <q-separator />
+            <!-- Boton Mi bodega -->
+            <q-btn
+              dense
+              round
+              unelevated
+              icon="bi-box-seam"
+              class="text-shadow bg-body-table color-icono"
+              :to="{ name: 'mi_bodega' }"
+            >
+              <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
+            </q-btn>
 
-                <q-item clickable to="notificaciones">
-                  <q-avatar>
-                    <q-icon name="bi-bell" />
-                  </q-avatar>
-                  <q-item-section>Ver todas las notificaciones</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
+            <q-separator vertical inset></q-separator>
 
-          <q-btn dense round flat @click.self="mostrarMenu = true">
+            <!-- Boton notificaciones -->
+            <q-btn
+              dense
+              round
+              flat
+              unelevated
+              icon="bi-bell"
+              class="text-shadow bg-body-table color-icono"
+              @click.self="mostrarNotificaciones = true"
+            >
+              <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
+
+              <q-badge v-if="notificaciones.length > 0" color="info" floating
+                >{{ notificaciones.length }}
+              </q-badge>
+
+              <q-menu
+                v-model="mostrarNotificaciones"
+                :self="selfCenterMiddle"
+                transition-show="jump-down"
+                transition-hide="jump-out"
+                :style="{ 'min-width': width }"
+                class="window-height bg-desenfoque custom-shadow"
+                max-height="100vh"
+              >
+                <!-- anchor="center middle" -->
+                <div class="full-width text-right q-pr-md">
+                  <q-btn
+                    icon="bi-x"
+                    round
+                    dense
+                    glossy
+                    class="q-mt-sm bg-negative text-white"
+                    @click="mostrarNotificaciones = false"
+                  ></q-btn>
+                </div>
+                <q-list style="min-width: 120px; max-width: 400px">
+                  <q-item
+                    class="q-mb-md text-grey-7"
+                    v-if="notificaciones.length === 0"
+                  >
+                    <q-avatar>
+                      <q-icon name="bi-bell-slash"></q-icon>
+                    </q-avatar>
+                    <q-item-section>
+                      <q-item-label
+                        >No tienes notificaciones nuevas</q-item-label
+                      >
+                    </q-item-section></q-item
+                  >
+                  <q-item
+                    v-for="notificacion in notificaciones"
+                    :key="notificacion.id"
+                    class="bg-desenfoque"
+                  >
+                    <q-item-section avatar>
+                      <q-icon
+                        color="info"
+                        :name="
+                          obtenerIcono.obtener(notificacion.tipo_notificacion)
+                        "
+                        size="sm"
+                      />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label
+                        ><q-breadcrumbs
+                          ><q-breadcrumbs-el
+                            :label="notificacion.mensaje"
+                            :to="notificacion.link" /></q-breadcrumbs
+                      ></q-item-label>
+                    </q-item-section>
+
+                    <q-item-section side top
+                      >{{ moment(notificacion.created_at).fromNow() }}
+                      <q-item-label caption
+                        ><q-breadcrumbs class="text-blue text-right">
+                          <q-breadcrumbs-el
+                            icon="bi-check"
+                            label="leída"
+                            @click="marcarLeida(notificacion.id)"
+                          /> </q-breadcrumbs
+                      ></q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-separator />
+
+                  <q-item clickable to="notificaciones">
+                    <q-avatar>
+                      <q-icon name="bi-bell" />
+                    </q-avatar>
+                    <q-item-section
+                      >Ver todas las notificaciones</q-item-section
+                    >
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </span>
+
+          <!-- Perfil -->
+          <q-btn dense round flat glossy @click.self="mostrarMenu = true">
             <q-avatar size="38px">
               <img v-bind:src="imagenPerfil" />
             </q-avatar>

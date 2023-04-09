@@ -3,20 +3,6 @@ import { Subtarea } from 'gestionTrabajos/subtareas/domain/Subtarea'
 
 export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
   {
-    name: 'proyecto',
-    field: 'proyecto',
-    label: 'Proyecto',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'cliente_final',
-    field: 'cliente_final',
-    label: 'Cliente final',
-    align: 'left',
-    sortable: true,
-  },
-  {
     name: 'tarea',
     field: 'tarea',
     label: 'Cód. Tarea',
@@ -104,5 +90,19 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     field: 'subtarea_dependiente',
     label: 'Depende de',
     align: 'left',
+  },
+  {
+    name: 'proyecto',
+    field: 'proyecto',
+    label: 'Proyecto',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'cliente_final',
+    field: 'cliente_final',
+    label: 'Cliente final',
+    align: 'left',
+    sortable: true,
   },
 ]

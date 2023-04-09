@@ -43,7 +43,6 @@ export default defineComponent({
     ***********/
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
     const authenticationStore = useAuthenticationStore()
-    const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
 
     /*******
     * Mixin
@@ -63,11 +62,11 @@ export default defineComponent({
      * Variables
      ************/
     const mostrarDialogPlantilla = ref(false)
-    const { confirmar, promptItems, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const modales = new ComportamientoModalesTrabajoAsignado()
     const tabActual = ref()
-    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnSeguimiento, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(listado, modales, listadosAuxiliares)
+    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(listado, modales, listadosAuxiliares)
     setFiltrarTrabajoAsignado(filtrarTrabajoAsignado)
+
     /*********
      * Pusher
      *********/
@@ -88,155 +87,9 @@ export default defineComponent({
       },
     }
 
-    /* const botonIniciar: CustomActionTable = {
-      titulo: 'Ejecutar',
-      icono: 'bi-play-fill',
-      color: 'positive',
-      visible: ({ entidad }) => [estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.puede_ejecutar && entidad.es_responsable,
-      accion: ({ entidad }) => {
-        confirmar('¿Está seguro de iniciar el trabajo?', async () => {
-          if (entidad.es_dependiente) {
-            const { result: subtareaDependiente } = await new SubtareaController().consultar(entidad.subtarea_dependiente_id)
-            if (subtareaDependiente.estado !== estadosTrabajos.REALIZADO) {
-              notificarAdvertencia('No puedes proceder. Primero debes finalizar con el trabajo ' + subtareaDependiente.codigo_subtarea)
-              return
-            }
-          }
-
-          const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id)
-          entidad.estado = estadosTrabajos.EJECUTANDO
-          entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
-          filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
-          notificarCorrecto('Trabajo iniciado exitosamente!')
-          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-        })
-      }
-    } */
-
-    /* const botonPausar: CustomActionTable = {
-      titulo: 'Pausar',
-      icono: 'bi-pause-circle',
-      color: 'blue-6',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.es_responsable,
-      accion: ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de pausar el trabajo?', () => {
-          const config: CustomActionPrompt = reactive({
-            mensaje: 'Seleccione el motivo de la pausa',
-            accion: async (idMotivoPausa) => {
-              console.log(idMotivoPausa)
-              await new CambiarEstadoSubtarea().pausar(entidad.id, idMotivoPausa)
-              entidad.estado = estadosTrabajos.PAUSADO
-              filtrarTrabajoAsignado(estadosTrabajos.PAUSADO)
-              notificarCorrecto('Trabajo pausado exitosamente!')
-              eliminarElemento(posicion, entidad)
-              movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-            },
-            tipo: 'radio',
-            items: listadosAuxiliares.motivosPausas.map((motivo: MotivoPausa) => {
-              return {
-                label: motivo.motivo,
-                value: motivo.id
-              }
-            })
-          })
-
-          promptItems(config)
-        })
-      },
-    } */
-
-    /* const botonReanudar: CustomActionTable = {
-      titulo: 'Reanudar',
-      icono: 'bi-play-circle',
-      color: 'positive',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.es_responsable && entidad.puede_ejecutar,
-      accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de reanudar el trabajo?', async () => {
-          await new CambiarEstadoSubtarea().reanudar(entidad.id)
-          entidad.estado = estadosTrabajos.EJECUTANDO
-          filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
-          notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
-          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-          // eliminarElemento(posicion, entidad)
-        })
-      }
-    } */
-
-    /* const botonFormulario: CustomActionTable = {
-      titulo: 'Seguimiento',
-      icono: 'bi-check2-square',
-      color: 'indigo',
-      visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO].includes(entidad.estado) && entidad.es_responsable,
-      accion: async ({ entidad }) => {
-        confirmar('¿Está seguro de abrir el formulario?', () => {
-          trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
-          trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
-          trabajoAsignadoStore.idEmergencia = entidad.seguimiento
-          trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
-          const obtenerPlantilla = new ObtenerPlantilla()
-          modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
-        })
-      }
-    } */
-
-    const botonSuspender: CustomActionTable = {
-      titulo: 'Suspender',
-      icono: 'bi-power',
-      color: 'negative',
-      visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.es_responsable && entidad.puede_suspender,
-      accion: ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de suspender el trabajo?', () => {
-          const config: CustomActionPrompt = {
-            mensaje: 'Seleccione el motivo de la suspención del trabajo',
-            accion: async (data) => {
-              const { result } = await new CambiarEstadoSubtarea().suspender(entidad.id, data)
-              entidad.estado = estadosTrabajos.SUSPENDIDO
-              entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
-              notificarCorrecto('Trabajo suspendido exitosamente!')
-              eliminarElemento(posicion, entidad)
-              movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-            },
-            tipo: 'radio',
-            items: listadosAuxiliares.motivosSuspendidos.map((motivo: MotivoSuspendido) => {
-              return {
-                label: motivo.motivo,
-                value: motivo.id
-              }
-            })
-          }
-
-          promptItems(config)
-        })
-      },
-    }
-
-    /*const botonRealizar: CustomActionTable = {
-      titulo: 'Realizado',
-      icono: 'bi-check-circle',
-      color: 'positive',
-      visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && entidad.es_responsable,
-      accion: ({ entidad, posicion }) => {
-        confirmar('¿Está seguro de que completó el trabajo?', async () => {
-          const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id)
-          entidad.estado = estadosTrabajos.REALIZADO
-          entidad.fecha_hora_realizado = result.fecha_hora_realizado
-          eliminarElemento(posicion, entidad)
-          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-          notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
-        })
-      }
-    } */
-
     /************
     * Funciones
     *************/
-    // - Actualizar un elemento del listado de trabajo asignado
-    function eliminarElemento(posicion: number, entidad: any): void {
-      if (posicion >= 0) {
-        listado.value.splice(posicion, 1)
-      }
-    }
-
     async function filtrarTrabajoAsignado(tabSeleccionado) {
       listar({ estado: tabSeleccionado })
       tabActual.value = tabSeleccionado
@@ -267,7 +120,7 @@ export default defineComponent({
       btnPausar,
       btnReanudar,
       btnSeguimiento,
-      botonSuspender,
+      btnSuspender,
       btnRealizar,
       tabActual,
       // botonCorregir,

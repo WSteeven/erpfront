@@ -17,6 +17,8 @@ export class ClienteFinal extends EntidadAuditable {
   correo: string | null
   medio_transmision: string | null
   tendido_interior_cable: string | null
+  provincia_nombre: string | null
+  canton_nombre: string | null
 
   constructor() {
     super()
@@ -37,5 +39,7 @@ export class ClienteFinal extends EntidadAuditable {
     // Informacion tecnica
     this.medio_transmision = null
     this.tendido_interior_cable = null
+    this.provincia_nombre = null
+    this.canton_nombre = null
   }
 }

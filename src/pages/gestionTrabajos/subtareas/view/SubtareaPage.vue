@@ -70,19 +70,6 @@
           </q-input>
         </div>
 
-        <!-- Titulo -->
-        <div v-if="subtarea.ruta_tarea" class="col-12">
-          <label class="q-mb-sm block">Ruta</label>
-          <q-input
-            v-model="subtarea.ruta_tarea"
-            :disable="disabled"
-            autofocus
-            outlined
-            dense
-          >
-          </q-input>
-        </div>
-
         <!-- Codigo tarea JP -->
         <div v-if="subtarea.codigo_trabajo" class="col-12 col-md-3">
           <label class="q-mb-sm block">Código de trabajo</label>
@@ -137,22 +124,6 @@
               </div>
             </template>
           </q-select>
-        </div>
-
-        <!-- Tiempo estimado del trabajo -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Tiempo estimado del trabajo</label>
-          <q-input
-            v-model="subtarea.tiempo_estimado"
-            type="time"
-            :disable="disabled"
-            hint="Opcional"
-            stack-label
-            outlined
-            clearable
-            dense
-          >
-          </q-input>
         </div>
 
         <!-- Es dependiente -->
@@ -302,6 +273,25 @@
           </q-input>
         </div>
 
+        <!-- Tiempo estimado del trabajo -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Tiempo estimado del trabajo</label>
+          <q-input
+            v-model="subtarea.tiempo_estimado"
+            type="number"
+            :disable="disabled"
+            min="0"
+            placeholder="Opcional"
+            :hint="tiempoFormateado"
+            suffix="minutos"
+            @update:model-value="convertir()"
+            outlined
+            clearable
+            dense
+          >
+          </q-input>
+        </div>
+
         <!-- Hora fin de agendamiento -->
         <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
           <label class="q-mb-sm block">Hora fin de trabajo (24 horas)</label>
@@ -347,6 +337,142 @@
           (empleados) => (subtarea.empleados_designados = empleados)
         "
       ></designar-responsable-trabajo>
+    </q-expansion-item>
+
+    <q-expansion-item
+      class="overflow-hidden q-mb-md expansion"
+      label="Ubicación del trabajo"
+      header-class="bg-header-collapse"
+      default-opened
+    >
+      <div v-if="subtarea.ruta_tarea" class="row q-pa-md">
+        <!-- Ruta de tarea -->
+        <div class="col-12">
+          <label class="q-mb-sm block">Ruta</label>
+          <q-input
+            v-model="subtarea.ruta_tarea"
+            disable
+            autofocus
+            outlined
+            dense
+          >
+          </q-input>
+        </div>
+      </div>
+
+      <div v-if="subtarea.cliente_final" class="row q-col-gutter-sm q-pa-md">
+        <!-- Nombre -->
+        <div class="col-12 col-md-6">
+          <label class="q-mb-sm block">Cliente final</label>
+          <q-input
+            v-model="nombresClienteFinal"
+            disable
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Id de cliente -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">ID de cliente final</label>
+          <q-input
+            v-model="clienteFinal.id_cliente_final"
+            disable
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Celular -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Celular</label>
+          <q-input
+            v-model="clienteFinal.celular"
+            outlined
+            dense
+            disable
+          ></q-input>
+        </div>
+
+        <!-- Provincia -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Provincia</label>
+          <q-input
+            v-model="clienteFinal.provincia_nombre"
+            disable
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Provincia -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Cantón</label>
+          <q-input
+            v-model="clienteFinal.canton_nombre"
+            disable
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Parroquia -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Parroquia/Barrio</label>
+          <q-input
+            v-model="clienteFinal.parroquia"
+            disable
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Direccion -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Dirección</label>
+          <q-input
+            v-model="clienteFinal.direccion"
+            disable
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Referencias -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Referencia</label>
+          <q-input
+            v-model="clienteFinal.referencia"
+            disable
+            outlined
+            dense
+          ></q-input>
+        </div>
+
+        <!-- Coordenadas -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Coordenada latitud</label>
+          <q-input
+            v-model="clienteFinal.coordenada_latitud"
+            disable
+            outlined
+            dense
+          >
+          </q-input>
+        </div>
+
+        <!-- Coordenadas -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Coordenada longitud</label>
+          <q-input
+            v-model="clienteFinal.coordenada_longitud"
+            disable
+            outlined
+            dense
+          >
+          </q-input>
+        </div>
+      </div>
     </q-expansion-item>
 
     <q-expansion-item

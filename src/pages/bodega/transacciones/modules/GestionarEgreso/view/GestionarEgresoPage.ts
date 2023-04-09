@@ -26,13 +26,15 @@ export default defineComponent({
     const { listar } = mixin.useComportamiento()
     const statusLoading = new StatusEssentialLoading()
 
-    listar()
+    // listar()
     const transaccionStore = useTransaccionEgresoStore()
     async function filtrarTabs(tabSeleccionado) {
       statusLoading.activar()
       const result = await transaccionStore.filtrarEgresosComprobantes(tabSeleccionado)
       listado.value = result
     }
+
+    filtrarTabs('PENDIENTE')
 
     const modales = new ComportamientoModalesGestionarEgreso()
     const botonVerTransaccion: CustomActionTable = {

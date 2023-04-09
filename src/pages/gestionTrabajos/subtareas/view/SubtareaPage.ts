@@ -2,14 +2,13 @@
 import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { defineComponent, Ref, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
 import {
   tiposInstalaciones,
   tiposTareasTelconet,
   tiposTareasNedetel,
   regiones,
   atenciones,
-  estadosTrabajos,
   rolesSistema,
   acciones,
   accionesTabla,
@@ -29,6 +28,8 @@ import { useQuasar } from 'quasar'
 
 // Componentes
 import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
+import TablaSubtareaSuspendida from 'gestionTrabajos/subtareas/modules/tablaSubtareasSuspendidas/view/TablaSubtareaSuspendida.vue'
+import TablaSubtareaPausas from 'gestionTrabajos/subtareas/modules/pausasRealizadas/view/PausasRealizadas.vue'
 import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/view/TiempoSubtarea.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
@@ -36,13 +37,12 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
-import TablaSubtareaSuspendida from 'gestionTrabajos/subtareas/modules/tablaSubtareasSuspendidas/view/TablaSubtareaSuspendida.vue'
-import TablaSubtareaPausas from 'gestionTrabajos/subtareas/modules/pausasRealizadas/view/PausasRealizadas.vue'
 
 // Logica y controladores
 import { ArchivoSubtareaController } from '../modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoTrabajoController } from 'gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
+import { DesignadoEmpleadoResponsable } from '../application/validaciones/DesignadoEmpleadoResponsable'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ComportamientoModalesSubtarea } from '../application/ComportamientoModalesSubtarea'
 import { GrupoController } from 'recursosHumanos/grupos/infraestructure/GrupoController'
@@ -52,12 +52,13 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
+import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
 import { descargarArchivoUrl } from 'shared/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
-import { DesignadoEmpleadoResponsable } from '../application/validaciones/DesignadoEmpleadoResponsable'
-import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
+import { ClienteFinal } from 'pages/gestionTrabajos/clientesFinales/domain/ClienteFinal'
+import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -116,7 +117,9 @@ export default defineComponent({
     if (subtareaStore.idSubtareaSeleccionada) {
       consultar({ id: subtareaStore.idSubtareaSeleccionada }).then(() => {
         listarArchivos({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
+        if (subtarea.cliente_final) obtenerClienteFinal(subtarea.cliente_final)
       })
+
     } else subtarea.hydrate(new Subtarea())
 
     subtarea.tarea = subtareaStore.codigoTarea
@@ -132,12 +135,7 @@ export default defineComponent({
     const tecnicoSeleccionado = ref()
     const busqueda = ref()
     const empleadosSeleccionados: Ref<Empleado[]> = ref([])
-    //    const empleadoGrupoQuitar = ref()
-
-    /**************
-     * Referencias
-     **************/
-    //     const refEmpleadosGrupo = ref()
+    const clienteFinal = reactive(new ClienteFinal())
 
     /**********
      * Modales
@@ -190,7 +188,6 @@ export default defineComponent({
         empleadoGrupo.es_responsable = empleado.es_responsable ? 1 : 0
         return empleadoGrupo
       })
-      //subtarea.empleados_adicionales = subtarea.empleados_adicionales.map((empleado: Empleado) => empleado.id)
     })
 
     onConsultado(() => subtarea.tarea = subtareaStore.codigoTarea)
@@ -220,27 +217,29 @@ export default defineComponent({
         const entidad: Subtarea = await guardar(subtarea, false)
         const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
 
-        if (entidad.id) {
+        const subtareaAux = new Subtarea()
+        subtareaAux.hydrate(entidad)
+
+        if (subtareaAux.id) {
           // Por el momento se asigna automaticamente pero a futuro quienes lo harán serán los trabajadores de la torre de control
           // hacia los coordinadores
-          const { result } = await cambiarEstadoTrabajo.asignar(entidad.id)
-          entidad.estado = estadosTrabajos.ASIGNADO
-          entidad.fecha_hora_asignacion = result.fecha_hora_asignacion
+          await cambiarEstadoTrabajo.asignar(subtareaAux.id)
 
-          const { result: resultAgendado } = await cambiarEstadoTrabajo.agendar(entidad.id)
-          entidad.estado = estadosTrabajos.AGENDADO
-          entidad.fecha_hora_agendado = resultAgendado.fecha_hora_agendado
+          const { result: resultAgendado } = await cambiarEstadoTrabajo.agendar(subtareaAux.id)
+          subtareaAux.hydrate(resultAgendado)
 
-          listado.value = [...listado.value, entidad]
+          listado.value = [subtareaAux, ...listado.value]
 
           // Subir archivos
-          idSubtarea = entidad.id
+          idSubtarea = subtareaAux.id
           refUploader.value.upload()
         }
 
         emit('cerrar-modal', false)
 
-      } catch (e) { }
+      } catch (e) {
+        console.log(e)
+      }
     }
 
     const btnDescargarArchivo: CustomActionTable = {
@@ -249,18 +248,6 @@ export default defineComponent({
       color: 'positive',
       accion: ({ entidad }) => descargarArchivoUrl(entidad.ruta)
     }
-
-    /* async function editarDatos(subtarea: Subtarea) {
-      try {
-        await editar(subtarea, false)
-
-        const indexElemento = subtareaStore.posicionSubtareaSeleccionada
-
-        listado.value.splice(indexElemento, 1, subtarea)
-
-        emit('cerrar-modal')
-      } catch (e) { }
-    } */
 
     function reestablecerDatos() {
       reestablecer()
@@ -303,17 +290,11 @@ export default defineComponent({
     }
 
     function seleccionarGrupo(grupo_id: number) {
-      console.log('Seleccionado grupo:  ' + grupo_id)
-      // subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
       subtarea.grupo = grupo_id
-      // subtarea.empleado = null
     }
 
     function seleccionarEmpleado(empleado_id: number) {
-      console.log('Seleccionado empleado: ' + empleado_id)
-      // subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
       subtarea.empleado = empleado_id
-      // subtarea.grupo = null
     }
 
     function seleccionarModoDesignacion(modo: string) {
@@ -322,9 +303,44 @@ export default defineComponent({
       subtarea.grupo = null
     }
 
+    async function obtenerClienteFinal(clienteFinalId: number) {
+      const clienteFinalController = new ClienteFinalController()
+      const { result } = await clienteFinalController.consultar(clienteFinalId)
+      clienteFinal.hydrate(result)
+    }
+
     function onRejected(rejectedEntries) {
       notificarAdvertencia('El tamaño total de los archivos no deben exceder los 10mb.')
     }
+
+    //const minutos = ref(0);
+    const dias = ref(0);
+    const horas = ref(0);
+    const minutosRestantes = ref(0);
+    const segundosRestantes = ref(0);
+
+    function convertir() {
+      let tiempo = subtarea.tiempo_estimado ? subtarea.tiempo_estimado * 60 : 0; // convertir minutos a segundos
+      dias.value = Math.floor(tiempo / (24 * 60 * 60));
+      tiempo -= dias.value * 24 * 60 * 60;
+      horas.value = Math.floor(tiempo / (60 * 60));
+      tiempo -= horas.value * 60 * 60;
+      minutosRestantes.value = Math.floor(tiempo / 60);
+      tiempo -= minutosRestantes.value * 60;
+      segundosRestantes.value = tiempo;
+    }
+
+    const tiempoFormateado = computed(() => {
+      let texto = '';
+      if (dias.value > 0) {
+        texto += dias.value === 1 ? '1 día, ' : `${dias.value} días, `;
+      }
+      if (horas.value > 0) {
+        texto += horas.value === 1 ? '1 hora, ' : `${horas.value} horas, `;
+      }
+      texto += `${minutosRestantes.value} minutos, ${segundosRestantes.value} segundos`;
+      return texto;
+    });
 
     /************
     * Observers
@@ -334,6 +350,8 @@ export default defineComponent({
     })
 
     return {
+      tiempoFormateado,
+      convertir,
       v$,
       refUploader,
       onRejected,
@@ -379,6 +397,8 @@ export default defineComponent({
       seleccionarGrupo,
       seleccionarEmpleado,
       seleccionarModoDesignacion,
+      clienteFinal,
+      nombresClienteFinal: computed(() => clienteFinal.nombres + ' ' + clienteFinal.apellidos),
       // Filtros
       clientes,
       filtrarClientes,

@@ -13,11 +13,11 @@ export class CambiarEstadoSubtarea {
   }
 
   async asignar(idSubtarea: number) {
-    return this.solicitud('/asignar', idSubtarea)
+    return await this.solicitud('/asignar', idSubtarea)
   }
 
   async agendar(idSubtarea: number) {
-    return this.solicitud('/agendar', idSubtarea)
+    return await this.solicitud('/agendar', idSubtarea)
   }
 
   async ejecutar(idSubtarea: number, data: UnwrapRef<any>) {
@@ -57,7 +57,7 @@ export class CambiarEstadoSubtarea {
   }
 
   async reagendar(idSubtarea: number, nuevaFecha: string) {
-    return this.solicitud('/reagendar', idSubtarea, { nueva_fecha: nuevaFecha })
+    return await this.solicitud('/reagendar', idSubtarea, { nueva_fecha: nuevaFecha })
   }
 
   async solicitud(accion, tarea, data?: UnwrapRef<any>) {

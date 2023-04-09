@@ -101,6 +101,20 @@
               ></essential-table>
             </div>
           </div>
+
+          <div class="row inline justify-end q-gutter-sm">
+            <!-- Boton guardar -->
+            <q-btn color="primary" no-caps push>
+              <q-icon name="bi-pin-angle" size="xs" class="q-pr-sm"></q-icon>
+              <span>Devolver a bodega matriz</span>
+            </q-btn>
+
+            <!-- Boton modificar -->
+            <q-btn color="primary" no-caps push>
+              <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
+              <span>Transferir a stock personal</span>
+            </q-btn>
+          </div>
         </q-tab-panel>
 
         <q-tab-panel name="personal">

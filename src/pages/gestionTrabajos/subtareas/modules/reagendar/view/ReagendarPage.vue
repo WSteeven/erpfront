@@ -1,13 +1,13 @@
 <template>
   <div class="col-12 q-gutter-sm q-mb-lg">
-    <div><b>Código de trabajo: </b>{{ codigoSubtareaSeleccionada }}</div>
+    <div><b>Código de subtarea: </b>{{ codigoSubtareaSeleccionada }}</div>
     <!-- <div><b>Fecha y hora de suspención: </b> {{ fechaHoraSuspendido }}</div> -->
     <!-- <div><b>Motivo del suspenso: </b> {{ motivoSuspendido }}</div> -->
   </div>
 
   <q-expansion-item
     class="overflow-hidden q-mb-md expansion"
-    label="Reajuste de tiempos para inicio de trabajo"
+    label="Reajuste de tiempos para el nuevo inicio de trabajo"
     header-class="text-bold bg-header-collapse"
     default-opened
   >

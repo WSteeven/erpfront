@@ -114,35 +114,18 @@
         <q-input v-model="trabajo.hora_fin_trabajo" outlined dense disable />
       </div>
 
-      <!--<div class="col-12">
-          <essential-table
-            v-if="
-              trabajo.modo_asignacion_trabajo ===
-              modosAsignacionTrabajo.por_grupo
-            "
-            titulo="Grupos asignados"
-            estilos="margin-bottom: 14px;"
-            :configuracionColumnas="configuracionColumnasGrupoSeleccionado"
-            :datos="trabajo.grupos_seleccionados"
-            :mostrarBotones="false"
-            :permitirConsultar="false"
-            :permitirEditar="false"
-            :permitirEliminar="false"
-            :alto-fijo="false"
-            :mostrar-header="true"
-            :permitir-buscar="false"
-            :mostrar-footer="!trabajo.grupos_seleccionados.length"
-          >
-          </essential-table> -->
-
       <div class="col-12">
         <essential-table
           v-if="
             trabajo.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo
           "
-          titulo="Empleados designados para ejecutar el trabajo"
+          :titulo="
+            'Se designaron a ' +
+            trabajo.empleados_designados.length +
+            ' empleados'
+          "
           :configuracionColumnas="configuracionColumnasEmpleadoGrupo"
-          :datos="empleadosDesignados"
+          :datos="trabajo.empleados_designados"
           :mostrarBotones="false"
           :permitirConsultar="false"
           :permitirEditar="false"
@@ -152,35 +135,25 @@
         >
         </essential-table>
       </div>
-
-      <!--<essential-table
-            v-if="
-              trabajo.modo_asignacion_trabajo ===
-              modosAsignacionTrabajo.por_trabajador
-            "
-            titulo="Empleados que ejecutarán el trabajo"
-            :configuracionColumnas="configuracionColumnasEmpleadoSeleccionado"
-            :datos="trabajo.empleados_seleccionados"
-            :mostrarBotones="false"
-            :permitirConsultar="false"
-            :permitirEditar="false"
-            :alto-fijo="false"
-            :mostrar-footer="false"
-            :permitir-buscar="false"
-          >
-          </essential-table>
-        </div> -->
     </div>
   </q-expansion-item>
 
   <q-expansion-item
-    v-if="trabajo.cliente_final"
     class="overflow-hidden q-mb-md expansion"
     label="Ubicación del trabajo"
     header-class="bg-header-collapse"
     default-opened
   >
-    <div class="row q-col-gutter-sm q-pa-md">
+    <div class="row q-pa-md">
+      <!-- Ruta de tarea -->
+      <div v-if="trabajo.ruta_tarea" class="col-12">
+        <label class="q-mb-sm block">Ruta</label>
+        <q-input v-model="trabajo.ruta_tarea" disable autofocus outlined dense>
+        </q-input>
+      </div>
+    </div>
+
+    <div v-if="trabajo.cliente_final" class="row q-col-gutter-sm q-pa-md">
       <!-- Nombre -->
       <div class="col-12 col-md-6">
         <label class="q-mb-sm block">Cliente final</label>
@@ -302,7 +275,7 @@
 
       <!-- Coordenadas -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Coordenada latitud</label>
+        <label class="q-mb-sm block">Latitud</label>
         <q-input
           v-model="clienteFinal.coordenada_latitud"
           disable
@@ -314,7 +287,7 @@
 
       <!-- Coordenadas -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Coordenada longitud</label>
+        <label class="q-mb-sm block">Longitud</label>
         <q-input
           v-model="clienteFinal.coordenada_longitud"
           disable

@@ -93,10 +93,9 @@ export default defineComponent({
         obtenerClienteFinal(trabajo.cliente_final)
       }
 
-      if (trabajo.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo && trabajo.grupo) {
-
+      /* if (trabajo.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo && trabajo.grupo) {
         obtenerTecnicosGrupo(trabajo.grupo)
-      }
+      } */
     })
 
     /***************
@@ -114,22 +113,12 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    async function obtenerTecnicosGrupo(grupo_id: number) {
+    /* async function obtenerTecnicosGrupo(grupo_id: number) {
       const empleadoController = new EmpleadoController()
 
       const { result } = await empleadoController.listar({ grupo_id: grupo_id })
       empleadosDesignados.value = result
-
-      /* trabajo.empleados_seleccionados = trabajo.empleados_seleccionados.map((empleado: Empleado) => {
-        const tecnico = new Empleado()
-        tecnico.hydrate(empleado)
-
-        const roles = stringToArray(tecnico.roles ?? '')
-        tecnico.roles = quitarItemDeArray(roles, rolesSistema.empleado).join(',')
-
-        return tecnico
-      }) */
-    }
+    } */
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()

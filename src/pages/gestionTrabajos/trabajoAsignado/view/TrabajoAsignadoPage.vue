@@ -11,7 +11,9 @@
     </div>
 
     <essential-table-tabs
-      titulo="Listado de trabajos"
+      :titulo="
+        'Tienes ' + listado.length + ' subtarea(s) en estado ' + tabActual
+      "
       :configuracionColumnas="[
         ...configuracionColumnasTrabajoAsignado,
         accionesTabla,
@@ -22,7 +24,7 @@
       :accion3="btnSeguimiento"
       :accion4="btnPausar"
       :accion5="btnReanudar"
-      :accion6="botonSuspender"
+      :accion6="btnSuspender"
       :accion7="btnRealizar"
       :permitirConsultar="false"
       :permitirEditar="false"

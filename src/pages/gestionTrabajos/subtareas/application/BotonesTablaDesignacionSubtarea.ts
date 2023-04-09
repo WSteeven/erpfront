@@ -73,7 +73,7 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
     titulo: 'Designar responsable',
     icono: 'bi-arrow-left-right',
     color: 'positive',
-    visible: () => false, //!cambiarResponsable.value && [acciones.editar, acciones.nuevo].includes(accion),
+    visible: () => !cambiarResponsable.value && [acciones.editar, acciones.nuevo].includes(accion),
     accion: async () => cambiarResponsable.value = true
   }
 
