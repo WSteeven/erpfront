@@ -73,7 +73,7 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos' },
+          params: { campos: 'id,nombres,apellidos',estado: 1 },
         },
         tiposFondos: {
           controller: new TipoFondoController(),

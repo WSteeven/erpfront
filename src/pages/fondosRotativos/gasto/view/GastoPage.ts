@@ -181,7 +181,7 @@ export default defineComponent({
         },
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id },
+          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id ,estado: 1},
         },
       })
       autorizacionesEspeciales.value =

@@ -67,7 +67,7 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos' },
+          params: { campos: 'id,nombres,apellidos',estado: 1 },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
@@ -95,7 +95,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
