@@ -64,6 +64,19 @@ export const configuracionColumnasMovilizacionSubtarea: ColumnConfig<Movilizacio
     align: 'left',
   },
   {
+    name: 'estado_subtarea_llegada',
+    field: 'estado_subtarea_llegada',
+    label: 'Estado subtarea llegada',
+    align: 'left',
+  },
+  {
+    name: 'coordinador_registrante_llegada',
+    field: 'coordinador_registrante_llegada',
+    label: 'Coordinador registrante llegada',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'estado',
     field: 'estado',
     label: 'Estado',

@@ -12,10 +12,10 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
 import { MovilizacionSubtarea } from 'pages/gestionTrabajos/movilizacionSubtareas/domain/MovilizacionSubtarea'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ReporteMovilizacionSubtarea } from '../domain/ReporteMovilizacionSubtarea'
 
 export default defineComponent({
@@ -29,8 +29,7 @@ export default defineComponent({
       new MovilizacionSubtareaController()
     )
     const { entidad: movilizacion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, setValidador, listar } =
-      mixin.useComportamiento()
+    const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({

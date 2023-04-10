@@ -24,28 +24,28 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/ejecutar', idSubtarea, data)
   }
 
-  async realizar(idSubtarea: number) {
-    return this.solicitud('/realizar', idSubtarea)
+  async realizar(idSubtarea: number, movilizacion: any) {
+    return this.solicitud('/realizar', idSubtarea, movilizacion)
   }
 
   async finalizar(idSubtarea: number) {
     return this.solicitud('/finalizar', idSubtarea)
   }
 
-  async pausar(idSubtarea: number, idMotivoPausa: number) {
-    return this.solicitud('/pausar', idSubtarea, { motivo_pausa_id: idMotivoPausa })
+  async pausar(idSubtarea: number, movilizacion: any) {
+    return this.solicitud('/pausar', idSubtarea, movilizacion)
   }
 
-  async reanudar(idSubtarea: number) {
-    return this.solicitud('/reanudar', idSubtarea)
+  async reanudar(idSubtarea: number, movilizacion: any) {
+    return this.solicitud('/reanudar', idSubtarea, movilizacion)
   }
 
   async corregir(idSubtarea: number) {
     return this.solicitud('/corregir', idSubtarea)
   }
 
-  async suspender(idSubtarea: number, idMotivoSuspendido: number) {
-    return this.solicitud('/suspender', idSubtarea, { motivo_suspendido_id: idMotivoSuspendido })
+  async suspender(idSubtarea: number, movilizacion: any,) {
+    return this.solicitud('/suspender', idSubtarea, movilizacion)
   }
 
   async pendiente(idSubtarea: number, idMotivoPendiente: string) {

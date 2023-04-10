@@ -11,6 +11,8 @@ export class MovilizacionSubtarea extends EntidadAuditable {
   motivo: string | null
   longitud: number | null
   latitud: number | null
+  coordinador_registrante_llegada: string | null
+  estado_subtarea_llegada: string | null
 
   constructor() {
     super()
@@ -24,5 +26,7 @@ export class MovilizacionSubtarea extends EntidadAuditable {
     this.motivo = null
     this.longitud = null
     this.latitud = null
+    this.coordinador_registrante_llegada = null
+    this.estado_subtarea_llegada = null
   }
 }

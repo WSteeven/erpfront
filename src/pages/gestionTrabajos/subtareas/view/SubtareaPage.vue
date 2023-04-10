@@ -82,10 +82,10 @@
         </div>
 
         <!-- Tarea -->
-        <div class="col-12 col-md-3">
+        <!-- <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Tarea</label>
           <q-input v-model="subtarea.tarea" outlined dense disable></q-input>
-        </div>
+        </div> -->
 
         <!-- Tipo trabajo -->
         <div class="col-12 col-md-3">
@@ -273,25 +273,6 @@
           </q-input>
         </div>
 
-        <!-- Tiempo estimado del trabajo -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Tiempo estimado del trabajo</label>
-          <q-input
-            v-model="subtarea.tiempo_estimado"
-            type="number"
-            :disable="disabled"
-            min="0"
-            placeholder="Opcional"
-            :hint="tiempoFormateado"
-            suffix="minutos"
-            @update:model-value="convertir()"
-            outlined
-            clearable
-            dense
-          >
-          </q-input>
-        </div>
-
         <!-- Hora fin de agendamiento -->
         <div v-if="subtarea.es_ventana" class="col-12 col-md-3">
           <label class="q-mb-sm block">Hora fin de trabajo (24 horas)</label>
@@ -314,6 +295,25 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+          </q-input>
+        </div>
+
+        <!-- Tiempo estimado del trabajo -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Tiempo estimado del trabajo</label>
+          <q-input
+            v-model="subtarea.tiempo_estimado"
+            type="number"
+            :disable="disabled"
+            min="0"
+            placeholder="Opcional"
+            :hint="tiempoFormateado"
+            suffix="minutos"
+            @update:model-value="convertir()"
+            outlined
+            clearable
+            dense
+          >
           </q-input>
         </div>
       </div>
@@ -340,6 +340,7 @@
     </q-expansion-item>
 
     <q-expansion-item
+      v-if="accion !== acciones.nuevo"
       class="overflow-hidden q-mb-md expansion"
       label="Ubicación del trabajo"
       header-class="bg-header-collapse"
@@ -478,7 +479,7 @@
     <q-expansion-item
       v-if="accion !== acciones.nuevo"
       class="overflow-hidden q-mb-md expansion"
-      label="Tiempos"
+      label="Ciclo de vida de la subtarea"
       header-class="text-bold bg-header-collapse"
       default-opened
     >
@@ -495,6 +496,30 @@
         <tabla-subtarea-suspendida
           :id-subtarea="subtarea.id"
         ></tabla-subtarea-suspendida>
+      </div>
+    </q-expansion-item>
+
+    <q-expansion-item
+      v-if="accion !== acciones.nuevo"
+      class="overflow-hidden q-mb-md expansion"
+      label="Movilización"
+      header-class="text-bold bg-header-collapse"
+      default-opened
+    >
+      <div class="q-pa-md q-gutter-y-md">
+        <essential-table
+          titulo="Movilizaciones"
+          :configuracionColumnas="configuracionColumnasMovilizacionSubtarea"
+          :datos="movilizacionesSubtarea"
+          :mostrarBotones="false"
+          :permitirConsultar="false"
+          :permitirEditar="false"
+          :permitirEliminar="false"
+          :alto-fijo="false"
+          :mostrar-header="true"
+          :permitir-buscar="false"
+        >
+        </essential-table>
       </div>
     </q-expansion-item>
 

@@ -1,4 +1,5 @@
 // Dependencias
+import { configuracionColumnasMovilizacionSubtarea } from 'gestionTrabajos/reporteMovilizacionSubtareas/domain/configuracionColumnasMovilizacionSubtarea'
 import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -59,6 +60,7 @@ import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
 import { ClienteFinal } from 'pages/gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
+import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -118,6 +120,7 @@ export default defineComponent({
       consultar({ id: subtareaStore.idSubtareaSeleccionada }).then(() => {
         listarArchivos({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
         if (subtarea.cliente_final) obtenerClienteFinal(subtarea.cliente_final)
+        obtenerMovilizaciones()
       })
 
     } else subtarea.hydrate(new Subtarea())
@@ -126,6 +129,13 @@ export default defineComponent({
     subtarea.observacion = subtareaStore.observacionTarea
     subtarea.cliente = subtareaStore.idCliente
     accion.value = subtareaStore.accion
+
+    const movilizacionController = new MovilizacionSubtareaController()
+
+    async function obtenerMovilizaciones() {
+      const { result } = await movilizacionController.listar({ subtarea_id: subtarea.id })
+      movilizacionesSubtarea.value = result
+    }
 
     /************
      * Variables
@@ -136,6 +146,7 @@ export default defineComponent({
     const busqueda = ref()
     const empleadosSeleccionados: Ref<Empleado[]> = ref([])
     const clienteFinal = reactive(new ClienteFinal())
+    const movilizacionesSubtarea = ref([])
 
     /**********
      * Modales
@@ -399,6 +410,8 @@ export default defineComponent({
       seleccionarModoDesignacion,
       clienteFinal,
       nombresClienteFinal: computed(() => clienteFinal.nombres + ' ' + clienteFinal.apellidos),
+      movilizacionesSubtarea,
+      configuracionColumnasMovilizacionSubtarea,
       // Filtros
       clientes,
       filtrarClientes,

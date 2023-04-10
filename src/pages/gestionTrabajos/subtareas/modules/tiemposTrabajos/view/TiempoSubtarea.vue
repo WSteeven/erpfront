@@ -2,7 +2,7 @@
   <div class="row q-col-gutter-sm">
     <!-- Estado -->
     <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Estado del trabajo</label>
+      <label class="q-mb-sm block">Estado actual</label>
       <estados-subtareas
         :propsTable="{ value: subtarea.estado }"
       ></estados-subtareas>
@@ -65,26 +65,6 @@
         dense
       ></q-input>
     </div>
-
-    <!-- Fecha y hora de estado suspendido -->
-    <!-- <div v-if="subtarea.fecha_hora_suspendido" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Fecha y hora de estado suspendido</label>
-      <q-input v-model="subtarea.fecha_hora_suspendido" outlined dense disable>
-      </q-input>
-    </div> -->
-
-    <!-- Causa de la suspencion -->
-    <!-- <div v-if="subtarea.motivo_suspendido" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Motivo de la suspención</label>
-      <q-input
-        v-model="subtarea.motivo_suspendido"
-        disable
-        outlined
-        type="textarea"
-        autogrow
-        dense
-      ></q-input>
-    </div> -->
 
     <!-- Fecha y hora de estado cancelacion -->
     <div v-if="subtarea.fecha_hora_cancelado" class="col-12 col-md-3">

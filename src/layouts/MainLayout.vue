@@ -4,11 +4,11 @@
     <q-header class="bg-toolbar border-bottomd">
       <q-toolbar class="row justify-between">
         <q-btn
-          flat
           dense
+          push
           aria-label="Menu"
           @click="toggleLeftDrawer"
-          class="custom-shadow bg-white"
+          class="custom-shadow bg-primary"
         >
           <svg
             width="24"
@@ -23,7 +23,7 @@
               d="m 4.9152545,6.3008475 c 0,-0.607508 0.44772,-1.1 1,-1.1 H 17.915255 c 0.5523,0 1,0.492492 1,1.1 0,0.607508 -0.4477,1.1 -1,1.1 H 5.9152545 c -0.55228,0 -1,-0.492492 -1,-1.1 z"
               fill="#575b6e"
               id="path2"
-              style="fill: #575b6e; stroke-width: 1.04881"
+              style="fill: #fff; stroke-width: 1.04881"
             />
             <path
               fill-rule="evenodd"
@@ -31,11 +31,11 @@
               d="m 1.7118644,12.182204 c 0,-0.607508 0.6526088,-1.1 1.457627,-1.1 H 20.661018 c 0.805046,0 1.457627,0.492492 1.457627,1.1 0,0.60753 -0.652581,1.1 -1.457627,1.1 H 3.1694914 c -0.8050182,0 -1.457627,-0.49247 -1.457627,-1.1 z"
               fill="#575b6e"
               id="path4"
-              style="fill: #575b6e; stroke-width: 1.26625"
+              style="fill: #fff; stroke-width: 1.26625"
             />
             <path
               id="path6"
-              style="fill: #575b6e; stroke-width: 1.04881"
+              style="fill: #fff; stroke-width: 1.04881"
               d="M 8.9160156 16.658203 C 8.3637368 16.658203 7.9160156 17.150284 7.9160156 17.757812 C 7.9160156 18.365342 8.3637368 18.859375 8.9160156 18.859375 L 14.916016 18.859375 C 15.468314 18.859375 15.916016 18.365342 15.916016 17.757812 C 15.916016 17.150284 15.468314 16.658203 14.916016 16.658203 L 8.9160156 16.658203 z "
             />
           </svg>

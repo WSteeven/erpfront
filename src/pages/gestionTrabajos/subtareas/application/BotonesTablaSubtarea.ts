@@ -57,9 +57,14 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
           }
         }
 
-        const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id, movilizacion)
+        const data = {
+          estado_subtarea_llegada: estadosTrabajos.EJECUTANDO,
+          ...movilizacion
+        }
+
+        const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id, data)
         entidad.estado = estadosTrabajos.EJECUTANDO
-        // entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
+        entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
         filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
         notificarCorrecto('Trabajo iniciado exitosamente!')
         movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
@@ -73,12 +78,21 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     color: 'blue-6',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && (authenticationStore.esCoordinador || entidad.es_responsable),
     accion: ({ entidad, posicion }) => {
-      confirmar('¿Está seguro de pausar el trabajo?', () => {
+
+      obtenerCoordenadas(entidad)
+
+      confirmar('¿Está seguro de pausar la subtarea?', () => {
         const config: CustomActionPrompt = reactive({
           mensaje: 'Seleccione el motivo de la pausa',
           accion: async (idMotivoPausa) => {
-            console.log(idMotivoPausa)
-            await new CambiarEstadoSubtarea().pausar(entidad.id, idMotivoPausa)
+
+            const data = {
+              estado_subtarea_llegada: estadosTrabajos.PAUSADO,
+              motivo_pausa_id: idMotivoPausa,
+              ...movilizacion
+            }
+
+            await new CambiarEstadoSubtarea().pausar(entidad.id, data)
             entidad.estado = estadosTrabajos.PAUSADO
             filtrarTrabajoAsignado(estadosTrabajos.PAUSADO)
             notificarCorrecto('Trabajo pausado exitosamente!')
@@ -105,8 +119,16 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     color: 'positive',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.puede_ejecutar && (authenticationStore.esCoordinador || entidad.es_responsable),
     accion: async ({ entidad, posicion }) => {
+
+      obtenerCoordenadas(entidad)
+
       confirmar('¿Está seguro de reanudar el trabajo?', async () => {
-        await new CambiarEstadoSubtarea().reanudar(entidad.id)
+        const data = {
+          estado_subtarea_llegada: estadosTrabajos.EJECUTANDO,
+          ...movilizacion
+        }
+
+        await new CambiarEstadoSubtarea().reanudar(entidad.id, data)
         entidad.estado = estadosTrabajos.EJECUTANDO
         filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
         notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
@@ -122,8 +144,15 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     color: 'positive',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && (authenticationStore.esCoordinador || entidad.es_responsable),
     accion: ({ entidad, posicion }) => {
+      obtenerCoordenadas(entidad)
+
       confirmar('¿Está seguro de que completó el trabajo?', async () => {
-        const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id)
+        const data = {
+          estado_subtarea_llegada: estadosTrabajos.REALIZADO,
+          ...movilizacion
+        }
+
+        const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id, data)
         entidad.estado = estadosTrabajos.REALIZADO
         entidad.fecha_hora_realizado = result.fecha_hora_realizado
         eliminarElemento(posicion)
@@ -172,10 +201,19 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     color: 'negative',
     visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.puede_suspender && (authenticationStore.esCoordinador || entidad.es_responsable),
     accion: ({ entidad, posicion }) => {
+
+      obtenerCoordenadas(entidad)
+
       confirmar('¿Está seguro de suspender el trabajo?', () => {
         const config: CustomActionPrompt = {
           mensaje: 'Seleccione el motivo de la suspención del trabajo',
-          accion: async (data) => {
+          accion: async (idMotivoSuspendido) => {
+            const data = {
+              motivo_suspendido_id: idMotivoSuspendido,
+              estado_subtarea_llegada: estadosTrabajos.SUSPENDIDO,
+              ...movilizacion
+            }
+
             await new CambiarEstadoSubtarea().suspender(entidad.id, data)
             // entidad.estado = estadosTrabajos.SUSPENDIDO
             // entidad.fecha_hora_suspendido = result.fecha_hora_suspendido

@@ -1,7 +1,15 @@
 <template>
   <q-page padding>
-    <div class="q-mb-md text-bold text-center">
-      <span>Mi bodega</span>
+    <div class="column q-mb-md text-center">
+      <b>Mi bodega</b>
+      <small
+        >Conoce el material que tienes a tu disposición para utilizar en tus
+        trabajos.</small
+      >
+      <small
+        >El material puede ser asignado para la tarea o a tu stock
+        personal.</small
+      >
     </div>
     <!-- <div
       class="col-12 rounded-card q-py-md text-center text-white bg-secondary q-mb-sm"
@@ -36,7 +44,7 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="tareas">
-          <div class="row q-col-gutter-sm q-pa-sm">
+          <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
             <!-- Tarea -->
             <div class="col-12 col-md-10">
               <label class="q-mb-sm block">Seleccione una tarea</label>
@@ -73,21 +81,53 @@
             <div class="col-12 col-md-2">
               <label class="q-mb-sm block">&nbsp;</label>
               <q-btn
-                color="primary"
+                color="positive"
                 class="full-width"
                 no-caps
                 push
+                glossy
                 @click="filtrarStock()"
               >
                 <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
                 <span>Buscar</span>
               </q-btn>
             </div>
+          </div>
+
+          <div v-if="listado.length" class="row">
+            <div class="col-12 text-center">
+              <label class="q-mb-sm block"
+                >Opciones de devolución de material sobrante de la tarea</label
+              >
+            </div>
+            <div class="col-12 row justify-center q-gutter-sm q-mb-md">
+              <!-- Boton guardar -->
+              <q-btn
+                color="primary"
+                no-caps
+                push
+                :to="{ name: 'devoluciones' }"
+              >
+                <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
+                <span>Devolver a bodega matriz</span>
+              </q-btn>
+
+              <!-- Boton modificar -->
+              <q-btn
+                color="primary"
+                no-caps
+                push
+                :to="{ name: 'devoluciones' }"
+              >
+                <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
+                <span>Transferir a stock personal</span>
+              </q-btn>
+            </div>
 
             <div class="col-12">
               <essential-table
                 v-if="listado.length"
-                titulo="Listado de materiales"
+                titulo="Listado de materiales para tarea"
                 :configuracionColumnas="
                   configuracionColumnasMaterialEmpleadoTarea
                 "
@@ -100,20 +140,6 @@
                 :alto-fijo="false"
               ></essential-table>
             </div>
-          </div>
-
-          <div class="row inline justify-end q-gutter-sm">
-            <!-- Boton guardar -->
-            <q-btn color="primary" no-caps push>
-              <q-icon name="bi-pin-angle" size="xs" class="q-pr-sm"></q-icon>
-              <span>Devolver a bodega matriz</span>
-            </q-btn>
-
-            <!-- Boton modificar -->
-            <q-btn color="primary" no-caps push>
-              <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
-              <span>Transferir a stock personal</span>
-            </q-btn>
           </div>
         </q-tab-panel>
 

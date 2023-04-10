@@ -15,6 +15,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -34,7 +35,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { notificarAdvertencia } = useNotificaciones()
+    const { notificarAdvertencia, notificarError } = useNotificaciones()
     const listado = ref([])
     const listadoStockPersonal = ref([])
     const tareasSource: any = ref([])
@@ -52,19 +53,28 @@ export default defineComponent({
      * Funciones
      ************/
     async function filtrarStock(tipoStock: string | null) {
-      if (tipoStock === 'personal') {
-        const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
-        listadoStockPersonal.value = result
-      } else {
-        if (!filtro.tarea) {
-          return notificarAdvertencia('Debe seleccionar una tarea')
-        }
+      const cargando = new StatusEssentialLoading()
 
-        const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id })
-        if (result.length === 0) {
-          notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
+      try {
+        cargando.activar()
+        if (tipoStock === 'personal') {
+          const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
+          listadoStockPersonal.value = result
+        } else {
+          if (!filtro.tarea) {
+            return notificarAdvertencia('Debe seleccionar una tarea')
+          }
+
+          const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id })
+          if (result.length === 0) {
+            notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
+          }
+          listado.value = result
         }
-        listado.value = result
+      } catch (e) {
+        notificarError('Error al obtener el material.')
+      } finally {
+        cargando.desactivar()
       }
     }
 
