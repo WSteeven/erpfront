@@ -1,5 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
+// Material para mostrar en mi bodega tarea
 export class MaterialEmpleadoTarea extends EntidadAuditable {
   detalle_producto_id: number | null
   item: number | null

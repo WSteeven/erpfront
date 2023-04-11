@@ -1,5 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
+// Material ocupado en el seguimiento
 export class MaterialOcupadoFormulario extends EntidadAuditable {
   detalle_producto_id: number | null
   detalle_producto: string | null
