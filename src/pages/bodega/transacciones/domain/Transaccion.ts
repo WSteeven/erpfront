@@ -47,6 +47,8 @@ export class Transaccion extends EntidadAuditable {
     firmada: boolean
     estado_comprobante: string|null
 
+    es_para_stock: boolean//true si es para el stock del tecnico
+
     constructor() {
         super()
         this.id = null
@@ -93,5 +95,7 @@ export class Transaccion extends EntidadAuditable {
 
         this.firmada = false
         this.estado_comprobante = null
+
+        this.es_para_stock = false
     }
 }

@@ -29,6 +29,8 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { LocalStorage } from 'quasar'
+import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
+import { MaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/MaterialEmpleadoTarea'
 
 
 export default defineComponent({
@@ -44,6 +46,7 @@ export default defineComponent({
         //stores
         const devolucionStore = useDevolucionStore()
         const store = useAuthenticationStore()
+        const listadoMaterialesDevolucion =  useListadoMaterialesDevolucionStore()
 
         //orquestador
         const {
@@ -84,6 +87,24 @@ export default defineComponent({
                     params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
                 },
             })
+
+            //logica para autocompletar el formulario de devolucion
+            if(listadoMaterialesDevolucion.listadoMateriales.length){
+                devolucion.tarea = listadoMaterialesDevolucion.tareaId?listadoMaterialesDevolucion.tareaId:null
+                devolucion.es_tarea = !!devolucion.tarea
+                devolucion.es_para_stock = listadoMaterialesDevolucion.devolverAlStock
+                devolucion.listadoProductos = listadoMaterialesDevolucion.listadoMateriales.map((material:MaterialEmpleadoTarea)=>{
+                    return {
+                        producto:material.producto,
+                        categoria:material.categoria,
+                        descripcion:material.detalle_producto,
+                        cantidad: material.stock_actual,
+                        medida: material.medida,
+                        id: material.detalle_producto_id
+                    }
+                })
+
+            }
         })
 
         //reglas de validacion

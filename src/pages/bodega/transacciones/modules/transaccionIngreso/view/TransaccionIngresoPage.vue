@@ -9,6 +9,10 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <div class="col col-12" v-if="transaccion.es_para_stock">
+            <span>Se realizará un egreso automatico al stock del solicitante</span>
+          </div>
+
           <!-- N° transaccion -->
           <div v-if="transaccion.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Transacción N°</label>

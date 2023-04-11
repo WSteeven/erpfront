@@ -9,7 +9,7 @@ export class Devolucion extends EntidadAuditable {
     canton: number | null
     estado: string | null
     created_at: string | null
-    stock_personal: boolean
+    es_para_stock: boolean
 
     listadoProductos: any[]
 
@@ -25,7 +25,7 @@ export class Devolucion extends EntidadAuditable {
         this.canton = null
         this.estado = null
         this.created_at = null
-        this.stock_personal =false
+        this.es_para_stock =false
         this.listadoProductos = []
 
         // variables auxiliares

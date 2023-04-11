@@ -16,6 +16,7 @@ import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoC
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -24,6 +25,7 @@ export default defineComponent({
      * Stores
      *********/
     const authenticationStore = useAuthenticationStore()
+    const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
 
     /****************
      * Controladores
@@ -60,6 +62,7 @@ export default defineComponent({
         if (tipoStock === 'personal') {
           const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
           listadoStockPersonal.value = result
+          listadoMaterialesDevolucionStore.listadoMateriales = result
         } else {
           if (!filtro.tarea) {
             return notificarAdvertencia('Debe seleccionar una tarea')
@@ -70,6 +73,9 @@ export default defineComponent({
             notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
           }
           listado.value = result
+          // asignacion al store de la tarea y el listado de materiales para devolver
+          listadoMaterialesDevolucionStore.listadoMateriales =result
+          listadoMaterialesDevolucionStore.tareaId =filtro.tarea
         }
       } catch (e) {
         notificarError('Error al obtener el material.')
@@ -92,6 +98,7 @@ export default defineComponent({
         )
       })
     }
+    //botones para transferir al stock 
 
     return {
       configuracionColumnasMaterialEmpleadoTarea,
@@ -105,6 +112,8 @@ export default defineComponent({
       filtro,
       tab: ref('tareas'),
       filtrarTareas,
+
+      listadoMaterialesDevolucionStore
     }
   },
 })

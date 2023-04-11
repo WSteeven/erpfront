@@ -32,7 +32,7 @@
           </div>
           <!-- Canton select -->
           <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Canton</label>
+            <label class="q-mb-sm block">Lugar de devolución</label>
             <q-select
               v-model="devolucion.canton"
               :options="opciones_cantones"
@@ -41,13 +41,14 @@
               options-dense
               dense
               outlined
+              hint="Lugar desde donde se realiza la devolución de materiales"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :error="!!v$.canton.$errors.length"
               :input-debounce="0"
               use-input
               @filter="filtroCantones"
-              error-message="Debes seleccionar un cantón"
+              error-message="Selecciona el lugar desde donde realiza la devolución"
               :option-label="(item) => item.canton"
               :option-value="(item) => item.id"
               emit-value
@@ -115,18 +116,19 @@
           </div>
           <!-- Es devolucion para stock personal -->
           <div
-            v-if="devolucion.stock_personal || accion === 'NUEVO'"
+            v-if="devolucion.es_para_stock || accion === 'NUEVO'"
             class="col-12 col-md-3"
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
-              v-model="devolucion.stock_personal"
+              v-model="devolucion.es_para_stock"
               label="¿Es devolución al stock personal?"
               :disable="disabled || soloLectura"
               outlined
               dense
             ></q-checkbox>
           </div>
+          {{ devolucion.listadoProductos }}
           <!-- Es devolucion de tarea -->
           <div
             v-if="devolucion.es_tarea || accion === 'NUEVO'"

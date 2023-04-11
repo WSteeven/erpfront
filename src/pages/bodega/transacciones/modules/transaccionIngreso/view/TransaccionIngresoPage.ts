@@ -161,7 +161,7 @@ export default defineComponent({
       transaccion.devolucion = devolucionStore.devolucion.id
       transaccion.justificacion = devolucionStore.devolucion.justificacion
       transaccion.solicitante = devolucionStore.devolucion.solicitante
-      transaccion.sucursal = devolucionStore.devolucion.sucursal
+      transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
       listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
       if (devolucionStore.devolucion.tarea) {
