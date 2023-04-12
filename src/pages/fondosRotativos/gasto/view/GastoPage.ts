@@ -12,8 +12,7 @@ import {
   requiredIf,
   maxLength,
   minLength,
-  required,
-} from 'shared/i18n-validators'
+  required} from 'shared/i18n-validators'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
@@ -94,6 +93,21 @@ export default defineComponent({
       return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1 ? true : false
     })
 
+    const esCombustibleEmpresa = computed(() => {
+      if (gasto.detalle == null) {
+        return false
+      }
+      if (gasto.sub_detalle == null) {
+        return false
+      }
+      if( parseInt(gasto.detalle !== null?gasto.detalle:'') === 6){
+        return  gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96)>-1 || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97)>-1
+      }else{
+        return false
+      }
+
+    })
+
     /*************
      * Validaciones
      **************/
@@ -144,6 +158,12 @@ export default defineComponent({
       },
       comprobante2: {
         required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1),
+      },
+      kilometraje: {
+        requiredIfdetalle: esCombustibleEmpresa,
+      },
+      placa: {
+        requiredIfdetalle: esCombustibleEmpresa,
       },
       observacion: {
         required,
@@ -229,6 +249,10 @@ export default defineComponent({
           )
       })
     }
+
+
+
+
     // - Filtro Detalles
 
     function filtrarDetalles(val, update) {
@@ -504,6 +528,7 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
       esTecnico,
+      esCombustibleEmpresa,
       watchEffect,
       filtrarAutorizacionesEspeciales,
       filtrarCantones,

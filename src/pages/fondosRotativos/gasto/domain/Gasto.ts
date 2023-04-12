@@ -16,7 +16,7 @@ export class Gasto extends EntidadAuditable {
   subTarea_info: string | null
   detalle: string | null
   detalle_info: string | null
-  sub_detalle: string | null
+  sub_detalle: [] | null
   sub_detalle_info: string | null
   comprobante1: string | null
   comprobante2: string | null
@@ -29,6 +29,8 @@ export class Gasto extends EntidadAuditable {
   estado: string | null
   estado_info: string | null
   detalle_estado: string | null
+  kilometraje: number | null
+  placa: number | null
 
 
   constructor() {
@@ -62,6 +64,8 @@ export class Gasto extends EntidadAuditable {
     this.estado = null
     this.estado_info = 'POR APROBAR'
     this.detalle_estado = null
+    this.kilometraje = null
+    this.placa = null
 
   }
 }
