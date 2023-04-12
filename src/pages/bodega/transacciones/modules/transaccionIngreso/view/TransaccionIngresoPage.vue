@@ -5,6 +5,7 @@
     titulo-pagina="Transacciones - Ingresos"
     :permitirEditar="false"
     :accion1="botonImprimir"
+    :accion2="botonAnular"
   >
     <template #formulario>
       <q-form @submit.prevent>

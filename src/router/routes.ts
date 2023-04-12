@@ -20,6 +20,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       }, */
       {
+        path:'/imagen',
+        name: 'imagen',
+        component: () => import('pages/bodega/pedidos/view/imagenComprimida.vue'),
+        meta: { requiresAuth: false},
+      },
+      {
         path: '/proyectos',
         name: 'proyectos',
         component: () =>

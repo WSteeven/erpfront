@@ -87,11 +87,23 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         const modelo = await actualizarComprobante(id, data)
         if(modelo){
             console.log('Se actualizó bien');
-            
+
         }
     }
 
-    
+    /**
+     * This is an async function that uses Axios to send a GET request to an API endpoint to cancel a
+     * transaction and then hydrates the response data into a transaction object.
+     */
+    async function anular(){
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.transacciones_ingresos)+'/anular/'+idTransaccion.value
+      const response: AxiosResponse = await axios.get(ruta)
+      console.log(response.data)
+      notificaciones.notificarCorrecto(response.data.mensaje)
+      transaccion.hydrate(response.data.modelo)
+    }
+
     return {
         // State
         transaccion,
@@ -103,7 +115,8 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         idTransaccion,
         showPreview,
         firmarComprobante,
-        
+        anular,
+
 
     }
 })
