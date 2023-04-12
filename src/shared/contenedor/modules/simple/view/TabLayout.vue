@@ -73,6 +73,7 @@
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
           :accion1="accion1"
+          :accion2="accion2"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"

@@ -1,7 +1,16 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 
-export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = [
+export const configuracionColumnasProductosSeleccionados: ColumnConfig<DetalleProducto>[] = [
+  {
+    name: 'id',
+    field: 'id',
+    label: 'Id',
+    align: 'left',
+    sortable: true,
+    editable: false,
+    visible: false
+  },
   {
     name: 'producto',
     field: 'producto',
@@ -29,16 +38,15 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     editable: false,
     visible: true
   },
-  /* {
-    name: 'precio_compra',
-    field: 'precio_compra',
-    label: 'P. Compra',
+  {
+    name: 'serial',
+    field: 'serial',
+    label: 'Serial',
     align: 'left',
-    type:'number',
     sortable: true,
-    editable: true,
+    editable: false,
     visible: true
-  }, */
+  },
   /* {
     name: 'condicion',
     field: 'condicion',

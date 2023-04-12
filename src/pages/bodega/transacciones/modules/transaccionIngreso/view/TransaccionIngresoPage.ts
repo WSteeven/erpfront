@@ -10,7 +10,7 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 import { useDevolucionStore } from 'stores/devolucion'
-import { acciones } from 'config/utils'
+import { acciones, estadosTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -49,7 +49,7 @@ export default defineComponent({
   setup() {
 
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
-    const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: transaccion, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
@@ -243,6 +243,26 @@ export default defineComponent({
         // console.log('Presionaste el boton IMPRIMIR')
       },
     }
+    const botonAnular: CustomActionTable = {
+      titulo: 'Anular',
+      color: 'danger',
+      icono: 'bi-x',
+      accion: async({entidad, posicion})=> {
+        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async()=> {
+          console.log(entidad)
+          console.log(posicion)
+          console.log(listado)
+          transaccionStore.idTransaccion = entidad.id
+          await transaccionStore.anular()
+          entidad.estado = transaccionStore.transaccion.estado
+        })
+      },
+      visible: ({entidad, posicion})=> {
+        console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es activos fijos y no esta anulada')
+        return store.esActivosFijos && entidad.estado===estadosTransacciones.completa
+      }
+
+    }
 
     //Configurar los listados
     opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
@@ -340,7 +360,7 @@ export default defineComponent({
       botonEliminar,
       botonEditarCantidad,
       botonImprimir,
-      // botonDespachar,
+      botonAnular,
       eliminarItem,
 
       //listado de devoluciones

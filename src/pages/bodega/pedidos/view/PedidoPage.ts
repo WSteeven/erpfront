@@ -80,14 +80,7 @@ export default defineComponent({
         soloLectura.value = true
       }
     })
-    onGuardado(() => {
-      // console.log('guardado, ahora se emite el evento')
-      // emit('notificar')
-    })
-    // console.log('es coordinador? ', esCoordinador)
-    // console.log('es bodeguero? ', esBodeguero)
-    // console.log('es activos fijos? ', esActivosFijos)
-
+    
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
     const opciones_tareas = ref([])
