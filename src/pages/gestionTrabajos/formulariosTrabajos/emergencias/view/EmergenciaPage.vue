@@ -3,19 +3,6 @@
     <div class="q-mb-md">
       Código de subtarea: <b>{{ codigoSubtarea }}</b>
     </div>
-    <!-- <div
-      v-if="esLider"
-      class="col-12 rounded-card q-py-md text-center text-white bg-warning q-mb-sm"
-    >
-      <div class="q-mb-md text-shadow">
-        Ésta entrada aún no se ha sincronizado.
-      </div>
-      <div class="q-mb-md text-bold">Modo offline.</div>
-      <q-btn color="white" outline no-caps>
-        <q-icon name="bi-cloud-upload-fill" class="q-mr-sm"></q-icon>
-        Sincronizar ahora</q-btn
-      >
-    </div> -->
 
     <q-card class="rounded-card custom-shadow q-pa-md">
       <div

@@ -3,6 +3,7 @@
     v-model="abierto"
     :maximized="modalMaximized"
     :full-width="true"
+    persistent
     top
   >
     <q-card
@@ -43,6 +44,7 @@
               :options="field.options"
               transition-show="scale"
               transition-hide="scale"
+              :hint="field.hint"
               options-dense
               dense
               outlined
@@ -89,6 +91,7 @@
               v-model="field.valor"
               :type="field.type !== 'select' ? field.type : 'text'"
               :autogrow="field.type !== 'number'"
+              :hint="field.hint"
               outlined
               dense
             ></q-input>
@@ -106,6 +109,7 @@
               :imagen="field.valor"
               file_extensiones=".jpg, image/*"
               @update:modelValue="(data) => (field.valor = data)"
+              :hint="field.hint"
             >
             </selector-imagen>
           </div>
@@ -132,8 +136,8 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { computed, reactive, ref, defineComponent } from 'vue'
-import console from 'console'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: {
@@ -157,6 +161,8 @@ export default defineComponent({
 
   // normal
   setup(props, { emit }) {
+    const { notificarAdvertencia } = useNotificaciones()
+
     const fields = computed(() =>
       props.configuracionColumnas
         .map((fila: ColumnConfig<any>) => {
@@ -166,6 +172,7 @@ export default defineComponent({
             type: fila.type ?? 'text',
             editable: fila.editable ?? true,
             valor: props.fila ? props.fila[fila.field] : '',
+            hint: fila.hint,
           })
         })
         .filter(
@@ -188,6 +195,7 @@ export default defineComponent({
             editable: fila.editable ?? true,
             valor: props.fila ? props.fila[fila.field] : '',
             options: fila.options,
+            hint: fila.hint,
           })
         })
         .filter(
@@ -205,6 +213,7 @@ export default defineComponent({
             type: fila.type ?? 'text',
             editable: fila.editable ?? true,
             valor: props.fila ? props.fila[fila.field] : '',
+            hint: fila.hint,
           })
         })
         .filter((fila) => fila.field !== 'acciones')
@@ -220,6 +229,7 @@ export default defineComponent({
             type: fila.type ?? 'text',
             editable: fila.editable ?? true,
             valor: props.fila ? props.fila[fila.field] : '',
+            hint: fila.hint,
           })
         })
         .filter(
@@ -258,8 +268,12 @@ export default defineComponent({
       Object.assign(newObj, ...mappedAll)
       Object.assign(newObj, ...mappedLleno)
 
-      emit('guardar', newObj)
-      abierto.value = false
+      const valido = validarRequeridos(newObj)
+
+      if (valido) {
+        emit('guardar', newObj)
+        abierto.value = false
+      }
     }
 
     function cerrarModalEntidad() {
@@ -279,6 +293,25 @@ export default defineComponent({
       // update(()=>{
       //   opciones = opciones.filter((item) => item.label.toLowerCase().includes(val.toLowerCase()))
       // })
+    }
+
+    // Antes de cerrar el modal
+    function validarRequeridos(fila) {
+      const requeridos: any = props.configuracionColumnas
+        .filter((item) => item.requerido)
+        .map((item) => item.field)
+
+      console.log(requeridos)
+      let valido = true
+
+      for (let key in fila) {
+        if (requeridos.includes(key) && !fila[key]) {
+          valido = false
+          notificarAdvertencia('El campo ' + key + ' es requerido')
+        }
+      }
+
+      return valido
     }
 
     return {

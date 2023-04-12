@@ -17,6 +17,8 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizad
     label: 'Trabajo realizado',
     align: 'left',
     type: 'text',
+    hint: 'Obligatorio',
+    requerido: true,
   },
   {
     name: 'fotografia',
@@ -25,5 +27,7 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<TrabajoRealizad
     align: 'left',
     type: 'imagen',
     visible: false,
+    hint: 'Obligatorio',
+    requerido: true,
   },
 ]

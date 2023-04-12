@@ -13,5 +13,7 @@ export interface ColumnConfig<T> {
   type?: tipos
   editable?: boolean
   options?: any[]
+  hint?: string,
+  requerido?: boolean
   // filtrar?: boolean
 }
