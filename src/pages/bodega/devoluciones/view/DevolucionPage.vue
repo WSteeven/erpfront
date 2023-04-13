@@ -128,7 +128,7 @@
               dense
             ></q-checkbox>
           </div>
-          {{ devolucion.listadoProductos }}
+
           <!-- Es devolucion de tarea -->
           <div
             v-if="devolucion.es_tarea || accion === 'NUEVO'"

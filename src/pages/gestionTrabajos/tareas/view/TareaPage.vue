@@ -696,7 +696,6 @@
             :mostrar-botones="false"
             :mostrarFooter="true"
             :permitirFiltrar="false"
-            :permitirBuscar="false"
             @tab-seleccionado="filtrarSubtareas"
             :tabDefecto="tabActual"
             :alto-fijo="false"

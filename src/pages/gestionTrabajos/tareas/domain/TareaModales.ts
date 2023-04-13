@@ -7,7 +7,7 @@ import ClienteFinalPage from 'clientesFinales/view/ClienteFinalPage.vue'
 import ProyectoPage from 'gestionTrabajos/proyectos/view/ProyectoPage.vue'
 import SubtareaPage from 'gestionTrabajos/subtareas/view/SubtareaPage.vue'
 import PausasRealizadasPage from 'pages/gestionTrabajos/subtareas/modules/pausasRealizadas/view/PausasRealizadas.vue'
-import GestorArchivoTrabajo from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/GestorArchivoSubtareaPage.vue'
+import GestorArchivoTrabajo from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import EmergenciasPage from 'gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
 import ReagendarPage from 'gestionTrabajos/subtareas/modules/reagendar/view/ReagendarPage.vue'
 

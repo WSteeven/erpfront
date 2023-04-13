@@ -1,9 +1,10 @@
-export default class Observacion {
-    id: number | null
-    observacion: string | null
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-    constructor() {
-        this.id = null
-        this.observacion = null
-    }
+export default class Observacion extends EntidadAuditable {
+  observacion: string | null
+
+  constructor() {
+    super()
+    this.observacion = null
+  }
 }

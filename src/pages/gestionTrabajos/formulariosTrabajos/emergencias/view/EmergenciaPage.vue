@@ -118,6 +118,14 @@
           >
           </tabla-devolucion-producto>
         </div>
+
+        <div class="col-12 q-mb-md">
+          <archivo-seguimiento
+            ref="refArchivoSeguimiento"
+            :mixin="mixinArchivoSeguimiento"
+            :endpoint="endpoint"
+          ></archivo-seguimiento>
+        </div>
       </div>
 
       <div class="row justify-end q-col-gutter-x-xs">

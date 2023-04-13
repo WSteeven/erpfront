@@ -54,7 +54,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       onBeforeGuardar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeGuardar', callback),
-      onGuardado: (callback: () => void) =>
+      onGuardado: (callback: (id?: number) => void) =>
         this.hooks.bindHook('onGuardado', callback),
       onBeforeConsultar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeConsultar', callback),
@@ -62,7 +62,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.hooks.bindHook('onConsultado', callback),
       onBeforeModificar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeModificar', callback),
-      onModificado: (callback: () => void) =>
+      onModificado: (callback: (id?: number) => void) =>
         this.hooks.bindHook('onModificado', callback),
       onReestablecer: (callback: () => void) =>
         this.hooks.bindHook('onReestablecer', callback),
@@ -169,8 +169,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
-      // throw new Error('No se ha efectuado ningun cambio')
-      return console.log('No se ha efectuado ningun cambio')
+      throw new Error('No se ha efectuado ningun cambio')
+      // return console.log('No se ha efectuado ningun cambio')
     }
 
 
@@ -206,7 +206,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       //console.log(this.entidad)
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
       this.reestablecer()
-      this.hooks.onGuardado()
+      this.hooks.onGuardado(copiaEntidad.id)
       return copiaEntidad
       /* const stop = watchEffect(() => {
         // console.log('dentrode  watch')
@@ -268,7 +268,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           this.reestablecer()
         }
 
-        this.hooks.onModificado()
+        const id: number = response.data.modelo.id ?? 0
+        this.hooks.onModificado(id)
 
       } catch (error: any) {
         if (isAxiosError(error)) {
@@ -286,7 +287,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   private async eliminar(data: T, callback?: () => void) {
     // this.verificarAutenticacion()
 
-    this.notificaciones.confirmar('Esta seguro que desea eliminar?', () => {
+    this.notificaciones.confirmar('¿Esta seguro que desea eliminar?', () => {
       if (data.id === null) {
         return this.notificaciones.notificarAdvertencia(
           'No se puede eliminar el recurso con id null'

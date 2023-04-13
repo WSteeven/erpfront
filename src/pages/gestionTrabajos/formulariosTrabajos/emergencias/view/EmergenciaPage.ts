@@ -5,13 +5,14 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, Ref, ref } from 'vue'
-import useVuelidate from '@vuelidate/core'
 import { apiConfig, endpoints } from 'config/api'
+import { defineComponent, Ref, ref } from 'vue'
+import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
 
 // Componentes
 import TrabajoRealizado from 'pages/gestionTrabajos/formulariosTrabajos/trabajosRealizados/view/TablaTrabajoRealizadoPage.vue'
+import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
 import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -20,15 +21,17 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
-import { EmergenciaController } from '../infraestructure/EmergenciaController'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { Emergencia } from '../domain/Emergencia'
 import { MaterialEmpleadoController } from 'pages/gestionTrabajos/miBodega/infraestructure/MaterialEmpleadoController'
-import { useAuthenticationStore } from 'stores/authentication'
-import { descargarArchivo, imprimirArchivo } from 'shared/utils'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
+import { ArchivoSeguimientoController } from '../infraestructure/ArchivoSeguimientoController'
+import { EmergenciaController } from '../infraestructure/EmergenciaController'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { useAuthenticationStore } from 'stores/authentication'
+import { Emergencia } from '../domain/Emergencia'
+import { imprimirArchivo } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -38,6 +41,7 @@ export default defineComponent({
     TablaDevolucionProducto,
     TrabajoRealizado,
     TablaObservaciones,
+    ArchivoSeguimiento,
   },
   props: {
     mixinModal: {
@@ -61,6 +65,7 @@ export default defineComponent({
     const { consultar, guardar, editar, reestablecer, setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado, onBeforeModificar, onGuardado, onModificado } = mixin.useHooks()
 
+    const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoController())
     const { listar: listarSubtareas } = props.mixinModal.useComportamiento()
 
     cargarVista(async () => {
@@ -80,13 +85,14 @@ export default defineComponent({
     const usarMaterialTarea = ref(false)
     const usarStock = ref(false)
     const columnasMaterial = [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
-    const { prompt } = useNotificaciones()
+    const { prompt, notificarAdvertencia } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
     const materialesTarea: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialesStock: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialEmpleadoController = new MaterialEmpleadoController()
     const esLider = authenticationStore.esTecnicoLider
     const esCoordinador = authenticationStore.esCoordinador
+    const refArchivoSeguimiento = ref()
 
     /************
      * Init
@@ -156,8 +162,6 @@ export default defineComponent({
       else return trabajoAsignadoStore.idEmpleadoResponsable
     }
 
-
-
     async function obtenerMaterialesTarea() {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
@@ -214,8 +218,14 @@ export default defineComponent({
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
 
-    function guardarSeguimiento() {
-      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada })
+    async function guardarSeguimiento() {
+      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada }).catch((e) => {
+        notificarAdvertencia('Ingrese al menos una actividad para guardar.')
+      })
+    }
+
+    function subirArchivos(idSeguimiento: number) {
+      refArchivoSeguimiento.value.subir({ seguimiento_id: idSeguimiento })
     }
 
     function editarSeguimiento() {
@@ -230,10 +240,9 @@ export default defineComponent({
       await obtenerMaterialesStock().then(() => ajustarCantidadesMaterialStockUtilizadas())
       existeObservaciones.value = !!emergencia.observaciones.length
       existeMaterialesDevolucion.value = !!emergencia.materiales_devolucion.length
-      // console.log(existeObservaciones.value)
       usarMaterialTarea.value = materialesTarea.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
       usarStock.value = materialesStock.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
-      console.log(usarMaterialTarea.value)
+      refArchivoSeguimiento.value.listarArchivos({ seguimiento_id: emergencia.id })
     })
 
     onBeforeGuardar(() => {
@@ -248,12 +257,14 @@ export default defineComponent({
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
     })
 
-    onGuardado(() => {
+    onGuardado((id: number) => {
+      subirArchivos(id)
       listarSubtareas({ estado: estadosTrabajos.EJECUTANDO })
       emit('cerrar-modal', false)
     })
 
-    onModificado(() => {
+    onModificado((id: number) => {
+      subirArchivos(id)
       emit('cerrar-modal', false)
     })
 
@@ -261,6 +272,8 @@ export default defineComponent({
       v$,
       refTrabajos,
       refObservaciones,
+      refArchivoSeguimiento,
+      mixinArchivoSeguimiento,
       emergencia,
       accion,
       guardarSeguimiento,
@@ -287,6 +300,7 @@ export default defineComponent({
       esLider,
       esCoordinador,
       descargarExcel,
+      endpoint: endpoints.archivos_seguimientos,
     }
   }
 })

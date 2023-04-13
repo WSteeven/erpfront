@@ -2,10 +2,9 @@
 import { configuracionColumnasTrabajoAsignado } from '../domain/configuracionColumnasTrabajoAsignado'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
-import { computed, defineComponent, reactive, ref } from 'vue'
 import { accionesTabla, estadosTrabajos } from 'config/utils'
-import { useNotificaciones } from 'shared/notificaciones'
 import { tabTrabajoAsignado } from 'config/tareas.utils'
+import { computed, defineComponent, ref } from 'vue'
 import { date } from 'quasar'
 
 // Componentes
@@ -19,17 +18,10 @@ import { TrabajoAsignadoController } from 'gestionTrabajos/trabajoAsignado/infra
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { CambiarEstadoSubtarea } from 'pages/gestionTrabajos/subtareas/application/CambiarEstadoSubtarea'
-import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
-import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
-import { MotivoPausa } from 'pages/gestionTrabajos/motivosPausas/domain/MotivoPausa'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
-import { ObtenerPlantilla } from '../application/ObtenerPlantilla'
-import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
-import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 
 export default defineComponent({
   components: {

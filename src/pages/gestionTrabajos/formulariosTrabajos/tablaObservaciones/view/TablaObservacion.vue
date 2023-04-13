@@ -13,6 +13,7 @@
     :accion1Header="agregarObservacion"
     @eliminar="eliminarObservacion"
     :modalMaximized="$q.screen.xs"
+    :entidad="Observacion"
   ></essential-table>
 </template>
 
@@ -62,13 +63,14 @@ const agregarObservacion: CustomActionTable = {
   icono: 'bi-arrow-bar-down',
   color: 'positive',
   accion: () => {
-    const fila: Observacion = new Observacion()
+    /* const fila: Observacion = new Observacion()
 
     observaciones.value.push(fila)
     refObservaciones.value.abrirModalEntidad(
       fila,
       observaciones.value.length - 1
-    )
+    ) */
+    refObservaciones.value.abrirModalEditar()
     emit('actualizar', observaciones.value)
   },
 }

@@ -1,44 +1,58 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from '../domain/configuracionColumnasArchivoSubtarea'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
-import { apiConfig, endpoints } from 'config/api'
 import { accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
+import { apiConfig } from 'config/api'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ArchivoSubtareaController } from '../infraestructure/ArchivoSubtareaController'
-import { Archivo } from '../domain/Archivo'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { Endpoint } from 'shared/http/domain/Endpoint'
 import { useSubtareaStore } from 'stores/subtarea'
+import { ParamsType } from 'config/types'
 
 export default defineComponent({
   components: {
     EssentialTable
   },
-  setup() {
+  props: {
+    mixin: {
+      type: Object as () => ContenedorSimpleMixin<any>,
+      required: true,
+    },
+    endpoint: {
+      type: Object as () => Endpoint,
+      required: true,
+    },
+    entidad: Object as () => EntidadAuditable,
+  },
+  setup(props) {
     /*********
      * Stores
-     *********/
+    *********/
     const subtareaStore = useSubtareaStore()
 
     /********
-    * Mixin
+     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Archivo, new ArchivoSubtareaController())
-    const { entidad: archivo, listado } = mixin.useReferencias()
-    const { editar, eliminar, listar } = mixin.useComportamiento()
+    const { listado } = props.mixin.useReferencias()
+    const { eliminar, listar } = props.mixin.useComportamiento()
 
-    const { prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const { notificarCorrecto, notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
 
-    listar({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
+    function listarArchivos(params: ParamsType) {
+      listar(params)
+    }
+
+    let paramsForm
 
     /***************
     * Botones tabla
@@ -47,30 +61,9 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash3',
       color: 'negative',
-      accion: async ({ entidad, posicion }) => {
-        await eliminar(entidad, () =>
-          listado.value.splice(posicion, 1)
-        )
+      accion: async ({ entidad }) => {
+        confirmar('Esta operación es irreversible. El archivo se eliminará de forma instantánea.', () => eliminar(entidad))
       }
-    }
-
-    const btnComentar: CustomActionTable = {
-      titulo: 'Comentar',
-      icono: 'bi-chat-square-text',
-      color: 'primary',
-      accion: ({ entidad }) => {
-        const config: CustomActionPrompt = {
-          mensaje: 'Ingrese el comentario',
-          defecto: entidad.comentario,
-          accion: (data) => {
-            entidad.comentario = data
-            archivo.hydrate(entidad)
-            editar(archivo)
-          }
-        }
-
-        prompt(config)
-      },
     }
 
     const btnDescargar: CustomActionTable = {
@@ -83,7 +76,7 @@ export default defineComponent({
     const refGestor = ref()
     const axios = AxiosHttpRepository.getInstance()
 
-    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(endpoints.archivos_subtareas)}`
+    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(props.endpoint)}`
 
     /************
     * Funciones
@@ -93,14 +86,14 @@ export default defineComponent({
     async function factoryFn(files) {
       const fd = new FormData()
       fd.append('file', files[0])
-      fd.append('subtarea_id', subtareaStore.idSubtareaSeleccionada)
+
+      for (let key in paramsForm) {
+        fd.append(key, paramsForm[key])
+
+      }
 
       try {
         const response: AxiosResponse = await axios.post(ruta, fd)
-        /*refGestor.value.reset()
-        refGestor.value.removeUploadedFiles()
-        refGestor.value.removeQueuedFiles()*/
-        quiero_subir_archivos.value = false
         files.value = []
         listado.value.push(response.data.modelo)
         notificarCorrecto(response.data.mensaje)
@@ -108,6 +101,15 @@ export default defineComponent({
         const axiosError = error as AxiosError
         notificarError(axiosError.response?.data.mensaje)
       }
+    }
+
+    function subir(params: ParamsType) {
+      paramsForm = params
+      refGestor.value.upload()
+    }
+
+    function onRejected(rejectedEntries) {
+      notificarAdvertencia('El tamaño total de los archivos no deben exceder los 10mb.')
     }
 
     return {
@@ -118,10 +120,12 @@ export default defineComponent({
       quiero_subir_archivos,
       columnas: [...configuracionColumnasArchivoSubtarea, accionesTabla],
       codigoSubtareaSeleccionada: subtareaStore.codigoSubtareaSeleccionada,
+      onRejected,
       btnEliminar,
-      btnComentar,
       btnDescargar,
       factoryFn,
+      subir,
+      listarArchivos,
     }
   }
 })
