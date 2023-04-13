@@ -354,14 +354,6 @@ export default defineComponent({
       sortable: false,
     }
     ]
-    const configuracionColumnasProductosSeleccionadosDespachado = [...configuracionColumnasProductosSeleccionados, {
-      name: 'cantidad',
-      field: 'cantidad',
-      label: 'Cantidad',
-      align: 'left',
-      sortable: false,
-    },
-    ]
 
 
     //Configurar los listados
@@ -461,7 +453,6 @@ export default defineComponent({
       configuracionColumnasInventarios,
       configuracionColumnasItemsSeleccionados,
       configuracionColumnasProductosSeleccionadosAccion,
-      configuracionColumnasProductosSeleccionadosDespachado,
       configuracionColumnasProductosSeleccionados,
       configuracionColumnasDetallesProductos,
       botonEditarCantidad,

@@ -208,6 +208,7 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
+              @update:model-value="()=>transaccion.listadoProductosTransaccion=[]"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -432,6 +433,7 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              @update:model-value="()=>transaccion.listadoProductosTransaccion=[]"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value
@@ -528,11 +530,7 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                accion === acciones.nuevo
-                  ? configuracionColumnasProductosSeleccionadosAccion
-                  : configuracionColumnasProductosSeleccionadosDespachado
-              "
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"

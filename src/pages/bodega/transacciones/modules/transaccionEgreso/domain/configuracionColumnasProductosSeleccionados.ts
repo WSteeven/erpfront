@@ -28,5 +28,22 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     editable: false,
     visible: true
   },
+  {
+    name: 'serial',
+    field: 'serial',
+    label: 'Serial',
+    align: 'left',
+    sortable: true,
+    editable: false,
+    visible: true
+  },
+  {
+    name: 'condiciones',
+    field: 'condiciones',
+    label: 'Estado del producto',
+    align: 'left',
+    sortable: false,
+    editable: false,
+  },
 ]
 

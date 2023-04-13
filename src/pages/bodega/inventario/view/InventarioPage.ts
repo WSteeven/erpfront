@@ -17,11 +17,17 @@ export default defineComponent({
         const { entidad: inventario, disabled, listado } = mixin.useReferencias()
         const { listar } = mixin.useComportamiento()
 
-        listar()
+        
+        function actualizarInventario(){
+            listar()
+        }
+        
+        actualizarInventario() //se carga el inventario
 
         return {
             mixin, inventario, disabled, listado,
             configuracionColumnas: configuracionColumnasInventarios,
+            actualizarInventario,
         }
     }
 })
