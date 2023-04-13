@@ -3,6 +3,13 @@ import { Transaccion } from './Transaccion'
 
 export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[] = [
     {
+        name: 'id',
+        field: 'id',
+        label: 'N°',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'solicitante',
         field: 'solicitante',
         label: 'Solicitante',

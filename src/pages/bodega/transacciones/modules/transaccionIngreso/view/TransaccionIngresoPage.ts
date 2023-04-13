@@ -73,7 +73,7 @@ export default defineComponent({
       transaccionStore.transaccion.hydrate(transaccion)
     })
     onReestablecer(() => {
-      transaccion.cliente = listadosAuxiliares.clientes[0]['id']
+      // transaccion.cliente = listadosAuxiliares.clientes[0]['id']
       transaccion.condicion = null
 
       //reestablecer valores de las banderas
@@ -245,7 +245,7 @@ export default defineComponent({
     }
     const botonAnular: CustomActionTable = {
       titulo: 'Anular',
-      color: 'danger',
+      color: 'red',
       icono: 'bi-x',
       accion: async({entidad, posicion})=> {
         confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async()=> {
