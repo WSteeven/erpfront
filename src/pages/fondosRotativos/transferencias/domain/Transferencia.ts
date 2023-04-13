@@ -1,5 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Transferencia extends EntidadAuditable {
+  fecha: Date | null
   usuario_envia_info:string|null
   usuario_recibe_info:string|null
   usuario_envia: number |null
@@ -15,6 +16,7 @@ export class Transferencia extends EntidadAuditable {
 
   constructor() {
     super()
+    this.fecha=null
     this.usuario_envia_info=null
     this.usuario_recibe_info=null
     this.usuario_envia=null
