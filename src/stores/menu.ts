@@ -288,6 +288,7 @@ export const useMenuStore = defineStore('menu', () => {
             },
           ],
         },
+
         {
           title: 'Detalle Fondos',
           icon: 'bi-list-task',
@@ -304,6 +305,19 @@ export const useMenuStore = defineStore('menu', () => {
             icon: 'bi-circle',
             can: store.can('puede.ver.sub_detalle_fondo'),
           }]
+        },
+        {
+          title: 'Solicitudes de fondos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.menu.solicitud_fondo'),
+          children: [
+            {
+              title: 'Motivo',
+              link: 'motivo-gasto',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.motivo_gasto'),
+            },
+          ]
         },
         {
           title: 'Saldo',
@@ -561,12 +575,7 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-person-fill-check',
       can: store.can('puede.ver.permisos'),
     },
-    {
-      title: 'Motivo Gasto',
-      link: 'motivo-gasto',
-      icon: 'bi-circle',
-      can: store.can('puede.ver.motivo_gasto'),
-    },
+
     /* {
       header: 'Sistema',
     },
