@@ -25,6 +25,7 @@ import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { TransferenciaSaldoPusherEvent } from 'pages/fondosRotativos/autorizarTransferencia/application/TransferenciaSaldoPusherEvent'
 import { GastoCoordinadorPusherEvent } from 'pages/fondosRotativos/gastoCoordinador/application/GastoCoordinadorPusherEvent'
 import { EgresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccionEgreso/application/EgresoPusherEvent'
+import { TransferenciaContabilidadPusherEvent } from 'pages/fondosRotativos/autorizarTransferencia/application/TransferenciaContabilidadPusherEvent'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -107,6 +108,9 @@ export default defineComponent({
     // Saldos
     const transferenciaSaldoPusherEvent = new TransferenciaSaldoPusherEvent();
     transferenciaSaldoPusherEvent.start();
+    //notificar a contabilidad
+    const transferenciaContabilidad = new TransferenciaContabilidadPusherEvent();
+    transferenciaContabilidad.start();
 
     // Solicitud de fondos
 

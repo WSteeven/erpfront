@@ -249,7 +249,7 @@ export default defineComponent({
     })
 
     onGuardado(() => {
-      if (authenticationStore.esTecnico) listarSubtareas({ estado: estadosTrabajos.EJECUTANDO })
+      listarSubtareas({ estado: estadosTrabajos.EJECUTANDO })
       emit('cerrar-modal', false)
     })
 

@@ -171,7 +171,7 @@ export default defineComponent({
     const grid = ref(false)
     const inFullscreen = ref(false)
     const fila = ref()
-    const filaEditada = ref()
+    const posicionFilaEditada = ref()
     const listado = ref()
     const refEditarModal = ref()
 
@@ -186,7 +186,7 @@ export default defineComponent({
 
       if (props.permitirEditarModal) {
         fila.value = data.entidad
-        filaEditada.value = data.posicion
+        posicionFilaEditada.value = data.posicion
         refEditarModal.value.abrir()
       }
     }
@@ -195,8 +195,20 @@ export default defineComponent({
     function abrirModalEntidad(entidad, posicion) {
       console.log(entidad)
       fila.value = entidad
-      filaEditada.value = posicion
+      posicionFilaEditada.value = posicion
       refEditarModal.value.abrir()
+    }
+
+    function abrirModalEditar(data) {
+      if (props.entidad) {
+        const filaVacia: EntidadAuditable = new props.entidad()
+        filaVacia.hydrate(data)
+        fila.value = filaVacia
+        posicionFilaEditada.value = listado.value.length
+        refEditarModal.value.abrir()
+      } else {
+        console.log('Debe pasar un objeto Instanciable a la tabla')
+      }
     }
 
     // Variables
@@ -220,8 +232,7 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
-      console.log('data recibida para actualizar', data)
-      listado.value.splice(filaEditada.value, 1, data)
+      listado.value.splice(posicionFilaEditada.value, 1, data)
       limpiarFila()
     }
 
@@ -348,6 +359,7 @@ export default defineComponent({
       mostrarFiltros,
       tituloBotonFiltros,
       abrirModalEntidad,
+      abrirModalEditar,
     }
   },
 })

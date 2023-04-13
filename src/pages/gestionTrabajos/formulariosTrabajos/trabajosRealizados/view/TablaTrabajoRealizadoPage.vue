@@ -13,6 +13,7 @@
     :accion1Header="agregarActividadRealizada"
     @eliminar="eliminarTrabajoRealizado"
     :modalMaximized="$q.screen.xs"
+    :entidad="TrabajoRealizado"
   ></essential-table>
 </template>
 
@@ -44,7 +45,7 @@ const emit = defineEmits(['actualizar'])
  * Variables
  ************/
 const trabajoRealizado: Ref<TrabajoRealizado[]> = ref(props.listado)
-const { confirmar } = useNotificaciones()
+const { confirmar, notificarError } = useNotificaciones()
 const refTrabajos = ref()
 
 watchEffect(() => (trabajoRealizado.value = props.listado))
@@ -65,12 +66,19 @@ const agregarActividadRealizada: CustomActionTable = {
   icono: 'bi-arrow-bar-down',
   color: 'positive',
   accion: async () => {
-    const fila: TrabajoRealizado = new TrabajoRealizado()
-    const { fecha_hora } = await obtenerTiempoActual()
-    fila.fecha_hora = fecha_hora
-    trabajoRealizado.value.push(fila)
-    refTrabajos.value.abrirModalEntidad(fila, trabajoRealizado.value.length - 1)
-    emit('actualizar', trabajoRealizado.value)
+    // const fila: TrabajoRealizado = new TrabajoRealizado()
+    try {
+      const { fecha_hora } = await obtenerTiempoActual()
+      // fila.fecha_hora = fecha_hora
+      // trabajoRealizado.value.push(fila)
+      // refTrabajos.value.abrirModalEntidad(fila, trabajoRealizado.value.length - 1)
+      refTrabajos.value.abrirModalEditar({ fecha_hora })
+      emit('actualizar', trabajoRealizado.value)
+    } catch (e) {
+      notificarError(
+        'Problemas para obtener la fecha y hora actual del servidor. Verifica tu conexión a Internet.'
+      )
+    }
   },
 }
 

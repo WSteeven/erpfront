@@ -8,8 +8,9 @@
     @update:model-value="setBase64"
     @clear="limpiar()"
     :disable="disable"
-    :accept="file_extensiones"
+    accept=".png, .jpg, .jpeg"
     :error="error"
+    :hint="hint"
   >
     <template #prepend>
       <q-icon name="attach_file" />
@@ -95,6 +96,7 @@ const props = defineProps([
   'file_extensiones',
   'error',
   'alto',
+  'hint',
 ])
 const emit = defineEmits(['update:modelValue'])
 
