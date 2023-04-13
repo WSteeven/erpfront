@@ -231,6 +231,11 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Comprobantes',
+          link: 'gestionar-egresos',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Reportes',
           icon: 'bi-circle',
           can: store.esBodeguero,

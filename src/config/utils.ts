@@ -169,7 +169,7 @@ export const tabAutorizarGasto: TabOption[] = [
 ]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
-  { label: 'Rechazada', value: 'RECHAZADA' },
+  // { label: 'Rechazada', value: 'RECHAZADA' },
   { label: 'Pendiente', value: 'PENDIENTE' },
 ]
 export const tabAutorizarTransferenciaSaldo: TabOption[] = [

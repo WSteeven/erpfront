@@ -3,9 +3,9 @@ import { Hooks } from './hooks'
 
 export class ActionHooks<T> extends Hooks<T> {
   onBeforeGuardar: () => void
-  onGuardado: () => void
+  onGuardado: (id?: number) => void
   onBeforeModificar: () => void
-  onModificado: () => void
+  onModificado: (id?: number) => void
   onBeforeConsultar: () => void
   onConsultado: () => void
   onReestablecer: () => void

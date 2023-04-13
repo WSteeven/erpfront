@@ -17,6 +17,7 @@ import BotonesPaginacion from './BotonesPaginacion.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
 import EstadosSubtareas from './EstadosSubtareas.vue'
 import CustomButtons from './CustomButtonsTable.vue'
+import { ParamsType } from 'config/types'
 
 export default defineComponent({
   components: {
@@ -193,16 +194,15 @@ export default defineComponent({
     const eliminar = (data: object) => emit('eliminar', data)
 
     function abrirModalEntidad(entidad, posicion) {
-      console.log(entidad)
       fila.value = entidad
       posicionFilaEditada.value = posicion
       refEditarModal.value.abrir()
     }
 
-    function abrirModalEditar(data) {
+    function abrirModalEditar(data: ParamsType) {
       if (props.entidad) {
         const filaVacia: EntidadAuditable = new props.entidad()
-        filaVacia.hydrate(data)
+        if (data) filaVacia.hydrate(data)
         fila.value = filaVacia
         posicionFilaEditada.value = listado.value.length
         refEditarModal.value.abrir()

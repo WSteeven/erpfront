@@ -1,5 +1,5 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import Observacion from 'trabajos/domain/Observacion'
+import Observacion from './Observacion'
 
 export const configuracionColumnasObservacion: ColumnConfig<Observacion>[] = [
   {
@@ -7,5 +7,7 @@ export const configuracionColumnasObservacion: ColumnConfig<Observacion>[] = [
     field: 'observacion',
     label: 'Observación',
     align: 'left',
+    hint: 'Obligatorio',
+    requerido: true,
   },
 ]

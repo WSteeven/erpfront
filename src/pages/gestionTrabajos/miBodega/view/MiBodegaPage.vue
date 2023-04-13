@@ -150,7 +150,13 @@
         <q-tab-panel name="personal">
           <div class="col-12 row justify-center q-gutter-sm q-mb-md">
             <!-- Boton guardar -->
-            <q-btn color="primary" no-caps push :to="{ name: 'devoluciones' }">
+            <q-btn
+              v-if="listadoStockPersonal.length"
+              color="primary"
+              no-caps
+              push
+              :to="{ name: 'devoluciones' }"
+            >
               <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
               <span>Devolver a bodega matriz</span>
             </q-btn>
