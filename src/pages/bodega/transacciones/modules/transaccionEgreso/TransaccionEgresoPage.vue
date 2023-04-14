@@ -38,6 +38,7 @@
               options-dense
               dense
               outlined
+              @popup-show="ordenarMotivos"
               @update:model-value="filtroMotivos"
               :readonly="disabled || (soloLectura && !esBodeguero)"
               :disable="disabled || (soloLectura && !esBodeguero)"

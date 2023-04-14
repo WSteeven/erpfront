@@ -342,6 +342,19 @@
                     :disable="disabled"
                   />
                 </div>
+                <!-- Coordenadas -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Coordenadas del lugar donde vive</label>
+                  <q-input
+                    type="tel"
+                    v-model="empleado.coordenadas"
+                    placeholder="Opcional"
+                    :disable="disabled"
+                    outlined
+                    dense
+                  >
+                  </q-input>
+                </div>
               </div>
             </q-expansion-item>
           </div>
@@ -554,19 +567,6 @@
                 type="tel"
                 mask="####"
                 v-model="empleado.extension"
-                placeholder="Opcional"
-                :disable="disabled"
-                outlined
-                dense
-              >
-              </q-input>
-            </div>
-            <!-- Coordenadas -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Coordenadas</label>
-              <q-input
-                type="tel"
-                v-model="empleado.coordenadas"
                 placeholder="Opcional"
                 :disable="disabled"
                 outlined
