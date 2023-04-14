@@ -250,9 +250,9 @@
           <label class="q-mb-sm block">Autorizaciòn Especial</label>
           <q-select v-model="consolidadofiltrado.autorizador" :options="autorizacionesEspeciales" transition-show="jump-up"
             transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
-            :error="!!v$.autorizador.$errors.length" error-message="Debes seleccionar un canton" use-input
+            :error="!!v$.autorizador.$errors.length" error-message="Debes seleccionar un empleado" use-input
             input-debounce="0" @filter="filtrarAutorizacionesEspeciales" :option-value="(v) => v.id"
-            :option-label="(v) => v.usuario" emit-value map-options>
+            :option-label="(v) => v.nombres+' '+v.apellidos" emit-value map-options>
             <template v-slot:error>
               <div v-for="error of v$.autorizador.$errors" :key="error.$uid">
                 <div class="error-msg">{{ error.$message }}</div>
