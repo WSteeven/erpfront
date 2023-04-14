@@ -17,6 +17,7 @@
       :permitirConsultar="true"
       :permitirEditar="false"
       :permitirEliminar="false"
+      :permitirFiltrar="false"
     ></essential-table>
   </q-page>
 </template>

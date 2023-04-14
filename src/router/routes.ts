@@ -230,7 +230,7 @@ const routes: RouteRecordRaw[] = [
         name: 'inventarios',
         component: () =>
           import('pages/bodega/inventario/view/InventarioPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
       {
         path: '/productos-perchas',

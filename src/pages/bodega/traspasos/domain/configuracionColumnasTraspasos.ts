@@ -47,7 +47,7 @@ export const configuracionColumnasTraspasos: ColumnConfig<Traspaso>[] = [
     {
         name: 'estado',
         field: 'estado',
-        label: 'Estado',
+        label: 'Estado de devolución',
         align: 'left',
         sortable: true
     },

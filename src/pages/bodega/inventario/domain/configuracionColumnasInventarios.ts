@@ -1,5 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Inventario } from './Inventario'
+import { LocalStorage } from 'quasar'
+import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 
 export const configuracionColumnasInventarios: ColumnConfig<Inventario>[] = [
     {
@@ -56,6 +58,8 @@ export const configuracionColumnasInventarios: ColumnConfig<Inventario>[] = [
         field: 'condicion',
         label: 'Condicion',
         align: 'center',
+        type:'select',
+        options: JSON.parse(LocalStorage.getItem('condiciones')!.toString()).map((v:Condicion)=>{return {label:v.nombre}}),
         sortable: true
     },
     /* {

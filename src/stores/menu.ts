@@ -183,7 +183,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Inventario',
           link: 'inventarios',
           icon: 'bi-circle',
-          can: store.can('puede.ver.inventarios'),
+          can: store.can('puede.ver.inventarios') || store.esCoordinador || store.esCoordinadorBackup || store.esRecursosHumanos || store.esTecnicoLider,
         },
         {
           title: 'Productos en Perchas',

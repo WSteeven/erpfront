@@ -40,7 +40,8 @@ import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
 import { ValidarListadoProductosEgreso } from './application/validaciones/ValidarListadoProductosEgreso'
-import { limpiarListado } from 'shared/utils'
+import { limpiarListado, ordernarListaString } from 'shared/utils'
+import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -483,7 +484,12 @@ export default defineComponent({
 
       pagination: ref({
         rowsPerPage: 0
-      })
+      }),
+
+      //ordenacion de listas
+      ordenarMotivos(){
+        opciones_motivos.value.sort((a:Motivo, b:Motivo)=> ordernarListaString(a.nombre!, b.nombre!))
+      }
     }
   }
 })
