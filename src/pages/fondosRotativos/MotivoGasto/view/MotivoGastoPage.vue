@@ -5,6 +5,7 @@
         <div class="row q-col-gutter-sm q-mb-md">
           <!-- Nombre -->
           <div class="col-12 col-md-3">
+            <label class="q-mb-xs">Motivo</label>
             <q-input
               v-model="motivoGasto.nombre"
               placeholder="Obligatorio"
