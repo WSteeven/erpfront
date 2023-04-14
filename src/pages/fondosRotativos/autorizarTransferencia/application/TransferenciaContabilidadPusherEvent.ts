@@ -16,7 +16,9 @@ export class TransferenciaContabilidadPusherEvent {
     const { notificarCorrecto } = useNotificaciones()
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
-    pusher.subscribe('transferencia-saldo-contabilidad'+this.rol)
+    console.log('transferencia-saldo-contabilidad-'+this.rol);
+
+    pusher.subscribe('transferencia-saldo-contabilidad-'+this.rol)
     pusher.bind('transferencia-saldo-contabilidad-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificarCorrecto('Han realizado  o aprobado una transferencia de saldo')
