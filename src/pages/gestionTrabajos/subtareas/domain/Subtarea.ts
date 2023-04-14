@@ -52,6 +52,7 @@ export class Subtarea extends EntidadAuditable {
 
   empleado: number | null
   grupo: number | null
+  grupo_nombre: string | null
 
   canton: string | null
   cantidad_subtareas: number | null
@@ -60,7 +61,7 @@ export class Subtarea extends EntidadAuditable {
   puede_ejecutar: boolean
   puede_suspender: boolean
   tiene_subtareas: boolean
-  empleados_designados: Empleado[]
+  empleados_designados: Empleado[] | any
   seguimiento: number | null
   tiempo_estimado: number | null
   cantidad_adjuntos: number | null
@@ -121,6 +122,7 @@ export class Subtarea extends EntidadAuditable {
     // Listados
     this.empleado = null
     this.grupo = null
+    this.grupo_nombre = null
 
     this.canton = null
     this.cantidad_subtareas = null

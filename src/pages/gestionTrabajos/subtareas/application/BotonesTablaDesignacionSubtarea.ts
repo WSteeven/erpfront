@@ -14,10 +14,15 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
   const empleadoGrupoQuitar = ref()
   const asignarLider = ref(false)
   const asignarSecretario = ref(false)
+  let emit
 
   const { accion, modo_asignacion_trabajo, grupo } = data.value
 
   const { notificarCorrecto, notificarAdvertencia, confirmar } = useNotificaciones()
+
+  function setEmit(emitir) {
+    emit = emitir
+  }
 
   const quitarEmpleado: CustomActionTable = {
     titulo: 'Quitar',
@@ -26,7 +31,10 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
     visible: () => [acciones.editar, acciones.nuevo].includes(accion) && !cambiarResponsable.value,
     accion: ({ entidad, posicion }) => {
       confirmar('Este empleado no participará en la ejecución del trabajo. ¿Desea continuar?', () => {
-        if (entidad.es_responsable) notificarAdvertencia('No olvides designar a otro responsable.')
+        if (entidad.es_responsable) {
+          notificarAdvertencia('No olvides designar a otro responsable.')
+          emit('seleccionar-responsable', null)
+        }
         empleadosSeleccionados.value.splice(posicion, 1)
       })
       //empleadosSeleccionados.value = empleadosSeleccionados.value // Necesario porque es computado get - set
@@ -101,6 +109,8 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
 
       const empleadoSeleccionado = empleados[0]
       empleadoSeleccionado.es_responsable = true
+      emit('seleccionar-responsable', empleadoSeleccionado.id)
+
       const index = empleadosSeleccionados.value.findIndex((emp: EmpleadoGrupo) => emp.id === empleadoSeleccionado.id)
 
       empleadosSeleccionados.value = empleadosSeleccionados.value.map((empleado: EmpleadoGrupo) => {
@@ -155,6 +165,7 @@ export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<E
     empleadoGrupoQuitar,
     entidadSeleccionadaResponsable,
     quitarEmpleado,
+    setEmit,
     // Designar responsable
     cambiarResponsable,
     btnCambiarResponsable,

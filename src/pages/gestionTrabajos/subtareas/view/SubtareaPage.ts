@@ -193,12 +193,13 @@ export default defineComponent({
     *********/
     onBeforeGuardar(() => {
       subtarea.tarea = subtareaStore.idTarea
-      subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => {
+      subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => empleado.id)
+      /*subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => {
         const empleadoGrupo = new EmpleadoGrupo()
         empleadoGrupo.hydrate(empleado)
         empleadoGrupo.es_responsable = empleado.es_responsable ? 1 : 0
         return empleadoGrupo
-      })
+      })*/
     })
 
     onConsultado(() => subtarea.tarea = subtareaStore.codigoTarea)
@@ -308,6 +309,10 @@ export default defineComponent({
       subtarea.empleado = empleado_id
     }
 
+    function seleccionarResponsable(idResponsable: number) {
+      subtarea.empleado = idResponsable
+    }
+
     function seleccionarModoDesignacion(modo: string) {
       subtarea.modo_asignacion_trabajo = modo
       subtarea.empleado = null
@@ -407,6 +412,7 @@ export default defineComponent({
       btnDescargarArchivo,
       seleccionarGrupo,
       seleccionarEmpleado,
+      seleccionarResponsable,
       seleccionarModoDesignacion,
       clienteFinal,
       nombresClienteFinal: computed(() => clienteFinal.nombres + ' ' + clienteFinal.apellidos),

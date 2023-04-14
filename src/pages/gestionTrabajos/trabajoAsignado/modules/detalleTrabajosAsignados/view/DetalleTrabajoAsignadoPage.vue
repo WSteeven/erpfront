@@ -86,6 +86,12 @@
         ></q-input>
       </div>
 
+      <div v-if="trabajo.grupo" class="col-12 col-md-3">
+        <label class="q-mb-sm block">Grupo</label>
+        <q-input v-model="trabajo.grupo_nombre" outlined dense disable>
+        </q-input>
+      </div>
+
       <!-- Es ventana -->
       <div v-if="trabajo.es_ventana" class="col-12 col-md-3 q-mb-md">
         <q-icon

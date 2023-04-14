@@ -1,30 +1,28 @@
-// import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { ObtenerPlantilla } from 'pages/gestionTrabajos/trabajoAsignado/application/ObtenerPlantilla'
+import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
+import { MotivoPausa } from 'pages/gestionTrabajos/motivosPausas/domain/MotivoPausa'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { ComportamientoModalesSubtarea } from './ComportamientoModalesSubtarea'
-import { CambiarEstadoSubtarea } from './CambiarEstadoSubtarea'
-import { useNotificaciones } from 'shared/notificaciones'
-import { useSubtareaStore } from 'stores/subtarea'
-import { estadosTrabajos } from 'config/utils'
-import { Subtarea } from '../domain/Subtarea'
-import { Ref, reactive, ref } from 'vue'
-import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
-import { ObtenerPlantilla } from 'pages/gestionTrabajos/trabajoAsignado/application/ObtenerPlantilla'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { useAuthenticationStore } from 'stores/authentication'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { SubtareaController } from '../infraestructure/SubtareaController'
-import { MotivoPausa } from 'pages/gestionTrabajos/motivosPausas/domain/MotivoPausa'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { CambiarEstadoSubtarea } from './CambiarEstadoSubtarea'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useSubtareaStore } from 'stores/subtarea'
 import { obtenerUbicacion } from 'shared/utils'
+import { estadosTrabajos } from 'config/utils'
+import { Subtarea } from '../domain/Subtarea'
+import { Ref, reactive } from 'vue'
 
 export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, listadosAuxiliares?: any) => {
   /***********
-    * Stores
-    ***********/
-  const authenticationStore = useAuthenticationStore()
+  * Stores
+  ***********/
   const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
-  const subtareaStore = useSubtareaStore()
   const trabajoAsignadoStore = useTrabajoAsignadoStore()
+  const authenticationStore = useAuthenticationStore()
+  const subtareaStore = useSubtareaStore()
 
   /************
    * Variables

@@ -30,7 +30,7 @@ export default defineComponent({
     EssentialTable,
     EssentialSelectableTable,
   },
-  emits: ['seleccionar-grupo', 'seleccionar-empleado', 'actualizar-empleados', 'seleccionar-modo-designacion'],
+  emits: ['seleccionar-grupo', 'seleccionar-empleado', 'actualizar-empleados', 'seleccionar-modo-designacion', 'seleccionar-responsable'],
   props: {
     disable: Boolean,
     accion: String,
@@ -102,7 +102,9 @@ export default defineComponent({
       btnCambiarResponsable,
       btnConfirmarDesignarResponsable,
       btnCancelarDesignacionResponsable,
+      setEmit
     } = useBotonesTablaDesignacionSubtarea(empleadosGrupo, data)
+    setEmit(emit)
 
     /*****************
      * Orquestadores
@@ -135,9 +137,12 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    function seleccionarGrupo() {
+    async function seleccionarGrupo() {
       if (subtarea.grupo) {
-        obtenerTecnicosGrupo(subtarea.grupo)
+        await obtenerTecnicosGrupo(subtarea.grupo)
+        const lider = encontrarLiderGrupo()
+        console.log(lider)
+        if (lider) emit('seleccionar-responsable', lider.id)
         return emit('seleccionar-grupo', subtarea.grupo)
       }
     }
@@ -151,6 +156,11 @@ export default defineComponent({
       subtarea.grupo = null
       empleadosGrupo.value = []
       return emit('seleccionar-modo-designacion', subtarea.modo_asignacion_trabajo)
+    }
+
+    function encontrarLiderGrupo() {
+      console.log(empleadosGrupo.value)
+      return empleadosGrupo.value.find((empleado: EmpleadoGrupo) => empleado.es_responsable)
     }
 
     async function obtenerTecnicosGrupo(grupo_id: number) {

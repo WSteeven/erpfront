@@ -18,6 +18,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
 import { maskFecha } from 'config/utils'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
 
 export default defineComponent({
   components: {
@@ -84,6 +85,7 @@ export default defineComponent({
         grupo: subtarea.designar_otro_responsable ? subtarea.grupo : null,
         empleado: subtarea.designar_otro_responsable ? subtarea.empleado : null,
         modo_asignacion_trabajo: subtarea.modo_asignacion_trabajo,
+        empleados_designados: subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => empleado.id),
       }
 
       try {
@@ -138,15 +140,25 @@ export default defineComponent({
     }
 
     function seleccionarGrupo(grupo_id) {
-      subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
+      // subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
       subtarea.grupo = grupo_id
-      subtarea.empleado = null
+      // subtarea.empleado = null
     }
 
     function seleccionarEmpleado(empleado_id) {
-      subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
+      // subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
       subtarea.empleado = empleado_id
+      // subtarea.grupo = null
+    }
+
+    function seleccionarModoDesignacion(modo: string) {
+      subtarea.modo_asignacion_trabajo = modo
+      subtarea.empleado = null
       subtarea.grupo = null
+    }
+
+    function seleccionarResponsable(idResponsable: number) {
+      subtarea.empleado = idResponsable
     }
 
     return {
@@ -159,6 +171,8 @@ export default defineComponent({
       maskFecha,
       seleccionarGrupo,
       seleccionarEmpleado,
+      seleccionarResponsable,
+      seleccionarModoDesignacion,
     }
   }
 })
