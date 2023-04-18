@@ -158,6 +158,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/permisos',
+        name: 'permisos',
+        component: () => import('pages/permisos/view/PermisoPage.vue'),
+        meta: { requiresAuth: true },
+      },
       // Routes for bodega
       {
         path: '/gestionar-egresos',
