@@ -59,8 +59,7 @@
           <!-- Factura -->
           <div class="col-12 col-md-3" v-if="esFactura">
             <label class="q-mb-sm block">#Factura</label>
-            <q-input v-model="gasto.factura" placeholder="Obligatorio" mask="###-###-#########" fill-mask
-              hint="###-###-#########" disable outlined dense>
+            <q-input v-model="gasto.factura" placeholder="Obligatorio" disable outlined dense>
             </q-input>
           </div>
           <!-- Numero de Comprobante -->
