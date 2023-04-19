@@ -42,6 +42,7 @@ import { useTransferenciaStore } from 'stores/transferencia'
 import { ValidarListadoProductosEgreso } from './application/validaciones/ValidarListadoProductosEgreso'
 import { limpiarListado, ordernarListaString } from 'shared/utils'
 import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
+import { useInventarioStore } from 'stores/inventario'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -57,6 +58,7 @@ export default defineComponent({
     const transaccionStore = useTransaccionStore()
     const pedidoStore = usePedidoStore()
     const transferenciaStore = useTransferenciaStore()
+    const inventarioStore = useInventarioStore()
 
     //orquestador
     const {
@@ -74,15 +76,12 @@ export default defineComponent({
     const esCoordinador = store.esCoordinador
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
-    // console.log('rol seleccionado: ', rolSeleccionado)
 
     let soloLectura = ref(false)
     let puedeEditarCantidad = ref(true)
     let puedeDespacharMaterial = ref(false)
     let esVisibleAutorizacion = ref(false)
-
     let esVisibleTarea = ref(false)
-    let requiereFecha = ref(false) //para mostrar u ocultar fecha limite
 
 
     const opciones_empleados = ref([])
@@ -96,10 +95,7 @@ export default defineComponent({
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos',
-            estado: 1
-          }
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
         tareas: {
           controller: new TareaController(),
@@ -108,18 +104,14 @@ export default defineComponent({
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
         clientes: {
           controller: new ClienteController(),
-          params: {
-            campos: 'id,empresa_id',
-            requiere_bodega: 1,
-            estado: 1,
-          },
+          params: { campos: 'id,empresa_id', requiere_bodega: 1, estado: 1, },
         },
       })
       //comprueba si hay un pedido en el store para llenar automaticamente los datos de ese pedido en la transaccion
       if (pedidoStore.pedido.id) {
         transaccion.tiene_pedido = true
         transaccion.tarea = pedidoStore.pedido.tarea
-        cargarDatos()
+        cargarDatosPedido()
         transaccion.solicitante = pedidoStore.pedido.solicitante_id
         transaccion.sucursal = pedidoStore.pedido.sucursal_id
       }
@@ -155,7 +147,7 @@ export default defineComponent({
     })
     onGuardado(() => {
       pedidoStore.resetearPedido()
-      listadoPedido.value = ref<any>([])
+      listadoPedido.value = []
       transaccion.pedido = null
     })
 
@@ -240,7 +232,7 @@ export default defineComponent({
       limpiarTransaccion()
       try {
         await pedidoStore.cargarPedido(id)
-        await cargarDatos()
+        await cargarDatosPedido()
       } catch (error) {
         //En esta seccion se limpian los campos previamente llenados
         limpiarTransaccion()
@@ -255,6 +247,10 @@ export default defineComponent({
       cargarDatosTransferencia()
       console.log(transferenciaStore.transferencia)
     }
+
+    /**
+     * Cargar los datos de la transferencia en la transacción
+     */
     function cargarDatosTransferencia() {
       transaccion.sucursal = transferenciaStore.transferencia.sucursal_salida
       transaccion.justificacion = transferenciaStore.transferencia.justificacion
@@ -263,12 +259,14 @@ export default defineComponent({
       transaccion.listadoProductosTransaccion = transferenciaStore.transferencia.listadoProductos
     }
 
-    let listadoPedido = ref()
+    let listadoPedido = ref<any[]>([])
+    let coincidencias = ref()
     let listadoCoincidencias = ref()
+
     /**
      * Cargar los datos del pedido en el formulario de egreso.
      */
-    async function cargarDatos() {
+    async function cargarDatosPedido() {
       //Copiar los valores de las variables
       transaccion.pedido = pedidoStore.pedido.id
       transaccion.justificacion = pedidoStore.pedido.justificacion
@@ -277,7 +275,7 @@ export default defineComponent({
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
       transaccion.per_autoriza = Number.isInteger(pedidoStore.pedido.per_autoriza) ? pedidoStore.pedido.per_autoriza : pedidoStore.pedido.per_autoriza_id
       listadoPedido.value = pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)
-      listadoPedido.value.sort((v, w) => v.id - w.id) //ordena el listado de pedido
+      listadoPedido.value.sort((v, w) => ordernarListaString(v.producto, w.producto)) //ordena el listado de pedido
       //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
       if (pedidoStore.pedido.tarea) {
         transaccion.es_tarea = true
@@ -285,36 +283,40 @@ export default defineComponent({
         filtroTareas(transaccion.tarea)
       }
       //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
-      // transaccion.listadoProductosTransaccion = Array.from(pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado))
-      // console.log(transaccion.listadoProductosTransaccion)
-      // transaccion.listadoProductosTransaccion.forEach((v) => v.cantidad = buscarCantidadPendienteEnPedido(v.id))
-      // let detalles_ids: any = []
-      // detalles_ids = pedidoStore.pedido.listadoProductos.map((v) => v.id)
-      // console.log(detalles_ids)
-      // const data = {
-      //     detalles: detalles_ids,
-      //     sucursal_id: transaccion.sucursal,
-      //     cliente_id: transaccion.cliente
-      // }
-      // coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
+      transaccion.listadoProductosTransaccion = Array.from(pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado))
+      console.log(transaccion.listadoProductosTransaccion)
+      transaccion.listadoProductosTransaccion.forEach((v) => v.cantidad = buscarCantidadPendienteEnPedido(v.id))
+      let detalles_ids: any = []
+      detalles_ids = listadoPedido.value.map((v) => v.id)
+      console.log(detalles_ids)
+      const data = {
+        detalles: detalles_ids,
+        sucursal_id: transaccion.sucursal,
+        cliente_id: transaccion.cliente
+      }
+      coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
     }
 
-    /* watch(coincidencias, () => {
-        console.log(coincidencias.value, transaccion.listadoProductosTransaccion)
-        listadoCoincidencias.value = coincidencias.value.results
-        console.log(listadoCoincidencias.value)
+    watch(coincidencias, () => {
+      console.log(coincidencias.value, transaccion.listadoProductosTransaccion)
+      transaccion.listadoProductosTransaccion = coincidencias.value.results
+      listadoCoincidencias.value = coincidencias.value.results
+      console.log(listadoCoincidencias.value)
 
-        transaccion.listadoProductosTransaccion.forEach((v) => {
-            let item = listadoCoincidencias.value.filter((i) => i.detalle === v.id)
-            console.log(item[0])
-            if (item[0]['cantidad'] >= v.cantidad) {
-                console.log('hay más en inventario')
-            } else {
-                console.log('hay menos en inventario')
-                v.cantidad = item[0]['cantidad']
-            }
-        })
-    }) */
+      transaccion.listadoProductosTransaccion.forEach((v) => {
+        let item = listadoPedido.value.filter((i) => i.id === v.detalle)
+        console.log(item)
+        if (item[0]) {
+          if (item[0]['cantidad'] >= v.cantidad) {
+            v.cantidad = item[0]['cantidad']
+            console.log('hay más en inventario')
+          } else {
+            v.cantidad = item[0]['cantidad']
+            console.log('hay menos en inventario')
+          }
+        }
+      })
+    })
 
     /**
      * Función que filtra y obtiene la cantidad restante a despachar en un pedido.
@@ -323,8 +325,22 @@ export default defineComponent({
      */
     function buscarCantidadPendienteEnPedido(detalle) {
       let fila = pedidoStore.pedido.listadoProductos.filter((v) => v.id === detalle)
-      console.log(fila[0])
+      // console.log(fila[0])
       return fila[0]['cantidad'] - fila[0]['despachado']
+    }
+
+    async function buscarListadoPedidoEnInventario() {
+      transaccion.listadoProductosTransaccion = []
+      if (transaccion.pedido) {
+        const detalles_ids = listadoPedido.value.map((v) => v.id)
+        const data = {
+          detalles: detalles_ids,
+          sucursal_id: transaccion.sucursal,
+          cliente_id: transaccion.cliente
+        }
+        coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
+      } else
+        transaccion.listadoProductosTransaccion = []
     }
 
     function limpiarTransaccion() {
@@ -395,11 +411,11 @@ export default defineComponent({
 
       listadoCoincidencias,
       listadoPedido,
+      buscarListadoPedidoEnInventario,
 
       //variables auxiliares
       esVisibleAutorizacion,
       esVisibleTarea,
-      requiereFecha,
 
 
       //filtros
@@ -487,8 +503,8 @@ export default defineComponent({
       }),
 
       //ordenacion de listas
-      ordenarMotivos(){
-        opciones_motivos.value.sort((a:Motivo, b:Motivo)=> ordernarListaString(a.nombre!, b.nombre!))
+      ordenarMotivos() {
+        opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
       }
     }
   }

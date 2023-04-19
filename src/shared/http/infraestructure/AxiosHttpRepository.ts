@@ -34,8 +34,8 @@ export class AxiosHttpRepository implements HttpRepository {
   }
 
   post<HttpResponse>(url: string, data?: any, options?: AxiosRequestConfig): Promise<HttpResponse> {
-    console.log(url)
-    console.log(data)
+    // console.log(url)
+    // console.log(data)
     return AxiosHttpRepository.axiosInst.post(url, data, { ...this.getOptions(), ...options })
   }
 

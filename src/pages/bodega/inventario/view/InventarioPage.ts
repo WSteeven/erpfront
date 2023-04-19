@@ -76,8 +76,8 @@ export default defineComponent({
                 sortable: true
             },
             {
-                name: 'condicion',
-                field: 'condicion',
+                name: 'condiciones',
+                field: 'condiciones',
                 label: 'Condicion',
                 align: 'center',
                 sortable: true
