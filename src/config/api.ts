@@ -27,6 +27,7 @@ export const endpoints = {
   // Permisos
   permisos_administrar: new Endpoint('permisos_administrar'),
   asignar_permisos: new Endpoint('asignar-permisos'),
+  crear_permiso: new Endpoint('crear-permiso'),
   // Ubicacion
   paises: new Endpoint('paises'),
   provincias: new Endpoint('provincias'),

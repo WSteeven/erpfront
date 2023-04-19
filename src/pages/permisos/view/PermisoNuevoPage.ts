@@ -1,0 +1,92 @@
+import {  defineComponent, ref } from 'vue'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useQuasar } from 'quasar'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import useVuelidate from '@vuelidate/core'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { Permiso } from '../domain/Permiso'
+import { PermisosController } from '../infrestructure/PermisosController'
+import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
+
+
+export default defineComponent({
+  components: { TabLayout, ButtonSubmits },
+  emits: ['guardado','cerrar-modal'],
+  setup(props, { emit }){
+    /*********
+     * Stores
+     *********/
+    useNotificacionStore().setQuasar(useQuasar())
+    const notificaciones = useNotificaciones()
+    /***********
+     * Mixin
+     ************/
+    const mixin = new ContenedorSimpleMixin(
+      Permiso,
+      new PermisosController()
+    )
+    const { entidad: permiso, disabled,listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador,cargarVista,obtenerListados } = mixin.useComportamiento()
+    /*************
+     * Validaciones
+     **************/
+    const reglas = {
+      name: {
+        required: true,
+        minLength: 3,
+        maxLength: 50,
+      },
+      roles:{
+        required: true,
+      }
+    }
+    const v$ = useVuelidate(reglas, permiso)
+    const roles = ref([])
+    setValidador(v$.value)
+    //Obtener el listado de las cantones
+    cargarVista(async () => {
+      await obtenerListados({
+        roles: {
+          controller: new RolController(),
+          params: { campos: 'id,name' },
+        },
+      })
+      roles.value =
+        listadosAuxiliares.roles
+    })
+    const onSubmit = () => {
+      //mixin.onSubmit()
+    }
+
+    async function crear() {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.crear_permiso)
+         await axios.post(ruta, permiso)
+        .then(function (response:any) {
+          notificaciones.notificarCorrecto(response.data.mensaje)
+          emit('cerrar-modal');
+        })
+        .catch((error) => {
+          //notificaciones.notificarError(error.response.data.errors.password[0])
+        });
+    }
+
+    return {
+      mixin,
+      onSubmit,
+      isPwdCurent: ref(true),
+      isPwd: ref(true),
+      isPwdConfirmation: ref(true),
+      permiso,
+      disabled,
+      v$,
+      roles,
+      listadosAuxiliares,
+      crear,
+    }
+  },
+})

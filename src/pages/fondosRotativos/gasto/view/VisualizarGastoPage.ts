@@ -174,7 +174,7 @@ export default defineComponent({
                 emit('guardado');
               } catch (e: any) {
                 notificarError(
-                  'No se pudo aprobar, debes ingresar un motivo para la anulación'
+                  'No se pudo aprobar, debes ingresar un motivo para la aprobacion'
                 )
               }
             },
