@@ -134,6 +134,7 @@ export default defineComponent({
     const tab = ref('tarea')
     const tabActual = ref()
     const esCoordinadorBackup = authenticationStore.esCoordinadorBackup
+    const clienteFinal = reactive(new ClienteFinal())
 
     const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea, botonCancelar: btnCancelarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
     const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
@@ -260,6 +261,8 @@ export default defineComponent({
         const res = await obtenerClienteFinal(tarea.cliente_final)
         clienteFinal.hydrate(res)
         cargando.desactivar()
+      } else {
+        clienteFinal.hydrate(new ClienteFinal())
       }
     })
 
@@ -270,9 +273,6 @@ export default defineComponent({
     function verificarEsVentana() {
       if (!tarea.es_ventana) tarea.hora_fin_trabajo = null
     }
-
-    // Informacion de cliente final
-    const clienteFinal = reactive(new ClienteFinal())
 
     async function setCliente() {
       if (tarea.proyecto) {

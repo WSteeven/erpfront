@@ -116,7 +116,7 @@
       </div>
     </div>
   </q-expansion-item>
-
+  {{ subtarea.empleado }}
   <q-expansion-item
     v-if="subtarea.designar_otro_responsable"
     class="overflow-hidden q-mb-md expansion"
@@ -131,6 +131,11 @@
           :subtarea-inicial="subtarea"
           @seleccionarGrupo="seleccionarGrupo"
           @seleccionarEmpleado="seleccionarEmpleado"
+          @seleccionarModoDesignacion="seleccionarModoDesignacion"
+          @seleccionarResponsable="seleccionarResponsable"
+          @actualizar-empleados="
+            (empleados) => (subtarea.empleados_designados = empleados)
+          "
         ></designar-responsable-trabajo>
       </div>
     </div>

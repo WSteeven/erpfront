@@ -318,7 +318,7 @@
         </div>
       </div>
     </q-expansion-item>
-
+    {{ subtarea.empleado }}
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
       label="Designación de trabajo"
@@ -333,6 +333,7 @@
         @seleccionarGrupo="seleccionarGrupo"
         @seleccionarEmpleado="seleccionarEmpleado"
         @seleccionarModoDesignacion="seleccionarModoDesignacion"
+        @seleccionarResponsable="seleccionarResponsable"
         @actualizar-empleados="
           (empleados) => (subtarea.empleados_designados = empleados)
         "

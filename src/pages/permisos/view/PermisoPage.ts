@@ -61,7 +61,7 @@ export default defineComponent({
       refPermisosSinAsignar.value.seleccionar()
     }
     function asignarPermiso(permisos: any) {
-      const permisosName = permisos.map((permiso: Permiso) => permiso.name)
+      const permisosName = permisos.map((permiso: Permiso) => permiso.id)
 
       aisnarPermisoController.guardar({
         id_rol: rol.value,

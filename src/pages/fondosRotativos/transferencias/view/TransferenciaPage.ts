@@ -79,7 +79,7 @@ export default defineComponent({
         required,
       },
       observacion: {
-        maxLength: maxLength(50),
+        maxLength: maxLength(150),
       },
     }
 

@@ -484,6 +484,7 @@
                     input-debounce="0"
                     emit-value
                     map-options
+                    clearable
                     :disable="disabled"
                     @update:model-value="
                       (v) => obtenerClienteFinal(tarea.cliente_final)
@@ -527,7 +528,10 @@
                 </div>
 
                 <!-- Provincia -->
-                <div class="col-12 col-md-3">
+                <div
+                  v-if="clienteFinal.provincia_nombre"
+                  class="col-12 col-md-3"
+                >
                   <label class="q-mb-sm block">Provincia</label>
                   <q-input
                     v-model="clienteFinal.provincia_nombre"
@@ -537,8 +541,8 @@
                   ></q-input>
                 </div>
 
-                <!-- Provincia -->
-                <div class="col-12 col-md-3">
+                <!-- Canton -->
+                <div v-if="clienteFinal.canton_nombre" class="col-12 col-md-3">
                   <label class="q-mb-sm block">Cantón</label>
                   <q-input
                     v-model="clienteFinal.canton_nombre"
@@ -638,6 +642,7 @@
                     input-debounce="0"
                     emit-value
                     map-options
+                    clearable
                     :disable="disabled"
                     :error="!!v$.ruta_tarea.$errors.length"
                     @blur="v$.ruta_tarea.$touch"

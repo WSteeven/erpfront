@@ -18,7 +18,15 @@
         autoplay
       ></lottie-player>
 
-      <q-btn color="primary" no-caps push glossy>Manuales de usuario</q-btn>
+      <q-btn
+        color="primary"
+        href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770"
+        target="_blank"
+        no-caps
+        push
+        glossy
+        >Manuales de usuario</q-btn
+      >
 
       <!--<q-chip
         v-if="store.esCoordinador || store.esTecnicoLider"
