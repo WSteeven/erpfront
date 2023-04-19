@@ -54,8 +54,8 @@ export const configuracionColumnasInventarios: ColumnConfig<Inventario>[] = [
         sortable: true
     },
     {
-        name: 'condicion',
-        field: 'condicion',
+        name: 'condiciones',
+        field: 'condiciones',
         label: 'Condicion',
         align: 'center',
         type:'select',

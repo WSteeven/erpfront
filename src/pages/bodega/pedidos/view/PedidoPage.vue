@@ -296,7 +296,13 @@
               dense
               outlined
               :readonly="
-                disabled || (soloLectura && !(esCoordinador || esActivosFijos ||store.user.id==pedido.per_autoriza_id))
+                disabled ||
+                (soloLectura &&
+                  !(
+                    esCoordinador ||
+                    esActivosFijos ||
+                    store.user.id == pedido.per_autoriza_id
+                  ))
               "
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
@@ -446,7 +452,15 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
-            ></essential-table>
+            >
+              <template v-slot:body="props">
+                <q-tr :props="props" @click="onRowClick(props.row)">
+                  <q-td key="name" :props="props">
+                    {{ props.row.name }}
+                  </q-td>
+                </q-tr>
+              </template>
+            </essential-table>
           </div>
         </div>
       </q-form>

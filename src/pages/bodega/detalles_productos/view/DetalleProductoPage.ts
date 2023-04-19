@@ -29,9 +29,14 @@ export default defineComponent({
   components: { TabLayout },
   setup() {
     const mixin = new ContenedorSimpleMixin(DetalleProducto, new DetalleProductoController())
-    const { entidad: detalle, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const {onGuardado, onReestablecer}=mixin.useHooks()
 
+    //variable aux
+    const descripcion = ref()
+    
+    //listas
     const opciones_productos = ref([])
     const opciones_marcas = ref([])
     const opciones_modelos = ref([])
@@ -41,6 +46,7 @@ export default defineComponent({
     const opciones_rams = ref([])
     const opciones_discos = ref([])
     const opciones_procesadores = ref([])
+    const listadoBackup = ref<any[]>([])
 
     //Obtener los listados
     cargarVista(async () => {
@@ -84,6 +90,10 @@ export default defineComponent({
       })
     })
 
+    //Hooks
+    onGuardado(()=>descripcion.value=null)
+    onReestablecer(()=>descripcion.value=null)
+
     //Reglas de validacion
     const reglas = {
       producto: { required },
@@ -124,13 +134,13 @@ export default defineComponent({
       detalle.tipo = ''
     }
     function limpiarCamposFibra() {
-      detalle.serial= null
+      detalle.serial = null
       detalle.span = null
-      detalle.tipo_fibra= null
-      detalle.hilos= null
-      detalle.punta_inicial= null
-      detalle.punta_final= null
-      detalle.punta_corte= null
+      detalle.tipo_fibra = null
+      detalle.hilos = null
+      detalle.punta_inicial = null
+      detalle.punta_final = null
+      detalle.punta_corte = null
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -165,19 +175,53 @@ export default defineComponent({
     const categoria_var = ref('')
 
     watch(categoria_var, () => {
-
+      listadoBackup.value = listado.value
       limpiarCamposInformatica()
       limpiarCamposAdicionales()
-      console.log(detalle.categoria)
-      console.log(categoria_var.value)
       if (detalle.categoria === 'EPP') {
         detalle.tiene_adicionales = true
       }
 
     })
 
+
+    async function cargarDetalle(id) {
+      const { result } = await new DetalleProductoController().consultar(id)
+      detalle.producto = result.producto
+      detalle.producto_id = result.producto_id
+      detalle.descripcion = result.descripcion //posiblemente no util esta linea
+      detalle.marca = result.marca
+      detalle.modelo = result.modelo
+      detalle.modelo_id = result.modelo_id
+      detalle.serial = result.serial
+      detalle.precio_compra = result.precio_compra
+      detalle.ram = result.ram
+      detalle.disco = result.disco
+      detalle.procesador = result.procesador
+      detalle.imei = result.imei
+      detalle.computadora = result.computadora
+      detalle.fibra = result.fibra
+      detalle.span = result.span
+      detalle.tipo_fibra = result.tipo_fibra
+      detalle.categoria = result.categoria
+      detalle.codigo = result.codigo
+      detalle.hilos = result.hilos
+      detalle.punta_inicial = result.punta_inicial
+      detalle.punta_final = result.punta_final
+      detalle.punta_corte = result.punta_corte
+      detalle.custodia = result.custodia
+      detalle.puntas = result.puntas
+      detalle.talla = result.talla
+      detalle.tipo = result.tipo
+      detalle.es_computadora = result.es_computadora
+      detalle.es_fibra = result.es_fibra
+      detalle.tiene_serial = result.tiene_serial
+      detalle.tiene_precio_compra = result.tiene_precio_compra
+      detalle.tiene_adicionales = result.tiene_adicionales
+    }
+
     return {
-      mixin, detalle, disabled, accion, v$,
+      mixin, detalle, disabled, accion, v$, listado, listadoBackup,
       configuracionColumnas: configuracionColumnasDetallesProductos,
       //listados
       opciones_hilos,
@@ -192,6 +236,8 @@ export default defineComponent({
       opciones_tipos,
       useVuelidate,
 
+      //variables auxiliares
+      descripcion,
       //pagination
       pagination,
 
@@ -294,23 +340,42 @@ export default defineComponent({
           opciones_productos.value = listadosAuxiliares.productos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
         })
       },
-      checkFibra(val){
-        if(!val){
+      checkFibra(val) {
+        if (!val) {
           limpiarCamposFibra()
         }
       },
 
       actualizarCategoria(val) {
         const producto = listadosAuxiliares.productos.filter((v) => v.id === val)
-        console.log(producto[0]['categoria'])
+        console.log(producto[0])
         categoria_var.value = producto[0]['categoria']
         detalle.categoria = producto[0]['categoria']
+        if (detalle.calco) {
+          listadoBackup.value = listadoBackup.value.filter((v) => v.producto_id === producto[0]['id'])
+        }
         /* if (producto[0]['categoria'] === 'INFORMATICA') {
             limpiarCamposInformatica()
         }
         if (producto[0]['categoria'] === 'EPP') {
             limpiarCamposInformatica()
         } */
+      },
+      filtroDetalles(val, update) {
+
+        console.log('valor tipeado', val)
+        if (val === '') {
+          update(() => {
+            listadoBackup.value = listado.value
+          })
+          return
+        }
+        update(() => {
+          listadoBackup.value = listadoBackup.value.filter((v) => v.descripcion.toLowerCase().indexOf(val) > -1)
+        })
+      },
+      actualizarDetalle(val) {
+        cargarDetalle(val)
       },
       /**
        * Función para calcular la diferencia entre la punta inicial y la punta final, cuyo resultado se asigna al valor de custodia.

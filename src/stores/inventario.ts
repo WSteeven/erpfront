@@ -53,11 +53,13 @@ export const useInventarioStore = defineStore('inventario', () => {
         statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
         let ruta = ''
-        if (opcion === 'id') {
-            ruta = 'api/buscarIdsEnInventario'
-        }
-        if (opcion === 'detalle_id') {
-            ruta = 'api/buscarDetallesEnInventario'
+        switch (opcion) {
+            case 'id':
+                ruta = 'api/buscarIdsEnInventario'
+                break
+            case 'detalle_id':
+                ruta = 'api/buscarDetallesEnInventario'
+                break
         }
         const response: AxiosResponse = await axios.post(ruta, data)
         statusLoading.desactivar()

@@ -15,6 +15,7 @@ export class ValidarListadoProductos implements Validador {
     if (this.pedido.listadoProductos.length === 0) {
       throw new Error('Debe agregar al menos un producto al listado')
     }
+    if (this.pedido.listadoProductos.includes((v) => v.cantidad == 0 || v.cantidad == null)) throw new Error('Debe ingresar una cantidad')
     return true
   }
 }

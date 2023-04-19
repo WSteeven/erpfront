@@ -14,7 +14,8 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         field: 'justificacion',
         label: 'Justificación',
         align: 'left',
-        sortable: true
+        sortable: true,
+        style: 'width:100px'
     },
     {
         name: 'solicitante',

@@ -209,7 +209,7 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
-              @update:model-value="()=>transaccion.listadoProductosTransaccion=[]"
+              @update:model-value="buscarListadoPedidoEnInventario"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -419,6 +419,7 @@
               </template>
             </q-select>
           </div>
+          {{ listadoPedido }}
           <!-- Select clientes -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>
@@ -434,7 +435,7 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
-              @update:model-value="()=>transaccion.listadoProductosTransaccion=[]"
+              @update:model-value="buscarListadoPedidoEnInventario"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value
@@ -454,6 +455,7 @@
               </template>
             </q-select>
           </div>
+          {{ transaccion.listadoProductosTransaccion }}
           <!-- Listado del pedido -->
           <div
             v-if="listadoPedido !== undefined && listadoPedido.length > 0"
