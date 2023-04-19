@@ -49,7 +49,7 @@ export const useInventarioStore = defineStore('inventario', () => {
      * @returns listado de elementos encontrados en el inventario que coinciden con el listado de detalle_id
      */
     async function buscarTodos(data: any, opcion: string) {
-        console.log('datos a consultar en el inventario', data)
+        // console.log('datos a consultar en el inventario', data)
         statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
         let ruta = ''
@@ -63,7 +63,7 @@ export const useInventarioStore = defineStore('inventario', () => {
         }
         const response: AxiosResponse = await axios.post(ruta, data)
         statusLoading.desactivar()
-        console.log(response.data.results)
+        // console.log(response.data.results) 
         return {
             results: response.data.results,
         }

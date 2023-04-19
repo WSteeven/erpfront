@@ -419,7 +419,6 @@
               </template>
             </q-select>
           </div>
-          {{ listadoPedido }}
           <!-- Select clientes -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>
@@ -455,7 +454,6 @@
               </template>
             </q-select>
           </div>
-          {{ transaccion.listadoProductosTransaccion }}
           <!-- Listado del pedido -->
           <div
             v-if="listadoPedido !== undefined && listadoPedido.length > 0"

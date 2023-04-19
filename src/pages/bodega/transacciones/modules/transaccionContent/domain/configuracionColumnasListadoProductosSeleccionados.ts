@@ -23,9 +23,16 @@ export const configuracionColumnasListadoProductosSeleccionados: ColumnConfig<an
     sortable: true,
   },
   {
+    name: 'serial',
+    field: 'serial',
+    label: 'Serial',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'cantidad',
     field: 'cantidad',
-    label: 'Cantidad',
+    label: 'Cantidad pendiente',
     align: 'left',
     sortable: false,
   },

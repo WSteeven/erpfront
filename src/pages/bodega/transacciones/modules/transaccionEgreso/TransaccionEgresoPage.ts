@@ -274,7 +274,7 @@ export default defineComponent({
       transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable) ? pedidoStore.pedido.responsable : pedidoStore.pedido.responsable_id
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
       transaccion.per_autoriza = Number.isInteger(pedidoStore.pedido.per_autoriza) ? pedidoStore.pedido.per_autoriza : pedidoStore.pedido.per_autoriza_id
-      listadoPedido.value = pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)
+      listadoPedido.value = [...pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)]
       listadoPedido.value.sort((v, w) => ordernarListaString(v.producto, w.producto)) //ordena el listado de pedido
       //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
       if (pedidoStore.pedido.tarea) {
@@ -294,39 +294,27 @@ export default defineComponent({
         sucursal_id: transaccion.sucursal,
         cliente_id: transaccion.cliente
       }
+      console.log(await inventarioStore.cargarCoincidencias(data, 'detalle_id'))
       coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
+      actualizarCantidades()
     }
 
-    watch(coincidencias, () => {
-      console.log(coincidencias.value, transaccion.listadoProductosTransaccion)
-      transaccion.listadoProductosTransaccion = coincidencias.value.results
-      listadoCoincidencias.value = coincidencias.value.results
-      console.log(listadoCoincidencias.value)
-
+    function actualizarCantidades() {
+      console.log(coincidencias.value)
+      console.log(transaccion.listadoProductosTransaccion)
+      transaccion.listadoProductosTransaccion = [...coincidencias.value.results]
       transaccion.listadoProductosTransaccion.forEach((v) => {
         let item = listadoPedido.value.filter((i) => i.id === v.detalle)
-        console.log(item)
-        if (item[0]) {
-          if (item[0]['cantidad'] >= v.cantidad) {
-            v.cantidad = item[0]['cantidad']
+        const cantidadPendiente = item[0]['cantidad']//-item[0]['despachado']
+        if (cantidadPendiente) {
+          if (cantidadPendiente <= v.cantidad) {
+            v.cantidad = cantidadPendiente
             console.log('hay más en inventario')
           } else {
-            v.cantidad = item[0]['cantidad']
             console.log('hay menos en inventario')
           }
         }
       })
-    })
-
-    /**
-     * Función que filtra y obtiene la cantidad restante a despachar en un pedido.
-     * @param detalle detalle_id del pedido
-     * @returns int el resultado de la cantidad solicitada menos la cantidad despachada
-     */
-    function buscarCantidadPendienteEnPedido(detalle) {
-      let fila = pedidoStore.pedido.listadoProductos.filter((v) => v.id === detalle)
-      // console.log(fila[0])
-      return fila[0]['cantidad'] - fila[0]['despachado']
     }
 
     async function buscarListadoPedidoEnInventario() {
@@ -339,9 +327,21 @@ export default defineComponent({
           cliente_id: transaccion.cliente
         }
         coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
+        actualizarCantidades()
       } else
         transaccion.listadoProductosTransaccion = []
     }
+
+    /**
+     * Función que filtra y obtiene la cantidad restante a despachar en un pedido.
+     * @param detalle detalle_id del pedido
+     * @returns int el resultado de la cantidad solicitada menos la cantidad despachada
+     */
+    function buscarCantidadPendienteEnPedido(detalle) {
+      let fila = pedidoStore.pedido.listadoProductos.filter((v) => v.id === detalle)
+      return fila[0]['cantidad'] - fila[0]['despachado']
+    }
+
 
     function limpiarTransaccion() {
       transaccion.pedido = null
