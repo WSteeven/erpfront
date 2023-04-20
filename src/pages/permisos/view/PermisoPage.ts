@@ -11,6 +11,8 @@ import { AsignarPermisosController } from '../infrestructure/AsignarPermisosCont
 import { PermisosController } from '../infrestructure/PermisosController'
 import { ComportamientoModalesPermisoNuevo } from '../application/ComportamientoModalesPermisoNuevo'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+import { useRouter } from 'vue-router'
+
 // Logica y controladores
 
 export default defineComponent({
@@ -26,7 +28,7 @@ export default defineComponent({
       listadosAuxiliares,
       listado,
     } = mixin.useReferencias()
-
+    const Router = useRouter()
     const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
 
     const rol = ref()
@@ -84,6 +86,9 @@ export default defineComponent({
      function crear_permiso() {
        modales.abrirModalEntidad('PermisoNuevoPage')
      }
+     const crearRol = () => {
+      Router.replace('/roles')
+    }
 
     return {
       mixin,
@@ -93,6 +98,7 @@ export default defineComponent({
       rol,
       listado,
       permisosSinAsignar,
+      crearRol,
       crear_permiso,
       obtenerPermisoRol,
       asignarPermiso,

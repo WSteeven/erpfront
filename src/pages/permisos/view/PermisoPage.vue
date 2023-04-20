@@ -25,7 +25,7 @@
               </q-item>
             </template>
             <template v-slot:after>
-              <q-btn class="block" color="secondary"><q-icon name="bi-plus"></q-icon></q-btn>
+              <q-btn class="block" color="secondary" @click="crearRol()"><q-icon name="bi-plus"></q-icon></q-btn>
         </template>
           </q-select>
 
