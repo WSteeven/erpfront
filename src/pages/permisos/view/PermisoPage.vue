@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg">
     <q-card>
       <q-card-section>
-        <div class="text-h6">
+  <div class="text-h6">
           <label class="q-mb-sm block">Roles</label>
           <q-select v-model="rol"
           :options="roles"
@@ -24,7 +24,11 @@
                 </q-item-section>
               </q-item>
             </template>
+            <template v-slot:after>
+              <q-btn class="block" color="secondary"><q-icon name="bi-plus"></q-icon></q-btn>
+        </template>
           </q-select>
+
         </div>
         <div class="row q-col-gutter-sm q-mb-md q-mt-xs">
           <div class="col-12 col-md-5 q-gutter-y-sm">
