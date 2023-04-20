@@ -596,7 +596,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Roles',
       link: 'roles',
       icon: 'bi-person-badge-fill',
-      can: true//store.can('puede.ver.roles'),
+      can: store.can('puede.ver.roles'),
     },
 
     /* {
