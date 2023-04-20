@@ -170,7 +170,7 @@
             <label class="q-mb-sm block">Fecha limite</label>
             <q-input
               v-model="pedido.fecha_limite"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               :error="!!v$.fecha_limite.$errors.length"
               @blur="v$.fecha_limite.$touch"
               :disable="disabled || soloLectura"
