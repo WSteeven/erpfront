@@ -163,7 +163,7 @@ export const tabOptionsTransacciones: TabOption[] = [
 ]
 export const tabAutorizarGasto: TabOption[] = [
   { label: 'Aprobada', value: '1' },
-  // { label: 'Rechazada', value: '2' },
+  { label: 'Rechazada', value: '2' },
   { label: 'Pendiente', value: '3' },
   { label: 'Anulado', value: '4' },
 ]
@@ -283,6 +283,7 @@ export const estadosGastos = {
   APROBADO: 1,
   RECHAZADO: 2,
   PENDIENTE: 3,
+  ANULADO: 4,
 }
 export const estadosTransferencias = {
   APROBADO: 1,
