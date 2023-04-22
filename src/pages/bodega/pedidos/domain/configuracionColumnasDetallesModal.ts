@@ -22,13 +22,13 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
         align: 'left',
         sortable: true
     },
-    // {
-    //     name: 'serial',
-    //     field: 'serial',
-    //     label: 'Serial',
-    //     align: 'left',
-    //     sortable: true
-    // },
+    {
+        name: 'serial',
+        field: 'serial',
+        label: 'Serial',
+        align: 'left',
+        sortable: true
+    },
     // {
     //     name: 'computadora',
     //     field: 'computadora',

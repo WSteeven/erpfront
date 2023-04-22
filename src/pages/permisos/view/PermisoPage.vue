@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg">
     <q-card>
       <q-card-section>
-        <div class="text-h6">
+  <div class="text-h6">
           <label class="q-mb-sm block">Roles</label>
           <q-select v-model="rol"
           :options="roles"
@@ -24,7 +24,11 @@
                 </q-item-section>
               </q-item>
             </template>
+            <template v-slot:after>
+              <q-btn class="block" color="secondary" @click="crearRol()"><q-icon name="bi-plus"></q-icon></q-btn>
+        </template>
           </q-select>
+
         </div>
         <div class="row q-col-gutter-sm q-mb-md q-mt-xs">
           <div class="col-12 col-md-5 q-gutter-y-sm">
@@ -44,9 +48,10 @@
             </q-card>
           </div>
 
-          <col-12 class="col-md-2 column justify-center q-gutter-y-md">
-        <q-btn class="full-width block" color="primary" @click="botonAsignarPermisos()"><q-icon name="bi-arrow-right"></q-icon></q-btn>
-        <q-btn class="full-width block" color="accent"><q-icon name="bi-arrow-left"></q-icon></q-btn>
+        <col-12 class="col-md-2 column justify-center q-gutter-y-md">
+          <q-btn class="full-width block" color="secondary" @click="crear_permiso()"><q-icon name="bi-plus"></q-icon></q-btn>
+          <q-btn v-if="rol !== undefined" class="full-width block" color="primary" @click="botonAsignarPermisos()"><q-icon name="bi-arrow-right"></q-icon></q-btn>
+          <q-btn v-if="rol !== undefined" class="full-width block" color="accent" @click="botonEliminarPermisos()"><q-icon name="bi-arrow-left"></q-icon></q-btn>
         </col-12>
 
           <div class="col-12 col-md-5 q-mb-md">
@@ -58,6 +63,8 @@
                   :permitirConsultar="false"
                   :permitirEditar="false"
                   :permitirEliminar="false"
+                  ref="refPermisosAsignados"
+                  @selected = "eliminarPermiso"
                   tipo-seleccion="multiple">
                 </essential-table>
               </q-card-section>
@@ -67,7 +74,7 @@
         </div>
       </q-card-section>
     </q-card>
-
+    <modal-entidad :comportamiento="modales"></modal-entidad>
   </q-page>
 </template>
 

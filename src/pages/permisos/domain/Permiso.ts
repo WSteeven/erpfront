@@ -4,6 +4,7 @@ export class Permiso extends EntidadAuditable {
   id: number | null;
   name: string | null
   role_id: number | null
+  roles: any[] | null
 
 
   constructor() {
@@ -11,6 +12,7 @@ export class Permiso extends EntidadAuditable {
     this.id = null
     this.name = null
     this.role_id = null
+    this.roles = null
 
   }
 }

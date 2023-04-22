@@ -36,12 +36,11 @@ import { LocalStorage } from 'quasar'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
-  emits: ['notificar'],
-  setup(props, { emit }) {
+  setup() {
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onReestablecer, onConsultado, onGuardado, onBeforeGuardar } = mixin.useHooks()
+    const { onReestablecer, onConsultado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
 
@@ -80,7 +79,7 @@ export default defineComponent({
         soloLectura.value = true
       }
     })
-    
+
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
     const opciones_tareas = ref([])
@@ -134,20 +133,16 @@ export default defineComponent({
      ******************************************************************************************/
 
     function eliminar({ entidad, posicion }) {
-      confirmar('¿Está seguro de continuar?',
-        () => pedido.listadoProductos.splice(posicion, 1))
+      confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
     }
     const botonEliminar: CustomActionTable = {
       titulo: 'Quitar',
       color: 'negative',
       icono: 'bi-x',
-      accion: ({ entidad, posicion }) => {
-        eliminar({ entidad, posicion })
-      },
-      visible: () => {
-        return accion.value == acciones.consultar ? false : true
-      }
+      accion: ({ entidad, posicion }) => eliminar({ entidad, posicion }),
+      visible: () => accion.value == acciones.consultar ? false : true
     }
+
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
       icono: 'bi-pencil',
@@ -170,16 +165,11 @@ export default defineComponent({
       color: 'primary',
       icono: 'bi-pencil-square',
       accion: ({ entidad, posicion }) => {
-        // router.replace({'transacciones_egresos'})
         pedidoStore.pedido = entidad
+        console.log('Pedido a despachar es: ',pedidoStore.pedido)
         router.push('transacciones-egresos')
-        console.log(posicion)
-        console.log(pedidoStore.pedido)
-        console.log(entidad)
       },
-      visible: ({ entidad }) => {
-        return tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
-      }
+      visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
     }
 
     const botonImprimir: CustomActionTable = {
@@ -287,7 +277,9 @@ export default defineComponent({
           const needle = val.toLowerCase()
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
         })
-      }
+      },
+
+      onRowClick: (row) => alert(`${row.name} clicked`),
     }
   }
 })

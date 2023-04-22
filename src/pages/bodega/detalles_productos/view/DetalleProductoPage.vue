@@ -8,6 +8,16 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <!-- Calco -->
+          <div class="col-12 col-md-12">
+            <q-checkbox
+              class="q-mb-lg"
+              v-model="detalle.calco"
+              label="Calco de otro detalle"
+              outlined
+              dense
+            />
+          </div>
           <!-- Producto -->
           <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Producto</label>
@@ -44,8 +54,40 @@
               </template>
             </q-select>
           </div>
+          <!-- Descripcion cuando hay calco -->
+          <div class="col-12 col-md-8" v-if="detalle.calco">
+            <label class="q-mb-sm block">Descripción</label>
+            <q-select
+              v-model="descripcion"
+              :options="listadoBackup"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroDetalles"
+              @update:model-value="actualizarDetalle"
+              :option-label="(item) => item.descripcion"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.descripcion }}</q-item-label>
+                    <q-item-label caption>{{
+                      scope.opt.serial
+                        ? 'Serie: ' + scope.opt.serial
+                        : scope.opt.serial
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template></q-select
+            >
+          </div>
           <!-- Descripcion -->
-          <div class="col-12 col-md-8">
+          <div class="col-12 col-md-8" v-if="!detalle.calco">
             <label class="q-mb-sm block">Descripción</label>
             <q-input
               v-model="detalle.descripcion"
@@ -156,7 +198,10 @@
             </q-select>
           </div>
           <!-- Imei -->
-          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4">
+          <div
+            v-if="detalle.categoria == 'INFORMATICA'"
+            class="col-12 col-md-4"
+          >
             <label class="q-mb-sm block">Imei</label>
             <q-input
               type="number"
@@ -282,7 +327,6 @@
               v-model="detalle.tiene_adicionales"
               label="Campos adicionales"
               outlined
-
               dense
               :disable="disabled"
             ></q-checkbox>
@@ -316,7 +360,8 @@
               v-model="detalle.color"
               placeholder="Obligatorio"
               :readonly="disabled"
-              outlined dense
+              outlined
+              dense
             >
             </q-input>
           </div>
@@ -451,8 +496,11 @@
               outlined
               dense
             >
-            <template v-slot:error>
-                <div v-for="error of v$.punta_inicial.$errors" :key="error.$uid">
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.punta_inicial.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>

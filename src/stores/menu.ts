@@ -291,6 +291,12 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-circle',
               can: store.can('puede.ver.gasto_coordinador'),
             },
+            {
+              title: 'Autorizar Gasto',
+              link: 'autorizar-gasto',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.autorizar_gasto'),
+            },
           ],
         },
 
@@ -340,6 +346,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'transferencia',
               icon: 'bi-circle',
               can: store.can('puede.ver.transferencia'),
+            },
+            {
+              title: 'Autorizar Transferencia',
+              link: 'autorizar-transferencia',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.autorizar_transferencia'),
             },
           ]
         },
@@ -579,6 +591,12 @@ export const useMenuStore = defineStore('menu', () => {
       link: 'permisos',
       icon: 'bi-person-fill-check',
       can: store.can('puede.ver.permisos'),
+    },
+    {
+      title: 'Roles',
+      link: 'roles',
+      icon: 'bi-person-badge-fill',
+      can: store.can('puede.ver.roles'),
     },
 
     /* {

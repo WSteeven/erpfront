@@ -41,6 +41,7 @@ export class DetalleProducto extends EntidadAuditable {
     es_fibra: boolean
     tiene_precio_compra: boolean
     tiene_adicionales: boolean
+    calco:boolean
 
     constructor() {
         super()
@@ -80,5 +81,6 @@ export class DetalleProducto extends EntidadAuditable {
         this.tiene_serial = false
         this.tiene_precio_compra = false
         this.tiene_adicionales = false
+        this.calco=false
     }
 }

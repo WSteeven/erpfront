@@ -8,7 +8,7 @@ export class Inventario extends EntidadAuditable {
   sucursal_id: number | null
   cliente: number | null
   cliente_id: number | null
-  condicion: number | null
+  condiciones: number | null
   por_recibir: number | null
   cantidad: number | null
   por_entregar: number | null
@@ -23,7 +23,7 @@ export class Inventario extends EntidadAuditable {
     this.sucursal_id= null
     this.cliente= null
     this.cliente_id= null
-    this.condicion= null
+    this.condiciones= null
     this.por_recibir= null
     this.cantidad= null
     this.por_entregar= null

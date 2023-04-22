@@ -27,9 +27,10 @@ export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, end
     const limpiar = () => singleSelector.limpiar()
 
     const seleccionar = (entidades: DetalleProducto[]) => {
-    //   console.log(entidades)
+      console.log(entidades)
+      console.log(entidad.listadoProductosTransaccion)
         let ids: any = []
-        ids = entidad.listadoProductosTransaccion.map((entidad: DetalleProducto) => entidad.id)
+        ids = entidad.listadoProductosTransaccion.map((entidad) => {entidad.condiciones?? entidad.id})
         const datos = entidades.filter((v) => !ids.includes(v.id))
         // datos.map((v) =>v.cantidad=null)
         singleSelector.seleccionarMultiple(datos)

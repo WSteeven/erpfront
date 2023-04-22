@@ -9,10 +9,14 @@ import { configuracionColumnasPermisos } from '../domain/configuracionColumnasPe
 import { Permiso } from '../domain/Permiso'
 import { AsignarPermisosController } from '../infrestructure/AsignarPermisosController'
 import { PermisosController } from '../infrestructure/PermisosController'
+import { ComportamientoModalesPermisoNuevo } from '../application/ComportamientoModalesPermisoNuevo'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+import { useRouter } from 'vue-router'
+
 // Logica y controladores
 
 export default defineComponent({
-  components: { EssentialTable },
+  components: { EssentialTable,ModalEntidad },
   setup() {
     /*********
      * Stores
@@ -24,7 +28,7 @@ export default defineComponent({
       listadosAuxiliares,
       listado,
     } = mixin.useReferencias()
-
+    const Router = useRouter()
     const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
 
     const rol = ref()
@@ -34,6 +38,7 @@ export default defineComponent({
     const aisnarPermisoController = new AsignarPermisosController()
     const permisosSinAsignar: Ref<Permiso[]> = ref([])
     const refPermisosSinAsignar = ref()
+    const refPermisosAsignados = ref()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -43,10 +48,7 @@ export default defineComponent({
         },
       })
     })
-
     roles.value = listadosAuxiliares.roles
-    //listar()
-
     async function obtenerPermisoRol(id_rol: number) {
       listar({ id_rol: id_rol, tipo: 'ASIGNADOS' })
       const { result } = await controller.listar({
@@ -56,33 +58,57 @@ export default defineComponent({
       permisosSinAsignar.value = result
     }
     function botonAsignarPermisos() {
-      console.log('entro a boton Asignar')
-
       refPermisosSinAsignar.value.seleccionar()
     }
+    function botonEliminarPermisos() {
+     refPermisosAsignados.value.seleccionar()
+    }
     function asignarPermiso(permisos: any) {
-      const permisosName = permisos.map((permiso: Permiso) => permiso.name)
-
+      const permisosName = permisos.map((permiso: Permiso) => permiso.id)
       aisnarPermisoController.guardar({
         id_rol: rol.value,
         permisos: permisosName,
+        tipo_sincronizacion: 'ASIGNAR',
       })
       obtenerPermisoRol(rol.value)
+    }
+    function eliminarPermiso(permisos: any){
+     const permisosName = permisos.map((permiso: Permiso) => permiso.id)
+      aisnarPermisoController.guardar({
+        id_rol: rol.value,
+        permisos: permisosName,
+        tipo_sincronizacion: 'ELIMINAR',
+      })
+      obtenerPermisoRol(rol.value)
+    }
+     /**Modales */
+     const modales = new ComportamientoModalesPermisoNuevo()
+     function crear_permiso() {
+       modales.abrirModalEntidad('PermisoNuevoPage')
+     }
+     const crearRol = () => {
+      Router.replace('/roles')
     }
 
     return {
       mixin,
       permiso,
+      modales,
       configuracionColumnasPermisos,
       rol,
       listado,
       permisosSinAsignar,
+      crearRol,
+      crear_permiso,
       obtenerPermisoRol,
       asignarPermiso,
+      eliminarPermiso,
       botonAsignarPermisos,
+      botonEliminarPermisos,
       listadosAuxiliares,
       roles,
       refPermisosSinAsignar,
+      refPermisosAsignados,
     }
   },
 })

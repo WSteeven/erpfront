@@ -209,7 +209,7 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
-              @update:model-value="()=>transaccion.listadoProductosTransaccion=[]"
+              @update:model-value="buscarListadoPedidoEnInventario"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -434,7 +434,7 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
-              @update:model-value="()=>transaccion.listadoProductosTransaccion=[]"
+              @update:model-value="buscarListadoPedidoEnInventario"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value

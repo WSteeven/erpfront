@@ -170,7 +170,7 @@
             <label class="q-mb-sm block">Fecha limite</label>
             <q-input
               v-model="pedido.fecha_limite"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               :error="!!v$.fecha_limite.$errors.length"
               @blur="v$.fecha_limite.$touch"
               :disable="disabled || soloLectura"
@@ -296,7 +296,13 @@
               dense
               outlined
               :readonly="
-                disabled || (soloLectura && !(esCoordinador || esActivosFijos ||store.user.id==pedido.per_autoriza_id))
+                disabled ||
+                (soloLectura &&
+                  !(
+                    esCoordinador ||
+                    esActivosFijos ||
+                    store.user.id == pedido.per_autoriza_id
+                  ))
               "
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
@@ -446,7 +452,15 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
-            ></essential-table>
+            >
+              <template v-slot:body="props">
+                <q-tr :props="props" @click="onRowClick(props.row)">
+                  <q-td key="name" :props="props">
+                    {{ props.row.name }}
+                  </q-td>
+                </q-tr>
+              </template>
+            </essential-table>
           </div>
         </div>
       </q-form>
