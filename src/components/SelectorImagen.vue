@@ -31,26 +31,6 @@
 
   <q-dialog v-model="opened" maximized>
     <q-card class="bg-black rounded-card no-border" flat>
-      <!-- <q-toolbar class="rounded-header" rounded>
-        <q-avatar square>
-          <q-icon name="bi-image" color="white"></q-icon>
-        </q-avatar>
-
-        <q-toolbar-title class="text-grey-4"
-          ><span>Vista previa</span></q-toolbar-title
-        >
-
-        <q-btn
-          round
-          push
-          color="negative"
-          glossy
-          dense
-          icon="bi-x"
-          v-close-popup
-        />
-      </q-toolbar> -->
-
       <q-btn
         round
         push
