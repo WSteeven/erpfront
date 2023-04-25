@@ -81,7 +81,7 @@ export default defineComponent({
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     onConsultado(() => {
-      esFactura.value = gasto.factura == null ? false : true
+      esFactura.value = gasto.factura == null || gasto.factura == undefined || gasto.factura == '' ? false : true
     })
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
@@ -107,6 +107,34 @@ export default defineComponent({
       }
 
     })
+    const numFacturaObjeto = [{
+      detalle: 16,
+      cantidad: 22,
+      mascara: '###-###-##############'
+    },
+    {
+      detalle: 10,
+      cantidad: 17,
+      mascara: '###-###-#########'
+    }]
+    const cantidadPermitidaFactura = computed(() => {
+      let cantidad = 17
+
+      if( esFactura.value === false){
+        cantidad = 0
+      }
+      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null?gasto.detalle:''));
+      cantidad = numFacturaObjeto[index]!== undefined?numFacturaObjeto[index].cantidad:15;
+      return cantidad
+    }
+      )
+    const mascaraFactura = computed(() => {
+      let mascara = '###-###-#############'
+      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null?gasto.detalle:''));
+      mascara = numFacturaObjeto[index]!== undefined?numFacturaObjeto[index].mascara:'###-###-#########';
+      return mascara
+    }
+      )
 
     /*************
      * Validaciones
@@ -130,7 +158,7 @@ export default defineComponent({
         requiredIfFactura: requiredIf(() => esFactura.value),
       },
       factura: {
-        maxLength: maxLength(22),
+        minLength: minLength(cantidadPermitidaFactura),
       },
       aut_especial: {
         requiredIfTecnico: requiredIf(() => esTecnico.value),
@@ -542,6 +570,7 @@ export default defineComponent({
       cambiar_proyecto,
       optionsFechaGasto,
       recargar_detalle,
+      mascaraFactura,
       listadosAuxiliares,
       listadoSubdetalles,
       mostrarListado,
