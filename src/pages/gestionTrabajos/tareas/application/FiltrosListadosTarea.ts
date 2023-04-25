@@ -3,7 +3,7 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { computed, Ref, ref, UnwrapRef } from 'vue'
 import { Tarea } from '../domain/Tarea'
 
-export const useFiltrosListadosTarea = (listadosAuxiliares, entidad: UnwrapRef<Tarea | Subtarea>) => {
+export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<Tarea | Subtarea>) => {
   // - Filtro clientes corporativos
   const clientes = ref()
   function filtrarClientes(val, update) {
@@ -98,7 +98,7 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad: UnwrapRef<T
   // - Filtro tipos de trabajos
   const tiposTrabajos: Ref<TipoTrabajo[]> = ref([])
   const tiposTrabajosSource = computed(() =>
-    listadosAuxiliares.tiposTrabajos.filter((tipo: TipoTrabajo) => tipo.cliente_id === (entidad.cliente ? entidad.cliente : false))
+    listadosAuxiliares.tiposTrabajos.filter((tipo: TipoTrabajo) => tipo.cliente_id === (entidad ? (entidad.cliente ? entidad.cliente : false) : false))
   )
 
   function filtrarTiposTrabajos(val, update) {

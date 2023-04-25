@@ -24,6 +24,7 @@
         label="Listado"
         :class="{ 'tab-inactive': tabs !== 'listado' }"
         no-caps
+        @click="forzarListar()"
       />
     </q-tabs>
 
@@ -94,6 +95,7 @@
           @eliminar="accionTabla.eliminar"
           :tab-options="tabOptions"
           @tab-seleccionado="aplicarFiltro"
+          :tab-defecto="tabDefecto"
         ></essential-table-tabs>
         <!-- :tab-defecto="tabDefecto" -->
       </q-tab-panel>

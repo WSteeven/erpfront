@@ -131,7 +131,6 @@ export default defineComponent({
 
     watchEffect(() => {
       empleadosGrupo.value = props.subtareaInicial.empleados_designados
-      console.log(props.subtareaInicial.empleados_designados)
     })
 
     /************
@@ -141,7 +140,6 @@ export default defineComponent({
       if (subtarea.grupo) {
         await obtenerTecnicosGrupo(subtarea.grupo)
         const lider = encontrarLiderGrupo()
-        console.log(lider)
         if (lider) emit('seleccionar-responsable', lider.id)
         return emit('seleccionar-grupo', subtarea.grupo)
       }
@@ -159,7 +157,6 @@ export default defineComponent({
     }
 
     function encontrarLiderGrupo() {
-      console.log(empleadosGrupo.value)
       return empleadosGrupo.value.find((empleado: EmpleadoGrupo) => empleado.es_responsable)
     }
 

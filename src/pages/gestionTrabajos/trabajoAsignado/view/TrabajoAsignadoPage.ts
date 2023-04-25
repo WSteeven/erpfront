@@ -71,7 +71,7 @@ export default defineComponent({
      * Botones tabla
      ***************/
     const botonVer: CustomActionTable = {
-      titulo: 'Ver trabajo',
+      titulo: 'Más detalles',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
         trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
@@ -97,6 +97,10 @@ export default defineComponent({
       modales.abrirModalEntidad(plantilla)
     }
 
+    function abrirGuia() {
+      modales.abrirModalEntidad('GuiaSubtareasPage')
+    }
+
     return {
       mixin,
       listado,
@@ -115,6 +119,7 @@ export default defineComponent({
       btnSuspender,
       btnRealizar,
       tabActual,
+      abrirGuia,
       // botonCorregir,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
       authenticationStore,

@@ -26,7 +26,7 @@ export const ubicacionesTrabajo = {
 }
 
 export const tabOptionsEstadosTareas: TabOption[] = [
-  { label: 'Todo', value: '' },
+  // { label: 'Todo', value: '' },
   { label: 'Activas', value: 0 },
   { label: 'Finalizadas', value: 1 },
 ];

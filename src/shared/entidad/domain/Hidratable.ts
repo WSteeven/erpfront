@@ -8,12 +8,7 @@ export class Hidratable {
       const value: any = this[key]
       // console.log(value)
       if (value instanceof Hidratable) {
-        console.log('Es hidratable')
         if (data[key]) {
-          console.log('La clave es: ' + key)
-          console.log('Y tiene valor que es: ' + value)
-          console.log('Y tiene valor que es: ' + typeof value)
-          console.log(data[key])
           value.hydrate(data[key])
         }
       }

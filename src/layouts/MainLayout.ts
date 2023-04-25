@@ -146,9 +146,11 @@ export default defineComponent({
     const modales = new ComportamientoModalesMainLayout()
 
     function abrirMovilizacionSubtarea() {
-      console.log('abriendo...')
       modales.abrirModalEntidad('MovilizacionSubtareaPage')
-      // modales.abierto.value = true
+    }
+
+    function abrirTransferirTareas() {
+      modales.abrirModalEntidad('TranferirTareaPage')
     }
 
     const enCamino = computed(() => movilizacionSubtareaStore.subtareaDestino)
@@ -159,6 +161,7 @@ export default defineComponent({
       motivo,
       modales,
       abrirMovilizacionSubtarea,
+      abrirTransferirTareas,
       links: menu.links,
       leftDrawerOpen,
       toggleLeftDrawer() {
@@ -185,6 +188,7 @@ export default defineComponent({
       imagenPerfil,
       selfCenterMiddle,
       grupo,
+      mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
     }
   },
 })

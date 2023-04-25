@@ -7,13 +7,10 @@
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"
     :tabOptions="tabOptionsEstadosTareas"
-    :accion1="btnFormularioTarea"
-    :accion2="btnReagendarTarea"
-    :accion3="btnCancelarTarea"
-    :accion4="btnFinalizarTarea"
-    :accionButtonSubmit="botonFinalizarTarea"
+    :accion1="btnFinalizarTarea"
     :filtrar="filtrarTarea"
-    :tabDefecto="''"
+    tabDefecto="0"
+    :forzarListar="true"
   >
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>

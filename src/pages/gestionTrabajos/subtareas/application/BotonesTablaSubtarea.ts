@@ -48,15 +48,16 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
       obtenerCoordenadas(entidad)
 
       confirmar('¿Está seguro de iniciar el trabajo?', async () => {
+        console.log(entidad.subtarea_dependiente_id)
         if (entidad.es_dependiente) {
           const { result: subtareaDependiente } = await new SubtareaController().consultar(entidad.subtarea_dependiente_id)
           if (subtareaDependiente.estado !== estadosTrabajos.REALIZADO) {
-            return notificarAdvertencia('No puedes proceder. Primero debes finalizar con el trabajo ' + subtareaDependiente.codigo_subtarea)
+            return notificarAdvertencia('No puedes proceder. Primero debes realizar la subtarea ' + subtareaDependiente.codigo_subtarea)
           }
         }
 
         const data = {
-          estado_subtarea_llegada: estadosTrabajos.EJECUTANDO,
+          estado_subtarea_llegada: estadosTrabajos.EJECUTANDO, //34
           ...movilizacion
         }
 
@@ -91,10 +92,10 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
             }
 
             await new CambiarEstadoSubtarea().pausar(entidad.id, data)
-            entidad.estado = estadosTrabajos.PAUSADO
+            // entidad.estado = estadosTrabajos.PAUSADO
             filtrarTrabajoAsignado(estadosTrabajos.PAUSADO)
             notificarCorrecto('Trabajo pausado exitosamente!')
-            eliminarElemento(posicion)
+            // eliminarElemento(posicion)
             movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
           },
           tipo: 'radio',
@@ -127,7 +128,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
         }
 
         await new CambiarEstadoSubtarea().reanudar(entidad.id, data)
-        entidad.estado = estadosTrabajos.EJECUTANDO
+        // entidad.estado = estadosTrabajos.EJECUTANDO
         filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
         notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
         movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
@@ -151,9 +152,12 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
         }
 
         const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id, data)
-        entidad.estado = estadosTrabajos.REALIZADO
-        entidad.fecha_hora_realizado = result.fecha_hora_realizado
-        eliminarElemento(posicion)
+        // entidad.estado = estadosTrabajos.REALIZADO
+        // entidad.fecha_hora_realizado = result.fecha_hora_realizado
+        // eliminarElemento(posicion)
+        if (authenticationStore.esCoordinador || authenticationStore.esJefeTecnico) filtrarTrabajoAsignado(estadosTrabajos.REALIZADO)
+        if (authenticationStore.esTecnico) eliminarElemento(posicion)
+
         movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
         notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
       })
@@ -185,10 +189,11 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
     accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
       const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id)
-      entidad.estado = estadosTrabajos.FINALIZADO
-      entidad.fecha_hora_finalizacion = result.fecha_hora_finalizacion
-      entidad.dias_ocupados = result.dias_ocupados
-      actualizarElemento(posicion, entidad)
+      // entidad.estado = estadosTrabajos.FINALIZADO
+      // entidad.fecha_hora_finalizacion = result.fecha_hora_finalizacion
+      // entidad.dias_ocupados = result.dias_ocupados
+      // actualizarElemento(posicion, entidad)
+      filtrarTrabajoAsignado(estadosTrabajos.FINALIZADO)
       notificarCorrecto('Trabajo finalizada exitosamente!')
     }),
   }
@@ -216,7 +221,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
             // entidad.estado = estadosTrabajos.SUSPENDIDO
             // entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
 
-            if (authenticationStore.esCoordinador) filtrarTrabajoAsignado(estadosTrabajos.SUSPENDIDO)
+            if (authenticationStore.esCoordinador || authenticationStore.esJefeTecnico) filtrarTrabajoAsignado(estadosTrabajos.SUSPENDIDO)
             if (authenticationStore.esTecnico) eliminarElemento(posicion)
 
             notificarCorrecto('Trabajo suspendido exitosamente!')

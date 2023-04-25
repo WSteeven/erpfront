@@ -318,7 +318,7 @@
         </div>
       </div>
     </q-expansion-item>
-    {{ subtarea.empleado }}
+
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
       label="Designación de trabajo"

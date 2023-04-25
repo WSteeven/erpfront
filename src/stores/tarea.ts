@@ -13,6 +13,7 @@ export const useTareaStore = defineStore('tarea', () => {
   const tarea = reactive(new Tarea())
   const subtarea = reactive(new Subtarea())
   const idCliente = ref() // al guardar show retorna string pero necesito id
+  const recargaTareasActivas = ref(false)
 
   // Tecnico
   const subtareaAsignada = reactive(new Subtarea())
@@ -59,6 +60,7 @@ export const useTareaStore = defineStore('tarea', () => {
     consultarSubtareaTecnico,
     idSubtareaAsignada,
     idCliente,
+    recargaTareasActivas,
     // accion,
     resetearSubtarea,
     // mostrarFormulario,
