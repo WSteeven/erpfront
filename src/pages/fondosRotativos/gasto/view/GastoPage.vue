@@ -305,7 +305,7 @@
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
-            <selector-imagen-modal :imagen="gasto.comprobante1" file_extensiones=".jpg, image/*"
+            <selector-imagen :imagen="gasto.comprobante1" file_extensiones=".jpg, image/*"
               :error="!!v$.comprobante1.$errors.length" error-message="Debes de cargar imagen de comprobante"
               @blur="v$.comprobante1.$touch" @update:modelValue="(data) => (gasto.comprobante1 = data)">
               <template v-slot:error>
@@ -313,13 +313,13 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </selector-imagen-modal>
+            </selector-imagen>
           </div>
 
           <!-- Comprobante 2 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
-            <selector-imagen-modal :imagen="gasto.comprobante2" file_extensiones=".jpg, image/*"
+            <selector-imagen :imagen="gasto.comprobante2" file_extensiones=".jpg, image/*"
               :error="!!v$.comprobante2.$errors.length" error-message="Debes de cargar reverso imagen de comprobante"
               @blur="v$.comprobante2.$touch" @update:modelValue="(data) => (gasto.comprobante2 = data)">
               <template v-slot:error>
@@ -327,7 +327,7 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </selector-imagen-modal>
+            </selector-imagen>
           </div>
 
           <!-- Observacion -->

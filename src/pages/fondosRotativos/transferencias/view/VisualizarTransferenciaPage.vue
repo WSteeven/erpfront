@@ -41,9 +41,9 @@
           <!--Comprobante-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante </label>
-            <selector-imagen-modal :imagen="transferencia.comprobante"
+            <selector-imagen :imagen="transferencia.comprobante"
               @update:modelValue="(data) => (transferencia.comprobante = data)">
-            </selector-imagen-modal>
+            </selector-imagen>
           </div>
           <!--Es devolucion-->
           <div class="col-12 col-md-3 q-mb-xl">
