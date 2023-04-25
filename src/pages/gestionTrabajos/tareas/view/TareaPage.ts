@@ -20,23 +20,21 @@ import TiempoSubtarea from 'gestionTrabajos/subtareas/modules/tiemposTrabajos/vi
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { MotivoSuspendidoController } from 'gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
+import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { RutaTareaController } from 'pages/gestionTrabajos/rutas/infraestructure/RutaTareaController'
+import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
-import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
-import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { TipoTrabajoController } from 'tiposTareas/infraestructure/TipoTrabajoController'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { ComportamientoModalesTarea } from '../application/ComportamientoModalesTarea'
 import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
@@ -45,12 +43,9 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useBotonesTablaTarea } from '../application/BotonesTablaTarea'
 import { TareaController } from '../infraestructure/TareaController'
 import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
-import { Tarea } from '../domain/Tarea'
-import { TareaModales } from '../domain/TareaModales'
-import { RutaTareaController } from 'pages/gestionTrabajos/rutas/infraestructure/RutaTareaController'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useAuthenticationStore } from 'stores/authentication'
-import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
+import { TareaModales } from '../domain/TareaModales'
+import { Tarea } from '../domain/Tarea'
 
 export default defineComponent({
   components: {
@@ -77,10 +72,10 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
-    const { entidad: tarea, listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
+    const { entidad: tarea, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-    const { onReestablecer, onConsultado, onBeforeGuardar } = mixin.useHooks()
+    const { onReestablecer, onConsultado } = mixin.useHooks()
 
     // -- Mixin subtarea
     const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
@@ -90,8 +85,6 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         clientes: new ClienteController(),
-        // provincias: new ProvinciaController(),
-        // cantones: new CantonController(),
         proyectos: new ProyectoController(),
         fiscalizadores: {
           controller: new EmpleadoController(),
@@ -104,11 +97,6 @@ export default defineComponent({
         rutas: new RutaTareaController(),
         motivosSuspendidos: new MotivoSuspendidoController(),
         motivosPausas: new MotivoPausaController(),
-
-        /*grupos: new GrupoController(),
-        empleados: new EmpleadoController(),
-        motivosSuspendidos: new MotivoSuspendidoController(), */
-        // motivosPausas: new MotivoPausaController(),
       })
 
       // Necesario al consultar
@@ -136,7 +124,7 @@ export default defineComponent({
     const esCoordinadorBackup = authenticationStore.esCoordinadorBackup
     const clienteFinal = reactive(new ClienteFinal())
 
-    const { btnVerPausas: btnVerPausasTarea, btnFinalizar: btnFinalizarTarea, btnFormulario: btnFormularioTarea, btnReagendar: btnReagendarTarea, botonCancelar: btnCancelarTarea } = useBotonesTablaTarea(listado, modalesTarea, listadosAuxiliares)
+    const { btnFinalizarTarea } = useBotonesTablaTarea(mixin)
     const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
     setFiltrarTrabajoAsignado(filtrarSubtareas)
 
@@ -147,13 +135,6 @@ export default defineComponent({
       cliente: { required: requiredIf(() => paraClienteFinal.value) },
       titulo: { required },
       proyecto: { required: requiredIf(() => paraProyecto.value) },
-      descripcion_completa: { required: requiredIf(() => !tarea.tiene_subtareas) },
-      tipo_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
-      fecha_inicio_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas) },
-      hora_inicio_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.es_ventana) },
-      hora_fin_trabajo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.es_ventana) },
-      grupo: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) },
-      empleado: { required: requiredIf(() => !tarea.tiene_subtareas && tarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_empleado) },
       coordinador: { required: requiredIf(() => esCoordinadorBackup) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
     }
@@ -192,9 +173,13 @@ export default defineComponent({
     /************
     * Funciones
     ************/
+    let tabActualTarea = '0'
+
     function filtrarTarea(tabSeleccionado: string) {
       listar({ finalizado: tabSeleccionado }, false)
+      tabActualTarea = tabSeleccionado
     }
+
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
@@ -212,7 +197,6 @@ export default defineComponent({
       switch (paginaModal) {
         case 'ProyectoPage':
           const { result } = await new ProyectoController().listar()
-          console.log(result)
           listadosAuxiliares.proyectos = result
           proyectos.value = result
           break
@@ -270,6 +254,15 @@ export default defineComponent({
       if (!tarea.id) subtareas.value = []
     })
 
+    const recargarTareas = computed(() => tareaStore.recargaTareasActivas)
+    watch(recargarTareas, () => {
+      if (recargarTareas.value) {
+        console.log(tabActualTarea)
+        if (tabActualTarea == '0') filtrarTarea('0')
+        tareaStore.recargaTareasActivas = false
+      }
+    })
+
     function verificarEsVentana() {
       if (!tarea.es_ventana) tarea.hora_fin_trabajo = null
     }
@@ -322,64 +315,7 @@ export default defineComponent({
       },
     }
 
-    const botonFinalizarTarea: CustomActionTable = {
-      titulo: 'Finalizar tarea',
-      icono: 'bi-check-circle-fill',
-      color: 'positive',
-      visible: () => !!tarea.id && tarea.tiene_subtareas && !tarea.finalizado && tab.value === 'tarea',
-      accion: () => {
-        console.log('finalizado')
-        console.log(tarea)
-
-        if (!tarea.codigo_tarea_cliente) {
-          const data: CustomActionPrompt = {
-            titulo: 'Finalizar tarea',
-            mensaje: 'Para finalizar la tarea ingrese el código de tarea que le otorgó el cliente corporativo.',
-            validacion: (val) => !!val,
-            accion: (data) => {
-              tarea.codigo_tarea_cliente = data
-
-              const data2: CustomActionPrompt = {
-                titulo: 'Novedad',
-                mensaje: 'Ingrese alguna novedad en caso de presentarse.',
-                accion: (data) => {
-                  tarea.novedad = data
-
-                  confirmar('¿Está seguro de finalizar la tarea?', () => {
-                    tarea.finalizado = true
-                    editar(tarea)
-                  })
-                },
-              }
-
-              prompt(data2)
-
-            },
-          }
-
-          prompt(data)
-        } else {
-
-          const data: CustomActionPrompt = {
-            titulo: 'Novedad',
-            mensaje: 'Ingrese alguna novedad en caso de presentarse.',
-            accion: (data) => {
-              tarea.novedad = data
-
-              confirmar('¿Está seguro de finalizar la tarea?', () => {
-                tarea.finalizado = true
-                editar(tarea)
-              })
-            },
-          }
-
-          prompt(data)
-        }
-      }
-    }
-
     function filtrarSubtareas(estado) {
-      console.log(estado)
       listarSubtareas({ tarea_id: tarea.id, estado: estado })
       tabActual.value = estado
     }
@@ -467,17 +403,13 @@ export default defineComponent({
       indicatorColor: computed(() => tarea.tiene_subtareas ? 'primary' : 'white'),
       maskFecha,
       guardado,
-      botonFinalizarTarea,
+      // botonFinalizarTarea,
       ubicacionesTrabajo,
       tabOptionsEstadosTareas,
       filtrarTarea,
       esCoordinadorBackup,
       // Botones tareas
-      btnVerPausasTarea,
       btnFinalizarTarea,
-      btnFormularioTarea,
-      btnReagendarTarea,
-      btnCancelarTarea,
     }
   },
 })

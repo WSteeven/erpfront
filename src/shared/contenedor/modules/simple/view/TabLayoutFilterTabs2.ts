@@ -114,6 +114,10 @@ export default defineComponent({
     filtrar: {
       type: Function,
       required: true,
+    },
+    forzarListar: {
+      type: Boolean,
+      default: false,
     }
   },
   emits: ['tab-seleccionado'],
@@ -126,7 +130,7 @@ export default defineComponent({
       props.mixin.useReferencias()
 
     const Router = useRouter()
-    let listadoCargado = false
+    // let listadoCargado = false
 
     const accionPersonalizada = computed(() => props.accion1)
     // console.log('accion recibida:',accionPersonalizada)
@@ -142,13 +146,18 @@ export default defineComponent({
       },
     ]
 
-    if (!listadoCargado) {
-      listar()
-      listadoCargado = true
-    }
-    const tabSeleccionado = 'TODO'
+    // if (!listadoCargado) {
+    // listar()
+    // listadoCargado = true
+    // }
+    // const tabSeleccionado = 'TODO'
+    aplicarFiltro(props.tabDefecto)
 
-    function aplicarFiltro(tabSeleccionado) {
+    function forzarListar() {
+      if (props.forzarListar) aplicarFiltro(props.tabDefecto)
+    }
+
+    function aplicarFiltro(tabSeleccionado?) {
       props.filtrar(tabSeleccionado)
     }
 
@@ -230,6 +239,7 @@ export default defineComponent({
       accionPersonalizada,
       esBodeguero,
       esCoordinador,
+      forzarListar,
     }
   },
 })

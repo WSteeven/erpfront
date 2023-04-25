@@ -5,6 +5,19 @@
         Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>
       </div>
       <div class="q-mb-md">{{ fecha }}</div>
+      <q-btn
+        color="primary"
+        class="q-px-md"
+        no-caps
+        dense
+        glossy
+        outline
+        rounded
+        @click="abrirGuia()"
+      >
+        <q-icon name="bi-info-circle-fill" size="xs" class="q-mr-sm"></q-icon>
+        ¿Cómo funcionan los estados de las subtareas?</q-btn
+      >
       <!--<div v-if="authenticationStore.user?.grupo" class="q-mb-md">
         Grupo, <strong>{{ authenticationStore.user.grupo }}</strong>
       </div> -->

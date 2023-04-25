@@ -49,22 +49,47 @@
           }"
         >
           <span
-            class="row bg-body-table rounded q-px-sm"
+            class="row bg-body-table rounded q-pr-sm"
             :class="{
               'q-gutter-x-sm': $q.screen.xs,
               'q-gutter-x-md': !$q.screen.xs,
             }"
           >
+            <!-- Boton transferir tareas -->
+            <q-btn
+              v-if="mostrarTransferirTareas"
+              dense
+              rounded
+              unelevated
+              no-caps
+              class="text-shadow bg-body-table color-icono custom-shadow"
+              @click="abrirTransferirTareas()"
+            >
+              <q-icon
+                name="bi-arrow-left-right"
+                :class="{ 'q-mr-sm': !$q.screen.xs }"
+              ></q-icon>
+              <span v-if="!$q.screen.xs">Transferir tareas activas</span>
+              <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
+            </q-btn>
+
+            <q-separator vertical inset></q-separator>
+
             <!-- Boton movilizacion -->
             <q-btn
               dense
-              round
+              rounded
               unelevated
-              icon="bi-car-front"
+              no-caps
               class="text-shadow bg-body-table color-icono"
               @click="abrirMovilizacionSubtarea()"
             >
-              <q-tooltip class="bg-dark">Movilización entre trabajos</q-tooltip>
+              <q-icon
+                name="bi-car-front"
+                :class="{ 'q-mr-sm': !$q.screen.xs }"
+              ></q-icon>
+              <span v-if="!$q.screen.xs">Movilización</span>
+              <q-tooltip class="bg-dark">Movilización</q-tooltip>
             </q-btn>
 
             <q-separator vertical inset></q-separator>
@@ -72,12 +97,17 @@
             <!-- Boton Mi bodega -->
             <q-btn
               dense
-              round
+              rounded
               unelevated
-              icon="bi-box-seam"
+              no-caps
               class="text-shadow bg-body-table color-icono"
               :to="{ name: 'mi_bodega' }"
             >
+              <q-icon
+                name="bi-box-seam"
+                :class="{ 'q-mr-sm': !$q.screen.xs }"
+              ></q-icon>
+              <span v-if="!$q.screen.xs">Mi bodega</span>
               <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
             </q-btn>
 
@@ -86,13 +116,17 @@
             <!-- Boton notificaciones -->
             <q-btn
               dense
-              round
-              flat
+              rounded
               unelevated
-              icon="bi-bell"
+              no-caps
               class="text-shadow bg-body-table color-icono"
               @click.self="mostrarNotificaciones = true"
             >
+              <q-icon
+                name="bi-bell"
+                :class="{ 'q-mr-sm': !$q.screen.xs }"
+              ></q-icon>
+              <span v-if="!$q.screen.xs">Notificaciones</span>
               <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
 
               <q-badge v-if="notificaciones.length > 0" color="info" floating

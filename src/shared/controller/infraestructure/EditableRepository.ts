@@ -40,4 +40,25 @@ export class EditableRepository<T> {
       throw new ApiError(axiosError)
     }
   }
+
+  async editarParcial(id: number, data: { [key: string]: any }, args?: any) {
+    try {
+      // const patch: { [key: string]: any } = {}
+      // patch[clave] = valor
+
+      const ruta = this.httpRepository.getEndpoint({ endpoint: this.endpoint, id }, args)
+      const response: AxiosResponse = await this.httpRepository.patch(
+        ruta,
+        data
+      )
+
+      return {
+        response,
+        result: response.data.modelo,
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
 }

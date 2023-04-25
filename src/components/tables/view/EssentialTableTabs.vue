@@ -220,7 +220,6 @@ const emit = defineEmits([
 const tabSeleccionado = ref(props.tabDefecto)
 
 watchEffect(() => {
-  console.log(props.tabDefecto)
   tabSeleccionado.value = props.tabDefecto
 })
 

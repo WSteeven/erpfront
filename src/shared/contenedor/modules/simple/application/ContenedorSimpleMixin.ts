@@ -42,6 +42,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       consultar: this.consultar.bind(this),
       guardar: this.guardar.bind(this),
       editar: this.editar.bind(this),
+      editarParcial: this.editarParcial.bind(this),
       eliminar: this.eliminar.bind(this),
       reestablecer: this.reestablecer.bind(this),
       obtenerListados: this.obtenerListados.bind(this),
@@ -270,6 +271,40 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
         const id: number = response.data.modelo.id ?? 0
         this.hooks.onModificado(id)
+
+      } catch (error: any) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, this.notificaciones)
+        } else {
+          this.notificaciones.notificarError(error.message)
+        }
+      }
+    })
+  }
+
+  // Editar
+  private async editarParcial(id: number, data: { [key: string]: any }, params?: ParamsType) {
+    /*if (data.id === null) {
+      return this.notificaciones.notificarAdvertencia(
+        'No se puede editar el recurso con id null'
+      )
+    } */
+
+    this.cargarVista(async () => {
+      try {
+        const { response, result: modelo } = await this.controller.editarParcial(
+          id,
+          data,
+          {
+            ...params,
+            ...this.argsDefault
+          }
+        )
+
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+        this.actualizarElementoListadoActual(modelo)
+        this.entidad.hydrate(response.data.modelo)
 
       } catch (error: any) {
         if (isAxiosError(error)) {

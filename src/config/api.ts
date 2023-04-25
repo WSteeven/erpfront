@@ -109,11 +109,11 @@ export const endpoints = {
   designar_secretario_grupo: new Endpoint('tareas/designar-secretario-grupo'),
   archivos_subtareas: new Endpoint('tareas/archivos-subtareas'),
   archivos_seguimientos: new Endpoint('tareas/archivos-seguimientos'),
-  materiales_despachados: new Endpoint('tareas/transacciones-egresos/materiales-despachados'),
+  // materiales_despachados: new Endpoint('tareas/transacciones-egresos/materiales-despachados'),
   // materiales_despachados_sin_bobina: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado_tarea: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado: new Endpoint('tareas/materiales-empleado'),
-  bobinas_empleado_tarea: new Endpoint('tareas/bobinas-empleado-tarea'),
+  // bobinas_empleado_tarea: new Endpoint('tareas/bobinas-empleado-tarea'),
   registros_tendidos: new Endpoint('tareas/registros-tendidos'),
   reportes_control_materiales: new Endpoint('tareas/reportes-control-materiales'),
   resumen_tendidos: new Endpoint('tareas/resumen-tendidos'),
@@ -123,6 +123,9 @@ export const endpoints = {
   clientes: new Endpoint('clientes'),
   grupos: new Endpoint('grupos'),
   exportExcelSeguimiento: new Endpoint('tareas/export-seguimiento'),
+  verificar_todas_subtareas_finalizadas: new Endpoint('tareas/verificar-todas-subtareas-finalizadas'),
+  verificar_material_tarea_devuelto: new Endpoint('tareas/verificar-material-tarea-devuelto'),
+  transferir_mis_tareas_activas: new Endpoint('tareas/transferir-mis-tareas-activas'),
 
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),

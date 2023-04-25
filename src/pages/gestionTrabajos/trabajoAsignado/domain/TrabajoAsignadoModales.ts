@@ -5,10 +5,12 @@ import { markRaw } from 'vue'
 // Paginas
 import DetalleTrabajoAsignadoPage from 'gestionTrabajos/trabajoAsignado/modules/detalleTrabajosAsignados/view/DetalleTrabajoAsignadoPage.vue'
 import EmergenciaPage from 'formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
+import GuiaSubtareasPage from 'gestionTrabajos/trabajoAsignado/modules/guiaSubtareas/GuiaSubtareasPage.vue'
 
 export class TrabajoAsignadoModales {
   DetalleTrabajoAsignadoPage: ComponenteModal
   EmergenciaPage: ComponenteModal
+  GuiaSubtareasPage: ComponenteModal
 
   constructor() {
     this.DetalleTrabajoAsignadoPage = markRaw(
@@ -17,6 +19,10 @@ export class TrabajoAsignadoModales {
 
     this.EmergenciaPage = markRaw(
       new ComponenteModal('Seguimiento', EmergenciaPage)
+    )
+
+    this.GuiaSubtareasPage = markRaw(
+      new ComponenteModal('¿Cómo funcionan los estados de las subtareas?', GuiaSubtareasPage)
     )
   }
 }

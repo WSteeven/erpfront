@@ -57,6 +57,10 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     return await this.editableRepository.editar(entidad.id, entidad, params)
   }
 
+  async editarParcial(id: number, data: { [key: string]: any }, params?: any) {
+    return await this.editableRepository.editarParcial(id, data, params)
+  }
+
   async eliminar(id: number, params?: any) {
     return await this.eliminableRepository.eliminar(id) //, params)
   }
