@@ -23,8 +23,15 @@ export const configuracionColumnasItemsSeleccionados: ColumnConfig<any>[] = [
     sortable: true,
   },
   {
-    name: 'condicion',
-    field: 'condicion',
+    name: 'serial',
+    field: 'serial',
+    label: 'Serial',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'condiciones',
+    field: 'condiciones',
     label: 'Condición',
     align: 'left',
     sortable: true,

@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagenModal from 'components/SelectorImagenModal.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -20,7 +20,7 @@ import { VisualizarTransferencia } from '../domain/VisualizarTransferencia'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagenModal },
+  components: { TabLayout, SelectorImagen },
   emits: ['guardado','cerrar-modal'],
   setup(props, { emit }) {
     /*********

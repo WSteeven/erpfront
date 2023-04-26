@@ -512,6 +512,7 @@
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
                       search: criterioBusquedaProducto,
+                      zeros:false
                     })
                   "
                   icon="search"
@@ -527,6 +528,9 @@
               </div>
             </div>
           </div>
+
+          
+
           <!-- Tabla -->
           <div class="col-12">
             <essential-table

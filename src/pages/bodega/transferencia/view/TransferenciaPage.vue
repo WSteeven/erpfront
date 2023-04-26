@@ -115,7 +115,7 @@
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               v-model="transferencia.observacion_aut"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :disable="disabled || (soloLectura && !esActivos)"
               :readonly="disabled || (soloLectura && !esActivos)"
               :error="!!v$.observacion_aut.$errors.length"
@@ -336,7 +336,7 @@
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               v-model="transferencia.observacion_est"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :disable="disabled || soloLectura"
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
@@ -368,6 +368,7 @@
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
                       cliente_id: transferencia.cliente,
+                      zeros:false,
                     })
                   "
                   @blur="
@@ -384,6 +385,7 @@
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
                       cliente_id: transferencia.cliente,
+                      zeros:false,
                     })
                   "
                   icon="search"

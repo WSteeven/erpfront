@@ -5,7 +5,7 @@ import { Ref, ref } from 'vue'
 import { Transferencia } from '../domain/Transferencia'
 import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
 
-export function useOrquestadorSelectorItems(entidad:Transferencia, endpoint: keyof typeof endpoints) {
+export function useOrquestadorSelectorItems(entidad: Transferencia, endpoint: keyof typeof endpoints) {
   const refListadoSeleccionable = ref()
   const listado: Ref<EntidadAuditable[]> = ref([])
   const criterioBusqueda = ref()
@@ -33,7 +33,7 @@ export function useOrquestadorSelectorItems(entidad:Transferencia, endpoint: key
     let ids: any = []
     ids = entidad.listadoProductos.map((entidad: Inventario) => entidad.id)
     const datos = items.filter((v) => !ids.includes(v.id))
-
+    console.log(datos.forEach((v) => { v.cantidades = v.cantidad, v.inventario_id = v.id }))
     singleSelector.seleccionar(datos)
   }
 

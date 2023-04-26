@@ -3,7 +3,7 @@ import { Transferencia } from '../domain/Transferencia'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagenModal from 'components/SelectorImagenModal.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -22,7 +22,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagenModal },
+  components: { TabLayout, SelectorImagen },
 
   setup() {
     /*********

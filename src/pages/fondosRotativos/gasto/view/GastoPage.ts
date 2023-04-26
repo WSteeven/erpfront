@@ -3,7 +3,7 @@ import { Gasto } from '../domain/Gasto'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagenModal from 'components/SelectorImagenModal.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
@@ -17,7 +17,6 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
-import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
@@ -28,18 +27,16 @@ import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
-import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { emit } from 'process'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import JSONPRequest from 'pusher-js/types/src/runtimes/web/dom/jsonp_request'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagenModal },
+  components: { TabLayout, SelectorImagen },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -60,7 +57,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
-    const { onConsultado, onGuardado } = mixin.useHooks()
+    const { onConsultado } = mixin.useHooks()
 
     const {
       confirmar,
