@@ -28,6 +28,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useOrquestadorSelectorItems } from '../application/OrquestadorSelectorItems'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { LocalStorage } from 'quasar'
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 
 
 export default defineComponent({
@@ -128,6 +129,9 @@ export default defineComponent({
         }
         const v$ = useVuelidate(reglas, transferencia)
         setValidador(v$.value)
+
+        const validarListadoProductos = new ValidarListadoProductos(transferencia)
+        mixin.agregarValidaciones(validarListadoProductos)
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?', () => transferencia.listadoProductos.splice(posicion, 1))

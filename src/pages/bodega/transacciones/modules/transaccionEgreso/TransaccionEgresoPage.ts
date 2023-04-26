@@ -161,7 +161,8 @@ export default defineComponent({
       cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
       motivo: { requiredIfBodeguero: requiredIf(esBodeguero) },
       tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
-      responsable: { requiredIfPedido: requiredIf(transaccion.pedido! > 0) },
+      // responsable: { requiredIfPedido: requiredIf(transaccion.pedido! > 0) },
+      responsable: { required },
       autorizacion: {
         requiredIfCoordinador: requiredIf(esCoordinador),
         requiredIfEsVisibleAut: requiredIf(false)
