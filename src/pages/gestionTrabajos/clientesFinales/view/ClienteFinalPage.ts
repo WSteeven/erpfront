@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasClienteFinal } from '../domain/configuracionColumnasClienteFinal'
 import { useNotificacionStore } from 'stores/notificacion'
+import { helpers, required } from 'shared/i18n-validators'
 import { computed, defineComponent, ref } from 'vue'
-import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 
@@ -17,6 +17,7 @@ import { ClienteController } from 'pages/sistema/clientes/infraestructure/Client
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
 import { ClienteFinalController } from '../infraestructure/ClienteFinalController'
 import { ClienteFinal } from '../domain/ClienteFinal'
+import { validarCedula } from 'shared/validadores/validaciones'
 
 export default defineComponent({
   components: {
@@ -49,6 +50,9 @@ export default defineComponent({
       cliente: { required },
       id_cliente_final: { required },
       nombres: { required },
+      cedula: {
+        cedula_valida: helpers.withMessage('La cédula no es válida', validarCedula)
+      },
     }
 
     useNotificacionStore().setQuasar(useQuasar())

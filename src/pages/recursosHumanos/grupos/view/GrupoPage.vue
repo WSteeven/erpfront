@@ -33,7 +33,6 @@
               v-model="grupo.activo"
               checked-icon="check"
               label="Activo"
-              unchecked-icon="clear"
               color="positive"
             />
           </div>
