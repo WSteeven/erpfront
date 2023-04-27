@@ -295,7 +295,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Autorizar Gasto',
               link: 'autorizar-gasto',
               icon: 'bi-circle',
-              can: store.can('puede.ver.autorizar_gasto'),
+              can: true//store.can('puede.ver.autorizar_gasto'),
             },
           ],
         },
@@ -345,7 +345,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Transferencia',
               link: 'transferencia',
               icon: 'bi-circle',
-              can: store.can('puede.ver.transferencia'),
+              can: true//store.can('puede.ver.transferencia'),
             },
             {
               title: 'Autorizar Transferencia',
