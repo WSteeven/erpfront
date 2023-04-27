@@ -66,6 +66,7 @@ export default defineComponent({
       { value: '1', label: 'Acreditacion' },
       { value: '2', label: 'Gasto' },
       { value: '3', label: 'Consolidado' },
+      { value: '4', label: 'Movimiento' },
     ]);
 
     listadosAuxiliares.tipos_saldos = tipos_saldos;
