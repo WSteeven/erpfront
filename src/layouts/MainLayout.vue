@@ -167,38 +167,41 @@
                       >
                     </q-item-section></q-item
                   >
+
                   <q-item
                     v-for="notificacion in notificaciones"
                     :key="notificacion.id"
-                    class="bg-desenfoque"
+                    :to="notificacion.link"
                   >
                     <q-item-section avatar>
                       <q-icon
-                        color="info"
+                        color="primary"
                         :name="
                           obtenerIcono.obtener(notificacion.tipo_notificacion)
                         "
-                        size="sm"
                       />
                     </q-item-section>
-                    <q-item-section>
-                      <q-item-label
-                        ><q-breadcrumbs
-                          ><q-breadcrumbs-el
-                            :label="notificacion.mensaje"
-                            :to="notificacion.link" /></q-breadcrumbs
-                      ></q-item-label>
-                    </q-item-section>
 
-                    <q-item-section side top
-                      >{{ moment(notificacion.created_at).fromNow() }}
-                      <q-item-label caption
-                        ><q-breadcrumbs class="text-blue text-right">
-                          <q-breadcrumbs-el
-                            icon="bi-check"
-                            label="leída"
-                            @click="marcarLeida(notificacion.id)"
-                          /> </q-breadcrumbs
+                    <q-item-section class="full-width">
+                      {{ notificacion.mensaje }}
+                      <span class="block text-grey-8 text-weight-regular">
+                        {{ moment(notificacion.created_at).fromNow() }}
+                      </span>
+
+                      <q-item-label class="row justify-end q-pt-sm">
+                        <q-btn
+                          icon="bi-check"
+                          label="Marcar como leído"
+                          dense
+                          color="positive"
+                          size="sm"
+                          no-caps
+                          rounded
+                          push
+                          unelevated
+                          @click="marcarLeida(notificacion.id)"
+                        >
+                        </q-btn
                       ></q-item-label>
                     </q-item-section>
                   </q-item>
