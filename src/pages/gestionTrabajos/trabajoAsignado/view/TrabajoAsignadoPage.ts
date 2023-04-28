@@ -21,7 +21,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
-import { SubtareaPusherEvent } from '../application/SubtareaPusherEvent'
+import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
 
 export default defineComponent({
   components: {
@@ -64,7 +64,7 @@ export default defineComponent({
      *********/
     const puedeEjecutar = computed(() => tabActual.value === estadosTrabajos.AGENDADO)
 
-    const subtareaPusherEvent = new SubtareaPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
+    const subtareaPusherEvent = new SubtareaListadoPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
     subtareaPusherEvent.start()
 
     /***************

@@ -853,7 +853,7 @@
     <template #body-cell-leida="props">
       <q-td :props="props">
         <span v-if="props.value == false || props.value == 0">
-          <q-icon class="bi-x-circle-fill" color="negative" size="sm"> </q-icon>
+          <q-icon class="bi-check-circle-fill" color="grey-4" size="sm"> </q-icon>
         </span>
         <span v-else>
           <q-icon class="bi-check-circle-fill" color="positive" size="sm">
