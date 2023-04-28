@@ -169,7 +169,7 @@ export default defineComponent({
                 entidad.detalle_estado = data
                 await aprobarController.aprobarGasto(entidad)
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
-                emit('cerrar-modal');
+                emit('cerrar-modal',false);
                 emit('guardado');
               } catch (e: any) {
                 notificarError(

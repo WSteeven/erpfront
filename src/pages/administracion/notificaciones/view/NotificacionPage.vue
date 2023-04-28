@@ -2,7 +2,7 @@
   <!-- Tabla de notificaciones -->
   <q-page padding>
     <essential-table
-      titulo="Notificaciones"
+      :titulo="'Tiene ' + totalNoLeidas + ' notificaciones pendientes de leer.'"
       :configuracionColumnas="configuracionColumnas"
       :datos="listado"
       :permitirConsultar="false"
@@ -10,6 +10,7 @@
       :permitirEliminar="false"
       :mostrarBotones="false"
       :accion1="BotonMarcarLeido"
+      :permitir-buscar="false"
     >
     </essential-table>
   </q-page>

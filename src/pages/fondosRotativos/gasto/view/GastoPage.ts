@@ -12,7 +12,8 @@ import {
   requiredIf,
   maxLength,
   minLength,
-  required} from 'shared/i18n-validators'
+  required
+} from 'shared/i18n-validators'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
@@ -97,9 +98,9 @@ export default defineComponent({
       if (gasto.sub_detalle == null) {
         return false
       }
-      if( parseInt(gasto.detalle !== null?gasto.detalle:'') === 6){
-        return  gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96)>-1 || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97)>-1
-      }else{
+      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
+        return gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) > -1 || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
+      } else {
         return false
       }
 
@@ -117,21 +118,21 @@ export default defineComponent({
     const cantidadPermitidaFactura = computed(() => {
       let cantidad = 17
 
-      if( esFactura.value === false){
+      if (esFactura.value === false) {
         cantidad = 0
       }
-      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null?gasto.detalle:''));
-      cantidad = numFacturaObjeto[index]!== undefined?numFacturaObjeto[index].cantidad:15;
+      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''));
+      cantidad = numFacturaObjeto[index] !== undefined ? numFacturaObjeto[index].cantidad : 15;
       return cantidad
     }
-      )
+    )
     const mascaraFactura = computed(() => {
       let mascara = '###-###-#############'
-      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null?gasto.detalle:''));
-      mascara = numFacturaObjeto[index]!== undefined?numFacturaObjeto[index].mascara:'###-###-#########';
+      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''));
+      mascara = numFacturaObjeto[index] !== undefined ? numFacturaObjeto[index].mascara : '###-###-#########';
       return mascara
     }
-      )
+    )
 
     /*************
      * Validaciones
@@ -152,13 +153,14 @@ export default defineComponent({
       ruc: {
         minLength: minLength(13),
         maxLength: maxLength(13),
-        requiredIfFactura: requiredIf(() => esFactura.value),
+        required: requiredIf(() => esFactura.value),
       },
       factura: {
         minLength: minLength(cantidadPermitidaFactura),
+        required: requiredIf(() => esFactura.value)
       },
       aut_especial: {
-        requiredIfTecnico: requiredIf(() => esTecnico.value),
+        required: requiredIf(() => esTecnico.value),
       },
       num_comprobante: {
         maxLength: maxLength(17),
@@ -226,7 +228,7 @@ export default defineComponent({
         },
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id ,estado: 1},
+          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id, estado: 1 },
         },
       })
       autorizacionesEspeciales.value =
@@ -480,8 +482,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
