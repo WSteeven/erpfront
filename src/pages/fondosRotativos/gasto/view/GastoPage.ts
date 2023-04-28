@@ -220,7 +220,7 @@ export default defineComponent({
         },
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
+          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',finalizado: 0 },
         },
         subTareas: {
           controller: new SubtareaController(),
