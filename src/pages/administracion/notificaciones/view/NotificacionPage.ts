@@ -1,40 +1,42 @@
 //Dependencias
-import { configuracionColumnasNotificaciones } from "../domain/configuracionColumnasNotificaciones";
+import { configuracionColumnasNotificaciones } from '../domain/configuracionColumnasNotificaciones'
 
 //Componentes
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import { defineComponent } from "vue";
-import { Notificacion } from "../domain/Notificacion";
-import { NotificacionController } from "../infraestructure/NotificacionController";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { useNotificationRealtimeStore } from "stores/notificationRealtime";
-import { useNotificaciones } from "shared/notificaciones";
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { computed, defineComponent } from 'vue'
+import { Notificacion } from '../domain/Notificacion'
+import { NotificacionController } from '../infraestructure/NotificacionController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
+import { useNotificaciones } from 'shared/notificaciones'
 
 //Logica y controladores
 
 export default defineComponent({
-  components: {EssentialTable},
-  setup(){
+  components: { EssentialTable },
+  setup() {
     const mixin = new ContenedorSimpleMixin(Notificacion, new NotificacionController())
-    const {entidad: notificacion, disabled, accion, listado} = mixin.useReferencias()
-    const {listar} = mixin.useComportamiento()
-    const {notificarCorrecto } = useNotificaciones()
+    const { entidad: notificacion, disabled, accion, listado } = mixin.useReferencias()
+    const { listar } = mixin.useComportamiento()
+    const { notificarCorrecto } = useNotificaciones()
 
     /* A function that is defined in the mixin. It is a function that is used to list all the entities. */
     listar()
+    const totalNoLeidas = computed(() => listado.value.filter((notificacion: Notificacion) => !notificacion.leida).length)
 
     const notificacionesPusher = useNotificationRealtimeStore()
 
     /* A custom action button that will be added to the table. */
-    const BotonMarcarLeido: CustomActionTable={
+    const BotonMarcarLeido: CustomActionTable = {
       titulo: 'Marcar como leído',
-      color:'primary',
-      icono: 'bi-file-check',
-      accion:async({entidad, posicion})=>{
+      color: 'positive',
+      icono: 'bi-check-circle-fill',
+      visible: ({ entidad }) => !entidad.leida,
+      accion: async ({ entidad, posicion }) => {
         notificacionesPusher.idNotificacion = entidad.id
         const modelo = await notificacionesPusher.marcarLeida()
-        if(modelo){
+        if (modelo) {
           notificarCorrecto('Notificación marcada como leída')
           listado.value.splice(posicion, 1, modelo)
         }
@@ -47,11 +49,11 @@ export default defineComponent({
       }
     }
 
-    return{
+    return {
       mixin, notificacion, disabled, accion, listado,
       configuracionColumnas: configuracionColumnasNotificaciones,
       BotonMarcarLeido,
-
+      totalNoLeidas,
     }
   }
 })

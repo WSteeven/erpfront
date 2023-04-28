@@ -2,7 +2,7 @@ import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { estadosTrabajos } from 'config/utils'
 import { Ref } from 'vue'
 
-export class SubtareaPusherEvent {
+export class SubtareaListadoPusherEvent {
   accion: (param: string) => void
   puedeEjecutar: Ref<boolean>
 
