@@ -42,7 +42,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     titulo: 'Ejecutar',
     icono: 'bi-play-fill',
     color: 'positive',
-    visible: ({ entidad }) => [estadosTrabajos.AGENDADO].includes(entidad.estado) && entidad.puede_ejecutar && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable),
+    visible: ({ entidad }) => [estadosTrabajos.AGENDADO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.puede_ejecutar && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable),
     accion: ({ entidad }) => {
 
       obtenerCoordenadas(entidad)

@@ -273,11 +273,11 @@ export const estadosTrabajos = {
   EJECUTANDO: 'EJECUTANDO',
   PAUSADO: 'PAUSADO',
   SUSPENDIDO: 'SUSPENDIDO',
-  PENDIENTE: 'PENDIENTE',
+  //PENDIENTE: 'PENDIENTE',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
-  REAGENDADO: 'REAGENDADO',
+  //REAGENDADO: 'REAGENDADO',
 }
 export const estadosGastos = {
   APROBADO: 1,
@@ -294,13 +294,13 @@ export const estadosTransferencias = {
 export const estadosTrabajoArray = [
   'CREADO',
   'ASIGNADO',
+  'AGENDADO',
   'EJECUTANDO',
   'PAUSADO',
   'SUSPENDIDO',
   'CANCELADO',
   'REALIZADO',
   'FINALIZADO',
-  'REAGENDADO',
 ]
 
 export const rolesSistema = {
