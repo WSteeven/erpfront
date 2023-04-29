@@ -66,6 +66,7 @@
         @accion10="emitAccion10"
         :permitir-filtrar="permitirFiltrar"
         :permitir-buscar="permitirBuscar"
+        @filtrarTodos="consultarTodos"
       ></essential-table>
     </div>
   </div>
@@ -215,6 +216,7 @@ const emit = defineEmits([
   'accion9',
   'accion10',
   'tab-seleccionado',
+  'filtrarTodos',
 ])
 
 const tabSeleccionado = ref(props.tabDefecto)
@@ -236,4 +238,9 @@ const emitAccion7 = (data) => emit('accion7', data)
 const emitAccion8 = (data) => emit('accion8', data)
 const emitAccion9 = (data) => emit('accion9', data)
 const emitAccion10 = (data) => emit('accion10', data)
+
+function consultarTodos(filtros) {
+      console.log('En essential table antes de filtrar todos')
+      emit('filtrarTodos', filtros)
+}
 </script>

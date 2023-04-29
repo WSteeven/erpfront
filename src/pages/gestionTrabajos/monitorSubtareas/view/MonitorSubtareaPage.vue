@@ -43,9 +43,12 @@
       :permitirEliminar="false"
       :mostrar-botones="false"
       :mostrarFooter="true"
-      :permitirFiltrar="false"
+      :permitirFiltrar="true"
+      :permitirBuscar="false"
       @tab-seleccionado="filtrarSubtareas"
       :tabDefecto="tabActual"
+      :altoFijo="false"
+      @filtrarTodos="filtrarTodos"
     ></essential-table-tabs>
 
     <modales-entidad :comportamiento="modalesSubtarea" :mixin-modal="mixin" />
