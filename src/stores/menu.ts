@@ -351,7 +351,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Autorizar Transferencia',
               link: 'autorizar-transferencia',
               icon: 'bi-circle',
-              can: store.can('puede.ver.autorizar_transferencia'),
+              can: true,
             },
           ]
         },
