@@ -244,6 +244,7 @@
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :error="!!v$.tarea.$errors.length"
+              @update:model-value="pedidoSeleccionado"
               error-message="Debe seleccionar una tarea"
               :option-label="(item) => item.titulo"
               :option-value="(item) => item.id"
@@ -411,7 +412,10 @@
                   :disable="disabled"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarProductos()"
+                  @keydown.enter="listarProductos({
+                    sucursal_id:pedido.sucursal,
+                    cliente_id: pedido.cliente_id
+                  })"
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
                   "
@@ -422,7 +426,11 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos()"
+                  @click="listarProductos({
+                    sucursal_id:pedido.sucursal,
+                    cliente_id: pedido.cliente_id
+                  }
+                  )"
                   icon="search"
                   unelevated
                   color="positive"

@@ -301,6 +301,25 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      //reportes de bodega
+      {
+        path: '/reporte-inventario',
+        name: 'reporte_inventario',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_inventario/view/ReporteInventarioPage.vue'
+          ),
+        meta: { requiresAuth: false},
+      },
+      {
+        path: '/kardex',
+        name: 'kardex',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_seguimiento_detalle/view/SeguimientoDetallePage.vue'
+          ),
+        meta: { requiresAuth: false},
+      },
 
       //Routes for Recursos Humanos
       {
