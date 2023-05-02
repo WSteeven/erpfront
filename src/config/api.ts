@@ -85,6 +85,11 @@ export const endpoints = {
   unidades_medidas: new Endpoint('unidades-medidas'),
   imagenes_adicionales: new Endpoint('imagenes-adicionales'),
   materiales_pedidos: new Endpoint('transacciones-egresos/materiales'),
+  /* REPORTES BODEGA  */
+  reporte_inventario: new Endpoint('reporte-inventario'),
+  kardex: new Endpoint('kardex'),
+
+
 
   // Modulo de tareas
   proyectos: new Endpoint('tareas/proyectos'),
@@ -146,7 +151,7 @@ export const endpoints = {
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
   lista_usuarios: new Endpoint('lista-usuarios'),
   fondo_rotativo_fecha_excel: new Endpoint('fondos-rotativos/reporte/fecha/excel'),
-  fondo_rotativo_fecha_pdf: new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
+  fondo_rotativo_fecha_pdf:   new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
   fondo_rotativo_autorizaciones_fecha_pdf: new Endpoint('fondos-rotativos/autorizaciones_fecha/pdf'),
   fondo_rotativo_autorizaciones_fecha_excel: new Endpoint('fondos-rotativos/autorizaciones_fecha/excel'),
   consolidado_pdf: new Endpoint('fondos-rotativos/consolidado/pdf'),
