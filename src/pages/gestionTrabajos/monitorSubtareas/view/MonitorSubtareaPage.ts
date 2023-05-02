@@ -78,6 +78,12 @@ export default defineComponent({
 
     filtrarSubtareas(estadosTrabajos.AGENDADO)
 
+    function filtrarTodos(filtro) {
+      console.log(filtro)
+      console.log('Listar ...')
+      listar(filtro)
+    }
+
     return {
       mixin,
       tabActual,
@@ -96,6 +102,7 @@ export default defineComponent({
       btnCancelar,
       btnFinalizar,
       filtrarSubtareas,
+      filtrarTodos,
     }
   }
 })

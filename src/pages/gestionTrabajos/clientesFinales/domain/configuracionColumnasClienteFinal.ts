@@ -44,4 +44,10 @@ export const configuracionColumnasClienteFinal: ColumnConfig<ClienteFinal>[] = [
     label: 'Canton',
     align: 'left',
   },
+  {
+    name: 'activo',
+    field: 'activo',
+    label: 'Activo',
+    align: 'left',
+  },
 ]

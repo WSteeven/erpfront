@@ -583,28 +583,10 @@
                 </div>
 
                 <!-- Coordenada latitud -->
-                <div
-                  v-if="clienteFinal.coordenada_latitud"
-                  class="col-12 col-md-3"
-                >
-                  <label class="q-mb-sm block">Latitud</label>
+                <div v-if="clienteFinal.coordenadas" class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Coordenadas</label>
                   <q-input
-                    v-model="clienteFinal.coordenada_latitud"
-                    disable
-                    outlined
-                    dense
-                  >
-                  </q-input>
-                </div>
-
-                <!-- Coordenada longitud -->
-                <div
-                  v-if="clienteFinal.coordenada_longitud"
-                  class="col-12 col-md-3"
-                >
-                  <label class="q-mb-sm block">Longitud</label>
-                  <q-input
-                    v-model="clienteFinal.coordenada_longitud"
+                    v-model="clienteFinal.coordenadas"
                     disable
                     outlined
                     dense

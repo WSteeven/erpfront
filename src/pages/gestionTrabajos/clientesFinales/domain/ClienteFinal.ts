@@ -10,8 +10,8 @@ export class ClienteFinal extends EntidadAuditable {
   parroquia: string | null
   direccion: string | null
   referencia: string | null
-  coordenada_latitud: string | null
-  coordenada_longitud: string | null
+  coordenadas: string | null
+  activo: boolean
   cliente: number | null
   cedula: string | null
   correo: string | null
@@ -31,8 +31,8 @@ export class ClienteFinal extends EntidadAuditable {
     this.parroquia = null
     this.direccion = null
     this.referencia = null
-    this.coordenada_latitud = null
-    this.coordenada_longitud = null
+    this.coordenadas = null
+    this.activo = true
     this.cliente = null
     this.cedula = null
     this.correo = null

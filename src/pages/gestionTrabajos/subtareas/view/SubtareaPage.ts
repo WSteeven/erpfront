@@ -122,7 +122,6 @@ export default defineComponent({
         if (subtarea.cliente_final) obtenerClienteFinal(subtarea.cliente_final)
         obtenerMovilizaciones()
       })
-
     } else subtarea.hydrate(new Subtarea())
 
     subtarea.tarea = subtareaStore.codigoTarea

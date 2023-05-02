@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasClienteFinal"
     titulo-pagina="Proyectos"
+    :permitir-eliminar="false"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -82,9 +83,20 @@
                 v-model="clienteFinal.cedula"
                 placeholder="Opcional"
                 :disable="disabled"
+                :error="!!v$.cedula.$errors.length"
+                @blur="v$.cedula.$touch"
                 outlined
                 dense
               >
+                <template v-slot:error>
+                  <div
+                    style="clear: inherit"
+                    v-for="error of v$.cedula.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
               </q-input>
             </div>
 
@@ -257,22 +269,20 @@
               </q-input>
             </div>
 
-            <!-- Coordenada latitud -->
-            <!--<div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Coordenada latitud</label>
-              <q-input
-                v-model="clienteFinal.coordenada_latitud"
-                placeholder="Opcional"
+            <div class="col-12 col-md-3">
+              <br />
+              <q-toggle
+                v-model="clienteFinal.activo"
+                checked-icon="check"
+                label="Activo"
+                color="positive"
                 :disable="disabled"
-                outlined
-                dense
-              >
-              </q-input>
-            </div> -->
+              />
+            </div>
           </div>
         </q-expansion-item>
 
-        <q-expansion-item
+        <!--<q-expansion-item
           class="overflow-hidden q-mb-md expansion"
           label="2. Información técnica"
           header-class="bg-header-collapse"
@@ -286,6 +296,7 @@
               <q-option-group
                 :options="mediosTransmision"
                 type="radio"
+                :disable="disabled"
                 v-model="clienteFinal.medio_transmision"
               />
             </div>
@@ -297,6 +308,7 @@
               <q-option-group
                 :options="tendidosInteriorCable"
                 type="radio"
+                :disable="disabled"
                 v-model="clienteFinal.tendido_interior_cable"
               />
             </div>
@@ -337,91 +349,7 @@
               </q-input>
             </div>
           </div>
-        </q-expansion-item>
-
-        <!-- Ruta -->
-        <!--<div class="text-bold">Ruta</div>
-        <div class="row q-col-gutter-sm q-py-md">
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Origen</label>
-            <q-input
-              v-model="clienteFinal.ruta_origen"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Destino</label>
-            <q-input
-              v-model="clienteFinal.ruta_destino"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-        </div> -->
-
-        <!-- ODF -->
-        <!--<div class="text-bold">ODF</div>
-        <div class="row q-col-gutter-sm q-py-md">
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Origen</label>
-            <q-input
-              v-model="clienteFinal.odf_origen"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Destino</label>
-            <q-input
-              v-model="clienteFinal.odf_destino"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-        </div> -->
-
-        <!-- Hilos -->
-        <!--<div class="text-bold">Hilos</div>
-        <div class="row q-col-gutter-sm q-py-md">
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Hilo 1</label>
-            <q-input
-              v-model="clienteFinal.odf_origen"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Hilo 2</label>
-            <q-input
-              v-model="clienteFinal.odf_destino"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-        </div> -->
+        </q-expansion-item> -->
       </q-form>
     </template>
   </tab-layout>
