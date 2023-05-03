@@ -14,6 +14,7 @@ export class Pedido extends EntidadAuditable {
     per_autoriza_id: number | null
     tarea: number | null
     tarea_id: number | null
+    cliente_id: number | null
     sucursal: number | null
     sucursal_id: number | null
     estado: number | null
@@ -42,6 +43,7 @@ export class Pedido extends EntidadAuditable {
         this.per_autoriza_id = null
         this.tarea = null
         this.tarea_id = null
+        this.cliente_id = null
         this.sucursal = null
         this.sucursal_id = null
         this.estado = null

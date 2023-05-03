@@ -24,7 +24,7 @@ export function useOrquestadorSelectorDetalles(entidad: Pedido, endpoint: keyof 
     }
 
     const selector = useSelector(singleSelector)
-    const listar = () => selector.listar(criterioBusqueda.value)
+    const listar = (params) => selector.listar(criterioBusqueda.value, params)
     const limpiar = () => singleSelector.limpiar()
 
     const seleccionar = (items: DetalleProducto[]) => {

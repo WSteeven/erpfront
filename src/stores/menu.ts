@@ -256,13 +256,13 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-dash',
             },
             {
-              title: 'Reporte item',
-              link: 'reporte-item1',
+              title: 'Reporte de inventario',
+              link: 'reporte-inventario',
               icon: 'bi-dash',
             },
             {
-              title: 'Reporte item',
-              link: 'reporte-item2',
+              title: 'Kardex',
+              link: 'kardex',
               icon: 'bi-dash',
             },
           ]
@@ -351,7 +351,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Autorizar Transferencia',
               link: 'autorizar-transferencia',
               icon: 'bi-circle',
-              can: store.can('puede.ver.autorizar_transferencia'),
+              can: true,
             },
           ]
         },

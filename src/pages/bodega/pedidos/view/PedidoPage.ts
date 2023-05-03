@@ -96,7 +96,13 @@ export default defineComponent({
             estado: 1,
           }
         },
-        tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,titulo,cliente_id' } },
+        tareas: {
+          controller: new TareaController(),
+          params: {
+            campos: 'id,codigo_tarea,titulo,cliente_id',
+            finalizado: 0
+          }
+        },
       })
     })
 
@@ -166,7 +172,7 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       accion: ({ entidad, posicion }) => {
         pedidoStore.pedido = entidad
-        console.log('Pedido a despachar es: ',pedidoStore.pedido)
+        console.log('Pedido a despachar es: ', pedidoStore.pedido)
         router.push('transacciones-egresos')
       },
       visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
@@ -280,6 +286,10 @@ export default defineComponent({
       },
 
       onRowClick: (row) => alert(`${row.name} clicked`),
+      pedidoSeleccionado(val){
+        pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id===val))[0]['cliente_id']
+        console.log(pedido.cliente_id)
+      }
     }
   }
 })
