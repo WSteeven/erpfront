@@ -36,6 +36,8 @@ export const endpoints = {
 
   // Modulo de RR HH
   cargos: new Endpoint('cargos'),
+  motivo_permiso_empleado: new Endpoint('motivo_permiso_empleado'),
+  estado_permiso_empleado: new Endpoint('estado_permiso_empleado'),
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),

@@ -411,7 +411,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'RR HH',
       icon: 'bi-people',
-      can: store.can('puede.ver.modulo_recursos_humanos'),
+      can: true,//store.can('puede.ver.modulo_recursos_humanos'),
       children: [
         {
           title: 'Empleados',
@@ -430,6 +430,12 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'grupos',
           icon: 'bi-circle',
           can: store.can('puede.ver.grupos'),
+        },
+        {
+          title: 'Permiso',
+          link: 'permiso-nomina',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.permisos_nomina'),
         },
       ],
     },

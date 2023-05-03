@@ -630,6 +630,17 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      //Recursos Humanos
+      {
+        path: '/permiso-nomina',
+        name: 'permiso_nomina',
+        component: () =>
+          import(
+            'pages/recursosHumanos/permiso-empleado/view/PermisoEmpleadoPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+
     ],
   },
   {
