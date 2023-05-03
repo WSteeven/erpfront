@@ -6,6 +6,9 @@ export class Empleado extends EntidadAuditable {
   apellidos: string | null
   telefono: string | null
   fecha_nacimiento: string | null
+  tipo_sangre: string | null
+  dirrecion: string | null
+  estado_civil: string | null
   jefe: string | null
   email: string | null
   password: string | null
@@ -13,8 +16,16 @@ export class Empleado extends EntidadAuditable {
   canton: string | null
   estado: boolean | null
   cargo: number | null
+  area: number | null
+  num_cuenta: string | null
+  banco: number | null
+  salario: number | null
   roles: string[] | string // | null
   grupo: number | null
+  fecha_ingreso: string | null
+  fecha_salida: string | null
+  tipo_contrato: number | null
+  sede: number | null
   disponible: boolean
   es_lider: boolean
   tiene_grupo: boolean
@@ -28,6 +39,8 @@ export class Empleado extends EntidadAuditable {
   casa_propia: boolean
   vive_con_discapacitados: boolean
   responsable_discapacitados: boolean
+  tiene_discapacidad: boolean
+  observacion: string | null
 
   grupo_id: number | null
 
@@ -38,6 +51,9 @@ export class Empleado extends EntidadAuditable {
     this.apellidos = null
     this.telefono = null
     this.fecha_nacimiento = null
+    this.tipo_sangre = null
+    this.dirrecion = null
+    this.estado_civil = null
     this.jefe = null
     this.email = null
     this.password = null
@@ -45,8 +61,16 @@ export class Empleado extends EntidadAuditable {
     this.canton = null
     this.estado = true
     this.cargo = null
+    this.area = null
+    this.num_cuenta = null
+    this.banco = null
+    this.salario = null
     this.roles = []
     this.grupo = null
+    this.fecha_ingreso = null
+    this.fecha_salida = null
+    this.tipo_contrato = null
+    this.sede=null
     this.disponible = true
     this.es_lider = false
     this.grupo_id = null
@@ -61,5 +85,7 @@ export class Empleado extends EntidadAuditable {
     this.casa_propia = true
     this.vive_con_discapacitados = false
     this.responsable_discapacitados = false
+    this.tiene_discapacidad = false
+    this.observacion = null
   }
 }

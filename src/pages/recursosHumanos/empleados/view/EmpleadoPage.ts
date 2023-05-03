@@ -40,6 +40,11 @@ export default defineComponent({
         const opciones_roles = ref([])
         const opciones_cargos = ref([])
         const opciones_empleados = ref([])
+        const estado_civiles = ref([{id:1, nombre:'Soltero'}, {id:2, nombre:'Casado'}, {id:3, nombre:'Divorciado'}, {id:4, nombre:'Viudo'}])
+        const areas = ref([{id:1, nombre:'Administrativo'}, {id:2, nombre:'Tecnico'},])
+        const tipos_contrato = ref([{id:1, nombre:'Indefinido'}, {id:2, nombre:'Emergente'}, {id:3, nombre:'Obra o tipo de Negociacion'}])
+        const sedes = ref([{id:1, nombre:'Quito'}, {id:2, nombre:'Guayaquil'}, {id:3, nombre:'Cuenca'}])
+        const bancos = ref([{id:1,nombre:'Produbanco'}])
         cargarVista(async () => {
             obtenerListados({
                 cantones: new CantonController(),
@@ -74,6 +79,18 @@ export default defineComponent({
                 minlength: minLength(10),
                 maxlength: maxLength(10)
             },
+            dirrecion: { required },
+            tipo_sangre: { required },
+            derreccion: { required },
+            estado_civil: { required },
+            area: { required },
+            tipo_contrato: { required },
+            sede: { required },
+            banco: { required },
+            num_cuenta: { required },
+            salario: { required },
+            fecha_ingreso: { required },
+            fecha_salida: { required },
             nombres: { required },
             apellidos: { required },
             jefe: { required },
@@ -81,6 +98,7 @@ export default defineComponent({
             usuario: { required },
             fecha_nacimiento: { required },
             cargo: { required },
+            observacion: { required },
             roles: { required },
             estado: { required },
             grupo: { required: requiredIf(() => empleado.tiene_grupo) },
@@ -97,9 +115,6 @@ export default defineComponent({
         /********
          * Hooks
          ********/
-        onBeforeModificar(() => {
-
-        })
 
         onConsultado(() => empleado.tiene_grupo = !!empleado.grupo)
 
@@ -122,6 +137,12 @@ export default defineComponent({
             opciones_empleados,
             opcionesEstados,
             maskFecha,
+            estado_civiles,
+            areas,
+            tipos_contrato,
+            sedes,
+            bancos,
+            //metodos
 
             //  FILTROS
             //filtro de empleados
