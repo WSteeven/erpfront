@@ -156,6 +156,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title:'Empleados',
+          link: 'empleados',
+          icon: 'bi-person-lines-fill',
+          can: store.can('puede.ver.empleados')
+        },
+        {
           title: 'Marcas',
           link: 'marcas',
           can: store.esActivosFijos,//store.can('puede.ver.marcas'),
@@ -238,7 +244,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-circle',
-          can: store.esBodeguero,
+          can: store.esBodeguero || store.esContabilidad,
           children: [
             {
               title: 'Reporte de ingresos',

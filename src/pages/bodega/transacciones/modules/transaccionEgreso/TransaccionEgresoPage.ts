@@ -50,8 +50,8 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
-    const { confirmar, prompt } = useNotificaciones()
+    const { onConsultado, onReestablecer, onGuardado, onBeforeGuardar } = mixin.useHooks()
+    const { confirmar, prompt, notificarAdvertencia } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
@@ -59,6 +59,7 @@ export default defineComponent({
     const pedidoStore = usePedidoStore()
     const transferenciaStore = useTransferenciaStore()
     const inventarioStore = useInventarioStore()
+    const $q = useNotificacionStore().$q ?? useQuasar()
 
     //orquestador
     const {
@@ -150,6 +151,25 @@ export default defineComponent({
       listadoPedido.value = []
       transaccion.pedido = null
     })
+    /* onBeforeGuardar(() => {
+      const detalles_ids_duplicados = transaccion.listadoProductosTransaccion.map((v)=>v.detalle)
+      console.log(detalles_ids_duplicados)
+      const hasDuplicates = new Set(transaccion.listadoProductosTransaccion).size < transaccion.listadoProductosTransaccion.length
+      console.log('Tiene duplicados: ', hasDuplicates)
+      if (hasDuplicates) {
+        $q.notify({
+          html: true,
+          title: 'Confirmación',
+          message: 'Hay datos duplicados en el listado, ¿Está seguro que desea continuar?',
+          cancel: true,
+          persistent: true
+        })
+          .onCancel(() => {
+            console.log('Estamos dentro del confirmar, si acepta, esta todo bien, si rechaza no se debe enviar el formulario')
+            notificarAdvertencia('Se canceló el envío.')
+          })
+      }
+    }) */
 
 
     /*****************************************************************************************
@@ -275,6 +295,8 @@ export default defineComponent({
       transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable) ? pedidoStore.pedido.responsable : pedidoStore.pedido.responsable_id
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
       transaccion.per_autoriza = Number.isInteger(pedidoStore.pedido.per_autoriza) ? pedidoStore.pedido.per_autoriza : pedidoStore.pedido.per_autoriza_id
+      transaccion.per_retira = Number.isInteger(pedidoStore.pedido.per_retira) ? pedidoStore.pedido.per_retira : pedidoStore.pedido.per_retira_id
+      transaccion.retira_tercero = pedidoStore.pedido.retira_tercero
       listadoPedido.value = [...pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)]
       listadoPedido.value.sort((v, w) => ordernarListaString(v.producto, w.producto)) //ordena el listado de pedido
       //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada

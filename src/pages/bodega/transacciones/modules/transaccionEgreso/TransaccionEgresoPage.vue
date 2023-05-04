@@ -512,7 +512,7 @@
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
                       search: criterioBusquedaProducto,
-                      zeros:false
+                      zeros: false,
                     })
                   "
                   icon="search"
@@ -529,13 +529,16 @@
             </div>
           </div>
 
-          
+
+          {{ transaccion.listadoProductosTransaccion }}
 
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
