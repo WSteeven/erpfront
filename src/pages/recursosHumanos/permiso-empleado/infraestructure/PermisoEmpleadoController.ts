@@ -4,7 +4,7 @@ import { endpoints } from "config/api";
 
 export class PermisoEmpleadoController extends TransaccionSimpleController<PermisoEmpleado>{
   constructor(){
-    super(endpoints.cargos)
+    super(endpoints.permiso_empleado)
   }
 }
 
