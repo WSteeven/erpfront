@@ -897,7 +897,7 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <!--<q-chip
+        <q-chip
           v-if="props.value === estadosTransacciones['pendiente']"
           :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
@@ -907,7 +907,7 @@
             class="q-mr-xs"
           ></q-icon>
           PENDIENTE
-        </q-chip> -->
+        </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
           :class="{ 'bg-red-1': !$q.dark.isActive }"

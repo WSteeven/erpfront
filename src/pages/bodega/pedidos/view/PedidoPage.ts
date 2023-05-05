@@ -128,7 +128,9 @@ export default defineComponent({
       observacion_aut: { requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!) },
       sucursal: { required },
       per_retira: { requiredIfCheck: requiredIf(() => pedido.retira_tercero) },
-      responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico || esRRHH) },
+      responsable: {
+        requiredIfCoordinador: requiredIf(() => (esCoordinador || !esTecnico || esRRHH) && !pedido.para_cliente)
+      },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
       // fecha_limite: {
       //   required: requiredIf(() => pedido.tiene_fecha_limite!),
@@ -325,13 +327,13 @@ export default defineComponent({
         })
       },
       filtroClientes(val, update) {
-        if(val === '') {
-          update(()=>opciones_clientes.value = listadosAuxiliares.clientes)
+        if (val === '') {
+          update(() => opciones_clientes.value = listadosAuxiliares.clientes)
           return
         }
-        update(()=>{
+        update(() => {
           const needle = val.toLowerCase()
-          opciones_clientes.value = listadosAuxiliares.clientes.filter((v) =>v.razon_social.toLowerCase().indexOf(needle)>-1)
+          opciones_clientes.value = listadosAuxiliares.clientes.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
         })
       },
 

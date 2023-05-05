@@ -159,7 +159,7 @@ export const useMenuStore = defineStore('menu', () => {
           title:'Empleados',
           link: 'empleados',
           icon: 'bi-person-lines-fill',
-          can: store.can('puede.ver.empleados')
+          can: store.can('puede.ver.empleados') && store.esBodeguero
         },
         {
           title: 'Marcas',
@@ -238,8 +238,20 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Comprobantes',
-          link: 'gestionar-egresos',
-          icon: 'bi-circle',
+          icon: 'bi-folder',
+          children:[
+            {
+              title: 'Mis comprobantes',
+              link: 'gestionar-egresos',
+              icon: 'bi-file-text',
+            },
+            {
+              title: 'Todos los comprobantes',
+              link: 'egresos-filtrados',
+              icon: 'bi-files',
+              can: store.esBodeguero||store.esContabilidad ||store.esCoordinador|| store.esGerente
+            }
+          ]
         },
         {
           title: 'Reportes',

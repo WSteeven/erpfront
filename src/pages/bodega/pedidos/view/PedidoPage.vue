@@ -163,7 +163,7 @@
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.para_cliente"
-              label="¿Es para devolución al cliente?"
+              label="¿Es material para el cliente?"
               :disable="disabled || soloLectura"
               @update:model-value="checkCliente"
               outlined
@@ -514,7 +514,7 @@
                   @keydown.enter="
                     listarProductos({
                       sucursal_id: pedido.sucursal,
-                      cliente_id: pedido.cliente_id,
+                      cliente_id: pedido.cliente,
                     })
                   "
                   @blur="
@@ -530,7 +530,7 @@
                   @click="
                     listarProductos({
                       sucursal_id: pedido.sucursal,
-                      cliente_id: pedido.cliente_id,
+                      cliente_id: pedido.cliente,
                     })
                   "
                   icon="search"

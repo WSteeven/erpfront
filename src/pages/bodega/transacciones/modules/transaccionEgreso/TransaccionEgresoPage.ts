@@ -2,7 +2,7 @@
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, watch } from 'vue'
+import { Ref, defineComponent, ref, watch } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
@@ -43,6 +43,7 @@ import { ValidarListadoProductosEgreso } from './application/validaciones/Valida
 import { limpiarListado, ordernarListaString } from 'shared/utils'
 import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { useInventarioStore } from 'stores/inventario'
+import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -51,7 +52,7 @@ export default defineComponent({
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado, onBeforeGuardar } = mixin.useHooks()
-    const { confirmar, prompt, notificarAdvertencia } = useNotificaciones()
+    const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
@@ -70,20 +71,23 @@ export default defineComponent({
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
     } = useOrquestadorSelectorItemsTransaccion(transaccion, 'inventarios')
-
+    
 
     const usuarioLogueado = store.user
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
-
+    
     let soloLectura = ref(false)
     let puedeEditarCantidad = ref(true)
     let puedeDespacharMaterial = ref(false)
     let esVisibleAutorizacion = ref(false)
     let esVisibleTarea = ref(false)
-
+    let listadoPedido :Ref<any[]>= ref([])
+    let coincidencias = ref()
+    let listadoCoincidencias = ref()
+    
 
     const opciones_empleados = ref([])
     const opciones_autorizaciones = ref([])
@@ -151,26 +155,7 @@ export default defineComponent({
       listadoPedido.value = []
       transaccion.pedido = null
     })
-    /* onBeforeGuardar(() => {
-      const detalles_ids_duplicados = transaccion.listadoProductosTransaccion.map((v)=>v.detalle)
-      console.log(detalles_ids_duplicados)
-      const hasDuplicates = new Set(transaccion.listadoProductosTransaccion).size < transaccion.listadoProductosTransaccion.length
-      console.log('Tiene duplicados: ', hasDuplicates)
-      if (hasDuplicates) {
-        $q.notify({
-          html: true,
-          title: 'Confirmación',
-          message: 'Hay datos duplicados en el listado, ¿Está seguro que desea continuar?',
-          cancel: true,
-          persistent: true
-        })
-          .onCancel(() => {
-            console.log('Estamos dentro del confirmar, si acepta, esta todo bien, si rechaza no se debe enviar el formulario')
-            notificarAdvertencia('Se canceló el envío.')
-          })
-      }
-    }) */
-
+    
 
     /*****************************************************************************************
      * Validaciones
@@ -198,8 +183,9 @@ export default defineComponent({
     setValidador(v$.value)
 
     //validar que envien datos en el listado
-    const validarListadoProductos = new ValidarListadoProductosEgreso(transaccion)
+    const validarListadoProductos = new ValidarListadoProductosEgreso(transaccion, listadoPedido)
     mixin.agregarValidaciones(validarListadoProductos)
+    
 
 
     function eliminar({ entidad, posicion }) {
@@ -266,7 +252,7 @@ export default defineComponent({
       limpiarTransaccion()
       await transferenciaStore.cargarTransferencia(id)
       cargarDatosTransferencia()
-      console.log(transferenciaStore.transferencia)
+      // console.log(transferenciaStore.transferencia)
     }
 
     /**
@@ -280,9 +266,6 @@ export default defineComponent({
       transaccion.listadoProductosTransaccion = transferenciaStore.transferencia.listadoProductos
     }
 
-    let listadoPedido = ref<any[]>([])
-    let coincidencias = ref()
-    let listadoCoincidencias = ref()
 
     /**
      * Cargar los datos del pedido en el formulario de egreso.
@@ -300,6 +283,7 @@ export default defineComponent({
       listadoPedido.value = [...pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)]
       listadoPedido.value.sort((v, w) => ordernarListaString(v.producto, w.producto)) //ordena el listado de pedido
       //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
+      transaccion.cliente = Number.isInteger(pedidoStore.pedido.cliente) ? pedidoStore.pedido.cliente : pedidoStore.pedido.cliente_id
       if (pedidoStore.pedido.tarea) {
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(pedidoStore.pedido.tarea) ? pedidoStore.pedido.tarea : pedidoStore.pedido.tarea_id
@@ -307,7 +291,7 @@ export default defineComponent({
       }
       //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
       transaccion.listadoProductosTransaccion = Array.from(pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado))
-      console.log(transaccion.listadoProductosTransaccion)
+      // console.log(transaccion.listadoProductosTransaccion)
       transaccion.listadoProductosTransaccion.forEach((v) => v.cantidad = buscarCantidadPendienteEnPedido(v.id))
       let detalles_ids: any = []
       detalles_ids = listadoPedido.value.map((v) => v.id)
@@ -446,12 +430,8 @@ export default defineComponent({
       filtroMotivos(val) {
         console.log('filtro motivos', val)
         const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)
-        if (motivoSeleccionado[0]['nombre'] == motivos.egresoTransferenciaBodegas) {
-          console.log(motivoSeleccionado[0]['nombre'])
-          transaccion.es_transferencia = true
-        } else {
-          transaccion.es_transferencia = false
-        }
+        transaccion.aviso_liquidacion_cliente = (motivoSeleccionado[0]['nombre'] == motivos.egresoLiquidacionMateriales) ? true : false
+        transaccion.es_transferencia = (motivoSeleccionado[0]['nombre'] == motivos.egresoTransferenciaBodegas) ? true : false
       },
 
       filtroEmpleados(val, update) {

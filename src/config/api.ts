@@ -52,6 +52,7 @@ export const endpoints = {
   devoluciones: new Endpoint('devoluciones'),
   detalle_producto_transaccion: new Endpoint('detalles-productos-transacciones'),
   discos: new Endpoint('discos'),
+  comprobantes_filtrados: new Endpoint('comprobantes-filtrados'),
   egresos_filtrados: new Endpoint('egresos-filtrados'),
   empresas: new Endpoint('empresas'),
   rams: new Endpoint('rams'),
