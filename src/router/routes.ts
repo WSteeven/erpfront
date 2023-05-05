@@ -638,9 +638,17 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/recursosHumanos/permiso-empleado/view/PermisoEmpleadoPage.vue'
           ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/prestamo-anticipo',
+        name: 'prestamo_anticipo',
+        component: () =>
+          import(
+            'pages/recursosHumanos/prestamo-anticipo/view/PrestamoAnticipoPage.vue'
+          ),
         meta: { requiresAuth: false },
       },
-
     ],
   },
   {

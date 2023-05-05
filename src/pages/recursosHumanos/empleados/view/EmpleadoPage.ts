@@ -19,6 +19,7 @@ import { Empleado } from '../domain/Empleado'
 import { useQuasar } from 'quasar'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { TipoContratoController } from 'pages/recursosHumanos/tipo-contrato/infraestructure/TipoContratoController'
 
 export default defineComponent({
     components: { TabLayout, SelectorImagen },
@@ -42,13 +43,15 @@ export default defineComponent({
         const opciones_empleados = ref([])
         const estado_civiles = ref([{id:1, nombre:'Soltero'}, {id:2, nombre:'Casado'}, {id:3, nombre:'Divorciado'}, {id:4, nombre:'Viudo'}])
         const areas = ref([{id:1, nombre:'Administrativo'}, {id:2, nombre:'Tecnico'},])
-        const tipos_contrato = ref([{id:1, nombre:'Indefinido'}, {id:2, nombre:'Emergente'}, {id:3, nombre:'Obra o tipo de Negociacion'}])
-        const sedes = ref([{id:1, nombre:'Quito'}, {id:2, nombre:'Guayaquil'}, {id:3, nombre:'Cuenca'}])
+        const tipos_contrato = ref([])
+        const niveles_academicos = ref([{nombre:'Estudio Primario'}, {nombre:'Estudio Secundario'}, { nombre:'Titulo Superior'}])
         const bancos = ref([{id:1,nombre:'Produbanco'}])
+
         cargarVista(async () => {
             obtenerListados({
                 cantones: new CantonController(),
                 cargos: new CargoController(),
+                tipos_contrato: new TipoContratoController(),
                 roles: {
                     controller: new RolController(),
                     params: { campos: 'id,name' }
@@ -81,11 +84,9 @@ export default defineComponent({
             },
             dirrecion: { required },
             tipo_sangre: { required },
-            derreccion: { required },
             estado_civil: { required },
             area: { required },
             tipo_contrato: { required },
-            sede: { required },
             banco: { required },
             num_cuenta: { required },
             salario: { required },
@@ -95,6 +96,7 @@ export default defineComponent({
             apellidos: { required },
             jefe: { required },
             email: { required },
+            correo_personal: { required },
             usuario: { required },
             fecha_nacimiento: { required },
             cargo: { required },
@@ -111,6 +113,7 @@ export default defineComponent({
         opciones_roles.value = listadosAuxiliares.roles
         opciones_cargos.value = listadosAuxiliares.cargos
         opciones_empleados.value = listadosAuxiliares.empleados
+        tipos_contrato.value = listadosAuxiliares.tipos_contrato
 
         /********
          * Hooks
@@ -140,7 +143,7 @@ export default defineComponent({
             estado_civiles,
             areas,
             tipos_contrato,
-            sedes,
+            niveles_academicos,
             bancos,
             //metodos
 

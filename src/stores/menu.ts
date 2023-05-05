@@ -435,6 +435,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Permiso',
           link: 'permiso-nomina',
           icon: 'bi-circle',
+          can: store.can('puede.ver.permiso_nomina'),
+        },
+
+        {
+          title: 'Prestamos',
+          link: 'prestamo-anticipo',
+          icon: 'bi-circle',
           can: true//store.can('puede.ver.permiso_nomina'),
         },
       ],

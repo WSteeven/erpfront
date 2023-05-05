@@ -11,6 +11,7 @@ export class Empleado extends EntidadAuditable {
   estado_civil: string | null
   jefe: string | null
   email: string | null
+  correo_personal: string | null
   password: string | null
   usuario: string | null
   canton: string | null
@@ -25,7 +26,6 @@ export class Empleado extends EntidadAuditable {
   fecha_ingreso: string | null
   fecha_salida: string | null
   tipo_contrato: number | null
-  sede: number | null
   disponible: boolean
   es_lider: boolean
   tiene_grupo: boolean
@@ -41,7 +41,7 @@ export class Empleado extends EntidadAuditable {
   responsable_discapacitados: boolean
   tiene_discapacidad: boolean
   observacion: string | null
-
+  nivel_academico : string | null
   grupo_id: number | null
 
   constructor() {
@@ -56,6 +56,7 @@ export class Empleado extends EntidadAuditable {
     this.estado_civil = null
     this.jefe = null
     this.email = null
+    this.correo_personal = null
     this.password = null
     this.usuario = null
     this.canton = null
@@ -70,7 +71,6 @@ export class Empleado extends EntidadAuditable {
     this.fecha_ingreso = null
     this.fecha_salida = null
     this.tipo_contrato = null
-    this.sede=null
     this.disponible = true
     this.es_lider = false
     this.grupo_id = null
@@ -86,6 +86,7 @@ export class Empleado extends EntidadAuditable {
     this.vive_con_discapacitados = false
     this.responsable_discapacitados = false
     this.tiene_discapacidad = false
+    this.nivel_academico = null
     this.observacion = null
   }
 }
