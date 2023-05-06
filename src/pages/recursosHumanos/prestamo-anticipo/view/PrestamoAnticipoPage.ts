@@ -2,7 +2,7 @@
 import { configuracionColumnasPrestamoAnticipo } from '../domain/configuracionColumnasPrestamoAnticipo'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -31,7 +31,6 @@ export default defineComponent({
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
     const key_enter = ref(0)
-    const plazos = ref([{ num_cuota: 0, fecha_pago: null, valor_a_pagar: 0 }])
     const motivos = ref([])
     const tipos = ref([
       { id: 1, nombre: 'Prestamo Descuento' },
@@ -59,7 +58,9 @@ export default defineComponent({
       tipo: { required },
       tipo_prestamo: { required },
       fecha: { required },
+      vencimiento: { required },
       valor: { required },
+      plazos: { required },
       forma_pago: { required },
     }
     const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
@@ -78,20 +79,21 @@ export default defineComponent({
     })
     function tabla_plazos() {
       key_enter.value++
-      if (key_enter.value > 1) {
-        plazos.value = []
+      if (key_enter.value >= 1) {
+        prestamoAnticipo.plazos = []
       }
-      for (let index = 1; index <= plazo_pago.value.plazo; index++) {
+     const  valor_cuota = prestamoAnticipo.valor !== null
+      ? prestamoAnticipo.valor
+      : 0;
+      for (let index = 1; index <= prestamoAnticipo.plazo; index++) {
         const plazo = {
           num_cuota: index,
           fecha_pago: calcular_fechas(index, 'meses'),
           valor_a_pagar:
-            prestamoAnticipo.valor !== null
-              ? prestamoAnticipo.valor
-              : 0 / plazo_pago.value.plazo,
+          valor_cuota/ prestamoAnticipo.plazo,
         }
 
-        plazos.value.push(plazo)
+        prestamoAnticipo.plazos!.push(plazo)
       }
     }
     function calcular_fechas(cuota: number, plazo: string) {
@@ -119,13 +121,48 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, prestamoAnticipo)
     setValidador(v$.value)
+    function diferencia_fechas() {
+      //fecha actual
+      const fechaActual = new Date()
+      const fechaInicio = convertir_fecha(
+        prestamoAnticipo.fecha != null
+          ? prestamoAnticipo.fecha
+          : fechaActual.toString()
+      )
 
+      const fechaFin = convertir_fecha(
+        prestamoAnticipo.vencimiento != null
+          ? prestamoAnticipo.vencimiento
+          : fechaActual.toString()
+      )
+      const anios = fechaFin.getFullYear() - fechaInicio.getFullYear()
+      const meses = fechaFin.getMonth() - fechaInicio.getMonth()
+      const totalMeses = anios * 12 + meses
+      return totalMeses
+    }
+    function convertir_fecha(fecha: string) {
+      const dateString = fecha
+      const dateParts = dateString.split('-')
+      const dia = parseInt(dateParts[0])
+      const mes = parseInt(dateParts[1])-1
+      const anio = parseInt(dateParts[2])
+      return new Date(anio, mes, dia)
+    }
+    watchEffect(() => {
+      prestamoAnticipo.plazo = diferencia_fechas()
+      if(prestamoAnticipo.plazo > 0){
+        tabla_plazos()
+      }
+
+    })
     return {
       removeAccents,
       mixin,
       prestamoAnticipo,
       tipos_prestamo,
+      watchEffect,
       filteredTipoPrestamo,
+      plazo_pago,
       motivos,
       tipos,
       formas_pago,

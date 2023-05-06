@@ -108,6 +108,40 @@
               </template>
             </q-input>
           </div>
+          <!-- Plazo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Plazo </label>
+            <q-input v-model="prestamoAnticipo.plazo"  type="number" disable
+               outlined dense>
+
+            </q-input>
+          </div>
+            <!-- Fecha -->
+            <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Vence</label>
+            <q-input v-model="prestamoAnticipo.vencimiento"
+            :error="!!v$.vencimiento.$errors.length"
+              :disable="disabled"
+              @blur="v$.vencimiento.$touch"
+               outlined dense>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="prestamoAnticipo.vencimiento" :mask="maskFecha"  today-btn>
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.vencimiento.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
            <!-- Forma de pago -->
            <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Forma de pago</label>
