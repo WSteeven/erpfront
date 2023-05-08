@@ -167,7 +167,7 @@ export default defineComponent({
       required: false,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrarTodos'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -293,24 +293,19 @@ export default defineComponent({
       mostrarFiltros.value ? "Ocultar filtros" : "Mostrar filtros"
     )
 
-    function consultarCien() {
+    function filtrar() {
       console.log('consultar cien')
-    }
-
-    function consultarTodos() {
-      console.log('En essential table antes de filtrar todos')
-      // filtros.search = busqueda.value === "" ? null : busqueda.value
-      // listar({...filtros, ...filtrosBusqueda.value}, false)
       console.log(filtros.value)
-      emit('filtrarTodos', filtros.value)
+
+      refTableFilters.value.filtrar()
+
+      // emit('filtrar', filtros.value)
     }
 
     const filtros = ref()
 
-    function establecerFiltros(filtrosEditados) {
-      console.log('Estableciendo filtros')
-      console.log(filtrosEditados)
-      filtros.value = filtrosEditados
+    function establecerFiltros(uri: string) {
+      emit('filtrar', uri)
     }
 
     const refTableFilters = ref()
@@ -318,13 +313,17 @@ export default defineComponent({
       refTableFilters.value.resetearFiltros()
     }
 
+    function agregarFiltro() {
+      refTableFilters.value.agregarFiltro()
+    }
+
     return {
       refEditarModal,
       refTableFilters,
       resetearFiltros,
+      agregarFiltro,
       establecerFiltros,
-      consultarCien,
-      consultarTodos,
+      filtrar,
       grid,
       inFullscreen,
       editar,

@@ -151,14 +151,6 @@
         </div>
       </div>
 
-      <!-- Filtros -->
-      <table-filters
-        ref="refTableFilters"
-        v-if="permitirFiltrar && mostrarFiltros"
-        :configuracionColumnas="configuracionColumnas"
-        @filtrosEditados="establecerFiltros"
-      ></table-filters>
-
       <div
         v-if="permitirFiltrar"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
@@ -170,6 +162,17 @@
         <div class="row q-gutter-xs justify-end q-mb-md">
           <q-btn
             v-if="mostrarFiltros"
+            color="secondary"
+            no-caps
+            push
+            @click="agregarFiltro()"
+          >
+            <q-icon name="bi-plus"></q-icon>
+            Agregar filtro</q-btn
+          >
+
+          <!-- <q-btn
+            v-if="mostrarFiltros"
             color="grey-8"
             no-caps
             push
@@ -177,9 +180,19 @@
           >
             <q-icon name="bi-eraser" class="q-mr-sm" size="xs"></q-icon>
             Resetear filtros</q-btn
-          >
+          > -->
 
-          <q-btn-dropdown
+          <q-btn
+            v-if="mostrarFiltros"
+            color="positive"
+            no-caps
+            push
+            @click="filtrar()"
+          >
+            <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
+            Filtrar</q-btn
+          >
+          <!--<q-btn-dropdown
             v-if="mostrarFiltros"
             split
             color="primary"
@@ -204,7 +217,7 @@
                 </q-item-section>
               </q-item>
             </q-list>
-          </q-btn-dropdown>
+          </q-btn-dropdown> -->
 
           <q-btn
             color="primary"
@@ -220,6 +233,16 @@
             {{ tituloBotonFiltros }}</q-btn
           >
         </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="row col-12">
+        <table-filters
+          ref="refTableFilters"
+          v-if="permitirFiltrar && mostrarFiltros"
+          :configuracionColumnas="configuracionColumnas"
+          @filtrar="establecerFiltros"
+        ></table-filters>
       </div>
 
       <!-- Botones Header -->
@@ -853,7 +876,8 @@
     <template #body-cell-leida="props">
       <q-td :props="props">
         <span v-if="props.value == false || props.value == 0">
-          <q-icon class="bi-check-circle-fill" color="grey-4" size="sm"> </q-icon>
+          <q-icon class="bi-check-circle-fill" color="grey-4" size="sm">
+          </q-icon>
         </span>
         <span v-else>
           <q-icon class="bi-check-circle-fill" color="positive" size="sm">
@@ -1122,6 +1146,17 @@
 </template>
 
 <style lang="scss">
+/* .filtros {
+  position: relative;
+  left: -16px;
+  top: -16px;
+  right: 16px;
+  padding: 0;
+  margin: 0;
+  display: block;
+  width: 100%;
+} */
+
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 410px;

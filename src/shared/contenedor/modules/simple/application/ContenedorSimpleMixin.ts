@@ -142,10 +142,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     //})
   }
 
-  private async filtrar(params?: ParamsType) {
+  private async filtrar(uri: string) {
     this.cargarVista(async () => {
       try {
-        const { result } = await this.controller.filtrar(params)
+        const { result } = await this.controller.filtrar(uri)
         if (result.length == 0) this.notificaciones.notificarCorrecto('No se encontraron coincidencias.')
 
         this.refs.listado.value = result
