@@ -438,6 +438,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.permiso_nomina'),
         },
         {
+          title: 'Rol de Pagos',
+          link: 'rol-pago',
+          icon: 'bi-circle',
+          can: true//store.can('puede.ver.permiso_nomina'),
+        },
+        {
           title: 'Prestamos y Anticipos',
           icon: 'fa-solid fa-hand-holding-dollar',
           can: true,//store.can('puede.ver.modulo_recursos_humanos'),

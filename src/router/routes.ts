@@ -658,6 +658,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: false },
       },
+      {
+        path: '/rol-pago',
+        name: 'rol_pago',
+        component: () =>
+          import(
+            'pages/recursosHumanos/rol-pago/view/RolPagoPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
     ],
   },
   {
