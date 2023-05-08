@@ -11,7 +11,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { PrestamoAnticipoController } from '../infraestructure/PrestamoAnticipoController'
+import { PrestamoController } from '../infraestructure/PrestamoController'
 import { Prestamo} from '../domain/Prestamo'
 import { removeAccents } from 'shared/utils'
 import { accionesTabla, maskFecha } from 'config/utils'
@@ -25,7 +25,7 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(
       Prestamo,
-      new PrestamoAnticipoController()
+      new PrestamoController()
     )
     const {
       entidad: prestamo,

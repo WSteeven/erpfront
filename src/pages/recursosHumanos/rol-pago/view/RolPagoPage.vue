@@ -11,7 +11,7 @@
              <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Empleado</label>
           <q-select
-            v-model="anticipo.empleado"
+            v-model="rolpago.empleado"
             :options="empleados"
             transition-show="jump-up"
             transition-hide="jump-down"

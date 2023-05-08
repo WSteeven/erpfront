@@ -1,8 +1,8 @@
 import { TransaccionSimpleController } from "shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController";
-import { PrestamoAnticipo } from "../domain/Prestamo";
+import { Prestamo } from "../domain/Prestamo";
 import { endpoints } from "config/api";
 
-export class PrestamoAnticipoController extends TransaccionSimpleController<PrestamoAnticipo>{
+export class PrestamoController extends TransaccionSimpleController<Prestamo>{
   constructor(){
     super(endpoints.prestamo_anticipo)
   }

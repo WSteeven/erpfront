@@ -28,7 +28,7 @@ export class RolPago extends EntidadAuditable {
     this.empleado = null
     this.empleado_info = null
     this.salario = null
-    this.dias = null
+    this.dias = 30
     this.sueldo = null
     this.decimo_tercero = null
     this.decimo_cuarto = null
