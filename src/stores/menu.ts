@@ -437,13 +437,26 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.permiso_nomina'),
         },
-
         {
-          title: 'Prestamos',
-          link: 'prestamo-anticipo',
-          icon: 'bi-circle',
-          can: true//store.can('puede.ver.permiso_nomina'),
-        },
+          title: 'Prestamos y Anticipos',
+          icon: 'fa-solid fa-hand-holding-dollar',
+          can: true,//store.can('puede.ver.modulo_recursos_humanos'),
+          children: [
+            {
+              title: 'Prestamos',
+              link: 'prestamo',
+              icon: 'bi-circle',
+              can: true//store.can('puede.ver.permiso_nomina'),
+            },
+            {
+              title: 'Anticipos',
+              link: 'anticipo',
+              icon: 'bi-circle',
+              can: true//store.can('puede.ver.permiso_nomina'),
+            },
+          ]},
+
+
       ],
     },
     //Modulo Activos Fijos

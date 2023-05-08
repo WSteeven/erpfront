@@ -1,5 +1,6 @@
 // Dependencias
-import { configuracionColumnasPrestamoAnticipo } from '../domain/configuracionColumnasPrestamoAnticipo'
+import { configuracionColumnasPrestamo} from '../domain/configuracionColumnasPrestamo'
+import { configuracionColumnasPlazoPrestamo } from '../domain/configuracionColumnasPlazoPrestamo'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed, watchEffect } from 'vue'
@@ -11,20 +12,22 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PrestamoAnticipoController } from '../infraestructure/PrestamoAnticipoController'
-import { PrestamoAnticipo } from '../domain/PrestamoAnticipo'
+import { Prestamo} from '../domain/Prestamo'
 import { removeAccents } from 'shared/utils'
-import { maskFecha } from 'config/utils'
+import { accionesTabla, maskFecha } from 'config/utils'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: { TabLayout, SelectorImagen, EssentialTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      PrestamoAnticipo,
+      Prestamo,
       new PrestamoAnticipoController()
     )
     const {
-      entidad: prestamoAnticipo,
+      entidad: prestamo,
       disabled,
       listadosAuxiliares,
     } = mixin.useReferencias()
@@ -55,45 +58,31 @@ export default defineComponent({
 
     //Reglas de validacion
     const reglas = {
-      tipo: { required },
-      tipo_prestamo: { required },
       fecha: { required },
       vencimiento: { required },
       valor: { required },
       plazos: { required },
       forma_pago: { required },
     }
+    prestamo.plazos = []
     const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
-    const filteredTipoPrestamo = computed(() => {
-      if (prestamoAnticipo.tipo) {
-        return tipos_prestamo.value.filter(
-          (item) =>
-            item.tipo ===
-            parseInt(
-              prestamoAnticipo.tipo == null ? '0' : prestamoAnticipo.tipo
-            )
-        )
-      } else {
-        return tipos_prestamo.value
-      }
-    })
     function tabla_plazos() {
       key_enter.value++
       if (key_enter.value >= 1) {
-        prestamoAnticipo.plazos = []
+        prestamo.plazos = []
       }
-     const  valor_cuota = prestamoAnticipo.valor !== null
-      ? prestamoAnticipo.valor
+     const  valor_cuota = prestamo.valor !== null
+      ? prestamo.valor
       : 0;
-      for (let index = 1; index <= prestamoAnticipo.plazo; index++) {
+      for (let index = 1; index <= prestamo.plazo; index++) {
         const plazo = {
           num_cuota: index,
           fecha_pago: calcular_fechas(index, 'meses'),
           valor_a_pagar:
-          valor_cuota/ prestamoAnticipo.plazo,
+          valor_cuota/ prestamo.plazo,
         }
 
-        prestamoAnticipo.plazos!.push(plazo)
+        prestamo.plazos!.push(plazo)
       }
     }
     function calcular_fechas(cuota: number, plazo: string) {
@@ -117,22 +106,23 @@ export default defineComponent({
           fecha = hoy.getTime() + year * cuota
           break
       }
-      return fecha
+      const fecha_final = new Date(fecha);
+      return fecha_final.toLocaleDateString('es-ES',{day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
     }
-    const v$ = useVuelidate(reglas, prestamoAnticipo)
+    const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
     function diferencia_fechas() {
       //fecha actual
       const fechaActual = new Date()
       const fechaInicio = convertir_fecha(
-        prestamoAnticipo.fecha != null
-          ? prestamoAnticipo.fecha
+        prestamo.fecha != null
+          ? prestamo.fecha
           : fechaActual.toString()
       )
 
       const fechaFin = convertir_fecha(
-        prestamoAnticipo.vencimiento != null
-          ? prestamoAnticipo.vencimiento
+        prestamo.vencimiento != null
+          ? prestamo.vencimiento
           : fechaActual.toString()
       )
       const anios = fechaFin.getFullYear() - fechaInicio.getFullYear()
@@ -149,8 +139,8 @@ export default defineComponent({
       return new Date(anio, mes, dia)
     }
     watchEffect(() => {
-      prestamoAnticipo.plazo = diferencia_fechas()
-      if(prestamoAnticipo.plazo > 0){
+      prestamo.plazo = diferencia_fechas()
+      if(prestamo.plazo > 0){
         tabla_plazos()
       }
 
@@ -158,10 +148,10 @@ export default defineComponent({
     return {
       removeAccents,
       mixin,
-      prestamoAnticipo,
+      prestamo,
       tipos_prestamo,
       watchEffect,
-      filteredTipoPrestamo,
+      configuracionColumnasPlazoPrestamo,
       plazo_pago,
       motivos,
       tipos,
@@ -169,7 +159,8 @@ export default defineComponent({
       maskFecha,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasPrestamoAnticipo,
+      configuracionColumnas: configuracionColumnasPrestamo,
+      accionesTabla
     }
   },
 })

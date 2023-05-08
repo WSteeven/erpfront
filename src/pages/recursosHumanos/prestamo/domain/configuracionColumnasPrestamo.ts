@@ -1,14 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { PrestamoAnticipo } from './PrestamoAnticipo'
+import { Prestamo } from './Prestamo'
 
-export const configuracionColumnasPrestamoAnticipo: ColumnConfig<PrestamoAnticipo>[] = [
-    {
-        name: 'tipo_info',
-        field: 'tipo_info',
-        label: 'Tipo',
-        align: 'left',
-        sortable: true
-    },
+export const configuracionColumnasPrestamo: ColumnConfig<Prestamo>[] = [
     {
       name: 'fecha',
       field: 'fecha',

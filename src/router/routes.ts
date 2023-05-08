@@ -641,11 +641,20 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/prestamo-anticipo',
-        name: 'prestamo_anticipo',
+        path: '/prestamo',
+        name: 'prestamo',
         component: () =>
           import(
-            'pages/recursosHumanos/prestamo-anticipo/view/PrestamoAnticipoPage.vue'
+            'pages/recursosHumanos/prestamo/view/PrestamoPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/anticipo',
+        name: 'anticipo',
+        component: () =>
+          import(
+            'pages/recursosHumanos/anticipo/view/AnticipoPage.vue'
           ),
         meta: { requiresAuth: false },
       },
