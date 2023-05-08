@@ -17,6 +17,7 @@ import { removeAccents } from 'shared/utils'
 import { accionesTabla, maskFecha } from 'config/utils'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 
 export default defineComponent({
@@ -49,15 +50,22 @@ export default defineComponent({
       { id: 2, nombre: 'Anticipo de Sueldo de empleado', tipo: 2 },
       { id: 2, nombre: 'Anticipo de Prestamo quirorafario', tipo: 2 },
     ])
+    const empleados = ref([])
     cargarVista(async () => {
       obtenerListados({
         motivos: new MotivoPermisoEmpleadoController(),
+        empleados: {
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos',estado: 1 },
+        }
       })
+      empleados.value = listadosAuxiliares.empleados
     })
     motivos.value = listadosAuxiliares.motivos
 
     //Reglas de validacion
     const reglas = {
+      empleado: { required},
       fecha: { required },
       vencimiento: { required },
       valor: { required },
@@ -78,10 +86,9 @@ export default defineComponent({
         const plazo = {
           num_cuota: index,
           fecha_pago: calcular_fechas(index, 'meses'),
-          valor_a_pagar:
-          valor_cuota/ prestamo.plazo,
+          valor_a_pagar:(
+          valor_cuota/ prestamo.plazo).toFixed(2),
         }
-
         prestamo.plazos!.push(plazo)
       }
     }
@@ -145,12 +152,28 @@ export default defineComponent({
       }
 
     })
+    function filtrarEmpleado(val, update) {
+      if (val === '') {
+        update(() => {
+          empleados.value = listadosAuxiliares.empleados
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        empleados.value = listadosAuxiliares.empleados.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
     return {
       removeAccents,
       mixin,
       prestamo,
+      empleados,
       tipos_prestamo,
       watchEffect,
+      filtrarEmpleado,
       configuracionColumnasPlazoPrestamo,
       plazo_pago,
       motivos,

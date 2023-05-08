@@ -7,11 +7,11 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
-                <!-- Empleados -->
-          <div class="col-12 col-md-3">
+             <!-- Empleados -->
+             <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Empleado</label>
           <q-select
-            v-model="prestamo.empleado"
+            v-model="anticipo.empleado"
             :options="empleados"
             transition-show="jump-up"
             transition-hide="jump-down"
@@ -25,7 +25,6 @@
             use-input
             input-debounce="0"
             @filter="filtrarEmpleado"
-            @update:model-value="saldo_anterior()"
             :option-value="(v) => v.id"
             :option-label="(v) => v.nombres + ' ' + v.apellidos"
             emit-value
@@ -48,12 +47,12 @@
             <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
-            <q-input v-model="prestamo.fecha" placeholder="Obligatorio" :error="!!v$.fecha.$errors.length"
+            <q-input v-model="anticipo.fecha" placeholder="Obligatorio" :error="!!v$.fecha.$errors.length"
               :disable="disabled" @blur="v$.fecha.$touch" outlined dense>
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="prestamo.fecha" :mask="maskFecha"  today-btn>
+                    <q-date v-model="anticipo.fecha" :mask="maskFecha"  today-btn>
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
@@ -72,7 +71,7 @@
           <!-- Valor  -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Valor </label>
-            <q-input v-model="prestamo.valor" placeholder="Obligatorio" type="number" :disable="disabled"
+            <q-input v-model="anticipo.valor" placeholder="Obligatorio" type="number" :disable="disabled"
               :error="!!v$.valor.$errors.length" @blur="v$.valor.$touch" outlined dense>
               <template v-slot:error>
                 <div v-for="error of v$.valor.$errors" :key="error.$uid">
@@ -81,45 +80,12 @@
               </template>
             </q-input>
           </div>
-          <!-- Plazo -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Plazo </label>
-            <q-input v-model="prestamo.plazo"  type="number" disable
-               outlined dense>
 
-            </q-input>
-          </div>
-            <!-- Fecha -->
-            <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Vence</label>
-            <q-input v-model="prestamo.vencimiento"
-            :error="!!v$.vencimiento.$errors.length"
-              :disable="disabled"
-              @blur="v$.vencimiento.$touch"
-               outlined dense>
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="prestamo.vencimiento" :mask="maskFecha"  today-btn>
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-              <template v-slot:error>
-                <div v-for="error of v$.vencimiento.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
            <!-- Forma de pago -->
            <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Forma de pago</label>
               <q-select
-                v-model="prestamo.forma_pago"
+                v-model="anticipo.forma_pago"
                 :options="formas_pago"
                 transition-show="jump-up"
                 transition-hide="jump-down"
@@ -151,17 +117,9 @@
 
         </div>
       </q-form>
-      <essential-table v-if="prestamo.plazo > 0" titulo="Plazo de Prestamo"
-      :configuracionColumnas="[...configuracionColumnasPlazoPrestamo,accionesTabla]"
-      :datos="prestamo.plazos"
-      :permitirConsultar="false"
-      :permitirEditar="false"
-      :permitirEliminar="false"
-      >
-    </essential-table>
     </template>
   </tab-layout>
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 
-<script src="./PrestamoPage.ts"></script>
+<script src="./RolPagoPage.ts"></script>

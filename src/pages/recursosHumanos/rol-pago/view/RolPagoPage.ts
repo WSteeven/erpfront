@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasAnticipo } from '../domain/configuracionColumnasAnticipo'
+import { configuracionColumnasRolPago } from '../domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed, watchEffect } from 'vue'
@@ -10,8 +10,8 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { AnticipoController } from '../infraestructure/AnticipoController'
-import { Anticipo } from '../domain/Anticipo'
+import { RolPagoController } from '../infraestructure/RolPagoController'
+import { RolPago } from '../domain/RolPago'
 import { removeAccents } from 'shared/utils'
 import { accionesTabla, maskFecha } from 'config/utils'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
@@ -22,11 +22,11 @@ export default defineComponent({
   components: { TabLayout, SelectorImagen},
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      Anticipo,
-      new AnticipoController()
+      RolPago,
+      new RolPagoController()
     )
     const {
-      entidad: anticipo,
+      entidad: rolpago,
       disabled,
       listadosAuxiliares,
     } = mixin.useReferencias()
@@ -36,7 +36,7 @@ export default defineComponent({
     const motivos = ref([])
     const tipos = ref([
       { id: 1, nombre: 'Prestamo Descuento' },
-      { id: 2, nombre: 'Anticipo' },
+      { id: 2, nombre: 'RolPago' },
     ])
     const formas_pago = ref([
       { id: 1, nombre: 'Efectivo' },
@@ -45,8 +45,8 @@ export default defineComponent({
     ])
     const tipos_prestamo = ref([
       { id: 1, nombre: 'Prestamo Empresa', tipo: 1 },
-      { id: 2, nombre: 'Anticipo de Sueldo de empleado', tipo: 2 },
-      { id: 2, nombre: 'Anticipo de Prestamo quirorafario', tipo: 2 },
+      { id: 2, nombre: 'RolPago de Sueldo de empleado', tipo: 2 },
+      { id: 2, nombre: 'RolPago de Prestamo quirorafario', tipo: 2 },
     ])
     const empleados = ref([])
     cargarVista(async () => {
@@ -63,14 +63,17 @@ export default defineComponent({
     //Reglas de validacion
     const reglas = {
       empleado: {required},
-      fecha: { required },
-      valor: { required },
-      forma_pago: { required },
+      salario: {required},
+      dias: {required},
+      alimentacion: {required},
+      prestamo_quirorafario: {required},
+      prestamo_hipotecario: {required},
+      extension_conyugal: {required},
     }
 
 
 
-    const v$ = useVuelidate(reglas, anticipo)
+    const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
     function filtrarEmpleado(val, update) {
       if (val === '') {
@@ -91,7 +94,7 @@ export default defineComponent({
     return {
       removeAccents,
       mixin,
-      anticipo,
+      rolpago,
       tipos_prestamo,
       motivos,
       tipos,
@@ -101,7 +104,7 @@ export default defineComponent({
       filtrarEmpleado,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasAnticipo,
+      configuracionColumnas: configuracionColumnasRolPago,
       accionesTabla
     }
   },
