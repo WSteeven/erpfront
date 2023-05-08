@@ -7,6 +7,17 @@
     :accion1="botonImprimir"
   >
     <template #formulario>
+      <div v-if="transaccion.aviso_liquidacion_cliente"
+        class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
+      >
+        <q-icon
+          name="bi-exclamation-triangle-fill"
+          class="q-mr-sm"
+          size="1em"
+        ></q-icon
+        ><b>&nbsp; Advertencia</b>
+        <div>Esta transacción no se cargará al stock de ningún empleado</div>
+      </div>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-lg">
           <!-- N° transaccion -->
@@ -512,7 +523,7 @@
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
                       search: criterioBusquedaProducto,
-                      zeros:false
+                      zeros: false,
                     })
                   "
                   icon="search"
@@ -529,13 +540,14 @@
             </div>
           </div>
 
-          
 
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"

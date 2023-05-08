@@ -53,13 +53,28 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
             statusLoading.activar()
             const axios = AxiosHttpRepository.getInstance()
             // const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_egresos)+'/filtrar?criterio='+filtro
-            const url =axios.getEndpoint(endpoints.egresos_filtrados)+'?estado='+filtro
+            const url =axios.getEndpoint(endpoints.comprobantes_filtrados)+'?estado='+filtro
             console.log(url)
             const response: AxiosResponse = await axios.get(url)
             return response.data.results
         } catch (error:any) {
             const errorApi = new ApiError(error)
             const mensajes: string[] = errorApi.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
+        }finally{
+            statusLoading.desactivar()
+        }
+    }
+    async function filtrarTransaccionesEgresos(filtro){
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = axios.getEndpoint(endpoints.egresos_filtrados)+'?estado='+filtro
+            const response: AxiosResponse=await axios.get(url)
+            return response.data.results
+        } catch (error:any) {
+            const errorApi = new ApiError(error)
+            const mensajes:string[]= errorApi.erroresValidacion
             notificarMensajesError(mensajes, notificaciones)
         }finally{
             statusLoading.desactivar()
@@ -83,6 +98,7 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
         idTransaccion,
         showPreview,
         filtrarEgresosComprobantes,
+        filtrarTransaccionesEgresos,
         imprimirEgreso,
 
     }

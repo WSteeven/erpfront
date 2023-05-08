@@ -156,6 +156,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title:'Empleados',
+          link: 'empleados',
+          icon: 'bi-person-lines-fill',
+          can: store.can('puede.ver.empleados') && store.esBodeguero
+        },
+        {
           title: 'Marcas',
           link: 'marcas',
           can: store.esActivosFijos,//store.can('puede.ver.marcas'),
@@ -232,13 +238,25 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Comprobantes',
-          link: 'gestionar-egresos',
-          icon: 'bi-circle',
+          icon: 'bi-folder',
+          children:[
+            {
+              title: 'Mis comprobantes',
+              link: 'gestionar-egresos',
+              icon: 'bi-file-text',
+            },
+            {
+              title: 'Todos los comprobantes',
+              link: 'egresos-filtrados',
+              icon: 'bi-files',
+              can: store.esBodeguero||store.esContabilidad ||store.esCoordinador|| store.esGerente
+            }
+          ]
         },
         {
           title: 'Reportes',
           icon: 'bi-circle',
-          can: store.esBodeguero,
+          can: store.esBodeguero || store.esContabilidad,
           children: [
             {
               title: 'Reporte de ingresos',
@@ -256,13 +274,13 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-dash',
             },
             {
-              title: 'Reporte item',
-              link: 'reporte-item1',
+              title: 'Reporte de inventario',
+              link: 'reporte-inventario',
               icon: 'bi-dash',
             },
             {
-              title: 'Reporte item',
-              link: 'reporte-item2',
+              title: 'Kardex',
+              link: 'kardex',
               icon: 'bi-dash',
             },
           ]
@@ -351,7 +369,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Autorizar Transferencia',
               link: 'autorizar-transferencia',
               icon: 'bi-circle',
-              can: store.can('puede.ver.autorizar_transferencia'),
+              can: true,
             },
           ]
         },

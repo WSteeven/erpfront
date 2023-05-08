@@ -59,6 +59,15 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
   function agregar(notificacion: Notificacion) {
     listadoNotificaciones.value.unshift(notificacion)
   }
+  
+  /**
+   * Actualiza las notificaciones obtenidas desde la base de datos.
+   * @param {Notificacion} notificacion
+   */
+  function actualizar() {
+    listar()
+  }
+
 
   async function marcarLeida() {
     const indiceEncontrado = listadoNotificaciones.value.findIndex((v: Notificacion) => v.id === idNotificacion.value)
@@ -80,6 +89,7 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
     accionNotificacion,
     listar,
     agregar,
+    actualizar,
     marcarLeida,
   }
 })

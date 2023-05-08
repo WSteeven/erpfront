@@ -168,7 +168,7 @@ export default defineComponent({
       tipo: string
     ): Promise<void> {
        const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_semanal_gastos_del_' + valor.fecha_inicio + '_al_' +valor.fecha_fin
+      const filename = 'reporte_semanal_consolidado_del_' + valor.fecha_inicio + '_al_' +valor.fecha_fin
       switch (tipo) {
         case 'excel':
           const url_excel =

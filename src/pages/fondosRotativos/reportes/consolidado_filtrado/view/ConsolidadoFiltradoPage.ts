@@ -228,9 +228,7 @@ export default defineComponent({
     function filtarSubdetalles(val, update) {
       if (val === '') {
         update(() => {
-          sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-            (v) => v.id_detalle_viatico == consolidadofiltrado.detalle
-          )
+          sub_detalles.value = listadosAuxiliares.sub_detalles
         })
         return
       }

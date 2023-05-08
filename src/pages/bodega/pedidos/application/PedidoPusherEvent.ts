@@ -21,6 +21,7 @@ export class PedidoPusherEvent {
     const pedidoCreado = pusher.subscribe('pedidos-tracker-' + this.store.user.id)
     pedidoCreado.bind('pedido-event', function (e) {
       notificacionStore.agregar(e.notificacion)
+      notificacionStore.actualizar()
       notificarCorrecto('Tienes un pedido esperando ser atendido')
     })
 
@@ -29,6 +30,7 @@ export class PedidoPusherEvent {
       const pedidoAutorizado = pusher.subscribe('pedidos-aprobados-' + rolesSistema.bodega)
       pedidoAutorizado.bind('pedido-event', function (e) {
         notificacionStore.agregar(e.notificacion)
+        notificacionStore.actualizar()
         notificarCorrecto('Tienes un pedido esperando ser despachado')
       })
     }

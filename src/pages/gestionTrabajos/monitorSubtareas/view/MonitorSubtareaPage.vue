@@ -48,7 +48,7 @@
       @tab-seleccionado="filtrarSubtareas"
       :tabDefecto="tabActual"
       :altoFijo="false"
-      @filtrarTodos="filtrarTodos"
+      @filtrar="aplicarFiltro"
     ></essential-table-tabs>
 
     <modales-entidad :comportamiento="modalesSubtarea" :mixin-modal="mixin" />

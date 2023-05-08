@@ -20,10 +20,10 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       }, */
       {
-        path:'/imagen',
+        path: '/imagen',
         name: 'imagen',
         component: () => import('pages/bodega/pedidos/view/imagenComprimida.vue'),
-        meta: { requiresAuth: false},
+        meta: { requiresAuth: false },
       },
       {
         path: '/proyectos',
@@ -181,6 +181,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: '/egresos-filtrados',
+        name: 'egresos_filtrados',
+        component: () =>
+          import('pages/bodega/comprobantes/view/ComprobantePage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/notificaciones',
         name: 'notificaciones',
         component: () =>
@@ -300,6 +307,25 @@ const routes: RouteRecordRaw[] = [
             'pages/bodega/transferencia/view/TransferenciaPage.vue'
           ),
         meta: { requiresAuth: true },
+      },
+      //reportes de bodega
+      {
+        path: '/reporte-inventario',
+        name: 'reporte_inventario',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_inventario/view/ReporteInventarioPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/kardex',
+        name: 'kardex',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_seguimiento_detalle/view/SeguimientoDetallePage.vue'
+          ),
+        meta: { requiresAuth: false },
       },
 
       //Routes for Recursos Humanos

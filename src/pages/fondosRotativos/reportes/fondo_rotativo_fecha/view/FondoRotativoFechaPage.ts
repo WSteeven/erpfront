@@ -67,7 +67,7 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
@@ -136,14 +136,11 @@ export default defineComponent({
       valor: FondoRotativoFecha,
       tipo: string
     ): Promise<void> {
-       const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_semanal_gastos_del_' + valor.fecha_inicio + '_al_' +valor.fecha_fin
+      const axios = AxiosHttpRepository.getInstance()
+      const filename = 'reporte_semanal_gastos_del_' + valor.fecha_inicio + '_al_' + valor.fecha_fin
       switch (tipo) {
         case 'excel':
-          const url_excel =
-            apiConfig.URL_BASE +
-            '/' +
-            axios.getEndpoint(endpoints.fondo_rotativo_fecha_excel)
+          const url_excel =apiConfig.URL_BASE +'/' +axios.getEndpoint(endpoints.fondo_rotativo_fecha_excel)
           imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
           break
         case 'pdf':

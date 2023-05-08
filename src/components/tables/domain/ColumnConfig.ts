@@ -1,4 +1,4 @@
-type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen'
+type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime'
 type align = 'left' | 'center' | 'right'
 
 export interface ColumnConfig<T> {
@@ -15,5 +15,5 @@ export interface ColumnConfig<T> {
   options?: any[]
   hint?: string,
   requerido?: boolean
-  // filtrar?: boolean
+  filtrar?: boolean
 }
