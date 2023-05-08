@@ -24,9 +24,9 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         sortable: true,
     },
     {
-        name: 'comprobante',
-        field: 'comprobante',
-        label: 'Factura',
+        name: 'responsable',
+        field: 'responsable',
+        label: 'Responsable',
         align: 'left',
         sortable: true,
     },

@@ -10,6 +10,7 @@ import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayout
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -32,10 +33,11 @@ import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { LocalStorage } from 'quasar'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad },
+  components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad, SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
@@ -69,6 +71,7 @@ export default defineComponent({
     const esTecnico = store.esTecnico
     const esActivosFijos = store.esActivosFijos
     const esRRHH = store.esRecursosHumanos
+    const esGerente = store.esGerente
 
     onReestablecer(() => {
       soloLectura.value = false
@@ -80,6 +83,7 @@ export default defineComponent({
       }
     })
 
+    const opciones_clientes = ref([])
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
     const opciones_tareas = ref([])
@@ -103,6 +107,14 @@ export default defineComponent({
             finalizado: 0
           }
         },
+        clientes: {
+          controller: new ClienteController(),
+          params: {
+            campos: 'id,empresa_id',
+            requiere_bodega: 1,
+            estado: 1,
+          },
+        },
       })
     })
 
@@ -115,7 +127,10 @@ export default defineComponent({
       // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
       observacion_aut: { requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!) },
       sucursal: { required },
-      responsable: { requiredIfCoordinador: requiredIf(() => esCoordinador || !esTecnico || esRRHH) },
+      per_retira: { requiredIfCheck: requiredIf(() => pedido.retira_tercero) },
+      responsable: {
+        requiredIfCoordinador: requiredIf(() => (esCoordinador || !esTecnico || esRRHH) && !pedido.para_cliente)
+      },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
       // fecha_limite: {
       //   required: requiredIf(() => pedido.tiene_fecha_limite!),
@@ -214,6 +229,7 @@ export default defineComponent({
     //Configurar los listados
     opciones_empleados.value = listadosAuxiliares.empleados
     opciones_tareas.value = listadosAuxiliares.tareas
+    opciones_clientes.value = listadosAuxiliares.clientes
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
@@ -224,6 +240,7 @@ export default defineComponent({
       //listados
       opciones_empleados,
       opciones_tareas,
+      opciones_clientes,
       opciones_sucursales,
       opciones_estados,
       opciones_autorizaciones,
@@ -258,15 +275,27 @@ export default defineComponent({
       puedeEditar,
       esCoordinador, esBodeguero, esTecnico, esActivosFijos, esRRHH,
 
-      checkEsFecha(val, evt) {
-        if (!val) pedido.fecha_limite = ''
+      checkEvidencia(val, evt) {
+        if (!val) {
+          pedido.evidencia1 = ''
+          pedido.evidencia2 = ''
+        }
+      },
+      checkCliente(val, evt) {
+        if (val) {
+          pedido.per_retira = null
+          pedido.responsable = null
+        } else pedido.cliente = null
+      },
+      checkRetiraTercero(val, evt) {
+        if (!val) pedido.per_retira = null
       },
       checkEsTarea(val, evt) {
         if (!val) pedido.tarea = null
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
 
@@ -284,10 +313,33 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
         })
       },
+      filtroRetira(val, update) {
+        if (val === '') {
+          update(() => {
+            // opciones_empleados.value = listadosAuxiliares.empleados
+            opciones_empleados.value = listadosAuxiliares.empleados
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
+        })
+      },
+      filtroClientes(val, update) {
+        if (val === '') {
+          update(() => opciones_clientes.value = listadosAuxiliares.clientes)
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_clientes.value = listadosAuxiliares.clientes.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
+        })
+      },
 
       onRowClick: (row) => alert(`${row.name} clicked`),
-      pedidoSeleccionado(val){
-        pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id===val))[0]['cliente_id']
+      pedidoSeleccionado(val) {
+        pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id === val))[0]['cliente_id']
         console.log(pedido.cliente_id)
       }
     }

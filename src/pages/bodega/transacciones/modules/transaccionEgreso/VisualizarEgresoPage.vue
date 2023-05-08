@@ -7,6 +7,17 @@
     :mostrarButtonSubmits="false"
   >
     <template #formulario>
+      <div v-if="transaccion.aviso_liquidacion_cliente"
+        class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
+      >
+        <q-icon
+          name="bi-exclamation-triangle-fill"
+          class="q-mr-sm"
+          size="1em"
+        ></q-icon
+        ><b>&nbsp; Advertencia</b>
+        <div>Esta transacción no se cargará al stock de ningún empleado</div>
+      </div>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-lg">
           <!-- N° transaccion -->
@@ -27,9 +38,9 @@
             <q-input v-model="transaccion.created_at" disable outlined dense />
           </div>
           <!-- Select motivo -->
-          <div v-if="esBodeguero" class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
-            <q-input v-model="transaccion.motivo" disable />
+            <q-input v-model="transaccion.motivo" disable outlined dense />
           </div>
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md">
@@ -122,8 +133,8 @@
             <q-input
               v-model="transaccion.observacion_aut"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :disable="disabled "
+              :readonly="disabled"
               :error="!!v$.observacion_aut.$errors.length"
               outlined
               dense
@@ -198,8 +209,8 @@
           <!-- Retira un tercero -->
           <div
             v-if="
-              (transaccion.per_retira && !transaccion.es_transferencia) ||
-              (accion === 'NUEVO' && !transaccion.es_transferencia)
+              (transaccion.per_retira && !transaccion.es_transferencia)&& transaccion.retira_tercero ||
+              (accion === 'NUEVO' && !transaccion.es_transferencia)&& transaccion.retira_tercero
             "
             class="col-12 col-md-3"
           >
@@ -242,7 +253,7 @@
         </div>
       </q-form>
       <div
-        v-if="transaccion.estado_comprobante === 'PENDIENTE'"
+        v-if="transaccion.estado_comprobante === 'PENDIENTE' && route.name=='gestionar_egresos'"
         class="q-pa-md q-gutter-sm flex flex-center"
       >
         <q-btn color="positive" @click="aprobarEgreso()" no-caps glossy push>

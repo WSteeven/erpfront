@@ -40,6 +40,7 @@ export class Transaccion extends EntidadAuditable {
     tiene_devolucion: boolean
     tiene_pedido: boolean
     es_transferencia: boolean
+    aviso_liquidacion_cliente: boolean
 
     // producto: string|null
     listadoProductosTransaccion: any[]
@@ -89,6 +90,7 @@ export class Transaccion extends EntidadAuditable {
         this.tiene_devolucion = false
         this.tiene_pedido = false
         this.es_transferencia = false
+        this.aviso_liquidacion_cliente = false
 
         // this.producto=null
         this.listadoProductosTransaccion = []

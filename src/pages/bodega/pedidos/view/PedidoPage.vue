@@ -110,61 +110,6 @@
               </template>
             </q-input>
           </div>
-          <!-- Responsable -->
-          <div
-            v-if="esCoordinador || esRRHH | !esTecnico"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Responsable</label>
-            <q-select
-              v-model="pedido.responsable"
-              :options="opciones_empleados"
-              transition-show="jump-up"
-              transition-hide="jump-up"
-              options-dense
-              dense
-              outlined
-              use-input
-              input-debounce="0"
-              @filter="filtroResponsable"
-              error-message="Debes seleccionar el responsable de los materiales"
-              :error="!!v$.responsable.$errors.length"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:error>
-                <div v-for="error of v$.responsable.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-select>
-          </div>
-          <!-- Requiere Fecha -->
-          <!-- <div
-            v-if="pedido.tiene_fecha_limite || accion === acciones.nuevo"
-            class="col-12 col-md-3"
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="pedido.tiene_fecha_limite"
-              label="¿Fecha límite?"
-              :disable="disabled || soloLectura"
-              @update:model-value="checkEsFecha"
-              outlined
-              dense
-            ></q-checkbox>
-          </div> -->
           <!-- Fecha límite -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha limite</label>
@@ -212,6 +157,127 @@
                 </div>
               </template>
             </q-input>
+          </div>
+          <!-- Es para el cliente -->
+          <div  class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="pedido.para_cliente"
+              label="¿Es material para el cliente?"
+              :disable="disabled || soloLectura"
+              @update:model-value="checkCliente"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <div v-if="pedido.para_cliente" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cliente</label>
+            <q-select
+            v-model="pedido.cliente"
+            :options="opciones_clientes"
+            transition-show="jump-up"
+            transition-hide="jump-up"
+            options-dense dense
+            outlined
+            use-input
+            input-debounce="0"
+            @filter="filtroClientes"
+            :option-label="(v)=>v.razon_social"
+            :option-value="(v)=>v.id"
+            emit-value
+            map-options
+            >
+
+            </q-select>
+          </div>
+          <!-- Responsable -->
+          <div
+            v-if="(esCoordinador && !pedido.para_cliente) || (esRRHH && !pedido.para_cliente) || (!esTecnico && !pedido.para_cliente) "
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Responsable</label>
+            <q-select
+              v-model="pedido.responsable"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroResponsable"
+              error-message="Debes seleccionar el responsable de los materiales"
+              :error="!!v$.responsable.$errors.length"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.responsable.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+          <!-- Retira otra persona -->
+          <div  class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="pedido.retira_tercero"
+              label="¿Retira otra persona?"
+              :disable="disabled || soloLectura"
+              @update:model-value="checkRetiraTercero"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Persona que retira -->
+          <div v-if="pedido.retira_tercero" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Persona que retira</label>
+            <q-select
+              v-model="pedido.per_retira"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroRetira"
+              error-message="Debes seleccionar la persona que retira los materiales"
+              :error="!!v$.per_retira.$errors.length"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.per_retira.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
           </div>
           <!-- Es pedido de tarea -->
           <div
@@ -384,6 +450,39 @@
             >
             </q-select>
           </div>
+
+          <!-- Evidencia fotografica -->
+          <div class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="pedido.tiene_evidencia"
+              label="¿Tiene evidencia fotográfica?"
+              :disable="disabled || soloLectura"
+              @update:model-value="checkEvidencia"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Evidencia fotografica 1 -->
+          <div v-if="pedido.tiene_evidencia ||pedido.evidencia1" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Evidencia 1 </label>
+            <selector-imagen
+              file_extensiones=".jpg, image/*"
+              :imagen="pedido.evidencia1"
+              :alto="'200px'"
+              @update:model-value="(data) => (pedido.evidencia1 = data)"
+            ></selector-imagen>
+          </div>
+          <!-- Evidencia fotografica 2 -->
+          <div v-if="pedido.tiene_evidencia ||pedido.evidencia2" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Evidencia 2</label>
+            <selector-imagen
+              file_extensiones=".jpg, image/*"
+              :imagen="pedido.evidencia2"
+              :alto="'200px'"
+              @update:model-value="(data) => (pedido.evidencia2 = data)"
+            ></selector-imagen>
+          </div>
           <!-- observacion estado -->
           <div
             v-if="pedido.observacion_est || accion === acciones.nuevo"
@@ -412,10 +511,12 @@
                   :disable="disabled"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarProductos({
-                    sucursal_id:pedido.sucursal,
-                    cliente_id: pedido.cliente_id
-                  })"
+                  @keydown.enter="
+                    listarProductos({
+                      sucursal_id: pedido.sucursal,
+                      cliente_id: pedido.cliente,
+                    })
+                  "
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
                   "
@@ -426,11 +527,12 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos({
-                    sucursal_id:pedido.sucursal,
-                    cliente_id: pedido.cliente_id
-                  }
-                  )"
+                  @click="
+                    listarProductos({
+                      sucursal_id: pedido.sucursal,
+                      cliente_id: pedido.cliente,
+                    })
+                  "
                   icon="search"
                   unelevated
                   color="positive"
