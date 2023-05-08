@@ -109,6 +109,19 @@ export default defineComponent({
       roles,
       refPermisosSinAsignar,
       refPermisosAsignados,
+      filtrarRol(val, update){
+        if(val===''){
+          update(()=>{
+            roles.value = listadosAuxiliares.roles
+          })
+          return
+        }
+        update(()=>{
+          const needle = val.toLowerCase()
+          roles.value = listadosAuxiliares.roles.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+        })
+      },
+
     }
   },
 })
