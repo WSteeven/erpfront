@@ -165,7 +165,11 @@ export default defineComponent({
     estilos: {
       type: String,
       required: false,
-    }
+    },
+    mostrarColumnasVisibles: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar'],
   setup(props, { emit }) {

@@ -109,7 +109,7 @@
           </q-input>
         </div>
 
-        <div class="col-md-4 col-12">
+        <div v-if="mostrarColumnasVisibles" class="col-md-4 col-12">
           <div class="row">
             <q-select
               v-model="visibleColumns"
