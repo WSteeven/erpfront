@@ -441,7 +441,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Rol de Pagos',
           link: 'rol-pago',
           icon: 'bi-circle',
-          can: true//store.can('puede.ver.permiso_nomina'),
+          can: store.can('puede.ver.rol_pago'),
         },
         {
           title: 'Prestamos y Anticipos',

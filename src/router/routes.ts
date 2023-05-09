@@ -665,7 +665,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/recursosHumanos/rol-pago/view/RolPagoPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
     ],
   },
