@@ -7,8 +7,8 @@ const authenticationStore = useAuthenticationStore()
 
 export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
   {
-    name: 'tarea',
-    field: 'tarea',
+    name: 'codigo_tarea',
+    field: 'codigo_tarea',
     label: 'Tarea JP',
     align: 'left',
     sortable: true,

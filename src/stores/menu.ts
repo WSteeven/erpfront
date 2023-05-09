@@ -530,12 +530,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.empresas') && store.esActivosFijos,
         },
         {
-          title: 'Clientes',
-          link: 'clientes',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.clientes'),
-        },
-        {
           title: 'Proveedores',
           link: 'proveedores',
           icon: 'bi-circle',
@@ -603,6 +597,12 @@ export const useMenuStore = defineStore('menu', () => {
           // can: true,
         },
       ]
+    },
+    {
+      title: 'Clientes',
+      link: 'clientes',
+      icon: 'bi-circle',
+      can: store.can('puede.ver.clientes'),
     },
     {
       title: 'Permisos',

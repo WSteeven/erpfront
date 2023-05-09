@@ -19,7 +19,7 @@ import { Pedido } from '../domain/Pedido'
 
 import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain/configuracionColumnasProductosSeleccionadosDespachado'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { acciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
+import { acciones, autorizacionesTransacciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { TareaController } from 'tareas/infraestructure/TareaController'
@@ -34,6 +34,7 @@ import { useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { LocalStorage } from 'quasar'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
 
 
 export default defineComponent({
@@ -43,7 +44,7 @@ export default defineComponent({
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onReestablecer, onConsultado } = mixin.useHooks()
-    const { confirmar, prompt } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
 
     // Stores
@@ -164,6 +165,35 @@ export default defineComponent({
       visible: () => accion.value == acciones.consultar ? false : true
     }
 
+    const botonAnularAutorizacion: CustomActionTable = {
+      titulo: 'Anular',
+      color:'negative',
+      icono: 'bi-x',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de anular el pedido?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Causa de anulación',
+            mensaje: 'Ingresa el motivo de la anulación',
+            accion: async (data) => {
+              try {
+                const { result } = await new CambiarEstadoPedido().anular(entidad.id, data)
+                if(result.autorizacion === autorizacionesTransacciones.cancelado){
+                  notificarCorrecto('Pedido anulado con éxito')
+                  listado.value.splice(posicion, 1)
+                }
+              }catch(e:any){
+                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+              }
+            }
+          }
+          prompt(data)
+        })
+      },
+      visible: ({entidad, posicion})=>{
+        console.log(posicion, entidad)
+        return tabSeleccionado.value===autorizacionesTransacciones.aprobado && entidad.per_autoriza_id=== store.user.id  && entidad.estado === estadosTransacciones.pendiente
+      }
+    }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
       icono: 'bi-pencil',
@@ -262,6 +292,7 @@ export default defineComponent({
       botonEliminar,
       botonImprimir,
       botonDespachar,
+      botonAnularAutorizacion,
 
       //stores
       store,
