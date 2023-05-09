@@ -111,7 +111,7 @@ export default defineComponent({
   },
   emits: ['filtrar'],
   setup(props, { emit }) {
-    const operadoresNumeradores = ['=', '<', '<=', '>', '>=']
+    const operadoresNumeradores = ['<', '<=', '>', '>=']
     const operadores = [...operadoresNumeradores, '!=', 'like']
     const columnas: Ref<any[]> = ref([])
 
@@ -166,10 +166,10 @@ export default defineComponent({
         if (['boolean', 'select'].includes(filtro.type)) return ['=']
         if (['datetime'].includes(filtro.type)) return ['like']
         if (['number', 'date'].includes(filtro.type))
-          return operadoresNumeradores
+          return ['=', ...operadoresNumeradores]
       }
 
-      return ['like']
+      return ['=']
     }
 
     function formatearFecha(fecha: string) {
