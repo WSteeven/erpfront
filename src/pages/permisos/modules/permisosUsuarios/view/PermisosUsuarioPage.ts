@@ -1,0 +1,128 @@
+// Dependencias
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+
+import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
+import { useQuasar } from 'quasar'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useNotificacionStore } from 'stores/notificacion'
+import { defineComponent, Ref, ref } from 'vue'
+import { configuracionColumnasPermisos } from 'pages/permisos/domain/configuracionColumnasPermisos'
+import { Permiso } from 'pages/permisos/domain/Permiso'
+import { AsignarPermisosController } from 'pages/permisos/infrestructure/AsignarPermisosController'
+import { PermisosController } from 'pages/permisos/infrestructure/PermisosController'
+// Logica y controladores
+import { ComportamientoModalesPermisoNuevo } from './../../../application/ComportamientoModalesPermisoNuevo';
+import { useRouter } from 'vue-router'
+
+
+export default defineComponent({
+  components: { EssentialTable,ModalEntidad },
+  setup() {
+    /*********
+     * Stores
+     *********/
+    useNotificacionStore().setQuasar(useQuasar())
+    const mixin = new ContenedorSimpleMixin(Permiso, new PermisosController())
+    const {
+      entidad: permiso,
+      listadosAuxiliares,
+      listado,
+    } = mixin.useReferencias()
+    const Router = useRouter()
+    const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+
+    const rol = ref()
+    const roles = ref([])
+
+    const controller = new PermisosController()
+    const aisnarPermisoController = new AsignarPermisosController()
+    const permisosSinAsignar: Ref<Permiso[]> = ref([])
+    const refPermisosSinAsignar = ref()
+    const refPermisosAsignados = ref()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        roles: {
+          controller: new RolController(),
+          params: { campos: 'id,name' },
+        },
+      })
+    })
+    roles.value = listadosAuxiliares.roles
+    async function obtenerPermisoRol(id_rol: number) {
+      listar({ id_rol: id_rol, tipo: 'ASIGNADOS' })
+      const { result } = await controller.listar({
+        id_rol: id_rol,
+        tipo: 'NO ASIGNADOS',
+      })
+      permisosSinAsignar.value = result
+    }
+    function botonAsignarPermisos() {
+      refPermisosSinAsignar.value.seleccionar()
+    }
+    function botonEliminarPermisos() {
+     refPermisosAsignados.value.seleccionar()
+    }
+    function asignarPermiso(permisos: any) {
+      const permisosName = permisos.map((permiso: Permiso) => permiso.id)
+      aisnarPermisoController.guardar({
+        id_rol: rol.value,
+        permisos: permisosName,
+        tipo_sincronizacion: 'ASIGNAR',
+      })
+      obtenerPermisoRol(rol.value)
+    }
+    function eliminarPermiso(permisos: any){
+     const permisosName = permisos.map((permiso: Permiso) => permiso.id)
+      aisnarPermisoController.guardar({
+        id_rol: rol.value,
+        permisos: permisosName,
+        tipo_sincronizacion: 'ELIMINAR',
+      })
+      obtenerPermisoRol(rol.value)
+    }
+     /**Modales */
+     const modales = new ComportamientoModalesPermisoNuevo()
+     function crear_permiso() {
+       modales.abrirModalEntidad('PermisoNuevoPage')
+     }
+     const crearRol = () => {
+      Router.replace('/roles')
+    }
+
+    return {
+      mixin,
+      permiso,
+      modales,
+      configuracionColumnasPermisos,
+      rol,
+      listado,
+      permisosSinAsignar,
+      crearRol,
+      crear_permiso,
+      obtenerPermisoRol,
+      asignarPermiso,
+      eliminarPermiso,
+      botonAsignarPermisos,
+      botonEliminarPermisos,
+      listadosAuxiliares,
+      roles,
+      refPermisosSinAsignar,
+      refPermisosAsignados,
+      filtrarRol(val, update){
+        if(val===''){
+          update(()=>{
+            roles.value = listadosAuxiliares.roles
+          })
+          return
+        }
+        update(()=>{
+          const needle = val.toLowerCase()
+          roles.value = listadosAuxiliares.roles.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+        })
+      },
+
+    }
+  },
+})
