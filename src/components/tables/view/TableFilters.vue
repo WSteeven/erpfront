@@ -24,6 +24,7 @@
         />
       </div>
 
+      <!-- Operador -->
       <div class="row col-md-2 items-center">
         <span class="col-md-4">Operador</span>
         <q-select
@@ -36,7 +37,8 @@
         />
       </div>
 
-      <div class="row col-md-3 items-center">
+      <!-- Valor -->
+      <div class="row col-md-4 items-center">
         <span class="col-md-2">Valor</span>
 
         <q-checkbox v-if="filtro.type === 'boolean'" v-model="filtro.value"
@@ -61,9 +63,15 @@
           outlined
           dense
           clearable
-          class="col-md-10"
+          :class="{
+            'col-md-6': filtro.type === 'datetime',
+            'col-md-10': filtro.type !== 'datetime',
+          }"
         >
-          <template v-if="filtro.type === 'date'" v-slot:append>
+          <template
+            v-if="['date', 'datetime'].includes(filtro.type)"
+            v-slot:append
+          >
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy
                 cover
@@ -79,9 +87,22 @@
             </q-icon>
           </template>
         </q-input>
+
+        <q-input
+          class="col-md-4"
+          v-if="filtro.type === 'datetime'"
+          v-model="filtro.value2"
+          type="time"
+          step="1"
+          stack-label
+          outlined
+          clearable
+          dense
+        >
+        </q-input>
       </div>
 
-      <div class="row col-md-3 items-center">
+      <div class="row col-md-1 items-center">
         <q-btn
           color="negative"
           round
@@ -138,34 +159,32 @@ export default defineComponent({
         columnas.value[index].type == 'boolean' ? false : null
     }
 
-    function filtrar() {
-      const uri = columnas.value.map((filtro) => obtenerUri(filtro)).join('&')
-
-      emit('filtrar', uri)
-    }
-
-    const resetearFiltros = () => {
-      columnas.value = []
-    }
-
     function obtenerUri(filtro: any) {
-      if (filtro.operador === 'like')
+      /*if (filtro.operador === 'like')
         return `${filtro.field}[${filtro.operador}]=%${filtro.value}%`
-      else if (operadoresNumeradores.includes(filtro.operador)) {
-        let valor = ''
+      else*/
+      let valor = ''
 
-        if (filtro.type === 'date') valor = formatearFecha(filtro.value)
-        else valor = filtro.value
+      if (filtro.type === 'date') valor = formatearFecha(filtro.value)
+      else if (filtro.type === 'datetime')
+        valor = formatearFechaHora(filtro.value, filtro.value2)
+      else valor = filtro.value
 
+      console.log(valor)
+
+      if (operadoresNumeradores.includes(filtro.operador)) {
         return `${filtro.field}[operator]=${filtro.operador}&${filtro.field}[value]=${valor}`
-      } else return `${filtro.field}=${filtro.value}`
+      } else {
+        console.log(`${filtro.field}=${valor}`)
+        return `${filtro.field}=${valor}`
+      }
     }
 
     function obtenerOperadores(filtro: any) {
       if (filtro.hasOwnProperty('type')) {
         if (['boolean', 'select'].includes(filtro.type)) return ['=']
-        if (['datetime'].includes(filtro.type)) return ['like']
-        if (['number', 'date'].includes(filtro.type))
+        //if (['datetime'].includes(filtro.type)) return ['like']
+        if (['number', 'date', 'datetime'].includes(filtro.type))
           return ['=', ...operadoresNumeradores]
       }
 
@@ -183,8 +202,29 @@ export default defineComponent({
       return date.formatDate(nuevaFecha, 'YYYY-MM-DD')
     }
 
+    function formatearFechaHora(fecha: string, hora: string) {
+      const arrayFecha = fecha.split('-').map(Number) // YYYY-MM-DD
+      const nuevaFecha = date.buildDate({
+        year: arrayFecha[2],
+        month: arrayFecha[1],
+        day: arrayFecha[0],
+      })
+
+      return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
+    }
+
     function quitarFiltro(index: number) {
       columnas.value.splice(index, 1)
+    }
+
+    function filtrar() {
+      const uri = columnas.value.map((filtro) => obtenerUri(filtro)).join('&')
+      console.log(uri)
+      emit('filtrar', uri)
+    }
+
+    const resetearFiltros = () => {
+      columnas.value = []
     }
 
     return {

@@ -99,35 +99,35 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_asignacion',
     label: 'Fecha y hora de asignación',
     align: 'left',
-    type: 'datetime'
+    type: 'date'
   },
   {
     name: 'fecha_hora_agendado',
     field: 'fecha_hora_agendado',
     label: 'Fecha y hora de agendado',
     align: 'left',
-    type: 'datetime'
+    type: 'date'
   },
   {
     name: 'fecha_hora_ejecucion',
     field: 'fecha_hora_ejecucion',
     label: 'Fecha y hora de ejecución',
     align: 'left',
-    type: 'datetime'
+    type: 'datetime',
   },
   {
     name: 'fecha_hora_realizado',
     field: 'fecha_hora_realizado',
     label: 'Fecha y hora de realizado',
     align: 'left',
-    type: 'datetime'
+    type: 'date'
   },
   {
     name: 'fecha_hora_finalizacion',
     field: 'fecha_hora_finalizacion',
     label: 'Fecha y hora de finalización',
     align: 'left',
-    type: 'datetime'
+    type: 'date'
   },
   {
     name: 'dias_ocupados',
@@ -141,6 +141,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_suspendido',
     label: 'Fecha y hora de suspención',
     align: 'left',
+    type: 'date',
   },
   {
     name: 'motivo_suspendido',
@@ -153,6 +154,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_cancelado',
     label: 'Fecha y hora de cancelación',
     align: 'left',
+    type: 'date',
   },
   {
     name: 'motivo_cancelado',
