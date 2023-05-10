@@ -267,6 +267,12 @@
             </template>
           </q-select>
         </div>
+        <!--RUC-->
+          <div class="col-12 col-md-3"  v-if="consolidadofiltrado.tipo_filtro == 7 || consolidadofiltrado.tipo_filtro == 0">
+            <label class="q-mb-sm block">RUC</label>
+            <q-input v-model="consolidadofiltrado.ruc" placeholder="" type="textarea" autogrow  :disable="disabled" outlined dense>
+            </q-input>
+          </div>
       </q-card-section>
 
       <q-separator></q-separator>

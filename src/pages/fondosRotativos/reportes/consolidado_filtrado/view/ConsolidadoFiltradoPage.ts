@@ -97,6 +97,10 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
+      ruc:{
+        required: true,
+        minLength: 13,
+     }
     }
     const tipos_saldos = ref([
       { value: '1', label: 'Acreditacion' },
@@ -111,6 +115,8 @@ export default defineComponent({
       { value: '4', name: 'SubDetalle' },
       { value: '5', name: 'Autorizacion' },
       { value: '6', name: 'Empleado' },
+      { value: '7', name: 'RUC' },
+      { value: '8', name: 'SIN COMPROBANTE' },
     ])
 
     listadosAuxiliares.tipos_saldos = tipos_saldos
@@ -304,6 +310,8 @@ export default defineComponent({
               { value: '4', name: 'SubDetalle' },
               { value: '5', name: 'Autorizacion' },
               { value: '6', name: 'Empleado' },
+              { value: '7', name: 'RUC' },
+              { value: '8', name: 'SIN COMPROBANTE' },
             ]
           })
           break
