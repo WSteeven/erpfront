@@ -162,12 +162,12 @@
         <div class="row q-gutter-xs justify-end q-mb-md">
           <q-btn
             v-if="mostrarFiltros"
-            color="secondary"
+            color="grey-8"
             no-caps
             push
             @click="agregarFiltro()"
           >
-            <q-icon name="bi-plus"></q-icon>
+            <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
             Agregar filtro</q-btn
           >
 
@@ -190,8 +190,17 @@
             @click="filtrar()"
           >
             <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
-            Filtrar</q-btn
+            Aplicar filtros</q-btn
           >
+
+          <q-btn
+            color="primary"
+            icon="archive"
+            label="Exportar a csv"
+            no-caps
+            push
+            @click="exportTable"
+          />
           <!--<q-btn-dropdown
             v-if="mostrarFiltros"
             split
