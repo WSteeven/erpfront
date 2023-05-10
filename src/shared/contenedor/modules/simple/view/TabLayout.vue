@@ -77,7 +77,7 @@
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
-          @filtrarTodos="filtrarTodos"
+          @filtrar="filtrarTodos"
         ></essential-table>
       </q-tab-panel>
 

@@ -1,19 +1,20 @@
 // Dependencias
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { useQuasar } from 'quasar'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useNotificacionStore } from 'stores/notificacion'
 import { defineComponent, Ref, ref } from 'vue'
-import { configuracionColumnasPermisos } from '../domain/configuracionColumnasPermisos'
-import { Permiso } from '../domain/Permiso'
-import { AsignarPermisosController } from '../infrestructure/AsignarPermisosController'
-import { PermisosController } from '../infrestructure/PermisosController'
-import { ComportamientoModalesPermisoNuevo } from '../application/ComportamientoModalesPermisoNuevo'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+import { configuracionColumnasPermisos } from 'pages/permisos/domain/configuracionColumnasPermisos'
+import { Permiso } from 'pages/permisos/domain/Permiso'
+import { AsignarPermisosController } from 'pages/permisos/infrestructure/AsignarPermisosController'
+import { PermisosController } from 'pages/permisos/infrestructure/PermisosController'
+// Logica y controladores
+import { ComportamientoModalesPermisoNuevo } from './../../../application/ComportamientoModalesPermisoNuevo';
 import { useRouter } from 'vue-router'
 
-// Logica y controladores
 
 export default defineComponent({
   components: { EssentialTable,ModalEntidad },

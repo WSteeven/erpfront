@@ -61,7 +61,6 @@ export class AxiosHttpRepository implements HttpRepository {
   public getEndpoint(
     endpoint: Endpoint | { endpoint: Endpoint; id: number | null },
     args?: Record<string, any>,
-    filtrar?: boolean
   ): string {
     let accessor: string
     let includeApiPath: boolean
@@ -81,7 +80,7 @@ export class AxiosHttpRepository implements HttpRepository {
       accessor = `api/${accessor}`
     }
 
-    if (args) accessor += this.mapearArgumentos(args, filtrar)
+    if (args) accessor += this.mapearArgumentos(args)
     return accessor
   }
 

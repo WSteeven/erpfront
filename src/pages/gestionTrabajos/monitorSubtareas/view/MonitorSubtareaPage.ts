@@ -34,7 +34,7 @@ export default defineComponent({
      ********/
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { listado, listadosAuxiliares } = mixin.useReferencias()
-    const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { filtrar, listar, cargarVista, obtenerListados } = mixin.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -78,10 +78,8 @@ export default defineComponent({
 
     filtrarSubtareas(estadosTrabajos.AGENDADO)
 
-    function filtrarTodos(filtro) {
-      console.log(filtro)
-      console.log('Listar ...')
-      listar(filtro)
+    function aplicarFiltro(uri) {
+      filtrar(uri)
     }
 
     return {
@@ -102,7 +100,8 @@ export default defineComponent({
       btnCancelar,
       btnFinalizar,
       filtrarSubtareas,
-      filtrarTodos,
+      filtrar,
+      aplicarFiltro,
     }
   }
 })
