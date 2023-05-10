@@ -8,6 +8,7 @@ import { acciones, opcionesEstados } from "config/utils";
 import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue"
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
+import SelectorImagen from 'components/SelectorImagen.vue';
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -22,7 +23,7 @@ import { ComportamientoModalesCliente } from "../application/ComportamientoModal
 
 
 export default defineComponent({
-    components: { TabLayout, LabelAbrirModal, ModalesEntidad },
+    components: { TabLayout, LabelAbrirModal, ModalesEntidad, SelectorImagen },
     setup() {
         const mixin = new ContenedorSimpleMixin(Cliente, new ClienteController())
         const { entidad: cliente, disabled, accion, listadosAuxiliares } = mixin.useReferencias()

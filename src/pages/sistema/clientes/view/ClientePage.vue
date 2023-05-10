@@ -137,11 +137,24 @@
               unchecked-icon="clear"
             />
           </div>
+          <!-- Logo de la empresa -->
+          <div class="col-12 col-md-3">
+            <label for="q-mb-sm block">Logo de la empresa</label>
+            <selector-imagen
+              file_extensiones=".jpg, .png, .jpeg"
+              :imagen="cliente.logo_url"
+              alto="200px"
+              @update:model-value="(data) => (cliente.logo_url = data)"
+            />
+          </div>
         </div>
       </q-form>
     </template>
   </tab-layout>
-  <modales-entidad :comportamiento="modales" @guardado="guardado"></modales-entidad>
+  <modales-entidad
+    :comportamiento="modales"
+    @guardado="guardado"
+  ></modales-entidad>
 </template>
 
 <script src="./ClientePage.ts"></script>
