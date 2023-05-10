@@ -226,10 +226,11 @@
         <div class="col-12 col-md-4 q-mb-md"
           v-if="(consolidadofiltrado.tipo_filtro == 4 || consolidadofiltrado.tipo_filtro == 0)&& consolidadofiltrado.tipo_saldo == 2">
           <label class="q-mb-sm block">SubDetalle</label>
-          <q-select v-model="consolidadofiltrado.subdetalle" :options="sub_detalles" transition-show="jump-up"
+          <q-select v-model="consolidadofiltrado.subdetalle" :options="opcionesSubdetalles" transition-show="jump-up"
             transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
             :error="!!v$.subdetalle.$errors.length" error-message="Debes seleccionar un canton" use-input
-            input-debounce="0" @filter="filtarSubdetalles" :option-value="(v) => v.id"
+            input-debounce="0" @filter="filtroSubdetalles"
+            :option-value="(v) => v.id"
             :option-label="(v) => v.descripcion" emit-value map-options>
             <template v-slot:error>
               <div v-for="error of v$.subdetalle.$errors" :key="error.$uid">
