@@ -118,7 +118,6 @@ export default defineComponent({
       { value: '7', name: 'RUC' },
       { value: '8', name: 'SIN COMPROBANTE' },
     ])
-
     listadosAuxiliares.tipos_saldos = tipos_saldos
     listadosAuxiliares.tipos_filtro = tipos_filtros
     const v$ = useVuelidate(reglas, consolidadofiltrado)

@@ -10,8 +10,8 @@
         </q-card-section>
 
         <q-card-section>
-            <!-- Usuarios -->
-        <div class="col-12 col-md-3">
+            <!-- Empleados -->
+        <div class="col-12 col-md-3" v-if="is_all_empleados=='false'">
           <label class="q-mb-sm block">Empleado</label>
           <q-select v-model="consolidado.usuario" :options="usuarios" transition-show="jump-up"
             transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
@@ -101,6 +101,16 @@
               </q-item>
             </template>
           </q-select>
+        </div>
+        <div class="col-12 col-md-3">
+          <q-checkbox
+            v-model="is_all_empleados"
+            color="secondary"
+            label="Todos los empleados"
+            true-value="true"
+            false-value="false"
+            @update:model-value="mostrarEmpleados()"
+          ></q-checkbox>
         </div>
         </q-card-section>
 
