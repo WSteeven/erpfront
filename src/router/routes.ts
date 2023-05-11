@@ -158,12 +158,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
+      /*{
         path: '/permisos-usuarios',
         name: 'permisos_usuarios',
         component: () => import('pages/permisos/modules/permisosUsuarios/view/PermisosUsuarioPage.vue'),
         meta: { requiresAuth: false }
-      },
+      },*/
       {
         path: '/permisos',
         name: 'permisos',

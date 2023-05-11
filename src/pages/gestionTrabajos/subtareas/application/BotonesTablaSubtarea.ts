@@ -51,7 +51,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
         console.log(entidad.subtarea_dependiente_id)
         if (entidad.es_dependiente) {
           const { result: subtareaDependiente } = await new SubtareaController().consultar(entidad.subtarea_dependiente_id)
-          if (subtareaDependiente.estado !== estadosTrabajos.REALIZADO) {
+          if (![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO].includes(subtareaDependiente.estado ?? '')) {
             return notificarAdvertencia('No puedes proceder. Primero debes realizar la subtarea ' + subtareaDependiente.codigo_subtarea)
           }
         }
