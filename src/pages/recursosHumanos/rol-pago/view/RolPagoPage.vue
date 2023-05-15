@@ -1,127 +1,133 @@
 <template>
-  <tab-layout
-    :mixin="mixin"
-    :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Cargos"
-  >
+  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" titulo-pagina="Cargos">
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
-             <!-- Empleados -->
-             <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Empleado</label>
-          <q-select
-            v-model="rolpago.empleado"
-            :options="empleados"
-            transition-show="jump-up"
-            transition-hide="jump-down"
-            options-dense
-            dense
-            outlined
-            :disable="disabled"
-            :readonly="disabled"
-            :error="!!v$.empleado.$errors.length"
-            error-message="Debes seleccionar un empleado"
-            use-input
-            input-debounce="0"
-            @filter="filtrarEmpleado"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.nombres + ' ' + v.apellidos"
-            emit-value
-            map-options
-          >
-            <template v-slot:error>
-              <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
+          <!-- Mes -->
+          <div class="col-12 col-md-3" v-if="!es_consultado">
+            <label class="q-mb-sm block">
+              Mes
+            </label>
+            <q-input v-model="rolpago.mes" placeholder="Obligatorio" :value="rolpago.mes"
+              @click="$refs.monthPicker.show()" mask="##-####" :error="!!v$.mes.$errors.length" :disable="disabled"
+              @blur="v$.mes.$touch" outlined dense>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="is_month">
+                    <q-date v-model="rolpago.mes" minimal mask="MM-YYYY" emit-immediately default-view="Years"
+                      @update:model-value="checkValue">
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
 
-    <!--salario -->
-    <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Salario</label>
-            <q-input v-model="rolpago.salario" placeholder="Obligatorio" type="number" :disable="disabled"
-              :error="!!v$.salario.$errors.length" @blur="v$.salario.$touch" outlined dense>
               <template v-slot:error>
-                <div v-for="error of v$.salario.$errors" :key="error.$uid">
+                <div v-for="error of v$.mes.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+            </q-input>
+          </div>
+          <!-- Empleados -->
+          <div class="col-12 col-md-3" v-if="!es_consultado">
+            <label class="q-mb-sm block">Empleado</label>
+            <q-select v-model="rolpago.empleado" :options="empleados" transition-show="jump-up"
+              transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
+              use-input
+              input-debounce="0" @filter="filtrarEmpleado" :option-value="(v) => v.id"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Tipo -->
+          <div class="col-12 col-md-3" v-if="!es_consultado">
+            <label class="q-mb-sm block">Registros</label>
+            <q-select v-model="tipo" :options="tipos" transition-show="jump-up" transition-hide="jump-down" options-dense
+              dense outlined :disable="disabled" :readonly="disabled" use-input input-debounce="0"
+              :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!---Campo-->
+          <div class="col-12 col-md-3" v-if="!es_consultado">
+            <label class="q-mb-sm block">{{ label_campo }}</label>
+            <q-input v-model="campo" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+              <template v-slot:append>
+                <q-btn round dense flat icon="add" @click="aniadirRol" />
+              </template>
+            </q-input>
+          </div>
+
+
+          <!--salario -->
+          <div class="col-12 col-md-3" v-if="es_consultado">
+            <label class="q-mb-sm block">Salario</label>
+            <q-input v-model="rolpago.salario" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
             </q-input>
           </div>
           <!-- Días -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="es_consultado">
             <label class="q-mb-sm block">Días</label>
-            <q-input v-model="rolpago.dias" placeholder="Obligatorio" type="number" :disable="disabled"
-              :error="!!v$.dias.$errors.length" @blur="v$.dias.$touch" outlined dense>
-              <template v-slot:error>
-                <div v-for="error of v$.dias.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+            <q-input v-model="rolpago.dias" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+
             </q-input>
           </div>
- <!-- alimentación -->
- <div class="col-12 col-md-3">
+          <!-- alimentación -->
+          <div class="col-12 col-md-3" v-if="es_consultado">
             <label class="q-mb-sm block">Alimentación</label>
-            <q-input v-model="rolpago.alimentacion" placeholder="Obligatorio" type="number" :disable="disabled"
-              :error="!!v$.alimentacion.$errors.length" @blur="v$.alimentacion.$touch" outlined dense>
-              <template v-slot:error>
-                <div v-for="error of v$.alimentacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+            <q-input v-model="rolpago.alimentacion" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+              dense>
             </q-input>
           </div>
-         <!---Prestamo Quirorafario-->
-         <div class="col-12 col-md-3">
+          <!---Prestamo Quirorafario-->
+          <div class="col-12 col-md-3" v-if="es_consultado">
             <label class="q-mb-sm block">Prestamo Quirorafario</label>
             <q-input v-model="rolpago.prestamo_quirorafario" placeholder="Obligatorio" type="number" :disable="disabled"
-              :error="!!v$.prestamo_quirorafario.$errors.length" @blur="v$.prestamo_quirorafario.$touch" outlined dense>
-              <template v-slot:error>
-                <div v-for="error of v$.prestamo_quirorafario.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+              outlined dense>
             </q-input>
           </div>
-<!---Prestamo Hipotecario-->
-<div class="col-12 col-md-3">
+          <!---Prestamo Hipotecario-->
+          <div class="col-12 col-md-3" v-if="es_consultado">
             <label class="q-mb-sm block">Prestamo Hipotecario</label>
             <q-input v-model="rolpago.prestamo_hipotecario" placeholder="Obligatorio" type="number" :disable="disabled"
-              :error="!!v$.prestamo_hipotecario.$errors.length" @blur="v$.prestamo_hipotecario.$touch" outlined dense>
-              <template v-slot:error>
-                <div v-for="error of v$.prestamo_hipotecario.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+              outlined dense>
             </q-input>
           </div>
 
-<!---Extension Conyugal-->
-<div class="col-12 col-md-3">
+          <!---Extension Conyugal-->
+          <div class="col-12 col-md-3" v-if="es_consultado">
             <label class="q-mb-sm block">Extension Conyugal</label>
             <q-input v-model="rolpago.extension_conyugal" placeholder="Obligatorio" type="number" :disable="disabled"
-              :error="!!v$.extension_conyugal.$errors.length" @blur="v$.extension_conyugal.$touch" outlined dense>
-              <template v-slot:error>
-                <div v-for="error of v$.extension_conyugal.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+              outlined dense>
             </q-input>
           </div>
 
 
         </div>
       </q-form>
+      <essential-table v-if="rolpago.roles.length > 0" titulo="Listado de Roles"
+      :configuracionColumnas="[...configuracionColumnasRolPagoTabla,accionesTabla]"
+      :datos="rolpago.roles"
+      :permitirConsultar="false"
+      :permitirEditar="false"
+      :permitirEliminar="false"
+      >
+    </essential-table>
     </template>
   </tab-layout>
 </template>

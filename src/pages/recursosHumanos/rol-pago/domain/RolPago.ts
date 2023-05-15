@@ -2,6 +2,7 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class RolPago extends EntidadAuditable {
   id: number | null
+  mes: string | null
   empleado: number| null
   empleado_info: string | null
   salario: string | null
@@ -22,9 +23,12 @@ export class RolPago extends EntidadAuditable {
   prestamo_empresarial: number |null
   sancion_pecuniaria: number |null
   total_egreso: number |null
+  total: number |null
+  roles:any|null
   constructor() {
     super()
     this.id = null
+    this.mes = null
     this.empleado = null
     this.empleado_info = null
     this.salario = null
@@ -46,5 +50,7 @@ export class RolPago extends EntidadAuditable {
     this.prestamo_empresarial = null
     this.sancion_pecuniaria = null
     this.total_egreso = null
+    this.total = null
+    this.roles= null
   }
 }
