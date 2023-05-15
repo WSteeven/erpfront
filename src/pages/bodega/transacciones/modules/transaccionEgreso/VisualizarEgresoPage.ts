@@ -1,16 +1,8 @@
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
-import { required, requiredIf } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
-import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
-import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
-import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
-import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
-import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, motivos, tabGestionarEgresos } from 'config/utils'
+import { acciones, tabGestionarEgresos } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -22,37 +14,29 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TransaccionEgresoController } from '../../infraestructure/TransaccionEgresoController'
 import { Transaccion } from '../../domain/Transaccion'
 import { useNotificacionStore } from 'stores/notificacion'
-import { LocalStorage, useQuasar } from 'quasar'
+import {  useQuasar } from 'quasar'
 
 //Controladores
 import { useNotificaciones } from 'shared/notificaciones'
 
 import { useAuthenticationStore } from 'stores/authentication'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useTransaccionStore } from 'stores/transaccion'
-import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
-import { ValidarListadoProductosEgreso } from './application/validaciones/ValidarListadoProductosEgreso'
-import { limpiarListado } from 'shared/utils'
 import { ComprobanteController } from 'pages/bodega/comprobantes/infraestructure/ComprobanteController'
-import { Comprobante } from 'pages/bodega/comprobantes/domain/Comprobante'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
+    const { entidad: transaccion } = mixin.useReferencias()
     const { notificarError, notificarCorrecto, confirmar, prompt } = useNotificaciones()
     const comprobanteController = new ComprobanteController()
     //stores
@@ -61,21 +45,17 @@ export default defineComponent({
     const transaccionStore = useTransaccionStore()
     const pedidoStore = usePedidoStore()
     const transferenciaStore = useTransferenciaStore()
-
+    const route = useRoute()
     if (transaccionStore.transaccion) {
       transaccion.hydrate(transaccionStore.transaccion)
     }
 
-    const usuarioLogueado = store.user
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
     // console.log('rol seleccionado: ', rolSeleccionado)
 
-    let soloLectura = ref(false)
-    let puedeEditarCantidad = ref(true)
-    let puedeDespacharMaterial = ref(false)
     let esVisibleAutorizacion = ref(false)
 
     let esVisibleTarea = ref(false)
@@ -88,14 +68,6 @@ export default defineComponent({
     const opciones_motivos = ref([])
     const opciones_tareas = ref([])
     const opciones_clientes = ref([])
-
-
-    //hooks
-    onReestablecer(() => {
-      // console.log('se reestableció')
-      puedeEditarCantidad.value = true
-      soloLectura.value = false
-    })
 
     const configuracionColumnasProductosSeleccionadosDespachado = [...configuracionColumnasProductosSeleccionados, {
       name: 'cantidad',
@@ -137,9 +109,6 @@ export default defineComponent({
       prompt(data)
 
     }
-    function rechazarEgreso() {
-
-    }
 
 
 
@@ -173,6 +142,8 @@ export default defineComponent({
       aprobarEgreso,
       tabGestionarEgresos,
 
+      //rutas 
+      route
 
     }
   }

@@ -9,6 +9,8 @@ import { getVisibleColumns, formatBytes } from 'shared/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'config/utils'
 import { offset } from 'config/utils_tablas'
+import exportFile from 'quasar/src/utils/export-file.js'
+import useQuasar from 'quasar/src/composables/use-quasar.js'
 
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
@@ -165,9 +167,13 @@ export default defineComponent({
     estilos: {
       type: String,
       required: false,
-    }
+    },
+    mostrarColumnasVisibles: {
+      type: Boolean,
+      default: true,
+    },
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrarTodos'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -293,24 +299,19 @@ export default defineComponent({
       mostrarFiltros.value ? "Ocultar filtros" : "Mostrar filtros"
     )
 
-    function consultarCien() {
+    function filtrar() {
       console.log('consultar cien')
-    }
-
-    function consultarTodos() {
-      console.log('En essential table antes de filtrar todos')
-      // filtros.search = busqueda.value === "" ? null : busqueda.value
-      // listar({...filtros, ...filtrosBusqueda.value}, false)
       console.log(filtros.value)
-      emit('filtrarTodos', filtros.value)
+
+      refTableFilters.value.filtrar()
+
+      // emit('filtrar', filtros.value)
     }
 
     const filtros = ref()
 
-    function establecerFiltros(filtrosEditados) {
-      console.log('Estableciendo filtros')
-      console.log(filtrosEditados)
-      filtros.value = filtrosEditados
+    function establecerFiltros(uri: string) {
+      emit('filtrar', uri)
     }
 
     const refTableFilters = ref()
@@ -318,13 +319,66 @@ export default defineComponent({
       refTableFilters.value.resetearFiltros()
     }
 
+    function agregarFiltro() {
+      refTableFilters.value.agregarFiltro()
+    }
+
+    // exportar CSV
+    function exportTable() {
+      // naive encoding to csv format
+      const content = [props.configuracionColumnas.map((col: any) => wrapCsvValue(col.label))].concat(
+        props.datos.map((row: any) => props.configuracionColumnas.map((col: any) => wrapCsvValue(
+          typeof col.field === 'function'
+            ? col.field(row)
+            : row[col.field === void 0 ? col.name : col.field],
+          col.format,
+          row
+        )).join(','))
+      ).join('\r\n')
+
+      const status = exportFile(
+        'table-export.csv',
+        content,
+        'text/csv'
+      )
+
+      if (status !== true) {
+        /*$q.notify({
+          message: 'Browser denied file download...',
+          color: 'negative',
+          icon: 'warning'
+        })*/
+        console.log('No se puede descargar...')
+      }
+    }
+
+    function wrapCsvValue(val, formatFn?, row?) {
+      let formatted = formatFn !== void 0
+        ? formatFn(val, row)
+        : val
+
+      formatted = formatted === void 0 || formatted === null
+        ? ''
+        : String(formatted)
+
+      formatted = formatted.split('"').join('""')
+      /**
+       * Excel accepts \n and \r in strings, but some other CSV parsers do not
+       * Uncomment the next two lines to escape new lines
+       */
+      // .split('\n').join('\\n')
+      // .split('\r').join('\\r')
+
+      return `"${formatted}"`
+    }
+
     return {
       refEditarModal,
       refTableFilters,
       resetearFiltros,
+      agregarFiltro,
       establecerFiltros,
-      consultarCien,
-      consultarTodos,
+      filtrar,
       grid,
       inFullscreen,
       editar,
@@ -360,6 +414,7 @@ export default defineComponent({
       tituloBotonFiltros,
       abrirModalEntidad,
       abrirModalEditar,
+      exportTable,
     }
   },
 })

@@ -1,18 +1,14 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { useAuthenticationStore } from 'stores/authentication'
 import { estadosTrabajoArray } from 'config/utils'
 import { Subtarea } from './Subtarea'
 
+const authenticationStore = useAuthenticationStore()
+
 export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
-  /* {
-    name: 'codigo_tarea_cliente',
-    field: 'codigo_tarea_cliente',
-    label: 'Tarea Cliente',
-    align: 'left',
-    sortable: true,
-  }, */
   {
-    name: 'tarea',
-    field: 'tarea',
+    name: 'codigo_tarea',
+    field: 'codigo_tarea',
     label: 'Tarea JP',
     align: 'left',
     sortable: true,
@@ -37,6 +33,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'coordinador',
     label: 'Coordinador',
     align: 'left',
+    filtrar: authenticationStore.esJefeTecnico || authenticationStore.esCoordinadorBackup,
   },
   {
     name: 'titulo',
@@ -55,6 +52,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'cantidad_adjuntos',
     label: 'Cant. Adjuntos',
     align: 'left',
+    type: 'number',
   },
   {
     name: 'fecha_solicitud',
@@ -75,6 +73,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_creacion',
     label: 'Fecha y hora de creación',
     align: 'left',
+    type: 'datetime',
   },
   {
     name: 'fecha_inicio_trabajo',
@@ -100,42 +99,35 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_asignacion',
     label: 'Fecha y hora de asignación',
     align: 'left',
+    type: 'date'
   },
   {
     name: 'fecha_hora_agendado',
     field: 'fecha_hora_agendado',
     label: 'Fecha y hora de agendado',
     align: 'left',
-  },
-  {
-    name: 'fecha_hora_pendiente',
-    field: 'fecha_hora_pendiente',
-    label: 'Fecha y hora de pendiente',
-    align: 'left',
-  },
-  {
-    name: 'motivo_pendiente',
-    field: 'motivo_pendiente',
-    label: 'Motivo de pendiente',
-    align: 'left',
+    type: 'date'
   },
   {
     name: 'fecha_hora_ejecucion',
     field: 'fecha_hora_ejecucion',
     label: 'Fecha y hora de ejecución',
     align: 'left',
+    type: 'datetime',
   },
   {
     name: 'fecha_hora_realizado',
     field: 'fecha_hora_realizado',
     label: 'Fecha y hora de realizado',
     align: 'left',
+    type: 'date'
   },
   {
     name: 'fecha_hora_finalizacion',
     field: 'fecha_hora_finalizacion',
     label: 'Fecha y hora de finalización',
     align: 'left',
+    type: 'date'
   },
   {
     name: 'dias_ocupados',
@@ -149,6 +141,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_suspendido',
     label: 'Fecha y hora de suspención',
     align: 'left',
+    type: 'date',
   },
   {
     name: 'motivo_suspendido',
@@ -161,6 +154,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_cancelado',
     label: 'Fecha y hora de cancelación',
     align: 'left',
+    type: 'date',
   },
   {
     name: 'motivo_cancelado',

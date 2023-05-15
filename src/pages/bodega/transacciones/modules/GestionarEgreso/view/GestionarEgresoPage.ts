@@ -3,14 +3,12 @@ import { configuracionColumnasTransaccionEgreso } from 'pages/bodega/transaccion
 import { defineComponent } from 'vue'
 
 //Componentes
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
-import { TransaccionController } from 'pages/bodega/transacciones/infraestructure/TransaccionController'
 import { GestionarEgresoController } from '../infraestructure/GestionarEgresoController'
 import { tabGestionarEgresos, accionesTabla } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -23,10 +21,8 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new GestionarEgresoController())
     const { entidad: transaccion, disabled, listado } = mixin.useReferencias()
-    const { listar } = mixin.useComportamiento()
     const statusLoading = new StatusEssentialLoading()
 
-    // listar()
     const transaccionStore = useTransaccionEgresoStore()
     async function filtrarTabs(tabSeleccionado) {
       statusLoading.activar()
@@ -41,7 +37,7 @@ export default defineComponent({
       titulo: '',
       icono: 'bi-eye',
       color: 'primary',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.showPreview()
         modales.abrirModalEntidad('VisualizarEgresoPage')

@@ -15,6 +15,7 @@ export class EgresoPusherEvent {
         egresoRealizado.bind('egreso-event', function (e) {
             // console.log('egreso-event')
             notificacionStore.agregar(e.notificacion)
+            notificacionStore.actualizar()
             notificarCorrecto('Te despacharon material de bodega')
         })
     }

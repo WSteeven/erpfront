@@ -109,7 +109,7 @@
           </q-input>
         </div>
 
-        <div class="col-md-4 col-12">
+        <div v-if="mostrarColumnasVisibles" class="col-md-4 col-12">
           <div class="row">
             <q-select
               v-model="visibleColumns"
@@ -151,14 +151,6 @@
         </div>
       </div>
 
-      <!-- Filtros -->
-      <table-filters
-        ref="refTableFilters"
-        v-if="permitirFiltrar && mostrarFiltros"
-        :configuracionColumnas="configuracionColumnas"
-        @filtrosEditados="establecerFiltros"
-      ></table-filters>
-
       <div
         v-if="permitirFiltrar"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
@@ -173,13 +165,43 @@
             color="grey-8"
             no-caps
             push
+            @click="agregarFiltro()"
+          >
+            <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
+            Agregar filtro</q-btn
+          >
+
+          <!-- <q-btn
+            v-if="mostrarFiltros"
+            color="grey-8"
+            no-caps
+            push
             @click="resetearFiltros()"
           >
             <q-icon name="bi-eraser" class="q-mr-sm" size="xs"></q-icon>
             Resetear filtros</q-btn
+          > -->
+
+          <q-btn
+            v-if="mostrarFiltros"
+            color="positive"
+            no-caps
+            push
+            @click="filtrar()"
+          >
+            <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
+            Aplicar filtros</q-btn
           >
 
-          <q-btn-dropdown
+          <q-btn
+            color="primary"
+            icon="archive"
+            label="Exportar a csv"
+            no-caps
+            push
+            @click="exportTable"
+          />
+          <!--<q-btn-dropdown
             v-if="mostrarFiltros"
             split
             color="primary"
@@ -204,7 +226,7 @@
                 </q-item-section>
               </q-item>
             </q-list>
-          </q-btn-dropdown>
+          </q-btn-dropdown> -->
 
           <q-btn
             color="primary"
@@ -220,6 +242,16 @@
             {{ tituloBotonFiltros }}</q-btn
           >
         </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="row col-12">
+        <table-filters
+          ref="refTableFilters"
+          v-if="permitirFiltrar && mostrarFiltros"
+          :configuracionColumnas="configuracionColumnas"
+          @filtrar="establecerFiltros"
+        ></table-filters>
       </div>
 
       <!-- Botones Header -->
@@ -853,7 +885,8 @@
     <template #body-cell-leida="props">
       <q-td :props="props">
         <span v-if="props.value == false || props.value == 0">
-          <q-icon class="bi-check-circle-fill" color="grey-4" size="sm"> </q-icon>
+          <q-icon class="bi-check-circle-fill" color="grey-4" size="sm">
+          </q-icon>
         </span>
         <span v-else>
           <q-icon class="bi-check-circle-fill" color="positive" size="sm">
@@ -897,7 +930,7 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <!--<q-chip
+        <q-chip
           v-if="props.value === estadosTransacciones['pendiente']"
           :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
@@ -907,7 +940,7 @@
             class="q-mr-xs"
           ></q-icon>
           PENDIENTE
-        </q-chip> -->
+        </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
@@ -1122,6 +1155,17 @@
 </template>
 
 <style lang="scss">
+/* .filtros {
+  position: relative;
+  left: -16px;
+  top: -16px;
+  right: 16px;
+  padding: 0;
+  margin: 0;
+  display: block;
+  width: 100%;
+} */
+
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 410px;

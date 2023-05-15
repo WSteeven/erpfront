@@ -40,8 +40,8 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     return this.listableRepository.listar<C>(params)
   }
 
-  async filtrar<C = T>(params?: any) {
-    return this.filtrableRepository.filtrar<C>(params)
+  async filtrar<C = T>(uri?: any) {
+    return this.filtrableRepository.filtrar<C>(uri)
   }
 
   async consultar(id: number, params?: any) {

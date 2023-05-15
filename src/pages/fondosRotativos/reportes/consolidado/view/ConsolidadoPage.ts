@@ -68,7 +68,7 @@ export default defineComponent({
       { value: '3', label: 'Consolidado' },
       { value: '4', label: 'Estado de Cuenta' },
     ]);
-
+    const is_all_empleados= ref('false')
     listadosAuxiliares.tipos_saldos = tipos_saldos;
     const v$ = useVuelidate(reglas, consolidado)
     setValidador(v$.value)
@@ -188,6 +188,9 @@ export default defineComponent({
           break
       }
     }
+    function mostrarEmpleados() {
+      consolidado.usuario = null;
+    }
     return {
       mixin,
       consolidado,
@@ -199,11 +202,13 @@ export default defineComponent({
       tiposFondos,
       tiposFondoRotativoFechas,
       tipos_saldos,
+      is_all_empleados,
       generar_reporte,
       filtrarUsuarios,
       filtrarTiposFondos,
       filtrarTiposFondoRotativoFechas,
       filtarTiposSaldos,
+      mostrarEmpleados,
       watchEffect,
     }
   },

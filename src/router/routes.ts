@@ -20,10 +20,10 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       }, */
       {
-        path:'/imagen',
+        path: '/imagen',
         name: 'imagen',
         component: () => import('pages/bodega/pedidos/view/imagenComprimida.vue'),
-        meta: { requiresAuth: false},
+        meta: { requiresAuth: false },
       },
       {
         path: '/proyectos',
@@ -159,6 +159,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/permisos-usuarios',
+        name: 'permisos_usuarios',
+        component: () => import('pages/permisos/modules/permisosUsuarios/view/PermisosUsuarioPage.vue'),
+        meta: { requiresAuth: false }
+      },
+      {
         path: '/permisos',
         name: 'permisos',
         component: () => import('pages/permisos/view/PermisoPage.vue'),
@@ -178,6 +184,13 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/bodega/transacciones/modules/GestionarEgreso/view/GestionarEgresoPage.vue'
           ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/egresos-filtrados',
+        name: 'egresos_filtrados',
+        component: () =>
+          import('pages/bodega/comprobantes/view/ComprobantePage.vue'),
         meta: { requiresAuth: false },
       },
       {
@@ -309,7 +322,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/bodega/reportes/modules/rpt_inventario/view/ReporteInventarioPage.vue'
           ),
-        meta: { requiresAuth: false},
+        meta: { requiresAuth: false },
       },
       {
         path: '/kardex',
@@ -318,7 +331,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/bodega/reportes/modules/rpt_seguimiento_detalle/view/SeguimientoDetallePage.vue'
           ),
-        meta: { requiresAuth: false},
+        meta: { requiresAuth: false },
       },
 
       //Routes for Recursos Humanos
