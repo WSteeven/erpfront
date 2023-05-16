@@ -356,6 +356,19 @@ const routes: RouteRecordRaw[] = [
           import('pages/recursosHumanos/grupos/view/GrupoPage.vue'),
         meta: { requiresAuth: true },
       },
+      //Routes for Vehiculos
+      {
+        path: '/combustibles',
+        name: 'combustibles',
+        component: () => import('pages/controlVehiculos/combustible/view/CombustiblePage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/vehiculos',
+        name: 'vehiculos',
+        component: () => import('pages/controlVehiculos/vehiculos/view/VehiculoPage.vue'),
+        meta: { requiresAuth: false },
+      },
 
       //Routes for Activos Fijos
       {

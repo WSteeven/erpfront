@@ -149,6 +149,12 @@
             </q-btn>
           </div>
         </div>
+        <div class="col-12 col-md-12">
+          <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
+            {{ 'Total de elementos: ' }}
+            <b>{{ datos == undefined ? 0 : datos.length }}</b>
+          </q-chip>
+        </div>
       </div>
 
       <div

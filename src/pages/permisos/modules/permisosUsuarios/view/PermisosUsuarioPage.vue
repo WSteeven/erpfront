@@ -2,41 +2,81 @@
   <q-page padding class="q-pa-lg">
     <q-card>
       <q-card-section>
-        <div class="text-h6">
-          <label class="q-mb-sm block">Roles</label>
-          <q-select
-            v-model="rol"
-            :options="roles"
-            transition-show="jump-up"
-            transition-hide="jump-down"
-            options-dense
-            dense
-            outlined
-            @update:model-value="obtenerPermisoRol(rol)"
-            :disable="disabled"
-            :readonly="disabled"
-            error-message="Debes seleccionar un rol"
-            use-input
-            input-debounce="0"
-            @filter="filtrarRol"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.name"
-            emit-value
-            map-options
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
-            </template>
-            <template v-slot:after>
-              <q-btn class="block" color="secondary" @click="crearRol()"
-                ><q-icon name="bi-plus"></q-icon
-              ></q-btn>
-            </template>
-          </q-select>
+        <div class="row q-col-gutter-sm q-mb-md">
+          <!-- Empleado -->
+          <div class="col-12 col-md-5">
+            <div class="col-12 col-md-5 q-mb-md">
+              <label class="q-mb-sm block"></label>
+              <q-select
+                v-model="empleado"
+                :options="empleados"
+                options-dense
+                dense
+                outlined
+                :disable="disabled"
+                :readonly="disabled"
+                error-message="Debe seleccionar un empleado"
+                use-input
+                input-debounce="0"
+                @filter="filtrarEmpleados"
+                @update:model-value="filtrarRolesEmpleados"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombres + ' ' + v.apellidos"
+                emit-value
+                map-options
+              ></q-select>
+            </div>
+            <!-- Roles -->
+            <div class="col-12 col-md-5 q-mb-md" v-if="roles">
+              <q-card>
+                <q-card-section>
+                  <div class="text-h6">Roles</div>
+                  <q-scroll-area style="height: 100px">
+                    <div class="row">
+                      <q-item dense v-for="(rol, index) in roles" :key="index">
+                        <q-item-section avatar>
+                          <q-icon
+                            name="bi-check-circle-fill"
+                            size="xs"
+                            color="positive"
+                          ></q-icon>
+                        </q-item-section>
+                        <q-item-section>{{ rol }}</q-item-section>
+                      </q-item>
+                    </div>
+                  </q-scroll-area>
+                </q-card-section>
+              </q-card>
+            </div>
+          </div>
+          <div class="col-12 col-md-2">
+            </div>
+          <!-- Permisos -->
+          <div class="col-12 col-md-5">
+            <div class="col-12 col-md-5 q-mb-md" v-if="listado">
+              <q-card>
+                <q-card-section>
+                  <div class="text-h6">Todos los permisos asignados (roles y directamente)</div>
+                  <q-scroll-area style="height: 164px">
+                    <div class="q-py-xs">
+                      <q-item dense v-for="(permiso, index) in permisos" :key="index">
+                        <q-item-section avatar>
+                          <q-icon
+                            name="bi-check-circle-fill"
+                            size="xs"
+                            color="positive"
+                          >
+                          &nbsp;{{ index+1}}
+                        </q-icon>
+                        </q-item-section>
+                        <q-item-section>{{ permiso.name }}</q-item-section>
+                      </q-item>
+                    </div>
+                  </q-scroll-area>
+                </q-card-section>
+              </q-card>
+            </div>
+          </div>
         </div>
         <div class="row q-col-gutter-sm q-mb-md q-mt-xs">
           <div class="col-12 col-md-5 q-gutter-y-sm">
@@ -69,14 +109,12 @@
               ><q-icon name="bi-plus"></q-icon
             ></q-btn>
             <q-btn
-              v-if="rol !== undefined"
               class="full-width block"
               color="primary"
               @click="botonAsignarPermisos()"
               ><q-icon name="bi-arrow-right"></q-icon
             ></q-btn>
             <q-btn
-              v-if="rol !== undefined"
               class="full-width block"
               color="accent"
               @click="botonEliminarPermisos()"
@@ -87,7 +125,7 @@
           <div class="col-12 col-md-5 q-mb-md">
             <q-card>
               <q-card-section>
-                <div class="text-h6">Asignados</div>
+                <div class="text-h6">Asignados directamente</div>
                 <essential-table
                   :configuracionColumnas="configuracionColumnasPermisos"
                   :mostrarColumnasVisibles="false"
@@ -110,4 +148,4 @@
   </q-page>
 </template>
 
-<script src="./PermisoPage.ts"></script>
+<script src="./PermisosUsuarioPage.ts"></script>
