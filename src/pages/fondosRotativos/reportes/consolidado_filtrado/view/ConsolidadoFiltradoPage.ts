@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -19,6 +19,7 @@ import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
 
 export default defineComponent({
   components: { TabLayout },
@@ -97,10 +98,10 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
-      ruc:{
+      ruc: {
         required: true,
         minLength: 13,
-     }
+      },
     }
     const tipos_saldos = ref([
       { value: '1', label: 'Acreditacion' },
@@ -118,7 +119,6 @@ export default defineComponent({
       { value: '7', name: 'RUC' },
       { value: '8', name: 'SIN COMPROBANTE' },
     ])
-
     listadosAuxiliares.tipos_saldos = tipos_saldos
     listadosAuxiliares.tipos_filtro = tipos_filtros
     const v$ = useVuelidate(reglas, consolidadofiltrado)
@@ -131,13 +131,14 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizacionesEspeciales = ref([])
     const tareas = ref([])
+    const filteredSubdetalles= []
     usuarios.value = listadosAuxiliares.usuarios
 
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
@@ -149,7 +150,7 @@ export default defineComponent({
         },
         autorizacionesEspeciales: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
         sub_detalles: {
           controller: new SubDetalleFondoController(),
@@ -191,7 +192,9 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -231,20 +234,7 @@ export default defineComponent({
       })
     }
 
-    function filtarSubdetalles(val, update) {
-      if (val === '') {
-        update(() => {
-          sub_detalles.value = listadosAuxiliares.sub_detalles
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-          (v) => v.detalle.indexOf(needle) > -1
-        )
-      })
-    }
+
     function filtrarProyectos(val, update) {
       if (val === '') {
         update(() => {
@@ -296,7 +286,7 @@ export default defineComponent({
               (v) => v.value == 6
             )
           })
-          break;
+          break
 
         default:
           update(() => {
@@ -336,16 +326,38 @@ export default defineComponent({
         )
       })
     }
+
+    const opcionesSubdetalles = computed(() => {
+      if (consolidadofiltrado.detalle == null || consolidadofiltrado.detalle == 0) {
+        return listadosAuxiliares.sub_detalles
+      }
+      return listadosAuxiliares.sub_detalles.filter(
+        (subdetalle) => subdetalle.id_detalle_viatico === consolidadofiltrado.detalle
+      )
+    })
+
+    function filtroSubdetalles(val, update) {
+      if (val === ' ') {
+        update(() => {
+          opcionesSubdetalles.value
+        })
+        return
+      }
+      const needle = val.toLowerCase()
+      update(() => {
+        return opcionesSubdetalles.value.filter(
+          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
     async function generar_reporte(
       valor: ConsolidadoFiltrado,
       tipo: string
     ): Promise<void> {
       const axios = AxiosHttpRepository.getInstance()
       const filename =
-        'reporte_gastos_del_' +
-        valor.fecha_inicio +
-        '_al_' +
-        valor.fecha_fin
+        'reporte_gastos_del_' + valor.fecha_inicio + '_al_' + valor.fecha_fin
       switch (tipo) {
         case 'excel':
           const url_excel =
@@ -385,9 +397,10 @@ export default defineComponent({
       filtrarUsuarios,
       filtarTiposSaldos,
       filtrarTiposFiltro,
+      filtroSubdetalles,
       filtrarAutorizacionesEspeciales,
+      opcionesSubdetalles,
       filtrarDetalles,
-      filtarSubdetalles,
       filtrarProyectos,
       filtrarTareas,
       watchEffect,
