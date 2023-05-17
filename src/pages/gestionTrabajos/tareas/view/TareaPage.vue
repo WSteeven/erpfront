@@ -8,6 +8,7 @@
     :mostrarButtonSubmits="tab === 'tarea'"
     :tabOptions="tabOptionsEstadosTareas"
     :accion1="btnFinalizarTarea"
+    :accion2="btnVerImagenInforme"
     :filtrar="filtrarTarea"
     tabDefecto="0"
     :forzarListar="true"
@@ -688,6 +689,14 @@
       </q-tab-panels>
     </template>
   </tab-layout-filter-tabs2>
+
+  <visor-imagen ref="refVisorImagen"></visor-imagen>
+
+  <solicitar-imagen
+    :mostrar="mostrarSolicitarImagen"
+    :confirmar="imagenSubida"
+    @cerrar="mostrarSolicitarImagen = false"
+  ></solicitar-imagen>
 
   <modales-entidad
     :comportamiento="modalesTarea"

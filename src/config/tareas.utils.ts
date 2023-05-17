@@ -46,7 +46,7 @@ export const tabOptionsEstadosSubtareas: TabOption[] = [
 ]
 
 export const tabOptionsEstadosSubtareasMonitor: TabOption[] = [
-  { label: 'Todo', value: '' },
+  //{ label: 'Todo', value: '' },
   { label: 'Agendado', value: 'AGENDADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },

@@ -219,7 +219,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }) */
       // @noImplicitAny: false
     } catch (error: any) {
-      console.log(error)
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)

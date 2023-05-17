@@ -632,7 +632,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Clientes',
       link: 'clientes',
-      icon: 'bi-circle',
+      icon: 'bi-person-circle',
       can: store.can('puede.ver.clientes'),
     },
     {
