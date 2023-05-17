@@ -6,13 +6,27 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Tarea } from '../domain/Tarea'
 import { endpoints } from 'config/api'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
+import { notificarMensajesError } from 'shared/utils'
+import { ApiError } from 'shared/error/domain/ApiError'
+import { computed, reactive, ref, watch } from 'vue'
 
 export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
   const { confirmar, prompt, notificarAdvertencia } = useNotificaciones()
+  const notificaciones = useNotificaciones()
   const { listado } = mixin.useReferencias()
   const { editarParcial } = mixin.useComportamiento()
   const authenticationStore = useAuthenticationStore()
+  const mostrarSolicitarImagen = ref(false)
+  const filaFinalizar = {
+    id: null,
+    novedad: null,
+    codigo_tarea_cliente: null,
+    finalizado: true,
+    posicion: 0,
+    imagen_informe: null,
+  }
+  const refVisorImagen = ref()
 
   const btnFinalizarTarea: CustomActionTable = {
     titulo: 'Finalizar tarea',
@@ -26,6 +40,9 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
       if (!estanFinalizadas) return notificarAdvertencia('La tarea aún tiene subtareas pendientes de FINALIZAR, CANCELAR o REAGENDAR.')
       if (!materialDevuelto) return notificarAdvertencia('La tarea aún tiene materiales pendiente de devolución.')
 
+      filaFinalizar.id = entidad.id
+      filaFinalizar.posicion = posicion
+
       if (!entidad.codigo_tarea_cliente) {
         const data: CustomActionPrompt = {
           titulo: 'Finalizar tarea',
@@ -33,15 +50,16 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
           validacion: (val) => !!val,
           accion: (codigoTareaCliente) => {
 
+            filaFinalizar.codigo_tarea_cliente = codigoTareaCliente
+
             const data2: CustomActionPrompt = {
               titulo: 'Novedad',
               mensaje: 'Ingrese alguna novedad en caso de presentarse.',
               accion: (novedad) => {
+                filaFinalizar.novedad = novedad
 
-                confirmar('¿Está seguro de finalizar la tarea?', async () => {
-                  await editarParcial(entidad.id, { finalizado: true, novedad: novedad, codigo_tarea_cliente: codigoTareaCliente })
-                  eliminarElemento(posicion)
-                })
+                if (entidad.cliente_id === 3) mostrarSolicitarImagen.value = true
+                else imagenSubida()
               },
             }
 
@@ -51,22 +69,33 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
         }
 
         prompt(data)
+
       } else {
 
         const data: CustomActionPrompt = {
           titulo: 'Novedad',
           mensaje: 'Ingrese alguna novedad en caso de presentarse.',
           accion: (novedad) => {
+            filaFinalizar.novedad = novedad
+            delete (filaFinalizar as any).codigo_tarea_cliente
 
-            confirmar('¿Está seguro de finalizar la tarea?', async () => {
-              await editarParcial(entidad.id, { finalizado: true, novedad: novedad })
-              eliminarElemento(posicion)
-            })
+            if (entidad.cliente_id === 3) mostrarSolicitarImagen.value = true
+            else imagenSubida()
           },
         }
 
         prompt(data)
       }
+    }
+  }
+
+  const btnVerImagenInforme: CustomActionTable = {
+    titulo: 'Ver imagen informe',
+    icono: 'bi-image-fill',
+    color: 'secondary',
+    visible: ({ entidad }) => entidad.imagen_informe,
+    accion: async ({ entidad }) => {
+      refVisorImagen.value.abrir(entidad.imagen_informe)
     }
   }
 
@@ -88,8 +117,28 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     return response.data.materiales_devueltos
   }
 
+  function imagenSubida(imagen?) {
+    confirmar('¿Está seguro de finalizar la tarea?', async () => {
+      const posicion = filaFinalizar.posicion
+      const id = filaFinalizar.id
+
+      filaFinalizar.imagen_informe = imagen
+
+      if (!imagen) delete (filaFinalizar as any).imagen_informe
+      delete (filaFinalizar as any).id
+      delete (filaFinalizar as any).posicion
+
+      if (id) await editarParcial(id, filaFinalizar)
+      eliminarElemento(posicion)
+    })
+  }
+
   return {
+    refVisorImagen,
     btnFinalizarTarea,
-    verificarTodasSubtareasFinalizadas,
+    // verificarTodasSubtareasFinalizadas,
+    mostrarSolicitarImagen,
+    imagenSubida,
+    btnVerImagenInforme,
   }
 }

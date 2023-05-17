@@ -33,6 +33,7 @@
       'my-sticky-column-table-dark': $q.dark.isActive,
       'my-sticky-column-table-light': !$q.dark.isActive,
       'rounded-header': $q.screen.xs,
+      'bg-header-table': mostrarFiltros,
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
@@ -74,6 +75,16 @@
 
     <!-- Header table -->
     <template v-if="mostrarHeader" v-slot:top="props">
+      <div
+        v-if="mostrarFiltros"
+        class="text-bold text-center full-width rounded q-mb-md"
+      >
+        <q-chip class="bg-white text-positive">
+          <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
+          Modo filtro activado
+        </q-chip>
+      </div>
+
       <div
         v-if="titulo"
         class="row text-bold text-primary q-mb-lg items-center justify-center block"
@@ -162,7 +173,7 @@
         <div class="row q-gutter-xs justify-end q-mb-md">
           <q-btn
             v-if="mostrarFiltros"
-            color="grey-8"
+            color="indigo-4"
             no-caps
             push
             @click="agregarFiltro()"
@@ -184,7 +195,7 @@
 
           <q-btn
             v-if="mostrarFiltros"
-            color="positive"
+            color="indigo"
             no-caps
             push
             @click="filtrar()"
@@ -194,7 +205,7 @@
           >
 
           <q-btn
-            color="primary"
+            color="positive"
             icon="archive"
             label="Exportar a csv"
             no-caps
@@ -229,10 +240,10 @@
           </q-btn-dropdown> -->
 
           <q-btn
-            color="primary"
+            :color="mostrarFiltros ? 'negative' : 'primary'"
             no-caps
             push
-            @click="mostrarFiltros = !mostrarFiltros"
+            @click="toggleFiltros()"
           >
             <q-icon
               :name="mostrarFiltros ? 'bi-eye-slash' : 'bi-eye'"
@@ -1165,6 +1176,11 @@
   display: block;
   width: 100%;
 } */
+/*.bg-header-table {
+  .q-table__top {
+    background-color: $grey-4 !important;
+  }
+}*/
 
 .my-sticky-dynamic {
   /* height or max-height is important */

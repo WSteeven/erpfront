@@ -1,6 +1,7 @@
 <template>
   <div class="bg-body-table-dark-color">
     <q-tabs
+      v-if="mostrarTabs"
       v-model="tabSeleccionado"
       no-caps
       bordered
@@ -67,6 +68,7 @@
         :permitir-filtrar="permitirFiltrar"
         :permitir-buscar="permitirBuscar"
         @filtrar="consultarTodos"
+        @toggle-filtros="toggleFiltros"
       ></essential-table>
     </div>
   </div>
@@ -217,13 +219,21 @@ const emit = defineEmits([
   'accion10',
   'tab-seleccionado',
   'filtrar',
+  'limpiar-listado',
 ])
 
 const tabSeleccionado = ref(props.tabDefecto)
+const mostrarTabs = ref(true)
 
 watchEffect(() => {
   tabSeleccionado.value = props.tabDefecto
 })
+
+function toggleFiltros(mostrarFiltros: boolean) {
+  mostrarTabs.value = !mostrarFiltros
+  if (mostrarTabs.value) emit('tab-seleccionado', tabSeleccionado.value)
+  else emit('limpiar-listado')
+}
 
 const consultar = (data) => emit('consultar', data)
 const editar = (data) => emit('editar', data)
