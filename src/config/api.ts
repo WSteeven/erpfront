@@ -25,8 +25,10 @@ export const endpoints = {
   //configuraciones: new Endpoint('configuraciones'),
   tablero: new Endpoint('tablero'),
   // Permisos
+  permisos_roles_usuario: new Endpoint('permisos_roles_usuario'),
   permisos_administrar: new Endpoint('permisos_administrar'),
   asignar_permisos: new Endpoint('asignar-permisos'),
+  asignar_permisos_individual: new Endpoint('asignar-permisos-usuario'),
   crear_permiso: new Endpoint('crear-permiso'),
   // Ubicacion
   paises: new Endpoint('paises'),
@@ -39,6 +41,12 @@ export const endpoints = {
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
+  
+  //Modulo de Vehiculos
+  combustibles: new Endpoint('vehiculos/combustibles'),
+  vehiculos: new Endpoint('vehiculos/vehiculos'),
+  bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
+  empleados_choferes: new Endpoint('empleados-choferes'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),

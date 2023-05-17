@@ -2,6 +2,7 @@ import { useAuthenticationStore } from './authentication'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
+import { link } from 'fs'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -138,6 +139,10 @@ export const useMenuStore = defineStore('menu', () => {
         },*/
       ],
     },
+    /**
+     * Modulo de bodega.
+     * Toda la estructura de pedidos, devoluciones y despachos de materiales
+     */
     {
       title: 'Bodega',
       icon: 'bi-building-fill',
@@ -451,6 +456,31 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    {
+      title: 'Vehículos',
+      icon: 'garage',
+      can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
+      children: [
+        {
+          title: 'Combustibles',
+          link: 'combustibles',
+          icon: 'bi-fuel-pump-fill',
+          can: store.can('puede.ver.combustibles'),
+        },
+        /* {
+          title: 'Control diario',
+          link: 'control-vehiculos',
+          icon: 'bi-card-checklist',
+          can: store.can('puede.ver.bitacoras_vehiculos'),
+        }, */
+        {
+          title: 'Vehículos',
+          link: 'vehiculos',
+          icon: 'bi-car-front-fill',
+          can: store.can('puede.ver.vehiculos'),
+        },
+      ]
+    },
     //Modulo Activos Fijos
     {
       title: 'Activos fijos',
@@ -603,6 +633,12 @@ export const useMenuStore = defineStore('menu', () => {
       link: 'clientes',
       icon: 'bi-person-circle',
       can: store.can('puede.ver.clientes'),
+    },
+    {
+      title: 'Permisos de usuarios',
+      link: 'permisos-usuarios',
+      icon: 'bi-person-fill-lock',
+      can: store.esAdministrador || store.can('puede.ver.permisos_usuarios'),
     },
     {
       title: 'Permisos',

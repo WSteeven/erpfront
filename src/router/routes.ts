@@ -158,12 +158,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
-      /*{
+      {
         path: '/permisos-usuarios',
         name: 'permisos_usuarios',
         component: () => import('pages/permisos/modules/permisosUsuarios/view/PermisosUsuarioPage.vue'),
-        meta: { requiresAuth: false }
-      },*/
+        meta: { requiresAuth: true }
+      },
       {
         path: '/permisos',
         name: 'permisos',
@@ -285,7 +285,6 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoPage.vue'
-            // 'pages/bodega/transacciones/mod/view/ControlTransaccionIngresoPage.vue',
           ),
         meta: { requiresAuth: true },
       },
@@ -355,6 +354,19 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('pages/recursosHumanos/grupos/view/GrupoPage.vue'),
         meta: { requiresAuth: true },
+      },
+      //Routes for Vehiculos
+      {
+        path: '/combustibles',
+        name: 'combustibles',
+        component: () => import('pages/controlVehiculos/combustible/view/CombustiblePage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/vehiculos',
+        name: 'vehiculos',
+        component: () => import('pages/controlVehiculos/vehiculos/view/VehiculoPage.vue'),
+        meta: { requiresAuth: false },
       },
 
       //Routes for Activos Fijos

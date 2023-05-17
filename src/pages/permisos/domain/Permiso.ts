@@ -5,6 +5,11 @@ export class Permiso extends EntidadAuditable {
   name: string | null
   role_id: number | null
   roles: any[] | null
+  ver: boolean
+  crear: boolean
+  editar: boolean
+  eliminar: boolean
+  permiso_personalizado: boolean
 
 
   constructor() {
@@ -13,6 +18,10 @@ export class Permiso extends EntidadAuditable {
     this.name = null
     this.role_id = null
     this.roles = null
-
+    this.ver=false
+    this.crear=false
+    this.editar=false
+    this.eliminar=false
+    this.permiso_personalizado=false //falso si es normal, true si es personalizado
   }
 }
