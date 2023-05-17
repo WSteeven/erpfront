@@ -484,25 +484,50 @@
             </q-input>
           </div>
           <!-- Placa vehiculo -->
-          <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">
-            <label class="q-mb-sm block">Placa de Vehiculo</label>
-            <q-input
-              v-model="gasto.placa"
-              placeholder="Obligatorio"
-              mask="AAA####"
-              hint="EJEMPLO: ABC123"
-              :disable="disabled"
-              :error="!!v$.placa.$errors.length"
-              @blur="v$.placa.$touch"
-              outlined
+          <div class="col-12 col-md-3"  v-if="esCombustibleEmpresa" >
+            <label class="q-mb-sm block">Placas</label>
+            <q-select
+              v-model="gasto.vehiculo"
+              :options="vehiculos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
               dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.vehiculo.$errors.length"
+              @blur="v$.vehiculo.$touch"
+              error-message="Debes seleccionar una Tarea"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.placa"
+              emit-value
+              map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.placa.$errors" :key="error.$uid">
+                <div v-for="error of v$.vehiculo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </q-input>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.placa
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">

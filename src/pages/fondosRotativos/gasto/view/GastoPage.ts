@@ -35,6 +35,7 @@ import { emit } from 'process'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -209,7 +210,7 @@ export default defineComponent({
       kilometraje: {
         requiredIfdetalle: esCombustibleEmpresa,
       },
-      placa: {
+      vehiculo: {
         requiredIfdetalle: esCombustibleEmpresa,
       },
       observacion: {
@@ -226,6 +227,7 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
+    const vehiculos = ref([])
 
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -257,13 +259,19 @@ export default defineComponent({
             estado: 1,
           },
         },
+        vehiculos: {
+          controller: new VehiculoController(),
+          params: {
+            campos: 'id,placa',
+          },
+        },
       })
       autorizacionesEspeciales.value =
         listadosAuxiliares.autorizacionesEspeciales
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
-
+      vehiculos.value = listadosAuxiliares.vehiculos
       autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
     cantones.value =
@@ -330,7 +338,7 @@ export default defineComponent({
         sabadoAnterior = convertir_fecha(
           new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7)))
         )
-      }else{
+      } else {
         sabadoAnterior = convertir_fecha(
           new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
         )
@@ -590,6 +598,7 @@ export default defineComponent({
       autorizacionesEspeciales,
       esTecnico,
       esCombustibleEmpresa,
+      vehiculos,
       watchEffect,
       filtrarAutorizacionesEspeciales,
       filtrarCantones,
