@@ -41,10 +41,12 @@ export const endpoints = {
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
-
+  
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),
+  bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
+  empleados_choferes: new Endpoint('empleados-choferes'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),

@@ -158,12 +158,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
-      /*{
+      {
         path: '/permisos-usuarios',
         name: 'permisos_usuarios',
         component: () => import('pages/permisos/modules/permisosUsuarios/view/PermisosUsuarioPage.vue'),
-        meta: { requiresAuth: false }
-      },*/
+        meta: { requiresAuth: true }
+      },
       {
         path: '/permisos',
         name: 'permisos',
@@ -285,7 +285,6 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoPage.vue'
-            // 'pages/bodega/transacciones/mod/view/ControlTransaccionIngresoPage.vue',
           ),
         meta: { requiresAuth: true },
       },

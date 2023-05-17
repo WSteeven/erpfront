@@ -52,7 +52,7 @@
           <div class="col-12 col-md-2">
             </div>
           <!-- Permisos -->
-          <div class="col-12 col-md-5">
+          <div class="col-12 col-md-5" v-if="permisos">
             <div class="col-12 col-md-5 q-mb-md" v-if="listado">
               <q-card>
                 <q-card-section>

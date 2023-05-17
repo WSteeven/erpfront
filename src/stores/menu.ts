@@ -459,25 +459,25 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Vehículos',
       icon: 'garage',
-      can: true,//store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
+      can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
       children: [
         {
           title: 'Combustibles',
           link: 'combustibles',
           icon: 'bi-fuel-pump-fill',
-          can: true, //store.can('puede.ver.combustibles'),
+          can: store.can('puede.ver.combustibles'),
         },
-        {
+        /* {
           title: 'Control diario',
           link: 'control-vehiculos',
           icon: 'bi-card-checklist',
-          can: store.can('puede.ver.control_vehiculos'),
-        },
+          can: store.can('puede.ver.bitacoras_vehiculos'),
+        }, */
         {
           title: 'Vehículos',
           link: 'vehiculos',
           icon: 'bi-car-front-fill',
-          can: true, //store.can('puede.ver.vehiculos'),
+          can: store.can('puede.ver.vehiculos'),
         },
       ]
     },
@@ -638,7 +638,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Permisos de usuarios',
       link: 'permisos-usuarios',
       icon: 'bi-person-fill-lock',
-      can: true, //store.esAdministrador,
+      can: store.esAdministrador || store.can('puede.ver.permisos_usuarios'),
     },
     {
       title: 'Permisos',
