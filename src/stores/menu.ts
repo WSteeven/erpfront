@@ -456,6 +456,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    //Modulo de Vehículos
     {
       title: 'Vehículos',
       icon: 'garage',
