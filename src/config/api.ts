@@ -19,12 +19,12 @@ export const endpoints = {
   perfil_usuario: new Endpoint('user/profile-information', false),
   cambiar_contrasena: new Endpoint('user/password', false),
   roles: new Endpoint('user/roles'),
-  permisos: new Endpoint('user/permisos'),
   fecha: new Endpoint('obtener-fecha'),
   hora: new Endpoint('obtener-hora'),
   //configuraciones: new Endpoint('configuraciones'),
   tablero: new Endpoint('tablero'),
   // Permisos
+  todos_permisos: new Endpoint('permisos'),
   permisos_roles_usuario: new Endpoint('permisos_roles_usuario'),
   permisos_administrar: new Endpoint('permisos_administrar'),
   asignar_permisos: new Endpoint('asignar-permisos'),
@@ -35,7 +35,7 @@ export const endpoints = {
   provincias: new Endpoint('provincias'),
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
-
+  
   // Modulo de RR HH
   cargos: new Endpoint('cargos'),
   activos_fijos: new Endpoint('activos-fijos'),
@@ -46,7 +46,7 @@ export const endpoints = {
   combustibles: new Endpoint('vehiculos/combustibles'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
-  empleados_choferes: new Endpoint('empleados-choferes'),
+  empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),

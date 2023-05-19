@@ -2,7 +2,7 @@
 import { configuracionColumnasBitacoraVehicular } from '../domain/configuracionColumnasBitacoraVehicular';
 import { required } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 
 // componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -87,6 +87,7 @@ export default defineComponent({
                     opciones_choferes.value = listadosAuxiliares.choferes.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
                 })
             },
+            TanqueFinalValido: computed(() => bitacora.tanque_final! <= 100 || bitacora.tanque_final! >= 0),
 
         }
     }
