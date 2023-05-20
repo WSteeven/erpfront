@@ -50,7 +50,7 @@
             </q-select>
           </div>
           <!-- Chofer -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="true">
+          <div class="col-12 col-md-3 q-mb-md" v-if="accion !== acciones.nuevo">
             <label class="q-mb-sm block">Chofer</label>
             <q-select
               v-model="bitacora.chofer"
@@ -62,7 +62,6 @@
               dense
               outlined
               :readonly="disabled"
-              :error="!!v$.chofer.$errors.length"
               use-input
               input-debounce="0"
               @filter="filtroChoferes"
@@ -71,11 +70,6 @@
               emit-value
               map-options
             >
-              <template v-slot:error>
-                <div v-for="error of v$.chofer.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
