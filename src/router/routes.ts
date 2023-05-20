@@ -158,23 +158,30 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
-        path: '/permisos-usuarios',
-        name: 'permisos_usuarios',
-        component: () => import('pages/permisos/modules/permisosUsuarios/view/PermisosUsuarioPage.vue'),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: '/permisos',
-        name: 'permisos',
-        component: () => import('pages/permisos/view/PermisoPage.vue'),
-        meta: { requiresAuth: true },
-      },
+      //Routes for permissions
       {
         path: '/roles',
         name: 'roles',
         component: () => import('pages/administracion/roles/view/RolPage.vue'),
         meta: { requiresAuth: false },
+      },
+      {
+        path: '/permisos',
+        name: 'permisos',
+        component: () => import('pages/permisos/modules/todosPermisos/view/PermisoPage.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/permisos-roles',
+        name: 'permisos_roles',
+        component: () => import('pages/permisos/view/PermisoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/permisos-usuarios',
+        name: 'permisos_usuarios',
+        component: () => import('pages/permisos/modules/permisosUsuarios/view/PermisosUsuarioPage.vue'),
+        meta: { requiresAuth: true }
       },
       // Routes for bodega
       {
@@ -357,16 +364,22 @@ const routes: RouteRecordRaw[] = [
       },
       //Routes for Vehiculos
       {
+        path: '/control-vehiculos',
+        name: 'bitacoras_vehiculos',
+        component: () => import('pages/controlVehiculos/bitacoraVehicular/view/BitacoraVehicularPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/combustibles',
         name: 'combustibles',
         component: () => import('pages/controlVehiculos/combustible/view/CombustiblePage.vue'),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/vehiculos',
         name: 'vehiculos',
         component: () => import('pages/controlVehiculos/vehiculos/view/VehiculoPage.vue'),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
 
       //Routes for Activos Fijos

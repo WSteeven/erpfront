@@ -7,8 +7,8 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
-          <!-- Placa -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <!-- Vehiculo -->
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Vehículo</label>
             <q-select
               v-model="bitacora.vehiculo"
@@ -17,9 +17,11 @@
               transition-show="scale"
               transition-hide="scale"
               options-dense
+              clearable
               dense
               outlined
               :readonly="disabled"
+              :disable="disabled"
               use-input
               input-debounce="0"
               @filter="filtroVehiculos"
@@ -27,7 +29,18 @@
               :option-value="(item) => item.id"
               emit-value
               map-options
-              ><template v-slot:no-option>
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.placa }}</q-item-label>
+                    <q-item-label caption>{{
+                      scope.opt.marca + ' ' + scope.opt.modelo
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
                     No hay resultados
@@ -37,7 +50,7 @@
             </q-select>
           </div>
           <!-- Chofer -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md" v-if="true">
             <label class="q-mb-sm block">Chofer</label>
             <q-select
               v-model="bitacora.chofer"
@@ -72,121 +85,46 @@
               </template>
             </q-select>
           </div>
-          <!-- Chofer -->
-          <div class="col-12 col-md-4 q-mb-md">
-            <label class="q-mb-sm block">Tipo de combustible</label>
-            <q-select
-              v-model="vehiculo.combustible"
-              :options="opciones_combustibles"
-              hint="Agregue elementos desde el panel de combustibles"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :readonly="disabled"
-              :error="!!v$.combustible.$errors.length"
-              use-input
-              input-debounce="0"
-              @filter="filtroCombustibles"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.combustible.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <!-- placa -->
-          <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">Placa</label>
+          <!-- Fecha de registro -->
+          <div class="col-6 col-md-3">
+            <label class="q-mb-sm block">Fecha</label>
             <q-input
-              v-model="vehiculo.placa"
+              v-model="bitacora.fecha"
               placeholder="Obligatorio"
-              :readonly="disabled"
-              :error="!!v$.placa.$errors.length"
-              mask="XXX-####"
-              fill-mask
+              :error="!!v$.fecha.$errors.length"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
               outlined
               dense
             >
-              <template v-slot:error>
-                <div v-for="error of v$.placa.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="bitacora.fecha"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
               </template>
-            </q-input>
-          </div>
-          <!-- num_chasis -->
-          <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">N° Chasis</label>
-            <q-input
-              v-model="vehiculo.num_chasis"
-              placeholder="Obligatorio"
-              :readonly="disabled"
-              :error="!!v$.num_chasis.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.num_chasis.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-          <!-- num_motor -->
-          <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">N° Motor</label>
-            <q-input
-              v-model="vehiculo.num_motor"
-              placeholder="Obligatorio"
-              :readonly="disabled"
-              :error="!!v$.num_motor.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.num_motor.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-          <!-- año -->
-          <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">Año de fabricación</label>
-            <q-input
-              type="number"
-              :rules="[
-                (val) =>
-                  (val != null && val.length <= 4) ||
-                  'Por favor usa maximo 4 caracteres',
-                (val) =>
-                  val > 1970 || 'Debe ingresar una cantidad mayor a 1970',
-              ]"
-              lazy-rules
-              v-model="vehiculo.anio_fabricacion"
-              placeholder="Obligatorio"
-              :readonly="disabled"
-              :error="!!v$.anio_fabricacion.$errors.length"
-              outlined
-              dense
-            >
               <template v-slot:error>
                 <div
-                  v-for="error of v$.anio_fabricacion.$errors"
+                  style="clear: inherit"
+                  v-for="error of v$.fecha.$errors"
                   :key="error.$uid"
                 >
                   <div class="error-msg">{{ error.$message }}</div>
@@ -194,52 +132,169 @@
               </template>
             </q-input>
           </div>
-          <!-- cilindraje -->
-          <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">Cilindraje (cc)</label>
+          <!-- Hora de salida -->
+          <div class="col-3 col-md-3">
+            <label class="q-mb-sm block">Hora inicio labores vehículo</label>
             <q-input
-              type="number"
-              :rules="[
-                (val) =>
-                  (val != null && val.length <= 4) ||
-                  'Por favor usa maximo 4 caracteres',
-                (val) => val > 0 || 'Debe ingresar una cantidad mayor a 0',
-              ]"
-              lazy-rules
-              v-model="vehiculo.cilindraje"
+              v-model="bitacora.hora_salida"
               placeholder="Obligatorio"
+              :disabled="disabled"
               :readonly="disabled"
-              :error="!!v$.cilindraje.$errors.length"
+              :error="!!v$.hora_salida.$errors.length"
+              type="time"
               outlined
+              clearable
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.cilindraje.$errors" :key="error.$uid">
+                <div v-for="error of v$.hora_salida.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
           </div>
-          <!-- <p>El rendimiento es {{ vehiculo.rendimiento }}</p> -->
-          <!-- rendimiento -->
-          <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">Rendimiento (km/gl)</label>
+          <!-- Hora de llegada -->
+          <div class="col-3 col-md-3">
+            <label class="q-mb-sm block">Hora fin labores vehículo</label>
+            <q-input
+              v-model="bitacora.hora_llegada"
+              placeholder="Obligatorio"
+              :disabled="disabled"
+              :readonly="disabled"
+              :error="!!v$.hora_llegada.$errors.length"
+              type="time"
+              outlined
+              clearable
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.hora_llegada.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- km inicial -->
+          <div class="col-6 col-md-3">
+            <label class="q-mb-sm block">Km inicial</label>
             <q-input
               type="number"
-              :rules="[
-                (val) =>
-                  (val != null && val.length <= 2) ||
-                  'Coloca el rendimiento expresado en km/gl',
-                (val) => val > 0 || 'Debe ingresar una cantidad mayor a 0',
-              ]"
-              lazy-rules
-              v-model="vehiculo.rendimiento"
+              v-model="bitacora.km_inicial"
               placeholder="Obligatorio"
+              :disabled="disabled"
               :readonly="disabled"
+              :error="!!v$.km_inicial.$errors.length"
               outlined
               dense
             >
+              <template v-slot:error>
+                <div v-for="error of v$.km_inicial.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
+          </div>
+          <!-- km final -->
+          <div class="col-6 col-md-3">
+            <label class="q-mb-sm block">Km final</label>
+            <q-input
+              type="number"
+              v-model="bitacora.km_final"
+              placeholder="Obligatorio"
+              :disabled="disabled"
+              :readonly="disabled"
+              :error="!!v$.km_final.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.km_final.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Tanque inicio -->
+          <div class="col-6 col-md-3">
+            <label class="q-mb-sm block">Tanque inicio</label>
+            <q-input
+              v-model="bitacora.tanque_inicio"
+              type="number"
+              mask="###"
+              :rules="[
+                (val) =>
+                  (val <= 100 && val >= 0) || 'Ingresa un valor entre 0 y 100',
+              ]"
+              dense
+              outlined
+              ><template v-slot:error>Ingresa un valor entre 0 y 100</template>
+              <template v-slot:prepend
+                ><q-icon name="bi-fuel-pump-fill"></q-icon
+              ></template>
+              <template v-slot:append
+                ><q-icon
+                  name="bi-percent"
+                  size="xs"
+                  color="black"
+                ></q-icon></template
+            ></q-input>
+            <q-circular-progress
+              show-value
+              class="text-white q-ma-md"
+              :value="bitacora.tanque_inicio"
+              size="90px"
+              :thickness="0.2"
+              :color="bitacora.tanque_inicio > 50 ? 'green-5' : 'red-5'"
+              :center-color="
+                bitacora.tanque_inicio > 50 ? 'positive' : 'negative'
+              "
+              track-color="transparent"
+              instant-feedback
+            >
+              <template v-slot:default>
+                {{ bitacora.tanque_inicio }}%
+              </template>
+            </q-circular-progress>
+          </div>
+          <!-- {{ v$.$errors }} -->
+          <!-- Tanque final -->
+          <div class="col-6 col-md-3">
+            <label class="q-mb-sm block">Tanque final</label>
+            <q-input
+              ref="tFinal"
+              type="number"
+              v-model="bitacora.tanque_final"
+              mask="###"
+              :rules="[
+                (val) =>
+                  (val <= 100 && val >= 0) || 'Ingresa un valor entre 0 y 100',
+              ]"
+              dense
+              outlined
+            >
+              <template v-slot:error>Ingresa un valor entre 0 y 100</template>
+              <template v-slot:prepend
+                ><q-icon name="bi-fuel-pump-fill"></q-icon
+              ></template>
+              <template v-slot:append
+                ><q-icon name="bi-percent" size="xs" color="black"></q-icon
+              ></template>
+            </q-input>
+            <q-circular-progress
+              show-value
+              class="text-white q-ma-md"
+              :value="bitacora.tanque_final"
+              size="90px"
+              :thickness="0.2"
+              :color="bitacora.tanque_final > 50 ? 'green-5' : 'red-5'"
+              :center-color="
+                bitacora.tanque_final > 50 ? 'positive' : 'negative'
+              "
+              track-color="transparent"
+              instant-feedback
+            >
+              <template v-slot:default> {{ bitacora.tanque_final }}% </template>
+            </q-circular-progress>
           </div>
         </div>
       </q-form>
