@@ -93,10 +93,11 @@ export default defineComponent({
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
     }
-    const esTecnico = computed(() => {
-      return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
+    const visualizarAutorizador = computed(() => {
+      return authenticationStore.can('puede.ver.campo.autorizador')
+      /*return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
         ? true
-        : false
+        : false*/
     })
 
     const esCombustibleEmpresa = computed(() => {
@@ -143,6 +144,9 @@ export default defineComponent({
           : 15
       return cantidad
     })
+    const mostarPlaca = computed(() => {
+      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16?true:false;
+    });
     const mascaraFactura = computed(() => {
       let mascara = '###-###-#############'
       const index = numFacturaObjeto
@@ -181,7 +185,7 @@ export default defineComponent({
         required: requiredIf(() => esFactura.value),
       },
       aut_especial: {
-        required: requiredIf(() => esTecnico.value),
+        required: requiredIf(() => visualizarAutorizador.value),
       },
       num_comprobante: {
         maxLength: maxLength(17),
@@ -246,10 +250,6 @@ export default defineComponent({
             campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
             finalizado: 0,
           },
-        },
-        subTareas: {
-          controller: new SubtareaController(),
-          params: { campos: 'id,codigo_sub_tarea,titulo,tarea_id' },
         },
         empleados: {
           controller: new EmpleadoController(),
@@ -415,6 +415,23 @@ export default defineComponent({
         )
       })
     }
+    /**Filtrar Vehiculos */
+       /**Filtro de proyectos */
+       function filtrarVehiculos(val, update) {
+        if (val === '') {
+          update(() => {
+            vehiculos.value = listadosAuxiliares.vehiculos
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          vehiculos.value = listadosAuxiliares.vehiculos.filter(
+            (v) =>
+              v.placa.toLowerCase().indexOf(needle) > -1
+          )
+        })
+      }
     /**Filtro de Tareas */
     function filtrarTareas(val, update) {
       console.log(gasto.proyecto)
@@ -596,7 +613,7 @@ export default defineComponent({
       maskFecha,
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
-      esTecnico,
+      visualizarAutorizador,
       esCombustibleEmpresa,
       vehiculos,
       watchEffect,
@@ -607,6 +624,7 @@ export default defineComponent({
       filtrarProyectos,
       existeComprobante,
       filtrarTareas,
+      filtrarVehiculos,
       aprobar_gasto,
       cambiar_detalle,
       cambiar_proyecto,
@@ -616,6 +634,7 @@ export default defineComponent({
       listadosAuxiliares,
       listadoSubdetalles,
       mostrarListado,
+      mostarPlaca,
       listadoTareas,
     }
   },

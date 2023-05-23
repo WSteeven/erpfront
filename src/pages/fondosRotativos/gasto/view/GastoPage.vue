@@ -330,7 +330,7 @@
             </q-input>
           </div>
           <!-- Autorizacion -->
-          <div class="col-12 col-md-3" v-if="esTecnico">
+          <div class="col-12 col-md-3" v-if="visualizarAutorizador">
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-select
               v-model="gasto.aut_especial"
@@ -403,10 +403,13 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar_detalle('detalle')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"/>
+                </q-btn>
+            </template>
             </q-select>
-            <q-btn color="positive" @click="recargar_detalle('detalle')"
-              ><q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"
-            /></q-btn>
+
           </div>
           <!-- Subdetalle-->
           <div class="col-12 col-md-3">
@@ -458,10 +461,13 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar_detalle('sub_detalle')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"/>
+                </q-btn>
+            </template>
             </q-select>
-            <q-btn color="positive" @click="recargar_detalle('sub_detalle')"
-              ><q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"
-            /></q-btn>
+
           </div>
           <!-- Kilometraje -->
           <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">
@@ -484,7 +490,7 @@
             </q-input>
           </div>
           <!-- Placa vehiculo -->
-          <div class="col-12 col-md-3"  v-if="esCombustibleEmpresa" >
+          <div class="col-12 col-md-3"  v-if="esCombustibleEmpresa ||  mostarPlaca" >
             <label class="q-mb-sm block">Placas</label>
             <q-select
               v-model="gasto.vehiculo"
@@ -498,6 +504,7 @@
               :readonly="disabled"
               :error="!!v$.vehiculo.$errors.length"
               @blur="v$.vehiculo.$touch"
+              @filter="filtrarVehiculos"
               error-message="Debes seleccionar una Tarea"
               use-input
               input-debounce="0"
