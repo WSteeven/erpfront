@@ -23,6 +23,8 @@ import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import SolicitarImagen from 'shared/prompts/SolicitarImagen.vue'
+import VisorImagen from 'components/VisorImagen.vue'
 
 // Logica y controladores
 import { MotivoSuspendidoController } from 'gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
@@ -59,6 +61,8 @@ export default defineComponent({
     TablaSubtareaSuspendida,
     TablaSubtareaPausas,
     EssentialTable,
+    SolicitarImagen,
+    VisorImagen,
   },
   setup() {
     /*********
@@ -124,7 +128,7 @@ export default defineComponent({
     const esCoordinadorBackup = authenticationStore.esCoordinadorBackup
     const clienteFinal = reactive(new ClienteFinal())
 
-    const { btnFinalizarTarea } = useBotonesTablaTarea(mixin)
+    const { btnFinalizarTarea, mostrarSolicitarImagen, imagenSubida, btnVerImagenInforme, refVisorImagen } = useBotonesTablaTarea(mixin)
     const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
     setFiltrarTrabajoAsignado(filtrarSubtareas)
 
@@ -333,6 +337,7 @@ export default defineComponent({
     }
 
     return {
+      refVisorImagen,
       seleccionarGrupo,
       seleccionarEmpleado,
       mixinSubtarea,
@@ -410,6 +415,9 @@ export default defineComponent({
       esCoordinadorBackup,
       // Botones tareas
       btnFinalizarTarea,
+      mostrarSolicitarImagen,
+      imagenSubida,
+      btnVerImagenInforme,
     }
   },
 })

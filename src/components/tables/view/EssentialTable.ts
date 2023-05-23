@@ -173,7 +173,7 @@ export default defineComponent({
       default: true,
     },
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -323,6 +323,12 @@ export default defineComponent({
       refTableFilters.value.agregarFiltro()
     }
 
+    function toggleFiltros() {
+      mostrarFiltros.value = !mostrarFiltros.value
+      listado.value = []
+      emit('toggle-filtros', mostrarFiltros.value)
+    }
+
     // exportar CSV
     function exportTable() {
       // naive encoding to csv format
@@ -415,6 +421,7 @@ export default defineComponent({
       abrirModalEntidad,
       abrirModalEditar,
       exportTable,
+      toggleFiltros,
     }
   },
 })

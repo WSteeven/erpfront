@@ -8,7 +8,7 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useSubtareaStore } from 'stores/subtarea'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -25,9 +25,7 @@ export default defineComponent({
     /* *******
     * Stores
     *********/
-    // const tareaStore = useTareaStore()
     const subtareaStore = useSubtareaStore()
-    // const authenticationStore = useAuthenticationStore()
 
     /********
      * Mixin
@@ -54,6 +52,7 @@ export default defineComponent({
      * Variables
      ************/
     const tabActual = ref()
+    const altoFijo = computed(() => !listado.value.length)
 
     /****************
      * Botones tabla
@@ -102,6 +101,7 @@ export default defineComponent({
       filtrarSubtareas,
       filtrar,
       aplicarFiltro,
+      altoFijo,
     }
   }
 })

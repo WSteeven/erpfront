@@ -304,6 +304,7 @@ export const estadosTrabajoArray = [
 ]
 
 export const rolesSistema = {
+  administrador: 'ADMINISTRADOR',
   contabilidad: 'CONTABILIDAD',
   gerente: 'GERENTE',
   rrhh: 'RECURSOS HUMANOS',

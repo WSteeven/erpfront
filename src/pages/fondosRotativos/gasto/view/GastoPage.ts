@@ -12,7 +12,7 @@ import {
   requiredIf,
   maxLength,
   minLength,
-  required
+  required,
 } from 'shared/i18n-validators'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -35,6 +35,7 @@ import { emit } from 'process'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -79,7 +80,12 @@ export default defineComponent({
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     onConsultado(() => {
-      esFactura.value = gasto.factura == null || gasto.factura == undefined || gasto.factura == '' ? false : true
+      esFactura.value =
+        gasto.factura == null ||
+        gasto.factura == undefined ||
+        gasto.factura == ''
+          ? false
+          : true
     })
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
@@ -88,7 +94,9 @@ export default defineComponent({
       esFactura.value = fondoRotativoStore.existeFactura
     }
     const esTecnico = computed(() => {
-      return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1 ? true : false
+      return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
+        ? true
+        : false
     })
 
     const esCombustibleEmpresa = computed(() => {
@@ -99,40 +107,53 @@ export default defineComponent({
         return false
       }
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
-        return gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) > -1 || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
+        return (
+          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
+            -1 ||
+          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
+        )
       } else {
         return false
       }
-
     })
-    const numFacturaObjeto = [{
-      detalle: 16,
-      cantidad: 22,
-      mascara: '###-###-##############'
-    },
-    {
-      detalle: 10,
-      cantidad: 17,
-      mascara: '###-###-#########'
-    }]
+    const numFacturaObjeto = [
+      {
+        detalle: 16,
+        cantidad: 22,
+        mascara: '###-###-##############',
+      },
+      {
+        detalle: 10,
+        cantidad: 17,
+        mascara: '###-###-#########',
+      },
+    ]
     const cantidadPermitidaFactura = computed(() => {
       let cantidad = 17
 
       if (esFactura.value === false) {
         cantidad = 0
       }
-      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''));
-      cantidad = numFacturaObjeto[index] !== undefined ? numFacturaObjeto[index].cantidad : 15;
+      const index = numFacturaObjeto
+        .map((object) => object.detalle)
+        .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
+      cantidad =
+        numFacturaObjeto[index] !== undefined
+          ? numFacturaObjeto[index].cantidad
+          : 15
       return cantidad
-    }
-    )
+    })
     const mascaraFactura = computed(() => {
       let mascara = '###-###-#############'
-      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''));
-      mascara = numFacturaObjeto[index] !== undefined ? numFacturaObjeto[index].mascara : '###-###-#########';
+      const index = numFacturaObjeto
+        .map((object) => object.detalle)
+        .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
+      mascara =
+        numFacturaObjeto[index] !== undefined
+          ? numFacturaObjeto[index].mascara
+          : '###-###-#########'
       return mascara
-    }
-    )
+    })
 
     /*************
      * Validaciones
@@ -157,7 +178,7 @@ export default defineComponent({
       },
       factura: {
         minLength: minLength(cantidadPermitidaFactura),
-        required: requiredIf(() => esFactura.value)
+        required: requiredIf(() => esFactura.value),
       },
       aut_especial: {
         required: requiredIf(() => esTecnico.value),
@@ -189,7 +210,7 @@ export default defineComponent({
       kilometraje: {
         requiredIfdetalle: esCombustibleEmpresa,
       },
-      placa: {
+      vehiculo: {
         requiredIfdetalle: esCombustibleEmpresa,
       },
       observacion: {
@@ -206,6 +227,7 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
+    const vehiculos = ref([])
 
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -220,7 +242,10 @@ export default defineComponent({
         },
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',finalizado: 0 },
+          params: {
+            campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+            finalizado: 0,
+          },
         },
         subTareas: {
           controller: new SubtareaController(),
@@ -228,7 +253,17 @@ export default defineComponent({
         },
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id, estado: 1 },
+          params: {
+            campos: 'id,nombres,apellidos',
+            id: usuario.jefe_id,
+            estado: 1,
+          },
+        },
+        vehiculos: {
+          controller: new VehiculoController(),
+          params: {
+            campos: 'id,placa',
+          },
         },
       })
       autorizacionesEspeciales.value =
@@ -236,7 +271,7 @@ export default defineComponent({
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
-
+      vehiculos.value = listadosAuxiliares.vehiculos
       autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
     cantones.value =
@@ -277,9 +312,6 @@ export default defineComponent({
       })
     }
 
-
-
-
     // - Filtro Detalles
 
     function filtrarDetalles(val, update) {
@@ -298,9 +330,19 @@ export default defineComponent({
     }
     function optionsFechaGasto(date) {
       const today = new Date()
-      const sabadoAnterior = convertir_fecha(
-        new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
-      )
+
+      const diaSemana = today.getDay()
+      // Verificar si el día actual es sábado
+      let sabadoAnterior = ''
+      if (diaSemana === 6) {
+        sabadoAnterior = convertir_fecha(
+          new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7)))
+        )
+      } else {
+        sabadoAnterior = convertir_fecha(
+          new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
+        )
+      }
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
       return date >= sabadoAnterior && date <= sabadoSiguiente
@@ -482,8 +524,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                      LocalStorage.getItem('sub_detalles')!.toString()
-                    )
+                        LocalStorage.getItem('sub_detalles')!.toString()
+                      )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
@@ -556,6 +598,7 @@ export default defineComponent({
       autorizacionesEspeciales,
       esTecnico,
       esCombustibleEmpresa,
+      vehiculos,
       watchEffect,
       filtrarAutorizacionesEspeciales,
       filtrarCantones,

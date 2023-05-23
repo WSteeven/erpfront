@@ -22,6 +22,7 @@ export class Empleado extends EntidadAuditable {
   banco: number | null
   salario: number | null
   roles: string[] | string // | null
+  permisos: string[] | string // | null
   grupo: number | null
   fecha_ingreso: string | null
   fecha_salida: string | null
@@ -67,6 +68,7 @@ export class Empleado extends EntidadAuditable {
     this.banco = null
     this.salario = null
     this.roles = []
+    this.permisos = []
     this.grupo = null
     this.fecha_ingreso = null
     this.fecha_salida = null

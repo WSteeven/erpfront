@@ -68,7 +68,7 @@ export default defineComponent({
          await axios.post(ruta, permiso)
         .then(function (response:any) {
           notificaciones.notificarCorrecto(response.data.mensaje)
-          emit('cerrar-modal');
+          emit('cerrar-modal',false);
         })
         .catch((error) => {
           //notificaciones.notificarError(error.response.data.errors.password[0])
@@ -87,6 +87,18 @@ export default defineComponent({
       roles,
       listadosAuxiliares,
       crear,
+      filtrarRol(val, update){
+        if(val===''){
+          update(()=>{
+            roles.value = listadosAuxiliares.roles
+          })
+          return
+        }
+        update(()=>{
+          const needle = val.toLowerCase()
+          roles.value = listadosAuxiliares.roles.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+        })
+      },
     }
   },
 })

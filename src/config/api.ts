@@ -19,21 +19,23 @@ export const endpoints = {
   perfil_usuario: new Endpoint('user/profile-information', false),
   cambiar_contrasena: new Endpoint('user/password', false),
   roles: new Endpoint('user/roles'),
-  permisos: new Endpoint('user/permisos'),
   fecha: new Endpoint('obtener-fecha'),
   hora: new Endpoint('obtener-hora'),
   //configuraciones: new Endpoint('configuraciones'),
   tablero: new Endpoint('tablero'),
   // Permisos
+  todos_permisos: new Endpoint('permisos'),
+  permisos_roles_usuario: new Endpoint('permisos_roles_usuario'),
   permisos_administrar: new Endpoint('permisos_administrar'),
   asignar_permisos: new Endpoint('asignar-permisos'),
+  asignar_permisos_individual: new Endpoint('asignar-permisos-usuario'),
   crear_permiso: new Endpoint('crear-permiso'),
   // Ubicacion
   paises: new Endpoint('paises'),
   provincias: new Endpoint('provincias'),
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
-
+  
   // Modulo de RR HH
   cargos: new Endpoint('cargos'),
   motivo_permiso_empleado: new Endpoint('recursos-humanos/motivo_permiso_empleado'),
@@ -46,6 +48,12 @@ export const endpoints = {
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
+  
+  //Modulo de Vehiculos
+  combustibles: new Endpoint('vehiculos/combustibles'),
+  vehiculos: new Endpoint('vehiculos/vehiculos'),
+  bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
+  empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),

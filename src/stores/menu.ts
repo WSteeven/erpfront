@@ -2,6 +2,7 @@ import { useAuthenticationStore } from './authentication'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
+import { link } from 'fs'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -138,6 +139,10 @@ export const useMenuStore = defineStore('menu', () => {
         },*/
       ],
     },
+    /**
+     * Modulo de bodega.
+     * Toda la estructura de pedidos, devoluciones y despachos de materiales
+     */
     {
       title: 'Bodega',
       icon: 'bi-building-fill',
@@ -156,7 +161,7 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title:'Empleados',
+          title: 'Empleados',
           link: 'empleados',
           icon: 'bi-person-lines-fill',
           can: store.can('puede.ver.empleados') && store.esBodeguero
@@ -214,20 +219,20 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
+          can: store.can('puede.ver.transacciones_ingresos') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
           title: store.esBodeguero ? 'Egreso de materiales' : 'Pedidos a bodega',
           link: 'transacciones-egresos',
           // can: store.can('puede.ver.transacciones_egresos'),
-          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
+          can: store.can('puede.ver.transacciones_egresos') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
           title: 'Transferencias',
           link: 'transferencias',
-          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
+          can: store.can('puede.ver.transferencias') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
@@ -239,7 +244,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Comprobantes',
           icon: 'bi-folder',
-          children:[
+          children: [
             {
               title: 'Mis comprobantes',
               link: 'gestionar-egresos',
@@ -249,7 +254,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Todos los comprobantes',
               link: 'egresos-filtrados',
               icon: 'bi-files',
-              can: store.esBodeguero||store.esContabilidad ||store.esCoordinador|| store.esGerente
+              can: store.esBodeguero || store.esContabilidad || store.esCoordinador || store.esGerente
             }
           ]
         },
@@ -483,6 +488,32 @@ export const useMenuStore = defineStore('menu', () => {
 
       ],
     },
+    //Modulo de Vehículos
+    {
+      title: 'Vehículos',
+      icon: 'garage',
+      can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
+      children: [
+        {
+          title: 'Combustibles',
+          link: 'combustibles',
+          icon: 'bi-fuel-pump-fill',
+          can: store.can('puede.ver.combustibles'),
+        },
+        {
+          title: 'Control diario',
+          link: 'control-vehiculos',
+          icon: 'bi-card-checklist',
+          can: store.can('puede.ver.bitacoras_vehiculos'),
+        },
+        {
+          title: 'Vehículos',
+          link: 'vehiculos',
+          icon: 'bi-car-front-fill',
+          can: store.can('puede.ver.vehiculos'),
+        },
+      ]
+    },
     //Modulo Activos Fijos
     {
       title: 'Activos fijos',
@@ -633,21 +664,41 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Clientes',
       link: 'clientes',
-      icon: 'bi-circle',
+      icon: 'bi-person-circle',
       can: store.can('puede.ver.clientes'),
     },
     {
-      title: 'Permisos',
-      link: 'permisos',
-      icon: 'bi-person-fill-check',
-      can: store.can('puede.ver.permisos'),
+      title: 'Roles y Permisos',
+      icon: 'bi-person-fill-gear',
+      can: store.esAdministrador,
+      children: [
+        {
+          title: 'Roles',
+          link: 'roles',
+          icon: 'bi-person-badge-fill',
+          can: store.esAdministrador || store.can('puede.ver.roles'),
+        },
+        {
+          title: 'Permisos',
+          link: 'permisos',
+          icon: 'bi-key-fill',
+          can: store.esAdministrador || store.can('puede.ver.permisos'),
+        },
+        {
+          title: 'Permisos en roles',
+          link: 'permisos-roles',
+          icon: 'bi-person-fill-check',
+          can: store.esAdministrador || store.can('puede.ver.permisos_roles'),
+        },
+        {
+          title: 'Permisos de usuarios',
+          link: 'permisos-usuarios',
+          icon: 'bi-person-fill-lock',
+          can: store.esAdministrador || store.can('puede.ver.permisos_usuarios'),
+        },
+      ]
     },
-    {
-      title: 'Roles',
-      link: 'roles',
-      icon: 'bi-person-badge-fill',
-      can: store.can('puede.ver.roles'),
-    },
+
 
     /* {
       header: 'Sistema',
