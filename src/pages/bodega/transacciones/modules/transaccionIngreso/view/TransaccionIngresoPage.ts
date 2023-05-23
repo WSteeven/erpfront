@@ -157,13 +157,14 @@ export default defineComponent({
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
       await devolucionStore.cargarDevolucion(id)
-      console.log(devolucionStore.devolucion)
       transaccion.devolucion = devolucionStore.devolucion.id
       transaccion.justificacion = devolucionStore.devolucion.justificacion
       transaccion.solicitante = devolucionStore.devolucion.solicitante
       transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
       listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
+      //copiar el listado de devolución al listado de la tabla
+      transaccion.listadoProductosTransaccion = [...devolucionStore.devolucion.listadoProductos]
       if (devolucionStore.devolucion.tarea) {
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea : devolucionStore.devolucion.tarea_id
@@ -247,8 +248,8 @@ export default defineComponent({
       titulo: 'Anular',
       color: 'red',
       icono: 'bi-x',
-      accion: async({entidad, posicion})=> {
-        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async()=> {
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
           console.log(entidad)
           console.log(posicion)
           console.log(listado)
@@ -257,9 +258,9 @@ export default defineComponent({
           entidad.estado = transaccionStore.transaccion.estado
         })
       },
-      visible: ({entidad, posicion})=> {
-        console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es activos fijos y no esta anulada')
-        return store.esActivosFijos && entidad.estado===estadosTransacciones.completa
+      visible: ({ entidad, posicion }) => {
+        // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es activos fijos y no esta anulada')
+        return store.esActivosFijos && entidad.estado === estadosTransacciones.completa
       }
 
     }

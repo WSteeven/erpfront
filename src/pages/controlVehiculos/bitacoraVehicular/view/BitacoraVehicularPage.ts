@@ -50,7 +50,7 @@ export default defineComponent({
             km_final: { required },
             tanque_inicio: { required },
             tanque_final: { required },
-            chofer: { required },
+            // chofer: { required },
             vehiculo: { required },
         }
         const v$ = useVuelidate(reglas, bitacora)
