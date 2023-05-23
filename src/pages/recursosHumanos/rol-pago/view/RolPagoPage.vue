@@ -35,8 +35,7 @@
           <div class="col-12 col-md-3" v-if="!es_consultado">
             <label class="q-mb-sm block">Empleado</label>
             <q-select v-model="rolpago.empleado" :options="empleados" transition-show="jump-up"
-              transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
-              use-input
+              transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled" use-input
               input-debounce="0" @filter="filtrarEmpleado" :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
               <template v-slot:no-option>
@@ -48,30 +47,47 @@
               </template>
             </q-select>
           </div>
-          <!-- Tipo -->
-          <div class="col-12 col-md-3" v-if="!es_consultado">
-            <label class="q-mb-sm block">Registros</label>
-            <q-select v-model="tipo" :options="tipos" transition-show="jump-up" transition-hide="jump-down" options-dense
-              dense outlined :disable="disabled" :readonly="disabled" use-input input-debounce="0"
-              :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <!---Campo-->
-          <div class="col-12 col-md-3" v-if="!es_consultado">
-            <label class="q-mb-sm block">{{ label_campo }}</label>
-            <q-input v-model="campo" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
-              <template v-slot:append>
-                <q-btn round dense flat icon="add" @click="aniadirRol" />
-              </template>
+          <!-- Días -->
+          <div class="col-12 col-md-3" v-if="es_consultado">
+            <label class="q-mb-sm block">Días</label>
+            <q-input v-model="rolpago.dias" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+
             </q-input>
           </div>
+          <q-expansion-item class="overflow-hidden q-mb-md expansion" label="Información de inicio de sesión"
+            header-class="text-bold bg-header-collapse" default-opened>
+            <!-- Bonificacion -->
+            <div class="col-12 col-md-3" v-if="es_consultado">
+              <label class="q-mb-sm block">Bonificación</label>
+              <q-input v-model="rolpago.bonificacion" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+                dense>
+              </q-input>
+            </div>
+            <!-- Tipo -->
+            <div class="col-12 col-md-3" v-if="!es_consultado">
+              <label class="q-mb-sm block">Registros</label>
+              <q-select v-model="tipo" :options="tipos" transition-show="jump-up" transition-hide="jump-down"
+                options-dense dense outlined :disable="disabled" :readonly="disabled" use-input input-debounce="0"
+                :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <!---Campo-->
+            <div class="col-12 col-md-3" v-if="!es_consultado">
+              <label class="q-mb-sm block">{{ label_campo }}</label>
+              <q-input v-model="campo" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+                <template v-slot:append>
+                  <q-btn round dense flat icon="add" @click="aniadirRol" />
+                </template>
+              </q-input>
+            </div>
+          </q-expansion-item>
 
 
           <!--salario -->
@@ -80,11 +96,32 @@
             <q-input v-model="rolpago.salario" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
             </q-input>
           </div>
-          <!-- Días -->
-          <div class="col-12 col-md-3" v-if="es_consultado">
-            <label class="q-mb-sm block">Días</label>
-            <q-input v-model="rolpago.dias" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
 
+          <!-- Extensión covenio salud -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Extensión convenio de Salud</label>
+            <q-input v-model="rolpago.extension_convenio_salud" placeholder="Obligatorio" type="number"
+              :disable="disabled" outlined dense>
+            </q-input>
+          </div>
+          <!-- Multas -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Multas</label>
+            <q-input v-model="rolpago.multas" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+            </q-input>
+          </div>
+          <!-- Descuentos -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Descuentos</label>
+            <q-input v-model="rolpago.descuentos" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+              dense>
+            </q-input>
+          </div>
+          <!-- Subsidio IESS -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Subsidio IESS</label>
+            <q-input v-model="rolpago.descuentos" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+              dense>
             </q-input>
           </div>
           <!-- alimentación -->
@@ -108,7 +145,6 @@
               outlined dense>
             </q-input>
           </div>
-
           <!---Extension Conyugal-->
           <div class="col-12 col-md-3" v-if="es_consultado">
             <label class="q-mb-sm block">Extension Conyugal</label>
@@ -116,18 +152,12 @@
               outlined dense>
             </q-input>
           </div>
-
-
         </div>
       </q-form>
       <essential-table v-if="rolpago.roles.length > 0" titulo="Listado de Roles"
-      :configuracionColumnas="[...configuracionColumnasRolPagoTabla,accionesTabla]"
-      :datos="rolpago.roles"
-      :permitirConsultar="false"
-      :permitirEditar="false"
-      :permitirEliminar="false"
-      >
-    </essential-table>
+        :configuracionColumnas="[...configuracionColumnasRolPagoTabla, accionesTabla]" :datos="rolpago.roles"
+        :permitirConsultar="false" :permitirEditar="false" :permitirEliminar="false">
+      </essential-table>
     </template>
   </tab-layout>
 </template>

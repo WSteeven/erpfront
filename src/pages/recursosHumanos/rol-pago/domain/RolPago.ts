@@ -15,6 +15,11 @@ export class RolPago extends EntidadAuditable {
   horas_extras: number | null
   total_ingreso: number | null
   comisiones: number | null
+  bonificacion:   number | null
+  extension_convenio_salud: number | null
+  multas: number | null
+  descuentos: number | null
+  subcidio_iess: number | null
   iess: number | null
   anticipo: number |null
   prestamo_quirorafario: number |null
@@ -42,6 +47,11 @@ export class RolPago extends EntidadAuditable {
     this.horas_extras = null
     this.total_ingreso = null
     this.comisiones = null
+    this.bonificacion = null
+    this.extension_convenio_salud = null
+    this.multas = null
+    this.descuentos = null
+    this.subcidio_iess = null
     this.iess = null
     this.anticipo = null
     this.prestamo_quirorafario = null
