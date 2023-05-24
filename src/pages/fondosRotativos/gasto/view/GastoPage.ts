@@ -82,8 +82,8 @@ export default defineComponent({
     onConsultado(() => {
       esFactura.value =
         gasto.factura == null ||
-        gasto.factura == undefined ||
-        gasto.factura == ''
+          gasto.factura == undefined ||
+          gasto.factura == ''
           ? false
           : true
     })
@@ -109,7 +109,7 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
         )
       } else {
@@ -243,8 +243,8 @@ export default defineComponent({
         tareas: {
           controller: new TareaController(),
           params: {
-            campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
-            finalizado: 0,
+            //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+            formulario: true,
           },
         },
         subTareas: {
@@ -524,8 +524,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
