@@ -6,11 +6,14 @@ export class Vehiculo extends EntidadAuditable {
     num_motor: string | null
     anio_fabricacion: number | null
     cilindraje: number | null
-    rendimiento: string | null
+    rendimiento: number | null
     marca: string | null
     modelo: string | null
-    // modelo_id: number | null
     combustible: string | null
+    traccion: string | null
+    aire_acondicionado: boolean|false
+    capacidad_tanque: number | null
+    // modelo_id: number | null
     // combustible_id: number | null
 
     constructor() {
@@ -23,8 +26,11 @@ export class Vehiculo extends EntidadAuditable {
         this.rendimiento = null
         this.marca = null
         this.modelo = null
-        // this.modelo_id = null
         this.combustible = null
+        this.traccion = null
+        this.aire_acondicionado =false
+        this.capacidad_tanque = null
+        // this.modelo_id = null
         // this.combustible_id = null
     }
 }

@@ -337,7 +337,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           if (callback) callback()
         })
         .catch((error) => {
-          this.notificaciones.notificarError(error.message)
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            notificarMensajesError(mensajes, this.notificaciones)
+          } else
+            this.notificaciones.notificarError(error.message)
         })
     })
   }

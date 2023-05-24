@@ -167,7 +167,7 @@ export default defineComponent({
 
     const botonAnularAutorizacion: CustomActionTable = {
       titulo: 'Anular',
-      color:'negative',
+      color: 'negative',
       icono: 'bi-x',
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de anular el pedido?', () => {
@@ -177,11 +177,11 @@ export default defineComponent({
             accion: async (data) => {
               try {
                 const { result } = await new CambiarEstadoPedido().anular(entidad.id, data)
-                if(result.autorizacion === autorizacionesTransacciones.cancelado){
+                if (result.autorizacion === autorizacionesTransacciones.cancelado) {
                   notificarCorrecto('Pedido anulado con éxito')
                   listado.value.splice(posicion, 1)
                 }
-              }catch(e:any){
+              } catch (e: any) {
                 notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
               }
             }
@@ -189,9 +189,9 @@ export default defineComponent({
           prompt(data)
         })
       },
-      visible: ({entidad, posicion})=>{
+      visible: ({ entidad, posicion }) => {
         console.log(posicion, entidad)
-        return tabSeleccionado.value===autorizacionesTransacciones.aprobado && entidad.per_autoriza_id=== store.user.id  && entidad.estado === estadosTransacciones.pendiente
+        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && entidad.per_autoriza_id === store.user.id && entidad.estado === estadosTransacciones.pendiente
       }
     }
     const botonEditarCantidad: CustomActionTable = {
@@ -201,6 +201,7 @@ export default defineComponent({
         const data: CustomActionPrompt = {
           titulo: 'Modifica',
           mensaje: 'Ingresa la cantidad',
+          tipo: 'number',
           defecto: pedido.listadoProductos[posicion].cantidad,
           accion: (data) => pedido.listadoProductos[posicion].cantidad = data,
         }

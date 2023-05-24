@@ -225,12 +225,6 @@
               :accion2="botonEliminar"
             ></essential-table>
           </div>
-          <tabla-devolucion-producto
-            :listado="devolucion.listadoProductos"
-            :listadoProductos="opciones_productos"
-            @actualizar="(data) => (devolucion.listadoProductos = data)"
-          >
-          </tabla-devolucion-producto>
         </div>
       </q-form>
 

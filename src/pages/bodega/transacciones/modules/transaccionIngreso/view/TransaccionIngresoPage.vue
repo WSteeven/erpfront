@@ -458,13 +458,15 @@
             class="col-12 col-md-12"
           >
             <q-table
-              flat
+              flat.bordered
+              style="height: 300px;"
               title="Listado de la devolución"
               class="bg-body-table custom-border"
               :rows="listadoDevolucion"
               :columns="configuracionColumnasListadoProductosDevolucion"
               row-key="id"
               :hide-bottom="true"
+              virtual-scroll
               dense
             />
           </div>

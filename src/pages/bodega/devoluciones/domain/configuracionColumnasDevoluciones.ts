@@ -31,9 +31,16 @@ export const configuracionColumnasDevoluciones: ColumnConfig<Devolucion>[] = [
         sortable: true
     },
     {
-        name: 'sucursal',
-        field: 'sucursal',
-        label: 'Sucursal',
+        name: 'canton',
+        field: 'canton',
+        label: 'Cantón',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'estado_bodega',
+        field: 'estado_bodega',
+        label: 'Procesada en bodega',
         align: 'left',
         sortable: true
     },

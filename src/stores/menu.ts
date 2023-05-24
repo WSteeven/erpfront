@@ -219,20 +219,20 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
+          can: store.can('puede.ver.transacciones_ingresos') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
           title: store.esBodeguero ? 'Egreso de materiales' : 'Pedidos a bodega',
           link: 'transacciones-egresos',
           // can: store.can('puede.ver.transacciones_egresos'),
-          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
+          can: store.can('puede.ver.transacciones_egresos') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
           title: 'Transferencias',
           link: 'transferencias',
-          can: store.can('puede.ver.transacciones_ingresos') && store.esBodeguero,
+          can: store.can('puede.ver.transferencias') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
@@ -261,22 +261,25 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-circle',
-          can: store.esBodeguero || store.esContabilidad,
+          can: store.esBodeguero || store.esContabilidad ||store.can('puede.ver.reportes_bodega'),
           children: [
             {
               title: 'Reporte de ingresos',
               link: 'reporte-ingresos',
               icon: 'bi-dash',
+              can: false,
             },
             {
               title: 'Reporte de egresos',
               link: 'reporte-egresos',
               icon: 'bi-dash',
+              can: false,
             },
             {
               title: 'Reporte de transferencias',
               link: 'reporte-transferencias',
               icon: 'bi-dash',
+              can: false,
             },
             {
               title: 'Reporte de inventario',
@@ -468,12 +471,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-fuel-pump-fill',
           can: store.can('puede.ver.combustibles'),
         },
-        /* {
+        {
           title: 'Control diario',
           link: 'control-vehiculos',
           icon: 'bi-card-checklist',
           can: store.can('puede.ver.bitacoras_vehiculos'),
-        }, */
+        },
         {
           title: 'Vehículos',
           link: 'vehiculos',
@@ -636,23 +639,37 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.clientes'),
     },
     {
-      title: 'Permisos de usuarios',
-      link: 'permisos-usuarios',
-      icon: 'bi-person-fill-lock',
-      can: store.esAdministrador || store.can('puede.ver.permisos_usuarios'),
+      title: 'Roles y Permisos',
+      icon: 'bi-person-fill-gear',
+      can: store.esAdministrador,
+      children: [
+        {
+          title: 'Roles',
+          link: 'roles',
+          icon: 'bi-person-badge-fill',
+          can: store.esAdministrador || store.can('puede.ver.roles'),
+        },
+        {
+          title: 'Permisos',
+          link: 'permisos',
+          icon: 'bi-key-fill',
+          can: store.esAdministrador || store.can('puede.ver.permisos'),
+        },
+        {
+          title: 'Permisos en roles',
+          link: 'permisos-roles',
+          icon: 'bi-person-fill-check',
+          can: store.esAdministrador || store.can('puede.ver.permisos_roles'),
+        },
+        {
+          title: 'Permisos de usuarios',
+          link: 'permisos-usuarios',
+          icon: 'bi-person-fill-lock',
+          can: store.esAdministrador || store.can('puede.ver.permisos_usuarios'),
+        },
+      ]
     },
-    {
-      title: 'Permisos',
-      link: 'permisos',
-      icon: 'bi-person-fill-check',
-      can: store.can('puede.ver.permisos'),
-    },
-    {
-      title: 'Roles',
-      link: 'roles',
-      icon: 'bi-person-badge-fill',
-      can: store.can('puede.ver.roles'),
-    },
+
 
     /* {
       header: 'Sistema',
