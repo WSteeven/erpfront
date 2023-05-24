@@ -148,7 +148,7 @@
             <label class="q-mb-sm block">Tareas</label>
             <q-select
               v-model="gasto.num_tarea"
-              :options="listadoTareas"
+              :options="tareas"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -157,6 +157,7 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.num_tarea.$errors.length"
+              @filter="filtrarTareas"
               @blur="v$.num_tarea.$touch"
               error-message="Debes seleccionar una Tarea"
               use-input
