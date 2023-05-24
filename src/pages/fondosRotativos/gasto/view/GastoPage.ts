@@ -82,8 +82,8 @@ export default defineComponent({
     onConsultado(() => {
       esFactura.value =
         gasto.factura == null ||
-          gasto.factura == undefined ||
-          gasto.factura == ''
+        gasto.factura == undefined ||
+        gasto.factura == ''
           ? false
           : true
     })
@@ -110,7 +110,7 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-          -1 ||
+            -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
         )
       } else {
@@ -145,8 +145,10 @@ export default defineComponent({
       return cantidad
     })
     const mostarPlaca = computed(() => {
-      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16?true:false;
-    });
+      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16
+        ? true
+        : false
+    })
     const mascaraFactura = computed(() => {
       let mascara = '###-###-#############'
       const index = numFacturaObjeto
@@ -416,54 +418,42 @@ export default defineComponent({
       })
     }
     /**Filtrar Vehiculos */
-       /**Filtro de proyectos */
-       function filtrarVehiculos(val, update) {
-        if (val === '') {
-          update(() => {
-            vehiculos.value = listadosAuxiliares.vehiculos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          vehiculos.value = listadosAuxiliares.vehiculos.filter(
-            (v) =>
-              v.placa.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      }
-    /**Filtro de Tareas */
-    function filtrarTareas(val, update) {
-      console.log(gasto.proyecto)
-
-      if (gasto.proyecto == 0) {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == null
-          )
-          console.log(tareas.value)
-        })
-        return
-      }
+    function filtrarVehiculos(val, update) {
       if (val === '') {
         update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == gasto.proyecto
-          )
-          console.log(tareas.value)
+          vehiculos.value = listadosAuxiliares.vehiculos
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        tareas.value = listadosAuxiliares.tareas.filter(
-          (v) =>
-            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
-            v.detalle.toLowerCase().indexOf(needle) > -1
+        vehiculos.value = listadosAuxiliares.vehiculos.filter(
+          (v) => v.placa.toLowerCase().indexOf(needle) > -1
         )
       })
     }
-    listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
+    /**Filtro de Tareas */
+    function filtrarTareas(val, update) {
+      if (val === '') {
+        update(() => {
+          tareas.value = listadoTareas.value
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tareas.value = listadoTareas.value.filter(
+          (v) =>
+            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
+            v.titulo.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    listadosAuxiliares.tareas.unshift({
+      id: 0,
+      titulo: 'Sin Tarea',
+      codigo_tarea: ' ',
+    })
     const listadoTareas = computed(() => {
       if (gasto.proyecto == 0) {
         return listadosAuxiliares.tareas.filter(
@@ -541,8 +531,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                      LocalStorage.getItem('sub_detalles')!.toString()
-                    )
+                        LocalStorage.getItem('sub_detalles')!.toString()
+                      )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
