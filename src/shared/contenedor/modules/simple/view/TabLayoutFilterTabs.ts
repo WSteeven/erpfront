@@ -12,6 +12,7 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TabOption } from 'components/tables/domain/TabOption'
 import { acciones } from 'config/utils'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   props: {
@@ -227,6 +228,7 @@ export default defineComponent({
       accionPersonalizada,
       esBodeguero,
       esCoordinador,
+      storeCargando: useCargandoStore(),
     }
   },
 })
