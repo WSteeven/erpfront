@@ -48,24 +48,31 @@
             </q-select>
           </div>
           <!-- Días -->
-          <div class="col-12 col-md-3" v-if="es_consultado">
-            <label class="q-mb-sm block">Días</label>
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Días Laborados</label>
             <q-input v-model="rolpago.dias" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
-
             </q-input>
           </div>
-          <q-expansion-item class="overflow-hidden q-mb-md expansion" label="Información de inicio de sesión"
-            header-class="text-bold bg-header-collapse" default-opened>
+          <!--salario -->
+          <div class="col-12 col-md-3" v-if="es_consultado">
+            <label class="q-mb-sm block">Salario</label>
+            <q-input v-model="rolpago.salario" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+            </q-input>
+          </div>
+        </div>
+        <q-expansion-item class="overflow-hidden q-mb-md  expansion" label="Ingresos"
+          header-class="text-bold bg-header-collapse" default-opened>
+          <div class="row q-col-gutter-sm q-py-md q-mx-xs">
             <!-- Bonificacion -->
-            <div class="col-12 col-md-3" v-if="es_consultado">
+            <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Bonificación</label>
               <q-input v-model="rolpago.bonificacion" placeholder="Obligatorio" type="number" :disable="disabled" outlined
                 dense>
               </q-input>
             </div>
-            <!-- Tipo -->
+            <!-- Concepto -->
             <div class="col-12 col-md-3" v-if="!es_consultado">
-              <label class="q-mb-sm block">Registros</label>
+              <label class="q-mb-sm block">Concepto</label>
               <q-select v-model="tipo" :options="tipos" transition-show="jump-up" transition-hide="jump-down"
                 options-dense dense outlined :disable="disabled" :readonly="disabled" use-input input-debounce="0"
                 :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
@@ -80,79 +87,76 @@
             </div>
             <!---Campo-->
             <div class="col-12 col-md-3" v-if="!es_consultado">
-              <label class="q-mb-sm block">{{ label_campo }}</label>
+              <label class="q-mb-sm block">Valor</label>
               <q-input v-model="campo" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
                 <template v-slot:append>
                   <q-btn round dense flat icon="add" @click="aniadirRol" />
                 </template>
               </q-input>
             </div>
-          </q-expansion-item>
-
-
-          <!--salario -->
-          <div class="col-12 col-md-3" v-if="es_consultado">
-            <label class="q-mb-sm block">Salario</label>
-            <q-input v-model="rolpago.salario" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
-            </q-input>
           </div>
-
-          <!-- Extensión covenio salud -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Extensión convenio de Salud</label>
-            <q-input v-model="rolpago.extension_convenio_salud" placeholder="Obligatorio" type="number"
-              :disable="disabled" outlined dense>
-            </q-input>
+        </q-expansion-item>
+        <q-expansion-item class="overflow-hidden q-mb-md expansion" label="Egresos"
+          header-class="text-bold bg-header-collapse" default-opened>
+          <div class="row q-col-gutter-sm q-py-md q-mx-xs">
+            <!-- Extensión covenio salud -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Extensión convenio de Salud</label>
+              <q-input v-model="rolpago.extension_convenio_salud" placeholder="Obligatorio" type="number"
+                :disable="disabled" outlined dense>
+              </q-input>
+            </div>
+            <!-- Multas -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Multas</label>
+              <q-input v-model="rolpago.multas" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+                dense>
+              </q-input>
+            </div>
+            <!-- Descuentos -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Descuentos</label>
+              <q-input v-model="rolpago.descuentos" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+                dense>
+              </q-input>
+            </div>
+            <!-- Subsidio IESS -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Subsidio IESS</label>
+              <q-input v-model="rolpago.descuentos" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+                dense>
+              </q-input>
+            </div>
+            <!-- alimentación -->
+            <div class="col-12 col-md-3" v-if="es_consultado">
+              <label class="q-mb-sm block">Alimentación</label>
+              <q-input v-model="rolpago.alimentacion" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+                dense>
+              </q-input>
+            </div>
+            <!---Prestamo Quirorafario-->
+            <div class="col-12 col-md-3" v-if="es_consultado">
+              <label class="q-mb-sm block">Prestamo Quirorafario</label>
+              <q-input v-model="rolpago.prestamo_quirorafario" placeholder="Obligatorio" type="number" :disable="disabled"
+                outlined dense>
+              </q-input>
+            </div>
+            <!---Prestamo Hipotecario-->
+            <div class="col-12 col-md-3" v-if="es_consultado">
+              <label class="q-mb-sm block">Prestamo Hipotecario</label>
+              <q-input v-model="rolpago.prestamo_hipotecario" placeholder="Obligatorio" type="number" :disable="disabled"
+                outlined dense>
+              </q-input>
+            </div>
+            <!---Extension Conyugal-->
+            <div class="col-12 col-md-3" v-if="es_consultado">
+              <label class="q-mb-sm block">Extension Conyugal</label>
+              <q-input v-model="rolpago.extension_conyugal" placeholder="Obligatorio" type="number" :disable="disabled"
+                outlined dense>
+              </q-input>
+            </div>
           </div>
-          <!-- Multas -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Multas</label>
-            <q-input v-model="rolpago.multas" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
-            </q-input>
-          </div>
-          <!-- Descuentos -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Descuentos</label>
-            <q-input v-model="rolpago.descuentos" placeholder="Obligatorio" type="number" :disable="disabled" outlined
-              dense>
-            </q-input>
-          </div>
-          <!-- Subsidio IESS -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Subsidio IESS</label>
-            <q-input v-model="rolpago.descuentos" placeholder="Obligatorio" type="number" :disable="disabled" outlined
-              dense>
-            </q-input>
-          </div>
-          <!-- alimentación -->
-          <div class="col-12 col-md-3" v-if="es_consultado">
-            <label class="q-mb-sm block">Alimentación</label>
-            <q-input v-model="rolpago.alimentacion" placeholder="Obligatorio" type="number" :disable="disabled" outlined
-              dense>
-            </q-input>
-          </div>
-          <!---Prestamo Quirorafario-->
-          <div class="col-12 col-md-3" v-if="es_consultado">
-            <label class="q-mb-sm block">Prestamo Quirorafario</label>
-            <q-input v-model="rolpago.prestamo_quirorafario" placeholder="Obligatorio" type="number" :disable="disabled"
-              outlined dense>
-            </q-input>
-          </div>
-          <!---Prestamo Hipotecario-->
-          <div class="col-12 col-md-3" v-if="es_consultado">
-            <label class="q-mb-sm block">Prestamo Hipotecario</label>
-            <q-input v-model="rolpago.prestamo_hipotecario" placeholder="Obligatorio" type="number" :disable="disabled"
-              outlined dense>
-            </q-input>
-          </div>
-          <!---Extension Conyugal-->
-          <div class="col-12 col-md-3" v-if="es_consultado">
-            <label class="q-mb-sm block">Extension Conyugal</label>
-            <q-input v-model="rolpago.extension_conyugal" placeholder="Obligatorio" type="number" :disable="disabled"
-              outlined dense>
-            </q-input>
-          </div>
-        </div>
+        </q-expansion-item>
       </q-form>
       <essential-table v-if="rolpago.roles.length > 0" titulo="Listado de Roles"
         :configuracionColumnas="[...configuracionColumnasRolPagoTabla, accionesTabla]" :datos="rolpago.roles"

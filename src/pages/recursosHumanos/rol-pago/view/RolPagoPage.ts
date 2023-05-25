@@ -31,10 +31,9 @@ export default defineComponent({
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
     const tipos = ref([
-      { id: 1, nombre: 'Días' },
-      { id: 2, nombre: 'Alimentacion' },
-      { id: 3, nombre: 'Comisiones' },
-      { id: 4, nombre: 'Horas Extras' },
+      { id: 1, nombre: 'Alimentacion' },
+      { id: 2, nombre: 'Comisiones' },
+      { id: 3, nombre: 'Horas Extras' },
     ])
     const es_consultado = ref(false)
     const tipo = ref(1)
@@ -91,10 +90,6 @@ export default defineComponent({
       if (tipo.value > 0) {
         switch (tipo.value) {
           case 1:
-            rolpago.dias = campo.value
-            campo.value = null
-            break
-          case 2:
             rolpago.alimentacion = campo.value
             campo.value = null
             break
