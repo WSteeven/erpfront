@@ -2,9 +2,9 @@ import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
 import { Gasto } from '../domain/Gasto'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 
+import SelectorImagen from 'components/SelectorImagen.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -32,13 +32,13 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { emit } from 'process'
-import { maskFecha } from 'config/utils'
+import { maskFecha, tabAutorizarGasto, estadosGastos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: { TabLayoutFilterTabs2, SelectorImagen },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -57,7 +57,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, consultar } =
+    const { setValidador, obtenerListados, cargarVista, consultar ,listar} =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
 
@@ -586,6 +586,11 @@ export default defineComponent({
           break
       }
     }
+    let tabActualGasto = '3'
+    function filtrarGasto(tabSeleccionado: string) {
+      listar( {estado:tabSeleccionado}, false)
+      tabActualGasto = tabSeleccionado
+    }
     return {
       mixin,
       gasto,
@@ -600,6 +605,7 @@ export default defineComponent({
       disabled,
       accion,
       v$,
+      tabAutorizarGasto,
       maskFecha,
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
@@ -614,6 +620,7 @@ export default defineComponent({
       filtrarProyectos,
       existeComprobante,
       filtrarTareas,
+      filtrarGasto,
       filtrarVehiculos,
       aprobar_gasto,
       cambiar_detalle,

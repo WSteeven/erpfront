@@ -1,9 +1,16 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :mostrarListado="mostrarListado"
+    :tabOptions="tabAutorizarGasto"
+    :full="true"
+    :permitirEditar="false"
+    :permitirEliminar="false"
     :mostrarButtonSubmits="!mostrarAprobacion"
+    :filtrar="filtrarGasto"
+    tabDefecto="3"
+    :forzarListar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -611,6 +618,6 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./GastoPage.ts"></script>
