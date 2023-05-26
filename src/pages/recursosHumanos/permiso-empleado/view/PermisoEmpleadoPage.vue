@@ -77,6 +77,7 @@
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
+                    <q-time v-model="permiso.fecha_fin" mask="YYYY-MM-DD HH:mm" color="purple" />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -87,6 +88,9 @@
                 </div>
               </template>
             </q-input>
+            <div class="q-gutter-md row items-start">
+
+    </div>
           </div>
                     <!-- Justificacion -->
                     <div class="col-12 col-md-3">

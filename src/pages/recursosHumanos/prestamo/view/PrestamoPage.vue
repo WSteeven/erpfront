@@ -61,12 +61,7 @@
               </template>
             </q-input>
           </div>
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Archivo </label>
-            <q-uploader ref="refGestor" label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
-              style="width: 100%" flat :factory="factoryFn" class="bg-header-collapse expansion" color="white"
-              text-color="black" hide-upload-btn max-total-size="10485760" @rejected="onRejected" />
-          </div>
+
           <!-- Plazo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Plazo </label>

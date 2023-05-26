@@ -8,6 +8,9 @@ export class PermisoEmpleado extends EntidadAuditable {
   estado_permiso_info: string | null
   fecha_inicio: string | null
   fecha_fin: string | null
+  fecha_recuperacion: string | null
+  dias_permiso: number | null
+  recuperables: boolean | null
   justificacion: string | null
   empleado_info: string | null
 
@@ -20,6 +23,9 @@ export class PermisoEmpleado extends EntidadAuditable {
     this.estado_permiso_info = null
     this.fecha_inicio = null
     this.fecha_fin = null
+    this.fecha_recuperacion = null
+    this.recuperables = null
+    this.dias_permiso = null
     this.justificacion = null
     this.empleado_info = null
   }
