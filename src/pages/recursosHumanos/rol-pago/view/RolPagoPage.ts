@@ -18,6 +18,7 @@ import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/in
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { configuracionColumnasRolPagoTabla } from '../domain/configuracionColumnasRolPagoTabla'
+import { log } from 'console'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
@@ -67,6 +68,8 @@ export default defineComponent({
     setValidador(v$.value)
 
     rolpago.roles = ref([])
+    rolpago.ingresos = ref([])
+    rolpago.egresos = ref([])
     function filtrarEmpleado(val, update) {
       if (val === '') {
         update(() => {
@@ -86,25 +89,43 @@ export default defineComponent({
     function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
     }
-    function aniadirRol() {
-      if (tipo.value > 0) {
-        switch (tipo.value) {
-          case 1:
-            rolpago.alimentacion = campo.value
-            campo.value = null
-            break
-          case 3:
-            rolpago.comisiones = campo.value
-            campo.value = null
-            break
-          case 4:
-            rolpago.horas_extras = campo.value
-            campo.value = null
-            break
-          default:
-            break
-        }
+    function aniadirIngreso() {
+      const indice_ingreso = rolpago.ingresos.findIndex(
+        (ingreso) => ingreso.concepto === rolpago.concepto_ingreso
+      )
+      //modificar
+      if (indice_ingreso !== -1) {
+        rolpago.ingresos[indice_ingreso].monto = rolpago.ingreso
       }
+      rolpago.ingresos.push({concepto: rolpago.concepto_ingreso, monto: rolpago.ingreso})
+      rolpago.ingreso=null
+    }
+    function verificar_concepto_ingreso(){
+      const indice_ingreso = rolpago.ingresos.findIndex(
+        (ingreso) => ingreso.concepto === rolpago.concepto_ingreso
+      )
+      if (indice_ingreso !== -1) {
+        rolpago.ingreso = rolpago.ingresos[indice_ingreso].monto
+      }
+    }
+    function verificar_concepto_egreso(){
+      const indice_egreso = rolpago.egresos.findIndex(
+        (egreso) => egreso.concepto === rolpago.concepto_egreso
+      )
+      if (indice_egreso !== -1) {
+        rolpago.egreso = rolpago.egresos[indice_egreso].monto
+      }
+    }
+    function aniadirEgreso() {
+      const indice_egreso = rolpago.egresos.findIndex(
+        (egreso) => egreso.concepto === rolpago.concepto_egreso
+      )
+      //modificar
+      if (indice_egreso !== -1) {
+        rolpago.egresos[indice_egreso].monto = rolpago.egreso
+      }
+      rolpago.egresos.push({concepto: rolpago.concepto_egreso, monto: rolpago.egreso})
+      rolpago.egreso=null
     }
     function aniadirArregloRoles() {
       const indice_rol = rolpago.roles.findIndex(
@@ -121,29 +142,14 @@ export default defineComponent({
             ' ' +
             empleados.value[indice].apellidos,
           dias: rolpago.dias,
-          comision: rolpago.comisiones,
-          alimentacion: rolpago.alimentacion,
-          horas_extras: rolpago.horas_extras,
         })
-        rolpago.comisiones = null
-        rolpago.alimentacion = null
-        rolpago.horas_extras = null
+
       }
 
       tipo.value = 1
       campo.value = null
     }
-    watchEffect(() => {
-      if (
-        rolpago.dias !== null &&
-        rolpago.alimentacion !== null &&
-        rolpago.comisiones !== null &&
-        rolpago.horas_extras !== null
-      ) {
-        aniadirArregloRoles()
-      }
-    })
-    return {
+      return {
       removeAccents,
       mixin,
       rolpago,
@@ -156,7 +162,10 @@ export default defineComponent({
       es_consultado,
       filtrarEmpleado,
       checkValue,
-      aniadirRol,
+      aniadirIngreso,
+      aniadirEgreso,
+      verificar_concepto_ingreso,
+      verificar_concepto_egreso,
       v$,
       disabled,
       configuracionColumnasRolPagoTabla,

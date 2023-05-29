@@ -73,8 +73,9 @@
             <!-- Concepto -->
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Concepto</label>
-              <q-select v-model="tipo" :options="tipos" transition-show="jump-up" transition-hide="jump-down"
+              <q-select v-model="rolpago.concepto_ingreso" :options="tipos" transition-show="jump-up" transition-hide="jump-down"
                 options-dense dense outlined :disable="disabled" :readonly="disabled" use-input input-debounce="0"
+                @update:model-value="verificar_concepto_ingreso()"
                 :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
                 <template v-slot:no-option>
                   <q-item>
@@ -88,9 +89,9 @@
             <!---Campo-->
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Valor</label>
-              <q-input v-model="campo" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+              <q-input v-model="rolpago.ingreso" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
                 <template v-slot:append>
-                  <q-btn round dense flat icon="add" @click="aniadirRol" />
+                  <q-btn round dense flat icon="add" @click="aniadirIngreso" />
                 </template>
               </q-input>
             </div>
@@ -99,60 +100,29 @@
         <q-expansion-item class="overflow-hidden q-mb-md expansion" label="Egresos"
           header-class="text-bold bg-header-collapse" default-opened>
           <div class="row q-col-gutter-sm q-py-md q-mx-xs">
-            <!-- Extensión covenio salud -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Extensión convenio de Salud</label>
-              <q-input v-model="rolpago.extension_convenio_salud" placeholder="Obligatorio" type="number"
-                :disable="disabled" outlined dense>
-              </q-input>
+              <!-- Concepto -->
+              <div class="col-12 col-md-3" v-if="!es_consultado">
+              <label class="q-mb-sm block">Concepto</label>
+              <q-select v-model="rolpago.concepto_egreso" :options="tipos" transition-show="jump-up" transition-hide="jump-down"
+                options-dense dense outlined :disable="disabled" :readonly="disabled" use-input input-debounce="0"
+                @update:model-value="verificar_concepto_egreso()"
+                :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
-            <!-- Multas -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Multas</label>
-              <q-input v-model="rolpago.multas" placeholder="Obligatorio" type="number" :disable="disabled" outlined
-                dense>
-              </q-input>
-            </div>
-            <!-- Descuentos -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Descuentos</label>
-              <q-input v-model="rolpago.descuentos" placeholder="Obligatorio" type="number" :disable="disabled" outlined
-                dense>
-              </q-input>
-            </div>
-            <!-- Subsidio IESS -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Subsidio IESS</label>
-              <q-input v-model="rolpago.descuentos" placeholder="Obligatorio" type="number" :disable="disabled" outlined
-                dense>
-              </q-input>
-            </div>
-            <!-- alimentación -->
-            <div class="col-12 col-md-3" v-if="es_consultado">
-              <label class="q-mb-sm block">Alimentación</label>
-              <q-input v-model="rolpago.alimentacion" placeholder="Obligatorio" type="number" :disable="disabled" outlined
-                dense>
-              </q-input>
-            </div>
-            <!---Prestamo Quirorafario-->
-            <div class="col-12 col-md-3" v-if="es_consultado">
-              <label class="q-mb-sm block">Prestamo Quirorafario</label>
-              <q-input v-model="rolpago.prestamo_quirorafario" placeholder="Obligatorio" type="number" :disable="disabled"
-                outlined dense>
-              </q-input>
-            </div>
-            <!---Prestamo Hipotecario-->
-            <div class="col-12 col-md-3" v-if="es_consultado">
-              <label class="q-mb-sm block">Prestamo Hipotecario</label>
-              <q-input v-model="rolpago.prestamo_hipotecario" placeholder="Obligatorio" type="number" :disable="disabled"
-                outlined dense>
-              </q-input>
-            </div>
-            <!---Extension Conyugal-->
-            <div class="col-12 col-md-3" v-if="es_consultado">
-              <label class="q-mb-sm block">Extension Conyugal</label>
-              <q-input v-model="rolpago.extension_conyugal" placeholder="Obligatorio" type="number" :disable="disabled"
-                outlined dense>
+            <!---Campo-->
+            <div class="col-12 col-md-3" v-if="!es_consultado">
+              <label class="q-mb-sm block">Valor</label>
+              <q-input v-model="rolpago.egreso" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+                <template v-slot:append>
+                  <q-btn round dense flat icon="add" @click="aniadirEgreso" />
+                </template>
               </q-input>
             </div>
           </div>
