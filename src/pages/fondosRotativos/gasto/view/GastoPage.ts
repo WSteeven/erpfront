@@ -186,6 +186,9 @@ export default defineComponent({
         minLength: minLength(cantidadPermitidaFactura),
         required: requiredIf(() => esFactura.value),
       },
+      beneficiarios: {
+        required: required
+      },
       aut_especial: {
         required: requiredIf(() => visualizarAutorizador.value),
       },
@@ -234,6 +237,7 @@ export default defineComponent({
     const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
     const vehiculos = ref([])
+    const beneficiarios = ref([])
 
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -261,6 +265,13 @@ export default defineComponent({
             estado: 1,
           },
         },
+        beneficiarios: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+          },
+        },
         vehiculos: {
           controller: new VehiculoController(),
           params: {
@@ -270,6 +281,7 @@ export default defineComponent({
       })
       autorizacionesEspeciales.value =
         listadosAuxiliares.autorizacionesEspeciales
+        beneficiarios.value = listadosAuxiliares.beneficiarios
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
@@ -310,6 +322,23 @@ export default defineComponent({
         autorizacionesEspeciales.value =
           listadosAuxiliares.autorizacionesEspeciales.filter(
             (v) => v.usuario.toLowerCase().indexOf(needle) > -1
+          )
+      })
+    }
+    //filtro beneficiarios
+    function filtrarBeneficiarios(val, update) {
+      if (val === '') {
+        update(() => {
+          beneficiarios.value =
+            listadosAuxiliares.beneficiarios
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        beneficiarios.value =
+          listadosAuxiliares.beneficiarios.filter(
+            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
@@ -630,6 +659,7 @@ export default defineComponent({
       mascaraFactura,
       listadosAuxiliares,
       listadoSubdetalles,
+      beneficiarios,
       mostrarListado,
       mostarPlaca,
       listadoTareas,

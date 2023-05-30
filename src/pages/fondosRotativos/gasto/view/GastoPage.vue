@@ -337,6 +337,59 @@
               </template>
             </q-input>
           </div>
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Beneficiarios</label>
+            <q-select
+              v-model="gasto.beneficiarios"
+              :options="beneficiarios"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              multiple
+              dense
+              use-chips
+              outlined
+              @filter="filtrarBeneficiarios"
+              @blur="v$.beneficiarios.$touch"
+              :error="!!v$.beneficiarios.$errors.length"
+              error-message="Debes seleccionar uno o varios beneficiarios"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              emit-value
+              map-options
+            >
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.nombres + ' ' + opt.apellidos }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.beneficiarios.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
+          </div>
           <!-- Autorizacion -->
           <div class="col-12 col-md-3" v-if="visualizarAutorizador">
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
