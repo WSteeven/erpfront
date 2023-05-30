@@ -112,6 +112,7 @@ export default defineComponent({
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
             -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
+          || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
         return false
@@ -145,7 +146,7 @@ export default defineComponent({
       return cantidad
     })
     const mostarPlaca = computed(() => {
-      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16
+      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 || parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
         ? true
         : false
     })
