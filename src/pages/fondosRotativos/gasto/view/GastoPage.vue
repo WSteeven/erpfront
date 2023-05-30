@@ -337,6 +337,7 @@
               </template>
             </q-input>
           </div>
+          <!--
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Beneficiarios</label>
             <q-select
@@ -389,7 +390,7 @@
               </template>
             </q-select>
 
-          </div>
+          </div> -->
           <!-- Autorizacion -->
           <div class="col-12 col-md-3" v-if="visualizarAutorizador">
             <label class="q-mb-sm block">Autorizaciòn Especial</label>

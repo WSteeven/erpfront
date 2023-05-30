@@ -187,9 +187,9 @@ export default defineComponent({
         minLength: minLength(cantidadPermitidaFactura),
         required: requiredIf(() => esFactura.value),
       },
-      beneficiarios: {
+      /*beneficiarios: {
         required: required
-      },
+      },*/
       aut_especial: {
         required: requiredIf(() => visualizarAutorizador.value),
       },
