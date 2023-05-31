@@ -10,6 +10,8 @@ export class RolPago extends EntidadAuditable {
   concepto_ingreso: number | null
   concepto_egreso: number | null
   total_egreso: number | null
+  bonificacion: number | null
+  bono_recurente: number | null
   ingreso: number | null
   egreso: number | null
   total: number | null
@@ -29,6 +31,8 @@ export class RolPago extends EntidadAuditable {
     this.ingreso = null
     this.egreso = null
     this.total_egreso = null
+    this.bonificacion = null
+    this.bono_recurente = null
     this.total = null
     this.ingresos  = null
     this.egresos = null

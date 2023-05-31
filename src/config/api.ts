@@ -35,7 +35,7 @@ export const endpoints = {
   provincias: new Endpoint('provincias'),
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
-  
+
   // Modulo de RR HH
   cargos: new Endpoint('cargos'),
   motivo_permiso_empleado: new Endpoint('recursos-humanos/motivo_permiso_empleado'),
@@ -45,10 +45,12 @@ export const endpoints = {
   prestamo_anticipo : new Endpoint('recursos-humanos/prestamo_anticipo'),
   anticipo : new Endpoint('recursos-humanos/anticipo'),
   rol_pago : new Endpoint('recursos-humanos/rol_pago'),
+  salario_empleado : new Endpoint('recursos-humanos/salario/'),
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
-  
+
+
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),

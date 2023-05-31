@@ -37,7 +37,8 @@
             <q-select v-model="rolpago.empleado" :options="empleados" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled" use-input
               input-debounce="0" @filter="filtrarEmpleado" :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
+              @update:model-value="datos_empleado()" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value
+              map-options>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -51,6 +52,12 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Días Laborados</label>
             <q-input v-model="rolpago.dias" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+            </q-input>
+          </div>
+          <!-- Días -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Salario</label>
+            <q-input v-model="rolpago.salario" placeholder="Obligatorio" type="number" disable outlined dense>
             </q-input>
           </div>
           <!--salario -->
@@ -73,26 +80,56 @@
             <!-- Concepto -->
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Concepto</label>
-              <q-select v-model="rolpago.concepto_ingreso" :options="tipos" transition-show="jump-up" transition-hide="jump-down"
-                options-dense dense outlined :disable="disabled" :readonly="disabled" use-input input-debounce="0"
-                @update:model-value="verificar_concepto_ingreso()"
-                :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              <q-select
+              v-model="rolpago.concepto_ingreso"
+              :options="tipos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              clearable
+              hint="Conceptos"
+              dense
+              outlined
+              :disable="disabled "
+              :readonly="disabled"
+              :error="!!v$.concepto_ingreso.$errors.length"
+              @update:model-value="verificar_concepto_ingreso"
+              error-message="Debe seleccionar un concepto"
+              :option-label="(v) => v.nombre"
+                  :option-value="(v) => v.id"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>
+                      {{scope.opt.nombre }}
+                      <q-icon v-if="scope.opt.calculable_iess" name="bi-check" /></q-item-label>
+                   </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
             </div>
             <!---Campo-->
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Valor</label>
-              <q-input v-model="rolpago.ingreso" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+              <q-input v-model="rolpago.ingreso" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+                dense>
                 <template v-slot:append>
                   <q-btn round dense flat icon="add" @click="aniadirIngreso" />
                 </template>
+              </q-input>
+            </div>
+            <!-- Bono Recurente -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Bono Recurente</label>
+              <q-input v-model="rolpago.bono_recurente" placeholder="Obligatorio" type="number" :disable="disabled"
+                outlined dense>
               </q-input>
             </div>
           </div>
@@ -100,13 +137,13 @@
         <q-expansion-item class="overflow-hidden q-mb-md expansion" label="Egresos"
           header-class="text-bold bg-header-collapse" default-opened>
           <div class="row q-col-gutter-sm q-py-md q-mx-xs">
-              <!-- Concepto -->
-              <div class="col-12 col-md-3" v-if="!es_consultado">
+            <!-- Concepto -->
+            <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Concepto</label>
-              <q-select v-model="rolpago.concepto_egreso" :options="tipos" transition-show="jump-up" transition-hide="jump-down"
-                options-dense dense outlined :disable="disabled" :readonly="disabled" use-input input-debounce="0"
-                @update:model-value="verificar_concepto_egreso()"
-                :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
+              <q-select v-model="rolpago.concepto_egreso" :options="tipos" transition-show="jump-up"
+                transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
+                use-input input-debounce="0" @update:model-value="verificar_concepto_egreso()" :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre" emit-value map-options>
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -119,7 +156,8 @@
             <!---Campo-->
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Valor</label>
-              <q-input v-model="rolpago.egreso" placeholder="Obligatorio" type="number" :disable="disabled" outlined dense>
+              <q-input v-model="rolpago.egreso" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+                dense>
                 <template v-slot:append>
                   <q-btn round dense flat icon="add" @click="aniadirEgreso" />
                 </template>

@@ -14,11 +14,15 @@ import { RolPagoController } from '../infraestructure/RolPagoController'
 import { RolPago } from '../domain/RolPago'
 import { removeAccents } from 'shared/utils'
 import { accionesTabla, maskFecha } from 'config/utils'
+import { apiConfig, endpoints } from 'config/api'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { configuracionColumnasRolPagoTabla } from '../domain/configuracionColumnasRolPagoTabla'
 import { log } from 'console'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import axios from 'axios'
+import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
@@ -32,9 +36,9 @@ export default defineComponent({
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
     const tipos = ref([
-      { id: 1, nombre: 'Alimentacion' },
-      { id: 2, nombre: 'Comisiones' },
-      { id: 3, nombre: 'Horas Extras' },
+      { id: 1, nombre: 'Alimentacion', calculable_iess  : true },
+      { id: 2, nombre: 'Comisiones', calculable_iess  : false  },
+      { id: 3, nombre: 'Horas Extras', calculable_iess  : true  },
     ])
     const es_consultado = ref(false)
     const tipo = ref(1)
@@ -60,6 +64,7 @@ export default defineComponent({
 
     //Reglas de validacion
     const reglas = {
+      concepto_ingreso: { required },
       mes: { required },
       roles: { required },
     }
@@ -70,6 +75,9 @@ export default defineComponent({
     rolpago.roles = ref([])
     rolpago.ingresos = ref([])
     rolpago.egresos = ref([])
+    function datos_empleado(){
+      salario();
+    }
     function filtrarEmpleado(val, update) {
       if (val === '') {
         update(() => {
@@ -88,6 +96,29 @@ export default defineComponent({
     }
     function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
+    }
+    function salario (){
+
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const url_salrio =
+                apiConfig.URL_BASE +
+                '/' +
+                axiosHttpRepository.getEndpoint(endpoints.salario_empleado)+ rolpago.empleado;
+      axios({
+        url: url_salrio,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          'Authorization': axiosHttpRepository.getOptions().headers.Authorization
+        }
+      }).then((response: HttpResponseGet) => {
+        const { data } = response
+        if (data) {
+          rolpago.salario = data.empleado.salario
+        }
+
+      })
+
     }
     function aniadirIngreso() {
       const indice_ingreso = rolpago.ingresos.findIndex(
@@ -158,6 +189,7 @@ export default defineComponent({
       label_campo,
       is_month,
       empleados,
+      datos_empleado,
       tipo,
       es_consultado,
       filtrarEmpleado,
