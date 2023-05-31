@@ -11,6 +11,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   props: {
@@ -183,6 +184,7 @@ export default defineComponent({
       puedeCrear,
       puedeEditar,
       puedeEliminar,
+      storeCargando: useCargandoStore(),
       //cargarListado,
 
       //acciones personalizadas

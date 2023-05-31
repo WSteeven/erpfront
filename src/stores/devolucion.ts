@@ -2,14 +2,16 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { Devolucion } from 'pages/bodega/devoluciones/domain/Devolucion'
 import { apiConfig, endpoints } from 'config/api'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
-import { acciones } from 'config/utils'
-import { imprimirArchivo, notificarMensajesError } from 'shared/utils'
+import { acciones, estadosTransacciones } from 'config/utils'
+import { imprimirArchivo, isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 
 import TransaccionIngresoPage from 'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoPage'
+import { ApiError } from 'shared/error/domain/ApiError'
+import { DevolucionController } from 'pages/bodega/devoluciones/infraestructure/DevolucionController'
 
 export const useDevolucionStore = defineStore('devolucion', () => {
     //State
@@ -17,7 +19,7 @@ export const useDevolucionStore = defineStore('devolucion', () => {
     const devolucionReset = new Devolucion()
     const idDevolucion = ref()
 
-    const { notificarAdvertencia } = useNotificaciones()
+    const { notificarAdvertencia, notificarError } = useNotificaciones()
 
 
     const accionDevolucion = acciones.nuevo
@@ -26,25 +28,29 @@ export const useDevolucionStore = defineStore('devolucion', () => {
 
     async function consultar(id: number) {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.devoluciones) +'/'+ id
+        const ruta = axios.getEndpoint(endpoints.devoluciones) + '/' + id
         const response: AxiosResponse = await axios.get(ruta)
-        // console.log('Respuesta obtenida: ', response)
-        // console.log('Estado es: ', response.data.modelo.estado)
         if (response.data.modelo.estado === 'CREADA') {
             return response.data.modelo
+        } else {
+            notificarAdvertencia('No se puede gestionar una devolución anulada')
         }
-        // console.log(response.data.modelo.estado=='CREADA')
-
     }
 
     async function cargarDevolucion(id: number) {
         try {
             statusLoading.activar()
             const modelo = await consultar(id)
-            devolucion.hydrate(modelo)
+            if (modelo.estado_bodega === estadosTransacciones.pendiente || modelo.estado_bodega === estadosTransacciones.parcial)
+                devolucion.hydrate(modelo)
+            else {
+                notificarAdvertencia('La devolución ya ha sido completada')
+                devolucion.hydrate(devolucionReset)
+            }
         } catch (e) {
-            notificarAdvertencia('Registro no encontrado')
+            notificarError('Devolución no encontrada')
             devolucion.hydrate(devolucionReset)
+
         } finally {
             statusLoading.desactivar()
         }
@@ -57,10 +63,10 @@ export const useDevolucionStore = defineStore('devolucion', () => {
         devolucion.hydrate(response.data.modelo)
     }
     async function imprimirPdf() {
-      const axios = AxiosHttpRepository.getInstance()
-      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.devoluciones) + '/imprimir/' + idDevolucion.value
-      const filename = 'devolucion_'+idDevolucion.value+'_'+Date.now()
-      imprimirArchivo(url,'GET', 'blob', 'pdf', filename)
+        const axios = AxiosHttpRepository.getInstance()
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.devoluciones) + '/imprimir/' + idDevolucion.value
+        const filename = 'devolucion_' + idDevolucion.value + '_' + Date.now()
+        imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
     }
 
     function resetearDevolucion() {

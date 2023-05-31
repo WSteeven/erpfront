@@ -8,7 +8,7 @@ export class BitacoraVehicular extends EntidadAuditable {
     km_final: string | null
     tanque_inicio: number | null
     tanque_final: number | null
-    firmada: string | null
+    firmada: boolean | null
     chofer: string | null
     vehiculo: string | null
 
@@ -21,7 +21,7 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.km_final = null
         this.tanque_inicio = 0
         this.tanque_final = 0
-        this.firmada = null
+        this.firmada = false
         this.chofer = null
         this.vehiculo = null
     }

@@ -231,22 +231,25 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-circle',
-          can: store.esBodeguero || store.esContabilidad,
+          can: store.esBodeguero || store.esContabilidad ||store.can('puede.ver.reportes_bodega'),
           children: [
             {
               title: 'Reporte de ingresos',
               link: 'reporte-ingresos',
               icon: 'bi-dash',
+              can: false,
             },
             {
               title: 'Reporte de egresos',
               link: 'reporte-egresos',
               icon: 'bi-dash',
+              can: false,
             },
             {
               title: 'Reporte de transferencias',
               link: 'reporte-transferencias',
               icon: 'bi-dash',
+              can: false,
             },
             {
               title: 'Reporte de inventario',
