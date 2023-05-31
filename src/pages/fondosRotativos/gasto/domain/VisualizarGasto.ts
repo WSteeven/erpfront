@@ -18,6 +18,8 @@ export class VisualizarGasto extends EntidadAuditable {
   detalle_info: string | null
   sub_detalle: string | null
   sub_detalle_info: string | null
+  placa: string | null
+  kilometraje: string | null
   comprobante1: string | null
   comprobante2: string | null
   cantidad: number | null
@@ -51,6 +53,8 @@ export class VisualizarGasto extends EntidadAuditable {
     this.detalle_info = null
     this.sub_detalle = null
     this.sub_detalle_info = null
+    this.placa = null
+    this.kilometraje = null
     this.comprobante1 = null
     this.comprobante2 = null
     this.cantidad = null

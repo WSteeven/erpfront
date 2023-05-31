@@ -366,6 +366,11 @@ export default defineComponent({
 
       //listado de devoluciones
       configuracionColumnasListadoProductosDevolucion,
+      //paginacion
+      pagination: ref({
+        rowsPerPage: 0
+      }),
+
 
       //selector
       refListadoSeleccionableProductos,

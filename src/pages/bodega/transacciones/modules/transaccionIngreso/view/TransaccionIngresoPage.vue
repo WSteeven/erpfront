@@ -466,6 +466,8 @@
               :columns="configuracionColumnasListadoProductosDevolucion"
               row-key="id"
               :hide-bottom="true"
+              v-model:pagination="pagination"
+              :rows-per-page-options="[0]"
               virtual-scroll
               dense
             />
