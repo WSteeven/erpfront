@@ -122,6 +122,7 @@ import { Ref, defineComponent, ref } from 'vue'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { maskFecha } from 'config/utils'
 import { date } from 'quasar'
+import { formatearFecha, formatearFechaHora } from 'shared/utils'
 
 export default defineComponent({
   props: {
@@ -189,28 +190,6 @@ export default defineComponent({
       }
 
       return ['=']
-    }
-
-    function formatearFecha(fecha: string) {
-      const arrayFecha = fecha.split('-').map(Number) // YYYY-MM-DD
-      const nuevaFecha = date.buildDate({
-        year: arrayFecha[2],
-        month: arrayFecha[1],
-        day: arrayFecha[0],
-      })
-
-      return date.formatDate(nuevaFecha, 'YYYY-MM-DD')
-    }
-
-    function formatearFechaHora(fecha: string, hora: string) {
-      const arrayFecha = fecha.split('-').map(Number) // YYYY-MM-DD
-      const nuevaFecha = date.buildDate({
-        year: arrayFecha[2],
-        month: arrayFecha[1],
-        day: arrayFecha[0],
-      })
-
-      return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
     }
 
     function quitarFiltro(index: number) {

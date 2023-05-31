@@ -35,6 +35,7 @@
       transition-prev="scale"
       transition-next="scale"
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
+      keep-alive
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">

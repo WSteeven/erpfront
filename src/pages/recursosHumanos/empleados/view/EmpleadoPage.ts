@@ -19,151 +19,176 @@ import { Empleado } from '../domain/Empleado'
 import { useQuasar } from 'quasar'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 
 export default defineComponent({
-    components: { TabLayout, SelectorImagen },
-    setup() {
-        /*********
-        * Stores
-        *********/
-        useNotificacionStore().setQuasar(useQuasar())
+  components: { TabLayout, SelectorImagen },
+  setup() {
+    /*********
+    * Stores
+    *********/
+    useNotificacionStore().setQuasar(useQuasar())
 
-        /***********
-        * Mixin
-        ************/
-        const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
-        const { entidad: empleado, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
-        const { onConsultado, onBeforeModificar } = mixin.useHooks()
+    /***********
+    * Mixin
+    ************/
+    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
+    const { entidad: empleado, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { onConsultado, onBeforeModificar } = mixin.useHooks()
 
-        const opciones_cantones = ref([])
-        const opciones_roles = ref([])
-        const opciones_cargos = ref([])
-        const opciones_empleados = ref([])
-        cargarVista(async () => {
-            obtenerListados({
-                cantones: new CantonController(),
-                cargos: new CargoController(),
-                roles: {
-                    controller: new RolController(),
-                    params: { campos: 'id,name' }
-                },
-                empleados: {
-                    controller: new EmpleadoController(),
-                    params: {
-                        campos: 'id,nombres,apellidos',
-                        estado: 1
-                    }
-                },
-                grupos: new GrupoController(),
-            })
-        })
+    const opciones_cantones = ref([])
+    const opciones_roles = ref([])
+    const opciones_cargos = ref([])
+    const opciones_empleados = ref([])
+    const opcionesDepartamentos = ref([])
 
-        /*************
-        * Validaciones
-        **************/
-        const reglas = {
-            identificacion: {
-                required,
-                minlength: minLength(10),
-                maxlength: maxLength(10),
-            },
-            telefono: {
-                required,
-                numeric,
-                minlength: minLength(10),
-                maxlength: maxLength(10)
-            },
-            nombres: { required },
-            apellidos: { required },
-            jefe: { required },
-            email: { required },
-            usuario: { required },
-            fecha_nacimiento: { required },
-            cargo: { required },
-            roles: { required },
-            estado: { required },
-            grupo: { required: requiredIf(() => empleado.tiene_grupo) },
+    cargarVista(async () => {
+      obtenerListados({
+        cantones: new CantonController(),
+        cargos: new CargoController(),
+        roles: {
+          controller: new RolController(),
+          params: { campos: 'id,name' }
+        },
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1
+          }
+        },
+        grupos: {
+          controller: new GrupoController(),
+          params: { activo: 1 },
+        },
+        departamentos:
+        {
+          controller: new DepartamentoController(),
+          params: { activo: 1 },
         }
+      })
+    })
 
-        const v$ = useVuelidate(reglas, empleado)
-        setValidador(v$.value)
-
-        opciones_cantones.value = listadosAuxiliares.cantones
-        opciones_roles.value = listadosAuxiliares.roles
-        opciones_cargos.value = listadosAuxiliares.cargos
-        opciones_empleados.value = listadosAuxiliares.empleados
-
-        /********
-         * Hooks
-         ********/
-        onBeforeModificar(() => {
-
-        })
-
-        onConsultado(() => empleado.tiene_grupo = !!empleado.grupo)
-
-        /************
-         * Observers
-         ************/
-        watchEffect(() => {
-            if (!empleado.tiene_grupo) empleado.grupo = null
-        })
-
-        return {
-            mixin, empleado, disabled, accion, v$,
-            configuracionColumnas: configuracionColumnasEmpleados,
-            isPwd: ref(true),
-            listadosAuxiliares,
-            //listado
-            opciones_cantones,
-            opciones_roles,
-            opciones_cargos,
-            opciones_empleados,
-            opcionesEstados,
-            maskFecha,
-
-            //  FILTROS
-            //filtro de empleados
-            filtroEmpleados(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_empleados.value = listadosAuxiliares.empleados
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-                })
-            },
-            //filtro de cantones
-            filtroCantones(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_cantones.value = listadosAuxiliares.cantones
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_cantones.value = listadosAuxiliares.cantones.filter((v) => v.canton.toLowerCase().indexOf(needle) > -1)
-                })
-            },
-            //filtro de cargos
-            filtroCargos(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_cargos.value = listadosAuxiliares.cargos
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_cargos.value = listadosAuxiliares.cargos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
-                })
-            }
-
-        }
+    /*************
+    * Validaciones
+    **************/
+    const reglas = {
+      identificacion: {
+        required,
+        minlength: minLength(10),
+        maxlength: maxLength(10),
+      },
+      telefono: {
+        required,
+        numeric,
+        minlength: minLength(10),
+        maxlength: maxLength(10)
+      },
+      nombres: { required },
+      apellidos: { required },
+      jefe: { required },
+      email: { required },
+      usuario: { required },
+      fecha_nacimiento: { required },
+      cargo: { required },
+      departamento: { required },
+      roles: { required },
+      estado: { required },
+      grupo: { required: requiredIf(() => empleado.tiene_grupo) },
     }
+
+    const v$ = useVuelidate(reglas, empleado)
+    setValidador(v$.value)
+
+    opciones_cantones.value = listadosAuxiliares.cantones
+    opciones_roles.value = listadosAuxiliares.roles
+    opciones_cargos.value = listadosAuxiliares.cargos
+    opciones_empleados.value = listadosAuxiliares.empleados
+
+    /********
+     * Hooks
+     ********/
+    onBeforeModificar(() => {
+
+    })
+
+    onConsultado(() => empleado.tiene_grupo = !!empleado.grupo)
+
+    /************
+     * Observers
+     ************/
+    watchEffect(() => {
+      if (!empleado.tiene_grupo) empleado.grupo = null
+    })
+
+    return {
+      mixin, empleado, disabled, accion, v$,
+      configuracionColumnas: configuracionColumnasEmpleados,
+      isPwd: ref(true),
+      listadosAuxiliares,
+      //listado
+      opciones_cantones,
+      opciones_roles,
+      opciones_cargos,
+      opcionesDepartamentos,
+      opciones_empleados,
+      opcionesEstados,
+      maskFecha,
+
+      //  FILTROS
+      //filtro de empleados
+      filtroEmpleados(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_empleados.value = listadosAuxiliares.empleados
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      //filtro de cantones
+      filtroCantones(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_cantones.value = listadosAuxiliares.cantones
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_cantones.value = listadosAuxiliares.cantones.filter((v) => v.canton.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      //filtro de cargos
+      filtroCargos(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_cargos.value = listadosAuxiliares.cargos
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_cargos.value = listadosAuxiliares.cargos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      filtroDepartamentos(val, update) {
+        if (val === '') {
+          update(() => {
+            opcionesDepartamentos.value = listadosAuxiliares.departamentos
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+        })
+      }
+
+    }
+  }
 })
