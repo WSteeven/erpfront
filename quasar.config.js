@@ -122,9 +122,26 @@ module.exports = configure(function (/* ctx */) {
         controlTareas: path.join(__dirname, './src/pages/tareas/controlTareas'),
         subtareas: path.join(
           __dirname,
-          './src/pages/tareas/controlTareas/modules/subtareas'
+          './src/pages/gestionTrabajos/subtareas'
         ),
         tiposTrabajos: path.join(__dirname, './src/pages/tareas/tiposTareas'),
+        tickets: path.join(__dirname, './src/pages/gestionTickets/tickets'),
+        ticketsAsignados: path.join(
+          __dirname,
+          './src/pages/gestionTickets/ticketsAsignados'
+        ),
+        tiposTickets: path.join(
+          __dirname,
+          './src/pages/gestionTickets/tiposTickets'
+        ),
+        motivosPausasTickets: path.join(
+          __dirname,
+          './src/pages/gestionTickets/motivosPausasTickets'
+        ),
+        motivosCanceladosTickets: path.join(
+          __dirname,
+          './src/pages/gestionTickets/motivosCanceladosTickets'
+        ),
       },
     },
 

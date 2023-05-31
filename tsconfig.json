@@ -24,8 +24,14 @@
       "proyectos/*": ["src/pages/gestionTrabajos/proyectos/*"],
       "recursosHumanos/*": ["src/pages/recursosHumanos/*"],
       "controlTareas/*": ["src/pages/tareas/controlTareas/*"],
-      "subtareas/*": ["src/pages/tareas/controlTareas/modules/subtareas/*"],
-      "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"]
+      "subtareas/*": ["src/pages/gestionTrabajos/subtareas/*"],
+      "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"],
+      "gestionTickets/*": ["src/pages/gestionTickets"],
+      "tickets/*": ["gestionTickets/tickets"],
+      "ticketsAsignados/*": ["gestionTickets/ticketsAsignados"],
+      "tiposTickets/*": ["gestionTickets/tiposTickets"],
+      "motivosPausasTickets/*": ["gestionTickets/motivosPausasTickets"],
+      "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"]
     }
   }
 }

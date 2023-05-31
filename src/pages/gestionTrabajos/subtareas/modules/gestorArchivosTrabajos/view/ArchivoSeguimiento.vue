@@ -3,7 +3,8 @@
     <br />
     <q-checkbox
       v-model="quiero_subir_archivos"
-      label="Quiero subir archivos"
+      label="Quiero compartir archivos"
+      :disable="disable"
       outlined
       dense
     ></q-checkbox>

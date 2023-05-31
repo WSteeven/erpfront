@@ -33,6 +33,14 @@ export default defineComponent({
       required: true,
     },
     entidad: Object as () => EntidadAuditable,
+    disable: {
+      type: Boolean,
+      default: false,
+    },
+    permitirEliminar: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     /*********
@@ -61,6 +69,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash3',
       color: 'negative',
+      visible: () => props.permitirEliminar,
       accion: async ({ entidad }) => {
         confirmar('Esta operación es irreversible. El archivo se eliminará de forma instantánea.', () => eliminar(entidad))
       }
@@ -97,6 +106,7 @@ export default defineComponent({
         files.value = []
         listado.value.push(response.data.modelo)
         notificarCorrecto(response.data.mensaje)
+        refGestor.value.removeQueuedFiles()
       } catch (error: unknown) {
         const axiosError = error as AxiosError
         notificarError(axiosError.response?.data.mensaje)
@@ -110,6 +120,10 @@ export default defineComponent({
 
     function onRejected(rejectedEntries) {
       notificarAdvertencia('El tamaño total de los archivos no deben exceder los 10mb.')
+    }
+
+    function limpiarListado() {
+      listado.value = []
     }
 
     return {
@@ -126,6 +140,7 @@ export default defineComponent({
       factoryFn,
       subir,
       listarArchivos,
+      limpiarListado,
     }
   }
 })
