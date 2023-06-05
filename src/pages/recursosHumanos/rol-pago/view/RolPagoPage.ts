@@ -2,7 +2,7 @@
 import { configuracionColumnasRolPago } from '../domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect } from 'vue'
+import { defineComponent, ref, computed, watchEffect, Ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -23,6 +23,12 @@ import { log } from 'console'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import axios from 'axios'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import { ConceptoIngreso } from 'pages/recursosHumanos/concepto_ingreso/domain/ConceptoIngreso'
+import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
+import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
+import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
+import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
+
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
@@ -35,23 +41,30 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-    const tipos = ref([
-      { id: 1, nombre: 'Alimentacion', calculable_iess  : true },
-      { id: 2, nombre: 'Comisiones', calculable_iess  : false  },
-      { id: 3, nombre: 'Horas Extras', calculable_iess  : true  },
-    ])
+      const {onConsultado} = mixin.useHooks()
+    const concepto_ingresos: Ref<ConceptoIngreso[]> = ref([])
+    const descuentos_generales = ref([])
+    const descuentos_ley = ref([])
+    const multas = ref([])
+ const tipo_descuento = ref();
     const es_consultado = ref(false)
+    const es_seleccionable_descuento_general  =ref(false)
+    const es_seleccionable_descuento_ley  = ref(true)
+    const es_seleccionable_multa = ref(false)
     const tipo = ref(1)
     const campo = ref()
     const label_campo = computed(() => {
-      const indice = tipos.value.findIndex(
+      const indice = concepto_ingresos.value.findIndex(
         (tipo_data) => tipo_data.id === tipo.value
       )
-      return tipos.value[indice].nombre
+      return concepto_ingresos.value[indice].nombre
     })
     const is_month = ref(false)
 
     const empleados = ref<Empleado[]>([])
+    onConsultado(()=>{
+      es_consultado.value = true;
+    })
     cargarVista(async () => {
       obtenerListados({
         motivos: new MotivoPermisoEmpleadoController(),
@@ -59,12 +72,73 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
+        concepto_ingresos: new ConceptoIngresoController(),
+        descuentos_generales: new DescuentosGenralesController(),
+        descuentos_ley: new DescuentosLeyController (),
+        multas: new MultaController(),
       })
+      concepto_ingresos.value =
+      listadosAuxiliares.concepto_ingresos
+      descuentos_generales.value =
+      listadosAuxiliares.descuentos_generales
+      descuentos_ley.value =
+      listadosAuxiliares.descuentos_ley
+      multas.value =
+      listadosAuxiliares.multas
+
     })
+    function verificar_descuento_general  (){
+
+      tipo_descuento.value = 'DESCUENTO_GENERAL'
+
+    }
+    function verificar_descuento_ley (){
+      tipo_descuento.value = 'DESCUENTO_LEY'
+
+    }
+    function verificar_multa (){
+      tipo_descuento.value = 'MULTA'
+
+    }
+
+    function aniadir_egreso(){
+      let  id_descuento = 0;
+      switch (tipo_descuento.value) {
+        case 'DESCUENTO_GENERAL':
+          id_descuento = rolpago.descuento_general ==null? 0:rolpago.descuento_general;
+          es_seleccionable_descuento_general.value = false
+          es_seleccionable_descuento_ley.value = false
+          es_seleccionable_multa.value= true
+          rolpago.descuento_general=null
+          break;
+          case  'DESCUENTO_LEY':
+            id_descuento = rolpago.descuento_ley == null ? 0: rolpago.descuento_ley;
+            es_seleccionable_descuento_general.value = true
+            es_seleccionable_descuento_ley.value = false
+            es_seleccionable_multa.value= false
+            rolpago.descuento_ley=null
+          break;
+          case 'MULTA':
+            id_descuento = rolpago.multa == null ? 0: rolpago.multa;
+            es_seleccionable_descuento_general.value = false
+            es_seleccionable_descuento_ley.value = true
+            es_seleccionable_multa.value= false
+            rolpago.multa=null
+            break;
+        default:
+          break;
+      }
+      console.log(id_descuento);
+      rolpago.egresos.push({tipo:tipo_descuento.value,id_descuento:id_descuento, monto: rolpago.egreso})
+      rolpago.egreso=null
+    }
 
     //Reglas de validacion
     const reglas = {
       concepto_ingreso: { required },
+      descuento_general: { required },
+      descuento_ley : {required},
+      multa:{required},
       mes: { required },
       roles: { required },
     }
@@ -139,25 +213,7 @@ export default defineComponent({
         rolpago.ingreso = rolpago.ingresos[indice_ingreso].monto
       }
     }
-    function verificar_concepto_egreso(){
-      const indice_egreso = rolpago.egresos.findIndex(
-        (egreso) => egreso.concepto === rolpago.concepto_egreso
-      )
-      if (indice_egreso !== -1) {
-        rolpago.egreso = rolpago.egresos[indice_egreso].monto
-      }
-    }
-    function aniadirEgreso() {
-      const indice_egreso = rolpago.egresos.findIndex(
-        (egreso) => egreso.concepto === rolpago.concepto_egreso
-      )
-      //modificar
-      if (indice_egreso !== -1) {
-        rolpago.egresos[indice_egreso].monto = rolpago.egreso
-      }
-      rolpago.egresos.push({concepto: rolpago.concepto_egreso, monto: rolpago.egreso})
-      rolpago.egreso=null
-    }
+
     function aniadirArregloRoles() {
       const indice_rol = rolpago.roles.findIndex(
         (rol_data) => rol_data.empleado === rolpago.empleado
@@ -184,7 +240,10 @@ export default defineComponent({
       removeAccents,
       mixin,
       rolpago,
-      tipos,
+      concepto_ingresos,
+      descuentos_generales,
+      descuentos_ley,
+      multas,
       campo,
       label_campo,
       is_month,
@@ -192,12 +251,18 @@ export default defineComponent({
       datos_empleado,
       tipo,
       es_consultado,
+      tipo_descuento,
       filtrarEmpleado,
       checkValue,
       aniadirIngreso,
-      aniadirEgreso,
+      aniadir_egreso,
       verificar_concepto_ingreso,
-      verificar_concepto_egreso,
+      verificar_descuento_general,
+      verificar_descuento_ley,
+      verificar_multa,
+      es_seleccionable_descuento_general,
+      es_seleccionable_descuento_ley,
+      es_seleccionable_multa,
       v$,
       disabled,
       configuracionColumnasRolPagoTabla,

@@ -49,6 +49,11 @@ export const endpoints = {
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
+  concepto_ingreso: new Endpoint('recursos-humanos/concepto_ingreso'),
+  descuentos_generales:  new Endpoint('recursos-humanos/descuentos_generales'),
+  descuentos_ley:  new Endpoint('recursos-humanos/descuentos_ley'),
+  multa: new Endpoint('recursos-humanos/multa'),
+
 
 
   //Modulo de Vehiculos

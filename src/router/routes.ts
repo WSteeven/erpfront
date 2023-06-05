@@ -175,7 +175,7 @@ const routes: RouteRecordRaw[] = [
         path: '/permisos-roles',
         name: 'permisos_roles',
         component: () => import('pages/permisos/view/PermisoPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
       {
         path: '/permisos-usuarios',
