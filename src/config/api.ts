@@ -53,7 +53,8 @@ export const endpoints = {
   descuentos_generales:  new Endpoint('recursos-humanos/descuentos_generales'),
   descuentos_ley:  new Endpoint('recursos-humanos/descuentos_ley'),
   multa: new Endpoint('recursos-humanos/multa'),
-
+  prestamos_quirorafario_empleado: new Endpoint('recursos-humanos/prestamos_quirorafario_empleado'),
+  prestamos_hipotecario_empleado: new Endpoint('recursos-humanos/prestamos_hipotecario_empleado'),
 
 
   //Modulo de Vehiculos

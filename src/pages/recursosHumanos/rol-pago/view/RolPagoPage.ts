@@ -28,7 +28,7 @@ import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingres
 import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
 import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
 import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
-
+import { integer } from 'vuelidate/lib/validators'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
@@ -41,15 +41,15 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-      const {onConsultado} = mixin.useHooks()
+    const { onConsultado } = mixin.useHooks()
     const concepto_ingresos: Ref<ConceptoIngreso[]> = ref([])
     const descuentos_generales = ref([])
     const descuentos_ley = ref([])
     const multas = ref([])
- const tipo_descuento = ref();
+    const tipo_descuento = ref()
     const es_consultado = ref(false)
-    const es_seleccionable_descuento_general  =ref(false)
-    const es_seleccionable_descuento_ley  = ref(true)
+    const es_seleccionable_descuento_general = ref(false)
+    const es_seleccionable_descuento_ley = ref(true)
     const es_seleccionable_multa = ref(false)
     const tipo = ref(1)
     const campo = ref()
@@ -62,8 +62,8 @@ export default defineComponent({
     const is_month = ref(false)
 
     const empleados = ref<Empleado[]>([])
-    onConsultado(()=>{
-      es_consultado.value = true;
+    onConsultado(() => {
+      es_consultado.value = true
     })
     cargarVista(async () => {
       obtenerListados({
@@ -74,71 +74,85 @@ export default defineComponent({
         },
         concepto_ingresos: new ConceptoIngresoController(),
         descuentos_generales: new DescuentosGenralesController(),
-        descuentos_ley: new DescuentosLeyController (),
+        descuentos_ley: new DescuentosLeyController(),
         multas: new MultaController(),
       })
-      concepto_ingresos.value =
-      listadosAuxiliares.concepto_ingresos
-      descuentos_generales.value =
-      listadosAuxiliares.descuentos_generales
-      descuentos_ley.value =
-      listadosAuxiliares.descuentos_ley
-      multas.value =
-      listadosAuxiliares.multas
-
+      concepto_ingresos.value = listadosAuxiliares.concepto_ingresos
+      descuentos_generales.value = listadosAuxiliares.descuentos_generales
+      descuentos_ley.value = listadosAuxiliares.descuentos_ley
+      multas.value = listadosAuxiliares.multas
     })
-    function verificar_descuento_general  (){
-
+    function verificar_descuento_general() {
       tipo_descuento.value = 'DESCUENTO_GENERAL'
-
     }
-    function verificar_descuento_ley (){
+    function verificar_descuento_ley() {
       tipo_descuento.value = 'DESCUENTO_LEY'
-
+      switch (rolpago.descuento_ley) {
+        case 1:
+        CalculoIESS()
+        break
+        case 4:
+          prestamoHipotecario()
+          break
+        case 5:
+          prestamoQuirorafario()
+          break
+        default:
+          rolpago.egreso= null
+          break
+      }
     }
-    function verificar_multa (){
+    function verificar_multa() {
       tipo_descuento.value = 'MULTA'
-
+    }
+    function CalculoIESS(){
+     rolpago.egreso= parseInt(rolpago.salario == null ? '0':rolpago.salario)*0.0945;
     }
 
-    function aniadir_egreso(){
-      let  id_descuento = 0;
+    function aniadir_egreso() {
+      let id_descuento = 0
       switch (tipo_descuento.value) {
         case 'DESCUENTO_GENERAL':
-          id_descuento = rolpago.descuento_general ==null? 0:rolpago.descuento_general;
+          id_descuento =
+            rolpago.descuento_general == null ? 0 : rolpago.descuento_general
           es_seleccionable_descuento_general.value = false
           es_seleccionable_descuento_ley.value = false
-          es_seleccionable_multa.value= true
-          rolpago.descuento_general=null
-          break;
-          case  'DESCUENTO_LEY':
-            id_descuento = rolpago.descuento_ley == null ? 0: rolpago.descuento_ley;
-            es_seleccionable_descuento_general.value = true
-            es_seleccionable_descuento_ley.value = false
-            es_seleccionable_multa.value= false
-            rolpago.descuento_ley=null
-          break;
-          case 'MULTA':
-            id_descuento = rolpago.multa == null ? 0: rolpago.multa;
-            es_seleccionable_descuento_general.value = false
-            es_seleccionable_descuento_ley.value = true
-            es_seleccionable_multa.value= false
-            rolpago.multa=null
-            break;
+          es_seleccionable_multa.value = true
+          rolpago.descuento_general = null
+          break
+        case 'DESCUENTO_LEY':
+          id_descuento =
+            rolpago.descuento_ley == null ? 0 : rolpago.descuento_ley
+          es_seleccionable_descuento_general.value = true
+          es_seleccionable_descuento_ley.value = false
+          es_seleccionable_multa.value = false
+          rolpago.descuento_ley = null
+          break
+        case 'MULTA':
+          id_descuento = rolpago.multa == null ? 0 : rolpago.multa
+          es_seleccionable_descuento_general.value = false
+          es_seleccionable_descuento_ley.value = true
+          es_seleccionable_multa.value = false
+          rolpago.multa = null
+          break
         default:
-          break;
+          break
       }
-      console.log(id_descuento);
-      rolpago.egresos.push({tipo:tipo_descuento.value,id_descuento:id_descuento, monto: rolpago.egreso})
-      rolpago.egreso=null
+      console.log(id_descuento)
+      rolpago.egresos.push({
+        tipo: tipo_descuento.value,
+        id_descuento: id_descuento,
+        monto: rolpago.egreso,
+      })
+      rolpago.egreso = null
     }
 
     //Reglas de validacion
     const reglas = {
       concepto_ingreso: { required },
       descuento_general: { required },
-      descuento_ley : {required},
-      multa:{required},
+      descuento_ley: { required },
+      multa: { required },
       mes: { required },
       roles: { required },
     }
@@ -149,8 +163,8 @@ export default defineComponent({
     rolpago.roles = ref([])
     rolpago.ingresos = ref([])
     rolpago.egresos = ref([])
-    function datos_empleado(){
-      salario();
+    function datos_empleado() {
+      salario()
     }
     function filtrarEmpleado(val, update) {
       if (val === '') {
@@ -171,28 +185,82 @@ export default defineComponent({
     function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
     }
-    function salario (){
+    function prestamoQuirorafario() {
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const params = {
+        empleado: rolpago.empleado,
+        mes: rolpago.mes,
+      }
 
+      const url_salario =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.prestamos_quirorafario_empleado)
+
+      axios
+        .get(url_salario, {
+          params: params,
+          responseType: 'json',
+          headers: {
+            Authorization:
+              axiosHttpRepository.getOptions().headers.Authorization,
+          },
+        })
+        .then((response) => {
+          const { data } = response
+          if (data) {
+              rolpago.egreso= data.prestamo
+          }
+        })
+    }
+    function prestamoHipotecario() {
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const params = {
+        empleado: rolpago.empleado,
+        mes: rolpago.mes,
+      }
+
+      const url_salario =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.prestamos_hipotecario_empleado)
+
+      axios
+        .get(url_salario, {
+          params: params,
+          responseType: 'json',
+          headers: {
+            Authorization:
+              axiosHttpRepository.getOptions().headers.Authorization,
+          },
+        })
+        .then((response) => {
+          const { data } = response
+          if (data) {
+            rolpago.egreso= data.prestamo
+          }
+        })
+    }
+    function salario() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const url_salrio =
-                apiConfig.URL_BASE +
-                '/' +
-                axiosHttpRepository.getEndpoint(endpoints.salario_empleado)+ rolpago.empleado;
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.salario_empleado) +
+        rolpago.empleado
       axios({
         url: url_salrio,
         method: 'GET',
         responseType: 'json',
         headers: {
-          'Authorization': axiosHttpRepository.getOptions().headers.Authorization
-        }
+          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+        },
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
           rolpago.salario = data.empleado.salario
         }
-
       })
-
     }
     function aniadirIngreso() {
       const indice_ingreso = rolpago.ingresos.findIndex(
@@ -202,10 +270,13 @@ export default defineComponent({
       if (indice_ingreso !== -1) {
         rolpago.ingresos[indice_ingreso].monto = rolpago.ingreso
       }
-      rolpago.ingresos.push({concepto: rolpago.concepto_ingreso, monto: rolpago.ingreso})
-      rolpago.ingreso=null
+      rolpago.ingresos.push({
+        concepto: rolpago.concepto_ingreso,
+        monto: rolpago.ingreso,
+      })
+      rolpago.ingreso = null
     }
-    function verificar_concepto_ingreso(){
+    function verificar_concepto_ingreso() {
       const indice_ingreso = rolpago.ingresos.findIndex(
         (ingreso) => ingreso.concepto === rolpago.concepto_ingreso
       )
@@ -230,13 +301,12 @@ export default defineComponent({
             empleados.value[indice].apellidos,
           dias: rolpago.dias,
         })
-
       }
 
       tipo.value = 1
       campo.value = null
     }
-      return {
+    return {
       removeAccents,
       mixin,
       rolpago,
