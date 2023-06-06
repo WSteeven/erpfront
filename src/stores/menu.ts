@@ -261,7 +261,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-circle',
-          can: store.esBodeguero || store.esContabilidad ||store.can('puede.ver.reportes_bodega'),
+          can: store.esBodeguero || store.esContabilidad || store.can('puede.ver.reportes_bodega'),
           children: [
             {
               title: 'Reporte de ingresos',
@@ -499,6 +499,26 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    //Modulo de compras y proveedores
+    {
+      title: 'Compras y proveedores',
+      icon: 'bi-bag-fill',
+      can: store.can('puede.ver.modulo_compras') || store.esAdministrador,
+      children: [
+        {
+          title: 'Empresas',
+          link: 'empresas',
+          icon: 'bi-building-fill-gear',
+          can: store.can('puede.ver.empresas')  || store.esAdministrador,
+        },
+        {
+          title: 'Proveedores',
+          link: 'proveedores',
+          icon: 'bi-boxes',
+          can: store.can('puede.ver.proveedores') || store.esAdministrador,
+        },
+      ]
+    },
     {
       header: 'Administración',
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
@@ -556,18 +576,6 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'codigos-clientes',
           icon: 'bi-circle',
           can: store.can('puede.ver.codigos_clientes') && store.esActivosFijos,
-        },
-        {
-          title: 'Empresas',
-          link: 'empresas',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.empresas') && store.esActivosFijos,
-        },
-        {
-          title: 'Proveedores',
-          link: 'proveedores',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.proveedores'),
         },
         {
           title: 'Estados de transacciones',

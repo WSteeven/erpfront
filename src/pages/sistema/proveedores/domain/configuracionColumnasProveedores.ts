@@ -10,6 +10,27 @@ export const configuracionColumnasProveedores: ColumnConfig<Proveedor>[]=[
     sortable: true,
   },
   {
+    name: 'sucursal',
+    field: 'sucursal',
+    label: 'Sucursal',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'ubicacion',
+    field: 'ubicacion',
+    label: 'Ubicación física',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'direccion',
+    field: 'direccion',
+    label: 'Direccion',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'estado',
     field: 'estado',
     label: 'Activo',

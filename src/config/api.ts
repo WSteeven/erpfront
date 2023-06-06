@@ -40,6 +40,7 @@ export const endpoints = {
   cargos: new Endpoint('cargos'),
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
+  departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
   
   //Modulo de Vehiculos
@@ -47,6 +48,11 @@ export const endpoints = {
   vehiculos: new Endpoint('vehiculos/vehiculos'),
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
+
+  //Modulo de compras y proveedores
+  empresas: new Endpoint('empresas'),
+  proveedores: new Endpoint('proveedores'),
+  ofertas_proveedores: new Endpoint('compras/ofertas_proveedores'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),
@@ -62,7 +68,6 @@ export const endpoints = {
   discos: new Endpoint('discos'),
   comprobantes_filtrados: new Endpoint('comprobantes-filtrados'),
   egresos_filtrados: new Endpoint('egresos-filtrados'),
-  empresas: new Endpoint('empresas'),
   rams: new Endpoint('rams'),
   inventarios: new Endpoint('inventarios'),
   hilos: new Endpoint('hilos'),
@@ -72,7 +77,6 @@ export const endpoints = {
   motivos: new Endpoint('motivos'),
   notificaciones: new Endpoint('notificaciones'),
   pedidos: new Endpoint('pedidos'),
-  proveedores: new Endpoint('proveedores'),
   procesadores: new Endpoint('procesadores'),
   prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),
