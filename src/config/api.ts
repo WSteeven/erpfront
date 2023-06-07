@@ -45,7 +45,7 @@ export const endpoints = {
   prestamo_anticipo : new Endpoint('recursos-humanos/prestamo_anticipo'),
   anticipo : new Endpoint('recursos-humanos/anticipo'),
   rol_pago : new Endpoint('recursos-humanos/rol_pago'),
-  salario_empleado : new Endpoint('recursos-humanos/salario/'),
+  datos_empleado : new Endpoint('recursos-humanos/datos_empleado/'),
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
@@ -55,6 +55,7 @@ export const endpoints = {
   multa: new Endpoint('recursos-humanos/multa'),
   prestamos_quirorafario_empleado: new Endpoint('recursos-humanos/prestamos_quirorafario_empleado'),
   prestamos_hipotecario_empleado: new Endpoint('recursos-humanos/prestamos_hipotecario_empleado'),
+  extension_covertura_salud_empleado: new Endpoint('recursos-humanos/extension_covertura_salud_empleado'),
 
 
   //Modulo de Vehiculos

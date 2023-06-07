@@ -87,8 +87,7 @@
               transition-hide="scale"
               options-dense
               clearable
-              hint="Conceptos"
-              dense
+               dense
               outlined
               :disable="disabled "
               :readonly="disabled"
@@ -148,7 +147,7 @@
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Descuento de Ley</label>
               <q-select v-model="rolpago.descuento_ley" :options="descuentos_ley" transition-show="jump-up"
-                transition-hide="jump-down" options-dense dense outlined :disable="!es_seleccionable_descuento_ley" :readonly="disabled"
+                transition-hide="jump-down" options-dense dense outlined :disable="disabled ||!es_seleccionable_descuento_ley" :readonly="disabled"
                 @update:model-value="verificar_descuento_ley"
                 use-input input-debounce="0" :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre" emit-value map-options>
@@ -165,7 +164,7 @@
               <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Descuentos Generales</label>
               <q-select v-model="rolpago.descuento_general" :options="descuentos_generales" transition-show="jump-up"
-                transition-hide="jump-down" options-dense dense outlined :disable="!es_seleccionable_descuento_general" :readonly="disabled"
+                transition-hide="jump-down" options-dense dense outlined :disable="disabled ||!es_seleccionable_descuento_general" :readonly="disabled"
                 @update:model-value="verificar_descuento_general"
                 use-input input-debounce="0" :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre" emit-value map-options>
@@ -182,7 +181,7 @@
               <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Multa</label>
               <q-select v-model="rolpago.multa" :options="multas" transition-show="jump-up"
-                transition-hide="jump-down" options-dense dense outlined :disable="!es_seleccionable_multa" :readonly="disabled"
+                transition-hide="jump-down" options-dense dense outlined :disable="disabled ||!es_seleccionable_multa" :readonly="disabled"
                 @update:model-value="verificar_multa"
                 use-input input-debounce="0" :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre" emit-value map-options>
@@ -198,9 +197,9 @@
             <!---Campo-->
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Valor</label>
-              <q-input v-model="rolpago.egreso" placeholder="Obligatorio" type="number" :disable="disabled" outlined
+              <q-input v-model="rolpago.egreso" placeholder="Obligatorio" type="number" :disable="disabled ||es_calculable" outlined
                 dense>
-                <template v-slot:append>
+                <template v-slot:append v-if="!es_calculable">
                   <q-btn round dense flat icon="add" @click="aniadir_egreso" />
                 </template>
               </q-input>

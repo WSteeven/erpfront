@@ -48,11 +48,14 @@ export default defineComponent({
     const multas = ref([])
     const tipo_descuento = ref()
     const es_consultado = ref(false)
-    const es_seleccionable_descuento_general = ref(false)
+    const es_seleccionable_descuento_general = ref(true)
     const es_seleccionable_descuento_ley = ref(true)
     const es_seleccionable_multa = ref(false)
     const tipo = ref(1)
+    const es_calculable = ref(true);
     const campo = ref()
+
+
     const label_campo = computed(() => {
       const indice = concepto_ingresos.value.findIndex(
         (tipo_data) => tipo_data.id === tipo.value
@@ -62,6 +65,12 @@ export default defineComponent({
     const is_month = ref(false)
 
     const empleados = ref<Empleado[]>([])
+    const total_egresos = computed(()=>{
+      return rolpago.egresos.reduce((accumulator, current) => parseInt( accumulator) +  parseInt(current.monto), 0);
+    })
+    const total_ingresos = computed(()=>{
+      return rolpago.egresos.reduce((accumulator, current) => parseInt( accumulator) +  parseInt(current.monto), 0);
+    })
     onConsultado(() => {
       es_consultado.value = true
     })
@@ -83,54 +92,71 @@ export default defineComponent({
       multas.value = listadosAuxiliares.multas
     })
     function verificar_descuento_general() {
+      es_calculable.value = false
+      rolpago.egreso = null
       tipo_descuento.value = 'DESCUENTO_GENERAL'
     }
     function verificar_descuento_ley() {
       tipo_descuento.value = 'DESCUENTO_LEY'
       switch (rolpago.descuento_ley) {
         case 1:
-        CalculoIESS()
-        break
+          es_calculable.value = true
+          CalculoIESS()
+          break
+        case 2:
+          es_calculable.value = true
+          obtener_datos_empleado('SUPA')
+          break
+        case 3:
+          extensionCoverturaSalud()
+          break
         case 4:
+          es_calculable.value = true
           prestamoHipotecario()
           break
         case 5:
+          es_calculable.value = true
           prestamoQuirorafario()
           break
         default:
-          rolpago.egreso= null
+          rolpago.egreso = null
           break
       }
     }
     function verificar_multa() {
+      es_calculable.value = false
+      rolpago.egreso = null
       tipo_descuento.value = 'MULTA'
     }
-    function CalculoIESS(){
-     rolpago.egreso= parseInt(rolpago.salario == null ? '0':rolpago.salario)*0.0945;
+    function CalculoIESS() {
+      rolpago.egreso =
+        parseInt(rolpago.salario == null ? '0' : rolpago.salario) * 0.0945
     }
 
     function aniadir_egreso() {
       let id_descuento = 0
+      if (rolpago.egreso == null){
+        rolpago.egreso=0;
+      }
       switch (tipo_descuento.value) {
         case 'DESCUENTO_GENERAL':
           id_descuento =
             rolpago.descuento_general == null ? 0 : rolpago.descuento_general
           es_seleccionable_descuento_general.value = false
-          es_seleccionable_descuento_ley.value = false
+          es_seleccionable_descuento_ley.value = true
           es_seleccionable_multa.value = true
           rolpago.descuento_general = null
           break
         case 'DESCUENTO_LEY':
-          id_descuento =
-            rolpago.descuento_ley == null ? 0 : rolpago.descuento_ley
+
           es_seleccionable_descuento_general.value = true
-          es_seleccionable_descuento_ley.value = false
+          es_seleccionable_descuento_ley.value = true
           es_seleccionable_multa.value = false
           rolpago.descuento_ley = null
           break
         case 'MULTA':
           id_descuento = rolpago.multa == null ? 0 : rolpago.multa
-          es_seleccionable_descuento_general.value = false
+          es_seleccionable_descuento_general.value = true
           es_seleccionable_descuento_ley.value = true
           es_seleccionable_multa.value = false
           rolpago.multa = null
@@ -138,7 +164,6 @@ export default defineComponent({
         default:
           break
       }
-      console.log(id_descuento)
       rolpago.egresos.push({
         tipo: tipo_descuento.value,
         id_descuento: id_descuento,
@@ -164,7 +189,7 @@ export default defineComponent({
     rolpago.ingresos = ref([])
     rolpago.egresos = ref([])
     function datos_empleado() {
-      salario()
+      obtener_datos_empleado('SALARIO')
     }
     function filtrarEmpleado(val, update) {
       if (val === '') {
@@ -195,7 +220,9 @@ export default defineComponent({
       const url_salario =
         apiConfig.URL_BASE +
         '/' +
-        axiosHttpRepository.getEndpoint(endpoints.prestamos_quirorafario_empleado)
+        axiosHttpRepository.getEndpoint(
+          endpoints.prestamos_quirorafario_empleado
+        )
 
       axios
         .get(url_salario, {
@@ -209,7 +236,7 @@ export default defineComponent({
         .then((response) => {
           const { data } = response
           if (data) {
-              rolpago.egreso= data.prestamo
+            rolpago.egreso = data.prestamo
           }
         })
     }
@@ -223,7 +250,9 @@ export default defineComponent({
       const url_salario =
         apiConfig.URL_BASE +
         '/' +
-        axiosHttpRepository.getEndpoint(endpoints.prestamos_hipotecario_empleado)
+        axiosHttpRepository.getEndpoint(
+          endpoints.prestamos_hipotecario_empleado
+        )
 
       axios
         .get(url_salario, {
@@ -237,16 +266,46 @@ export default defineComponent({
         .then((response) => {
           const { data } = response
           if (data) {
-            rolpago.egreso= data.prestamo
+            rolpago.egreso = data.prestamo
           }
         })
     }
-    function salario() {
+    function extensionCoverturaSalud() {
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const params = {
+        empleado: rolpago.empleado,
+        mes: rolpago.mes,
+      }
+
+      const url_salario =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(
+          endpoints.extension_covertura_salud_empleado
+        )
+
+      axios
+        .get(url_salario, {
+          params: params,
+          responseType: 'json',
+          headers: {
+            Authorization:
+              axiosHttpRepository.getOptions().headers.Authorization,
+          },
+        })
+        .then((response) => {
+          const { data } = response
+          if (data) {
+            rolpago.egreso = data.prestamo
+          }
+        })
+    }
+    function obtener_datos_empleado(campo) {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const url_salrio =
         apiConfig.URL_BASE +
         '/' +
-        axiosHttpRepository.getEndpoint(endpoints.salario_empleado) +
+        axiosHttpRepository.getEndpoint(endpoints.datos_empleado) +
         rolpago.empleado
       axios({
         url: url_salrio,
@@ -258,7 +317,16 @@ export default defineComponent({
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
-          rolpago.salario = data.empleado.salario
+          switch (campo) {
+            case 'SALARIO':
+              rolpago.salario = data.empleado.salario
+              break
+            case 'SUPA':
+              rolpago.egreso = data.empleado.supa
+              break
+            default:
+              break
+          }
         }
       })
     }
@@ -324,12 +392,15 @@ export default defineComponent({
       tipo_descuento,
       filtrarEmpleado,
       checkValue,
+      es_calculable,
       aniadirIngreso,
       aniadir_egreso,
       verificar_concepto_ingreso,
       verificar_descuento_general,
       verificar_descuento_ley,
       verificar_multa,
+      total_egresos,
+      total_ingresos,
       es_seleccionable_descuento_general,
       es_seleccionable_descuento_ley,
       es_seleccionable_multa,
