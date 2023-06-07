@@ -26,6 +26,7 @@ import { useQuasar } from 'quasar'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TipoContratoController } from 'pages/recursosHumanos/tipo-contrato/infraestructure/TipoContratoController'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -69,6 +70,7 @@ export default defineComponent({
       { nombre: 'Estudio Secundario' },
       { nombre: 'Titulo Superior' },
     ])
+    const opcionesDepartamentos = ref([])
 
     cargarVista(async () => {
       obtenerListados({
@@ -77,22 +79,30 @@ export default defineComponent({
         tipos_contrato: new TipoContratoController(),
         roles: {
           controller: new RolController(),
-          params: { campos: 'id,name' },
+          params: { campos: 'id,name' }
         },
         empleados: {
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos',
-            estado: 1,
-          },
+            estado: 1
+          }
         },
-        grupos: new GrupoController(),
+        grupos: {
+          controller: new GrupoController(),
+          params: { activo: 1 },
+        },
+        departamentos:
+        {
+          controller: new DepartamentoController(),
+          params: { activo: 1 },
+        }
       })
     })
 
     /*************
-     * Validaciones
-     **************/
+    * Validaciones
+    **************/
     const reglas = {
       identificacion: {
         required,
@@ -124,6 +134,7 @@ export default defineComponent({
       fecha_nacimiento: { required },
       cargo: { required },
       observacion: { required },
+      departamento: { required },
       roles: { required },
       estado: { required },
       grupo: { required: requiredIf(() => empleado.tiene_grupo) },
@@ -181,6 +192,9 @@ export default defineComponent({
       return diffYears + ' Años ' + diffMonths + ' Meses ' + diffDays + ' Dias'
     })
 
+
+    onConsultado(() => empleado.tiene_grupo = !!empleado.grupo)
+
     /************
      * Observers
      ************/
@@ -210,6 +224,7 @@ export default defineComponent({
       tipos_contrato,
       niveles_academicos,
       //metodos
+      opcionesDepartamentos,
 
       //  FILTROS
       //filtro de empleados
@@ -222,11 +237,7 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter(
-            (v) =>
-              v.nombres.toLowerCase().indexOf(needle) > -1 ||
-              v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
+          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
       //filtro de cantones
@@ -239,9 +250,7 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_cantones.value = listadosAuxiliares.cantones.filter(
-            (v) => v.canton.toLowerCase().indexOf(needle) > -1
-          )
+          opciones_cantones.value = listadosAuxiliares.cantones.filter((v) => v.canton.toLowerCase().indexOf(needle) > -1)
         })
       },
       //filtro de cargos
@@ -254,11 +263,22 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_cargos.value = listadosAuxiliares.cargos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
+          opciones_cargos.value = listadosAuxiliares.cargos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
         })
       },
+      filtroDepartamentos(val, update) {
+        if (val === '') {
+          update(() => {
+            opcionesDepartamentos.value = listadosAuxiliares.departamentos
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+        })
+      }
+
     }
-  },
+  }
 })

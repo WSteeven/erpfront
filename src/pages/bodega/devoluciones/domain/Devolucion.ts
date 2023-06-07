@@ -8,6 +8,7 @@ export class Devolucion extends EntidadAuditable {
     tarea_id: number | null
     canton: number | null
     estado: string | null
+    estado_bodega: string | null
     created_at: string | null
     es_para_stock: boolean
 
@@ -24,6 +25,7 @@ export class Devolucion extends EntidadAuditable {
         this.tarea_id = null
         this.canton = null
         this.estado = null
+        this.estado_bodega = null
         this.created_at = null
         this.es_para_stock =false
         this.listadoProductos = []

@@ -1,13 +1,20 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :mostrarListado="mostrarListado"
+    :tabOptions="tabAutorizarGasto"
+    :full="true"
+    :permitirEditar="false"
+    :permitirEliminar="false"
     :mostrarButtonSubmits="!mostrarAprobacion"
+    :filtrar="filtrarGasto"
+    tabDefecto="3"
+    :forzarListar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-mb-md">
+        <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
           <!-- Lugar -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar</label>
@@ -148,7 +155,7 @@
             <label class="q-mb-sm block">Tareas</label>
             <q-select
               v-model="gasto.num_tarea"
-              :options="listadoTareas"
+              :options="tareas"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -157,6 +164,7 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.num_tarea.$errors.length"
+              @filter="filtrarTareas"
               @blur="v$.num_tarea.$touch"
               error-message="Debes seleccionar una Tarea"
               use-input
@@ -329,8 +337,62 @@
               </template>
             </q-input>
           </div>
+          <!--
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Beneficiarios</label>
+            <q-select
+              v-model="gasto.beneficiarios"
+              :options="beneficiarios"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              multiple
+              dense
+              use-chips
+              outlined
+              @filter="filtrarBeneficiarios"
+              @blur="v$.beneficiarios.$touch"
+              :error="!!v$.beneficiarios.$errors.length"
+              error-message="Debes seleccionar uno o varios beneficiarios"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              emit-value
+              map-options
+            >
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.nombres + ' ' + opt.apellidos }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.beneficiarios.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+
+          </div> -->
           <!-- Autorizacion -->
-          <div class="col-12 col-md-3" v-if="esTecnico">
+          <div class="col-12 col-md-3" v-if="visualizarAutorizador">
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-select
               v-model="gasto.aut_especial"
@@ -403,10 +465,13 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar_detalle('detalle')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"/>
+                </q-btn>
+            </template>
             </q-select>
-            <q-btn color="positive" @click="recargar_detalle('detalle')"
-              ><q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"
-            /></q-btn>
+
           </div>
           <!-- Subdetalle-->
           <div class="col-12 col-md-3">
@@ -458,10 +523,13 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar_detalle('sub_detalle')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"/>
+                </q-btn>
+            </template>
             </q-select>
-            <q-btn color="positive" @click="recargar_detalle('sub_detalle')"
-              ><q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"
-            /></q-btn>
+
           </div>
           <!-- Kilometraje -->
           <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">
@@ -484,7 +552,7 @@
             </q-input>
           </div>
           <!-- Placa vehiculo -->
-          <div class="col-12 col-md-3"  v-if="esCombustibleEmpresa" >
+          <div class="col-12 col-md-3"  v-if="esCombustibleEmpresa ||  mostarPlaca" >
             <label class="q-mb-sm block">Placas</label>
             <q-select
               v-model="gasto.vehiculo"
@@ -498,6 +566,7 @@
               :readonly="disabled"
               :error="!!v$.vehiculo.$errors.length"
               @blur="v$.vehiculo.$touch"
+              @filter="filtrarVehiculos"
               error-message="Debes seleccionar una Tarea"
               use-input
               input-debounce="0"
@@ -603,6 +672,6 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./GastoPage.ts"></script>

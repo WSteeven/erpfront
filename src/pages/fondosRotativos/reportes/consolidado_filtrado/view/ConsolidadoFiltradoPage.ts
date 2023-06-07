@@ -20,6 +20,7 @@ import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestruct
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
   components: { TabLayout },
@@ -131,7 +132,6 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizacionesEspeciales = ref([])
     const tareas = ref([])
-    const filteredSubdetalles= []
     usuarios.value = listadosAuxiliares.usuarios
 
     cargarVista(async () => {
@@ -251,32 +251,33 @@ export default defineComponent({
         )
       })
     }
-    function filtrarTareas(val, update) {
-      if (consolidadofiltrado.proyecto == 0) {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == null
-          )
-        })
-        return
-      }
-      if (val === '') {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == consolidadofiltrado.proyecto
-          )
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tareas.value = listadosAuxiliares.tareas.filter(
-          (v) =>
-            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
-            v.detalle.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+/**Filtro de Tareas */
+function filtrarTareas(val, update) {
+  if (val === '') {
+    update(() => {
+      tareas.value = listadoTareas.value
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    tareas.value = listadoTareas.value.filter(
+      (v) =>
+        v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
+        v.titulo.toLowerCase().indexOf(needle) > -1
+    )
+  })
+}
+const listadoTareas = computed(() => {
+  if (consolidadofiltrado.proyecto == 0) {
+    return listadosAuxiliares.tareas.filter(
+      (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
+    )
+  }
+  return listadosAuxiliares.tareas.filter(
+    (tarea: Tarea) => tarea.proyecto_id === consolidadofiltrado.proyecto || tarea.id == 0
+  )
+})
     // - Filtro tipos Filtro
     function filtrarTiposFiltro(val, update) {
       switch (consolidadofiltrado.tipo_saldo) {

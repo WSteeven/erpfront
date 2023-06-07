@@ -164,9 +164,16 @@
             <!-- Fecha límite -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Fecha de nacimiento</label>
-              <q-input v-model="empleado.fecha_nacimiento" placeholder="Obligatorio"
-                :error="!!v$.fecha_nacimiento.$errors.length" @blur="v$.fecha_nacimiento.$touch"
-                :disable="disabled || soloLectura" :readonly="disabled || soloLectura" outlined dense>
+              <q-input
+                v-model="empleado.fecha_nacimiento"
+                placeholder="Obligatorio"
+                :error="!!v$.fecha_nacimiento.$errors.length"
+                @blur="v$.fecha_nacimiento.$touch"
+                :disable="disabled"
+                :readonly="disabled"
+                outlined
+                dense
+              >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -270,9 +277,17 @@
                 </div>
                 <!-- Coordenadas -->
                 <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Coordenadas del lugar donde vive</label>
-                  <q-input type="tel" v-model="empleado.coordenadas" placeholder="Opcional" :disable="disabled" outlined
-                    dense>
+                  <label class="q-mb-sm block"
+                    >Coordenadas del lugar donde vive</label
+                  >
+                  <q-input
+                    type="tel"
+                    v-model="empleado.coordenadas"
+                    placeholder="Opcional"
+                    :disable="disabled"
+                    outlined
+                    dense
+                  >
                   </q-input>
                 </div>
               </div>
@@ -304,14 +319,33 @@
                 </template>
               </q-select>
             </div>
-            <!-- Area -->
-            <div class="col-12 col-md-3 q-mb-md">
-              <label class="q-mb-sm block">Area</label>
-              <q-select v-model="empleado.area" :options="areas" transition-show="jump-up" transition-hide="jump-down"
-                :disable="disabled" options-dense dense outlined :input-debounce="0" use-input hint="Opcional"
-                :option-value="(v) => v.id" :option-label="(v) => v.nombre" emit-value map-options>
+
+  <!-- Area -->
+  <div class="col-12 col-md-3">
+    <label class="q-mb-sm block">Area</label>
+              <q-select
+                v-model="empleado.area"
+                :options="areas"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                use-input
+                input-debounce="0"
+                @filter="filtroDepartamentos"
+                :error="!!v$.area.$errors.length"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
                 <template v-slot:error>
-                  <div v-for="error of v$.area.$errors" :key="error.$uid">
+                  <div
+                    v-for="error of v$.area.$errors"
+                    :key="error.$uid"
+                  >
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -324,6 +358,48 @@
                 </template>
               </q-select>
             </div>
+
+
+
+            <!-- Departamento -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Departamento</label>
+              <q-select
+                v-model="empleado.departamento"
+                :options="opcionesDepartamentos"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                use-input
+                input-debounce="0"
+                @filter="filtroDepartamentos"
+                :error="!!v$.departamento.$errors.length"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.departamento.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
             <!--Cargo -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Cargo</label>
@@ -487,6 +563,14 @@
                   </div>
                 </template>
               </q-input>
+              <q-checkbox
+                class="q-mt-lg q-pt-md"
+                v-model="empleado.tiene_grupo"
+                label="Pertenece a un grupo técnico"
+                :disable="disabled"
+                outlined
+                dense
+              ></q-checkbox>
             </div>
 
             <!-- Grupo -->
