@@ -6,8 +6,8 @@
     :permitirEditar="false"
     :permitirEliminar="false"
     :tabOptions="tabOptionsEstadosTickets"
-    :filtrar="filtrarTarea"
-    :tabDefecto="estadosTickets.SIN_ASIGNAR"
+    :filtrar="filtrarTickets"
+    :tabDefecto="tabActual"
     :forzarListar="true"
     :accion1="btnAsignar"
     :accion2="btnReasignar"
@@ -97,48 +97,6 @@
               </q-input>
             </div>
 
-            <!-- Tipo de ticket -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Tipo de ticket</label>
-              <q-select
-                v-model="ticket.tipo_ticket"
-                :options="tiposTickets"
-                @filter="filtrarTiposTickets"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Obligatorio"
-                options-dense
-                dense
-                outlined
-                :disable="disabled"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                :error="!!v$.tipo_ticket.$errors.length"
-                @blur="v$.tipo_ticket.$touch"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_ticket.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
-            </div>
-
             <!-- Departamento -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Departamento que atenderá</label>
@@ -221,6 +179,48 @@
                 <template v-slot:error>
                   <div
                     v-for="error of v$.responsable.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-select>
+            </div>
+
+            <!-- Tipo de ticket -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Tipo de ticket</label>
+              <q-select
+                v-model="ticket.tipo_ticket"
+                :options="tiposTickets"
+                @filter="filtrarTiposTickets"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Obligatorio"
+                options-dense
+                dense
+                outlined
+                :disable="disabled"
+                :option-label="(item) => item.nombre"
+                :option-value="(item) => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                :error="!!v$.tipo_ticket.$errors.length"
+                @blur="v$.tipo_ticket.$touch"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.tipo_ticket.$errors"
                     :key="error.$uid"
                   >
                     <div class="error-msg">{{ error.$message }}</div>
@@ -344,6 +344,7 @@
                 :endpoint="endpoint"
                 :disable="disabled"
                 :permitir-eliminar="false"
+                :listar-al-guardar="false"
               ></archivo-seguimiento>
             </div>
           </div>
@@ -351,7 +352,11 @@
       </div>
     </template>
   </tab-layout-filter-tabs2>
-  <modales-entidad :comportamiento="modalesTicket" :mixin-modal="mixin" />
+  <modales-entidad
+    :comportamiento="modalesTicket"
+    :mixin-modal="mixin"
+    :accion="filtrarTickets"
+  />
 </template>
 
 <script src="./TicketPage.ts"></script>

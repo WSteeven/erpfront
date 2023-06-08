@@ -78,7 +78,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.tickets'),
       children: [
         {
-          title: 'Tickets',
+          title: 'Crear ticket',
           link: 'tickets',
           icon: 'bi-circle',
           can: store.can('puede.ver.tickets'),
@@ -97,7 +97,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Motivos de pausas',
-          link: 'motivos-pausas',
+          link: 'motivos-pausas-tickets',
           icon: 'bi-circle',
           can: store.can('puede.ver.motivos_pausas_tickets'),
         },
@@ -231,7 +231,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-circle',
-          can: store.esBodeguero || store.esContabilidad ||store.can('puede.ver.reportes_bodega'),
+          can: store.esBodeguero || store.esContabilidad || store.can('puede.ver.reportes_bodega'),
           children: [
             {
               title: 'Reporte de ingresos',

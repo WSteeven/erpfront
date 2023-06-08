@@ -4,7 +4,7 @@ import { configuracionColumnasClientes } from 'sistema/clientes/domain/configura
 import { tabOptionsEstadosTickets, tiposPrioridades, estadosTickets } from 'config/tickets.utils'
 import { configuracionColumnasTicket } from '../domain/configuracionColumnasTicket'
 import { useNotificaciones } from 'shared/notificaciones'
-import { accionesTabla, maskFecha } from 'config/utils'
+import { accionesTabla, maskFecha, rolesSistema } from 'config/utils'
 import { required } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
 import { defineComponent, ref } from 'vue'
@@ -106,6 +106,7 @@ export default defineComponent({
     const horaLimite = ref()
     let tiempoActualInterval = setInterval(() => fechaHoraActual.value = obtenerFechaHoraActual(), 1000)
     const modalesTicket = new ComportamientoModalesTicket()
+    const tabActual = ref()
 
     /*************
     * Validaciones
@@ -143,20 +144,26 @@ export default defineComponent({
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', departamento_id: departamento }
+          params: { departamento_id: departamento, rol: rolesSistema.coordinador }
+          // params: { campos: 'id,nombres,apellidos', departamento_id: departamento, rol: rolesSistema.coordinador }
         },
       })
       empleados.value = listadosAuxiliares.empleados
     }
 
-    function subirArchivos(id: number) {
-      refArchivoTicket.value.subir({ ticket_id: id })
+    async function subirArchivos(id: number) {
+      await refArchivoTicket.value.subir({ ticket_id: id })
+      // refArchivoTicket.value.limpiarListado()
     }
 
-    function filtrarTarea(tab: string) {
+    function filtrarTickets(tab: string) {
       listar({ estado: tab })
+      tabActual.value = tab
+      console.log('filtarr aqui...')
+      console.log(tab)
     }
 
+    filtrarTickets(estadosTickets.ASIGNADO)
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
@@ -188,6 +195,7 @@ export default defineComponent({
 
     onGuardado((id: number) => {
       subirArchivos(id)
+      // refArchivoTicket.value.limpiarListado()
       emit('cerrar-modal', false)
     })
 
@@ -201,6 +209,7 @@ export default defineComponent({
       horaLimite.value = null
       tiempoActualInterval = setInterval(() => fechaHoraActual.value = obtenerFechaHoraActual(), 1000)
       refArchivoTicket.value.limpiarListado()
+      refArchivoTicket.value.quiero_subir_archivos = false
     })
 
     return {
@@ -222,7 +231,7 @@ export default defineComponent({
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
       tabOptionsEstadosTickets,
       maskFecha,
-      filtrarTarea,
+      filtrarTickets,
       filtrarDepartamentos,
       filtrarEmpleados,
       filtrarTiposTickets,
@@ -241,6 +250,7 @@ export default defineComponent({
       estadosTickets,
       modalesTicket,
       obtenerResponsables,
+      tabActual,
     }
   },
 })

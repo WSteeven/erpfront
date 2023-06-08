@@ -12,11 +12,21 @@
   <!-- ASIGNADO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.ASIGNADO"
-    :class="{ 'bg-purple-1': !$q.dark.isActive }"
-    class="text-purple q-mx-none"
+    :class="{ 'bg-blue-grey-1': !$q.dark.isActive }"
+    class="text--blue-grey-5 q-mx-none"
   >
-    <q-icon name="bi-circle-fill" color="purple-5" class="q-mr-xs"></q-icon
+    <q-icon name="bi-circle-fill" color="blue-grey-5" class="q-mr-xs"></q-icon
     >{{ estadosTrabajos.ASIGNADO }}
+  </q-chip>
+
+  <!-- REASIGNADO -->
+  <q-chip
+    v-if="props.propsTable.value === estadosTickets.REASIGNADO"
+    :class="{ 'bg-blue-grey-1': !$q.dark.isActive }"
+    class="text--blue-grey-5 q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="blue-grey-5" class="q-mr-xs"></q-icon
+    >{{ estadosTickets.REASIGNADO }}
   </q-chip>
 
   <!-- AGENDADO -->
@@ -32,18 +42,18 @@
   <!-- EJECUTANDO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.EJECUTANDO"
-    :class="{ 'bg-blue-1': !$q.dark.isActive }"
-    class="text-blue q-mx-none"
+    :class="{ 'bg-yellow-1': !$q.dark.isActive }"
+    class="text-warning q-mx-none"
   >
-    <q-icon name="bi-circle-fill" color="blue" class="q-mr-xs"></q-icon
+    <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
     >{{ estadosTrabajos.EJECUTANDO }}
   </q-chip>
 
   <!-- PAUSADO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.PAUSADO"
-    :class="{ 'bg-grey-3': !$q.dark.isActive }"
-    class="q-mx-none"
+    :class="{ 'bg-grey-2': !$q.dark.isActive }"
+    class="text-grey-8 q-mx-none"
   >
     <q-icon name="bi-circle-fill" color="grey-6" class="q-mr-xs"></q-icon
     >{{ estadosTrabajos.PAUSADO }}
@@ -82,6 +92,15 @@
     >{{ estadosTrabajos.CANCELADO }}
   </q-chip>
 
+  <!-- RECHAZADO -->
+  <q-chip
+    v-if="props.propsTable.value === estadosTickets.RECHAZADO"
+    class="bg-red-1 text-red q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="red" class="q-mr-xs"></q-icon
+    >{{ estadosTickets.RECHAZADO }}
+  </q-chip>
+
   <!-- REALIZADO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.REALIZADO"
@@ -104,6 +123,7 @@
 </template>
 
 <script setup>
+import { estadosTickets } from 'config/tickets.utils'
 import { estadosTrabajos } from 'config/utils'
 
 const props = defineProps({

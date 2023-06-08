@@ -187,4 +187,5 @@ export const endpoints = {
   motivos_pausas_tickets: new Endpoint('tickets/motivos-pausas-tickets'),
   motivos_cancelados_tickets: new Endpoint('tickets/motivos-cancelados-tickets'),
   cambiar_responsable_ticket: new Endpoint('tickets/tickets/cambiar-responsable'),
+  actividades_realizadas_seguimientos_tickets: new Endpoint('tickets/actividades-realizadas-seguimientos-tickets'),
 }

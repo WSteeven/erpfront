@@ -16,7 +16,7 @@ export class CambiarEstadoTicket {
     return await this.solicitud('/asignar', id)
   }
 
-  async ejecutar(id: number, data: UnwrapRef<any>) {
+  async ejecutar(id: number, data?: UnwrapRef<any>) {
     return this.solicitud('/ejecutar', id, data)
   }
 
@@ -28,12 +28,16 @@ export class CambiarEstadoTicket {
     return this.solicitud('/pausar', id, movilizacion)
   }
 
-  async reanudar(id: number, movilizacion: any) {
-    return this.solicitud('/reanudar', id, movilizacion)
+  async reanudar(id: number, data?: any) {
+    return this.solicitud('/reanudar', id, data)
   }
 
   async cancelar(id: number, idMotivoCancelado: number) {
     return this.solicitud('/cancelar', id, { motivo_cancelado_ticket_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
+  }
+
+  async rechazar(id: number) {
+    return this.solicitud('/rechazar', id)
   }
 
   async solicitud(accion, id, data?: UnwrapRef<any>) {
