@@ -7,6 +7,8 @@ import { useVuelidate } from '@vuelidate/core';
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
@@ -27,7 +29,7 @@ import { DepartamentoController } from '../modules/departamentos/infraestructure
 
 
 export default defineComponent({
-  components: { TabLayout, LabelAbrirModal, ModalesEntidad },
+  components: { TabLayout, LabelAbrirModal, ModalesEntidad, TablaDevolucionProducto, EssentialTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(Proveedor, new ProveedorController())
     const { entidad: proveedor, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
@@ -88,6 +90,7 @@ export default defineComponent({
     }
     const {
       parroquias, filtrarParroquias,
+      empresas, filtrarEmpresas
 
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -111,6 +114,7 @@ export default defineComponent({
       opciones_tipo_negocio,
       opciones_empresas,
       parroquias, filtrarParroquias,
+      empresas, filtrarEmpresas,
 
       //modal
       modales,

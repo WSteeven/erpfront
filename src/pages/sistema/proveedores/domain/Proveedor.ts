@@ -1,4 +1,5 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { Ref, ref } from "vue";
 
 export class Proveedor extends EntidadAuditable {
   empresa: number | null
@@ -11,6 +12,11 @@ export class Proveedor extends EntidadAuditable {
   celular: string | null
   telefono: string | null
 
+  //arrays de relaciones muchos a muchos
+  tipos_ofrece: Ref<any[]>
+  categorias_ofrece: Ref<any[]>
+  departamentos: Ref<any[]>
+
   constructor() {
     super()
     this.empresa = null
@@ -22,5 +28,8 @@ export class Proveedor extends EntidadAuditable {
     this.direccion = null
     this.celular = null
     this.telefono = null
+    this.tipos_ofrece= ref([])
+    this.categorias_ofrece= ref([])
+    this.departamentos= ref([])
   }
 }

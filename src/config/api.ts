@@ -35,14 +35,14 @@ export const endpoints = {
   provincias: new Endpoint('provincias'),
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
-  
+
   // Modulo de RR HH
   cargos: new Endpoint('cargos'),
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
-  
+
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),
@@ -52,7 +52,8 @@ export const endpoints = {
   //Modulo de compras y proveedores
   empresas: new Endpoint('empresas'),
   proveedores: new Endpoint('proveedores'),
-  ofertas_proveedores: new Endpoint('compras/ofertas_proveedores'),
+  contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
+  ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),

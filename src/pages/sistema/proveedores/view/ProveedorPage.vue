@@ -23,13 +23,16 @@
               <label v-else class="q-mb-sm block">Empresa</label>
               <q-select
                 v-model="proveedor.empresa"
-                :options="opciones_empresas"
+                :options="empresas"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
                 options-dense
                 dense
                 outlined
+                use-input
+                input-debounce="0"
+                @filter="filtrarEmpresas"
                 @update:model-value="obtenerEmpresa"
                 :error="!!v$.empresa.$errors.length"
                 hint="Agrega elementos desde el panel de empresas"
@@ -232,18 +235,6 @@
                 </template>
               </q-select>
             </div>
-            <!-- Direccion  -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Dirección</label>
-              <q-input
-                v-model="proveedor.direccion"
-                placeholder="Obligatorio"
-                :disable="disabled"
-                outlined
-                dense
-              >
-              </q-input>
-            </div>
             <!-- Celular  -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Celular</label>
@@ -269,7 +260,18 @@
               >
               </q-input>
             </div>
-
+            <!-- Direccion  -->
+            <div class="col-12 col-md-6">
+              <label class="q-mb-sm block">Dirección</label>
+              <q-input
+                v-model="proveedor.direccion"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
             <!-- Estado -->
             <div class="col-12 col-md-3">
               <label>Estado</label> <br />
@@ -283,6 +285,23 @@
               />
             </div>
           </div>
+          <!-- Contactos financiero y tecnico -->
+          <essential-table
+            titulo="Contactos del proveedor"
+            :configuracionColumnas="configuracionColumnas"
+            :datos="data"
+            :accion1Header="addRow"
+            :permitirBuscar="false"
+            :permitirConsultar="false"
+            :permitirEditar="true"
+            :permitirEliminar="true"
+            @eliminar="eliminar"
+            :mostrarBotones="false"
+            :permitirEditarModal="true"
+            :modalMaximized="false"
+            :alto-fijo="altoFijo"
+            :mostrarFooter="mostrarFooter"
+          ></essential-table>
         </q-expansion-item>
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
@@ -391,8 +410,10 @@
                 dense
                 use-chips
                 outlined
+                hint="Dept. Contable califica a todos los proveedores"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
+                :option-disable="(v) => v.nombre === 'CONTABILIDAD'"
                 emit-value
                 map-options
                 ><template
@@ -419,6 +440,19 @@
                   </q-item>
                 </template>
               </q-select>
+            </div>
+            <!-- Departamentos -->
+            <div class="col-12 col-md-3" v-if="false">
+              <label>Departamentos calificadores</label>
+              <q-option-group
+                :options="
+                  departamentos.map((v) => {
+                    return { label: v.nombre, value: v.id }
+                  })
+                "
+                type="checkbox"
+                v-model="proveedor.departamentos"
+              />
             </div>
           </div>
         </q-expansion-item>
