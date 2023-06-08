@@ -16,6 +16,8 @@ export class RolPago extends EntidadAuditable {
   bono_recurente: number | null
   ingreso: number | null
   egreso: number | null
+  horas_extra_tipo: number | null
+  horas_extra_subtipo: number | null
   total: number | null
   ingresos: any | null
   egresos: any | null
@@ -37,6 +39,8 @@ export class RolPago extends EntidadAuditable {
     this.total_egreso = null
     this.bonificacion = null
     this.bono_recurente = null
+    this.horas_extra_tipo = null
+    this.horas_extra_subtipo = null
     this.total = null
     this.ingresos  = null
     this.egresos = null

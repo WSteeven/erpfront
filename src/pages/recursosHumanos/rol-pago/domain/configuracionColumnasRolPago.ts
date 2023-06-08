@@ -24,6 +24,13 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   sortable: true
 },
 {
+  name: 'ingresos',
+  field: 'ingresos',
+  label: 'Ingresos',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'total_egreso',
   field: 'total_egreso',
   label: 'Total Egreso',

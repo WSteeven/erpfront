@@ -91,9 +91,7 @@
               outlined
               :disable="disabled "
               :readonly="disabled"
-              :error="!!v$.concepto_ingreso.$errors.length"
               @update:model-value="verificar_concepto_ingreso"
-              error-message="Debe seleccionar un concepto"
               :option-label="(v) => v.nombre"
                   :option-value="(v) => v.id"
               emit-value
@@ -114,13 +112,42 @@
                     </q-item-section>
                   </q-item>
                 </template>
-              <template v-slot:error>
-                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-select>
             </div>
+          <!-- Tipos de Horas Extras -->
+          <div class="col-12 col-md-3" v-if="rolpago.concepto_ingreso==2">
+            <label class="q-mb-sm block">Tipo de Hora Extra</label>
+            <q-select v-model="rolpago.horas_extra_tipo" :options="horas_extras_tipos" transition-show="jump-up"
+              transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled" use-input
+              input-debounce="0" @filter="filtrarHorasExtrasTipo" :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre" emit-value
+              map-options>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+           <!-- Sub Tipos de Horas Extras -->
+           <div class="col-12 col-md-3" v-if="rolpago.horas_extra_tipo !== null ">
+            <label class="q-mb-sm block">Sub Tipo de Hora Extra</label>
+            <q-select v-model="rolpago.horas_extra_subtipo" :options="horas_extras_subtipos" transition-show="jump-up"
+              transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled" use-input
+              input-debounce="0" @filter="filtrarHorasExtrasSubTipo" :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre" emit-value
+              map-options>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
             <!---Campo-->
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Valor</label>
@@ -147,7 +174,7 @@
             <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Descuento de Ley</label>
               <q-select v-model="rolpago.descuento_ley" :options="descuentos_ley" transition-show="jump-up"
-                transition-hide="jump-down" options-dense dense outlined :disable="disabled ||!es_seleccionable_descuento_ley" :readonly="disabled"
+                transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
                 @update:model-value="verificar_descuento_ley"
                 use-input input-debounce="0" :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre" emit-value map-options>
@@ -164,7 +191,7 @@
               <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Descuentos Generales</label>
               <q-select v-model="rolpago.descuento_general" :options="descuentos_generales" transition-show="jump-up"
-                transition-hide="jump-down" options-dense dense outlined :disable="disabled ||!es_seleccionable_descuento_general" :readonly="disabled"
+                transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
                 @update:model-value="verificar_descuento_general"
                 use-input input-debounce="0" :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre" emit-value map-options>
@@ -181,7 +208,7 @@
               <div class="col-12 col-md-3" v-if="!es_consultado">
               <label class="q-mb-sm block">Multa</label>
               <q-select v-model="rolpago.multa" :options="multas" transition-show="jump-up"
-                transition-hide="jump-down" options-dense dense outlined :disable="disabled ||!es_seleccionable_multa" :readonly="disabled"
+                transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
                 @update:model-value="verificar_multa"
                 use-input input-debounce="0" :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre" emit-value map-options>
@@ -200,17 +227,13 @@
               <q-input v-model="rolpago.egreso" placeholder="Obligatorio" type="number" :disable="disabled ||es_calculable" outlined
                 dense>
                 <template v-slot:append v-if="!es_calculable">
-                  <q-btn round dense flat icon="add" @click="aniadir_egreso" />
+                  <q-btn round dense flat icon="add" @click="aniadirEgreso" />
                 </template>
               </q-input>
             </div>
           </div>
         </q-expansion-item>
       </q-form>
-      <essential-table v-if="rolpago.roles.length > 0" titulo="Listado de Roles"
-        :configuracionColumnas="[...configuracionColumnasRolPagoTabla, accionesTabla]" :datos="rolpago.roles"
-        :permitirConsultar="false" :permitirEditar="false" :permitirEliminar="false">
-      </essential-table>
     </template>
   </tab-layout>
 </template>

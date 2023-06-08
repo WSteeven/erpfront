@@ -56,6 +56,8 @@ export const endpoints = {
   prestamos_quirorafario_empleado: new Endpoint('recursos-humanos/prestamos_quirorafario_empleado'),
   prestamos_hipotecario_empleado: new Endpoint('recursos-humanos/prestamos_hipotecario_empleado'),
   extension_covertura_salud_empleado: new Endpoint('recursos-humanos/extension_covertura_salud_empleado'),
+  horas_extras_tipo: new Endpoint('recursos-humanos/horas_extras_tipo'),
+  horas_extras_subtipo: new Endpoint('recursos-humanos/horas_extras_subtipo'),
 
 
   //Modulo de Vehiculos
