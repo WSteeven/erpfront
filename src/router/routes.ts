@@ -437,6 +437,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/criterios-calificaciones',
+        name: 'criterios_calificaciones',
+        component: () =>
+          import('pages/comprasProveedores/criteriosCalificaciones/view/CriterioCalificacionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: 'logs-contactos-proveedores',
         name: 'log_contactos_proveedores',
         component: () =>

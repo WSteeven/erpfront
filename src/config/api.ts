@@ -53,6 +53,7 @@ export const endpoints = {
   empresas: new Endpoint('empresas'),
   proveedores: new Endpoint('proveedores'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
+  criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),
 
@@ -185,7 +186,6 @@ export const endpoints = {
   /********************
   * Modulo de tickets
   *********************/
-  departamentos: new Endpoint('recursos-humanos/departamentos'),
   tickets: new Endpoint('tickets/tickets'),
   tipos_tickets: new Endpoint('tickets/tipos-tickets'),
   archivos_tickets: new Endpoint('tickets/archivos-tickets'),

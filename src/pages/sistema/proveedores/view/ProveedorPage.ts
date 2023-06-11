@@ -137,6 +137,7 @@ export default defineComponent({
     //llenar listados
     parroquias.value = listadosAuxiliares.parroquias
     categorias.value = listadosAuxiliares.categorias
+    empresas.value = listadosAuxiliares.empresas
     departamentos.value = listadosAuxiliares.departamentos
     ofertas.value = listadosAuxiliares.ofertas
 

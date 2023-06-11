@@ -435,6 +435,7 @@
                     <q-item-section>
                       {{ opt.nombre }}
                       <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                      <q-item-label caption>{{ opt.responsable }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
                       <q-toggle

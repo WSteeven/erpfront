@@ -166,7 +166,7 @@
               <q-input
                 mask="##########"
                 v-model="contacto.celular"
-                placeholder="Opcional"
+                placeholder="Obligatorio"
                 :disable="disabled"
                 :error="!!v$.celular.$errors.length"
                 outlined

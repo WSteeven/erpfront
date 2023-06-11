@@ -482,6 +482,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_compras') || store.esAdministrador,
       children: [
         {
+          title: 'Criterios de calificacion de proveedores',
+          link: 'criterios-calificaciones',
+          icon: 'bi-list-check',
+          can: store.can('puede.ver.criterios_calificaciones')  || store.esAdministrador,
+        },
+        {
           title: 'Empresas',
           link: 'empresas',
           icon: 'bi-building-fill-gear',

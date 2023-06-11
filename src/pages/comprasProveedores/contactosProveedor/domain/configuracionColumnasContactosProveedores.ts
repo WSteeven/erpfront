@@ -1,6 +1,5 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { ContactoProveedor } from "./ContactoProveedor";
-import { opciones_tipo_contacto } from "config/utils_compras_proveedores";
 
 export const configuracionColumnasContactosProveedores: ColumnConfig<ContactoProveedor>[]=[
   {

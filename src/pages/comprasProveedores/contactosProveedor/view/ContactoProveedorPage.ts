@@ -21,7 +21,6 @@ import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { ComportamientoModalesContactosProveedor } from "../application/ComportamientoModalesContactosProveedor";
 import { useContactoProveedorStore } from "stores/comprasProveedores/contactoProveedor";
 
-//Logica y controladores
 
 export default defineComponent({
     components: { TabLayout, ModalEntidad, },
