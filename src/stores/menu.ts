@@ -517,6 +517,25 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-boxes',
           can: store.can('puede.ver.proveedores') || store.esAdministrador,
         },
+        {
+          title: 'Contactos de Proveedores',
+          link: 'contactos-proveedores',
+          icon: 'bi-person-fill-add',
+          can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
+        },
+        {
+          title: 'Logs',
+          icon: 'bi-file-text',
+          can: true,
+          children: [
+            {
+              title: 'Contactos de Proveedores',
+              link: 'logs-contactos-proveedores',
+              icon: 'bi-person-fill-add',
+              can: true,
+            }
+          ]
+        }
       ]
     },
     {

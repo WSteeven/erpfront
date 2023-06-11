@@ -290,6 +290,7 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion1Header.titulo }}</span>
+          <q-tooltip class="bg-dark">{{accion1Header.tooltip}}</q-tooltip>
         </q-btn>
 
         <!-- Boton 2 Header -->

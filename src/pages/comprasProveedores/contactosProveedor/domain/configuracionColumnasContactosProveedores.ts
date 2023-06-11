@@ -1,11 +1,19 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { ContactoProveedor } from "./ContactoProveedor";
+import { opciones_tipo_contacto } from "config/utils_compras_proveedores";
 
 export const configuracionColumnasContactosProveedores: ColumnConfig<ContactoProveedor>[]=[
   {
-    name: 'nombres_completos',
-    field: 'nombres_completos',
-    label: 'Nombres y Apellidos',
+    name: 'nombres',
+    field: 'nombres',
+    label: 'Nombres',
+    align: 'left',
+    sortable: true
+},
+  {
+    name: 'apellidos',
+    field: 'apellidos',
+    label: 'Apellidos',
     align: 'left',
     sortable: true
 },
@@ -14,7 +22,8 @@ export const configuracionColumnasContactosProveedores: ColumnConfig<ContactoPro
     field: 'proveedor',
     label: 'Proveedor',
     align: 'left',
-    sortable: true
+    sortable: true,
+    editable:false,
 },
 {
     name: 'tipo_contacto',

@@ -54,6 +54,7 @@ export const endpoints = {
   proveedores: new Endpoint('proveedores'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
+  log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),

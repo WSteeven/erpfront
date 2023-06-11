@@ -2,8 +2,8 @@ import { TransaccionSimpleController } from "shared/contenedor/modules/simple/in
 import { ContactoProveedor } from "../domain/ContactoProveedor";
 import { endpoints } from "config/api";
 
-export class ContactoProveedorController extends TransaccionSimpleController<ContactoProveedor>{
+export class ContactoProveedorLogController extends TransaccionSimpleController<ContactoProveedor>{
     constructor(){
-        super(endpoints.contactos_proveedores)
+        super(endpoints.log_contactos_proveedores)
     }
 }

@@ -11,6 +11,7 @@ export class Proveedor extends EntidadAuditable {
   direccion: string | null
   celular: string | null
   telefono: string | null
+  contactos: Ref<any[]>
 
   //arrays de relaciones muchos a muchos
   tipos_ofrece: Ref<any[]>
@@ -28,6 +29,7 @@ export class Proveedor extends EntidadAuditable {
     this.direccion = null
     this.celular = null
     this.telefono = null
+    this.contactos= ref([])
     this.tipos_ofrece= ref([])
     this.categorias_ofrece= ref([])
     this.departamentos= ref([])

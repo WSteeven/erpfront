@@ -284,24 +284,36 @@
                 unchecked-icon="clear"
               />
             </div>
+            <!-- Contactos financiero y tecnico -->
+            <div class="col-12 col-md-12">
+              <q-expansion-item
+                class="overflow-hidden q-mb-md expansion"
+                label="Contactos del proveedor"
+                header-class="text-bold bg-header-collapse"
+              >
+                <div class="row q-col-gutter-sm q-pa-sm">
+                  <div class="col-12 col-md-12">
+                    <essential-table
+                      ref="refContactos"
+                      titulo="Contactos del proveedor"
+                      :configuracionColumnas="columnasContactosProveedor"
+                      :datos="proveedor.contactos"
+                      :accion1Header="abrirModalContacto"
+                      :permitirBuscar="false"
+                      :permitirConsultar="false"
+                      :permitirEditar="true"
+                      :permitirEliminar="true"
+                      :mostrarBotones="false"
+                      :permitirEditarModal="true"
+                      :modalMaximized="false"
+                      :alto-fijo="false"
+                      :mostrarFooter="mostrarFooter"
+                    ></essential-table>
+                  </div>
+                </div>
+              </q-expansion-item>
+            </div>
           </div>
-          <!-- Contactos financiero y tecnico -->
-          <essential-table
-            titulo="Contactos del proveedor"
-            :configuracionColumnas="configuracionColumnas"
-            :datos="data"
-            :accion1Header="addRow"
-            :permitirBuscar="false"
-            :permitirConsultar="false"
-            :permitirEditar="true"
-            :permitirEliminar="true"
-            @eliminar="eliminar"
-            :mostrarBotones="false"
-            :permitirEditarModal="true"
-            :modalMaximized="false"
-            :alto-fijo="altoFijo"
-            :mostrarFooter="mostrarFooter"
-          ></essential-table>
         </q-expansion-item>
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
