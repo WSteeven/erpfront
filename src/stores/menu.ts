@@ -24,23 +24,15 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-ui-checks-grid',
       can: true,//store.esTecnicoLider,// store.can('puede.ver.trabajo_asignado'),
     },
-    /* {
-      title: 'Reportes control de materiales',
-      link: 'reportes-control-materiales',
-      icon: 'bi-table',
-      can: store.can('puede.ver.reportes_control_materiales'),
-    }, */
-    /* {
-      title: 'Tablero',
-      icon: 'bi-layers-fill',
-      link: '/admin',
-    }, */
     {
       title: 'Notificaciones',
       icon: 'bi-bell-fill',
       link: 'notificaciones',
       can: true
     },
+    /*******************
+     * Modulo de tareas
+     *******************/
     {
       title: 'Proyectos y tareas',
       icon: 'bi-pin-angle-fill',
@@ -64,80 +56,58 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.tareas'),
         },
-        /* {
-          title: 'Control de tareas',
-          link: 'hoja-control-trabajos',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.hoja_control_trabajos'),
-        }, */
         {
           title: 'Movilización entre trabajos',
           link: 'reporte-movilizacion-subtarea',
           icon: 'bi-circle',
           can: store.can('puede.ver.reporte_movilizacion_subtarea'),
         },
-        /* {
-          title: 'Informes',
-          link: 'informes',
-          icon: 'bi-circle',
-        },
-        {
-          title: 'Control diario de materiales',
-          link: 'control-diario-materiales',
-          icon: 'bi-circle',
-        }, */
-        // {
-        //   title: 'Control de cambios',
-        //   link: 'control-cambios',
-        //   icon: 'bi-circle',
-        // },
-        /* {
-          title: 'Control de asistencia',
-          link: 'control-asistencia',
-          icon: 'bi-person-check',
-        }, */
         {
           title: 'Clientes finales',
           link: 'clientes-finales',
           icon: 'bi-circle',
         },
-        /*{
-          title: 'Reportes',
-          icon: 'bi-circle',
-          children: [
-            {
-              title: 'Control de materiales diario',
-              link: 'reportes-control-materiales',
-              icon: 'bi-dash',
-              can: store.can('puede.ver.reportes_control_materiales'),
-            },
-            {
-              title: 'Movilización entre trabajos',
-              link: 'reporte-movilizacion-subtarea',
-              icon: 'bi-dash',
-              can: store.can('puede.ver.reporte_movilizacion_subtarea'),
-            },
-            // {
-            //   title: 'Resumen de tendidos',
-            //   link: 'reportes-control-tendidos',
-            //   icon: 'bi-dash',
-            //   can: store.can('puede.ver.reportes_control_tendidos'),
-            // },
-             {
-              title: 'Control de tendidos',
-              link: 'reportes-control-tendidos',
-              icon: 'bi-dash',
-              can: store.can('puede.ver.reportes_control_tendidos'),
-            },
-            {
-              title: 'Trabajos realizados',
-              link: 'reporte-trabajos-realizados',
-              icon: 'bi-dash',
-              can: store.can('puede.ver.reporte_trabajos_realizados'),
-            },
-          ],
-        },*/
       ],
+    },
+    /********************
+     * Modulo de tickets
+     ********************/
+    {
+      title: 'Tickets',
+      icon: 'bi-ticket-perforated-fill',
+      can: store.can('puede.ver.tickets'),
+      children: [
+        {
+          title: 'Crear ticket',
+          link: 'tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.tickets'),
+        },
+        {
+          title: 'Tickets asignados',
+          link: 'tickets-asignados',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.tickets_asignados'),
+        },
+        {
+          title: 'Tipos de tickets',
+          link: 'tipos-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.tipos_tickets'),
+        },
+        {
+          title: 'Motivos de pausas',
+          link: 'motivos-pausas-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.motivos_pausas_tickets'),
+        },
+        {
+          title: 'Motivos de cancelaciones',
+          link: 'motivos-cancelados-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.motivos_cancelados_tickets'),
+        },
+      ]
     },
     /**
      * Modulo de bodega.
@@ -452,7 +422,13 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.cargos'),
         },
         {
-          title: 'Grupos',
+          title: 'Departamentos',
+          link: 'departamentos',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.departamentos'),
+        },
+        {
+          title: 'Grupos técnicos',
           link: 'grupos',
           icon: 'bi-circle',
           can: store.can('puede.ver.grupos'),

@@ -104,6 +104,7 @@ export function useNotificaciones() {
         model: config.defecto,
         // inline: true
         items: config.items,
+        isValid: val => !!val,
       },
     })
       .onOk((data) => {

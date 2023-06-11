@@ -112,6 +112,7 @@ export default defineComponent({
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
             -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
+          || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
         return false
@@ -145,7 +146,7 @@ export default defineComponent({
       return cantidad
     })
     const mostarPlaca = computed(() => {
-      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16
+      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 || parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
         ? true
         : false
     })
@@ -186,6 +187,9 @@ export default defineComponent({
         minLength: minLength(cantidadPermitidaFactura),
         required: requiredIf(() => esFactura.value),
       },
+      /*beneficiarios: {
+        required: required
+      },*/
       aut_especial: {
         required: requiredIf(() => visualizarAutorizador.value),
       },
@@ -234,6 +238,7 @@ export default defineComponent({
     const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
     const vehiculos = ref([])
+    const beneficiarios = ref([])
 
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -261,6 +266,13 @@ export default defineComponent({
             estado: 1,
           },
         },
+        beneficiarios: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+          },
+        },
         vehiculos: {
           controller: new VehiculoController(),
           params: {
@@ -270,6 +282,7 @@ export default defineComponent({
       })
       autorizacionesEspeciales.value =
         listadosAuxiliares.autorizacionesEspeciales
+        beneficiarios.value = listadosAuxiliares.beneficiarios
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
@@ -310,6 +323,23 @@ export default defineComponent({
         autorizacionesEspeciales.value =
           listadosAuxiliares.autorizacionesEspeciales.filter(
             (v) => v.usuario.toLowerCase().indexOf(needle) > -1
+          )
+      })
+    }
+    //filtro beneficiarios
+    function filtrarBeneficiarios(val, update) {
+      if (val === '') {
+        update(() => {
+          beneficiarios.value =
+            listadosAuxiliares.beneficiarios
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        beneficiarios.value =
+          listadosAuxiliares.beneficiarios.filter(
+            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
@@ -630,6 +660,7 @@ export default defineComponent({
       mascaraFactura,
       listadosAuxiliares,
       listadoSubdetalles,
+      beneficiarios,
       mostrarListado,
       mostarPlaca,
       listadoTareas,

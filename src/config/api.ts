@@ -104,9 +104,9 @@ export const endpoints = {
   reporte_inventario: new Endpoint('reporte-inventario'),
   kardex: new Endpoint('kardex'),
 
-
-
-  // Modulo de tareas
+  /********************
+  * Modulo de tareas
+  *********************/
   proyectos: new Endpoint('tareas/proyectos'),
   tareas: new Endpoint('tareas/tareas'),
   subtareas: new Endpoint('tareas/subtareas'),
@@ -129,11 +129,8 @@ export const endpoints = {
   designar_secretario_grupo: new Endpoint('tareas/designar-secretario-grupo'),
   archivos_subtareas: new Endpoint('tareas/archivos-subtareas'),
   archivos_seguimientos: new Endpoint('tareas/archivos-seguimientos'),
-  // materiales_despachados: new Endpoint('tareas/transacciones-egresos/materiales-despachados'),
-  // materiales_despachados_sin_bobina: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado_tarea: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado: new Endpoint('tareas/materiales-empleado'),
-  // bobinas_empleado_tarea: new Endpoint('tareas/bobinas-empleado-tarea'),
   registros_tendidos: new Endpoint('tareas/registros-tendidos'),
   reportes_control_materiales: new Endpoint('tareas/reportes-control-materiales'),
   resumen_tendidos: new Endpoint('tareas/resumen-tendidos'),
@@ -166,7 +163,7 @@ export const endpoints = {
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
   lista_usuarios: new Endpoint('lista-usuarios'),
   fondo_rotativo_fecha_excel: new Endpoint('fondos-rotativos/reporte/fecha/excel'),
-  fondo_rotativo_fecha_pdf:   new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
+  fondo_rotativo_fecha_pdf: new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
   fondo_rotativo_autorizaciones_fecha_pdf: new Endpoint('fondos-rotativos/autorizaciones_fecha/pdf'),
   fondo_rotativo_autorizaciones_fecha_excel: new Endpoint('fondos-rotativos/autorizaciones_fecha/excel'),
   consolidado_pdf: new Endpoint('fondos-rotativos/consolidado/pdf'),
@@ -176,7 +173,6 @@ export const endpoints = {
   autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
   autorizaciones_transferencia: new Endpoint('fondos-rotativos/autorizaciones_transferencia'),
 
-
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
@@ -185,4 +181,17 @@ export const endpoints = {
   reporte_solicitud_fondo_pdf: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/pdf'),
   reporte_solicitud_fondo_excel: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/excel'),
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
+
+  /********************
+  * Modulo de tickets
+  *********************/
+  departamentos: new Endpoint('recursos-humanos/departamentos'),
+  tickets: new Endpoint('tickets/tickets'),
+  tipos_tickets: new Endpoint('tickets/tipos-tickets'),
+  archivos_tickets: new Endpoint('tickets/archivos-tickets'),
+  archivos_seguimientos_tickets: new Endpoint('tickets/archivos-seguimientos-tickets'),
+  motivos_pausas_tickets: new Endpoint('tickets/motivos-pausas-tickets'),
+  motivos_cancelados_tickets: new Endpoint('tickets/motivos-cancelados-tickets'),
+  cambiar_responsable_ticket: new Endpoint('tickets/tickets/cambiar-responsable'),
+  actividades_realizadas_seguimientos_tickets: new Endpoint('tickets/actividades-realizadas-seguimientos-tickets'),
 }

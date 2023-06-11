@@ -2,49 +2,73 @@
   <essential-table
     ref="refTrabajos"
     titulo="Cronología de trabajos realizados"
-    :configuracionColumnas="columnasTrabajoRealizado"
+    :configuracionColumnas="columnas"
     :datos="trabajoRealizado"
     :alto-fijo="false"
     :permitirConsultar="false"
+    :permitirEditar="false"
+    :permitirEliminar="false"
     :permitir-buscar="false"
     :permitirEditarModal="true"
     :mostrarFooter="!trabajoRealizado.length"
     separador="cell"
     :accion1Header="agregarActividadRealizada"
+    :accion1="accion1"
     @eliminar="eliminarTrabajoRealizado"
     :modalMaximized="$q.screen.xs"
-    :entidad="TrabajoRealizado"
+    :entidad="entidad"
+    :editarFilaLocal="editarFilaLocal"
+    @guardarFila="(fila) => emit('guardar-fila', fila)"
   ></essential-table>
 </template>
 
 <script lang="ts" setup>
 // Dependencias
-import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { obtenerTiempoActual } from 'shared/utils'
 import { accionesTabla } from 'config/utils'
 import { Ref, ref, watchEffect } from 'vue'
 
-// Componentes
-import TrabajoRealizado from '../../emergencias/domain/TrabajoRealizado'
-
 // Logica y controladores
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { Instanciable } from 'shared/entidad/domain/instanciable'
 
 const props = defineProps({
   listado: {
-    type: Object as () => TrabajoRealizado[],
+    type: Object as () => EntidadAuditable[],
     required: true,
+  },
+  configuracionColumnas: {
+    type: Object as () => ColumnConfig<EntidadAuditable>[],
+    required: true,
+  },
+  entidad: {
+    type: Object as Instanciable,
+    required: true,
+  },
+  accion1: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  mostrarAccion1Header: {
+    type: Boolean,
+    default: true,
+  },
+  editarFilaLocal: {
+    type: Boolean,
+    default: true,
   },
 })
 
-const emit = defineEmits(['actualizar'])
+const emit = defineEmits(['actualizar', 'guardar-fila'])
 
 /************
  * Variables
  ************/
-const trabajoRealizado: Ref<TrabajoRealizado[]> = ref(props.listado)
+const trabajoRealizado: Ref<any[]> = ref(props.listado)
 const { confirmar, notificarError } = useNotificaciones()
 const refTrabajos = ref()
 
@@ -53,10 +77,7 @@ watchEffect(() => (trabajoRealizado.value = props.listado))
 /***************************
  * Configuracion de columnas
  ****************************/
-const columnasTrabajoRealizado: any = [
-  ...configuracionColumnasTrabajoRealizado,
-  accionesTabla,
-]
+const columnas: any = [...props.configuracionColumnas, accionesTabla]
 
 /************
  * Funciones
@@ -65,13 +86,11 @@ const agregarActividadRealizada: CustomActionTable = {
   titulo: 'Agregar actividad',
   icono: 'bi-arrow-bar-down',
   color: 'positive',
+  visible: () => props.mostrarAccion1Header,
   accion: async () => {
     // const fila: TrabajoRealizado = new TrabajoRealizado()
     try {
       const { fecha_hora } = await obtenerTiempoActual()
-      // fila.fecha_hora = fecha_hora
-      // trabajoRealizado.value.push(fila)
-      // refTrabajos.value.abrirModalEntidad(fila, trabajoRealizado.value.length - 1)
       refTrabajos.value.abrirModalEditar({ fecha_hora })
       emit('actualizar', trabajoRealizado.value)
     } catch (e) {

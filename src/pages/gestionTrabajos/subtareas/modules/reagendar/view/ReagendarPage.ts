@@ -1,7 +1,7 @@
 // Dependencias
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { ref, reactive, defineComponent, onMounted } from 'vue'
 import { required, requiredIf } from 'shared/i18n-validators'
+import { reactive, defineComponent, onMounted } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
 import { endpoints } from 'config/api'
@@ -12,13 +12,12 @@ import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/design
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
-import { modosAsignacionTrabajo } from 'config/tareas.utils'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
 import { maskFecha } from 'config/utils'
-import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
-import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
 
 export default defineComponent({
   components: {
