@@ -198,7 +198,7 @@ const routes: RouteRecordRaw[] = [
         path: '/permisos-roles',
         name: 'permisos_roles',
         component: () => import('pages/permisos/view/PermisoPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
       {
         path: '/permisos-usuarios',
@@ -688,6 +688,43 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/fondosRotativos/reportes/reporte_solicitud_fondos/view/Reporte_solicitud_fondoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      //Recursos Humanos
+      {
+        path: '/permiso-nomina',
+        name: 'permiso_nomina',
+        component: () =>
+          import(
+            'pages/recursosHumanos/permiso-empleado/view/PermisoEmpleadoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/prestamo',
+        name: 'prestamo',
+        component: () =>
+          import(
+            'pages/recursosHumanos/prestamo/view/PrestamoPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/anticipo',
+        name: 'anticipo',
+        component: () =>
+          import(
+            'pages/recursosHumanos/anticipo/view/AnticipoPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/rol-pago',
+        name: 'rol_pago',
+        component: () =>
+          import(
+            'pages/recursosHumanos/rol-pago/view/RolPagoPage.vue'
           ),
         meta: { requiresAuth: true },
       },

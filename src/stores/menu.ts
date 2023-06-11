@@ -407,7 +407,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'RR HH',
       icon: 'bi-people',
-      can: store.can('puede.ver.modulo_recursos_humanos'),
+      can: true,//store.can('puede.ver.modulo_recursos_humanos'),
       children: [
         {
           title: 'Empleados',
@@ -433,6 +433,38 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.grupos'),
         },
+        {
+          title: 'Permiso',
+          link: 'permiso-nomina',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.permiso_nomina'),
+        },
+        {
+          title: 'Rol de Pagos',
+          link: 'rol-pago',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.rol_pago'),
+        },
+        {
+          title: 'Prestamos y Anticipos',
+          icon: 'fa-solid fa-hand-holding-dollar',
+          can: true,//store.can('puede.ver.modulo_recursos_humanos'),
+          children: [
+            {
+              title: 'Prestamos',
+              link: 'prestamo',
+              icon: 'bi-circle',
+              can: true//store.can('puede.ver.permiso_nomina'),
+            },
+            {
+              title: 'Anticipos',
+              link: 'anticipo',
+              icon: 'bi-circle',
+              can: true//store.can('puede.ver.permiso_nomina'),
+            },
+          ]},
+
+
       ],
     },
     //Modulo de Vehículos
