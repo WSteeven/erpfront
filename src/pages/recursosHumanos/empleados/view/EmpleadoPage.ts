@@ -105,6 +105,7 @@ export default defineComponent({
     opciones_roles.value = listadosAuxiliares.roles
     opciones_cargos.value = listadosAuxiliares.cargos
     opciones_empleados.value = listadosAuxiliares.empleados
+    opcionesDepartamentos.value = listadosAuxiliares.departamentos
 
     /********
      * Hooks
