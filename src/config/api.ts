@@ -19,14 +19,16 @@ export const endpoints = {
   perfil_usuario: new Endpoint('user/profile-information', false),
   cambiar_contrasena: new Endpoint('user/password', false),
   roles: new Endpoint('user/roles'),
-  permisos: new Endpoint('user/permisos'),
   fecha: new Endpoint('obtener-fecha'),
   hora: new Endpoint('obtener-hora'),
   //configuraciones: new Endpoint('configuraciones'),
   tablero: new Endpoint('tablero'),
   // Permisos
+  todos_permisos: new Endpoint('permisos'),
+  permisos_roles_usuario: new Endpoint('permisos_roles_usuario'),
   permisos_administrar: new Endpoint('permisos_administrar'),
   asignar_permisos: new Endpoint('asignar-permisos'),
+  asignar_permisos_individual: new Endpoint('asignar-permisos-usuario'),
   crear_permiso: new Endpoint('crear-permiso'),
   // Ubicacion
   paises: new Endpoint('paises'),
@@ -39,6 +41,12 @@ export const endpoints = {
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
+
+  //Modulo de Vehiculos
+  combustibles: new Endpoint('vehiculos/combustibles'),
+  vehiculos: new Endpoint('vehiculos/vehiculos'),
+  bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
+  empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),
@@ -90,9 +98,9 @@ export const endpoints = {
   reporte_inventario: new Endpoint('reporte-inventario'),
   kardex: new Endpoint('kardex'),
 
-
-
-  // Modulo de tareas
+  /********************
+  * Modulo de tareas
+  *********************/
   proyectos: new Endpoint('tareas/proyectos'),
   tareas: new Endpoint('tareas/tareas'),
   subtareas: new Endpoint('tareas/subtareas'),
@@ -115,11 +123,8 @@ export const endpoints = {
   designar_secretario_grupo: new Endpoint('tareas/designar-secretario-grupo'),
   archivos_subtareas: new Endpoint('tareas/archivos-subtareas'),
   archivos_seguimientos: new Endpoint('tareas/archivos-seguimientos'),
-  // materiales_despachados: new Endpoint('tareas/transacciones-egresos/materiales-despachados'),
-  // materiales_despachados_sin_bobina: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado_tarea: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado: new Endpoint('tareas/materiales-empleado'),
-  // bobinas_empleado_tarea: new Endpoint('tareas/bobinas-empleado-tarea'),
   registros_tendidos: new Endpoint('tareas/registros-tendidos'),
   reportes_control_materiales: new Endpoint('tareas/reportes-control-materiales'),
   resumen_tendidos: new Endpoint('tareas/resumen-tendidos'),
@@ -152,7 +157,7 @@ export const endpoints = {
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
   lista_usuarios: new Endpoint('lista-usuarios'),
   fondo_rotativo_fecha_excel: new Endpoint('fondos-rotativos/reporte/fecha/excel'),
-  fondo_rotativo_fecha_pdf:   new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
+  fondo_rotativo_fecha_pdf: new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
   fondo_rotativo_autorizaciones_fecha_pdf: new Endpoint('fondos-rotativos/autorizaciones_fecha/pdf'),
   fondo_rotativo_autorizaciones_fecha_excel: new Endpoint('fondos-rotativos/autorizaciones_fecha/excel'),
   consolidado_pdf: new Endpoint('fondos-rotativos/consolidado/pdf'),
@@ -162,7 +167,6 @@ export const endpoints = {
   autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
   autorizaciones_transferencia: new Endpoint('fondos-rotativos/autorizaciones_transferencia'),
 
-
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
@@ -171,4 +175,16 @@ export const endpoints = {
   reporte_solicitud_fondo_pdf: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/pdf'),
   reporte_solicitud_fondo_excel: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/excel'),
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
+
+  /********************
+  * Modulo de tickets
+  *********************/
+  departamentos: new Endpoint('recursos-humanos/departamentos'),
+  tickets: new Endpoint('tickets/tickets'),
+  tipos_tickets: new Endpoint('tickets/tipos-tickets'),
+  archivos_tickets: new Endpoint('tickets/archivos-tickets'),
+  archivos_seguimientos_tickets: new Endpoint('tickets/archivos-seguimientos-tickets'),
+  motivos_pausas_tickets: new Endpoint('tickets/motivos-pausas-tickets'),
+  motivos_cancelados_tickets: new Endpoint('tickets/motivos-cancelados-tickets'),
+  cambiar_responsable_ticket: new Endpoint('tickets/tickets/cambiar-responsable'),
 }

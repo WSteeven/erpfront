@@ -61,6 +61,7 @@
               v-if="mostrarButtonSubmits"
               :accion="accion"
               :permitirGuardar="puedeCrear"
+              :disabled="storeCargando.cargando"
               :labelGuardar="labelGuardar"
               @cancelar="reestablecer()"
               @editar="editar(entidad, resetFormularioOnUpdate)"

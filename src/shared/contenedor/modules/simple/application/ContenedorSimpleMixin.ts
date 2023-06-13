@@ -10,7 +10,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
-import { markRaw } from 'vue'
+import { markRaw, watchEffect } from 'vue'
 import { ParamsType } from 'config/types'
 import { Usuario } from 'pages/fondosRotativos/usuario/domain/Usuario'
 
@@ -95,8 +95,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.entidad_copia.hydrate(this.entidad)
       this.refs.tabs.value = 'formulario'
 
-      const usuario = new Usuario()
-      usuario.hydrate(result)
+      // const usuario = new Usuario()
+      // usuario.hydrate(result)
 
     } catch (error) {
       if (isAxiosError(error)) {
@@ -116,12 +116,12 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }
     })*/
 
-    /* const stop = watchEffect(() => {
+    /*const stop = watchEffect(() => {
       console.log('dentrode  watch consultar')
       if (this.entidad.id !== null) {
         this.hooks.onConsultado()
         console.log('ha sido consultado mixin')
-        stop()
+        //stop()
       }
     })*/
   }
@@ -183,8 +183,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     this.hooks.onBeforeGuardar()
 
-    console.log(params)
-
     //return this.cargarVista(async (): Promise<any> => {
     this.statusEssentialLoading.activar()
     try {
@@ -199,9 +197,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.notificaciones.notificarCorrecto(response.data.mensaje)
       if (agregarAlListado) this.agregarElementoListadoActual(response.data.modelo)
       this.entidad.hydrate(response.data.modelo)
-
-      /* if (resetOnSaved) {
-      } */
 
 
       //console.log(this.entidad)
@@ -219,7 +214,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }) */
       // @noImplicitAny: false
     } catch (error: any) {
-      console.log(error)
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
@@ -338,7 +332,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           if (callback) callback()
         })
         .catch((error) => {
-          this.notificaciones.notificarError(error.message)
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            notificarMensajesError(mensajes, this.notificaciones)
+          } else
+            this.notificaciones.notificarError(error.message)
         })
     })
   }

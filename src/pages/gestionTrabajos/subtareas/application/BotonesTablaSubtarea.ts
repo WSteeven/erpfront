@@ -10,10 +10,12 @@ import { CambiarEstadoSubtarea } from './CambiarEstadoSubtarea'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
-import { obtenerUbicacion } from 'shared/utils'
+import { isAxiosError, notificarMensajesError, obtenerUbicacion } from 'shared/utils'
 import { estadosTrabajos } from 'config/utils'
 import { Subtarea } from '../domain/Subtarea'
 import { Ref, reactive } from 'vue'
+import { AxiosError } from 'axios'
+import { ApiError } from 'shared/error/domain/ApiError'
 
 export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, listadosAuxiliares?: any) => {
   /***********
@@ -28,6 +30,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
    * Variables
    ************/
   const { notificarAdvertencia, confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
+  const notificaciones = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
   let filtrarTrabajoAsignado: (estado: string) => void
 
@@ -48,10 +51,9 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
       obtenerCoordenadas(entidad)
 
       confirmar('¿Está seguro de iniciar el trabajo?', async () => {
-        console.log(entidad.subtarea_dependiente_id)
         if (entidad.es_dependiente) {
           const { result: subtareaDependiente } = await new SubtareaController().consultar(entidad.subtarea_dependiente_id)
-          if (subtareaDependiente.estado !== estadosTrabajos.REALIZADO) {
+          if (![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO].includes(subtareaDependiente.estado ?? '')) {
             return notificarAdvertencia('No puedes proceder. Primero debes realizar la subtarea ' + subtareaDependiente.codigo_subtarea)
           }
         }
@@ -92,10 +94,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
             }
 
             await new CambiarEstadoSubtarea().pausar(entidad.id, data)
-            // entidad.estado = estadosTrabajos.PAUSADO
             filtrarTrabajoAsignado(estadosTrabajos.PAUSADO)
             notificarCorrecto('Trabajo pausado exitosamente!')
-            // eliminarElemento(posicion)
             movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
           },
           tipo: 'radio',
@@ -117,7 +117,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     icono: 'bi-play-circle',
     color: 'positive',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.PAUSADO && entidad.puede_ejecutar && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable),
-    accion: async ({ entidad, posicion }) => {
+    accion: async ({ entidad }) => {
 
       obtenerCoordenadas(entidad)
 
@@ -128,11 +128,9 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
         }
 
         await new CambiarEstadoSubtarea().reanudar(entidad.id, data)
-        // entidad.estado = estadosTrabajos.EJECUTANDO
         filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
         notificarCorrecto('Trabajo ha sido reanudado exitosamente!')
         movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-        // eliminarElemento(posicion, entidad)
       })
     }
   }
@@ -146,20 +144,25 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
       obtenerCoordenadas(entidad)
 
       confirmar('¿Está seguro de que completó el trabajo?', async () => {
-        const data = {
-          estado_subtarea_llegada: estadosTrabajos.REALIZADO,
-          ...movilizacion
+        try {
+
+          const data = {
+            estado_subtarea_llegada: estadosTrabajos.REALIZADO,
+            ...movilizacion
+          }
+
+          await new CambiarEstadoSubtarea().realizar(entidad.id, data)
+          if (authenticationStore.esCoordinador || authenticationStore.esJefeTecnico) filtrarTrabajoAsignado(estadosTrabajos.REALIZADO)
+          if (authenticationStore.esTecnico) eliminarElemento(posicion)
+
+          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+          notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
+        } catch (error: unknown) {
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
+          }
         }
-
-        const { result } = await new CambiarEstadoSubtarea().realizar(entidad.id, data)
-        // entidad.estado = estadosTrabajos.REALIZADO
-        // entidad.fecha_hora_realizado = result.fecha_hora_realizado
-        // eliminarElemento(posicion)
-        if (authenticationStore.esCoordinador || authenticationStore.esJefeTecnico) filtrarTrabajoAsignado(estadosTrabajos.REALIZADO)
-        if (authenticationStore.esTecnico) eliminarElemento(posicion)
-
-        movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-        notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
       })
     }
   }
@@ -187,12 +190,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     color: 'positive',
     icono: 'bi-check',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
-    accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
-      const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id)
-      // entidad.estado = estadosTrabajos.FINALIZADO
-      // entidad.fecha_hora_finalizacion = result.fecha_hora_finalizacion
-      // entidad.dias_ocupados = result.dias_ocupados
-      // actualizarElemento(posicion, entidad)
+    accion: ({ entidad }) => confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
+      await cambiarEstadoTrabajo.finalizar(entidad.id)
       filtrarTrabajoAsignado(estadosTrabajos.FINALIZADO)
       notificarCorrecto('Trabajo finalizada exitosamente!')
     }),
@@ -218,8 +217,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
             }
 
             await new CambiarEstadoSubtarea().suspender(entidad.id, data)
-            // entidad.estado = estadosTrabajos.SUSPENDIDO
-            // entidad.fecha_hora_suspendido = result.fecha_hora_suspendido
 
             if (authenticationStore.esCoordinador || authenticationStore.esJefeTecnico) filtrarTrabajoAsignado(estadosTrabajos.SUSPENDIDO)
             if (authenticationStore.esTecnico) eliminarElemento(posicion)

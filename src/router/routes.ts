@@ -25,6 +25,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/bodega/pedidos/view/imagenComprimida.vue'),
         meta: { requiresAuth: false },
       },
+      /*******************
+       * Módulo de tareas
+       *******************/
       {
         path: '/proyectos',
         name: 'proyectos',
@@ -84,16 +87,6 @@ const routes: RouteRecordRaw[] = [
           import('gestionTrabajos/clientesFinales/view/ClienteFinalPage.vue'),
         meta: { requiresAuth: true },
       },
-
-      {
-        path: '/control-asistencia',
-        name: 'control_asistencia',
-        component: () =>
-          import(
-            'gestionTrabajos/controlAsistencia/view/ControlAsistenciaPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
       {
         path: '/trabajo-agendado',
         name: 'trabajo_agendado',
@@ -135,15 +128,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/reportes-control-tendidos',
-        name: 'reportes_control_tendidos',
-        component: () =>
-          import(
-            'gestionTrabajos/reporteResumenTendidos/view/ReporteResumenTendidoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/reporte-trabajos-realizados',
         name: 'reporte_trabajos_realizados',
         component: () =>
@@ -152,23 +136,75 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      /********************
+       * Modulo de tickets
+       ********************/
+      {
+        path: '/departamentos',
+        name: 'departamentos',
+        component: () => import('recursosHumanos/departamentos/view/DepartamentoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tickets',
+        name: 'tickets',
+        component: () => import('tickets/view/TicketPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tickets-asignados',
+        name: 'tickets_asignados',
+        component: () => import('ticketsAsignados/view/TicketAsignadoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-tickets',
+        name: 'tipos_tickets',
+        component: () => import('tiposTickets/view/TipoTicketPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/motivos-pausas-tickets',
+        name: 'motivos_pausas_tickets',
+        component: () => import('motivosPausasTickets/view/MotivoPausaTicketPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/motivos-cancelados-tickets',
+        name: 'motivos_cancelados_tickets',
+        component: () => import('motivosCanceladosTickets/view/MotivoCanceladoTicketPage.vue'),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/perfil',
         name: 'perfil',
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
-        path: '/permisos',
-        name: 'permisos',
-        component: () => import('pages/permisos/view/PermisoPage.vue'),
-        meta: { requiresAuth: true },
-      },
+      //Routes for permissions
       {
         path: '/roles',
         name: 'roles',
         component: () => import('pages/administracion/roles/view/RolPage.vue'),
         meta: { requiresAuth: false },
+      },
+      {
+        path: '/permisos',
+        name: 'permisos',
+        component: () => import('pages/permisos/modules/todosPermisos/view/PermisoPage.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/permisos-roles',
+        name: 'permisos_roles',
+        component: () => import('pages/permisos/view/PermisoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/permisos-usuarios',
+        name: 'permisos_usuarios',
+        component: () => import('pages/permisos/modules/permisosUsuarios/view/PermisosUsuarioPage.vue'),
+        meta: { requiresAuth: true }
       },
       // Routes for bodega
       {
@@ -279,7 +315,6 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoPage.vue'
-            // 'pages/bodega/transacciones/mod/view/ControlTransaccionIngresoPage.vue',
           ),
         meta: { requiresAuth: true },
       },
@@ -309,6 +344,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       //reportes de bodega
+      {
+        path: '/reporte-pedidos',
+        name: 'reporte_pedidos',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_pedidos/view/ReportePedidosPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
       {
         path: '/reporte-inventario',
         name: 'reporte_inventario',
@@ -348,6 +392,25 @@ const routes: RouteRecordRaw[] = [
         name: 'grupos',
         component: () =>
           import('pages/recursosHumanos/grupos/view/GrupoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      //Routes for Vehiculos
+      {
+        path: '/control-vehiculos',
+        name: 'bitacoras_vehiculos',
+        component: () => import('pages/controlVehiculos/bitacoraVehicular/view/BitacoraVehicularPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/combustibles',
+        name: 'combustibles',
+        component: () => import('pages/controlVehiculos/combustible/view/CombustiblePage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/vehiculos',
+        name: 'vehiculos',
+        component: () => import('pages/controlVehiculos/vehiculos/view/VehiculoPage.vue'),
         meta: { requiresAuth: true },
       },
 

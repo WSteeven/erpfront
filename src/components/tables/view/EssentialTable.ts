@@ -9,6 +9,8 @@ import { getVisibleColumns, formatBytes } from 'shared/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'config/utils'
 import { offset } from 'config/utils_tablas'
+import exportFile from 'quasar/src/utils/export-file.js'
+import useQuasar from 'quasar/src/composables/use-quasar.js'
 
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
@@ -171,7 +173,7 @@ export default defineComponent({
       default: true,
     },
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -321,6 +323,61 @@ export default defineComponent({
       refTableFilters.value.agregarFiltro()
     }
 
+    function toggleFiltros() {
+      mostrarFiltros.value = !mostrarFiltros.value
+      listado.value = []
+      emit('toggle-filtros', mostrarFiltros.value)
+    }
+
+    // exportar CSV
+    function exportTable() {
+      // naive encoding to csv format
+      const content = [props.configuracionColumnas.map((col: any) => wrapCsvValue(col.label))].concat(
+        props.datos.map((row: any) => props.configuracionColumnas.map((col: any) => wrapCsvValue(
+          typeof col.field === 'function'
+            ? col.field(row)
+            : row[col.field === void 0 ? col.name : col.field],
+          col.format,
+          row
+        )).join(','))
+      ).join('\r\n')
+
+      const status = exportFile(
+        'table-export.csv',
+        content,
+        'text/csv'
+      )
+
+      if (status !== true) {
+        /*$q.notify({
+          message: 'Browser denied file download...',
+          color: 'negative',
+          icon: 'warning'
+        })*/
+        console.log('No se puede descargar...')
+      }
+    }
+
+    function wrapCsvValue(val, formatFn?, row?) {
+      let formatted = formatFn !== void 0
+        ? formatFn(val, row)
+        : val
+
+      formatted = formatted === void 0 || formatted === null
+        ? ''
+        : String(formatted)
+
+      formatted = formatted.split('"').join('""')
+      /**
+       * Excel accepts \n and \r in strings, but some other CSV parsers do not
+       * Uncomment the next two lines to escape new lines
+       */
+      // .split('\n').join('\\n')
+      // .split('\r').join('\\r')
+
+      return `"${formatted}"`
+    }
+
     return {
       refEditarModal,
       refTableFilters,
@@ -363,6 +420,8 @@ export default defineComponent({
       tituloBotonFiltros,
       abrirModalEntidad,
       abrirModalEditar,
+      exportTable,
+      toggleFiltros,
     }
   },
 })

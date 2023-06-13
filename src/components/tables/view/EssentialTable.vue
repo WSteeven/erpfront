@@ -33,6 +33,7 @@
       'my-sticky-column-table-dark': $q.dark.isActive,
       'my-sticky-column-table-light': !$q.dark.isActive,
       'rounded-header': $q.screen.xs,
+      'bg-header-table': mostrarFiltros,
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
@@ -74,6 +75,16 @@
 
     <!-- Header table -->
     <template v-if="mostrarHeader" v-slot:top="props">
+      <div
+        v-if="mostrarFiltros"
+        class="text-bold text-center full-width rounded q-mb-md"
+      >
+        <q-chip class="bg-white text-positive">
+          <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
+          Modo filtro activado
+        </q-chip>
+      </div>
+
       <div
         v-if="titulo"
         class="row text-bold text-primary q-mb-lg items-center justify-center block"
@@ -149,6 +160,12 @@
             </q-btn>
           </div>
         </div>
+        <div class="col-12 col-md-12">
+          <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
+            {{ 'Total de elementos: ' }}
+            <b>{{ datos == undefined ? 0 : datos.length }}</b>
+          </q-chip>
+        </div>
       </div>
 
       <div
@@ -162,12 +179,12 @@
         <div class="row q-gutter-xs justify-end q-mb-md">
           <q-btn
             v-if="mostrarFiltros"
-            color="secondary"
+            color="indigo-4"
             no-caps
             push
             @click="agregarFiltro()"
           >
-            <q-icon name="bi-plus"></q-icon>
+            <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
             Agregar filtro</q-btn
           >
 
@@ -184,14 +201,23 @@
 
           <q-btn
             v-if="mostrarFiltros"
-            color="positive"
+            color="indigo"
             no-caps
             push
             @click="filtrar()"
           >
             <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
-            Filtrar</q-btn
+            Aplicar filtros</q-btn
           >
+
+          <q-btn
+            color="positive"
+            icon="archive"
+            label="Exportar a csv"
+            no-caps
+            push
+            @click="exportTable"
+          />
           <!--<q-btn-dropdown
             v-if="mostrarFiltros"
             split
@@ -220,10 +246,10 @@
           </q-btn-dropdown> -->
 
           <q-btn
-            color="primary"
+            :color="mostrarFiltros ? 'negative' : 'primary'"
             no-caps
             push
-            @click="mostrarFiltros = !mostrarFiltros"
+            @click="toggleFiltros()"
           >
             <q-icon
               :name="mostrarFiltros ? 'bi-eye-slash' : 'bi-eye'"
@@ -872,6 +898,51 @@
         >
       </q-td>
     </template>
+    <!-- devoluciones de bodega -->
+    <template #body-cell-estado_bodega="props">
+      <q-td :props="props">
+        <q-chip
+          v-if="props.value === estadosTransacciones.completa"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+          ><q-icon name="bi-circle-fill" color="positive"></q-icon
+          >COMPLETA</q-chip
+        >
+        <q-chip
+          v-if="props.value === estadosTransacciones.parcial"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          PARCIAL
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosTransacciones.pendiente"
+          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          PENDIENTE
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosTransacciones.no_realizada"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
+          <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          NO REALIZADA
+        </q-chip>
+      </q-td>
+    </template>
 
     <template #body-cell-leida="props">
       <q-td :props="props">
@@ -1156,6 +1227,11 @@
   display: block;
   width: 100%;
 } */
+/*.bg-header-table {
+  .q-table__top {
+    background-color: $grey-4 !important;
+  }
+}*/
 
 .my-sticky-dynamic {
   /* height or max-height is important */

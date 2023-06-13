@@ -43,19 +43,20 @@
             <q-card>
               <q-card-section>
                 <div class="text-h6">No Asignados</div>
-                  <essential-table
-                    :configuracionColumnas="configuracionColumnasPermisos"
-                    :datos="permisosSinAsignar"
-                    :permitirConsultar="false"
-                    :permitirEditar="false"
-                    :permitirEliminar="false"
-                    :mostrarHeaders="false"
-                    :mostrarColumnasVisibles="false"
-                    ref="refPermisosSinAsignar"
-                    @selected="asignarPermiso"
-                    tipo-seleccion="multiple"
-                  >
-                  </essential-table>
+                <essential-table
+                  :configuracionColumnas="configuracionColumnasPermisos"
+                  :datos="permisosSinAsignar"
+                  :permitirConsultar="false"
+                  :permitirEditar="false"
+                  :permitirEliminar="false"
+                  :mostrarHeaders="false"
+                  :mostrarFooter="true"
+                  :mostrarColumnasVisibles="false"
+                  ref="refPermisosSinAsignar"
+                  @selected="asignarPermiso"
+                  tipo-seleccion="multiple"
+                >
+                </essential-table>
               </q-card-section>
             </q-card>
           </div>

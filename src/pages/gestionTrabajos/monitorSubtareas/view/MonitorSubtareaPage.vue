@@ -12,6 +12,7 @@
         no-caps
         dense
         glossy
+        push
         >Ir a Control de tareas</q-btn
       >
     </div>
@@ -47,8 +48,9 @@
       :permitirBuscar="false"
       @tab-seleccionado="filtrarSubtareas"
       :tabDefecto="tabActual"
-      :altoFijo="false"
+      :altoFijo="altoFijo"
       @filtrar="aplicarFiltro"
+      @limpiarListado="() => (listado = [])"
     ></essential-table-tabs>
 
     <modales-entidad :comportamiento="modalesSubtarea" :mixin-modal="mixin" />

@@ -4,6 +4,7 @@ export class ConsolidadoFiltrado extends EntidadAuditable {
   proyecto: number | null
   tarea: number | null
   detalle: number | null
+  ruc:number|null
   subdetalle: number | null
   autorizador: number | null
   tipo_saldo: string | null
@@ -16,6 +17,7 @@ export class ConsolidadoFiltrado extends EntidadAuditable {
     this.proyecto = null
     this.tarea = null
     this.detalle = null
+    this.ruc=null
     this.subdetalle = null
     this.autorizador = null
     this.tipo_saldo = null

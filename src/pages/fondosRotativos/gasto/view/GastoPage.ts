@@ -2,9 +2,9 @@ import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
 import { Gasto } from '../domain/Gasto'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 
+import SelectorImagen from 'components/SelectorImagen.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -12,7 +12,7 @@ import {
   requiredIf,
   maxLength,
   minLength,
-  required
+  required,
 } from 'shared/i18n-validators'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -32,12 +32,13 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { emit } from 'process'
-import { maskFecha } from 'config/utils'
+import { maskFecha, tabAutorizarGasto, estadosGastos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: { TabLayoutFilterTabs2, SelectorImagen },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -56,7 +57,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, consultar } =
+    const { setValidador, obtenerListados, cargarVista, consultar ,listar} =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
 
@@ -79,7 +80,12 @@ export default defineComponent({
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     onConsultado(() => {
-      esFactura.value = gasto.factura == null || gasto.factura == undefined || gasto.factura == '' ? false : true
+      esFactura.value =
+        gasto.factura == null ||
+        gasto.factura == undefined ||
+        gasto.factura == ''
+          ? false
+          : true
     })
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
@@ -87,8 +93,11 @@ export default defineComponent({
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
     }
-    const esTecnico = computed(() => {
-      return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1 ? true : false
+    const visualizarAutorizador = computed(() => {
+      return authenticationStore.can('puede.ver.campo.autorizador')
+      /*return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
+        ? true
+        : false*/
     })
 
     const esCombustibleEmpresa = computed(() => {
@@ -99,40 +108,59 @@ export default defineComponent({
         return false
       }
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
-        return gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) > -1 || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
+        return (
+          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
+            -1 ||
+          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
+          || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
+        )
       } else {
         return false
       }
-
     })
-    const numFacturaObjeto = [{
-      detalle: 16,
-      cantidad: 22,
-      mascara: '###-###-##############'
-    },
-    {
-      detalle: 10,
-      cantidad: 17,
-      mascara: '###-###-#########'
-    }]
+    const numFacturaObjeto = [
+      {
+        detalle: 16,
+        cantidad: 22,
+        mascara: '###-###-##############',
+      },
+      {
+        detalle: 10,
+        cantidad: 17,
+        mascara: '###-###-#########',
+      },
+    ]
     const cantidadPermitidaFactura = computed(() => {
       let cantidad = 17
 
       if (esFactura.value === false) {
         cantidad = 0
       }
-      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''));
-      cantidad = numFacturaObjeto[index] !== undefined ? numFacturaObjeto[index].cantidad : 15;
+      const index = numFacturaObjeto
+        .map((object) => object.detalle)
+        .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
+      cantidad =
+        numFacturaObjeto[index] !== undefined
+          ? numFacturaObjeto[index].cantidad
+          : 15
       return cantidad
-    }
-    )
+    })
+    const mostarPlaca = computed(() => {
+      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 || parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
+        ? true
+        : false
+    })
     const mascaraFactura = computed(() => {
       let mascara = '###-###-#############'
-      const index = numFacturaObjeto.map(object => object.detalle).indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''));
-      mascara = numFacturaObjeto[index] !== undefined ? numFacturaObjeto[index].mascara : '###-###-#########';
+      const index = numFacturaObjeto
+        .map((object) => object.detalle)
+        .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
+      mascara =
+        numFacturaObjeto[index] !== undefined
+          ? numFacturaObjeto[index].mascara
+          : '###-###-#########'
       return mascara
-    }
-    )
+    })
 
     /*************
      * Validaciones
@@ -157,10 +185,13 @@ export default defineComponent({
       },
       factura: {
         minLength: minLength(cantidadPermitidaFactura),
-        required: requiredIf(() => esFactura.value)
+        required: requiredIf(() => esFactura.value),
       },
+      /*beneficiarios: {
+        required: required
+      },*/
       aut_especial: {
-        required: requiredIf(() => esTecnico.value),
+        required: requiredIf(() => visualizarAutorizador.value),
       },
       num_comprobante: {
         maxLength: maxLength(17),
@@ -189,7 +220,7 @@ export default defineComponent({
       kilometraje: {
         requiredIfdetalle: esCombustibleEmpresa,
       },
-      placa: {
+      vehiculo: {
         requiredIfdetalle: esCombustibleEmpresa,
       },
       observacion: {
@@ -206,6 +237,8 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
+    const vehiculos = ref([])
+    const beneficiarios = ref([])
 
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -220,23 +253,40 @@ export default defineComponent({
         },
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',finalizado: 0 },
-        },
-        subTareas: {
-          controller: new SubtareaController(),
-          params: { campos: 'id,codigo_sub_tarea,titulo,tarea_id' },
+          params: {
+            //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+            formulario: true,
+          },
         },
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', id: usuario.jefe_id, estado: 1 },
+          params: {
+            campos: 'id,nombres,apellidos',
+            id: usuario.jefe_id,
+            estado: 1,
+          },
+        },
+        beneficiarios: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+          },
+        },
+        vehiculos: {
+          controller: new VehiculoController(),
+          params: {
+            campos: 'id,placa',
+          },
         },
       })
       autorizacionesEspeciales.value =
         listadosAuxiliares.autorizacionesEspeciales
+        beneficiarios.value = listadosAuxiliares.beneficiarios
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
-
+      vehiculos.value = listadosAuxiliares.vehiculos
       autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
     cantones.value =
@@ -276,9 +326,23 @@ export default defineComponent({
           )
       })
     }
-
-
-
+    //filtro beneficiarios
+    function filtrarBeneficiarios(val, update) {
+      if (val === '') {
+        update(() => {
+          beneficiarios.value =
+            listadosAuxiliares.beneficiarios
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        beneficiarios.value =
+          listadosAuxiliares.beneficiarios.filter(
+            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+          )
+      })
+    }
 
     // - Filtro Detalles
 
@@ -298,9 +362,19 @@ export default defineComponent({
     }
     function optionsFechaGasto(date) {
       const today = new Date()
-      const sabadoAnterior = convertir_fecha(
-        new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
-      )
+
+      const diaSemana = today.getDay()
+      // Verificar si el día actual es sábado
+      let sabadoAnterior = ''
+      if (diaSemana === 6) {
+        sabadoAnterior = convertir_fecha(
+          new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7)))
+        )
+      } else {
+        sabadoAnterior = convertir_fecha(
+          new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
+        )
+      }
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
       return date >= sabadoAnterior && date <= sabadoSiguiente
@@ -373,38 +447,43 @@ export default defineComponent({
         )
       })
     }
-    /**Filtro de Tareas */
-    function filtrarTareas(val, update) {
-      console.log(gasto.proyecto)
-
-      if (gasto.proyecto == 0) {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == null
-          )
-          console.log(tareas.value)
-        })
-        return
-      }
+    /**Filtrar Vehiculos */
+    function filtrarVehiculos(val, update) {
       if (val === '') {
         update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == gasto.proyecto
-          )
-          console.log(tareas.value)
+          vehiculos.value = listadosAuxiliares.vehiculos
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        tareas.value = listadosAuxiliares.tareas.filter(
-          (v) =>
-            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
-            v.detalle.toLowerCase().indexOf(needle) > -1
+        vehiculos.value = listadosAuxiliares.vehiculos.filter(
+          (v) => v.placa.toLowerCase().indexOf(needle) > -1
         )
       })
     }
-    listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
+    /**Filtro de Tareas */
+    function filtrarTareas(val, update) {
+      if (val === '') {
+        update(() => {
+          tareas.value = listadoTareas.value
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tareas.value = listadoTareas.value.filter(
+          (v) =>
+            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
+            v.titulo.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    listadosAuxiliares.tareas.unshift({
+      id: 0,
+      titulo: 'Sin Tarea',
+      codigo_tarea: ' ',
+    })
     const listadoTareas = computed(() => {
       if (gasto.proyecto == 0) {
         return listadosAuxiliares.tareas.filter(
@@ -482,8 +561,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                      LocalStorage.getItem('sub_detalles')!.toString()
-                    )
+                        LocalStorage.getItem('sub_detalles')!.toString()
+                      )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
@@ -537,6 +616,11 @@ export default defineComponent({
           break
       }
     }
+    let tabActualGasto = '3'
+    function filtrarGasto(tabSeleccionado: string) {
+      listar( {estado:tabSeleccionado}, false)
+      tabActualGasto = tabSeleccionado
+    }
     return {
       mixin,
       gasto,
@@ -551,11 +635,13 @@ export default defineComponent({
       disabled,
       accion,
       v$,
+      tabAutorizarGasto,
       maskFecha,
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
-      esTecnico,
+      visualizarAutorizador,
       esCombustibleEmpresa,
+      vehiculos,
       watchEffect,
       filtrarAutorizacionesEspeciales,
       filtrarCantones,
@@ -564,6 +650,8 @@ export default defineComponent({
       filtrarProyectos,
       existeComprobante,
       filtrarTareas,
+      filtrarGasto,
+      filtrarVehiculos,
       aprobar_gasto,
       cambiar_detalle,
       cambiar_proyecto,
@@ -572,7 +660,9 @@ export default defineComponent({
       mascaraFactura,
       listadosAuxiliares,
       listadoSubdetalles,
+      beneficiarios,
       mostrarListado,
+      mostarPlaca,
       listadoTareas,
     }
   },
