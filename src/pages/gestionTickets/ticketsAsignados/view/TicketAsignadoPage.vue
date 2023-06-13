@@ -22,6 +22,7 @@
       :accion6="btnReanudar"
       :accion7="btnFinalizar"
       :accion8="btnRechazar"
+      :accion9="btnCalificar"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"

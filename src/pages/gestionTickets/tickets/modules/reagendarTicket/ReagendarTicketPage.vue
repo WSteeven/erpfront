@@ -1,13 +1,13 @@
 <template>
-  <div class="bg-white rounded q-pa-md">
+  <!-- <div class="q-mb-lg q-pa-md rounded border-grey bg-white">
+    <div class="text-bold q-mb-lg">Información general</div>
     <DetalleTicket :ticket="ticket"></DetalleTicket>
+  </div> -->
 
-    <q-separator class="q-mt-xl q-mb-md"></q-separator>
-    <div class="text-center text-grey-8 q-mb-xl">
-      <q-icon name="bi-arrow-left-right" size="xs" class="q-pr-sm"></q-icon
-      >Cambiar responsable
-    </div>
-
+  <div class="text-center text-bold q-mb-md">
+    Selecciona al nuevo responsable
+  </div>
+  <div class="bg-white rounded q-pa-md">
     <div class="row q-col-gutter-xs">
       <!-- Departamento -->
       <div class="col-12 col-md-3">

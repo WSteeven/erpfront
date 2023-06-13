@@ -1,10 +1,10 @@
 // Dependencias
 import { configuracionColumnasTicketAsignado } from '../domain/configuracionColumnasTicketAsignado'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla, estadosTrabajos } from 'config/utils'
 import { tabOptionsEstadosTicketsAsignados, estadosTickets } from 'config/tickets.utils'
 import { computed, defineComponent, ref } from 'vue'
+import { useTicketStore } from 'stores/ticket'
 import { date } from 'quasar'
 
 // Componentes
@@ -13,14 +13,9 @@ import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
-import { TrabajoAsignadoController } from 'gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
-import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 import { ComportamientoModalesTicketAsignado } from '../application/ComportamientoModalesTicketAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
 import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
@@ -37,14 +32,14 @@ export default defineComponent({
     /***********
     * Stores
     ***********/
-    const trabajoAsignadoStore = useTrabajoAsignadoStore()
+    const ticketStore = useTicketStore()
     const authenticationStore = useAuthenticationStore()
 
     /*******
     * Mixin
     ********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { listado, listadosAuxiliares } = mixin.useReferencias()
+    const { listado } = mixin.useReferencias()
     const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
 
     cargarVista(async () => {
@@ -62,7 +57,7 @@ export default defineComponent({
     const mostrarDialogPlantilla = ref(false)
     const modales = new ComportamientoModalesTicketAsignado()
     const tabActual = ref()
-    const { btnTransferir, btnEjecutar, btnPausar, btnReanudar, btnFinalizar, btnSeguimiento, setFiltrarTickets, btnRechazar } = useBotonesTablaTicket(mixin, modales)
+    const { btnTransferir, btnEjecutar, btnPausar, btnReanudar, btnFinalizar, btnSeguimiento, setFiltrarTickets, btnRechazar, btnCalificar } = useBotonesTablaTicket(mixin, modales)
     setFiltrarTickets(filtrarTrabajoAsignado)
 
     /*********
@@ -80,8 +75,8 @@ export default defineComponent({
       titulo: 'Más detalles',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
-        trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
-        // modales.abrirModalEntidad('DetalleTrabajoAsignadoPage')
+        ticketStore.filaTicket = entidad
+        modales.abrirModalEntidad('DetalleTicketAsignadoPage')
       },
     }
 
@@ -95,18 +90,6 @@ export default defineComponent({
 
     filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)
 
-    // - Mostrar formulario modal de acuerdo a su tipo de trabajo
-    const listadoModales = modales.getModales()
-
-    function plantillaSeleccionada(plantilla: keyof typeof listadoModales) {
-      mostrarDialogPlantilla.value = false
-      modales.abrirModalEntidad(plantilla)
-    }
-
-    function abrirGuia() {
-      modales.abrirModalEntidad('SeguimientoTicketPage')
-    }
-
     return {
       mixin,
       listado,
@@ -116,7 +99,6 @@ export default defineComponent({
       accionesTabla,
       modales,
       mostrarDialogPlantilla,
-      plantillaSeleccionada,
       botonVer,
       btnTransferir,
       btnEjecutar,
@@ -125,8 +107,8 @@ export default defineComponent({
       btnSeguimiento,
       btnFinalizar,
       btnRechazar,
+      btnCalificar,
       tabActual,
-      abrirGuia,
       estadosTickets,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
       authenticationStore,

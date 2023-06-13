@@ -1,12 +1,11 @@
 <template>
   <q-page>
-    <!-- <div class="q-mb-md">
-      Código de ticket: <b>{{ codigoTicket }}</b>
+    <!-- <div class="q-mb-lg q-pa-md rounded border-grey bg-white">
+      <div class="text-bold q-mb-lg">Información general</div>
+      <DetalleTicket :ticket="ticket"></DetalleTicket>
     </div> -->
 
-    <div class="q-mb-md q-mx-md">
-      <DetalleTicket :ticket="ticket"></DetalleTicket>
-    </div>
+    <div class="text-center text-bold q-mb-md">Ingreso del seguimiento</div>
     <q-card class="rounded-card custom-shadow q-pa-md">
       <div class="row">
         <div class="col-12 q-mb-md">
@@ -17,6 +16,7 @@
             :accion1="verFotografia"
             :mostrarAccion1Header="permitirSubir"
             @guardarFila="(fila) => guardarFilaActividad(fila)"
+            :editarFilaLocal="false"
           ></tabla-filas-dinamicas>
         </div>
 

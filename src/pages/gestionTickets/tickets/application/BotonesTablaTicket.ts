@@ -104,28 +104,37 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     visible: ({ entidad }) => entidad.estado === estadosTickets.EJECUTANDO,
     accion: ({ entidad, posicion }) => confirmar('¿Está seguro de marcar como finalizado el ticket?', async () => {
       const config: CustomActionPrompt = reactive({
-        mensaje: 'Seleccione una opción',
+        mensaje: 'Seleccione una opción de finalización',
         accion: async (opcion) => {
 
           if (opcion === 1) {
             await cambiarEstadoTicket.finalizar(entidad.id)
             filtrarTickets(estadosTickets.FINALIZADO_SOLUCIONADO)
           } else {
-            await cambiarEstadoTicket.finalizar(entidad.id)
-            filtrarTickets(estadosTickets.FINALIZADO_SIN_SOLUCION)
+            const config2: CustomActionPrompt = {
+              titulo: 'Motivo',
+              mensaje: 'Ingrese el motivo por el que no se pudo dar solución.',
+              accion: async (motivo) => {
+                await cambiarEstadoTicket.finalizarNoSolucion(entidad.id, { motivo })
+                filtrarTickets(estadosTickets.FINALIZADO_SIN_SOLUCION)
+              },
+            }
+
+            prompt(config2)
           }
+
           eliminarElemento(posicion)
           notificarCorrecto('Ticket finalizado exitosamente!')
         },
         tipo: 'radio',
         items: [
           {
-            label: 'FINALIZADO SOLUCIONADO',
+            label: 'SE SOLUCIONÓ EL TICKET',
             value: 1,
           },
           {
-            label: 'FINALIZADO SIN SOLUCIÓN',
-            value: 0,
+            label: 'NO SE LOGRÓ DAR SOLUCIÓN AL TICKET',
+            value: 2,
           },
         ]
       })
@@ -181,11 +190,21 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     color: 'negative',
     visible: ({ entidad }) => [estadosTickets.ASIGNADO, estadosTickets.REASIGNADO].includes(entidad.estado),
     accion: async ({ entidad, posicion }) => {
-      confirmar('¿Está seguro de rechazar el ticket?', async () => {
-        const { response } = await cambiarEstadoTicket.rechazar(entidad.id)
-        eliminarElemento(posicion)
-        notificarCorrecto(response.data.mensaje)
-      })
+      const config: CustomActionPrompt = {
+        titulo: 'Motivo',
+        mensaje: 'Ingrese el motivo por el que rechaza el ticket.',
+        accion: async (motivo) => {
+          // await cambiarEstadoTicket.rechazar(entidad.id, { motivo })
+
+          confirmar('¿Está seguro de rechazar el ticket?', async () => {
+            const { response } = await cambiarEstadoTicket.rechazar(entidad.id, { motivo })
+            eliminarElemento(posicion)
+            notificarCorrecto(response.data.mensaje)
+          })
+        },
+      }
+
+      prompt(config)
     }
   }
 
@@ -225,8 +244,10 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     icono: 'bi-stars',
     color: 'secondary',
     visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado),
-    accion: async ({ entidad }) => {
-      //
+    accion: ({ entidad }) => {
+      console.log('dentro')
+      ticketStore.filaTicket = entidad
+      modales.abrirModalEntidad('CalificarTicketPage')
     }
   }
 

@@ -26,6 +26,7 @@ import { SeguimientoTicketController } from '../infraestructure/SeguimientoTicke
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTicketStore } from 'stores/ticket'
+import { estadosTickets } from 'config/tickets.utils'
 
 export default defineComponent({
   components: {
@@ -74,7 +75,7 @@ export default defineComponent({
     // const { prompt, notificarAdvertencia } = useNotificaciones()
     const ticket = ticketStore.filaTicket
     const refArchivoSeguimiento = ref()
-    const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id
+    const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id && ticket.estado === estadosTickets.EJECUTANDO
 
     /************
      * Init

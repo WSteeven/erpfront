@@ -1,59 +1,44 @@
 <template>
-  <div class="row q-col-gutter-sm bg-white">
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Código del ticket</label>
-      <b>{{ ticket.codigo }}</b>
-    </div>
-
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Asunto</label>
-      <b>{{ ticket.asunto }}</b>
-    </div>
-
-    <div class="col-12 col-md-6">
-      <label class="q-mb-sm block">Descripción</label>
-      <b>{{ ticket.descripcion }}</b>
-    </div>
-
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Prioridad</label>
-      <b>{{ ticket.prioridad }}</b>
-    </div>
-
-    <div v-if="ticket.fecha_hora_limite" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Fecha y hora límite</label>
-      <b>{{ ticket.fecha_hora_limite }}</b>
-    </div>
-
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Estado</label>
-      <b>{{ ticket.estado }}</b>
-    </div>
-
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Tipo de ticket</label>
-      <b>{{ ticket.tipo_ticket }}</b>
-    </div>
-
-    <div v-if="ticket.departamento_responsable" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Actual departamento responsable</label>
-      <b>{{ ticket.departamento_responsable }}</b>
-    </div>
-
-    <div v-if="ticket.responsable" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Actual empleado responsable</label>
-      <b>{{ ticket.responsable }}</b>
-    </div>
-  </div>
+  <q-card class="rounded-card border-none">
+    <q-card-section>
+      <detalle-ticket :ticket="ticket"></detalle-ticket>
+      <archivo-seguimiento
+        ref="refArchivoTicket"
+        :mixin="mixinArchivoTicket"
+        :endpoint="endpoint"
+        :disable="true"
+        :permitir-eliminar="false"
+        :listar-al-guardar="false"
+        :permitirSubir="false"
+      ></archivo-seguimiento>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script lang="ts" setup>
-import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
+// Dependencias
+import { useTicketStore } from 'stores/ticket'
+import { endpoints } from 'config/api'
 
-defineProps({
-  ticket: {
-    type: Object as () => Ticket,
-    required: true,
-  },
-})
+// Componentes
+import DetalleTicket from './DetalleTicket.vue'
+import ArchivoSeguimiento from 'subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
+import { ArchivoTicketController } from 'pages/gestionTickets/tickets/infraestructure/ArchivoTicketController '
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { onMounted, ref } from 'vue'
+
+const ticketStore = useTicketStore()
+const ticket = ticketStore.filaTicket
+
+const endpoint = endpoints.archivos_tickets
+
+const mixinArchivoTicket = new ContenedorSimpleMixin(
+  Archivo,
+  new ArchivoTicketController()
+)
+
+const refArchivoTicket = ref()
+
+onMounted(() => refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id }))
 </script>

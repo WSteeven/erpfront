@@ -14,6 +14,8 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoTicket } from '../domain/TipoTicket'
 import { TipoTicketController } from '../infraestructure/TipoTicketController'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
+import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
 
 export default defineComponent({
   components: {
@@ -25,11 +27,27 @@ export default defineComponent({
       TipoTicket,
       new TipoTicketController()
     )
-    const { entidad: tipoTicket, disabled, accion } = mixin.useReferencias()
-    const { setValidador } = mixin.useComportamiento()
+    const { entidad: tipoTicket, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        departamentos: new DepartamentoController(),
+      })
+      departamentos.value = listadosAuxiliares.departamentos
+    })
+
+    /*********
+    * Filtros
+    **********/
+    const {
+      filtrarDepartamentos,
+      departamentos,
+    } = useFiltrosListadosTickets(listadosAuxiliares)
 
     const rules = {
       nombre: { required },
+      departamento: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -45,6 +63,8 @@ export default defineComponent({
       disabled,
       accion,
       configuracionColumnasTipoTicket,
+      filtrarDepartamentos,
+      departamentos,
     }
   },
 })

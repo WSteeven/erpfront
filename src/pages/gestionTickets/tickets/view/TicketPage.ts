@@ -7,7 +7,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { accionesTabla, maskFecha, rolesSistema } from 'config/utils'
 import { required } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 
@@ -25,6 +25,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarImagen from 'shared/prompts/SolicitarImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
+import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 
 // Logica y controladores
 import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
@@ -42,6 +43,12 @@ import { formatearFechaHora, obtenerFechaHoraActual } from 'shared/utils'
 import { TicketController } from '../infraestructure/TicketController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Ticket } from '../domain/Ticket'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosResponse } from 'axios'
+import { configuracionColumnasPausas } from 'gestionTrabajos/subtareas/modules/pausasRealizadas/domain/configuracionColumnasPausas'
+import { configuracionColumnasTicketRechazado } from '../domain/configuracionColumnasTicketRechazado'
+import { CategoriaTipoTicketController } from 'pages/gestionTickets/tiposTickets/infraestructure/CategoriaTipoTicketController'
+import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
 
 export default defineComponent({
   components: {
@@ -58,6 +65,7 @@ export default defineComponent({
     SolicitarImagen,
     VisorImagen,
     ArchivoSeguimiento,
+    EstadosSubtareas,
   },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -82,6 +90,7 @@ export default defineComponent({
       await obtenerListados({
         empleados: [],
         departamentos: new DepartamentoController(),
+        categoriasTiposTickets: new CategoriaTipoTicketController(),
         tiposTickets: {
           controller: new TipoTicketController(),
           params: { activo: 1 },
@@ -91,8 +100,9 @@ export default defineComponent({
           params: { activo: 1 },
         },
       })
-      tiposTickets.value = listadosAuxiliares.tiposTickets
+      // tiposTickets.value = listadosAuxiliares.tiposTickets
       departamentos.value = listadosAuxiliares.departamentos
+      categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets
     })
 
     /************
@@ -108,12 +118,15 @@ export default defineComponent({
     const modalesTicket = new ComportamientoModalesTicket()
     const tabActual = ref()
 
+    const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket === ticket.categoria_tipo_ticket))
+
     /*************
     * Validaciones
     **************/
     const reglas = {
       asunto: { required },
       tipo_ticket: { required },
+      categoria_tipo_ticket: { required },
       descripcion: { required },
       prioridad: { required },
       responsable: { required },
@@ -123,6 +136,19 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, ticket)
     setValidador(v$.value)
 
+    /***********
+     * Columnas
+     ***********/
+    const columnasPausas = [
+      ...configuracionColumnasPausas,
+      {
+        name: 'responsable',
+        field: 'responsable',
+        label: 'Responsable',
+        align: 'left',
+        sortable: true,
+      }]
+
     /*********
     * Filtros
     **********/
@@ -130,9 +156,11 @@ export default defineComponent({
       filtrarDepartamentos,
       filtrarEmpleados,
       filtrarTiposTickets,
-      tiposTickets,
+      filtrarCategoriasTiposTickets,
+      //  tiposTickets,
       departamentos,
       empleados,
+      categoriasTiposTickets,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
     /************
@@ -153,14 +181,11 @@ export default defineComponent({
 
     async function subirArchivos(id: number) {
       await refArchivoTicket.value.subir({ ticket_id: id })
-      // refArchivoTicket.value.limpiarListado()
     }
 
     function filtrarTickets(tab: string) {
       listar({ estado: tab })
       tabActual.value = tab
-      console.log('filtarr aqui...')
-      console.log(tab)
     }
 
     filtrarTickets(estadosTickets.ASIGNADO)
@@ -169,6 +194,38 @@ export default defineComponent({
       const clienteFinalController = new ClienteFinalController()
       const { result } = await clienteFinalController.consultar(clienteFinalId)
       return result
+    }
+
+    function obtenerTexto(calificacion: number) {
+      switch (calificacion) {
+        case 1: return 'MALO'
+        case 2: return 'ACEPTABLE'
+        case 3: return 'BUENO'
+        case 4: return 'EXCELENTE'
+      }
+    }
+
+    const pausas = ref([])
+    async function obtenerPausas() {
+      // const statusEssentialLoading = new StatusEssentialLoading()
+      // statusEssentialLoading.activar()
+
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta =
+        axios.getEndpoint(endpoints.pausas_tickets) + '/' + ticket.id
+      const response: AxiosResponse = await axios.get(ruta)
+      pausas.value = response.data.results
+
+      // statusEssentialLoading.desactivar()
+    }
+
+    const rechazos = ref([])
+    async function obtenerRechazos() {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta =
+        axios.getEndpoint(endpoints.rechazos_tickets) + '/' + ticket.id
+      const response: AxiosResponse = await axios.get(ruta)
+      rechazos.value = response.data.results
     }
 
     /*********
@@ -188,14 +245,14 @@ export default defineComponent({
       fechaHoraActual.value = ticket.fecha_hora_solicitud
       clearInterval(tiempoActualInterval)
       if (ticket.departamento_responsable) obtenerResponsables(ticket.departamento_responsable)
-      console.log(refArchivoTicket.value)
       refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id })
       refArchivoTicket.value.quiero_subir_archivos = false
+      obtenerPausas()
+      obtenerRechazos()
     })
 
     onGuardado((id: number) => {
       subirArchivos(id)
-      // refArchivoTicket.value.limpiarListado()
       emit('cerrar-modal', false)
     })
 
@@ -226,6 +283,8 @@ export default defineComponent({
       listadosAuxiliares,
       configuracionColumnasClientes,
       configuracionColumnasTicket,
+      configuracionColumnasTicketRechazado,
+      columnasPausas,
       mixin,
       configuracionColumnasSubtarea,
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
@@ -251,6 +310,11 @@ export default defineComponent({
       modalesTicket,
       obtenerResponsables,
       tabActual,
+      pausas,
+      rechazos,
+      obtenerTexto,
+      filtrarCategoriasTiposTickets,
+      categoriasTiposTickets,
     }
   },
 })
