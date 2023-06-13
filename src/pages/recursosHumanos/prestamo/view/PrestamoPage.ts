@@ -61,6 +61,7 @@ export default defineComponent({
       { id: 2, nombre: 'Anticipo de Sueldo de empleado', tipo: 2 },
       { id: 2, nombre: 'Anticipo de Prestamo quirorafario', tipo: 2 },
     ])
+    const esMayorPrestamo = ref(false)
     const empleados = ref([])
     cargarVista(async () => {
       obtenerListados({
@@ -212,67 +213,44 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       color: 'secondary',
       accion: ({ entidad, posicion }) => {
-        console.log(posicion);
-        
         modificar_couta(posicion)
       },
     }
 
     function modificar_couta(indice_couta) {
-      confirmar('¿Está seguro de rechazar el gasto?', () => {
+      confirmar('¿Está seguro de modificar la couta?', () => {
         const data: CustomActionPrompt = {
           titulo: 'Modificar couta',
           mensaje: 'Ingrese nuevo valor de la couta',
           accion: async (data) => {
             try {
-              const valor_utilidad =
-                prestamo.valor_utilidad == null ? 0 : prestamo.valor_utilidad
               const valor_prestamo = prestamo.valor == null ? 0 : prestamo.valor
-              const valorAnterior = valor_prestamo / prestamo.plazo
+              if (data > valor_prestamo) {
+                esMayorPrestamo.value=true;
+              }
               prestamo.plazos![indice_couta].valor_a_pagar = data
-              calcular_valores_prestamo_indice(
-                indice_couta,
-                valor_utilidad,
-                valor_prestamo,
-                valorAnterior
-              )
+              calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
             } catch (e: any) {
-              notificarError(
-                'No se pudo rechazar, debes ingresar un motivo para la anulación'
-              )
+              notificarError('No se pudo modificar, debes ingresar monto')
             }
           },
         }
         prompt(data)
       })
     }
-    function calcular_valores_prestamo_indice(
-      indiceExcluido,
-      valor_utilidad,
-      valor_prestamo,
-      valorAnterior
-    ) {
-      const plazos = prestamo
-        .plazos!.slice(0, indiceExcluido)
-        .concat(prestamo.plazos!.slice(indiceExcluido + 1))
-      const sumaValoresAnteriores = plazos.reduce(
-        (acumulador, cuotaAnterior) => {
-          const valorAnterior = parseFloat(cuotaAnterior.valor_a_pagar)
-          return acumulador + valorAnterior
-        },
-        0
-      )
-      const numero_couta = prestamo.plazos![indiceExcluido].num_cuota;
-      const porcentaje_resta = Math.min(parseFloat(valor_prestamo.toString()) / parseFloat(valor_utilidad.toString()), 1);
-      prestamo.plazos!.map(cuotaAnterior => {
+    function calcular_valores_prestamo_indice(indiceExcluido, valor_prestamo) {
+      const numero_couta = prestamo.plazos![indiceExcluido].num_cuota
+      prestamo.plazos!.map((cuotaAnterior) => {
         if (cuotaAnterior.num_cuota !== numero_couta) {
           cuotaAnterior.valor_a_pagar = (
-            valorAnterior -
-            valorAnterior * porcentaje_resta
+            (parseFloat(valor_prestamo.toString()) -
+              prestamo.plazos![indiceExcluido].valor_a_pagar) /
+            (prestamo.plazo - 1)
           ).toFixed(2)
-        } 
-        return cuotaAnterior;
-      });
+          return cuotaAnterior
+        }
+        return cuotaAnterior
+      })
     }
     function calcular_valores_prestamo(
       valor_utilidad,
@@ -310,6 +288,7 @@ export default defineComponent({
       watchEffect,
       filtrarEmpleado,
       recargar_tabla,
+      esMayorPrestamo,
       botonmodificar_couta,
       configuracionColumnasPlazoPrestamo,
       plazo_pago,

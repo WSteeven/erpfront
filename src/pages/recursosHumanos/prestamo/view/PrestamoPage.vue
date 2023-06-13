@@ -140,6 +140,7 @@
         :configuracionColumnas="[...configuracionColumnasPlazoPrestamo, accionesTabla]" :datos="prestamo.plazos"
         :permitirConsultar="false" :permitirEditar="false" :permitirEliminar="false" :mostrarBotones="true" :accion1="botonmodificar_couta">
       </essential-table>
+      <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block">La suma de todas las coutas no debe superar al valor del prestamo</label>
     </template>
   </tab-layout>
 </template>
