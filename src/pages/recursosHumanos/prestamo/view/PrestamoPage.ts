@@ -212,6 +212,8 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       color: 'secondary',
       accion: ({ entidad, posicion }) => {
+        console.log(posicion);
+        
         modificar_couta(posicion)
       },
     }
@@ -228,7 +230,8 @@ export default defineComponent({
               const valor_prestamo = prestamo.valor == null ? 0 : prestamo.valor
               const valorAnterior = valor_prestamo / prestamo.plazo
               prestamo.plazos![indice_couta].valor_a_pagar = data
-              calcular_valores_prestamo(
+              calcular_valores_prestamo_indice(
+                indice_couta,
                 valor_utilidad,
                 valor_prestamo,
                 valorAnterior
@@ -243,25 +246,53 @@ export default defineComponent({
         prompt(data)
       })
     }
+    function calcular_valores_prestamo_indice(
+      indiceExcluido,
+      valor_utilidad,
+      valor_prestamo,
+      valorAnterior
+    ) {
+      const plazos = prestamo
+        .plazos!.slice(0, indiceExcluido)
+        .concat(prestamo.plazos!.slice(indiceExcluido + 1))
+      const sumaValoresAnteriores = plazos.reduce(
+        (acumulador, cuotaAnterior) => {
+          const valorAnterior = parseFloat(cuotaAnterior.valor_a_pagar)
+          return acumulador + valorAnterior
+        },
+        0
+      )
+      const numero_couta = prestamo.plazos![indiceExcluido].num_cuota;
+      const porcentaje_resta = Math.min(parseFloat(valor_prestamo.toString()) / parseFloat(valor_utilidad.toString()), 1);
+      prestamo.plazos!.map(cuotaAnterior => {
+        if (cuotaAnterior.num_cuota !== numero_couta) {
+          cuotaAnterior.valor_a_pagar = (
+            valorAnterior -
+            valorAnterior * porcentaje_resta
+          ).toFixed(2)
+        } 
+        return cuotaAnterior;
+      });
+    }
     function calcular_valores_prestamo(
       valor_utilidad,
       valor_prestamo,
       valorAnterior
     ) {
-
       if (valor_utilidad > 0) {
         let porcentaje_resta
         if (valor_utilidad !== 0) {
-          porcentaje_resta = parseFloat(valor_utilidad.toString())/
-            parseFloat(valor_prestamo.toString()) 
-           
+          porcentaje_resta =
+            parseFloat(valor_utilidad.toString()) /
+            parseFloat(valor_prestamo.toString())
         } else {
           // Manejar el caso cuando valor_utilidad es cero
           porcentaje_resta = 0 // Asignar un valor predeterminado o manejarlo de otra forma apropiada
         }
         prestamo.plazos!.slice(0, -1).map((cuotaAnterior) => {
           cuotaAnterior.valor_a_pagar = (
-            valorAnterior - (valorAnterior*porcentaje_resta)
+            valorAnterior -
+            valorAnterior * porcentaje_resta
           ).toFixed(2)
           return cuotaAnterior
         })
