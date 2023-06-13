@@ -9,8 +9,8 @@
             <q-select v-model="prestamo.empleado" :options="empleados" transition-show="jump-up"
               transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
               :error="!!v$.empleado.$errors.length" error-message="Debes seleccionar un empleado" use-input
-              input-debounce="0" @filter="filtrarEmpleado" @update:model-value="saldo_anterior()"
-              :option-value="(v) => v.id" :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
+              input-debounce="0" @filter="filtrarEmpleado" :option-value="(v) => v.id"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos" emit-value map-options>
               <template v-slot:error>
                 <div v-for="error of v$.usuario.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
@@ -112,12 +112,33 @@
               </template>
             </q-select>
           </div>
+          <!-- Utilidades  -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Utilidades </label>
+            <q-input v-model="prestamo.utilidad" type="number" :disable="disabled" outlined
+              dense>
+            </q-input>
+          </div>
+          <!-- Valor  -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Valor Utilidades </label>
+            <q-input v-model="prestamo.valor_utilidad" placeholder="Obligatorio" type="number" :disable="disabled"
+              :error="!!v$.valor_utilidad.$errors.length" @blur="v$.valor_utilidad.$touch" outlined dense>
+              <template v-slot:error>
+                <div v-for="error of v$.valor_utilidad.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+
+          </div>
+
 
         </div>
       </q-form>
       <essential-table v-if="prestamo.plazo > 0" titulo="Plazo de Prestamo"
         :configuracionColumnas="[...configuracionColumnasPlazoPrestamo, accionesTabla]" :datos="prestamo.plazos"
-        :permitirConsultar="false" :permitirEditar="false" :permitirEliminar="false">
+        :permitirConsultar="false" :permitirEditar="false" :permitirEliminar="false" :mostrarBotones="true" :accion1="botonmodificar_couta">
       </essential-table>
     </template>
   </tab-layout>
