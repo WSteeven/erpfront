@@ -231,9 +231,9 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         pedidoStore.idPedido = entidad.id
         await pedidoStore.imprimirPdf()
-        console.log(pedidoStore.pedido)
-        console.log(pedidoStore.pedido.listadoProductos)
-        console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
+        // console.log(pedidoStore.pedido)
+        // console.log(pedidoStore.pedido.listadoProductos)
+        // console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
       },
       visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }

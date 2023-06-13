@@ -148,6 +148,7 @@ export default defineComponent({
     opciones_cargos.value = listadosAuxiliares.cargos
     opciones_empleados.value = listadosAuxiliares.empleados
     tipos_contrato.value = listadosAuxiliares.tipos_contrato
+    opcionesDepartamentos.value = listadosAuxiliares.departamentos
 
     /********
      * Hooks
@@ -163,13 +164,13 @@ export default defineComponent({
       const day = parseInt(dateParts[0], 10) // Obtener el día como entero
       const month = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
       const year = parseInt(dateParts[2], 10) // Obtener el año como entero
-      const fechaIngreso =  new Date(year, month, day)
+      const fechaIngreso = new Date(year, month, day)
 
       if (!fechaIngreso) {
         return null // O algún valor predeterminado en caso de fechaIngreso sea null
       }
 
-      let diffYears =  fechaActual.getFullYear()-fechaIngreso.getFullYear()
+      let diffYears = fechaActual.getFullYear() - fechaIngreso.getFullYear()
       let diffMonths = fechaActual.getMonth() - fechaIngreso.getMonth()
       let diffDays = fechaActual.getDate() - fechaIngreso.getDate()
       if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
@@ -186,7 +187,7 @@ export default defineComponent({
         diffMonths--
         diffDays += lastMonthDate
       }
-      if( Number.isNaN(diffYears) || Number.isNaN(diffMonths)  ||   Number.isNaN(diffDays)){
+      if (Number.isNaN(diffYears) || Number.isNaN(diffMonths) || Number.isNaN(diffDays)) {
         return null
       }
       return diffYears + ' Años ' + diffMonths + ' Meses ' + diffDays + ' Dias'
