@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasTipoTicket } from '../domain/configuracionColumnasTipoTicket'
+import { configuracionColumnasCategoriaTipoTicket } from '../domain/configuracionColumnasCategoriaTipoTicket'
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
@@ -12,10 +12,10 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TipoTicket } from '../domain/TipoTicket'
-import { TipoTicketController } from '../infraestructure/TipoTicketController'
-import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
+import { DepartamentoController } from 'recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
+import { CategoriaTipoTicket } from '../domain/CategoriaTipoTicket'
+import { CategoriaTipoTicketController } from '../infraestructure/CategoriaTipoTicketController'
 
 export default defineComponent({
   components: {
@@ -24,8 +24,8 @@ export default defineComponent({
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      TipoTicket,
-      new TipoTicketController()
+      CategoriaTipoTicket,
+      new CategoriaTipoTicketController()
     )
     const { entidad: tipoTicket, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
@@ -48,7 +48,6 @@ export default defineComponent({
     const rules = {
       nombre: { required },
       departamento: { required },
-      categoria_tipo_ticket: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -63,7 +62,7 @@ export default defineComponent({
       tipoTicket,
       disabled,
       accion,
-      configuracionColumnasTipoTicket,
+      configuracionColumnasCategoriaTipoTicket,
       filtrarDepartamentos,
       departamentos,
     }
