@@ -448,13 +448,13 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Prestamos',
           icon: 'fa-solid fa-hand-holding-dollar',
-          can: true,//store.can('puede.ver.modulo_recursos_humanos'),
+          can: true,//store.can('puede.ver.prestamo_empresarial'),
           children: [
             {
               title: 'Prestamos',
-              link: 'prestamo',
+              link: 'prestamo-empresarial',
               icon: 'bi-circle',
-              can: true//store.can('puede.ver.permiso_nomina'),
+              can:store.can('puede.ver.prestamo_empresarial'),
             },
           ]},
 

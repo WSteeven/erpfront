@@ -702,20 +702,11 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/prestamo',
-        name: 'prestamo',
+        path: '/prestamo-empresarial',
+        name: 'prestamo-empresarial',
         component: () =>
           import(
-            'pages/recursosHumanos/prestamo/view/PrestamoPage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/anticipo',
-        name: 'anticipo',
-        component: () =>
-          import(
-            'pages/recursosHumanos/anticipo/view/AnticipoPage.vue'
+            'pages/recursosHumanos/prestamo/view/PrestamoEmpresarialPage.vue'
           ),
         meta: { requiresAuth: false },
       },

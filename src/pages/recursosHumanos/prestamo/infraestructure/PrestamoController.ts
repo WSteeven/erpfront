@@ -4,7 +4,7 @@ import { endpoints } from "config/api";
 
 export class PrestamoController extends TransaccionSimpleController<Prestamo>{
   constructor(){
-    super(endpoints.prestamo_anticipo)
+    super(endpoints.prestamo_empresarial)
   }
 }
 

@@ -56,11 +56,6 @@ export default defineComponent({
       { id: 2, nombre: 'Cheque' },
       { id: 3, nombre: 'Nota Debito' },
     ])
-    const tipos_prestamo = ref([
-      { id: 1, nombre: 'Prestamo Empresa', tipo: 1 },
-      { id: 2, nombre: 'Anticipo de Sueldo de empleado', tipo: 2 },
-      { id: 2, nombre: 'Anticipo de Prestamo quirorafario', tipo: 2 },
-    ])
     const esMayorPrestamo = ref(false)
     const empleados = ref([])
     cargarVista(async () => {
@@ -284,7 +279,6 @@ export default defineComponent({
       mixin,
       prestamo,
       empleados,
-      tipos_prestamo,
       watchEffect,
       filtrarEmpleado,
       recargar_tabla,

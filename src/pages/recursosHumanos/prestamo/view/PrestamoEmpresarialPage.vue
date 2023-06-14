@@ -1,5 +1,5 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" titulo-pagina="Cargos">
+  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas" titulo-pagina="Prestamos Empresariales">
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
@@ -138,7 +138,7 @@
       </q-form>
       <essential-table v-if="prestamo.plazo > 0" titulo="Plazo de Prestamo"
         :configuracionColumnas="[...configuracionColumnasPlazoPrestamo, accionesTabla]" :datos="prestamo.plazos"
-        :permitirConsultar="false" :permitirEditar="false" :permitirEliminar="false" :mostrarBotones="true" :accion1="botonmodificar_couta">
+        :permitirConsultar="false" :permitirEditar="false" :permitirEliminar="false"  :accion1="botonmodificar_couta">
       </essential-table>
       <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block">La suma de todas las coutas no debe superar al valor del prestamo</label>
     </template>
@@ -146,4 +146,4 @@
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 
-<script src="./PrestamoPage.ts"></script>
+<script src="./PrestamoEmpresarialPage.ts"></script>
