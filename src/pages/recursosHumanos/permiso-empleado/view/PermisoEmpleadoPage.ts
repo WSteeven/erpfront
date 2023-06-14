@@ -17,6 +17,7 @@ import { maskFecha } from 'config/utils'
 import { EstadoPermisoEmpleadoController } from 'pages/recursosHumanos/estado/infraestructure/EstadoPermisoEmpleadoController'
 import { MotivoPermisoEmpleado } from 'pages/recursosHumanos/motivo/domain/MotivoPermisoEmpleado'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
     components: { TabLayout,SelectorImagen },
@@ -24,21 +25,32 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(PermisoEmpleado, new PermisoEmpleadoController())
         const { entidad: permiso, disabled,listadosAuxiliares } = mixin.useReferencias()
         const { setValidador,cargarVista, obtenerListados } = mixin.useComportamiento()
-        const motivos = ref ([]);
+        const tipos_permisos = ref ([]);
+        const empleados = ref([])
         cargarVista(async () => {
           obtenerListados({
-              motivos: new MotivoPermisoEmpleadoController(),
+              tipos_permisos: new MotivoPermisoEmpleadoController(),
+              empleados: {
+                controller: new EmpleadoController(),
+                params: { campos: 'id,nombres,apellidos', estado: 1 },
+              },
           })
+          empleados.value = listadosAuxiliares.empleados
+          tipos_permisos.value = listadosAuxiliares.tipos_permisos
       })
-      motivos.value = listadosAuxiliares.motivos
+
 
 
         //Reglas de validacion
         const reglas = {
-            motivo: { required },
-            fecha_inicio: { required },
-            fecha_fin: { required },
+          empleado: { required },
+          tipo_permiso: { required },
+            fecha_hora_inicio: { required },
+            fecha_hora_fin: { required },
+            fecha_recuperacion:  { required },
+            hora_recuperacion:  { required },
             justificacion: { required },
+            documento: { required },
         }
 
         const v$ = useVuelidate(reglas, permiso)
@@ -49,7 +61,8 @@ export default defineComponent({
             removeAccents,
             mixin,
             permiso,
-            motivos,
+            tipos_permisos,
+            empleados,
             maskFecha,
             v$,
             disabled,
