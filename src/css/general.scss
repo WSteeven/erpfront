@@ -34,6 +34,10 @@ body {
   border-radius: 16px !important;
 }
 
+.square-card {
+  border-radius: 0 !important;
+}
+
 .rounded-tabpanel {
   border-radius: 0 16px 16px 16px;
 }
@@ -68,6 +72,10 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 .border-primary {
   border: 1px solid $primary;
+}
+
+.border-grey {
+  border: 1px solid $grey-4;
 }
 /* .bg-transparent {
     background-color: transparent !important;

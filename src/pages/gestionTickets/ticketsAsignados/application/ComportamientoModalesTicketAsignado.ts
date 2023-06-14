@@ -1,8 +1,8 @@
 import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
-import { TrabajoAsignadoModales } from 'gestionTrabajos/trabajoAsignado/domain/TrabajoAsignadoModales'
+import { TicketModales } from 'pages/gestionTickets/tickets/domain/TicketModales'
 
-export class ComportamientoModalesTicketAsignado extends ComportamientoModales<TrabajoAsignadoModales> {
+export class ComportamientoModalesTicketAsignado extends ComportamientoModales<TicketModales> {
   constructor() {
-    super(new TrabajoAsignadoModales())
+    super(new TicketModales())
   }
 }

@@ -8,26 +8,33 @@
   >
     <q-card class="bg-transparent rounded-card no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
-      <q-toolbar class="bg-body rounded-header" rounded>
+      <q-toolbar class="bg-body rounded-header border-bottom" rounded>
         <q-avatar square>
           <img src="~assets/logo.svg" />
         </q-avatar>
 
-        <q-toolbar-title class="text-primary"
+        <q-toolbar-title class="text-grey-8 text-subtitle1"
           ><span>{{ titulo }}</span></q-toolbar-title
         >
 
-        <q-btn
-          round
-          glossy
-          push
-          dense
-          color="negative"
-          icon="bi-x"
-          @click="cerrarModalEntidad()"
-        >
-          <q-tooltip class="bg-dark">Cerrar</q-tooltip>
-        </q-btn>
+        <div class="row q-gutter-x-sm">
+          <q-btn round dense unelevated color="light-green" size="sm">
+            <q-icon name="bi-arrows-angle-expand" size="14px"></q-icon>
+            <q-tooltip class="bg-dark">Maximizar</q-tooltip>
+          </q-btn>
+
+          <q-btn
+            round
+            dense
+            unelevated
+            color="red"
+            size="sm"
+            @click="cerrarModalEntidad()"
+          >
+            <q-icon name="bi-x-lg" size="14px"></q-icon>
+            <q-tooltip class="bg-dark">Cerrar</q-tooltip>
+          </q-btn>
+        </div>
         <!--v-close-popup -->
       </q-toolbar>
 
@@ -36,6 +43,7 @@
           v-if="mixinModal"
           :is="componente"
           :mixin-modal="mixinModal"
+          :accion="accion"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
           "
@@ -46,6 +54,7 @@
         <component
           v-else
           :is="componente"
+          :accion="accion"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
           "

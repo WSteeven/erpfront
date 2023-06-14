@@ -9,12 +9,13 @@ import { apiConfig, endpoints } from 'config/api'
 import { defineComponent, Ref, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
+import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
 
 // Componentes
-import TrabajoRealizado from 'pages/gestionTrabajos/formulariosTrabajos/trabajosRealizados/view/TablaTrabajoRealizadoPage.vue'
 import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
 import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
+import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -32,6 +33,7 @@ import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Emergencia } from '../domain/Emergencia'
 import { imprimirArchivo } from 'shared/utils'
+import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
 
 export default defineComponent({
   components: {
@@ -39,9 +41,9 @@ export default defineComponent({
     SelectorImagen,
     ButtonSubmits,
     TablaDevolucionProducto,
-    TrabajoRealizado,
     TablaObservaciones,
     ArchivoSeguimiento,
+    TablaFilasDinamicas,
   },
   props: {
     mixinModal: {
@@ -301,6 +303,8 @@ export default defineComponent({
       esCoordinador,
       descargarExcel,
       endpoint: endpoints.archivos_seguimientos,
+      TrabajoRealizado,
+      configuracionColumnasTrabajoRealizado,
     }
   }
 })
