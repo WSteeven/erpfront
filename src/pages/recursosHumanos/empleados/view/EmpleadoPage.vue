@@ -105,7 +105,7 @@
               </q-input>
             </div>
             <!-- correo -->
-            <div class="col-12 col-md-3">
+       <!--     <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Correo Personal</label>
               <q-input type="email" v-model="empleado.correo_personal" placeholder="Obligatorio" :disable="disabled"
                 :error="!!v$.correo_personal.$errors.length" @blur="v$.correo_personal.$touch"
@@ -116,9 +116,9 @@
                   </div>
                 </template>
               </q-input>
-            </div>
+            </div> -->
             <!--Tipo de Sangre -->
-            <div class="col-12 col-md-3">
+       <!--     <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Tipo de Sangre</label>
               <q-input v-model="empleado.tipo_sangre" placeholder="Obligatorio" :disable="disabled"
                 :error="!!v$.tipo_sangre.$errors.length" @blur="v$.tipo_sangre.$touch" outlined dense>
@@ -128,9 +128,9 @@
                   </div>
                 </template>
               </q-input>
-            </div>
+            </div> -->
             <!-- Estado Civil -->
-            <div class="col-12 col-md-3 q-mb-md">
+        <!--    <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Estado Civil</label>
               <q-select v-model="empleado.estado_civil" :options="estado_civiles" transition-show="jump-up"
                 transition-hide="jump-down" :disable="disabled" options-dense dense outlined :input-debounce="0" use-input
@@ -148,7 +148,7 @@
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div>-->
             <div class="col-12 col-md-3 q-mb-xl">
               <q-checkbox class="q-mt-lg q-pt-md" v-model="empleado.tiene_grupo" label="Pertenece a un grupo"
                 :disable="disabled" outlined dense></q-checkbox>
@@ -162,7 +162,7 @@
             </div>
 
             <!-- Fecha límite -->
-            <div class="col-12 col-md-3">
+       -    <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Fecha de nacimiento</label>
               <q-input
                 v-model="empleado.fecha_nacimiento"
@@ -193,7 +193,7 @@
               </q-input>
             </div>
             <!-- Numero de Cuenta bancarea -->
-            <div class="col-12 col-md-3">
+         <!--   <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Numero de Cuenta</label>
               <q-input v-model="empleado.num_cuenta" placeholder="Obligatorio" type="number" :disable="disabled"
                 :error="!!v$.num_cuenta.$errors.length" @blur="v$.num_cuenta.$touch" outlined dense>
@@ -204,7 +204,7 @@
                 </template>
               </q-input>
             </div>
-
+-->
             <!-- Canton -->
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Canton</label>
@@ -270,11 +270,11 @@
                     unchecked-icon="clear" :disable="disabled" />
                 </div>
                 <!-- Vive con discapacitados -->
-                <div class="col-12 col-md-3">
+              <!--  <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Tiene Discapacidad</label>
                   <q-toggle :label="empleado.tiene_discapacidad ? 'SI' : 'NO'" v-model="empleado.tiene_discapacidad"
                     color="primary" keep-color icon="bi-check2-circle" unchecked-icon="clear" :disable="disabled" />
-                </div>
+                </div> -->
                 <!-- Coordenadas -->
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block"
@@ -321,7 +321,7 @@
             </div>
 
   <!-- Area -->
-  <div class="col-12 col-md-3">
+ <!-- <div class="col-12 col-md-3">
     <label class="q-mb-sm block">Area</label>
               <q-select
                 v-model="empleado.area"
@@ -359,7 +359,7 @@
               </q-select>
             </div>
 
-
+-->
 
             <!-- Departamento -->
             <div class="col-12 col-md-3">
@@ -454,7 +454,7 @@
               </q-select>
             </div>
             <!-- Tipo Contrato -->
-            <div class="col-12 col-md-3 q-mb-md">
+   <!--         <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Tipo Contrato</label>
               <q-select v-model="empleado.tipo_contrato" :options="tipos_contrato" transition-show="jump-up"
                 transition-hide="jump-down" :disable="disabled" options-dense dense outlined :input-debounce="0" use-input
@@ -472,9 +472,9 @@
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div>-->
             <!-- Nivel Academico -->
-            <div class="col-12 col-md-3 q-mb-md">
+        <!--    <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Nivel Academico</label>
               <q-select v-model="empleado.nivel_academico" :options="niveles_academicos" transition-show="jump-up"
                 transition-hide="jump-down" :disable="disabled" options-dense dense outlined :input-debounce="0" use-input
@@ -492,9 +492,9 @@
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div>-->
             <!-- Fecha Ingreso -->
-            <div class="col-12 col-md-3">
+           <!-- <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Fecha de Ingreso</label>
               <q-input v-model="empleado.fecha_ingreso" placeholder="Obligatorio"
                 :error="!!v$.fecha_ingreso.$errors.length" @blur="v$.fecha_ingreso.$touch"
@@ -516,9 +516,9 @@
                   </div>
                 </template>
               </q-input>
-            </div>
+            </div> -->
             <!-- Fecha Salida -->
-            <div class="col-12 col-md-3">
+         <!--   <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Fecha de Salida</label>
               <q-input v-model="empleado.fecha_salida" placeholder="Obligatorio" :error="!!v$.fecha_salida.$errors.length"
                 @blur="v$.fecha_salida.$touch" :disable="disabled || soloLectura" :readonly="disabled || soloLectura"
@@ -540,9 +540,9 @@
                   </div>
                 </template>
               </q-input>
-            </div>
+            </div>-->
             <!-- Extensión -->
-            <div class="col-12 col-md-3">
+           <!-- <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Antiguedad</label>
               <q-input  v-model="antiguedad" placeholder="Opcional" :disable="disabled"
                 outlined dense>
@@ -551,9 +551,9 @@
             <div class="col-12 col-md-3 q-mb-xl">
               <q-checkbox class="q-mt-lg q-pt-md" v-model="empleado.tiene_grupo" label="Pertenece a un grupo"
                 :disable="disabled" outlined dense></q-checkbox>
-            </div>
+            </div>-->
             <!-- Salario -->
-            <div class="col-12 col-md-3">
+       <!---     <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Salario</label>
               <q-input v-model="empleado.salario" placeholder="Obligatorio" type="number" :disable="disabled"
                 :error="!!v$.salario.$errors.length" @blur="v$.salario.$touch" outlined dense>
@@ -572,7 +572,7 @@
                 dense
               ></q-checkbox>
             </div>
-
+-->
             <!-- Grupo -->
             <div v-if="empleado.tiene_grupo" class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Grupo</label>
