@@ -94,7 +94,7 @@
           </div>
                     <!-- Justificacion -->
                     <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Justificación</label>
+            <label class="q-mb-sm block">Documento</label>
             <selector-imagen :imagen="permiso.justificacion" file_extensiones=".jpg, image/*"
               :error="!!v$.justificacion.$errors.length" error-message="Debes de cargar imagen de comprobante"
               @blur="v$.justificacion.$touch" @update:modelValue="(data) => (permiso.justificacion = data)">
