@@ -55,12 +55,12 @@
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <div class="q-gutter-md row items-start">
-                      <q-date v-model="permiso.fecha_hora_inicio" mask="MM-DD-YYYY HH:mm" today-btn>
+                      <q-date v-model="permiso.fecha_hora_inicio" mask="DD-MM-YYYY HH:mm" today-btn>
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>
                       </q-date>
-                      <q-time v-model="permiso.fecha_hora_inicio" mask="MM-DD-YYYY HH:mm" color="primary" />
+                      <q-time v-model="permiso.fecha_hora_inicio" mask="DD-MM-YYYY HH:mm" color="primary" />
                     </div>
                   </q-popup-proxy>
                 </q-icon>
@@ -83,12 +83,12 @@
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <div class="q-gutter-md row items-start">
-                      <q-date v-model="permiso.fecha_hora_fin" mask="MM-DD-YYYY HH:mm" today-btn>
+                      <q-date v-model="permiso.fecha_hora_fin" mask="DD-MM-YYYY HH:mm" today-btn>
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>
                       </q-date>
-                      <q-time v-model="permiso.fecha_hora_fin" mask="MM-DD-YYYY HH:mm" color="primary" />
+                      <q-time v-model="permiso.fecha_hora_fin" mask="DD-MM-YYYY HH:mm" color="primary" />
                     </div>
                   </q-popup-proxy>
                 </q-icon>
@@ -175,6 +175,20 @@
           <div class="col-12 col-md-3">
             <q-checkbox class="q-mt-lg q-pt-md" v-model="permiso.cargo_vacaciones" label="Cargo a Vacaciones"
               :disable="disabled" outlined dense></q-checkbox>
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Dias de permiso</label>
+            <q-input v-model="dias_permiso"
+              placeholder="Obligatorio"
+              :disable="disabled"  outlined dense>
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Horas de permiso</label>
+            <q-input v-model="horas_permisos"
+              placeholder="Obligatorio"
+              :disable="disabled"  outlined dense>
+            </q-input>
           </div>
         </div>
       </q-form>
