@@ -78,7 +78,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.tickets'),
       children: [
         {
-          title: 'Tickets',
+          title: 'Crear ticket',
           link: 'tickets',
           icon: 'bi-circle',
           can: store.can('puede.ver.tickets'),
@@ -90,6 +90,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tickets_asignados'),
         },
         {
+          title: 'Categorías tipos de tickets',
+          link: 'categorias-tipos-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.categorias_tipos_tickets'),
+        },
+        {
           title: 'Tipos de tickets',
           link: 'tipos-tickets',
           icon: 'bi-circle',
@@ -97,7 +103,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Motivos de pausas',
-          link: 'motivos-pausas',
+          link: 'motivos-pausas-tickets',
           icon: 'bi-circle',
           can: store.can('puede.ver.motivos_pausas_tickets'),
         },
@@ -231,7 +237,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-circle',
-          can: store.esBodeguero || store.esContabilidad ||store.can('puede.ver.reportes_bodega'),
+          can: store.esBodeguero || store.esContabilidad || store.can('puede.ver.reportes_bodega'),
           children: [
             {
               title: 'Reporte de ingresos',
@@ -439,6 +445,32 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.grupos'),
         },
+        {
+          title: 'Permiso',
+          link: 'permiso-nomina',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.permiso_nomina'),
+        },
+        /*  {
+            title: 'Rol de Pagos',
+            link: 'rol-pago',
+            icon: 'bi-circle',
+            can: store.can('puede.ver.rol_pago'),
+          },*/
+        /*  {
+            title: 'Prestamos',
+            icon: 'fa-solid fa-hand-holding-dollar',
+            can: true,//store.can('puede.ver.prestamo_empresarial'),
+            children: [
+              {
+                title: 'Prestamos',
+                link: 'prestamo-empresarial',
+                icon: 'bi-circle',
+                can:store.can('puede.ver.prestamo_empresarial'),
+              },
+            ]},*/
+
+
       ],
     },
     //Modulo de Vehículos

@@ -10,22 +10,31 @@ import { AxiosResponse } from 'axios'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import DetalleTicket from 'ticketsAsignados/modules/detalleTicketAsignado/view/DetalleTicket.vue'
 
 // Logica y controladores
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useFiltrosListadosTickets } from '../../application/FiltrosListadosTicket'
+import { useAuthenticationStore } from 'stores/authentication'
+import { estadosTickets } from 'config/tickets.utils'
 import { Ticket } from '../../domain/Ticket'
 
 export default defineComponent({
   components: {
     EssentialTable,
+    DetalleTicket,
   },
   props: {
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<Ticket>,
       required: true,
     },
+    accion: {
+      type: Function,
+      required: true,
+    }
   },
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
@@ -33,6 +42,7 @@ export default defineComponent({
     * Stores
     *********/
     const ticketStore = useTicketStore()
+    const authenticationStore = useAuthenticationStore()
 
     /*******
     * Mixin
@@ -43,6 +53,7 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         empleados: [],
+        departamentos: new DepartamentoController(),
       })
     })
 
@@ -96,10 +107,19 @@ export default defineComponent({
               responsable: reagendar.responsable,
             })
 
-            const anterior = listado.value[ticketStore.posicionFilaTicket]
-            anterior.departamento_responsable = response.data.modelo.departamento_responsable
-            anterior.responsable = response.data.modelo.responsable
-            listado.value.splice(ticketStore.posicionFilaTicket, 1, anterior)
+            // Es el solicitante asigna
+            if (authenticationStore.user.id === ticketStore.filaTicket.solicitante_id) {
+              /*const anterior = listado.value[ticketStore.posicionFilaTicket]
+              anterior.departamento_responsable = response.data.modelo.departamento_responsable
+              anterior.responsable = response.data.modelo.responsable
+              anterior.estado = estadosTickets.ASIGNADO
+              listado.value.splice(ticketStore.posicionFilaTicket, 1, anterior)*/
+              props.accion(estadosTickets.ASIGNADO)
+            } else {
+              // Es el responsable actual transfiere
+              listado.value.splice(ticketStore.posicionFilaTicket, 1)
+            }
+
             notificarCorrecto(response.data.mensaje)
             emit('cerrar-modal', false)
           })

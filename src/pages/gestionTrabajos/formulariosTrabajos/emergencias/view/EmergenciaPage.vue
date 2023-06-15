@@ -27,10 +27,13 @@
       </div>
       <div class="row">
         <div class="col-12 q-mb-md">
-          <trabajo-realizado
+          <tabla-filas-dinamicas
             :listado="emergencia.trabajo_realizado"
+            :configuracion-columnas="configuracionColumnasTrabajoRealizado"
             @actualizar="(data) => (emergencia.trabajo_realizado = data)"
-          ></trabajo-realizado>
+            :entidad="TrabajoRealizado"
+            :accion1="verFotografia"
+          ></tabla-filas-dinamicas>
         </div>
 
         <div class="col-12 q-mb-md">
@@ -150,6 +153,8 @@
         />
       </div>
     </q-card>
+
+    <visor-imagen ref="refVisorImagen"></visor-imagen>
   </q-page>
 </template>
 
