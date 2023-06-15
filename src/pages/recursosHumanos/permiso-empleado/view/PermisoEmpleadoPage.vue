@@ -83,7 +83,7 @@
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <div class="q-gutter-md row items-start">
-                      <q-date v-model="permiso.fecha_hora_fin" mask="DD-MM-YYYY HH:mm" today-btn>
+                      <q-date v-model="permiso.fecha_hora_fin" mask="DD-MM-YYYY HH:mm"  :options="optionsFecha" today-btn>
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>

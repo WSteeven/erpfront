@@ -36,62 +36,21 @@ export default defineComponent({
     const tipos_permisos = ref([])
     const empleados = ref([])
     const dias_permiso = computed(() => {
-      const datePartsInicio = permiso.fecha_hora_inicio
-        ? permiso.fecha_hora_inicio.split('-')
-        : 0 // Dividir el string en partes usando el guión como separador
-      const dia_inicio = parseInt(datePartsInicio[0], 10) // Obtener el día como entero
-      const mes_inicio = parseInt(datePartsInicio[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-      const anio_inicio = parseInt(datePartsInicio[2], 10)
-      const datePartsFin = permiso.fecha_hora_fin
-        ? permiso.fecha_hora_fin.split('-')
-        : 0 // Dividir el string en partes usando el guión como separador
-      const dia_fin = parseInt(datePartsFin[0], 10) // Obtener el día como entero
-      const mes_fin = parseInt(datePartsFin[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-      const anio_fin = parseInt(datePartsFin[2], 10)
-      const fechaInicio = new Date(anio_inicio, mes_inicio, dia_inicio)
-      const fechaFin = new Date(anio_fin, mes_fin, dia_fin)
-      // Calcula la diferencia en dias
-      const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
-      return diferenciaDias
+      if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
+        const fechaInicio = convertir_fecha(permiso.fecha_hora_inicio)
+        const fechaFin =  convertir_fecha(permiso.fecha_hora_fin)
+        // Calcula la diferencia en dias
+        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
+        return diferenciaDias
+      }else{
+        return 0
+      }
+
     })
     const horas_permisos = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const datePartsInicio = permiso.fecha_hora_inicio
-          ? permiso.fecha_hora_inicio.split('-')
-          : 0 // Dividir el string en partes usando el guión como separador
-        let tiempo_inicio = datePartsInicio[2]
-        tiempo_inicio = tiempo_inicio.split(' ')
-        tiempo_inicio = tiempo_inicio[1].split(':')
-        const dia_inicio = parseInt(datePartsInicio[0], 10) // Obtener el día como entero
-        const mes_inicio = parseInt(datePartsInicio[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-        const anio_inicio = parseInt(datePartsInicio[2], 10)
-        const datePartsFin = permiso.fecha_hora_fin
-          ? permiso.fecha_hora_fin.split('-')
-          : 0 // Dividir el string en partes usando el guión como separador
-        let tiempo_fin = datePartsFin[2]
-        tiempo_fin = tiempo_fin.split(' ')
-        tiempo_fin = tiempo_fin[1].split(':')
-        const dia_fin = parseInt(datePartsFin[0], 10) // Obtener el día como entero
-        const mes_fin = parseInt(datePartsFin[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-        const anio_fin = parseInt(datePartsFin[2], 10)
-        const fechaInicio = new Date(
-          anio_inicio,
-          mes_inicio,
-          dia_inicio,
-          tiempo_inicio[0],
-          tiempo_inicio[1],
-          0
-        )
-        const fechaFin = new Date(
-          anio_fin,
-          mes_fin,
-          dia_fin,
-          tiempo_fin[0],
-          tiempo_fin[1],
-          0
-        )
-        console.log('fechaInicio', fechaInicio)
-        console.log('fechaFin', fechaFin)
+        const fechaInicio = convertir_fecha(permiso.fecha_hora_inicio)
+        const fechaFin =  convertir_fecha(permiso.fecha_hora_fin)
         // Calcula la diferencia en milisegundos
         const diferenciaMilisegundos =
           fechaFin.getTime() - fechaInicio.getTime()
@@ -102,6 +61,31 @@ export default defineComponent({
         return 0
       }
     })
+    function optionsFecha(date) {
+      const today = new Date();
+      const fechaActual = convertir_fecha(permiso.fecha_hora_inicio);
+      const fechaIngresada = new Date(date);
+      const diferenciaDias = fechaIngresada.getDate() - fechaActual.getDate()
+      return diferenciaDias == 0;
+    }
+    function convertir_fecha(fecha){
+      const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
+    let tiempo = dateParts[2]
+    tiempo = tiempo.split(' ')
+    tiempo = tiempo[1].split(':')
+    const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
+    const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
+    const anio = parseInt(dateParts[2], 10)
+    const fecha_convert = new Date(
+      anio,
+      mes,
+      dia,
+      tiempo[0],
+      tiempo[1],
+      0
+    )
+    return fecha_convert;
+    }
     cargarVista(async () => {
       obtenerListados({
         tipos_permisos: new MotivoPermisoEmpleadoController(),
@@ -133,6 +117,7 @@ export default defineComponent({
       removeAccents,
       mixin,
       permiso,
+      optionsFecha,
       tipos_permisos,
       dias_permiso,
       horas_permisos,
