@@ -11,11 +11,12 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TipoTicket } from '../domain/TipoTicket'
-import { TipoTicketController } from '../infraestructure/TipoTicketController'
 import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
+import { TipoTicketController } from '../infraestructure/TipoTicketController'
+import { TipoTicket } from '../domain/TipoTicket'
+import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
 
 export default defineComponent({
   components: {
@@ -33,8 +34,10 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         departamentos: new DepartamentoController(),
+        categoriasTiposTickets: new CategoriaTipoTicketController(),
       })
       departamentos.value = listadosAuxiliares.departamentos
+      categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets
     })
 
     /*********
@@ -42,7 +45,9 @@ export default defineComponent({
     **********/
     const {
       filtrarDepartamentos,
+      filtrarCategoriasTiposTickets,
       departamentos,
+      categoriasTiposTickets,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
     const rules = {
@@ -65,7 +70,9 @@ export default defineComponent({
       accion,
       configuracionColumnasTipoTicket,
       filtrarDepartamentos,
+      filtrarCategoriasTiposTickets,
       departamentos,
+      categoriasTiposTickets,
     }
   },
 })

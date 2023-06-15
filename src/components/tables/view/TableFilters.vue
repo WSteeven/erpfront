@@ -102,15 +102,18 @@
         </q-input>
       </div>
 
-      <div class="row col-md-1 items-center">
+      <div class="row col-md-2 items-center">
         <q-btn
-          color="negative"
-          round
+          color="grey-10"
           push
           no-caps
-          icon="bi-x"
+          dense
+          class="full-width"
           @click="quitarFiltro(index)"
-        ></q-btn>
+        >
+          <q-icon name="bi-x"></q-icon>
+          Quitar filtro</q-btn
+        >
       </div>
     </div>
   </div>
@@ -156,8 +159,8 @@ export default defineComponent({
       columnas.value[index].options = campo.options
       columnas.value[index].operador = null
       columnas.value[index].operadores = obtenerOperadores(filtro)
-      columnas.value[index].value =
-        columnas.value[index].type == 'boolean' ? false : null
+      columnas.value[index].value = null
+      columnas.value[index].type == 'boolean' ? false : null
     }
 
     function obtenerUri(filtro: any) {
@@ -197,8 +200,15 @@ export default defineComponent({
     }
 
     function filtrar() {
+      columnas.value = columnas.value.filter(
+        (filtro) => filtro.field || filtro.value
+      )
+
+      // const verificarValores = columnas.value.some((filtro) => filtro.value)
+      // console.log(verificarValores)
+
       const uri = columnas.value.map((filtro) => obtenerUri(filtro)).join('&')
-      console.log(uri)
+      // console.log(uri)
       emit('filtrar', uri)
     }
 

@@ -130,6 +130,10 @@ module.exports = configure(function (/* ctx */) {
           __dirname,
           './src/pages/gestionTickets/ticketsAsignados'
         ),
+        categoriasTiposTickets: path.join(
+          __dirname,
+          './src/pages/gestionTickets/categoriasTiposTickets'
+        ),
         tiposTickets: path.join(
           __dirname,
           './src/pages/gestionTickets/tiposTickets'

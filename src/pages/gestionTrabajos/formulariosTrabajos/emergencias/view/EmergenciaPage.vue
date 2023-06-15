@@ -32,6 +32,7 @@
             :configuracion-columnas="configuracionColumnasTrabajoRealizado"
             @actualizar="(data) => (emergencia.trabajo_realizado = data)"
             :entidad="TrabajoRealizado"
+            :accion1="verFotografia"
           ></tabla-filas-dinamicas>
         </div>
 
@@ -152,6 +153,8 @@
         />
       </div>
     </q-card>
+
+    <visor-imagen ref="refVisorImagen"></visor-imagen>
   </q-page>
 </template>
 

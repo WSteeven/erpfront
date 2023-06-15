@@ -158,6 +158,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/categorias-tipos-tickets',
+        name: 'categorias_tipos_tickets',
+        component: () => import('categoriasTiposTickets/view/CategoriaTipoTicketPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/tipos-tickets',
         name: 'tipos_tickets',
         component: () => import('tiposTickets/view/TipoTicketPage.vue'),

@@ -90,6 +90,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tickets_asignados'),
         },
         {
+          title: 'Categorías tipos de tickets',
+          link: 'categorias-tipos-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.categorias_tipos_tickets'),
+        },
+        {
           title: 'Tipos de tickets',
           link: 'tipos-tickets',
           icon: 'bi-circle',
@@ -462,7 +468,8 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-circle',
               can:store.can('puede.ver.prestamo_empresarial'),
             },
-          ]},
+          ]
+        },
 
 
       ],
