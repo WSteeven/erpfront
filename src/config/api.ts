@@ -58,6 +58,9 @@ export const endpoints = {
   extension_covertura_salud_empleado: new Endpoint('recursos-humanos/extension_covertura_salud_empleado'),
   horas_extras_tipo: new Endpoint('recursos-humanos/horas_extras_tipo'),
   horas_extras_subtipo: new Endpoint('recursos-humanos/horas_extras_subtipo'),
+  forma_pago: new Endpoint('forma_pago'),
+  sueldo_basico: new Endpoint('recursos-humanos/sueldo_basico'),
+
 
 
   //Modulo de Vehiculos

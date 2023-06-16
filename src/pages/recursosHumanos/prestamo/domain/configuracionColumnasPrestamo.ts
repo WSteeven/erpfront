@@ -10,9 +10,9 @@ export const configuracionColumnasPrestamo: ColumnConfig<Prestamo>[] = [
       sortable: true
   },
   {
-    name: 'valor',
-    field: 'valor',
-    label: 'Valor',
+    name: 'monto',
+    field: 'monto',
+    label: 'monto',
     align: 'left',
     sortable: true
 },

@@ -712,12 +712,12 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/prestamo-empresarial',
-        name: 'prestamo-empresarial',
+        name: 'prestamo_empresarial',
         component: () =>
           import(
             'pages/recursosHumanos/prestamo/view/PrestamoEmpresarialPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/rol-pago',

@@ -7,9 +7,11 @@ import {
   minLength,
   required,
 } from 'shared/i18n-validators'
+import { apiConfig, endpoints } from 'config/api'
+import axios from 'axios'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect } from 'vue'
+import { defineComponent, ref, computed, watchEffect, reactive } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -27,12 +29,18 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { FormaPagoController } from 'pages/recursosHumanos/forma_pago/infraestructure/FormaPagoController'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useRecursosHumanosStore } from 'stores/recursosHumanos'
+import { integer } from 'vuelidate/lib/validators'
+import { number } from 'echarts'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(Prestamo, new PrestamoController())
     const {
+      accion,
       entidad: prestamo,
       disabled,
       listadosAuxiliares,
@@ -52,13 +60,19 @@ export default defineComponent({
       { id: 1, nombre: 'Prestamo Descuento' },
       { id: 2, nombre: 'Anticipo' },
     ])
-    const formas_pago = ref([
-      { id: 1, nombre: 'Efectivo' },
-      { id: 2, nombre: 'Cheque' },
-      { id: 3, nombre: 'Nota Debito' },
-    ])
+    const maximoAPrestar = ref()
+    const formas_pago = ref([])
     const esMayorPrestamo = ref(false)
     const empleados = ref([])
+    const recursosHumanosStore = useRecursosHumanosStore()
+    const sueldo_basico = computed (()=>{
+      recursosHumanosStore.obtener_sueldo_basico()
+      return recursosHumanosStore.sueldo_basico
+    })
+   /* async function obtenerSueldoBasico() {
+      sueldo_basico.value = await recursosHumanosStore.obtener_sueldo_basico()
+      await console.log(sueldo_basico.value)
+    }*/
     cargarVista(async () => {
       obtenerListados({
         motivos: new MotivoPermisoEmpleadoController(),
@@ -66,22 +80,30 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
+        formas_pago: {
+          controller: new FormaPagoController(),
+          params: { campos: 'id,nombre' },
+        },
       })
+      formas_pago.value = listadosAuxiliares.formas_pago
       empleados.value = listadosAuxiliares.empleados
+      //obtenerSueldoBasico()
     })
     motivos.value = listadosAuxiliares.motivos
 
+    maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
+    console.log(maximoAPrestar.value)
     //Reglas de validacion
-    const reglas = {
-      empleado: { required },
+    const reglas =computed(()=>({
+      solicitante: { required, },
       fecha: { required },
       vencimiento: { required },
-      valor: { required },
-      valor_utilidad: { required },
+      monto: { required, maxValue: maxValue(maximoAPrestar.value) },
+      valor_utilidad: { requiredIf: requiredIf(prestamo.utilidad != null) },
       plazo: { required, minValue: minValue(1), maxValue: maxValue(12) },
       plazos: { required },
       forma_pago: { required },
-    }
+    }))
     prestamo.plazos = []
     const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
     function tabla_plazos() {
@@ -89,7 +111,7 @@ export default defineComponent({
       if (key_enter.value >= 1) {
         prestamo.plazos = []
       }
-      const valor_cuota = prestamo.valor !== null ? prestamo.valor : 0
+      const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
       for (let index = 1; index <= prestamo.plazo; index++) {
         const plazo = {
           num_cuota: index,
@@ -128,14 +150,19 @@ export default defineComponent({
       }
       // Formatear la fecha en formato 'YYYY-MM-DD'
       // Obtiene los componentes de la fecha
-      const dia = fechaActual.getDate() >=10 ?fechaActual.getDate():'0'+fechaActual.getDate()
-      const mes = fechaActual.getMonth() >= 9 ?fechaActual.getMonth() + 1:'0'+(fechaActual.getMonth() + 1) // Los meses en JavaScript se indexan desde 0 (enero es 0)
+      const dia =
+        fechaActual.getDate() >= 10
+          ? fechaActual.getDate()
+          : '0' + fechaActual.getDate()
+      const mes =
+        fechaActual.getMonth() >= 9
+          ? fechaActual.getMonth() + 1
+          : '0' + (fechaActual.getMonth() + 1) // Los meses en JavaScript se indexan desde 0 (enero es 0)
       const año = fechaActual.getFullYear()
       // Formatea los componentes de la fecha en el nuevo formato
       const fechaFormateada = dia + '-' + mes + '-' + año
       return fechaFormateada
     }
-
     const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
     function diferencia_fechas() {
@@ -165,11 +192,13 @@ export default defineComponent({
     }
     watchEffect(() => {
       if (prestamo.plazo != null) {
-
         if (prestamo.plazo > 0) {
           tabla_plazos()
         }
-        prestamo.vencimiento = prestamo.plazos!=null?prestamo.plazos[prestamo.plazo-1].fecha_pago:null
+        prestamo.vencimiento =
+          prestamo.plazos != null
+            ? prestamo.plazos[prestamo.plazo - 1].fecha_pago
+            : null
       }
     })
     function filtrarEmpleado(val, update) {
@@ -191,7 +220,7 @@ export default defineComponent({
     function recargar_tabla() {
       const valor_utilidad =
         prestamo.valor_utilidad == null ? 0 : prestamo.valor_utilidad
-      const valor_prestamo = prestamo.valor == null ? 0 : prestamo.valor
+      const valor_prestamo = prestamo.monto == null ? 0 : prestamo.monto
 
       if (valor_utilidad > 0) {
         const indice_couta = prestamo.plazos!.findIndex(
@@ -213,6 +242,7 @@ export default defineComponent({
         calcular_valores_prestamo(valor_utilidad, valor_prestamo, valorAnterior)
       }
     }
+
     const botonmodificar_couta: CustomActionTable = {
       titulo: 'editar',
       icono: 'bi-pencil-square',
@@ -229,7 +259,7 @@ export default defineComponent({
           mensaje: 'Ingrese nuevo valor de la couta',
           accion: async (data) => {
             try {
-              const valor_prestamo = prestamo.valor == null ? 0 : prestamo.valor
+              const valor_prestamo = prestamo.monto == null ? 0 : prestamo.monto
               if (data > valor_prestamo) {
                 esMayorPrestamo.value = true
               }
@@ -284,15 +314,21 @@ export default defineComponent({
     watchEffect(() => {
       recargar_tabla()
     })
+
+    console.log(maximoAPrestar.value)
     return {
       removeAccents,
       mixin,
       prestamo,
       empleados,
+      sueldo_basico,
       watchEffect,
       filtrarEmpleado,
       recargar_tabla,
       esMayorPrestamo,
+      maximoValorPrestamo: [
+        val => (val && val.length < (parseInt(sueldo_basico.value)*2)) || 'Solo se permite prestamo menor a 2 SBU'
+      ],
       botonmodificar_couta,
       configuracionColumnasPlazoPrestamo,
       plazo_pago,
@@ -303,6 +339,7 @@ export default defineComponent({
       v$,
       disabled,
       configuracionColumnas: configuracionColumnasPrestamo,
+      accion,
       accionesTabla,
     }
   },

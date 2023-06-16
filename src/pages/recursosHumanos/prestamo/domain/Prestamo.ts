@@ -2,12 +2,12 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class Prestamo extends EntidadAuditable {
   id: number | null
-  empleado: number | null
+  solicitante: number | null
   fecha: string | null
   vencimiento: string | null
   utilidad: number |null
   valor_utilidad: number |null
-  valor: number | null
+  monto: number | null
   forma_pago: string | null
   forma_pago_info: string | null
   plazo
@@ -16,12 +16,12 @@ export class Prestamo extends EntidadAuditable {
   constructor() {
     super()
     this.id = null
-    this.empleado = null
+    this.solicitante = null
     this.fecha = null
     this.vencimiento = null
     this.utilidad = null
     this.valor_utilidad = null
-    this.valor = null
+    this.monto = null
     this.forma_pago = null
     this.forma_pago_info = null
     this.plazo = null
