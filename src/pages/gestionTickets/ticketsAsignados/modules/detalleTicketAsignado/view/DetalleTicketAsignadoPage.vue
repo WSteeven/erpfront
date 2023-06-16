@@ -2,6 +2,7 @@
   <q-card class="rounded-card border-none">
     <q-card-section>
       <detalle-ticket :ticket="ticket"></detalle-ticket>
+      <br />
       <archivo-seguimiento
         ref="refArchivoTicket"
         :mixin="mixinArchivoTicket"

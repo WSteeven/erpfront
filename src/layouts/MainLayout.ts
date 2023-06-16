@@ -45,7 +45,7 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+    if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
 
     /************
      * Variables

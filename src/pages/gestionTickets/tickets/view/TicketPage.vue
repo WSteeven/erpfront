@@ -126,6 +126,8 @@
                 @update:model-value="
                   () => {
                     ticket.responsable = null
+                    ticket.categoria_tipo_ticket = null
+                    ticket.tipo_ticket = null
                     obtenerResponsables(ticket.departamento_responsable)
                   }
                 "
@@ -149,6 +151,21 @@
                   </div>
                 </template>
               </q-select>
+            </div>
+
+            <!-- Ticket interno -->
+            <div class="col-12 col-md-3">
+              <br />
+              <q-checkbox
+                v-model="ticket.ticket_interno"
+                label="Ticket interno"
+                outlined
+                :disable="disabled"
+                @update:model-value="
+                  obtenerResponsables(ticket.departamento_responsable)
+                "
+                dense
+              ></q-checkbox>
             </div>
 
             <!-- Responsable -->
@@ -177,7 +194,7 @@
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
-                      Primero seleccione un departamento
+                      Seleccione un departamento
                     </q-item-section>
                   </q-item>
                 </template>
@@ -197,10 +214,10 @@
               <label class="q-mb-sm block"
                 >Categorías para tipo de ticket</label
               >
+              <!--@filter="filtrarCategoriasTiposTickets" -->
               <q-select
                 v-model="ticket.categoria_tipo_ticket"
                 :options="categoriasTiposTickets"
-                @filter="filtrarCategoriasTiposTickets"
                 transition-show="scale"
                 transition-hide="scale"
                 hint="Obligatorio"
@@ -214,13 +231,14 @@
                 input-debounce="0"
                 emit-value
                 map-options
+                @update:model-value="ticket.tipo_ticket = null"
                 :error="!!v$.categoria_tipo_ticket.$errors.length"
                 @blur="v$.categoria_tipo_ticket.$touch"
               >
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
-                      No hay resultados
+                      Seleccione un departamento
                     </q-item-section>
                   </q-item>
                 </template>
@@ -262,7 +280,7 @@
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
-                      No hay resultados
+                      Seleccione una categoría
                     </q-item-section>
                   </q-item>
                 </template>
@@ -404,7 +422,10 @@
           class="rounded-card q-mb-md"
         >
           <q-card-section>
-            <div class="text-bold q-mb-lg">Calificaciones</div>
+            <div class="text-bold q-mb-lg">
+              <q-icon name="bi-stars"></q-icon>
+              Calificaciones
+            </div>
             <div
               v-for="item in ticket.calificaciones"
               :key="item.id"
@@ -415,13 +436,16 @@
                 <label class="q-mb-sm block"
                   >Calificación del {{ item.solicitante_o_responsable }}</label
                 >
-                <q-input
-                  :model-value="obtenerTexto(item.calificacion)"
-                  outlined
-                  disable
-                  dense
-                >
-                </q-input>
+                <q-chip color="grey-3">
+                  <q-icon
+                    v-for="index in item.calificacion"
+                    :key="index"
+                    name="bi-star-fill"
+                    color="yellow-7"
+                    class="q-mr-xs"
+                  ></q-icon>
+                  {{ obtenerTexto(item.calificacion) }}
+                </q-chip>
               </div>
 
               <!-- Observacion -->
@@ -452,6 +476,7 @@
           :alto-fijo="false"
           :permitir-buscar="false"
           :mostrar-footer="!pausas.length"
+          estilos="margin-bottom: 16px;"
         ></essential-table>
 
         <essential-table

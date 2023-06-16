@@ -49,6 +49,7 @@ import { configuracionColumnasPausas } from 'gestionTrabajos/subtareas/modules/p
 import { configuracionColumnasTicketRechazado } from '../domain/configuracionColumnasTicketRechazado'
 import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
 import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
+import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
 
 export default defineComponent({
   components: {
@@ -102,7 +103,7 @@ export default defineComponent({
       })
       // tiposTickets.value = listadosAuxiliares.tiposTickets
       departamentos.value = listadosAuxiliares.departamentos
-      categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets
+      // categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets
     })
 
     /************
@@ -118,7 +119,8 @@ export default defineComponent({
     const modalesTicket = new ComportamientoModalesTicket()
     const tabActual = ref()
 
-    const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket === ticket.categoria_tipo_ticket))
+    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === ticket.departamento_responsable))
+    const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket_id === ticket.categoria_tipo_ticket))
 
     /*************
     * Validaciones
@@ -157,10 +159,8 @@ export default defineComponent({
       filtrarEmpleados,
       filtrarTiposTickets,
       filtrarCategoriasTiposTickets,
-      //  tiposTickets,
       departamentos,
       empleados,
-      categoriasTiposTickets,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
     /************
@@ -169,10 +169,16 @@ export default defineComponent({
     const { btnReasignar, btnSeguimiento, btnCalificar, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
 
     async function obtenerResponsables(departamento: number) {
+      const filtros = {
+        departamento_id: departamento, rol: rolesSistema.coordinador
+      }
+
+      if (ticket.ticket_interno) delete (filtros as any).rol
+
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { departamento_id: departamento, rol: rolesSistema.coordinador }
+          params: filtros, //{ departamento_id: departamento, rol: rolesSistema.coordinador }
           // params: { campos: 'id,nombres,apellidos', departamento_id: departamento, rol: rolesSistema.coordinador }
         },
       })
@@ -184,17 +190,11 @@ export default defineComponent({
     }
 
     function filtrarTickets(tab: string) {
-      listar({ estado: tab })
+      listar({ solicitante_id: authenticationStore.user.id, estado: tab })
       tabActual.value = tab
     }
 
     filtrarTickets(estadosTickets.ASIGNADO)
-
-    async function obtenerClienteFinal(clienteFinalId: number) {
-      const clienteFinalController = new ClienteFinalController()
-      const { result } = await clienteFinalController.consultar(clienteFinalId)
-      return result
-    }
 
     function obtenerTexto(calificacion: number) {
       switch (calificacion) {
@@ -279,7 +279,6 @@ export default defineComponent({
       eliminar,
       tareaStore,
       reestablecer,
-      obtenerClienteFinal,
       listadosAuxiliares,
       configuracionColumnasClientes,
       configuracionColumnasTicket,

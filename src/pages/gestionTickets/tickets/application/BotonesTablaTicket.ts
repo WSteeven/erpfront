@@ -243,7 +243,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     titulo: 'Calificar',
     icono: 'bi-stars',
     color: 'secondary',
-    visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado),
+    visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && entidad.pendiente_calificar,
     accion: ({ entidad }) => {
       console.log('dentro')
       ticketStore.filaTicket = entidad

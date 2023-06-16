@@ -3,7 +3,7 @@ import { configuracionColumnasTipoTicket } from '../domain/configuracionColumnas
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useQuasar } from 'quasar'
 
 // Componentes
@@ -17,6 +17,7 @@ import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/applicat
 import { TipoTicketController } from '../infraestructure/TipoTicketController'
 import { TipoTicket } from '../domain/TipoTicket'
 import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
+import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
 
 export default defineComponent({
   components: {
@@ -37,17 +38,22 @@ export default defineComponent({
         categoriasTiposTickets: new CategoriaTipoTicketController(),
       })
       departamentos.value = listadosAuxiliares.departamentos
-      categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets
+      // categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets
     })
+
+    /**
+     * Variables
+     */
+    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === tipoTicket.departamento))
 
     /*********
     * Filtros
     **********/
     const {
       filtrarDepartamentos,
-      filtrarCategoriasTiposTickets,
+      // filtrarCategoriasTiposTickets,
       departamentos,
-      categoriasTiposTickets,
+      // categoriasTiposTickets,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
     const rules = {
@@ -70,7 +76,7 @@ export default defineComponent({
       accion,
       configuracionColumnasTipoTicket,
       filtrarDepartamentos,
-      filtrarCategoriasTiposTickets,
+      // filtrarCategoriasTiposTickets,
       departamentos,
       categoriasTiposTickets,
     }
