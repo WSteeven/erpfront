@@ -65,14 +65,18 @@
           <!-- Plazo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Plazo </label>
-            <q-input v-model="prestamo.plazo" type="number" disable outlined dense>
-
+            <q-input v-model="prestamo.plazo" type="number" :disable="disabled" :error="!!v$.plazo.$errors.length" @blur="v$.plazo.$touch" outlined dense>
+              <template v-slot:error>
+                <div v-for="error of v$.plazo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
           <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Vence</label>
-            <q-input v-model="prestamo.vencimiento" :error="!!v$.vencimiento.$errors.length" :disable="disabled"
+            <q-input v-model="prestamo.vencimiento" :error="!!v$.vencimiento.$errors.length" disable
               @blur="v$.vencimiento.$touch" outlined dense>
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">

@@ -7,6 +7,7 @@ import {
   minLength,
   required,
 } from 'shared/i18n-validators'
+import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed, watchEffect } from 'vue'
 
@@ -77,6 +78,7 @@ export default defineComponent({
       vencimiento: { required },
       valor: { required },
       valor_utilidad: { required },
+      plazo: { required, minValue: minValue(1), maxValue: maxValue(12) },
       plazos: { required },
       forma_pago: { required },
     }
@@ -125,7 +127,12 @@ export default defineComponent({
           break
       }
       // Formatear la fecha en formato 'YYYY-MM-DD'
-      const fechaFormateada = fechaActual.toISOString().slice(0, 10)
+      // Obtiene los componentes de la fecha
+      const dia = fechaActual.getDate() >=10 ?fechaActual.getDate():'0'+fechaActual.getDate()
+      const mes = fechaActual.getMonth() >= 9 ?fechaActual.getMonth() + 1:'0'+(fechaActual.getMonth() + 1) // Los meses en JavaScript se indexan desde 0 (enero es 0)
+      const año = fechaActual.getFullYear()
+      // Formatea los componentes de la fecha en el nuevo formato
+      const fechaFormateada = dia + '-' + mes + '-' + año
       return fechaFormateada
     }
 
@@ -157,9 +164,12 @@ export default defineComponent({
       return new Date(anio, mes, dia)
     }
     watchEffect(() => {
-      prestamo.plazo = diferencia_fechas()
-      if (prestamo.plazo > 0) {
-        tabla_plazos()
+      if (prestamo.plazo != null) {
+
+        if (prestamo.plazo > 0) {
+          tabla_plazos()
+        }
+        prestamo.vencimiento = prestamo.plazos!=null?prestamo.plazos[prestamo.plazo-1].fecha_pago:null
       }
     })
     function filtrarEmpleado(val, update) {
@@ -221,7 +231,7 @@ export default defineComponent({
             try {
               const valor_prestamo = prestamo.valor == null ? 0 : prestamo.valor
               if (data > valor_prestamo) {
-                esMayorPrestamo.value=true;
+                esMayorPrestamo.value = true
               }
               prestamo.plazos![indice_couta].valor_a_pagar = data
               calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
