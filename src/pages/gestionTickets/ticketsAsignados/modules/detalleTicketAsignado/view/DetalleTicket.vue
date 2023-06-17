@@ -45,6 +45,12 @@
     </div>
 
     <div class="col-12 col-md-3">
+      <label class="q-mb-sm block">Categoria tipo de ticket</label>
+      <b>{{ ticket.categoria_tipo_ticket }}</b>
+      <!-- <q-input :model-value="ticket.tipo_ticket" outlined disable dense></q-input> -->
+    </div>
+
+    <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Tipo de ticket</label>
       <b>{{ ticket.tipo_ticket }}</b>
       <!-- <q-input :model-value="ticket.tipo_ticket" outlined disable dense></q-input> -->
