@@ -5,6 +5,8 @@ export class Prestamo extends EntidadAuditable {
   empleado: number | null
   fecha: string | null
   vencimiento: string | null
+  utilidad: number |null
+  valor_utilidad: number |null
   valor: number | null
   forma_pago: string | null
   forma_pago_info: string | null
@@ -17,6 +19,8 @@ export class Prestamo extends EntidadAuditable {
     this.empleado = null
     this.fecha = null
     this.vencimiento = null
+    this.utilidad = null
+    this.valor_utilidad = null
     this.valor = null
     this.forma_pago = null
     this.forma_pago_info = null

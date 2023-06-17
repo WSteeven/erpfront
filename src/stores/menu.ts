@@ -90,6 +90,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tickets_asignados'),
         },
         {
+          title: 'Categorías tipos de tickets',
+          link: 'categorias-tipos-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.categorias_tipos_tickets'),
+        },
+        {
           title: 'Tipos de tickets',
           link: 'tipos-tickets',
           icon: 'bi-circle',
@@ -193,7 +199,7 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title: store.esBodeguero ? 'Egreso de materiales' : 'Pedidos a bodega',
+          title: 'Egreso de materiales',
           link: 'transacciones-egresos',
           // can: store.can('puede.ver.transacciones_egresos'),
           can: store.can('puede.ver.transacciones_egresos') || store.esBodeguero,
@@ -244,6 +250,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-egresos',
               icon: 'bi-dash',
               can: false,
+            },
+            {
+              title: 'Reporte de pedidos',
+              link: 'reporte-pedidos',
+              icon: 'bi-dash',
+              can: true,
             },
             {
               title: 'Reporte de transferencias',
@@ -407,7 +419,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'RR HH',
       icon: 'bi-people',
-      can: true,//store.can('puede.ver.modulo_recursos_humanos'),
+      can: store.can('puede.ver.modulo_recursos_humanos'),
       children: [
         {
           title: 'Empleados',
@@ -439,30 +451,24 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.permiso_nomina'),
         },
-        {
-          title: 'Rol de Pagos',
-          link: 'rol-pago',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.rol_pago'),
-        },
-        {
-          title: 'Prestamos y Anticipos',
-          icon: 'fa-solid fa-hand-holding-dollar',
-          can: true,//store.can('puede.ver.modulo_recursos_humanos'),
-          children: [
-            {
-              title: 'Prestamos',
-              link: 'prestamo',
-              icon: 'bi-circle',
-              can: true//store.can('puede.ver.permiso_nomina'),
-            },
-            {
-              title: 'Anticipos',
-              link: 'anticipo',
-              icon: 'bi-circle',
-              can: true//store.can('puede.ver.permiso_nomina'),
-            },
-          ]},
+        /*  {
+            title: 'Rol de Pagos',
+            link: 'rol-pago',
+            icon: 'bi-circle',
+            can: store.can('puede.ver.rol_pago'),
+          },*/
+        /*  {
+            title: 'Prestamos',
+            icon: 'fa-solid fa-hand-holding-dollar',
+            can: true,//store.can('puede.ver.prestamo_empresarial'),
+            children: [
+              {
+                title: 'Prestamos',
+                link: 'prestamo-empresarial',
+                icon: 'bi-circle',
+                can:store.can('puede.ver.prestamo_empresarial'),
+              },
+            ]},*/
 
 
       ],

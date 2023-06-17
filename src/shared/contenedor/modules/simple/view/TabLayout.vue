@@ -4,6 +4,10 @@
       <slot name="modales" />
     </transition>
 
+    <b class="block text-center">
+      <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon>
+      {{ tituloTabla }}</b
+    >
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"

@@ -47,8 +47,8 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { AxiosResponse } from 'axios'
 import { configuracionColumnasPausas } from 'gestionTrabajos/subtareas/modules/pausasRealizadas/domain/configuracionColumnasPausas'
 import { configuracionColumnasTicketRechazado } from '../domain/configuracionColumnasTicketRechazado'
-import { CategoriaTipoTicketController } from 'pages/gestionTickets/tiposTickets/infraestructure/CategoriaTipoTicketController'
 import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
+import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
 
 export default defineComponent({
   components: {

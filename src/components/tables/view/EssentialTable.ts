@@ -310,6 +310,8 @@ export default defineComponent({
 
       refTableFilters.value.filtrar()
 
+
+
       // emit('filtrar', filtros.value)
     }
 

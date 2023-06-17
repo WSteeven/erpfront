@@ -1,6 +1,6 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
-import { endpoints } from 'config/api'
 import { CategoriaTipoTicket } from '../domain/CategoriaTipoTicket'
+import { endpoints } from 'config/api'
 
 export class CategoriaTipoTicketController extends TransaccionSimpleController<CategoriaTipoTicket> {
   constructor() {

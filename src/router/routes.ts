@@ -158,6 +158,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/categorias-tipos-tickets',
+        name: 'categorias_tipos_tickets',
+        component: () => import('categoriasTiposTickets/view/CategoriaTipoTicketPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/tipos-tickets',
         name: 'tipos_tickets',
         component: () => import('tiposTickets/view/TipoTicketPage.vue'),
@@ -344,6 +350,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       //reportes de bodega
+      {
+        path: '/reporte-pedidos',
+        name: 'reporte_pedidos',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_pedidos/view/ReportePedidosPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
       {
         path: '/reporte-inventario',
         name: 'reporte_inventario',
@@ -702,20 +717,11 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/prestamo',
-        name: 'prestamo',
+        path: '/prestamo-empresarial',
+        name: 'prestamo-empresarial',
         component: () =>
           import(
-            'pages/recursosHumanos/prestamo/view/PrestamoPage.vue'
-          ),
-        meta: { requiresAuth: false },
-      },
-      {
-        path: '/anticipo',
-        name: 'anticipo',
-        component: () =>
-          import(
-            'pages/recursosHumanos/anticipo/view/AnticipoPage.vue'
+            'pages/recursosHumanos/prestamo/view/PrestamoEmpresarialPage.vue'
           ),
         meta: { requiresAuth: false },
       },
