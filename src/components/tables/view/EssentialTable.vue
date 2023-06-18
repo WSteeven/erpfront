@@ -87,7 +87,7 @@
 
       <div
         v-if="titulo"
-        class="row text-bold text-primary q-mb-lg items-center justify-center block"
+        class="row text-primary text-subtitle2 q-mb-lg items-center justify-center block"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,

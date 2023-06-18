@@ -158,6 +158,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/categorias-tipos-tickets',
+        name: 'categorias_tipos_tickets',
+        component: () => import('categoriasTiposTickets/view/CategoriaTipoTicketPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/tipos-tickets',
         name: 'tipos_tickets',
         component: () => import('tiposTickets/view/TipoTicketPage.vue'),
@@ -198,7 +204,7 @@ const routes: RouteRecordRaw[] = [
         path: '/permisos-roles',
         name: 'permisos_roles',
         component: () => import('pages/permisos/view/PermisoPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
       {
         path: '/permisos-usuarios',
@@ -706,6 +712,34 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/fondosRotativos/reportes/reporte_solicitud_fondos/view/Reporte_solicitud_fondoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      //Recursos Humanos
+      {
+        path: '/permiso-nomina',
+        name: 'permiso_nomina',
+        component: () =>
+          import(
+            'pages/recursosHumanos/permiso-empleado/view/PermisoEmpleadoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/prestamo-empresarial',
+        name: 'prestamo-empresarial',
+        component: () =>
+          import(
+            'pages/recursosHumanos/prestamo/view/PrestamoEmpresarialPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/rol-pago',
+        name: 'rol_pago',
+        component: () =>
+          import(
+            'pages/recursosHumanos/rol-pago/view/RolPagoPage.vue'
           ),
         meta: { requiresAuth: true },
       },

@@ -13,6 +13,10 @@ export default defineComponent({
       type: Object as () => ComportamientoModales<any>,
       required: true,
     },
+    accion: {
+      type: Function,
+      required: false,
+    },
     // confirmarCerrar: {
     //   type: Boolean,
     //   default: false,

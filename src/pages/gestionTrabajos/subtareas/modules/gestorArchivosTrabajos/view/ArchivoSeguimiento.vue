@@ -1,5 +1,5 @@
 <template>
-  <div class="col-12 col-md-3 q-mb-lg">
+  <div v-if="permitirSubir" class="col-12 col-md-3 q-mb-lg">
     <br />
     <q-checkbox
       v-model="quiero_subir_archivos"
@@ -10,7 +10,7 @@
     ></q-checkbox>
   </div>
 
-  <div v-show="quiero_subir_archivos" class="col-12 q-mb-md">
+  <div v-show="quiero_subir_archivos" class="col-12 q-mb-sm">
     <q-uploader
       ref="refGestor"
       label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
@@ -21,15 +21,17 @@
       class="bg-header-collapse expansion"
       color="white"
       text-color="black"
-      hide-upload-btn
       max-total-size="10485760"
       @rejected="onRejected"
+      hide-upload-btn
     />
   </div>
 
-  <div v-if="listado.length" class="col-12">
+  <slot name="boton-subir"></slot>
+
+  <div v-if="listado.length" class="col-12 q-mb-sm">
     <essential-table
-      titulo="Archivos subidos hasta el momento"
+      :titulo="`Existen ${listado.length} archivos compartidos hasta el momento`"
       :configuracionColumnas="columnas"
       :datos="listado"
       :alto-fijo="false"
@@ -40,8 +42,8 @@
       :mostrar-botones="false"
       :permitir-buscar="false"
       :accion1="btnDescargar"
-      :accion2="btnEliminar"
     ></essential-table>
+    <!-- :accion2="btnEliminar" -->
   </div>
 </template>
 

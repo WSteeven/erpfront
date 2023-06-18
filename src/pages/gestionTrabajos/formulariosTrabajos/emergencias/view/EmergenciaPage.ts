@@ -9,15 +9,17 @@ import { apiConfig, endpoints } from 'config/api'
 import { defineComponent, Ref, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
+import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
 
 // Componentes
-import TrabajoRealizado from 'pages/gestionTrabajos/formulariosTrabajos/trabajosRealizados/view/TablaTrabajoRealizadoPage.vue'
 import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
 import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
+import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import VisorImagen from 'components/VisorImagen.vue'
 
 // Logica y controladores
 import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
@@ -32,6 +34,7 @@ import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Emergencia } from '../domain/Emergencia'
 import { imprimirArchivo } from 'shared/utils'
+import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
 
 export default defineComponent({
   components: {
@@ -39,9 +42,10 @@ export default defineComponent({
     SelectorImagen,
     ButtonSubmits,
     TablaDevolucionProducto,
-    TrabajoRealizado,
     TablaObservaciones,
     ArchivoSeguimiento,
+    TablaFilasDinamicas,
+    VisorImagen,
   },
   props: {
     mixinModal: {
@@ -78,6 +82,7 @@ export default defineComponent({
      * Variables
      ************/
     const refTrabajos = ref()
+    const refVisorImagen = ref()
     const refObservaciones = ref()
     const utilizarMateriales = ref(false)
     const existeMaterialesDevolucion = ref(false)
@@ -142,6 +147,16 @@ export default defineComponent({
 
         prompt(config)
       },
+    }
+
+    const verFotografia: CustomActionTable = {
+      titulo: 'Ver fotografía',
+      icono: 'bi-image-fill',
+      color: 'secondary',
+      visible: ({ entidad }) => entidad.fotografia,
+      accion: async ({ entidad }) => {
+        refVisorImagen.value.abrir(entidad.fotografia)
+      }
     }
 
     /*************
@@ -270,6 +285,7 @@ export default defineComponent({
 
     return {
       v$,
+      refVisorImagen,
       refTrabajos,
       refObservaciones,
       refArchivoSeguimiento,
@@ -301,6 +317,9 @@ export default defineComponent({
       esCoordinador,
       descargarExcel,
       endpoint: endpoints.archivos_seguimientos,
+      TrabajoRealizado,
+      configuracionColumnasTrabajoRealizado,
+      verFotografia,
     }
   }
 })

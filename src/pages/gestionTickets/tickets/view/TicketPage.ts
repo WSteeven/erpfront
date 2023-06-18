@@ -4,10 +4,10 @@ import { configuracionColumnasClientes } from 'sistema/clientes/domain/configura
 import { tabOptionsEstadosTickets, tiposPrioridades, estadosTickets } from 'config/tickets.utils'
 import { configuracionColumnasTicket } from '../domain/configuracionColumnasTicket'
 import { useNotificaciones } from 'shared/notificaciones'
-import { accionesTabla, maskFecha } from 'config/utils'
+import { accionesTabla, maskFecha, rolesSistema } from 'config/utils'
 import { required } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 
@@ -25,6 +25,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarImagen from 'shared/prompts/SolicitarImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
+import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 
 // Logica y controladores
 import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
@@ -42,6 +43,13 @@ import { formatearFechaHora, obtenerFechaHoraActual } from 'shared/utils'
 import { TicketController } from '../infraestructure/TicketController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Ticket } from '../domain/Ticket'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosResponse } from 'axios'
+import { configuracionColumnasPausas } from 'gestionTrabajos/subtareas/modules/pausasRealizadas/domain/configuracionColumnasPausas'
+import { configuracionColumnasTicketRechazado } from '../domain/configuracionColumnasTicketRechazado'
+import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
+import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
+import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
 
 export default defineComponent({
   components: {
@@ -58,6 +66,7 @@ export default defineComponent({
     SolicitarImagen,
     VisorImagen,
     ArchivoSeguimiento,
+    EstadosSubtareas,
   },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -82,6 +91,7 @@ export default defineComponent({
       await obtenerListados({
         empleados: [],
         departamentos: new DepartamentoController(),
+        categoriasTiposTickets: new CategoriaTipoTicketController(),
         tiposTickets: {
           controller: new TipoTicketController(),
           params: { activo: 1 },
@@ -91,8 +101,9 @@ export default defineComponent({
           params: { activo: 1 },
         },
       })
-      tiposTickets.value = listadosAuxiliares.tiposTickets
+      // tiposTickets.value = listadosAuxiliares.tiposTickets
       departamentos.value = listadosAuxiliares.departamentos
+      // categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets
     })
 
     /************
@@ -106,6 +117,10 @@ export default defineComponent({
     const horaLimite = ref()
     let tiempoActualInterval = setInterval(() => fechaHoraActual.value = obtenerFechaHoraActual(), 1000)
     const modalesTicket = new ComportamientoModalesTicket()
+    const tabActual = ref()
+
+    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === ticket.departamento_responsable))
+    const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket_id === ticket.categoria_tipo_ticket))
 
     /*************
     * Validaciones
@@ -113,6 +128,7 @@ export default defineComponent({
     const reglas = {
       asunto: { required },
       tipo_ticket: { required },
+      categoria_tipo_ticket: { required },
       descripcion: { required },
       prioridad: { required },
       responsable: { required },
@@ -122,6 +138,19 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, ticket)
     setValidador(v$.value)
 
+    /***********
+     * Columnas
+     ***********/
+    const columnasPausas = [
+      ...configuracionColumnasPausas,
+      {
+        name: 'responsable',
+        field: 'responsable',
+        label: 'Responsable',
+        align: 'left',
+        sortable: true,
+      }]
+
     /*********
     * Filtros
     **********/
@@ -129,7 +158,7 @@ export default defineComponent({
       filtrarDepartamentos,
       filtrarEmpleados,
       filtrarTiposTickets,
-      tiposTickets,
+      filtrarCategoriasTiposTickets,
       departamentos,
       empleados,
     } = useFiltrosListadosTickets(listadosAuxiliares)
@@ -140,28 +169,63 @@ export default defineComponent({
     const { btnReasignar, btnSeguimiento, btnCalificar, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
 
     async function obtenerResponsables(departamento: number) {
+      const filtros = {
+        departamento_id: departamento, rol: rolesSistema.coordinador
+      }
+
+      if (ticket.ticket_interno) delete (filtros as any).rol
+
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', departamento_id: departamento }
+          params: filtros, //{ departamento_id: departamento, rol: rolesSistema.coordinador }
+          // params: { campos: 'id,nombres,apellidos', departamento_id: departamento, rol: rolesSistema.coordinador }
         },
       })
       empleados.value = listadosAuxiliares.empleados
     }
 
-    function subirArchivos(id: number) {
-      refArchivoTicket.value.subir({ ticket_id: id })
+    async function subirArchivos(id: number) {
+      await refArchivoTicket.value.subir({ ticket_id: id })
     }
 
-    function filtrarTarea(tab: string) {
-      listar({ estado: tab })
+    function filtrarTickets(tab: string) {
+      listar({ solicitante_id: authenticationStore.user.id, estado: tab })
+      tabActual.value = tab
     }
 
+    filtrarTickets(estadosTickets.ASIGNADO)
 
-    async function obtenerClienteFinal(clienteFinalId: number) {
-      const clienteFinalController = new ClienteFinalController()
-      const { result } = await clienteFinalController.consultar(clienteFinalId)
-      return result
+    function obtenerTexto(calificacion: number) {
+      switch (calificacion) {
+        case 1: return 'MALO'
+        case 2: return 'ACEPTABLE'
+        case 3: return 'BUENO'
+        case 4: return 'EXCELENTE'
+      }
+    }
+
+    const pausas = ref([])
+    async function obtenerPausas() {
+      // const statusEssentialLoading = new StatusEssentialLoading()
+      // statusEssentialLoading.activar()
+
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta =
+        axios.getEndpoint(endpoints.pausas_tickets) + '/' + ticket.id
+      const response: AxiosResponse = await axios.get(ruta)
+      pausas.value = response.data.results
+
+      // statusEssentialLoading.desactivar()
+    }
+
+    const rechazos = ref([])
+    async function obtenerRechazos() {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta =
+        axios.getEndpoint(endpoints.rechazos_tickets) + '/' + ticket.id
+      const response: AxiosResponse = await axios.get(ruta)
+      rechazos.value = response.data.results
     }
 
     /*********
@@ -181,9 +245,10 @@ export default defineComponent({
       fechaHoraActual.value = ticket.fecha_hora_solicitud
       clearInterval(tiempoActualInterval)
       if (ticket.departamento_responsable) obtenerResponsables(ticket.departamento_responsable)
-      console.log(refArchivoTicket.value)
       refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id })
       refArchivoTicket.value.quiero_subir_archivos = false
+      obtenerPausas()
+      obtenerRechazos()
     })
 
     onGuardado((id: number) => {
@@ -201,6 +266,7 @@ export default defineComponent({
       horaLimite.value = null
       tiempoActualInterval = setInterval(() => fechaHoraActual.value = obtenerFechaHoraActual(), 1000)
       refArchivoTicket.value.limpiarListado()
+      refArchivoTicket.value.quiero_subir_archivos = false
     })
 
     return {
@@ -213,16 +279,17 @@ export default defineComponent({
       eliminar,
       tareaStore,
       reestablecer,
-      obtenerClienteFinal,
       listadosAuxiliares,
       configuracionColumnasClientes,
       configuracionColumnasTicket,
+      configuracionColumnasTicketRechazado,
+      columnasPausas,
       mixin,
       configuracionColumnasSubtarea,
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
       tabOptionsEstadosTickets,
       maskFecha,
-      filtrarTarea,
+      filtrarTickets,
       filtrarDepartamentos,
       filtrarEmpleados,
       filtrarTiposTickets,
@@ -241,6 +308,12 @@ export default defineComponent({
       estadosTickets,
       modalesTicket,
       obtenerResponsables,
+      tabActual,
+      pausas,
+      rechazos,
+      obtenerTexto,
+      filtrarCategoriasTiposTickets,
+      categoriasTiposTickets,
     }
   },
 })

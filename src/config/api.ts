@@ -38,9 +38,27 @@ export const endpoints = {
 
   // Modulo de RR HH
   cargos: new Endpoint('cargos'),
+  motivo_permiso_empleado: new Endpoint('recursos-humanos/motivo_permiso_empleado'),
+  estado_permiso_empleado: new Endpoint('recursos-humanos/estado_permiso_empleado'),
+  tipo_contrato: new Endpoint('recursos-humanos/tipo_contrato'),
+  permiso_empleado: new Endpoint('recursos-humanos/permiso_empleado'),
+  prestamo_empresarial : new Endpoint('recursos-humanos/prestamo_empresarial'),
+  anticipo : new Endpoint('recursos-humanos/anticipo'),
+  rol_pago : new Endpoint('recursos-humanos/rol_pago'),
+  datos_empleado : new Endpoint('recursos-humanos/datos_empleado/'),
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   allroles: new Endpoint('roles'),
+  concepto_ingreso: new Endpoint('recursos-humanos/concepto_ingreso'),
+  descuentos_generales:  new Endpoint('recursos-humanos/descuentos_generales'),
+  descuentos_ley:  new Endpoint('recursos-humanos/descuentos_ley'),
+  multa: new Endpoint('recursos-humanos/multa'),
+  prestamos_quirorafario_empleado: new Endpoint('recursos-humanos/prestamos_quirorafario_empleado'),
+  prestamos_hipotecario_empleado: new Endpoint('recursos-humanos/prestamos_hipotecario_empleado'),
+  extension_covertura_salud_empleado: new Endpoint('recursos-humanos/extension_covertura_salud_empleado'),
+  horas_extras_tipo: new Endpoint('recursos-humanos/horas_extras_tipo'),
+  horas_extras_subtipo: new Endpoint('recursos-humanos/horas_extras_subtipo'),
+
 
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),
@@ -183,9 +201,13 @@ export const endpoints = {
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   tickets: new Endpoint('tickets/tickets'),
   tipos_tickets: new Endpoint('tickets/tipos-tickets'),
+  categorias_tipos_tickets: new Endpoint('tickets/categorias-tipos-tickets'),
   archivos_tickets: new Endpoint('tickets/archivos-tickets'),
   archivos_seguimientos_tickets: new Endpoint('tickets/archivos-seguimientos-tickets'),
   motivos_pausas_tickets: new Endpoint('tickets/motivos-pausas-tickets'),
   motivos_cancelados_tickets: new Endpoint('tickets/motivos-cancelados-tickets'),
   cambiar_responsable_ticket: new Endpoint('tickets/tickets/cambiar-responsable'),
+  actividades_realizadas_seguimientos_tickets: new Endpoint('tickets/actividades-realizadas-seguimientos-tickets'),
+  pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
+  rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
 }
