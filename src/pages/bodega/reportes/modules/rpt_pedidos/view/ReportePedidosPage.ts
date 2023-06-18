@@ -15,9 +15,8 @@ import { Doughnut } from "vue-chartjs";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { AxiosResponse } from "axios"
-import { apiConfig, endpoints } from "config/api";
+import { endpoints } from "config/api";
 import { useNotificaciones } from "shared/notificaciones";
-import { acciones, accionesTabla } from "config/utils";
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 export default defineComponent({
