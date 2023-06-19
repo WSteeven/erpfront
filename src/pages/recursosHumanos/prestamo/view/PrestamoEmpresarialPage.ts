@@ -40,12 +40,12 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(Prestamo, new PrestamoController())
     const {
-      accion,
       entidad: prestamo,
       disabled,
+      accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } =
+    const { setValidador,obtenerListados, cargarVista } =
       mixin.useComportamiento()
     const {
       confirmar,
@@ -65,16 +65,16 @@ export default defineComponent({
     const esMayorPrestamo = ref(false)
     const empleados = ref([])
     const recursosHumanosStore = useRecursosHumanosStore()
-    const sueldo_basico = computed (()=>{
+    const sueldo_basico = computed(() => {
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
     })
-   /* async function obtenerSueldoBasico() {
+    /* async function obtenerSueldoBasico() {
       sueldo_basico.value = await recursosHumanosStore.obtener_sueldo_basico()
       await console.log(sueldo_basico.value)
     }*/
     cargarVista(async () => {
-      obtenerListados({
+      await obtenerListados({
         motivos: new MotivoPermisoEmpleadoController(),
         empleados: {
           controller: new EmpleadoController(),
@@ -87,18 +87,16 @@ export default defineComponent({
       })
       formas_pago.value = listadosAuxiliares.formas_pago
       empleados.value = listadosAuxiliares.empleados
-      //obtenerSueldoBasico()
     })
     motivos.value = listadosAuxiliares.motivos
 
     maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
-    console.log(maximoAPrestar.value)
     //Reglas de validacion
-    const reglas =computed(()=>({
-      solicitante: { required, },
+    const reglas = computed(() => ({
+      solicitante: { required },
       fecha: { required },
       vencimiento: { required },
-      monto: { required, maxValue: maxValue(maximoAPrestar.value) },
+      monto: { required },
       valor_utilidad: { requiredIf: requiredIf(prestamo.utilidad != null) },
       plazo: { required, minValue: minValue(1), maxValue: maxValue(12) },
       plazos: { required },
@@ -112,13 +110,18 @@ export default defineComponent({
         prestamo.plazos = []
       }
       const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
-      for (let index = 1; index <= prestamo.plazo; index++) {
-        const plazo = {
-          num_cuota: index,
-          fecha_pago: calcular_fechas(index, 'meses'),
-          valor_a_pagar: (valor_cuota / prestamo.plazo).toFixed(2),
+      const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
+      const valor_pago = valor_cuota / plazo_prestamo
+      if (valor_pago <= 200) {
+        for (let index = 1; index <= prestamo.plazo; index++) {
+          const plazo = {
+            num_cuota: index,
+            fecha_pago: calcular_fechas(index, 'meses'),
+            valor_a_pagar: (valor_cuota / plazo_prestamo).toFixed(2),
+            pago_couta:false
+          }
+          prestamo.plazos!.push(plazo)
         }
-        prestamo.plazos!.push(plazo)
       }
     }
     function calcular_fechas(cuota: number, plazo: string) {
@@ -165,23 +168,6 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
-    function diferencia_fechas() {
-      //fecha actual
-      const fechaActual = new Date()
-      const fechaInicio = convertir_fecha(
-        prestamo.fecha != null ? prestamo.fecha : fechaActual.toString()
-      )
-
-      const fechaFin = convertir_fecha(
-        prestamo.vencimiento != null
-          ? prestamo.vencimiento
-          : fechaActual.toString()
-      )
-      const anios = fechaFin.getFullYear() - fechaInicio.getFullYear()
-      const meses = fechaFin.getMonth() - fechaInicio.getMonth()
-      const totalMeses = anios * 12 + meses
-      return totalMeses
-    }
     function convertir_fecha(fecha: string) {
       const dateString = fecha
       const dateParts = dateString.split('-')
@@ -192,13 +178,26 @@ export default defineComponent({
     }
     watchEffect(() => {
       if (prestamo.plazo != null) {
-        if (prestamo.plazo > 0) {
+        const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
+        const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
+        const valor_pago = valor_cuota / plazo_prestamo
+        if (valor_pago <= 200 &&( prestamo.plazo > 0 && prestamo.plazo <= 12) ){
           tabla_plazos()
+          prestamo.vencimiento =
+            prestamo.plazos != null
+              ? prestamo.plazos[prestamo.plazo - 1].fecha_pago
+              : null
+          if(prestamo.valor_utilidad != null ){
+            recargar_tabla()
+          }
+        }else{
+          if( prestamo.plazo > 0){
+            notificarError(
+              'Las Coutas no deben exeder al 40% del sueldo del empleado'
+            )
+          }
+
         }
-        prestamo.vencimiento =
-          prestamo.plazos != null
-            ? prestamo.plazos[prestamo.plazo - 1].fecha_pago
-            : null
       }
     })
     function filtrarEmpleado(val, update) {
@@ -229,13 +228,14 @@ export default defineComponent({
         if (indice_couta == -1) {
           const nuevaCuota = {
             num_cuota: prestamo.plazos!.length + 1,
-            fecha_pago: prestamo.utilidad + '-04-15',
+            fecha_pago:'15-04-'+ prestamo.utilidad ,
             valor_a_pagar: prestamo.valor_utilidad,
+            pago_couta:false
           }
           prestamo.plazos!.push(nuevaCuota)
         } else {
           prestamo.plazos![indice_couta].fecha_pago =
-            prestamo.utilidad + '-04-15'
+          '15-04-'+ prestamo.utilidad
           prestamo.plazos![indice_couta].valor_a_pagar = prestamo.valor_utilidad
         }
         const valorAnterior = valor_prestamo / prestamo.plazo
@@ -247,10 +247,21 @@ export default defineComponent({
       titulo: 'editar',
       icono: 'bi-pencil-square',
       color: 'secondary',
-      accion: ({ entidad, posicion }) => {
+      accion: ({posicion }) => {
         modificar_couta(posicion)
       },
+      visible: ()=> accion.value == "NUEVO"?true:false
     }
+    const botonpagar_couta: CustomActionTable = {
+      titulo: 'pagar',
+      icono: 'bi-cash',
+      color: 'primary',
+      accion: ({ posicion }) => {
+        pagar(posicion)
+      },
+      visible: ()=> accion.value == "EDITAR"?true:false
+    }
+
 
     function modificar_couta(indice_couta) {
       confirmar('¿Está seguro de modificar la couta?', () => {
@@ -287,6 +298,8 @@ export default defineComponent({
         return cuotaAnterior
       })
     }
+
+
     function calcular_valores_prestamo(
       valor_utilidad,
       valor_prestamo,
@@ -311,11 +324,27 @@ export default defineComponent({
         })
       }
     }
-    watchEffect(() => {
-      recargar_tabla()
-    })
-
-    console.log(maximoAPrestar.value)
+    function pagar(indice_couta){
+      confirmar('¿Está seguro de modificar la couta?', () => {
+        const data: CustomActionPrompt = {
+          titulo: 'Pagar couta',
+          mensaje: 'Ingrese valor de la couta a pagar',
+          accion: async (data) => {
+            try {
+              if (data >  prestamo.plazos![indice_couta].valor_a_pagar) {
+                notificarError('No se pudo pagar, debes ingresar monto menor o igual a '+ prestamo.plazos![indice_couta].valor_a_pagar)
+                return
+              }
+              prestamo.plazos![indice_couta].pago_couta= true;
+              prestamo.plazos![indice_couta].valor_a_pagar =prestamo.plazos![indice_couta].valor_a_pagar- data
+            } catch (e: any) {
+              notificarError('No se pudo pagar, debes ingresar monto')
+            }
+          },
+        }
+        prompt(data)
+      })
+    }
     return {
       removeAccents,
       mixin,
@@ -327,9 +356,14 @@ export default defineComponent({
       recargar_tabla,
       esMayorPrestamo,
       maximoValorPrestamo: [
-        val => (val && val.length < (parseInt(sueldo_basico.value)*2)) || 'Solo se permite prestamo menor a 2 SBU'
+        (val) =>
+          (val && val <= parseInt(sueldo_basico.value) * 2) ||
+          'Solo se permite prestamo menor o igual a 2 SBU (' +
+            parseInt(sueldo_basico.value) * 2 +
+            ')',
       ],
       botonmodificar_couta,
+      botonpagar_couta,
       configuracionColumnasPlazoPrestamo,
       plazo_pago,
       motivos,

@@ -1180,6 +1180,24 @@
       </q-td>
     </template>
 
+        <!-- esta pagado -->
+        <template #body-cell-pago_couta="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+
     <!-- Tiene subtareas -->
     <template #body-cell-tiene_subtareas="props">
       <q-td :props="props">

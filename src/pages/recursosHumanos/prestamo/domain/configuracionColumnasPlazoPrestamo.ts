@@ -23,5 +23,13 @@ export const configuracionColumnasPlazoPrestamo: ColumnConfig<PlazoPrestamo>[] =
     align: 'left',
     sortable: true
 },
+{
+  name: 'pago_couta',
+  field: 'pago_couta',
+  label: 'Pago',
+  align: 'left',
+  sortable: true
+},
+
 
 ]

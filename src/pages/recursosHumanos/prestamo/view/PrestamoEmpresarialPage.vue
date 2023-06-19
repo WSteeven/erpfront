@@ -76,7 +76,7 @@
               v-model="prestamo.monto"
               placeholder="Obligatorio"
               type="number"
-              :disable="disabled"
+              :disable="disabled||accion.value == 'EDITAR'?true:false"
               lazy-rules
               :rules="maximoValorPrestamo"
               outlined
@@ -91,7 +91,7 @@
             <q-input
               v-model="prestamo.plazo"
               type="number"
-              :disable="disabled"
+              :disable="disabled || accion.value == 'EDITAR'?true:false"
               :error="!!v$.plazo.$errors.length"
               @blur="v$.plazo.$touch"
               outlined
@@ -176,7 +176,6 @@
             >
             </q-input>
           </div>
-          {{ sueldo_basico }}
           <!-- Valor  -->
           <div class="col-12 col-md-3" v-if="prestamo.utilidad!=null">
             <label class="q-mb-sm block">Valor Utilidades </label>
@@ -200,7 +199,7 @@
         </div>
       </q-form>
       <essential-table
-        v-if="prestamo.plazo > 0"
+        v-if="prestamo.plazo > 0 && prestamo.plazo <= 12"
         titulo="Plazo de Prestamo"
         :configuracionColumnas="[...configuracionColumnasPlazoPrestamo, accionesTabla]"
         :datos="prestamo.plazos"
@@ -208,6 +207,7 @@
         :permitirEditar="false"
         :permitirEliminar="false"
         :accion1="botonmodificar_couta"
+        :accion2="botonpagar_couta"
       >
       </essential-table>
       <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block"
