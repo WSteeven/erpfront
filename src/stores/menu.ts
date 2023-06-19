@@ -31,7 +31,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     /*******************
-     * Modulo de tareas
+     * Modulo de tarreas
      *******************/
     {
       title: 'Proyectos y tareas',
@@ -243,7 +243,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Reporte de ingresos',
               link: 'reporte-ingresos',
               icon: 'bi-dash',
-              can: false,
+              can: true,
             },
             {
               title: 'Reporte de egresos',

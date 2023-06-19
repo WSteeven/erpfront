@@ -337,8 +337,48 @@ export const opcionesEstados = [
   { value: 0, label: 'INACTIVO' }
 ]
 
-export const opciones_tipo_contribuyente = [
+export const opcionesTipoContribuyente = [
   { value: 'NATURAL', label: 'NATURAL' },
   { value: 'PRIVADA', label: 'PRIVADA' },
   { value: 'PUBLICA', label: 'PUBLICA' },
 ]
+
+export const opcionesReportesIngresos = [
+  { value: 0, label: 'POR SOLICITANTE' },
+  { value: 1, label: 'POR BODEGUERO' }, //PERSONA QUE ATIENDE
+  { value: 2, label: 'POR MOTIVO' },
+  { value: 3, label: 'POR BODEGA' },
+  { value: 4, label: 'POR DEVOLUCIÓN' },
+  { value: 5, label: 'POR TAREA' },
+  { value: 6, label: 'POR TRANSFERENCIA' },
+]
+
+export const tiposReportesIngresos = {
+  solicitante: 0, //empleado
+  bodeguero: 1, //bodeguero
+  motivo: 2,
+  sucursal: 3,
+  devolucion: 4,
+  tarea: 5,
+  transferencia: 6,
+}
+
+export const opcionesReportesEgresos = [
+  { value: 0, label: 'POR SOLICITANTE' },
+  { value: 1, label: 'POR BODEGUERO' }, //PERSONA QUE ATIENDE
+  { value: 2, label: 'POR MOTIVO' },
+  { value: 3, label: 'POR BODEGA' },
+  { value: 4, label: 'POR DEVOLUCIÓN' },
+  { value: 5, label: 'POR TAREA' },
+  { value: 6, label: 'POR TRANSFERENCIA' },
+]
+
+export const tiposReportesEgresos = {
+  solicitante: 0, //empleado
+  bodeguero: 1, //bodeguero
+  motivo: 2,
+  sucursal: 3,
+  devolucion: 4,
+  tarea: 5,
+  transferencia: 6,
+}
