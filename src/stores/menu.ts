@@ -236,7 +236,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Reportes',
-          icon: 'bi-circle',
+          icon: 'bi-clipboard2-data-fill',
           can: store.esBodeguero || store.esContabilidad || store.can('puede.ver.reportes_bodega'),
           children: [
             {
@@ -249,7 +249,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Reporte de egresos',
               link: 'reporte-egresos',
               icon: 'bi-dash',
-              can: false,
+              can: true,
             },
             {
               title: 'Reporte de pedidos',
