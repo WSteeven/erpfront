@@ -50,6 +50,7 @@ export class Subtarea extends EntidadAuditable {
   // archivos: File[]
   subtarea_dependiente_id: number | null
 
+  empleado_responsable: number | null
   empleado: number | null
   grupo: number | null
   grupo_nombre: string | null
@@ -121,6 +122,7 @@ export class Subtarea extends EntidadAuditable {
 
     // Listados
     this.empleado = null
+    this.empleado_responsable = null
     this.grupo = null
     this.grupo_nombre = null
 

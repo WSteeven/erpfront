@@ -18,5 +18,9 @@ export const iconos = {
   egreso: {
     label: "EGRESO",
     icono: 'bi-box-seam'
-  }
+  },
+  ticket: {
+    label: "TICKET",
+    icono: 'bi-ticket-perforated'
+  },
 }

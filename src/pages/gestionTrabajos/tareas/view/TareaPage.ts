@@ -48,6 +48,8 @@ import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TareaModales } from '../domain/TareaModales'
 import { Tarea } from '../domain/Tarea'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: {
@@ -71,6 +73,7 @@ export default defineComponent({
     const tareaStore = useTareaStore()
     const subtareaStore = useSubtareaStore()
     const authenticationStore = useAuthenticationStore()
+    useCargandoStore().setQuasar(useQuasar())
 
     /*******
      * Mixin
