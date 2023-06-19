@@ -13,28 +13,28 @@ import { CategoriaController } from '../infraestructure/CategoriaController'
 import { Categoria } from '../domain/Categoria'
 
 export default defineComponent({
-    components: { TabLayout },
-    setup() {
-        const mixin = new ContenedorSimpleMixin(Categoria, new CategoriaController())
-        const { entidad: categoria, disabled } = mixin.useReferencias()
-        const { setValidador } = mixin.useComportamiento()
+  components: { TabLayout },
+  setup() {
+    const mixin = new ContenedorSimpleMixin(Categoria, new CategoriaController())
+    const { entidad: categoria, disabled } = mixin.useReferencias()
+    const { setValidador } = mixin.useComportamiento()
 
-        //Reglas de validacion
-        const reglas = {
-            nombre: { required }
-        }
-
-        const v$ = useVuelidate(reglas, categoria)
-        setValidador(v$.value)
- 
-
-
-        return {
-            mixin,
-            categoria,
-            v$,
-            disabled,
-            configuracionColumnas: configuracionColumnasCategorias,
-        }
+    //Reglas de validacion
+    const reglas = {
+      nombre: { required }
     }
+
+    const v$ = useVuelidate(reglas, categoria)
+    setValidador(v$.value)
+
+
+
+    return {
+      mixin,
+      categoria,
+      v$,
+      disabled,
+      configuracionColumnas: configuracionColumnasCategorias,
+    }
+  }
 })

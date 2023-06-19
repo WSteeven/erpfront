@@ -35,6 +35,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 const props = defineProps({
   listado: {
@@ -71,6 +72,7 @@ const emit = defineEmits(['actualizar', 'guardar-fila'])
 const trabajoRealizado: Ref<any[]> = ref(props.listado)
 const { confirmar, notificarError } = useNotificaciones()
 const refTrabajos = ref()
+const cargando = new StatusEssentialLoading()
 
 watchEffect(() => (trabajoRealizado.value = props.listado))
 
@@ -88,8 +90,8 @@ const agregarActividadRealizada: CustomActionTable = {
   color: 'positive',
   visible: () => props.mostrarAccion1Header,
   accion: async () => {
-    // const fila: TrabajoRealizado = new TrabajoRealizado()
     try {
+      cargando.activar()
       const { fecha_hora } = await obtenerTiempoActual()
       refTrabajos.value.abrirModalEditar({ fecha_hora })
       emit('actualizar', trabajoRealizado.value)
@@ -97,6 +99,8 @@ const agregarActividadRealizada: CustomActionTable = {
       notificarError(
         'Problemas para obtener la fecha y hora actual del servidor. Verifica tu conexión a Internet.'
       )
+    } finally {
+      cargando.desactivar()
     }
   },
 }

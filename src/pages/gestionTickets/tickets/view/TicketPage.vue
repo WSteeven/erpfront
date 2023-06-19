@@ -116,7 +116,7 @@
                 options-dense
                 dense
                 outlined
-                :disable="disabled"
+                :disable="disabled || departamentoDeshabilitado"
                 :option-label="(item) => item.nombre"
                 :option-value="(item) => item.id"
                 use-input
@@ -154,7 +154,7 @@
             </div>
 
             <!-- Ticket interno -->
-            <div class="col-12 col-md-3">
+            <div v-if="esResponsableDepartamento" class="col-12 col-md-3">
               <br />
               <q-checkbox
                 v-model="ticket.ticket_interno"
@@ -162,7 +162,10 @@
                 outlined
                 :disable="disabled"
                 @update:model-value="
-                  obtenerResponsables(ticket.departamento_responsable)
+                  () => {
+                    establecerDepartamentoDefecto()
+                    obtenerResponsables(ticket.departamento_responsable)
+                  }
                 "
                 dense
               ></q-checkbox>

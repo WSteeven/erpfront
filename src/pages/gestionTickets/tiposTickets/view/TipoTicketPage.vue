@@ -3,6 +3,9 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasTipoTicket"
     :permitir-eliminar="false"
+    :permitir-editar="false"
+    :permitir-consultar="false"
+    :accion1="btnToggleActivar"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -16,11 +19,10 @@
               @filter="filtrarDepartamentos"
               transition-show="scale"
               transition-hide="scale"
-              hint="Obligatorio"
               options-dense
               dense
               outlined
-              :disable="disabled"
+              disable
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               use-input
