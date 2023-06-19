@@ -259,22 +259,13 @@ export function removeAccents(accents: string) {
 export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
-  const cargando = new StatusEssentialLoading()
-
   try {
-    cargando.activar()
-    cargando.establecerMensaje('Obteniendo fecha y hora actual')
-
     const fecha: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.fecha))
     const hora: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.hora))
 
-    //const fechaArray = fecha.split('-') //.map(Number)
-    console.log(fecha.data)
     return { fecha: fecha.data, hora: hora.data, fecha_hora: fecha.data + ' ' + hora.data }
   } catch (e: any) {
     throw new ApiError(e)
-  } finally {
-    cargando.desactivar()
   }
 }
 

@@ -5,7 +5,7 @@ export const configuracionColumnasTipoTicket: ColumnConfig<TipoTicket>[] = [
   {
     name: 'nombre',
     field: 'nombre',
-    label: 'Nombre',
+    label: 'Nombre del tipo de ticket',
     align: 'left',
   },
   {

@@ -16,6 +16,7 @@ import { DepartamentoController } from 'recursosHumanos/departamentos/infraestru
 import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
 import { CategoriaTipoTicket } from '../domain/CategoriaTipoTicket'
 import { CategoriaTipoTicketController } from '../infraestructure/CategoriaTipoTicketController'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: {
@@ -23,18 +24,22 @@ export default defineComponent({
     EssentialTable,
   },
   setup() {
+    const authenticationStore = useAuthenticationStore()
+
     const mixin = new ContenedorSimpleMixin(
       CategoriaTipoTicket,
       new CategoriaTipoTicketController()
     )
     const { entidad: tipoTicket, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { onReestablecer } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
         departamentos: new DepartamentoController(),
       })
       departamentos.value = listadosAuxiliares.departamentos
+      tipoTicket.departamento = authenticationStore.user.departamento
     })
 
     /*********
@@ -54,6 +59,11 @@ export default defineComponent({
 
     const v$ = useVuelidate(rules, tipoTicket)
     setValidador(v$.value)
+
+    /********
+     * Hooks
+     ********/
+    onReestablecer(() => tipoTicket.departamento = authenticationStore.user.departamento)
 
     return {
       // mixin

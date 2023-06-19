@@ -125,6 +125,9 @@ export default defineComponent({
     function subir(params: ParamsType) {
       paramsForm = params
       refGestor.value.upload()
+      refGestor.value.reset()
+      refGestor.value.removeUploadedFiles()
+      refGestor.value.removeQueuedFiles()
     }
 
     function onRejected(rejectedEntries) {
@@ -133,7 +136,7 @@ export default defineComponent({
 
     function limpiarListado() {
       listado.value = []
-      console.log('limpiado...')
+      // console.log('limpiado...')
     }
 
     return {
