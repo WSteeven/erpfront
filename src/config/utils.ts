@@ -136,7 +136,9 @@ export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Completa', value: 'COMPLETA' },
 ]
 export const tabOptionsDevoluciones: TabOption[] = [
-  { label: 'Creadas', value: 'CREADA' },
+  { label: 'Por autorizar', value: 'PENDIENTE' },
+  { label: 'Aprobados', value: 'APROBADO' },
+  { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Anuladas', value: 'ANULADA' },
 ]
 export const tabOptionsTransferencias: TabOption[] = [

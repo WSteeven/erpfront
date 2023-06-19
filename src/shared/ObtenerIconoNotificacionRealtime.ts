@@ -13,6 +13,8 @@ export class ObtenerIconoNotificacionRealtime {
                 return iconos.subtarea.icono
             case iconos.egreso.label:
                 return iconos.egreso.icono
+            case iconos.devolucion.label:
+                return iconos.devolucion.icono
         }
     }
 }

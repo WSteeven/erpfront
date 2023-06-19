@@ -3,6 +3,10 @@ export const iconos = {
     label: "PEDIDO",
     icono: 'bi-file-earmark-text'
   },
+  devolucion: {
+    label: "DEVOLUCION",
+    icono: 'bi-box-seam-fill'
+  },
   autorizacion_gasto: {
     label: "AUTORIZACION GASTO",
     icono: 'bi-plus-circle-fill'

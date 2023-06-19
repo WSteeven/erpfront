@@ -6,6 +6,7 @@ import { SubtareaPusherEvent } from 'pages/gestionTrabajos/subtareas/application
 import { GastoPusherEvent } from 'pages/fondosRotativos/gasto/application/GastoPusherEvent'
 import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusherEvent'
 import { TicketPusherEvent } from 'src/pusherEvents/TicketPusherEvent'
+import { DevolucionPusherEvent } from 'pages/bodega/devoluciones/application/DevolucionPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -13,6 +14,10 @@ export class NotificacionesSistema {
     // Pedidos
     const pedidoPusherEvent = new PedidoPusherEvent()
     pedidoPusherEvent.start()
+
+    //Devoluciones
+    const devolucionPusherEvent = new DevolucionPusherEvent()
+    devolucionPusherEvent.start()
 
     //Egresos
     const egresoPusherEvent = new EgresoPusherEvent()

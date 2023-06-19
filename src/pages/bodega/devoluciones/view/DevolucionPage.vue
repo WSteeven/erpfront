@@ -5,7 +5,7 @@
     titulo-pagina="Devoluciones"
     :tab-options="tabOptionsDevoluciones"
     @tab-seleccionado="tabEs"
-    :permitirEditar="false"
+    :permitirEditar="puedeEditar"
     :accion1="botonAnular"
     :accion2="botonImprimir"
   >
@@ -161,7 +161,6 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              @update:model-value="filtroTareas"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               emit-value
@@ -175,6 +174,94 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <!-- Persona que autoriza -->
+          <div v-if="devolucion.per_autoriza" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Persona que autoriza</label>
+            <q-select
+              v-model="devolucion.per_autoriza"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            />
+          </div>
+          <!-- Select autorizacion -->
+          <!-- v-if="pedido.autorizacion || esCoordinador||esActivosFijos" -->
+          <div v-if="devolucion.autorizacion" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Autorizacion</label>
+            <q-select
+              v-model="devolucion.autorizacion"
+              :options="opciones_autorizaciones"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :readonly="
+                disabled ||
+                (soloLectura &&
+                  !(
+                    esCoordinador ||
+                    esActivosFijos ||
+                    store.user.id == devolucion.per_autoriza
+                  ))
+              "
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Observacion de autorizacion -->
+          <div
+            v-if="store.user.id === devolucion.per_autoriza"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              autogrow
+              v-model="devolucion.observacion_aut"
+              placeholder="Opcional"
+              :disable="
+                disabled ||
+                (soloLectura &&
+                  !(
+                    esCoordinador ||
+                    esActivosFijos ||
+                    store.user.id == devolucion.per_autoriza_id
+                  ))
+              "
+              :error="!!v$.observacion_aut.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.observacion_aut.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
