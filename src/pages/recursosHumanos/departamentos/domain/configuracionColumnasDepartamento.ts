@@ -9,6 +9,12 @@ export const configuracionColumnasDepartamento: ColumnConfig<Departamento>[] = [
     align: 'left',
   },
   {
+    name: 'responsable',
+    field: 'responsable',
+    label: 'Responsable',
+    align: 'left',
+  },
+  {
     name: 'activo',
     field: 'activo',
     label: 'Activo',

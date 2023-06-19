@@ -31,7 +31,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     /*******************
-     * Modulo de tareas
+     * Modulo de tarreas
      *******************/
     {
       title: 'Proyectos y tareas',
@@ -93,13 +93,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Categorías tipos de tickets',
           link: 'categorias-tipos-tickets',
           icon: 'bi-circle',
-          can: store.can('puede.ver.categorias_tipos_tickets'),
+          can: store.can('puede.ver.categorias_tipos_tickets') || store.user.es_responsable_departamento,
         },
         {
           title: 'Tipos de tickets',
           link: 'tipos-tickets',
           icon: 'bi-circle',
-          can: store.can('puede.ver.tipos_tickets'),
+          can: store.can('puede.ver.tipos_tickets') || store.user.es_responsable_departamento,
         },
         {
           title: 'Motivos de pausas',
@@ -243,7 +243,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Reporte de ingresos',
               link: 'reporte-ingresos',
               icon: 'bi-dash',
-              can: false,
+              can: true,
             },
             {
               title: 'Reporte de egresos',

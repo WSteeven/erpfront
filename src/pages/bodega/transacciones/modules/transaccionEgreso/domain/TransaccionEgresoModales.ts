@@ -4,7 +4,6 @@ import { markRaw } from 'vue'
 //paginas
 import DespacharPage from '../view/DespacharPage.vue'
 import TransaccionEgresoImprimirPage from '../view/TransaccionEgresoImprimirPage.vue'
-import InventarioPage from 'pages/bodega/inventario/view/InventarioPage'
 
 export class TransaccionEgresoModales {
     DespacharPage: ComponenteModal

@@ -10,7 +10,7 @@
     ></q-checkbox>
   </div>
 
-  <div v-show="quiero_subir_archivos" class="col-12 q-mb-sm">
+  <div v-if="quiero_subir_archivos" class="col-12 q-mb-sm">
     <q-uploader
       ref="refGestor"
       label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"

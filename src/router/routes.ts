@@ -351,6 +351,15 @@ const routes: RouteRecordRaw[] = [
       },
       //reportes de bodega
       {
+        path: '/reporte-ingresos',
+        name: 'reporte_ingresos',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_ingresos/view/ReporteIngresosPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/reporte-pedidos',
         name: 'reporte_pedidos',
         component: () =>

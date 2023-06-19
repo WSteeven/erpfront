@@ -33,7 +33,7 @@ export class Empleado extends EntidadAuditable {
   tiene_grupo: boolean
   firma_url: string | null
   foto_url: string | null
-  // es_responsable_grupo: boolean
+  es_responsable_departamento: boolean
   convencional: number | null
   telefono_empresa: number | null
   extension: number | null
@@ -43,7 +43,7 @@ export class Empleado extends EntidadAuditable {
   responsable_discapacitados: boolean
   tiene_discapacidad: boolean
   observacion: string | null
-  nivel_academico : string | null
+  nivel_academico: string | null
   grupo_id: number | null
 
   constructor() {
@@ -81,7 +81,7 @@ export class Empleado extends EntidadAuditable {
     this.tiene_grupo = false
     this.firma_url = null
     this.foto_url = null
-    // this.es_responsable_grupo = false
+    this.es_responsable_departamento = false
     this.convencional = null
     this.telefono_empresa = null
     this.extension = null

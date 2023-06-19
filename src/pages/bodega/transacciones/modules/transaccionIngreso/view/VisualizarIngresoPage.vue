@@ -2,7 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Transacciones - Egresos"
+    titulo-pagina="Transacciones - Ingresos"
     :mostrarListado="false"
     :mostrarButtonSubmits="false"
   >
@@ -64,7 +64,7 @@
               placeholder="Opcional"
               hint="Ingresa un numero de transferencia y presiona Enter"
               @keyup.enter="llenarTransferencia(transaccion.transferencia)"
-              :readonly="disabled"
+              disable
               outlined
               dense
             >
@@ -108,8 +108,7 @@
           <div
             v-if="
               transaccion.tiene_observacion_aut ||
-              transaccion.observacion_aut ||
-              esVisibleAutorizacion
+              transaccion.observacion_aut
             "
             class="col-12 col-md-3"
           >
@@ -152,7 +151,7 @@
           <!-- Select sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
-            <q-input v-model="transaccion.sucursal" disable outlined dense />
+            <q-input v-model="transaccion.sucursal" autogrow disable outlined dense />
           </div>
           <!-- Justificacion -->
           <div class="col-12 col-md-3">
@@ -201,38 +200,20 @@
             <label class="q-mb-sm block">Tarea</label>
             <q-input v-model="transaccion.tarea" dense outlined disable />
           </div>
-          <!-- Responsable -->
-          <div v-if="!esTecnico" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Responsable</label>
-            <q-input v-model="transaccion.responsable" autogrow disable outlined dense />
-          </div>
-          <!-- Retira un tercero -->
-          <div
-            v-if="
-              (transaccion.per_retira && !transaccion.es_transferencia)&& transaccion.retira_tercero ||
-              (accion === 'NUEVO' && !transaccion.es_transferencia)&& transaccion.retira_tercero
-            "
-            class="col-12 col-md-3"
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="transaccion.retira_tercero"
-              @update:model-value="checkRetiraOtro"
-              label="¿Retira otra persona?"
-              disable
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <!-- Persona que retira -->
-          <div v-if="transaccion.retira_tercero" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Persona que retira</label>
-            <q-input v-model="transaccion.per_retira" dense outlined disable />
-          </div>
           <!-- Select clientes -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>
-            <q-input v-model="transaccion.cliente" disable outlined dense />
+            <q-input v-model="transaccion.cliente" autogrow disable outlined dense />
+          </div>
+          <!-- Select estado -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Estado</label>
+            <q-input
+              v-model="transaccion.estado"
+              disable
+              outlined
+              dense
+            />
           </div>
 
           <!-- Tabla -->
@@ -242,26 +223,17 @@
               :configuracionColumnas="
                 configuracionColumnasProductosSeleccionadosDespachado
               "
+              :permitirBuscar="true"
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
-              :permitirBuscar="false"
             ></essential-table>
           </div>
         </div>
       </q-form>
-      <div
-        v-if="transaccion.estado_comprobante === 'PENDIENTE' && route.name=='gestionar_egresos'"
-        class="q-pa-md q-gutter-sm flex flex-center"
-      >
-        <q-btn color="positive" @click="aprobarEgreso()" no-caps glossy push>
-          <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
-          Aprobar y Firmar</q-btn
-        >
-      </div>
     </template>
   </tab-layout>
 </template>
-<script src="./VisualizarEgresoPage.ts" />
+<script src="./VisualizarIngresoPage.ts" />

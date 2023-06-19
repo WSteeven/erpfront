@@ -72,6 +72,7 @@ export const endpoints = {
   condiciones: new Endpoint('condiciones'),
   comprobantes: new Endpoint('comprobantes'),
   estados_transacciones: new Endpoint('estados'),
+  empleados_roles: new Endpoint('empleados-roles'), //con esta ruta se obtienen los empleados por el/los roles especificados
   control_stocks: new Endpoint('control-stocks'),
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles: new Endpoint('detalles'),
