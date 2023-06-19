@@ -15,6 +15,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.egreso.icono
       case iconos.ticket.label:
         return iconos.ticket.icono
+      case iconos.devolucion.label:
+        return iconos.devolucion.icono
     }
   }
 }
