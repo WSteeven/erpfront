@@ -431,7 +431,7 @@
                 hint="Dept. Contable califica a todos los proveedores"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
-                :option-disable="(v) => v.nombre === 'CONTABILIDAD'"
+                :option-disable="(v) => v.nombre === 'CONTABILIDAD'|| v.nombre === 'contabilidad'"
                 emit-value
                 map-options
                 ><template
