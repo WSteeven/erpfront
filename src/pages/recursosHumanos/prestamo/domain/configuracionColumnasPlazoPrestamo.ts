@@ -10,6 +10,13 @@ export const configuracionColumnasPlazoPrestamo: ColumnConfig<PlazoPrestamo>[] =
         sortable: true
     },
     {
+      name: 'fecha_vencimiento',
+      field: 'fecha_vencimiento',
+      label: 'Fecha de Vencimiento',
+      align: 'left',
+      sortable: true
+  },
+    {
       name: 'fecha_pago',
       field: 'fecha_pago',
       label: 'Fecha de Pago',

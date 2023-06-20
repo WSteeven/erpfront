@@ -45,8 +45,10 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador,obtenerListados, cargarVista } =
+    const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
+    const { onBeforeConsultar, onConsultado, onBeforeModificar } =
+      mixin.useHooks()
     const {
       confirmar,
       prompt,
@@ -60,6 +62,8 @@ export default defineComponent({
       { id: 1, nombre: 'Prestamo Descuento' },
       { id: 2, nombre: 'Anticipo' },
     ])
+    const esConsultado = ref(false)
+    onBeforeModificar(() => (esConsultado.value = true))
     const maximoAPrestar = ref()
     const formas_pago = ref([])
     const esMayorPrestamo = ref(false)
@@ -116,9 +120,9 @@ export default defineComponent({
         for (let index = 1; index <= prestamo.plazo; index++) {
           const plazo = {
             num_cuota: index,
-            fecha_pago: calcular_fechas(index, 'meses'),
+            fecha_vencimiento: calcular_fechas(index, 'meses'),
             valor_a_pagar: (valor_cuota / plazo_prestamo).toFixed(2),
-            pago_couta:false
+            pago_couta: false,
           }
           prestamo.plazos!.push(plazo)
         }
@@ -177,28 +181,40 @@ export default defineComponent({
       return new Date(anio, mes, dia)
     }
     watchEffect(() => {
-      if (prestamo.plazo != null) {
-        const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
-        const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
-        const valor_pago = valor_cuota / plazo_prestamo
-        if (valor_pago <= 200 &&( prestamo.plazo > 0 && prestamo.plazo <= 12) ){
-          tabla_plazos()
+      try {
+        if (accion.value == 'NUEVO' ? true : false) {
+          if (prestamo.plazo != null) {
+            const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
+            const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
+            const valor_pago = valor_cuota / plazo_prestamo
+            if (
+              valor_pago <= 200 &&
+              prestamo.plazo > 0 &&
+              prestamo.plazo <= 12
+            ) {
+              tabla_plazos()
+              prestamo.vencimiento =
+                prestamo.plazos != null
+                  ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
+                  : null
+              if (prestamo.valor_utilidad != null) {
+                recargar_tabla()
+              }
+            } else {
+              if (prestamo.plazo > 0) {
+                notificarError(
+                  'Las Coutas no deben exeder al 40% del sueldo del empleado'
+                )
+              }
+            }
+          }
+        } else {
           prestamo.vencimiento =
             prestamo.plazos != null
-              ? prestamo.plazos[prestamo.plazo - 1].fecha_pago
+              ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
               : null
-          if(prestamo.valor_utilidad != null ){
-            recargar_tabla()
-          }
-        }else{
-          if( prestamo.plazo > 0){
-            notificarError(
-              'Las Coutas no deben exeder al 40% del sueldo del empleado'
-            )
-          }
-
         }
-      }
+      } catch (error) {}
     })
     function filtrarEmpleado(val, update) {
       if (val === '') {
@@ -228,14 +244,14 @@ export default defineComponent({
         if (indice_couta == -1) {
           const nuevaCuota = {
             num_cuota: prestamo.plazos!.length + 1,
-            fecha_pago:'15-04-'+ prestamo.utilidad ,
+            fecha_pago: '15-04-' + prestamo.utilidad,
             valor_a_pagar: prestamo.valor_utilidad,
-            pago_couta:false
+            pago_couta: false,
           }
           prestamo.plazos!.push(nuevaCuota)
         } else {
           prestamo.plazos![indice_couta].fecha_pago =
-          '15-04-'+ prestamo.utilidad
+            '15-04-' + prestamo.utilidad
           prestamo.plazos![indice_couta].valor_a_pagar = prestamo.valor_utilidad
         }
         const valorAnterior = valor_prestamo / prestamo.plazo
@@ -247,10 +263,10 @@ export default defineComponent({
       titulo: 'editar',
       icono: 'bi-pencil-square',
       color: 'secondary',
-      accion: ({posicion }) => {
+      accion: ({ posicion }) => {
         modificar_couta(posicion)
       },
-      visible: ()=> accion.value == "NUEVO"?true:false
+      visible: () => (accion.value == 'NUEVO' ? true : false),
     }
     const botonpagar_couta: CustomActionTable = {
       titulo: 'pagar',
@@ -259,9 +275,8 @@ export default defineComponent({
       accion: ({ posicion }) => {
         pagar(posicion)
       },
-      visible: ()=> accion.value == "EDITAR"?true:false
+      visible: () => (accion.value == 'EDITAR' ? true : false),
     }
-
 
     function modificar_couta(indice_couta) {
       confirmar('¿Está seguro de modificar la couta?', () => {
@@ -299,7 +314,6 @@ export default defineComponent({
       })
     }
 
-
     function calcular_valores_prestamo(
       valor_utilidad,
       valor_prestamo,
@@ -324,25 +338,47 @@ export default defineComponent({
         })
       }
     }
-    function pagar(indice_couta){
-      confirmar('¿Está seguro de modificar la couta?', () => {
+    function pagar(indice_couta) {
+      confirmar('¿Está seguro de pagar la couta?', () => {
         const data: CustomActionPrompt = {
           titulo: 'Pagar couta',
           mensaje: 'Ingrese valor de la couta a pagar',
           accion: async (data) => {
             try {
-              if (data >  prestamo.plazos![indice_couta].valor_a_pagar) {
-                notificarError('No se pudo pagar, debes ingresar monto menor o igual a '+ prestamo.plazos![indice_couta].valor_a_pagar)
+              if (
+                data > parseFloat(prestamo.plazos![indice_couta].valor_a_pagar)
+              ) {
+                notificarError(
+                  'No se pudo pagar, debes ingresar monto menor o igual a ' +
+                    prestamo.plazos![indice_couta].valor_a_pagar
+                )
                 return
               }
-              prestamo.plazos![indice_couta].pago_couta= true;
-              prestamo.plazos![indice_couta].valor_a_pagar =prestamo.plazos![indice_couta].valor_a_pagar- data
+              const fecha_actual = new Date()
+              if (
+                data == parseFloat(prestamo.plazos![indice_couta].valor_a_pagar)
+              ) {
+                prestamo.plazos![indice_couta].pago_couta = true
+                prestamo.plazos![indice_couta].fecha_pago = fecha_actual.toISOString().slice(0, 10)
+                actualizar_fecha_plazos(indice_couta + 1)
+              }
+              prestamo.plazos![indice_couta].fecha_pago = fecha_actual.toISOString().slice(0, 10)
+              prestamo.plazos![indice_couta].valor_a_pagar = (
+                prestamo.plazos![indice_couta].valor_a_pagar - data
+              ).toFixed(2)
             } catch (e: any) {
-              notificarError('No se pudo pagar, debes ingresar monto')
+              notificarError('No se pudo pagar, a ocurido un error: ' + e)
             }
           },
         }
         prompt(data)
+      })
+    }
+    function actualizar_fecha_plazos(indice_couta) {
+      prestamo.plazos!.slice(indice_couta).forEach((element) => {
+        const fecha = new Date(element.fecha_vencimiento)
+        fecha.setMonth(fecha.getMonth() - 1)
+        element.fecha_vencimiento= fecha.toISOString().slice(0, 10)
       })
     }
     return {
@@ -365,6 +401,7 @@ export default defineComponent({
       botonmodificar_couta,
       botonpagar_couta,
       configuracionColumnasPlazoPrestamo,
+      esConsultado,
       plazo_pago,
       motivos,
       tipos,

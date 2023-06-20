@@ -14,7 +14,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="accion.value != 'NUEVO' ?false:true"
               :readonly="disabled"
               :error="!!v$.solicitante.$errors.length"
               error-message="Debes seleccionar un empleado"
@@ -45,7 +45,7 @@
               v-model="prestamo.fecha"
               placeholder="Obligatorio"
               :error="!!v$.fecha.$errors.length"
-              :disable="disabled"
+              :disable="accion.value != 'NUEVO' ?false:true"
               @blur="v$.fecha.$touch"
               outlined
               dense
@@ -76,7 +76,7 @@
               v-model="prestamo.monto"
               placeholder="Obligatorio"
               type="number"
-              :disable="disabled||accion.value == 'EDITAR'?true:false"
+              :disable="accion.value != 'NUEVO' ?false:true"
               lazy-rules
               :rules="maximoValorPrestamo"
               outlined
@@ -91,7 +91,7 @@
             <q-input
               v-model="prestamo.plazo"
               type="number"
-              :disable="disabled || accion.value == 'EDITAR'?true:false"
+              :disable="accion.value != 'NUEVO' ?false:true"
               :error="!!v$.plazo.$errors.length"
               @blur="v$.plazo.$touch"
               outlined
@@ -141,7 +141,7 @@
               :options="formas_pago"
               transition-show="jump-up"
               transition-hide="jump-down"
-              :disable="disabled"
+              :disable="accion.value != 'NUEVO' ?false:true"
               options-dense
               dense
               outlined
