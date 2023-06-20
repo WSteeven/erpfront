@@ -267,11 +267,17 @@
                 v-model="proveedor.direccion"
                 placeholder="Obligatorio"
                 :disable="disabled"
+                :error="!!v$.direccion.$errors.length"
                 outlined
                 dense
-              >
+              ><template v-slot:error>
+                <div v-for="error of v$.direccion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
               </q-input>
             </div>
+
             <!-- Estado -->
             <div class="col-12 col-md-3">
               <label>Estado</label> <br />

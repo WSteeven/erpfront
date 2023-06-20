@@ -75,6 +75,7 @@ export default defineComponent({
     const reglas = {
       empresa: { required },
       sucursal: { required },
+      direccion: { required },
     }
     const v$ = useVuelidate(reglas, proveedor)
     setValidador(v$.value)

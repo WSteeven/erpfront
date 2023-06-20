@@ -19,7 +19,7 @@ export const configuracionColumnasCriteriosCalificaciones: ColumnConfig<Criterio
     {
         name: 'ponderacion_referencia',
         field: 'ponderacion_referencia',
-        label: 'Ponderación Referencia',
+        label: 'Ponderación Referencia (%)',
         align: 'left',
         sortable: true,
         editable: false,

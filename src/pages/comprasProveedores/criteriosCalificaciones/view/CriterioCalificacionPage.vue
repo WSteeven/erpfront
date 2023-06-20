@@ -5,8 +5,7 @@
     titulo-pagina="Proveedores"
     :accion1="botonVerLogs"
     :mostrarButtonSubmits="
-      (departamento !== undefined && departamento.length > 0) ||
-      store.esAdministrador
+      (departamento !== undefined && departamento.length > 0) 
         ? true
         : false
     "
@@ -15,23 +14,22 @@
       <q-form
         @submit.prevent
         v-if="
-          (departamento != undefined && departamento.length > 0) ||
-          store.esAdministrador
+          (departamento != undefined && departamento.length > 0) 
         "
       >
         Criterios de calificaciones para el departamento de
-        {{ departamento[0].nombre }}
+        <strong>{{  departamento[0].nombre }}</strong>
         <div class="row q-col-gutter-sm q-pa-sm">
           <!-- departamento -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Departamento</label>
             <q-input outlined dense disable>
-              <q-chip v-model="departamento[0].id" icon="bi-shield">{{
-                departamento[0].nombre
+              <q-chip v-model="departamento[0]['id']" icon="bi-shield">{{
+                departamento[0]['nombre']
               }}</q-chip>
             </q-input>
           </div>
-          
+
           <!-- nombre -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Nombre</label>
@@ -90,9 +88,7 @@
               outlined
               dense
             >
-            <template v-slot:append>
-                %
-            </template>
+              <template v-slot:append> % </template>
             </q-input>
           </div>
         </div>
