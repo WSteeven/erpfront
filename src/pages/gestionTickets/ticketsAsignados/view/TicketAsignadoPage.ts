@@ -21,6 +21,7 @@ import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/T
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
 import { MotivoPausaTicketController } from 'pages/gestionTickets/motivosPausasTickets/infraestructure/MotivoPausaTicketController'
+import { TicketModales } from 'pages/gestionTickets/tickets/domain/TicketModales'
 
 export default defineComponent({
   components: {
@@ -90,6 +91,21 @@ export default defineComponent({
 
     filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)
 
+    async function guardado(paginaModal: keyof TicketModales) {
+      switch (paginaModal) {
+        case 'CalificarTicketPage':
+          if (!ticketStore.filaTicket.calificaciones.length) {
+            const entidad = listado.value[ticketStore.posicionFilaTicket]
+            entidad.pendiente_calificar = false
+            listado.value.splice(ticketStore.posicionFilaTicket, 1, entidad)
+          } else {
+            filtrarTrabajoAsignado(estadosTickets.CALIFICADO)
+          }
+          break
+      }
+      modales.cerrarModalEntidad()
+    }
+
     return {
       mixin,
       listado,
@@ -112,6 +128,7 @@ export default defineComponent({
       estadosTickets,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
       authenticationStore,
+      guardado,
     }
   }
 })

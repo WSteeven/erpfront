@@ -128,7 +128,7 @@
                     ticket.responsable = null
                     ticket.categoria_tipo_ticket = null
                     ticket.tipo_ticket = null
-                    obtenerResponsables(ticket.departamento_responsable)
+                    obtenerResponsables(filtroResponsableDepartamento)
                   }
                 "
                 :error="!!v$.departamento_responsable.$errors.length"
@@ -164,7 +164,7 @@
                 @update:model-value="
                   () => {
                     establecerDepartamentoDefecto()
-                    obtenerResponsables(ticket.departamento_responsable)
+                    obtenerResponsables(filtroDepartamento)
                   }
                 "
                 dense

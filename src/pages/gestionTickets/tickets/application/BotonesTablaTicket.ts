@@ -244,8 +244,9 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     icono: 'bi-stars',
     color: 'secondary',
     visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && entidad.pendiente_calificar,
-    accion: ({ entidad }) => {
+    accion: ({ entidad, posicion }) => {
       console.log('dentro')
+      ticketStore.posicionFilaTicket = posicion
       ticketStore.filaTicket = entidad
       modales.abrirModalEntidad('CalificarTicketPage')
     }
