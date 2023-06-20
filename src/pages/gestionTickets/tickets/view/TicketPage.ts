@@ -266,6 +266,7 @@ export default defineComponent({
 
     onGuardado((id: number) => {
       subirArchivos(id)
+      departamentoDeshabilitado.value = false
       emit('cerrar-modal', false)
     })
 
