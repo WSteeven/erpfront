@@ -24,6 +24,20 @@ export const configuracionColumnasDevoluciones: ColumnConfig<Devolucion>[] = [
         sortable: true
     },
     {
+        name: 'autorizacion',
+        field: 'autorizacion',
+        label: 'Autorización',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'per_autoriza',
+        field: 'per_autoriza',
+        label: 'Autoriza',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'tarea',
         field: 'tarea',
         label: 'Tarea',

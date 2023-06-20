@@ -1,9 +1,7 @@
 //Dependencias
-import { configuracionColumnasTransaccionIngreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionIngreso';
+import { configuracionColumnasTransaccionEgreso } from "pages/bodega/transacciones/domain/configuracionColumnasTransaccionEgreso";
 import { defineComponent, reactive, ref } from "vue";
-import { required } from "shared/i18n-validators";
 import { LocalStorage, useQuasar, } from "quasar";
-import useVuelidate from "@vuelidate/core";
 
 //Componentes
 import EssentialTable from "components/tables/view/EssentialTable.vue";
@@ -21,16 +19,17 @@ import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/applicat
 import { TransaccionIngresoController } from "pages/bodega/transacciones/infraestructure/TransaccionIngresoController";
 import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { accionesTabla, opcionesReportesIngresos, tiposReportesIngresos } from 'config/utils';
+import { accionesTabla, opcionesReportesEgresos, tiposReportesEgresos } from 'config/utils';
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController';
-import { ComportamientoModalesTransaccionIngreso } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/ComportamientoModalesGestionarIngreso';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController';
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
 import { imprimirArchivo } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion';
-import { useCargandoStore } from 'stores/cargando';
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
+import { ComportamientoModalesTransaccionEgreso } from 'pages/bodega/transacciones/modules/transaccionEgreso/application/ComportamientoModalesGestionarEgresos';
+import { useCargandoStore } from "stores/cargando";
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 export default defineComponent({
@@ -42,18 +41,22 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const cargando = new StatusEssentialLoading()
-    const modales = new ComportamientoModalesTransaccionIngreso()
+    const modales = new ComportamientoModalesTransaccionEgreso()
     const reporte = reactive({
       tipo: null,
       fecha_inicio: '',
       fecha_fin: '',
       solicitante: null,
-      per_atiende: null,
+      per_retira: null,
+      responsable: null,
+      per_autoriza:null,
+      per_atiende: null, //bodeguero
       sucursal: null,
       motivo: null,
-      devolucion: null,
+      pedido: null,
       tarea: null,
       transferencia: null,
+      firmada: true,
       accion: '',
     })
 
@@ -61,13 +64,14 @@ export default defineComponent({
     const transaccionStore = useTransaccionEgresoStore()
     const listado = ref([])
     const bodegueros = ref([])
+    const clientes = ref([])
     const empleados = ref([])
     const motivos = ref([])
     const tareas = ref([])
     cargarVista(async () => {
       await obtenerListados({
         empleados: new EmpleadoController(),
-        motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 1 } },
+        motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
       })
     })
 
@@ -79,10 +83,14 @@ export default defineComponent({
     function limpiarCampos() {
       reporte.solicitante = null
       reporte.sucursal = null
+      reporte.responsable = null
+      reporte.per_retira = null
+      reporte.per_autoriza = null
       reporte.per_atiende = null
       reporte.motivo = null
-      reporte.devolucion = null
+      reporte.pedido = null
       reporte.tarea = null
+      reporte.firmada = true
       reporte.transferencia = null
       reporte.accion = ''
     }
@@ -90,21 +98,19 @@ export default defineComponent({
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        let url = axios.getEndpoint(endpoints.transacciones_ingresos) + '/reportes'
-        const filename = 'reporte_ingresos_bodega'
+        let url = axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
+        const filename = 'reporte_egresos_bodega'
         switch (accion) {
           case 'excel':
-            url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_ingresos) + '/reportes'
+            url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
             reporte.accion = 'excel'
             imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
 
             break
           case 'pdf':
-            url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_ingresos) + '/reportes'
+            url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
             reporte.accion = 'pdf'
-            cargando.activar()
             imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
-            cargando.desactivar()
             break
           default:
             reporte.accion = ''
@@ -124,17 +130,23 @@ export default defineComponent({
     }
     async function consultarListado(id: number) {
       limpiarCampos()
-      if (id == tiposReportesIngresos.tarea && tareas.value.length == 0) {
+      if (id == tiposReportesEgresos.tarea && tareas.value.length == 0) {
         cargando.activar()
         const { response } = await new TareaController().listar({ campos: 'id,codigo_tarea,titulo,cliente_id' })
         cargando.desactivar()
         tareas.value = response.data.results
       }
-      if (id == tiposReportesIngresos.bodeguero && bodegueros.value.length == 0) {
+      if (id == tiposReportesEgresos.bodeguero && bodegueros.value.length == 0) {
         cargando.activar()
         const { response } = await new EmpleadoRoleController().listar({ roles: ['BODEGA', 'ACTIVOS FIJOS'] })
         cargando.desactivar()
         bodegueros.value = response.data.results
+      }
+      if (id == tiposReportesEgresos.cliente && clientes.value.length == 0) {
+        cargando.activar()
+        const { response } = await new ClienteController().listar({ estado: 1, requiere_bodega: 1 })
+        cargando.desactivar()
+        clientes.value = response.data.results
       }
     }
     /**
@@ -147,7 +159,7 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.showPreview()
-        modales.abrirModalEntidad('VisualizarIngresoPage')
+        modales.abrirModalEntidad('VisualizarEgresoPage')
       }
     }
 
@@ -165,7 +177,7 @@ export default defineComponent({
 
 
 
-    const configuracionColumnas = [...configuracionColumnasTransaccionIngreso, accionesTabla]
+    const configuracionColumnas = [...configuracionColumnasTransaccionEgreso, accionesTabla]
 
     return {
       configuracionColumnas,
@@ -173,10 +185,10 @@ export default defineComponent({
       //listados
       sucursales, listado,
       empleados, bodegueros, motivos,
-      tareas,
+      tareas,clientes,
 
-      opcionesReportesIngresos,
-      tiposReportesIngresos,
+      opcionesReportesEgresos,
+      tiposReportesEgresos,
       //funciones
       buscarReporte,
       consultarListado,

@@ -5,7 +5,8 @@ import { computed, ComputedRef, Ref } from 'vue'
 export class StatusEssentialLoading {
   public estaCargando: ComputedRef<boolean>
   store = useCargandoStore()
-  $q = useQuasar()
+  $q = useCargandoStore().$q ?? useQuasar()
+  // $q = useQuasar()
   // mensaje: Ref<string> = 'Cargando'
 
   constructor() {

@@ -116,7 +116,7 @@
       </div>
     </div>
   </q-expansion-item>
-  {{ subtarea.empleado }}
+
   <q-expansion-item
     v-if="subtarea.designar_otro_responsable"
     class="overflow-hidden q-mb-md expansion"

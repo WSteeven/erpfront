@@ -11,6 +11,7 @@ import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 import Swal from 'sweetalert2'
+import { useNotificaciones } from './notificaciones';
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -319,6 +320,7 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
   const statusLoading = new StatusEssentialLoading()
+  const {notificarAdvertencia}= useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -343,18 +345,7 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
       link.remove()
     }
   }).catch(error => {
-    let timerInterval
-    Swal.fire({
-      title: 'No hay datos!',
-      html: error,
-      icon: 'warning',
-      timer: 1500,
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading()
-      },
-      willClose: () => { clearInterval(timerInterval) }
-    })
+    notificarAdvertencia(error)
   })
 
   statusLoading.desactivar()

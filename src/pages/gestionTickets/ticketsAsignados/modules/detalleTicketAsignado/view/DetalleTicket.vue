@@ -56,6 +56,11 @@
       <!-- <q-input :model-value="ticket.tipo_ticket" outlined disable dense></q-input> -->
     </div>
 
+    <div v-if="ticket.solicitante" class="col-12 col-md-3">
+      <label class="q-mb-sm block">Solicitante</label>
+      <b>{{ ticket.solicitante }}</b>
+    </div>
+
     <div v-if="ticket.departamento_responsable" class="col-12 col-md-3">
       <label class="q-mb-sm block">Actual departamento responsable</label>
       <b>{{ ticket.departamento_responsable }}</b>
