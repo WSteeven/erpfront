@@ -499,6 +499,7 @@
     :comportamiento="modalesTicket"
     :mixin-modal="mixin"
     :accion="filtrarTickets"
+    @guardado="guardado"
   />
 </template>
 

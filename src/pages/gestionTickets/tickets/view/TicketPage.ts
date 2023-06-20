@@ -51,6 +51,9 @@ import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
 import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
 import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
 import { useQuasar } from 'quasar'
+import { TicketModales } from '../domain/TicketModales'
+import { useTicketStore } from 'stores/ticket'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: {
@@ -76,6 +79,8 @@ export default defineComponent({
      *********/
     const tareaStore = useTareaStore()
     const authenticationStore = useAuthenticationStore()
+    // const ticketStore = useTicketStore()
+    useCargandoStore().setQuasar(useQuasar())
 
     /*******
      * Mixin
@@ -241,6 +246,17 @@ export default defineComponent({
       rechazos.value = response.data.results
     }
 
+    async function guardado(paginaModal: keyof TicketModales) {
+      console.log('guardado modal jeje ...')
+      switch (paginaModal) {
+        case 'CalificarTicketPage':
+          // listadosAuxiliares.value.splice(ticketStore.posicionFilaTicket, 1)
+          filtrarTickets(estadosTickets.CALIFICADO)
+          break
+      }
+      modalesTicket.cerrarModalEntidad()
+    }
+
     /*********
      * Hooks
      *********/
@@ -330,6 +346,7 @@ export default defineComponent({
       establecerDepartamentoDefecto,
       departamentoDeshabilitado,
       esResponsableDepartamento,
+      guardado,
     }
   },
 })

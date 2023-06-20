@@ -82,7 +82,8 @@ export default defineComponent({
               const { response } = await cambiarEstado.calificar(ticket.id, calificar)
               notificarCorrecto(response.data.mensaje)
             }
-            emit('cerrar-modal', false)
+            // emit('cerrar-modal', false)
+            emit('guardado', 'CalificarTicketPage')
           })
         } catch (e: any) {
           notificarAdvertencia(e)

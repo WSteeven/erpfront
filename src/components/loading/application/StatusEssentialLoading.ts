@@ -1,4 +1,4 @@
-import { QSpinnerRadio, useQuasar } from 'quasar'
+import { QSpinnerPuff, useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
 import { computed, ComputedRef, Ref } from 'vue'
 
@@ -17,7 +17,7 @@ export class StatusEssentialLoading {
   activar(): void {
     // this.store.activarCargando()
     this.$q.loading.show({
-      spinner: QSpinnerRadio,
+      spinner: QSpinnerPuff,
       message: 'La operación está en progreso.<br/><span class="text-amber text-italic">Espere por favor...</span>',
       html: true
     })
