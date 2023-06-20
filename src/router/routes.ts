@@ -360,6 +360,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: '/reporte-egresos',
+        name: 'reporte_egresos',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_egresos/ReporteEgresosPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/reporte-pedidos',
         name: 'reporte_pedidos',
         component: () =>

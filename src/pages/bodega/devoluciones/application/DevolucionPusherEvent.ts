@@ -15,13 +15,11 @@ export class DevolucionPusherEvent {
     const { notificarCorrecto } = useNotificaciones()
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
-    console.log('Se inicio el servicion de devolucion')
-    console.log(this.store.user.id)
+    
 
     //suscripcion al canal del pedido creado
     const devolucionCreada = pusher.subscribe('devoluciones-tracker-' + this.store.user.id)
     devolucionCreada.bind('devolucion-event', function (e) {
-      console.log(e)
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
       notificarCorrecto('Tienes una devolución esperando ser atendido')
@@ -31,7 +29,6 @@ export class DevolucionPusherEvent {
     //suscripcion al canal de devolucion actualizada
     const devolucionActualizada = pusher.subscribe('devoluciones-actualizadas-' + this.store.user.id)
     devolucionActualizada.bind('devolucion-event', function (e) {
-      console.log(e)
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
       notificarCorrecto('Tu devolución ha sido actualizada')
@@ -42,7 +39,6 @@ export class DevolucionPusherEvent {
     if (this.store.esBodeguero) {
       const devolucionAutorizada = pusher.subscribe('devoluciones-aprobadas-' + rolesSistema.bodega)
       devolucionAutorizada.bind('devolucion-event', function (e) {
-        console.log(e)
         notificacionStore.agregar(e.notificacion)
         notificacionStore.actualizar()
         notificarCorrecto('Tienes una devolución esperando ser atendida')

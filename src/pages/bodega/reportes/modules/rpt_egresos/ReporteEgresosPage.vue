@@ -10,7 +10,7 @@
                 <label class="q-mb-sm block">Tipo de reporte</label>
                 <q-select
                   v-model="reporte.tipo"
-                  :options="opcionesReportesIngresos"
+                  :options="opcionesReportesEgresos"
                   transition-show="scale"
                   transition-hide="scale"
                   options-dense
@@ -27,7 +27,7 @@
               <!-- solicitante -->
               <div
                 class="col-12 col-md-3"
-                v-if="reporte.tipo === tiposReportesIngresos.solicitante"
+                v-if="reporte.tipo === tiposReportesEgresos.solicitante"
               >
                 <label class="q-mb-sm block">Seleccione un empleado</label>
                 <q-select
@@ -48,10 +48,82 @@
                 >
                 </q-select>
               </div>
+              <!-- persona que autoriza -->
+              <div
+                class="col-12 col-md-3"
+                v-if="reporte.tipo === tiposReportesEgresos.autorizador"
+              >
+                <label class="q-mb-sm block">Seleccione un empleado</label>
+                <q-select
+                  v-model="reporte.per_autoriza"
+                  :options="empleados"
+                  transition-show="scale"
+                  transition-hide="scale"
+                  options-dense
+                  dense
+                  outlined
+                  use-input
+                  input-debounce="0"
+                  @filter="filtroEmpleados"
+                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
+                  :option-value="(item) => item.id"
+                  emit-value
+                  map-options
+                >
+                </q-select>
+              </div>
+              <!-- persona que autoriza -->
+              <div
+                class="col-12 col-md-3"
+                v-if="reporte.tipo === tiposReportesEgresos.retira"
+              >
+                <label class="q-mb-sm block">Seleccione un empleado</label>
+                <q-select
+                  v-model="reporte.per_retira"
+                  :options="empleados"
+                  transition-show="scale"
+                  transition-hide="scale"
+                  options-dense
+                  dense
+                  outlined
+                  use-input
+                  input-debounce="0"
+                  @filter="filtroEmpleados"
+                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
+                  :option-value="(item) => item.id"
+                  emit-value
+                  map-options
+                >
+                </q-select>
+              </div>
+              <!-- responsable -->
+              <div
+                class="col-12 col-md-3"
+                v-if="reporte.tipo === tiposReportesEgresos.responsable"
+              >
+                <label class="q-mb-sm block">Seleccione un empleado</label>
+                <q-select
+                  v-model="reporte.responsable"
+                  :options="empleados"
+                  transition-show="scale"
+                  transition-hide="scale"
+                  options-dense
+                  dense
+                  outlined
+                  use-input
+                  input-debounce="0"
+                  @filter="filtroEmpleados"
+                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
+                  :option-value="(item) => item.id"
+                  emit-value
+                  map-options
+                >
+                </q-select>
+              </div>
               <!-- bodegueros -->
               <div
                 class="col-12 col-md-3"
-                v-if="reporte.tipo === tiposReportesIngresos.bodeguero"
+                v-if="reporte.tipo === tiposReportesEgresos.bodeguero"
               >
                 <label class="q-mb-sm block">Seleccione un bodeguero</label>
                 <q-select
@@ -72,7 +144,7 @@
               <!-- motivo -->
               <div
                 class="col-12 col-md-3 q-mb-md"
-                v-if="reporte.tipo === tiposReportesIngresos.motivo"
+                v-if="reporte.tipo === tiposReportesEgresos.motivo"
               >
                 <label class="q-mb-sm block">Motivo</label>
                 <q-select
@@ -99,25 +171,53 @@
                   </template>
                 </q-select>
               </div>
-              <!-- devolucion -->
+              <!-- pedido -->
               <div
-                v-if="reporte.tipo === tiposReportesIngresos.devolucion"
+                v-if="reporte.tipo === tiposReportesEgresos.pedido"
                 class="col-12 col-md-3 q-mb-md"
               >
-                <label class="q-mb-sm block">N° de devolucion</label>
+                <label class="q-mb-sm block">N° de pedido</label>
                 <q-input
                   type="number"
-                  v-model="reporte.devolucion"
+                  v-model="reporte.pedido"
                   placeholder="Obligatorio"
                   outlined
                   dense
                 >
                 </q-input>
               </div>
+              <!-- cliente -->
+              <div
+                class="col-12 col-md-3 q-mb-md"
+                v-if="reporte.tipo === tiposReportesEgresos.cliente"
+              >
+                <label class="q-mb-sm block">Cliente</label>
+                <q-select
+                  v-model="reporte.cliente"
+                  :options="clientes"
+                  transition-show="jum-up"
+                  transition-hide="jump-down"
+                  options-dense
+                  dense
+                  outlined
+                  :option-value="(v) => v.id"
+                  :option-label="(v) => v.razon_social"
+                  emit-value
+                  map-options
+                >
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No hay resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
               <!-- sucursal -->
               <div
                 class="col-12 col-md-3 q-mb-md"
-                v-if="reporte.tipo === tiposReportesIngresos.sucursal"
+                v-if="reporte.tipo === tiposReportesEgresos.sucursal"
               >
                 <label class="q-mb-sm block">Bodega</label>
                 <q-select
@@ -145,7 +245,7 @@
               <!-- tarea -->
               <div
                 class="col-12 col-md-3 q-mb-md"
-                v-if="reporte.tipo === tiposReportesIngresos.tarea"
+                v-if="reporte.tipo === tiposReportesEgresos.tarea"
               >
                 <label class="q-mb-sm block">Tarea</label>
                 <q-select
@@ -183,7 +283,7 @@
               </div>
               <!-- transferencia -->
               <div
-                v-if="reporte.tipo === tiposReportesIngresos.transferencia"
+                v-if="reporte.tipo === tiposReportesEgresos.transferencia"
                 class="col-12 col-md-3 q-mb-md"
               >
                 <label class="q-mb-sm block">N° de transferencia</label>
@@ -265,6 +365,16 @@
                     </q-icon>
                   </template>
                 </q-input>
+              </div>
+              <!-- Egresos firmados y sin firmar -->
+              <div class="col-12 col-md-3">
+                <q-checkbox
+                class="q-mt-sm"
+                  v-model="reporte.firmada"
+                  label="Firmada"
+                  outlined
+                  dense
+                ></q-checkbox>
               </div>
               <!-- Grupo de botones -->
               <div class="col-12 col-md-12 q-mt-md">
@@ -354,4 +464,4 @@
   </q-layout>
 </template>
 
-<script src="./ReporteIngresosPage.ts"></script>
+<script src="./ReporteEgresosPage.ts"></script>
