@@ -457,16 +457,29 @@ export const useMenuStore = defineStore('menu', () => {
           can: true,//store.can('puede.ver.prestamo_empresarial'),
           children: [
             {
-              title: 'Prestamos',
+              title: 'Prestamos Empresariales',
               link: 'prestamo-empresarial',
               icon: 'bi-circle',
               can:store.can('puede.ver.prestamo_empresarial'),
             },
           ]},
+          {
+            title: 'Solicitudes',
+            icon: 'fa-solid fa-hand-holding-dollar',
+            can: true,//store.can('puede.ver.prestamo_empresarial'),
+            children: [
+              {
+                title: 'Solicitud de Prestamos Empresariales',
+                link: 'solicitud-prestamo-empresarial',
+                icon: 'bi-circle',
+                can:store.can('puede.ver.solicitud_prestamo_empresarial'),
+              },
+            ]},
 
 
       ],
     },
+
     //Modulo de Vehículos
     {
       title: 'Vehículos',

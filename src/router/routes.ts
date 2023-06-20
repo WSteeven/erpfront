@@ -720,6 +720,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/solicitud-prestamo-empresarial',
+        name: 'solicitud_prestamo_empresarial',
+        component: () =>
+          import(
+            'pages/recursosHumanos/solicitudes/solicitud-prestamo/view/SolicitudPrestamoEmpresarialPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/rol-pago',
         name: 'rol_pago',
         component: () =>
