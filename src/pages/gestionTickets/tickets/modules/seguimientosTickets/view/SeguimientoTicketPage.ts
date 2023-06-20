@@ -26,6 +26,7 @@ import { SeguimientoTicketController } from '../infraestructure/SeguimientoTicke
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTicketStore } from 'stores/ticket'
+import { estadosTickets } from 'config/tickets.utils'
 
 export default defineComponent({
   components: {
@@ -59,7 +60,7 @@ export default defineComponent({
     const mixinActividad = new ContenedorSimpleMixin(ActividadRealizadaSeguimientoTicket, new SeguimientoTicketController())
     const { entidad: actividad, accion, listadosAuxiliares, listado: actividadesRealizadas } = mixinActividad.useReferencias()
     const { guardar: guardarActividad, editar, reestablecer, setValidador, listar: listarActividades } = mixinActividad.useComportamiento()
-    const { onBeforeGuardar, onConsultado, onBeforeModificar, onGuardado, onModificado } = mixinActividad.useHooks()
+    const { onBeforeGuardar, onConsultado, onBeforeModificar } = mixinActividad.useHooks()
 
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoTicketController())
     const { listar: listarArchivosTickets } = mixinArchivoSeguimiento.useComportamiento()
@@ -71,10 +72,9 @@ export default defineComponent({
     const refEditarModal = ref()
     const fila = ref()
     const refVisorImagen = ref()
-    // const { prompt, notificarAdvertencia } = useNotificaciones()
     const ticket = ticketStore.filaTicket
     const refArchivoSeguimiento = ref()
-    const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id
+    const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id && ticket.estado === estadosTickets.EJECUTANDO
 
     /************
      * Init

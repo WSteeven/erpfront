@@ -31,7 +31,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     /*******************
-     * Modulo de tareas
+     * Modulo de tarreas
      *******************/
     {
       title: 'Proyectos y tareas',
@@ -90,10 +90,16 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tickets_asignados'),
         },
         {
+          title: 'Categorías tipos de tickets',
+          link: 'categorias-tipos-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.categorias_tipos_tickets') || store.user.es_responsable_departamento,
+        },
+        {
           title: 'Tipos de tickets',
           link: 'tipos-tickets',
           icon: 'bi-circle',
-          can: store.can('puede.ver.tipos_tickets'),
+          can: store.can('puede.ver.tipos_tickets') || store.user.es_responsable_departamento,
         },
         {
           title: 'Motivos de pausas',
@@ -193,7 +199,7 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
-          title: store.esBodeguero ? 'Egreso de materiales' : 'Pedidos a bodega',
+          title: 'Egreso de materiales',
           link: 'transacciones-egresos',
           // can: store.can('puede.ver.transacciones_egresos'),
           can: store.can('puede.ver.transacciones_egresos') || store.esBodeguero,
@@ -230,20 +236,26 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Reportes',
-          icon: 'bi-circle',
+          icon: 'bi-clipboard2-data-fill',
           can: store.esBodeguero || store.esContabilidad || store.can('puede.ver.reportes_bodega'),
           children: [
             {
               title: 'Reporte de ingresos',
               link: 'reporte-ingresos',
               icon: 'bi-dash',
-              can: false,
+              can: true,
             },
             {
               title: 'Reporte de egresos',
               link: 'reporte-egresos',
               icon: 'bi-dash',
-              can: false,
+              can: true,
+            },
+            {
+              title: 'Reporte de pedidos',
+              link: 'reporte-pedidos',
+              icon: 'bi-dash',
+              can: true,
             },
             {
               title: 'Reporte de transferencias',
@@ -433,6 +445,32 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.grupos'),
         },
+        {
+          title: 'Permiso',
+          link: 'permiso-nomina',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.permiso_nomina'),
+        },
+        /*  {
+            title: 'Rol de Pagos',
+            link: 'rol-pago',
+            icon: 'bi-circle',
+            can: store.can('puede.ver.rol_pago'),
+          },*/
+        /*  {
+            title: 'Prestamos',
+            icon: 'fa-solid fa-hand-holding-dollar',
+            can: true,//store.can('puede.ver.prestamo_empresarial'),
+            children: [
+              {
+                title: 'Prestamos',
+                link: 'prestamo-empresarial',
+                icon: 'bi-circle',
+                can:store.can('puede.ver.prestamo_empresarial'),
+              },
+            ]},*/
+
+
       ],
     },
     //Modulo de Vehículos

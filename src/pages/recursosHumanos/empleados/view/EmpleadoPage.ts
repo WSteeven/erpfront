@@ -1,9 +1,15 @@
 //Dependencias
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-import { maxLength, minLength, numeric, required, requiredIf } from 'shared/i18n-validators'
+import {
+  maxLength,
+  minLength,
+  numeric,
+  required,
+  requiredIf,
+} from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { maskFecha, opcionesEstados } from 'config/utils'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect, computed } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -19,34 +25,58 @@ import { Empleado } from '../domain/Empleado'
 import { useQuasar } from 'quasar'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { TipoContratoController } from 'pages/recursosHumanos/tipo-contrato/infraestructure/TipoContratoController'
 import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
   setup() {
     /*********
-    * Stores
-    *********/
+     * Stores
+     *********/
     useNotificacionStore().setQuasar(useQuasar())
 
     /***********
-    * Mixin
-    ************/
+     * Mixin
+     ************/
     const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
-    const { entidad: empleado, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const {
+      entidad: empleado,
+      disabled,
+      accion,
+      listadosAuxiliares,
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } =
+      mixin.useComportamiento()
     const { onConsultado, onBeforeModificar } = mixin.useHooks()
 
     const opciones_cantones = ref([])
     const opciones_roles = ref([])
     const opciones_cargos = ref([])
     const opciones_empleados = ref([])
+    const estado_civiles = ref([
+      { id: 1, nombre: 'Soltero' },
+      { id: 2, nombre: 'Casado' },
+      { id: 3, nombre: 'Divorciado' },
+      { id: 4, nombre: 'Viudo' },
+    ])
+    const areas = ref([
+      { id: 1, nombre: 'Administrativo' },
+      { id: 2, nombre: 'Tecnico' },
+    ])
+    const tipos_contrato = ref([])
+    const niveles_academicos = ref([
+      { nombre: 'Estudio Primario' },
+      { nombre: 'Estudio Secundario' },
+      { nombre: 'Titulo Superior' },
+    ])
     const opcionesDepartamentos = ref([])
 
     cargarVista(async () => {
       obtenerListados({
         cantones: new CantonController(),
         cargos: new CargoController(),
+        tipos_contrato: new TipoContratoController(),
         roles: {
           controller: new RolController(),
           params: { campos: 'id,name' }
@@ -83,15 +113,27 @@ export default defineComponent({
         required,
         numeric,
         minlength: minLength(10),
-        maxlength: maxLength(10)
+        maxlength: maxLength(10),
       },
+      dirrecion: { required },
+   //   tipo_sangre: { required },
+  //estado_civil: { required },
+   //   area: { required },
+    //  tipo_contrato: { required },
+   //   banco: { required },
+  //    num_cuenta: { required },
+ //     salario: { required },
+   //   fecha_ingreso: { required },
+   //   fecha_salida: { required },
       nombres: { required },
       apellidos: { required },
       jefe: { required },
       email: { required },
+    //  correo_personal: { required },
       usuario: { required },
       fecha_nacimiento: { required },
       cargo: { required },
+      observacion: { required },
       departamento: { required },
       roles: { required },
       estado: { required },
@@ -105,13 +147,52 @@ export default defineComponent({
     opciones_roles.value = listadosAuxiliares.roles
     opciones_cargos.value = listadosAuxiliares.cargos
     opciones_empleados.value = listadosAuxiliares.empleados
+    tipos_contrato.value = listadosAuxiliares.tipos_contrato
+    opcionesDepartamentos.value = listadosAuxiliares.departamentos
 
     /********
      * Hooks
      ********/
-    onBeforeModificar(() => {
 
+    onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
+
+    const antiguedad = computed(() => {
+      const fechaActual = new Date()
+      const dateParts = empleado.fecha_ingreso
+        ? empleado.fecha_ingreso.split('-')
+        : 0 // Dividir el string en partes usando el guión como separador
+      const day = parseInt(dateParts[0], 10) // Obtener el día como entero
+      const month = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
+      const year = parseInt(dateParts[2], 10) // Obtener el año como entero
+      const fechaIngreso = new Date(year, month, day)
+
+      if (!fechaIngreso) {
+        return null // O algún valor predeterminado en caso de fechaIngreso sea null
+      }
+
+      let diffYears = fechaActual.getFullYear() - fechaIngreso.getFullYear()
+      let diffMonths = fechaActual.getMonth() - fechaIngreso.getMonth()
+      let diffDays = fechaActual.getDate() - fechaIngreso.getDate()
+      if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
+        diffYears--
+        diffMonths += 12
+      }
+
+      if (diffDays < 0) {
+        const lastMonthDate = new Date(
+          fechaActual.getFullYear(),
+          fechaActual.getMonth(),
+          0
+        ).getDate()
+        diffMonths--
+        diffDays += lastMonthDate
+      }
+      if (Number.isNaN(diffYears) || Number.isNaN(diffMonths) || Number.isNaN(diffDays)) {
+        return null
+      }
+      return diffYears + ' Años ' + diffMonths + ' Meses ' + diffDays + ' Dias'
     })
+
 
     onConsultado(() => empleado.tiene_grupo = !!empleado.grupo)
 
@@ -123,18 +204,28 @@ export default defineComponent({
     })
 
     return {
-      mixin, empleado, disabled, accion, v$,
+      mixin,
+      empleado,
+      disabled,
+      accion,
+      v$,
       configuracionColumnas: configuracionColumnasEmpleados,
       isPwd: ref(true),
       listadosAuxiliares,
+      antiguedad,
       //listado
       opciones_cantones,
       opciones_roles,
       opciones_cargos,
-      opcionesDepartamentos,
       opciones_empleados,
       opcionesEstados,
       maskFecha,
+      estado_civiles,
+      areas,
+      tipos_contrato,
+      niveles_academicos,
+      //metodos
+      opcionesDepartamentos,
 
       //  FILTROS
       //filtro de empleados

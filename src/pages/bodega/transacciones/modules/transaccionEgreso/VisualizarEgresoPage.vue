@@ -40,7 +40,7 @@
           <!-- Select motivo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
-            <q-input v-model="transaccion.motivo" disable outlined dense />
+            <q-input v-model="transaccion.motivo" autogrow disable outlined dense />
           </div>
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md">
@@ -172,7 +172,7 @@
             <label class="q-mb-sm block">Solicitante</label>
             <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
             </q-input> -->
-            <q-input v-model="transaccion.solicitante" dense outlined disable>
+            <q-input v-model="transaccion.solicitante" autogrow dense outlined disable>
             </q-input>
           </div>
           <!-- Es para una tarea -->
@@ -204,7 +204,7 @@
           <!-- Responsable -->
           <div v-if="!esTecnico" class="col-12 col-md-3">
             <label class="q-mb-sm block">Responsable</label>
-            <q-input v-model="transaccion.responsable" disable outlined dense />
+            <q-input v-model="transaccion.responsable" autogrow disable outlined dense />
           </div>
           <!-- Retira un tercero -->
           <div

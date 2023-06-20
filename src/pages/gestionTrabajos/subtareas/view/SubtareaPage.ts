@@ -61,6 +61,7 @@ import { AxiosError } from 'axios'
 import { ClienteFinal } from 'pages/gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -76,8 +77,9 @@ export default defineComponent({
      * Stores
      *********/
     const subtareaStore = useSubtareaStore()
-    const notificacionStore = useNotificacionStore()
-    notificacionStore.setQuasar(useQuasar())
+
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
 
     /********
     * Mixin

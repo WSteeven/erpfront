@@ -3,6 +3,10 @@ export const iconos = {
     label: "PEDIDO",
     icono: 'bi-file-earmark-text'
   },
+  devolucion: {
+    label: "DEVOLUCION",
+    icono: 'bi-box-seam-fill'
+  },
   autorizacion_gasto: {
     label: "AUTORIZACION GASTO",
     icono: 'bi-plus-circle-fill'
@@ -18,5 +22,9 @@ export const iconos = {
   egreso: {
     label: "EGRESO",
     icono: 'bi-box-seam'
-  }
+  },
+  ticket: {
+    label: "TICKET",
+    icono: 'bi-ticket-perforated'
+  },
 }

@@ -30,6 +30,7 @@
       "tickets/*": ["gestionTickets/tickets"],
       "ticketsAsignados/*": ["gestionTickets/ticketsAsignados"],
       "tiposTickets/*": ["gestionTickets/tiposTickets"],
+      "categoriasTiposTickets/*": ["gestionTickets/categoriasTiposTickets"],
       "motivosPausasTickets/*": ["gestionTickets/motivosPausasTickets"],
       "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"]
     }

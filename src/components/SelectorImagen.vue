@@ -80,6 +80,7 @@ const props = defineProps([
 ])
 const emit = defineEmits(['update:modelValue'])
 
+
 const img = ref()
 const imagenCodificada = computed(() => props.imagen)
 const alto = computed(() => props.alto ?? '160px')

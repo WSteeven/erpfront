@@ -4,7 +4,7 @@ export interface CustomActionTable {
   tooltip?: string
   accion: (param) => void
   visible?: (param) => boolean
-  color?: string
+  color?: string | funcion
   icono?: string | funcion
 }
 

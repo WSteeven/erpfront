@@ -10,6 +10,14 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         sortable: true
     },
     {
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha',
+        align: 'left',
+        sortable: true,
+        style: 'width:100px'
+    },
+    {
         name: 'justificacion',
         field: 'justificacion',
         label: 'Justificación',
@@ -38,13 +46,13 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         align: 'left',
         sortable: true
     },
-    {
-        name: 'tarea',
-        field: 'tarea',
-        label: 'Tarea',
-        align: 'left',
-        sortable: true
-    },
+    // {
+    //     name: 'tarea',
+    //     field: 'tarea',
+    //     label: 'Tarea',
+    //     align: 'left',
+    //     sortable: true
+    // },
     {
         name: 'responsable',
         field: 'responsable',

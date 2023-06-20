@@ -120,6 +120,35 @@
     <q-icon name="bi-circle-fill" color="light-green" class="q-mr-xs"></q-icon
     >{{ estadosTrabajos.FINALIZADO }}
   </q-chip>
+
+  <!-- FINALIZADO SOLUCIONADO -->
+  <q-chip
+    v-if="props.propsTable.value === estadosTickets.FINALIZADO_SOLUCIONADO"
+    :class="{ 'bg-green-1': !$q.dark.isActive }"
+    class="text-light-green q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="light-green" class="q-mr-xs"></q-icon
+    >{{ estadosTickets.FINALIZADO_SOLUCIONADO }}
+  </q-chip>
+
+  <!-- FINALIZADO SIN SOLUCION -->
+  <q-chip
+    v-if="props.propsTable.value === estadosTickets.FINALIZADO_SIN_SOLUCION"
+    :class="{ 'bg-green-1': !$q.dark.isActive }"
+    class="text-light-green q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="light-green" class="q-mr-xs"></q-icon
+    >{{ estadosTickets.FINALIZADO_SIN_SOLUCION }}
+  </q-chip>
+
+  <q-chip
+    v-if="props.propsTable.value === estadosTickets.CALIFICADO"
+    :class="{ 'bg-green-2': !$q.dark.isActive }"
+    class="text-green-10 q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="green-10" class="q-mr-xs"></q-icon
+    >{{ estadosTickets.CALIFICADO }}
+  </q-chip>
 </template>
 
 <script setup>

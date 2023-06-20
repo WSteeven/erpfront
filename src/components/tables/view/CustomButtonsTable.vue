@@ -15,7 +15,7 @@
     >
       <q-btn
         v-if="extraerVisible(accion1)"
-        :color="accion1?.color ?? 'primary'"
+        :color="extraerColor(accion1) || 'primary'"
         glossy
         dense
         no-caps
@@ -35,7 +35,7 @@
       <!-- Accion 2 -->
       <q-btn
         v-if="extraerVisible(accion2)"
-        :color="accion2?.color ?? 'primary'"
+        :color="extraerColor(accion2) || 'primary'"
         dense
         glossy
         no-caps
@@ -55,7 +55,7 @@
       <!-- Accion 3 -->
       <q-btn
         v-if="extraerVisible(accion3)"
-        :color="accion3?.color ?? 'primary'"
+        :color="extraerColor(accion3) || 'primary'"
         dense
         glossy
         no-caps
@@ -75,7 +75,7 @@
       <!-- Accion 4 -->
       <q-btn
         v-if="extraerVisible(accion4)"
-        :color="accion4?.color ?? 'primary'"
+        :color="extraerColor(accion4) || 'primary'"
         dense
         glossy
         no-caps
@@ -95,7 +95,7 @@
       <!-- Accion 5 -->
       <q-btn
         v-if="extraerVisible(accion5)"
-        :color="accion5?.color ?? 'primary'"
+        :color="extraerColor(accion5) || 'primary'"
         dense
         glossy
         no-caps
@@ -115,7 +115,7 @@
       <!-- Accion 6 -->
       <q-btn
         v-if="extraerVisible(accion6)"
-        :color="accion6?.color ?? 'primary'"
+        :color="extraerColor(accion6) || 'primary'"
         dense
         glossy
         no-caps
@@ -135,7 +135,7 @@
       <!-- Accion 7 -->
       <q-btn
         v-if="extraerVisible(accion7)"
-        :color="accion7?.color ?? 'primary'"
+        :color="extraerColor(accion7) || 'primary'"
         dense
         glossy
         no-caps
@@ -155,7 +155,7 @@
       <!-- Accion 8 -->
       <q-btn
         v-if="extraerVisible(accion8)"
-        :color="accion8?.color ?? 'primary'"
+        :color="extraerColor(accion8) || 'primary'"
         dense
         glossy
         no-caps
@@ -175,7 +175,7 @@
       <!-- Accion 9 -->
       <q-btn
         v-if="extraerVisible(accion9)"
-        :color="accion9?.color ?? 'primary'"
+        :color="extraerColor(accion9) || 'primary'"
         dense
         glossy
         no-caps
@@ -195,7 +195,7 @@
       <!-- Accion 10 -->
       <q-btn
         v-if="extraerVisible(accion10)"
-        :color="accion10?.color ?? 'primary'"
+        :color="extraerColor(accion10) || 'primary'"
         dense
         glossy
         no-caps
@@ -293,6 +293,15 @@ function extraerTitulo(accion?: CustomActionTable) {
         posicion: props.propsTable.rowIndex,
       })
     : accion?.titulo
+}
+
+function extraerColor(accion?: CustomActionTable) {
+  return typeof accion?.color === 'function'
+    ? accion.color({
+        entidad: props.propsTable.row,
+        posicion: props.propsTable.rowIndex,
+      })
+    : accion?.color
 }
 
 function ejecutarAccion(accion?: CustomActionTable) {

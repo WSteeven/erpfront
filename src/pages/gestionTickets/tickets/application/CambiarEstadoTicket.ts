@@ -24,6 +24,10 @@ export class CambiarEstadoTicket {
     return this.solicitud('/finalizar', id)
   }
 
+  async finalizarNoSolucion(id: number, data: any) {
+    return this.solicitud('/finalizar-no-solucion', id, data)
+  }
+
   async pausar(id: number, movilizacion: any) {
     return this.solicitud('/pausar', id, movilizacion)
   }
@@ -36,18 +40,22 @@ export class CambiarEstadoTicket {
     return this.solicitud('/cancelar', id, { motivo_cancelado_ticket_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
   }
 
-  async rechazar(id: number) {
-    return this.solicitud('/rechazar', id)
+  async rechazar(id: number, data: any) {
+    return this.solicitud('/rechazar', id, data)
   }
 
+  async calificar(id: number, data: any) {
+    return this.solicitud('/calificar', id, data)
+  }
+
+  cargando = new StatusEssentialLoading()
   async solicitud(accion, id, data?: UnwrapRef<any>) {
-    const cargando = new StatusEssentialLoading()
 
     try {
       const ruta =
         this.axios.getEndpoint(endpoints.tickets) + accion + '/' + id
 
-      cargando.activar()
+      this.cargando.activar()
       const response: AxiosResponse = await this.axios.post(ruta, data)
 
       return {
@@ -58,7 +66,7 @@ export class CambiarEstadoTicket {
       const axiosError = e as AxiosError
       throw new ApiError(axiosError)
     } finally {
-      cargando.desactivar()
+      this.cargando.desactivar()
     }
   }
 }

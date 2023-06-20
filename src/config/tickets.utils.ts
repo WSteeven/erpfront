@@ -14,7 +14,7 @@ export const estadosTickets = {
   EJECUTANDO: 'EJECUTANDO',
   PAUSADO: 'PAUSADO',
   CANCELADO: 'CANCELADO',
-  FINALIZADO_SIN_SOLUCION: 'FINALIZADO SIN SOLUCION',
+  FINALIZADO_SIN_SOLUCION: 'FINALIZADO SIN SOLUCIÓN',
   FINALIZADO_SOLUCIONADO: 'FINALIZADO SOLUCIONADO',
   CALIFICADO: 'CALIFICADO',
 }
@@ -27,6 +27,7 @@ export const tabOptionsEstadosTickets: TabOption[] = [
   { label: 'Pausado', value: estadosTickets.PAUSADO },
   { label: 'Finalizado solucionado', value: estadosTickets.FINALIZADO_SOLUCIONADO },
   { label: 'Finalizado sin solución', value: estadosTickets.FINALIZADO_SIN_SOLUCION },
+  { label: 'Calificado', value: estadosTickets.CALIFICADO },
 ]
 
 export const tabOptionsEstadosTicketsAsignados: TabOption[] = [
@@ -34,4 +35,6 @@ export const tabOptionsEstadosTicketsAsignados: TabOption[] = [
   { label: 'Reasignado', value: estadosTickets.REASIGNADO },
   { label: 'Ejecutando', value: estadosTickets.EJECUTANDO },
   { label: 'Pausado', value: estadosTickets.PAUSADO },
+  { label: 'Finalizado solucionado', value: estadosTickets.FINALIZADO_SOLUCIONADO },
+  { label: 'Finalizado sin solución', value: estadosTickets.FINALIZADO_SIN_SOLUCION },
 ]
