@@ -21,6 +21,7 @@ import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/Ta
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: { TabLayout },
@@ -29,6 +30,7 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     /***********
      * Mixin
      ************/
