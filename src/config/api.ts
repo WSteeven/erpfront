@@ -43,6 +43,8 @@ export const endpoints = {
   tipo_contrato: new Endpoint('recursos-humanos/tipo_contrato'),
   permiso_empleado: new Endpoint('recursos-humanos/permiso_empleado'),
   prestamo_empresarial : new Endpoint('recursos-humanos/prestamo_empresarial'),
+  solicitud_prestamo_empresarial : new Endpoint('recursos-humanos/solicitud_prestamo_empresarial'),
+
   anticipo : new Endpoint('recursos-humanos/anticipo'),
   rol_pago : new Endpoint('recursos-humanos/rol_pago'),
   datos_empleado : new Endpoint('recursos-humanos/datos_empleado/'),

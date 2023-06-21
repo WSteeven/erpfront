@@ -12,8 +12,6 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', ()=>{
 
   async function obtener_sueldo_basico() {
     try {
-      console.log('entro a obtener');
-
       const userApi = axios.getEndpoint(endpoints.sueldo_basico)
 
       const response = await axios.get<AxiosResponse>(userApi)

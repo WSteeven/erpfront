@@ -10,16 +10,23 @@ export const configuracionColumnasSolicitudPrestamo: ColumnConfig<SolicitudPrest
       sortable: true
   },
   {
+    name: 'solicitante_info',
+    field: 'solicitante_info',
+    label: 'Solicitante',
+    align: 'left',
+    sortable: true
+},
+  {
     name: 'monto',
     field: 'monto',
-    label: 'monto',
+    label: 'Monto',
     align: 'left',
     sortable: true
 },
 {
-  name: 'forma_pago_info',
-  field: 'forma_pago_info',
-  label: 'Forma de pago',
+  name: 'plazo',
+  field: 'plazo',
+  label: 'Plazo',
   align: 'left',
   sortable: true
 },
