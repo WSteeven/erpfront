@@ -62,6 +62,8 @@ export const endpoints = {
   horas_extras_subtipo: new Endpoint('recursos-humanos/horas_extras_subtipo'),
   forma_pago: new Endpoint('forma_pago'),
   sueldo_basico: new Endpoint('recursos-humanos/sueldo_basico'),
+  aprobar_prestamo_empresarial: new Endpoint('recursos-humanos/aprobar_prestamo_empresarial'),
+
 
 
 

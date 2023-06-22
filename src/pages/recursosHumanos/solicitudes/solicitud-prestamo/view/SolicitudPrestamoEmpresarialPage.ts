@@ -30,6 +30,9 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSolicitudPrestamoEmpresarialStore } from 'stores/solicitudPrestamoEmpresarial'
 import { useRouter } from 'vue-router'
 import { useAuthenticationStore } from 'stores/authentication'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosResponse } from 'axios'
+import { endpoints } from 'config/api'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen },
@@ -114,8 +117,8 @@ export default defineComponent({
       titulo: 'Aprobar',
       icono: 'bi-check-all',
       color: 'positive',
-      accion: ({ posicion }) => {
-        console.log(posicion)
+      accion: ({ entidad }) => {
+        aprobarPrestamos(entidad);
       },
       visible: () => (tabSolicitudPrestaamo == '4' ? true : false),
     }
@@ -134,6 +137,13 @@ export default defineComponent({
      }else{
       solicitudPrestamo.estado= estado_aux.value!= undefined?estado_aux.value:1
      }
+    }
+    async function aprobarPrestamos(entidad): Promise<void>{
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.aprobar_prestamo_empresarial)
+      const response: AxiosResponse = await axios.put(ruta, entidad)
+      console.log(response)
+      notificarCorrecto(response.data.mensaje)
     }
 
     return {
