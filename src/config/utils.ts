@@ -150,6 +150,12 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
+export const tabOptionsSolicitudPedido: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Validado', value: '4' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
+]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
   { label: 'Devueltas', value: '1' },

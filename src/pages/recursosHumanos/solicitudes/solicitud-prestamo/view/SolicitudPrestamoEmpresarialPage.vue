@@ -1,5 +1,17 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout-filter-tabs2 :mixin="mixin"
+  :configuracionColumnas="configuracionColumnas"
+  :mostrarListado="mostrarListado"
+    :tabOptions="tabOptionsSolicitudPedido"
+    :full="true"
+    :permitirEditar="true"
+    :permitirEliminar="false"
+    :mostrarButtonSubmits="true"
+    :accion1="botonAprobar"
+    :accion2="botonCancelar"
+    :filtrar="filtrarSolicitudPrestamo"
+    tabDefecto="1"
+    :forzarListar="true">
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
@@ -99,10 +111,16 @@
               </template>
               </q-input>
           </div>
+            <!-- Validado -->
+            <div class="col-12 col-md-3" v-if="accion=='EDITAR' && store.can('puede.ver.campo.validado')">
+                  <label class="q-mb-sm block">Validado</label>
+                  <q-toggle :label="es_validado ? 'SI' : 'NO'" v-model="es_validado" @update:model-value="validarPermiso"
+                    color="primary" keep-color icon="bi-check2-circle" unchecked-icon="clear" :disable="disabled" />
+                </div>
 
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./SolicitudPrestamoEmpresarialPage.ts"></script>
