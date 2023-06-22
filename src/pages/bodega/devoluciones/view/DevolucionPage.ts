@@ -28,10 +28,12 @@ import { useDevolucionStore } from 'stores/devolucion'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { MaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/MaterialEmpleadoTarea'
 import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
+import { useCargandoStore } from 'stores/cargando'
+import { useNotificacionStore } from 'stores/notificacion'
 
 
 export default defineComponent({
@@ -45,6 +47,8 @@ export default defineComponent({
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         //stores
+        useNotificacionStore().setQuasar(useQuasar())
+        useCargandoStore().setQuasar(useQuasar())
         const devolucionStore = useDevolucionStore()
         const store = useAuthenticationStore()
         const listadoMaterialesDevolucion = useListadoMaterialesDevolucionStore()

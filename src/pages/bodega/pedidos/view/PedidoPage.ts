@@ -32,9 +32,11 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
 
 
 export default defineComponent({
@@ -48,6 +50,8 @@ export default defineComponent({
 
 
     // Stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const pedidoStore = usePedidoStore()
     const store = useAuthenticationStore()
     const router = useRouter()
