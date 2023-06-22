@@ -14,6 +14,8 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CambiarEstadoTicket } from '../../application/CambiarEstadoTicket'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Ticket } from '../../domain/Ticket'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: {
@@ -37,6 +39,7 @@ export default defineComponent({
     *********/
     const ticketStore = useTicketStore()
     const authenticationStore = useAuthenticationStore()
+    useCargandoStore().setQuasar(useQuasar())
 
     /************
      * Variables
@@ -77,7 +80,6 @@ export default defineComponent({
           confirmar('¿Está seguro de continuar?', async () => {
             const cambiarEstado = new CambiarEstadoTicket()
             if (ticket.id) {
-              console.log(ticket)
               calificar.solicitante_o_responsable = authenticationStore.user.id === ticket.solicitante_id ? 'SOLICITANTE' : 'RESPONSABLE'
               const { response } = await cambiarEstado.calificar(ticket.id, calificar)
               notificarCorrecto(response.data.mensaje)

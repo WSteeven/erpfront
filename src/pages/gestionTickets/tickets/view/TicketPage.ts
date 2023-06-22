@@ -54,6 +54,7 @@ import { useQuasar } from 'quasar'
 import { TicketModales } from '../domain/TicketModales'
 import { useTicketStore } from 'stores/ticket'
 import { useCargandoStore } from 'stores/cargando'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -79,14 +80,14 @@ export default defineComponent({
      *********/
     const tareaStore = useTareaStore()
     const authenticationStore = useAuthenticationStore()
-    // const ticketStore = useTicketStore()
+    const ticketStore = useTicketStore()
     useCargandoStore().setQuasar(useQuasar())
 
     /*******
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { entidad: ticket, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
+    const { entidad: ticket, listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
     const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
@@ -114,7 +115,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { notificarAdvertencia, prompt, confirmar } = useNotificaciones()
+    // const { notificarAdvertencia, prompt, confirmar } = useNotificaciones()
     const nombreUsuario = authenticationStore.nombreUsuario
     const fechaHoraActual = ref()
     const refArchivoTicket = ref()
@@ -124,6 +125,8 @@ export default defineComponent({
     const modalesTicket = new ComportamientoModalesTicket()
     const tabActual = ref()
     const departamentoDeshabilitado = ref(false)
+    const filtroResponsableDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable, es_responsable_departamento: true } })
+    const filtroDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable } })
 
     const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((categoria: CategoriaTipoTicket) => categoria.departamento_id === ticket.departamento_responsable))
     const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket_id === ticket.categoria_tipo_ticket))
@@ -169,8 +172,6 @@ export default defineComponent({
       empleados,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
-
-
     /************
     * Funciones
     ************/
@@ -186,21 +187,17 @@ export default defineComponent({
       }
     }
 
-    async function obtenerResponsables(departamento: number) {
-      const filtros = {
-        departamento_id: departamento, es_responsable_departamento: true,
-      }
-
-      if (ticket.ticket_interno) delete (filtros as any).es_responsable_departamento
-
-      await obtenerListados({
-        empleados: {
-          controller: new EmpleadoController(),
-          params: filtros, //{ departamento_id: departamento, rol: rolesSistema.coordinador }
-          // params: { campos: 'id,nombres,apellidos', departamento_id: departamento, rol: rolesSistema.coordinador }
-        },
+    async function obtenerResponsables(filtros) {
+      cargarVista(async () => {
+        await obtenerListados({
+          empleados: {
+            controller: new EmpleadoController(),
+            params: filtros,
+            // params: { campos: 'id,nombres,apellidos', departamento_id: departamento, rol: rolesSistema.coordinador }
+          },
+        })
+        empleados.value = listadosAuxiliares.empleados
       })
-      empleados.value = listadosAuxiliares.empleados
     }
 
     async function subirArchivos(id: number) {
@@ -223,23 +220,26 @@ export default defineComponent({
       }
     }
 
+    const axios = AxiosHttpRepository.getInstance()
+    const cargando = new StatusEssentialLoading()
     const pausas = ref([])
     async function obtenerPausas() {
-      // const statusEssentialLoading = new StatusEssentialLoading()
-      // statusEssentialLoading.activar()
 
-      const axios = AxiosHttpRepository.getInstance()
-      const ruta =
-        axios.getEndpoint(endpoints.pausas_tickets) + '/' + ticket.id
-      const response: AxiosResponse = await axios.get(ruta)
-      pausas.value = response.data.results
-
-      // statusEssentialLoading.desactivar()
+      try {
+        cargando.activar()
+        const ruta =
+          axios.getEndpoint(endpoints.pausas_tickets) + '/' + ticket.id
+        const response: AxiosResponse = await axios.get(ruta)
+        pausas.value = response.data.results
+      } catch (e) {
+        //
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     const rechazos = ref([])
     async function obtenerRechazos() {
-      const axios = AxiosHttpRepository.getInstance()
       const ruta =
         axios.getEndpoint(endpoints.rechazos_tickets) + '/' + ticket.id
       const response: AxiosResponse = await axios.get(ruta)
@@ -247,11 +247,15 @@ export default defineComponent({
     }
 
     async function guardado(paginaModal: keyof TicketModales) {
-      console.log('guardado modal jeje ...')
       switch (paginaModal) {
         case 'CalificarTicketPage':
-          // listadosAuxiliares.value.splice(ticketStore.posicionFilaTicket, 1)
-          filtrarTickets(estadosTickets.CALIFICADO)
+          if (!ticketStore.filaTicket.calificaciones.length) {
+            const entidad = listado.value[ticketStore.posicionFilaTicket]
+            entidad.pendiente_calificar = false
+            listado.value.splice(ticketStore.posicionFilaTicket, 1, entidad)
+          } else {
+            filtrarTickets(estadosTickets.CALIFICADO)
+          }
           break
       }
       modalesTicket.cerrarModalEntidad()
@@ -273,7 +277,11 @@ export default defineComponent({
       ticket.establecer_hora_limite = !!horaLimite.value
       fechaHoraActual.value = ticket.fecha_hora_solicitud
       clearInterval(tiempoActualInterval)
-      if (ticket.departamento_responsable) obtenerResponsables(ticket.departamento_responsable)
+      if (ticket.departamento_responsable) {
+        obtenerResponsables({
+          departamento_id: ticket.departamento_responsable,
+        })
+      }
       refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id })
       refArchivoTicket.value.quiero_subir_archivos = false
       obtenerPausas()
@@ -347,6 +355,8 @@ export default defineComponent({
       departamentoDeshabilitado,
       esResponsableDepartamento,
       guardado,
+      filtroResponsableDepartamento,
+      filtroDepartamento,
     }
   },
 })

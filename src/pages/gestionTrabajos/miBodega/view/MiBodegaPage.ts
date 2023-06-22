@@ -17,6 +17,8 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -26,6 +28,7 @@ export default defineComponent({
      *********/
     const authenticationStore = useAuthenticationStore()
     const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
+    useCargandoStore().setQuasar(useQuasar())
 
     /****************
      * Controladores
@@ -74,8 +77,8 @@ export default defineComponent({
           }
           listado.value = result
           // asignacion al store de la tarea y el listado de materiales para devolver
-          listadoMaterialesDevolucionStore.listadoMateriales =result
-          listadoMaterialesDevolucionStore.tareaId =filtro.tarea
+          listadoMaterialesDevolucionStore.listadoMateriales = result
+          listadoMaterialesDevolucionStore.tareaId = filtro.tarea
         }
       } catch (e) {
         notificarError('Error al obtener el material.')
@@ -98,7 +101,7 @@ export default defineComponent({
         )
       })
     }
-    //botones para transferir al stock 
+    //botones para transferir al stock
 
     return {
       configuracionColumnasMaterialEmpleadoTarea,

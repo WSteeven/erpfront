@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mb-lg q-pa-md rounded border-grey bg-white">
+  <q-card class="q-mb-lg q-pa-md rounded">
     <div class="text-bold q-mb-lg">Información general</div>
     <DetalleTicket :ticket="ticket"></DetalleTicket>
     <br />
@@ -84,7 +84,7 @@
         <span>Cancelar</span>
       </q-btn>
     </div>
-  </div>
+  </q-card>
 </template>
 
 <script src="./CalificarTicketPage.ts"></script>

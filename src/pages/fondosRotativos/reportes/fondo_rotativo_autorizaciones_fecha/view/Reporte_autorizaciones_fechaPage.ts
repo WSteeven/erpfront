@@ -14,6 +14,7 @@ import { FondoRotativoAutorizacionesFechaController } from '../infrestructure/Fo
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: { TabLayout },
@@ -22,6 +23,7 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     /***********
      * Mixin
      ************/
