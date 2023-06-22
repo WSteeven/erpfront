@@ -1,7 +1,7 @@
 //Dependencias
 
-import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
-import { markRaw } from "vue";
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain';
+import { markRaw } from 'vue';
 
 //Paginas
 import VisualizarEgresoPage  from 'pages/bodega/transacciones/modules/transaccionEgreso/VisualizarEgresoPage.vue'

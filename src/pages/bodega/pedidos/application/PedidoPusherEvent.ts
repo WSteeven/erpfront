@@ -15,7 +15,6 @@ export class PedidoPusherEvent {
     const { notificarCorrecto } = useNotificaciones()
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
-    const user = this.store.user
 
     //suscripcion al canal del pedido creado
     const pedidoCreado = pusher.subscribe('pedidos-tracker-' + this.store.user.id)
