@@ -1,7 +1,8 @@
 <template>
-  <tab-layout-filter-tabs2 :mixin="mixin"
-  :configuracionColumnas="configuracionColumnas"
-  :mostrarListado="mostrarListado"
+  <tab-layout-filter-tabs2
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :mostrarListado="mostrarListado"
     :tabOptions="tabOptionsSolicitudPedido"
     :full="true"
     :permitirEditar="true"
@@ -11,10 +12,11 @@
     :accion2="botonCancelar"
     :filtrar="filtrarSolicitudPrestamo"
     tabDefecto="1"
-    :forzarListar="true">
+    :forzarListar="true"
+  >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-md">
+        <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
           <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
@@ -22,7 +24,7 @@
               v-model="solicitudPrestamo.fecha"
               placeholder="Obligatorio"
               :error="!!v$.fecha.$errors.length"
-              :disable="accion.value != 'NUEVO' ?false:true"
+              :disable="accion.value != 'NUEVO' ? false : true"
               @blur="v$.fecha.$touch"
               outlined
               dense
@@ -30,7 +32,12 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="solicitudPrestamo.fecha" :mask="maskFecha" :options="optionsSolicitudPrestamo" today-btn>
+                    <q-date
+                      v-model="solicitudPrestamo.fecha"
+                      :mask="maskFecha"
+                      :options="optionsSolicitudPrestamo"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
@@ -53,7 +60,7 @@
               v-model="solicitudPrestamo.monto"
               placeholder="Obligatorio"
               type="number"
-              :disable="accion.value != 'NUEVO' ?false:true"
+              :disable="accion.value != 'NUEVO' ? false : true"
               :error="!!v$.monto.$errors.length"
               lazy-rules
               :rules="maximoValorsolicitudPrestamo"
@@ -61,12 +68,12 @@
               outlined
               dense
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.monto.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-              </q-input>
+            </q-input>
           </div>
 
           <!-- Plazo -->
@@ -75,10 +82,9 @@
             <q-input
               v-model="solicitudPrestamo.plazo"
               type="number"
-              :disable="accion.value != 'NUEVO' ?false:true"
+              :disable="accion.value != 'NUEVO' ? false : true"
               :error="!!v$.plazo.$errors.length"
               placeholder="Obligatorio"
-
               @blur="v$.plazo.$touch"
               outlined
               dense
@@ -90,8 +96,8 @@
               </template>
             </q-input>
           </div>
-           <!-- Observacion  -->
-           <div class="col-12 col-md-3">
+          <!-- Observacion  -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion </label>
             <q-input
               v-model="solicitudPrestamo.observacion"
@@ -104,20 +110,30 @@
               outlined
               dense
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.observacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-              </q-input>
+            </q-input>
           </div>
-            <!-- Validado -->
-            <div class="col-12 col-md-3" v-if="accion=='EDITAR' && store.can('puede.ver.campo.validado')">
-                  <label class="q-mb-sm block">Validado</label>
-                  <q-toggle :label="es_validado ? 'SI' : 'NO'" v-model="es_validado" @update:model-value="validarPermiso"
-                    color="primary" keep-color icon="bi-check2-circle" unchecked-icon="clear" :disable="disabled" />
-                </div>
-
+          <!-- Validado -->
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == 'EDITAR' && store.can('puede.ver.campo.validado')"
+          >
+            <label class="q-mb-sm block">Validado</label>
+            <q-toggle
+              :label="es_validado ? 'SI' : 'NO'"
+              v-model="es_validado"
+              @update:model-value="validarPermiso"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
         </div>
       </q-form>
     </template>

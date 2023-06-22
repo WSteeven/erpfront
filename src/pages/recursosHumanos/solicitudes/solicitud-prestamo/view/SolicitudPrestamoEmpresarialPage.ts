@@ -7,7 +7,7 @@ import {
 } from 'shared/i18n-validators'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect, reactive } from 'vue'
+import { defineComponent, ref, computed, watchEffect, reactive, Ref } from 'vue'
 
 // Componentes
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -45,6 +45,7 @@ export default defineComponent({
       entidad: solicitudPrestamo,
       disabled,
       accion,
+      listado,
     } = mixin.useReferencias()
     const { setValidador, listar } = mixin.useComportamiento()
 
@@ -56,7 +57,7 @@ export default defineComponent({
       notificarError,
     } = useNotificaciones()
     const { onBeforeConsultar, onConsultado, onBeforeModificar } =
-    mixin.useHooks()
+      mixin.useHooks()
 
     const maximoAPrestar = ref()
     const esMayorsolicitudPrestamo = ref(false)
@@ -72,10 +73,9 @@ export default defineComponent({
       return recursosHumanosStore.sueldo_basico
     })
     maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
-    onConsultado(() =>{
+    onConsultado(() => {
       estado_aux.value = solicitudPrestamo.estado
-    console.log(estado_aux.value);
-
+      console.log(estado_aux.value)
     })
     //Reglas de validacion
     const reglas = computed(() => ({
@@ -86,7 +86,6 @@ export default defineComponent({
     }))
     const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
     const v$ = useVuelidate(reglas, solicitudPrestamo)
-
 
     setValidador(v$.value)
     function optionsSolicitudPrestamo(date) {
@@ -117,10 +116,14 @@ export default defineComponent({
       titulo: 'Aprobar',
       icono: 'bi-check-all',
       color: 'positive',
-      accion: ({ entidad }) => {
-        aprobarPrestamos(entidad);
+      accion: ({ entidad, posicion }) => {
+        aprobarPrestamos(entidad, posicion)
       },
-      visible: () => (tabSolicitudPrestaamo == '4' ? true : false),
+      visible: () =>
+        tabSolicitudPrestaamo == '4' &&
+        store.can('puede.autorizar.solicitud_Prestamo_empresarial')
+          ? true
+          : false,
     }
     const botonCancelar: CustomActionTable = {
       titulo: 'cancelar',
@@ -131,18 +134,22 @@ export default defineComponent({
       },
       visible: () => (tabSolicitudPrestaamo == '2' ? true : false),
     }
-    function validarPermiso(val){
-      if(es_validado.value){
-        solicitudPrestamo.estado= 4
-     }else{
-      solicitudPrestamo.estado= estado_aux.value!= undefined?estado_aux.value:1
-     }
+    function validarPermiso() {
+      if (es_validado.value) {
+        solicitudPrestamo.estado = 4
+      } else {
+        solicitudPrestamo.estado =
+          estado_aux.value != undefined ? estado_aux.value : 1
+      }
     }
-    async function aprobarPrestamos(entidad): Promise<void>{
+
+    async function aprobarPrestamos(entidad, posicion): Promise<void> {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.aprobar_prestamo_empresarial)
       const response: AxiosResponse = await axios.put(ruta, entidad)
-      console.log(response)
+     /* listado.value.splice(posicion, 1, entidad)
+      listado.value = [...listado.value]*/
+      tabSolicitudPrestaamo ='4';
       notificarCorrecto(response.data.mensaje)
     }
 
@@ -171,7 +178,7 @@ export default defineComponent({
       estado_aux,
       v$,
       disabled,
-       store,
+      store,
       tabOptionsSolicitudPedido,
       accion,
       configuracionColumnas: configuracionColumnasSolicitudPrestamo,
