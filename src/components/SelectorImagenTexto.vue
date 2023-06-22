@@ -116,7 +116,7 @@ const texto2 = computed(() => props.texto2)
 const texto3 = computed(() => props.texto3)
 const texto4 = computed(() => props.texto4)
 
-const alto = computed(() => props.alto ?? '160px')
+// const alto = computed(() => props.alto ?? '160px')
 const opened = ref(false)
 const setBase64 = (file: File) => {
   if (file !== null && file !== undefined) {

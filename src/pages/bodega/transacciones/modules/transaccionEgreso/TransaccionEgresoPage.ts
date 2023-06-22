@@ -44,6 +44,7 @@ import { limpiarListado, ordernarListaString } from 'shared/utils'
 import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { useInventarioStore } from 'stores/inventario'
 import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -55,6 +56,7 @@ export default defineComponent({
     const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
     const pedidoStore = usePedidoStore()

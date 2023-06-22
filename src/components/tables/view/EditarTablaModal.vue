@@ -281,9 +281,9 @@ export default defineComponent({
       emit('limpiar')
     }
 
-    function filtrarSelect(val, update) {
+    // function filtrarSelect(val, update) {
       // const opciones = fieldsSelect.filter
-      console.log(val)
+      // console.log(val)
       // if(val ===''){
       //   update(()=>{
       //     opciones = opciones
@@ -293,7 +293,7 @@ export default defineComponent({
       // update(()=>{
       //   opciones = opciones.filter((item) => item.label.toLowerCase().includes(val.toLowerCase()))
       // })
-    }
+    // }
 
     // Antes de cerrar el modal
     function validarRequeridos(fila) {
@@ -323,7 +323,6 @@ export default defineComponent({
       abrir,
       guardar,
       cerrarModalEntidad,
-      filtrarSelect,
     }
   },
 })

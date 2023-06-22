@@ -1,6 +1,6 @@
-import { useAuthenticationStore } from "stores/authentication";
-import { useRouter } from "vue-router";
-import { ResetPassword } from "../domain/ResetPassword"
+import { useAuthenticationStore } from 'stores/authentication';
+import { useRouter } from 'vue-router';
+import { ResetPassword } from '../domain/ResetPassword'
 
 export class ResetPasswordController {
   store = useAuthenticationStore()
