@@ -22,7 +22,7 @@
               options-dense
               dense
               outlined
-              disable
+              :disable="disabled"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               use-input
