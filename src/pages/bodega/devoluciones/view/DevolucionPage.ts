@@ -254,7 +254,6 @@ export default defineComponent({
             puedeEditar,
 
             tabEs(val) {
-                console.log(val);
                 tabSeleccionado.value = val
                 puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
                     ? true : false
