@@ -20,6 +20,9 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { AutorizarGastoModales } from '../domain/AutorizarGastoModales'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+import { useCargandoStore } from 'stores/cargando'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -45,9 +48,13 @@ export default defineComponent({
     const { listado } = mixin.useReferencias()
     const {listar } =
     mixin.useComportamiento()
-    /***********
+
+    /*********
      * Stores
-     ***********/
+     *********/
+
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const authenticationStore = useAuthenticationStore()
     const fondoRotativoStore = useFondoRotativoStore()
     /***************
