@@ -13,12 +13,10 @@ import {
   rolesSistema,
   acciones,
   accionesTabla,
-  tiposIntervenciones,
-  causaIntervencion,
   maskFecha,
 } from 'config/utils'
 import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
-import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
+import { destinosTareas, modosAsignacionTrabajo, tiposIntervenciones } from 'config/tareas.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -91,7 +89,6 @@ export default defineComponent({
     const mixinArchivo = new ContenedorSimpleMixin(Archivo, new ArchivoSubtareaController())
     const { listado: archivos } = mixinArchivo.useReferencias()
     const { listar: listarArchivos } = mixinArchivo.useComportamiento()
-
 
     cargarVista(async () => {
       await obtenerListados({
@@ -385,8 +382,6 @@ export default defineComponent({
       fab: ref(false),
       regiones,
       atenciones,
-      tiposIntervenciones,
-      causaIntervencion,
       guardarDatos,
       reestablecerDatos,
       accion,
@@ -436,6 +431,7 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
+      tiposIntervenciones,
     }
   },
 })

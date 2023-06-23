@@ -55,6 +55,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/causas-intervenciones',
+        name: 'causas_intervenciones',
+        component: () =>
+          import('gestionTrabajos/causasIntervenciones/view/CausaIntervencionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/motivos-pausas',
         name: 'motivos_pausas',
         component: () =>
