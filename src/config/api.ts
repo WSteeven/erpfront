@@ -63,6 +63,8 @@ export const endpoints = {
   forma_pago: new Endpoint('forma_pago'),
   sueldo_basico: new Endpoint('recursos-humanos/sueldo_basico'),
   aprobar_prestamo_empresarial: new Endpoint('recursos-humanos/aprobar_prestamo_empresarial'),
+  rechazar_prestamo_empresarial: new Endpoint('recursos-humanos/rechazar_prestamo_empresarial'),
+  vacacion: new Endpoint('recursos-humanos/vacacion'),
 
 
 

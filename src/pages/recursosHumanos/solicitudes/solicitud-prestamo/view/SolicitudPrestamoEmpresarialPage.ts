@@ -33,6 +33,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { AxiosResponse } from 'axios'
 import { endpoints } from 'config/api'
+import { LocalStorage } from 'quasar'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen },
@@ -68,19 +69,32 @@ export default defineComponent({
     const router = useRouter()
     const es_validado = ref(false)
     const estado_aux = ref()
+    const autorizaciones = ref()
     const sueldo_basico = computed(() => {
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
     })
     maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
+    autorizaciones.value =
+      LocalStorage.getItem('autorizaciones') == null
+        ? []
+        : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     onConsultado(() => {
+      if(store.can('puede.ver.campo.validado')){
+        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'APROBADO'),1);
+        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'PENDIENTE'),1);
+      }
+      if(store.can('puede.autorizar.solicitud_prestamo_empresarial')){
+       autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'VALIDADO'),1);
+       autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'PENDIENTE'),1);
+      }
       estado_aux.value = solicitudPrestamo.estado
-      console.log(estado_aux.value)
     })
     //Reglas de validacion
     const reglas = computed(() => ({
       fecha: { required },
       monto: { required },
+      estado: requiredIf(store.can('puede.ver.campo.validado')),
       observacion: { required },
       plazo: { required, minValue: minValue(1), maxValue: maxValue(12) },
     }))
@@ -121,7 +135,20 @@ export default defineComponent({
       },
       visible: () =>
         tabSolicitudPrestaamo == '4' &&
-        store.can('puede.autorizar.solicitud_Prestamo_empresarial')
+        store.can('puede.autorizar.solicitud_prestamo_empresarial')
+          ? true
+          : false,
+    }
+    const botonRechazar: CustomActionTable = {
+      titulo: 'Rechazar',
+      icono: 'bi-x',
+      color: 'negative',
+      accion: ({ entidad, posicion }) => {
+        rechazarPrestamos(entidad, posicion)
+      },
+      visible: () =>
+        tabSolicitudPrestaamo == '4' &&
+        store.can('puede.autorizar.solicitud_prestamo_empresarial')
           ? true
           : false,
     }
@@ -147,10 +174,19 @@ export default defineComponent({
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.aprobar_prestamo_empresarial)
       const response: AxiosResponse = await axios.put(ruta, entidad)
-     /* listado.value.splice(posicion, 1, entidad)
+      /* listado.value.splice(posicion, 1, entidad)
       listado.value = [...listado.value]*/
-      tabSolicitudPrestaamo ='4';
+      tabSolicitudPrestaamo = '4'
       notificarCorrecto(response.data.mensaje)
+    }
+    async function rechazarPrestamos(entidad, posicion) {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.rechazar_prestamo_empresarial)
+      const response: AxiosResponse = await axios.put(ruta, entidad)
+      /* listado.value.splice(posicion, 1, entidad)
+      listado.value = [...listado.value]*/
+      tabSolicitudPrestaamo = '4'
+      notificarAdvertencia(response.data.mensaje)
     }
 
     return {
@@ -162,6 +198,7 @@ export default defineComponent({
       botonValidar,
       botonAprobar,
       botonCancelar,
+      botonRechazar,
       validarPermiso,
       optionsSolicitudPrestamo,
       filtrarSolicitudPrestamo,
@@ -173,6 +210,7 @@ export default defineComponent({
             ')',
       ],
       plazo_pago,
+      autorizaciones,
       maskFecha,
       es_validado,
       estado_aux,

@@ -30,4 +30,18 @@ export const configuracionColumnasSolicitudPrestamo: ColumnConfig<SolicitudPrest
   align: 'left',
   sortable: true
 },
+{
+  name: 'observacion',
+  field: 'observacion',
+  label: 'Observación',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'estado_info',
+  field: 'estado_info',
+  label: 'Estado',
+  align: 'left',
+  sortable: true
+},
 ]

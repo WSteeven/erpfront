@@ -8,6 +8,7 @@ export class SolicitudPrestamo extends EntidadAuditable {
   monto: number | null
   plazo: number | null
   estado: number |null
+  estado_info: string|null
   observacion: string | null
 
   constructor() {
@@ -19,6 +20,7 @@ export class SolicitudPrestamo extends EntidadAuditable {
     this.monto = null
     this.plazo = null
     this.estado = null
+    this.estado_info= null
     this.observacion = null
   }
 }

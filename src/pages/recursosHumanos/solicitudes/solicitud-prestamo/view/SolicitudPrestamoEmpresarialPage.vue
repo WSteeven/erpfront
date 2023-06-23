@@ -8,8 +8,6 @@
     :permitirEditar="true"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
-    :accion1="botonAprobar"
-    :accion2="botonCancelar"
     :filtrar="filtrarSolicitudPrestamo"
     tabDefecto="1"
     :forzarListar="true"
@@ -117,22 +115,32 @@
               </template>
             </q-input>
           </div>
-          <!-- Validado -->
-          <div
-            class="col-12 col-md-3"
-            v-if="accion == 'EDITAR' && store.can('puede.ver.campo.validado')"
-          >
-            <label class="q-mb-sm block">Validado</label>
-            <q-toggle
-              :label="es_validado ? 'SI' : 'NO'"
-              v-model="es_validado"
-              @update:model-value="validarPermiso"
-              color="primary"
-              keep-color
-              icon="bi-check2-circle"
-              unchecked-icon="clear"
+             <!-- Autorizacion -->
+            <div class="col-12 col-md-3"  v-if="accion == 'EDITAR' && (store.can('puede.ver.campo.validado')|| store.can('puede.autorizar.solicitud_prestamo_empresarial'))">
+            <label class="q-mb-sm block">Autorizacion</label>
+            <q-select
+              v-model="solicitudPrestamo.estado"
+              :options="autorizaciones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
               :disable="disabled"
-            />
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
         </div>
       </q-form>
