@@ -67,8 +67,6 @@ export default defineComponent({
     const recursosHumanosStore = useRecursosHumanosStore()
     const store = useAuthenticationStore()
     const router = useRouter()
-    const es_validado = ref(false)
-    const estado_aux = ref()
     const autorizaciones = ref()
     const sueldo_basico = computed(() => {
       recursosHumanosStore.obtener_sueldo_basico()
@@ -88,7 +86,6 @@ export default defineComponent({
        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'VALIDADO'),1);
        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'PENDIENTE'),1);
       }
-      estado_aux.value = solicitudPrestamo.estado
     })
     //Reglas de validacion
     const reglas = computed(() => ({
@@ -161,14 +158,7 @@ export default defineComponent({
       },
       visible: () => (tabSolicitudPrestaamo == '2' ? true : false),
     }
-    function validarPermiso() {
-      if (es_validado.value) {
-        solicitudPrestamo.estado = 4
-      } else {
-        solicitudPrestamo.estado =
-          estado_aux.value != undefined ? estado_aux.value : 1
-      }
-    }
+
 
     async function aprobarPrestamos(entidad, posicion): Promise<void> {
       const axios = AxiosHttpRepository.getInstance()
@@ -199,7 +189,6 @@ export default defineComponent({
       botonAprobar,
       botonCancelar,
       botonRechazar,
-      validarPermiso,
       optionsSolicitudPrestamo,
       filtrarSolicitudPrestamo,
       maximoValorsolicitudPrestamo: [
@@ -212,8 +201,6 @@ export default defineComponent({
       plazo_pago,
       autorizaciones,
       maskFecha,
-      es_validado,
-      estado_aux,
       v$,
       disabled,
       store,
