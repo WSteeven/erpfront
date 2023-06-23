@@ -19,6 +19,8 @@ export class Ticket extends EntidadAuditable {
   establecer_hora_limite: boolean
   fecha_hora_solicitud: string | null
   calificaciones: any
+  pendiente_calificar: boolean
+  ticket_interno: boolean
 
   constructor() {
     super()
@@ -40,5 +42,7 @@ export class Ticket extends EntidadAuditable {
     this.establecer_hora_limite = false
     this.fecha_hora_solicitud = null
     this.calificaciones = []
+    this.pendiente_calificar = false
+    this.ticket_interno = false
   }
 }

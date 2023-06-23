@@ -140,6 +140,15 @@
     <q-icon name="bi-circle-fill" color="light-green" class="q-mr-xs"></q-icon
     >{{ estadosTickets.FINALIZADO_SIN_SOLUCION }}
   </q-chip>
+
+  <q-chip
+    v-if="props.propsTable.value === estadosTickets.CALIFICADO"
+    :class="{ 'bg-green-2': !$q.dark.isActive }"
+    class="text-green-10 q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="green-10" class="q-mr-xs"></q-icon
+    >{{ estadosTickets.CALIFICADO }}
+  </q-chip>
 </template>
 
 <script setup>

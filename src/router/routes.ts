@@ -55,6 +55,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/causas-intervenciones',
+        name: 'causas_intervenciones',
+        component: () =>
+          import('gestionTrabajos/causasIntervenciones/view/CausaIntervencionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/motivos-pausas',
         name: 'motivos_pausas',
         component: () =>
@@ -155,6 +162,12 @@ const routes: RouteRecordRaw[] = [
         path: '/tickets-asignados',
         name: 'tickets_asignados',
         component: () => import('ticketsAsignados/view/TicketAsignadoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/categorias-tipos-tickets',
+        name: 'categorias_tipos_tickets',
+        component: () => import('categoriasTiposTickets/view/CategoriaTipoTicketPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -344,6 +357,24 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       //reportes de bodega
+      {
+        path: '/reporte-ingresos',
+        name: 'reporte_ingresos',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_ingresos/view/ReporteIngresosPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/reporte-egresos',
+        name: 'reporte_egresos',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_egresos/ReporteEgresosPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
       {
         path: '/reporte-pedidos',
         name: 'reporte_pedidos',

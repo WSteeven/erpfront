@@ -54,11 +54,15 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    mostrarAcciones: {
+      type: Boolean,
+      default: true,
+    },
     accion1: {
       type: Object as () => CustomActionTable,
       required: false,
     },
-    accion2:{
+    accion2: {
       type: Object as () => CustomActionTable,
       required: false,
     },
@@ -80,23 +84,22 @@ export default defineComponent({
     const Router = useRouter()
     let listadoCargado = false
 
-    const columnas = [
-      ...(props.configuracionColumnas ? props.configuracionColumnas : []),
-      {
+    let columnas: any = props.configuracionColumnas
+
+    if (props.mostrarAcciones) {
+      columnas = [...columnas, {
         name: 'acciones',
         field: 'acciones',
         label: 'Acciones',
         align: 'center',
         style: 'width:200px'
-      },
-    ]
+      }]
+    }
 
     if (!listadoCargado && props.mostrarListado) {
       listar()
       listadoCargado = true
     }
-
-
 
     const seleccionado = ref()
 

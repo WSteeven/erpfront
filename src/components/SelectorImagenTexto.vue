@@ -1,6 +1,6 @@
 <template>
   <q-file
-    v-model="imagen"
+    v-model="img"
     dense
     outlined
     class="q-mb-sm"
@@ -109,14 +109,14 @@ const props = defineProps([
 ])
 const emit = defineEmits(['update:modelValue'])
 
-const imagen = ref()
+const img = ref()
 const imagenCodificada = computed(() => props.imagen)
 const texto1 = computed(() => props.texto1)
 const texto2 = computed(() => props.texto2)
 const texto3 = computed(() => props.texto3)
 const texto4 = computed(() => props.texto4)
 
-const alto = computed(() => props.alto ?? '160px')
+// const alto = computed(() => props.alto ?? '160px')
 const opened = ref(false)
 const setBase64 = (file: File) => {
   if (file !== null && file !== undefined) {
@@ -127,7 +127,7 @@ const setBase64 = (file: File) => {
 }
 
 watch(imagenCodificada, () => {
-  if (!imagenCodificada.value) imagen.value = null
+  if (!imagenCodificada.value) img.value = null
 })
 
 function limpiar() {

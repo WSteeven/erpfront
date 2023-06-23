@@ -1,14 +1,17 @@
+import { AxiosError } from 'axios';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
-import { date } from 'quasar'
+import { date, useQuasar } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
+import Swal from 'sweetalert2'
+import { useNotificaciones } from './notificaciones';
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -259,22 +262,13 @@ export function removeAccents(accents: string) {
 export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
-  const cargando = new StatusEssentialLoading()
-
   try {
-    cargando.activar()
-    cargando.establecerMensaje('Obteniendo fecha y hora actual')
-
     const fecha: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.fecha))
     const hora: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.hora))
 
-    //const fechaArray = fecha.split('-') //.map(Number)
-    console.log(fecha.data)
     return { fecha: fecha.data, hora: hora.data, fecha_hora: fecha.data + ' ' + hora.data }
   } catch (e: any) {
     throw new ApiError(e)
-  } finally {
-    cargando.desactivar()
   }
 }
 
@@ -320,9 +314,13 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  * @param responseType tipo de respuesta esperada, de la clase axios.ResponseType
  * @param formato tipo de archivo esperado
  * @param titulo  nombre del archivo para descargar
+ * @param data  lo que se envia en el post
+ *
+ * @returns mensaje que indica que no se puede imprimir el archivo
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
   const statusLoading = new StatusEssentialLoading()
+  const {notificarAdvertencia}= useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -334,16 +332,24 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
       'Authorization': axiosHttpRepository.getOptions().headers.Authorization
     }
   }).then((response: HttpResponseGet) => {
-    const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
-    const link = document.createElement('a')
-    link.href = fileURL
-    link.target = '_blank'
-    link.setAttribute('download', `${titulo}.${formato}`)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
+    console.log(response.data)
+    if (response.data.size < 100 || response.data.type=='application/json') throw 'No se obtuvieron resultados para generar el reporte'
+    else {
+      const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+      const link = document.createElement('a')
+      link.href = fileURL
+      link.target = '_blank'
+      link.setAttribute('download', `${titulo}.${formato}`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    }
+  }).catch(error => {
+    notificarAdvertencia(error)
   })
+
   statusLoading.desactivar()
+
 }
 
 /**

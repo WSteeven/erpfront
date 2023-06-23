@@ -13,12 +13,10 @@ import {
   rolesSistema,
   acciones,
   accionesTabla,
-  tiposIntervenciones,
-  causaIntervencion,
   maskFecha,
 } from 'config/utils'
 import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
-import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
+import { destinosTareas, modosAsignacionTrabajo, tiposIntervenciones } from 'config/tareas.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -61,6 +59,7 @@ import { AxiosError } from 'axios'
 import { ClienteFinal } from 'pages/gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -76,8 +75,9 @@ export default defineComponent({
      * Stores
      *********/
     const subtareaStore = useSubtareaStore()
-    const notificacionStore = useNotificacionStore()
-    notificacionStore.setQuasar(useQuasar())
+
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
 
     /********
     * Mixin
@@ -89,7 +89,6 @@ export default defineComponent({
     const mixinArchivo = new ContenedorSimpleMixin(Archivo, new ArchivoSubtareaController())
     const { listado: archivos } = mixinArchivo.useReferencias()
     const { listar: listarArchivos } = mixinArchivo.useComportamiento()
-
 
     cargarVista(async () => {
       await obtenerListados({
@@ -383,8 +382,6 @@ export default defineComponent({
       fab: ref(false),
       regiones,
       atenciones,
-      tiposIntervenciones,
-      causaIntervencion,
       guardarDatos,
       reestablecerDatos,
       accion,
@@ -434,6 +431,7 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
+      tiposIntervenciones,
     }
   },
 })

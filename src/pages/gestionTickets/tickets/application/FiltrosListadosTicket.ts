@@ -1,18 +1,6 @@
 import { ref } from 'vue'
 
 export const useFiltrosListadosTickets = (listadosAuxiliares) => {
-  const categoriasTiposTickets = ref([])
-  function filtrarCategoriasTiposTickets(val, update) {
-    if (val === '') update(() => categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets)
-
-    update(() => {
-      const needle = val.toLowerCase()
-      categoriasTiposTickets.value = listadosAuxiliares.categoriasTiposTickets.filter(
-        (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-      )
-    })
-  }
-
   const tiposTickets = ref([])
   function filtrarTiposTickets(val, update) {
     if (val === '') update(() => tiposTickets.value = listadosAuxiliares.tiposTickets)
@@ -53,8 +41,6 @@ export const useFiltrosListadosTickets = (listadosAuxiliares) => {
     filtrarDepartamentos,
     filtrarEmpleados,
     filtrarTiposTickets,
-    filtrarCategoriasTiposTickets,
-    categoriasTiposTickets,
     tiposTickets,
     departamentos,
     empleados,

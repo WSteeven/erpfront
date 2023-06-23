@@ -7,6 +7,7 @@ import { UnwrapRef } from 'vue'
 
 export class CambiarEstadoSubtarea {
   axios: AxiosHttpRepository
+  cargando = new StatusEssentialLoading()
 
   constructor() {
     this.axios = AxiosHttpRepository.getInstance()
@@ -61,13 +62,12 @@ export class CambiarEstadoSubtarea {
   }
 
   async solicitud(accion, tarea, data?: UnwrapRef<any>) {
-    const cargando = new StatusEssentialLoading()
 
     try {
       const ruta =
         this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + tarea
 
-      cargando.activar()
+      this.cargando.activar()
       console.log(data)
       const response: AxiosResponse = await this.axios.post(ruta, data)
 
@@ -79,7 +79,7 @@ export class CambiarEstadoSubtarea {
       const axiosError = e as AxiosError
       throw new ApiError(axiosError)
     } finally {
-      cargando.desactivar()
+      this.cargando.desactivar()
     }
   }
 }

@@ -176,7 +176,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
       confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
         trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
         trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
-        trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable
+        trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable_id
         trabajoAsignadoStore.idEmergencia = entidad.seguimiento
         trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
         const obtenerPlantilla = new ObtenerPlantilla()
@@ -294,7 +294,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     obtenerUbicacion((ubicacion) => {
       movilizacion.latitud_llegada = ubicacion.coords.latitude
       movilizacion.longitud_llegada = ubicacion.coords.longitude
-      movilizacion.empleado_responsable_subtarea = (authenticationStore.esTecnico ? authenticationStore.user.id : (authenticationStore.esCoordinador || authenticationStore.esJefeTecnico ? entidad.empleado_responsable : null))
+      movilizacion.empleado_responsable_subtarea = (authenticationStore.esTecnico ? authenticationStore.user.id : (authenticationStore.esCoordinador || authenticationStore.esJefeTecnico ? entidad.empleado_responsable_id : null))
       movilizacion.coordinador_registrante_llegada = authenticationStore.esCoordinador || authenticationStore.esJefeTecnico ? authenticationStore.user.id : null
     })
   }

@@ -42,6 +42,7 @@ import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { useTransferenciaStore } from 'stores/transferencia'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -56,6 +57,7 @@ export default defineComponent({
 
     //stores
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
     const devolucionStore = useDevolucionStore()

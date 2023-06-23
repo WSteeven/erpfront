@@ -28,10 +28,12 @@ import { useDevolucionStore } from 'stores/devolucion'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { MaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/MaterialEmpleadoTarea'
 import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
+import { useCargandoStore } from 'stores/cargando'
+import { useNotificacionStore } from 'stores/notificacion'
 
 
 export default defineComponent({
@@ -45,6 +47,8 @@ export default defineComponent({
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         //stores
+        useNotificacionStore().setQuasar(useQuasar())
+        useCargandoStore().setQuasar(useQuasar())
         const devolucionStore = useDevolucionStore()
         const store = useAuthenticationStore()
         const listadoMaterialesDevolucion = useListadoMaterialesDevolucionStore()
@@ -63,7 +67,9 @@ export default defineComponent({
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
-
+        let puedeEditar = ref(false)
+        const esCoordinador = store.esCoordinador
+        const esActivosFijos = store.esActivosFijos
 
 
         onReestablecer(() => {
@@ -73,6 +79,7 @@ export default defineComponent({
         const opciones_empleados = ref([])
         const opciones_cantones = ref([])
         const opciones_tareas = ref([])
+        const opciones_autorizaciones = ref([])
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
@@ -111,6 +118,7 @@ export default defineComponent({
         //reglas de validacion
         const reglas = {
             justificacion: { required },
+            observacion_aut: { requiredIfCoordinador: requiredIf(() => devolucion.tiene_observacion_aut!) },
             canton: { required },
             tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
         }
@@ -143,7 +151,7 @@ export default defineComponent({
                 const data: CustomActionPrompt = {
                     titulo: 'Modifica',
                     mensaje: 'Ingresa la cantidad',
-                    tipo:'number',
+                    tipo: 'number',
                     defecto: devolucion.listadoProductos[posicion].cantidad,
                     accion: (data) => devolucion.listadoProductos[posicion].cantidad = data,
                 }
@@ -176,8 +184,8 @@ export default defineComponent({
                     prompt(data)
                 })
             },
-            visible: ({ entidad, posicion }) => {
-                return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante &&(entidad.estado_bodega===estadosTransacciones.pendiente||entidad.estado_bodega===estadosTransacciones.parcial) ? true : false
+            visible: ({ entidad }) => {
+                return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante && (entidad.estado_bodega === estadosTransacciones.pendiente || entidad.estado_bodega === estadosTransacciones.parcial) ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
@@ -203,6 +211,7 @@ export default defineComponent({
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+        opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
 
         return {
@@ -212,6 +221,8 @@ export default defineComponent({
             opciones_empleados,
             opciones_tareas,
             opciones_cantones,
+            opciones_autorizaciones,
+            store,
 
             //selector
             refListado,
@@ -234,21 +245,21 @@ export default defineComponent({
             //flags
             soloLectura,
             esVisibleTarea,
+            esCoordinador,
+            esActivosFijos,
 
             //Tabs
             tabOptionsDevoluciones,
             tabSeleccionado,
+            puedeEditar,
 
             tabEs(val) {
                 tabSeleccionado.value = val
+                puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
+                    ? true : false
             },
 
             //Filtros
-            filtroTareas(val) {
-                // const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
-                // devolucion.cliente = opcion_encontrada[0]['cliente_id']
-            },
-            //filtro de cantones
             filtroCantones(val, update) {
                 if (val === '') {
                     update(() => {

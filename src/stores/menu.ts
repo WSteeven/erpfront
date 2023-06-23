@@ -2,7 +2,6 @@ import { useAuthenticationStore } from './authentication'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
-import { link } from 'fs'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -31,7 +30,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     /*******************
-     * Modulo de tareas
+     * Modulo de tarreas
      *******************/
     {
       title: 'Proyectos y tareas',
@@ -90,10 +89,16 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tickets_asignados'),
         },
         {
+          title: 'Categorías tipos de tickets',
+          link: 'categorias-tipos-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.categorias_tipos_tickets') || store.user.es_responsable_departamento,
+        },
+        {
           title: 'Tipos de tickets',
           link: 'tipos-tickets',
           icon: 'bi-circle',
-          can: store.can('puede.ver.tipos_tickets'),
+          can: store.can('puede.ver.tipos_tickets') || store.user.es_responsable_departamento,
         },
         {
           title: 'Motivos de pausas',
@@ -230,20 +235,20 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Reportes',
-          icon: 'bi-circle',
+          icon: 'bi-clipboard2-data-fill',
           can: store.esBodeguero || store.esContabilidad || store.can('puede.ver.reportes_bodega'),
           children: [
             {
               title: 'Reporte de ingresos',
               link: 'reporte-ingresos',
               icon: 'bi-dash',
-              can: false,
+              can: true,
             },
             {
               title: 'Reporte de egresos',
               link: 'reporte-egresos',
               icon: 'bi-dash',
-              can: false,
+              can: true,
             },
             {
               title: 'Reporte de pedidos',
@@ -413,7 +418,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'RR HH',
       icon: 'bi-people',
-      can: true,//store.can('puede.ver.modulo_recursos_humanos'),
+      can: store.can('puede.ver.modulo_recursos_humanos'),
       children: [
         {
           title: 'Empleados',
@@ -534,6 +539,12 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'tipos-trabajos',
           icon: 'bi-circle',
           can: store.can('puede.ver.tipos_trabajos'),
+        },
+        {
+          title: 'Causas intervenciones',
+          link: 'causas-intervenciones',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.causas_intervenciones'),
         },
         {
           title: 'Motivos de trabajo pausado',

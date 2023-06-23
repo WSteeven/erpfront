@@ -1,10 +1,5 @@
 <template>
   <q-page>
-    <!-- <div class="q-mb-lg q-pa-md rounded border-grey bg-white">
-      <div class="text-bold q-mb-lg">Información general</div>
-      <DetalleTicket :ticket="ticket"></DetalleTicket>
-    </div> -->
-
     <div class="text-center text-bold q-mb-md">Ingreso del seguimiento</div>
     <q-card class="rounded-card custom-shadow q-pa-md">
       <div class="row">
@@ -43,16 +38,6 @@
           </archivo-seguimiento>
         </div>
       </div>
-
-      <!-- <div class="row justify-end q-col-gutter-x-xs">
-        <button-submits
-          :accion="accion"
-          @cerrar-modal="emit('cerrar-modal')"
-          @cancelar="reestablecer()"
-          @editar="editarSeguimiento()"
-          @guardar="guardarSeguimiento()"
-        />
-      </div> -->
     </q-card>
 
     <visor-imagen ref="refVisorImagen"></visor-imagen>

@@ -1,9 +1,9 @@
 //Dependencias
-import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain"
-import { markRaw } from "vue"
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain'
+import { markRaw } from 'vue'
 
 //Paginas
-import EmpresaPage from "pages/administracion/empresas/view/EmpresaPage.vue"
+import EmpresaPage from 'pages/administracion/empresas/view/EmpresaPage.vue'
 
 export class ProveedorModales{
   EmpresaPage: ComponenteModal

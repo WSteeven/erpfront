@@ -57,78 +57,6 @@ export const regiones = ['R1', 'R2', 'R3', 'R4']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
-// Emergencias
-export const tiposIntervenciones = [
-  { id: 'CF', descripcion: 'CORTE FIBRA' },
-  { id: 'MTTO', descripcion: 'MANTENIMIENTO' },
-  { id: 'SPT', descripcion: 'SOPORTE' },
-  { id: 'TP', descripcion: 'TAREA PROGRAMADA' },
-]
-
-export const causaIntervencion: CausaIntervencion[] =
-  [
-    { categoria: 'TP', descripcion: 'TP-ARREGLO PATCH NODO' },
-    { categoria: 'TP', descripcion: 'TP-CAMBIO DE MANGAS' },
-    { categoria: 'TP', descripcion: 'TP-CAMBIO DE TRAMO' },
-    { categoria: 'TP', descripcion: 'TP-EMERGENTES' },
-    { categoria: 'TP', descripcion: 'TP-MIGRACION DE ENLACES' },
-    { categoria: 'TP', descripcion: 'TP-RECUPERACIÓN HILOS' },
-    { categoria: 'TP', descripcion: 'TP-REGULARIZACION DE TRAMOS' },
-    { categoria: 'TP', descripcion: 'TP-REPARACIÓN/CAMBIO ODF' },
-    { categoria: 'TP', descripcion: 'TP-REVISIÓN DE ATENUACIÓN' },
-    { categoria: 'TP', descripcion: 'TP-SEPARACIÓN DE RUTA' },
-
-    { categoria: 'CF', descripcion: 'CF-ACCESORIOS DE SUJECIÓN EN POSTES' },
-    { categoria: 'CF', descripcion: 'CF-ACCIDENTE DE TRANSITO' },
-    { categoria: 'CF', descripcion: 'CF-AMPLIACION DE VIAS/REGENERACION' },
-    { categoria: 'CF', descripcion: 'CF-CAIDA DE ARBOL ' },
-    { categoria: 'CF', descripcion: 'CF-CAIDA DE POSTES' },
-    { categoria: 'CF', descripcion: 'CF-CAMBIO DE TRAMO/FALLA NO DETERMINADA' },
-    { categoria: 'CF', descripcion: 'CF-CORTE MACHETE/PODA DE ARBOL' },
-    { categoria: 'CF', descripcion: 'CF-DEMOLICIONES' },
-    { categoria: 'CF', descripcion: 'CF-DERRUMBE/DESLAVE/INUNDACION/LLUVIAS' },
-    { categoria: 'CF', descripcion: 'CF-DESASTRES NATURALES' },
-    { categoria: 'CF', descripcion: 'CF-DESCARGA ELECTRICA/FIBRA QUEMADA' },
-    { categoria: 'CF', descripcion: 'CF-DISPARO EN FIBRA' },
-    { categoria: 'CF', descripcion: 'CF-ERROR HUMANO' },
-    { categoria: 'CF', descripcion: 'CF-EXTENSION DE VENTANA PROGRAMADA' },
-    { categoria: 'CF', descripcion: 'CF-INSECTOS/ROEDORES' },
-    { categoria: 'CF', descripcion: 'CF-INTENTO ROBO DE CABLE/MANGAS' },
-    { categoria: 'CF', descripcion: 'CF-MANGA CAIDA / MANGA MAL ESTADO' },
-    { categoria: 'CF', descripcion: 'CF-MAQUINARIA PESADA/CARGA ELEVADA' },
-    { categoria: 'CF', descripcion: 'CF-QUEMA DE MALEZA/FIBRA QUEMADA' },
-    { categoria: 'CF', descripcion: 'CF-REGENERACIÓN URBANA' },
-    { categoria: 'CF', descripcion: 'CF-RETIRO POSTES' },
-    { categoria: 'CF', descripcion: 'CF-SABOTAJE' },
-    { categoria: 'CF', descripcion: 'CF-TAREA NO NOTIFICADA' },
-    { categoria: 'CF', descripcion: 'CF-TRABAJOS DE OPERADOR EXTERNO' },
-
-    { categoria: 'MTTO', descripcion: 'MTTO-ARMADO DE MANGA' },
-    { categoria: 'MTTO', descripcion: 'MTTO-CAMBIO A NUEVOS POSTES' },
-    { categoria: 'MTTO', descripcion: 'MTTO-CAMBIO DE AMARRAS' },
-    { categoria: 'MTTO', descripcion: 'MTTO-COLOCACION DE ETIQUETAS' },
-    { categoria: 'MTTO', descripcion: 'MTTO-FIBRA EN EL SUELO' },
-    { categoria: 'MTTO', descripcion: 'MTTO-RETEMPLADO DE FIBRA' },
-    { categoria: 'MTTO', descripcion: 'MTTO-CERTIFICACION DE HILOS' },
-
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO DE EQUIPO' },
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO DE VENTILADORES' },
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO MODULO ODF' },
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO PATCH' },
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO SFP' },
-    { categoria: 'SPT', descripcion: 'SPT-REFUSION PIGTAIL' },
-    { categoria: 'SPT', descripcion: 'SPT-REINICIO DE EQUIPO' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION UM CLIENTE' },
-    { categoria: 'SPT', descripcion: 'STP-CAMBIO/REVISION DE FUENTE' },
-    { categoria: 'SPT', descripcion: 'SPT-ASISTENCIA MANOS REMOTAS' },
-    { categoria: 'SPT', descripcion: 'SPT-ACOMPAÑAMIENTO PROVEEDORES' },
-    { categoria: 'SPT', descripcion: 'SPT-ACOMPAÑAMIENTO CLIENTE' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION ELECTRICA' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION CLIMATIZACION' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION ALARMAS/SEGURIDAD' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION NODO' },
-  ]
-
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'Pendiente', value: 'PENDIENTE' },
@@ -136,7 +64,9 @@ export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Completa', value: 'COMPLETA' },
 ]
 export const tabOptionsDevoluciones: TabOption[] = [
-  { label: 'Creadas', value: 'CREADA' },
+  { label: 'Por autorizar', value: 'PENDIENTE' },
+  { label: 'Aprobados', value: 'APROBADO' },
+  { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Anuladas', value: 'ANULADA' },
 ]
 export const tabOptionsTransferencias: TabOption[] = [
@@ -343,8 +273,56 @@ export const opcionesEstados = [
   { value: 0, label: 'INACTIVO' }
 ]
 
-export const opciones_tipo_contribuyente = [
+export const opcionesTipoContribuyente = [
   { value: 'NATURAL', label: 'NATURAL' },
   { value: 'PRIVADA', label: 'PRIVADA' },
   { value: 'PUBLICA', label: 'PUBLICA' },
 ]
+
+export const opcionesReportesIngresos = [
+  { value: 0, label: 'POR SOLICITANTE' },
+  { value: 1, label: 'POR BODEGUERO' }, //PERSONA QUE ATIENDE
+  { value: 2, label: 'POR MOTIVO' },
+  { value: 3, label: 'POR BODEGA' },
+  { value: 4, label: 'POR DEVOLUCIÓN' },
+  { value: 5, label: 'POR TAREA' },
+  { value: 6, label: 'POR TRANSFERENCIA' },
+]
+
+export const tiposReportesIngresos = {
+  solicitante: 0, //empleado
+  bodeguero: 1, //bodeguero
+  motivo: 2,
+  sucursal: 3,
+  devolucion: 4,
+  tarea: 5,
+  transferencia: 6,
+}
+
+export const opcionesReportesEgresos = [
+  { value: 0, label: 'POR SOLICITANTE' },
+  { value: 1, label: 'POR PERSONA QUE AUTORIZA' },
+  { value: 2, label: 'POR PERSONA QUE RETIRA' },
+  { value: 3, label: 'POR RESPONSABLE' },
+  { value: 4, label: 'POR BODEGUERO' }, //PERSONA QUE ATIENDE
+  { value: 5, label: 'POR MOTIVO' },
+  { value: 6, label: 'POR BODEGA' },
+  { value: 7, label: 'POR PEDIDO' },
+  { value: 8, label: 'POR CLIENTE' },
+  { value: 9, label: 'POR TAREA' },
+  { value: 10, label: 'POR TRANSFERENCIA' },
+]
+
+export const tiposReportesEgresos = {
+  solicitante: 0, //empleado
+  autorizador: 1, //persona que autoriza el pedido
+  retira: 2, //persona que retira la encomienda o pedido
+  responsable: 3, //responsable de los materiales
+  bodeguero: 4, //bodeguero
+  motivo: 5,
+  sucursal: 6,
+  pedido: 7,
+  cliente: 8,
+  tarea: 9,
+  transferencia: 10,
+}
