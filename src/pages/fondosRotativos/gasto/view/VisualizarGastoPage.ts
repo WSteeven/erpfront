@@ -21,6 +21,7 @@ import { maskFecha } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 import { AutorizarGastoModales } from 'pages/fondosRotativos/autorizarGasto/domain/AutorizarGastoModales'
+import { useCargandoStore } from 'stores/cargando'
 
 
 export default defineComponent({
@@ -33,6 +34,7 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     /***********
      * Mixin
      ************/
