@@ -114,7 +114,7 @@ export default defineComponent({
       filtrarClientes,
       tiposTrabajos,
       filtrarTiposTrabajos,
-    } = useFiltrosListadosTarea(listadosAuxiliares)
+    } = useFiltrosListadosTarea(listadosAuxiliares, causaIntervencion)
 
     const rules = {
       nombre: { required },
@@ -144,6 +144,7 @@ export default defineComponent({
       clientes,
       filtrarClientes,
       tiposTrabajos,
+      filtrarTiposTrabajos,
       // categoriasTiposTickets,
       btnToggleActivar,
     }

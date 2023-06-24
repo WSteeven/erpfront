@@ -53,6 +53,7 @@
             <q-select
               v-model="causaIntervencion.tipo_trabajo"
               :options="tiposTrabajos"
+              @filter="filtrarTiposTrabajos"
               transition-show="scale"
               transition-hide="scale"
               hint="Obligatorio"
