@@ -529,6 +529,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tipos_trabajos'),
         },
         {
+          title: 'Causas intervenciones',
+          link: 'causas-intervenciones',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.causas_intervenciones'),
+        },
+        {
           title: 'Motivos de trabajo pausado',
           link: 'motivos-pausas',
           icon: 'bi-circle',

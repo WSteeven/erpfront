@@ -1,7 +1,6 @@
 import { SelectorController } from '../infraestructure/SelectorController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { ref } from 'vue'
 
 export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)

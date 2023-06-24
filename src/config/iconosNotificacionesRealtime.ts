@@ -1,30 +1,30 @@
 export const iconos = {
   pedido: {
-    label: "PEDIDO",
+    label: 'PEDIDO',
     icono: 'bi-file-earmark-text'
   },
   devolucion: {
-    label: "DEVOLUCION",
+    label: 'DEVOLUCION',
     icono: 'bi-box-seam-fill'
   },
   autorizacion_gasto: {
-    label: "AUTORIZACION GASTO",
+    label: 'AUTORIZACION GASTO',
     icono: 'bi-plus-circle-fill'
   },
   tarea: {
-    label: "TAREA",
+    label: 'TAREA',
     icono: 'bi-pin-angle'
   },
   subtarea: {
-    label: "SUBTAREA",
+    label: 'SUBTAREA',
     icono: 'bi-ui-checks-grid'
   },
   egreso: {
-    label: "EGRESO",
+    label: 'EGRESO',
     icono: 'bi-box-seam'
   },
   ticket: {
-    label: "TICKET",
+    label: 'TICKET',
     icono: 'bi-ticket-perforated'
   },
 }

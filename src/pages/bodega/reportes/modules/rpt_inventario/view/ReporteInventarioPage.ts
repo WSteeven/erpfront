@@ -1,13 +1,18 @@
 import { apiConfig, endpoints } from "config/api";
-import { LocalStorage } from "quasar";
+import { LocalStorage, useQuasar } from "quasar";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { imprimirArchivo } from "shared/utils";
+import { useCargandoStore } from "stores/cargando";
+import { useNotificacionStore } from "stores/notificacion";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   components: {},
   setup() {
 
+    //stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     let sucursal=ref()
     const sucursales = ref([])
 
