@@ -75,7 +75,7 @@
           </div>
 
           <!-- Plazo -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="esValidador|| esAutorizador">
             <label class="q-mb-sm block">Plazo </label>
             <q-input
               v-model="solicitudPrestamo.plazo"
@@ -94,8 +94,29 @@
               </template>
             </q-input>
           </div>
-          <!-- Observacion  -->
+          <!-- Motivo  -->
           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Motivo </label>
+            <q-input
+              v-model="solicitudPrestamo.motivo"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              type="textarea"
+              :error="!!v$.motivo.$errors.length"
+              @blur="v$.motivo.$touch"
+              autogrow
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.motivo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Observacion  -->
+          <div class="col-12 col-md-3" v-if="esValidador">
             <label class="q-mb-sm block">Observacion </label>
             <q-input
               v-model="solicitudPrestamo.observacion"
@@ -108,15 +129,23 @@
               outlined
               dense
             >
-              <template v-slot:error>
+            <template v-slot:error>
                 <div v-for="error of v$.observacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
           </div>
-             <!-- Autorizacion -->
-            <div class="col-12 col-md-3"  v-if="accion == 'EDITAR' && (store.can('puede.ver.campo.validado')|| store.can('puede.autorizar.solicitud_prestamo_empresarial'))">
+
+          <!-- Autorizacion -->
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              accion == 'EDITAR' &&
+              (store.can('puede.ver.campo.validado') ||
+                store.can('puede.autorizar.solicitud_prestamo_empresarial'))
+            "
+          >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="solicitudPrestamo.estado"
@@ -141,6 +170,24 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <!-- Foto -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Foto</label>
+            <selector-imagen
+              :imagen="solicitudPrestamo.foto"
+              file_extensiones=".jpg, image/*"
+              :error="!!v$.foto.$errors.length"
+              error-message="Debes de cargar imagen de comprobante"
+              @blur="v$.foto.$touch"
+              @update:modelValue="(data) => (solicitudPrestamo.foto = data)"
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.foto.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </selector-imagen>
           </div>
         </div>
       </q-form>
