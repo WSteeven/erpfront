@@ -116,7 +116,7 @@
             </q-input>
           </div>
           <!-- Observacion  -->
-          <div class="col-12 col-md-3" v-if="esValidador">
+          <div class="col-12 col-md-3" v-if="esValidador || esAutorizador">
             <label class="q-mb-sm block">Observacion </label>
             <q-input
               v-model="solicitudPrestamo.observacion"

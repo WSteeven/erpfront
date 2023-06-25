@@ -132,7 +132,7 @@ export default defineComponent({
       filtrarSolicitudPrestamo,
       maximoValorsolicitudPrestamo: [
         (val) =>
-          (val && val <= parseInt(sueldo_basico.value) * 2) ||
+          (val <= parseInt(sueldo_basico.value) * 2) ||
           'Solo se permite prestamo menor o igual a 2 SBU ($ ' +
             parseInt(sueldo_basico.value) * 2 +
             ')',
