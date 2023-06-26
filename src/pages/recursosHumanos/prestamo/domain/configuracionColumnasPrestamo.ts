@@ -10,11 +10,25 @@ export const configuracionColumnasPrestamo: ColumnConfig<Prestamo>[] = [
       sortable: true
   },
   {
+    name: 'solicitante_info',
+    field: 'solicitante_info',
+    label: 'Solicitante',
+    align: 'left',
+    sortable: true
+},
+  {
     name: 'monto',
     field: 'monto',
     label: 'monto',
     align: 'left',
     sortable: true
+},
+{
+  name: 'plazo',
+  field: 'plazo',
+  label: 'Plazo',
+  align: 'left',
+  sortable: true
 },
 {
   name: 'forma_pago_info',
