@@ -50,6 +50,7 @@ import { TareaModales } from '../domain/TareaModales'
 import { Tarea } from '../domain/Tarea'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 
 export default defineComponent({
   components: {
@@ -104,6 +105,7 @@ export default defineComponent({
         rutas: new RutaTareaController(),
         motivosSuspendidos: new MotivoSuspendidoController(),
         motivosPausas: new MotivoPausaController(),
+        causasIntervenciones: new CausaIntervencionController(),
       })
 
       // Necesario al consultar

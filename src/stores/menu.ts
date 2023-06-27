@@ -67,6 +67,19 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'clientes-finales',
           icon: 'bi-circle',
         },
+        {
+          title: 'Reportes',
+          icon: 'bi-table',
+          can: store.esJefeTecnico || store.esAdministrador,
+          children: [
+            {
+              title: 'Generar reporte',
+              link: 'tipos-trabajos',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.tipos_trabajos'),
+            },
+          ],
+        },
       ],
     },
     /********************
@@ -520,7 +533,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Proyectos y tareas',
       icon: 'bi-pin-angle-fill',
-      can: store.esJefeTecnico,
+      can: store.esJefeTecnico || store.esAdministrador,
       children: [
         {
           title: 'Tipos de trabajos',

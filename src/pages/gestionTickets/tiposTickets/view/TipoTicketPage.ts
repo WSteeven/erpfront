@@ -17,13 +17,13 @@ import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infr
 import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
 import { TipoTicketController } from '../infraestructure/TipoTicketController'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { TipoTicket } from '../domain/TipoTicket'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
 
 export default defineComponent({
   components: {
@@ -54,7 +54,7 @@ export default defineComponent({
         departamentos: new DepartamentoController(),
         categoriasTiposTickets: new CategoriaTipoTicketController(),
       })
-      // departamentos.value = listadosAuxiliares.departamentos
+
       tipoTicket.departamento = authenticationStore.user.departamento
     })
 
@@ -85,7 +85,7 @@ export default defineComponent({
         notificaciones.confirmar('¿Está seguro de continuar?', async () => {
           try {
             cargando.activar()
-            const { response, result } = await controller.editarParcial(entidad.id, { activo: !entidad.activo })
+            const { response, result } = await controller.editarParcial(entidad.id, { nombre: entidad.nombre, activo: !entidad.activo })
             listado.value.splice(posicion, 1, result)
             notificaciones.notificarCorrecto(response.data.mensaje)
           } catch (e: any) {

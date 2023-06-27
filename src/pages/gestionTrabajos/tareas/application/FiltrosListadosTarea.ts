@@ -102,8 +102,7 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
   )
 
   function filtrarTiposTrabajos(val, update) {
-    if (val === '') update(() => tiposTrabajos.value = []) //listadosAuxiliares.tiposTrabajos)
-    // if (val === '') update(() => tiposTrabajos.value = listadosAuxiliares.tiposTrabajos)
+    if (val === '') update(() => tiposTrabajos.value = [])
 
     update(() => {
       const needle = val.toLowerCase()

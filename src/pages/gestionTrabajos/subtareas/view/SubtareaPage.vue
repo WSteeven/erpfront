@@ -81,12 +81,6 @@
           ></q-input>
         </div>
 
-        <!-- Tarea -->
-        <!-- <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Tarea</label>
-          <q-input v-model="subtarea.tarea" outlined dense disable></q-input>
-        </div> -->
-
         <!-- Tipo trabajo -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Tipo de trabajo a realizar</label>
@@ -123,6 +117,28 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+          </q-select>
+        </div>
+
+        <!-- Causa intervencion -->
+        <div v-if="subtarea.causa_intervencion" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Causa intervención</label>
+          <q-select
+            v-model="subtarea.causa_intervencion"
+            :options="listadosAuxiliares.causasIntervenciones"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            disable
+            :option-label="(item) => item.nombre"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
           </q-select>
         </div>
 

@@ -23,6 +23,7 @@ import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useCargandoStore } from 'stores/cargando'
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 
 export default defineComponent({
   components: {
@@ -49,6 +50,7 @@ export default defineComponent({
       await obtenerListados({
         motivosPausas: new MotivoPausaController(),
         motivosSuspendidos: new MotivoSuspendidoController(),
+        causasIntervenciones: new CausaIntervencionController(),
       })
     })
 
