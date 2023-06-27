@@ -60,6 +60,7 @@ import { ClienteFinal } from 'pages/gestionTrabajos/clientesFinales/domain/Clien
 import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
 import { useCargandoStore } from 'stores/cargando'
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -104,6 +105,10 @@ export default defineComponent({
           params: { rol: rolesSistema.coordinador },
         },
         empleados: new EmpleadoController(),
+        causasIntervenciones: {
+          controller: new CausaIntervencionController(),
+          params: { tipo_trabajo_id: subtarea.tipo_trabajo },
+        },
       })
 
       // Necesario al consultar

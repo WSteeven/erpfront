@@ -6,14 +6,12 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Tarea } from '../domain/Tarea'
 import { endpoints } from 'config/api'
-import { AxiosError, AxiosResponse } from 'axios'
-import { notificarMensajesError } from 'shared/utils'
-import { ApiError } from 'shared/error/domain/ApiError'
-import { computed, reactive, ref, watch } from 'vue'
+import { AxiosResponse } from 'axios'
+import { ref } from 'vue'
+import { clientes } from 'config/clientes'
 
 export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
   const { confirmar, prompt, notificarAdvertencia } = useNotificaciones()
-  const notificaciones = useNotificaciones()
   const { listado } = mixin.useReferencias()
   const { editarParcial } = mixin.useComportamiento()
   const authenticationStore = useAuthenticationStore()
@@ -58,7 +56,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
               accion: (novedad) => {
                 filaFinalizar.novedad = novedad
 
-                if (entidad.cliente_id === 3) mostrarSolicitarImagen.value = true
+                if (entidad.cliente_id === clientes.NEDETEL) mostrarSolicitarImagen.value = true
                 else imagenSubida()
               },
             }
@@ -79,7 +77,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
             filaFinalizar.novedad = novedad
             delete (filaFinalizar as any).codigo_tarea_cliente
 
-            if (entidad.cliente_id === 3) mostrarSolicitarImagen.value = true
+            if (entidad.cliente_id === clientes.NEDETEL) mostrarSolicitarImagen.value = true
             else imagenSubida()
           },
         }
@@ -136,7 +134,6 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
   return {
     refVisorImagen,
     btnFinalizarTarea,
-    // verificarTodasSubtareasFinalizadas,
     mostrarSolicitarImagen,
     imagenSubida,
     btnVerImagenInforme,
