@@ -30,10 +30,8 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { FormaPagoController } from 'pages/recursosHumanos/forma_pago/infraestructure/FormaPagoController'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
-import { integer } from 'vuelidate/lib/validators'
-import { number } from 'echarts'
+
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
@@ -58,6 +56,7 @@ export default defineComponent({
     } = useNotificaciones()
     const key_enter = ref(0)
     const motivos = ref([])
+
     const tipos = ref([
       { id: 1, nombre: 'Prestamo Descuento' },
       { id: 2, nombre: 'Anticipo' },
@@ -73,10 +72,9 @@ export default defineComponent({
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
     })
-    /* async function obtenerSueldoBasico() {
-      sueldo_basico.value = await recursosHumanosStore.obtener_sueldo_basico()
-      await console.log(sueldo_basico.value)
-    }*/
+    const esNuevo = computed(() => {
+      return accion.value === 'NUEVO'
+    })
     cargarVista(async () => {
       await obtenerListados({
         motivos: new MotivoPermisoEmpleadoController(),
@@ -277,7 +275,19 @@ export default defineComponent({
       },
       visible: () => (accion.value == 'EDITAR' ? true : false),
     }
+    const botonaplazar_couta: CustomActionTable = {
+      titulo: 'Aplazar',
+      icono: 'bi-cash-stack',
+      color: 'warning',
+      accion: ({ posicion }) => {
+        aplazar(posicion)
+      },
+      visible: () => (accion.value == 'EDITAR' ? true : false),
 
+    }
+    function aplazar(indice_couta){
+        prestamo.plazos![indice_couta].fecha_vencimiento = prestamo.plazos![(prestamo.plazo-1)].fecha_vencimiento
+    }
     function modificar_couta(indice_couta) {
       confirmar('¿Está seguro de modificar la couta?', () => {
         const data: CustomActionPrompt = {
@@ -400,6 +410,9 @@ export default defineComponent({
       ],
       botonmodificar_couta,
       botonpagar_couta,
+
+      botonaplazar_couta,
+      esNuevo,
       configuracionColumnasPlazoPrestamo,
       esConsultado,
       plazo_pago,

@@ -18,14 +18,20 @@ import { EstadoPermisoEmpleadoController } from 'pages/recursosHumanos/estado/in
 import { MotivoPermisoEmpleado } from 'pages/recursosHumanos/motivo/domain/MotivoPermisoEmpleado'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { endpoints } from 'config/api'
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { ArchivoPermisoEmpleadoController } from '../infraestructure/ArchivoPermisoEmpleadoController'
+import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: { TabLayout, SelectorImagen,ArchivoSeguimiento },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       PermisoEmpleado,
       new PermisoEmpleadoController()
     )
+    const mixinArchivoPrestamoEmpleado = new ContenedorSimpleMixin(Archivo, new ArchivoPermisoEmpleadoController())
+
     const {
       entidad: permiso,
       disabled,
@@ -33,8 +39,11 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
+      const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
+
     const tipos_permisos = ref([])
     const empleados = ref([])
+    const refArchivoPrestamoEmpresarial = ref()
     const dias_permiso = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
         const fechaInicio = convertir_fecha(permiso.fecha_hora_inicio)
@@ -86,6 +95,13 @@ export default defineComponent({
     )
     return fecha_convert;
     }
+    onGuardado((id: number) => {
+      subirArchivos(id)
+    })
+    async function subirArchivos(id: number) {
+      await refArchivoPrestamoEmpresarial.value.subir({ pewrmiso_id: id })
+    }
+
     cargarVista(async () => {
       obtenerListados({
         tipos_permisos: new MotivoPermisoEmpleadoController(),
@@ -118,6 +134,9 @@ export default defineComponent({
       mixin,
       permiso,
       optionsFecha,
+      refArchivoPrestamoEmpresarial,
+      mixinArchivoPrestamoEmpleado,
+      endpoint: endpoints.archivo_permiso_empleado,
       tipos_permisos,
       dias_permiso,
       horas_permisos,

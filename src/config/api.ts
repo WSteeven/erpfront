@@ -64,7 +64,7 @@ export const endpoints = {
   aprobar_prestamo_empresarial: new Endpoint('recursos-humanos/aprobar_prestamo_empresarial'),
   rechazar_prestamo_empresarial: new Endpoint('recursos-humanos/rechazar_prestamo_empresarial'),
   vacacion: new Endpoint('recursos-humanos/vacacion'),
-
+  archivo_permiso_empleado: new Endpoint('recursos-humanos/archivo_permiso_empleado'),
 
 
 

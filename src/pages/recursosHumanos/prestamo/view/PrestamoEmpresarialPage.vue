@@ -14,7 +14,7 @@
               options-dense
               dense
               outlined
-              :disable="accion.value != 'NUEVO' ?false:true"
+              :disable="!esNuevo"
               :readonly="disabled"
               :error="!!v$.solicitante.$errors.length"
               error-message="Debes seleccionar un empleado"
@@ -45,7 +45,7 @@
               v-model="prestamo.fecha"
               placeholder="Obligatorio"
               :error="!!v$.fecha.$errors.length"
-              :disable="accion.value != 'NUEVO' ?false:true"
+              :disable="!esNuevo"
               @blur="v$.fecha.$touch"
               outlined
               dense
@@ -76,7 +76,7 @@
               v-model="prestamo.monto"
               placeholder="Obligatorio"
               type="number"
-              :disable="accion.value != 'NUEVO' ?false:true"
+              :disable="!esNuevo"
               lazy-rules
               :rules="maximoValorPrestamo"
               outlined
@@ -91,7 +91,7 @@
             <q-input
               v-model="prestamo.plazo"
               type="number"
-              :disable="accion.value != 'NUEVO' ?false:true"
+              :disable="!esNuevo"
               :error="!!v$.plazo.$errors.length"
               @blur="v$.plazo.$touch"
               outlined
@@ -141,7 +141,7 @@
               :options="formas_pago"
               transition-show="jump-up"
               transition-hide="jump-down"
-              :disable="accion.value != 'NUEVO' ?false:true"
+              :disable="!esNuevo"
               options-dense
               dense
               outlined
@@ -170,7 +170,7 @@
             <q-input
               v-model="prestamo.utilidad"
               type="number"
-              :disable="disabled"
+              :disable="!esNuevo"
               outlined
               dense
             >
@@ -183,7 +183,7 @@
               v-model="prestamo.valor_utilidad"
               placeholder="Obligatorio"
               type="number"
-              :disable="disabled"
+              :disable="!esNuevo"
               :error="!!v$.valor_utilidad.$errors.length"
               @blur="v$.valor_utilidad.$touch"
               outlined
@@ -208,6 +208,7 @@
         :permitirEliminar="false"
         :accion1="botonmodificar_couta"
         :accion2="botonpagar_couta"
+        :accion3="botonaplazar_couta"
       >
       </essential-table>
       <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block"
