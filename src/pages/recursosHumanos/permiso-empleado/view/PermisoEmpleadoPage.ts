@@ -99,7 +99,7 @@ export default defineComponent({
       subirArchivos(id)
     })
     async function subirArchivos(id: number) {
-      await refArchivoPrestamoEmpresarial.value.subir({ pewrmiso_id: id })
+      await refArchivoPrestamoEmpresarial.value.subir({ permiso_id: id })
     }
 
     cargarVista(async () => {
@@ -123,7 +123,6 @@ export default defineComponent({
       fecha_recuperacion: { required },
       hora_recuperacion: { required },
       justificacion: { required },
-      documento: { required },
     }
 
     const v$ = useVuelidate(reglas, permiso)

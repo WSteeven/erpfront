@@ -221,7 +221,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_viat.$errors" :key="error.$uid">
+                <div v-for="error of v$.fecha_recuperacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -231,22 +231,26 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Hora de Recuperacion (24 horas)</label>
             <q-input
-              v-model="permiso.hora_recuperacion"
-              :error="!!v$.hora_recuperacion.$errors.length"
-              type="time"
-              :disable="disabled"
-              hint="Obligatorio"
-              stack-label
-              outlined
-              clearable
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.hora_recuperacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
+            v-model="permiso.hora_recuperacion"
+            :error="!!v$.hora_recuperacion.$errors.length"
+            type="time"
+            :disable="disabled"
+            hint="Obligatorio"
+            stack-label
+            outlined
+            clearable
+            dense
+          >
+            <template v-slot:error>
+              <div
+                v-for="error of v$.hora_recuperacion.$errors"
+                :key="error.$uid"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+
           </div>
           <!-- Recuperable -->
           <div class="col-12 col-md-3">
