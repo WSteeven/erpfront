@@ -29,8 +29,8 @@ export class CambiarEstadoSubtarea {
     return this.solicitud('/realizar', idSubtarea, movilizacion)
   }
 
-  async finalizar(idSubtarea: number) {
-    return this.solicitud('/finalizar', idSubtarea)
+  async finalizar(idSubtarea: number, data: any) {
+    return this.solicitud('/finalizar', idSubtarea, data)
   }
 
   async pausar(idSubtarea: number, movilizacion: any) {

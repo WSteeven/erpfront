@@ -1,16 +1,16 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class Grupo extends EntidadAuditable {
+export class CausaIntervencion extends EntidadAuditable {
   nombre: string | null
-  empleado_id: number | null
+  cliente: number | null
+  tipo_trabajo: number | null
   activo: boolean
-  region: string | null
 
   constructor() {
     super()
     this.nombre = null
-    this.empleado_id = null // responsable
+    this.cliente = null
+    this.tipo_trabajo = null
     this.activo = true
-    this.region = null
   }
 }

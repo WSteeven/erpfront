@@ -80,18 +80,9 @@ export default defineComponent({
   setup(props, { emit }) {
     const { notificarAdvertencia } = useNotificaciones()
     const imagen = ref()
-    //const mostrar = ref(true)
-    const abierto = computed(() => props.mostrar) /*{
-      get: () => props.mostrar && mostrar.value,
-      set: (valor) => (mostrar.value = valor),
-    })*/
-
-    /* function abrir() {
-      abierto.value = true
-    } */
+    const abierto = computed(() => props.mostrar)
 
     function cerrarModalEntidad() {
-      //mostrar.value = false
       imagen.value = null
       emit('cerrar')
     }
@@ -101,13 +92,10 @@ export default defineComponent({
         return notificarAdvertencia('Debe seleccionar una imagen')
       props.confirmar(imagen.value)
       cerrarModalEntidad()
-      //emit('guardar', imagen)
-      //abierto.value = false
     }
 
     return {
       abierto,
-      // abrir,
       guardar,
       imagen,
       cerrarModalEntidad,

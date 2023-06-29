@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasMaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasMaterialOcupadoFormulario'
-import { regiones, atenciones, tiposIntervenciones, accionesTabla, acciones, estadosTrabajos } from 'config/utils'
+import { regiones, atenciones, accionesTabla, acciones, estadosTrabajos } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -306,7 +306,6 @@ export default defineComponent({
       botonEditarCantidadStock,
       regiones,
       atenciones,
-      tiposIntervenciones,
       guardar,
       editar,
       reestablecer,
