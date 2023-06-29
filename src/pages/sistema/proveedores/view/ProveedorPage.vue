@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proveedores"
+    :accion1="botonCalificarProveedores"
   >
     <template #formulario>
       <q-form @submit.prevent>

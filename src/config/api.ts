@@ -71,6 +71,7 @@ export const endpoints = {
   empresas: new Endpoint('empresas'),
   proveedores: new Endpoint('proveedores'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
+  calificacion_proveedor: new Endpoint('compras/calificacion-proveedor'),
   criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),

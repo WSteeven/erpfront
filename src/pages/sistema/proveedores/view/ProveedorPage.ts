@@ -31,6 +31,8 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { ContactoProveedor } from 'pages/comprasProveedores/contactosProveedor/domain/ContactoProveedor';
 import { useNotificaciones } from 'shared/notificaciones';
 import { ContactoProveedorController } from 'pages/comprasProveedores/contactosProveedor/infraestructure/ContactoProveedorController';
+import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
+import { useAuthenticationStore } from 'stores/authentication';
 
 
 export default defineComponent({
@@ -44,8 +46,16 @@ export default defineComponent({
     const refContactos = ref()
     const contactosProveedor: Ref<ContactoProveedor[]> = ref(proveedor.contactos)
     const mostrarLabelModal = computed(() => accion.value === acciones.nuevo)
+    /**************************************************************
+     * Stores
+     **************************************************************/
     const modales = new ComportamientoModalesProveedores()
     const StatusLoading = new StatusEssentialLoading()
+    const proveedorStore = useProveedorStore()
+    const store = useAuthenticationStore()
+
+    //variables
+    const departamento = ref()
     const empresa: Empresa = reactive(new Empresa())
     const categorias = ref([])
     const departamentos = ref([])
@@ -81,8 +91,8 @@ export default defineComponent({
     setValidador(v$.value)
 
     /***************************
- * Configuracion de columnas
- ****************************/
+     * Configuracion de columnas
+     ****************************/
     const columnasContactosProveedor: any = [
       ...configuracionColumnasContactosProveedores,
       // accionesTabla,
@@ -102,6 +112,21 @@ export default defineComponent({
       visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
     }
 
+    const botonCalificarProveedores: CustomActionTable = {
+      titulo: 'Calificar',
+      icono: 'bi-star-fill',
+      color: 'positive',
+      accion: async ({ entidad, posicion }) => {
+        console.log(posicion)
+        console.log(entidad)
+        consultarDepartamento().then(() => {
+          proveedorStore.idDepartamento = departamento.value[0].id
+        })
+        proveedorStore.proveedor = entidad
+        // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
+        modales.abrirModalEntidad('CalificacionProveedorPage')
+      }
+    }
 
 
     async function obtenerEmpresa(empresaId: number | null) {
@@ -118,6 +143,11 @@ export default defineComponent({
       if (accion.value === acciones.editar)
         consultarContactosProveedor()
 
+    }
+    async function consultarDepartamento() {
+      const { result } = await new DepartamentoController().listar({ responsable_id: store.user.id })
+      console.log(result)
+      departamento.value = result
     }
 
     async function consultarEmpresas() {
@@ -162,6 +192,7 @@ export default defineComponent({
       mostrarLabelModal,
       guardado,
       abrirModalContacto,
+      botonCalificarProveedores,
       refContactos,
 
       //funciones

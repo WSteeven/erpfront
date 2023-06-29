@@ -17,3 +17,7 @@ export const opcionesOfertas = [
   { value: 1, label: 'BIENES' },
   { value: 2, label: 'SERVICIOS' },
 ]
+export const tiposOfertas={
+  bienes:'BIENES',
+  servicios:'SERVICIOS',
+}
