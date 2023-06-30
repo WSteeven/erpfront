@@ -160,7 +160,7 @@
             </q-btn>
           </div>
         </div>
-        <div class="col-12 col-md-12">
+        <div class="col-12 col-md-12" v-if="false">
           <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
             {{ 'Total de elementos: ' }}
             <b>{{ datos == undefined ? 0 : datos.length }}</b>
@@ -169,7 +169,7 @@
       </div>
 
       <div
-        v-if="permitirFiltrar"
+        v-if="permitirFiltrar||true"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
         <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
@@ -210,7 +210,7 @@
             Aplicar filtros</q-btn
           >
 
-          <q-btn
+          <q-btn v-if="mostrarExportar"
             color="positive"
             icon="archive"
             label="Exportar a csv"
@@ -245,7 +245,7 @@
             </q-list>
           </q-btn-dropdown> -->
 
-          <q-btn
+          <q-btn v-if="permitirFiltrar"
             :color="mostrarFiltros ? 'negative' : 'primary'"
             no-caps
             push

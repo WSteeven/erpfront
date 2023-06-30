@@ -3,15 +3,14 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasCausaIntervencion"
     :permitir-eliminar="false"
-    :permitir-editar="false"
-    :permitir-consultar="false"
-    :accion1="btnToggleActivar"
+    :permitir-editar="esAdministrador"
+    :permitir-consultar="esAdministrador"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Cliente -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente corporativo</label>
             <q-select
               v-model="causaIntervencion.cliente"
@@ -53,6 +52,7 @@
             <q-select
               v-model="causaIntervencion.tipo_trabajo"
               :options="tiposTrabajos"
+              @filter="filtrarTiposTrabajos"
               transition-show="scale"
               transition-hide="scale"
               hint="Obligatorio"
@@ -110,10 +110,7 @@
             </q-input>
           </div>
 
-          <div
-            v-if="causaIntervencion.categoria_tipo_ticket"
-            class="col-12 col-md-3"
-          >
+          <div v-if="causaIntervencion.nombre" class="col-12 col-md-3">
             <br />
             <q-toggle
               v-model="causaIntervencion.activo"

@@ -80,6 +80,8 @@
           :permitirEliminar="puedeEliminar"
           :accion1="accion1"
           :accion2="accion2"
+          :permitirFiltrar="puedeFiltrar"
+          :mostrarExportar="puedeExportar"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"

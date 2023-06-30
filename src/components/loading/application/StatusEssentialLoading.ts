@@ -1,4 +1,4 @@
-import { QSpinnerPuff, useQuasar } from 'quasar'
+import { QSpinnerBars, QSpinnerDots, QSpinnerGears, QSpinnerGrid, QSpinnerHourglass, QSpinnerIos, QSpinnerOrbit, QSpinnerRadio, useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
 import { computed, ComputedRef, Ref } from 'vue'
 
@@ -17,10 +17,10 @@ export class StatusEssentialLoading {
   activar(): void {
     // this.store.activarCargando()
     this.$q.loading.show({
-      spinner: QSpinnerPuff,
+      spinner: QSpinnerOrbit,
       message: 'La operación está en progreso.<br/><span class="text-blue-grey-2 text-italic">Espere por favor...</span>',
       html: true,
-      spinnerColor: 'lime',
+      spinnerColor: 'white',
     })
   }
 

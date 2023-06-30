@@ -1,10 +1,9 @@
 // Dependencias
 import { configuracionColumnasCausaIntervencion } from '../domain/configuracionColumnasCausaIntervencion'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from 'shared/i18n-validators'
-import { computed, defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
+import { defineComponent } from 'vue'
 import { useQuasar } from 'quasar'
 
 // Componentes
@@ -12,21 +11,13 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
-import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
-import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
-import { useAuthenticationStore } from 'stores/authentication'
-import { useNotificaciones } from 'shared/notificaciones'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
-import { CausaIntervencionController } from '../infraestructure/CausaIntervencionController'
-import { CausaIntervencion } from '../domain/CausaIntervencion'
-import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
-import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
 import { TipoTrabajoController } from 'pages/gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
+import { CausaIntervencionController } from '../infraestructure/CausaIntervencionController'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { CausaIntervencion } from '../domain/CausaIntervencion'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: {
@@ -48,7 +39,7 @@ export default defineComponent({
       CausaIntervencion,
       controller,
     )
-    const { entidad: causaIntervencion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { entidad: causaIntervencion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
     // const { onReestablecer } = mixin.useHooks()
 
@@ -65,46 +56,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const notificaciones = useNotificaciones()
-    // const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((tipo: CategoriaTipoTicket) => tipo.departamento_id === tipoTicket.departamento))
-    const cargando = new StatusEssentialLoading()
-
-    const departamentos = computed(() => listadosAuxiliares.departamentos.filter((departamento: Departamento) => {
-      if (authenticationStore.esAdministrador) {
-        return true
-      } else {
-        return departamento.id === authenticationStore.user.departamento
-      }
-    }))
-
-
-    /****************
-     * Botones tabla
-     ****************/
-    const btnToggleActivar: CustomActionTable = {
-      titulo: ({ entidad }) => entidad.activo ? 'Deshabilitar' : 'Activar',
-      icono: ({ entidad }) => entidad.activo ? 'bi-toggle2-off' : 'bi-toggle2-on',
-      color: ({ entidad }) => entidad.activo ? 'negative' : 'secondary',
-      accion: ({ entidad, posicion }) => {
-        notificaciones.confirmar('¿Está seguro de continuar?', async () => {
-          try {
-            cargando.activar()
-            const { response, result } = await controller.editarParcial(entidad.id, { activo: !entidad.activo })
-            listado.value.splice(posicion, 1, result)
-            notificaciones.notificarCorrecto(response.data.mensaje)
-          } catch (e: any) {
-            if (isAxiosError(e)) {
-              const mensajes: string[] = e.erroresValidacion
-              notificarMensajesError(mensajes, notificaciones)
-            } else {
-              notificaciones.notificarError(e.message)
-            }
-          } finally {
-            cargando.desactivar()
-          }
-        })
-      }
-    }
+    const esAdministrador = authenticationStore.esAdministrador
 
     /*********
     * Filtros
@@ -114,7 +66,7 @@ export default defineComponent({
       filtrarClientes,
       tiposTrabajos,
       filtrarTiposTrabajos,
-    } = useFiltrosListadosTarea(listadosAuxiliares)
+    } = useFiltrosListadosTarea(listadosAuxiliares, causaIntervencion)
 
     const rules = {
       nombre: { required },
@@ -144,8 +96,10 @@ export default defineComponent({
       clientes,
       filtrarClientes,
       tiposTrabajos,
+      filtrarTiposTrabajos,
       // categoriasTiposTickets,
-      btnToggleActivar,
+      // btnToggleActivar,
+      esAdministrador,
     }
   },
 })

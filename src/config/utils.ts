@@ -1,6 +1,4 @@
 import { TabOption } from 'components/tables/domain/TabOption'
-import { CausaIntervencion } from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/view/CausaIntervencion'
-// import { CausaIntervencion } from 'pages/tareas/controlTareas/modules/subtareas/modules/controlAvance/view/CausaIntervencion'
 
 export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'

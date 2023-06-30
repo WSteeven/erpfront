@@ -5,7 +5,25 @@ export const configuracionColumnasCausaIntervencion: ColumnConfig<CausaIntervenc
   {
     name: 'nombre',
     field: 'nombre',
-    label: 'Nombre',
+    label: 'Causa de intervención',
+    align: 'left',
+  },
+  {
+    name: 'tipo_trabajo',
+    field: 'tipo_trabajo',
+    label: 'Tipo de trabajo',
+    align: 'left',
+  },
+  {
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente',
+    align: 'left',
+  },
+  {
+    name: 'activo',
+    field: 'activo',
+    label: 'Activo',
     align: 'left',
   },
 ]

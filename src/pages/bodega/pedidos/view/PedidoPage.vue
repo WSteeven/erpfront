@@ -532,6 +532,7 @@
                     listarProductos({
                       sucursal_id: pedido.sucursal,
                       cliente_id: pedido.cliente,
+                      stock:true,
                     })
                   "
                   icon="search"
