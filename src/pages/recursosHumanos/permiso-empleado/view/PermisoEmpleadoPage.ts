@@ -1,6 +1,5 @@
 // Dependencias
 import { configuracionColumnasPermisoEmpleado } from '../domain/configuracionColumnasPermisoEmpleado'
-import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref } from 'vue'
 
@@ -14,52 +13,77 @@ import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoCon
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
 import { removeAccents } from 'shared/utils'
 import { maskFecha } from 'config/utils'
-import { EstadoPermisoEmpleadoController } from 'pages/recursosHumanos/estado/infraestructure/EstadoPermisoEmpleadoController'
-import { MotivoPermisoEmpleado } from 'pages/recursosHumanos/motivo/domain/MotivoPermisoEmpleado'
+import {
+  requiredIf,
+  maxLength,
+  minLength,
+  required,
+} from 'shared/i18n-validators'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoPermisoEmpleadoController } from '../infraestructure/ArchivoPermisoEmpleadoController'
 import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
+import { useAuthenticationStore } from 'stores/authentication'
+import { LocalStorage } from 'quasar'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen,ArchivoSeguimiento },
+  components: { TabLayout, SelectorImagen, ArchivoSeguimiento },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       PermisoEmpleado,
       new PermisoEmpleadoController()
     )
-    const mixinArchivoPrestamoEmpleado = new ContenedorSimpleMixin(Archivo, new ArchivoPermisoEmpleadoController())
+    const mixinArchivoPrestamoEmpleado = new ContenedorSimpleMixin(
+      Archivo,
+      new ArchivoPermisoEmpleadoController()
+    )
 
     const {
       entidad: permiso,
       disabled,
+      accion,
+      listado,
       listadosAuxiliares,
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-      const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
+    const {
+      onBeforeGuardar,
+      onGuardado,
+      onModificado,
+      onConsultado,
+      onReestablecer,
+    } = mixin.useHooks()
+    const store = useAuthenticationStore()
 
     const tipos_permisos = ref([])
     const empleados = ref([])
     const refArchivoPrestamoEmpresarial = ref()
+    const autorizaciones = ref()
+    const esAutorizador = computed(() =>
+      store.can('puede.autorizar.permiso_empleado')
+    )
+    const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
+    const esNuevo = computed(() => {
+      return accion.value === 'NUEVO'
+    })
     const dias_permiso = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
         const fechaInicio = convertir_fecha(permiso.fecha_hora_inicio)
-        const fechaFin =  convertir_fecha(permiso.fecha_hora_fin)
+        const fechaFin = convertir_fecha(permiso.fecha_hora_fin)
         // Calcula la diferencia en dias
         const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
         return diferenciaDias
-      }else{
+      } else {
         return 0
       }
-
     })
     const horas_permisos = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
         const fechaInicio = convertir_fecha(permiso.fecha_hora_inicio)
-        const fechaFin =  convertir_fecha(permiso.fecha_hora_fin)
+        const fechaFin = convertir_fecha(permiso.fecha_hora_fin)
         // Calcula la diferencia en milisegundos
         const diferenciaMilisegundos =
           fechaFin.getTime() - fechaInicio.getTime()
@@ -71,29 +95,22 @@ export default defineComponent({
       }
     })
     function optionsFecha(date) {
-      const today = new Date();
-      const fechaActual = convertir_fecha(permiso.fecha_hora_inicio);
-      const fechaIngresada = new Date(date);
+      const today = new Date()
+      const fechaActual = convertir_fecha(permiso.fecha_hora_inicio)
+      const fechaIngresada = new Date(date)
       const diferenciaDias = fechaIngresada.getDate() - fechaActual.getDate()
-      return diferenciaDias == 0;
+      return diferenciaDias == 0
     }
-    function convertir_fecha(fecha){
+    function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
-    let tiempo = dateParts[2]
-    tiempo = tiempo.split(' ')
-    tiempo = tiempo[1].split(':')
-    const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
-    const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-    const anio = parseInt(dateParts[2], 10)
-    const fecha_convert = new Date(
-      anio,
-      mes,
-      dia,
-      tiempo[0],
-      tiempo[1],
-      0
-    )
-    return fecha_convert;
+      let tiempo = dateParts[2]
+      tiempo = tiempo.split(' ')
+      tiempo = tiempo[1].split(':')
+      const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
+      const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
+      const anio = parseInt(dateParts[2], 10)
+      const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
+      return fecha_convert
     }
     onGuardado((id: number) => {
       subirArchivos(id)
@@ -101,9 +118,17 @@ export default defineComponent({
     async function subirArchivos(id: number) {
       await refArchivoPrestamoEmpresarial.value.subir({ permiso_id: id })
     }
+    onConsultado(() => {
+      setTimeout(() => {
+        refArchivoPrestamoEmpresarial.value.listarArchivos({
+          permiso_id: permiso.id,
+        })
+        refArchivoPrestamoEmpresarial.value.quiero_subir_archivos = false
+      }, 2000)
+    })
 
     cargarVista(async () => {
-      obtenerListados({
+      await obtenerListados({
         tipos_permisos: new MotivoPermisoEmpleadoController(),
         empleados: {
           controller: new EmpleadoController(),
@@ -112,16 +137,34 @@ export default defineComponent({
       })
       empleados.value = listadosAuxiliares.empleados
       tipos_permisos.value = listadosAuxiliares.tipos_permisos
+      autorizaciones.value =
+        LocalStorage.getItem('autorizaciones') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     })
+    function filtrarEmpleados(val, update) {
+      if (val === '')
+        update(() => (empleados.value = listadosAuxiliares.empleados))
 
+      update(() => {
+        const needle = val.toLowerCase()
+        empleados.value = listadosAuxiliares.empleados.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
     //Reglas de validacion
     const reglas = {
-      empleado: { required },
+      empleado: { required: requiredIf(() => permiso.recuperables == true) },
       tipo_permiso: { required },
       fecha_hora_inicio: { required },
       fecha_hora_fin: { required },
-      fecha_recuperacion: { required },
-      hora_recuperacion: { required },
+      fecha_recuperacion: {
+        required: requiredIf(() => permiso.recuperables == true),
+      },
+      hora_recuperacion: {
+        required: requiredIf(() => permiso.recuperables == true),
+      },
       justificacion: { required },
     }
 
@@ -133,6 +176,10 @@ export default defineComponent({
       mixin,
       permiso,
       optionsFecha,
+      filtrarEmpleados,
+      esAutorizador,
+      esNuevo,
+      verEmpleado,
       refArchivoPrestamoEmpresarial,
       mixinArchivoPrestamoEmpleado,
       endpoint: endpoints.archivo_permiso_empleado,
@@ -140,6 +187,8 @@ export default defineComponent({
       dias_permiso,
       horas_permisos,
       empleados,
+      autorizaciones,
+      accion,
       maskFecha,
       v$,
       disabled,

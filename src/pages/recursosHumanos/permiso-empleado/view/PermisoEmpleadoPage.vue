@@ -8,7 +8,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Empleados -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="verEmpleado">
             <label class="q-mb-sm block">Empleado</label>
             <q-select
               v-model="permiso.empleado"
@@ -18,13 +18,13 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="!esNuevo"
               :readonly="disabled"
               :error="!!v$.empleado.$errors.length"
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
-              @filter="filtrarEmpleado"
+              @filter="filtrarEmpleados"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
@@ -50,7 +50,7 @@
               :options="tipos_permisos"
               transition-show="jump-up"
               transition-hide="jump-down"
-              :disable="disabled"
+              :disable="!esNuevo"
               options-dense
               dense
               outlined
@@ -80,7 +80,7 @@
               v-model="permiso.fecha_hora_inicio"
               placeholder="Obligatorio"
               :error="!!v$.fecha_hora_inicio.$errors.length"
-              :disable="disabled"
+              :disable="!esNuevo"
               @blur="v$.fecha_hora_inicio.$touch"
               outlined
               dense
@@ -122,7 +122,7 @@
               v-model="permiso.fecha_hora_fin"
               placeholder="Obligatorio"
               :error="!!v$.fecha_hora_fin.$errors.length"
-              :disable="disabled"
+              :disable="!esNuevo"
               @blur="v$.fecha_hora_fin.$touch"
               outlined
               dense
@@ -165,7 +165,7 @@
               v-model="permiso.justificacion"
               @update:model-value="(v) => (permiso.justificacion = removeAccents(v))"
               placeholder="Obligatorio"
-              :disable="disabled"
+              :disable="!esNuevo"
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
@@ -185,7 +185,7 @@
               ref="refArchivoPrestamoEmpresarial"
               :mixin="mixinArchivoPrestamoEmpleado"
               :endpoint="endpoint"
-              :disable="disabled"
+              :disable="!esNuevo"
               :permitir-eliminar="false"
               :listar-al-guardar="false"
             >
@@ -193,13 +193,13 @@
           </div>
 
           <!-- Fecha Recuperacion -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="permiso.recuperables">
             <label class="q-mb-sm block">Fecha de Recuperacion</label>
             <q-input
               v-model="permiso.fecha_recuperacion"
               placeholder="Obligatorio"
               :error="!!v$.fecha_recuperacion.$errors.length"
-              :disable="disabled"
+              :disable="!esNuevo"
               @blur="v$.fecha_recuperacion.$touch"
               outlined
               dense
@@ -227,14 +227,14 @@
               </template>
             </q-input>
           </div>
-          <!-- Hora inicio de agendamiento -->
-          <div class="col-12 col-md-3">
+          <!-- Hora de recuperacion -->
+          <div class="col-12 col-md-3"  v-if="permiso.recuperables">
             <label class="q-mb-sm block">Hora de Recuperacion (24 horas)</label>
             <q-input
             v-model="permiso.hora_recuperacion"
             :error="!!v$.hora_recuperacion.$errors.length"
             type="time"
-            :disable="disabled"
+            :disable="!esNuevo"
             hint="Obligatorio"
             stack-label
             outlined
@@ -258,7 +258,7 @@
               class="q-mt-lg q-pt-md"
               v-model="permiso.recuperables"
               label="Recuperables"
-              :disable="disabled"
+              :disable="!esNuevo"
               outlined
               dense
             ></q-checkbox>
@@ -269,7 +269,7 @@
               class="q-mt-lg q-pt-md"
               v-model="permiso.cargo_vacaciones"
               label="Cargo a Vacaciones"
-              :disable="disabled"
+              :disable="!esNuevo"
               outlined
               dense
             ></q-checkbox>
@@ -279,7 +279,7 @@
             <q-input
               v-model="dias_permiso"
               placeholder="Obligatorio"
-              :disable="disabled"
+              disable
               outlined
               dense
             >
@@ -290,12 +290,40 @@
             <q-input
               v-model="horas_permisos"
               placeholder="Obligatorio"
-              :disable="disabled"
+              disable
               outlined
               dense
             >
             </q-input>
           </div>
+            <!-- Autorizacion -->
+            <div class="col-12 col-md-3" v-if=" accion == 'EDITAR' && esAutorizador">
+            <label class="q-mb-sm block">Autorizacion</label>
+            <q-select
+              v-model="permiso.estado"
+              :options="autorizaciones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
         </div>
       </q-form>
     </template>
