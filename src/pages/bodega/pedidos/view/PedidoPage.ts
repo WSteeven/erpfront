@@ -194,7 +194,7 @@ export default defineComponent({
         })
       },
       visible: ({ entidad, posicion }) => {
-        console.log(posicion, entidad)
+        // console.log(posicion, entidad)
         return tabSeleccionado.value === autorizacionesTransacciones.aprobado && entidad.per_autoriza_id === store.user.id && entidad.estado === estadosTransacciones.pendiente
       }
     }
