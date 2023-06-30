@@ -175,6 +175,10 @@ export default defineComponent({
     editarFilaLocal: {
       type: Boolean,
       default: true,
+    },
+    mostrarExportar: {
+      type: Boolean,
+      default: false,
     }
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila'],
@@ -429,6 +433,8 @@ export default defineComponent({
       abrirModalEditar,
       exportTable,
       toggleFiltros,
+
+      mostrarExportar: props.mostrarExportar
     }
   },
 })
