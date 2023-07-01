@@ -93,7 +93,10 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        tiposTrabajos: new TipoTrabajoController(),
+        tiposTrabajos: {
+          controller: new TipoTrabajoController(),
+          params: { activo: 1 },
+        },
         tareas: new TareaController(),
         grupos: {
           controller: new GrupoController(),

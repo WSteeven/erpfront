@@ -149,6 +149,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
           confirmarRealizar({ entidad, posicion, causa_intervencion_id })
         },
         tipo: 'radio',
+        requerido: false,
         items: listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo).map((causa: CausaIntervencion) => {
           return {
             label: causa.nombre,
@@ -221,6 +222,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
         accion: (causa_intervencion_id) => {
           confirmarFinalizar({ entidad, causa_intervencion_id })
         },
+        requerido: false,
         defecto: entidad.causa_intervencion_id,
         tipo: 'radio',
         items: listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo).map((causa: CausaIntervencion) => {
