@@ -54,6 +54,14 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    puedeFiltrar: {
+      type: Boolean,
+      default: false,
+    },
+    puedeExportar: {
+      type: Boolean,
+      default: false,
+    },
     mostrarAcciones: {
       type: Boolean,
       default: true,
@@ -192,6 +200,8 @@ export default defineComponent({
 
       //acciones personalizadas
       // accion1: props.accion1
+      puedeFiltrar: props.puedeFiltrar,
+      puedeExportar: props.puedeExportar
     }
   },
 })

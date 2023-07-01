@@ -337,7 +337,7 @@
               </template>
             </q-input>
           </div>
-          <!--
+<!--Beneficiarios-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Beneficiarios</label>
             <q-select
@@ -352,9 +352,6 @@
               use-chips
               outlined
               @filter="filtrarBeneficiarios"
-              @blur="v$.beneficiarios.$touch"
-              :error="!!v$.beneficiarios.$errors.length"
-              error-message="Debes seleccionar uno o varios beneficiarios"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
@@ -376,11 +373,6 @@
                   </q-item-section>
                 </q-item>
               </template>
-              <template v-slot:error>
-                <div v-for="error of v$.beneficiarios.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -390,7 +382,7 @@
               </template>
             </q-select>
 
-          </div> -->
+          </div>
           <!-- Autorizacion -->
           <div class="col-12 col-md-3" v-if="visualizarAutorizador">
             <label class="q-mb-sm block">Autorizaciòn Especial</label>

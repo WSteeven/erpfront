@@ -120,7 +120,7 @@ export default defineComponent({
       { value: '5', name: 'Autorizacion' },
       { value: '6', name: 'Empleado' },
       { value: '7', name: 'RUC' },
-      { value: '8', name: 'SIN COMPROBANTE' },
+      { value: '8', name: 'SIN FACTURA' },
     ])
     listadosAuxiliares.tipos_saldos = tipos_saldos
     listadosAuxiliares.tipos_filtro = tipos_filtros
@@ -302,7 +302,7 @@ const listadoTareas = computed(() => {
               { value: '5', name: 'Autorizacion' },
               { value: '6', name: 'Empleado' },
               { value: '7', name: 'RUC' },
-              { value: '8', name: 'SIN COMPROBANTE' },
+              { value: '8', name: 'SIN FACTURA' },
             ]
           })
           break
@@ -348,7 +348,7 @@ const listadoTareas = computed(() => {
       }
       const needle = val.toLowerCase()
       update(() => {
-        return opcionesSubdetalles.value.filter(
+        sub_detalles.value = opcionesSubdetalles.value.filter(
           (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
         )
       })
