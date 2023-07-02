@@ -2,7 +2,7 @@ import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { CriterioCalificacion } from "./CriterioCalificacion";
 import { opcionesOfertas } from "config/utils_compras_proveedores";
 
-export const configuracionColumnasCriteriosCalificaciones: ColumnConfig<CriterioCalificacion>[] = [
+export const configuracionColumnasCriteriosCalificacionesConPeso: ColumnConfig<any>[] = [
     {
         name: 'nombre',
         field: 'nombre',
@@ -45,5 +45,14 @@ export const configuracionColumnasCriteriosCalificaciones: ColumnConfig<Criterio
         options: opcionesOfertas,
         align: 'center',
         sortable: true
+    },
+    {
+        name: 'peso',
+        field: 'peso',
+        label: 'Peso asignado (%)',
+        align: 'center',
+        type: 'number',
+        sortable: true,
+        editable: true,
     },
 ]

@@ -117,8 +117,8 @@ export default defineComponent({
       icono: 'bi-star-fill',
       color: 'positive',
       accion: async ({ entidad, posicion }) => {
-        console.log(posicion)
-        console.log(entidad)
+        // console.log(posicion)
+        // console.log(entidad)
         consultarDepartamento().then(() => {
           proveedorStore.idDepartamento = departamento.value[0].id
         })
@@ -146,7 +146,7 @@ export default defineComponent({
     }
     async function consultarDepartamento() {
       const { result } = await new DepartamentoController().listar({ responsable_id: store.user.id })
-      console.log(result)
+      // console.log(result)
       departamento.value = result
     }
 

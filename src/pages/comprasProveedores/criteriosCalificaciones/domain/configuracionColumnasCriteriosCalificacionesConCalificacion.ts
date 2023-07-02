@@ -2,7 +2,7 @@ import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { CriterioCalificacion } from "./CriterioCalificacion";
 import { opcionesOfertas } from "config/utils_compras_proveedores";
 
-export const configuracionColumnasCriteriosCalificaciones: ColumnConfig<CriterioCalificacion>[] = [
+export const configuracionColumnasCriteriosCalificacionesConCalificacion: ColumnConfig<any>[] = [
     {
         name: 'nombre',
         field: 'nombre',
@@ -20,29 +20,27 @@ export const configuracionColumnasCriteriosCalificaciones: ColumnConfig<Criterio
         sortable: true
     },
     {
-        name: 'ponderacion_referencia',
-        field: 'ponderacion_referencia',
-        label: 'Ponderación referencia (%)',
+        name: 'peso',
+        field: 'peso',
+        label: 'Peso (%)',
         align: 'center',
         type: 'number',
         sortable: true,
         editable: true,
     },
     {
-        name: 'departamento',
-        field: 'departamento',
-        label: 'Departamento',
+        name: 'puntaje',
+        field: 'puntaje',
+        label: 'Puntaje',
         align: 'center',
         editable: false,
         sortable: true
 
     },
     {
-        name: 'oferta',
-        field: 'oferta',
-        label: 'Aplicable',
-        type: 'select',
-        options: opcionesOfertas,
+        name: 'calificacion',
+        field: 'calificacion',
+        label: 'Calificacion',
         align: 'center',
         sortable: true
     },
