@@ -319,15 +319,24 @@ export default defineComponent({
         return
       }
       update(() => {
+
         const needle = val.toLowerCase()
+        console.log(listadosAuxiliares.autorizacionesEspeciales.filter(
+          (v) =>{
+            console.log(v.nombres.toLowerCase());
+
+            v.nombres.toLowerCase().indexOf(needle) > -1}
+        ));
+
         autorizacionesEspeciales.value =
           listadosAuxiliares.autorizacionesEspeciales.filter(
-            (v) => v.usuario.toLowerCase().indexOf(needle) > -1
+            (v) =>v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
     //filtro beneficiarios
     function filtrarBeneficiarios(val, update) {
+
       if (val === '') {
         update(() => {
           beneficiarios.value =
@@ -339,7 +348,7 @@ export default defineComponent({
         const needle = val.toLowerCase()
         beneficiarios.value =
           listadosAuxiliares.beneficiarios.filter(
-            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+            (v) =>     v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
@@ -417,16 +426,17 @@ export default defineComponent({
     function filtarSubdetalles(val, update) {
       if (val === '') {
         update(() => {
-          sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-            (v) => v.id_detalle_viatico == gasto.detalle
-          )
+          sub_detalles.value = listadoSubdetalles.value
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-          (v) => v.detalle.indexOf(needle) > -1
+        sub_detalles.value = listadoSubdetalles.value.filter(
+          (v) =>{
+            v.descripcion.toLowerCase().indexOf(needle) > -1
+          }
+
         )
       })
     }
@@ -647,6 +657,7 @@ export default defineComponent({
       filtrarCantones,
       filtrarDetalles,
       filtarSubdetalles,
+      filtrarBeneficiarios,
       filtrarProyectos,
       existeComprobante,
       filtrarTareas,
