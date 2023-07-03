@@ -188,6 +188,7 @@
               :disable="!esNuevo"
               :permitir-eliminar="false"
               :listar-al-guardar="false"
+              :esMultiple="false"
             >
             </gestor-documentos>
           </div>

@@ -27,10 +27,12 @@ import { ArchivoPermisoEmpleadoController } from '../infraestructure/ArchivoPerm
 import { useAuthenticationStore } from 'stores/authentication'
 import { LocalStorage } from 'quasar'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
-  setup() {
+  emits: ['cerrar-modal'],
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
       PermisoEmpleado,
       new PermisoEmpleadoController()
@@ -57,6 +59,13 @@ export default defineComponent({
       onReestablecer,
     } = mixin.useHooks()
     const store = useAuthenticationStore()
+    const {
+      confirmar,
+      prompt,
+      notificarCorrecto,
+      notificarAdvertencia,
+      notificarError,
+    } = useNotificaciones()
 
     const tipos_permisos = ref([])
     const empleados = ref([])
@@ -114,9 +123,14 @@ export default defineComponent({
     }
     onBeforeGuardar(()=>{
       permiso.tieneDocumento=  refArchivoPrestamoEmpresarial.value.tamanioListado > 0 ? true : false;
+      if(!permiso.tieneDocumento){
+        notificarAdvertencia('Debe seleccionar al menos un archivo.')
+      }
     })
     onGuardado((id: number) => {
       subirArchivos(id)
+      emit('cerrar-modal')
+
     })
     async function subirArchivos(id: number) {
       await refArchivoPrestamoEmpresarial.value.subir({ permiso_id: id })

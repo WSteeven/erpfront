@@ -54,6 +54,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    esMultiple: {
+      type: Boolean,
+      default: true,
+    }
   },
   setup(props) {
     /********

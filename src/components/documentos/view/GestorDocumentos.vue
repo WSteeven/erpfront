@@ -3,8 +3,8 @@
   <div v-if="quiero_subir_archivos && !esConsultado" class="col-12 q-mb-sm">
     <q-uploader
       ref="refGestor"
-      label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
-      multiple
+      :label="esMultiple?'Selecciona o arrastra tus archivos aquí (Máximo 10mb)':'Selecciona o arrastra el archivo aquí (Máximo 10mb)'"
+      :multiple="esMultiple"
       style="width: 100%"
       flat
       :factory="factoryFn"
