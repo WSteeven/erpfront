@@ -12,7 +12,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
 import { removeAccents } from 'shared/utils'
-import { maskFecha } from 'config/utils'
+import { maskFecha, tabOptionsSolicitudPedido } from 'config/utils'
 import {
   requiredIf,
   maxLength,
@@ -28,9 +28,10 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { LocalStorage } from 'quasar'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, GestorDocumentos },
+  components: { TabLayoutFilterTabs2, SelectorImagen, GestorDocumentos },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
@@ -49,7 +50,7 @@ export default defineComponent({
       listado,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } =
+    const { setValidador, cargarVista, obtenerListados,listar } =
       mixin.useComportamiento()
     const {
       onBeforeGuardar,
@@ -193,7 +194,11 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, permiso)
     setValidador(v$.value)
-
+    let tabPermisoEmpleado = '1'
+    function filtrarPermisoEmpleado(tabSeleccionado: string) {
+      listar({ estado_permiso_id: tabSeleccionado }, false)
+      tabPermisoEmpleado = tabSeleccionado
+    }
 
     return {
       removeAccents,
@@ -201,6 +206,7 @@ export default defineComponent({
       permiso,
       optionsFecha,
       filtrarEmpleados,
+      filtrarPermisoEmpleado,
       watchEffect,
       esAutorizador,
       esNuevo,
@@ -217,7 +223,10 @@ export default defineComponent({
       maskFecha,
       v$,
       disabled,
+ tabOptionsSolicitudPedido,
       configuracionColumnas: configuracionColumnasPermisoEmpleado,
     }
   },
 })
+
+

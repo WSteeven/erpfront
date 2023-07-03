@@ -84,6 +84,11 @@ export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
 ]
+export const tabOptionsPermiso: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
+]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
   { label: 'Devueltas', value: '1' },

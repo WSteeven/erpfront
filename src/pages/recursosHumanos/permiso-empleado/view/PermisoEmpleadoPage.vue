@@ -1,12 +1,20 @@
 <template>
-  <tab-layout
+   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Cargos"
+    :mostrarListado="mostrarListado"
+    :tabOptions="tabOptionsSolicitudPedido"
+    :full="true"
+    :permitirEditar="true"
+    :permitirEliminar="false"
+    :mostrarButtonSubmits="true"
+    :filtrar="filtrarPermisoEmpleado"
+    tabDefecto="1"
+    :forzarListar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-md">
+        <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
           <!-- Empleados -->
           <div class="col-12 col-md-3" v-if="verEmpleado">
             <label class="q-mb-sm block">Empleado</label>
@@ -328,7 +336,7 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 
