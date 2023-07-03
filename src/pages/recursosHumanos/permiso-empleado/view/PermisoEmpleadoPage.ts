@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasPermisoEmpleado } from '../domain/configuracionColumnasPermisoEmpleado'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -24,12 +24,12 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoPermisoEmpleadoController } from '../infraestructure/ArchivoPermisoEmpleadoController'
-import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import { useAuthenticationStore } from 'stores/authentication'
 import { LocalStorage } from 'quasar'
+import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, ArchivoSeguimiento },
+  components: { TabLayout, SelectorImagen, GestorDocumentos },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       PermisoEmpleado,
@@ -112,6 +112,9 @@ export default defineComponent({
       const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
       return fecha_convert
     }
+    onBeforeGuardar(()=>{
+      permiso.tieneDocumento=  refArchivoPrestamoEmpresarial.value.tamanioListado > 0 ? true : false;
+    })
     onGuardado((id: number) => {
       subirArchivos(id)
     })
@@ -123,8 +126,14 @@ export default defineComponent({
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           permiso_id: permiso.id,
         })
-        refArchivoPrestamoEmpresarial.value.quiero_subir_archivos = false
+        refArchivoPrestamoEmpresarial.value.esConsultado = true
       }, 2000)
+    })
+    onReestablecer(() => {
+      setTimeout(() => {
+      refArchivoPrestamoEmpresarial.value.limpiarListado()
+      refArchivoPrestamoEmpresarial.value.esConsultado = false
+    }, 1000)
     })
 
     cargarVista(async () => {
@@ -171,12 +180,14 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, permiso)
     setValidador(v$.value)
 
+
     return {
       removeAccents,
       mixin,
       permiso,
       optionsFecha,
       filtrarEmpleados,
+      watchEffect,
       esAutorizador,
       esNuevo,
       verEmpleado,

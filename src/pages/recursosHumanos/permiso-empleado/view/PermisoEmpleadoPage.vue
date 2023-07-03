@@ -181,7 +181,7 @@
           <!-- Documento -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Documento</label>
-            <archivo-seguimiento
+            <gestor-documentos
               ref="refArchivoPrestamoEmpresarial"
               :mixin="mixinArchivoPrestamoEmpleado"
               :endpoint="endpoint"
@@ -189,7 +189,7 @@
               :permitir-eliminar="false"
               :listar-al-guardar="false"
             >
-            </archivo-seguimiento>
+            </gestor-documentos>
           </div>
 
           <!-- Fecha Recuperacion -->

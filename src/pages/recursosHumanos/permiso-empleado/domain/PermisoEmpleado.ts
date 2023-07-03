@@ -16,6 +16,7 @@ export class PermisoEmpleado extends EntidadAuditable {
   recuperables: boolean | null
   justificacion: string | null
   documento: string |null
+  tieneDocumento: boolean | null
   cargo_vacaciones: boolean |null
   constructor() {
     super()
@@ -34,6 +35,7 @@ export class PermisoEmpleado extends EntidadAuditable {
     this.dias_permiso = null
     this.justificacion = null
     this.documento =null
+    this.tieneDocumento = null
     this.recuperables=false
     this.cargo_vacaciones = false
   }
