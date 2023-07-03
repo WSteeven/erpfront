@@ -6,9 +6,9 @@ import { LocalStorage, useQuasar, } from "quasar";
 import useVuelidate from "@vuelidate/core";
 
 //Componentes
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Doughnut } from "vue-chartjs";
+import { Doughnut } from 'vue-chartjs'
 
 
 //Logica y controladores
@@ -21,6 +21,7 @@ import { useNotificacionStore } from "stores/notificacion";
 import { useCargandoStore } from "stores/cargando";
 
 ChartJS.register(ArcElement, Tooltip, Legend)
+
 export default defineComponent({
   components: { EssentialTable, Doughnut },
   setup() {

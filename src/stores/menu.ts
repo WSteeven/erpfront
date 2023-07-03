@@ -73,9 +73,9 @@ export const useMenuStore = defineStore('menu', () => {
           children: [
             {
               title: 'Generar reporte',
-              link: 'tipos-trabajos',
+              link: 'reportes-subtareas',
               icon: 'bi-circle',
-              can: store.can('puede.ver.tipos_trabajos'),
+              can: store.can('puede.ver.reportes_subtareas'),
             },
           ],
         },
