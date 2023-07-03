@@ -190,13 +190,24 @@
           </div>
         </div>
       </q-step>
+      <q-step
+        :name="5"
+        title="Resúmen"
+        caption="Resultados de tu calificación y valoración global"
+        icon="bi-plus-circle"
+      >
+      <q-card>
+        <div class="col-12 justify-center">Tu calificación para el proveedor es: <h4>{{ resultadosCalificacion.calificacion }}</h4></div>
+        Fecha de calificación: <q-chip >{{ resultadosCalificacion.fecha_calificacion }}</q-chip>
+      </q-card>
+      </q-step>
 
       <template v-slot:navigation>
         <q-stepper-navigation>
-          <q-btn
+          <q-btn v-if="step<5"
             @click="botonNext"
             color="primary"
-            :label="step === 4 ? 'Finish' : 'Continue'"
+            :label="step === 4 ? 'Finalizar' : 'Continuar'"
           />
           <q-btn
             v-if="step > 1"

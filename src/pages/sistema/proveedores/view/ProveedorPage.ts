@@ -125,6 +125,10 @@ export default defineComponent({
         proveedorStore.proveedor = entidad
         // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
         modales.abrirModalEntidad('CalificacionProveedorPage')
+      },
+      visible: ({posicion})=>{
+        console.log(posicion)
+        return true
       }
     }
 

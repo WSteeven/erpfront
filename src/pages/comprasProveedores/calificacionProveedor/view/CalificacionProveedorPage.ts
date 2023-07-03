@@ -1,9 +1,10 @@
 // Dependencies
-import { defineComponent, ref } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 
 //Components
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from "components/tables/view/EssentialTable.vue";
+import ArchivoSeguimiento from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue";
 
 // Logic and controllers
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -14,22 +15,25 @@ import { CalificacionProveedor } from "../domain/CalificacionProveedor";
 import { useOrquestadorSelectorCriterios } from "../application/OrquestadorSelectorCriterios";
 import { useProveedorStore } from "stores/comprasProveedores/proveedor";
 import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController";
-import { tiposOfertas } from "config/utils_compras_proveedores";
+import { likertCalificacion, tiposOfertas } from "config/utils_compras_proveedores";
 import { accionesTabla } from "config/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { useNotificaciones } from "shared/notificaciones";
 import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion";
 import { configuracionColumnasCriteriosCalificacionesConPeso } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConPeso";
+import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
+import { endpoints } from "config/api";
+import { AxiosResponse } from "axios";
 
 export default defineComponent({
-    components: { EssentialTable, EssentialSelectableTable },
+    components: { EssentialTable, EssentialSelectableTable, ArchivoSeguimiento },
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
         const { entidad: calificacion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
         const { onConsultado } = mixin.useHooks()
-        const { confirmar, prompt } = useNotificaciones()
+        const { confirmar, prompt, promptItems } = useNotificaciones()
 
         /**************************************************************
          * Stores
@@ -37,15 +41,7 @@ export default defineComponent({
         const proveedorStore = useProveedorStore()
         const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
-        //Orquestador
-        const {
-            refListadoSeleccionable: refListado,
-            criterioBusqueda: criterioBusquedaCriterio,
-            listado: listadoCriterios,
-            listar: listarCriterios,
-            limpiar: limpiarCriterio,
-            seleccionar: seleccionarCriterio
-        } = useOrquestadorSelectorCriterios(calificacion, 'calificacion_proveedor')
+        
         /************************************************************** 
          * Variables
          **************************************************************/
@@ -53,6 +49,7 @@ export default defineComponent({
         const criteriosBienes = ref<any>([])
         const criteriosServicios = ref<any>([])
         const step = ref(1)
+        const resultadosCalificacion = ref()
         const seleccionados = ref([]) //los criterios que son seleccionados en la primera tabla
 
         cargarVista(async () => {
@@ -141,16 +138,30 @@ export default defineComponent({
             titulo: 'Calificación',
             icono: 'bi-pencil',
             accion: ({ entidad, posicion }) => {
-                const config: CustomActionPrompt = {
+                const config: CustomActionPrompt = reactive({
                     titulo: 'Califica',
                     mensaje: 'Ingresa una puntuación',
                     defecto: criteriosBienes.value[posicion].puntaje,
-                    tipo: 'number',
+                    tipo: 'radio',
                     accion: (data) => {
                         criteriosBienes.value[posicion].puntaje = data
-                    }
-                }
-                prompt(config)
+                        criteriosBienes.value[posicion].calificacion = (.2 * data * criteriosBienes.value[posicion].peso).toFixed(2)
+
+                        const config: CustomActionPrompt = {
+                            titulo: 'Comentario',
+                            mensaje: 'Ingresa un comentario',
+                            defecto: criteriosBienes.value[posicion].comentario,
+                            tipo: 'text',
+                            accion: (data) => {
+                                criteriosBienes.value[posicion].comentario = data
+                            },
+                        }
+
+                        prompt(config)
+                    },
+                    items: likertCalificacion
+                })
+                promptItems(config)
             }
         }
         /************************************************************** 
@@ -163,7 +174,8 @@ export default defineComponent({
          * @returns nada (indefinido) en la mayoría de los casos. Sin embargo, puede regresar antes de
          * tiempo con una declaración de "retorno" si se cumplen ciertas condiciones.
          */
-        function botonNext() {
+        async function botonNext() {
+            console.log('Clickeaste en el botonNext, step ', step.value + 1)
             if (step.value == 2) {
                 const resultListadoBienes = verificarCriteriosBienes()
                 if (resultListadoBienes) {
@@ -182,7 +194,29 @@ export default defineComponent({
                     return
                 }
             }
+            if (step.value == 4) {
+                console.log('Aqui se guardan los resultados en la base de datos')
+                const data = {
+                    proveedor_id: proveedorStore.proveedor.id,
+                    calificacion: criteriosBienes.value.reduce((prev, curr) => prev + parseFloat(curr.calificacion), 0)
+                }
+                const { response, result } = await guardarCalificacion(data)
+                if (response.status == 200) {
+                    resultadosCalificacion.value = result
+                    step.value++
+                }
+                return
+            }
             step.value++
+        }
+        async function guardarCalificacion(data) {
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = axios.getEndpoint(endpoints.calificacion_proveedor)
+            const response: AxiosResponse = await axios.post(ruta, data)
+            return {
+                response,
+                result: response.data.modelo
+            }
         }
         function verificarCriteriosBienes() {
             let sumaCriteriosBienes = 0
@@ -278,9 +312,8 @@ export default defineComponent({
 
             seleccionados,
             criterioSeleccionado,
+            resultadosCalificacion,
 
-            //orquestador
-            seleccionarCriterio,
             //pagination
             initialPagination: {
                 sortBy: 'desc',

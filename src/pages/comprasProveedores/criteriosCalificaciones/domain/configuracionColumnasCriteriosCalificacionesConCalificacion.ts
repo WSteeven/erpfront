@@ -12,10 +12,10 @@ export const configuracionColumnasCriteriosCalificacionesConCalificacion: Column
         sortable: true
     },
     {
-        name: 'descripcion',
-        field: 'descripcion',
-        label: 'Descripción',
-        style: 'max-width: 250px; overflow: auto;',
+        name: 'comentario',
+        field: 'comentario',
+        label: 'comentario',
+        style: 'max-width: 4000px; overflow: auto;',
         align: 'left',
         sortable: true
     },

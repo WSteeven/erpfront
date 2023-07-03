@@ -21,3 +21,11 @@ export const tiposOfertas={
   bienes:'BIENES',
   servicios:'SERVICIOS',
 }
+
+export const likertCalificacion = [
+  { label: 'MUY BUENO', value: '5' },
+  { label: 'BUENO', value: '4' },
+  { label: 'NORMAL', value: '3' },
+  { label: 'MALO', value: '2' },
+  { label: 'MUY MALO', value: '1' },
+]
