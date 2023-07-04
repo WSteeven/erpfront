@@ -50,11 +50,12 @@ export default defineComponent({
       listado,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados,listar } =
+    const { setValidador, cargarVista, obtenerListados, listar } =
       mixin.useComportamiento()
     const {
       onBeforeGuardar,
       onGuardado,
+      onBeforeModificar,
       onModificado,
       onConsultado,
       onReestablecer,
@@ -72,9 +73,7 @@ export default defineComponent({
     const empleados = ref([])
     const refArchivoPrestamoEmpresarial = ref()
     const autorizaciones = ref()
-    const esAutorizador = computed(() =>
-      store.can('puede.autorizar.permiso_empleado')
-    )
+    const esAutorizador = store.user.jefe_id //computed(() => store.can('puede.autorizar.permiso_empleado') )
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
@@ -105,11 +104,16 @@ export default defineComponent({
       }
     })
     function optionsFecha(date) {
-      const today = new Date()
       const fechaActual = convertir_fecha(permiso.fecha_hora_inicio)
       const fechaIngresada = new Date(date)
-      const diferenciaDias = fechaIngresada.getDate() - fechaActual.getDate()
-      return diferenciaDias == 0
+      const diferenciaMilisegundos =
+        fechaIngresada.getTime() - fechaActual.getTime()
+      const diferenciaDias = Math.floor(
+        diferenciaMilisegundos / (1000 * 60 * 60 * 24)
+      ) // Diferencia en días
+      console.log(diferenciaDias);
+
+      return diferenciaDias === -1|| diferenciaDias === 0  || diferenciaDias === 1 || diferenciaDias === 2
     }
     function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
@@ -122,16 +126,19 @@ export default defineComponent({
       const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
       return fecha_convert
     }
-    onBeforeGuardar(()=>{
-      permiso.tieneDocumento=  refArchivoPrestamoEmpresarial.value.tamanioListado > 0 ? true : false;
-      if(!permiso.tieneDocumento){
+    onBeforeGuardar(() => {
+      permiso.tieneDocumento =
+        refArchivoPrestamoEmpresarial.value.tamanioListado > 0 ? true : false
+      if (!permiso.tieneDocumento) {
         notificarAdvertencia('Debe seleccionar al menos un archivo.')
       }
+    })
+    onBeforeModificar(() => {
+      permiso.tieneDocumento = true
     })
     onGuardado((id: number) => {
       subirArchivos(id)
       emit('cerrar-modal')
-
     })
     async function subirArchivos(id: number) {
       await refArchivoPrestamoEmpresarial.value.subir({ permiso_id: id })
@@ -146,9 +153,9 @@ export default defineComponent({
     })
     onReestablecer(() => {
       setTimeout(() => {
-      refArchivoPrestamoEmpresarial.value.limpiarListado()
-      refArchivoPrestamoEmpresarial.value.esConsultado = false
-    }, 1000)
+        refArchivoPrestamoEmpresarial.value.limpiarListado()
+        refArchivoPrestamoEmpresarial.value.esConsultado = false
+      }, 1000)
     })
 
     cargarVista(async () => {
@@ -173,13 +180,14 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         empleados.value = listadosAuxiliares.empleados.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
     //Reglas de validacion
     const reglas = {
-      empleado: { required: requiredIf(() => permiso.recuperables == true) },
       tipo_permiso: { required },
       fecha_hora_inicio: { required },
       fecha_hora_fin: { required },
@@ -190,6 +198,7 @@ export default defineComponent({
         required: requiredIf(() => permiso.recuperables == true),
       },
       justificacion: { required },
+      observacion: { required: requiredIf(() => esAutorizador.value) },
     }
 
     const v$ = useVuelidate(reglas, permiso)
@@ -223,10 +232,8 @@ export default defineComponent({
       maskFecha,
       v$,
       disabled,
- tabOptionsSolicitudPedido,
+      tabOptionsSolicitudPedido,
       configuracionColumnas: configuracionColumnasPermisoEmpleado,
     }
   },
 })
-
-

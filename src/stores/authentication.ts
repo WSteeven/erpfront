@@ -38,6 +38,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
       }`
   )
+  const jefe_inmediato = ref()
 
   const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
   const esCoordinadorBackup = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup) : false)

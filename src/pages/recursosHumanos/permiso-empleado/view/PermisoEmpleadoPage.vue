@@ -1,5 +1,5 @@
 <template>
-   <tab-layout-filter-tabs2
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :mostrarListado="mostrarListado"
@@ -15,41 +15,6 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
-          <!-- Empleados -->
-          <div class="col-12 col-md-3" v-if="verEmpleado">
-            <label class="q-mb-sm block">Empleado</label>
-            <q-select
-              v-model="permiso.empleado"
-              :options="empleados"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="!esNuevo"
-              :readonly="disabled"
-              :error="!!v$.empleado.$errors.length"
-              error-message="Debes seleccionar un empleado"
-              use-input
-              input-debounce="0"
-              @filter="filtrarEmpleados"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
           <!-- Tipo del prestamo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo</label>
@@ -166,6 +131,42 @@
             </q-input>
             <div class="q-gutter-md row items-start"></div>
           </div>
+          <!-- Fecha sugerida -->
+          <div class="col-12 col-md-3" v-if="permiso.estado==3">
+            <label class="q-mb-sm block">Fecha y hora sugerida</label>
+            <q-input
+              v-model="permiso.fecha_hora_reagendamiento"
+              placeholder="Obligatorio"
+              :disable="esNuevo"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <div class="q-gutter-md row items-start">
+                      <q-date
+                        v-model="permiso.fecha_hora_reagendamiento"
+                        mask="DD-MM-YYYY HH:mm"
+                        :options="optionsFecha"
+                        today-btn
+                      >
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        </div>
+                      </q-date>
+                      <q-time
+                        v-model="permiso.fecha_hora_reagendamiento"
+                        mask="DD-MM-YYYY HH:mm"
+                        color="primary"
+                      />
+                    </div>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <div class="q-gutter-md row items-start"></div>
+          </div>
           <!-- justificativo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Justificativo</label>
@@ -185,10 +186,53 @@
               </template>
             </q-input>
           </div>
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Justificativo</label>
+            <q-input v-model="permiso.empleado" :disable="!esNuevo" outlined dense>
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Departamento</label>
+            <q-input v-model="permiso.departamento" :disable="!esNuevo" outlined dense>
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Fecha y hora de la solicitud</label>
+            <q-input
+              v-model="permiso.fecha_hora_solicitud"
+              :disable="!esNuevo"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Jefe Inmediato</label>
+            <q-input v-model="permiso.jefe_inmediato" :disable="!esNuevo" outlined dense>
+            </q-input>
+          </div>
+          <!-- observacion -->
+          <div class="col-12 col-md-3" v-if="esAutorizador">
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              v-model="permiso.observacion"
+              placeholder="Obligatorio"
+              :disable="!esNuevo"
+              :error="!!v$.observacion.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
 
           <!-- Documento -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Documento</label>
+            <label class="q-mb-sm block">Soporte</label>
             <gestor-documentos
               ref="refArchivoPrestamoEmpresarial"
               :mixin="mixinArchivoPrestamoEmpleado"
@@ -208,7 +252,7 @@
               v-model="permiso.fecha_recuperacion"
               placeholder="Obligatorio"
               :error="!!v$.fecha_recuperacion.$errors.length"
-              :disable="!esNuevo"
+              :disable="permiso.id_jefe_inmediato == null && permiso.estado !== 1"
               @blur="v$.fecha_recuperacion.$touch"
               outlined
               dense
@@ -237,43 +281,56 @@
             </q-input>
           </div>
           <!-- Hora de recuperacion -->
-          <div class="col-12 col-md-3"  v-if="permiso.recuperables">
+          <div class="col-12 col-md-3" v-if="permiso.recuperables">
             <label class="q-mb-sm block">Hora de Recuperacion (24 horas)</label>
             <q-input
-            v-model="permiso.hora_recuperacion"
-            :error="!!v$.hora_recuperacion.$errors.length"
-            type="time"
-            :disable="!esNuevo"
-            hint="Obligatorio"
-            stack-label
-            outlined
-            clearable
-            dense
-          >
-            <template v-slot:error>
-              <div
-                v-for="error of v$.hora_recuperacion.$errors"
-                :key="error.$uid"
-              >
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-input>
-
+              v-model="permiso.hora_recuperacion"
+              :error="!!v$.hora_recuperacion.$errors.length"
+              type="time"
+              :disable="permiso.id_jefe_inmediato == null && permiso.estado !== 1"
+              hint="Obligatorio"
+              stack-label
+              outlined
+              clearable
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.hora_recuperacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
           <!-- Recuperable -->
-          <div class="col-12 col-md-3">
+          <div
+            class="col-12 col-md-3"
+            v-if="permiso.id_jefe_inmediato != null && permiso.estado == 1"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="permiso.recuperables"
               label="Recuperables"
-              :disable="!esNuevo"
+              :disable="permiso.id_jefe_inmediato == null && permiso.estado !== 1"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Recuperto -->
+          <div
+            class="col-12 col-md-3"
+            v-if="permiso.id_jefe_inmediato != null && permiso.estado == 2"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="permiso.recupero"
+              label="Recupero Horas de Trabajo"
+              :disable="disabled"
               outlined
               dense
             ></q-checkbox>
           </div>
           <!-- Cargo a Vacaciones -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="horas_permisos == 8">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="permiso.cargo_vacaciones"
@@ -305,8 +362,8 @@
             >
             </q-input>
           </div>
-            <!-- Autorizacion -->
-            <div class="col-12 col-md-3" v-if=" accion == 'EDITAR' && esAutorizador">
+          <!-- Autorizacion -->
+          <div class="col-12 col-md-3" v-if="accion == 'EDITAR' && esAutorizador">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="permiso.estado"
@@ -332,7 +389,6 @@
               </template>
             </q-select>
           </div>
-
         </div>
       </q-form>
     </template>
