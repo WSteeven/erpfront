@@ -16,11 +16,10 @@ import {
   maskFecha,
 } from 'config/utils'
 import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
-import { destinosTareas, modosAsignacionTrabajo, tiposIntervenciones } from 'config/tareas.utils'
+import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
-import { nivelesTrabajos } from 'config/tareas.utils'
 import { useSubtareaStore } from 'stores/subtarea'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
@@ -406,7 +405,6 @@ export default defineComponent({
       reestablecer,
       modales,
       subtareaStore,
-      nivelesTrabajos,
       acciones,
       maskFecha,
       accionesTabla,
@@ -439,7 +437,6 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
-      tiposIntervenciones,
     }
   },
 })

@@ -1,14 +1,16 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class FiltroReporteMaterial extends EntidadAuditable {
-  tarea: number | null
+  mes_anio: string | null
   grupo: string | null
-  fecha: number | null
+  cliente: string | null
+  tipo_trabajo: number | null
 
   constructor() {
     super()
-    this.tarea = null
+    this.mes_anio = null
     this.grupo = null
-    this.fecha = null
+    this.cliente = null
+    this.tipo_trabajo = null
   }
 }

@@ -81,9 +81,9 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/reportes-subtareas',
-        name: 'reportes_subtareas',
-        component: () => import('src/pages/gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteTrabajoRealizadoPage.vue'),
+        path: '/reportes-modulo-tareas',
+        name: 'reportes_modulo_tareas',
+        component: () => import('src/pages/gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteModuloTareaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
