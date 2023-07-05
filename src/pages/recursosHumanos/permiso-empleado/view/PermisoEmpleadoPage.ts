@@ -73,7 +73,7 @@ export default defineComponent({
     const empleados = ref([])
     const refArchivoPrestamoEmpresarial = ref()
     const autorizaciones = ref()
-    const esAutorizador = store.user.jefe_id //computed(() => store.can('puede.autorizar.permiso_empleado') )
+    const esAutorizador = store.user.jefe_id == permiso.id_jefe_inmediato ? true:false
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
@@ -198,7 +198,7 @@ export default defineComponent({
         required: requiredIf(() => permiso.recuperables == true),
       },
       justificacion: { required },
-      observacion: { required: requiredIf(() => esAutorizador.value) },
+      observacion: { required: requiredIf(() => esAutorizador) },
     }
 
     const v$ = useVuelidate(reglas, permiso)

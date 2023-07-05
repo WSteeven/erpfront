@@ -37,4 +37,19 @@ export const configuracionColumnasPermisoEmpleado: ColumnConfig<PermisoEmpleado>
   align: 'left',
   sortable: true
 },
+{
+  name: 'observacion',
+  field: 'observacion',
+  label: 'Sugerencias',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'fecha_hora_agendamiento',
+  field: 'fecha_hora_reagendamiento',
+  label: 'Fcha Sugerida de Permiso',
+  aling: 'left',
+  storable: true
+}
+
 ]
