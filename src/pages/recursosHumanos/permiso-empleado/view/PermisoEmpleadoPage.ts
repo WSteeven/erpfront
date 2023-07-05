@@ -73,7 +73,9 @@ export default defineComponent({
     const empleados = ref([])
     const refArchivoPrestamoEmpresarial = ref()
     const autorizaciones = ref()
-    const esAutorizador = store.user.jefe_id == permiso.id_jefe_inmediato ? true:false
+    const esRecursosHumanos = store.esRecursosHumanos;
+
+    const esAutorizador = ref(false)
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
@@ -144,6 +146,7 @@ export default defineComponent({
       await refArchivoPrestamoEmpresarial.value.subir({ permiso_id: id })
     }
     onConsultado(() => {
+      esAutorizador.value = store.user.id == permiso.id_jefe_inmediato ? true:false
       setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           permiso_id: permiso.id,
@@ -198,7 +201,7 @@ export default defineComponent({
         required: requiredIf(() => permiso.recuperables == true),
       },
       justificacion: { required },
-      observacion: { required: requiredIf(() => esAutorizador) },
+      observacion: { required: requiredIf(() => esAutorizador.value) },
     }
 
     const v$ = useVuelidate(reglas, permiso)
@@ -218,6 +221,7 @@ export default defineComponent({
       filtrarPermisoEmpleado,
       watchEffect,
       esAutorizador,
+      esRecursosHumanos,
       esNuevo,
       verEmpleado,
       refArchivoPrestamoEmpresarial,

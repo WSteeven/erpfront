@@ -45,11 +45,11 @@ export const configuracionColumnasPermisoEmpleado: ColumnConfig<PermisoEmpleado>
   sortable: true
 },
 {
-  name: 'fecha_hora_agendamiento',
+  name: 'fecha_hora_reagendamiento',
   field: 'fecha_hora_reagendamiento',
   label: 'Fcha Sugerida de Permiso',
-  aling: 'left',
-  storable: true
+  align: 'left',
+  sortable: true
 }
 
 ]

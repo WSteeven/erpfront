@@ -2,10 +2,9 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :mostrarListado="mostrarListado"
     :tabOptions="tabOptionsSolicitudPedido"
     :full="true"
-    :permitirEditar="true"
+    :permitirEditar="!esRecursosHumanos"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarPermisoEmpleado"
@@ -192,6 +191,11 @@
             </q-input>
           </div>
           <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Empleado</label>
+            <q-input v-model="permiso.empleado_info" :disable="!esNuevo" outlined dense>
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="!esNuevo">
             <label class="q-mb-sm block">Departamento</label>
             <q-input v-model="permiso.departamento" :disable="!esNuevo" outlined dense>
             </q-input>
@@ -217,7 +221,7 @@
             <q-input
               v-model="permiso.observacion"
               placeholder="Obligatorio"
-              :disable="!esNuevo"
+              :disable="!esAutorizador"
               :error="!!v$.observacion.$errors.length"
               outlined
               dense
@@ -310,7 +314,7 @@
               class="q-mt-lg q-pt-md"
               v-model="permiso.recuperables"
               label="Recuperables"
-              :disable="permiso.id_jefe_inmediato == null && permiso.estado !== 1"
+              :disable="(permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled"
               outlined
               dense
             ></q-checkbox>
