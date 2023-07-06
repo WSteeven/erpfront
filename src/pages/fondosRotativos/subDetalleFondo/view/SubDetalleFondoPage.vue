@@ -32,9 +32,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -58,8 +56,8 @@
               </template>
             </q-input>
           </div>
-                    <!-- transcriptor -->
-                    <div class="col-12 col-md-3">
+          <!-- transcriptor -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-xs">Requiere Autorización(*): </label>
             <q-toggle
               :label="subDetalleFondo.autorizacion"
@@ -81,6 +79,26 @@
             </q-toggle>
           </div>
           <div class="col-12 col-md-3">
+            <label class="q-mb-xs">Requiere Factura(*): </label>
+            <q-toggle
+              :label="subDetalleFondo.tiene_factura"
+              color="green"
+              v-model="subDetalleFondo.tiene_factura"
+              :disable="disabled"
+              :error="!!v$.tiene_factura.$errors.length"
+              @blur="v$.tiene_factura.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.tiene_factura.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-toggle>
+          </div>
+
+          <div class="col-12 col-md-3">
             <label class="q-mb-xs">Estatus del Detalle(*): </label>
             <q-toggle
               :label="subDetalleFondo.estatus"
@@ -101,7 +119,6 @@
               </template>
             </q-toggle>
           </div>
-
         </div>
       </q-form>
     </template>
