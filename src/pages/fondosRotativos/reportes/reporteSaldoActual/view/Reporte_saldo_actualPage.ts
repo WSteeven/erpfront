@@ -2,7 +2,7 @@ import { defineComponent, reactive, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
@@ -15,6 +15,7 @@ import axios from 'axios'
 import { useAuthenticationStore } from 'stores/authentication'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
+import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 
 export default defineComponent({
   components: { TabLayout },
@@ -25,6 +26,7 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+    const fondosStore = useFondoRotativoStore()
     const store = useAuthenticationStore()
     /***********
      * Mixin
@@ -55,7 +57,7 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, reporte_saldo_actual)
     setValidador(v$.value)
-    const usuarios = ref([])
+    const usuarios = ref()
     const is_all_users = ref('false')
     const is_inactivo = ref('false')
     usuarios.value = listadosAuxiliares.usuarios
@@ -96,15 +98,32 @@ export default defineComponent({
     }
     async function mostrarInactivos(val) {
       if (val === 'true') {
-       usuarios.value =(
+        const empleados = (
           await new EmpleadoController().listar({
             campos: 'id,nombres,apellidos',
             estado: 0,
           })
         ).result
-        usuarios.value = listadosAuxiliares.usuarios
+        fondosStore.empleados = empleados
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados.value = fondosStore.empleados
+              usuarios.value = empleados.value
+            }, 100),
+          250
+        )
       } else {
-        usuarios.value = listadosAuxiliares.usuarios
+        const empleados_aux = listadosAuxiliares.usuarios
+        fondosStore.empleados = empleados_aux
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados_aux.value = fondosStore.empleados
+              usuarios.value = empleados_aux.value
+            }, 100),
+          250
+        )
       }
     }
     async function generar_reporte(
