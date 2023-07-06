@@ -100,6 +100,16 @@
               </template>
             </q-toggle>
           </div>
+          <div class="col-12 col-md-3" >
+          <q-checkbox
+            v-model="is_inactivo"
+            color="secondary"
+            label="Inactivo"
+            true-value="true"
+            false-value="false"
+            @update:model-value="mostrarInactivos"
+          ></q-checkbox>
+        </div>
         </q-card-section>
 
         <q-separator></q-separator>

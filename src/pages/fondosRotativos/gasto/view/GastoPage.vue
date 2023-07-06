@@ -2,12 +2,11 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :mostrarListado="mostrarListado"
     :tabOptions="tabAutorizarGasto"
     :full="true"
     :permitirEditar="false"
     :permitirEliminar="false"
-    :mostrarButtonSubmits="!mostrarAprobacion"
+    :mostrarButtonSubmits="false"
     :filtrar="filtrarGasto"
     tabDefecto="3"
     :forzarListar="true"
@@ -60,6 +59,7 @@
               placeholder="Obligatorio"
               :error="!!v$.fecha_viat.$errors.length"
               :disable="disabled"
+              readonly
               @blur="v$.fecha_viat.$touch"
               outlined
               dense
@@ -183,18 +183,7 @@
               </template>
             </q-select>
           </div>
-          <!--Tiene Factura-->
-          <div class="col-12 col-md-3 q-mb-xl">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="esFactura"
-              label="¿Tiene Factura?"
-              :disable="disabled"
-              @update:model-value="existeComprobante()"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
+
 
           <!-- Factura -->
           <div class="col-12 col-md-3" v-if="esFactura">
