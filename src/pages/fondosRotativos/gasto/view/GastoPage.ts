@@ -57,7 +57,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, consultar ,listar} =
+    const { setValidador, obtenerListados, cargarVista, consultar, listar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
 
@@ -76,22 +76,13 @@ export default defineComponent({
     const aprobarController = new AprobarGastoController()
 
     const esFactura = ref(true)
-
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
-    onConsultado(() => {
-      esFactura.value =
-        gasto.factura == null ||
-        gasto.factura == undefined ||
-        gasto.factura == ''
-          ? false
-          : true
-    })
+
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
       mostrarAprobacion.value = true
-      esFactura.value = fondoRotativoStore.existeFactura
     }
     const visualizarAutorizador = computed(() => {
       return authenticationStore.can('puede.ver.campo.autorizador')
@@ -111,8 +102,9 @@ export default defineComponent({
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
             -1 ||
-          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
-          || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
+          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
+            -1 ||
+          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
         return false
@@ -146,7 +138,8 @@ export default defineComponent({
       return cantidad
     })
     const mostarPlaca = computed(() => {
-      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 || parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
+      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 ||
+        parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
         ? true
         : false
     })
@@ -282,7 +275,7 @@ export default defineComponent({
       })
       autorizacionesEspeciales.value =
         listadosAuxiliares.autorizacionesEspeciales
-        beneficiarios.value = listadosAuxiliares.beneficiarios
+      beneficiarios.value = listadosAuxiliares.beneficiarios
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
@@ -319,37 +312,38 @@ export default defineComponent({
         return
       }
       update(() => {
-
         const needle = val.toLowerCase()
-        console.log(listadosAuxiliares.autorizacionesEspeciales.filter(
-          (v) =>{
-            console.log(v.nombres.toLowerCase());
+        console.log(
+          listadosAuxiliares.autorizacionesEspeciales.filter((v) => {
+            console.log(v.nombres.toLowerCase())
 
-            v.nombres.toLowerCase().indexOf(needle) > -1}
-        ));
+            v.nombres.toLowerCase().indexOf(needle) > -1
+          })
+        )
 
         autorizacionesEspeciales.value =
           listadosAuxiliares.autorizacionesEspeciales.filter(
-            (v) =>v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+            (v) =>
+              v.nombres.toLowerCase().indexOf(needle) > -1 ||
+              v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
     //filtro beneficiarios
     function filtrarBeneficiarios(val, update) {
-
       if (val === '') {
         update(() => {
-          beneficiarios.value =
-            listadosAuxiliares.beneficiarios
+          beneficiarios.value = listadosAuxiliares.beneficiarios
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        beneficiarios.value =
-          listadosAuxiliares.beneficiarios.filter(
-            (v) =>     v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
+        beneficiarios.value = listadosAuxiliares.beneficiarios.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
       })
     }
 
@@ -432,12 +426,9 @@ export default defineComponent({
       }
       update(() => {
         const needle = val.toLowerCase()
-        sub_detalles.value = listadoSubdetalles.value.filter(
-          (v) =>{
-            v.descripcion.toLowerCase().indexOf(needle) > -1
-          }
-
-        )
+        sub_detalles.value = listadoSubdetalles.value.filter((v) => {
+          v.descripcion.toLowerCase().indexOf(needle) > -1
+        })
       })
     }
     /**Filtro de proyectos */
@@ -521,6 +512,20 @@ export default defineComponent({
       gasto.sub_detalle = null
     }
 
+    function tiene_factura_subdetalle() {
+      let tieneFactura = false
+
+      for (let index = 0; index < gasto.sub_detalle!.length; index++) {
+        const id_subdetalle = gasto.sub_detalle![index]
+        const subdetalleEncontrado = listadoSubdetalles.value.find((v) => v.id === id_subdetalle)
+        if (subdetalleEncontrado.tiene_factura) {
+          tieneFactura = true
+          break
+        }
+      }
+      esFactura.value = tieneFactura
+      console.log('tiene_factura', esFactura.value);
+    }
     /*********
      * Pusher
      *********/
@@ -530,6 +535,9 @@ export default defineComponent({
 
     watchEffect(() => {
       gasto.total = gasto.cantidad! * gasto.valor_u!
+      if (gasto.sub_detalle !== null) {
+        tiene_factura_subdetalle()
+      }
     })
     function existeComprobante() {
       gasto.factura = null
@@ -627,8 +635,9 @@ export default defineComponent({
       }
     }
     let tabActualGasto = '3'
+
     function filtrarGasto(tabSeleccionado: string) {
-      listar( {estado:tabSeleccionado}, false)
+      listar({ estado: tabSeleccionado }, false)
       tabActualGasto = tabSeleccionado
     }
     return {
@@ -654,6 +663,7 @@ export default defineComponent({
       vehiculos,
       watchEffect,
       filtrarAutorizacionesEspeciales,
+      tiene_factura_subdetalle,
       filtrarCantones,
       filtrarDetalles,
       filtarSubdetalles,

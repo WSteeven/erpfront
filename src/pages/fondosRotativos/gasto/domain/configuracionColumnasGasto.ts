@@ -80,5 +80,12 @@ export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
     align: 'left',
     sortable: true
   },
+  {
+    name: 'total',
+    field: 'total',
+    label: 'Total',
+    align: 'left',
+    sortable: true
+  },
 
 ]

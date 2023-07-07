@@ -57,6 +57,11 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
+      tiene_factura: {
+        required: true,
+        minLength: 3,
+        maxLength: 50,
+      },
     }
     const v$ = useVuelidate(reglas, subDetalleFondo)
     setValidador(v$.value)
@@ -89,6 +94,7 @@ export default defineComponent({
         )
       })
     }
+
     return {
       mixin,
       subDetalleFondo,
