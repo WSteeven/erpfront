@@ -275,6 +275,16 @@
             <q-input v-model="consolidadofiltrado.ruc" placeholder="" type="textarea" autogrow  :disable="disabled" outlined dense>
             </q-input>
           </div>
+          <div class="col-12 col-md-3"  v-if="consolidadofiltrado.tipo_filtro == 6 || consolidadofiltrado.tipo_filtro == 0" >
+          <q-checkbox
+            v-model="is_inactivo"
+            color="secondary"
+            label="Inactivo"
+            true-value="true"
+            false-value="false"
+            @update:model-value="mostrarInactivos"
+          ></q-checkbox>
+        </div>
       </q-card-section>
 
       <q-separator></q-separator>

@@ -2,6 +2,7 @@ import { TipoTrabajo } from 'gestionTrabajos/tiposTareas/domain/TipoTrabajo'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { computed, Ref, ref, UnwrapRef } from 'vue'
 import { Tarea } from '../domain/Tarea'
+import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
 
 export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<any>) => {// Tarea | Subtarea | any>) => {
   // - Filtro clientes corporativos
@@ -112,6 +113,23 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
     })
   }
 
+  // - Filtro causas de intervenciones
+  const causasIntervenciones: Ref<TipoTrabajo[]> = ref([])
+  const causasIntervencionesSource = computed(() =>
+    listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo_id === (entidad ? (entidad.tipo_trabajo ? entidad.tipo_trabajo : false) : false))
+  )
+
+  function filtrarCausasIntervenciones(val, update) {
+    if (val === '') update(() => causasIntervenciones.value = [])
+
+    update(() => {
+      const needle = val.toLowerCase()
+      causasIntervenciones.value = causasIntervencionesSource.value.filter(
+        (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
   // - Filtro grupos
   const grupos = ref([])
   function filtrarGrupos(val, update) {
@@ -174,5 +192,7 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
     filtrarEmpleados,
     rutas,
     filtrarRutas,
+    causasIntervenciones,
+    filtrarCausasIntervenciones,
   }
 }
