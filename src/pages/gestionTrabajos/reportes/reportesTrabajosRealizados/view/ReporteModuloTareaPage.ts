@@ -182,7 +182,7 @@ export default defineComponent({
         return fila.grupo
       })
 
-      const labelsColumns = [{ label: 'CORTE FIBRA', color: '#dfefee' }, { label: 'MANTENIMIENTO', color: '#ff00ee' }, { label: 'SOPORTE', color: '#0f0dc3' }, { label: 'TAREA PROGRAMADA', color: '#0987ff' }]
+      const labelsColumns = [{ label: 'CORTE FIBRA', color: '#5086c1' }, { label: 'MANTENIMIENTO', color: '#8f7193' }, { label: 'SOPORTE', color: '#bc98f3' }, { label: 'TAREA PROGRAMADA', color: '#b2dafa' }]
 
       // Transponer la matriz
       const transposed = transposeMatrix(data)
