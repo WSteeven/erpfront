@@ -23,7 +23,7 @@
     v-show="imagenCodificada"
     :src="imagenCodificada"
     width="90%"
-          height="100vh"
+    height="100vh"
     fit="contain"
   >
   </q-img>
@@ -61,11 +61,21 @@
       />
       <q-card-section>
         <div class="row q-col-gutter-sm q-mb-md q-ml-md q-mr-md text-grey-4">
-        <div class="col-12 col-md-3 text-h6">{{texto1}}</div>
-        <div class="col-12 col-md-3 text-h6" v-if="texto2!=null || texto2!=' '">{{texto2}}</div>
-        <div class="col-12 col-md-3 text-h6" v-if="texto3!=null || texto3!=' '">{{texto3}}</div>
-        <div class="col-12 col-md-3 text-h6">{{texto4}}</div>
-      </div>
+          <div class="col-12 col-md-3 text-h6">{{ texto1 }}</div>
+          <div
+            class="col-12 col-md-3 text-h6"
+            v-if="texto2 != null || texto2 != ' '"
+          >
+            {{ texto2 }}
+          </div>
+          <div
+            class="col-12 col-md-3 text-h6"
+            v-if="texto3 != null || texto3 != ' '"
+          >
+            {{ texto3 }}
+          </div>
+          <div class="col-12 col-md-3 text-h6">{{ texto4 }}</div>
+        </div>
       </q-card-section>
       <q-card-section class="rounded-footer text-center q-pa-none">
         <q-img

@@ -35,10 +35,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="gasto.fecha_viat" :mask="maskFecha" today-btn>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="gasto.fecha_viat"
+                      :mask="maskFecha"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -261,7 +274,13 @@
           <!-- Estado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado</label>
-            <q-input v-model="gasto.estado_info" placeholder="" disable outlined dense>
+            <q-input
+              v-model="gasto.estado_info"
+              placeholder=""
+              disable
+              outlined
+              dense
+            >
             </q-input>
           </div>
           <!-- Empleado -->
@@ -293,7 +312,7 @@
           <!-- Comprobante 1 Archivo -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
-            <selector-imagen-texto
+            <selector-imagen
               :imagen="gasto.comprobante1"
               :texto1="'R.U.C.: ' + gasto.ruc"
               :texto2="'Factura: ' + gasto.factura"
@@ -305,7 +324,7 @@
               :texto4="'Empleado: ' + gasto.empleado_info"
               @update:modelValue="(data) => (gasto.comprobante1 = data)"
             >
-            </selector-imagen-texto>
+            </selector-imagen>
           </div>
 
           <!-- Comprobante 2 Archivo -->
@@ -329,7 +348,9 @@
       </q-form>
       <div
         class="q-pa-md q-gutter-sm flex flex-center"
-        v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'POR APROBAR'"
+        v-if="
+          usuario.id == gasto.aut_especial && gasto.estado_info == 'POR APROBAR'
+        "
       >
         <q-btn color="positive" @click="aprobar_gasto(gasto, 'aprobar')">
           <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobar</q-btn
@@ -340,7 +361,9 @@
       </div>
       <div
         class="q-pa-md q-gutter-sm flex flex-center"
-        v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'APROBADO'"
+        v-if="
+          usuario.id == gasto.aut_especial && gasto.estado_info == 'APROBADO'
+        "
       >
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn

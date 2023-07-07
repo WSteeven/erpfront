@@ -124,6 +124,7 @@
 
           <div class="col-12 col-md-6">
             <table-view
+              v-if="trabajosRealizados.length"
               :configuracion-columnas="configuracionColumnasSubtareasRealizadas"
               :elementos="trabajosRealizados"
             ></table-view>
@@ -131,7 +132,7 @@
 
           <div class="col-12 col-md-6">
             <Bar
-              v-if="trabajosRealizadosBar"
+              v-if="trabajosRealizados.length"
               :data="trabajosRealizadosBar"
               :options="options"
             />
@@ -144,62 +145,6 @@
           Trabajos realizados por región
         </div>
         <div class="row q-col-gutter-sm q-pa-md q-mb-xl">
-          <div class="col-12">
-            <label class="q-mb-sm block">Cliente corporativo</label>
-            <q-select
-              v-model="filtro.cliente"
-              :options="clientes"
-              @filter="filtrarClientes"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.razon_social"
-              :option-value="(item) => item.id"
-              :option-disable="(item) => (item.id === 1 ? true : false)"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              @update:model-value="
-                () => {
-                  consultar()
-                  consultarTrabajoRealizadoPorRegion()
-                }
-              "
-              :error="!!v$.cliente.$errors.length"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-
-              <template v-slot:error>
-                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-select>
-          </div>
-
-          <!-- <div class="col-12 col-md-2">
-            <label class="q-mb-sm block">&nbsp;</label>
-            <q-btn
-              color="secondary"
-              class="full-width"
-              no-caps
-              push
-              @click="consultarTrabajoRealizadoPorRegion()"
-            >
-              <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
-              <span>Consultar</span>
-            </q-btn>
-          </div> -->
-
           <div class="col-12 col-md-6">
             <table-view
               :configuracion-columnas="
@@ -280,7 +225,10 @@
               emit-value
               map-options
               @update:model-value="
-                consultarTrabajoRealizadoPorRegionTipoTrabajo()
+                () => {
+                  consultarTrabajoRealizadoPorRegionTipoTrabajo()
+                  consultarTrabajoRealizadoPorGrupoTipoTrabajo()
+                }
               "
             >
               <template v-slot:no-option>
@@ -293,22 +241,9 @@
             </q-select>
           </div>
 
-          <!-- <div class="col-12 col-md-2">
-            <label class="q-mb-sm block">&nbsp;</label>
-            <q-btn
-              color="secondary"
-              class="full-width"
-              no-caps
-              push
-              @click="consultarTrabajoRealizadoPorRegionTipoTrabajo()"
-            >
-              <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
-              <span>Consultar</span>
-            </q-btn>
-          </div> -->
-
           <div class="col-12 col-md-6">
             <table-view
+              v-if="trabajoRealizadoPorRegionTipoTrabajo.length"
               :configuracion-columnas="
                 configuracionColumnasSubtareasRealizadasPorRegion
               "
@@ -330,7 +265,7 @@
           <q-icon name="bi-bar-chart-line-fill" class="q-mr-sm"></q-icon>
           Trabajos realizados por grupo y tipo de trabajo
         </div>
-        <div class="row q-col-gutter-sm q-pa-md">
+        <div class="row q-col-gutter-sm q-pa-md q-mb-xl">
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Cliente corporativo</label>
             <q-select
@@ -387,7 +322,10 @@
               emit-value
               map-options
               @update:model-value="
-                consultarTrabajoRealizadoPorGrupoTipoTrabajo()
+                () => {
+                  consultarTrabajoRealizadoPorRegionTipoTrabajo()
+                  consultarTrabajoRealizadoPorGrupoTipoTrabajo()
+                }
               "
             >
               <template v-slot:no-option>
@@ -402,6 +340,7 @@
 
           <div class="col-12 col-md-6">
             <table-view
+              v-if="trabajoRealizadoPorGrupoTipoTrabajo.length"
               :configuracion-columnas="
                 configuracionColumnasSubtareasRealizadasPorGrupo
               "
@@ -423,7 +362,7 @@
           <q-icon name="bi-bar-chart-line-fill" class="q-mr-sm"></q-icon>
           Trabajos realizados por grupo y tipos de trabajos de EMERGENCIA
         </div>
-        <div class="row q-col-gutter-sm q-pa-md">
+        <div class="row q-col-gutter-sm q-pa-md q-mb-xl">
           <div class="col-12">
             <label class="q-mb-sm block">Cliente corporativo</label>
             <q-select
@@ -477,6 +416,137 @@
               v-if="trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar"
               :data="trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar"
               :options="optionsVertical"
+            />
+          </div>
+        </div>
+
+        <!-- Trabajos realizados por grupo y causas de intervencion -->
+        <div class="text-bold">
+          <q-icon name="bi-bar-chart-line-fill" class="q-mr-sm"></q-icon>
+          Trabajos realizados por grupo y causas de intervención
+        </div>
+        <div class="row q-col-gutter-sm q-pa-md">
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Cliente corporativo</label>
+            <q-select
+              v-model="filtro.cliente"
+              :options="clientes"
+              @filter="filtrarClientes"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.razon_social"
+              :option-value="(item) => item.id"
+              :option-disable="(item) => (item.id === 1 ? true : false)"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @update:model-value="consultar()"
+              :error="!!v$.cliente.$errors.length"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Seleccione el tipo de trabajo</label>
+            <q-select
+              v-model="filtro.tipo_trabajo"
+              :options="tiposTrabajos"
+              @filter="filtrarTiposTrabajos"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Obligatorio"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.descripcion"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @update:model-value="
+                () => {
+                  consultarTrabajoRealizadoPorRegionTipoTrabajo()
+                  consultarTrabajoRealizadoPorGrupoTipoTrabajo()
+                }
+              "
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Seleccione cliente corporativo
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Seleccione la causa de intervención</label
+            >
+            <q-select
+              v-model="filtro.causa_intervencion"
+              :options="causasIntervenciones"
+              @filter="filtrarCausasIntervenciones"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Obligatorio"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @update:model-value="
+                consultarTrabajoRealizadoPorGrupoCausaIntervencion()
+              "
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Seleccione tipo de trabajo
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <table-view
+              v-if="trabajoRealizadoPorGrupoCausaIntervencion.length"
+              :configuracion-columnas="
+                configuracionColumnasSubtareasRealizadasPorGrupo
+              "
+              :elementos="trabajoRealizadoPorGrupoCausaIntervencion"
+            ></table-view>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <Bar
+              v-if="trabajoRealizadoPorGrupoCausaIntervencionBar"
+              :data="trabajoRealizadoPorGrupoCausaIntervencionBar"
+              :options="options"
             />
           </div>
         </div>

@@ -140,7 +140,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
+      /*{
         path: '/reporte-trabajos-realizados',
         name: 'reporte_trabajos_realizados',
         component: () =>
@@ -148,7 +148,7 @@ const routes: RouteRecordRaw[] = [
             'gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteTrabajoRealizadoPage.vue'
           ),
         meta: { requiresAuth: true },
-      },
+      },*/
       /********************
        * Modulo de tickets
        ********************/

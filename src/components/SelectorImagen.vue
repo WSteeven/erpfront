@@ -41,6 +41,15 @@
         class="closeButton"
       />
 
+      <q-card-section v-if="texto1">
+        <div class="row q-col-gutter-sm q-mb-md q-ml-md q-mr-md text-grey-4">
+          <div class="col-12 col-md-3 text-h6">{{ texto1 }}</div>
+          <div v-if="texto2" class="col-12 col-md-3 text-h6">{{ texto2 }}</div>
+          <div v-if="texto3" class="col-12 col-md-3 text-h6">{{ texto3 }}</div>
+          <div class="col-12 col-md-3 text-h6">{{ texto4 }}</div>
+        </div>
+      </q-card-section>
+
       <q-card-section class="rounded-footer text-center q-pa-none">
         <q-img
           v-show="imagenCodificada"
@@ -77,10 +86,14 @@ const props = defineProps([
   'error',
   'alto',
   'hint',
+  'texto1',
+  'texto2',
+  'texto3',
+  'texto4',
 ])
 const emit = defineEmits(['update:modelValue'])
 
-const img= ref()
+const img = ref()
 const imagenCodificada = computed(() => props.imagen)
 const alto = computed(() => props.alto ?? '160px')
 const opened = ref(false)
