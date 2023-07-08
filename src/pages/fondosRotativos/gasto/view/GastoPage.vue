@@ -2,11 +2,11 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :mostrarListado="mostrarListado"
     :tabOptions="tabAutorizarGasto"
     :full="true"
     :permitirEditar="false"
     :permitirEliminar="false"
-    :mostrarButtonSubmits="false"
     :filtrar="filtrarGasto"
     tabDefecto="3"
     :forzarListar="true"
@@ -59,7 +59,6 @@
               placeholder="Obligatorio"
               :error="!!v$.fecha_viat.$errors.length"
               :disable="disabled"
-              readonly
               @blur="v$.fecha_viat.$touch"
               outlined
               dense
@@ -183,8 +182,18 @@
               </template>
             </q-select>
           </div>
-
-
+          <!--Tiene Factura-->
+          <div class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="esFactura"
+              label="¿Tiene Factura?"
+              :disable="disabled"
+              @update:model-value="existeComprobante()"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
           <!-- Factura -->
           <div class="col-12 col-md-3" v-if="esFactura">
             <label class="q-mb-sm block">#Factura</label>
@@ -449,6 +458,7 @@
               input-debounce="0"
               @filter="filtarSubdetalles"
               @blur="v$.sub_detalle.$touch"
+              @update:model-value="tiene_factura_subdetalle()"
               :error="!!v$.sub_detalle.$errors.length"
               error-message="Debes seleccionar uno o varios sub_detalle"
               :option-value="(v) => v.id"

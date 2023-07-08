@@ -18,6 +18,9 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesTransferencia } from '../application/ComportamientoModalesTransferencia'
 import { AutorizarTransferenciaController } from '../infrestructure/AutorizarTransferenciaController'
 import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+import { useCargandoStore } from 'stores/cargando'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -48,21 +51,22 @@ export default defineComponent({
      ***********/
     const authenticationStore = useAuthenticationStore()
     const transferenciaSaldoStore = useTransferenciaSaldoStore()
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+
+
     /***************
      * Botones tabla
      ***************/
     const autorizarTransferenciaController = new AutorizarTransferenciaController()
     async function filtrarAutorizacionesTransferencia(tabSeleccionado) {
       const cargando = new StatusEssentialLoading()
-
       cargando.activar()
-
       const { result } = await autorizarTransferenciaController.listar({
         estado: tabSeleccionado,
       })
       listado.value = result
       tabActual.value = tabSeleccionado
-
       cargando.desactivar()
     }
     filtrarAutorizacionesTransferencia(estadosTransferencias.PENDIENTE)
