@@ -18,6 +18,8 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesTransferencia } from '../application/ComportamientoModalesTransferencia'
 import { AutorizarTransferenciaController } from '../infrestructure/AutorizarTransferenciaController'
 import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -41,13 +43,15 @@ export default defineComponent({
      ************/
     const mixin = new ContenedorSimpleMixin(Gasto, controller)
     const { listado } = mixin.useReferencias()
-    const {listar } =
-    mixin.useComportamiento()
+    const { listar } =
+      mixin.useComportamiento()
     /***********
      * Stores
      ***********/
     const authenticationStore = useAuthenticationStore()
     const transferenciaSaldoStore = useTransferenciaSaldoStore()
+    useCargandoStore().setQuasar(useQuasar())
+
     /***************
      * Botones tabla
      ***************/

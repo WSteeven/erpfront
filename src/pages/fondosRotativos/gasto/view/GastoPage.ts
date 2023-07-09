@@ -27,7 +27,6 @@ import { GastoPusherEvent } from '../application/GastoPusherEvent'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
-import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
@@ -101,9 +100,9 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -579,8 +578,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
