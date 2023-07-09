@@ -330,7 +330,7 @@
           <!-- Comprobante 2 Archivo -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
-            <selector-imagen-texto
+            <selector-imagen
               :imagen="gasto.comprobante2"
               :texto1="'R.U.C.: ' + gasto.ruc"
               :texto2="'Factura: ' + gasto.factura"
@@ -342,7 +342,7 @@
               :texto4="'Empleado: ' + gasto.empleado_info"
               @update:modelValue="(data) => (gasto.comprobante2 = data)"
             >
-            </selector-imagen-texto>
+            </selector-imagen>
           </div>
         </div>
       </q-form>

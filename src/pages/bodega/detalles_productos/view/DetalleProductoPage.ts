@@ -68,45 +68,133 @@ export default defineComponent({
 
     //Obtener los listados
     cargarVista(async () => {
-      await obtenerListados({
-        productos: {
-          controller: new ProductoController(),
-          params: { campos: 'id,nombre,categoria_id' }
-        },
-        marcas: {
-          controller: new MarcaController(),
-          params: { campos: 'id,nombre' }
-        },
-        modelos: {
-          controller: new ModeloController(),
-          params: { campos: 'id,nombre,marca_id' }
-        },
-        spans: {
-          controller: new SpanController(),
-          params: { campos: 'id,nombre' }
-        },
-        fibras: {
-          controller: new TipoFibraController(),
-          params: { campos: 'id,nombre' }
-        },
-        hilos: {
-          controller: new HiloController(),
-          params: { campos: 'id,nombre' }
-        },
-        rams: {
-          controller: new RamController(),
-          params: { campos: 'id,nombre' }
-        },
-        discos: {
-          controller: new DiscoController(),
-          params: { campos: 'id,nombre' }
-        },
-        procesadores: {
-          controller: new ProcesadorController(),
-          params: { campos: 'id,nombre' }
-        },
-      })
-      cargarDatosLS()
+      // productos
+      if (!LocalStorage.getItem('productos')) {
+        opciones_productos.value = JSON.parse(LocalStorage.getItem('productos')!.toString())
+      }
+      else {
+        await obtenerListados({
+          productos: {
+            controller: new ProductoController(),
+            params: { campos: 'id,nombre,categoria_id' }
+          },
+        })
+        LocalStorage.set('productos', JSON.stringify(listadosAuxiliares.productos))
+      }
+
+      // marcas
+      if (LocalStorage.getItem('marcas') != undefined){
+        console.log(LocalStorage.getItem('marcas') == undefined)
+        console.log(LocalStorage.getItem('marcas') != undefined)
+        opciones_marcas.value = JSON.parse(LocalStorage.getItem('marcas')!.toString())
+      }
+
+      else {
+        console.log('entró al else')
+        await obtenerListados({
+          marcas: {
+            controller: new MarcaController(),
+            params: { campos: 'id,nombre' }
+          },
+        })
+        LocalStorage.set('marcas', JSON.stringify(listadosAuxiliares.marcas))
+      }
+
+      //modelos
+      if (!LocalStorage.getItem('modelos')) {
+        opciones_modelos.value = JSON.parse(LocalStorage.getItem('modelos')!.toString())
+      }
+      else {
+        await obtenerListados({
+          modelos: {
+            controller: new ModeloController(),
+            params: { campos: 'id,nombre,marca_id' }
+          },
+        })
+        LocalStorage.set('modelos', JSON.stringify(listadosAuxiliares.modelos))
+      }
+
+      //spans
+      if (!LocalStorage.getItem('spans'))
+        opciones_spans.value = JSON.parse(LocalStorage.getItem('spans')!.toString())
+      else {
+        await obtenerListados({
+          spans: {
+            controller: new SpanController(),
+            params: { campos: 'id,nombre' }
+          },
+        })
+        LocalStorage.set('spans', JSON.stringify(listadosAuxiliares.spans))
+      }
+
+      //fibras
+      if (!LocalStorage.getItem('fibras')) {
+        console.log(!LocalStorage.getItem('fibras'))
+        console.log(LocalStorage.has('fibras'))
+        opciones_fibras.value = JSON.parse(LocalStorage.getItem('fibras')!.toString())
+      }
+      else {
+        await obtenerListados({
+          fibras: {
+            controller: new TipoFibraController(),
+            params: { campos: 'id,nombre' }
+          },
+        })
+        LocalStorage.set('fibras', JSON.stringify(listadosAuxiliares.fibras))
+      }
+
+      //hilos
+      if (!LocalStorage.getItem('hilos'))
+        opciones_hilos.value = JSON.parse(LocalStorage.getItem('hilos')!.toString())
+      else {
+        await obtenerListados({
+          hilos: {
+            controller: new HiloController(),
+            params: { campos: 'id,nombre' }
+          },
+        })
+        LocalStorage.set('hilos', JSON.stringify(listadosAuxiliares.hilos))
+      }
+
+      //rams
+      if (!LocalStorage.getItem('rams'))
+        opciones_rams.value = JSON.parse(LocalStorage.getItem('rams')!.toString())
+      else {
+        await obtenerListados({
+          rams: {
+            controller: new RamController(),
+            params: { campos: 'id,nombre' }
+          },
+        })
+        LocalStorage.set('rams', JSON.stringify(listadosAuxiliares.rams))
+      }
+
+      //discos
+      if (!LocalStorage.getItem('discos'))
+        opciones_discos.value = JSON.parse(LocalStorage.getItem('discos')!.toString())
+      else {
+        await obtenerListados({
+          discos: {
+            controller: new DiscoController(),
+            params: { campos: 'id,nombre' }
+          },
+        })
+        LocalStorage.set('discos', JSON.stringify(listadosAuxiliares.discos))
+      }
+
+      //procesadores
+      if (!LocalStorage.getItem('procesadores'))
+        opciones_procesadores.value = JSON.parse(LocalStorage.getItem('procesadores')!.toString())
+      else {
+        await obtenerListados({
+          procesadores: {
+            controller: new ProcesadorController(),
+            params: { campos: 'id,nombre' }
+          },
+        })
+        LocalStorage.set('procesadores', JSON.stringify(listadosAuxiliares.procesadores))
+      }
+      guardarDatosLS()
       obtenerListadosLS()
       cargarListados()
     })
@@ -146,7 +234,7 @@ export default defineComponent({
     /**************************************************************
      * Funciones
      **************************************************************/
-    async function cargarDatosLS() {
+    async function guardarDatosLS() {
       LocalStorage.set('procesadores', JSON.stringify(listadosAuxiliares.procesadores))
       LocalStorage.set('discos', JSON.stringify(listadosAuxiliares.discos))
       LocalStorage.set('rams', JSON.stringify(listadosAuxiliares.rams))
@@ -185,15 +273,15 @@ export default defineComponent({
 
     //Configurar los listados
     async function obtenerListadosLS() {
-      opciones_marcas.value = JSON.parse(LocalStorage.getItem('marcas')!.toString())
-      opciones_modelos.value = JSON.parse(localStorage.getItem('modelos')!.toString())
-      opciones_hilos.value = JSON.parse(localStorage.getItem('hilos')!.toString())
-      opciones_spans.value = JSON.parse(localStorage.getItem('spans')!.toString())
-      opciones_fibras.value = JSON.parse(localStorage.getItem('fibras')!.toString())
-      opciones_productos.value = JSON.parse(localStorage.getItem('productos')!.toString())
-      opciones_discos.value = JSON.parse(localStorage.getItem('discos')!.toString())
-      opciones_procesadores.value = JSON.parse(localStorage.getItem('procesadores')!.toString())
-      opciones_rams.value = JSON.parse(localStorage.getItem('rams')!.toString())
+      // opciones_marcas.value = JSON.parse(LocalStorage.getItem('marcas')!.toString())
+      opciones_modelos.value = JSON.parse(LocalStorage.getItem('modelos')!.toString())
+      opciones_hilos.value = JSON.parse(LocalStorage.getItem('hilos')!.toString())
+      opciones_spans.value = JSON.parse(LocalStorage.getItem('spans')!.toString())
+      opciones_fibras.value = JSON.parse(LocalStorage.getItem('fibras')!.toString())
+      opciones_productos.value = JSON.parse(LocalStorage.getItem('productos')!.toString())
+      opciones_discos.value = JSON.parse(LocalStorage.getItem('discos')!.toString())
+      opciones_procesadores.value = JSON.parse(LocalStorage.getItem('procesadores')!.toString())
+      opciones_rams.value = JSON.parse(LocalStorage.getItem('rams')!.toString())
     }
 
     async function cargarListados() {
