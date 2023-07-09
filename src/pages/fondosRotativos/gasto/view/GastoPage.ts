@@ -512,18 +512,16 @@ export default defineComponent({
     }
 
     function tiene_factura_subdetalle() {
-      let tieneFactura = false
-
+      let tieneFactura = true
       for (let index = 0; index < gasto.sub_detalle!.length; index++) {
         const id_subdetalle = gasto.sub_detalle![index]
         const subdetalleEncontrado = listadoSubdetalles.value.find((v) => v.id === id_subdetalle)
-        if (subdetalleEncontrado.tiene_factura) {
-          tieneFactura = true
+        if (!subdetalleEncontrado.tiene_factura) {
+          tieneFactura = false
           break
         }
       }
       esFactura.value = tieneFactura
-      console.log('tiene_factura', esFactura.value);
     }
     /*********
      * Pusher
@@ -534,9 +532,7 @@ export default defineComponent({
 
     watchEffect(() => {
       gasto.total = gasto.cantidad! * gasto.valor_u!
-      if (gasto.sub_detalle !== null) {
-        tiene_factura_subdetalle()
-      }
+
     })
     function existeComprobante() {
       gasto.factura = null
