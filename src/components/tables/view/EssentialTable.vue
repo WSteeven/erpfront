@@ -57,11 +57,7 @@
     <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
       <q-td :key="props.col.name" :props="props">
         {{ props.row[props.col.name] }}
-        <q-popup-edit
-          v-model="props.row[props.col.name]"
-          v-slot="scope"
-          auto-save
-        >
+        <q-popup-edit v-model="props.row[props.col.name]" v-slot="scope" auto-save>
           <q-input
             v-model="scope.value"
             placeholder="Ingrese"
@@ -75,10 +71,7 @@
 
     <!-- Header table -->
     <template v-if="mostrarHeader" v-slot:top="props">
-      <div
-        v-if="mostrarFiltros"
-        class="text-bold text-center full-width rounded q-mb-md"
-      >
+      <div v-if="mostrarFiltros" class="text-bold text-center full-width rounded q-mb-md">
         <q-chip class="bg-white text-positive">
           <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
           Modo filtro activado
@@ -141,39 +134,37 @@
               flat
               round
               dense
-              :icon="
-                props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'
-              "
+              :icon="props.inFullscreen ? 'bi-fullscreen-exit' : 'bi-fullscreen'"
               @click="
                 () => {
-                  props.toggleFullscreen()
-                  inFullscreen = !props.inFullscreen
+                  props.toggleFullscreen();
+                  inFullscreen = !props.inFullscreen;
                 }
               "
               class="q-ml-md"
             >
               <q-tooltip class="bg-dark">{{
                 props.inFullscreen
-                  ? 'Salir de pantalla completa'
-                  : 'Abrir en pantalla completa'
+                  ? "Salir de pantalla completa"
+                  : "Abrir en pantalla completa"
               }}</q-tooltip>
             </q-btn>
           </div>
         </div>
         <div class="col-12 col-md-12" v-if="false">
           <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
-            {{ 'Total de elementos: ' }}
+            {{ "Total de elementos: " }}
             <b>{{ datos == undefined ? 0 : datos.length }}</b>
           </q-chip>
         </div>
       </div>
 
       <div
-        v-if="permitirFiltrar||true"
+        v-if="permitirFiltrar || true"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
         <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
-          {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+          {{ "Total de elementos: " }} <b>{{ datos.length }}</b>
         </q-chip>
 
         <div class="row q-gutter-xs justify-end q-mb-md">
@@ -199,18 +190,13 @@
             Resetear filtros</q-btn
           > -->
 
-          <q-btn
-            v-if="mostrarFiltros"
-            color="indigo"
-            no-caps
-            push
-            @click="filtrar()"
-          >
+          <q-btn v-if="mostrarFiltros" color="indigo" no-caps push @click="filtrar()">
             <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
             Aplicar filtros</q-btn
           >
 
-          <q-btn v-if="mostrarExportar"
+          <q-btn
+            v-if="mostrarExportar"
             color="positive"
             icon="archive"
             label="Exportar a csv"
@@ -245,7 +231,8 @@
             </q-list>
           </q-btn-dropdown> -->
 
-          <q-btn v-if="permitirFiltrar"
+          <q-btn
+            v-if="permitirFiltrar"
             :color="mostrarFiltros ? 'negative' : 'primary'"
             no-caps
             push
@@ -386,9 +373,7 @@
               class="bg-primary q-px-md"
               dense
               glossy
-              @click="
-                consultar({ entidad: props.row, posicion: props.rowIndex })
-              "
+              @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
             >
               <q-icon name="bi-eye" size="xs" color="white"></q-icon>
               <q-tooltip class="bg-dark"> Consultar </q-tooltip>
@@ -412,9 +397,7 @@
               class="bg-negative q-px-md"
               glossy
               dense
-              @click="
-                eliminar({ entidad: props.row, posicion: props.rowIndex })
-              "
+              @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
             >
               <q-icon name="bi-trash3" size="xs" color="white"></q-icon>
               <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
@@ -459,15 +442,8 @@
             </q-item-section>
 
             <!-- Valor -->
-            <q-item-section
-              caption
-              class="text-right text-grey-7 label-card-table"
-            >
-              <div
-                v-if="col.name === 'acciones'"
-                :props="props"
-                class="q-gutter-sm"
-              >
+            <q-item-section caption class="text-right text-grey-7 label-card-table">
+              <div v-if="col.name === 'acciones'" :props="props" class="q-gutter-sm">
                 <!-- Consultar -->
                 <q-btn
                   v-if="permitirConsultar"
@@ -475,9 +451,7 @@
                   round
                   glossy
                   dense
-                  @click="
-                    consultar({ entidad: props.row, posicion: props.rowIndex })
-                  "
+                  @click="consultar({ entidad: props.row, posicion: props.rowIndex })"
                 >
                   <q-icon name="bi-eye" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Consultar </q-tooltip>
@@ -491,15 +465,9 @@
                   glossy
                   color="secondary"
                   dense
-                  @click="
-                    editar({ entidad: props.row, posicion: props.rowIndex })
-                  "
+                  @click="editar({ entidad: props.row, posicion: props.rowIndex })"
                 >
-                  <q-icon
-                    name="bi-pencil-square"
-                    color="white"
-                    size="xs"
-                  ></q-icon>
+                  <q-icon name="bi-pencil-square" color="white" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Editar </q-tooltip>
                 </q-btn>
 
@@ -511,9 +479,7 @@
                   color="negative"
                   glossy
                   dense
-                  @click="
-                    eliminar({ entidad: props.row, posicion: props.rowIndex })
-                  "
+                  @click="eliminar({ entidad: props.row, posicion: props.rowIndex })"
                 >
                   <q-icon name="bi-trash3" size="xs"></q-icon>
                   <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
@@ -543,12 +509,7 @@
                     color="positive"
                     size="md"
                   ></q-icon>
-                  <q-icon
-                    v-else
-                    name="bi-x"
-                    color="negative"
-                    size="md"
-                  ></q-icon>
+                  <q-icon v-else name="bi-x" color="negative" size="md"></q-icon>
                 </span>
 
                 <span v-if="col.name === 'activo'">
@@ -576,12 +537,7 @@
                     color="positive"
                     size="xs"
                   ></q-icon>
-                  <q-icon
-                    v-else
-                    name="bi-check-circle"
-                    color="grey-6"
-                    size="xs"
-                  ></q-icon>
+                  <q-icon v-else name="bi-check-circle" color="grey-6" size="xs"></q-icon>
                 </span>
 
                 <span v-if="col.name === 'es_responsable'">
@@ -607,21 +563,15 @@
                 </span>
 
                 <div :class="{ 'q-mb-xs': $q.screen.xs }">
-                  <estados-subtareas
-                    v-if="col.name === 'estado'"
-                    :propsTable="col"
-                  />
+                  <estados-subtareas v-if="col.name === 'estado'" :propsTable="col" />
 
-                  <q-chip
-                    v-if="col.value === 'EN CAMINO'"
-                    class="bg-blue-1 text-primary"
-                  >
+                  <q-chip v-if="col.value === 'EN CAMINO'" class="bg-blue-1 text-primary">
                     <q-icon
                       name="bi-car-front-fill"
                       color="primary"
                       class="q-mr-xs"
                     ></q-icon
-                    >{{ 'En camino' }}
+                    >{{ "En camino" }}
                   </q-chip>
 
                   <q-chip
@@ -633,7 +583,7 @@
                       color="positive"
                       class="q-mr-xs"
                     ></q-icon
-                    >{{ 'RUTA COMPLETADA' }}
+                    >{{ "RUTA COMPLETADA" }}
                   </q-chip>
                 </div>
 
@@ -717,6 +667,18 @@
         ></q-icon>
       </q-td>
     </template>
+    <template #body-cell-tiene_factura="props">
+      <q-td :props="props">
+        <q-chip v-if="props.value" class="bg-yellow-1">
+          <q-icon name="bi-circle-fill" color="primary" class="q-mr-xs"></q-icon>
+          SI
+        </q-chip>
+        <q-chip v-if="!props.value" class="bg-yellow-1">
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
+          NO
+        </q-chip>
+      </q-td>
+    </template>
 
     <template #body-cell-es_ventana="props">
       <q-td :props="props">
@@ -754,12 +716,7 @@
 
     <template #body-cell-pagado="props">
       <q-td :props="props" class="">
-        <q-icon
-          v-if="props.value"
-          name="bi-check"
-          color="positive"
-          size="md"
-        ></q-icon>
+        <q-icon v-if="props.value" name="bi-check" color="positive" size="md"></q-icon>
         <q-icon v-else name="bi-x" color="negative" size="md"></q-icon>
       </q-td>
     </template>
@@ -767,43 +724,22 @@
     <template #body-cell-disponible="props">
       <q-td :props="props" class="">
         <q-chip v-if="props.value" class="bg-green-1">
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon
           >Disponible
         </q-chip>
         <q-chip v-else class="bg-pink-1">
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon
-          >Ocupado
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>Ocupado
         </q-chip>
       </q-td>
     </template>
 
     <template #body-cell-accion="props">
       <q-td :props="props" class="">
-        <q-chip
-          v-if="props.value === accionesActivos['asignado']"
-          class="bg-green-1"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
-          >Asignado
+        <q-chip v-if="props.value === accionesActivos['asignado']" class="bg-green-1">
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>Asignado
         </q-chip>
         <q-chip v-else class="bg-pink-1" color="red">
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
           Devuelto
         </q-chip>
       </q-td>
@@ -815,50 +751,30 @@
           v-if="props.value === autorizacionesTransacciones['aprobado']"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>
           APROBADO
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['cancelado']"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
           CANCELADO
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['pendiente']"
           :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="warning"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon>
           PENDIENTE
         </q-chip>
 
         <q-chip v-if="props.value === 'SI'" class="bg-yellow-1">
-          <q-icon
-            name="bi-circle-fill"
-            color="primary"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="primary" class="q-mr-xs"></q-icon>
           SI
         </q-chip>
         <q-chip v-if="props.value === 'NO'" class="bg-yellow-1">
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
           NO
         </q-chip>
       </q-td>
@@ -904,29 +820,20 @@
         <q-chip
           v-if="props.value === estadosTransacciones.completa"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
-          ><q-icon name="bi-circle-fill" color="positive"></q-icon
-          >COMPLETA</q-chip
+          ><q-icon name="bi-circle-fill" color="positive"></q-icon>COMPLETA</q-chip
         >
         <q-chip
           v-if="props.value === estadosTransacciones.parcial"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
           PARCIAL
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones.pendiente"
           :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="warning"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon>
           PENDIENTE
         </q-chip>
         <q-chip
@@ -934,11 +841,7 @@
           :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
           NO REALIZADA
         </q-chip>
       </q-td>
@@ -947,12 +850,10 @@
     <template #body-cell-leida="props">
       <q-td :props="props">
         <span v-if="props.value == false || props.value == 0">
-          <q-icon class="bi-check-circle-fill" color="grey-4" size="sm">
-          </q-icon>
+          <q-icon class="bi-check-circle-fill" color="grey-4" size="sm"> </q-icon>
         </span>
         <span v-else>
-          <q-icon class="bi-check-circle-fill" color="positive" size="sm">
-          </q-icon>
+          <q-icon class="bi-check-circle-fill" color="positive" size="sm"> </q-icon>
         </span>
       </q-td>
     </template>
@@ -963,44 +864,28 @@
           v-if="props.value === 'COMPLETADO'"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>
           COMPLETA
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones['completa']"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>
           COMPLETA
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones['parcial']"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
           PARCIAL
         </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones['pendiente']"
           :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
-          <q-icon
-            name="bi-circle-fill"
-            color="warning"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon>
           PENDIENTE
         </q-chip>
         <q-chip
@@ -1008,11 +893,7 @@
           :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon>
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>
           NO REALIZADA
         </q-chip>
         <q-icon
@@ -1029,102 +910,48 @@
         ></q-icon>
 
         <!-- Estados de la tabla inventarios -->
-        <q-chip
-          v-if="props.value === estadosInventarios.sin_stock"
-          class="bg-red-1"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon
-          >SIN STOCK
+        <q-chip v-if="props.value === estadosInventarios.sin_stock" class="bg-red-1">
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon>SIN
+          STOCK
         </q-chip>
-        <q-chip
-          v-if="props.value === estadosInventarios.transito"
-          class="bg-yellow-1"
-        >
-          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
-          >TRANSITO
+        <q-chip v-if="props.value === estadosInventarios.transito" class="bg-yellow-1">
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon>TRANSITO
         </q-chip>
-        <q-chip
-          v-if="props.value === estadosInventarios.inventario"
-          class="bg-green-1"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
+        <q-chip v-if="props.value === estadosInventarios.inventario" class="bg-green-1">
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon
           >INVENTARIO
         </q-chip>
         <!-- Estados de la tabla control de stock -->
-        <q-chip
-          v-if="props.value === estadosControlStock.minimo"
-          class="bg-red-1"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          ></q-icon
+        <q-chip v-if="props.value === estadosControlStock.minimo" class="bg-red-1">
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs"></q-icon
           >{{ estadosControlStock.minimo }}
         </q-chip>
 
-        <q-chip
-          v-if="props.value === estadosControlStock.reorden"
-          class="bg-yellow-1"
-        >
+        <q-chip v-if="props.value === estadosControlStock.reorden" class="bg-yellow-1">
           <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
           >{{ estadosControlStock.reorden }}
         </q-chip>
 
-        <q-chip
-          v-if="props.value === estadosControlStock.suficiente"
-          class="bg-green-1"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
+        <q-chip v-if="props.value === estadosControlStock.suficiente" class="bg-green-1">
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon
           >{{ estadosControlStock.suficiente }}
         </q-chip>
 
-        <q-chip
-          v-if="props.value === 'EN CAMINO'"
-          class="bg-blue-1 text-primary"
-        >
-          <q-icon
-            name="bi-car-front-fill"
-            color="primary"
-            class="q-mr-xs"
-          ></q-icon
-          >{{ 'En camino' }}
+        <q-chip v-if="props.value === 'EN CAMINO'" class="bg-blue-1 text-primary">
+          <q-icon name="bi-car-front-fill" color="primary" class="q-mr-xs"></q-icon
+          >{{ "En camino" }}
         </q-chip>
 
-        <q-chip
-          v-if="props.value === 'RUTA COMPLETADA'"
-          class="bg-green-1 text-positive"
-        >
-          <q-icon
-            name="bi-check-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
-          >{{ 'RUTA COMPLETADA' }}
+        <q-chip v-if="props.value === 'RUTA COMPLETADA'" class="bg-green-1 text-positive">
+          <q-icon name="bi-check-circle-fill" color="positive" class="q-mr-xs"></q-icon
+          >{{ "RUTA COMPLETADA" }}
         </q-chip>
 
         <estados-subtareas :propsTable="props" />
 
         <!-- estados de la tabla prestamos temporales -->
         <q-chip v-if="props.value === 'DEVUELTO'" class="bg-green-1">
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
-          >DEVUELTO
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs"></q-icon>DEVUELTO
         </q-chip>
       </q-td>
     </template>
@@ -1216,12 +1043,7 @@
     class="text-right text-grey-7"
   >
     <q-chip class="bg-grey-2 text-info" color="info">
-      <q-icon
-        name="bi-info-circle-fill"
-        color="info"
-        size="xs"
-        class="q-mr-sm"
-      ></q-icon>
+      <q-icon name="bi-info-circle-fill" color="info" size="xs" class="q-mr-sm"></q-icon>
       <small>Haz clic sobre una celda para editarla</small>
     </q-chip>
   </div>

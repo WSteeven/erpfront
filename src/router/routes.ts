@@ -81,9 +81,9 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/reportes-subtareas',
-        name: 'reportes_subtareas',
-        component: () => import('src/pages/gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteTrabajoRealizadoPage.vue'),
+        path: '/reportes-modulo-tareas',
+        name: 'reportes_modulo_tareas',
+        component: () => import('src/pages/gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteModuloTareaPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -140,7 +140,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
+      /*{
         path: '/reporte-trabajos-realizados',
         name: 'reporte_trabajos_realizados',
         component: () =>
@@ -148,7 +148,7 @@ const routes: RouteRecordRaw[] = [
             'gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteTrabajoRealizadoPage.vue'
           ),
         meta: { requiresAuth: true },
-      },
+      },*/
       /********************
        * Modulo de tickets
        ********************/

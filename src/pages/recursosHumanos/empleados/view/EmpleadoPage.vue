@@ -350,8 +350,9 @@
                 </template>
               </q-select>
             </div>
+
             <!--Dirección-->
-            <div class="col-12 col-md-3">
+            <!--<div class="col-12 col-md-3">
               <label class="q-mb-sm block">Dirección</label>
               <q-input
                 v-model="empleado.dirrecion"
@@ -370,7 +371,8 @@
                   </div>
                 </template>
               </q-input>
-            </div>
+            </div> -->
+
             <!-- Foto de perfil -->
             <div class="col-12 col-md-3">
               <label for="q-mb-sm block">Foto de perfil</label>
@@ -862,8 +864,9 @@
               >
               </q-input>
             </div>
+
             <!-- Observacion -->
-            <div class="col-12 col-md-3">
+            <!-- <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Observación</label>
               <q-input
                 v-model="empleado.observacion"
@@ -885,7 +888,7 @@
                   </div>
                 </template>
               </q-input>
-            </div>
+            </div> -->
           </div>
         </q-expansion-item>
       </q-form>

@@ -135,8 +135,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.set('autorizaciones_especiales', JSON.stringify(autorizacionesEspeciales))
     const tareas = (await new TareaController().listar({ campos: 'id,titulo' })).result
     LocalStorage.set('tareas', JSON.stringify(tareas))
-    const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
-    LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
+    // const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
+    // LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
 
 
   }

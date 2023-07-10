@@ -9,6 +9,7 @@ export class SubDetalleFondo extends EntidadAuditable {
   fecha_trans: Date | null
   autorizacion: string | boolean| null
   estatus: string | boolean| null
+  tiene_factura: boolean|null
 
   constructor() {
     super()
@@ -21,6 +22,7 @@ export class SubDetalleFondo extends EntidadAuditable {
     this.fecha_trans = null
     this.autorizacion = 'SI'
     this.estatus = 'ACTIVO'
+    this.tiene_factura = false
 
   }
 }
