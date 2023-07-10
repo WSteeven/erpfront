@@ -42,6 +42,7 @@ export const endpoints = {
   estado_permiso_empleado: new Endpoint('recursos-humanos/estado_permiso_empleado'),
   tipo_contrato: new Endpoint('recursos-humanos/tipo_contrato'),
   permiso_empleado: new Endpoint('recursos-humanos/permiso_empleado'),
+  licencia_empleado: new Endpoint('recursos-humanos/licencia_empleado'),
   prestamo_empresarial : new Endpoint('recursos-humanos/prestamo_empresarial'),
   solicitud_prestamo_empresarial : new Endpoint('recursos-humanos/solicitud_prestamo_empresarial'),
   anticipo : new Endpoint('recursos-humanos/anticipo'),
@@ -61,10 +62,13 @@ export const endpoints = {
   horas_extras_subtipo: new Endpoint('recursos-humanos/horas_extras_subtipo'),
   forma_pago: new Endpoint('forma_pago'),
   sueldo_basico: new Endpoint('recursos-humanos/sueldo_basico'),
+  nivel_endeudamiento: new Endpoint('recursos-humanos/nivel_endeudamiento'),
   aprobar_prestamo_empresarial: new Endpoint('recursos-humanos/aprobar_prestamo_empresarial'),
   rechazar_prestamo_empresarial: new Endpoint('recursos-humanos/rechazar_prestamo_empresarial'),
   vacacion: new Endpoint('recursos-humanos/vacacion'),
   archivo_permiso_empleado: new Endpoint('recursos-humanos/archivo_permiso_empleado'),
+  archivo_licencia_empleado: new Endpoint('recursos-humanos/archivo_licencia_empleado'),
+
 
 
 

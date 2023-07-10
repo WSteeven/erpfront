@@ -114,10 +114,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.identificacion.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.identificacion.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -226,16 +223,6 @@
                 </template>
               </q-select>
             </div>-->
-            <div class="col-12 col-md-3 q-mb-xl">
-              <q-checkbox
-                class="q-mt-lg q-pt-md"
-                v-model="empleado.tiene_grupo"
-                label="Pertenece a un grupo"
-                :disable="disabled"
-                outlined
-                dense
-              ></q-checkbox>
-            </div>
             <!-- Convencional -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Convencional</label>
@@ -269,23 +256,14 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="empleado.fecha_nacimiento"
                         :mask="maskFecha"
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Cerrar"
-                            color="primary"
-                            flat
-                          />
+                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -343,9 +321,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -407,9 +383,7 @@
                 </div>
                 <!-- Vive con discapacitados -->
                 <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Convive con personas discapacitadas</label
-                  >
+                  <label class="q-mb-sm block">Convive con personas discapacitadas</label>
                   <q-toggle
                     :label="empleado.vive_con_discapacitados ? 'SI' : 'NO'"
                     v-model="empleado.vive_con_discapacitados"
@@ -443,9 +417,7 @@
                 </div> -->
                 <!-- Coordenadas -->
                 <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Coordenadas del lugar donde vive</label
-                  >
+                  <label class="q-mb-sm block">Coordenadas del lugar donde vive</label>
                   <q-input
                     type="tel"
                     v-model="empleado.coordenadas"
@@ -497,9 +469,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -568,18 +538,13 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.departamento.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.departamento.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -614,9 +579,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -642,9 +605,7 @@
                 emit-value
                 map-options
               >
-                <template
-                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
-                >
+                <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                   <q-item v-bind="itemProps">
                     <q-item-section>
                       {{ opt.name }}
@@ -665,9 +626,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -792,6 +751,16 @@
               ></q-checkbox>
             </div>
 -->
+            <div class="col-12 col-md-3 q-mb-xl">
+              <q-checkbox
+                class="q-mt-lg q-pt-md"
+                v-model="empleado.tiene_grupo"
+                label="Pertenece a un grupo"
+                :disable="disabled"
+                outlined
+                dense
+              ></q-checkbox>
+            </div>
             <!-- Grupo -->
             <div v-if="empleado.tiene_grupo" class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Grupo</label>
@@ -819,9 +788,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>

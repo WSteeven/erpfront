@@ -71,6 +71,9 @@ export default defineComponent({
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
     })
+     recursosHumanosStore.nivel_endeudamiento(solicitudPrestamo.solicitante == null ? store.user.id: solicitudPrestamo.solicitante)
+
+
     maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
     const esValidador = computed(()=>store.can('puede.ver.campo.validado'))
     const esAutorizador = computed(()=>store.can('puede.autorizar.solicitud_prestamo_empresarial'))
@@ -143,9 +146,11 @@ export default defineComponent({
       v$,
       disabled,
       store,
+      recursosHumanosStore,
       tabOptionsSolicitudPedido,
       accion,
       configuracionColumnas: configuracionColumnasSolicitudPrestamo,
+
       accionesTabla,
     }
   },

@@ -757,6 +757,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/licencia-empleado',
+        name: 'licencia_empleado',
+        component: () =>
+          import(
+            'pages/recursosHumanos/licencia-empleado/view/LicenciaEmpleadoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/solicitud-prestamo-empresarial',
         name: 'solicitud_prestamo_empresarial',
         component: () =>

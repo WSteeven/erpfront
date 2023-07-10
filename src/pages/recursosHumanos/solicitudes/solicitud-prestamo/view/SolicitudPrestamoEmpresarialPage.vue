@@ -73,9 +73,8 @@
               </template>
             </q-input>
           </div>
-
           <!-- Plazo -->
-          <div class="col-12 col-md-3" v-if="esValidador|| esAutorizador">
+          <div class="col-12 col-md-3" v-if="esValidador || esAutorizador">
             <label class="q-mb-sm block">Plazo </label>
             <q-input
               v-model="solicitudPrestamo.plazo"
@@ -129,7 +128,7 @@
               outlined
               dense
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.observacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
@@ -188,6 +187,38 @@
                 </div>
               </template>
             </selector-imagen>
+          </div>
+          <!--nivel endeudamiento-->
+          <!--Total descuentos-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Total de Descuentos </label>
+            <q-input
+              v-model="recursosHumanosStore.total_descuento"
+              type="number"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!--Porcentaje Endeudamiento-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Porcentaje de Descuentos </label>
+            <q-input
+              v-model="recursosHumanosStore.porcentaje_endeudamiento"
+              type="number"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3">
+            <label
+              v-if="recursosHumanosStore.mensaje"
+              class="q-mb-sm text-red text-h6 block"
+              >{{ recursosHumanosStore.mensaje }}</label
+            >
           </div>
         </div>
       </q-form>
