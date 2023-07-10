@@ -13,12 +13,9 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', ()=>{
   async function obtener_sueldo_basico() {
     try {
       const userApi = axios.getEndpoint(endpoints.sueldo_basico)
-
       const response = await axios.get<AxiosResponse>(userApi)
-
       setSueldoBasico(response.data.rubro.valor_rubro)
       return response.data.rubro.valor_rubro
-
     } catch (e) {
       setSueldoBasico(0)
     }
