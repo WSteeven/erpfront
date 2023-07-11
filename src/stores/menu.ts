@@ -68,6 +68,11 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Materiales de técnicos',
+          link: 'materiales-empleados',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Reportes',
           link: 'reportes-modulo-tareas',
           icon: 'bi-circle',

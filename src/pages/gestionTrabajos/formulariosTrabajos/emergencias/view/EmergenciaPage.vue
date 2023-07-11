@@ -31,6 +31,7 @@
             :listado="emergencia.trabajo_realizado"
             :configuracion-columnas="configuracionColumnasTrabajoRealizado"
             @actualizar="(data) => (emergencia.trabajo_realizado = data)"
+            :mostrarAccion1Header="permitirSubir"
             :entidad="TrabajoRealizado"
             :accion1="verFotografia"
           ></tabla-filas-dinamicas>
@@ -61,7 +62,10 @@
           ></essential-table>
         </div>
 
-        <div class="col-12 q-mb-md">
+        <div
+          v-if="subtarea.cliente_id !== clientes.TELCONET"
+          class="col-12 q-mb-md"
+        >
           <br />
           <q-checkbox
             v-model="usarStock"
@@ -102,7 +106,10 @@
           ></tabla-observaciones>
         </div>
 
-        <div class="col-12 q-mb-md">
+        <div
+          v-if="subtarea.cliente_id !== clientes.TELCONET"
+          class="col-12 q-mb-md"
+        >
           <br />
           <q-checkbox
             v-model="existeMaterialesDevolucion"
@@ -127,6 +134,7 @@
             ref="refArchivoSeguimiento"
             :mixin="mixinArchivoSeguimiento"
             :endpoint="endpoint"
+            :permitir-eliminar="permitirSubir"
           ></archivo-seguimiento>
         </div>
       </div>

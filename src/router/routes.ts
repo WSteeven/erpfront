@@ -101,6 +101,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/materiales-empleados',
+        name: 'materiales_empleados',
+        component: () =>
+          import('gestionTrabajos/clientesFinales/view/ClienteFinalPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/trabajo-agendado',
         name: 'trabajo_agendado',
         component: () =>
