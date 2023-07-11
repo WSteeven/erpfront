@@ -29,6 +29,7 @@ import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { ArchivoLicenciaEmpleadoController } from '../infraestructure/ArchivoLicenciaEmpleadoController'
+import { TipoLicenciaController } from 'pages/recursosHumanos/tipo-licencia/infraestructure/TipoLicenciaController'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, GestorDocumentos },
@@ -100,19 +101,14 @@ export default defineComponent({
       const diferenciaDias = Math.floor(
         diferenciaMilisegundos / (1000 * 60 * 60 * 24)
       ) // Diferencia en días
-      console.log(diferenciaDias);
-
       return diferenciaDias === -1|| diferenciaDias === 0  || diferenciaDias === 1 || diferenciaDias === 2
     }
     function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
-      let tiempo = dateParts[2]
-      tiempo = tiempo.split(' ')
-      tiempo = tiempo[1].split(':')
       const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
       const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
       const anio = parseInt(dateParts[2], 10)
-      const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
+      const fecha_convert = new Date(anio, mes, dia, 0)
       return fecha_convert
     }
     onBeforeGuardar(() => {
@@ -133,6 +129,11 @@ export default defineComponent({
       await refArchivoPrestamoEmpresarial.value.subir({ licencia_id: id })
     }
     onConsultado(() => {
+      esAutorizador.value = store.user.id == licencia.id_jefe_inmediato ? true:false
+      if(esAutorizador.value){
+        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'VALIDADO'),1);
+        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'PENDIENTE'),1);
+       }
       setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           licencia_id: licencia.id,
@@ -149,7 +150,7 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        tipos_licencias: new MotivoPermisoEmpleadoController(),
+        tipos_licencias: new TipoLicenciaController(),
         empleados: {
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
@@ -187,7 +188,7 @@ export default defineComponent({
     setValidador(v$.value)
     let tabPermisoEmpleado = '1'
     function filtrarPermisoEmpleado(tabSeleccionado: string) {
-      listar({ estado_licencia_id: tabSeleccionado }, false)
+      listar({ estado: tabSeleccionado }, false)
       tabPermisoEmpleado = tabSeleccionado
     }
 

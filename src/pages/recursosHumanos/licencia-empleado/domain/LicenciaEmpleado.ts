@@ -11,6 +11,8 @@ export class LicenciaEmpleado extends EntidadAuditable {
   fecha_inicio: string | null
   fecha_fin: string | null
    justificacion: string | null
+   id_jefe_inmediato: number | null
+  jefe_inmediato: string | null
   documento: string |null
   tieneDocumento: boolean | null
 
@@ -26,6 +28,8 @@ export class LicenciaEmpleado extends EntidadAuditable {
     this.estado = null
     this.estado_licencia_info = null
     this.justificacion = null
+    this.id_jefe_inmediato = null
+    this.jefe_inmediato= null
     this.documento =null
     this.tieneDocumento = null
 

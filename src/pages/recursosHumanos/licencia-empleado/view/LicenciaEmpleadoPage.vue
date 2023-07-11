@@ -60,22 +60,15 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <div class="q-gutter-md row items-start">
                       <q-date
                         v-model="licencia.fecha_inicio"
-                        mask="DD-MM-YYYY HH:mm"
+                        mask="DD-MM-YYYY"
                         today-btn
                       >
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>
                       </q-date>
-                      <q-time
-                        v-model="licencia.fecha_inicio"
-                        mask="DD-MM-YYYY HH:mm"
-                        color="primary"
-                      />
-                    </div>
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -102,10 +95,9 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <div class="q-gutter-md row items-start">
                       <q-date
                         v-model="licencia.fecha_fin"
-                        mask="DD-MM-YYYY HH:mm"
+                        mask="DD-MM-YYYY"
                         :options="optionsFecha"
                         today-btn
                       >
@@ -113,12 +105,6 @@
                           <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>
                       </q-date>
-                      <q-time
-                        v-model="licencia.fecha_fin"
-                        mask="DD-MM-YYYY HH:mm"
-                        color="primary"
-                      />
-                    </div>
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -174,6 +160,33 @@
               dense
             >
             </q-input>
+          </div>
+           <!-- Autorizacion -->
+           <div class="col-12 col-md-3" v-if="accion == 'EDITAR' && esAutorizador">
+            <label class="q-mb-sm block">Autorizacion</label>
+            <q-select
+              v-model="licencia.estado"
+              :options="autorizaciones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
         </div>
       </q-form>

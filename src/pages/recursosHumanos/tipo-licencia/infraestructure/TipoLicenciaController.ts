@@ -1,10 +1,10 @@
 import { TransaccionSimpleController } from "shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController";
-import { Periodo } from "../domain/Periodo";
+import { TipoLicencia } from "../domain/TipoLicencia";
 import { endpoints } from "config/api";
 
-export class PeriodoController extends TransaccionSimpleController<Periodo>{
+export class TipoLicenciaController extends TransaccionSimpleController<TipoLicencia>{
   constructor(){
-    super(endpoints.periodo)
+    super(endpoints.tipo_licencia)
   }
 }
 

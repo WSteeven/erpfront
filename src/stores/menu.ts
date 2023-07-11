@@ -469,6 +469,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.licencia_empleado'),
         },
         {
+          title: 'Vacaciones',
+          link: 'vacacion',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.vacacion'),
+        },
+        {
           title: 'Prestamos',
           icon: 'fa-solid fa-hand-holding-dollar',
           can: true,//store.can('puede.ver.prestamo_empresarial'),
