@@ -90,7 +90,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tickets'),
         },
         {
-          title: 'Tickets asignados',
+          title: 'Tickets asignados para mi',
           link: 'tickets-asignados',
           icon: 'bi-circle',
           can: store.can('puede.ver.tickets_asignados'),
