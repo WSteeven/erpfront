@@ -1,16 +1,14 @@
-import { AxiosError } from 'axios';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
-import { date, useQuasar } from 'quasar'
+import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
-import Swal from 'sweetalert2'
 import { useNotificaciones } from './notificaciones';
 
 export function limpiarListado<T>(listado: T[]): void {
@@ -256,7 +254,7 @@ export function obtenerFechaActual() {
  * @returns cadena sin acentos ni tildes
  */
 export function removeAccents(accents: string) {
-  return accents.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  return accents.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
 export async function obtenerTiempoActual() {
@@ -408,4 +406,9 @@ export function formatearFechaHora(fecha: string, hora: string) {
   })
 
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
+}
+
+export function formatearFechaTexto(fecha: number){
+  const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(fecha).toLocaleDateString('es-Es', opciones)
 }
