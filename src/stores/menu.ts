@@ -471,7 +471,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Vacaciones',
           link: 'vacacion',
-          icon: 'bi-circle',
+          icon: 'bi-umbrella',
           can: store.can('puede.ver.vacacion'),
         },
         {

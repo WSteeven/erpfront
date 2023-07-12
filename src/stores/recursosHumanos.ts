@@ -1,16 +1,14 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { AxiosError, AxiosResponse } from 'axios'
 import { endpoints } from 'src/config/api'
 
-
-export const useRecursosHumanosStore = defineStore('fondo_rotativo', ()=>{
+export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
   const sueldo_basico = ref()
-  const total_descuento = ref ()
-  const porcentaje_endeudamiento = ref ()
-  const mensaje = ref ()
-
+  const total_descuento = ref()
+  const porcentaje_endeudamiento = ref()
+  const mensaje = ref()
   const axios = AxiosHttpRepository.getInstance()
 
   async function obtener_sueldo_basico() {
@@ -22,15 +20,14 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', ()=>{
     } catch (e) {
       setSueldoBasico(0)
     }
-
   }
   async function nivel_endeudamiento(id_empleado) {
     try {
       const userApi = axios.getEndpoint(endpoints.nivel_endeudamiento)
       const response = await axios.get<AxiosResponse>(userApi, {
         params: {
-          empleado: id_empleado
-        }
+          empleado: id_empleado,
+        },
       })
       setPorcentajeEndeudamiento(response.data.results.porcentaje)
       setTotalDescuento(response.data.results.total_descuento)
@@ -43,23 +40,24 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', ()=>{
       return e
     }
   }
+
+
   const getSueldoBasico = () => {
     return sueldo_basico.value
   }
   const setSueldoBasico = (sueldo: number) => {
     sueldo_basico.value = sueldo
   }
-  const setTotalDescuento = (total_descuento_data:number) => {
+  const setTotalDescuento = (total_descuento_data: number) => {
     total_descuento.value = total_descuento_data
-    console.log(total_descuento.value);
-
+    console.log(total_descuento.value)
   }
   const setPorcentajeEndeudamiento = (porcentaje: number) => {
     porcentaje_endeudamiento.value = porcentaje
   }
-const setMensaje = (mensaje_data: string) => {
-  mensaje.value =mensaje_data
-}
+  const setMensaje = (mensaje_data: string) => {
+    mensaje.value = mensaje_data
+  }
 
   return {
     getSueldoBasico,
@@ -68,7 +66,6 @@ const setMensaje = (mensaje_data: string) => {
     sueldo_basico,
     total_descuento,
     porcentaje_endeudamiento,
-    mensaje
-
+    mensaje,
   }
 })

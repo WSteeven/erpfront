@@ -3,41 +3,6 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
-          <!-- Empleados -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Empleado</label>
-            <q-select
-              v-model="vacacion.empleado"
-              :options="empleados"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="accion.value != 'NUEVO' ? false : true"
-              :readonly="disabled"
-              :error="!!v$.empleado.$errors.length"
-              error-message="Debes seleccionar un empleado"
-              use-input
-              input-debounce="0"
-              @filter="filtrarEmpleado"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
           <!--Periodos -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Periodo</label>
@@ -77,11 +42,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Derecho a vacaciones</label>
             <q-input
-              v-model="vacacion.descuento_vacaciones"
+              v-model="vacacion.derecho_vacaciones"
               placeholder="Obligatorio"
-              :error="!!v$.descuento_vacaciones.$errors.length"
+              :error="!!v$.derecho_vacaciones.$errors.length"
               :disable="accion.value != 'NUEVO' ? false : true"
-              @blur="v$.descuento_vacaciones.$touch"
+              @blur="v$.derecho_vacaciones.$touch"
               outlined
               dense
             >
@@ -89,7 +54,7 @@
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
-                      v-model="vacacion.descuento_vacaciones"
+                      v-model="vacacion.derecho_vacaciones"
                       :mask="maskFecha"
                       today-btn
                     >
@@ -102,7 +67,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.descuento_vacaciones.$errors" :key="error.$uid">
+                <div v-for="error of v$.derecho_vacaciones.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>

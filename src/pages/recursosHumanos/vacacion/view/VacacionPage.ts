@@ -21,6 +21,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { useNotificaciones } from 'shared/notificaciones'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
@@ -50,36 +51,45 @@ export default defineComponent({
     const esConsultado = ref(false)
     onBeforeModificar(() => (esConsultado.value = true))
     const periodos = ref([])
-    const empleados = ref([])
-    const dias_adicionales = ref(0)
-    const dias_descuento_vacaciones = ref (0)
+    const fecha_ingreso = ref();
+    const dias_descuento_vacaciones = ref(0)
     const recursosHumanosStore = useRecursosHumanosStore()
+    const store = useAuthenticationStore()
+    const dias_adicionales = computed(() => {
+      const fechaInicio = new Date(store.user.fecha_ingreso)
+      const fechaActual = new Date() // Obtiene la fecha actual
+      let diasAdicionales = 0
+      const aniosServicio =
+        fechaActual.getFullYear() - fechaInicio.getFullYear() // Calcula los años de servicio
+      if (aniosServicio >= 5) {
+        const aniosExcedentes = aniosServicio - 4 // Calcula los años de excedente
+        diasAdicionales = Math.min(aniosExcedentes, 15) // Limita los días adicionales a un máximo de 15
+      }
+      return diasAdicionales
+    })
+
 
     cargarVista(async () => {
       await obtenerListados({
-        empleados: {
-          controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
-        },
         periodos: {
           controller: new PeriodoController(),
           params: { campos: 'id,nombre', activo: 1 },
         },
       })
       periodos.value = listadosAuxiliares.periodos
-      empleados.value = listadosAuxiliares.empleados
     })
 
     //Reglas de validacion
     const reglas = computed(() => ({
       empleado: { required },
       periodo: { required },
+      derecho_vacaciones: { required },
       descuento_vacaciones: { required },
       fecha_inicio_rango1_vacaciones: { required },
       fecha_fin_rango1_vacaciones: { required },
       fecha_inicio_rango2_vacaciones: { required },
       fecha_fin_rango2_vacaciones: { required },
-      solicitud: { required, minValue: minValue(1), maxValue: maxValue(12) },
+      solicitud: { required },
     }))
 
     const v$ = useVuelidate(reglas, vacacion)
@@ -119,6 +129,7 @@ export default defineComponent({
     const numero_dias = computed(() => {
       return dias_rango1.value + dias_rango2.value
     })
+
     function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
 
@@ -128,26 +139,12 @@ export default defineComponent({
       const fecha_convert = new Date(anio, mes, dia, 0)
       return fecha_convert
     }
+
     watchEffect(() => {
       try {
       } catch (error) {}
     })
-    function filtrarEmpleado(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+
     function filtrarPeriodo(val, update) {
       if (val === '') {
         update(() => {
@@ -167,10 +164,10 @@ export default defineComponent({
       removeAccents,
       mixin,
       vacacion,
-      empleados,
+      periodos,
       watchEffect,
-      filtrarEmpleado,
       filtrarPeriodo,
+      recursosHumanosStore,
       dias_adicionales,
       dias_descuento_vacaciones,
       esConsultado,
