@@ -16,4 +16,9 @@ export const configuracionColumnasRutasTareas: ColumnConfig<RutaTarea>[] = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'activo',
+    field: 'activo',
+    label: 'Activo',
+  },
 ]

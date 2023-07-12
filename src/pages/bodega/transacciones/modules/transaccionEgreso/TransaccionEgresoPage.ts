@@ -45,6 +45,10 @@ import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { useInventarioStore } from 'stores/inventario'
 import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
 import { useCargandoStore } from 'stores/cargando'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { Cliente } from 'sistema/clientes/domain/Cliente'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -73,23 +77,23 @@ export default defineComponent({
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
     } = useOrquestadorSelectorItemsTransaccion(transaccion, 'inventarios')
-    
+
 
     const usuarioLogueado = store.user
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
-    
+
     let soloLectura = ref(false)
     let puedeEditarCantidad = ref(true)
     let puedeDespacharMaterial = ref(false)
     let esVisibleAutorizacion = ref(false)
     let esVisibleTarea = ref(false)
-    let listadoPedido :Ref<any[]>= ref([])
+    let listadoPedido: Ref<any[]> = ref([])
     let coincidencias = ref()
     let listadoCoincidencias = ref()
-    
+
 
     const opciones_empleados = ref([])
     const opciones_autorizaciones = ref([])
@@ -157,7 +161,7 @@ export default defineComponent({
       listadoPedido.value = []
       transaccion.pedido = null
     })
-    
+
 
     /*****************************************************************************************
      * Validaciones
@@ -187,7 +191,7 @@ export default defineComponent({
     //validar que envien datos en el listado
     const validarListadoProductos = new ValidarListadoProductosEgreso(transaccion, listadoPedido)
     mixin.agregarValidaciones(validarListadoProductos)
-    
+
 
 
     function eliminar({ entidad, posicion }) {
@@ -402,6 +406,11 @@ export default defineComponent({
     /* function filtroSolicitante(val){
         const opcion_encontrada = listadosAuxiliares.empleados.filter((v)=>v.id===val)
     } */
+
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
@@ -426,6 +435,7 @@ export default defineComponent({
       esVisibleAutorizacion,
       esVisibleTarea,
 
+      recargarSucursales,
 
       //filtros
       filtroTareas,
@@ -434,6 +444,19 @@ export default defineComponent({
         const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)
         transaccion.aviso_liquidacion_cliente = (motivoSeleccionado[0]['nombre'] == motivos.egresoLiquidacionMateriales) ? true : false
         transaccion.es_transferencia = (motivoSeleccionado[0]['nombre'] == motivos.egresoTransferenciaBodegas) ? true : false
+      },
+
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
       },
 
       filtroEmpleados(val, update) {
@@ -510,6 +533,15 @@ export default defineComponent({
       //ordenacion de listas
       ordenarMotivos() {
         opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
+      },
+      ordenarClientes() {
+        opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+      },
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
+      ordenarEmpleados() {
+        opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
       }
     }
   }

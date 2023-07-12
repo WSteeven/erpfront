@@ -7,7 +7,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { accionesTabla, maskFecha, rolesSistema } from 'config/utils'
 import { required } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 
@@ -55,6 +55,7 @@ import { TicketModales } from '../domain/TicketModales'
 import { useTicketStore } from 'stores/ticket'
 import { useCargandoStore } from 'stores/cargando'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
   components: {
@@ -125,6 +126,7 @@ export default defineComponent({
     const modalesTicket = new ComportamientoModalesTicket()
     const tabActual = ref()
     const departamentoDeshabilitado = ref(false)
+    const responsableDeshabilitado = ref(false)
     const filtroResponsableDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable, es_responsable_departamento: true } })
     const filtroDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable } })
 
@@ -172,19 +174,49 @@ export default defineComponent({
       empleados,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
+    watchEffect(() => {
+      if (listadosAuxiliares.empleados.length && ticket.ticket_interno) {
+        listadosAuxiliares.empleados = listadosAuxiliares.empleados.filter((empleado: Empleado) => empleado.id !== authenticationStore.user.id)
+      }
+    })
+
     /************
     * Funciones
     ************/
     const { btnReasignar, btnSeguimiento, btnCalificar, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
 
-    function establecerDepartamentoDefecto() {
+    async function toggleTicketInterno() {
       if (ticket.ticket_interno) {
         ticket.responsable = null
         departamentoDeshabilitado.value = true
+        responsableDeshabilitado.value = false
+        ticket.ticket_para_mi = false
         ticket.departamento_responsable = authenticationStore.user.departamento
+        await obtenerResponsables(filtroDepartamento.value)
       } else {
         departamentoDeshabilitado.value = false
+        listadosAuxiliares.empleados = []
+        empleados.value = []
+        ticket.departamento_responsable = null
+        ticket.responsable = null
       }
+    }
+
+    function toggleTicketParaMi() {
+      if (ticket.ticket_para_mi) {
+        ticket.responsable = authenticationStore.user.id
+        ticket.departamento_responsable = authenticationStore.user.departamento
+        obtenerResponsables(filtroDepartamento.value)
+      } else {
+        ticket.departamento_responsable = null
+        ticket.responsable = null
+        listadosAuxiliares.empleados = []
+        empleados.value = []
+      }
+
+      responsableDeshabilitado.value = ticket.ticket_para_mi
+      departamentoDeshabilitado.value = ticket.ticket_para_mi
+      ticket.ticket_interno = false
     }
 
     async function obtenerResponsables(filtros) {
@@ -192,8 +224,7 @@ export default defineComponent({
         await obtenerListados({
           empleados: {
             controller: new EmpleadoController(),
-            params: filtros,
-            // params: { campos: 'id,nombres,apellidos', departamento_id: departamento, rol: rolesSistema.coordinador }
+            params: { ...filtros, campos: 'id,nombres,apellidos' },
           },
         })
         empleados.value = listadosAuxiliares.empleados
@@ -223,8 +254,8 @@ export default defineComponent({
     const axios = AxiosHttpRepository.getInstance()
     const cargando = new StatusEssentialLoading()
     const pausas = ref([])
-    async function obtenerPausas() {
 
+    async function obtenerPausas() {
       try {
         cargando.activar()
         const ruta =
@@ -305,6 +336,8 @@ export default defineComponent({
       tiempoActualInterval = setInterval(() => fechaHoraActual.value = obtenerFechaHoraActual(), 1000)
       refArchivoTicket.value.limpiarListado()
       refArchivoTicket.value.quiero_subir_archivos = false
+      responsableDeshabilitado.value = false
+      departamentoDeshabilitado.value = false
     })
 
     return {
@@ -351,12 +384,14 @@ export default defineComponent({
       rechazos,
       obtenerTexto,
       categoriasTiposTickets,
-      establecerDepartamentoDefecto,
+      toggleTicketInterno,
       departamentoDeshabilitado,
       esResponsableDepartamento,
       guardado,
       filtroResponsableDepartamento,
       filtroDepartamento,
+      responsableDeshabilitado,
+      toggleTicketParaMi,
     }
   },
 })

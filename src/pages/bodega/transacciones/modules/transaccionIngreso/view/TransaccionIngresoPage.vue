@@ -189,6 +189,9 @@
               :disable="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
               @popup-show="ordenarSucursales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
@@ -206,6 +209,11 @@
                     No hay resultados
                   </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSucursales">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
             </q-select>
           </div>
@@ -252,8 +260,9 @@
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
+              @popup-show="ordenarEmpleados"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -524,6 +533,8 @@
               :permitirEliminar="accion==acciones.nuevo||accion==acciones.editar?true:false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
+              :accion1Header="abrirModalDetalle"
+              :altoFijo="false"
               @eliminar="eliminarItem"
               :permitirEditarModal="true"
               :modalMaximized="false"
@@ -544,5 +555,8 @@
       </essential-selectable-table>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+  ></modales-entidad>
 </template>
 <script src="./TransaccionIngresoPage.ts" />

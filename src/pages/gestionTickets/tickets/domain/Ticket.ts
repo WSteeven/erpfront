@@ -21,6 +21,7 @@ export class Ticket extends EntidadAuditable {
   calificaciones: any
   pendiente_calificar: boolean
   ticket_interno: boolean
+  ticket_para_mi: boolean
 
   constructor() {
     super()
@@ -44,5 +45,6 @@ export class Ticket extends EntidadAuditable {
     this.calificaciones = []
     this.pendiente_calificar = false
     this.ticket_interno = false
+    this.ticket_para_mi = false
   }
 }

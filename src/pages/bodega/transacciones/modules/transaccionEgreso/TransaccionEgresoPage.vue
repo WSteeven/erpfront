@@ -221,6 +221,10 @@
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               @update:model-value="buscarListadoPedidoEnInventario"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
+              @popup-show="ordenarSucursales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -237,6 +241,11 @@
                     No hay resultados
                   </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSucursales">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
             </q-select>
           </div>
@@ -359,11 +368,12 @@
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
+              @popup-show="ordenarEmpleados"
               error-message="Debes seleccionar el responsable de los materiales"
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -414,9 +424,10 @@
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
+              @popup-show="ordenarEmpleados"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -445,6 +456,7 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              @popup-show="ordenarClientes"
               @update:model-value="buscarListadoPedidoEnInventario"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"

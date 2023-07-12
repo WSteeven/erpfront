@@ -68,6 +68,11 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
         },
         {
+          title: 'Materiales de técnicos',
+          link: 'materiales-empleados',
+          icon: 'bi-circle',
+        },
+        {
           title: 'Reportes',
           link: 'reportes-modulo-tareas',
           icon: 'bi-circle',
@@ -90,7 +95,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tickets'),
         },
         {
-          title: 'Tickets asignados',
+          title: 'Tickets asignados para mi',
           link: 'tickets-asignados',
           icon: 'bi-circle',
           can: store.can('puede.ver.tickets_asignados'),

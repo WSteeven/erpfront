@@ -102,7 +102,10 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
-        rutas: new RutaTareaController(),
+        rutas: {
+          controller: new RutaTareaController(),
+          params: { activo: 1 },
+        },
         motivosSuspendidos: new MotivoSuspendidoController(),
         motivosPausas: new MotivoPausaController(),
         causasIntervenciones: new CausaIntervencionController(),
