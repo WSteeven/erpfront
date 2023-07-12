@@ -8,11 +8,14 @@ export const useTrabajoAsignadoStore = defineStore('trabajoAsignado', () => {
   const codigoSubtarea = ref()
   const idEmpleadoResponsable = ref()
 
+  const subtarea = ref()
+
   return {
     idTareaSeleccionada,
     idSubtareaSeleccionada,
     idEmergencia,
     codigoSubtarea,
     idEmpleadoResponsable,
+    subtarea,
   }
 })

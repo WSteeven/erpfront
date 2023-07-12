@@ -35,6 +35,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { Emergencia } from '../domain/Emergencia'
 import { imprimirArchivo } from 'shared/utils'
 import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
+import { clientes } from 'config/clientes'
 
 export default defineComponent({
   components: {
@@ -98,6 +99,8 @@ export default defineComponent({
     const esLider = authenticationStore.esTecnicoLider
     const esCoordinador = authenticationStore.esCoordinador
     const refArchivoSeguimiento = ref()
+    const subtarea = trabajoAsignadoStore.subtarea
+    const permitirSubir = ![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
 
     /************
      * Init
@@ -319,6 +322,9 @@ export default defineComponent({
       TrabajoRealizado,
       configuracionColumnasTrabajoRealizado,
       verFotografia,
+      clientes,
+      subtarea,
+      permitirSubir,
     }
   }
 })
