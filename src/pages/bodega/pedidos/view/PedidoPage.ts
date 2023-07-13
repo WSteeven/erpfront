@@ -37,6 +37,9 @@ import { ClienteController } from 'sistema/clientes/infraestructure/ClienteContr
 import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { ordernarListaString } from 'shared/utils'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 
 
 export default defineComponent({
@@ -156,8 +159,12 @@ export default defineComponent({
 
     /*******************************************************************************************
      * Funciones
-     ******************************************************************************************/
-
+     *****************************************************************************************
+     */
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
     function eliminar({ entidad, posicion }) {
       confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
     }
@@ -377,7 +384,24 @@ export default defineComponent({
       pedidoSeleccionado(val) {
         pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id === val))[0]['cliente_id']
         console.log(pedido.cliente_id)
-      }
+      },
+
+      recargarSucursales,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
     }
   }
 })
