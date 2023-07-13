@@ -312,7 +312,7 @@ export default defineComponent({
         sucursal_id: transaccion.sucursal,
         cliente_id: transaccion.cliente
       }
-      console.log(await inventarioStore.cargarCoincidencias(data, 'detalle_id'))
+      // console.log(await inventarioStore.cargarCoincidencias(data, 'detalle_id'))
       coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
       actualizarCantidades()
     }

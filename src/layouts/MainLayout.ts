@@ -182,6 +182,7 @@ export default defineComponent({
       console.log('Resultado',  new Date().getTime()-la > LIMIT, new Date().toLocaleTimeString())
       if (new Date().getTime() - la > LIMIT) {
         logout()
+        sessionStorage.removeItem('lastActivity')
         LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
         Swal.fire({
           icon: 'error',
