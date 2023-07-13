@@ -53,10 +53,14 @@ export default defineComponent({
     ])
     const esConsultado = ref(false)
     onBeforeModificar(() => (esConsultado.value = true))
+    onConsultado(() => {
+      esAutorizador.value =
+        store.user.id == vacacion.id_jefe_inmediato ? true : false
+    })
     const periodos = ref([])
     const recursosHumanosStore = useRecursosHumanosStore()
     const store = useAuthenticationStore()
-
+    const esAutorizador = ref(false)
     const data = reactive<{
       dias_descuento_vacaciones: string;
       empleado: Empleado | null;
@@ -154,12 +158,9 @@ export default defineComponent({
     const reglas = computed(() => ({
       empleado: { required },
       periodo: { required },
-      derecho_vacaciones: { required },
-      descuento_vacaciones: { required },
-      fecha_inicio_rango1_vacaciones: { required },
-      fecha_fin_rango1_vacaciones: { required },
-      fecha_inicio_rango2_vacaciones: { required },
-      fecha_fin_rango2_vacaciones: { required },
+      derecho_vacaciones: { reqiredIf:esAutorizador },
+      fecha_inicio: { required },
+      fecha_fin: { required },
       solicitud: { required },
     }))
 
@@ -240,6 +241,7 @@ export default defineComponent({
       watchEffect,
       filtrarPeriodo,
       recursosHumanosStore,
+      esAutorizador,
       dias_adicionales,
       dias_descuento_vacaciones,
       esConsultado,
