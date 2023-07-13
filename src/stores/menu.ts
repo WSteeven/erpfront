@@ -57,6 +57,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas'),
         },
         {
+          title: 'Materiales de técnicos',
+          link: 'materiales-empleados',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.materiales_empleados'),
+        },
+        {
           title: 'Movilización entre trabajos',
           link: 'reporte-movilizacion-subtarea',
           icon: 'bi-circle',
@@ -65,11 +71,6 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Clientes finales',
           link: 'clientes-finales',
-          icon: 'bi-circle',
-        },
-        {
-          title: 'Materiales de técnicos',
-          link: 'materiales-empleados',
           icon: 'bi-circle',
         },
         {
