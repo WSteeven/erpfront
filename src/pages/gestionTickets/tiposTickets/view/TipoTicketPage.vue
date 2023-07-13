@@ -22,7 +22,7 @@
               options-dense
               dense
               outlined
-              disable
+              :disable="disabled"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               use-input
@@ -97,7 +97,6 @@
             <q-input
               v-model="tipoTicket.nombre"
               placeholder="Obligatorio"
-              @update:model-value="(v) => (tipoTicket.nombre = v.toUpperCase())"
               :disable="disabled"
               autofocus
               outlined
@@ -114,6 +113,7 @@
 
           <div v-if="tipoTicket.categoria_tipo_ticket" class="col-12 col-md-3">
             <br />
+            credenciales
             <q-toggle
               v-model="tipoTicket.activo"
               checked-icon="check"

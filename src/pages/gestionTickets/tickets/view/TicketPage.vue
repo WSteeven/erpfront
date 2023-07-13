@@ -128,7 +128,7 @@
                     ticket.responsable = null
                     ticket.categoria_tipo_ticket = null
                     ticket.tipo_ticket = null
-                    obtenerResponsables(ticket.departamento_responsable)
+                    obtenerResponsables(filtroResponsableDepartamento)
                   }
                 "
                 :error="!!v$.departamento_responsable.$errors.length"
@@ -161,12 +161,20 @@
                 label="Ticket interno"
                 outlined
                 :disable="disabled"
-                @update:model-value="
-                  () => {
-                    establecerDepartamentoDefecto()
-                    obtenerResponsables(ticket.departamento_responsable)
-                  }
-                "
+                @update:model-value="toggleTicketInterno()"
+                dense
+              ></q-checkbox>
+            </div>
+
+            <!-- Ticket para mi -->
+            <div class="col-12 col-md-3">
+              <br />
+              <q-checkbox
+                v-model="ticket.ticket_para_mi"
+                label="Ticket para mi"
+                outlined
+                :disable="disabled"
+                @update:model-value="toggleTicketParaMi()"
                 dense
               ></q-checkbox>
             </div>
@@ -184,7 +192,7 @@
                 options-dense
                 dense
                 outlined
-                :disable="disabled"
+                :disable="disabled || responsableDeshabilitado"
                 :option-label="(item) => `${item.nombres} ${item.apellidos}`"
                 :option-value="(item) => item.id"
                 use-input

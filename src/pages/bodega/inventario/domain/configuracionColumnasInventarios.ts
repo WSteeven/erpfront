@@ -8,6 +8,7 @@ export const configuracionColumnasInventarios: ColumnConfig<Inventario>[] = [
         name: 'producto',
         field: 'producto',
         label: 'Producto',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -15,6 +16,8 @@ export const configuracionColumnasInventarios: ColumnConfig<Inventario>[] = [
         name: 'detalle_id',
         field: 'detalle_id',
         label: 'Descripción',
+        // style: 'max-width: 500px;',
+        style: 'max-width: 500px; overflow: auto;',
         align: 'left',
         sortable: true
     },

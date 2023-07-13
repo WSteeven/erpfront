@@ -39,7 +39,11 @@
       :tab-defecto="tabActual"
     ></essential-table-tabs>
 
-    <modales-entidad :comportamiento="modales" :mixin-modal="mixin" />
+    <modales-entidad
+      :comportamiento="modales"
+      :mixin-modal="mixin"
+      @guardado="guardado"
+    />
   </q-page>
 </template>
 

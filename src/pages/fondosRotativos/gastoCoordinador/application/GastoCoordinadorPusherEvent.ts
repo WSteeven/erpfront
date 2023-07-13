@@ -1,8 +1,6 @@
-import Pusher from 'pusher-js'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { Ref } from 'vue'
 
 export class GastoCoordinadorPusherEvent {
   authenticationStore = useAuthenticationStore()

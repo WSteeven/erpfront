@@ -27,6 +27,7 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         name: 'justificacion',
         field: 'justificacion',
         label: 'Justificación',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true,
     },
@@ -34,6 +35,13 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         name: 'responsable',
         field: 'responsable',
         label: 'Responsable',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'pedido',
+        field: 'pedido',
+        label: 'Pedido',
         align: 'left',
         sortable: true,
     },
@@ -65,13 +73,6 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         align: 'left',
         sortable: true,
     },
-    // {
-    //     name: 'estado',
-    //     field: 'estado',
-    //     label: 'Estado del despacho',
-    //     align: 'left',
-    //     sortable: true,
-    // },
     {
         name: 'firmada',
         field: 'firmada',
@@ -83,7 +84,7 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         name: 'estado_comprobante',
         field: 'estado_comprobante',
         label: 'Estado del comprobante',
-        align: 'left',
+        align: 'center',
         sortable: true,
     }
 ]

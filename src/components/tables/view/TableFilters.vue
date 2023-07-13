@@ -124,7 +124,6 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Ref, defineComponent, ref } from 'vue'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { maskFecha } from 'config/utils'
-import { date } from 'quasar'
 import { formatearFecha, formatearFechaHora } from 'shared/utils'
 
 export default defineComponent({

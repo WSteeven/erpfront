@@ -14,6 +14,8 @@ import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useCargandoStore } from 'stores/cargando'
+import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 
 export default defineComponent({
   components: { TabLayout },
@@ -22,6 +24,9 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+    const fondosStore = useFondoRotativoStore()
+
     /***********
      * Mixin
      ************/
@@ -69,6 +74,7 @@ export default defineComponent({
       { value: '4', label: 'Estado de Cuenta' },
     ]);
     const is_all_empleados= ref('false')
+    const is_inactivo = ref('false')
     listadosAuxiliares.tipos_saldos = tipos_saldos;
     const v$ = useVuelidate(reglas, consolidado)
     setValidador(v$.value)
@@ -191,6 +197,36 @@ export default defineComponent({
     function mostrarEmpleados() {
       consolidado.usuario = null;
     }
+    async function mostrarInactivos(val) {
+      if (val === 'true') {
+        const empleados = (
+          await new EmpleadoController().listar({
+            campos: 'id,nombres,apellidos',
+            estado: 0,
+          })
+        ).result
+        fondosStore.empleados = empleados
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados.value = fondosStore.empleados
+              usuarios.value = empleados.value
+            }, 100),
+          250
+        )
+      } else {
+        const empleados_aux = listadosAuxiliares.usuarios
+        fondosStore.empleados = empleados_aux
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados_aux.value = fondosStore.empleados
+              usuarios.value = empleados_aux.value
+            }, 100),
+          250
+        )
+      }
+    }
     return {
       mixin,
       consolidado,
@@ -203,12 +239,14 @@ export default defineComponent({
       tiposFondoRotativoFechas,
       tipos_saldos,
       is_all_empleados,
+      is_inactivo,
       generar_reporte,
       filtrarUsuarios,
       filtrarTiposFondos,
       filtrarTiposFondoRotativoFechas,
       filtarTiposSaldos,
       mostrarEmpleados,
+      mostrarInactivos,
       watchEffect,
     }
   },

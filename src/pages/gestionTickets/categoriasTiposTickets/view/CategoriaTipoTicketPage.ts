@@ -3,7 +3,7 @@ import { configuracionColumnasCategoriaTipoTicket } from '../domain/configuracio
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useQuasar } from 'quasar'
 
 // Componentes
@@ -17,6 +17,7 @@ import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/applicat
 import { CategoriaTipoTicket } from '../domain/CategoriaTipoTicket'
 import { CategoriaTipoTicketController } from '../infraestructure/CategoriaTipoTicketController'
 import { useAuthenticationStore } from 'stores/authentication'
+import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
 
 export default defineComponent({
   components: {
@@ -38,16 +39,24 @@ export default defineComponent({
       await obtenerListados({
         departamentos: new DepartamentoController(),
       })
-      departamentos.value = listadosAuxiliares.departamentos
+      // departamentos.value = listadosAuxiliares.departamentos
       tipoTicket.departamento = authenticationStore.user.departamento
     })
+
+    const departamentos = computed(() => listadosAuxiliares.departamentos.filter((departamento: Departamento) => {
+      if (authenticationStore.esAdministrador) {
+        return true
+      } else {
+        return departamento.id === authenticationStore.user.departamento
+      }
+    }))
 
     /*********
     * Filtros
     **********/
     const {
       filtrarDepartamentos,
-      departamentos,
+      // departamentos,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
     const rules = {
@@ -66,7 +75,6 @@ export default defineComponent({
     onReestablecer(() => tipoTicket.departamento = authenticationStore.user.departamento)
 
     return {
-      // mixin
       v$,
       mixin,
       tipoTicket,

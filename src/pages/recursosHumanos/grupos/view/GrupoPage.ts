@@ -14,6 +14,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GrupoController } from '../infraestructure/GrupoController'
 import { Grupo } from '../domain/Grupo'
+import { regiones } from 'config/utils'
 
 export default defineComponent({
   components: {
@@ -45,6 +46,7 @@ export default defineComponent({
       disabled,
       accion,
       configuracionColumnasGrupo,
+      regiones,
     }
   },
 })

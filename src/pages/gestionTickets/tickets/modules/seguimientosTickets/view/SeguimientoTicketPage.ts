@@ -1,6 +1,5 @@
 // Dependencias
-import { regiones, atenciones, tiposIntervenciones, estadosTrabajos } from 'config/utils'
-import { useNotificaciones } from 'shared/notificaciones'
+import { regiones, atenciones } from 'config/utils'
 import { endpoints } from 'config/api'
 import { computed, defineComponent, Ref, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
@@ -173,7 +172,6 @@ export default defineComponent({
       editarSeguimiento,
       regiones,
       atenciones,
-      tiposIntervenciones,
       //    guardar,
       editar,
       reestablecer,

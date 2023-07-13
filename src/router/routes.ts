@@ -55,6 +55,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/causas-intervenciones',
+        name: 'causas_intervenciones',
+        component: () =>
+          import('gestionTrabajos/causasIntervenciones/view/CausaIntervencionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/motivos-pausas',
         name: 'motivos_pausas',
         component: () =>
@@ -74,6 +81,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reportes-modulo-tareas',
+        name: 'reportes_modulo_tareas',
+        component: () => import('src/pages/gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteModuloTareaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/control-cambios',
         name: 'control_cambios',
         component: () =>
@@ -85,6 +98,13 @@ const routes: RouteRecordRaw[] = [
         name: 'clientes_finales',
         component: () =>
           import('gestionTrabajos/clientesFinales/view/ClienteFinalPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/materiales-empleados',
+        name: 'materiales_empleados',
+        component: () =>
+          import('gestionTrabajos/materialesEmpleados/view/MaterialEmpleadoPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -127,7 +147,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
         meta: { requiresAuth: true },
       },
-      {
+      /*{
         path: '/reporte-trabajos-realizados',
         name: 'reporte_trabajos_realizados',
         component: () =>
@@ -135,7 +155,7 @@ const routes: RouteRecordRaw[] = [
             'gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteTrabajoRealizadoPage.vue'
           ),
         meta: { requiresAuth: true },
-      },
+      },*/
       /********************
        * Modulo de tickets
        ********************/

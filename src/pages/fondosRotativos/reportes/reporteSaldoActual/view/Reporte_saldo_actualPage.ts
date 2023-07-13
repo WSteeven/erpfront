@@ -2,11 +2,9 @@ import { defineComponent, reactive, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
-import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
@@ -16,16 +14,19 @@ import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
 import { useAuthenticationStore } from 'stores/authentication'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useCargandoStore } from 'stores/cargando'
+import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 
 export default defineComponent({
   components: { TabLayout },
 
   setup() {
-
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+    const fondosStore = useFondoRotativoStore()
     const store = useAuthenticationStore()
     /***********
      * Mixin
@@ -34,14 +35,14 @@ export default defineComponent({
       ReporteSaldoActual,
       new ReporteSaldoActualController()
     )
-    const visualizar_saldo_usuario = ref( false )
+    const visualizar_saldo_usuario = ref(false)
     const {
       entidad: reporte_saldo_actual,
       disabled,
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista} =
+    const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
 
     /*************
@@ -52,20 +53,21 @@ export default defineComponent({
         required: true,
         minLength: 3,
         maxLength: 50,
-      }
+      },
     }
     const v$ = useVuelidate(reglas, reporte_saldo_actual)
     setValidador(v$.value)
-    const usuarios = ref([])
-    const is_all_users= ref('false')
+    const usuarios = ref()
+    const is_all_users = ref('false')
+    const is_inactivo = ref('false')
     usuarios.value = listadosAuxiliares.usuarios
 
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
-        }
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
+        },
       })
 
       usuarios.value = listadosAuxiliares.usuarios
@@ -83,21 +85,53 @@ export default defineComponent({
         return
       }
       update(() => {
-        const needle = val.toLowerCase();
+        const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
     function mostrarUsuarios() {
-      reporte_saldo_actual.usuario = null;
+      reporte_saldo_actual.usuario = null
+    }
+    async function mostrarInactivos(val) {
+      if (val === 'true') {
+        const empleados = (
+          await new EmpleadoController().listar({
+            campos: 'id,nombres,apellidos',
+            estado: 0,
+          })
+        ).result
+        fondosStore.empleados = empleados
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados.value = fondosStore.empleados
+              usuarios.value = empleados.value
+            }, 100),
+          250
+        )
+      } else {
+        const empleados_aux = listadosAuxiliares.usuarios
+        fondosStore.empleados = empleados_aux
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados_aux.value = fondosStore.empleados
+              usuarios.value = empleados_aux.value
+            }, 100),
+          250
+        )
+      }
     }
     async function generar_reporte(
       valor: ReporteSaldoActual,
       tipo: string
     ): Promise<void> {
-       const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_saldo_actual' + new Date().getTime();
+      const axios = AxiosHttpRepository.getInstance()
+      const filename = 'reporte_saldo_actual' + new Date().getTime()
       switch (tipo) {
         case 'excel':
           const url_excel =
@@ -117,34 +151,32 @@ export default defineComponent({
           break
       }
     }
-    if(store.can('puede.buscar.saldo.usuarios')==false){
+    if (store.can('puede.buscar.saldo.usuarios') == false) {
       reporte_saldo_actual.usuario = store.user.id
       visualizar_saldo_usuario.value = true
-      saldo_anterior();
+      saldo_anterior()
     }
-    function saldo_anterior (){
-
+    function saldo_anterior() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const url_acreditacion =
-                apiConfig.URL_BASE +
-                '/' +
-                axiosHttpRepository.getEndpoint(endpoints.ultimo_saldo)+ reporte_saldo_actual.usuario;
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.ultimo_saldo) +
+        reporte_saldo_actual.usuario
       axios({
         url: url_acreditacion,
         method: 'GET',
         responseType: 'json',
         headers: {
-          'Authorization': axiosHttpRepository.getOptions().headers.Authorization
-        }
+          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+        },
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
           visualizar_saldo_usuario.value = true
           reporte_saldo_actual.saldo_anterior = data.saldo_actual
         }
-
       })
-
     }
 
     return {
@@ -157,7 +189,9 @@ export default defineComponent({
       v$,
       usuarios,
       is_all_users,
+      is_inactivo,
       mostrarUsuarios,
+      mostrarInactivos,
       generar_reporte,
       filtrarUsuarios,
       visualizar_saldo_usuario,

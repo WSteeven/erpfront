@@ -57,6 +57,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas'),
         },
         {
+          title: 'Materiales de técnicos',
+          link: 'materiales-empleados',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.materiales_empleados'),
+        },
+        {
           title: 'Movilización entre trabajos',
           link: 'reporte-movilizacion-subtarea',
           icon: 'bi-circle',
@@ -66,6 +72,12 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Clientes finales',
           link: 'clientes-finales',
           icon: 'bi-circle',
+        },
+        {
+          title: 'Reportes',
+          link: 'reportes-modulo-tareas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.reportes_modulo_tareas'),
         },
       ],
     },
@@ -84,7 +96,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tickets'),
         },
         {
-          title: 'Tickets asignados',
+          title: 'Tickets asignados para mi',
           link: 'tickets-asignados',
           icon: 'bi-circle',
           can: store.can('puede.ver.tickets_asignados'),
@@ -565,13 +577,19 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Proyectos y tareas',
       icon: 'bi-pin-angle-fill',
-      can: store.esJefeTecnico,
+      can: store.esJefeTecnico || store.esAdministrador,
       children: [
         {
           title: 'Tipos de trabajos',
           link: 'tipos-trabajos',
           icon: 'bi-circle',
           can: store.can('puede.ver.tipos_trabajos'),
+        },
+        {
+          title: 'Causas intervenciones',
+          link: 'causas-intervenciones',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.causas_intervenciones'),
         },
         {
           title: 'Motivos de trabajo pausado',

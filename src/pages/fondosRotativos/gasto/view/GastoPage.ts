@@ -27,7 +27,6 @@ import { GastoPusherEvent } from '../application/GastoPusherEvent'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
-import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
@@ -57,7 +56,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, consultar ,listar} =
+    const { setValidador, obtenerListados, cargarVista, consultar, listar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
 
@@ -76,22 +75,13 @@ export default defineComponent({
     const aprobarController = new AprobarGastoController()
 
     const esFactura = ref(true)
-
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
-    onConsultado(() => {
-      esFactura.value =
-        gasto.factura == null ||
-        gasto.factura == undefined ||
-        gasto.factura == ''
-          ? false
-          : true
-    })
+
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
       mostrarAprobacion.value = true
-      esFactura.value = fondoRotativoStore.existeFactura
     }
     const visualizarAutorizador = computed(() => {
       return authenticationStore.can('puede.ver.campo.autorizador')
@@ -110,9 +100,10 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
-          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) > -1
-          || gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
+          -1 ||
+          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
+          -1 ||
+          gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
         return false
@@ -146,7 +137,8 @@ export default defineComponent({
       return cantidad
     })
     const mostarPlaca = computed(() => {
-      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 || parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
+      return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 ||
+        parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
         ? true
         : false
     })
@@ -282,7 +274,7 @@ export default defineComponent({
       })
       autorizacionesEspeciales.value =
         listadosAuxiliares.autorizacionesEspeciales
-        beneficiarios.value = listadosAuxiliares.beneficiarios
+      beneficiarios.value = listadosAuxiliares.beneficiarios
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
@@ -320,9 +312,19 @@ export default defineComponent({
       }
       update(() => {
         const needle = val.toLowerCase()
+        console.log(
+          listadosAuxiliares.autorizacionesEspeciales.filter((v) => {
+            console.log(v.nombres.toLowerCase())
+
+            v.nombres.toLowerCase().indexOf(needle) > -1
+          })
+        )
+
         autorizacionesEspeciales.value =
           listadosAuxiliares.autorizacionesEspeciales.filter(
-            (v) => v.usuario.toLowerCase().indexOf(needle) > -1
+            (v) =>
+              v.nombres.toLowerCase().indexOf(needle) > -1 ||
+              v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
@@ -330,17 +332,17 @@ export default defineComponent({
     function filtrarBeneficiarios(val, update) {
       if (val === '') {
         update(() => {
-          beneficiarios.value =
-            listadosAuxiliares.beneficiarios
+          beneficiarios.value = listadosAuxiliares.beneficiarios
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        beneficiarios.value =
-          listadosAuxiliares.beneficiarios.filter(
-            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
+        beneficiarios.value = listadosAuxiliares.beneficiarios.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
       })
     }
 
@@ -417,17 +419,15 @@ export default defineComponent({
     function filtarSubdetalles(val, update) {
       if (val === '') {
         update(() => {
-          sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-            (v) => v.id_detalle_viatico == gasto.detalle
-          )
+          sub_detalles.value = listadoSubdetalles.value
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        sub_detalles.value = listadosAuxiliares.sub_detalles.filter(
-          (v) => v.detalle.indexOf(needle) > -1
-        )
+        sub_detalles.value = listadoSubdetalles.value.filter((v) => {
+          v.descripcion.toLowerCase().indexOf(needle) > -1
+        })
       })
     }
     /**Filtro de proyectos */
@@ -511,6 +511,18 @@ export default defineComponent({
       gasto.sub_detalle = null
     }
 
+    function tiene_factura_subdetalle() {
+      let tieneFactura = true
+      for (let index = 0; index < gasto.sub_detalle!.length; index++) {
+        const id_subdetalle = gasto.sub_detalle![index]
+        const subdetalleEncontrado = listadoSubdetalles.value.find((v) => v.id === id_subdetalle)
+        if (!subdetalleEncontrado.tiene_factura) {
+          tieneFactura = false
+          break
+        }
+      }
+      esFactura.value = tieneFactura
+    }
     /*********
      * Pusher
      *********/
@@ -520,6 +532,7 @@ export default defineComponent({
 
     watchEffect(() => {
       gasto.total = gasto.cantidad! * gasto.valor_u!
+
     })
     function existeComprobante() {
       gasto.factura = null
@@ -561,8 +574,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
@@ -617,8 +630,9 @@ export default defineComponent({
       }
     }
     let tabActualGasto = '3'
+
     function filtrarGasto(tabSeleccionado: string) {
-      listar( {estado:tabSeleccionado}, false)
+      listar({ estado: tabSeleccionado }, false)
       tabActualGasto = tabSeleccionado
     }
     return {
@@ -644,9 +658,11 @@ export default defineComponent({
       vehiculos,
       watchEffect,
       filtrarAutorizacionesEspeciales,
+      tiene_factura_subdetalle,
       filtrarCantones,
       filtrarDetalles,
       filtarSubdetalles,
+      filtrarBeneficiarios,
       filtrarProyectos,
       existeComprobante,
       filtrarTareas,

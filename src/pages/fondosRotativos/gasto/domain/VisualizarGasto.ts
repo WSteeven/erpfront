@@ -14,6 +14,7 @@ export class VisualizarGasto extends EntidadAuditable {
   aut_especial_user: string | null
   lugar_info: string | null
   subTarea_info: string | null
+  beneficiarios_info: string | null
   detalle: string | null
   detalle_info: string | null
   sub_detalle: string | null
@@ -31,8 +32,7 @@ export class VisualizarGasto extends EntidadAuditable {
   estado: string | null
   estado_info: string | null
   detalle_estado: string | null
-
-
+  created_at: string | null
   constructor() {
     super()
     this.fecha_viat = null
@@ -42,6 +42,8 @@ export class VisualizarGasto extends EntidadAuditable {
     this.tarea_info = null
     this.subTarea = null
     this.subTarea_info = null
+    this.beneficiarios_info = null
+
     this.proyecto = null
     this.proyecto_info = null
     this.ruc = null
@@ -66,6 +68,7 @@ export class VisualizarGasto extends EntidadAuditable {
     this.empleado_info = null
     this.estado_info = 'POR APROBAR'
     this.detalle_estado = null
+    this.created_at = null
 
   }
 }

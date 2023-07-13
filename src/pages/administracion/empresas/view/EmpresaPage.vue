@@ -35,7 +35,7 @@
             <label class="q-mb-sm block">Tipo de contribuyente</label>
             <q-select
               v-model="empresa.tipo_contribuyente"
-              :options="opciones_tipo_contribuyente"
+              :options="opcionesTipoContribuyente"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"

@@ -5,6 +5,7 @@ export class Sucursal extends EntidadAuditable {
     telefono: string | null
     correo: string | null
     extension: string | null
+    cliente:number | null
     // administrador: string | null
 
     constructor() {
@@ -13,6 +14,7 @@ export class Sucursal extends EntidadAuditable {
         this.telefono = null
         this.correo = null
         this.extension = null
+        this.cliente = null
         // this.administrador = null
     }
 }

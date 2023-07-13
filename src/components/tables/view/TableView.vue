@@ -1,61 +1,79 @@
 <template>
-  <table class="full-width">
-    <thead>
-      <tr>
-        <th
-          v-for="(columna, index) in configuracionColumnas"
-          :key="index"
-          class="mini-texto"
-        >
-          {{ columna.label }}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(fila, indice) in datosImprimir" :key="indice">
-        <td v-for="(valor, clave) in fila" :key="clave" class="mini-texto">
-          {{ valor }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="overflow-auto q-mb-sm">
+    <table :class="estilos">
+      <thead>
+        <tr>
+          <th
+            v-for="(columna, index) in configuracionColumnas"
+            :key="index"
+            class="text-left"
+            :class="{ 'mini-texto': dense }"
+          >
+            {{ columna.label }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(fila, index) in elementos" :key="index">
+          <td
+            v-for="(celda, index) in fila"
+            :key="index"
+            class="text-no-wrap"
+            :class="{ 'mini-texto': dense }"
+          >
+            {{ celda }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <deslizar-movil></deslizar-movil>
 </template>
 
-<script lang="ts" setup>
-import { computed } from 'vue'
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { ColumnConfig } from '../domain/ColumnConfig'
+import DeslizarMovil from './DeslizarMovil.vue'
 
-const props = defineProps(['configuracionColumnas', 'datos'])
-
-function wrapCsvValue(val, formatFn?, row?) {
-  let formatted = formatFn !== void 0 ? formatFn(val, row) : val
-
-  formatted =
-    formatted === void 0 || formatted === null ? '' : String(formatted)
-
-  return `${formatted}`
-}
-
-const datosImprimir = computed(() =>
-  props.datos.map((row: any) =>
-    props.configuracionColumnas.map((col: any) =>
-      wrapCsvValue(
-        typeof col.field === 'function'
-          ? col.field(row)
-          : row[col.field === void 0 ? col.name : col.field],
-        col.format,
-        row
-      )
-    )
-  )
-)
+export default defineComponent({
+  components: { DeslizarMovil },
+  props: {
+    configuracionColumnas: {
+      type: Object as () => ColumnConfig<any>[],
+      required: true,
+    },
+    elementos: {
+      type: Array,
+      required: true,
+    },
+    dense: {
+      type: Boolean,
+      default: false,
+    },
+    estilos: {
+      type: String,
+      required: false,
+    },
+  },
+  setup() {
+    //
+  },
+})
 </script>
 
-<style>
+<style lang="scss" scoped>
 thead {
-  background-color: #eee;
+  background-color: #fff;
 }
 
 table {
   border-collapse: collapse;
+  width: 100%;
+
+  td,
+  th {
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+  }
 }
 </style>

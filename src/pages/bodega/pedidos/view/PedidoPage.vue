@@ -46,6 +46,10 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
+              @popup-show="ordenarSucursales"
               :option-label="(item) => item.lugar"
               :option-value="(item) => item.id"
               emit-value
@@ -55,6 +59,11 @@
                 <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSucursales">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
             </q-select>
           </div>
@@ -532,6 +541,7 @@
                     listarProductos({
                       sucursal_id: pedido.sucursal,
                       cliente_id: pedido.cliente,
+                      stock:true,
                     })
                   "
                   icon="search"
