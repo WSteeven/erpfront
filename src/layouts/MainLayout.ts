@@ -3,9 +3,9 @@
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { defineComponent, ref, computed, Ref, ComputedRef, onMounted, watch } from 'vue'
+import { defineComponent, ref, computed, Ref, ComputedRef, watch } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { LocalStorage, useQuasar } from 'quasar'
+import { LocalStorage, SessionStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import moment from 'moment'
@@ -25,6 +25,7 @@ import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useIdle, useTimestamp } from '@vueuse/core'
 import { formatearFechaTexto } from 'shared/utils'
+import { Idle, NotIdle } from 'idlejs'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -141,6 +142,7 @@ export default defineComponent({
      * cierto período de tiempo. 
      */
     const tiempoInactividad = 5 * 60 * 1000 //5 minutos de inactividad
+    let mouseActivo = true
     const mostrarAlertaInactividad = computed(() => {
       return (tiempoInactividad / 1000) - idledFor.value < 10 //true cuando sean 10 segundos restantes
     })
@@ -148,8 +150,10 @@ export default defineComponent({
     const now = useTimestamp({ interval: 1000 })
     const idledFor = computed(() => Math.floor((now.value - lastActive.value) / 1000),) //Tiempo de inactividad transcurrido en segundos 1,2,3...,n
     const ultimaConexion = LocalStorage.getItem('ultima_conexion')
+    /*
     watch(idle, () => {
       if (idle.value === true) {
+        console.log('Se cierra la sesión por inactividad, ultima conexion: ' + formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
         LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
         notificarAdvertencia('Se ha cerrado la sesión por inactividad, por favor vuelve a iniciar sesión.')
         Swal.fire({
@@ -161,6 +165,28 @@ export default defineComponent({
         logout()
       }
     })
+    */
+    const notIdle = new NotIdle()
+      .whenInteractive()
+      .within(10, 1000)
+      .do(() => {
+        sessionStorage.setItem('lastActivity', new Date().getTime().toString())
+      })
+      .start()
+    const LIMIT = 10 * 60 * 1000 // 10 minutes for logout session
+    setInterval(() => {
+      let la = new Date(+sessionStorage.getItem('lastActivity')!).getTime()
+      if (new Date().getTime() - la > LIMIT) {
+        logout()
+        LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
+        Swal.fire({
+          icon: 'error',
+          title: 'Has excedido el tiempo de inactividad',
+          text: 'Se ha cerrado la sesión por exceder tiempo de inactividad, por favor vuelve a iniciar sesión.',
+          confirmButtonColor: '#0879dc',
+        })
+      }
+    }, 60000) //comprobar cada minuto
 
     return {
       enCamino,

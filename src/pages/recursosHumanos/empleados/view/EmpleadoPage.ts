@@ -48,8 +48,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-    const { onConsultado, onBeforeModificar } = mixin.useHooks()
-
+    const { onConsultado } = mixin.useHooks()
     const opciones_cantones = ref([])
     const opciones_roles = ref([])
     const opciones_cargos = ref([])
