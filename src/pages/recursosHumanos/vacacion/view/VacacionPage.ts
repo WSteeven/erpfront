@@ -3,7 +3,7 @@ import { configuracionColumnasVacacion } from '../domain/configuracionColumnasVa
 import { required } from 'shared/i18n-validators'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect } from 'vue'
+import { defineComponent, ref, computed, watchEffect, reactive } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -15,13 +15,16 @@ import { VacacionController } from '../infraestructure/VacacionController'
 import { Vacacion } from '../domain/Vacacion'
 import { removeAccents } from 'shared/utils'
 import { accionesTabla, maskFecha } from 'config/utils'
-import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 import { useAuthenticationStore } from 'stores/authentication'
+import axios from 'axios'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
@@ -51,34 +54,102 @@ export default defineComponent({
     const esConsultado = ref(false)
     onBeforeModificar(() => (esConsultado.value = true))
     const periodos = ref([])
-    const fecha_ingreso = ref();
-    const dias_descuento_vacaciones = ref(0)
     const recursosHumanosStore = useRecursosHumanosStore()
     const store = useAuthenticationStore()
-    const dias_adicionales = computed(() => {
-      const fechaInicio = new Date(store.user.fecha_ingreso)
-      const fechaActual = new Date() // Obtiene la fecha actual
-      let diasAdicionales = 0
-      const aniosServicio =
-        fechaActual.getFullYear() - fechaInicio.getFullYear() // Calcula los años de servicio
-      if (aniosServicio >= 5) {
-        const aniosExcedentes = aniosServicio - 4 // Calcula los años de excedente
-        diasAdicionales = Math.min(aniosExcedentes, 15) // Limita los días adicionales a un máximo de 15
-      }
-      return diasAdicionales
+
+    const data = reactive<{
+      dias_descuento_vacaciones: string;
+      empleado: Empleado | null;
+    }>({
+      dias_descuento_vacaciones: '',
+      empleado: null
+    });
+    const dias_descuento_vacaciones = computed(() => {
+      obtener_descuentos();
+      return data.dias_descuento_vacaciones
     })
 
+    function obtener_descuentos() {
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const url_acreditacion =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.descuentos_permiso)
+      axios({
+        url: url_acreditacion,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+        },
+        params: {
+          empleado:   vacacion.empleado == null ? store.user.id:  data.empleado!.id,
+        },
+      })
+        .then((response) => {
+          const responseData = response.data
+          if (responseData) {
+            data.dias_descuento_vacaciones = convertirHorasAHumanos(responseData.duracion)
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
+    function convertirHorasAHumanos(horas) {
+      const dias = Math.floor(horas / 8);
+      const horasRestantes = horas % 8;
 
+      let resultado = "";
+      if (dias > 0) {
+        resultado += dias + " día";
+        if (dias > 1) {
+          resultado += "s";
+        }
+        resultado += " ";
+      }
+
+      if (horasRestantes > 0) {
+        resultado += horasRestantes + " hora";
+        if (horasRestantes > 1) {
+          resultado += "s";
+        }
+      }
+
+      return resultado;
+    }
+    const empleado = ref();
     cargarVista(async () => {
       await obtenerListados({
         periodos: {
           controller: new PeriodoController(),
           params: { campos: 'id,nombre', activo: 1 },
         },
+       empleados: {
+          controller: new EmpleadoController(),
+          params: {id:vacacion.empleado == null ? store.user.id:vacacion.empleado,
+           estado: 1 },
+        },
       })
+     data.empleado = listadosAuxiliares.empleados[0]
       periodos.value = listadosAuxiliares.periodos
     })
-
+    const dias_adicionales = computed(() => {
+      const fecha_ingreso = vacacion.empleado !== null ?data.empleado!.fecha_ingreso:store.user.fecha_ingreso;
+       if(fecha_ingreso == null){
+         return 0
+       }
+       const fechaInicio = new Date(store.user.fecha_ingreso)
+       const fechaActual = new Date() // Obtiene la fecha actual
+       let diasAdicionales = 0
+       const aniosServicio =
+         fechaActual.getFullYear() - fechaInicio.getFullYear() // Calcula los años de servicio
+       if (aniosServicio >= 5) {
+         const aniosExcedentes = aniosServicio - 4 // Calcula los años de excedente
+         diasAdicionales = Math.min(aniosExcedentes, 15) // Limita los días adicionales a un máximo de 15
+       }
+       return diasAdicionales
+     })
     //Reglas de validacion
     const reglas = computed(() => ({
       empleado: { required },
@@ -165,6 +236,7 @@ export default defineComponent({
       mixin,
       vacacion,
       periodos,
+      empleado,
       watchEffect,
       filtrarPeriodo,
       recursosHumanosStore,

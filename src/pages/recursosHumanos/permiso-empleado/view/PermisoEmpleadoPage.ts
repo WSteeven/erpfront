@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasPermisoEmpleado } from '../domain/configuracionColumnasPermisoEmpleado'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -29,6 +29,8 @@ import { LocalStorage } from 'quasar'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { log } from 'console'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, GestorDocumentos },
@@ -50,7 +52,7 @@ export default defineComponent({
       listado,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } =
+    const { setValidador, consultar, cargarVista, obtenerListados, listar } =
       mixin.useComportamiento()
     const {
       onBeforeGuardar,
@@ -73,8 +75,7 @@ export default defineComponent({
     const empleados = ref([])
     const refArchivoPrestamoEmpresarial = ref()
     const autorizaciones = ref()
-    const esRecursosHumanos = store.esRecursosHumanos;
-
+    const esRecursosHumanos = store.esRecursosHumanos
     const esAutorizador = ref(false)
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
@@ -113,9 +114,14 @@ export default defineComponent({
       const diferenciaDias = Math.floor(
         diferenciaMilisegundos / (1000 * 60 * 60 * 24)
       ) // Diferencia en días
-      console.log(diferenciaDias);
+      console.log(diferenciaDias)
 
-      return diferenciaDias === -1|| diferenciaDias === 0  || diferenciaDias === 1 || diferenciaDias === 2
+      return (
+        diferenciaDias === -1 ||
+        diferenciaDias === 0 ||
+        diferenciaDias === 1 ||
+        diferenciaDias === 2
+      )
     }
     function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
@@ -146,7 +152,8 @@ export default defineComponent({
       await refArchivoPrestamoEmpresarial.value.subir({ permiso_id: id })
     }
     onConsultado(() => {
-      esAutorizador.value = store.user.id == permiso.id_jefe_inmediato ? true:false
+      esAutorizador.value =
+        store.user.id == permiso.id_jefe_inmediato ? true : false
       setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           permiso_id: permiso.id,
@@ -212,6 +219,18 @@ export default defineComponent({
       tabPermisoEmpleado = tabSeleccionado
     }
 
+    const editarPermiso: CustomActionTable = {
+      titulo: ' ',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      visible: ({ entidad }) =>
+        entidad.empleado !== store.user.id && !esRecursosHumanos,
+      accion: ({ entidad }) => {
+        accion.value = 'EDITAR'
+        consultar(entidad)
+      },
+    }
+
     return {
       removeAccents,
       mixin,
@@ -220,6 +239,7 @@ export default defineComponent({
       filtrarEmpleados,
       filtrarPermisoEmpleado,
       watchEffect,
+      editarPermiso,
       esAutorizador,
       esRecursosHumanos,
       esNuevo,
