@@ -168,14 +168,18 @@ export default defineComponent({
     */
     const notIdle = new NotIdle()
       .whenInteractive()
-      .within(10, 1000)
+      .within(5, 1000)
       .do(() => {
+        console.log('ultima actividad', new Date().getTime().toString(), new Date().toLocaleTimeString())
         sessionStorage.setItem('lastActivity', new Date().getTime().toString())
       })
       .start()
-    const LIMIT = 10 * 60 * 1000 // 10 minutes for logout session
+    const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
     setInterval(() => {
       let la = new Date(+sessionStorage.getItem('lastActivity')!).getTime()
+      console.log('Resta de tiempo', new Date().getTime()-la)
+      console.log('Tiempo limite', LIMIT)
+      console.log('Resultado',  new Date().getTime()-la > LIMIT, new Date().toLocaleTimeString())
       if (new Date().getTime() - la > LIMIT) {
         logout()
         LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
