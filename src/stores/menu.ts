@@ -482,13 +482,19 @@ export const useMenuStore = defineStore('menu', () => {
             {
               title: 'Prestamos Empresariales',
               link: 'prestamo-empresarial',
-              icon: 'bi-circle',
+              icon: 'bi-building',
               can:store.can('puede.ver.prestamo_empresarial'),
+            },
+            {
+              title: 'Prestamos Hipotecario',
+              link: 'prestamo-hipotecario',
+              icon: 'bi-house',
+              can:store.can('puede.ver.prestamo_hipotecario'),
             },
             {
               title: 'Solicitud de Prestamos Empresariales',
               link: 'solicitud-prestamo-empresarial',
-              icon: 'bi-circle',
+              icon: 'fa-solid fa-file-signature',
               can:store.can('puede.ver.solicitud_prestamo_empresarial'),
             },
           ]},

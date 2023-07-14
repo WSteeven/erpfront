@@ -24,6 +24,20 @@ export const configuracionColumnasVacacion: ColumnConfig<Vacacion>[] = [
   sortable: true
 },
 {
+  name: 'fecha_inicio',
+  field: 'fecha_inicio',
+  label: 'Fecha Inicio',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'fecha_fin',
+  field: 'fecha_fin',
+  label: 'Fecha Fin',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'fecha_inicio_rango1_vacaciones',
   field: 'fecha_inicio_rango1_vacaciones',
   label: 'Fecha Inicio Rango 1 de Vacaciones',

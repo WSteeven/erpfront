@@ -1,8 +1,20 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout-filter-tabs2
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :tabOptions="tabOptionsVacaciones"
+    :full="true"
+    :accion1="editarVacacion"
+    :permitirEditar="false"
+    :permitirEliminar="false"
+    :mostrarButtonSubmits="true"
+    :filtrar="filtrarVacacion"
+    tabDefecto="1"
+    :forzarListar="true"
+  >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-md">
+        <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
           <!--Periodos -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Periodo</label>
@@ -39,7 +51,7 @@
             </q-select>
           </div>
           <!-- Derecho a vacaciones -->
-          <div class="col-12 col-md-3"  v-if="accion == 'EDITAR' && esAutorizador">
+          <div class="col-12 col-md-3" v-if="accion == 'EDITAR' && esAutorizador">
             <label class="q-mb-sm block">Derecho a vacaciones</label>
             <q-input
               v-model="vacacion.derecho_vacaciones"
@@ -78,8 +90,8 @@
             <label class="q-mb-sm block">Número de dias</label>
             <q-input v-model="numero_dias" disable outlined dense> </q-input>
           </div>
-            <!-- Fecha Inicio -->
-            <div class="col-12 col-md-3">
+          <!-- Fecha Inicio -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha Inicio</label>
             <q-input
               v-model="vacacion.fecha_inicio"
@@ -93,11 +105,7 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date
-                      v-model="vacacion.fecha_inicio"
-                      :mask="maskFecha"
-                      today-btn
-                    >
+                    <q-date v-model="vacacion.fecha_inicio" :mask="maskFecha" today-btn>
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
@@ -107,10 +115,7 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_inicio.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -131,11 +136,7 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date
-                      v-model="vacacion.fecha_fin"
-                      :mask="maskFecha"
-                      today-btn
-                    >
+                    <q-date v-model="vacacion.fecha_fin" :mask="maskFecha" today-btn>
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
@@ -145,10 +146,7 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  v-for="error of v$.fecha_fin.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -336,6 +334,6 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./VacacionPage.ts"></script>

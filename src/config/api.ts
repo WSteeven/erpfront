@@ -70,7 +70,9 @@ export const endpoints = {
   vacacion: new Endpoint('recursos-humanos/vacacion'),
   archivo_permiso_empleado: new Endpoint('recursos-humanos/archivo_permiso_empleado'),
   archivo_licencia_empleado: new Endpoint('recursos-humanos/archivo_licencia_empleado'),
+  archivo_prestamo_hipotecario: new Endpoint('recursos-humanos/archivo_prestamo_hipotecario'),
   descuentos_permiso: new Endpoint('recursos-humanos/descuentos_permiso'),
+  prestamo_hipotecario : new Endpoint('recursos-humanos/prestamo_hopotecario'),
 
 
 
