@@ -74,7 +74,7 @@ export default defineComponent({
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
-
+const auxmes = ref()
 
 
     function convertir_fecha(fecha) {
@@ -94,16 +94,17 @@ export default defineComponent({
       if (!prestamo.tieneDocumento) {
         notificarAdvertencia('Debe seleccionar al menos un archivo.')
       }
+      auxmes.value = prestamo.mes
     })
     onBeforeModificar(() => {
       prestamo.tieneDocumento = true
     })
     onGuardado((id: number) => {
-      subirArchivos(id)
+      subirArchivos()
       emit('cerrar-modal')
     })
-    async function subirArchivos(id: number) {
-      await refArchivoPrestamoHipotecario.value.subir({ prestamo_id: id })
+    async function subirArchivos() {
+        await refArchivoPrestamoHipotecario.value.subir({ mes: auxmes.value })
     }
     onConsultado(() => {
 
