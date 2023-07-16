@@ -23,12 +23,13 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         label: 'Justificación',
         align: 'left',
         sortable: true,
-        style: 'width:100px'
+        style: 'max-width:300px; overflow: auto;'
     },
     {
         name: 'solicitante',
         field: 'solicitante',
         label: 'Solicitante',
+        style: 'max-width:250px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -43,6 +44,7 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         name: 'per_autoriza',
         field: 'per_autoriza',
         label: 'Autoriza',
+        style: 'max-width:250px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -57,6 +59,7 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         name: 'responsable',
         field: 'responsable',
         label: 'Responsable',
+        style: 'max-width:250px; overflow: auto;',
         align: 'left',
         sortable: true
     },

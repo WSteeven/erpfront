@@ -12,11 +12,13 @@ import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpl
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
-import { useAuthenticationStore } from 'stores/authentication'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { ordernarListaString } from 'shared/utils'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -24,7 +26,7 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const authenticationStore = useAuthenticationStore()
+    // const authenticationStore = useAuthenticationStore()
     const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
     useCargandoStore().setQuasar(useQuasar())
 
@@ -34,6 +36,7 @@ export default defineComponent({
     const materialEmpleadoTareaController = new MaterialEmpleadoTareaController()
     const materialEmpleadoController = new MaterialEmpleadoController()
     const tareaController = new TareaController()
+    const empleadoController = new EmpleadoController()
 
     /************
      * Variables
@@ -43,16 +46,31 @@ export default defineComponent({
     const materialesTarea = ref([])
     const listadoStockPersonal = ref([])
     const tareasSource: any = ref([])
+    const empleadosSource: any = ref([])
     const filtro = reactive({
       tarea: null,
-      tipoStock: null
+      tipoStock: null,
+      empleado: null,
     })
     const mensaje = ref()
 
     /*******
      * Init
      *******/
-    tareaController.listar({ finalizado: 0 }).then((data) => tareasSource.value = data.result)
+    async function cargarListados() {
+      cargando.activar()
+      const tareasResponse = await tareaController.listar({ finalizado: 0 })
+      tareasSource.value = tareasResponse.result
+
+      const empleadosResponse = await empleadoController.listar({
+        campos: 'id,nombres,apellidos',
+        estado: 1
+      })
+      empleadosSource.value = empleadosResponse.result
+      cargando.desactivar()
+    }
+
+    cargarListados()
 
     /************
      * Funciones
@@ -70,20 +88,24 @@ export default defineComponent({
       }
     }
 
+    function ordenarEmpleados() {
+      empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+    }
+
     async function filtrarStockPersonal() {
-      const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
+      const { result } = await materialEmpleadoController.listar({ empleado_id: filtro.empleado })
       listadoStockPersonal.value = result
       listadoMaterialesDevolucionStore.listadoMateriales = result
-      mensaje.value = !result.length ? 'No tienes materiales asignados en tu stock personal' : ''
+      mensaje.value = !result.length ? 'El empleado seleccionado no tiene materiales asignados en su stock personal' : ''
     }
 
     async function filtrarMaterialTarea() {
-      const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id })
+      const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: filtro.empleado })
       // if (result.length === 0) {
       //   notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
       // }
       materialesTarea.value = result
-      mensaje.value = !result.length ? 'No tienes materiales asignados para la tarea seleccionada' : ''
+      mensaje.value = !result.length ? 'El empleado seleccionado no tiene materiales asignados para la tarea seleccionada' : ''
       // asignacion al store de la tarea y el listado de materiales para devolver
       listadoMaterialesDevolucionStore.listadoMateriales = result
       listadoMaterialesDevolucionStore.tareaId = filtro.tarea
@@ -92,6 +114,16 @@ export default defineComponent({
     /**********
      * Filtros
      **********/
+    const empleados = ref([])
+    function filtrarEmpleados(val, update) {
+      if (val === '') update(() => empleados.value = empleadosSource.value.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
+
+      update(() => {
+        const needle = val.toLowerCase()
+        empleados.value = empleadosSource.value.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+      })
+    }
+
     const tareas = ref([])
     function filtrarTareas(val, update) {
       if (val === '') update(() => tareas.value = tareasSource.value)
@@ -103,7 +135,6 @@ export default defineComponent({
         )
       })
     }
-    //botones para transferir al stock
 
     return {
       configuracionColumnasMaterialEmpleadoTarea,
@@ -113,12 +144,15 @@ export default defineComponent({
       materialEmpleadoTareaController,
       materialesTarea,
       listadoStockPersonal,
-      tareas,
       filtro,
+      tareas,
+      empleados,
       tab: ref('tareas'),
       filtrarTareas,
+      filtrarEmpleados,
+      listadoMaterialesDevolucionStore,
+      ordenarEmpleados,
       mensaje,
-      listadoMaterialesDevolucionStore
     }
   },
 })

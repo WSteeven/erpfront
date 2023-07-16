@@ -7,7 +7,8 @@
     :accion1="botonImprimir"
   >
     <template #formulario>
-      <div v-if="transaccion.aviso_liquidacion_cliente"
+      <div
+        v-if="transaccion.aviso_liquidacion_cliente"
         class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
       >
         <q-icon
@@ -276,7 +277,11 @@
           </div>
           <!-- Solicitante -->
           <div v-if="transaccion.solicitante" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Solicitante</label>
+            <label-info-empleado v-if="accion==acciones.consultar"
+              label="Solicitante"
+              @click="infoEmpleado(transaccion.solicitante)"
+            />
+            <label v-else class="q-mb-sm block">Solicitante</label>
             <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
             </q-input> -->
             <q-select
@@ -356,7 +361,11 @@
           </div>
           <!-- Responsable -->
           <div v-if="!esTecnico" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Responsable</label>
+            <label-info-empleado v-if="accion==acciones.consultar"
+              label="Responsable"
+              @click="infoEmpleado(transaccion.responsable)"
+            />
+            <label v-else class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="transaccion.responsable"
               :options="opciones_empleados"
@@ -412,7 +421,11 @@
           </div>
           <!-- Persona que retira -->
           <div v-if="transaccion.retira_tercero" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Persona que retira</label>
+            <label-info-empleado v-if="accion==acciones.consultar"
+              label="Persona que retira"
+              @click="infoEmpleado(transaccion.per_retira)"
+            />
+            <label v-else class="q-mb-sm block">Persona que retira</label>
             <q-select
               v-model="transaccion.per_retira"
               :options="opciones_empleados"
@@ -543,7 +556,7 @@
                   :disable="disabled || soloLectura"
                   color="positive"
                   class="full-width"
-                  style="height: 40px"
+                  style="height:20px; max-height: 40px; "
                   no-caps
                   glossy
                   >Buscar</q-btn
@@ -551,7 +564,6 @@
               </div>
             </div>
           </div>
-
 
           <!-- Tabla -->
           <div class="col-12">
@@ -565,6 +577,7 @@
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
+              :altoFijo="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               @eliminar="eliminar"
@@ -585,5 +598,6 @@
       </essential-selectable-table>
     </template>
   </tab-layout>
+  <modales-entidad :comportamiento="modalesEmpleado" :confirmarCerrar="false"></modales-entidad>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

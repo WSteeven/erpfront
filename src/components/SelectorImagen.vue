@@ -3,7 +3,7 @@
     v-model="img"
     dense
     outlined
-    class="q-mb-sm"
+    class="q-mt-sm"
     clearable
     @update:model-value="setBase64"
     @clear="limpiar()"

@@ -1,30 +1,55 @@
 <template>
   <q-page padding>
     <div class="column q-mb-md text-center">
-      <b>Mi bodega</b>
+      <b>Material de técnicos</b>
       <small
-        >Conoce el material que tienes a tu disposición para utilizar en tus
-        trabajos.</small
+        >Conoce el material que tienen a su disposición los técnicos para
+        utilizar en sus trabajos.</small
       >
       <small
-        >El material puede ser asignado para la tarea o a tu stock
+        >El material puede ser asignado para una tarea o a su stock
         personal.</small
       >
     </div>
-    <!-- <div
-      class="col-12 rounded-card q-py-md text-center text-white bg-secondary q-mb-sm"
-    >
-      <div class="q-mb-md text-shadow">
-        Mantenga siempre actualizada su base de datos de materiales.
-      </div>
-      <div class="q-mb-md text-bold">Modo offline.</div>
-      <q-btn color="white" outline no-caps>
-        <q-icon name="bi-cloud-download-fill" class="q-mr-sm"></q-icon>
-        Sincronizar ahora</q-btn
-      >
-    </div> -->
+
     <q-card class="rounded-card custom-shadow">
+      <q-card-section>
+        <div class="row">
+          <div class="col-12">
+            <label class="q-mb-sm block"
+              ><b>Paso 1: </b>Seleccione un empleado</label
+            >
+            <q-select
+              v-model="filtro.empleado"
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarEmpleados"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+        </div>
+      </q-card-section>
+
       <q-tabs
+        v-if="filtro.empleado"
         v-model="tab"
         class="text-primary"
         :class="{ 'bg-grey-1': !$q.dark.isActive }"
@@ -35,23 +60,25 @@
       >
         <q-tab
           name="tareas"
-          label="Material para tarea"
+          label="Material para tarea que tiene a cargo"
           @click="() => (mensaje = '')"
         />
         <q-tab
           name="personal"
-          label="Stock personal"
+          label="Stock personal del empleado"
           @click="filtrarStock('personal')"
         >
         </q-tab>
       </q-tabs>
 
-      <q-tab-panels v-model="tab" animated>
+      <q-tab-panels v-if="filtro.empleado" v-model="tab" animated>
         <q-tab-panel name="tareas">
-          <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
+          <div class="row q-col-gutter-sm q-mb-md">
             <!-- Tarea -->
             <div class="col-12">
-              <label class="q-mb-sm block">Seleccione una tarea</label>
+              <label class="q-mb-sm block"
+                ><b>Paso 2: </b>Seleccione una tarea</label
+              >
               <q-select
                 v-model="filtro.tarea"
                 :options="tareas"
@@ -61,6 +88,7 @@
                 use-input
                 input-debounce="0"
                 options-dense
+                hint="Búsqueda por código de tarea"
                 dense
                 outlined
                 :option-label="
@@ -167,7 +195,7 @@
                 :permitir-buscar="false"
                 :alto-fijo="false"
               ></essential-table>
-              <!-- <div v-else>Aún no tienes materiales asignados.</div> -->
+              <!-- <div v-else>El empleado seleccionado no tiene materiales asignados.</div> -->
             </div>
           </div>
         </q-tab-panel>
@@ -183,4 +211,4 @@
   </q-page>
 </template>
 
-<script src="./MiBodegaPage.ts"></script>
+<script src="./MaterialEmpleadoPage.ts"></script>

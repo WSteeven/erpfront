@@ -166,7 +166,7 @@ export default defineComponent({
       try {
         cargando.activar()
         const empleadoController = new EmpleadoController()
-        const { result } = await empleadoController.listar({ grupo_id: grupo_id })
+        const { result } = await empleadoController.listar({ grupo_id: grupo_id, estado: 1 })
         empleadosGrupo.value = mapearResponsable(result)
       } catch (error) {
         if (isAxiosError(error)) {

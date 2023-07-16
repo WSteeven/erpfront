@@ -373,21 +373,6 @@
 
     <!-- Router -->
     <q-page-container :class="{ 'bg-body': true }">
-      <div
-        v-if="mostrarAlertaInactividad"
-        class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
-      >
-        <q-icon
-          name="bi-exclamation-triangle-fill"
-          class="q-mr-sm"
-          size="1em"
-        ></q-icon
-        ><b>&nbsp; Tiempo de inactividad excedido</b>
-        <div>
-          La sesión se cerrará en
-          {{ tiempoInactividad / 1000 - idledFor }} segundos
-        </div>
-      </div>
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>
