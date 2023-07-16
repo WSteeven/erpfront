@@ -2,7 +2,7 @@ import { defineComponent, reactive, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
@@ -70,9 +70,9 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, fondo_rotativo_autorizacion_fecha)
     setValidador(v$.value)
     const usuarios = ref([])
+    const usuariosInactivos = ref()
     const tiposFondos = ref([])
     const tiposFondoRotativoFechas = ref([])
-    usuarios.value = listadosAuxiliares.usuarios
     const is_inactivo = ref('false')
 
     cargarVista(async () => {
@@ -88,6 +88,11 @@ export default defineComponent({
       })
 
       usuarios.value = listadosAuxiliares.usuarios
+      usuariosInactivos.value =
+      LocalStorage.getItem('usuariosInactivos') == null
+        ? []
+        : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
+    listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposFondoRotativoFechas.value =
         listadosAuxiliares.tiposFondoRotativoFechas
@@ -108,6 +113,22 @@ export default defineComponent({
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
           (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrarUsuariosInactivos(val, update) {
+      if (val === '') {
+        update(() => {
+          usuariosInactivos.value = listadosAuxiliares.usuariosInactivos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        usuariosInactivos.value = listadosAuxiliares.usuariosInactivos.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -170,36 +191,6 @@ export default defineComponent({
       }
     }
     fondo_rotativo_autorizacion_fecha.tipo_reporte='1';
-    async function mostrarInactivos(val) {
-      if (val === 'true') {
-        const empleados = (
-          await new EmpleadoController().listar({
-            campos: 'id,nombres,apellidos',
-            estado: 0,
-          })
-        ).result
-        fondosStore.empleados = empleados
-        setTimeout(
-          () =>
-            setInterval(() => {
-              empleados.value = fondosStore.empleados
-              usuarios.value = empleados.value
-            }, 100),
-          250
-        )
-      } else {
-        const empleados_aux = listadosAuxiliares.usuarios
-        fondosStore.empleados = empleados_aux
-        setTimeout(
-          () =>
-            setInterval(() => {
-              empleados_aux.value = fondosStore.empleados
-              usuarios.value = empleados_aux.value
-            }, 100),
-          250
-        )
-      }
-    }
     return {
       mixin,
       fondo_rotativo_autorizacion_fecha,
@@ -208,12 +199,13 @@ export default defineComponent({
       v$,
       maskFecha,
       usuarios,
+      usuariosInactivos,
       tiposFondos,
       tiposFondoRotativoFechas,
-      mostrarInactivos,
       is_inactivo,
       generar_reporte,
       filtrarUsuarios,
+      filtrarUsuariosInactivos,
       filtrarTiposFondos,
       filtrarTiposFondoRotativoFechas,
       watchEffect,

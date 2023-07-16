@@ -21,6 +21,7 @@ import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/in
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -134,6 +135,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.set('autorizaciones_especiales', JSON.stringify(autorizacionesEspeciales))
     const tareas = (await new TareaController().listar({ campos: 'id,titulo' })).result
     LocalStorage.set('tareas', JSON.stringify(tareas))
+    const usuariosInactivos = (await new EmpleadoController().listar({ campos: 'id,nombres,apellidos', estado: 0 })).result
+    LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
     // const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
     // LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
 
