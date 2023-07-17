@@ -85,10 +85,10 @@
               </template>
             </q-input>
           </div>
-          <!-- Numero de días-->
+          <!-- Numero de días por rango-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Número de dias</label>
-            <q-input v-model="numero_dias" disable outlined dense> </q-input>
+            <label class="q-mb-sm block">Número de dias por Rangos</label>
+            <q-input v-model="numero_dias_rango" disable outlined dense> </q-input>
           </div>
           <!-- Fecha Inicio -->
           <div class="col-12 col-md-3">
@@ -152,12 +152,17 @@
               </template>
             </q-input>
           </div>
+                 <!-- Numero de días-->
+                 <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Número de dias </label>
+            <q-input v-model="numero_dias" disable outlined dense> </q-input>
+          </div>
           <!-- Fecha Inicio Rango 1 -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Rango 1 de Vacaciones</label>
             <q-input
               v-model="vacacion.fecha_inicio_rango1_vacaciones"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :disable="accion.value != 'NUEVO' ? false : true"
               outlined
               dense
@@ -184,7 +189,7 @@
             <label class="q-mb-sm block">Fecha finalización Rango 1 de Vacaciones</label>
             <q-input
               v-model="vacacion.fecha_fin_rango1_vacaciones"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :disable="accion.value != 'NUEVO' ? false : true"
               outlined
               dense
@@ -221,7 +226,7 @@
             <label class="q-mb-sm block">Rango 2 de Vacaciones</label>
             <q-input
               v-model="vacacion.fecha_inicio_rango2_vacaciones"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :disable="accion.value != 'NUEVO' ? false : true"
               outlined
               dense
@@ -248,7 +253,7 @@
             <label class="q-mb-sm block">Fecha finalización Rango 2 de Vacaciones</label>
             <q-input
               v-model="vacacion.fecha_fin_rango2_vacaciones"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               :disable="accion.value != 'NUEVO' ? false : true"
               outlined
               dense

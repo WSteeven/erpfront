@@ -192,6 +192,22 @@ export default defineComponent({
         return 0
       }
     })
+    const dias_inicio = computed(() => {
+      if (
+        vacacion.fecha_inicio != null &&
+        vacacion.fecha_inicio != null
+      ) {
+        const fechaInicio = convertir_fecha(
+          vacacion.fecha_inicio
+        )
+        const fechaFin = convertir_fecha(vacacion.fecha_inicio)
+        // Calcula la diferencia en dias
+        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
+        return diferenciaDias
+      } else {
+        return 0
+      }
+    })
     const dias_rango2 = computed(() => {
       if (
         vacacion.fecha_inicio_rango2_vacaciones != null &&
@@ -208,8 +224,27 @@ export default defineComponent({
         return 0
       }
     })
-    const numero_dias = computed(() => {
+    const dias_fin = computed(() => {
+      if (
+        vacacion.fecha_fin != null &&
+        vacacion.fecha_fin != null
+      ) {
+        const fechaInicio = convertir_fecha(
+          vacacion.fecha_fin
+        )
+        const fechaFin = convertir_fecha(vacacion.fecha_fin)
+        // Calcula la diferencia en dias
+        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
+        return diferenciaDias
+      } else {
+        return 0
+      }
+    })
+    const numero_dias_rango = computed(() => {
       return dias_rango1.value + dias_rango2.value
+    })
+    const numero_dias = computed(() => {
+      return dias_inicio.value + dias_fin.value
     })
 
     function convertir_fecha(fecha) {
@@ -270,6 +305,7 @@ export default defineComponent({
       dias_rango1,
       dias_rango2,
       numero_dias,
+      numero_dias_rango,
       tipos,
       maskFecha,
       v$,

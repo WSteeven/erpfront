@@ -210,7 +210,9 @@
               disable
               outlined
               dense
-            >
+            > <template v-slot:after>
+          %
+        </template>
             </q-input>
           </div>
           <div class="col-12 col-md-3">
