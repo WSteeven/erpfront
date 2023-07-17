@@ -197,8 +197,9 @@ export const endpoints = {
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
 
   /********************
-  * Modulo de tickets
+   * Modulo de tickets
   *********************/
+  dashboard_tickets: new Endpoint('tickets/dashboard'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   tickets: new Endpoint('tickets/tickets'),
   tipos_tickets: new Endpoint('tickets/tipos-tickets'),

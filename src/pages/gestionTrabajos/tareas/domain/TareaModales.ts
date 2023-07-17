@@ -8,14 +8,14 @@ import ProyectoPage from 'gestionTrabajos/proyectos/view/ProyectoPage.vue'
 import SubtareaPage from 'gestionTrabajos/subtareas/view/SubtareaPage.vue'
 import PausasRealizadasPage from 'pages/gestionTrabajos/subtareas/modules/pausasRealizadas/view/PausasRealizadas.vue'
 import GestorArchivoTrabajo from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
-import EmergenciasPage from 'gestionTrabajos/formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
+import SeguimientoSubtareaPage from 'gestionTrabajos/formulariosTrabajos/emergencias/view/SeguimientoSubtareaPage.vue'
 import ReagendarPage from 'gestionTrabajos/subtareas/modules/reagendar/view/ReagendarPage.vue'
 
 export class TareaModales {
   ClienteFinalPage: ComponenteModal
   ProyectoPage: ComponenteModal
   SubtareaPage: ComponenteModal
-  EmergenciasPage: ComponenteModal
+  SeguimientoSubtareaPage: ComponenteModal
   GestorArchivoTrabajo: ComponenteModal
   PausasRealizadasPage: ComponenteModal
   ReagendarPage: ComponenteModal
@@ -30,8 +30,8 @@ export class TareaModales {
     this.SubtareaPage = markRaw(
       new ComponenteModal('Detalles de la subtarea', SubtareaPage)
     )
-    this.EmergenciasPage = markRaw(
-      new ComponenteModal('Gestionar avances', EmergenciasPage)
+    this.SeguimientoSubtareaPage = markRaw(
+      new ComponenteModal('Gestionar avances', SeguimientoSubtareaPage)
     )
     this.GestorArchivoTrabajo = markRaw(
       new ComponenteModal('Compartir archivos para el trabajo', GestorArchivoTrabajo)

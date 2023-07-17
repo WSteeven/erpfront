@@ -113,14 +113,14 @@
           </div>
 
           <div v-if="materialesTarea.length" class="row">
-            <div class="col-12 text-center">
+            <!-- <div class="col-12 text-center">
               <label class="q-mb-sm block"
                 >Opciones de devolución de material sobrante de la tarea</label
               >
-            </div>
+            </div> -->
             <div class="col-12 row justify-center q-gutter-sm q-mb-md">
               <!-- Boton guardar -->
-              <q-btn
+              <!-- <q-btn
                 color="primary"
                 no-caps
                 push
@@ -128,10 +128,10 @@
               >
                 <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
                 <span>Devolver a bodega matriz</span>
-              </q-btn>
+              </q-btn> -->
 
               <!-- Boton modificar -->
-              <q-btn
+              <!-- <q-btn
                 color="primary"
                 @click="
                   () =>
@@ -143,7 +143,7 @@
               >
                 <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
                 <span>Transferir a stock personal</span>
-              </q-btn>
+              </q-btn> -->
             </div>
 
             <div class="col-12">
@@ -168,7 +168,7 @@
         <q-tab-panel name="personal">
           <div class="col-12 row justify-center q-gutter-sm q-mb-md">
             <!-- Boton guardar -->
-            <q-btn
+            <!-- <q-btn
               v-if="listadoStockPersonal.length"
               color="primary"
               no-caps
@@ -177,7 +177,7 @@
             >
               <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
               <span>Devolver a bodega matriz</span>
-            </q-btn>
+            </q-btn> -->
           </div>
           <div class="row">
             <div class="col-12">

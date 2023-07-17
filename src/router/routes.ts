@@ -166,6 +166,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/dashboard-tickets',
+        name: 'dashboard_tickets',
+        component: () => import('dashboardTickets/view/DashboardTicketsPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/tickets',
         name: 'tickets',
         component: () => import('tickets/view/TicketPage.vue'),

@@ -90,6 +90,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.tickets'),
       children: [
         {
+          title: 'Dashboard',
+          link: 'dashboard-tickets',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.tickets'),
+        },
+        {
           title: 'Crear ticket',
           link: 'tickets',
           icon: 'bi-circle',
