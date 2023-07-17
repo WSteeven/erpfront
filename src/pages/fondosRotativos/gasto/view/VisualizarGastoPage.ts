@@ -63,6 +63,7 @@ export default defineComponent({
     const aprobarController = new AprobarGastoController()
 
     const esFactura = ref(true)
+    const estaSemanAC = ref()
 
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
@@ -74,6 +75,9 @@ export default defineComponent({
       mostrarListado.value = false
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
+console.log(fondoRotativoStore.estaSemanAC)
+      estaSemanAC.value= fondoRotativoStore.estaSemanAC
+      console.log(estaSemanAC.value)
 
     }
 
@@ -240,6 +244,7 @@ export default defineComponent({
       maskFecha,
       accion,
       v$,
+      estaSemanAC,
       configuracionColumnas: configuracionColumnasGasto,
       watchEffect,
       existeComprobante,
