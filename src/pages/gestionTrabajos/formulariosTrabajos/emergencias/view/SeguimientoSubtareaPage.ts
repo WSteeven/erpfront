@@ -237,7 +237,7 @@ export default defineComponent({
     }
 
     async function guardarSeguimiento() {
-      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada }).catch((e) => {
+      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo }).catch((e) => {
         notificarAdvertencia('Ingrese al menos una actividad para guardar.')
       })
     }
@@ -247,7 +247,7 @@ export default defineComponent({
     }
 
     function editarSeguimiento() {
-      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada })
+      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
     }
 
     /********
@@ -325,6 +325,7 @@ export default defineComponent({
       clientes,
       subtarea,
       permitirSubir,
+      tab: ref('usar_material_tarea'),
     }
   }
 })

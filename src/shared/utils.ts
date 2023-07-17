@@ -10,6 +10,8 @@ import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 import { useNotificaciones } from './notificaciones';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { Ref } from 'vue'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -318,7 +320,7 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
   const statusLoading = new StatusEssentialLoading()
-  const {notificarAdvertencia}= useNotificaciones()
+  const { notificarAdvertencia } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -331,7 +333,7 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     }
   }).then((response: HttpResponseGet) => {
     console.log(response.data)
-    if (response.data.size < 100 || response.data.type=='application/json') throw 'No se obtuvieron resultados para generar el reporte'
+    if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
     else {
       const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
       const link = document.createElement('a')
@@ -408,7 +410,11 @@ export function formatearFechaHora(fecha: string, hora: string) {
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
 }
 
-export function formatearFechaTexto(fecha: number){
+export function formatearFechaTexto(fecha: number) {
   const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
   return new Date(fecha).toLocaleDateString('es-Es', opciones)
 }
+
+/* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
+  empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+} */

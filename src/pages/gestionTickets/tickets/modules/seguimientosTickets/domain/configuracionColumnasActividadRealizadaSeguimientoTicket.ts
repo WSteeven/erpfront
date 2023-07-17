@@ -35,6 +35,7 @@ export const configuracionColumnasActividadRealizadaSeguimientoTicket: ColumnCon
     align: 'left',
     type: 'imagen',
     visible: false,
-    hint: 'Opcional',
+    hint: 'Obligatorio',
+    requerido: true,
   },
 ]
