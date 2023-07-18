@@ -22,6 +22,7 @@ export class PermisoEmpleado extends EntidadAuditable {
   fecha_hora_reagendamiento : string | null
   id_jefe_inmediato: number | null
   jefe_inmediato: string | null
+  suguiere_fecha: boolean | null
   recupero:boolean | null
   tieneDocumento: boolean | null
   cargo_vacaciones: boolean |null
@@ -49,6 +50,7 @@ export class PermisoEmpleado extends EntidadAuditable {
     this.id_jefe_inmediato = null
     this.jefe_inmediato= null
     this.recupero = false
+    this.suguiere_fecha= false
     this.tieneDocumento = null
     this.recuperables=false
     this.cargo_vacaciones = false

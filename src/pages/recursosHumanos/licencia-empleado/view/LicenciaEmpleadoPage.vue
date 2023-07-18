@@ -14,7 +14,7 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
-          <!-- Tipo del prestamo -->
+          <!-- Tipo de licencia -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo</label>
             <q-select
@@ -28,6 +28,7 @@
               outlined
               :input-debounce="0"
               use-input
+              @update:model-value="obtener_dias_licencia"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -54,6 +55,7 @@
               :error="!!v$.fecha_inicio.$errors.length"
               :disable="!esNuevo"
               @blur="v$.fecha_inicio.$touch"
+              readonly
               outlined
               dense
             >
@@ -87,7 +89,7 @@
               v-model="licencia.fecha_fin"
               placeholder="Obligatorio"
               :error="!!v$.fecha_fin.$errors.length"
-              :disable="!esNuevo"
+              disable
               @blur="v$.fecha_fin.$touch"
               outlined
               dense
@@ -155,7 +157,8 @@
             <q-input
               v-model="dias_licencia"
               placeholder="Obligatorio"
-              disable
+              :disable="tiene_dias_licencia"
+              @blur="v$.fecha_fin.$touch"
               outlined
               dense
             >

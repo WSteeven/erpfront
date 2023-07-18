@@ -74,25 +74,29 @@ export default defineComponent({
     const empleados = ref([])
     const refArchivoPrestamoEmpresarial = ref()
     const autorizaciones = ref()
-    const esRecursosHumanos = store.esRecursosHumanos;
+    const esRecursosHumanos = store.esRecursosHumanos
 
     const esAutorizador = ref(false)
+    const tiene_dias_licencia = ref(false)
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
-    const dias_licencia = computed(() => {
-      if (licencia.fecha_inicio != null && licencia.fecha_fin != null) {
-        const fechaInicio = convertir_fecha(licencia.fecha_inicio)
-        const fechaFin = convertir_fecha(licencia.fecha_fin)
-        // Calcula la diferencia en dias
-        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
-        return diferenciaDias
-      } else {
-        return 0
-      }
-    })
+    const dias_licencia = ref()
 
+    function obtener_dias_licencia() {
+      const licencia_filtrada = listadosAuxiliares.tipos_licencias.filter(
+        (v) => v.id == licencia.tipo_licencia
+      )
+      if (licencia_filtrada[0].num_dias > 0) {
+        dias_licencia.value = licencia_filtrada[0].num_dias
+        tiene_dias_licencia.value = true
+      } else {
+        dias_licencia.value = null
+        licencia.fecha_fin = null
+        tiene_dias_licencia.value = false
+      }
+    }
     function optionsFecha(date) {
       const fechaActual = convertir_fecha(licencia.fecha_inicio)
       const fechaIngresada = new Date(date)
@@ -101,7 +105,12 @@ export default defineComponent({
       const diferenciaDias = Math.floor(
         diferenciaMilisegundos / (1000 * 60 * 60 * 24)
       ) // Diferencia en días
-      return diferenciaDias === -1|| diferenciaDias === 0  || diferenciaDias === 1 || diferenciaDias === 2
+      return (
+        diferenciaDias === -1 ||
+        diferenciaDias === 0 ||
+        diferenciaDias === 1 ||
+        diferenciaDias === 2
+      )
     }
     function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
@@ -129,11 +138,18 @@ export default defineComponent({
       await refArchivoPrestamoEmpresarial.value.subir({ licencia_id: id })
     }
     onConsultado(() => {
-      esAutorizador.value = store.user.id == licencia.id_jefe_inmediato ? true:false
-      if(esAutorizador.value){
-        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'VALIDADO'),1);
-        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'PENDIENTE'),1);
-       }
+      esAutorizador.value =
+        store.user.id == licencia.id_jefe_inmediato ? true : false
+      if (esAutorizador.value) {
+        autorizaciones.value.splice(
+          autorizaciones.value.findIndex((obj) => obj.nombre === 'VALIDADO'),
+          1
+        )
+        autorizaciones.value.splice(
+          autorizaciones.value.findIndex((obj) => obj.nombre === 'PENDIENTE'),
+          1
+        )
+      }
       setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           licencia_id: licencia.id,
@@ -181,8 +197,8 @@ export default defineComponent({
       tipo_licencia: { required },
       fecha_inicio: { required },
       fecha_fin: { required },
-        justificacion: { required },
-          }
+      justificacion: { required },
+    }
 
     const v$ = useVuelidate(reglas, licencia)
     setValidador(v$.value)
@@ -191,6 +207,21 @@ export default defineComponent({
       listar({ estado: tabSeleccionado }, false)
       tabPermisoEmpleado = tabSeleccionado
     }
+    watchEffect(() => {
+      if (
+        licencia.fecha_inicio !== null && dias_licencia.value !== null && dias_licencia.value !== undefined && dias_licencia.value !=='') {
+        const fechaInicio = convertir_fecha(licencia.fecha_inicio)
+        const fechaFinal = fechaInicio
+        fechaFinal.setDate(
+          fechaInicio.getDate() + parseInt(dias_licencia.value)
+        )
+        // Formatear la fecha a "año-mes-día"
+        const anio = fechaFinal.getFullYear()
+        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
+        const dia = ('0' + fechaFinal.getDate()).slice(-2)
+        licencia.fecha_fin = dia + '-' + mes + '-' + anio
+      }
+    })
 
     return {
       removeAccents,
@@ -209,6 +240,8 @@ export default defineComponent({
       endpoint: endpoints.archivo_licencia_empleado,
       tipos_licencias,
       dias_licencia,
+      tiene_dias_licencia,
+      obtener_dias_licencia,
       empleados,
       autorizaciones,
       accion,

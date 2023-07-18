@@ -53,8 +53,11 @@
               v-model="permiso.fecha_hora_inicio"
               placeholder="Obligatorio"
               :error="!!v$.fecha_hora_inicio.$errors.length"
-              :disable="!esNuevo"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              "
               @blur="v$.fecha_hora_inicio.$touch"
+              readonly
               outlined
               dense
             >
@@ -95,8 +98,11 @@
               v-model="permiso.fecha_hora_fin"
               placeholder="Obligatorio"
               :error="!!v$.fecha_hora_fin.$errors.length"
-              :disable="!esNuevo"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              "
               @blur="v$.fecha_hora_fin.$touch"
+              readonly
               outlined
               dense
             >
@@ -131,13 +137,32 @@
             </q-input>
             <div class="q-gutter-md row items-start"></div>
           </div>
+          <!-- Sugerir Fecha -->
+          <div
+            class="col-12 col-md-3"
+            v-if="permiso.id_jefe_inmediato != null && permiso.estado == 1"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="permiso.suguiere_fecha"
+              label="Sugerir Fecha"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              "
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
           <!-- Fecha sugerida -->
-          <div class="col-12 col-md-3" v-if="permiso.estado==3">
+          <div class="col-12 col-md-3" v-if="permiso.suguiere_fecha">
             <label class="q-mb-sm block">Fecha y hora sugerida</label>
             <q-input
               v-model="permiso.fecha_hora_reagendamiento"
               placeholder="Obligatorio"
-              :disable="esNuevo"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              "
+              readonly
               outlined
               dense
             >
@@ -184,11 +209,6 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </q-input>
-          </div>
-          <div class="col-12 col-md-3" v-if="!esNuevo">
-            <label class="q-mb-sm block">Justificativo</label>
-            <q-input v-model="permiso.empleado" :disable="!esNuevo" outlined dense>
             </q-input>
           </div>
           <div class="col-12 col-md-3" v-if="!esNuevo">
@@ -257,7 +277,9 @@
               v-model="permiso.fecha_recuperacion"
               placeholder="Obligatorio"
               :error="!!v$.fecha_recuperacion.$errors.length"
-              :disable="permiso.id_jefe_inmediato == null && permiso.estado !== 1"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              "
               @blur="v$.fecha_recuperacion.$touch"
               outlined
               dense
@@ -292,7 +314,9 @@
               v-model="permiso.hora_recuperacion"
               :error="!!v$.hora_recuperacion.$errors.length"
               type="time"
-              :disable="permiso.id_jefe_inmediato == null && permiso.estado !== 1"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              "
               hint="Obligatorio"
               stack-label
               outlined
@@ -315,11 +339,14 @@
               class="q-mt-lg q-pt-md"
               v-model="permiso.recuperables"
               label="Recuperables"
-              :disable="(permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              "
               outlined
               dense
             ></q-checkbox>
           </div>
+
           <!-- Recuperto -->
           <div
             class="col-12 col-md-3"
@@ -335,7 +362,7 @@
             ></q-checkbox>
           </div>
           <!-- Cargo a Vacaciones -->
-          <div class="col-12 col-md-3" v-if="horas_permisos == 8">
+          <div class="col-12 col-md-3" v-if="horas_permisos <= 8">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="permiso.cargo_vacaciones"

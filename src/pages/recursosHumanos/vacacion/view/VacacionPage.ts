@@ -27,6 +27,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import { LocalStorage } from 'quasar'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
@@ -40,28 +41,53 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, consultar, cargarVista, listar } =
       mixin.useComportamiento()
-    const { onBeforeConsultar, onConsultado, onBeforeModificar } =
-      mixin.useHooks()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
-    const tipos = ref([
-      { id: 1, nombre: 'Vacacion Descuento' },
-      { id: 2, nombre: 'Anticipo' },
-    ])
-    const esConsultado = ref(false)
+    /* El código anterior usa un mixin para acceder y usar ganchos en una base de código de TypeScript.
+       Está desestructurando las funciones `onConsultado` y `onBeforeModificar` de la función
+      `mixin.useHooks()` y asignándolas a variables. */
+    const { onConsultado, onBeforeModificar } = mixin.useHooks()
+   /* El código anterior define una función TypeScript llamada `onBeforeModificar` que no acepta
+      argumentos. Dentro de la función, establece el valor de una variable `esConsultado` a `true`. */
     onBeforeModificar(() => (esConsultado.value = true))
+   /* El código anterior define una función de devolución de llamada que se ejecutará cuando ocurra un
+      evento "consultado". Dentro de la función de devolución de llamada, verifica si la ID del usuario
+      es igual a la ID del jefe inmediato de la solicitud de vacaciones. Si son iguales pone el valor
+      de "esAutorizador" a verdadero, en caso contrario lo pone a falso. */
+    /* El código anterior está escrito en TypeScript y define una función llamada `onConsultado`. Dentro de
+       la función se está comprobando si el `id` del usuario en la tienda es igual al `id_jefe_inmediato`
+       del objeto `vacacion`. Si son iguales pone el valor de `esAutorizador` en `true`, en caso contrario
+       lo pone en `false`. */
     onConsultado(() => {
       esAutorizador.value =
         store.user.id == vacacion.id_jefe_inmediato ? true : false
     })
+    cargarVista(async () => {
+      await obtenerListados({
+        periodos: {
+          controller: new PeriodoController(),
+          params: { campos: 'id,nombre', activo: 1 },
+        },
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            id: vacacion.empleado == null ? store.user.id : vacacion.empleado,
+            estado: 1,
+          },
+        },
+      })
+      autorizaciones.value =
+        LocalStorage.getItem('autorizaciones') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      data.empleado = listadosAuxiliares.empleados[0]
+      periodos.value = listadosAuxiliares.periodos
+    })
+
+    /***
+     * Inicializacion de  variables
+     */
+    const autorizaciones = ref()
+    const esConsultado = ref(false)
     const periodos = ref([])
-    const recursosHumanosStore = useRecursosHumanosStore()
-    const store = useAuthenticationStore()
     const esAutorizador = ref(false)
     const data = reactive<{
       dias_descuento_vacaciones: string
@@ -70,6 +96,23 @@ export default defineComponent({
       dias_descuento_vacaciones: '',
       empleado: null,
     })
+    const empleado = ref()
+    const esNuevo = computed(() => {
+      return accion.value === 'NUEVO'
+    })
+    const dias_rango1 = ref()
+    const dias_rango2 = ref()
+    const numero_dias = ref()
+    let tabVacacion = '1'
+    /**
+     * Stores
+     */
+    const recursosHumanosStore = useRecursosHumanosStore()
+    const store = useAuthenticationStore()
+
+    /* El código anterior define una propiedad computada llamada "dias_descuento_vacaciones" en TypeScript.
+       Esta propiedad calculada utiliza una función para calcular su valor. Dentro de la función llama a la
+       función "obtener_descuentos()" y luego devuelve el valor de "data.dias_descuento_vacaciones". */
     const dias_descuento_vacaciones = computed(() => {
       obtener_descuentos()
       return data.dias_descuento_vacaciones
@@ -127,24 +170,8 @@ export default defineComponent({
 
       return resultado
     }
-    const empleado = ref()
-    cargarVista(async () => {
-      await obtenerListados({
-        periodos: {
-          controller: new PeriodoController(),
-          params: { campos: 'id,nombre', activo: 1 },
-        },
-        empleados: {
-          controller: new EmpleadoController(),
-          params: {
-            id: vacacion.empleado == null ? store.user.id : vacacion.empleado,
-            estado: 1,
-          },
-        },
-      })
-      data.empleado = listadosAuxiliares.empleados[0]
-      periodos.value = listadosAuxiliares.periodos
-    })
+
+
     const dias_adicionales = computed(() => {
       const fecha_ingreso =
         vacacion.empleado !== null
@@ -173,80 +200,30 @@ export default defineComponent({
       fecha_fin: { required },
       solicitud: { required },
     }))
-
     const v$ = useVuelidate(reglas, vacacion)
     setValidador(v$.value)
-    const dias_rango1 = computed(() => {
-      if (
-        vacacion.fecha_inicio_rango1_vacaciones != null &&
-        vacacion.fecha_fin_rango1_vacaciones != null
-      ) {
-        const fechaInicio = convertir_fecha(
-          vacacion.fecha_inicio_rango1_vacaciones
-        )
-        const fechaFin = convertir_fecha(vacacion.fecha_fin_rango1_vacaciones)
-        // Calcula la diferencia en dias
-        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
-        return diferenciaDias
-      } else {
-        return 0
-      }
-    })
-    const dias_inicio = computed(() => {
-      if (
-        vacacion.fecha_inicio != null &&
-        vacacion.fecha_inicio != null
-      ) {
-        const fechaInicio = convertir_fecha(
-          vacacion.fecha_inicio
-        )
-        const fechaFin = convertir_fecha(vacacion.fecha_inicio)
-        // Calcula la diferencia en dias
-        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
-        return diferenciaDias
-      } else {
-        return 0
-      }
-    })
-    const dias_rango2 = computed(() => {
-      if (
-        vacacion.fecha_inicio_rango2_vacaciones != null &&
-        vacacion.fecha_fin_rango2_vacaciones != null
-      ) {
-        const fechaInicio = convertir_fecha(
-          vacacion.fecha_inicio_rango2_vacaciones
-        )
-        const fechaFin = convertir_fecha(vacacion.fecha_fin_rango2_vacaciones)
-        // Calcula la diferencia en dias
-        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
-        return diferenciaDias
-      } else {
-        return 0
-      }
-    })
-    const dias_fin = computed(() => {
-      if (
-        vacacion.fecha_fin != null &&
-        vacacion.fecha_fin != null
-      ) {
-        const fechaInicio = convertir_fecha(
-          vacacion.fecha_fin
-        )
-        const fechaFin = convertir_fecha(vacacion.fecha_fin)
-        // Calcula la diferencia en dias
-        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
-        return diferenciaDias
-      } else {
-        return 0
-      }
-    })
-    const numero_dias_rango = computed(() => {
-      return dias_rango1.value + dias_rango2.value
-    })
-    const numero_dias = computed(() => {
-      return dias_inicio.value + dias_fin.value
-    })
 
+    /* El código define una propiedad computada `numero_dias_rango` que calcula el número total de días en
+        un rango. */
+    const numero_dias_rango = computed(() => {
+      if (
+        dias_rango1.value != null &&
+        dias_rango1.value != '' &&
+        dias_rango2.value != null &&
+        dias_rango2.value != ''
+      ) {
+        return parseInt(dias_rango1.value) + parseInt(dias_rango2.value)
+      } else {
+        return 0
+      }
+    })
+    /**
+     * La función "convertir_fecha" toma una cadena que representa una fecha en el formato "dd-mm-yyyy" y
+     * devuelve un objeto Date.
+     * @param fecha - El parámetro `fecha` es una cadena que representa una fecha en el formato
+     * "dd-mm-yyyy".
+     * @returns un objeto de fecha que representa la fecha convertida.
+     */
     function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
 
@@ -257,6 +234,83 @@ export default defineComponent({
       return fecha_convert
     }
 
+    /**
+     * La función "calcular_fecha_fin" calcula la fecha de finalización de unas vacaciones en función de la
+     * fecha de inicio y el número de días.
+     */
+    function calcular_fecha_fin() {
+      if (
+        vacacion.fecha_inicio !== null &&
+        numero_dias.value !== null &&
+        numero_dias.value !== undefined &&
+        numero_dias.value !== ''
+      ) {
+        const fechaInicio = convertir_fecha(vacacion.fecha_inicio)
+        const fechaFinal = fechaInicio
+        fechaFinal.setDate(fechaInicio.getDate() + parseInt(numero_dias.value))
+        // Formatear la fecha a "año-mes-día"
+        const anio = fechaFinal.getFullYear()
+        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
+        const dia = ('0' + fechaFinal.getDate()).slice(-2)
+        vacacion.fecha_fin = dia + '-' + mes + '-' + anio
+      } else {
+        vacacion.fecha_fin = null
+      }
+    }
+
+    /**
+     * La función calcula la fecha de finalización de unas vacaciones en función de la fecha de inicio y el
+     * número de días.
+     */
+    function calcular_fecha_fin_rango1() {
+      if (
+        vacacion.fecha_inicio_rango1_vacaciones !== null &&
+        dias_rango1.value !== null &&
+        dias_rango1.value !== undefined &&
+        dias_rango1.value !== ''
+      ) {
+        const fechaInicio = convertir_fecha(
+          vacacion.fecha_inicio_rango1_vacaciones
+        )
+        const fechaFinal = fechaInicio
+        fechaFinal.setDate(fechaInicio.getDate() + parseInt(dias_rango1.value))
+        // Formatear la fecha a "año-mes-día"
+        const anio = fechaFinal.getFullYear()
+        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
+        const dia = ('0' + fechaFinal.getDate()).slice(-2)
+        vacacion.fecha_fin_rango1_vacaciones = dia + '-' + mes + '-' + anio
+      } else {
+        vacacion.fecha_fin_rango1_vacaciones = null
+      }
+    }
+    /**
+     * La función calcula la fecha de finalización de un intervalo de vacaciones en función de la fecha de
+     * inicio y el número de días.
+     */
+    function calcular_fecha_fin_rango2() {
+      if (
+        vacacion.fecha_inicio_rango2_vacaciones !== null &&
+        dias_rango2.value !== null &&
+        dias_rango2.value !== undefined &&
+        dias_rango2.value !== ''
+      ) {
+        const fechaInicio = convertir_fecha(
+          vacacion.fecha_inicio_rango2_vacaciones
+        )
+        const fechaFinal = fechaInicio
+        fechaFinal.setDate(fechaInicio.getDate() + parseInt(dias_rango2.value))
+        // Formatear la fecha a "año-mes-día"
+        const anio = fechaFinal.getFullYear()
+        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
+        const dia = ('0' + fechaFinal.getDate()).slice(-2)
+        vacacion.fecha_fin_rango2_vacaciones = dia + '-' + mes + '-' + anio
+      } else {
+        vacacion.fecha_fin_rango2_vacaciones = null
+      }
+    }
+
+    /* El código anterior define una variable constante llamada `editarVacacion` que es del tipo
+`CustomActionTable`. Tiene las siguientes propiedades: */
     const editarVacacion: CustomActionTable = {
       titulo: ' ',
       icono: 'bi-pencil-square',
@@ -267,6 +321,17 @@ export default defineComponent({
         consultar(entidad)
       },
     }
+    /**
+     * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
+     * lista filtrada.
+     * @param val - El parámetro `val` es un valor de cadena que representa el valor de entrada para
+     * filtrar los períodos. Se utiliza para buscar períodos que tienen un nombre que contiene el valor de
+     * entrada.
+     * @param update - El parámetro `update` es una función que se utiliza para actualizar el valor de
+     * `periodos`. Es una función de devolución de llamada que toma otra función como argumento. La función
+     * interna es responsable de actualizar el valor de `periodos` en función del parámetro `val` dado.
+     * @returns nada (indefinido).
+     */
     function filtrarPeriodo(val, update) {
       if (val === '') {
         update(() => {
@@ -281,7 +346,11 @@ export default defineComponent({
         )
       })
     }
-    let tabVacacion = '1'
+    /**
+     * La función "filtrarVacacion" filtra las vacaciones en función de la pestaña seleccionada y actualiza
+     * la variable tabVacacion.
+     * @param {string} tabSeleccionado - Una cadena que representa la pestaña seleccionada.
+     */
     function filtrarVacacion(tabSeleccionado: string) {
       listar({ estado: tabSeleccionado }, false)
       tabVacacion = tabSeleccionado
@@ -296,6 +365,10 @@ export default defineComponent({
       editarVacacion,
       filtrarPeriodo,
       filtrarVacacion,
+      calcular_fecha_fin_rango1,
+      calcular_fecha_fin_rango2,
+      calcular_fecha_fin,
+      autorizaciones,
       tabOptionsVacaciones,
       recursosHumanosStore,
       esAutorizador,
@@ -304,9 +377,9 @@ export default defineComponent({
       esConsultado,
       dias_rango1,
       dias_rango2,
+      esNuevo,
       numero_dias,
       numero_dias_rango,
-      tipos,
       maskFecha,
       v$,
       disabled,
