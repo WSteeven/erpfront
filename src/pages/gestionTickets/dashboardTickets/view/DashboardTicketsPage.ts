@@ -13,8 +13,8 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import TableView from 'components/tables/view/TableView.vue'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-import { Bar } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
+import { Bar, Doughnut } from 'vue-chartjs'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -27,9 +27,9 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Doughnut },
   setup() {
-    ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+    ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
 
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
@@ -64,9 +64,11 @@ export default defineComponent({
 
     const cantidadesTicketsSolicitadosPorDepartamento = ref([])
     const cantidadesTicketsRecibidosPorDepartamento = ref([])
+    const ticketsPorEstado = ref([])
 
     const cantidadesTicketsSolicitadosPorDepartamentoBar = ref()
     const cantidadesTicketsRecibidosPorDepartamentoBar = ref()
+    const ticketsPorEstadoBar = ref()
 
     const options = {
       responsive: true,
@@ -130,6 +132,11 @@ export default defineComponent({
         const labels2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.nombre)
         const valores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.total)
         cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidades de tickets recibidos por departamento')
+
+        ticketsPorEstado.value = result.ticketsPorEstado
+        const labels3 = result.ticketsPorEstado.map((item) => item.estado)
+        const valores3 = result.ticketsPorEstado.map((item) => item.total_tickets)
+        ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidades de tickets por estados')
         cargando.desactivar()
       }
     }
@@ -199,9 +206,11 @@ export default defineComponent({
       // Listados
       cantidadesTicketsSolicitadosPorDepartamento,
       cantidadesTicketsRecibidosPorDepartamento,
+      ticketsPorEstado,
       // Bar
       cantidadesTicketsSolicitadosPorDepartamentoBar,
       cantidadesTicketsRecibidosPorDepartamentoBar,
+      ticketsPorEstadoBar,
     }
   },
 })

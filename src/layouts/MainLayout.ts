@@ -3,7 +3,7 @@
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { defineComponent, ref, computed, Ref, ComputedRef, watch } from 'vue'
+import { defineComponent, ref, computed, Ref, ComputedRef, watch, watchEffect } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, SessionStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
@@ -110,6 +110,8 @@ export default defineComponent({
       () => notificacionesPusherStore.listadoNotificaciones
     )
 
+    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' JPCONSTRUCRED')
+
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
       await notificacionesPusherStore.marcarLeida()
@@ -139,7 +141,7 @@ export default defineComponent({
 
     /**
      * Este código es responsable de manejar la inactividad del usuario y cerrar sesión después de un
-     * cierto período de tiempo. 
+     * cierto período de tiempo.
      */
     const tiempoInactividad = 10 * 60 * 1000 //10 minutos de inactividad
     // let mouseActivo = true
@@ -177,9 +179,9 @@ export default defineComponent({
     const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
     setInterval(() => {
       let la = new Date(+sessionStorage.getItem('lastActivity')!).getTime()
-      console.log('Resta de tiempo', new Date().getTime()-la)
+      console.log('Resta de tiempo', new Date().getTime() - la)
       console.log('Tiempo limite', LIMIT)
-      console.log('Resultado',  new Date().getTime()-la > LIMIT, new Date().toLocaleTimeString())
+      console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
       if (new Date().getTime() - la > LIMIT) {
         logout()
         sessionStorage.removeItem('lastActivity')

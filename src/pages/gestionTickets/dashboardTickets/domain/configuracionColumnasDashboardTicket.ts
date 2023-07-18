@@ -16,6 +16,20 @@ export const configuracionColumnasDashboardTicket: ColumnConfig<any>[] = [
     sortable: true,
   },
   {
+    name: 'departamento_solicitante',
+    field: 'departamento_solicitante',
+    label: 'Departamento solicitante',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'empleado_solicitante',
+    field: 'empleado_solicitante',
+    label: 'Empleado solicitante',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'tiempo_hasta_finalizar',
     field: 'tiempo_hasta_finalizar',
     label: 'Tiempo que tomó finalizarlo',

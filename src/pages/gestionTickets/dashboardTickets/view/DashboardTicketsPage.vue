@@ -95,9 +95,7 @@
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block"
-              ><b>Paso 1: </b>Seleccione un empleado</label
-            >
+            <label class="q-mb-sm block">Seleccione un empleado</label>
             <q-select
               v-model="filtro.empleado"
               :options="empleados"
@@ -227,6 +225,18 @@
               :options="options"
             />
           </div>
+
+          <div class="col-12 col-md-6" v-if="true">
+            <Doughnut
+              :data="ticketsPorEstadoBar"
+              :options="{
+                responsive: true,
+                maintainAspectRatio: false,
+              }"
+              v-if="ticketsPorEstado.length"
+            />
+          </div>
+          {{ ticketsPorEstado }}
         </div>
 
         <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-sm">
