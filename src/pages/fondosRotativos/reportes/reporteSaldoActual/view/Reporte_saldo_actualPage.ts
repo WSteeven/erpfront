@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { Ref, defineComponent, reactive, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -44,7 +44,6 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
-
     /*************
      * Validaciones
      **************/
@@ -58,10 +57,17 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, reporte_saldo_actual)
     setValidador(v$.value)
     const usuarios = ref()
+    // Define el tipo de los elementos en los arreglos
+    type Usuario = {
+      id: number
+      nombres: string
+      apellidos: string
+    }
+
+    // Define las variables con el tipo adecuado
+    const usuariosInactivos = ref()
     const is_all_users = ref('false')
     const is_inactivo = ref('false')
-    usuarios.value = listadosAuxiliares.usuarios
-
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
@@ -69,8 +75,12 @@ export default defineComponent({
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
       })
-
       usuarios.value = listadosAuxiliares.usuarios
+      usuariosInactivos.value =
+        LocalStorage.getItem('usuariosInactivos') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
+      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
     })
     /*********
      * Filtros
@@ -93,39 +103,26 @@ export default defineComponent({
         )
       })
     }
+    function filtrarUsuariosInactivos(val, update) {
+      if (val === '') {
+        update(() => {
+          usuariosInactivos.value = listadosAuxiliares.usuariosInactivos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        usuariosInactivos.value = listadosAuxiliares.usuariosInactivos.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
     function mostrarUsuarios() {
       reporte_saldo_actual.usuario = null
     }
-    async function mostrarInactivos(val) {
-      if (val === 'true') {
-        const empleados = (
-          await new EmpleadoController().listar({
-            campos: 'id,nombres,apellidos',
-            estado: 0,
-          })
-        ).result
-        fondosStore.empleados = empleados
-        setTimeout(
-          () =>
-            setInterval(() => {
-              empleados.value = fondosStore.empleados
-              usuarios.value = empleados.value
-            }, 100),
-          250
-        )
-      } else {
-        const empleados_aux = listadosAuxiliares.usuarios
-        fondosStore.empleados = empleados_aux
-        setTimeout(
-          () =>
-            setInterval(() => {
-              empleados_aux.value = fondosStore.empleados
-              usuarios.value = empleados_aux.value
-            }, 100),
-          250
-        )
-      }
-    }
+
     async function generar_reporte(
       valor: ReporteSaldoActual,
       tipo: string
@@ -188,14 +185,14 @@ export default defineComponent({
       accion,
       v$,
       usuarios,
+      usuariosInactivos,
       is_all_users,
       is_inactivo,
       mostrarUsuarios,
-      mostrarInactivos,
       generar_reporte,
       filtrarUsuarios,
+      filtrarUsuariosInactivos,
       visualizar_saldo_usuario,
-      watchEffect,
     }
   },
 })

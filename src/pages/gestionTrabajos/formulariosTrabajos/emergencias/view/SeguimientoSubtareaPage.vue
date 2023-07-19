@@ -47,19 +47,61 @@
         </div>
 
         <div v-if="usarMaterialTarea" class="col-12 q-mb-md">
-          <essential-table
-            titulo="Materiales designados para la tarea"
-            :configuracionColumnas="columnasMaterial"
-            :datos="materialesTarea"
-            :alto-fijo="false"
-            :permitirConsultar="false"
-            :permitirEliminar="false"
-            :permitirEditar="false"
-            :permitir-buscar="false"
-            :permitirEditarModal="true"
-            separador="cell"
-            :accion1="botonEditarCantidadTarea"
-          ></essential-table>
+          <q-card class="rounded-card">
+            <q-tabs
+              v-model="tab"
+              class="text-primary"
+              :class="{ 'bg-grey-1': !$q.dark.isActive }"
+              active-color="primary"
+              align="justify"
+              no-caps
+              inline-label
+            >
+              <q-tab
+                name="usar_material_tarea"
+                label="Usar material de tarea"
+              />
+              <!-- <q-tab
+                name="historial_material_tarea_usado"
+                label="Historial de material de tarea usado"
+              >
+              </q-tab> -->
+            </q-tabs>
+
+            <q-tab-panels v-model="tab" animated>
+              <q-tab-panel name="usar_material_tarea">
+                <essential-table
+                  titulo="Materiales designados para la tarea"
+                  :configuracionColumnas="columnasMaterial"
+                  :datos="materialesTarea"
+                  :alto-fijo="false"
+                  :permitirConsultar="false"
+                  :permitirEliminar="false"
+                  :permitirEditar="false"
+                  :permitir-buscar="false"
+                  :permitirEditarModal="true"
+                  separador="cell"
+                  :accion1="botonEditarCantidadTarea"
+                ></essential-table>
+              </q-tab-panel>
+
+              <q-tab-panel name="historial_material_tarea_usado">
+                <essential-table
+                  titulo="Historial material tarea usado"
+                  :configuracionColumnas="columnasMaterial"
+                  :datos="materialesTarea"
+                  :alto-fijo="false"
+                  :permitirConsultar="false"
+                  :permitirEliminar="false"
+                  :permitirEditar="false"
+                  :permitir-buscar="false"
+                  :permitirEditarModal="true"
+                  separador="cell"
+                  :accion1="botonEditarCantidadTarea"
+                ></essential-table>
+              </q-tab-panel>
+            </q-tab-panels>
+          </q-card>
         </div>
 
         <div
@@ -166,4 +208,4 @@
   </q-page>
 </template>
 
-<script src="./EmergenciaPage.ts"></script>
+<script src="./SeguimientoSubtareaPage.ts"></script>
