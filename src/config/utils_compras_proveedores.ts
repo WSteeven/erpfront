@@ -1,3 +1,5 @@
+import { TabOption } from "components/tables/domain/TabOption"
+
 export const opciones_tipo_contribuyente = [
   { value: 'NATURAL', label: 'NATURAL' },
   { value: 'PRIVADA', label: 'PRIVADA' },
@@ -8,9 +10,19 @@ export const opciones_tipo_negocio = [
   { value: 'RIMPE CON IVA', label: 'RIMPE CON IVA' },
   { value: 'RIMPE SIN IVA', label: 'RIMPE SIN IVA' },
 ]
-export const opciones_tipo_contacto = [
+export const opcionesTipoContacto = [
   { value: 'TECNICO', label: 'TÉCNICO' },
   { value: 'FINANCIERO', label: 'FINANCIERO' },
+  { value: 'COMERCIAL', label: 'COMERCIAL' },
+]
+export const opcionesForma = [
+  { value: 'CONTADO', label: 'CONTADO' },
+  { value: 'CREDITO', label: 'CREDITO' },
+]
+export const opcionesTiempo = [
+  { value: '7 DIAS', label: '7 DIAS' },
+  { value: '15 DIAS', label: '15 DIAS' },
+  { value: '30 DIAS', label: '30 DIAS' },
 ]
 
 export const opcionesOfertas = [
@@ -29,3 +41,17 @@ export const likertCalificacion = [
   { label: 'MALO', value: '2' },
   { label: 'MUY MALO', value: '1' },
 ]
+
+export const tabOptionsOrdenCompra: TabOption[]=[
+  {label: 'Sin Autorizador', value: '0'},
+  {label: 'Autorizadas', value: '1'},
+  {label: 'Canceladas', value: '2'}
+]
+
+export const estadosCalificacionProveedor = {
+  vacio: 'SIN CONFIGURAR',
+  pendiente: 'SIN CALIFICAR',
+  calificado: 'CALIFICADO',
+  parcial: 'PARCIAL',
+
+}

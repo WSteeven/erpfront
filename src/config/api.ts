@@ -68,13 +68,16 @@ export const endpoints = {
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   //Modulo de compras y proveedores
-  empresas: new Endpoint('empresas'),
-  proveedores: new Endpoint('proveedores'),
+  archivos_proveedores: new Endpoint('compras/archivos-proveedores'),
+  calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
-  calificacion_proveedor: new Endpoint('compras/calificacion-proveedor'),
   criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
-  ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
+  detalles_departamentos_proveedor: new Endpoint('compras/detalles-departamentos-proveedor'),
+  empresas: new Endpoint('empresas'),
   log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),
+  ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
+  ordenes_compras: new Endpoint('compras/ordenes-compras'),
+  proveedores: new Endpoint('proveedores'),
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),

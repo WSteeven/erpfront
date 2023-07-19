@@ -37,4 +37,18 @@ export const configuracionColumnasProveedores: ColumnConfig<Proveedor>[]=[
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'calificacion',
+    field: 'calificacion',
+    label: 'Calificación',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'calificado',
+    field: 'calificado',
+    label: '¿Calificado?',
+    align: 'left',
+    sortable: true,
+  },
 ]

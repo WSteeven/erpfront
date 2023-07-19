@@ -9,7 +9,7 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- identificacion-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Identificacion</label>
+            <label class="q-mb-sm block">RUC/Cédula</label>
             <q-input
               mask="#############"
               v-model="empresa.identificacion"
@@ -151,12 +151,17 @@
             <q-input
               mask="##########"
               v-model="empresa.celular"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
+              :error="!!v$.celular.$errors.length"
               :readonly="disabled"
               :disable="disabled"
               outlined
               dense
-            ></q-input>
+            ><template v-slot:error>
+                <div v-for="error of v$.celular.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template></q-input>
           </div>
           <!-- telefono-->
           <div class="col-12 col-md-3">
@@ -177,7 +182,7 @@
             <label class="q-mb-sm block">Correo</label>
             <q-input
               v-model="empresa.correo"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               :readonly="disabled"
               :disable="disabled"
               outlined
@@ -289,7 +294,7 @@
               type="textarea"
               autogrow
               v-model="empresa.ciudad"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               :readonly="disabled"
               :disable="disabled"
               outlined
@@ -304,7 +309,7 @@
               type="textarea"
               autogrow
               v-model="empresa.direccion"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               :readonly="disabled"
               :disable="disabled"
               outlined

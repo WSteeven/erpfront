@@ -60,6 +60,7 @@ export default defineComponent({
             tipo_contribuyente: { required },
             tipo_negocio: { required },
             razon_social: { required },
+            celular: { required },
         }
         const v$ = useVuelidate(reglas, empresa)
         setValidador(v$.value)

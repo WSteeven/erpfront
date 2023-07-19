@@ -537,12 +537,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-list-check',
           can: store.can('puede.ver.criterios_calificaciones')  || store.esAdministrador,
         },
-        {
-          title: 'Empresas',
-          link: 'empresas',
-          icon: 'bi-building-fill-gear',
-          can: store.can('puede.ver.empresas')  || store.esAdministrador,
-        },
+        // {
+        //   title: 'Empresas',
+        //   link: 'empresas',
+        //   icon: 'bi-building-fill-gear',
+        //   can: store.can('puede.ver.empresas')  || store.esAdministrador,
+        // },
         {
           title: 'Proveedores',
           link: 'proveedores',

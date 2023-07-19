@@ -8,7 +8,7 @@
     >
       <div class="row q-col-gutter-sm q-pa-sm">
         <!-- razon social -->
-        <div class="col-12 col-md-3">
+        <div class="col-sm-6 col-md-3 col-xs-12">
           <label class="q-mb-sm block">Razón social</label>
           <q-input
             disable
@@ -18,7 +18,7 @@
           />
         </div>
         <!-- sucursal -->
-        <div class="col-12 col-md-3">
+        <div class="col-sm-6 col-md-3 col-xs-12">
           <label class="q-mb-sm block">Sucursal</label>
           <q-input
             disable
@@ -28,7 +28,7 @@
           />
         </div>
         <!-- direccion -->
-        <div class="col-12 col-md-3">
+        <div class="col-sm-6 col-md-3 col-xs-12">
           <label class="q-mb-sm block">Dirección</label>
           <q-input
             disable
@@ -38,7 +38,7 @@
           />
         </div>
         <!-- tipos que ofrece -->
-        <div class="col-12 col-md-3">
+        <div class="col-sm-6 col-md-3 col-xs-12">
           <label class="q-mb-sm block">Ofrece</label>
           <q-select
             disable
@@ -55,10 +55,13 @@
         </div>
       </div>
     </q-expansion-item>
+    <!-- stepper -->
     <q-stepper
       v-model="step"
       ref="stepper"
+      :vertical="$q.screen.xs || $q.screen.sm"
       animated
+      alternative-labels
       done-color="positive"
       active-color="primary"
       inactive-color="gray"
@@ -70,7 +73,7 @@
         icon="settings"
         :done="step > 1"
       >
-        <div class="row q-col-gutter-sm q-pa-sm">
+        <div class="row q-col-gutter-sm">
           <div class="col-12 col-md-12">
             <q-table
               title="Criterios disponibles"
@@ -90,11 +93,12 @@
 
       <q-step
         :name="2"
+        :disable="criteriosBienes.length == 0"
         title="Criterios de bienes"
         icon="create_new_folder"
         :done="step > 2"
       >
-        <div class="row q-col-gutter-sm q-pa-sm">
+        <div class="row q-col-gutter-sm">
           <!-- tabla de criterios de bienes -->
           <div class="col-12 col-md-12">
             <essential-table
@@ -109,8 +113,8 @@
               :permitirEliminar="false"
               :mostrarFooter="true"
               :altoFijo="false"
-              :accion1="botonEditarCantidadCriterioBien"
-              :accion2="botonEliminarCriterioBien"
+              :accion1="btnEditarCantidadCriterioBien"
+              :accion2="btnEliminarCriterioBien"
             >
             </essential-table>
           </div>
@@ -119,11 +123,12 @@
 
       <q-step
         :name="3"
+        :disable="criteriosServicios.length == 0"
         title="Criterios de Servicios"
         icon="add_comment"
         :done="step > 3"
       >
-        <div class="row q-col-gutter-sm q-pa-sm">
+        <div class="row q-col-gutter-sm">
           <!-- tabla de criterios de servicios -->
           <div class="col-12 col-md-12">
             <essential-table
@@ -138,8 +143,8 @@
               :permitirEliminar="false"
               :mostrarFooter="true"
               :altoFijo="false"
-              :accion1="botonEditarCantidadCriterioServicio"
-              :accion2="botonEliminarCriterioServicio"
+              :accion1="btnEditarCantidadCriterioServicio"
+              :accion2="btnEliminarCriterioServicio"
             >
             </essential-table>
           </div>
@@ -152,9 +157,8 @@
         icon="bi-plus"
         :done="step > 4"
       >
-        <div class="row q-col-gutter-sm q-pa-sm">
-          <p>aqui va la calificacion</p>
-          <div class="col-12 col-md-12">
+        <div class="row q-col-gutter-sm">
+          <div class="col-12 col-md-12" v-if="criteriosBienes.length > 0">
             <essential-table
               titulo="Criterios de bienes"
               :configuracionColumnas="[
@@ -165,13 +169,15 @@
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
-              :mostrarFooter="true"
+              :permitirBuscar="false"
+              :mostrarFooter="false"
+              :mostrarCantidadElementos="false"
               :altoFijo="false"
-              :accion1="botonCalificarCriterioBien"
+              :accion1="btnCalificarCriterioBien"
             >
             </essential-table>
           </div>
-          <div class="col-12 col-md-12">
+          <div class="col-12 col-md-12" v-if="criteriosServicios.length > 0">
             <essential-table
               titulo="Criterios de servicios"
               :configuracionColumnas="[
@@ -182,39 +188,56 @@
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
-              :mostrarFooter="true"
+              :permitirBuscar="false"
+              :mostrarCantidadElementos="false"
+              :mostrarFooter="false"
               :altoFijo="false"
-              :accion1="botonCalificarCriterioBien"
+              :accion1="btnCalificarCriterioServicio"
             >
             </essential-table>
+          </div>
+          <!-- carga de archivos de soporte -->
+          <div class="col-12 q-mb-md">
+            <archivo-seguimiento
+              ref="refArchivoProveedor"
+              :mixin="mixinArchivoProveedor"
+              :endpoint="endpoint"
+              :disable="disabled"
+              :permitir-eliminar="false"
+              :listar-al-guardar="false"
+            ></archivo-seguimiento>
           </div>
         </div>
       </q-step>
       <q-step
         :name="5"
         title="Resúmen"
-        caption="Resultados de tu calificación y valoración global"
+        caption="Valoración global del proveedor"
         icon="bi-plus-circle"
       >
-      <q-card>
-        <div class="col-12 justify-center">Tu calificación para el proveedor es: <h4>{{ resultadosCalificacion.calificacion }}</h4></div>
-        Fecha de calificación: <q-chip >{{ resultadosCalificacion.fecha_calificacion }}</q-chip>
-      </q-card>
+        <q-card>
+          <div class="col-12 justify-center">
+            Tu calificación para el proveedor es:
+            <h4>{{ resultadosCalificacion.calificacion }}/100</h4>
+          </div>
+          Fecha de calificación:
+          <q-chip>{{ resultadosCalificacion.fecha_calificacion }}</q-chip>
+        </q-card>
       </q-step>
 
       <template v-slot:navigation>
         <q-stepper-navigation>
-          <q-btn v-if="step<5"
+          <q-btn
             @click="botonNext"
             color="primary"
-            :label="step === 4 ? 'Finalizar' : 'Continuar'"
+            :label="step === 5 ? 'Finalizar' : 'Continuar'"
           />
           <q-btn
-            v-if="step > 1"
+            v-if="step > 1 && step < 5"
             flat
             color="primary"
             @click="$refs.stepper.previous()"
-            label="Back"
+            label="Anterior"
             class="q-ml-sm"
           />
         </q-stepper-navigation>

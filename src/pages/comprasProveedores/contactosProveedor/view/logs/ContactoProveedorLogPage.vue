@@ -1,5 +1,4 @@
 <template>
-  <q-page padding>
     <q-card class="rounded-card custom-shadow">
       <div class="row q-col-gutter-sm q-pa-sm">
         <div class="q-px-lg q-py-md">
@@ -71,6 +70,5 @@
         </div>
       </div>
     </q-card>
-  </q-page>
 </template>
 <script src="./ContactoProveedorLogPage.ts"></script>

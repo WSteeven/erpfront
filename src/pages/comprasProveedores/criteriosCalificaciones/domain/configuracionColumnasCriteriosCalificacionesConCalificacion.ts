@@ -14,7 +14,7 @@ export const configuracionColumnasCriteriosCalificacionesConCalificacion: Column
     {
         name: 'comentario',
         field: 'comentario',
-        label: 'comentario',
+        label: 'Comentario',
         style: 'max-width: 4000px; overflow: auto;',
         align: 'left',
         sortable: true

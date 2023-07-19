@@ -115,18 +115,24 @@
               <label class="q-mb-sm block">Tipo de contacto</label>
               <q-select
                 v-model="contacto.tipo_contacto"
-                :options="opciones_tipo_contacto"
+                :options="opcionesTipoContacto"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
                 options-dense
                 dense
                 outlined
+                :error="!!v$.tipo_contacto.$errors.length"
                 :option-value="(v) => v.value"
                 :option-label="(v) => v.label"
                 emit-value
                 map-options
               >
+              <template v-slot:error>
+                  <div v-for="error of v$.tipo_contacto.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -143,9 +149,15 @@
                 v-model="contacto.nombres"
                 placeholder="Obligatorio"
                 :disable="disabled"
+                :error="!!v$.nombres.$errors.length"
                 outlined
                 dense
               >
+              <template v-slot:error>
+                  <div v-for="error of v$.nombres.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
               </q-input>
             </div>
             <!-- apellidos-->
@@ -155,9 +167,14 @@
                 v-model="contacto.apellidos"
                 placeholder="Obligatorio"
                 :disable="disabled"
+                :error="!!v$.apellidos.$errors.length"
                 outlined
                 dense
-              >
+              ><template v-slot:error>
+                  <div v-for="error of v$.apellidos.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
               </q-input>
             </div>
             <!-- celular-->
@@ -196,11 +213,16 @@
               <label class="q-mb-sm block">Correo</label>
               <q-input
                 v-model="contacto.correo"
-                placeholder="Opcional"
+                placeholder="Obligatorio"
                 :disable="disabled"
+                :error="!!v$.correo.$errors.length"
                 outlined
                 dense
-              ></q-input>
+              ><template v-slot:error>
+                  <div v-for="error of v$.correo.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template></q-input>
             </div>
           </div>
         </q-expansion-item>
@@ -211,7 +233,7 @@
     :comportamiento="modales"
     @guardado="guardado"
   ></modales-entidad>
-  <modal-entidad :comportamiento="modales" :ref="refLog"></modal-entidad>
+  <modal-entidad :comportamiento="modales" :confirmarCerrar="false"></modal-entidad>
 </template>
 
 <script src="./ContactoProveedorPage.ts"></script>

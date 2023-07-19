@@ -15,14 +15,14 @@ export const configuracionColumnasCriteriosCalificaciones: ColumnConfig<Criterio
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
-        style: 'max-width: 250px; overflow: auto;',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true
     },
     {
         name: 'ponderacion_referencia',
         field: 'ponderacion_referencia',
-        label: 'Ponderación referencia (%)',
+        label: 'Ponderación ref (%)',
         align: 'center',
         type: 'number',
         sortable: true,

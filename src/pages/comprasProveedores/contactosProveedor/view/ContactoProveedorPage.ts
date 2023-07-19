@@ -16,7 +16,7 @@ import { ProveedorController } from "sistema/proveedores/infraestructure/Proveed
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { Proveedor } from "sistema/proveedores/domain/Proveedor";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { opciones_tipo_contacto } from "config/utils_compras_proveedores";
+import { opcionesTipoContacto } from "config/utils_compras_proveedores";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { ComportamientoModalesContactosProveedor } from "../application/ComportamientoModalesContactosProveedor";
 import { useContactoProveedorStore } from "stores/comprasProveedores/contactoProveedor";
@@ -52,7 +52,7 @@ export default defineComponent({
             proveedor.hydrate(new Proveedor())
         })
         onGuardado(()=>{
-            emit('cerrar-modal')
+            emit('cerrar-modal', false)
             emit('guardado')
         })
 
@@ -63,6 +63,7 @@ export default defineComponent({
             nombres: { required },
             apellidos: { required },
             celular: { required },
+            correo: { required },
             tipo_contacto: { required },
             proveedor: { required },
         }
@@ -94,7 +95,6 @@ export default defineComponent({
         }
 
         onBeforeUnmount(()=>{
-            // console.log('onbeforeunmount')
             contactoProveedorStore.idcontacto = null
         })
         
@@ -115,7 +115,7 @@ export default defineComponent({
             proveedor,
             //listados
             proveedores,
-            opciones_tipo_contacto,
+            opcionesTipoContacto,
 
             //funciones
             filtrarProveedores,

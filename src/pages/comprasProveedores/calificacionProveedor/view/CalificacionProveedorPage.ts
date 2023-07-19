@@ -25,148 +25,90 @@ import { configuracionColumnasCriteriosCalificacionesConPeso } from "pages/compr
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { endpoints } from "config/api";
 import { AxiosResponse } from "axios";
+import { useBotonesTablaCalificacionProveedor } from "../application/BotonesTablaCalificacionProveedor";
+import { Archivo } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo";
+import { ArchivoTicketController } from "pages/gestionTickets/tickets/infraestructure/ArchivoTicketController ";
 
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable, ArchivoSeguimiento },
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
         const { entidad: calificacion, listadosAuxiliares } = mixin.useReferencias()
-        const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+        const { cargarVista, obtenerListados } = mixin.useComportamiento()
         const { onConsultado } = mixin.useHooks()
         const { confirmar, prompt, promptItems } = useNotificaciones()
 
+
+        const mixinArchivoProveedor = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
         /**************************************************************
          * Stores
          **************************************************************/
         const proveedorStore = useProveedorStore()
         const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
-        
+
         /************************************************************** 
          * Variables
          **************************************************************/
-        const ofertas = ref([])
-        const criteriosBienes = ref<any>([])
-        const criteriosServicios = ref<any>([])
+        const refArchivoProveedor = ref()
+        const disabled = ref(false)
+        // const criteriosBienes = ref<any>([])
+        // const criteriosServicios = ref<any>([])
         const step = ref(1)
+        const stepper = ref()
         const resultadosCalificacion = ref()
         const seleccionados = ref([]) //los criterios que son seleccionados en la primera tabla
+        const {
+            btnCalificarCriterioBien,
+            btnCalificarCriterioServicio,
+            btnEditarCantidadCriterioBien,
+            btnEditarCantidadCriterioServicio,
+            btnEliminarCriterioBien,
+            btnEliminarCriterioServicio,
+            criteriosBienes,
+            criteriosServicios,
+            listado: listadoSeleccionados,
+            // btnSubirArchivosBien,
+        } = useBotonesTablaCalificacionProveedor(seleccionados)
+
+        function estructuraConsultaOferta() {
+            //aqui se sabe que la oferta siempre será bienes y servicios así que se recorre hasta el penultimo digito
+            let parametro = ''
+            if (proveedorStore.proveedor.tipos_ofrece.length > 1) {
+                console.log('Se ofrecen varios tipos')
+            } else {
+                console.log('Se ofrece un tipo')
+            }
+            proveedorStore.proveedor.tipos_ofrece.forEach((v, index) => {
+                if (index === 1) parametro += v
+                else parametro += v + '&oferta_id[]='
+            })
+            console.log('Se elemento', parametro)
+            return parametro
+        }
 
         cargarVista(async () => {
             obtenerListados({
-                // criterios: {
-                //     controller: new CriterioCalificacionController(),
-                //     params: { departamento_id: proveedorStore.idDepartamento },
-                // }
                 ofertas: new OfertaProveedorController(),
-                criterios: new CriterioCalificacionController(),
+                criterios: {
+                    controller: new CriterioCalificacionController(),
+                    params: {
+                        only_me: true,
+                        'oferta_id[]': estructuraConsultaOferta()
+                    }
+                }
             })
+            estructuraConsultaOferta()
         })
 
-        /************************************************************** 
-         * Botones de tabla
-         **************************************************************/
-        function eliminarBien({ entidad, posicion }) {
-            confirmar('¿Está seguro de continuar?',
-                () => {
-                    criteriosBienes.value.splice(posicion, 1)
-                    console.log(entidad, posicion)
-                    seleccionados.value.splice(posicion, 1)
-                    console.log(seleccionados.value)
-                })
-        }
-        function eliminarServicio({ entidad, posicion }) {
-            confirmar('¿Está seguro de continuar?',
-                () => criteriosServicios.value.splice(posicion, 1))
-            console.log(seleccionados.value)
-        }
-        const botonEliminarCriterioBien: CustomActionTable = {
-            titulo: 'Quitar',
-            color: 'negative',
-            icono: 'bi-x',
-            accion: ({ entidad, posicion }) => {
-                eliminarBien({ entidad, posicion })
-            },
-            visible: () => true
-        }
-        const botonEliminarCriterioServicio: CustomActionTable = {
-            titulo: 'Quitar',
-            color: 'negative',
-            icono: 'bi-x',
-            accion: ({ entidad, posicion }) => {
-                eliminarServicio({ entidad, posicion })
-            },
-            visible: () => true
-        }
-        const botonEditarCantidadCriterioBien: CustomActionTable = {
-            titulo: 'Cantidad',
-            icono: 'bi-pencil',
-            accion: ({ posicion }) => {
-                const config: CustomActionPrompt = {
-                    titulo: 'Confirmación',
-                    mensaje: 'Ingresa la cantidad',
-                    defecto: criteriosBienes.value[posicion].peso,
-                    tipo: 'number',
-                    accion: (data) => {
-                        criteriosBienes.value[posicion].peso = data
-                    },
-                }
 
-                prompt(config)
-            },
-            visible: () => true
-        }
-        const botonEditarCantidadCriterioServicio: CustomActionTable = {
-            titulo: 'Cantidad',
-            icono: 'bi-pencil',
-            accion: ({ posicion }) => {
-                const config: CustomActionPrompt = {
-                    titulo: 'Confirmación',
-                    mensaje: 'Ingresa la cantidad',
-                    defecto: criteriosServicios.value[posicion].peso,
-                    tipo: 'number',
-                    accion: (data) => {
-                        criteriosServicios.value[posicion].peso = data
-                    },
-                }
-
-                prompt(config)
-            },
-            visible: () => true
-        }
-        const botonCalificarCriterioBien: CustomActionTable = {
-            titulo: 'Calificación',
-            icono: 'bi-pencil',
-            accion: ({ entidad, posicion }) => {
-                const config: CustomActionPrompt = reactive({
-                    titulo: 'Califica',
-                    mensaje: 'Ingresa una puntuación',
-                    defecto: criteriosBienes.value[posicion].puntaje,
-                    tipo: 'radio',
-                    accion: (data) => {
-                        criteriosBienes.value[posicion].puntaje = data
-                        criteriosBienes.value[posicion].calificacion = (.2 * data * criteriosBienes.value[posicion].peso).toFixed(2)
-
-                        const config: CustomActionPrompt = {
-                            titulo: 'Comentario',
-                            mensaje: 'Ingresa un comentario',
-                            defecto: criteriosBienes.value[posicion].comentario,
-                            tipo: 'text',
-                            accion: (data) => {
-                                criteriosBienes.value[posicion].comentario = data
-                            },
-                        }
-
-                        prompt(config)
-                    },
-                    items: likertCalificacion
-                })
-                promptItems(config)
-            }
-        }
         /************************************************************** 
          * Funciones
          **************************************************************/
+        // function botonPrevious() {
+        //     stepper.value.previous()
+        // }
+
         /**
          * La función `botonNext` se usa para manejar la lógica para avanzar al siguiente paso en un
          * proceso de varios pasos, verificando ciertos criterios antes de permitir que el usuario
@@ -175,40 +117,73 @@ export default defineComponent({
          * tiempo con una declaración de "retorno" si se cumplen ciertas condiciones.
          */
         async function botonNext() {
-            console.log('Clickeaste en el botonNext, step ', step.value + 1)
+            // console.log('Clickeaste en Next, actual: ', step.value, ' siguiente step es: ', step.value + 1)
+            if (criteriosBienes.value.length == 0 && criteriosServicios.value.length == 0) {
+                notificarAdvertencia('Debes seleccionar al menos un criterio del listado para poder avanzar.')
+                return
+            }
             if (step.value == 2) {
                 const resultListadoBienes = verificarCriteriosBienes()
                 if (resultListadoBienes) {
-                    step.value++
+                    stepper.value.next()
                     return
-                } else {
-                    return
-                }
+                } else return
             }
             if (step.value == 3) {
                 const resultListadoServicios = verificarCriteriosServicios()
                 if (resultListadoServicios) {
-                    step.value++
+                    stepper.value.next()
                     return
-                } else {
-                    return
-                }
+                } else return
             }
             if (step.value == 4) {
-                console.log('Aqui se guardan los resultados en la base de datos')
-                const data = {
-                    proveedor_id: proveedorStore.proveedor.id,
-                    calificacion: criteriosBienes.value.reduce((prev, curr) => prev + parseFloat(curr.calificacion), 0)
+                if (verificarCalificacionesCriterios()) {
+                    confirmar('¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla', async () => {
+                        console.log('Aqui se guardan los resultados en la base de datos')
+                        console.log(criteriosBienes.value, criteriosServicios.value)
+                        let calificacionBienes = 0
+                        let calificacionServicios = 0
+                        let suma = 0
+                        if (criteriosBienes.value.length > 0) calificacionBienes = criteriosBienes.value.reduce((prev, curr) => prev + parseFloat(curr.calificacion), 0)
+                        if (criteriosServicios.value.length > 0) calificacionServicios = criteriosServicios.value.reduce((prev, curr) => prev + parseFloat(curr.calificacion), 0)
+                        console.log(calificacionBienes, calificacionServicios)
+                        if (calificacionBienes > 0 && calificacionServicios > 0) {
+                            suma = (calificacionServicios + calificacionBienes) / 2
+                        } else {
+                            if (calificacionServicios > 0) suma = calificacionServicios
+                            if (calificacionBienes > 0) suma = calificacionBienes
+                        }
+
+                        const data = {
+                            proveedor_id: proveedorStore.proveedor.id,
+                            criterios: [...criteriosBienes.value, ...criteriosServicios.value],
+                            calificacion: suma
+                        }
+                        const { response, result } = await guardarCalificacion(data)
+                        if (response.status == 200) {
+                            resultadosCalificacion.value = result
+                            // step.value++
+                            stepper.value.next()
+                            return
+                        } else {
+                            // step.value--
+                            stepper.value.previous()
+                        }
+                    })
+                    return
+                } else {
+                    notificarError('¡Debes calificar todos los criterios para poder avanzar!.')
+                    return
                 }
-                const { response, result } = await guardarCalificacion(data)
-                if (response.status == 200) {
-                    resultadosCalificacion.value = result
-                    step.value++
-                }
-                return
             }
-            step.value++
+            if (step.value == 5) {
+                emit('cerrar-modal', false)
+                emit('guardado') //se  envia a recargar listado de proveedores para que no se muestre el boton 
+            }
+            stepper.value.next()
         }
+
+
         async function guardarCalificacion(data) {
             const axios = AxiosHttpRepository.getInstance()
             const ruta = axios.getEndpoint(endpoints.calificacion_proveedor)
@@ -218,6 +193,13 @@ export default defineComponent({
                 result: response.data.modelo
             }
         }
+        /**
+         * La función "verificarCriteriosBienes" comprueba si la suma de los pesos asignados a los
+         * elementos de una lista es igual a 100.
+         * @returns ya sea verdadero o falso. Si la condición `if (sumaCriteriosBienes == 100)` es
+         * verdadera, devuelve verdadero. Si la condición `if (criteriosBienes.value.length > 0)` es
+         * falsa, también devuelve verdadero. De lo contrario, devuelve falso.
+         */
         function verificarCriteriosBienes() {
             let sumaCriteriosBienes = 0
             if (criteriosBienes.value.length > 0) {
@@ -238,6 +220,17 @@ export default defineComponent({
                 return true
             }
         }
+
+
+
+        /**
+         * La función "verificarCriteriosServicios" comprueba si la suma de pesos asignados a criterios
+         * para servicios es válida.
+         * @returns ya sea verdadero o falso. Si la condición `if (sumaCriteriosServicios == 100)` es
+         * verdadera, devolverá verdadero. Si alguna de las otras condiciones es verdadera, devolverá
+         * falso. Si no se cumple ninguna de las condiciones y se ejecuta el bloque `else`, también
+         * devolverá verdadero.
+         */
         function verificarCriteriosServicios() {
             let sumaCriteriosServicios = 0
             if (criteriosServicios.value.length > 0) {
@@ -258,6 +251,20 @@ export default defineComponent({
                 return true
             }
         }
+
+
+
+        /**
+         * La función "verificarCalificacionesCriterios" comprueba si a todos los criterios de bienes y
+         * servicios se les ha asignado una calificación.
+         * @returns un valor booleano.
+         */
+        function verificarCalificacionesCriterios() {
+            return criteriosBienes.value.every((v) => v.calificacion != null) && criteriosServicios.value.every((v) => v.calificacion != null)
+        }
+
+
+
         /**
          * La función `criterioSeleccionado` registra la entrada `fila` y agrega o elimina elementos de
          * `criteriosBienes.value` y `criteriosServicios.value` en función de la propiedad `oferta` de
@@ -268,11 +275,17 @@ export default defineComponent({
          * individuales dentro de la fila principal. 
          */
         function criterioSeleccionado(fila) {
-            console.log(fila)
+            // console.log(fila)
             if (fila.added) {
                 fila.rows.forEach((v) => {
-                    if (v.oferta == tiposOfertas.bienes) criteriosBienes.value.push(v)
-                    if (v.oferta == tiposOfertas.servicios) criteriosServicios.value.push(v)
+                    if (v.oferta == tiposOfertas.bienes) {
+                        const posicion = criteriosBienes.value.push(v)
+                        criteriosBienes.value[posicion - 1].peso = v.ponderacion_referencia
+                    }
+                    if (v.oferta == tiposOfertas.servicios) {
+                        const posicion = criteriosServicios.value.push(v)
+                        criteriosBienes.value[posicion - 1].peso = v.ponderacion_referencia
+                    }
                 })
             } else {
                 fila.rows.forEach((element) => {
@@ -287,20 +300,30 @@ export default defineComponent({
 
 
         return {
+            stepper,
             step,
             columnasCriterios: configuracionColumnasCriteriosCalificaciones,
             columnasCriteriosConPeso: configuracionColumnasCriteriosCalificacionesConPeso,
             columnasCriteriosConCalificacion: configuracionColumnasCriteriosCalificacionesConCalificacion,
             accionesTabla,
             //botones de tabla
-            botonEditarCantidadCriterioBien,
-            botonEliminarCriterioBien,
-            botonEditarCantidadCriterioServicio,
-            botonEliminarCriterioServicio,
-            botonCalificarCriterioBien,
+            btnEditarCantidadCriterioBien,
+            btnEliminarCriterioBien,
+            btnEditarCantidadCriterioServicio,
+            btnEliminarCriterioServicio,
+            btnCalificarCriterioBien,
+            btnCalificarCriterioServicio,
+            // btnSubirArchivosBien,
+
             //botones de navegacion
             botonNext,
+            // botonPrevious,
 
+            //manejo de archivos
+            refArchivoProveedor,
+            mixinArchivoProveedor,
+            endpoint: endpoints.archivos_proveedores,
+            disabled,
 
             //listados
             criterios: listadosAuxiliares.criterios, //tabla general 
@@ -310,7 +333,7 @@ export default defineComponent({
 
             proveedor: proveedorStore.proveedor,
 
-            seleccionados,
+            seleccionados: listadoSeleccionados,
             criterioSeleccionado,
             resultadosCalificacion,
 

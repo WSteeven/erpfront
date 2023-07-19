@@ -412,3 +412,14 @@ export function formatearFechaTexto(fecha: number){
   const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
   return new Date(fecha).toLocaleDateString('es-Es', opciones)
 }
+
+// export function obtenerDiasTranscurridos(fecha){
+//   const segundo = 1000 //mil milisegundos son 1 segundo
+//   const minuto = 60 * segundo
+//   const hora = 60 * minuto
+//   const dia = 24*hora
+//   const anio = 365*dia
+
+
+
+// }

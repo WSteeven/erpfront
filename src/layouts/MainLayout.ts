@@ -52,6 +52,7 @@ export default defineComponent({
      * Init
      *******/
     if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+    moment.updateLocale('es', { invalidDate: 'No aplica' })
 
     /************
      * Variables
@@ -166,32 +167,39 @@ export default defineComponent({
       }
     })
     */
-    const notIdle = new NotIdle()
-      .whenInteractive()
-      .within(5, 1000)
-      .do(() => {
-        console.log('ultima actividad', new Date().getTime().toString(), new Date().toLocaleTimeString())
-        sessionStorage.setItem('lastActivity', new Date().getTime().toString())
-      })
-      .start()
-    const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
-    setInterval(() => {
-      let la = new Date(+sessionStorage.getItem('lastActivity')!).getTime()
-      console.log('Resta de tiempo', new Date().getTime()-la)
-      console.log('Tiempo limite', LIMIT)
-      console.log('Resultado',  new Date().getTime()-la > LIMIT, new Date().toLocaleTimeString())
-      if (new Date().getTime() - la > LIMIT) {
-        logout()
-        sessionStorage.removeItem('lastActivity')
-        LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
-        Swal.fire({
-          icon: 'error',
-          title: 'Has excedido el tiempo de inactividad',
-          text: 'Se ha cerrado la sesión por exceder tiempo de inactividad, por favor vuelve a iniciar sesión.',
-          confirmButtonColor: '#0879dc',
+    if (authenticationStore.user) {
+      const notIdle = new NotIdle()
+        .whenInteractive()
+        .within(5, 1000)
+        .do(() => {
+          //  console.log('ultima actividad', new Date().getTime().toString(), new Date().toLocaleTimeString())
+          sessionStorage.setItem('lastActivity', new Date().getTime().toString())
         })
-      }
-    }, 60000) //comprobar cada minuto
+        .start()
+      const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
+      setInterval(() => {
+        if (authenticationStore.user) {
+          // console.log(authenticationStore.user)
+          let la = new Date(+sessionStorage.getItem('lastActivity')!).getTime()
+          //  console.log('Resta de tiempo', new Date().getTime()-la)
+          //  console.log('Tiempo limite', LIMIT)
+          //  console.log('Resultado',  new Date().getTime()-la > LIMIT, new Date().toLocaleTimeString())
+          if (new Date().getTime() - la > LIMIT) {
+            logout()
+            sessionStorage.removeItem('lastActivity')
+            LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
+            Swal.fire({
+              icon: 'error',
+              title: 'Has excedido el tiempo de inactividad',
+              text: 'Se ha cerrado la sesión por exceder tiempo de inactividad, por favor vuelve a iniciar sesión.',
+              confirmButtonColor: '#0879dc',
+            })
+          }
+        }
+      }, 60000) //comprobar cada minuto
+    } else {
+      sessionStorage.clear()
+    }
 
     return {
       enCamino,

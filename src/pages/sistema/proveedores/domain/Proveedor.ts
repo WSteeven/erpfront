@@ -18,6 +18,10 @@ export class Proveedor extends EntidadAuditable {
   categorias_ofrece: Ref<any[]>
   departamentos: Ref<any[]>
 
+  //auxiliares
+  calificacion: number | null
+  calificado: string | null
+
   constructor() {
     super()
     this.empresa = null
@@ -29,9 +33,13 @@ export class Proveedor extends EntidadAuditable {
     this.direccion = null
     this.celular = null
     this.telefono = null
-    this.contactos= ref([])
-    this.tipos_ofrece= ref([])
-    this.categorias_ofrece= ref([])
-    this.departamentos= ref([])
+    this.contactos = ref([])
+    this.tipos_ofrece = ref([])
+    this.categorias_ofrece = ref([])
+    this.departamentos = ref([])
+
+    //Auxiliares
+    this.calificacion = null
+    this.calificado = null
   }
 }

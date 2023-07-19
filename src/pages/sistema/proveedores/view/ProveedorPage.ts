@@ -16,13 +16,13 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { Ref, computed, defineComponent, reactive, ref } from 'vue';
 import { ProveedorController } from '../infraestructure/ProveedorController';
 import { Proveedor } from '../domain/Proveedor';
-import { acciones, accionesTabla } from 'config/utils';
+import { acciones } from 'config/utils';
 import { ComportamientoModalesProveedores } from '../application/ComportamientoModalesProveedores';
 import { EmpresaController } from 'pages/administracion/empresas/infraestructure/EmpresaController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { Empresa } from 'pages/administracion/empresas/domain/Empresa';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { opciones_tipo_contribuyente, opciones_tipo_negocio } from 'config/utils_compras_proveedores';
+import { estadosCalificacionProveedor, opciones_tipo_contribuyente, opciones_tipo_negocio } from 'config/utils_compras_proveedores';
 import { ParroquiaController } from 'sistema/parroquia/infraestructure/ParroquiaController';
 import { OfertaProveedorController } from '../modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
 import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController';
@@ -33,14 +33,16 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { ContactoProveedorController } from 'pages/comprasProveedores/contactosProveedor/infraestructure/ContactoProveedorController';
 import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
 import { useAuthenticationStore } from 'stores/authentication';
+import moment from 'moment';
+import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor';
 
 
 export default defineComponent({
   components: { TabLayout, LabelAbrirModal, ModalesEntidad, TablaDevolucionProducto, EssentialTable },
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Proveedor, new ProveedorController())
-    const { entidad: proveedor, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { entidad: proveedor, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
     const { onConsultado, onReestablecer } = mixin.useHooks()
     const { confirmar } = useNotificaciones()
     const refContactos = ref()
@@ -52,6 +54,7 @@ export default defineComponent({
     const modales = new ComportamientoModalesProveedores()
     const StatusLoading = new StatusEssentialLoading()
     const proveedorStore = useProveedorStore()
+    const calificacionStore = useCalificacionProveedorStore()
     const store = useAuthenticationStore()
 
     //variables
@@ -83,9 +86,13 @@ export default defineComponent({
      * Validaciones
      **************************************************************/
     const reglas = {
+      parroquia: { required },
       empresa: { required },
       sucursal: { required },
       direccion: { required },
+      tipos_ofrece: { required },
+      categorias_ofrece: { required },
+      departamentos: { required },
     }
     const v$ = useVuelidate(reglas, proveedor)
     setValidador(v$.value)
@@ -97,6 +104,7 @@ export default defineComponent({
       ...configuracionColumnasContactosProveedores,
       // accionesTabla,
     ]
+    columnasContactosProveedor.splice(2, 1)
 
     /**************************************************************
      * Funciones
@@ -112,9 +120,9 @@ export default defineComponent({
       visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
     }
 
-    const botonCalificarProveedores: CustomActionTable = {
+    const botonCalificarProveedor: CustomActionTable = {
       titulo: 'Calificar',
-      icono: 'bi-star-fill',
+      icono: 'bi-stars',
       color: 'positive',
       accion: async ({ entidad, posicion }) => {
         // console.log(posicion)
@@ -125,10 +133,60 @@ export default defineComponent({
         proveedorStore.proveedor = entidad
         // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
         modales.abrirModalEntidad('CalificacionProveedorPage')
+        
       },
-      visible: ({posicion})=>{
-        console.log(posicion)
-        return true
+      visible: ({ posicion, entidad }) => {
+        // console.log(posicion, entidad)
+        const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
+        if (departamento_calificador) {
+          if (departamento_calificador.pivot.fecha_calificacion) {
+            const diasTranscurridos = moment().diff(moment(departamento_calificador?.pivot.fecha_calificacion), 'days')
+            return diasTranscurridos > 365 && entidad.estado
+          }
+          return true && entidad.estado
+        }
+        return false
+
+        // return true
+      }
+    }
+    const botonVerMiCalificacionProveedor: CustomActionTable = {
+      titulo: 'Ver calificación',
+      icono: 'bi-eye',
+      color: 'positive',
+      accion: async ({ entidad, posicion }) => {
+        await consultarDepartamento().then(() => {
+          proveedorStore.idDepartamento = departamento.value[0].id
+          
+        })
+        proveedorStore.proveedor = entidad
+        calificacionStore.idDepartamento = proveedorStore.idDepartamento
+        calificacionStore.verMiCalificacion = true
+        // console.log('PROVEEDOR STORE proveedor', proveedorStore.idDepartamento, proveedorStore.idProveedor)
+        // console.log('PROVEEDOR STORE calificacion', calificacionStore.idDepartamento, calificacionStore.idProveedor)
+        modales.abrirModalEntidad('InfoCalificacionProveedorPage')
+      },
+      visible: ({ posicion, entidad }) => {
+        const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
+        if (departamento_calificador) {
+          return departamento_calificador.pivot.calificacion!==null
+        }
+        return false
+      }
+    }
+    const botonVerCalificacionProveedor: CustomActionTable = {
+      titulo: 'Todas las calificaciones',
+      icono: 'bi-eye',
+      color: 'info',
+      accion: async ({ entidad, posicion }) => {
+        consultarDepartamento().then(() => {
+          proveedorStore.idDepartamento = departamento.value[0].id
+        })
+        proveedorStore.proveedor = entidad
+        modales.abrirModalEntidad('InfoCalificacionProveedorPage')
+      },
+      visible: ({ posicion, entidad }) => {
+        return entidad.calificado === estadosCalificacionProveedor.calificado
       }
     }
 
@@ -143,6 +201,7 @@ export default defineComponent({
     }
     async function guardado() {
       consultarEmpresas()
+      listar()
       console.log('accion', accion.value)
       if (accion.value === acciones.editar)
         consultarContactosProveedor()
@@ -150,7 +209,6 @@ export default defineComponent({
     }
     async function consultarDepartamento() {
       const { result } = await new DepartamentoController().listar({ responsable_id: store.user.id })
-      // console.log(result)
       departamento.value = result
     }
 
@@ -196,12 +254,15 @@ export default defineComponent({
       mostrarLabelModal,
       guardado,
       abrirModalContacto,
-      botonCalificarProveedores,
       refContactos,
 
       //funciones
       obtenerEmpresa,
 
+      //botones
+      botonCalificarProveedor,
+      botonVerCalificacionProveedor,
+      botonVerMiCalificacionProveedor,
     }
 
   }

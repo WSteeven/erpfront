@@ -3,7 +3,9 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proveedores"
-    :accion1="botonCalificarProveedores"
+    :accion1="botonCalificarProveedor"
+    :accion2="botonVerMiCalificacionProveedor"
+    :accion3="botonVerCalificacionProveedor"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -18,10 +20,12 @@
             <div class="col-12 col-md-3">
               <label-abrir-modal
                 v-if="mostrarLabelModal"
-                label="Empresa"
+                label="Persona (natural/juridica)"
                 @click="modales.abrirModalEntidad('EmpresaPage')"
               />
-              <label v-else class="q-mb-sm block">Empresa</label>
+              <label v-else class="q-mb-sm block"
+                >Persona (natural/juridica)</label
+              >
               <q-select
                 v-model="proveedor.empresa"
                 :options="empresas"
@@ -213,11 +217,18 @@
                 use-input
                 input-debounce="0"
                 @filter="filtrarParroquias"
+                :error="!!v$.parroquia.$errors.length"
+                error-message="Debes seleccionar una parroquia"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.parroquia"
                 emit-value
                 map-options
               >
+                <template v-slot:error>
+                  <div v-for="error of v$.parroquia.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps">
                     <q-item-section>
@@ -271,11 +282,11 @@
                 :error="!!v$.direccion.$errors.length"
                 outlined
                 dense
-              ><template v-slot:error>
-                <div v-for="error of v$.direccion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
+                ><template v-slot:error>
+                  <div v-for="error of v$.direccion.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
               </q-input>
             </div>
 
@@ -297,6 +308,7 @@
                 class="overflow-hidden q-mb-md expansion"
                 label="Contactos del proveedor"
                 header-class="text-bold bg-header-collapse"
+                default-opened
               >
                 <div class="row q-col-gutter-sm q-pa-sm">
                   <div class="col-12 col-md-12">
@@ -343,6 +355,8 @@
                 dense
                 use-chips
                 outlined
+                :error="!!v$.tipos_ofrece.$errors.length"
+                error-message="Debes seleccionar al menos una opcion"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
                 emit-value
@@ -386,6 +400,8 @@
                 dense
                 use-chips
                 outlined
+                :error="!!v$.categorias_ofrece.$errors.length"
+                error-message="Debes seleccionar al menos una opcion"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
                 emit-value
@@ -429,10 +445,15 @@
                 dense
                 use-chips
                 outlined
+                :error="!!v$.departamentos.$errors.length"
+                error-message="Debes seleccionar al menos una opcion"
                 hint="Dept. Contable califica a todos los proveedores"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
-                :option-disable="(v) => v.nombre === 'CONTABILIDAD'|| v.nombre === 'contabilidad'"
+                :option-disable="
+                  (v) =>
+                    v.nombre === 'CONTABILIDAD' || v.nombre === 'contabilidad'
+                "
                 emit-value
                 map-options
                 ><template
