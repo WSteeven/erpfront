@@ -141,15 +141,15 @@ export default defineComponent({
      * Este código es responsable de manejar la inactividad del usuario y cerrar sesión después de un
      * cierto período de tiempo. 
      */
-    const tiempoInactividad = 10 * 60 * 1000 //10 minutos de inactividad
+    // const tiempoInactividad = 10 * 60 * 1000 //10 minutos de inactividad
     // let mouseActivo = true
     // const mostrarAlertaInactividad = computed(() => {
     //   return (tiempoInactividad / 1000) - idledFor.value < 10 //true cuando sean 10 segundos restantes
     // })
-    const { idle, lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
+    // const { idle, lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
     // const now = useTimestamp({ interval: 1000 })
     // const idledFor = computed(() => Math.floor((now.value - lastActive.value) / 1000),) //Tiempo de inactividad transcurrido en segundos 1,2,3...,n
-    const ultimaConexion = LocalStorage.getItem('ultima_conexion')
+    // const ultimaConexion = LocalStorage.getItem('ultima_conexion')
     /*
     watch(idle, () => {
       if (idle.value === true) {
@@ -166,7 +166,7 @@ export default defineComponent({
       }
     })
     */
-    const notIdle = new NotIdle()
+    /* const notIdle = new NotIdle()
       .whenInteractive()
       .within(5, 1000)
       .do(() => {
@@ -191,7 +191,8 @@ export default defineComponent({
           confirmButtonColor: '#0879dc',
         })
       }
-    }, 60000) //comprobar cada minuto
+    }, 60000) //comprobar cada minuto 
+    */
 
     return {
       enCamino,
@@ -228,9 +229,9 @@ export default defineComponent({
       mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
 
       // idledFor,
-      tiempoInactividad,
+      // tiempoInactividad,
       // mostrarAlertaInactividad,
-      ultimaConexion,
+      // ultimaConexion,
     }
   },
 })
