@@ -159,6 +159,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.remove('token')
     limpiarLS()
     await getUser()
+    document.title = 'JPCONSTRUCRED'
   }
 
   const setUser = (userData: Empleado | null) => {

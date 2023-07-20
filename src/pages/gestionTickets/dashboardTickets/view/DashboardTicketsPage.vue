@@ -227,16 +227,19 @@
           </div>
 
           <div class="col-12 col-md-6" v-if="true">
-            <Doughnut
+            <Pie
               :data="ticketsPorEstadoBar"
               :options="{
                 responsive: true,
                 maintainAspectRatio: false,
+                legend: {
+                  display: true,
+                  position: 'bottom', // Cambia la posición según tus necesidades
+                },
               }"
               v-if="ticketsPorEstado.length"
             />
           </div>
-          {{ ticketsPorEstado }}
         </div>
 
         <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-sm">

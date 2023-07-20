@@ -192,6 +192,7 @@ export default defineComponent({
       materialesStock.value = result
     }
 
+    // antes de guardar y editar seguimiento
     function filtrarMaterialesTareaOcupados() {
       return materialesTarea.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
     }

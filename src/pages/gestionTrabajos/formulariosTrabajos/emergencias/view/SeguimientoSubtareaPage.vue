@@ -61,11 +61,11 @@
                 name="usar_material_tarea"
                 label="Usar material de tarea"
               />
-              <!-- <q-tab
+              <q-tab
                 name="historial_material_tarea_usado"
                 label="Historial de material de tarea usado"
               >
-              </q-tab> -->
+              </q-tab>
             </q-tabs>
 
             <q-tab-panels v-model="tab" animated>

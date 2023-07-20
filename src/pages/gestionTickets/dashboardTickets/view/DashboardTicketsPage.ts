@@ -14,7 +14,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import TableView from 'components/tables/view/TableView.vue'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
-import { Bar, Doughnut } from 'vue-chartjs'
+import { Bar, Pie } from 'vue-chartjs'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -25,9 +25,10 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { DashboardTicketController } from '../infraestructure/DashboardTicketsController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { estadosTickets } from 'config/tickets.utils'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Doughnut },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie },
   setup() {
     ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
 
@@ -80,6 +81,10 @@ export default defineComponent({
         y: {
           beginAtZero: true
         }
+      },
+      legend: {
+        display: true,
+        position: 'bottom' // Cambia la posición según tus necesidades
       }
     }
 
@@ -136,7 +141,8 @@ export default defineComponent({
         ticketsPorEstado.value = result.ticketsPorEstado
         const labels3 = result.ticketsPorEstado.map((item) => item.estado)
         const valores3 = result.ticketsPorEstado.map((item) => item.total_tickets)
-        ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidades de tickets por estados')
+        const colores = result.ticketsPorEstado.map((item) => mapearColor(item.estado))
+        ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidades de tickets por estados', colores)
         cargando.desactivar()
       }
     }
@@ -145,12 +151,12 @@ export default defineComponent({
       return matrix[0].map((_, index) => matrix.map(row => row[index]));
     }
 
-    function mapearDatos(labels: [], valores: [], titulo: string) {
+    function mapearDatos(labels: [], valores: [], titulo: string, colores?: []) {
       return {
         labels: labels,
         datasets: [
           {
-            backgroundColor: '#666f88',
+            backgroundColor: colores ?? '#666f88',
             label: titulo,
             data: valores,
           }
@@ -170,6 +176,15 @@ export default defineComponent({
         label: labelsColumns.label,
         backgroundColor: labelsColumns.color,
         data,
+      }
+    }
+
+    function mapearColor(estadoTicket: keyof typeof estadosTickets) {
+      switch (estadoTicket) {
+        case estadosTickets.ASIGNADO: return '#78909c'
+        case estadosTickets.EJECUTANDO: return '#ffc107'
+        case estadosTickets.PAUSADO: return '#616161'
+        case estadosTickets.FINALIZADO_SOLUCIONADO: return '#8bc34a'
       }
     }
 
