@@ -53,9 +53,7 @@
               v-model="permiso.fecha_hora_inicio"
               placeholder="Obligatorio"
               :error="!!v$.fecha_hora_inicio.$errors.length"
-              :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
-              "
+              :disable="disabled"
               @blur="v$.fecha_hora_inicio.$touch"
               readonly
               outlined
@@ -98,8 +96,7 @@
               v-model="permiso.fecha_hora_fin"
               placeholder="Obligatorio"
               :error="!!v$.fecha_hora_fin.$errors.length"
-              :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              :disable="disabled
               "
               @blur="v$.fecha_hora_fin.$touch"
               readonly
@@ -268,6 +265,7 @@
               :esMultiple="false"
             >
             </gestor-documentos>
+
           </div>
 
           <!-- Fecha Recuperacion -->
@@ -362,7 +360,7 @@
             ></q-checkbox>
           </div>
           <!-- Cargo a Vacaciones -->
-          <div class="col-12 col-md-3" v-if="horas_permisos <= 8">
+          <div class="col-12 col-md-3" v-if="horas_permisos >= 8">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="permiso.cargo_vacaciones"

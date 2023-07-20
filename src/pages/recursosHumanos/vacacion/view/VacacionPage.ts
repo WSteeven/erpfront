@@ -45,10 +45,15 @@ export default defineComponent({
        Está desestructurando las funciones `onConsultado` y `onBeforeModificar` de la función
       `mixin.useHooks()` y asignándolas a variables. */
     const { onConsultado, onBeforeModificar } = mixin.useHooks()
-   /* El código anterior define una función TypeScript llamada `onBeforeModificar` que no acepta
+    /**
+     * Stores
+     */
+    const recursosHumanosStore = useRecursosHumanosStore()
+    const store = useAuthenticationStore()
+    /* El código anterior define una función TypeScript llamada `onBeforeModificar` que no acepta
       argumentos. Dentro de la función, establece el valor de una variable `esConsultado` a `true`. */
     onBeforeModificar(() => (esConsultado.value = true))
-   /* El código anterior define una función de devolución de llamada que se ejecutará cuando ocurra un
+    /* El código anterior define una función de devolución de llamada que se ejecutará cuando ocurra un
       evento "consultado". Dentro de la función de devolución de llamada, verifica si la ID del usuario
       es igual a la ID del jefe inmediato de la solicitud de vacaciones. Si son iguales pone el valor
       de "esAutorizador" a verdadero, en caso contrario lo pone a falso. */
@@ -102,13 +107,7 @@ export default defineComponent({
     })
     const dias_rango1 = ref()
     const dias_rango2 = ref()
-    const numero_dias = ref()
     let tabVacacion = '1'
-    /**
-     * Stores
-     */
-    const recursosHumanosStore = useRecursosHumanosStore()
-    const store = useAuthenticationStore()
 
     /* El código anterior define una propiedad computada llamada "dias_descuento_vacaciones" en TypeScript.
        Esta propiedad calculada utiliza una función para calcular su valor. Dentro de la función llama a la
@@ -118,6 +117,10 @@ export default defineComponent({
       return data.dias_descuento_vacaciones
     })
 
+    /**
+     * La función "obtener_descuentos" realiza una solicitud GET a una URL específica y recupera
+     * información de descuento para vacaciones.
+     */
     function obtener_descuentos() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const url_acreditacion =
@@ -139,6 +142,8 @@ export default defineComponent({
         .then((response) => {
           const responseData = response.data
           if (responseData) {
+            vacacion.descuento_vacaciones =
+              responseData.duracion != null ? responseData.duracion : 0
             data.dias_descuento_vacaciones = convertirHorasAHumanos(
               responseData.duracion
             )
@@ -148,9 +153,17 @@ export default defineComponent({
           console.error(error)
         })
     }
+    /**
+     * La función "convertirHorasAHumanos" convierte una determinada cantidad de horas a un formato
+     * legible por humanos, mostrando la cantidad de días y horas restantes.
+     * @param horas - El parámetro "horas" representa la cantidad de horas que desea convertir a un
+     * formato legible por humanos.
+     * @returns una cadena que representa las horas de entrada convertidas a un formato legible por
+     * humanos.
+     */
     function convertirHorasAHumanos(horas) {
-      const dias = Math.floor(horas / 8)
-      const horasRestantes = horas % 8
+      const dias = Math.floor(horas / 24)
+      const horasRestantes = horas % 24
 
       let resultado = ''
       if (dias > 0) {
@@ -170,8 +183,6 @@ export default defineComponent({
 
       return resultado
     }
-
-
     const dias_adicionales = computed(() => {
       const fecha_ingreso =
         vacacion.empleado !== null
@@ -207,12 +218,10 @@ export default defineComponent({
         un rango. */
     const numero_dias_rango = computed(() => {
       if (
-        dias_rango1.value != null &&
-        dias_rango1.value != '' &&
-        dias_rango2.value != null &&
-        dias_rango2.value != ''
+        vacacion.numero_dias_rango1 != null &&
+        vacacion.numero_dias_rango2!= null
       ) {
-        return parseInt(dias_rango1.value) + parseInt(dias_rango2.value)
+        return parseInt(vacacion.numero_dias_rango1.toString()) + parseInt(vacacion.numero_dias_rango2.toString())
       } else {
         return 0
       }
@@ -241,13 +250,12 @@ export default defineComponent({
     function calcular_fecha_fin() {
       if (
         vacacion.fecha_inicio !== null &&
-        numero_dias.value !== null &&
-        numero_dias.value !== undefined &&
-        numero_dias.value !== ''
+        vacacion.numero_dias !== null &&
+        vacacion.numero_dias !== undefined
       ) {
         const fechaInicio = convertir_fecha(vacacion.fecha_inicio)
         const fechaFinal = fechaInicio
-        fechaFinal.setDate(fechaInicio.getDate() + parseInt(numero_dias.value))
+        fechaFinal.setDate(fechaInicio.getDate() + parseInt(vacacion.numero_dias.toString()))
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()
         const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
@@ -265,15 +273,14 @@ export default defineComponent({
     function calcular_fecha_fin_rango1() {
       if (
         vacacion.fecha_inicio_rango1_vacaciones !== null &&
-        dias_rango1.value !== null &&
-        dias_rango1.value !== undefined &&
-        dias_rango1.value !== ''
+        vacacion.numero_dias_rango1 !== null &&
+        vacacion.numero_dias_rango1 !== undefined
       ) {
         const fechaInicio = convertir_fecha(
           vacacion.fecha_inicio_rango1_vacaciones
         )
         const fechaFinal = fechaInicio
-        fechaFinal.setDate(fechaInicio.getDate() + parseInt(dias_rango1.value))
+        fechaFinal.setDate(fechaInicio.getDate() + parseInt(vacacion.numero_dias_rango1.toString()));
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()
         const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
@@ -290,15 +297,14 @@ export default defineComponent({
     function calcular_fecha_fin_rango2() {
       if (
         vacacion.fecha_inicio_rango2_vacaciones !== null &&
-        dias_rango2.value !== null &&
-        dias_rango2.value !== undefined &&
-        dias_rango2.value !== ''
+        vacacion.numero_dias_rango2 !== null &&
+        vacacion.numero_dias_rango2 !== undefined
       ) {
         const fechaInicio = convertir_fecha(
           vacacion.fecha_inicio_rango2_vacaciones
         )
         const fechaFinal = fechaInicio
-        fechaFinal.setDate(fechaInicio.getDate() + parseInt(dias_rango2.value))
+        fechaFinal.setDate(fechaInicio.getDate() + parseInt(vacacion.numero_dias_rango2.toString()));
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()
         const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
@@ -378,7 +384,6 @@ export default defineComponent({
       dias_rango1,
       dias_rango2,
       esNuevo,
-      numero_dias,
       numero_dias_rango,
       maskFecha,
       v$,

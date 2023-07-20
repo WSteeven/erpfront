@@ -30,10 +30,15 @@ import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { log } from 'console'
+import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen, GestorDocumentos },
+  components: {
+    TabLayoutFilterTabs2,
+    SelectorImagen,
+    GestorDocumentos,
+    ArchivoSeguimiento,
+  },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
@@ -114,8 +119,6 @@ export default defineComponent({
       const diferenciaDias = Math.floor(
         diferenciaMilisegundos / (1000 * 60 * 60 * 24)
       ) // Diferencia en días
-      console.log(diferenciaDias)
-
       return (
         diferenciaDias === -1 ||
         diferenciaDias === 0 ||
@@ -161,12 +164,20 @@ export default defineComponent({
         refArchivoPrestamoEmpresarial.value.esConsultado = true
       }, 2000)
     })
+     const limpiarArchivoPrestamoEmpresarial = () => {
+      const archivoPrestamoEmpresarial = refArchivoPrestamoEmpresarial.value;
+      archivoPrestamoEmpresarial.limpiarListado();
+      archivoPrestamoEmpresarial.quiero_subir_archivos = false;
+      archivoPrestamoEmpresarial.esConsultado = false;
+      // Realizar cambios en la interfaz de usuario en el siguiente ciclo de renderizado
+     requestAnimationFrame(() => {
+        archivoPrestamoEmpresarial.quiero_subir_archivos = true;
+      });
+    };
+
     onReestablecer(() => {
-      setTimeout(() => {
-        refArchivoPrestamoEmpresarial.value.limpiarListado()
-        refArchivoPrestamoEmpresarial.value.esConsultado = false
-      }, 1000)
-    })
+      setTimeout(limpiarArchivoPrestamoEmpresarial, 50);
+    });
 
     cargarVista(async () => {
       await obtenerListados({

@@ -88,7 +88,7 @@
           <!-- Numero de días por rango-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Número de dias por Rangos</label>
-            <q-input v-model="numero_dias_rango" :disable="!esNuevo" outlined dense>
+            <q-input v-model="numero_dias_rango" disable outlined dense>
             </q-input>
           </div>
           <!-- Fecha Inicio -->
@@ -156,7 +156,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Número de dias </label>
             <q-input
-              v-model="numero_dias"
+              v-model="vacacion.numero_dias"
               @update:model-value="calcular_fecha_fin"
               placeholder="Obligatorio"
               :disable="disabled"
@@ -171,7 +171,7 @@
             <q-input
               v-model="vacacion.fecha_inicio_rango1_vacaciones"
               placeholder="Opcional"
-              :disable="!esNuevo"
+              :disable="disabled"
               outlined
               dense
             >
@@ -223,7 +223,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Rango 1 de Vacaciones (días)</label>
             <q-input
-              v-model="dias_rango1"
+              v-model="vacacion.numero_dias_rango1"
               @update:model-value="calcular_fecha_fin_rango1"
               placeholder="Opcional"
               :disable="!esNuevo"
@@ -243,7 +243,7 @@
             <q-input
               v-model="vacacion.fecha_inicio_rango2_vacaciones"
               placeholder="Opcional"
-              :disable="!esNuevo"
+              :disable="disabled"
               outlined
               dense
             >
@@ -295,7 +295,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Rango 2 de Vacaciones (días)</label>
             <q-input
-              v-model="dias_rango2"
+              v-model="vacacion.numero_dias_rango2"
               @update:model-value="calcular_fecha_fin_rango2"
               placeholder="Opcional"
               :disable="!esNuevo"

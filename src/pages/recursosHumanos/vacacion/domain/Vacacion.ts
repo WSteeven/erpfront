@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Vacacion extends EntidadAuditable {
   id: number | null
@@ -7,16 +7,20 @@ export class Vacacion extends EntidadAuditable {
   periodo: string | null
   periodo_info: string | null
   derecho_vacaciones: string | null
-  id_jefe_inmediato:number | null
-  descuento_vacaciones: string |null
+  id_jefe_inmediato: number | null
+  descuento_vacaciones: number | null
   fecha_inicio: string | null
   fecha_fin: string | null
-  fecha_inicio_rango1_vacaciones: string |null
-  fecha_fin_rango1_vacaciones: string |null
-  fecha_inicio_rango2_vacaciones: string |null
-  fecha_fin_rango2_vacaciones: string |null
-  solicitud:string |null
+  fecha_inicio_rango1_vacaciones: string | null
+  fecha_fin_rango1_vacaciones: string | null
+  fecha_inicio_rango2_vacaciones: string | null
+  fecha_fin_rango2_vacaciones: string | null
+  solicitud: string | null
   estado: string | null
+  numero_dias: number | null
+  numero_dias_rango1: number | null
+  numero_dias_rango2: number | null
+
   constructor() {
     super()
     this.id = null
@@ -35,5 +39,8 @@ export class Vacacion extends EntidadAuditable {
     this.solicitud = null
     this.id_jefe_inmediato = null
     this.estado = null
+    this.numero_dias = null
+    this.numero_dias_rango1 = null
+    this.numero_dias_rango2 = null
   }
 }
