@@ -90,6 +90,25 @@ export default defineComponent({
         soloLectura.value = true
       }
     })
+    //variables para cosultar los detalles
+    const all = ref(true)
+    const only_sucursal = ref(false)
+    const only_cliente_tarea = ref(false)
+    const group = ref('todos')
+    const options_groups = [
+      {
+        label: 'Todos los elementos',
+        value: 'todos'
+      },
+      {
+        label: 'Solo bodega seleccionada',
+        value: 'only_sucursal'
+      },
+      {
+        label: 'Solo perteneciente al cliente de la tarea',
+        value: 'only_cliente_tarea'
+      }
+    ]
 
     const opciones_clientes = ref([])
     const opciones_empleados = ref([])
@@ -311,6 +330,8 @@ export default defineComponent({
 
       //flags
       soloLectura,
+      all, only_sucursal, only_cliente_tarea,
+      group, options_groups,
 
       //Tabs
       tabOptionsPedidos,
@@ -338,7 +359,7 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
 

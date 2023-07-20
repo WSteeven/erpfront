@@ -169,7 +169,7 @@
             </q-input>
           </div>
           <!-- Es para el cliente -->
-          <div  class="col-12 col-md-3 q-mb-xl">
+          <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.para_cliente"
@@ -183,26 +183,30 @@
           <div v-if="pedido.para_cliente" class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>
             <q-select
-            v-model="pedido.cliente"
-            :options="opciones_clientes"
-            transition-show="jump-up"
-            transition-hide="jump-up"
-            options-dense dense
-            outlined
-            use-input
-            input-debounce="0"
-            @filter="filtroClientes"
-            :option-label="(v)=>v.razon_social"
-            :option-value="(v)=>v.id"
-            emit-value
-            map-options
+              v-model="pedido.cliente"
+              :options="opciones_clientes"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroClientes"
+              :option-label="(v) => v.razon_social"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
             >
-
             </q-select>
           </div>
           <!-- Responsable -->
           <div
-            v-if="(esCoordinador && !pedido.para_cliente) || (esRRHH && !pedido.para_cliente) || (!esTecnico && !pedido.para_cliente) "
+            v-if="
+              (esCoordinador && !pedido.para_cliente) ||
+              (esRRHH && !pedido.para_cliente) ||
+              (!esTecnico && !pedido.para_cliente)
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Responsable</label>
@@ -241,7 +245,7 @@
             </q-select>
           </div>
           <!-- Retira otra persona -->
-          <div  class="col-12 col-md-3 q-mb-xl">
+          <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.retira_tercero"
@@ -474,7 +478,10 @@
             ></q-checkbox>
           </div>
           <!-- Evidencia fotografica 1 -->
-          <div v-if="pedido.tiene_evidencia ||pedido.evidencia1" class="col-12 col-md-3">
+          <div
+            v-if="pedido.tiene_evidencia || pedido.evidencia1"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Evidencia 1 </label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
@@ -484,7 +491,10 @@
             ></selector-imagen>
           </div>
           <!-- Evidencia fotografica 2 -->
-          <div v-if="pedido.tiene_evidencia ||pedido.evidencia2" class="col-12 col-md-3">
+          <div
+            v-if="pedido.tiene_evidencia || pedido.evidencia2"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Evidencia 2</label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
@@ -510,6 +520,14 @@
             >
             </q-input>
           </div>
+          <!-- Configuracion de opciones para que puedan seleccionar los detalles en el listado -->
+          <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
+            <q-option-group
+              v-model="group"
+              :options="options_groups"
+              color="primary"
+            />
+          </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -523,8 +541,10 @@
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
                     listarProductos({
+                      tipo_busqueda: group,
+                      search: criterioBusquedaProducto,
                       sucursal_id: pedido.sucursal,
-                      cliente_id: pedido.cliente,
+                      cliente_id: pedido.cliente || pedido.cliente_id,
                     })
                   "
                   @blur="
@@ -539,9 +559,11 @@
                 <q-btn
                   @click="
                     listarProductos({
+                      tipo_busqueda: group,
+                      search: criterioBusquedaProducto,
                       sucursal_id: pedido.sucursal,
-                      cliente_id: pedido.cliente,
-                      stock:true,
+                      cliente_id: pedido.cliente || pedido.cliente_id,
+                      stock: true,
                     })
                   "
                   icon="search"

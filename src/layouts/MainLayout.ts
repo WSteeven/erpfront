@@ -151,7 +151,7 @@ export default defineComponent({
     const { idle, lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
     // const now = useTimestamp({ interval: 1000 })
     // const idledFor = computed(() => Math.floor((now.value - lastActive.value) / 1000),) //Tiempo de inactividad transcurrido en segundos 1,2,3...,n
-    const ultimaConexion = LocalStorage.getItem('ultima_conexion')
+    // const ultimaConexion = LocalStorage.getItem('ultima_conexion')
     /*
     watch(idle, () => {
       if (idle.value === true) {
@@ -168,32 +168,40 @@ export default defineComponent({
       }
     })
     */
-    const notIdle = new NotIdle()
-      .whenInteractive()
-      .within(5, 1000)
-      .do(() => {
-        console.log('ultima actividad', new Date().getTime().toString(), new Date().toLocaleTimeString())
-        sessionStorage.setItem('lastActivity', new Date().getTime().toString())
-      })
-      .start()
-    const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
-    setInterval(() => {
-      let la = new Date(+sessionStorage.getItem('lastActivity')!).getTime()
-      console.log('Resta de tiempo', new Date().getTime() - la)
-      console.log('Tiempo limite', LIMIT)
-      console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
-      if (new Date().getTime() - la > LIMIT) {
-        logout()
-        sessionStorage.removeItem('lastActivity')
-        LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
-        Swal.fire({
-          icon: 'error',
-          title: 'Has excedido el tiempo de inactividad',
-          text: 'Se ha cerrado la sesión por exceder tiempo de inactividad, por favor vuelve a iniciar sesión.',
-          confirmButtonColor: '#0879dc',
+    if (authenticationStore.user) {
+      const notIdle = new NotIdle()
+        .whenInteractive()
+        .within(60, 1000) // un minuto
+        .do(() => {
+          // console.log('ultima actividad', new Date().getTime().toString(), new Date().toLocaleTimeString())
+          LocalStorage.set('lastActivity', new Date().getTime().toString())
         })
-      }
-    }, 60000) //comprobar cada minuto
+        .start()
+      const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
+      // const LIMIT = 1 * 15 * 1000 // 5 segundos for logout session
+      setInterval(() => {
+        if (authenticationStore.user) {
+          let la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
+          // console.log('Resta de tiempo', new Date().getTime() - la)
+          // console.log('Tiempo limite', LIMIT)
+          // console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
+          if (new Date().getTime() - la > LIMIT) {
+            logout()
+            LocalStorage.remove('lastActivity')
+            LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
+            Swal.fire({
+              icon: 'error',
+              title: 'Has excedido el tiempo de inactividad',
+              text: 'Se ha cerrado la sesión por exceder tiempo de inactividad, por favor vuelve a iniciar sesión.',
+              confirmButtonColor: '#0879dc',
+            })
+          }
+        }
+      }, 60000) //comprobar cada minuto 
+    } else {
+      LocalStorage.remove('lastActivity')
+    }
+
 
     return {
       enCamino,
@@ -230,9 +238,9 @@ export default defineComponent({
       mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
 
       // idledFor,
-      tiempoInactividad,
+      // tiempoInactividad,
       // mostrarAlertaInactividad,
-      ultimaConexion,
+      // ultimaConexion,
     }
   },
 })

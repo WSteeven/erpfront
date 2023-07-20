@@ -264,10 +264,10 @@
                   Saldo Actual: $ {{ saldo }}
                 </div>
 
-                <div class=" text-center q-mb-md" v-if="ultimaConexion">
+                <!-- <div class=" text-center q-mb-md" v-if="ultimaConexion">
                   Ultima conexión
                   <br><strong>{{ ultimaConexion }}</strong>
-                </div>
+                </div> -->
 
                 <q-item clickable :to="{ name: 'perfil' }" class="full-width">
                   <q-avatar>
