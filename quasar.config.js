@@ -125,6 +125,10 @@ module.exports = configure(function (/* ctx */) {
           './src/pages/gestionTrabajos/subtareas'
         ),
         tiposTrabajos: path.join(__dirname, './src/pages/tareas/tiposTareas'),
+        dashboardTickets: path.join(
+          __dirname,
+          './src/pages/gestionTickets/dashboardTickets'
+        ),
         tickets: path.join(__dirname, './src/pages/gestionTickets/tickets'),
         ticketsAsignados: path.join(
           __dirname,

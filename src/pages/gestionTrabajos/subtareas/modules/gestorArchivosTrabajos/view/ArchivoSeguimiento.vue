@@ -42,8 +42,8 @@
       :mostrar-botones="false"
       :permitir-buscar="false"
       :accion1="btnDescargar"
+      :accion2="btnEliminar"
     ></essential-table>
-    <!-- :accion2="btnEliminar" -->
   </div>
 </template>
 

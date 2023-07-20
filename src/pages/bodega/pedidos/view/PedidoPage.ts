@@ -37,6 +37,9 @@ import { ClienteController } from 'sistema/clientes/infraestructure/ClienteContr
 import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { ordernarListaString } from 'shared/utils'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 
 
 export default defineComponent({
@@ -87,6 +90,25 @@ export default defineComponent({
         soloLectura.value = true
       }
     })
+    //variables para cosultar los detalles
+    const all = ref(true)
+    const only_sucursal = ref(false)
+    const only_cliente_tarea = ref(false)
+    const group = ref('todos')
+    const options_groups = [
+      {
+        label: 'Todos los elementos',
+        value: 'todos'
+      },
+      {
+        label: 'Solo bodega seleccionada',
+        value: 'only_sucursal'
+      },
+      {
+        label: 'Solo perteneciente al cliente de la tarea',
+        value: 'only_cliente_tarea'
+      }
+    ]
 
     const opciones_clientes = ref([])
     const opciones_empleados = ref([])
@@ -156,8 +178,12 @@ export default defineComponent({
 
     /*******************************************************************************************
      * Funciones
-     ******************************************************************************************/
-
+     *****************************************************************************************
+     */
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
     function eliminar({ entidad, posicion }) {
       confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
     }
@@ -304,6 +330,8 @@ export default defineComponent({
 
       //flags
       soloLectura,
+      all, only_sucursal, only_cliente_tarea,
+      group, options_groups,
 
       //Tabs
       tabOptionsPedidos,
@@ -331,7 +359,7 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
 
@@ -377,7 +405,24 @@ export default defineComponent({
       pedidoSeleccionado(val) {
         pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id === val))[0]['cliente_id']
         console.log(pedido.cliente_id)
-      }
+      },
+
+      recargarSucursales,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
     }
   }
 })

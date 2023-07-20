@@ -1,17 +1,17 @@
-import { AxiosError } from 'axios';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
-import { date, useQuasar } from 'quasar'
+import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
-import Swal from 'sweetalert2'
 import { useNotificaciones } from './notificaciones';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { Ref } from 'vue'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -256,7 +256,7 @@ export function obtenerFechaActual() {
  * @returns cadena sin acentos ni tildes
  */
 export function removeAccents(accents: string) {
-  return accents.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  return accents.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
 export async function obtenerTiempoActual() {
@@ -320,7 +320,7 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
   const statusLoading = new StatusEssentialLoading()
-  const {notificarAdvertencia}= useNotificaciones()
+  const { notificarAdvertencia } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -333,7 +333,7 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     }
   }).then((response: HttpResponseGet) => {
     console.log(response.data)
-    if (response.data.size < 100 || response.data.type=='application/json') throw 'No se obtuvieron resultados para generar el reporte'
+    if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
     else {
       const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
       const link = document.createElement('a')
@@ -409,3 +409,12 @@ export function formatearFechaHora(fecha: string, hora: string) {
 
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
 }
+
+export function formatearFechaTexto(fecha: number) {
+  const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(fecha).toLocaleDateString('es-Es', opciones)
+}
+
+/* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
+  empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+} */

@@ -17,22 +17,22 @@ export default defineComponent({
       type: Function,
       required: false,
     },
-    // confirmarCerrar: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    confirmarCerrar: {
+      type: Boolean,
+      default: true,
+    },
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<any>,
       required: false,
     },
   },
   // emits: ['seleccionar', 'accion1'],
-  emits: ['guardado'],
+  emits: ['guardado', 'cerrado'],
   setup(props, { emit }) {
     const { componente, titulo, abierto } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
 
-    function cerrarModalEntidad(confirmarCerrar = true) {
+    function cerrarModalEntidad(confirmarCerrar = true && props.confirmarCerrar) {
       if (confirmarCerrar) {
         confirmar('¿Está seguro de que desea cerrar?', () => abierto.value = false)
       } else {

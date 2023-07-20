@@ -264,6 +264,11 @@
                   Saldo Actual: $ {{ saldo }}
                 </div>
 
+                <!-- <div class=" text-center q-mb-md" v-if="ultimaConexion">
+                  Ultima conexión
+                  <br><strong>{{ ultimaConexion }}</strong>
+                </div> -->
+
                 <q-item clickable :to="{ name: 'perfil' }" class="full-width">
                   <q-avatar>
                     <q-icon name="bi-person"></q-icon>
@@ -378,5 +383,4 @@
     </q-page-container>
   </q-layout>
 </template>
-
 <script src="./MainLayout.ts"></script>

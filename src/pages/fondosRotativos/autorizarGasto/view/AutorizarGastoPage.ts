@@ -87,7 +87,8 @@ export default defineComponent({
         fondoRotativoStore.existeFactura =
           entidad.factura == null ? false : true
         fondoRotativoStore.id_gasto = entidad.id
-        estaSemanAC.value=estaEnSemanaActual(entidad.fecha_viat)
+        console.log(estaEnSemanaActual(entidad.fecha_viat))
+        fondoRotativoStore.estaSemanAC=estaEnSemanaActual(entidad.fecha_viat)
         modales.abrirModalEntidad('VisualizarGastoPage')
       },
     }

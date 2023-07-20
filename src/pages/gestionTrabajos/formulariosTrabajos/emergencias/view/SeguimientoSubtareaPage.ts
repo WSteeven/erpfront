@@ -35,6 +35,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { Emergencia } from '../domain/Emergencia'
 import { imprimirArchivo } from 'shared/utils'
 import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
+import { clientes } from 'config/clientes'
 
 export default defineComponent({
   components: {
@@ -98,6 +99,8 @@ export default defineComponent({
     const esLider = authenticationStore.esTecnicoLider
     const esCoordinador = authenticationStore.esCoordinador
     const refArchivoSeguimiento = ref()
+    const subtarea = trabajoAsignadoStore.subtarea
+    const permitirSubir = ![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
 
     /************
      * Init
@@ -189,6 +192,7 @@ export default defineComponent({
       materialesStock.value = result
     }
 
+    // antes de guardar y editar seguimiento
     function filtrarMaterialesTareaOcupados() {
       return materialesTarea.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
     }
@@ -234,7 +238,7 @@ export default defineComponent({
     }
 
     async function guardarSeguimiento() {
-      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada }).catch((e) => {
+      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo }).catch((e) => {
         notificarAdvertencia('Ingrese al menos una actividad para guardar.')
       })
     }
@@ -244,7 +248,7 @@ export default defineComponent({
     }
 
     function editarSeguimiento() {
-      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada })
+      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
     }
 
     /********
@@ -319,6 +323,10 @@ export default defineComponent({
       TrabajoRealizado,
       configuracionColumnasTrabajoRealizado,
       verFotografia,
+      clientes,
+      subtarea,
+      permitirSubir,
+      tab: ref('usar_material_tarea'),
     }
   }
 })

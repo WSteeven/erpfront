@@ -20,7 +20,7 @@ export default defineComponent({
 
 
         function actualizarInventario(){
-            listar({zeros:true})
+            listar({zeros:false})
         }
 
         actualizarInventario() //se carga el inventario
