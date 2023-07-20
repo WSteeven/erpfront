@@ -825,6 +825,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/prestamo-quirorafario',
+        name: 'prestamo_quirorafario',
+        component: () =>
+          import(
+            'pages/recursosHumanos/prestamo-quirorafarios/view/PrestamoHipotecarioPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

@@ -5,7 +5,7 @@
     :mostrarListado="mostrarListado"
     :tabOptions="tabOptionsSolicitudPedido"
     :full="true"
-    :permitirEditar="true"
+    :permitirEditar="(esValidador || esAutorizador)"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarSolicitudPrestamo"
@@ -139,11 +139,7 @@
           <!-- Autorizacion -->
           <div
             class="col-12 col-md-3"
-            v-if="
-              accion == 'EDITAR' &&
-              (store.can('puede.ver.campo.validado') ||
-                store.can('puede.autorizar.solicitud_prestamo_empresarial'))
-            "
+            v-if="accion == 'EDITAR' && (esValidador || esAutorizador)"
           >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
@@ -210,9 +206,8 @@
               disable
               outlined
               dense
-            > <template v-slot:after>
-          %
-        </template>
+            >
+              <template v-slot:after> % </template>
             </q-input>
           </div>
           <div class="col-12 col-md-3">

@@ -71,24 +71,43 @@ export default defineComponent({
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
     })
-     recursosHumanosStore.nivel_endeudamiento(solicitudPrestamo.solicitante == null ? store.user.id: solicitudPrestamo.solicitante)
-
+    recursosHumanosStore.nivel_endeudamiento(
+      solicitudPrestamo.solicitante == null
+        ? store.user.id
+        : solicitudPrestamo.solicitante
+    )
 
     maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
-    const esValidador = computed(()=>store.can('puede.ver.campo.validado'))
-    const esAutorizador = computed(()=>store.can('puede.autorizar.solicitud_prestamo_empresarial'))
+    const esValidador = computed(() => store.can('puede.ver.campo.validado'))
+    const esAutorizador = computed(() =>
+      store.can('puede.autorizar.solicitud_prestamo_empresarial')
+    )
     autorizaciones.value =
       LocalStorage.getItem('autorizaciones') == null
         ? []
         : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     onConsultado(() => {
-      if(esValidador.value){
-        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'APROBADO'),1);
-        autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'PENDIENTE'),1);
+      if (esValidador.value) {
+        if (!store.esAdministrador) {
+          autorizaciones.value.splice(
+            autorizaciones.value.findIndex((obj) => obj.nombre === 'APROBADO'),
+            1
+          )
+          autorizaciones.value.splice(
+            autorizaciones.value.findIndex((obj) => obj.nombre === 'PENDIENTE'),
+            1
+          )
+        }
       }
-      if(esAutorizador.value){
-       autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'VALIDADO'),1);
-       autorizaciones.value.splice(autorizaciones.value.findIndex(obj => obj.nombre === 'PENDIENTE'),1);
+      if (esAutorizador.value) {
+        autorizaciones.value.splice(
+          autorizaciones.value.findIndex((obj) => obj.nombre === 'VALIDADO'),
+          1
+        )
+        autorizaciones.value.splice(
+          autorizaciones.value.findIndex((obj) => obj.nombre === 'PENDIENTE'),
+          1
+        )
       }
     })
     //Reglas de validacion
@@ -96,13 +115,13 @@ export default defineComponent({
       fecha: { required },
       monto: { required },
       motivo: { required },
-      foto:{required},
+      foto: { required },
       estado: requiredIf(esValidador.value),
-      observacion: {requiredValidador :requiredIf(esValidador.value)},
+      observacion: { requiredValidador: requiredIf(esValidador.value) },
       plazo: {
         minValue: minValue(1),
         maxValue: maxValue(12),
-        requiredValidador : requiredIf(esValidador.value),
+        requiredValidador: requiredIf(esValidador.value),
       },
     }))
     const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
@@ -135,7 +154,7 @@ export default defineComponent({
       filtrarSolicitudPrestamo,
       maximoValorsolicitudPrestamo: [
         (val) =>
-          (val <= parseInt(sueldo_basico.value) * 2) ||
+          val <= parseInt(sueldo_basico.value) * 2 ||
           'Solo se permite prestamo menor o igual a 2 SBU ($ ' +
             parseInt(sueldo_basico.value) * 2 +
             ')',
