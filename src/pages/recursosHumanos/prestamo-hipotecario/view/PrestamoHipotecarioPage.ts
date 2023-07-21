@@ -106,21 +106,21 @@ const auxmes = ref()
     async function subirArchivos() {
         await refArchivoPrestamoHipotecario.value.subir({ mes: auxmes.value })
     }
-    onConsultado(() => {
 
-      setTimeout(() => {
-        refArchivoPrestamoHipotecario.value.listarArchivos({
-          prestamo_id: prestamo.id,
-        })
-        refArchivoPrestamoHipotecario.value.esConsultado = true
-      }, 2000)
-    })
+      const limpiarArchivoPrestamoHipotecario = () => {
+      const archivoPrestamoHipotecario = refArchivoPrestamoHipotecario.value;
+      archivoPrestamoHipotecario.limpiarListado();
+      archivoPrestamoHipotecario.quiero_subir_archivos = false;
+      archivoPrestamoHipotecario.esConsultado = false;
+      // Realizar cambios en la interfaz de usuario en el siguiente ciclo de renderizado
+     requestAnimationFrame(() => {
+        archivoPrestamoHipotecario.quiero_subir_archivos = true;
+      });
+    };
+
     onReestablecer(() => {
-      setTimeout(() => {
-        refArchivoPrestamoHipotecario.value.limpiarListado()
-        refArchivoPrestamoHipotecario.value.esConsultado = false
-      }, 1000)
-    })
+      setTimeout(limpiarArchivoPrestamoHipotecario, 50);
+    });
     //Reglas de validacion
     const reglas = {
       mes: { required },

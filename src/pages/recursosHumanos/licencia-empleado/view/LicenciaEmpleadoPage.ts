@@ -222,12 +222,21 @@ export default defineComponent({
         licencia.fecha_fin = dia + '-' + mes + '-' + anio
       }
     })
+    function optionsFechaInicio(date) {
+      const currentDate = new Date() // Obtener la fecha actual
+      const year = currentDate.getFullYear() // Obtener el año
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
+      const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
+      const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
+      return date >= currentDateString
+    }
 
     return {
       removeAccents,
       mixin,
       licencia,
       optionsFecha,
+      optionsFechaInicio,
       filtrarEmpleados,
       filtrarPermisoEmpleado,
       watchEffect,

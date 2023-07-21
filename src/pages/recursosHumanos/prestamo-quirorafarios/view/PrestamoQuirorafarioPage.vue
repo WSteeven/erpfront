@@ -54,8 +54,23 @@
               </template>
             </q-input>
           </div>
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Empleado</label>
+            <q-input v-model="prestamo.empleado_info" :disable="!esNuevo" outlined dense>
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">NUT</label>
+            <q-input v-model="prestamo.nut" :disable="!esNuevo" outlined dense>
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="!esNuevo">
+            <label class="q-mb-sm block">Valor</label>
+            <q-input v-model="prestamo.valor" :disable="!esNuevo" outlined dense>
+            </q-input>
+          </div>
           <!-- Documento -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="esNuevo">
             <label class="q-mb-sm block">Planilla</label>
             <gestor-documentos
               ref="refArchivoPrestamoQuirorafario"

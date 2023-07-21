@@ -31,6 +31,7 @@
               :error="!!v$.periodo.$errors.length"
               error-message="Debes seleccionar un periodo"
               use-input
+              @blur="v$.numero_dias.$touch"
               input-debounce="0"
               @filter="filtrarPeriodo"
               :option-value="(v) => v.id"
@@ -85,14 +86,27 @@
               </template>
             </q-input>
           </div>
-          <!-- Numero de días por rango-->
+          <!-- Numero de  rango-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Número de dias por Rangos</label>
-            <q-input v-model="numero_dias_rango" disable outlined dense>
+            <label class="q-mb-sm block">Número de Rangos</label>
+            <q-input
+              v-model="vacacion.numero_rangos"
+              :disable="disabled"
+              @blur="v$.numero_rangos.$touch"
+              type="number"
+              :error="!!v$.numero_rangos.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.numero_rangos.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
           <!-- Fecha Inicio -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="vacacion.numero_rangos==1">
             <label class="q-mb-sm block">Fecha Inicio</label>
             <q-input
               v-model="vacacion.fecha_inicio"
@@ -106,7 +120,12 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="vacacion.fecha_inicio" :mask="maskFecha" today-btn>
+                    <q-date
+                      v-model="vacacion.fecha_inicio"
+                      :mask="maskFecha"
+                      :options="optionsFechaInicio"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
@@ -123,7 +142,7 @@
             </q-input>
           </div>
           <!-- Fecha Fin  -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="vacacion.numero_rangos==1">
             <label class="q-mb-sm block">Fecha Fin</label>
             <q-input
               v-model="vacacion.fecha_fin"
@@ -153,20 +172,27 @@
             </q-input>
           </div>
           <!-- Numero de días-->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3"  v-if="vacacion.numero_rangos==1">
             <label class="q-mb-sm block">Número de dias </label>
             <q-input
               v-model="vacacion.numero_dias"
               @update:model-value="calcular_fecha_fin"
+              @blur="v$.numero_dias.$touch"
               placeholder="Obligatorio"
               :disable="disabled"
+              :error="!!v$.numero_dias.$errors.length"
               outlined
               dense
             >
+            <template v-slot:error>
+                <div v-for="error of v$.numero_dias.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
           <!-- Fecha Inicio Rango 1 -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3"  v-if="vacacion.numero_rangos==2">
             <label class="q-mb-sm block">Rango 1 de Vacaciones</label>
             <q-input
               v-model="vacacion.fecha_inicio_rango1_vacaciones"
@@ -193,7 +219,7 @@
             </q-input>
           </div>
           <!-- Fecha Fin Rango 1 -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3"  v-if="vacacion.numero_rangos==2">
             <label class="q-mb-sm block">Fecha finalización Rango 1 de Vacaciones</label>
             <q-input
               v-model="vacacion.fecha_fin_rango1_vacaciones"
@@ -220,7 +246,7 @@
             </q-input>
           </div>
           <!-- Numero de días rango 1-->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="vacacion.numero_rangos==2">
             <label class="q-mb-sm block">Rango 1 de Vacaciones (días)</label>
             <q-input
               v-model="vacacion.numero_dias_rango1"
@@ -238,7 +264,7 @@
             <q-input v-model="dias_adicionales" disable outlined dense> </q-input>
           </div>
           <!-- Fecha Inicio Rango 2 -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="vacacion.numero_rangos==2">
             <label class="q-mb-sm block">Rango 2 de Vacaciones</label>
             <q-input
               v-model="vacacion.fecha_inicio_rango2_vacaciones"
@@ -265,7 +291,7 @@
             </q-input>
           </div>
           <!-- Fecha Fin Rango 2 -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="vacacion.numero_rangos==2">
             <label class="q-mb-sm block">Fecha finalización Rango 2 de Vacaciones</label>
             <q-input
               v-model="vacacion.fecha_fin_rango2_vacaciones"
@@ -292,7 +318,7 @@
             </q-input>
           </div>
           <!-- Numero de días rango 2-->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="vacacion.numero_rangos==2">
             <label class="q-mb-sm block">Rango 2 de Vacaciones (días)</label>
             <q-input
               v-model="vacacion.numero_dias_rango2"

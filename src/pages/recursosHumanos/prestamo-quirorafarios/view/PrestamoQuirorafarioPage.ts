@@ -103,21 +103,22 @@ const auxmes = ref()
     async function subirArchivos() {
         await refArchivoPrestamoQuirorafario.value.subir({ mes: auxmes.value })
     }
-    onConsultado(() => {
 
-      setTimeout(() => {
-        refArchivoPrestamoQuirorafario.value.listarArchivos({
-          prestamo_id: prestamo.id,
-        })
-        refArchivoPrestamoQuirorafario.value.esConsultado = true
-      }, 2000)
-    })
+    const limpiarArchivoPrestamoQuirorafario = () => {
+      const archivoPrestamoQuirorafario = refArchivoPrestamoQuirorafario.value;
+      archivoPrestamoQuirorafario.limpiarListado();
+      archivoPrestamoQuirorafario.quiero_subir_archivos = false;
+      archivoPrestamoQuirorafario.esConsultado = false;
+      // Realizar cambios en la interfaz de usuario en el siguiente ciclo de renderizado
+     requestAnimationFrame(() => {
+        archivoPrestamoQuirorafario.quiero_subir_archivos = true;
+      });
+    };
+
     onReestablecer(() => {
-      setTimeout(() => {
-        refArchivoPrestamoQuirorafario.value.limpiarListado()
-        refArchivoPrestamoQuirorafario.value.esConsultado = false
-      }, 1000)
-    })
+      setTimeout(limpiarArchivoPrestamoQuirorafario, 50);
+    });
+
     //Reglas de validacion
     const reglas = {
       mes: { required },

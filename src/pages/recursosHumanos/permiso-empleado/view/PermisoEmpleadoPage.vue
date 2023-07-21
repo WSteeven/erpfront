@@ -66,6 +66,7 @@
                       <q-date
                         v-model="permiso.fecha_hora_inicio"
                         mask="DD-MM-YYYY HH:mm"
+                        :options="optionsFechaInicio"
                         today-btn
                       >
                         <div class="row items-center justify-end">

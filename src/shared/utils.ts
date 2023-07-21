@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { AxiosError } from 'axios'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
@@ -54,9 +54,7 @@ export function descargarArchivo(
   link.remove()
 }
 
-export function descargarArchivoUrl(
-  url: string,
-): void {
+export function descargarArchivoUrl(url: string): void {
   const link = document.createElement('a')
   link.href = apiConfig.URL_BASE + url
   link.target = '_blank'
@@ -256,17 +254,25 @@ export function obtenerFechaActual() {
  * @returns cadena sin acentos ni tildes
  */
 export function removeAccents(accents: string) {
-  return accents.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  return accents.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
 export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
   try {
-    const fecha: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.fecha))
-    const hora: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.hora))
+    const fecha: AxiosResponse = await axios.get(
+      axios.getEndpoint(endpoints.fecha)
+    )
+    const hora: AxiosResponse = await axios.get(
+      axios.getEndpoint(endpoints.hora)
+    )
 
-    return { fecha: fecha.data, hora: hora.data, fecha_hora: fecha.data + ' ' + hora.data }
+    return {
+      fecha: fecha.data,
+      hora: hora.data,
+      fecha_hora: fecha.data + ' ' + hora.data,
+    }
   } catch (e: any) {
     throw new ApiError(e)
   }
@@ -318,9 +324,16 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  *
  * @returns mensaje que indica que no se puede imprimir el archivo
  */
-export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
+export async function imprimirArchivo(
+  ruta: string,
+  metodo: Method,
+  responseType: ResponseType,
+  formato: string,
+  titulo: string,
+  data?: any
+) {
   const statusLoading = new StatusEssentialLoading()
-  const {notificarAdvertencia}= useNotificaciones()
+  const { notificarAdvertencia } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -329,27 +342,31 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     data: data,
     responseType: responseType,
     headers: {
-      'Authorization': axiosHttpRepository.getOptions().headers.Authorization
-    }
-  }).then((response: HttpResponseGet) => {
-    console.log(response.data)
-    if (response.data.size < 100 || response.data.type=='application/json') throw 'No se obtuvieron resultados para generar el reporte'
-    else {
-      const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
-      const link = document.createElement('a')
-      link.href = fileURL
-      link.target = '_blank'
-      link.setAttribute('download', `${titulo}.${formato}`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-    }
-  }).catch(error => {
-    notificarAdvertencia(error)
+      Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+    },
   })
+    .then((response: HttpResponseGet) => {
+      console.log(response.data)
+      if (response.data.size < 100 || response.data.type == 'application/json')
+        throw 'No se obtuvieron resultados para generar el reporte'
+      else {
+        const fileURL = URL.createObjectURL(
+          new Blob([response.data], { type: `appication/${formato}` })
+        )
+        const link = document.createElement('a')
+        link.href = fileURL
+        link.target = '_blank'
+        link.setAttribute('download', `${titulo}.${formato}`)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+      }
+    })
+    .catch((error) => {
+      notificarAdvertencia(error)
+    })
 
   statusLoading.desactivar()
-
 }
 
 /**
@@ -370,18 +387,21 @@ export function ordernarListaString(a: string, b: string) {
 }
 
 export function obtenerUbicacion(onUbicacionConcedida) {
-
-  const onErrorDeUbicacion = err => {
+  const onErrorDeUbicacion = (err) => {
     console.log('Error obteniendo ubicación: ', err)
   }
 
   const opcionesDeSolicitud = {
     enableHighAccuracy: true, // Alta precisión
     maximumAge: 0, // No queremos caché
-    timeout: 5000 // Esperar solo 5 segundos
+    timeout: 5000, // Esperar solo 5 segundos
   }
 
-  navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud)
+  navigator.geolocation.getCurrentPosition(
+    onUbicacionConcedida,
+    onErrorDeUbicacion,
+    opcionesDeSolicitud
+  )
 }
 
 export function extraerRol(roles: string[], rolConsultar: string) {

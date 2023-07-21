@@ -207,8 +207,11 @@ export default defineComponent({
       empleado: { reqiredIf: esAutorizador },
       periodo: { required },
       derecho_vacaciones: { reqiredIf: esAutorizador },
-      fecha_inicio: { required },
-      fecha_fin: { required },
+      numero_rangos:{required,minValue: minValue(1), maxValue: maxValue(2) },
+      fecha_inicio: { requiredIf: vacacion.numero_rangos=='1'?true:false },
+      fecha_fin: { requiredIf: vacacion.numero_rangos=='1'?true:false  },
+      numero_dias: { requiredIf: vacacion.numero_rangos=='1'?true:false  },
+
       solicitud: { required },
     }))
     const v$ = useVuelidate(reglas, vacacion)
@@ -361,6 +364,14 @@ export default defineComponent({
       listar({ estado: tabSeleccionado }, false)
       tabVacacion = tabSeleccionado
     }
+    function optionsFechaInicio(date) {
+      const currentDate = new Date() // Obtener la fecha actual
+      const year = currentDate.getFullYear() // Obtener el año
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
+      const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
+      const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
+      return date >= currentDateString
+    }
 
     return {
       removeAccents,
@@ -369,6 +380,7 @@ export default defineComponent({
       periodos,
       empleado,
       editarVacacion,
+      optionsFechaInicio,
       filtrarPeriodo,
       filtrarVacacion,
       calcular_fecha_fin_rango1,

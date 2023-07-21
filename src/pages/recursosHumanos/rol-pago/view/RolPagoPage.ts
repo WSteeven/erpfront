@@ -63,7 +63,7 @@ export default defineComponent({
       es_consultado.value = true
     })
     cargarVista(async () => {
-      obtenerListados({
+      await obtenerListados({
         motivos: new MotivoPermisoEmpleadoController(),
         empleados: {
           controller: new EmpleadoController(),
@@ -82,6 +82,7 @@ export default defineComponent({
       multas.value = listadosAuxiliares.multas
       horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos
       horas_extras_subtipos.value = listadosAuxiliares.horas_extras_subtipos
+
     })
     const listadoHorasExtrasSubTipo = computed(() => {
       return listadosAuxiliares.horas_extras_subtipos.filter(
@@ -93,7 +94,7 @@ export default defineComponent({
     const reglas = {
       empleado: { required },
       mes: { required },
-      }
+    }
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
 
@@ -102,6 +103,7 @@ export default defineComponent({
     rolpago.egresos = ref([])
     function datos_empleado() {
       obtener_datos_empleado('SALARIO')
+      obtener_datos_empleado('PERMISOS_SIN_RECUPERAR')
     }
     /**Verifica si es un mes */
     function checkValue(val, reason, details) {
@@ -222,9 +224,39 @@ export default defineComponent({
             case 'SUPA':
               rolpago.egreso = data.empleado.supa
               break
+            case 'PERMISOS_SIN_RECUPERAR':
+              Obtener_dias_permiso()
+              break
             default:
               break
           }
+        }
+      })
+    }
+    function Obtener_dias_permiso(){
+      rolpago.dias_permiso_sin_recuperar =  null
+      rolpago.dias= null
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const url_salrio =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.permisos_sin_recuperar)
+      axios({
+        url: url_salrio,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+        },
+        params:{
+          'empleado':rolpago.empleado,
+          'mes': rolpago.mes
+        }
+      }).then((response: HttpResponseGet) => {
+        const { data } = response
+        if (data) {
+          rolpago.dias_permiso_sin_recuperar = data.totalDiasPermiso != null ? data.totalDiasPermiso :0
+          rolpago.dias= 30
         }
       })
     }
@@ -243,6 +275,7 @@ export default defineComponent({
       tipo_descuento.value = 'DESCUENTO_GENERAL'
     }
     function verificar_descuento_ley() {
+      rolpago.egreso = null
       tipo_descuento.value = 'DESCUENTO_LEY'
       switch (rolpago.descuento_ley) {
         case 1:
@@ -276,8 +309,45 @@ export default defineComponent({
     }
     /**Calculo de  descuento del IESS */
     function CalculoIESS() {
-      rolpago.egreso =
-        parseInt(rolpago.salario == null ? '0' : rolpago.salario) * 0.0945
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const params = {
+        empleado: rolpago.empleado,
+        mes: rolpago.mes,
+      }
+
+      const url_salario =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.porcentaje_iess)
+
+      axios
+        .get(url_salario, {
+          params: params,
+          responseType: 'json',
+          headers: {
+            Authorization:
+              axiosHttpRepository.getOptions().headers.Authorization,
+          },
+        })
+        .then((response) => {
+          const { data } = response
+          if (data) {
+            rolpago.egreso = redondearDecimales(
+              parseInt(rolpago.salario == null ? '0' : rolpago.salario) *
+                data.porcentaje_iess,
+              2
+            )
+          }
+        })
+    }
+    function redondearDecimales(numero, decimales) {
+      const numeroRegexp = new RegExp('\\d\\.(\\d){' + decimales + ',}') // Expresion regular para numeros con un cierto numero de decimales o mas
+      if (numeroRegexp.test(numero)) {
+        // Ya que el numero tiene el numero de decimales requeridos o mas, se realiza el redondeo
+        return Number(numero.toFixed(decimales))
+      } else {
+        return Number(numero.toFixed(decimales)) === 0 ? 0 : numero // En valores muy bajos, se comprueba si el numero es 0 (con el redondeo deseado), si no lo es se devuelve el numero otra vez.
+      }
     }
     /**Añadir Ingreso */
     function aniadirIngreso() {

@@ -65,6 +65,7 @@
                       <q-date
                         v-model="licencia.fecha_inicio"
                         mask="DD-MM-YYYY"
+                        :options="optionsFechaInicio"
                         today-btn
                       >
                         <div class="row items-center justify-end">
