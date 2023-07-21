@@ -68,7 +68,7 @@
               </q-tab>
             </q-tabs>
 
-            <q-tab-panels v-model="tab" animated>
+            <q-tab-panels v-model="tab" animated class="bg-body">
               <q-tab-panel name="usar_material_tarea">
                 <essential-table
                   titulo="Materiales designados para la tarea"
@@ -86,19 +86,106 @@
               </q-tab-panel>
 
               <q-tab-panel name="historial_material_tarea_usado">
-                <essential-table
-                  titulo="Historial material tarea usado"
-                  :configuracionColumnas="columnasMaterial"
-                  :datos="materialesTarea"
-                  :alto-fijo="false"
-                  :permitirConsultar="false"
-                  :permitirEliminar="false"
-                  :permitirEditar="false"
-                  :permitir-buscar="false"
-                  :permitirEditarModal="true"
-                  separador="cell"
-                  :accion1="botonEditarCantidadTarea"
-                ></essential-table>
+                <!-- {{ emergencia.historial_material_tarea_usado }} -->
+                <q-tabs
+                  v-model="tabsMateriales"
+                  align="left"
+                  switch-indicator
+                  active-class="tab-active"
+                  indicator-color="transparent"
+                  dense
+                >
+                  <q-tab
+                    name="historial"
+                    label="Historial"
+                    :class="{ 'tab-inactive': tabs !== 'historial' }"
+                    no-caps
+                  />
+                  <q-tab
+                    name="suma"
+                    label="Suma total"
+                    :class="{ 'tab-inactive': tabs !== 'suma' }"
+                    no-caps
+                  />
+                </q-tabs>
+
+                <!-- Tab content -->
+                <q-tab-panels
+                  v-model="tabsMateriales"
+                  animated
+                  transition-prev="scale"
+                  transition-next="scale"
+                  :class="{ 'rounded-tabpanel': !$q.screen.xs }"
+                >
+                  <!-- Formulario -->
+                  <q-tab-panel name="historial">
+                    <div class="row">
+                      <!-- Fecha historial -->
+                      <div class="col-12 col-md-3 q-mb-md">
+                        <label class="q-mb-sm block"
+                          >Seleccione una fecha para filtrar</label
+                        >
+                        <q-input v-model="fecha_historial" outlined dense>
+                          <template v-slot:append>
+                            <q-icon name="event" class="cursor-pointer">
+                              <q-popup-proxy
+                                cover
+                                transition-show="scale"
+                                transition-hide="scale"
+                              >
+                                <q-date
+                                  v-model="fecha_historial"
+                                  mask="DD-MM-YYYY"
+                                  today-btn
+                                >
+                                  <div class="row items-center justify-end">
+                                    <q-btn
+                                      v-close-popup
+                                      label="Cerrar"
+                                      color="primary"
+                                      flat
+                                    />
+                                  </div>
+                                </q-date>
+                              </q-popup-proxy>
+                            </q-icon>
+                          </template>
+                        </q-input>
+                      </div>
+                    </div>
+                    <essential-table
+                      titulo="Historial material tarea usado"
+                      :configuracionColumnas="
+                        configuracionColumnasMaterialOcupadoFormulario
+                      "
+                      :datos="materialesTarea"
+                      :alto-fijo="false"
+                      :permitirConsultar="false"
+                      :permitirEliminar="false"
+                      :permitirEditar="false"
+                      :permitir-buscar="false"
+                      :permitirEditarModal="true"
+                      separador="cell"
+                    ></essential-table>
+                  </q-tab-panel>
+
+                  <q-tab-panel name="suma">
+                    <essential-table
+                      titulo="Sumatoria del historial material tarea usado"
+                      :configuracionColumnas="
+                        configuracionColumnasMaterialOcupadoFormulario
+                      "
+                      :datos="materialesTarea"
+                      :alto-fijo="false"
+                      :permitirConsultar="false"
+                      :permitirEliminar="false"
+                      :permitirEditar="false"
+                      :permitir-buscar="false"
+                      :permitirEditarModal="true"
+                      separador="cell"
+                    ></essential-table>
+                  </q-tab-panel>
+                </q-tab-panels>
               </q-tab-panel>
             </q-tab-panels>
           </q-card>

@@ -157,6 +157,7 @@ export const endpoints = {
   verificar_todas_subtareas_finalizadas: new Endpoint('tareas/verificar-todas-subtareas-finalizadas'),
   verificar_material_tarea_devuelto: new Endpoint('tareas/verificar-material-tarea-devuelto'),
   transferir_mis_tareas_activas: new Endpoint('tareas/transferir-mis-tareas-activas'),
+  obtener_suma_material_tarea_usado: new Endpoint('tareas/obtener-suma-material-tarea-usado'),
 
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),

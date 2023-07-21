@@ -93,14 +93,18 @@ export default defineComponent({
     const columnasMaterial = [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
     const { prompt, notificarAdvertencia } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
+
     const materialesTarea: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialesStock: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const sumaMaterialesTareaUsado: Ref<MaterialOcupadoFormulario[]> = ref([])
+
     const materialEmpleadoController = new MaterialEmpleadoController()
     const esLider = authenticationStore.esTecnicoLider
     const esCoordinador = authenticationStore.esCoordinador
     const refArchivoSeguimiento = ref()
     const subtarea = trabajoAsignadoStore.subtarea
     const permitirSubir = ![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
+    const fecha_historial = ref()
 
     /************
      * Init
@@ -304,8 +308,10 @@ export default defineComponent({
       usarStock,
       usarMaterialTarea,
       columnasMaterial,
+      configuracionColumnasMaterialOcupadoFormulario,
       materialesTarea,
       materialesStock,
+      sumaMaterialesTareaUsado,
       botonEditarCantidadTarea,
       botonEditarCantidadStock,
       regiones,
@@ -327,6 +333,8 @@ export default defineComponent({
       subtarea,
       permitirSubir,
       tab: ref('usar_material_tarea'),
+      tabsMateriales: ref('historial'),
+      fecha_historial,
     }
   }
 })
