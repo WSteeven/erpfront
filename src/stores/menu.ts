@@ -31,7 +31,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     /*******************
-     * Modulo de tarreas
+     * Modulo de tareas
      *******************/
     {
       title: 'Proyectos y tareas',
@@ -543,6 +543,13 @@ export const useMenuStore = defineStore('menu', () => {
         //   icon: 'bi-building-fill-gear',
         //   can: store.can('puede.ver.empresas')  || store.esAdministrador,
         // },
+        {
+          title: 'Ordenes de compras',
+          link: 'ordenes-compras',
+          icon: 'bi-boxes',
+          // can: store.can('puede.ver.proveedores') || store.esAdministrador,
+          can: true,
+        },
         {
           title: 'Proveedores',
           link: 'proveedores',

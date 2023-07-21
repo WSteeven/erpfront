@@ -67,7 +67,10 @@
     >
       <div class="row q-col-gutter-sm q-pa-sm">
         <!-- tabla de criterios de bienes -->
-        <div class="col-12 col-md-12" v-if="listadoFiltrado(departamento[1], 'bienes').length>0">
+        <div
+          class="col-12 col-md-12"
+          v-if="listadoFiltrado(departamento[1], 'bienes').length > 0"
+        >
           <essential-table
             titulo="Criterios de bienes"
             :configuracionColumnas="[...columnasCriteriosConCalificacion]"
@@ -82,7 +85,10 @@
           >
           </essential-table>
         </div>
-        <div class="col-12 col-md-12" v-if="listadoFiltrado(departamento[1], 'servicios').length>0">
+        <div
+          class="col-12 col-md-12"
+          v-if="listadoFiltrado(departamento[1], 'servicios').length > 0"
+        >
           <essential-table
             titulo="Criterios de servicios"
             :configuracionColumnas="[...columnasCriteriosConCalificacion]"
@@ -96,6 +102,25 @@
             :altoFijo="false"
           >
           </essential-table>
+        </div>
+      </div>
+    </q-expansion-item>
+    <q-expansion-item
+      v-if="mostrarCalificacionPersonal"
+      class="overflow-hidden q-mb-md expansion"
+      label="Calificación personal otorgada"
+      header-class="text-bold bg-header-collapse"
+      default-opened
+      ><div class="row q-col-gutter-sm q-pa-sm">
+        <div class="col-12 col-md-12">
+          <q-card flat bordered>
+            <q-card-section>
+              <div class="text-h6">Tu calificación es: {{ calificacion_dada.calificacion }}/100 </div>
+            </q-card-section>
+            <q-card-section>
+              <div class="text">Fecha de calificación: <strong>{{ calificacion_dada.fecha_calificacion }}</strong>  </div>
+            </q-card-section>
+          </q-card>
         </div>
       </div>
     </q-expansion-item>

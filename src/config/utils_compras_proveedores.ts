@@ -29,6 +29,16 @@ export const opcionesOfertas = [
   { value: 1, label: 'BIENES' },
   { value: 2, label: 'SERVICIOS' },
 ]
+export const opcionesUnidadesMedida = [
+  { value: 1, label: 'UNIDAD' },
+  { value: 2, label: 'KILOGRAMO' },
+  { value: 3, label: 'METRO' },
+  { value: 4, label: 'METRO' },
+  { value: 5, label: 'KILOMETRO' },
+  { value: 6, label: 'KILOMETRO CUBICO' },
+  { value: 7, label: 'LITRO' },
+  { value: 8, label: 'KIT' },
+]
 export const tiposOfertas={
   bienes:'BIENES',
   servicios:'SERVICIOS',

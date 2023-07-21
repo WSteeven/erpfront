@@ -11,6 +11,7 @@ import { CalificacionProveedorController } from "../infraestructure/Calificacion
 import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController"
 import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion"
 import { useCalificacionProveedorStore } from "stores/comprasProveedores/calificacionProveedor"
+import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController"
 
 //Logica y controladores
 
@@ -26,15 +27,18 @@ export default defineComponent({
          **************************************************************/
         const proveedorStore = useProveedorStore()
         const calificacionProveedorStore = useCalificacionProveedorStore()
+        const mostrarCalificacionPersonal = calificacionProveedorStore.verMiCalificacion
         /************************************************************** 
          * Variables
          **************************************************************/
+        const calificacion_dada = ref()
         const refArchivoProveedor = ref()
         const disabled = ref(false)
         const criteriosBienes = ref([])
         const criteriosServicios = ref([])
         const departamentosCalificadores = ref([])
         const calificacionesDepartamentos = ref([])
+        
 
         cargarVista(async () => {
             obtenerListados({
@@ -57,6 +61,13 @@ export default defineComponent({
                 // console.log(await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id))
             })
             console.log(calificacionesDepartamentos.value)
+
+            //aqui consulta el departamento y la calificación
+            if (mostrarCalificacionPersonal) {
+                const {result} = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+                calificacion_dada.value = result[0]
+            }
+
         })
 
         return {
@@ -74,6 +85,9 @@ export default defineComponent({
                 console.log(listadoFiltrado.length)
                 return listadoFiltrado
             },
+
+            mostrarCalificacionPersonal,
+            calificacion_dada,
 
         }
 
