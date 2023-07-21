@@ -62,6 +62,7 @@
                 label="Usar material de tarea"
               />
               <q-tab
+                v-if="esCoordinador"
                 name="historial_material_tarea_usado"
                 label="Historial de material de tarea usado"
               >
@@ -97,7 +98,7 @@
                 >
                   <q-tab
                     name="historial"
-                    label="Historial"
+                    label="Historial por fecha"
                     :class="{ 'tab-inactive': tabs !== 'historial' }"
                     no-caps
                   />
@@ -119,11 +120,12 @@
                 >
                   <!-- Formulario -->
                   <q-tab-panel name="historial">
-                    <div class="row">
+                    <div class="row text-center justify-center">
                       <!-- Fecha historial -->
                       <div class="col-12 col-md-3 q-mb-md">
                         <label class="q-mb-sm block"
-                          >Seleccione una fecha para filtrar</label
+                          >Seleccione una fecha para filtrar en el
+                          historial</label
                         >
                         <q-input v-model="fecha_historial" outlined dense>
                           <template v-slot:append>
@@ -137,6 +139,11 @@
                                   v-model="fecha_historial"
                                   mask="DD-MM-YYYY"
                                   today-btn
+                                  @update:model-value="
+                                    obtenerHistorialMaterialTareaUsadoPorFecha(
+                                      fecha_historial
+                                    )
+                                  "
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -151,14 +158,20 @@
                             </q-icon>
                           </template>
                         </q-input>
+
+                        <small class="text-positive">{{
+                          rangoFechasHistorial
+                        }}</small>
                       </div>
                     </div>
+
                     <essential-table
+                      v-if="historialMaterialTareaUsadoPorFecha.length"
                       titulo="Historial material tarea usado"
                       :configuracionColumnas="
                         configuracionColumnasMaterialOcupadoFormulario
                       "
-                      :datos="materialesTarea"
+                      :datos="historialMaterialTareaUsadoPorFecha"
                       :alto-fijo="false"
                       :permitirConsultar="false"
                       :permitirEliminar="false"
@@ -172,10 +185,8 @@
                   <q-tab-panel name="suma">
                     <essential-table
                       titulo="Sumatoria del historial material tarea usado"
-                      :configuracionColumnas="
-                        configuracionColumnasMaterialOcupadoFormulario
-                      "
-                      :datos="materialesTarea"
+                      :configuracionColumnas="configuracionColumnasSumaMaterial"
+                      :datos="sumaMaterialesTareaUsado"
                       :alto-fijo="false"
                       :permitirConsultar="false"
                       :permitirEliminar="false"
@@ -235,7 +246,7 @@
           ></tabla-observaciones>
         </div>
 
-        <div
+        <!-- <div
           v-if="subtarea.cliente_id !== clientes.TELCONET"
           class="col-12 q-mb-md"
         >
@@ -256,7 +267,7 @@
             :mostrarFooter="!emergencia.materiales_devolucion.length"
           >
           </tabla-devolucion-producto>
-        </div>
+        </div> -->
 
         <div class="col-12 q-mb-md">
           <archivo-seguimiento

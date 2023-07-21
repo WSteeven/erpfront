@@ -10,12 +10,12 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
     sortable: true,
     type: 'text'
   },
-  {
+  /* {
     name: 'medida',
     field: 'medida',
     label: 'Medida',
     align: 'left',
-  },
+  }, */
   {
     name: 'stock_actual',
     field: 'stock_actual',
