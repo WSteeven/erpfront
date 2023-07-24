@@ -95,9 +95,9 @@
             >
             </q-input>
           </div>
-           <!-- Días  de permisos sin recuperar-->
-           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Días  de permisos sin recuperar</label>
+          <!-- Días  de permisos sin recuperar-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Días de permisos sin recuperar</label>
             <q-input
               v-model="rolpago.dias_permiso_sin_recuperar"
               type="number"
@@ -128,6 +128,19 @@
               placeholder="Obligatorio"
               type="number"
               :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- Sueldo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Sueldo</label>
+            <q-input
+              v-model="sueldo"
+              placeholder="Obligatorio"
+              type="number"
+              disable
               outlined
               dense
             >
@@ -219,7 +232,10 @@
               </q-select>
             </div>
             <!-- Sub Tipos de Horas Extras -->
-            <div class="col-12 col-md-3" v-if="rolpago.horas_extra_tipo !== null">
+            <div
+              class="col-12 col-md-3"
+              v-if="rolpago.horas_extra_tipo !== null && rolpago.horas_extra_tipo !== ''"
+            >
               <label class="q-mb-sm block">Sub Tipo de Hora Extra</label>
               <q-select
                 v-model="rolpago.horas_extra_subtipo"

@@ -82,13 +82,22 @@ export default defineComponent({
       multas.value = listadosAuxiliares.multas
       horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos
       horas_extras_subtipos.value = listadosAuxiliares.horas_extras_subtipos
-
     })
     const listadoHorasExtrasSubTipo = computed(() => {
       return listadosAuxiliares.horas_extras_subtipos.filter(
         (horas_extras_subtipos: HorasExtrasSubTipo) =>
           horas_extras_subtipos.horas_extras === rolpago.horas_extra_tipo
       )
+    })
+    const sueldo = computed(() => {
+      const num_dias = rolpago.dias != null ? rolpago.dias : 0
+      const dias_sin_recuperar =
+        rolpago.dias_permiso_sin_recuperar != null
+          ? rolpago.dias_permiso_sin_recuperar
+          : 0
+      const salario = rolpago.salario != null ? rolpago.salario : '0'
+      const sueldo = (parseInt(salario) / 30) * (num_dias - dias_sin_recuperar)
+      return sueldo.toFixed(2)
     })
     //Reglas de validacion
     const reglas = {
@@ -170,6 +179,61 @@ export default defineComponent({
           }
         })
     }
+    function prestamoEmpresarial() {
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const params = {
+        empleado: rolpago.empleado,
+        mes: rolpago.mes,
+      }
+
+      const url_salario =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.obtener_prestamo_empleado)
+
+      axios
+        .get(url_salario, {
+          params: params,
+          responseType: 'json',
+          headers: {
+            Authorization:
+              axiosHttpRepository.getOptions().headers.Authorization,
+          },
+        })
+        .then((response) => {
+          const { data } = response
+          if (data) {
+            rolpago.egreso = data.results
+          }
+        })
+    }
+    function fondosRotativos() {
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const params = {
+        empleado: rolpago.empleado,
+        mes: rolpago.mes,
+      }
+      const url_salario =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.otener_saldo_empleado_mes)
+
+      axios
+        .get(url_salario, {
+          params: params,
+          responseType: 'json',
+          headers: {
+            Authorization:
+              axiosHttpRepository.getOptions().headers.Authorization,
+          },
+        })
+        .then((response) => {
+          const { data } = response
+          if (data) {
+            rolpago.egreso = data.saldoUsuarioEnMes.saldo_actual
+          }
+        })
+    }
     function extensionCoverturaSalud() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const params = {
@@ -196,7 +260,7 @@ export default defineComponent({
         .then((response) => {
           const { data } = response
           if (data) {
-            rolpago.egreso = data.prestamo
+            rolpago.egreso = data.valor != null ? data.valor : 0
           }
         })
     }
@@ -225,7 +289,7 @@ export default defineComponent({
               rolpago.egreso = data.empleado.supa
               break
             case 'PERMISOS_SIN_RECUPERAR':
-              Obtener_dias_permiso()
+              obtener_dias_permiso()
               break
             default:
               break
@@ -233,9 +297,9 @@ export default defineComponent({
         }
       })
     }
-    function Obtener_dias_permiso(){
-      rolpago.dias_permiso_sin_recuperar =  null
-      rolpago.dias= null
+    function obtener_dias_permiso() {
+      rolpago.dias_permiso_sin_recuperar = null
+      rolpago.dias = null
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const url_salrio =
         apiConfig.URL_BASE +
@@ -248,15 +312,16 @@ export default defineComponent({
         headers: {
           Authorization: axiosHttpRepository.getOptions().headers.Authorization,
         },
-        params:{
-          'empleado':rolpago.empleado,
-          'mes': rolpago.mes
-        }
+        params: {
+          empleado: rolpago.empleado,
+          mes: rolpago.mes,
+        },
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
-          rolpago.dias_permiso_sin_recuperar = data.totalDiasPermiso != null ? data.totalDiasPermiso :0
-          rolpago.dias= 30
+          rolpago.dias_permiso_sin_recuperar =
+            data.totalDiasPermiso != null ? data.totalDiasPermiso : 0
+          rolpago.dias = 30
         }
       })
     }
@@ -270,12 +335,26 @@ export default defineComponent({
       }
     }
     function verificar_descuento_general() {
-      es_calculable.value = false
       rolpago.egreso = null
+      rolpago.descuento_ley = null
+      rolpago.multa = null
       tipo_descuento.value = 'DESCUENTO_GENERAL'
+      es_calculable.value = false
+      switch (rolpago.descuento_general) {
+        case 4:
+          prestamoEmpresarial()
+          es_calculable.value = true
+          break
+        case 5:
+          fondosRotativos()
+          es_calculable.value = true
+          break
+      }
     }
     function verificar_descuento_ley() {
       rolpago.egreso = null
+      rolpago.descuento_general = null
+      rolpago.multa = null
       tipo_descuento.value = 'DESCUENTO_LEY'
       switch (rolpago.descuento_ley) {
         case 1:
@@ -305,6 +384,8 @@ export default defineComponent({
     function verificar_multa() {
       es_calculable.value = false
       rolpago.egreso = null
+      rolpago.descuento_general = null
+      rolpago.descuento_ley = null
       tipo_descuento.value = 'MULTA'
     }
     /**Calculo de  descuento del IESS */
@@ -364,6 +445,11 @@ export default defineComponent({
         mes: rolpago.mes,
         monto: rolpago.ingreso,
       })
+      if (rolpago.concepto_ingreso == 2) {
+        rolpago.horas_extra_tipo = null
+        rolpago.horas_extra_subtipo = null
+      }
+      rolpago.concepto_ingreso = null
       rolpago.ingreso = null
     }
     /**Añadir Egreso */
@@ -463,6 +549,7 @@ export default defineComponent({
       descuentos_ley,
       horas_extras_tipos,
       horas_extras_subtipos,
+      sueldo,
       multas,
       campo,
       is_month,
