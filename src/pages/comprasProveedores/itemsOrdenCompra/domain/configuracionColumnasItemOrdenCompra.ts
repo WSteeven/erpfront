@@ -10,6 +10,7 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         label: 'Cantidad',
         type: 'number',
         align: 'left',
+        editable: true,
         sortable: true,
     },
     {
@@ -41,25 +42,29 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         name: 'precio_unitario',
         field: 'precio_unitario',
         label: 'Precio U',
+        hint: 'Precio unitario',
         align: 'left',
+        editable: true,
         sortable: true
     },
     {
         name: 'facturable',
         field: 'facturable',
         label: '¿Facturable?',
-        type: 'checkbox',
+        type: 'toggle',
         align: 'left',
         default: true,
+        editable: true,
         sortable: true
     },
     {
         name: 'grava_iva',
         field: 'grava_iva',
         label: '¿IVA?',
-        align: 'left',
-        type: 'checkbox',
+        align: 'center',
+        type: 'toggle',
         default: true,
+        editable: true,
         sortable: true
     },
     {
@@ -74,15 +79,17 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
     {
         name: 'porcentaje_descuento',
         field: 'porcentaje_descuento',
+        hint: 'Porcentaje de descuento',
         label: '% descuento',
         align: 'left',
         type: 'number',
+        editable: true,
         sortable: true
     },
     {
         name: 'subtotal',
         field: 'subtotal',
-        label: '% subtotal',
+        label: 'Subtotal',
         align: 'left',
         type: 'number',
         editable: false,
@@ -91,7 +98,7 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
     {
         name: 'total',
         field: 'total',
-        label: '% total',
+        label: 'Total',
         align: 'left',
         type: 'number',
         editable: false,

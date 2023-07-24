@@ -5,6 +5,8 @@ export const maskFecha = 'DD-MM-YYYY'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
+export type TipoSeparador = 'none' | 'horizontal' | 'vertical' | 'cell' | undefined
+
 export const acciones = {
   nuevo: 'NUEVO',
   eliminar: 'ELIMINAR',

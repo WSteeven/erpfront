@@ -1,67 +1,121 @@
 <template>
   <q-table
+    ref="referencia"
+    :grid="grid || $q.screen.xs"
     flat
     bordered
     title="Treats"
-    :rows="rows"
-    :columns="columns"
-    row-key="name"
+    :rows="datos"
+    :columns="configuracionColumnas"
+    :filter="filter"
+    :visible-columns="visibleColumns"
+    :separator="$q.screen.xs ? 'horizontal' : separador"
+    :hide-bottom="!mostrarFooter"
+    row-key="id"
+    v-model:selected="selected"
+    :style="estilos"
+    class="bg-body-table my-sticky-column-table borde"
+    :class="{
+      'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
+      'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
+      'my-sticky-dynamic2': !inFullscreen && altoFijo,
+      'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
+      'my-sticky-column-table-dark': $q.dark.isActive,
+      'my-sticky-column-table-light': !$q.dark.isActive,
+      'rounded-header': $q.screen.xs,
+      'bg-header-table': mostrarFiltros,
+    }"
+    virtual-scroll
+    :virtual-scroll-item-size="offset"
+    :pagination="pagination"
+    no-data-label="Aún no se han agregado elementos"
     binary-state-sort
   >
-    <template v-slot:body="props">
-      <q-tr :props="props">
-        <q-td key="name" :props="props">
-          {{ props.row.name }}
-          <q-popup-edit v-model="props.row.name" v-slot="scope">
-            <q-input
-              v-model="scope.value"
-              dense
-              autofocus
-              counter
-              @keyup.enter="scope.set"
-            />
-          </q-popup-edit>
-        </q-td>
-        <q-td key="calories" :props="props">
-          {{ props.row.calories }}
-          <q-popup-edit
-            v-model="props.row.calories"
-            title="Update calories"
-            buttons
-            v-slot="scope"
+    <!-- No data  -->
+    <template v-slot:no-data="{ message }">
+      <div class="full-width row flex-center text-primary q-gutter-sm">
+        <q-icon size="2em" name="bi-exclamation-triangle-fill" />
+        <span> {{ message }} </span>
+      </div>
+    </template>
+
+    <!-- Pagination -->
+    <template #pagination="scope">
+      <botones-paginacion :scope="scope"> </botones-paginacion>
+    </template>
+    <!-- Edicion de celdas -->
+    <template v-slot:body-cell="props">
+      <q-td :key="props.col.name" :props="props">
+        {{ props.row[props.col.name] }}
+        <q-popup-edit
+          v-if="props.col.editable"
+          v-model="props.row[props.col.name]"
+          :title="'Modificar ' + props.col.label"
+          auto-save
+          v-slot="scope"
+          ><q-input
+            v-if="props.col.type != 'toggle'"
+            v-model="scope.value"
+            :type="props.col.type ? props.col.type : 'text'"
+            :hint="props.col.hint"
+            dense
+            autofocus
+            counter
+            @keyup.enter="scope.set"
+          />
+          <q-toggle
+            v-else
+            keep-color
+            v-model="scope.value"
+            :label="scope.value ? 'SI' : 'NO'"
+          />
+        </q-popup-edit>
+      </q-td>
+    </template>
+    <!-- Personalizacion de celdas -->
+    <!-- Facturable -->
+    <template v-slot:body-cell-facturable="props">
+      <q-td :key="props.col.name" :props="props">
+        <q-icon
+        size="md"
+          :name="props.row[props.col.name] ? 'bi-toggle2-on' : 'bi-toggle2-off'"
+          :color="props.row[props.col.name] ? 'positive' : 'negative'"
+        />
+        <q-popup-edit
+          v-if="props.col.editable"
+          v-model="props.row[props.col.name]"
+          :title="'¿Es ' + props.col.name+'?'"
+          auto-save
+          v-slot="scope"
           >
-            <q-input type="number" v-model="scope.value" dense autofocus />
-          </q-popup-edit>
-        </q-td>
-        <q-td key="fat" :props="props">
-          <div class="text-pre-wrap">{{ props.row.fat }}</div>
-          <q-popup-edit v-model="props.row.fat" v-slot="scope">
-            <q-input type="textarea" v-model="scope.value" dense autofocus />
-          </q-popup-edit>
-        </q-td>
-        <q-td key="carbs" :props="props">
-          {{ props.row.carbs }}
-          <q-popup-edit
-            v-model="props.row.carbs"
-            title="Update carbs"
-            buttons
-            persistent
-            v-slot="scope"
+          <q-toggle
+            v-model="scope.value"
+            :label="scope.value ? 'SI' : 'NO'"
+          />
+        </q-popup-edit>
+      </q-td>
+    </template>
+    <!-- Grava IVA -->
+    <template #body-cell-grava_iva="props">
+      <q-td :key="props.col.name" :props="props">
+        <q-icon
+        size="md"
+          :name="props.row[props.col.name] ? 'bi-toggle2-on' : 'bi-toggle2-off'"
+          :color="props.row[props.col.name] ? 'positive' : 'negative'"
+        />
+        <q-popup-edit
+          v-if="props.col.editable"
+          v-model="props.row[props.col.name]"
+          :title="'¿Grava IVA? '"
+          auto-save
+          v-slot="scope"
           >
-            <q-input
-              type="number"
-              v-model="scope.value"
-              dense
-              autofocus
-              hint="Use buttons to close"
-            />
-          </q-popup-edit>
-        </q-td>
-        <q-td key="protein" :props="props">{{ props.row.protein }}</q-td>
-        <q-td key="sodium" :props="props">{{ props.row.sodium }}</q-td>
-        <q-td key="calcium" :props="props">{{ props.row.calcium }}</q-td>
-        <q-td key="iron" :props="props">{{ props.row.iron }}</q-td>
-      </q-tr>
+          <q-toggle
+            v-model="scope.value"
+            :label="scope.value ? 'SI' : 'NO'"
+          />
+        </q-popup-edit>
+      </q-td>
     </template>
   </q-table>
 </template>
@@ -71,8 +125,12 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { defineComponent, ref } from 'vue'
 import { ColumnConfig } from '../domain/ColumnConfig'
+import { getVisibleColumns } from 'shared/utils'
+import { TipoSeparador } from 'config/utils'
+import { offset } from 'config/utils_tablas'
 
 export default defineComponent({
+  components: {},
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
@@ -82,158 +140,51 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    separador: {
+      type: String as () => TipoSeparador,
+      default: 'horizontal',
+    },
+    mostrarFooter: {
+      type: Boolean,
+      default: true,
+    },
+    estilos: {
+      type: String,
+      required: false,
+    },
+    altoFijo: {
+      type: Boolean,
+      default: true,
+    },
   },
-  components: {  },
-  setup() {
-    const columns = [
-      {
-        name: 'name',
-        required: true,
-        label: 'Dessert (100g serving)',
-        align: 'left',
-        field: (row) => row.name,
-        format: (val) => `${val}`,
-        sortable: true,
-      },
-      {
-        name: 'calories',
-        align: 'center',
-        label: 'Calories',
-        field: 'calories',
-        sortable: true,
-      },
-      {
-        name: 'fat',
-        label: 'Fat (g)',
-        field: 'fat',
-        sortable: true,
-        style: 'width: 10px',
-      },
-      { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
-      { name: 'protein', label: 'Protein (g)', field: 'protein' },
-      { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-      {
-        name: 'calcium',
-        label: 'Calcium (%)',
-        field: 'calcium',
-        sortable: true,
-        sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-      },
-      {
-        name: 'iron',
-        label: 'Iron (%)',
-        field: 'iron',
-        sortable: true,
-        sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-      },
-    ]
+  emits: ['selected'],
+  setup(props, { emit }) {
+    const filter = ref()
+    const grid = ref(false)
+    const inFullscreen = ref(false)
+    const mostrarFiltros = ref(false)
+    const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
+    const selected = ref([])
+    const pagination = ref({
+      sortBy: 'desc',
+      descending: false,
+      page: 1,
+      rowsPerPage: props.altoFijo ? 15 : 0,
+    })
 
-    const rows = [
-      {
-        name: 'Frozen Yogurt',
-        calories: 159,
-        fat: 6.0,
-        carbs: 24,
-        protein: 4.0,
-        sodium: 87,
-        calcium: '14%',
-        iron: '1%',
-      },
-      {
-        name: 'Ice cream sandwich',
-        calories: 237,
-        fat: 9.0,
-        carbs: 37,
-        protein: 4.3,
-        sodium: 129,
-        calcium: '8%',
-        iron: '1%',
-      },
-      {
-        name: 'Eclair',
-        calories: 262,
-        fat: 16.0,
-        carbs: 23,
-        protein: 6.0,
-        sodium: 337,
-        calcium: '6%',
-        iron: '7%',
-      },
-      {
-        name: 'Cupcake',
-        calories: 305,
-        fat: 3.7,
-        carbs: 67,
-        protein: 4.3,
-        sodium: 413,
-        calcium: '3%',
-        iron: '8%',
-      },
-      {
-        name: 'Gingerbread',
-        calories: 356,
-        fat: 16.0,
-        carbs: 49,
-        protein: 3.9,
-        sodium: 327,
-        calcium: '7%',
-        iron: '16%',
-      },
-      {
-        name: 'Jelly bean',
-        calories: 375,
-        fat: 0.0,
-        carbs: 94,
-        protein: 0.0,
-        sodium: 50,
-        calcium: '0%',
-        iron: '0%',
-      },
-      {
-        name: 'Lollipop',
-        calories: 392,
-        fat: 0.2,
-        carbs: 98,
-        protein: 0,
-        sodium: 38,
-        calcium: '0%',
-        iron: '2%',
-      },
-      {
-        name: 'Honeycomb',
-        calories: 408,
-        fat: 3.2,
-        carbs: 87,
-        protein: 6.5,
-        sodium: 562,
-        calcium: '0%',
-        iron: '45%',
-      },
-      {
-        name: 'Donut',
-        calories: 452,
-        fat: 25.0,
-        carbs: 51,
-        protein: 4.9,
-        sodium: 326,
-        calcium: '2%',
-        iron: '22%',
-      },
-      {
-        name: 'KitKat',
-        calories: 518,
-        fat: 26.0,
-        carbs: 65,
-        protein: 7,
-        sodium: 54,
-        calcium: '12%',
-        iron: '6%',
-      },
-    ]
+    //Observers
+    const seleccionar = () => emit('selected', selected.value)
 
     return {
-      columns,
-      rows: ref(rows)
+      grid,
+      filter,
+      visibleColumns,
+      selected,
+      inFullscreen,
+      mostrarFiltros,
+      offset,
+      pagination,
+      seleccionar,
     }
   },
 })

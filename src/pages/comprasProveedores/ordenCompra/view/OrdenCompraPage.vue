@@ -370,6 +370,7 @@
               :datos="orden.listadoProductos"
               separador="cell"
               :permitirEditarModal="true"
+              :permitirEditarCeldas="true"
               :editarFilaLocal="true"
               :permitirConsultar="false"
               :permitirEditar="true"
@@ -399,6 +400,7 @@
             :permitirEditar="true"
             :permitirEliminar="false"
             :mostrarBotones="false"
+            :altoFijo="false"
             :accion1="btnEditarFila"
             :accion2="btnEliminarFila"
           >
