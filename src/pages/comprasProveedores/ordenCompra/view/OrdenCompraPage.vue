@@ -107,6 +107,52 @@
             </q-select>
           </div>
 
+          <!--Categorias-->
+          <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Categorias</label>
+              <q-select
+                v-model="orden.categorias"
+                :options="categorias"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                multiple
+                dense
+                use-chips
+                outlined
+                :error="!!v$.categorias.$errors.length"
+                error-message="Debes seleccionar al menos una opcion"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+                ><template
+                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                >
+                  <q-item v-bind="itemProps">
+                    <q-item-section>
+                      {{ opt.nombre }}
+                      <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-toggle
+                        :model-value="selected"
+                        @update:model-value="toggleOption(opt)"
+                      />
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
           <!-- Justificacion -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Descripción</label>
@@ -343,6 +389,7 @@
                   @click="
                     listarProductos({
                       tipo_busqueda: 'all',
+                      categoria_id: estructuraConsultaCategoria()
                     })
                   "
                   icon="search"
@@ -358,9 +405,11 @@
               </div>
             </div>
           </div>
-          <!-- Tabla -->
+
+          {{ orden }}
+          <!-- Tabla con popup -->
           <div class="col-12">
-            <essential-table
+            <essential-popup-editable-table
               ref="refItems"
               titulo="Productos Seleccionados"
               :configuracionColumnas="[
@@ -370,41 +419,18 @@
               :datos="orden.listadoProductos"
               separador="cell"
               :permitirEditarModal="true"
-              :permitirEditarCeldas="true"
               :editarFilaLocal="true"
               :permitirConsultar="false"
-              :permitirEditar="true"
+              :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
               :accion1="btnEditarFila"
               :accion2="btnEliminarFila"
+              v-on:fila-modificada="calcularValores"
             >
-            </essential-table>
+            </essential-popup-editable-table>
           </div>
-        </div>
-        <!-- Tabla con popup -->
-        <div class="col-12">
-          <essential-popup-editable-table
-            ref="refItems"
-            titulo="Productos Seleccionados"
-            :configuracionColumnas="[
-              ...configuracionColumnasItemOrdenCompra,
-              accionesTabla,
-            ]"
-            :datos="orden.listadoProductos"
-            separador="cell"
-            :permitirEditarModal="true"
-            :editarFilaLocal="true"
-            :permitirConsultar="false"
-            :permitirEditar="true"
-            :permitirEliminar="false"
-            :mostrarBotones="false"
-            :altoFijo="false"
-            :accion1="btnEditarFila"
-            :accion2="btnEliminarFila"
-          >
-          </essential-popup-editable-table>
         </div>
       </q-form>
 

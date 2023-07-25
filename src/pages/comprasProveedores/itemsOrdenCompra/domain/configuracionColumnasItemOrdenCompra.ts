@@ -13,14 +13,14 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         editable: true,
         sortable: true,
     },
-    {
-        name: 'producto',
-        field: 'producto',
-        label: 'producto',
-        align: 'left',
-        editable: false,
-        sortable: true
-    },
+    // {
+    //     name: 'producto',
+    //     field: 'producto',
+    //     label: 'producto',
+    //     align: 'left',
+    //     editable: false,
+    //     sortable: true
+    // },
     {
         name: 'descripcion',
         field: 'descripcion',
@@ -43,7 +43,7 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         field: 'precio_unitario',
         label: 'Precio U',
         hint: 'Precio unitario',
-        align: 'left',
+        align: 'center',
         editable: true,
         sortable: true
     },
@@ -52,7 +52,7 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         field: 'facturable',
         label: '¿Facturable?',
         type: 'toggle',
-        align: 'left',
+        align: 'center',
         default: true,
         editable: true,
         sortable: true

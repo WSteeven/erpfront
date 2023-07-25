@@ -2,9 +2,9 @@
 import { configuracionColumnasOrdenesCompras } from "../domain/configuracionColumnasOrdenCompra";
 import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
 import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
-import { helpers, required, requiredIf } from 'shared/i18n-validators'
+import { required, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watch, } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 
@@ -33,12 +33,11 @@ import { formatearFecha, obtenerTiempoActual } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { emit } from "process";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { watch } from "fs";
 
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
-    emits: ['actualizar'],
+    emits: ['actualizar', 'fila-modificada'],
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
         const { entidad: orden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
@@ -98,6 +97,7 @@ export default defineComponent({
          ****************************************************************************************/
         const reglas = {
             proveedor: { required },
+            categorias: { required },
             // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
             autorizador: { required },
             descripcion: { required },
@@ -115,11 +115,36 @@ export default defineComponent({
         /*******************************************************************************************
          * Funciones
          ******************************************************************************************/
+        function estructuraConsultaCategoria(){
+            let parametro = ''
+            if(orden.categorias?.length>1){
+                console.log('Hay varias categorias')
+            }else{
+                console.log('Hay solo una categoria')
+            }
+            orden.categorias?.forEach((v, index)=>{
+                if(index===orden.categorias?.length-1) parametro+=v
+                else parametro+=v+'&categoria_id[]='
+            })
+
+            return parametro
+        }
         function filtrarOrdenes(tab: string) {
             listar({ solicitante_id: store.user.id, estado: tab })
         }
-        function eliminar({ entidad, posicion }) {
+        function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
+        }
+        function calcularValores(data: any) {
+            console.log('dentro de la función: ', data)
+            console.log('cantidad: ', Number(data.cantidad))
+            console.log('precio unitario: ', Number(data.precio_unitario))
+            console.log('subtotal: ', Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva))
+            console.log('total: ', data.cantidad * data.precio_unitario + data.iva)
+            data.iva = data.grava_iva ? (data.cantidad * data.precio_unitario) * .12 : 0
+            data.subtotal = data.facturable ? data.cantidad * data.precio_unitario : 0
+            data.total = data.facturable ? data.cantidad * data.precio_unitario + data.iva : 0
+
         }
 
         /*******************************************************************************************
@@ -129,18 +154,10 @@ export default defineComponent({
             titulo: 'Editar',
             icono: 'bi-pencil',
             color: 'positive',
-            accion: async({ entidad, posicion }) => {
-                try {
-                    cargando.activar()
-                    const { fecha_hora } = await obtenerTiempoActual()
-                    console.log('Diste clic en editar')
-                    refItems.value.abrirModalEntidad(entidad, orden.listadoProductos.length-1)
-                    emit('actualizar', orden.listadoProductos)
-                } catch (e) {
-                    notificarError('Verifica tu conexion a internet')
-                } finally {
-                    cargando.desactivar()
-                }
+            accion: async ({ entidad, posicion }) => {
+                console.log('Diste clic en editar')
+                console.log('entidad', entidad)
+                console.log('posicion', posicion)
             }
         }
         const btnEliminarFila: CustomActionTable = {
@@ -148,10 +165,15 @@ export default defineComponent({
             icono: 'bi-x',
             color: 'negative',
             accion: ({ entidad, posicion }) => {
-                confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
+                eliminar({ posicion })
+                // confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
             }
         }
 
+        watch(refItems, () => {
+            console.log('modificacion')
+            console.log(refItems.value)
+        })
 
         // configurar los listados
         empleados.value = listadosAuxiliares.empleados
@@ -166,6 +188,7 @@ export default defineComponent({
             configuracionColumnasItemOrdenCompra,
             //listados
             empleados,
+            categorias,
             proveedores,
             opcionesForma,
             opcionesTiempo,
@@ -199,6 +222,8 @@ export default defineComponent({
 
             //funciones
             filtrarOrdenes,
+            calcularValores,
+            estructuraConsultaCategoria,
 
 
         }
