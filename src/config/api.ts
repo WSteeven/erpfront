@@ -79,6 +79,7 @@ export const endpoints = {
   permisos_sin_recuperar : new Endpoint('recursos-humanos/permisos_sin_recuperar'),
   obtener_prestamo_empleado : new Endpoint('recursos-humanos/obtener_prestamo_empleado'),
   otener_saldo_empleado_mes : new Endpoint('recursos-humanos/otener_saldo_empleado_mes'),
+  imprimir_rol_pago : new Endpoint('recursos-humanos/imprimir_rol_pago/'),
 
 
 

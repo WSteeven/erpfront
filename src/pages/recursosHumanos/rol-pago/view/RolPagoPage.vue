@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Cargos"
+    :accion1="imprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>

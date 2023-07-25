@@ -12,7 +12,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { RolPagoController } from '../infraestructure/RolPagoController'
 import { RolPago } from '../domain/RolPago'
-import { removeAccents } from 'shared/utils'
+import { imprimirArchivo, removeAccents } from 'shared/utils'
 import { accionesTabla, maskFecha } from 'config/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
@@ -30,6 +30,10 @@ import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/Mu
 import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
 import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras_subtipo/infraestructure/HorasExtrasSubTipoController'
 import { HorasExtrasSubTipo } from 'pages/recursosHumanos/horas_extras_subtipo/domain/HorasExtrasSubTipo'
+import { useAuthenticationStore } from 'stores/authentication'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
@@ -43,6 +47,8 @@ export default defineComponent({
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
+    useCargandoStore().setQuasar(useQuasar())
+
     const concepto_ingresos: Ref<ConceptoIngreso[]> = ref([])
     const descuentos_generales = ref([])
     const horas_extras_tipos = ref([])
@@ -110,6 +116,10 @@ export default defineComponent({
     rolpago.roles = ref([])
     rolpago.ingresos = ref([])
     rolpago.egresos = ref([])
+    const store = useAuthenticationStore()
+
+    const esRecursosHumanos = store.esRecursosHumanos
+
     function datos_empleado() {
       obtener_datos_empleado('SALARIO')
       obtener_datos_empleado('PERMISOS_SIN_RECUPERAR')
@@ -540,6 +550,25 @@ export default defineComponent({
         )
       })
     }
+    const imprimir: CustomActionTable = {
+      titulo: ' ',
+      icono: 'bi-printer',
+      color: 'primary',
+      visible: ({ entidad }) => esRecursosHumanos,
+      accion: ({ entidad }) => {
+        generar_reporte(entidad)
+      },
+    }
+    async function generar_reporte(valor: RolPago): Promise<void> {
+      const axios = AxiosHttpRepository.getInstance()
+      const filename = 'rol_pago'
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.imprimir_rol_pago) +
+        valor.id
+      imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
+    }
     return {
       removeAccents,
       mixin,
@@ -554,6 +583,7 @@ export default defineComponent({
       campo,
       is_month,
       empleados,
+      imprimir,
       datos_empleado,
       tipo,
       es_consultado,
