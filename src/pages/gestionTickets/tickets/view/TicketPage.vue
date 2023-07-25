@@ -14,6 +14,7 @@
     :accion3="btnSeguimiento"
     :accion4="btnCancelar"
     :accion5="btnCalificar"
+    subtitulo-pagina="Módulo de Tickets"
   >
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>

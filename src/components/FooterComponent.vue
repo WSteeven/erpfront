@@ -1,5 +1,5 @@
 <template>
-  <small class="q-pa-xs q-pl-md footer">
+  <small class="q-pa-xs text-right">
     <strong>Copyright © 2023</strong>. Todos los derechos reservados por
     <strong>JPCONSTRUCRED</strong>.
   </small>
@@ -9,7 +9,8 @@
 .footer {
   position: fixed;
   bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
-  z-index: -1;
 }
 </style>

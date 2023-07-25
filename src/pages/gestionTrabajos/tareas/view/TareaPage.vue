@@ -12,6 +12,7 @@
     :filtrar="filtrarTarea"
     tabDefecto="0"
     :forzarListar="true"
+    subtitulo-pagina="Módulo de Tareas"
   >
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>

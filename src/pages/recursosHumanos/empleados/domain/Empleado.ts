@@ -22,6 +22,7 @@ export class Empleado extends EntidadAuditable {
   banco: number | null
   salario: number | null
   departamento: number | null
+  departamento_id: number | null
   roles: string[] | string // | null
   permisos: string[] | string // | null
   grupo: number | null
@@ -45,6 +46,7 @@ export class Empleado extends EntidadAuditable {
   observacion: string | null
   nivel_academico: string | null
   grupo_id: number | null
+  responsable_departamento: boolean
 
   constructor() {
     super()
@@ -69,6 +71,7 @@ export class Empleado extends EntidadAuditable {
     this.banco = null
     this.salario = null
     this.departamento = null
+    this.departamento_id = null
     this.roles = []
     this.permisos = []
     this.grupo = null
@@ -92,5 +95,6 @@ export class Empleado extends EntidadAuditable {
     this.tiene_discapacidad = false
     this.nivel_academico = null
     this.observacion = null
+    this.responsable_departamento = false
   }
 }

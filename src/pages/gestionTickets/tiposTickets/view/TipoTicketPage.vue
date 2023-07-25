@@ -6,6 +6,7 @@
     :permitir-editar="false"
     :permitir-consultar="false"
     :accion1="btnToggleActivar"
+    subtitulo-pagina="Módulo de Tickets"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -113,7 +114,6 @@
 
           <div v-if="tipoTicket.categoria_tipo_ticket" class="col-12 col-md-3">
             <br />
-            credenciales
             <q-toggle
               v-model="tipoTicket.activo"
               checked-icon="check"

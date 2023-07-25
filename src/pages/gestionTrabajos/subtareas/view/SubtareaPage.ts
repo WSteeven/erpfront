@@ -106,7 +106,13 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
-        empleados: new EmpleadoController(),
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1
+          }
+        },
         causasIntervenciones: {
           controller: new CausaIntervencionController(),
           params: { tipo_trabajo_id: subtarea.tipo_trabajo },
