@@ -1,8 +1,8 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-toolbar border-bottomd">
-      <q-toolbar class="row justify-between">
+    <q-header class="bg-white rounded-card custom-shadow">
+      <q-toolbar class="row justify-between q-py-sm">
         <q-btn
           dense
           push
@@ -49,10 +49,10 @@
           }"
         >
           <span
-            class="row bg-body-table rounded q-pr-sm"
+            class="row"
             :class="{
-              'q-gutter-x-sm': $q.screen.xs,
-              'q-gutter-x-md': !$q.screen.xs,
+              'q-gutter-x-xs': $q.screen.xs,
+              'q-gutter-x-sm': !$q.screen.xs,
             }"
           >
             <!-- Boton transferir tareas -->
@@ -62,18 +62,19 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono custom-shadow"
+              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
               @click="abrirTransferirTareas()"
             >
               <q-icon
                 name="bi-arrow-left-right"
-                :class="{ 'q-mr-sm': !$q.screen.xs }"
+                :class="{ 'q-mx-sm': !$q.screen.xs }"
+                size="xs"
               ></q-icon>
               <span v-if="!$q.screen.xs">Transferir tareas activas</span>
               <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
             </q-btn>
 
-            <q-separator vertical inset></q-separator>
+            <!-- <q-separator vertical inset></q-separator> -->
 
             <!-- Boton movilizacion -->
             <q-btn
@@ -81,18 +82,19 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono"
+              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
               @click="abrirMovilizacionSubtarea()"
             >
               <q-icon
                 name="bi-car-front"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
+                size="xs"
               ></q-icon>
               <span v-if="!$q.screen.xs">Movilización</span>
               <q-tooltip class="bg-dark">Movilización</q-tooltip>
             </q-btn>
 
-            <q-separator vertical inset></q-separator>
+            <!-- <q-separator vertical inset></q-separator> -->
 
             <!-- Boton Mi bodega -->
             <q-btn
@@ -100,18 +102,19 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono"
+              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
               :to="{ name: 'mi_bodega' }"
             >
               <q-icon
                 name="bi-box-seam"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
+                size="xs"
               ></q-icon>
               <span v-if="!$q.screen.xs">Mi bodega</span>
               <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
             </q-btn>
 
-            <q-separator vertical inset></q-separator>
+            <!-- <q-separator vertical inset></q-separator> -->
 
             <!-- Boton notificaciones -->
             <q-btn
@@ -119,12 +122,13 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono"
+              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
               @click.self="mostrarNotificaciones = true"
             >
               <q-icon
                 name="bi-bell"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
+                size="xs"
               ></q-icon>
               <span v-if="!$q.screen.xs">Notificaciones</span>
               <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
@@ -333,9 +337,13 @@
     </q-header>
 
     <!-- Drawer -->
-    <q-drawer v-model="leftDrawerOpen" class="border-right" show-if-above>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      class="bg-body q-px-sm q-py-sm"
+      show-if-above
+    >
       <!-- Drawer Header -->
-      <div class="absolute-top q-pa-lg">
+      <div class="absolute-top q-pa-sm q-ma-sm bg-whited rounded-card">
         <!--<img src="~assets/logo.svg" height="80" class="q-mx-auto block" /> -->
         <img
           src="~assets/logoJP_Borde.png"
@@ -345,7 +353,10 @@
       </div>
 
       <!-- Drawer Body -->
-      <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px">
+      <q-scroll-area
+        style="height: calc(96% - 100px); margin-top: 100px"
+        class="bg-white rounded-card shadow-chip q-mb-sm"
+      >
         <q-list>
           <div v-for="item in links" :key="item.title">
             <q-item-label
@@ -367,6 +378,14 @@
           </div>
         </q-list>
       </q-scroll-area>
+      <q-btn
+        color="primary"
+        no-caps
+        class="full-width"
+        rounded
+        @click="logout()"
+        >Cerrar sesión</q-btn
+      >
     </q-drawer>
 
     <modales-entidad :comportamiento="modales" />
@@ -377,8 +396,10 @@
         <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>
         </transition>
+        <div class="text-right absolute-bottom">
+          <footer-component></footer-component>
+        </div>
         <component :is="Component" />
-        <!--<footer-component></footer-component> -->
       </router-view>
     </q-page-container>
   </q-layout>

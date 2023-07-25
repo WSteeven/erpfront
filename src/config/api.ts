@@ -158,7 +158,7 @@ export const endpoints = {
   verificar_material_tarea_devuelto: new Endpoint('tareas/verificar-material-tarea-devuelto'),
   transferir_mis_tareas_activas: new Endpoint('tareas/transferir-mis-tareas-activas'),
   obtener_suma_material_tarea_usado: new Endpoint('tareas/obtener-suma-material-tarea-usado'),
-
+  obtener_historial_material_tarea_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-tarea-usado-por-fecha'),
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   gastos: new Endpoint('fondos-rotativos/gastos'),

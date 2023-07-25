@@ -319,3 +319,18 @@ export const tiposReportesEgresos = {
   tarea: 9,
   transferencia: 10,
 }
+
+export const departamentos = {
+  xtrim_cuenca: 'XTRIM CUENCA',
+  medico: 'MEDICO',
+  activos_fijos: 'ACTIVOS FIJOS',
+  gerencia: 'GERENCIA',
+  proyectos: 'PROYECTOS',
+  recursos_humanos: 'RECURSOS HUMANOS',
+  tecnico: 'TECNICO',
+  contabilidad: 'CONTABILIDAD',
+  informatica: 'INFORMATICA',
+  bodega: 'BODEGA',
+  sso: 'SSO',
+  vehiculos: 'VEHICULOS',
+}

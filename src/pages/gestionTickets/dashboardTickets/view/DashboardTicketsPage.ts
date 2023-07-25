@@ -6,7 +6,7 @@ import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia
 import { required } from '@vuelidate/validators'
 import { computed, defineComponent, reactive, ref } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
-import { tiposJornadas } from 'config/utils'
+import { accionesTabla, departamentos, tiposJornadas } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -15,6 +15,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import TableView from 'components/tables/view/TableView.vue'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
 import { Bar, Pie } from 'vue-chartjs'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -26,10 +27,21 @@ import { DashboardTicketController } from '../infraestructure/DashboardTicketsCo
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { estadosTickets } from 'config/tickets.utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useTicketStore } from 'stores/ticket'
+import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
+import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
+import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
+import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad },
   setup() {
+    /***********
+    * Stores
+    ***********/
+    const ticketStore = useTicketStore()
+
     ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
 
     const mixin = new ContenedorSimpleMixin(
@@ -45,7 +57,7 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
+            campos: 'id,nombres,apellidos,departamento_id,responsable_departamento',
             estado: 1
           }
         },
@@ -56,10 +68,19 @@ export default defineComponent({
     const dashboardTicketController = new DashboardTicketController()
     const cargando = new StatusEssentialLoading()
     const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado)
+    const modales = new ComportamientoModalesTicketAsignado()
+    const empleadoResponsableDepartamento = ref()
+    const esResponsableDepartamento = ref(false)
 
     const ticketsConSolucion = ref([])
     const cantTicketsCreados = ref()
     const cantTicketsRecibidos = ref()
+    const cantTicketsReasignados = ref()
+    const cantTicketsAsignados = ref()
+    const cantTicketsEjecutados = ref()
+    const cantTicketsPausados = ref()
+    const cantTicketsCalificadosResponsable = ref()
+    const cantTicketsCalificadosSolicitante = ref()
     const cantTicketsFinalizadosSolucionados = ref()
     const cantTicketsFinalizadosSinSolucion = ref()
 
@@ -92,6 +113,15 @@ export default defineComponent({
       responsive: true,
     }
 
+    const optionsPie = {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        display: true,
+        position: 'bottom', // Cambia la posición según tus necesidades
+      },
+    }
+
     // Reglas de validacion
     const reglas = {
       fecha_inicio: { required },
@@ -101,10 +131,26 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, filtro)
 
+    /***************
+     * Botones tabla
+     ***************/
+    const { btnSeguimiento } = useBotonesTablaTicket(mixin, modales)
+    // setFiltrarTickets(filtrarTrabajoAsignado)
+
+    const botonVer: CustomActionTable = {
+      titulo: 'Más detalles',
+      icono: 'bi-eye',
+      accion: async ({ entidad }) => {
+        ticketStore.filaTicket = entidad
+        modales.abrirModalEntidad('DetalleTicketAsignadoPage')
+      },
+    }
+
     /*********
    * Filtros
    **********/
     const empleados = ref([])
+    const empleadosResponsables = ref([])
     function filtrarEmpleados(val, update) {
       if (val === '') update(() => empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
 
@@ -114,37 +160,74 @@ export default defineComponent({
       })
     }
 
-    filtro.fecha_inicio = obtenerFechaActual()//.substring(3)
+    filtro.fecha_fin = obtenerFechaActual()//.substring(3)
 
     async function consultar() {
-      if (await v$.value.$validate()) {
 
+      if (await v$.value.$validate()) {
+        const empleadoSeleccionado: Empleado = empleados.value.filter((emp: Empleado) => emp.id === filtro.empleado)[0]
+        console.log(empleadoSeleccionado.departamento_id)
+        esResponsableDepartamento.value = empleadoSeleccionado.responsable_departamento
+        departamento = empleadoSeleccionado.departamento_id
         cargando.activar()
         const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado })
+        await obtenerResponsables()
         // console.log(result)
         ticketsConSolucion.value = result.tiemposTicketsFinalizados
         cantTicketsCreados.value = result.cantTicketsCreados
         cantTicketsRecibidos.value = result.cantTicketsRecibidos
+        cantTicketsReasignados.value = result.cantTicketsReasignados
+        cantTicketsAsignados.value = result.cantTicketsAsignados
+        cantTicketsEjecutados.value = result.cantTicketsEjecutados
+        cantTicketsPausados.value = result.cantTicketsPausados
         cantTicketsFinalizadosSolucionados.value = result.cantTicketsFinalizadosSolucionados
         cantTicketsFinalizadosSinSolucion.value = result.cantTicketsFinalizadosSinSolucion
+        cantTicketsCalificadosResponsable.value = result.cantTicketsCalificadosResponsable
+        cantTicketsCalificadosSolicitante.value = result.cantTicketsCalificadosSolicitante
 
         cantidadesTicketsSolicitadosPorDepartamento.value = result.cantidadesTicketsSolicitadosPorDepartamento
         const labels = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.nombre)
         const valores = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.total)
-        cantidadesTicketsSolicitadosPorDepartamentoBar.value = mapearDatos(labels, valores, 'Cantidades de tickets solicitados por departamento')
+        const colores1 = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
+        cantidadesTicketsSolicitadosPorDepartamentoBar.value = mapearDatos(labels, valores, 'Cantidades de tickets creados a los departamentos', colores1)
 
         cantidadesTicketsRecibidosPorDepartamento.value = result.cantidadesTicketsRecibidosPorDepartamento
         const labels2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.nombre)
         const valores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.total)
-        cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidades de tickets recibidos por departamento')
+        const colores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
+        cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidades de tickets recibidos por los departamentos', colores2)
 
         ticketsPorEstado.value = result.ticketsPorEstado
         const labels3 = result.ticketsPorEstado.map((item) => item.estado)
         const valores3 = result.ticketsPorEstado.map((item) => item.total_tickets)
-        const colores = result.ticketsPorEstado.map((item) => mapearColor(item.estado))
-        ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidades de tickets por estados', colores)
+        const colores3 = result.ticketsPorEstado.map((item) => mapearColor(item.estado))
+        ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidades de tickets por estados', colores3)
+
+        if (filtro.empleado) {
+          empleadoResponsableDepartamento.value = filtro.empleado
+          obtenerTicketsEmpleadoResponsable(filtro.empleado)
+        }
         cargando.desactivar()
       }
+    }
+
+    const ticketsEmpleadoResponsable = ref([])
+    let departamento
+    async function obtenerTicketsEmpleadoResponsable(responsable_id: number) {
+      const controller = new TicketController()
+      ticketsEmpleadoResponsable.value = (await controller.listar({ responsable_id })).result
+    }
+
+    async function obtenerResponsables() {
+      cargarVista(async () => {
+        await obtenerListados({
+          empleadosResp: {
+            controller: new EmpleadoController(),
+            params: { departamento_id: departamento, campos: 'id,nombres,apellidos' },
+          },
+        })
+        empleadosResponsables.value = listadosAuxiliares.empleadosResp
+      })
     }
 
     function transposeMatrix(matrix) {
@@ -181,10 +264,29 @@ export default defineComponent({
 
     function mapearColor(estadoTicket: keyof typeof estadosTickets) {
       switch (estadoTicket) {
-        case estadosTickets.ASIGNADO: return '#78909c'
+        case estadosTickets.ASIGNADO: return '#9fa8da'
+        case estadosTickets.REASIGNADO: return '#78909c'
         case estadosTickets.EJECUTANDO: return '#ffc107'
         case estadosTickets.PAUSADO: return '#616161'
         case estadosTickets.FINALIZADO_SOLUCIONADO: return '#8bc34a'
+        case estadosTickets.FINALIZADO_SIN_SOLUCION: return '#9ba98c'
+      }
+    }
+
+    function mapearColorDepartamentos(estadoTicket: keyof typeof estadosTickets) {
+      switch (estadoTicket) {
+        case departamentos.xtrim_cuenca: return '#9fa8da'
+        case departamentos.medico: return '#78909c'
+        case departamentos.activos_fijos: return '#ffc107'
+        case departamentos.gerencia: return '#616161'
+        case departamentos.proyectos: return '#8bc34a'
+        case departamentos.recursos_humanos: return '#9ba98c'
+        case departamentos.tecnico: return '#1de48d'
+        case departamentos.contabilidad: return '#db4cb2'
+        case departamentos.informatica: return '#1ac9e6'
+        case departamentos.bodega: return '#eb548c'
+        case departamentos.sso: return '#eabd3b'
+        case departamentos.vehiculos: return '#e7e34e'
       }
     }
 
@@ -196,12 +298,20 @@ export default defineComponent({
       ordenarEmpleados,
       filtrarEmpleados,
       empleados,
+      empleadosResponsables,
       configuracionColumnasDashboardTicket,
       ticketsConSolucion,
       cantTicketsCreados,
       cantTicketsRecibidos,
+      cantTicketsReasignados,
+      cantTicketsAsignados,
+      cantTicketsCalificadosResponsable,
+      cantTicketsCalificadosSolicitante,
+      cantTicketsEjecutados,
+      cantTicketsPausados,
       cantTicketsFinalizadosSolucionados,
       cantTicketsFinalizadosSinSolucion,
+      configuracionColumnasTicket,
       v$,
       mixin,
       listar,
@@ -211,7 +321,14 @@ export default defineComponent({
       tiposJornadas,
       options,
       optionsVertical,
+      optionsPie,
       mostrarTitulosSeccion,
+      accionesTabla,
+      modales,
+      empleadoResponsableDepartamento,
+      obtenerTicketsEmpleadoResponsable,
+      ticketsEmpleadoResponsable,
+      esResponsableDepartamento,
       // Configuracion columnas
       configuracionColumnasSubtareasRealizadasPorRegion,
       configuracionColumnasSubtareasRealizadasPorGrupo,
@@ -226,6 +343,9 @@ export default defineComponent({
       cantidadesTicketsSolicitadosPorDepartamentoBar,
       cantidadesTicketsRecibidosPorDepartamentoBar,
       ticketsPorEstadoBar,
+      // botones
+      botonVer,
+      btnSeguimiento,
     }
   },
 })

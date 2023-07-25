@@ -6,6 +6,7 @@
     :permitir-editar="false"
     :permitir-consultar="false"
     :mostrar-acciones="false"
+    subtitulo-pagina="Módulo de Tickets"
   >
     <template #formulario>
       <q-form @submit.prevent>
