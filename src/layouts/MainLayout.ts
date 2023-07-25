@@ -197,7 +197,7 @@ export default defineComponent({
             })
           }
         }
-      }, 60000) //comprobar cada minuto 
+      }, 60000) //comprobar cada minuto
     } else {
       LocalStorage.remove('lastActivity')
     }

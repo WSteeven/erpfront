@@ -12,7 +12,7 @@ import { reactive } from 'vue'
 import { MotivoPausaTicket } from 'pages/gestionTickets/motivosPausasTickets/domain/MotivoPausaTicket'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
-export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, modales: ComportamientoModalesTicket | any) => {
+export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
   const { confirmar, prompt, notificarAdvertencia, notificarCorrecto, promptItems } = useNotificaciones()
   const notificaciones = useNotificaciones()
   const { listado, listadosAuxiliares } = mixin.useReferencias()

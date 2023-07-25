@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-card flat bordered class="q-mb-md rounded">
+    <q-card class="q-mb-md rounded no-border custom-shadow">
       <q-card-section>
         <div class="text-bold q-mb-lg">
           Análisis de datos: Módulo de tickets
@@ -139,21 +139,67 @@
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
           <div v-if="cantTicketsCreados >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card text-white q-pa-md text-center full-height"
-              style="background-color: #5086c1"
+              class="rounded-card no-border custom-shadow q-pa-md text-center full-height"
             >
-              <div>Cantidad de tickets creados</div>
-              <div class="text-h3">{{ cantTicketsCreados }}</div>
+              <div class="text-h3 text-primary q-mb-md">
+                {{ cantTicketsCreados }}
+              </div>
+              <div>Cantidad de tickets que creó</div>
             </q-card>
           </div>
 
           <div v-if="cantTicketsRecibidos >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card text-white q-pa-md text-center full-height"
-              style="background-color: #8f7193"
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
             >
+              <div class="text-h3 text-primary q-mb-md">
+                {{ cantTicketsRecibidos }}
+              </div>
               <div>Cantidad de tickets que recibió</div>
-              <div class="text-h3">{{ cantTicketsRecibidos }}</div>
+            </q-card>
+          </div>
+
+          <div v-if="cantTicketsAsignados >= 0" class="col-12 col-md-3">
+            <q-card
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+            >
+              <div class="text-h3 text-primary q-mb-md">
+                {{ cantTicketsAsignados }}
+              </div>
+              <div>Cantidad de tickets que le asignaron</div>
+            </q-card>
+          </div>
+
+          <div v-if="cantTicketsReasignados >= 0" class="col-12 col-md-3">
+            <q-card
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+            >
+              <div class="text-h3 text-primary q-mb-md">
+                {{ cantTicketsReasignados }}
+              </div>
+              <div>Cantidad de tickets que le transfirieron</div>
+            </q-card>
+          </div>
+
+          <div v-if="cantTicketsEjecutados >= 0" class="col-12 col-md-3">
+            <q-card
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+            >
+              <div class="text-h3 text-primary q-mb-md">
+                {{ cantTicketsEjecutados }}
+              </div>
+              <div>Cantidad de tickets que está ejecutando</div>
+            </q-card>
+          </div>
+
+          <div v-if="cantTicketsPausados >= 0" class="col-12 col-md-3">
+            <q-card
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+            >
+              <div class="text-h3 text-primary q-mb-md">
+                {{ cantTicketsPausados }}
+              </div>
+              <div>Cantidad de tickets pausados</div>
             </q-card>
           </div>
 
@@ -162,13 +208,12 @@
             class="col-12 col-md-3"
           >
             <q-card
-              class="rounded-card text-white q-pa-md text-center"
-              style="background-color: #bc98f3"
+              class="rounded-card no-border custom-shadow q-pa-md text-center"
             >
-              <div>Cantidad de tickets finalizados con solución</div>
-              <div class="text-h3">
+              <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsFinalizadosSolucionados }}
               </div>
+              <div>Cantidad de tickets finalizados con solución</div>
             </q-card>
           </div>
 
@@ -177,11 +222,40 @@
             class="col-12 col-md-3"
           >
             <q-card
-              class="rounded-card text-white q-pa-md text-center"
-              style="background-color: #73bcf8"
+              class="rounded-card custom-shadow no-border q-pa-md text-center"
             >
+              <div class="text-h3 text-primary q-mb-md">
+                {{ cantTicketsFinalizadosSinSolucion }}
+              </div>
               <div>Cantidad de tickets finalizados sin solución</div>
-              <div class="text-h3">{{ cantTicketsFinalizadosSinSolucion }}</div>
+            </q-card>
+          </div>
+
+          <div
+            v-if="cantTicketsCalificadosSolicitante >= 0"
+            class="col-12 col-md-3"
+          >
+            <q-card
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+            >
+              <div class="text-h3 text-positive q-mb-md">
+                {{ cantTicketsCalificadosSolicitante }}
+              </div>
+              <div>Cantidad de tickets que creó, calificados</div>
+            </q-card>
+          </div>
+
+          <div
+            v-if="cantTicketsCalificadosResponsable >= 0"
+            class="col-12 col-md-3"
+          >
+            <q-card
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+            >
+              <div class="text-h3 text-positive q-mb-md">
+                {{ cantTicketsCalificadosResponsable }}
+              </div>
+              <div>Cantidad de tickets que finalizó, calificados</div>
             </q-card>
           </div>
 
@@ -190,79 +264,118 @@
               cantTicketsFinalizadosSolucionados >= 0 ||
               cantTicketsFinalizadosSinSolucion >= 0
             "
-            class="col-12"
+            class="col-12 col-md-6"
           >
             <q-card
-              class="bg-positive rounded-card text-white q-pa-md text-center"
+              class="rounded-card text-white no-border custom-shadow q-pa-md text-center full-height"
+              style="background-color: #bc98f3"
             >
-              <div>Cantidad de tickets finalizados</div>
-              <div class="text-h3">
+              <div class="text-h3 q-mb-md">
                 {{
                   cantTicketsFinalizadosSolucionados +
                   cantTicketsFinalizadosSinSolucion
                 }}
               </div>
+              <div>Cantidad de tickets finalizados</div>
             </q-card>
           </div>
         </div>
 
-        <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-sm">
+        <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-md">
           Gráficos estadísticos
         </div>
-        <div class="row q-col-gutter-sm q-py-md q-mb-lg">
-          <div class="col-12 col-md-6">
-            <Bar
-              v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
-              :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
-              :options="options"
-            />
-          </div>
-
-          <div class="col-12 col-md-6">
-            <Bar
-              v-if="cantidadesTicketsRecibidosPorDepartamento.length"
-              :data="cantidadesTicketsRecibidosPorDepartamentoBar"
-              :options="options"
-            />
-          </div>
-
+        <div class="row justify-center">
           <div class="col-12 col-md-6" v-if="true">
             <Pie
               :data="ticketsPorEstadoBar"
-              :options="{
-                responsive: true,
-                maintainAspectRatio: false,
-                legend: {
-                  display: true,
-                  position: 'bottom', // Cambia la posición según tus necesidades
-                },
-              }"
+              :options="optionsPie"
               v-if="ticketsPorEstado.length"
             />
           </div>
         </div>
 
+        <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+          <div class="col-12 col-md-6">
+            <Pie
+              v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
+              :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
+              :options="optionsPie"
+            />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <Pie
+              v-if="cantidadesTicketsRecibidosPorDepartamento.length"
+              :data="cantidadesTicketsRecibidosPorDepartamentoBar"
+              :options="optionsPie"
+            />
+          </div>
+        </div>
+
         <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-sm">
-          Tablas de datos
+          Tablas de tickets
         </div>
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+          <!-- Responsable -->
+          <div v-if="esResponsableDepartamento" class="col-12">
+            <label class="q-mb-sm block"
+              >Empleados responsables del departamento seleccionado</label
+            >
+            <q-select
+              v-model="empleadoResponsableDepartamento"
+              :options="empleadosResponsables"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Obligatorio"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => `${item.nombres} ${item.apellidos}`"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @update:model-value="
+                obtenerTicketsEmpleadoResponsable(
+                  empleadoResponsableDepartamento
+                )
+              "
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Seleccione un departamento
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
           <div class="col-12">
             <essential-table
-              v-if="ticketsConSolucion.length"
+              v-if="ticketsEmpleadoResponsable.length"
               titulo="Tickets finalizados con solución"
-              :configuracionColumnas="configuracionColumnasDashboardTicket"
-              :datos="ticketsConSolucion"
+              :configuracionColumnas="[
+                ...configuracionColumnasTicket,
+                accionesTabla,
+              ]"
+              :datos="ticketsEmpleadoResponsable"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
-              :permitir-buscar="false"
               :alto-fijo="false"
+              :accion1="botonVer"
+              :accion2="btnSeguimiento"
             ></essential-table>
           </div>
+          <!-- {{ ticketsEmpleadoResponsable }} -->
         </div>
       </q-card-section>
     </q-card>
+
+    <modales-entidad :comportamiento="modales" />
   </q-page>
 </template>
 
