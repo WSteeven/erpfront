@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-white rounded-card custom-shadow">
+    <q-header class="bg-drawer rounded-card custom-shadow">
       <q-toolbar class="row justify-between q-py-sm">
         <q-btn
           dense
@@ -343,7 +343,7 @@
       show-if-above
     >
       <!-- Drawer Header -->
-      <div class="absolute-top q-pa-sm q-ma-sm bg-whited rounded-card">
+      <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
         <!--<img src="~assets/logo.svg" height="80" class="q-mx-auto block" /> -->
         <img
           src="~assets/logoJP_Borde.png"
@@ -355,7 +355,7 @@
       <!-- Drawer Body -->
       <q-scroll-area
         style="height: calc(96% - 100px); margin-top: 100px"
-        class="bg-white rounded-card shadow-chip q-mb-sm"
+        class="bg-drawer rounded-card shadow-chip q-mb-sm"
       >
         <q-list>
           <div v-for="item in links" :key="item.title">

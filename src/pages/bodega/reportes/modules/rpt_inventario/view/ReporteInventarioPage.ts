@@ -4,7 +4,7 @@ import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpReposi
 import { imprimirArchivo } from "shared/utils";
 import { useCargandoStore } from "stores/cargando";
 import { useNotificacionStore } from "stores/notificacion";
-import { defineComponent, ref } from "vue";
+import { Ref, defineComponent, ref } from "vue";
 
 export default defineComponent({
   components: {},
@@ -14,7 +14,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     let sucursal=ref()
-    const sucursales = ref([])
+    const sucursales: Ref<any[]> = ref([])
 
 
     async function generarReporte(tipo: string) {
@@ -36,6 +36,8 @@ export default defineComponent({
     }
 
     sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+    //agregar otra opcion
+    sucursales.value.unshift({ id: 0, lugar: 'TODAS LAS SUCURSALES', })
     return {
       sucursales,
       sucursal,
