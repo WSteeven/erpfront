@@ -35,9 +35,10 @@ import { maskFecha, tabAutorizarGasto, estadosGastos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
+import  ImagenComprimidaComponent from 'pages/bodega/pedidos/view/imagenComprimida.vue'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen },
+  components: { TabLayoutFilterTabs2,  ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
