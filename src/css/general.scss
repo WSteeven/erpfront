@@ -25,8 +25,20 @@ body {
   &::-webkit-scrollbar-thumb {
     border-radius: 50px;
     background: #aaa;
-    // background: -webkit-linear-gradient(45deg, #2f4d81, #009fff);
-    // background: linear-gradient(45deg, #2f4d81, #009fff);
+  }
+}
+
+.q-drawer__content {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+    border-radius: 16px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: #aaa;
   }
 }
 

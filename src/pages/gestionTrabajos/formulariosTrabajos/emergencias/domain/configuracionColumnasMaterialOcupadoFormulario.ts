@@ -17,15 +17,33 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
     align: 'left',
   }, */
   {
+    name: 'despachado',
+    field: 'despachado',
+    label: 'Despachado',
+    align: 'left',
+  },
+  {
+    name: 'cantidad_utilizada',
+    field: 'cantidad_utilizada',
+    label: 'Cantidad utilizada hoy',
+    align: 'left',
+  },
+  {
     name: 'stock_actual',
     field: 'stock_actual',
     label: 'Stock actual',
     align: 'left',
   },
   {
-    name: 'cantidad_utilizada',
-    field: 'cantidad_utilizada',
-    label: 'Cantidad utilizada',
+    name: 'total_cantidad_utilizada',
+    field: 'total_cantidad_utilizada',
+    label: 'Total cantidad utilizada',
+    align: 'left',
+  },
+  {
+    name: 'devuelto',
+    field: 'devuelto',
+    label: 'Devuelto',
     align: 'left',
   },
 ]
