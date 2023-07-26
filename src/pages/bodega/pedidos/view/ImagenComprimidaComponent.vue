@@ -20,9 +20,10 @@
       <slot name="error"></slot>
     </template>
   </q-file>
-  <div v-if="fileSize !== null">
+  <!-- datos de la imagen  -->
+  <!-- <div v-if="fileSize !== null && !isNaN(fileSize)">
     Tamaño de la imagen: {{ (fileSize / 1024).toFixed(2) }} KB
-  </div>
+  </div> -->
   <q-img
     v-show="imagenCodificada"
     :src="imagenCodificada"
@@ -76,12 +77,6 @@
       no-caps
     />
   </small>
-  <!-- datos de la imagen  -->
-  <div>
-    <q-chip>
-      <!-- Tamaño de imagen sin comprimir: {{ img.fileSize }} -->
-    </q-chip>
-  </div>
 </template>
 
 <script lang="ts" setup>
