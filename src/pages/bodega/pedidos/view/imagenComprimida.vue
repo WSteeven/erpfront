@@ -10,40 +10,13 @@
       >
       </imagen-comprimida-component>
     </div>
-    <div class="col col-md-4">
-      <label class="q-mb-sm block">Imagen con compresión</label>
-      <q-file
-        accept=".png, .jpg, .jpeg"
-        v-model="imagen2"
-        dense
-        class="q-mt-sm"
-        outlined
-        clearable
-        @update:model-value="(data) => onFileChange(data)"
-      >
-      </q-file>
-      <div v-if="fileSize2 !== null">
-        Tamaño de la imagen: {{ (fileSize2 / 1024).toFixed(2) }} KB
-      </div>
-      <q-img
-        v-show="imagenCodificada"
-        :src="imagenCodificada"
-        width="100%"
-        :height="alto"
-        fit="contain"
-      >
-      </q-img>
-      <q-btn @click="compressAndUpload" :disable="!imagen2">
-        Comprimir y subir</q-btn
-      >
-      {{ (fileSize2 / 1024).toFixed(2) }} KB
-    </div>
+    
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue'
-import ImagenComprimidaComponent from './ImagenComprimidaComponent.vue'
+import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 
 export default defineComponent({
   components: { ImagenComprimidaComponent },
