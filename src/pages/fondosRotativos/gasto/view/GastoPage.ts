@@ -30,13 +30,11 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { emit } from 'process'
 import { maskFecha, tabAutorizarGasto, estadosGastos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
-import  ImagenComprimidaComponent from 'pages/bodega/pedidos/view/imagenComprimida.vue'
-
+import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 export default defineComponent({
   components: { TabLayoutFilterTabs2,  ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],

@@ -61,6 +61,7 @@
               placeholder="Obligatorio"
               :error="!!v$.fecha_viat.$errors.length"
               :disable="disabled"
+              readonly
               @blur="v$.fecha_viat.$touch"
               outlined
               dense
