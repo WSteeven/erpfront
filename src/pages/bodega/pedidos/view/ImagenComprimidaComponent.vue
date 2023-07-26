@@ -108,14 +108,14 @@ const imagenCodificada = computed(() => props.imagen)
 const alto = computed(() => props.alto ?? '160px')
 const opened = ref(false)
 
-const setBase64 = async(file: File) => {
+const setBase64 = async (file: File) => {
   if (file !== null && file !== undefined) {
-    console.log('Imagen sin comprimida en el archivo', file)
+    // console.log('Imagen sin comprimida en el archivo', file)
     fileSize.value = file.size
-    console.log('tamaño de imagen_1', fileSize.value)
+    // console.log('tamaño de imagen_1', fileSize.value)
     const reader = new FileReader()
-    const compressedFile =await compressImage(file)
-    console.log('Imagen comprimida en el archivo', compressedFile)
+    const compressedFile = await compressImage(file)
+    // console.log('Imagen comprimida en el archivo', compressedFile)
     reader.readAsDataURL(compressedFile)
     reader.onload = () => emit('update:modelValue', reader.result)
     // reader.onload = () => emit('update:modelValue', compressImage(file))
@@ -130,7 +130,7 @@ async function compressImage(file) {
     const reader = new FileReader()
 
     reader.onload = (event) => {
-      console.log(event)
+      // console.log(event)
       const img = new Image()
       img.src = event.target.result
 
@@ -138,7 +138,7 @@ async function compressImage(file) {
         const canvas = document.createElement('canvas')
         const ctx = canvas.getContext('2d')
 
-        const maxWidth = 800 // Tamaño máximo después de la compresión (puedes ajustar esto según tus necesidades)
+        const maxWidth = 1600 // Tamaño máximo después de la compresión (puedes ajustar esto según tus necesidades)
         let newWidth = img.width
         let newHeight = img.height
 
@@ -162,8 +162,8 @@ async function compressImage(file) {
             resolve(compressedFile)
           },
           'image/jpeg',
-          0.7
-        ) // Ajusta la calidad de compresión (0.7 en este caso)
+          0.7 // Ajusta la calidad de compresión (0.7 en este caso)
+        ) // Si se coloca en 1 (una imagen grande pesará alrededor de 2gb)
       }
     }
 

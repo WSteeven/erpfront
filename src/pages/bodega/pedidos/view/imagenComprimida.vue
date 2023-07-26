@@ -61,15 +61,15 @@ export default defineComponent({
     // methods: {
     const onFileChange = (file: File) => {
       if (file !== null && file !== undefined) {
-        console.log('entro al if de file')
+        // console.log('entro al if de file')
         const reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = () => emit('update:modelValue', reader.result)
-        console.log('tamaño de la imagen', file.size)
+        // console.log('tamaño de la imagen', file.size)
         fileSize2.value = file.size
         compressImage(file)
       } else {
-        console.log('entro al else')
+        // console.log('entro al else')
         fileSize2.value = null
       }
     }
@@ -78,7 +78,6 @@ export default defineComponent({
         const reader = new FileReader()
 
         reader.onload = (event) => {
-          console.log(event)
           const img = new Image()
           img.src = event.target.result
 
@@ -123,10 +122,10 @@ export default defineComponent({
       if (!imagen2.value) return
 
       const compressedFile: File = await compressImage(imagen2.value)
-      console.log('Imagen sin comprimir', fileSize2.value)
-      console.log('Imagen comprimida', compressedFile)
+      // console.log('Imagen sin comprimir', fileSize2.value)
+      // console.log('Imagen comprimida', compressedFile)
       fileSize2.value = compressedFile.size
-      console.log('Imagen comprimida', fileSize2.value)
+      // console.log('Imagen comprimida', fileSize2.value)
     }
 
     return {
