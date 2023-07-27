@@ -31,6 +31,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { FormaPagoController } from 'pages/recursosHumanos/forma_pago/infraestructure/FormaPagoController'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
+import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 
 
 export default defineComponent({
@@ -64,9 +65,9 @@ export default defineComponent({
     const esConsultado = ref(false)
     onBeforeModificar(() => (esConsultado.value = true))
     const maximoAPrestar = ref()
-    const formas_pago = ref([])
     const esMayorPrestamo = ref(false)
     const empleados = ref([])
+    const periodos = ref()
     const recursosHumanosStore = useRecursosHumanosStore()
     const sueldo_basico = computed(() => {
       recursosHumanosStore.obtener_sueldo_basico()
@@ -82,15 +83,15 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
-        formas_pago: {
-          controller: new FormaPagoController(),
-          params: { campos: 'id,nombre' },
+        periodos: {
+          controller: new PeriodoController(),
+          params: { campos: 'id,nombre', activo: 1 },
         },
       })
-      formas_pago.value = listadosAuxiliares.formas_pago
       empleados.value = listadosAuxiliares.empleados
+      periodos.value = listadosAuxiliares.periodos
+      motivos.value = listadosAuxiliares.motivos
     })
-    motivos.value = listadosAuxiliares.motivos
 
     maximoAPrestar.value = parseInt(sueldo_basico.value) * 2
     //Reglas de validacion
@@ -99,10 +100,9 @@ export default defineComponent({
       fecha: { required },
       vencimiento: { required },
       monto: { required },
-      valor_utilidad: { requiredIf: requiredIf(prestamo.utilidad != null) },
+      valor_utilidad: { requiredIf: requiredIf(prestamo.periodo != null) },
       plazo: { required, minValue: minValue(1), maxValue: maxValue(12) },
       plazos: { required },
-      forma_pago: { required },
     }))
     prestamo.plazos = []
     const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
@@ -242,14 +242,13 @@ export default defineComponent({
         if (indice_couta == -1) {
           const nuevaCuota = {
             num_cuota: prestamo.plazos!.length + 1,
-            fecha_pago: '15-04-' + prestamo.utilidad,
+           // fecha_pago: '15-04-' + prestamo.utilidad,
             valor_a_pagar: prestamo.valor_utilidad,
             pago_couta: false,
           }
           prestamo.plazos!.push(nuevaCuota)
         } else {
-          prestamo.plazos![indice_couta].fecha_pago =
-            '15-04-' + prestamo.utilidad
+       //   prestamo.plazos![indice_couta].fecha_pago ='15-04-' + prestamo.utilidad
           prestamo.plazos![indice_couta].valor_a_pagar = prestamo.valor_utilidad
         }
         const valorAnterior = valor_prestamo / prestamo.plazo
@@ -391,6 +390,31 @@ export default defineComponent({
         element.fecha_vencimiento= fecha.toISOString().slice(0, 10)
       })
     }
+       /**
+     * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
+     * lista filtrada.
+     * @param val - El parámetro `val` es un valor de cadena que representa el valor de entrada para
+     * filtrar los períodos. Se utiliza para buscar períodos que tienen un nombre que contiene el valor de
+     * entrada.
+     * @param update - El parámetro `update` es una función que se utiliza para actualizar el valor de
+     * `periodos`. Es una función de devolución de llamada que toma otra función como argumento. La función
+     * interna es responsable de actualizar el valor de `periodos` en función del parámetro `val` dado.
+     * @returns nada (indefinido).
+     */
+       function filtrarPeriodo(val, update) {
+        if (val === '') {
+          update(() => {
+            periodos.value = listadosAuxiliares.periodos
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          periodos.value = listadosAuxiliares.periodos.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
+        })
+      }
     return {
       removeAccents,
       mixin,
@@ -418,7 +442,6 @@ export default defineComponent({
       plazo_pago,
       motivos,
       tipos,
-      formas_pago,
       maskFecha,
       v$,
       disabled,

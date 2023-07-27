@@ -6,6 +6,7 @@ export class RolPago extends EntidadAuditable {
   empleado: number | null
   empleado_info: string | null
   salario: string | null
+  sueldo: number | null
   dias: number | null
   concepto_ingreso: number | null
   descuento_ley_info: number | null
@@ -37,6 +38,7 @@ export class RolPago extends EntidadAuditable {
     this.empleado = null
     this.empleado_info = null
     this.salario = null
+    this.sueldo = null
     this.dias = null
     this.concepto_ingreso = null
     this.concepto_ingreso_info = null

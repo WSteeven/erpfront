@@ -2,7 +2,7 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :tabOptions="tabOptionsSolicitudPedido"
+    :tabOptions="tabOptionsLicencias"
     :full="true"
     :permitirEditar="!esRecursosHumanos"
     :permitirEliminar="false"
@@ -156,7 +156,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Dias de licencia</label>
             <q-input
-              v-model="dias_licencia"
+              v-model="licencia.dias_licencia"
               placeholder="Obligatorio"
               :disable="tiene_dias_licencia"
               @blur="v$.fecha_fin.$touch"

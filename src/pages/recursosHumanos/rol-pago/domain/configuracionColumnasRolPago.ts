@@ -17,6 +17,13 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
     sortable: true
 },
 {
+  name: 'sueldo',
+  field: 'sueldo',
+  label: 'Sueldo',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'dias',
   field: 'dias',
   label: 'Días',

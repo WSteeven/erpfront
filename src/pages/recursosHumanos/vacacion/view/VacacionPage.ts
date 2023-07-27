@@ -210,7 +210,7 @@ export default defineComponent({
       numero_rangos:{required,minValue: minValue(1), maxValue: maxValue(2) },
       fecha_inicio: { requiredIf: vacacion.numero_rangos=='1'?true:false },
       fecha_fin: { requiredIf: vacacion.numero_rangos=='1'?true:false  },
-      numero_dias: { requiredIf: vacacion.numero_rangos=='1'?true:false  },
+      numero_dias: { requiredIf: vacacion.numero_rangos=='1'?true:false , maxValue: maxValue(15) },
 
       solicitud: { required },
     }))

@@ -34,6 +34,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { AxiosResponse } from 'axios'
 import { endpoints } from 'config/api'
 import { LocalStorage } from 'quasar'
+import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen },
@@ -47,8 +48,9 @@ export default defineComponent({
       disabled,
       accion,
       listado,
+      listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, listar } = mixin.useComportamiento()
+    const { setValidador,cargarVista,obtenerListados, listar } = mixin.useComportamiento()
 
     const {
       confirmar,
@@ -67,6 +69,7 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const router = useRouter()
     const autorizaciones = ref()
+    const  periodos = ref()
     const sueldo_basico = computed(() => {
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
@@ -82,10 +85,21 @@ export default defineComponent({
     const esAutorizador = computed(() =>
       store.can('puede.autorizar.solicitud_prestamo_empresarial')
     )
-    autorizaciones.value =
+    cargarVista(async () => {
+      await obtenerListados({
+        periodos: {
+          controller: new PeriodoController(),
+          params: { campos: 'id,nombre', activo: 1 },
+        },
+
+      })
+      autorizaciones.value =
       LocalStorage.getItem('autorizaciones') == null
         ? []
         : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      periodos.value = listadosAuxiliares.periodos
+    })
+
     onConsultado(() => {
       if (esValidador.value) {
         if (!store.esAdministrador) {
@@ -118,6 +132,7 @@ export default defineComponent({
       foto: { required },
       estado: requiredIf(esValidador.value),
       observacion: { requiredValidador: requiredIf(esValidador.value) },
+      valor_utilidad: { requiredIf: requiredIf(solicitudPrestamo.periodo != null) },
       plazo: {
         minValue: minValue(1),
         maxValue: maxValue(12),
@@ -141,11 +156,38 @@ export default defineComponent({
       listar({ estado: tabSeleccionado }, false)
       tabSolicitudPrestaamo = tabSeleccionado
     }
+      /**
+     * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
+     * lista filtrada.
+     * @param val - El parámetro `val` es un valor de cadena que representa el valor de entrada para
+     * filtrar los períodos. Se utiliza para buscar períodos que tienen un nombre que contiene el valor de
+     * entrada.
+     * @param update - El parámetro `update` es una función que se utiliza para actualizar el valor de
+     * `periodos`. Es una función de devolución de llamada que toma otra función como argumento. La función
+     * interna es responsable de actualizar el valor de `periodos` en función del parámetro `val` dado.
+     * @returns nada (indefinido).
+     */
+      function filtrarPeriodo(val, update) {
+        if (val === '') {
+          update(() => {
+            periodos.value = listadosAuxiliares.periodos
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          periodos.value = listadosAuxiliares.periodos.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
+        })
+      }
 
     return {
       removeAccents,
       mixin,
       solicitudPrestamo,
+      periodos,
+      filtrarPeriodo,
       sueldo_basico,
       esMayorsolicitudPrestamo,
       esValidador,

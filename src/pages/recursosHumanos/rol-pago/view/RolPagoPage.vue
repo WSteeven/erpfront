@@ -9,7 +9,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Mes -->
-          <div class="col-12 col-md-3" v-if="!es_consultado">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block"> Mes </label>
             <q-input
               v-model="rolpago.mes"
@@ -55,7 +55,7 @@
             </q-input>
           </div>
           <!-- Empleados -->
-          <div class="col-12 col-md-3" v-if="!es_consultado">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Empleado</label>
             <q-select
               v-model="rolpago.empleado"

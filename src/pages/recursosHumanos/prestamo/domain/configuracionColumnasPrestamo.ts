@@ -30,11 +30,4 @@ export const configuracionColumnasPrestamo: ColumnConfig<Prestamo>[] = [
   align: 'left',
   sortable: true
 },
-{
-  name: 'forma_pago_info',
-  field: 'forma_pago_info',
-  label: 'Forma de pago',
-  align: 'left',
-  sortable: true
-},
 ]

@@ -15,6 +15,7 @@ export class LicenciaEmpleado extends EntidadAuditable {
   jefe_inmediato: string | null
   documento: string |null
   tieneDocumento: boolean | null
+  dias_licencia: number | null
 
   constructor() {
     super()
@@ -32,6 +33,7 @@ export class LicenciaEmpleado extends EntidadAuditable {
     this.jefe_inmediato= null
     this.documento =null
     this.tieneDocumento = null
+    this.dias_licencia = null
 
   }
 }

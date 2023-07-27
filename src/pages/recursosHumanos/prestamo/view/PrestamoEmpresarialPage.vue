@@ -164,20 +164,36 @@
               </template>
             </q-select>
           </div>
-          <!-- Utilidades  -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Utilidades </label>
-            <q-input
-              v-model="prestamo.utilidad"
-              type="number"
-              :disable="!esNuevo"
-              outlined
+        <!--Periodos -->
+        <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Periodo</label>
+            <q-select
+              v-model="prestamo.periodo"
+              :options="periodos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
               dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtrarPeriodo"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
             >
-            </q-input>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
           <!-- Valor  -->
-          <div class="col-12 col-md-3" v-if="prestamo.utilidad!=null">
+          <div class="col-12 col-md-3" v-if="prestamo.periodo!=null">
             <label class="q-mb-sm block">Valor Utilidades </label>
             <q-input
               v-model="prestamo.valor_utilidad"

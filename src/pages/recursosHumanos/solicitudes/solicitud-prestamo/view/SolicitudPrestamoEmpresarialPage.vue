@@ -5,7 +5,7 @@
     :mostrarListado="mostrarListado"
     :tabOptions="tabOptionsSolicitudPedido"
     :full="true"
-    :permitirEditar="(esValidador || esAutorizador)"
+    :permitirEditar="esValidador || esAutorizador"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarSolicitudPrestamo"
@@ -135,7 +135,54 @@
               </template>
             </q-input>
           </div>
-
+          <!--Periodos -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Periodo</label>
+            <q-select
+              v-model="solicitudPrestamo.periodo"
+              :options="periodos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtrarPeriodo"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Valor Utilidad  -->
+          <div class="col-12 col-md-3" v-if="solicitudPrestamo.periodo != null">
+            <label class="q-mb-sm block">Valor Utilidades </label>
+            <q-input
+              v-model="solicitudPrestamo.valor_utilidad"
+              placeholder="Obligatorio"
+              type="number"
+              :disable="disabled"
+              :error="!!v$.valor_utilidad.$errors.length"
+              @blur="v$.valor_utilidad.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.valor_utilidad.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
           <!-- Autorizacion -->
           <div
             class="col-12 col-md-3"

@@ -4,7 +4,6 @@ import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
@@ -12,14 +11,13 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { LicenciaEmpleado } from '../domain/LicenciaEmpleado'
 import { removeAccents } from 'shared/utils'
-import { maskFecha, tabOptionsSolicitudPedido } from 'config/utils'
+import { maskFecha, tabOptionsLicencias } from 'config/utils'
 import {
   requiredIf,
   maxLength,
   minLength,
   required,
 } from 'shared/i18n-validators'
-import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
@@ -89,10 +87,10 @@ export default defineComponent({
         (v) => v.id == licencia.tipo_licencia
       )
       if (licencia_filtrada[0].num_dias > 0) {
-        dias_licencia.value = licencia_filtrada[0].num_dias
+        licencia.dias_licencia = licencia_filtrada[0].num_dias
         tiene_dias_licencia.value = true
       } else {
-        dias_licencia.value = null
+        licencia.dias_licencia = null
         licencia.fecha_fin = null
         tiene_dias_licencia.value = false
       }
@@ -209,11 +207,11 @@ export default defineComponent({
     }
     watchEffect(() => {
       if (
-        licencia.fecha_inicio !== null && dias_licencia.value !== null && dias_licencia.value !== undefined && dias_licencia.value !=='') {
+        licencia.fecha_inicio !== null && licencia.dias_licencia !== null && licencia.dias_licencia !== undefined ) {
         const fechaInicio = convertir_fecha(licencia.fecha_inicio)
         const fechaFinal = fechaInicio
         fechaFinal.setDate(
-          fechaInicio.getDate() + parseInt(dias_licencia.value)
+          fechaInicio.getDate() + parseInt(licencia.dias_licencia.toString())
         )
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()
@@ -248,7 +246,6 @@ export default defineComponent({
       mixinArchivoPrestamoEmpleado,
       endpoint: endpoints.archivo_licencia_empleado,
       tipos_licencias,
-      dias_licencia,
       tiene_dias_licencia,
       obtener_dias_licencia,
       empleados,
@@ -257,7 +254,7 @@ export default defineComponent({
       maskFecha,
       v$,
       disabled,
-      tabOptionsSolicitudPedido,
+      tabOptionsLicencias,
       configuracionColumnas: configuracionColumnasLicenciaEmpleado,
     }
   },

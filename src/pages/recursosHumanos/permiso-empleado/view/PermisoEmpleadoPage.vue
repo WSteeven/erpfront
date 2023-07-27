@@ -138,7 +138,7 @@
           <!-- Sugerir Fecha -->
           <div
             class="col-12 col-md-3"
-            v-if="permiso.id_jefe_inmediato != null && permiso.estado == 1"
+            v-if="permiso.id_jefe_inmediato != null "
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
