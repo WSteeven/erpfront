@@ -56,8 +56,8 @@
               </template>
             </q-input>
           </div>
-          <!-- transcriptor -->
-          <div class="col-12 col-md-3">
+          <!-- Requiere autorizacion -->
+          <div class="col-12 col-md-3 q-mb-xl q-mt-lg q-pt-md">
             <label class="q-mb-xs">Requiere Autorización(*): </label>
             <q-toggle
               :label="subDetalleFondo.autorizacion"
@@ -78,10 +78,10 @@
               </template>
             </q-toggle>
           </div>
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 q-mb-xl q-mt-lg q-pt-md">
             <label class="q-mb-xs">Requiere Factura(*): </label>
             <q-toggle
-              :label="subDetalleFondo.tiene_factura"
+              :label="subDetalleFondo.tiene_factura?'SI':'NO'"
               color="green"
               v-model="subDetalleFondo.tiene_factura"
               :disable="disabled"
@@ -98,7 +98,7 @@
             </q-toggle>
           </div>
 
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 q-mb-xl q-mt-lg q-pt-md">
             <label class="q-mb-xs">Estatus del Detalle(*): </label>
             <q-toggle
               :label="subDetalleFondo.estatus"
