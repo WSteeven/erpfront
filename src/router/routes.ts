@@ -487,7 +487,7 @@ const routes: RouteRecordRaw[] = [
         name: 'ordenes_compras',
         component: () =>
           import('pages/comprasProveedores/ordenCompra/view/OrdenCompraPage.vue'),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/contactos-proveedores',

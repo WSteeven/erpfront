@@ -87,6 +87,8 @@
               outlined
               use-input
               input-debounce="0"
+              :error="!!v$.proveedor.$errors.length"
+                error-message="Debes seleccionar al menos una opcion"
               :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value
@@ -242,16 +244,18 @@
             </q-select>
           </div>
           <!-- Persona que autoriza -->
-          <div v-if="orden.per_autoriza" class="col-12 col-md-3">
+          <div  class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="orden.per_autoriza"
-              :options="opciones_empleados"
+              :options="empleadosAutorizadores"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
               dense
               outlined
+              :error="!!v$.autorizador.$errors.length"
+                error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
@@ -261,7 +265,7 @@
             />
           </div>
           <!-- Select autorizacion -->
-          <div v-if="orden.autorizacion" class="col-12 col-md-3 q-mb-md">
+          <div  class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="orden.autorizacion"
@@ -406,7 +410,7 @@
             </div>
           </div>
 
-          {{ orden }}
+          {{ v$.$errors }}
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table

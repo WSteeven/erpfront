@@ -614,10 +614,10 @@
     <template v-slot:body-cell="props">
       <q-td :key="props.col.name" :props="props">
         {{ props.row[props.col.name] }}
+        <!-- :title="'Modificar ' + props.col.label" -->
         <q-popup-edit
           v-if="props.col.editable"
           v-model="props.row[props.col.name]"
-          :title="'Modificar ' + props.col.label"
           auto-save
           v-slot="scope"
           @hide="guardarCeldaEditada(props.row)"

@@ -21,7 +21,7 @@ import { OrdenCompra } from "../domain/OrdenCompra";
 import { OrdenCompraController } from "../infraestructure/OrdenCompraController";
 import { useNotificaciones } from "shared/notificaciones";
 import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
+import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
@@ -72,6 +72,8 @@ export default defineComponent({
         const empleados = ref([])
         const categorias = ref([])
         const proveedores = ref([])
+        const autorizaciones = ref([])
+        const empleadosAutorizadores = ref([])
         cargarVista(async () => {
             await obtenerListados({
                 empleados: {
@@ -117,13 +119,13 @@ export default defineComponent({
          ******************************************************************************************/
         function estructuraConsultaCategoria(){
             let parametro = ''
-            if(orden.categorias?.length>1){
+            if(orden.categorias!.length>1){
                 console.log('Hay varias categorias')
             }else{
                 console.log('Hay solo una categoria')
             }
             orden.categorias?.forEach((v, index)=>{
-                if(index===orden.categorias?.length-1) parametro+=v
+                if(index===orden.categorias!.length-1) parametro+=v
                 else parametro+=v+'&categoria_id[]='
             })
 
@@ -141,9 +143,9 @@ export default defineComponent({
             console.log('precio unitario: ', Number(data.precio_unitario))
             console.log('subtotal: ', Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva))
             console.log('total: ', data.cantidad * data.precio_unitario + data.iva)
-            data.iva = data.grava_iva ? (data.cantidad * data.precio_unitario) * .12 : 0
-            data.subtotal = data.facturable ? data.cantidad * data.precio_unitario : 0
-            data.total = data.facturable ? data.cantidad * data.precio_unitario + data.iva : 0
+            data.iva = data.grava_iva ? ((data.cantidad * data.precio_unitario) * .12).toFixed(4) : 0
+            data.subtotal = data.facturable ? (data.cantidad * data.precio_unitario).toFixed(4) : 0
+            data.total = data.facturable ? (data.cantidad * data.precio_unitario + data.iva).toFixed(4) : 0
 
         }
 
@@ -179,6 +181,8 @@ export default defineComponent({
         empleados.value = listadosAuxiliares.empleados
         categorias.value = listadosAuxiliares.categorias
         proveedores.value = listadosAuxiliares.proveedores
+        autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+        empleadosAutorizadores.value = JSON.parse(LocalStorage.getItem('autorizaciones_especiales')!.toString())
 
         return {
             mixin, orden, disabled, accion, v$, acciones,
@@ -190,6 +194,8 @@ export default defineComponent({
             empleados,
             categorias,
             proveedores,
+            autorizaciones,
+            empleadosAutorizadores,
             opcionesForma,
             opcionesTiempo,
 

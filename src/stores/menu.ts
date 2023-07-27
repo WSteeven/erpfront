@@ -546,9 +546,8 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ordenes de compras',
           link: 'ordenes-compras',
-          icon: 'bi-boxes',
-          // can: store.can('puede.ver.proveedores') || store.esAdministrador,
-          can: true,
+          icon: 'bi-cart-plus',
+          can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
         },
         {
           title: 'Proveedores',
