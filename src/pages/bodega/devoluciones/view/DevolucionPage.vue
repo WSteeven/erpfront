@@ -5,7 +5,7 @@
     titulo-pagina="Devoluciones"
     :tab-options="tabOptionsDevoluciones"
     @tab-seleccionado="tabEs"
-    :permitirEditar="puedeEditar"
+    :permitirEditar="true"
     :accion1="botonAnular"
     :accion2="botonImprimir"
   >

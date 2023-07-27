@@ -86,7 +86,7 @@ export default defineComponent({
     const btnDescargar: CustomActionTable = {
       titulo: 'Descargar',
       icono: 'bi-download',
-      color: 'secondary',
+      color: 'positive',
       accion: ({ entidad }) => descargarArchivoUrl(entidad.ruta)
     }
 
