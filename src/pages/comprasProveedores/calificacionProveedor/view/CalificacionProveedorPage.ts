@@ -75,15 +75,15 @@ export default defineComponent({
             //aqui se sabe que la oferta siempre será bienes y servicios así que se recorre hasta el penultimo digito
             let parametro = ''
             if (proveedorStore.proveedor.tipos_ofrece.length > 1) {
-                console.log('Se ofrecen varios tipos')
+                // console.log('Se ofrecen varios tipos')
             } else {
-                console.log('Se ofrece un tipo')
+                // console.log('Se ofrece un tipo')
             }
             proveedorStore.proveedor.tipos_ofrece.forEach((v, index) => {
                 if (index === 1) parametro += v
                 else parametro += v + '&oferta_id[]='
             })
-            console.log('Se elemento', parametro)
+            // console.log('Se elemento', parametro)
             return parametro
         }
 
@@ -284,7 +284,7 @@ export default defineComponent({
                     }
                     if (v.oferta == tiposOfertas.servicios) {
                         const posicion = criteriosServicios.value.push(v)
-                        criteriosBienes.value[posicion - 1].peso = v.ponderacion_referencia
+                        criteriosServicios.value[posicion - 1].peso = v.ponderacion_referencia
                     }
                 })
             } else {

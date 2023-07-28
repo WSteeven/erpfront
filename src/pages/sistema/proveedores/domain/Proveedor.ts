@@ -20,7 +20,7 @@ export class Proveedor extends EntidadAuditable {
 
   //auxiliares
   calificacion: number | null
-  calificado: string | null
+  estado_calificado: string | null
 
   constructor() {
     super()
@@ -40,6 +40,6 @@ export class Proveedor extends EntidadAuditable {
 
     //Auxiliares
     this.calificacion = null
-    this.calificado = null
+    this.estado_calificado = null
   }
 }

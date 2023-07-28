@@ -79,7 +79,7 @@
               <label class="q-mb-sm block">Tipo de contribuyente</label>
               <q-select
                 v-model="empresa.tipo_contribuyente"
-                :options="opciones_tipo_contribuyente"
+                :options="opcionesTipoContribuyente"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 disable
@@ -118,7 +118,7 @@
               <label class="q-mb-sm block">Tipo de negocio</label>
               <q-select
                 v-model="empresa.tipo_negocio"
-                :options="opciones_tipo_negocio"
+                :options="opcionesTipoNegocio"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 disable

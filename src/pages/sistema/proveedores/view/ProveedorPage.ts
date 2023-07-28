@@ -22,7 +22,7 @@ import { EmpresaController } from 'pages/administracion/empresas/infraestructure
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { Empresa } from 'pages/administracion/empresas/domain/Empresa';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { estadosCalificacionProveedor, opciones_tipo_contribuyente, opciones_tipo_negocio } from 'config/utils_compras_proveedores';
+import { estadosCalificacionProveedor, opcionesTipoContribuyente, opcionesTipoNegocio } from 'config/utils_compras_proveedores';
 import { ParroquiaController } from 'sistema/parroquia/infraestructure/ParroquiaController';
 import { OfertaProveedorController } from '../modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
 import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController';
@@ -133,10 +133,10 @@ export default defineComponent({
         proveedorStore.proveedor = entidad
         // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
         modales.abrirModalEntidad('CalificacionProveedorPage')
-        
+
       },
       visible: ({ posicion, entidad }) => {
-        // console.log(posicion, entidad)
+        console.log(posicion, entidad)
         const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
         if (departamento_calificador) {
           if (departamento_calificador.pivot.fecha_calificacion) {
@@ -157,7 +157,7 @@ export default defineComponent({
       accion: async ({ entidad, posicion }) => {
         await consultarDepartamento().then(() => {
           proveedorStore.idDepartamento = departamento.value[0].id
-          
+
         })
         proveedorStore.proveedor = entidad
         calificacionStore.idDepartamento = proveedorStore.idDepartamento
@@ -169,7 +169,7 @@ export default defineComponent({
       visible: ({ posicion, entidad }) => {
         const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
         if (departamento_calificador) {
-          return departamento_calificador.pivot.calificacion!==null
+          return departamento_calificador.pivot.calificacion !== null
         }
         return false
       }
@@ -244,8 +244,8 @@ export default defineComponent({
       categorias,
       departamentos,
       ofertas,
-      opciones_tipo_contribuyente,
-      opciones_tipo_negocio,
+      opcionesTipoContribuyente,
+      opcionesTipoNegocio,
       parroquias, filtrarParroquias,
       empresas, filtrarEmpresas,
 

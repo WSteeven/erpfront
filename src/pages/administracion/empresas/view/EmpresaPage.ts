@@ -11,7 +11,7 @@ import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { Empresa } from "../domain/Empresa";
 import { EmpresaController } from "../infraestructure/EmpresaController";
-import { opciones_tipo_contribuyente, opciones_tipo_negocio } from "config/utils_compras_proveedores";
+import { opcionesTipoContribuyente, opcionesTipoNegocio } from "config/utils_compras_proveedores";
 import { PaisController } from "sistema/pais/infraestructure/pais.controller";
 import { ProvinciaController } from "sistema/provincia/infraestructure/ProvinciaController";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
@@ -43,7 +43,7 @@ export default defineComponent({
 
 
         onGuardado(() => {
-            emit('cerrar-modal')
+            emit('cerrar-modal', false)
             emit('guardado')
         })
         onConsultado(() => {
@@ -105,8 +105,8 @@ export default defineComponent({
             acciones,
 
             //listados
-            opciones_tipo_contribuyente,
-            opciones_tipo_negocio,
+            opcionesTipoContribuyente,
+            opcionesTipoNegocio,
             obtenerProvincias,
             obtenerCantones,
             paises, filtrarPaises,

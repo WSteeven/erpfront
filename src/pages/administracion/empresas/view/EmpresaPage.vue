@@ -116,7 +116,7 @@
             <label class="q-mb-sm block">Tipo de negocio</label>
             <q-select
               v-model="empresa.tipo_negocio"
-              :options="opciones_tipo_negocio"
+              :options="opcionesTipoNegocio"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"

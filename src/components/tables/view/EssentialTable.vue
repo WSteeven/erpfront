@@ -887,7 +887,7 @@
       </q-td>
     </template>
     <!-- colores en campo calificacion de proveedores -->
-    <template #body-cell-calificado="props">
+    <template #body-cell-estado_calificado="props">
       <q-td :props="props">
         <q-chip v-if="props.value===estadosCalificacionProveedor.vacio">
           <q-icon

@@ -1,12 +1,12 @@
 import { TabOption } from "components/tables/domain/TabOption"
 
-export const opciones_tipo_contribuyente = [
+export const opcionesTipoContribuyente = [
   { value: 'NATURAL', label: 'NATURAL' },
   { value: 'PRIVADA', label: 'PRIVADA' },
   { value: 'PUBLICA', label: 'PUBLICA' },
 ]
 
-export const opciones_tipo_negocio = [
+export const opcionesTipoNegocio = [
   { value: 'RIMPE CON IVA', label: 'RIMPE CON IVA' },
   { value: 'RIMPE SIN IVA', label: 'RIMPE SIN IVA' },
 ]
