@@ -415,6 +415,32 @@ export function formatearFechaTexto(fecha: number) {
   return new Date(fecha).toLocaleDateString('es-Es', opciones)
 }
 
+export function generarColorHexadecimalAleatorio() {
+  const r = Math.floor(Math.random() * 128 + 128); // Componente rojo entre 128 y 255
+  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 128 y 255
+  const b = Math.floor(Math.random() * 128 + 128); // Componente azul entre 128 y 255
+
+  const colorHexadecimal = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+  return colorHexadecimal;
+}
+
+function componentToHex(component) {
+  const hex = component.toString(16);
+  return hex.length === 1 ? "0" + hex : hex;
+}
+
+export function generarColorPastelAzulAleatorio() {
+  const r = Math.floor(Math.random() * 128); // Componente rojo entre 0 y 127
+  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 0 y 127
+  const b = Math.floor(Math.random() * 128); // Componente azul entre 128 y 255
+
+  const colorHexadecimal = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+  return colorHexadecimal;
+}
+
+
 /* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
   empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
 } */
