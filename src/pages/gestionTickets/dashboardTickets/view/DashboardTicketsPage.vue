@@ -333,7 +333,10 @@
         </div>
         <div v-if="esResponsableDepartamento" class="row q-col-gutter-y-xl">
           <!-- Asignados -->
-          <div class="col-12 col-md-6 text-center">
+          <div
+            v-if="ticketsPorDepartamentoEstadoAsignado.length"
+            class="col-12 col-md-6 text-center"
+          >
             <div class="text-subtitle2">Asignados</div>
             <div>
               <Pie
@@ -344,7 +347,10 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 text-center">
+          <div
+            v-if="ticketsPorDepartamentoEstadoReasignado.length"
+            class="col-12 col-md-6 text-center"
+          >
             <div class="text-subtitle2">Reasignados</div>
             <div>
               <Pie
@@ -355,7 +361,10 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 text-center">
+          <div
+            v-if="ticketsPorDepartamentoEstadoEjecutando.length"
+            class="col-12 col-md-6 text-center"
+          >
             <div class="text-subtitle2">Ejecutando</div>
             <div>
               <Pie
@@ -366,7 +375,10 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 text-center">
+          <div
+            v-if="ticketsPorDepartamentoEstadoPausado.length"
+            class="col-12 col-md-6 text-center"
+          >
             <div class="text-subtitle2">Pausados</div>
             <div>
               <Pie
@@ -377,7 +389,10 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 text-center">
+          <div
+            v-if="ticketsPorDepartamentoEstadoFinalizadoSolucionado.length"
+            class="col-12 col-md-6 text-center"
+          >
             <div class="text-subtitle2">Finalizado solucionado</div>
             <div>
               <Pie
@@ -388,7 +403,10 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 text-center">
+          <div
+            v-if="ticketsPorDepartamentoEstadoFinalizadoSinSolucion.length"
+            class="col-12 col-md-6 text-center"
+          >
             <div class="text-subtitle2">Finalizado sin solución</div>
             <div>
               <Pie
@@ -399,7 +417,10 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 text-center">
+          <div
+            v-if="ticketsPorDepartamentoEstadoCalificado.length"
+            class="col-12 col-md-6 text-center"
+          >
             <div class="text-subtitle2">Calificado</div>
             <div>
               <Pie

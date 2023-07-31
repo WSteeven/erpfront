@@ -410,6 +410,20 @@ export function formatearFechaHora(fecha: string, hora: string) {
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
 }
 
+// recibe fecha dd-mm-yyyy y sale yyyy-mm-dd con el nuevo separador
+export function formatearFechaSeparador(fecha: string, separador: string, sumarTiempo?: any) {
+  const arrayFecha = fecha.split('-').map(Number) // YYYY-MM-DD
+  let nuevaFecha = date.buildDate({
+    year: arrayFecha[2],
+    month: arrayFecha[1],
+    day: arrayFecha[0],
+  })
+
+  if (sumarTiempo) nuevaFecha = date.addToDate(nuevaFecha, sumarTiempo)
+
+  return date.formatDate(nuevaFecha, 'YYYY' + separador + 'MM' + separador + 'DD')
+}
+
 export function formatearFechaTexto(fecha: number) {
   const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
   return new Date(fecha).toLocaleDateString('es-Es', opciones)
