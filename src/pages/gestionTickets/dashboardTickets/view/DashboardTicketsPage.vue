@@ -282,33 +282,153 @@
         </div>
 
         <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-md">
-          Gráficos estadísticos
+          Gráficos estadísticos del empleado consultado
         </div>
-        <div class="row justify-center">
-          <div class="col-12 col-md-6" v-if="true">
-            <Pie
-              :data="ticketsPorEstadoBar"
-              :options="optionsPie"
-              v-if="ticketsPorEstado.length"
-            />
+        <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
+          <div class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Tickets por estado</div>
+            <div>
+              <Pie
+                :data="ticketsPorEstadoBar"
+                :options="optionsPie"
+                v-if="ticketsPorEstado.length"
+              />
+            </div>
           </div>
         </div>
 
-        <div class="row q-col-gutter-sm q-py-md q-mb-lg">
-          <div class="col-12 col-md-6">
-            <Pie
-              v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
-              :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
-              :options="optionsPie"
-            />
+        <div v-if="mostrarTitulosSeccion" class="row q-mb-xl">
+          <div class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">
+              Tickets creados a los departamentos
+            </div>
+            <div>
+              <Pie
+                v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
+                :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
+                :options="optionsPie"
+              />
+            </div>
           </div>
 
-          <div class="col-12 col-md-6">
-            <Pie
-              v-if="cantidadesTicketsRecibidosPorDepartamento.length"
-              :data="cantidadesTicketsRecibidosPorDepartamentoBar"
-              :options="optionsPie"
-            />
+          <div class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">
+              Tickets recibidos de los departamentos
+            </div>
+            <div>
+              <Pie
+                v-if="cantidadesTicketsRecibidosPorDepartamento.length"
+                :data="cantidadesTicketsRecibidosPorDepartamentoBar"
+                :options="optionsPie"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-if="mostrarTitulosSeccion && esResponsableDepartamento"
+          class="text-bold q-mb-xl"
+        >
+          Gráficos estadísticos del departamento
+        </div>
+        <div v-if="esResponsableDepartamento" class="row q-col-gutter-y-xl">
+          <!-- Asignados -->
+          <div
+            v-if="ticketsPorDepartamentoEstadoAsignado.length"
+            class="col-12 col-md-6 text-center"
+          >
+            <div class="text-subtitle2">Asignados</div>
+            <div>
+              <Pie
+                :data="ticketsPorDepartamentoEstadoAsignadoBar"
+                :options="optionsPie"
+                v-if="ticketsPorDepartamentoEstadoAsignado.length"
+              />
+            </div>
+          </div>
+
+          <div
+            v-if="ticketsPorDepartamentoEstadoReasignado.length"
+            class="col-12 col-md-6 text-center"
+          >
+            <div class="text-subtitle2">Reasignados</div>
+            <div>
+              <Pie
+                :data="ticketsPorDepartamentoEstadoReasignadoBar"
+                :options="optionsPie"
+                v-if="ticketsPorDepartamentoEstadoReasignado.length"
+              />
+            </div>
+          </div>
+
+          <div
+            v-if="ticketsPorDepartamentoEstadoEjecutando.length"
+            class="col-12 col-md-6 text-center"
+          >
+            <div class="text-subtitle2">Ejecutando</div>
+            <div>
+              <Pie
+                :data="ticketsPorDepartamentoEstadoEjecutandoBar"
+                :options="optionsPie"
+                v-if="ticketsPorDepartamentoEstadoEjecutando.length"
+              />
+            </div>
+          </div>
+
+          <div
+            v-if="ticketsPorDepartamentoEstadoPausado.length"
+            class="col-12 col-md-6 text-center"
+          >
+            <div class="text-subtitle2">Pausados</div>
+            <div>
+              <Pie
+                :data="ticketsPorDepartamentoEstadoPausadoBar"
+                :options="optionsPie"
+                v-if="ticketsPorDepartamentoEstadoPausado.length"
+              />
+            </div>
+          </div>
+
+          <div
+            v-if="ticketsPorDepartamentoEstadoFinalizadoSolucionado.length"
+            class="col-12 col-md-6 text-center"
+          >
+            <div class="text-subtitle2">Finalizado solucionado</div>
+            <div>
+              <Pie
+                :data="ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar"
+                :options="optionsPie"
+                v-if="ticketsPorDepartamentoEstadoFinalizadoSolucionado.length"
+              />
+            </div>
+          </div>
+
+          <div
+            v-if="ticketsPorDepartamentoEstadoFinalizadoSinSolucion.length"
+            class="col-12 col-md-6 text-center"
+          >
+            <div class="text-subtitle2">Finalizado sin solución</div>
+            <div>
+              <Pie
+                :data="ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar"
+                :options="optionsPie"
+                v-if="ticketsPorDepartamentoEstadoFinalizadoSinSolucion.length"
+              />
+            </div>
+          </div>
+
+          <div
+            v-if="ticketsPorDepartamentoEstadoCalificado.length"
+            class="col-12 col-md-6 text-center"
+          >
+            <div class="text-subtitle2">Calificado</div>
+            <div>
+              <Pie
+                :data="ticketsPorDepartamentoEstadoCalificadoBar"
+                :options="optionsPie"
+                v-if="ticketsPorDepartamentoEstadoCalificado.length"
+              />
+            </div>
           </div>
         </div>
 

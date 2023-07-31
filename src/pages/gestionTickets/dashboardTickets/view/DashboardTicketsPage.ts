@@ -21,7 +21,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
-import { obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import { formatearFechaSeparador, generarColorHexadecimalAleatorio, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { DashboardTicketController } from '../infraestructure/DashboardTicketsController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -33,6 +33,8 @@ import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticket
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
 import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad },
@@ -71,7 +73,10 @@ export default defineComponent({
     const modales = new ComportamientoModalesTicketAsignado()
     const empleadoResponsableDepartamento = ref()
     const esResponsableDepartamento = ref(false)
+    const ticketsEmpleadoResponsable = ref([])
+    let departamento
 
+    // Cantidades
     const ticketsConSolucion = ref([])
     const cantTicketsCreados = ref()
     const cantTicketsRecibidos = ref()
@@ -83,14 +88,27 @@ export default defineComponent({
     const cantTicketsCalificadosSolicitante = ref()
     const cantTicketsFinalizadosSolucionados = ref()
     const cantTicketsFinalizadosSinSolucion = ref()
-
     const cantidadesTicketsSolicitadosPorDepartamento = ref([])
     const cantidadesTicketsRecibidosPorDepartamento = ref([])
     const ticketsPorEstado = ref([])
+    const ticketsPorDepartamentoEstadoAsignado = ref([])
+    const ticketsPorDepartamentoEstadoReasignado = ref([])
+    const ticketsPorDepartamentoEstadoEjecutando = ref([])
+    const ticketsPorDepartamentoEstadoPausado = ref([])
+    const ticketsPorDepartamentoEstadoFinalizadoSolucionado = ref([])
+    const ticketsPorDepartamentoEstadoFinalizadoSinSolucion = ref([])
+    const ticketsPorDepartamentoEstadoCalificado = ref([])
 
     const cantidadesTicketsSolicitadosPorDepartamentoBar = ref()
     const cantidadesTicketsRecibidosPorDepartamentoBar = ref()
     const ticketsPorEstadoBar = ref()
+    const ticketsPorDepartamentoEstadoAsignadoBar = ref()
+    const ticketsPorDepartamentoEstadoReasignadoBar = ref()
+    const ticketsPorDepartamentoEstadoEjecutandoBar = ref()
+    const ticketsPorDepartamentoEstadoPausadoBar = ref()
+    const ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar = ref()
+    const ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar = ref()
+    const ticketsPorDepartamentoEstadoCalificadoBar = ref()
 
     const options = {
       responsive: true,
@@ -116,10 +134,17 @@ export default defineComponent({
     const optionsPie = {
       responsive: true,
       maintainAspectRatio: false,
+
+      title: {
+        display: true,
+        text: 'Título del gráfico pie',
+        fontSize: 16
+      },
+
       legend: {
         display: true,
-        position: 'bottom', // Cambia la posición según tus necesidades
-      },
+        position: 'left' // Puedes usar 'top', 'bottom', 'left' o 'right'
+      }
     }
 
     // Reglas de validacion
@@ -160,62 +185,124 @@ export default defineComponent({
       })
     }
 
-    filtro.fecha_fin = obtenerFechaActual()//.substring(3)
+    filtro.fecha_fin = obtenerFechaActual()
 
     async function consultar() {
 
       if (await v$.value.$validate()) {
-        const empleadoSeleccionado: Empleado = empleados.value.filter((emp: Empleado) => emp.id === filtro.empleado)[0]
-        console.log(empleadoSeleccionado.departamento_id)
-        esResponsableDepartamento.value = empleadoSeleccionado.responsable_departamento
-        departamento = empleadoSeleccionado.departamento_id
-        cargando.activar()
-        const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado })
-        await obtenerResponsables()
-        // console.log(result)
-        ticketsConSolucion.value = result.tiemposTicketsFinalizados
-        cantTicketsCreados.value = result.cantTicketsCreados
-        cantTicketsRecibidos.value = result.cantTicketsRecibidos
-        cantTicketsReasignados.value = result.cantTicketsReasignados
-        cantTicketsAsignados.value = result.cantTicketsAsignados
-        cantTicketsEjecutados.value = result.cantTicketsEjecutados
-        cantTicketsPausados.value = result.cantTicketsPausados
-        cantTicketsFinalizadosSolucionados.value = result.cantTicketsFinalizadosSolucionados
-        cantTicketsFinalizadosSinSolucion.value = result.cantTicketsFinalizadosSinSolucion
-        cantTicketsCalificadosResponsable.value = result.cantTicketsCalificadosResponsable
-        cantTicketsCalificadosSolicitante.value = result.cantTicketsCalificadosSolicitante
+        try {
 
-        cantidadesTicketsSolicitadosPorDepartamento.value = result.cantidadesTicketsSolicitadosPorDepartamento
-        const labels = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.nombre)
-        const valores = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.total)
-        const colores1 = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
-        cantidadesTicketsSolicitadosPorDepartamentoBar.value = mapearDatos(labels, valores, 'Cantidades de tickets creados a los departamentos', colores1)
+          const empleadoSeleccionado: Empleado = empleados.value.filter((emp: Empleado) => emp.id === filtro.empleado)[0]
 
-        cantidadesTicketsRecibidosPorDepartamento.value = result.cantidadesTicketsRecibidosPorDepartamento
-        const labels2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.nombre)
-        const valores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.total)
-        const colores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
-        cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidades de tickets recibidos por los departamentos', colores2)
+          esResponsableDepartamento.value = empleadoSeleccionado.responsable_departamento
+          departamento = empleadoSeleccionado.departamento_id
+          // cargando.activar()
 
-        ticketsPorEstado.value = result.ticketsPorEstado
-        const labels3 = result.ticketsPorEstado.map((item) => item.estado)
-        const valores3 = result.ticketsPorEstado.map((item) => item.total_tickets)
-        const colores3 = result.ticketsPorEstado.map((item) => mapearColor(item.estado))
-        ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidades de tickets por estados', colores3)
+          const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado, departamento_responsable_id: departamento })
+          await obtenerResponsables()
 
-        if (filtro.empleado) {
-          empleadoResponsableDepartamento.value = filtro.empleado
-          obtenerTicketsEmpleadoResponsable(filtro.empleado)
+          ticketsConSolucion.value = result.tiemposTicketsFinalizados
+          cantTicketsCreados.value = result.cantTicketsCreados
+          cantTicketsRecibidos.value = result.cantTicketsRecibidos
+          cantTicketsReasignados.value = result.cantTicketsReasignados
+          cantTicketsAsignados.value = result.cantTicketsAsignados
+          cantTicketsEjecutados.value = result.cantTicketsEjecutados
+          cantTicketsPausados.value = result.cantTicketsPausados
+          cantTicketsFinalizadosSolucionados.value = result.cantTicketsFinalizadosSolucionados
+          cantTicketsFinalizadosSinSolucion.value = result.cantTicketsFinalizadosSinSolucion
+          cantTicketsCalificadosResponsable.value = result.cantTicketsCalificadosResponsable
+          cantTicketsCalificadosSolicitante.value = result.cantTicketsCalificadosSolicitante
+
+          cantidadesTicketsSolicitadosPorDepartamento.value = result.cantidadesTicketsSolicitadosPorDepartamento
+          const labels = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.nombre)
+          const valores = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.total)
+          const colores1 = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
+          cantidadesTicketsSolicitadosPorDepartamentoBar.value = mapearDatos(labels, valores, 'Cantidades de tickets creados a los departamentos', colores1)
+
+          cantidadesTicketsRecibidosPorDepartamento.value = result.cantidadesTicketsRecibidosPorDepartamento
+          const labels2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.nombre)
+          const valores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.total)
+          const colores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
+          cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidades de tickets recibidos por los departamentos', colores2)
+
+          ticketsPorEstado.value = result.ticketsPorEstado
+          const labels3 = result.ticketsPorEstado.map((item) => item.estado)
+          const valores3 = result.ticketsPorEstado.map((item) => item.total_tickets)
+          const colores3 = result.ticketsPorEstado.map((item) => mapearColor(item.estado))
+          ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidades de tickets por estados', colores3)
+
+          /**************
+           * Mapear Pies
+           **************/
+          const labels4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.responsable)
+          const valores4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.total_tickets)
+          const colores4 = result.ticketsPorDepartamentoEstadoAsignado.map(() => generarColorHexadecimalAleatorio())
+          ticketsPorDepartamentoEstadoAsignadoBar.value = mapearDatos(labels4, valores4, 'Cantidades de tickets del departamento con filtro por estado', colores4)
+          ticketsPorDepartamentoEstadoAsignado.value = await result.ticketsPorDepartamentoEstadoAsignado
+
+          const labels5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => item.responsable)
+          const valores5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => item.total_tickets)
+          const colores5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => generarColorHexadecimalAleatorio())
+          ticketsPorDepartamentoEstadoReasignadoBar.value = mapearDatos(labels5, valores5, 'Cantidades de tickets del departamento con filtro por estado', colores5)
+          ticketsPorDepartamentoEstadoReasignado.value = result.ticketsPorDepartamentoEstadoReasignado
+
+          const labels6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => item.responsable)
+          const valores6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => item.total_tickets)
+          const colores6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => generarColorHexadecimalAleatorio())
+          ticketsPorDepartamentoEstadoEjecutandoBar.value = mapearDatos(labels6, valores6, 'Cantidades de tickets del departamento con filtro por estado', colores6)
+          ticketsPorDepartamentoEstadoEjecutando.value = result.ticketsPorDepartamentoEstadoEjecutando
+
+          const labels7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => item.responsable)
+          const valores7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => item.total_tickets)
+          const colores7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => generarColorHexadecimalAleatorio())
+          ticketsPorDepartamentoEstadoPausadoBar.value = mapearDatos(labels7, valores7, 'Cantidades de tickets del departamento con filtro por estado', colores7)
+          ticketsPorDepartamentoEstadoPausado.value = result.ticketsPorDepartamentoEstadoPausado
+
+          const labels8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.responsable)
+          const valores8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.total_tickets)
+          const colores8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => generarColorHexadecimalAleatorio())
+          ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar.value = mapearDatos(labels8, valores8, 'Cantidades de tickets del departamento con filtro por estado', colores8)
+          ticketsPorDepartamentoEstadoFinalizadoSolucionado.value = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado
+
+          const labels9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => item.responsable)
+          const valores9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => item.total_tickets)
+          const colores9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => generarColorHexadecimalAleatorio())
+          ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar.value = mapearDatos(labels9, valores9, 'Cantidades de tickets del departamento con filtro por estado', colores9)
+          ticketsPorDepartamentoEstadoFinalizadoSinSolucion.value = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion
+
+          const labels10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.responsable)
+          const valores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.total_tickets)
+          const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorHexadecimalAleatorio())
+          ticketsPorDepartamentoEstadoCalificadoBar.value = mapearDatos(labels10, valores10, 'Cantidades de tickets del departamento con filtro por estado', colores10)
+          ticketsPorDepartamentoEstadoCalificado.value = result.ticketsPorDepartamentoEstadoCalificado
+
+          if (filtro.empleado) {
+            empleadoResponsableDepartamento.value = filtro.empleado
+            obtenerTicketsEmpleadoResponsable(filtro.empleado)
+          }
+
+        } catch (e) {
+          console.log(e)
+        } finally {
+
+          // cargando.desactivar()
         }
-        cargando.desactivar()
       }
     }
 
-    const ticketsEmpleadoResponsable = ref([])
-    let departamento
     async function obtenerTicketsEmpleadoResponsable(responsable_id: number) {
-      const controller = new TicketController()
-      ticketsEmpleadoResponsable.value = (await controller.listar({ responsable_id })).result
+      // const controller = new TicketController()
+      // ticketsEmpleadoResponsable.value = (await controller.listar({ responsable_id })).result
+      if (filtro.fecha_inicio && filtro.fecha_fin) {
+        const fechaInicio = formatearFechaSeparador(filtro.fecha_inicio, '/')
+        const fechaFin = formatearFechaSeparador(filtro.fecha_fin, '/', { days: 1 })
+        const consultaFecha = 'created_at[start]=' + fechaInicio + '&created_at[end]=' + fechaFin
+        const consultaParametros = 'responsable_id=' + responsable_id
+        const axios = AxiosHttpRepository.getInstance()
+        const respuesta: any = await axios.get(axios.getEndpoint(endpoints.tickets) + '?' + consultaParametros + '&' + consultaFecha)
+        ticketsEmpleadoResponsable.value = respuesta.data.results
+      }
+      //
     }
 
     async function obtenerResponsables() {
@@ -270,6 +357,8 @@ export default defineComponent({
         case estadosTickets.PAUSADO: return '#616161'
         case estadosTickets.FINALIZADO_SOLUCIONADO: return '#8bc34a'
         case estadosTickets.FINALIZADO_SIN_SOLUCION: return '#9ba98c'
+        case estadosTickets.CANCELADO: return '#c31d25'
+        case estadosTickets.CALIFICADO: return '#98bf23'
       }
     }
 
@@ -283,12 +372,16 @@ export default defineComponent({
         case departamentos.recursos_humanos: return '#9ba98c'
         case departamentos.tecnico: return '#1de48d'
         case departamentos.contabilidad: return '#db4cb2'
-        case departamentos.informatica: return '#1ac9e6'
+        case departamentos.informatica: return '#9fa8da'
         case departamentos.bodega: return '#eb548c'
         case departamentos.sso: return '#eabd3b'
         case departamentos.vehiculos: return '#e7e34e'
       }
     }
+
+    /*function mapearColorDepartamentoEstado() {
+      return generarColorHexadecimalAleatorio()
+    } */
 
     function ordenarEmpleados() {
       empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
@@ -339,10 +432,24 @@ export default defineComponent({
       cantidadesTicketsSolicitadosPorDepartamento,
       cantidadesTicketsRecibidosPorDepartamento,
       ticketsPorEstado,
+      ticketsPorDepartamentoEstadoAsignado,
+      ticketsPorDepartamentoEstadoReasignado,
+      ticketsPorDepartamentoEstadoEjecutando,
+      ticketsPorDepartamentoEstadoPausado,
+      ticketsPorDepartamentoEstadoFinalizadoSolucionado,
+      ticketsPorDepartamentoEstadoFinalizadoSinSolucion,
+      ticketsPorDepartamentoEstadoCalificado,
       // Bar
       cantidadesTicketsSolicitadosPorDepartamentoBar,
       cantidadesTicketsRecibidosPorDepartamentoBar,
       ticketsPorEstadoBar,
+      ticketsPorDepartamentoEstadoAsignadoBar,
+      ticketsPorDepartamentoEstadoReasignadoBar,
+      ticketsPorDepartamentoEstadoEjecutandoBar,
+      ticketsPorDepartamentoEstadoPausadoBar,
+      ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar,
+      ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar,
+      ticketsPorDepartamentoEstadoCalificadoBar,
       // botones
       botonVer,
       btnSeguimiento,

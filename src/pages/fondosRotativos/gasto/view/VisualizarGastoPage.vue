@@ -312,7 +312,7 @@
           <!-- Comprobante 1 Archivo -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
-            <selector-imagen
+            <imagen-comprimida-component
               :imagen="gasto.comprobante1"
               :texto1="'R.U.C.: ' + gasto.ruc"
               :texto2="'Factura: ' + gasto.factura"
@@ -324,13 +324,13 @@
               :texto4="'Empleado: ' + gasto.empleado_info"
               @update:modelValue="(data) => (gasto.comprobante1 = data)"
             >
-            </selector-imagen>
+            </imagen-comprimida-component>
           </div>
 
           <!-- Comprobante 2 Archivo -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
-            <selector-imagen
+            <imagen-comprimida-component
               :imagen="gasto.comprobante2"
               :texto1="'R.U.C.: ' + gasto.ruc"
               :texto2="'Factura: ' + gasto.factura"
@@ -342,7 +342,7 @@
               :texto4="'Empleado: ' + gasto.empleado_info"
               @update:modelValue="(data) => (gasto.comprobante2 = data)"
             >
-            </selector-imagen>
+            </imagen-comprimida-component>
           </div>
         </div>
       </q-form>

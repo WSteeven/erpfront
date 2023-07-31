@@ -91,7 +91,8 @@ export default defineComponent({
     const existeObservaciones = ref(false)
     const usarMaterialTarea = ref(false)
     const usarStock = ref(false)
-    const columnasMaterial = [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
+    const permitirSubir = ![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
+    const columnasMaterial = permitirSubir ? [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla] : configuracionColumnasMaterialOcupadoFormulario
     const { prompt, notificarAdvertencia } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
     const rangoFechasHistorial = computed(() => {
@@ -108,7 +109,6 @@ export default defineComponent({
     const esCoordinador = authenticationStore.esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esCoordinadorBackup
     const refArchivoSeguimiento = ref()
     const subtarea = trabajoAsignadoStore.subtarea
-    const permitirSubir = ![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
     const fecha_historial = ref()
 
     /************
@@ -129,6 +129,7 @@ export default defineComponent({
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil-square',
       color: 'primary',
+      visible: () => permitirSubir,
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
@@ -147,6 +148,7 @@ export default defineComponent({
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil-square',
       color: 'primary',
+      visible: () => permitirSubir,
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
@@ -191,7 +193,7 @@ export default defineComponent({
 
     async function obtenerMaterialesTarea() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
+      const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
       const response: AxiosResponse = await axios.get(ruta)
       materialesTarea.value = response.data.results
     }

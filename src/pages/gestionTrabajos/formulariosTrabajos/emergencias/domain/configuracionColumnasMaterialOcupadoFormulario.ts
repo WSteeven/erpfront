@@ -25,19 +25,19 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
   {
     name: 'cantidad_utilizada',
     field: 'cantidad_utilizada',
-    label: 'Cantidad utilizada hoy',
-    align: 'left',
-  },
-  {
-    name: 'stock_actual',
-    field: 'stock_actual',
-    label: 'Stock actual',
+    label: 'Cantidad utilizada',
     align: 'left',
   },
   {
     name: 'total_cantidad_utilizada',
     field: 'total_cantidad_utilizada',
     label: 'Total cantidad utilizada',
+    align: 'left',
+  },
+  {
+    name: 'stock_actual',
+    field: 'stock_actual',
+    label: 'Stock actual',
     align: 'left',
   },
   {
