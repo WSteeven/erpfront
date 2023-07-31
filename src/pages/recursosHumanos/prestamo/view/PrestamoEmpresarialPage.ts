@@ -33,7 +33,6 @@ import { FormaPagoController } from 'pages/recursosHumanos/forma_pago/infraestru
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 
-
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable },
   setup() {
@@ -119,7 +118,7 @@ export default defineComponent({
           const plazo = {
             num_cuota: index,
             fecha_vencimiento: calcular_fechas(index, 'meses'),
-            valor_a_pagar: (valor_cuota / plazo_prestamo).toFixed(2),
+            valor_couta: (valor_cuota / plazo_prestamo).toFixed(2),
             pago_couta: false,
           }
           prestamo.plazos!.push(plazo)
@@ -242,14 +241,14 @@ export default defineComponent({
         if (indice_couta == -1) {
           const nuevaCuota = {
             num_cuota: prestamo.plazos!.length + 1,
-           // fecha_pago: '15-04-' + prestamo.utilidad,
-            valor_a_pagar: prestamo.valor_utilidad,
+            // fecha_pago: '15-04-' + prestamo.utilidad,
+            valor_couta: prestamo.valor_utilidad,
             pago_couta: false,
           }
           prestamo.plazos!.push(nuevaCuota)
         } else {
-       //   prestamo.plazos![indice_couta].fecha_pago ='15-04-' + prestamo.utilidad
-          prestamo.plazos![indice_couta].valor_a_pagar = prestamo.valor_utilidad
+          //   prestamo.plazos![indice_couta].fecha_pago ='15-04-' + prestamo.utilidad
+          prestamo.plazos![indice_couta].valor_couta = prestamo.valor_utilidad
         }
         const valorAnterior = valor_prestamo / prestamo.plazo
         calcular_valores_prestamo(valor_utilidad, valor_prestamo, valorAnterior)
@@ -282,10 +281,23 @@ export default defineComponent({
         aplazar(posicion)
       },
       visible: () => (accion.value == 'EDITAR' ? true : false),
-
     }
-    function aplazar(indice_couta){
-        prestamo.plazos![indice_couta].fecha_vencimiento = prestamo.plazos![(prestamo.plazo-1)].fecha_vencimiento
+    function aplazar(indice_couta) {
+      const fechaActual = prestamo.plazos![prestamo.plazo - 1].fecha_vencimiento
+      const [anio, mes, dia] = fechaActual.split('-')
+      // Crear un objeto de fecha con el formato yyyy-mm-dd
+      const fechaObj = new Date(anio, mes - 1, dia)
+      // Aumentar un mes a la fecha de vencimiento
+      fechaObj.setMonth(fechaObj.getMonth() + 1)
+      // Obtener los componentes de la nueva fecha
+      const nuevaFecha = fechaObj.getDate()
+      const nuevoMes = fechaObj.getMonth() + 1 // Sumamos 1 ya que los meses van de 0 a 11
+      const nuevoAnio = fechaObj.getFullYear()
+      // Formatear la nueva fecha a dd-mm-yyyy
+      const nuevaFechaStr = `${nuevoAnio}-${nuevoMes.toString().padStart(2, '0')}-${nuevaFecha
+        .toString()
+        .padStart(2, '0')}`
+      prestamo.plazos![indice_couta].fecha_vencimiento = nuevaFechaStr
     }
     function modificar_couta(indice_couta) {
       confirmar('¿Está seguro de modificar la couta?', () => {
@@ -298,7 +310,7 @@ export default defineComponent({
               if (data > valor_prestamo) {
                 esMayorPrestamo.value = true
               }
-              prestamo.plazos![indice_couta].valor_a_pagar = data
+              prestamo.plazos![indice_couta].valor_couta = data
               calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
             } catch (e: any) {
               notificarError('No se pudo modificar, debes ingresar monto')
@@ -312,9 +324,9 @@ export default defineComponent({
       const numero_couta = prestamo.plazos![indiceExcluido].num_cuota
       prestamo.plazos!.map((cuotaAnterior) => {
         if (cuotaAnterior.num_cuota !== numero_couta) {
-          cuotaAnterior.valor_a_pagar = (
+          cuotaAnterior.valor_couta = (
             (parseFloat(valor_prestamo.toString()) -
-              prestamo.plazos![indiceExcluido].valor_a_pagar) /
+              prestamo.plazos![indiceExcluido].valor_couta) /
             (prestamo.plazo - 1)
           ).toFixed(2)
           return cuotaAnterior
@@ -339,7 +351,7 @@ export default defineComponent({
           porcentaje_resta = 0 // Asignar un valor predeterminado o manejarlo de otra forma apropiada
         }
         prestamo.plazos!.slice(0, -1).map((cuotaAnterior) => {
-          cuotaAnterior.valor_a_pagar = (
+          cuotaAnterior.valor_couta = (
             valorAnterior -
             valorAnterior * porcentaje_resta
           ).toFixed(2)
@@ -355,25 +367,30 @@ export default defineComponent({
           accion: async (data) => {
             try {
               if (
-                data > parseFloat(prestamo.plazos![indice_couta].valor_a_pagar)
+                data > parseFloat(prestamo.plazos![indice_couta].valor_couta)
               ) {
                 notificarError(
                   'No se pudo pagar, debes ingresar monto menor o igual a ' +
-                    prestamo.plazos![indice_couta].valor_a_pagar
+                    prestamo.plazos![indice_couta].valor_couta
                 )
                 return
               }
               const fecha_actual = new Date()
               if (
-                data == parseFloat(prestamo.plazos![indice_couta].valor_a_pagar)
+                data == parseFloat(prestamo.plazos![indice_couta].valor_couta)
               ) {
                 prestamo.plazos![indice_couta].pago_couta = true
-                prestamo.plazos![indice_couta].fecha_pago = fecha_actual.toISOString().slice(0, 10)
+                prestamo.plazos![indice_couta].fecha_pago = fecha_actual
+                  .toISOString()
+                  .slice(0, 10)
                 actualizar_fecha_plazos(indice_couta + 1)
               }
-              prestamo.plazos![indice_couta].fecha_pago = fecha_actual.toISOString().slice(0, 10)
+              prestamo.plazos![indice_couta].fecha_pago = fecha_actual
+                .toISOString()
+                .slice(0, 10)
+              prestamo.plazos![indice_couta].valor_pagado = parseFloat(data)
               prestamo.plazos![indice_couta].valor_a_pagar = (
-                prestamo.plazos![indice_couta].valor_a_pagar - data
+                prestamo.plazos![indice_couta].valor_couta - data
               ).toFixed(2)
             } catch (e: any) {
               notificarError('No se pudo pagar, a ocurido un error: ' + e)
@@ -387,10 +404,10 @@ export default defineComponent({
       prestamo.plazos!.slice(indice_couta).forEach((element) => {
         const fecha = new Date(element.fecha_vencimiento)
         fecha.setMonth(fecha.getMonth() - 1)
-        element.fecha_vencimiento= fecha.toISOString().slice(0, 10)
+        element.fecha_vencimiento = fecha.toISOString().slice(0, 10)
       })
     }
-       /**
+    /**
      * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
      * lista filtrada.
      * @param val - El parámetro `val` es un valor de cadena que representa el valor de entrada para
@@ -401,20 +418,20 @@ export default defineComponent({
      * interna es responsable de actualizar el valor de `periodos` en función del parámetro `val` dado.
      * @returns nada (indefinido).
      */
-       function filtrarPeriodo(val, update) {
-        if (val === '') {
-          update(() => {
-            periodos.value = listadosAuxiliares.periodos
-          })
-          return
-        }
+    function filtrarPeriodo(val, update) {
+      if (val === '') {
         update(() => {
-          const needle = val.toLowerCase()
-          periodos.value = listadosAuxiliares.periodos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
+          periodos.value = listadosAuxiliares.periodos
         })
+        return
       }
+      update(() => {
+        const needle = val.toLowerCase()
+        periodos.value = listadosAuxiliares.periodos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
     return {
       removeAccents,
       mixin,

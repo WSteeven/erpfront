@@ -458,9 +458,9 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Rol de Pagos',
-          link: 'rol-pago',
+          link: 'rol-pago-mes',
           icon: 'bi-circle',
-          can: store.can('puede.ver.rol_pago'),
+          can: store.can('puede.ver.rol_pago_mes'),
         },
         {
           title: 'Licencia Empleado',

@@ -810,10 +810,10 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/rol-pago',
-        name: 'rol_pago',
+        path: '/rol-pago-mes',
+        name: 'rol_pago_mes',
         component: () =>
-          import('pages/recursosHumanos/rol-pago/view/RolPagoPage.vue'),
+          import('pages/recursosHumanos/rol-pago-mes/view/RolPagoMesPage.vue'),
         meta: { requiresAuth: true },
       },
       {

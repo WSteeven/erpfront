@@ -133,37 +133,6 @@
               </template>
             </q-input>
           </div>
-          <!-- Forma de pago -->
-          <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Forma de pago</label>
-            <q-select
-              v-model="prestamo.forma_pago"
-              :options="formas_pago"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              :disable="!esNuevo"
-              options-dense
-              dense
-              outlined
-              :input-debounce="0"
-              use-input
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.forma_pago.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
         <!--Periodos -->
         <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Periodo</label>

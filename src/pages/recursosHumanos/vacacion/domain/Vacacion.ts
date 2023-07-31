@@ -6,7 +6,7 @@ export class Vacacion extends EntidadAuditable {
   empleado_info: string | null
   periodo: string | null
   periodo_info: string | null
-  derecho_vacaciones: string | null
+  derecho_vacaciones: number | null
   id_jefe_inmediato: number | null
   descuento_vacaciones: number | null
   fecha_inicio: string | null
