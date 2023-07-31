@@ -97,8 +97,6 @@ export default defineComponent({
       icono: 'bi-plus',
       color: 'positive',
       accion: () => {
-        console.log('agregar rol de pagos');
-
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una tarea.')
         if (rolpago.finalizado)

@@ -34,40 +34,52 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import { useRolPagoStore } from 'stores/rolPago'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
+import { ComportamientoModalesRolPago } from '../aplication/ComportamientoModalesRolPago'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, EssentialTable },
-  setup() {
-    const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
+  components: { TabLayout, SelectorImagen, EssentialTable, ButtonSubmits },
+  emits: ['cerrar-modal', 'guardado'],
+  props: {
+    mixinModal: {
+      type: Object as () => ContenedorSimpleMixin<RolPago>,
+      required: true,
+    },
+  },
+  setup(props, { emit }) {
+    /*********
+     * Stores
+     *********/
+    const rolPagoStore = useRolPagoStore()
+
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+    const store = useAuthenticationStore()
+
+    /********
+     * Mixin
+     *********/
     const {
       entidad: rolpago,
-      disabled,
       listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } =
-      mixin.useComportamiento()
-    const { onConsultado } = mixin.useHooks()
-    useCargandoStore().setQuasar(useQuasar())
+      accion,
+      listado,
+      disabled,
+    } = props.mixinModal.useReferencias()
+    const {
+      obtenerListados,
+      cargarVista,
+      consultar,
+      guardar,
+      editar,
+      reestablecer,
+      setValidador,
+    } = props.mixinModal.useComportamiento()
+    const { onBeforeGuardar, onConsultado } = props.mixinModal.useHooks()
 
-    const concepto_ingresos: Ref<ConceptoIngreso[]> = ref([])
-    const descuentos_generales = ref([])
-    const horas_extras_tipos = ref([])
-    const horas_extras_subtipos = ref([])
-    const descuentos_ley = ref([])
-    const multas = ref([])
-    const tipo_descuento = ref()
-    const es_consultado = ref(false)
-    const es_seleccionable_descuento_general = ref(true)
-    const es_seleccionable_descuento_ley = ref(true)
-    const es_seleccionable_multa = ref(false)
-    const tipo = ref(1)
-    const es_calculable = ref(true)
-    const campo = ref()
-    const is_month = ref(false)
-    const empleados = ref<Empleado[]>([])
-    onConsultado(() => {
-      es_consultado.value = true
-    })
     cargarVista(async () => {
       await obtenerListados({
         motivos: new MotivoPermisoEmpleadoController(),
@@ -89,6 +101,41 @@ export default defineComponent({
       horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos
       horas_extras_subtipos.value = listadosAuxiliares.horas_extras_subtipos
     })
+    /*******
+     * Init
+     *******/
+    if (rolPagoStore.idRolPagoSeleccionada) {
+      consultar({ id: rolPagoStore.idRolPagoSeleccionada })
+    } else rolpago.hydrate(new RolPago())
+
+    rolpago.dias = rolPagoStore.dias
+    accion.value = rolPagoStore.accion
+
+    /************
+     * Variables
+     ************/
+    const { notificarError, notificarCorrecto, notificarAdvertencia } =
+      useNotificaciones()
+    const concepto_ingresos: Ref<ConceptoIngreso[]> = ref([])
+    const descuentos_generales = ref([])
+    const horas_extras_tipos = ref([])
+    const horas_extras_subtipos = ref([])
+    const descuentos_ley = ref([])
+    const multas = ref([])
+    const tipo_descuento = ref()
+    const es_consultado = ref(false)
+    const es_seleccionable_descuento_general = ref(true)
+    const es_seleccionable_descuento_ley = ref(true)
+    const es_seleccionable_multa = ref(false)
+    const tipo = ref(1)
+    const es_calculable = ref(true)
+    const campo = ref()
+    const is_month = ref(false)
+    const empleados = ref<Empleado[]>([])
+    onConsultado(() => {
+      es_consultado.value = true
+    })
+
     const listadoHorasExtrasSubTipo = computed(() => {
       return listadosAuxiliares.horas_extras_subtipos.filter(
         (horas_extras_subtipos: HorasExtrasSubTipo) =>
@@ -105,18 +152,10 @@ export default defineComponent({
       const sueldo = (parseInt(salario) / 30) * (num_dias - dias_sin_recuperar)
       return sueldo.toFixed(2)
     })
-    //Reglas de validacion
-    const reglas = {
-      empleado: { required },
-      mes: { required },
-    }
-    const v$ = useVuelidate(reglas, rolpago)
-    setValidador(v$.value)
 
     rolpago.roles = ref([])
     rolpago.ingresos = ref([])
     rolpago.egresos = ref([])
-    const store = useAuthenticationStore()
 
     const esRecursosHumanos = store.esRecursosHumanos
 
@@ -124,10 +163,123 @@ export default defineComponent({
       obtener_datos_empleado('SALARIO')
       obtener_datos_empleado('PERMISOS_SIN_RECUPERAR')
     }
+
+    /**********
+     * Modales
+     **********/
+    const modales = new ComportamientoModalesRolPago()
+
+    /*********
+     * Filtros
+     **********/
+    /****Filtro de Empleados */
+    function filtrarEmpleado(val, update) {
+      if (val === '') {
+        update(() => {
+          empleados.value = listadosAuxiliares.empleados
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        empleados.value = listadosAuxiliares.empleados.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    /**Filtro de HorasExtrasSubTipo */
+    function filtrarHorasExtrasSubTipo(val, update) {
+      if (val === '') {
+        update(() => {
+          horas_extras_subtipos.value = listadoHorasExtrasSubTipo.value
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        horas_extras_subtipos.value = listadoHorasExtrasSubTipo.value.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    /**Filtro de Tipo de Horas Extras */
+    function filtrarHorasExtrasTipo(val, update) {
+      if (val === '') {
+        update(() => {
+          horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    /********
+     * Hooks
+     *********/
+    onBeforeGuardar(() => {
+      // rolpago.roles = rolpagoStore.roles
+      /*rolpago.empleados_designados = rolpago.empleados_designados.map((empleado: EmpleadoGrupo) => {
+        const empleadoGrupo = new EmpleadoGrupo()
+        empleadoGrupo.hydrate(empleado)
+        empleadoGrupo.es_responsable = empleado.es_responsable ? 1 : 0
+        return empleadoGrupo
+      })*/
+    })
+    let idSubtarea: any
+
+    //onConsultado(() => rolpago.tarea = rolpagoStore.codigoTarea)
+    async function guardarDatos(rolpago: RolPago) {
+      try {
+        const entidad: RolPago = await guardar(rolpago, false)
+
+        const rolpagoAux = new RolPago()
+        rolpagoAux.hydrate(entidad)
+
+        if (rolpagoAux.id) {
+          // Por el momento se asigna automaticamente pero a futuro quienes lo harán serán los trabajadores de la torre de control
+          // hacia los coordinadores
+
+          listado.value = [rolpagoAux, ...listado.value]
+
+          // Subir archivos
+          idSubtarea = rolpagoAux.id
+        }
+
+        emit('cerrar-modal', false)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+    function reestablecerDatos() {
+      reestablecer()
+      emit('cerrar-modal')
+    }
+
+    /*************
+     * Validaciones
+     **************/
+    const reglas = {
+      empleado: { required },
+      mes: { required },
+    }
+    const v$ = useVuelidate(reglas, rolpago)
+    setValidador(v$.value)
+
     /**Verifica si es un mes */
     function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
     }
+
+    /************
+    * Funciones
+    *************/
     /**Obtyención de descuentos de Ley */
     function prestamoQuirorafario() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
@@ -502,54 +654,7 @@ export default defineComponent({
       })
       rolpago.egreso = null
     }
-    /***Filtros de Listados */
-    /****Filtro de Empleados */
-    function filtrarEmpleado(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-    /**Filtro de HorasExtrasSubTipo */
-    function filtrarHorasExtrasSubTipo(val, update) {
-      if (val === '') {
-        update(() => {
-          horas_extras_subtipos.value = listadoHorasExtrasSubTipo.value
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        horas_extras_subtipos.value = listadoHorasExtrasSubTipo.value.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-    /**Filtro de Tipo de Horas Extras */
-    function filtrarHorasExtrasTipo(val, update) {
-      if (val === '') {
-        update(() => {
-          horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+
     const imprimir: CustomActionTable = {
       titulo: ' ',
       icono: 'bi-printer',
@@ -569,9 +674,9 @@ export default defineComponent({
         valor.id
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
+
     return {
       removeAccents,
-      mixin,
       rolpago,
       concepto_ingresos,
       descuentos_generales,
@@ -584,7 +689,12 @@ export default defineComponent({
       is_month,
       empleados,
       imprimir,
+      guardarDatos,
+      reestablecerDatos,
       datos_empleado,
+      guardar,
+      editar,
+      reestablecer,
       tipo,
       es_consultado,
       tipo_descuento,
@@ -606,6 +716,7 @@ export default defineComponent({
       disabled,
       configuracionColumnasRolPagoTabla,
       configuracionColumnas: configuracionColumnasRolPago,
+      accion,
       accionesTabla,
     }
   },
