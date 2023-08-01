@@ -254,6 +254,7 @@ export default defineComponent({
     const axios = AxiosHttpRepository.getInstance()
     const cargando = new StatusEssentialLoading()
     const pausas = ref([])
+    const rechazos = ref([])
 
     async function obtenerPausas() {
       try {
@@ -269,7 +270,6 @@ export default defineComponent({
       }
     }
 
-    const rechazos = ref([])
     async function obtenerRechazos() {
       const ruta =
         axios.getEndpoint(endpoints.rechazos_tickets) + '/' + ticket.id

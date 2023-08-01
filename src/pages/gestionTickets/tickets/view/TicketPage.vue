@@ -16,7 +16,6 @@
     :accion5="btnCalificar"
     subtitulo-pagina="Módulo de Tickets"
   >
-    <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
       <div class="q-pa-md">
         <q-expansion-item
