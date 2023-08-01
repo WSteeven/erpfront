@@ -207,6 +207,7 @@
               options-dense
               dense
               outlined
+              :disable="disabled || soloLectura"
               :readonly="
                 disabled ||
                 (soloLectura &&

@@ -6,6 +6,7 @@
     :permitir-editar="false"
     :permitir-consultar="false"
     :accion1="btnToggleActivar"
+    subtitulo-pagina="Módulo de Tickets"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -97,7 +98,6 @@
             <q-input
               v-model="tipoTicket.nombre"
               placeholder="Obligatorio"
-              @update:model-value="(v) => (tipoTicket.nombre = v.toUpperCase())"
               :disable="disabled"
               autofocus
               outlined

@@ -13,6 +13,7 @@ export const mediosNotificacion = [
   'CORREO',
   'LLAMADA',
   'CHAT',
+  'TICKET',
 ]
 
 export const modosAsignacionTrabajo = { por_grupo: 'POR_GRUPO', por_empleado: 'POR_EMPLEADO' }

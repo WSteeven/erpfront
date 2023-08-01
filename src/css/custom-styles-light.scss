@@ -38,7 +38,7 @@
   }
 
   .bg-drawer {
-    background-color: #c2c2cf;
+    background-color: #fff;
   }
 
   .q-card,
@@ -60,6 +60,10 @@
 
   .custom-shadow {
     box-shadow: 0px 10px 60px -10px rgba(44, 54, 60, 0.2);
+  }
+
+  .shadow-button {
+    box-shadow: 0px 10px 60px -10px rgba(44, 54, 60, 0.4);
   }
 
   .error-validation {

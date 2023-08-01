@@ -13,9 +13,6 @@
             <q-input
               v-model="departamento.nombre"
               placeholder="Obligatorio"
-              @update:model-value="
-                (v) => (departamento.nombre = v.toUpperCase())
-              "
               :disable="disabled"
               autofocus
               outlined

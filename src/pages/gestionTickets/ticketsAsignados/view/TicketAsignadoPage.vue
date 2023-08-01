@@ -1,12 +1,12 @@
 <template>
   <q-page :padding="!$q.screen.xs">
-    <b class="block text-h6 text-grey-9 q-mb-md">
-      <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon>
-      {{ 'Tickets asignados' }}</b
-    >
-    <div class="q-mb-md">
+    <div class="q-mb-md text-right">
+      <b class="block text-subtitle1 text-primary q-mb-sm">
+        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
+        {{ 'Tickets asignados' }}</b
+      >
       <div class="q-mb-sm">
-        Bienvenido, {{ authenticationStore.nombreUsuario }}
+        Bienvenido, <b>{{ authenticationStore.nombreUsuario }}</b>
       </div>
       <small>
         <b>{{ fecha }}</b>

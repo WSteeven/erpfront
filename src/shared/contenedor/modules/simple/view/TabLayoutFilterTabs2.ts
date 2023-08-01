@@ -31,6 +31,10 @@ export default defineComponent({
     tituloPagina: {
       type: String,
     },
+    subtituloPagina: {
+      type: String,
+      default: 'JPCONSTRUCRED',
+    },
     mostrarFormulario: {
       type: Boolean,
       default: true,

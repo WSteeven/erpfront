@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="columnas"
     :permitirEliminar="false"
+    subtitulo-pagina="Módulo de Tickets"
   >
     <template #formulario>
       <q-form @submit.prevent>

@@ -255,6 +255,7 @@ export const estadosTrabajoArray = [
 
 export const rolesSistema = {
   administrador: 'ADMINISTRADOR',
+  compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
   gerente: 'GERENTE',
   rrhh: 'RECURSOS HUMANOS',
@@ -339,4 +340,19 @@ export const tiposReportesEgresos = {
   cliente: 8,
   tarea: 9,
   transferencia: 10,
+}
+
+export const departamentos = {
+  xtrim_cuenca: 'XTRIM CUENCA',
+  medico: 'MEDICO',
+  activos_fijos: 'ACTIVOS FIJOS',
+  gerencia: 'GERENCIA',
+  proyectos: 'PROYECTOS',
+  recursos_humanos: 'RECURSOS HUMANOS',
+  tecnico: 'TECNICO',
+  contabilidad: 'CONTABILIDAD',
+  informatica: 'INFORMATICA',
+  bodega: 'BODEGA',
+  sso: 'SSO',
+  vehiculos: 'VEHICULOS',
 }

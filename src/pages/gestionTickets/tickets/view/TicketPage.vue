@@ -14,8 +14,8 @@
     :accion3="btnSeguimiento"
     :accion4="btnCancelar"
     :accion5="btnCalificar"
+    subtitulo-pagina="Módulo de Tickets"
   >
-    <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
       <div class="q-pa-md">
         <q-expansion-item
@@ -161,12 +161,20 @@
                 label="Ticket interno"
                 outlined
                 :disable="disabled"
-                @update:model-value="
-                  () => {
-                    establecerDepartamentoDefecto()
-                    obtenerResponsables(filtroDepartamento)
-                  }
-                "
+                @update:model-value="toggleTicketInterno()"
+                dense
+              ></q-checkbox>
+            </div>
+
+            <!-- Ticket para mi -->
+            <div class="col-12 col-md-3">
+              <br />
+              <q-checkbox
+                v-model="ticket.ticket_para_mi"
+                label="Ticket para mi"
+                outlined
+                :disable="disabled"
+                @update:model-value="toggleTicketParaMi()"
                 dense
               ></q-checkbox>
             </div>
@@ -184,7 +192,7 @@
                 options-dense
                 dense
                 outlined
-                :disable="disabled"
+                :disable="disabled || responsableDeshabilitado"
                 :option-label="(item) => `${item.nombres} ${item.apellidos}`"
                 :option-value="(item) => item.id"
                 use-input

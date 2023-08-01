@@ -394,7 +394,7 @@
         label-guardar="Guardar"
         :permitirCancelar="false"
         @cancelar="reestablecerDatos()"
-        @guardar="guardarDatos(subtarea)"
+        @editar="guardarDatos(rolpago)"
       />
     </div>
   </div>

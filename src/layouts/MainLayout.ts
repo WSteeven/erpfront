@@ -3,12 +3,14 @@
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { defineComponent, ref, computed, Ref, ComputedRef } from 'vue'
+import { defineComponent, ref, computed, Ref, ComputedRef, watch, watchEffect } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { LocalStorage, useQuasar } from 'quasar'
+import { LocalStorage, SessionStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import moment from 'moment'
+import Swal from 'sweetalert2'
+
 
 // Componentes
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -20,6 +22,10 @@ import { ComportamientoModalesMainLayout } from './modales/application/Comportam
 import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacionRealtime'
 import { NotificacionesSistema } from './notificacionesSistema/NotificacionesSistema'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useIdle, useTimestamp } from '@vueuse/core'
+import { formatearFechaTexto } from 'shared/utils'
+import { Idle, NotIdle } from 'idlejs'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -51,7 +57,8 @@ export default defineComponent({
      * Variables
      ************/
     const Router = useRouter()
-
+    const route = useRoute()
+    const { notificarAdvertencia } = useNotificaciones()
     const grupo = authenticationStore.user.grupo
 
     const saldo = computed(() => {
@@ -103,6 +110,8 @@ export default defineComponent({
       () => notificacionesPusherStore.listadoNotificaciones
     )
 
+    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' JPCONSTRUCRED')
+
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
       await notificacionesPusherStore.marcarLeida()
@@ -128,6 +137,71 @@ export default defineComponent({
 
     const enCamino = computed(() => movilizacionSubtareaStore.subtareaDestino)
     const motivo = computed(() => movilizacionSubtareaStore.motivo)
+
+
+    /**
+     * Este código es responsable de manejar la inactividad del usuario y cerrar sesión después de un
+     * cierto período de tiempo.
+     */
+    const tiempoInactividad = 10 * 60 * 1000 //10 minutos de inactividad
+    // let mouseActivo = true
+    // const mostrarAlertaInactividad = computed(() => {
+    //   return (tiempoInactividad / 1000) - idledFor.value < 10 //true cuando sean 10 segundos restantes
+    // })
+    const { idle, lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
+    // const now = useTimestamp({ interval: 1000 })
+    // const idledFor = computed(() => Math.floor((now.value - lastActive.value) / 1000),) //Tiempo de inactividad transcurrido en segundos 1,2,3...,n
+    // const ultimaConexion = LocalStorage.getItem('ultima_conexion')
+    /*
+    watch(idle, () => {
+      if (idle.value === true) {
+        console.log('Se cierra la sesión por inactividad, ultima conexion: ' + formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
+        LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
+        notificarAdvertencia('Se ha cerrado la sesión por inactividad, por favor vuelve a iniciar sesión.')
+        Swal.fire({
+          icon: 'error',
+          title: 'Has excedido el tiempo de inactividad',
+          text: 'Se ha cerrado la sesión por exceder tiempo de inactividad, por favor vuelve a iniciar sesión.',
+          confirmButtonColor: '#0879dc',
+        })
+        logout()
+      }
+    })
+    */
+    if (authenticationStore.user) {
+      const notIdle = new NotIdle()
+        .whenInteractive()
+        .within(60, 1000) // un minuto
+        .do(() => {
+          // console.log('ultima actividad', new Date().getTime().toString(), new Date().toLocaleTimeString())
+          LocalStorage.set('lastActivity', new Date().getTime().toString())
+        })
+        .start()
+      const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
+      // const LIMIT = 1 * 15 * 1000 // 5 segundos for logout session
+      setInterval(() => {
+        if (authenticationStore.user) {
+          let la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
+          // console.log('Resta de tiempo', new Date().getTime() - la)
+          // console.log('Tiempo limite', LIMIT)
+          // console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
+          if (new Date().getTime() - la > LIMIT) {
+            logout()
+            LocalStorage.remove('lastActivity')
+            LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
+            Swal.fire({
+              icon: 'error',
+              title: 'Has excedido el tiempo de inactividad',
+              text: 'Se ha cerrado la sesión por exceder tiempo de inactividad, por favor vuelve a iniciar sesión.',
+              confirmButtonColor: '#0879dc',
+            })
+          }
+        }
+      }, 60000) //comprobar cada minuto
+    } else {
+      LocalStorage.remove('lastActivity')
+    }
+
 
     return {
       enCamino,
@@ -162,6 +236,11 @@ export default defineComponent({
       selfCenterMiddle,
       grupo,
       mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
+
+      // idledFor,
+      // tiempoInactividad,
+      // mostrarAlertaInactividad,
+      // ultimaConexion,
     }
   },
 })

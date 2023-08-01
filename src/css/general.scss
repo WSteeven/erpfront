@@ -25,8 +25,20 @@ body {
   &::-webkit-scrollbar-thumb {
     border-radius: 50px;
     background: #aaa;
-    // background: -webkit-linear-gradient(45deg, #2f4d81, #009fff);
-    // background: linear-gradient(45deg, #2f4d81, #009fff);
+  }
+}
+
+.q-drawer__content {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+    border-radius: 16px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: #aaa;
   }
 }
 
@@ -81,3 +93,30 @@ input[type='time']::-webkit-calendar-picker-indicator {
     background-color: transparent !important;
     border: none !important;
   } */
+.q-card-hover {
+  /* Agregar sombra predeterminada sin hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+
+  /* Establecer márgenes o padding según tu diseño */
+  /* margin: 10px; */
+  /* padding: 20px; */
+
+  /* Asegurar que el cursor se convierta en una mano cuando se coloque sobre la tarjeta */
+  cursor: pointer;
+}
+
+.q-card-hover:hover {
+  /* Cambiar la sombra en hover para crear el efecto */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.q-card-press {
+  /* Agregar una transición para hacerla más suave */
+  transition: transform 0.2s ease;
+}
+
+/* Reducir ligeramente el tamaño al presionar el q-card */
+.q-card-press:active {
+  transform: scale(0.98);
+}

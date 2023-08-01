@@ -10,9 +10,11 @@ import { Ticket } from '../domain/Ticket'
 import { useTicketStore } from 'stores/ticket'
 import { reactive } from 'vue'
 import { MotivoPausaTicket } from 'pages/gestionTickets/motivosPausasTickets/domain/MotivoPausaTicket'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
-export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, modales: ComportamientoModalesTicket | any) => {
+export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
   const { confirmar, prompt, notificarAdvertencia, notificarCorrecto, promptItems } = useNotificaciones()
+  const notificaciones = useNotificaciones()
   const { listado, listadosAuxiliares } = mixin.useReferencias()
 
   const cambiarEstadoTicket = new CambiarEstadoTicket()
@@ -108,23 +110,44 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
         accion: async (opcion) => {
 
           if (opcion === 1) {
-            await cambiarEstadoTicket.finalizar(entidad.id)
-            filtrarTickets(estadosTickets.FINALIZADO_SOLUCIONADO)
+            try {
+              await cambiarEstadoTicket.finalizar(entidad.id)
+              filtrarTickets(estadosTickets.FINALIZADO_SOLUCIONADO)
+
+              eliminarElemento(posicion)
+              notificarCorrecto('Ticket finalizado exitosamente!')
+            } catch (error: any) {
+              if (isAxiosError(error)) {
+                const mensajes: string[] = error.erroresValidacion
+                notificarMensajesError(mensajes, notificaciones)
+              } else {
+                notificaciones.notificarError(error.message)
+              }
+            }
           } else {
             const config2: CustomActionPrompt = {
               titulo: 'Motivo',
               mensaje: 'Ingrese el motivo por el que no se pudo dar solución.',
               accion: async (motivo) => {
-                await cambiarEstadoTicket.finalizarNoSolucion(entidad.id, { motivo })
-                filtrarTickets(estadosTickets.FINALIZADO_SIN_SOLUCION)
+                try {
+                  await cambiarEstadoTicket.finalizarNoSolucion(entidad.id, { motivo })
+                  filtrarTickets(estadosTickets.FINALIZADO_SIN_SOLUCION)
+
+                  eliminarElemento(posicion)
+                  notificarCorrecto('Ticket finalizado exitosamente!')
+                } catch (error: any) {
+                  if (isAxiosError(error)) {
+                    const mensajes: string[] = error.erroresValidacion
+                    notificarMensajesError(mensajes, notificaciones)
+                  } else {
+                    notificaciones.notificarError(error.message)
+                  }
+                }
               },
             }
 
             prompt(config2)
           }
-
-          eliminarElemento(posicion)
-          notificarCorrecto('Ticket finalizado exitosamente!')
         },
         tipo: 'radio',
         items: [

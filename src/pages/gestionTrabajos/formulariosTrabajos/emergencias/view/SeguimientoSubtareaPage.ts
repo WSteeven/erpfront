@@ -6,7 +6,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { apiConfig, endpoints } from 'config/api'
-import { defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, Ref, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
 import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
@@ -33,8 +33,10 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Emergencia } from '../domain/Emergencia'
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
+import { clientes } from 'config/clientes'
+import { configuracionColumnasSumaMaterial } from '../domain/configuracionColumnasSumaMaterial'
 
 export default defineComponent({
   components: {
@@ -72,11 +74,11 @@ export default defineComponent({
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoController())
     const { listar: listarSubtareas } = props.mixinModal.useComportamiento()
 
-    cargarVista(async () => {
+    /* cargarVista(async () => {
       await obtenerListados({
         productos: new ProductoController(),
       })
-    })
+    }) */
 
     /************
      * Variables
@@ -89,15 +91,25 @@ export default defineComponent({
     const existeObservaciones = ref(false)
     const usarMaterialTarea = ref(false)
     const usarStock = ref(false)
-    const columnasMaterial = [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla]
+    const permitirSubir = ![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
+    const columnasMaterial = permitirSubir ? [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla] : configuracionColumnasMaterialOcupadoFormulario
     const { prompt, notificarAdvertencia } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
+    const rangoFechasHistorial = computed(() => {
+      return 'Rango disponible desde ' + trabajoAsignadoStore.subtarea.fecha_hora_ejecucion.substring(0, 10) + ' hasta ' + (trabajoAsignadoStore.subtarea.fecha_hora_finalizacion ?? obtenerFechaActual())
+    })
+
     const materialesTarea: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialesStock: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const sumaMaterialesTareaUsado: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const historialMaterialTareaUsadoPorFecha: Ref<MaterialOcupadoFormulario[]> = ref([])
+
     const materialEmpleadoController = new MaterialEmpleadoController()
     const esLider = authenticationStore.esTecnicoLider
-    const esCoordinador = authenticationStore.esCoordinador
+    const esCoordinador = authenticationStore.esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esCoordinadorBackup
     const refArchivoSeguimiento = ref()
+    const subtarea = trabajoAsignadoStore.subtarea
+    const fecha_historial = ref()
 
     /************
      * Init
@@ -117,6 +129,7 @@ export default defineComponent({
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil-square',
       color: 'primary',
+      visible: () => permitirSubir,
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
@@ -135,6 +148,7 @@ export default defineComponent({
       titulo: 'Cantidad utilizada',
       icono: 'bi-pencil-square',
       color: 'primary',
+      visible: () => permitirSubir,
       accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
@@ -179,7 +193,7 @@ export default defineComponent({
 
     async function obtenerMaterialesTarea() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, empleado_id: obtenerIdEmpleadoResponsable() })
+      const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
       const response: AxiosResponse = await axios.get(ruta)
       materialesTarea.value = response.data.results
     }
@@ -189,6 +203,23 @@ export default defineComponent({
       materialesStock.value = result
     }
 
+    async function obtenerSumatoriaMaterialesTareaUsados() {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.obtener_suma_material_tarea_usado, { subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
+      const response: AxiosResponse = await axios.get(ruta)
+      sumaMaterialesTareaUsado.value = response.data.results
+    }
+
+    async function obtenerHistorialMaterialTareaUsadoPorFecha(fecha: string) {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.obtener_historial_material_tarea_usado_por_fecha, { fecha, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
+      const response: AxiosResponse = await axios.get(ruta)
+      historialMaterialTareaUsadoPorFecha.value = response.data.results
+    }
+
+    if (esCoordinador) obtenerSumatoriaMaterialesTareaUsados()
+
+    // antes de guardar y editar seguimiento
     function filtrarMaterialesTareaOcupados() {
       return materialesTarea.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
     }
@@ -234,7 +265,7 @@ export default defineComponent({
     }
 
     async function guardarSeguimiento() {
-      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada }).catch((e) => {
+      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo }).catch((e) => {
         notificarAdvertencia('Ingrese al menos una actividad para guardar.')
       })
     }
@@ -244,7 +275,7 @@ export default defineComponent({
     }
 
     function editarSeguimiento() {
-      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada })
+      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
     }
 
     /********
@@ -300,8 +331,13 @@ export default defineComponent({
       usarStock,
       usarMaterialTarea,
       columnasMaterial,
+      configuracionColumnasMaterialOcupadoFormulario,
+      configuracionColumnasSumaMaterial,
       materialesTarea,
       materialesStock,
+      sumaMaterialesTareaUsado,
+      historialMaterialTareaUsadoPorFecha,
+      obtenerHistorialMaterialTareaUsadoPorFecha,
       botonEditarCantidadTarea,
       botonEditarCantidadStock,
       regiones,
@@ -319,6 +355,13 @@ export default defineComponent({
       TrabajoRealizado,
       configuracionColumnasTrabajoRealizado,
       verFotografia,
+      clientes,
+      subtarea,
+      permitirSubir,
+      tab: ref('usar_material_tarea'),
+      tabsMateriales: ref('historial'),
+      fecha_historial,
+      rangoFechasHistorial,
     }
   }
 })

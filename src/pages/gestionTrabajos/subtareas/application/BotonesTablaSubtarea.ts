@@ -205,8 +205,11 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
         trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable_id
         trabajoAsignadoStore.idEmergencia = entidad.seguimiento
         trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
-        const obtenerPlantilla = new ObtenerPlantilla()
-        modales.abrirModalEntidad(obtenerPlantilla.obtener(entidad.tipo_trabajo))
+
+        trabajoAsignadoStore.subtarea = entidad
+
+        // const obtenerPlantilla = new ObtenerPlantilla()
+        modales.abrirModalEntidad('SeguimientoSubtareaPage')//obtenerPlantilla.obtener(entidad.tipo_trabajo))
       })
     }
   }

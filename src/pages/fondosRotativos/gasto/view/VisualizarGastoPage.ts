@@ -22,10 +22,11 @@ import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 // import { AutorizarGastoModales } from 'pages/fondosRotativos/autorizarGasto/domain/AutorizarGastoModales'
 import { useCargandoStore } from 'stores/cargando'
+import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: { TabLayout, ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -63,6 +64,7 @@ export default defineComponent({
     const aprobarController = new AprobarGastoController()
 
     const esFactura = ref(true)
+    const estaSemanAC = ref()
 
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
@@ -74,6 +76,9 @@ export default defineComponent({
       mostrarListado.value = false
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
+console.log(fondoRotativoStore.estaSemanAC)
+      estaSemanAC.value= fondoRotativoStore.estaSemanAC
+      console.log(estaSemanAC.value)
 
     }
 
@@ -240,6 +245,7 @@ export default defineComponent({
       maskFecha,
       accion,
       v$,
+      estaSemanAC,
       configuracionColumnas: configuracionColumnasGasto,
       watchEffect,
       existeComprobante,

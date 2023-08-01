@@ -20,7 +20,8 @@
             ref="refArchivoSeguimiento"
             :mixin="mixinArchivoSeguimiento"
             :endpoint="endpoint"
-            :permitirSubir="permitirSubir"
+            :permitir-subir="permitirSubir"
+            :permitir-eliminar="permitirSubir"
           >
             <template #boton-subir>
               <q-btn

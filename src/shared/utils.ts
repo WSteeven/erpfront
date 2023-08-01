@@ -1,17 +1,21 @@
+<<<<<<< HEAD
 import { AxiosError } from 'axios'
+=======
+>>>>>>> origin/desarrollo
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
-import { date, useQuasar } from 'quasar'
+import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
-import Swal from 'sweetalert2'
 import { useNotificaciones } from './notificaciones';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { Ref } from 'vue'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -342,8 +346,28 @@ export async function imprimirArchivo(
     data: data,
     responseType: responseType,
     headers: {
+<<<<<<< HEAD
       Authorization: axiosHttpRepository.getOptions().headers.Authorization,
     },
+=======
+      'Authorization': axiosHttpRepository.getOptions().headers.Authorization
+    }
+  }).then((response: HttpResponseGet) => {
+    console.log(response.data)
+    if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
+    else {
+      const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+      const link = document.createElement('a')
+      link.href = fileURL
+      link.target = '_blank'
+      link.setAttribute('download', `${titulo}.${formato}`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    }
+  }).catch(error => {
+    notificarAdvertencia(error)
+>>>>>>> origin/desarrollo
   })
     .then((response: HttpResponseGet) => {
       console.log(response.data)
@@ -429,3 +453,52 @@ export function formatearFechaHora(fecha: string, hora: string) {
 
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
 }
+
+// recibe fecha dd-mm-yyyy y sale yyyy-mm-dd con el nuevo separador
+export function formatearFechaSeparador(fecha: string, separador: string, sumarTiempo?: any) {
+  const arrayFecha = fecha.split('-').map(Number) // YYYY-MM-DD
+  let nuevaFecha = date.buildDate({
+    year: arrayFecha[2],
+    month: arrayFecha[1],
+    day: arrayFecha[0],
+  })
+
+  if (sumarTiempo) nuevaFecha = date.addToDate(nuevaFecha, sumarTiempo)
+
+  return date.formatDate(nuevaFecha, 'YYYY' + separador + 'MM' + separador + 'DD')
+}
+
+export function formatearFechaTexto(fecha: number) {
+  const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(fecha).toLocaleDateString('es-Es', opciones)
+}
+
+export function generarColorHexadecimalAleatorio() {
+  const r = Math.floor(Math.random() * 128 + 128); // Componente rojo entre 128 y 255
+  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 128 y 255
+  const b = Math.floor(Math.random() * 128 + 128); // Componente azul entre 128 y 255
+
+  const colorHexadecimal = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+  return colorHexadecimal;
+}
+
+function componentToHex(component) {
+  const hex = component.toString(16);
+  return hex.length === 1 ? "0" + hex : hex;
+}
+
+export function generarColorPastelAzulAleatorio() {
+  const r = Math.floor(Math.random() * 128); // Componente rojo entre 0 y 127
+  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 0 y 127
+  const b = Math.floor(Math.random() * 128); // Componente azul entre 128 y 255
+
+  const colorHexadecimal = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+  return colorHexadecimal;
+}
+
+
+/* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
+  empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+} */

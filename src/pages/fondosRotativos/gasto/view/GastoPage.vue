@@ -61,6 +61,7 @@
               placeholder="Obligatorio"
               :error="!!v$.fecha_viat.$errors.length"
               :disable="disabled"
+              readonly
               @blur="v$.fecha_viat.$touch"
               outlined
               dense
@@ -603,7 +604,7 @@
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
-            <selector-imagen
+            <imagen-comprimida-component
               :imagen="gasto.comprobante1"
               file_extensiones=".jpg, image/*"
               :error="!!v$.comprobante1.$errors.length"
@@ -616,13 +617,13 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </selector-imagen>
+            </imagen-comprimida-component>
           </div>
 
           <!-- Comprobante 2 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
-            <selector-imagen
+            <imagen-comprimida-component
               :imagen="gasto.comprobante2"
               file_extensiones=".jpg, image/*"
               :error="!!v$.comprobante2.$errors.length"
@@ -635,7 +636,7 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </selector-imagen>
+            </imagen-comprimida-component>
           </div>
 
           <!-- Observacion -->

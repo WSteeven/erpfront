@@ -76,7 +76,11 @@
     <div v-if="ticket.responsable" class="col-12 col-md-3">
       <label class="q-mb-sm block">Actual empleado responsable</label>
       <b>{{ ticket.responsable }}</b>
-      <!-- <q-input :model-value="ticket.responsable" outlined disable dense></q-input> -->
+    </div>
+
+    <div v-if="ticket.fecha_hora_solicitud" class="col-12 col-md-3">
+      <label class="q-mb-sm block">Fecha hora solicitud</label>
+      <b>{{ ticket.fecha_hora_solicitud }}</b>
     </div>
   </div>
 </template>

@@ -2,10 +2,13 @@
   <q-page padding>
     <slot name="modales" />
 
-    <b class="block text-h6 text-grey-9 q-mb-md">
-      <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon>
-      {{ tituloTabla }}</b
-    >
+    <div class="text-right">
+      <b class="block text-subtitle1 text-thin text-primary">
+        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
+        {{ tituloTabla }}</b
+      >
+      <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small>
+    </div>
 
     <!-- Tabs -->
     <q-tabs

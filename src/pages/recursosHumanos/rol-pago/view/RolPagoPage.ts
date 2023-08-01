@@ -234,8 +234,9 @@ export default defineComponent({
     //onConsultado(() => rolpago.tarea = rolpagoStore.codigoTarea)
     async function guardarDatos(rolpago: RolPago) {
       try {
-        const entidad: RolPago = await guardar(rolpago, false)
-
+       // const entidad: RolPago =
+         await editar(rolpago, false)
+        const entidad = rolpago
         const rolpagoAux = new RolPago()
         rolpagoAux.hydrate(entidad)
 

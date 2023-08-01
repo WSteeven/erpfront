@@ -113,6 +113,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/materiales-empleados',
+        name: 'materiales_empleados',
+        component: () =>
+          import('gestionTrabajos/materialesEmpleados/view/MaterialEmpleadoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/trabajo-agendado',
         name: 'trabajo_agendado',
         component: () =>
@@ -172,6 +179,12 @@ const routes: RouteRecordRaw[] = [
         name: 'departamentos',
         component: () =>
           import('recursosHumanos/departamentos/view/DepartamentoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/dashboard-tickets',
+        name: 'dashboard_tickets',
+        component: () => import('dashboardTickets/view/DashboardTicketsPage.vue'),
         meta: { requiresAuth: true },
       },
       {

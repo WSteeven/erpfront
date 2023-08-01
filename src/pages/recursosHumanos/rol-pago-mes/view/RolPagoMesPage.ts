@@ -123,7 +123,7 @@ export default defineComponent({
     const btnEditarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Editar',
       icono: 'bi-pencil',
-      color: 'primary',
+      color: 'warning',
       accion: ({ entidad }) => {
         rolPagoStore.idRolPagoSeleccionada = entidad.id
         rolPagoStore.accion = acciones.editar

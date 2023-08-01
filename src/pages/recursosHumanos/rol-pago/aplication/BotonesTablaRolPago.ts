@@ -44,7 +44,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     titulo: 'Ejecutar',
     icono: 'bi-play-fill',
     color: 'positive',
-    visible: ({ entidad }) => [estadosTrabajos.AGENDADO, estadosTrabajos.REALIZADO].includes(entidad.estado) && entidad.puede_ejecutar && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable),
+    visible: ({ entidad }) => [estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos || authenticationStore.esAdministrador),
     accion: ({ entidad }) => {
 
 
