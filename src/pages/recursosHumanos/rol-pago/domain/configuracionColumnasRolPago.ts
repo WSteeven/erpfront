@@ -26,7 +26,7 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
 {
   name: 'dias',
   field: 'dias',
-  label: 'Días',
+  label: 'Días Laborados',
   align: 'left',
   sortable: true
 },
@@ -83,13 +83,6 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   name: 'descuento_general_info',
   field: 'descuento_general_info',
   label: 'Descuentos Generales',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'multa_info',
-  field: 'multa_info',
-  label: 'Multas',
   align: 'left',
   sortable: true
 },

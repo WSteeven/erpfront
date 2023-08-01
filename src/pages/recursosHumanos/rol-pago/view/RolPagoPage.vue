@@ -162,7 +162,7 @@
           </q-input>
         </div>
         <!-- Concepto -->
-        <div class="col-12 col-md-3" v-if="!es_consultado">
+        <div class="col-12 col-md-3" >
           <label class="q-mb-sm block">Concepto</label>
           <q-select
             v-model="rolpago.concepto_ingreso"
@@ -173,8 +173,6 @@
             clearable
             dense
             outlined
-            :disable="disabled"
-            :readonly="disabled"
             @update:model-value="verificar_concepto_ingreso"
             :option-label="(v) => v.nombre"
             :option-value="(v) => v.id"
@@ -257,7 +255,7 @@
           </q-select>
         </div>
         <!---Campo-->
-        <div class="col-12 col-md-3" v-if="!es_consultado">
+        <div class="col-12 col-md-3" >
           <label class="q-mb-sm block">Valor</label>
           <q-input
             v-model="rolpago.ingreso"
@@ -295,7 +293,7 @@
     >
       <div class="row q-col-gutter-sm q-py-md q-mx-xs">
         <!-- Descuento de Ley -->
-        <div class="col-12 col-md-3" v-if="!es_consultado">
+        <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Descuento de Ley</label>
           <q-select
             v-model="rolpago.descuento_ley"
@@ -305,8 +303,6 @@
             options-dense
             dense
             outlined
-            :disable="disabled"
-            :readonly="disabled"
             @update:model-value="verificar_descuento_ley"
             use-input
             input-debounce="0"
@@ -323,7 +319,7 @@
           </q-select>
         </div>
         <!-- Descuentos Generales -->
-        <div class="col-12 col-md-3" v-if="!es_consultado">
+        <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Descuentos Generales</label>
           <q-select
             v-model="rolpago.descuento_general"
@@ -333,8 +329,6 @@
             options-dense
             dense
             outlined
-            :disable="disabled"
-            :readonly="disabled"
             @update:model-value="verificar_descuento_general"
             use-input
             input-debounce="0"
@@ -351,7 +345,7 @@
           </q-select>
         </div>
         <!-- Multa -->
-        <div class="col-12 col-md-3" v-if="!es_consultado">
+        <div class="col-12 col-md-3" >
           <label class="q-mb-sm block">Multa</label>
           <q-select
             v-model="rolpago.multa"
@@ -361,8 +355,6 @@
             options-dense
             dense
             outlined
-            :disable="disabled"
-            :readonly="disabled"
             @update:model-value="verificar_multa"
             use-input
             input-debounce="0"
@@ -379,7 +371,7 @@
           </q-select>
         </div>
         <!---Campo-->
-        <div class="col-12 col-md-3" v-if="!es_consultado">
+        <div class="col-12 col-md-3" >
           <label class="q-mb-sm block">Valor</label>
           <q-input
             v-model="rolpago.egreso"

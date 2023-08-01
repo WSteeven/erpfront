@@ -111,21 +111,7 @@ export default defineComponent({
         return 0
       }
     })
-    function optionsFecha(date) {
-      const fechaActual = convertir_fecha(permiso.fecha_hora_inicio)
-      const fechaIngresada = new Date(date)
-      const diferenciaMilisegundos =
-        fechaIngresada.getTime() - fechaActual.getTime()
-      const diferenciaDias = Math.floor(
-        diferenciaMilisegundos / (1000 * 60 * 60 * 24)
-      ) // Diferencia en días
-      return (
-        diferenciaDias === -1 ||
-        diferenciaDias === 0 ||
-        diferenciaDias === 1 ||
-        diferenciaDias === 2
-      )
-    }
+
     function convertir_fecha(fecha) {
       const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
       let tiempo = dateParts[2]
@@ -164,20 +150,20 @@ export default defineComponent({
         refArchivoPrestamoEmpresarial.value.esConsultado = true
       }, 2000)
     })
-     const limpiarArchivoPrestamoEmpresarial = () => {
-      const archivoPrestamoEmpresarial = refArchivoPrestamoEmpresarial.value;
-      archivoPrestamoEmpresarial.limpiarListado();
-      archivoPrestamoEmpresarial.quiero_subir_archivos = false;
-      archivoPrestamoEmpresarial.esConsultado = false;
+    const limpiarArchivoPrestamoEmpresarial = () => {
+      const archivoPrestamoEmpresarial = refArchivoPrestamoEmpresarial.value
+      archivoPrestamoEmpresarial.limpiarListado()
+      archivoPrestamoEmpresarial.quiero_subir_archivos = false
+      archivoPrestamoEmpresarial.esConsultado = false
       // Realizar cambios en la interfaz de usuario en el siguiente ciclo de renderizado
-     requestAnimationFrame(() => {
-        archivoPrestamoEmpresarial.quiero_subir_archivos = true;
-      });
-    };
+      requestAnimationFrame(() => {
+        archivoPrestamoEmpresarial.quiero_subir_archivos = true
+      })
+    }
 
     onReestablecer(() => {
-      setTimeout(limpiarArchivoPrestamoEmpresarial, 50);
-    });
+      setTimeout(limpiarArchivoPrestamoEmpresarial, 50)
+    })
 
     cargarVista(async () => {
       await obtenerListados({
@@ -195,12 +181,30 @@ export default defineComponent({
           : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     })
     function optionsFechaInicio(date) {
-      const currentDate = new Date() // Obtener la fecha actual
+      const currentDate =
+        permiso.fecha_hora_inicio != null
+          ? convertir_fecha(permiso.fecha_hora_inicio)
+          : new Date() // Obtener la fecha actual
       const year = currentDate.getFullYear() // Obtener el año
       const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
       const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
       const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
       return date >= currentDateString
+    }
+    function optionsFecha(date) {
+      const fechaActual = convertir_fecha(permiso.fecha_hora_inicio)
+      const fechaIngresada = new Date(date)
+      const diferenciaMilisegundos =
+        fechaIngresada.getTime() - fechaActual.getTime()
+      const diferenciaDias = Math.floor(
+        diferenciaMilisegundos / (1000 * 60 * 60 * 24)
+      ) // Diferencia en días
+      return (
+        diferenciaDias === -1 ||
+        diferenciaDias === 0 ||
+        diferenciaDias === 1 ||
+        diferenciaDias === 2
+      )
     }
     function filtrarEmpleados(val, update) {
       if (val === '')

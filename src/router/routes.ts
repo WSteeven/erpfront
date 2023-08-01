@@ -830,7 +830,7 @@ const routes: RouteRecordRaw[] = [
         name: 'prestamo_quirorafario',
         component: () =>
           import(
-            'pages/recursosHumanos/prestamo-quirorafarios/view/PrestamoHipotecarioPage.vue'
+            'pages/recursosHumanos/prestamo-quirorafarios/view/PrestamoQuirorafarioPage.vue'
           ),
         meta: { requiresAuth: true },
       },

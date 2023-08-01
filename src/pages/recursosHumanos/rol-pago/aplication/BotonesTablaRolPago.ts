@@ -90,11 +90,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
         })
       })
 
-      if (entidad.cliente_id === clientes.NEDETEL) {
-        promptItems(config)
-      } else {
-        confirmarRealizar({ entidad, posicion })
-      }
+
     }
   }
 

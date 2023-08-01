@@ -42,14 +42,10 @@ import { ComportamientoModalesRolPago } from '../aplication/ComportamientoModale
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, EssentialTable, ButtonSubmits },
-  emits: ['cerrar-modal', 'guardado'],
-  props: {
-    mixinModal: {
-      type: Object as () => ContenedorSimpleMixin<RolPago>,
-      required: true,
-    },
-  },
+  emit: ['cerrar-modal', 'guardado'],
+
   setup(props, { emit }) {
+    const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
     /*********
      * Stores
      *********/
@@ -68,7 +64,7 @@ export default defineComponent({
       accion,
       listado,
       disabled,
-    } = props.mixinModal.useReferencias()
+    } = mixin.useReferencias()
     const {
       obtenerListados,
       cargarVista,
@@ -77,8 +73,8 @@ export default defineComponent({
       editar,
       reestablecer,
       setValidador,
-    } = props.mixinModal.useComportamiento()
-    const { onBeforeGuardar, onConsultado } = props.mixinModal.useHooks()
+    } = mixin.useComportamiento()
+    const { onBeforeGuardar, onConsultado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -94,6 +90,7 @@ export default defineComponent({
         horas_extras_tipos: new HorasExtrasTipoController(),
         horas_extras_subtipos: new HorasExtrasSubTipoController(),
       })
+      empleados.value = listadosAuxiliares.empleados;
       concepto_ingresos.value = listadosAuxiliares.concepto_ingresos
       descuentos_generales.value = listadosAuxiliares.descuentos_generales
       descuentos_ley.value = listadosAuxiliares.descuentos_ley
@@ -108,7 +105,7 @@ export default defineComponent({
       consultar({ id: rolPagoStore.idRolPagoSeleccionada })
     } else rolpago.hydrate(new RolPago())
 
-    rolpago.dias = rolPagoStore.dias
+   // rolpago.dias = rolPagoStore.dias
     accion.value = rolPagoStore.accion
 
     /************
@@ -278,8 +275,8 @@ export default defineComponent({
     }
 
     /************
-    * Funciones
-    *************/
+     * Funciones
+     *************/
     /**Obtyención de descuentos de Ley */
     function prestamoQuirorafario() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()

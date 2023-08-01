@@ -119,6 +119,17 @@ export default defineComponent({
         modalesRolPago.abrirModalEntidad('RolPagoPage')
       },
     }
+
+    const btnEditarRolPagoEmpleado: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil',
+      color: 'primary',
+      accion: ({ entidad }) => {
+        rolPagoStore.idRolPagoSeleccionada = entidad.id
+        rolPagoStore.accion = acciones.editar
+        modalesRolPago.abrirModalEntidad('RolPagoPage')
+      },
+    }
     let tabActualRolPago = '0'
     function filtrarRolPagoMes(tabSeleccionado: string) {
       listar({ finalizado: tabSeleccionado }, false)
@@ -205,6 +216,7 @@ export default defineComponent({
       tabOptionsEstadosRolPagoEmpleado,
       tabOptionsEstadosRolPago,
       btnFinalizarRolPago,
+      btnEditarRolPagoEmpleado,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,
     }
