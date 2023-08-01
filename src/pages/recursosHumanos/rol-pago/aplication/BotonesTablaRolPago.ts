@@ -7,7 +7,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { estadosTrabajos } from 'config/utils'
+import { acciones, estadosTrabajos } from 'config/utils'
 import { RolPago } from 'pages/recursosHumanos/rol-pago/domain/RolPago'
 import { Ref, reactive } from 'vue'
 import { clientes } from 'config/clientes'
@@ -15,6 +15,7 @@ import { RolPagoController } from 'pages/recursosHumanos/rol-pago/infraestructur
 import { useRolPagoStore } from 'stores/rolPago'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
+import { CambiarEstadoRolPago } from './CambiarEstadoRolPago'
 
 export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, listadosAuxiliares?: any) => {
   /***********
@@ -35,10 +36,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
   const notificaciones = useNotificaciones()
 
 
-  const movilizacion = reactive({
-    empleado_responsable_subtarea: null,
-    coordinador_registrante_llegada: null,
-  })
+
 
   const btnIniciar: CustomActionTable = {
     titulo: 'Ejecutar',
@@ -46,77 +44,34 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     color: 'positive',
     visible: ({ entidad }) => [estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos || authenticationStore.esAdministrador),
     accion: ({ entidad }) => {
-
-
-      confirmar('¿Está seguro de iniciar el trabajo?', async () => {
-        if (entidad.es_dependiente) {
-          const { result: subtareaDependiente } = await new RolPagoController().consultar(entidad.subtarea_dependiente_id)
-          if (![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO].includes(subtareaDependiente.estado ?? '')) {
-            return notificarAdvertencia('No puedes proceder. Primero debes realizar la subtarea ' + subtareaDependiente.mes)
-          }
-        }
-
-        const data = {
-          estado_subtarea_llegada: estadosTrabajos.EJECUTANDO,
-          ...movilizacion
-        }
-
+      confirmar('¿Está seguro de iniciar cambios rol de pago?', async () => {
         entidad.estado = estadosTrabajos.EJECUTANDO
-        notificarCorrecto('Trabajo iniciado exitosamente!')
+        const data = {
+          estado: estadosTrabajos.EJECUTANDO,
+        }
+        const { result } = await new CambiarEstadoRolPago().ejecutar(entidad.id, data)
+        notificarCorrecto('Rol de Pagos se esta Verificando!')
       })
     }
   }
-
-
 
   const btnRealizar: CustomActionTable = {
     titulo: 'Realizado',
     icono: 'bi-check-circle',
     color: 'positive',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable),
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && (authenticationStore.esRecursosHumanos),
     accion: ({ entidad, posicion }) => {
-      const config: CustomActionPrompt = reactive({
-        mensaje: 'Seleccione la causa de intervención',
-        accion: async (causa_intervencion_id) => {
-          confirmarRealizar({ entidad, posicion, causa_intervencion_id })
-        },
-        tipo: 'radio',
-        requerido: false,
-        items: listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo).map((causa: CausaIntervencion) => {
-          return {
-            label: causa.nombre,
-            value: causa.id
-          }
-        })
+
+      confirmar('¿Tiene el rol de pagos firmado?', async () => {
+        rolPagoStore.idRolPagoSeleccionada = entidad.id;
+        rolPagoStore.accion= acciones.editar;
+        modales.abrirModalEntidad('RolPagoFirmadoPage')
+
       })
-
-
     }
   }
 
-  function confirmarRealizar(data: any) {
-    const { entidad, posicion, causa_intervencion_id } = data
 
-    confirmar('¿Está seguro de que completó el trabajo?', async () => {
-      try {
-
-        const data = {
-          estado_subtarea_llegada: estadosTrabajos.REALIZADO,
-          causa_intervencion_id: causa_intervencion_id,
-          ...movilizacion,
-        }
-
-         eliminarElemento(posicion) //if (authenticationStore.esTecnico) eliminarElemento(posicion)
-
-        notificarCorrecto('El trabajo ha sido marcado como realizado exitosamente!')
-      } catch (error: unknown) {
-        if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes, notificaciones)
-        }
-      }
-    })
-  }
 
 
 

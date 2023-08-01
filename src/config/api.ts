@@ -75,6 +75,8 @@ export const endpoints = {
   archivo_licencia_empleado: new Endpoint('recursos-humanos/archivo_licencia_empleado'),
   archivo_prestamo_hipotecario: new Endpoint('recursos-humanos/archivo_prestamo_hipotecario'),
   archivo_prestamo_quirirafario: new Endpoint('recursos-humanos/archivo_prestamo_quirorafario'),
+  archivo_rol_pago: new Endpoint('recursos-humanos/archivo_rol_pago'),
+
   descuentos_permiso: new Endpoint('recursos-humanos/descuentos_permiso'),
   prestamo_hipotecario : new Endpoint('recursos-humanos/prestamo_hipotecario'),
   prestamo_quirorafario : new Endpoint('recursos-humanos/prestamo_quirorafario'),

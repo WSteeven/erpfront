@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import { AxiosError } from 'axios'
-=======
->>>>>>> origin/desarrollo
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
@@ -346,10 +342,6 @@ export async function imprimirArchivo(
     data: data,
     responseType: responseType,
     headers: {
-<<<<<<< HEAD
-      Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-    },
-=======
       'Authorization': axiosHttpRepository.getOptions().headers.Authorization
     }
   }).then((response: HttpResponseGet) => {
@@ -367,7 +359,6 @@ export async function imprimirArchivo(
     }
   }).catch(error => {
     notificarAdvertencia(error)
->>>>>>> origin/desarrollo
   })
     .then((response: HttpResponseGet) => {
       console.log(response.data)
