@@ -139,7 +139,8 @@
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
           <div v-if="cantTicketsCreados >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card no-border custom-shadow q-pa-md text-center full-height"
+              class="rounded-card no-border custom-shadow q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
+              @click="saludar()"
             >
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsCreados }}
@@ -150,7 +151,7 @@
 
           <div v-if="cantTicketsRecibidos >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
             >
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsRecibidos }}
@@ -161,7 +162,7 @@
 
           <div v-if="cantTicketsAsignados >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover"
             >
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsAsignados }}
@@ -172,9 +173,9 @@
 
           <div v-if="cantTicketsAsignados >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+              class="rounded-card text-white custom-shadow no-border q-pa-md text-center full-height bg-negative cursor-pointer q-card-hover"
             >
-              <div class="text-h3 text-negative q-mb-md">
+              <div class="text-h3 q-mb-md">
                 {{ cantTicketsAsignados }}
               </div>
               <div>Cantidad de tickets cancelados</div>
@@ -183,7 +184,7 @@
 
           <div v-if="cantTicketsReasignados >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
             >
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsReasignados }}
@@ -194,7 +195,7 @@
 
           <div v-if="cantTicketsEjecutados >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
             >
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsEjecutados }}
@@ -205,7 +206,7 @@
 
           <div v-if="cantTicketsPausados >= 0" class="col-12 col-md-3">
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
             >
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsPausados }}
@@ -219,7 +220,7 @@
             class="col-12 col-md-3"
           >
             <q-card
-              class="rounded-card no-border custom-shadow q-pa-md text-center"
+              class="rounded-card no-border custom-shadow q-pa-md text-center q-card-hover"
             >
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsFinalizadosSolucionados }}
@@ -233,7 +234,7 @@
             class="col-12 col-md-3"
           >
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center"
+              class="rounded-card custom-shadow no-border q-pa-md text-center q-card-hover"
             >
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsFinalizadosSinSolucion }}
@@ -247,7 +248,7 @@
             class="col-12 col-md-3"
           >
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
             >
               <div class="text-h3 text-positive q-mb-md">
                 {{ cantTicketsCalificadosSolicitante }}
@@ -261,7 +262,7 @@
             class="col-12 col-md-3"
           >
             <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
             >
               <div class="text-h3 text-positive q-mb-md">
                 {{ cantTicketsCalificadosResponsable }}
@@ -278,7 +279,7 @@
             class="col-12 col-md-6"
           >
             <q-card
-              class="rounded-card text-white no-border custom-shadow q-pa-md text-center full-height"
+              class="rounded-card text-white no-border custom-shadow q-pa-md text-center full-height q-card-hover"
               style="background-color: #bc98f3"
             >
               <div class="text-h3 q-mb-md">

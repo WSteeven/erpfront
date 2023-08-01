@@ -379,6 +379,10 @@ export default defineComponent({
       }
     }
 
+    function saludar() {
+      console.log('hola bebe')
+    }
+
     /*function mapearColorDepartamentoEstado() {
       return generarColorHexadecimalAleatorio()
     } */
@@ -388,6 +392,7 @@ export default defineComponent({
     }
 
     return {
+      saludar,
       ordenarEmpleados,
       filtrarEmpleados,
       empleados,
