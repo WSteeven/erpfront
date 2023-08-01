@@ -166,7 +166,18 @@
               <div class="text-h3 text-primary q-mb-md">
                 {{ cantTicketsAsignados }}
               </div>
-              <div>Cantidad de tickets que le asignaron</div>
+              <div>Cantidad de tickets pendientes</div>
+            </q-card>
+          </div>
+
+          <div v-if="cantTicketsAsignados >= 0" class="col-12 col-md-3">
+            <q-card
+              class="rounded-card custom-shadow no-border q-pa-md text-center full-height"
+            >
+              <div class="text-h3 text-negative q-mb-md">
+                {{ cantTicketsAsignados }}
+              </div>
+              <div>Cantidad de tickets cancelados</div>
             </q-card>
           </div>
 
