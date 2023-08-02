@@ -229,6 +229,13 @@ export const estadosTrabajos = {
   FINALIZADO: 'FINALIZADO',
   //REAGENDADO: 'REAGENDADO',
 }
+export const estadosRolPago = {
+  CREADO: 'CREADO',
+  EJECUTANDO: 'EJECUTANDO',
+  CANCELADO: 'CANCELADO',
+  REALIZADO: 'REALIZADO',
+  FINALIZADO: 'FINALIZADO',
+}
 export const estadosGastos = {
   APROBADO: 1,
   RECHAZADO: 2,

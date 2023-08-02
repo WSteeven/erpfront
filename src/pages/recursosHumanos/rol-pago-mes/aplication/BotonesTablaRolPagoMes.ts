@@ -7,8 +7,6 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { RolPagoMes } from '../domain/RolPagoMes'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
-import { ref } from 'vue'
-import { clientes } from 'config/clientes'
 
 export const useBotonesTablaRolPagoMes = (
   mixin: ContenedorSimpleMixin<RolPagoMes>
@@ -17,7 +15,6 @@ export const useBotonesTablaRolPagoMes = (
   const { listado } = mixin.useReferencias()
   const { editarParcial } = mixin.useComportamiento()
   const authenticationStore = useAuthenticationStore()
-  const mostrarSolicitarImagen = ref(false)
   const filaFinalizar = {
     id: null,
     novedad: null,

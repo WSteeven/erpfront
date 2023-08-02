@@ -107,7 +107,6 @@
             :accion2="btnIniciar"
             :accion3="btnRealizar"
             :accion4="btnEditarRolPagoEmpleado"
-            :accion5="btnCancelar"
             :accion6="btnImprimir"
             :accion1Header="btnAgregarRolPagoEmpleado"
             :permitirConsultar="false"

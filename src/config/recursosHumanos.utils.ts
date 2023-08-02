@@ -2,8 +2,8 @@ import { TabOption } from "components/tables/domain/TabOption";
 
 export const tabOptionsEstadosRolPagoEmpleado: TabOption[] = [
   { label: 'Todo', value: '' },
+  { label: 'Creado', value: 'CREADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
-  { label: 'Cancelado', value: 'CANCELADO' },
   { label: 'Realizado', value: 'REALIZADO' },
   { label: 'Finalizado', value: 'FINALIZADO' },
 ]

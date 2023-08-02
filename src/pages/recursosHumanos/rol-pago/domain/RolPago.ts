@@ -32,6 +32,8 @@ export class RolPago extends EntidadAuditable {
   roles: any | null
   dias_permiso_sin_recuperar: number | null
   estado: string | null
+  tieneDocumento: boolean | null
+
   constructor() {
     super()
     this.id = null
@@ -65,5 +67,6 @@ export class RolPago extends EntidadAuditable {
     this.roles = null
     this.dias_permiso_sin_recuperar = null
     this.estado = null
+    this.tieneDocumento = false
   }
 }
