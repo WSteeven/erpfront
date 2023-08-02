@@ -87,8 +87,9 @@
               outlined
               use-input
               input-debounce="0"
+              @filter="filtrarProveedores"
               :error="!!v$.proveedor.$errors.length"
-                error-message="Debes seleccionar al menos una opcion"
+              error-message="Debes seleccionar al menos una opcion"
               :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value
@@ -106,54 +107,61 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
             </q-select>
           </div>
 
           <!--Categorias-->
           <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Categorias</label>
-              <q-select
-                v-model="orden.categorias"
-                :options="categorias"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                :disable="disabled"
-                options-dense
-                multiple
-                dense
-                use-chips
-                outlined
-                :error="!!v$.categorias.$errors.length"
-                error-message="Debes seleccionar al menos una opcion"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
-                emit-value
-                map-options
-                ><template
-                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
-                >
-                  <q-item v-bind="itemProps">
-                    <q-item-section>
-                      {{ opt.nombre }}
-                      <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
-                    </q-item-section>
-                    <q-item-section side>
-                      <q-toggle
-                        :model-value="selected"
-                        @update:model-value="toggleOption(opt)"
-                      />
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
+            <label class="q-mb-sm block">Categorias</label>
+            <q-select
+              v-model="orden.categorias"
+              :options="categorias"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              multiple
+              dense
+              use-chips
+              outlined
+              :error="!!v$.categorias.$errors.length"
+              error-message="Debes seleccionar al menos una opcion"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+              ><template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.nombre }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
 
           <!-- Justificacion -->
           <div class="col-12 col-md-6">
@@ -244,7 +252,7 @@
             </q-select>
           </div>
           <!-- Persona que autoriza -->
-          <div  class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="orden.per_autoriza"
@@ -255,7 +263,7 @@
               dense
               outlined
               :error="!!v$.autorizador.$errors.length"
-                error-message="Debes seleccionar al menos una opcion"
+              error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
@@ -265,7 +273,7 @@
             />
           </div>
           <!-- Select autorizacion -->
-          <div  class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="orden.autorizacion"
@@ -393,7 +401,7 @@
                   @click="
                     listarProductos({
                       tipo_busqueda: 'all',
-                      categoria_id: estructuraConsultaCategoria()
+                      'categoria_id[]': estructuraConsultaCategoria(),
                     })
                   "
                   icon="search"
@@ -410,7 +418,7 @@
             </div>
           </div>
 
-          {{ v$.$errors }}
+          
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table

@@ -105,6 +105,7 @@
         </div>
       </div>
     </q-expansion-item>
+
     <q-expansion-item
       v-if="mostrarCalificacionPersonal"
       class="overflow-hidden q-mb-md expansion"

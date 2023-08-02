@@ -136,7 +136,7 @@ export default defineComponent({
 
       },
       visible: ({ posicion, entidad }) => {
-        console.log(posicion, entidad)
+        // console.log(posicion, entidad)
         const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
         if (departamento_calificador) {
           if (departamento_calificador.pivot.fecha_calificacion) {
@@ -162,8 +162,6 @@ export default defineComponent({
         proveedorStore.proveedor = entidad
         calificacionStore.idDepartamento = proveedorStore.idDepartamento
         calificacionStore.verMiCalificacion = true
-        // console.log('PROVEEDOR STORE proveedor', proveedorStore.idDepartamento, proveedorStore.idProveedor)
-        // console.log('PROVEEDOR STORE calificacion', calificacionStore.idDepartamento, calificacionStore.idProveedor)
         modales.abrirModalEntidad('InfoCalificacionProveedorPage')
       },
       visible: ({ posicion, entidad }) => {
@@ -186,10 +184,9 @@ export default defineComponent({
         modales.abrirModalEntidad('InfoCalificacionProveedorPage')
       },
       visible: ({ posicion, entidad }) => {
-        return entidad.calificado === estadosCalificacionProveedor.calificado
+        return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (store.esAdministrador && entidad.estado_calificado !== estadosCalificacionProveedor.vacio) || (store.esCompras && entidad.estado_calificado !== estadosCalificacionProveedor.vacio)
       }
     }
-
 
     async function obtenerEmpresa(empresaId: number | null) {
       if (empresaId !== null) {

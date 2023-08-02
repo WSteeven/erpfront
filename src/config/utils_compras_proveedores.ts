@@ -39,9 +39,9 @@ export const opcionesUnidadesMedida = [
   { value: 7, label: 'LITRO' },
   { value: 8, label: 'KIT' },
 ]
-export const tiposOfertas={
-  bienes:'BIENES',
-  servicios:'SERVICIOS',
+export const tiposOfertas = {
+  bienes: 'BIENES',
+  servicios: 'SERVICIOS',
 }
 
 export const likertCalificacion = [
@@ -52,10 +52,10 @@ export const likertCalificacion = [
   { label: 'MUY MALO', value: '1' },
 ]
 
-export const tabOptionsOrdenCompra: TabOption[]=[
-  {label: 'Sin Autorizador', value: '0'},
-  {label: 'Autorizadas', value: '1'},
-  {label: 'Canceladas', value: '2'}
+export const tabOptionsOrdenCompra: TabOption[] = [
+  { label: 'Sin Autorizador', value: '0' },
+  { label: 'Autorizadas', value: '1' },
+  { label: 'Canceladas', value: '2' }
 ]
 
 export const estadosCalificacionProveedor = {
@@ -63,5 +63,4 @@ export const estadosCalificacionProveedor = {
   pendiente: 'SIN CALIFICAR',
   calificado: 'CALIFICADO',
   parcial: 'PARCIAL',
-
 }

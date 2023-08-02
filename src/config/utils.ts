@@ -234,20 +234,21 @@ export const estadosTrabajoArray = [
 ]
 
 export const rolesSistema = {
+  activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
+  bodega: 'BODEGA',
+  compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
-  gerente: 'GERENTE',
-  rrhh: 'RECURSOS HUMANOS',
-  empleado: 'EMPLEADO',
   coordinador: 'COORDINADOR',
   coordinadorBackup: 'COORDINADOR_BACKUP',
-  jefe_tecnico: 'JEFE TECNICO',
+  empleado: 'EMPLEADO',
   fiscalizador: 'FISCALIZADOR',
-  bodega: 'BODEGA',
-  activos_fijos: 'ACTIVOS FIJOS',
-  tecnico: 'TECNICO',
-  tecnico_lider: 'LIDER DE GRUPO',
+  gerente: 'GERENTE',
+  jefe_tecnico: 'JEFE TECNICO',
+  rrhh: 'RECURSOS HUMANOS',
   secretario: 'SECRETARIO',
+  tecnico_lider: 'LIDER DE GRUPO',
+  tecnico: 'TECNICO',
 }
 
 export const cargosSistema = {

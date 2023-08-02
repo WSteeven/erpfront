@@ -26,13 +26,14 @@ import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
 import { acciones, accionesTabla } from "config/utils";
-import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo } from "config/utils_compras_proveedores";
+import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
 import { CategoriaController } from "pages/bodega/categorias/infraestructure/CategoriaController";
 import { useAuthenticationStore } from "stores/authentication";
 import { formatearFecha, obtenerTiempoActual } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { emit } from "process";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
+import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 
 
 export default defineComponent({
@@ -67,11 +68,13 @@ export default defineComponent({
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
         } = useOrquestadorSelectorDetalles(orden, 'detalles')
+        //Filtros y listados
+        const { proveedores, filtrarProveedores}=useFiltrosListadosSelects(listadosAuxiliares)
 
         //Obtener listados
         const empleados = ref([])
         const categorias = ref([])
-        const proveedores = ref([])
+        // const proveedores = ref([])
         const autorizaciones = ref([])
         const empleadosAutorizadores = ref([])
         cargarVista(async () => {
@@ -86,8 +89,12 @@ export default defineComponent({
                 proveedores: {
                     controller: new ProveedorController(),
                     params: {
-                        campos: 'id,codigo_tarea,titulo,cliente_id',
-                        finalizado: 0
+                        // campos: 'id,codigo_tarea,titulo,cliente_id',
+                        // finalizado: 0
+                        // http://localhost:8000/api/proveedores?calificacion[operator]=>&calificacion[value]=70
+                        'calificacion[operator]': '>',
+                        'calificacion[value]': 70,
+                        'estado_calificado': estadosCalificacionProveedor.calificado
                     }
                 },
                 categorias: new CategoriaController()
@@ -180,7 +187,7 @@ export default defineComponent({
         // configurar los listados
         empleados.value = listadosAuxiliares.empleados
         categorias.value = listadosAuxiliares.categorias
-        proveedores.value = listadosAuxiliares.proveedores
+        // proveedores.value = listadosAuxiliares.proveedores
         autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
         empleadosAutorizadores.value = JSON.parse(LocalStorage.getItem('autorizaciones_especiales')!.toString())
 
@@ -230,8 +237,7 @@ export default defineComponent({
             filtrarOrdenes,
             calcularValores,
             estructuraConsultaCategoria,
-
-
+            filtrarProveedores,
         }
     }
 })

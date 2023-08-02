@@ -12,6 +12,7 @@ import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_p
 import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion"
 import { useCalificacionProveedorStore } from "stores/comprasProveedores/calificacionProveedor"
 import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController"
+import { date } from "quasar"
 
 //Logica y controladores
 
@@ -38,25 +39,26 @@ export default defineComponent({
         const criteriosServicios = ref([])
         const departamentosCalificadores = ref([])
         const calificacionesDepartamentos = ref([])
-        
+
+        calificacion_dada.value = { calificacion: 0, fecha_calificacion: Date.now() }
 
         cargarVista(async () => {
             obtenerListados({
                 ofertas: new OfertaProveedorController(),
             })
-            console.log('INFO CALIFICACION', proveedorStore.idProveedor, proveedorStore.idDepartamento)
+            // console.log('INFO CALIFICACION', proveedorStore.idProveedor, proveedorStore.idDepartamento)
             calificacionProveedorStore.idProveedor = proveedorStore.proveedor.id
             calificacionProveedorStore.idDepartamento = proveedorStore.idDepartamento
             if (calificacionProveedorStore.verMiCalificacion) {
                 await calificacionProveedorStore.consultarCalificacionMiDepartamento()
                 departamentosCalificadores.value = calificacionProveedorStore.departamentosCalificadoresProveedor
-                console.log(departamentosCalificadores.value)
+                // console.log(departamentosCalificadores.value)
             } else {
                 await calificacionProveedorStore.consultarDepartamentosCalificanProveedor()
                 departamentosCalificadores.value = calificacionProveedorStore.departamentosCalificadoresProveedor
             }
             await calificacionProveedorStore.departamentosCalificadoresProveedor.forEach(async (v, index) => {
-                console.log(v)
+                // console.log(v)
                 calificacionesDepartamentos.value[index] = [v, await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id)]
                 // console.log(await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id))
             })
@@ -64,7 +66,8 @@ export default defineComponent({
 
             //aqui consulta el departamento y la calificación
             if (mostrarCalificacionPersonal) {
-                const {result} = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+                const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+                // console.log(result[0])
                 calificacion_dada.value = result[0]
             }
 
@@ -80,9 +83,9 @@ export default defineComponent({
             criteriosBienes,
 
             listadoFiltrado(listado, tipo) {
-                console.log(listado, tipo)
+                // console.log(listado, tipo)
                 const listadoFiltrado = listado.filter((v) => v.tipo.toLowerCase().indexOf(tipo.toLowerCase()) > -1)
-                console.log(listadoFiltrado.length)
+                // console.log(listadoFiltrado.length)
                 return listadoFiltrado
             },
 
