@@ -83,6 +83,7 @@ export default defineComponent({
     const cantTicketsReasignados = ref()
     const cantTicketsAsignados = ref()
     const cantTicketsEjecutados = ref()
+    const cantTicketsCancelados = ref()
     const cantTicketsPausados = ref()
     const cantTicketsCalificadosResponsable = ref()
     const cantTicketsCalificadosSolicitante = ref()
@@ -207,6 +208,7 @@ export default defineComponent({
           cantTicketsReasignados.value = result.cantTicketsReasignados
           cantTicketsAsignados.value = result.cantTicketsAsignados
           cantTicketsEjecutados.value = result.cantTicketsEjecutados
+          cantTicketsCancelados.value = result.cantTicketsCancelados
           cantTicketsPausados.value = result.cantTicketsPausados
           cantTicketsFinalizadosSolucionados.value = result.cantTicketsFinalizadosSolucionados
           cantTicketsFinalizadosSinSolucion.value = result.cantTicketsFinalizadosSinSolucion
@@ -406,6 +408,7 @@ export default defineComponent({
       cantTicketsCalificadosResponsable,
       cantTicketsCalificadosSolicitante,
       cantTicketsEjecutados,
+      cantTicketsCancelados,
       cantTicketsPausados,
       cantTicketsFinalizadosSolucionados,
       cantTicketsFinalizadosSinSolucion,

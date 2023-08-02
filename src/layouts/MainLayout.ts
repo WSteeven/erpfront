@@ -110,6 +110,32 @@ export default defineComponent({
       () => notificacionesPusherStore.listadoNotificaciones
     )
 
+    const notificacionesAgrupadas: any = computed(
+      () => agruparYOrdenarNotificacionesPorTipo(notificacionesPusherStore.listadoNotificaciones)
+    )
+
+    function agruparYOrdenarNotificacionesPorTipo(notificaciones) {
+      const grupos = {}
+
+      notificaciones.forEach((notificacion) => {
+        const tipo = notificacion.tipo_notificacion
+        if (!grupos[tipo]) {
+          grupos[tipo] = []
+        }
+        grupos[tipo].push(notificacion)
+      })
+
+      // Ordenar las notificaciones dentro de cada grupo según el campo "tipo"
+      const tiposOrdenados = Object.keys(grupos).sort()
+
+      const notificacionesAgrupadasYOrdenadas = {}
+      tiposOrdenados.forEach((tipo) => {
+        notificacionesAgrupadasYOrdenadas[tipo] = grupos[tipo]
+      })
+
+      return notificacionesAgrupadasYOrdenadas
+    }
+
     watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' JPCONSTRUCRED')
 
     async function marcarLeida(id) {
@@ -220,7 +246,7 @@ export default defineComponent({
       menuVisible,
       modoOscuro,
       toggleDarkMode,
-      width: computed(() => ($q.screen.xs ? '100%' : '350px')),
+      width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       mostrarMenu: ref(false),
       mostrarNotificaciones: ref(false),
       notificaciones,
@@ -236,7 +262,7 @@ export default defineComponent({
       selfCenterMiddle,
       grupo,
       mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
-
+      notificacionesAgrupadas,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,
