@@ -90,7 +90,7 @@ export default defineComponent({
         horas_extras_tipos: new HorasExtrasTipoController(),
         horas_extras_subtipos: new HorasExtrasSubTipoController(),
       })
-      empleados.value = listadosAuxiliares.empleados;
+      empleados.value = listadosAuxiliares.empleados
       concepto_ingresos.value = listadosAuxiliares.concepto_ingresos
       descuentos_generales.value = listadosAuxiliares.descuentos_generales
       descuentos_ley.value = listadosAuxiliares.descuentos_ley
@@ -105,7 +105,7 @@ export default defineComponent({
       consultar({ id: rolPagoStore.idRolPagoSeleccionada })
     } else rolpago.hydrate(new RolPago())
 
-   // rolpago.dias = rolPagoStore.dias
+    // rolpago.dias = rolPagoStore.dias
     accion.value = rolPagoStore.accion
 
     /************
@@ -234,8 +234,8 @@ export default defineComponent({
     //onConsultado(() => rolpago.tarea = rolpagoStore.codigoTarea)
     async function guardarDatos(rolpago: RolPago) {
       try {
-       // const entidad: RolPago =
-         await editar(rolpago, false)
+        // const entidad: RolPago =
+        await editar(rolpago, false)
         const entidad = rolpago
         const rolpagoAux = new RolPago()
         rolpagoAux.hydrate(entidad)
@@ -487,6 +487,7 @@ export default defineComponent({
     }
     /**Verificacion de Tipo de Descuento */
     function verificar_concepto_ingreso() {
+      rolpago.ingreso = null
       const indice_ingreso = rolpago.ingresos.findIndex(
         (ingreso) => ingreso.concepto === rolpago.concepto_ingreso
       )
@@ -509,6 +510,17 @@ export default defineComponent({
           fondosRotativos()
           es_calculable.value = true
           break
+        default:
+          buscar_egreso('DESCUENTO_GENERAL',rolpago.descuento_general !=null ?rolpago.descuento_general:0)
+          break
+      }
+    }
+    function buscar_egreso(tipo: string, id: number) {
+      const indice_egreso = rolpago.egresos.findIndex(
+        (egreso) => egreso.id_descuento === id && egreso.tipo === tipo
+      )
+      if (indice_egreso !== -1) {
+        rolpago.egreso = rolpago.egresos[indice_egreso].monto
       }
     }
     function verificar_descuento_ley() {
@@ -547,6 +559,8 @@ export default defineComponent({
       rolpago.descuento_general = null
       rolpago.descuento_ley = null
       tipo_descuento.value = 'MULTA'
+      buscar_egreso('MULTA',rolpago.multa !=null ?rolpago.multa:0)
+
     }
     /**Calculo de  descuento del IESS */
     function CalculoIESS() {

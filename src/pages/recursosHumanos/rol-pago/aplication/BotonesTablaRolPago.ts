@@ -47,11 +47,27 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
       })
     }
   }
-  const btnRealizar: CustomActionTable = {
-    titulo: 'Realizado',
+  const btnRealizado: CustomActionTable = {
+    titulo: 'Realizar',
     icono: 'bi-check-circle',
     color: 'positive',
-    visible: ({ entidad }) => entidad.estado === estadosRolPago.EJECUTANDO && (authenticationStore.esRecursosHumanos),
+    visible: ({ entidad }) => [estadosRolPago.EJECUTANDO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos || authenticationStore.esAdministrador),
+    accion: ({ entidad }) => {
+      confirmar('¿Está seguro de iniciar cambios rol de pago?', async () => {
+        entidad.estado = estadosRolPago.REALIZADO
+        const data = {
+          estado: estadosRolPago.REALIZADO,
+        }
+        const { result } = await new CambiarEstadoRolPago().realizar(entidad.id, data)
+        notificarCorrecto('Rol de Pagos se esta Verificando!')
+      })
+    }
+  }
+  const btnRealizar: CustomActionTable = {
+    titulo: 'Firmar Rol de Pago',
+    icono: 'fa-solid fa-file-signature',
+    color: 'positive',
+    visible: ({ entidad }) => entidad.estado === estadosRolPago.REALIZADO && (authenticationStore.esRecursosHumanos),
     accion: ({ entidad, posicion }) => {
 
       confirmar('¿Tiene el rol de pagos firmado?', async () => {
@@ -62,10 +78,6 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
       })
     }
   }
-
-
-
-
 
   const btnFinalizar: CustomActionTable = {
     titulo: 'Finalizar',
@@ -120,7 +132,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     titulo: ' ',
     icono: 'bi-printer',
     color: 'primary',
-    visible: ({ entidad }) => esRecursosHumanos,
+    visible: ({ entidad }) =>  [estadosRolPago.EJECUTANDO,estadosRolPago.REALIZADO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos),
     accion: ({ entidad }) => {
       generar_reporte(entidad)
     },
@@ -140,6 +152,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
 
   return {
     btnIniciar,
+    btnRealizado,
     btnRealizar,
     btnFinalizar,
     btnImprimir

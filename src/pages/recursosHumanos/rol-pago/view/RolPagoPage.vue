@@ -255,7 +255,7 @@
           </q-select>
         </div>
         <!---Campo-->
-        <div class="col-12 col-md-3" >
+        <div class="col-12 col-md-3" v-if="rolpago.concepto_ingreso != '' && rolpago.concepto_ingreso !=null">
           <label class="q-mb-sm block">Valor</label>
           <q-input
             v-model="rolpago.ingreso"

@@ -13,7 +13,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { RolPagoController } from '../../rol-pago/infraestructure/RolPagoController'
 import { RolPago } from '../../rol-pago/domain/RolPago'
 import { removeAccents } from 'shared/utils'
-import { acciones, accionesTabla } from 'config/utils'
+import { acciones, accionesTabla, estadosRolPago } from 'config/utils'
 import { configuracionColumnasRolPagoTabla } from '../../rol-pago/domain/configuracionColumnasRolPagoTabla'
 import { ConceptoIngreso } from 'pages/recursosHumanos/concepto_ingreso/domain/ConceptoIngreso'
 import { useAuthenticationStore } from 'stores/authentication'
@@ -72,6 +72,7 @@ export default defineComponent({
     )
     const { listado: roles_empleados } = mixinRolEmpleado.useReferencias()
     const { listar: listarRolEmpleado } = mixinRolEmpleado.useComportamiento()
+    const authenticationStore = useAuthenticationStore()
 
     /**********
      * Modales
@@ -84,7 +85,7 @@ export default defineComponent({
     const { notificarAdvertencia, prompt, confirmar } = useNotificaciones()
 
     const { btnFinalizarRolPago } = useBotonesTablaRolPagoMes(mixin)
-    const { btnIniciar, btnRealizar,btnImprimir } = useBotonesTablaRolPago(
+    const { btnIniciar, btnRealizar, btnRealizado,btnImprimir } = useBotonesTablaRolPago(
       roles_empleados,
       modalesRolPago,
       listadosAuxiliares
@@ -124,6 +125,7 @@ export default defineComponent({
       titulo: 'Editar',
       icono: 'bi-pencil',
       color: 'warning',
+      visible: ({ entidad }) => {return entidad.estado === estadosRolPago.EJECUTANDO && (authenticationStore.esRecursosHumanos)},
       accion: ({ entidad }) => {
         rolPagoStore.idRolPagoSeleccionada = entidad.id
         rolPagoStore.accion = acciones.editar
@@ -192,6 +194,7 @@ export default defineComponent({
       btnIniciar,
       btnRealizar,
       btnImprimir,
+      btnRealizado,
       btnConsultarRolPagoEmpleado,
       btnAgregarRolPagoEmpleado,
       roles_empleados,
