@@ -137,9 +137,9 @@
           Datos generales
         </div>
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
-          <div v-if="cantTicketsCreados >= 0" class="col-12 col-md-3">
+          <div v-if="cantTicketsCreados >= 0" class="col-12 col-md-6">
             <q-card
-              class="rounded-card no-border custom-shadow q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
+              class="rounded-card no-border custom-shadow q-pa-md text-center full-heighht cursor-pointer q-card-hover q-card-press"
               @click="saludar()"
             >
               <div class="text-h3 text-primary q-mb-md">
@@ -149,147 +149,152 @@
             </q-card>
           </div>
 
-          <div v-if="cantTicketsRecibidos >= 0" class="col-12 col-md-3">
-            <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
-            >
-              <div class="text-h3 text-primary q-mb-md">
-                {{ cantTicketsRecibidos }}
+          <!-- Segunda columna -->
+          <div v-if="cantTicketsRecibidos >= 0" class="col-12 col-md-6 column">
+            <div class="row q-col-gutter-xs">
+              <div class="col-12">
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsRecibidos }}
+                  </div>
+                  <div>Cantidad de tickets asignados</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets que recibió</div>
-            </q-card>
-          </div>
 
-          <div v-if="cantTicketsAsignados >= 0" class="col-12 col-md-3">
-            <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover"
-            >
-              <div class="text-h3 text-primary q-mb-md">
-                {{ cantTicketsAsignados }}
+              <div v-if="cantTicketsAsignados >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsAsignados }}
+                  </div>
+                  <div>Cantidad de tickets pendientes</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets pendientes</div>
-            </q-card>
-          </div>
 
-          <div v-if="cantTicketsAsignados >= 0" class="col-12 col-md-3">
-            <q-card
-              class="rounded-card text-white custom-shadow no-border q-pa-md text-center full-height bg-negative cursor-pointer q-card-hover"
-            >
-              <div class="text-h3 q-mb-md">
-                {{ cantTicketsAsignados }}
+              <div v-if="cantTicketsCancelados >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card text-white custom-shadow no-border q-pa-md text-center full-height bg-negative cursor-pointer q-card-hover"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantTicketsCancelados }}
+                  </div>
+                  <div>Cantidad de tickets cancelados</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets cancelados</div>
-            </q-card>
-          </div>
 
-          <div v-if="cantTicketsReasignados >= 0" class="col-12 col-md-3">
-            <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-            >
-              <div class="text-h3 text-primary q-mb-md">
-                {{ cantTicketsReasignados }}
+              <div v-if="cantTicketsReasignados >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsReasignados }}
+                  </div>
+                  <div>Cantidad de tickets que le transfirieron</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets que le transfirieron</div>
-            </q-card>
-          </div>
 
-          <div v-if="cantTicketsEjecutados >= 0" class="col-12 col-md-3">
-            <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-            >
-              <div class="text-h3 text-primary q-mb-md">
-                {{ cantTicketsEjecutados }}
+              <div v-if="cantTicketsEjecutados >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsEjecutados }}
+                  </div>
+                  <div>Cantidad de tickets que está ejecutando</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets que está ejecutando</div>
-            </q-card>
-          </div>
 
-          <div v-if="cantTicketsPausados >= 0" class="col-12 col-md-3">
-            <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-            >
-              <div class="text-h3 text-primary q-mb-md">
-                {{ cantTicketsPausados }}
+              <div v-if="cantTicketsPausados >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsPausados }}
+                  </div>
+                  <div>Cantidad de tickets pausados</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets pausados</div>
-            </q-card>
-          </div>
 
-          <div
-            v-if="cantTicketsFinalizadosSolucionados >= 0"
-            class="col-12 col-md-3"
-          >
-            <q-card
-              class="rounded-card no-border custom-shadow q-pa-md text-center q-card-hover"
-            >
-              <div class="text-h3 text-primary q-mb-md">
-                {{ cantTicketsFinalizadosSolucionados }}
+              <div
+                v-if="cantTicketsFinalizadosSolucionados >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card no-border custom-shadow q-pa-md text-center q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsFinalizadosSolucionados }}
+                  </div>
+                  <div>Cantidad de tickets finalizados con solución</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets finalizados con solución</div>
-            </q-card>
-          </div>
 
-          <div
-            v-if="cantTicketsFinalizadosSinSolucion >= 0"
-            class="col-12 col-md-3"
-          >
-            <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center q-card-hover"
-            >
-              <div class="text-h3 text-primary q-mb-md">
-                {{ cantTicketsFinalizadosSinSolucion }}
+              <div
+                v-if="cantTicketsFinalizadosSinSolucion >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsFinalizadosSinSolucion }}
+                  </div>
+                  <div>Cantidad de tickets finalizados sin solución</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets finalizados sin solución</div>
-            </q-card>
-          </div>
 
-          <div
-            v-if="cantTicketsCalificadosSolicitante >= 0"
-            class="col-12 col-md-3"
-          >
-            <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-            >
-              <div class="text-h3 text-positive q-mb-md">
-                {{ cantTicketsCalificadosSolicitante }}
+              <div
+                v-if="cantTicketsCalificadosSolicitante >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-positive q-mb-md">
+                    {{ cantTicketsCalificadosSolicitante }}
+                  </div>
+                  <div>Cantidad de tickets que creó, calificados</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets que creó, calificados</div>
-            </q-card>
-          </div>
 
-          <div
-            v-if="cantTicketsCalificadosResponsable >= 0"
-            class="col-12 col-md-3"
-          >
-            <q-card
-              class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-            >
-              <div class="text-h3 text-positive q-mb-md">
-                {{ cantTicketsCalificadosResponsable }}
+              <div
+                v-if="cantTicketsCalificadosResponsable >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-positive q-mb-md">
+                    {{ cantTicketsCalificadosResponsable }}
+                  </div>
+                  <div>Cantidad de tickets que finalizó, calificados</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets que finalizó, calificados</div>
-            </q-card>
-          </div>
 
-          <div
-            v-if="
-              cantTicketsFinalizadosSolucionados >= 0 ||
-              cantTicketsFinalizadosSinSolucion >= 0
-            "
-            class="col-12 col-md-6"
-          >
-            <q-card
-              class="rounded-card text-white no-border custom-shadow q-pa-md text-center full-height q-card-hover"
-              style="background-color: #bc98f3"
-            >
-              <div class="text-h3 q-mb-md">
-                {{
-                  cantTicketsFinalizadosSolucionados +
-                  cantTicketsFinalizadosSinSolucion
-                }}
+              <div
+                v-if="
+                  cantTicketsFinalizadosSolucionados >= 0 ||
+                  cantTicketsFinalizadosSinSolucion >= 0
+                "
+                class="col-12 col-md-6"
+              >
+                <q-card
+                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center full-height q-card-hover"
+                  style="background-color: #bc98f3"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{
+                      cantTicketsFinalizadosSolucionados +
+                      cantTicketsFinalizadosSinSolucion
+                    }}
+                  </div>
+                  <div>Cantidad de tickets finalizados</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets finalizados</div>
-            </q-card>
+            </div>
           </div>
         </div>
 

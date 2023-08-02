@@ -147,7 +147,7 @@
                 max-height="100vh"
               >
                 <!-- anchor="center middle" -->
-                <div class="full-width text-right q-pr-md">
+                <div class="full-width text-right q-pr-md q-mb-md">
                   <q-btn
                     icon="bi-x"
                     round
@@ -157,7 +157,10 @@
                     @click="mostrarNotificaciones = false"
                   ></q-btn>
                 </div>
-                <q-list style="min-width: 120px; max-width: 400px">
+                <q-list
+                  style="min-width: 140px; max-width: 450px"
+                  class="q-px-xs"
+                >
                   <q-item
                     class="q-mb-md text-grey-7"
                     v-if="notificaciones.length === 0"
@@ -172,7 +175,54 @@
                     </q-item-section></q-item
                   >
 
-                  <q-item
+                  <q-expansion-item
+                    v-for="titulo in Object.keys(notificacionesAgrupadas)"
+                    :key="titulo"
+                    class="overflow-hidden q-mb-sm expansion"
+                    :label="`${titulo} (${notificacionesAgrupadas[titulo].length})`"
+                    header-class="text-bold bg-header-collapse text-primary full-width"
+                    icon="bi-dot"
+                  >
+                    <q-item
+                      v-for="notificacion in notificacionesAgrupadas[titulo]"
+                      :key="notificacion.id"
+                      :to="notificacion.link"
+                    >
+                      <q-item-section avatar>
+                        <q-icon
+                          color="grey-8"
+                          :name="
+                            obtenerIcono.obtener(notificacion.tipo_notificacion)
+                          "
+                        />
+                      </q-item-section>
+
+                      <q-item-section class="full-width">
+                        {{ notificacion.mensaje }}
+                        <span class="block text-grey-8 text-weight-regular">
+                          {{ moment(notificacion.created_at).fromNow() }}
+                        </span>
+
+                        <q-item-label class="row justify-end q-pt-sm">
+                          <q-btn
+                            icon="bi-check"
+                            label="Marcar como leído"
+                            dense
+                            color="positive"
+                            size="sm"
+                            no-caps
+                            rounded
+                            push
+                            unelevated
+                            @click="marcarLeida(notificacion.id)"
+                          >
+                          </q-btn
+                        ></q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-expansion-item>
+
+                  <!--<q-item
                     v-for="notificacion in notificaciones"
                     :key="notificacion.id"
                     :to="notificacion.link"
@@ -209,6 +259,7 @@
                       ></q-item-label>
                     </q-item-section>
                   </q-item>
+                -->
 
                   <q-separator />
 
