@@ -534,6 +534,7 @@
                   :accion9="accion9"
                   :accion10="accion10"
                   :propsTable="props"
+                  :listado="listado"
                 ></CustomButtons>
               </div>
 

@@ -246,6 +246,11 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
+      console.log(data)
+      const posicion = props.datos.findIndex(
+        (fila: any) => fila.id === data.id
+      )
+
       if (props.editarFilaLocal) listado.value.splice(posicionFilaEditada.value, 1, data)
       limpiarFila()
       emit('guardar-fila', data)

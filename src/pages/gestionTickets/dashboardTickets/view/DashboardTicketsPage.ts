@@ -79,11 +79,15 @@ export default defineComponent({
     // Cantidades
     const ticketsConSolucion = ref([])
     const cantTicketsCreados = ref()
+    const cantTicketsCreadosParaMi = ref()
+    const cantTicketsCreadosInternos = ref()
+    const cantTicketsCreadosADepartamentos = ref()
     const cantTicketsRecibidos = ref()
     const cantTicketsReasignados = ref()
     const cantTicketsAsignados = ref()
     const cantTicketsEjecutados = ref()
     const cantTicketsCancelados = ref()
+    const cantTicketsCanceladosPorMi = ref()
     const cantTicketsPausados = ref()
     const cantTicketsCalificadosResponsable = ref()
     const cantTicketsCalificadosSolicitante = ref()
@@ -204,11 +208,15 @@ export default defineComponent({
 
           ticketsConSolucion.value = result.tiemposTicketsFinalizados
           cantTicketsCreados.value = result.cantTicketsCreados
+          cantTicketsCreadosParaMi.value = result.cantTicketsCreadosParaMi
+          cantTicketsCreadosInternos.value = result.cantTicketsCreadosInternos
+          cantTicketsCreadosADepartamentos.value = result.cantTicketsCreadosADepartamentos
           cantTicketsRecibidos.value = result.cantTicketsRecibidos
           cantTicketsReasignados.value = result.cantTicketsReasignados
           cantTicketsAsignados.value = result.cantTicketsAsignados
           cantTicketsEjecutados.value = result.cantTicketsEjecutados
           cantTicketsCancelados.value = result.cantTicketsCancelados
+          cantTicketsCanceladosPorMi.value = result.cantTicketsCanceladosPorMi
           cantTicketsPausados.value = result.cantTicketsPausados
           cantTicketsFinalizadosSolucionados.value = result.cantTicketsFinalizadosSolucionados
           cantTicketsFinalizadosSinSolucion.value = result.cantTicketsFinalizadosSinSolucion
@@ -402,6 +410,9 @@ export default defineComponent({
       configuracionColumnasDashboardTicket,
       ticketsConSolucion,
       cantTicketsCreados,
+      cantTicketsCreadosParaMi,
+      cantTicketsCreadosInternos,
+      cantTicketsCreadosADepartamentos,
       cantTicketsRecibidos,
       cantTicketsReasignados,
       cantTicketsAsignados,
@@ -409,6 +420,7 @@ export default defineComponent({
       cantTicketsCalificadosSolicitante,
       cantTicketsEjecutados,
       cantTicketsCancelados,
+      cantTicketsCanceladosPorMi,
       cantTicketsPausados,
       cantTicketsFinalizadosSolucionados,
       cantTicketsFinalizadosSinSolucion,
