@@ -8,7 +8,8 @@
     :permitirEditar="puedeEditar"
     :accion1="botonDespachar"
     :accion2="botonAnularAutorizacion"
-    :accion3="botonImprimir"
+    :accion3="botonCorregir"
+    :accion4="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -619,6 +620,6 @@
     </template>
   </tab-layout-filter-tabs>
   <!-- Modales -->
-  <!-- <modales-entidad :comportamiento="modales"></modales-entidad> -->
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./PedidoPage.ts"></script>

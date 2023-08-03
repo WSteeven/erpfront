@@ -13,6 +13,7 @@ export const configuracionColumnasDevoluciones: ColumnConfig<Devolucion>[] = [
         name: 'justificacion',
         field: 'justificacion',
         label: 'Justificación',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -41,6 +42,7 @@ export const configuracionColumnasDevoluciones: ColumnConfig<Devolucion>[] = [
         name: 'tarea',
         field: 'tarea',
         label: 'Tarea',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true
     },
