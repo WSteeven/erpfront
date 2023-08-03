@@ -105,6 +105,7 @@ export default defineComponent({
             'No puede agregar más subtareas porque la tarea ha finalizado.'
           )
         rolPagoStore.idRolPagoMes = rolpago.id
+        rolPagoStore.mes = rolpago.mes
         rolPagoStore.accion = acciones.nuevo
         rolPagoStore.idRolPagoSeleccionada = null
         modalesRolPago.abrirModalEntidad('RolPagoPage')
@@ -131,6 +132,26 @@ export default defineComponent({
         rolPagoStore.accion = acciones.editar
         modalesRolPago.abrirModalEntidad('RolPagoPage')
       },
+    }
+    function  obtenerNombreMes() {
+      console.log('nombre mes')
+      const meses = [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre',
+      ];
+      const [mes, anio] = rolpago.mes!.split("-");
+      rolpago.nombre =  `Rol de Pagos de ${meses[parseInt(mes, 10) - 1]} de ${anio}`;
+
     }
     let tabActualRolPago = '0'
     function filtrarRolPagoMes(tabSeleccionado: string) {
@@ -172,13 +193,12 @@ export default defineComponent({
       modalesRolPagoMes.cerrarModalEntidad()
     }
 
-    const store = useAuthenticationStore()
 
-    const esRecursosHumanos = store.esRecursosHumanos
 
     /**Verifica si es un mes */
     function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
+      obtenerNombreMes();
     }
 
     return {
@@ -206,6 +226,7 @@ export default defineComponent({
       v$,
       filtrarRolPagoMes,
       filtrarRolPagoEmpleado,
+      obtenerNombreMes,
       disabled,
       configuracionColumnasRolPago,
       columnasRolPagoEmpleados: [

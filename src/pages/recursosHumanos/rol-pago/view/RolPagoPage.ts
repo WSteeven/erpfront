@@ -33,7 +33,7 @@ import { HorasExtrasSubTipo } from 'pages/recursosHumanos/horas_extras_subtipo/d
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useCargandoStore } from 'stores/cargando'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { useRolPagoStore } from 'stores/rolPago'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -78,25 +78,38 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        motivos: new MotivoPermisoEmpleadoController(),
         empleados: {
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
-        concepto_ingresos: new ConceptoIngresoController(),
-        descuentos_generales: new DescuentosGenralesController(),
-        descuentos_ley: new DescuentosLeyController(),
-        multas: new MultaController(),
-        horas_extras_tipos: new HorasExtrasTipoController(),
-        horas_extras_subtipos: new HorasExtrasSubTipoController(),
       })
       empleados.value = listadosAuxiliares.empleados
-      concepto_ingresos.value = listadosAuxiliares.concepto_ingresos
-      descuentos_generales.value = listadosAuxiliares.descuentos_generales
-      descuentos_ley.value = listadosAuxiliares.descuentos_ley
-      multas.value = listadosAuxiliares.multas
-      horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos
-      horas_extras_subtipos.value = listadosAuxiliares.horas_extras_subtipos
+      concepto_ingresos.value =
+        LocalStorage.getItem('concepto_ingresos') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('concepto_ingresos')!.toString())
+      descuentos_generales.value =
+        LocalStorage.getItem('descuentos_generales') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('descuentos_generales')!.toString())
+      descuentos_ley.value =
+        LocalStorage.getItem('descuentos_ley') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('descuentos_ley')!.toString())
+      multas.value =
+        LocalStorage.getItem('multas') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('multas')!.toString())
+      horas_extras_tipos.value =
+        LocalStorage.getItem('horas_extras_tipos') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('horas_extras_tipos')!.toString())
+      horas_extras_subtipos.value =
+        LocalStorage.getItem('horas_extras_subtipos') == null
+          ? []
+          : JSON.parse(
+              LocalStorage.getItem('horas_extras_subtipos')!.toString()
+            )
     })
     /*******
      * Init
@@ -104,8 +117,13 @@ export default defineComponent({
     if (rolPagoStore.idRolPagoSeleccionada) {
       consultar({ id: rolPagoStore.idRolPagoSeleccionada })
     } else rolpago.hydrate(new RolPago())
+    if (rolPagoStore.idRolPagoMes) {
+      console.log('nuevo rol de pagos: ' + rolPagoStore.idRolPagoMes);
 
-    // rolpago.dias = rolPagoStore.dias
+      rolpago.rol_pago_id = rolPagoStore.idRolPagoMes
+      rolpago.mes = rolPagoStore.mes
+    }
+
     accion.value = rolPagoStore.accion
 
     /************
@@ -234,9 +252,14 @@ export default defineComponent({
     //onConsultado(() => rolpago.tarea = rolpagoStore.codigoTarea)
     async function guardarDatos(rolpago: RolPago) {
       try {
-        // const entidad: RolPago =
-        await editar(rolpago, false)
-        const entidad = rolpago
+        let entidad: RolPago = new RolPago()
+        if (accion.value == 'NUEVO') {
+          await guardar(rolpago)
+        } else {
+          await editar(rolpago, false)
+          entidad = rolpago
+        }
+
         const rolpagoAux = new RolPago()
         rolpagoAux.hydrate(entidad)
 
@@ -511,7 +534,10 @@ export default defineComponent({
           es_calculable.value = true
           break
         default:
-          buscar_egreso('DESCUENTO_GENERAL',rolpago.descuento_general !=null ?rolpago.descuento_general:0)
+          buscar_egreso(
+            'DESCUENTO_GENERAL',
+            rolpago.descuento_general != null ? rolpago.descuento_general : 0
+          )
           break
       }
     }
@@ -559,8 +585,7 @@ export default defineComponent({
       rolpago.descuento_general = null
       rolpago.descuento_ley = null
       tipo_descuento.value = 'MULTA'
-      buscar_egreso('MULTA',rolpago.multa !=null ?rolpago.multa:0)
-
+      buscar_egreso('MULTA', rolpago.multa != null ? rolpago.multa : 0)
     }
     /**Calculo de  descuento del IESS */
     function CalculoIESS() {

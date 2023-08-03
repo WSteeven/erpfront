@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 export const useRolPagoStore = defineStore('rolpago', () => {
   const idRolPagoMes = ref()
+  const mes = ref()
   const idRolPagoSeleccionada = ref()
   const posicionRolPagoSeleccionada = ref()
   const idEmpleado = ref()
@@ -46,6 +47,7 @@ export const useRolPagoStore = defineStore('rolpago', () => {
     posicionRolPagoSeleccionada,
     accion,
     sueldo,
+    mes,
     dias,
     concepto_ingreso,
     salario,

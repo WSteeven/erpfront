@@ -11,7 +11,7 @@
           @click="$refs.monthPicker.show()"
           mask="##-####"
           :error="!!v$.mes.$errors.length"
-          :disable="disabled"
+          disable
           @blur="v$.mes.$touch"
           outlined
           dense
@@ -395,6 +395,7 @@
         :permitirCancelar="false"
         @cancelar="reestablecerDatos()"
         @editar="guardarDatos(rolpago)"
+        @guardar="guardarDatos(rolpago)"
       />
     </div>
   </div>

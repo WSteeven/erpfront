@@ -88,7 +88,7 @@
                 <q-input
                   v-model="rolpago.nombre"
                   placeholder="Obligatorio"
-                  :disable="disabled"
+                  disable
                   outlined
                   dense
                 >
