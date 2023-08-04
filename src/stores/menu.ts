@@ -544,6 +544,12 @@ export const useMenuStore = defineStore('menu', () => {
         //   can: store.can('puede.ver.empresas')  || store.esAdministrador,
         // },
         {
+          title: 'Preordenes de compras',
+          link: 'preordenes-compras',
+          icon: 'bi-list',
+          can: store.can('puede.ver.preordenes_compras') || store.esAdministrador,
+        },
+        {
           title: 'Ordenes de compras',
           link: 'ordenes-compras',
           icon: 'bi-cart-plus',

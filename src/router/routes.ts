@@ -483,6 +483,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/preordenes-compras',
+        name: 'preordenes_compras',
+        component: () =>
+          import('pages/comprasProveedores/preordenCompra/view/PreordenCompraPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/ordenes-compras',
         name: 'ordenes_compras',
         component: () =>

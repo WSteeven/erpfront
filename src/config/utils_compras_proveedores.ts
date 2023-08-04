@@ -57,6 +57,11 @@ export const tabOptionsOrdenCompra: TabOption[] = [
   { label: 'Autorizadas', value: '1' },
   { label: 'Canceladas', value: '2' }
 ]
+export const tabOptionsPreordenCompra: TabOption[] = [
+  { label: 'Pendiente', value: 'PENDIENTE' },
+  { label: 'Completa', value: 'COMPLETA' },
+  { label: 'Anulada', value: 'NO REALIZADA' }
+]
 
 export const estadosCalificacionProveedor = {
   vacio: 'SIN CONFIGURAR',
