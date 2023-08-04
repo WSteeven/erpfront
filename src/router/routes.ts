@@ -847,6 +847,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/familiares',
+        name: 'familiares',
+        component: () =>
+          import(
+            'pages/recursosHumanos/familiares/view/FamiliaresPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

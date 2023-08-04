@@ -1,0 +1,74 @@
+<template>
+  <tab-layout
+  :mixin="mixin" :configuracionColumnas="configuracionColumnas"
+  >
+    <template #formulario>
+      <q-form @submit.prevent>
+        <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
+          <!-- Nombres -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Nombres</label>
+            <q-input
+              v-model="familiares.nombres"
+              @update:model-value="(v) => (familiares.nombres = removeAccents(v))"
+              placeholder="Obligatorio"
+              :disable="!esNuevo"
+              @blur="v$.nombres.$touch"
+              :error="!!v$.nombres.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.nombres.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Apellidos -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Apellidos</label>
+            <q-input
+              v-model="familiares.apellidos"
+              @update:model-value="(v) => (familiares.apellidos = removeAccents(v))"
+              placeholder="Obligatorio"
+              :disable="!esNuevo"
+              @blur="v$.apellidos.$touch"
+              :error="!!v$.apellidos.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.apellidos.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+           <!-- Parentezco -->
+           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Parentezco</label>
+            <q-input
+              v-model="familiares.parentezco"
+              @update:model-value="(v) => (familiares.parentezco = removeAccents(v))"
+              placeholder="Obligatorio"
+              :disable="!esNuevo"
+              :error="!!v$.parentezco.$errors.length"
+              @blur="v$.parentezco.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.parentezco.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+        </div>
+      </q-form>
+    </template>
+  </tab-layout>
+</template>
+<script src="./FamiliaresPage.ts"></script>
+./FamiliaresPage.js./FamiliaresPage.js

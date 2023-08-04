@@ -42,6 +42,8 @@ export const endpoints = {
   motivo_permiso_empleado: new Endpoint('recursos-humanos/motivo_permiso_empleado'),
   estado_permiso_empleado: new Endpoint('recursos-humanos/estado_permiso_empleado'),
   estado_civil: new Endpoint('recursos-humanos/estado_civil'),
+  familiares: new Endpoint('recursos-humanos/familiares'),
+
   areas: new Endpoint('recursos-humanos/areas'),
   tipo_contrato: new Endpoint('recursos-humanos/tipo_contrato'),
   tipo_licencia: new Endpoint('recursos-humanos/tipo_licencia'),
