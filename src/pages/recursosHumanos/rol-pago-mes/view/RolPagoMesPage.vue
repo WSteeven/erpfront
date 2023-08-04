@@ -48,6 +48,7 @@
                   :error="!!v$.mes.$errors.length"
                   :disable="disabled"
                   @blur="v$.mes.$touch"
+                  readonly
                   outlined
                   dense
                 >
@@ -89,6 +90,8 @@
                   v-model="rolpago.nombre"
                   placeholder="Obligatorio"
                   disable
+                  type="textarea"
+                  autogrow
                   outlined
                   dense
                 >

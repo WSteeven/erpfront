@@ -144,6 +144,8 @@ export default defineComponent({
     const es_calculable = ref(true)
     const campo = ref()
     const is_month = ref(false)
+    const indice_ingreso = ref()
+    const indice_egreso = ref()
     const empleados = ref<Empleado[]>([])
     onConsultado(() => {
       es_consultado.value = true
@@ -509,12 +511,14 @@ export default defineComponent({
     /**Verificacion de Tipo de Descuento */
     function verificar_concepto_ingreso() {
       rolpago.ingreso = null
-      const indice_ingreso = rolpago.ingresos.findIndex(
+      const indice_ingreso_busqueda = rolpago.ingresos.findIndex(
         (ingreso) => ingreso.concepto === rolpago.concepto_ingreso
       )
-      if (indice_ingreso !== -1) {
-        rolpago.ingreso = rolpago.ingresos[indice_ingreso].monto
+      if (indice_ingreso_busqueda !== -1) {
+        rolpago.ingreso = rolpago.ingresos[indice_ingreso_busqueda].monto
+        indice_ingreso.value = indice_ingreso_busqueda
       }
+
     }
     function verificar_descuento_general() {
       rolpago.egreso = null
@@ -540,12 +544,14 @@ export default defineComponent({
       }
     }
     function buscar_egreso(tipo: string, id: number) {
-      const indice_egreso = rolpago.egresos.findIndex(
+      const indice_egreso_busqueda = rolpago.egresos.findIndex(
         (egreso) => egreso.id_descuento === id && egreso.tipo === tipo
       )
-      if (indice_egreso !== -1) {
-        rolpago.egreso = rolpago.egresos[indice_egreso].monto
+      if (indice_egreso_busqueda !== -1) {
+        rolpago.egreso = rolpago.egresos[indice_egreso_busqueda].monto
+        indice_egreso.value =indice_egreso_busqueda
       }
+
     }
     function verificar_descuento_ley() {
       rolpago.egreso = null
@@ -629,19 +635,17 @@ export default defineComponent({
     }
     /**Añadir Ingreso */
     function aniadirIngreso() {
-      const indice_ingreso = rolpago.ingresos.findIndex(
-        (ingreso) => ingreso.concepto === rolpago.concepto_ingreso
-      )
       //modificar
-      if (indice_ingreso !== -1) {
-        rolpago.ingresos[indice_ingreso].monto = rolpago.ingreso
+      if (indice_ingreso.value>=0) {
+        rolpago.ingresos[indice_ingreso.value].monto = rolpago.ingreso
+      }else{
+        rolpago.ingresos.push({
+          concepto: rolpago.concepto_ingreso,
+          id_empleado: rolpago.empleado,
+          mes: rolpago.mes,
+          monto: rolpago.ingreso,
+        })
       }
-      rolpago.ingresos.push({
-        concepto: rolpago.concepto_ingreso,
-        id_empleado: rolpago.empleado,
-        mes: rolpago.mes,
-        monto: rolpago.ingreso,
-      })
       if (rolpago.concepto_ingreso == 2) {
         rolpago.horas_extra_tipo = null
         rolpago.horas_extra_subtipo = null
@@ -680,14 +684,19 @@ export default defineComponent({
         default:
           break
       }
-      rolpago.egresos.push({
-        tipo: tipo_descuento.value,
-        id_descuento: id_descuento,
-        id_empleado: rolpago.empleado,
-        mes: rolpago.mes,
-        monto: rolpago.egreso,
-      })
-      rolpago.egreso = null
+      if (indice_egreso.value>=0) {
+        rolpago.egresos[indice_egreso.value].monto = rolpago.egreso
+      }else{
+        rolpago.egresos.push({
+          tipo: tipo_descuento.value,
+          id_descuento: id_descuento,
+          id_empleado: rolpago.empleado,
+          mes: rolpago.mes,
+          monto: rolpago.egreso,
+        })
+
+      }
+           rolpago.egreso = null
     }
 
     const imprimir: CustomActionTable = {

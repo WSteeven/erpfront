@@ -358,7 +358,7 @@
           </q-select>
         </div>
         <!---Campo-->
-        <div class="col-12 col-md-3" >
+        <div class="col-12 col-md-3" v-if="(rolpago.multa != '' && rolpago.multa !=null)||(rolpago.descuento_general != ''&& rolpago.descuento_general!=null)||(rolpago.descuento_ley != ''&& rolpago.descuento_ley!=null)">
           <label class="q-mb-sm block">Valor</label>
           <q-input
             v-model="rolpago.egreso"

@@ -211,7 +211,7 @@ export default defineComponent({
         const fechaInicio = convertir_fecha(licencia.fecha_inicio)
         const fechaFinal = fechaInicio
         fechaFinal.setDate(
-          fechaInicio.getDate() + parseInt(licencia.dias_licencia.toString())
+          fechaInicio.getDate() + parseInt(licencia.dias_licencia.toString())-1
         )
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()

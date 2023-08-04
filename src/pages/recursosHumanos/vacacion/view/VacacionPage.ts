@@ -272,7 +272,7 @@ export default defineComponent({
         const fechaInicio = convertir_fecha(vacacion.fecha_inicio)
         const fechaFinal = fechaInicio
         fechaFinal.setDate(
-          fechaInicio.getDate() + parseInt(vacacion.numero_dias.toString())
+          fechaInicio.getDate() + parseInt(vacacion.numero_dias.toString())-1
         )
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()
@@ -300,7 +300,7 @@ export default defineComponent({
         const fechaFinal = fechaInicio
         fechaFinal.setDate(
           fechaInicio.getDate() +
-            parseInt(vacacion.numero_dias_rango1.toString())
+            parseInt(vacacion.numero_dias_rango1.toString())-1
         )
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()
@@ -327,7 +327,7 @@ export default defineComponent({
         const fechaFinal = fechaInicio
         fechaFinal.setDate(
           fechaInicio.getDate() +
-            parseInt(vacacion.numero_dias_rango2.toString())
+            parseInt(vacacion.numero_dias_rango2.toString())-1
         )
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()
