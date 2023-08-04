@@ -4,7 +4,10 @@ export class OrdenCompra extends EntidadAuditable {
     solicitante: number | null
     proveedor: number | null
     autorizador: number | null
+    autorizacion: number | null
     descripcion: string | null
+    preorden:number | null
+    pedido:number | null
     forma: string | null
     tiempo: string | null
     fecha: string | null
@@ -12,17 +15,26 @@ export class OrdenCompra extends EntidadAuditable {
     categorias: [] | null
     listadoProductos: any[]
 
+    //variables auxiliares
+    tiene_preorden: boolean
+    tiene_pedido: boolean
+
     constructor() {
         super()
         this.solicitante = null
         this.proveedor = null
         this.autorizador = null
+        this.autorizacion = null
         this.descripcion = null
+        this.preorden = null
+        this.pedido = null
         this.forma = null
         this.created_at = null
         this.tiempo = null
         this.fecha = null
         this.categorias = []
         this.listadoProductos = []
+        this.tiene_preorden =false
+        this.tiene_pedido= false
     }
 }

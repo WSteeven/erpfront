@@ -74,6 +74,95 @@
             </q-input>
           </div>
 
+           <!-- Persona que autoriza -->
+           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Persona que autoriza</label>
+            <q-select
+              v-model="orden.autorizador"
+              :options="empleadosAutorizadores"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.autorizador.$errors.length"
+              error-message="Debes seleccionar al menos una opcion"
+              :disable="disabled || soloLectura||orden.tiene_preorden"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            />
+          </div>
+          <!-- Select autorizacion -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Autorizacion</label>
+            <q-select
+              v-model="orden.autorizacion"
+              :options="autorizaciones"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled||orden.tiene_preorden"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <!--
+                :error="!!v$.autorizacion.$errors.length"
+                error-message="Debes seleccionar una autorizacion"
+  
+                <template v-slot:error>
+                  <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template> -->
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- preorden de compra -->
+          <div  class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">N° preorden</label>
+            <q-input
+              type="number"
+              v-model="orden.preorden"
+              placeholder="Opcional"
+              hint="Ingresa un numero de preorden y presiona Enter"
+              @keyup.enter="llenarOrden(orden.preorden)"
+              @update:model-value="actualizarPreorden"
+              :readonly="disabled"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- pedido -->
+          <div  class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">N° pedido</label>
+            <q-input
+              type="number"
+              v-model="orden.pedido"
+              placeholder="Opcional"
+              hint="Este es un campo opcional"
+              :readonly="disabled"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- Proveedor -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proveedor</label>
@@ -125,6 +214,7 @@
               :options="categorias"
               transition-show="jump-up"
               transition-hide="jump-down"
+              hint="Este campo es opcionall, selecciona una o varias categorias"
               :disable="disabled"
               options-dense
               multiple
@@ -251,70 +341,7 @@
               </template>
             </q-select>
           </div>
-          <!-- Persona que autoriza -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Persona que autoriza</label>
-            <q-select
-              v-model="orden.per_autoriza"
-              :options="empleadosAutorizadores"
-              transition-show="jump-up"
-              transition-hide="jump-up"
-              options-dense
-              dense
-              outlined
-              :error="!!v$.autorizador.$errors.length"
-              error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-            />
-          </div>
-          <!-- Select autorizacion -->
-          <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Autorizacion</label>
-            <q-select
-              v-model="orden.autorizacion"
-              :options="opciones_autorizaciones"
-              transition-show="jum-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :readonly="
-                disabled ||
-                (soloLectura &&
-                  !(
-                    esCoordinador ||
-                    esActivosFijos ||
-                    store.user.id == orden.per_autoriza_id
-                  ))
-              "
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-            >
-              <!--
-                :error="!!v$.autorizacion.$errors.length"
-                error-message="Debes seleccionar una autorizacion"
-  
-                <template v-slot:error>
-                  <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template> -->
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
+         
           <!-- Observacion de autorizacion -->
           <div
             v-if="store.user.id === orden.per_autoriza_id"
@@ -418,7 +445,6 @@
             </div>
           </div>
 
-          
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table
@@ -442,6 +468,41 @@
               v-on:fila-modificada="calcularValores"
             >
             </essential-popup-editable-table>
+          </div>
+
+          <!-- Tabla con el resumen -->
+          <div class="col-12">
+            <div class="row q-col-xs-4 q-col-xs-offset-8 flex-end justify-end">
+              <q-list
+                bordered
+                separator
+                dense
+                v-if="orden.listadoProductos.length > 0"
+              >
+                <q-item>
+                  <q-item-section>Subtotal: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ subtotal }}</q-item-section>
+                </q-item>
+
+                <q-item>
+                  <q-item-section class="q-mr-md">Descuento: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ descuento }}</q-item-section>
+                </q-item>
+
+                <q-item>
+                  <q-item-section>IVA (12%): </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ iva }}</q-item-section>
+                </q-item>
+                <q-item>
+                  <q-item-section>Total: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ total }}</q-item-section>
+                </q-item>
+              </q-list>
+            </div>
           </div>
         </div>
       </q-form>

@@ -7,9 +7,8 @@
     tabDefecto="PENDIENTE"
     :filtrar="filtrarPreordenes"
     :permitirEditar="puedeEditar"
-    :accion1="botonDespachar"
-    :accion2="botonAnularAutorizacion"
-    :accion3="botonImprimir"
+    :accion1="btnHacerOrdenCompra"
+    
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -32,23 +31,20 @@
             <label class="q-mb-sm block">Fecha de creación</label>
             <q-input v-model="preorden.created_at" disable outlined dense />
           </div>
-
-          <!-- Justificacion -->
-          <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Justificación</label>
+          <!-- N° pedido -->
+          <div v-if="preorden.pedido" class="col-12 col-md-3">
+            <label class="q-mb-sm block">N° Pedido</label>
             <q-input
-              type="textarea"
-              autogrow
-              v-model="preorden.justificacion"
+              v-model="preorden.pedido"
               placeholder="Obligatorio"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
               outlined
               dense
             >
             </q-input>
           </div>
-
-
+          
           <!-- Solicitante -->
           <div v-if="preorden.solicitante" class="col-12 col-md-3">
             <label class="q-mb-sm block">Solicitante</label>
@@ -77,6 +73,23 @@
             </q-select>
           </div>
 
+
+          <!-- Justificacion -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Justificación</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="preorden.justificacion"
+              placeholder="Obligatorio"
+              :disable="disabled||soloLectura"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+
           <!-- Persona que autoriza -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
@@ -88,17 +101,14 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="disabled||soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
               map-options
             />
           </div>
-         
-          
 
-          
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Autorizacion</label>
@@ -110,7 +120,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="disabled||soloLectura"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -148,16 +158,16 @@
             </q-select>
           </div>
 
-          
           <!-- Tabla con popup -->
           <div class="col-12">
-            <essential-table
+            <essential-popup-editable-table
               ref="refItems"
               titulo="Productos Seleccionados"
-              :configuracionColumnas="[
-                ...configuracionColumnasItemOrdenCompra,
-                accionesTabla,
-              ]"
+              :configuracionColumnas="
+                accion == acciones.consultar
+                  ? configuracionColumnasDetallesProductos
+                  : [...configuracionColumnasDetallesProductos, accionesTabla]
+              "
               :datos="preorden.listadoProductos"
               separador="cell"
               :permitirEditarModal="true"
@@ -167,11 +177,44 @@
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
-              :accion1="btnEditarFila"
-              :accion2="btnEliminarFila"
+              :accion1="btnEliminarFila"
               v-on:fila-modificada="calcularValores"
             >
-            </essential-table>
+            </essential-popup-editable-table>
+          </div>
+          <!-- Tabla con el resumen -->
+          <div class="col-12">
+            <div class="row q-col-xs-4 q-col-xs-offset-8 flex-end justify-end">
+              <q-list
+                bordered
+                separator
+                dense
+                v-if="preorden.listadoProductos.length > 0"
+              >
+                <q-item>
+                  <q-item-section>Subtotal: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ subtotal }}</q-item-section>
+                </q-item>
+
+                <q-item>
+                  <q-item-section class="q-mr-md">Descuento: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ descuento }}</q-item-section>
+                </q-item>
+
+                <q-item>
+                  <q-item-section>IVA (12%): </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ iva }}</q-item-section>
+                </q-item>
+                <q-item>
+                  <q-item-section>Total: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ total }}</q-item-section>
+                </q-item>
+              </q-list>
+            </div>
           </div>
         </div>
       </q-form>

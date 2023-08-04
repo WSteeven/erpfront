@@ -9,6 +9,7 @@ export class ItemOrdenCompra extends EntidadAuditable {
     iva: number | null
     orden_compra: number | null
     porcentaje_descuento: number | null
+    descuento: number | null
     precio_unitario: number | null
     producto: number | null //producto padre del detalle
     subtotal: number | null
@@ -25,6 +26,7 @@ export class ItemOrdenCompra extends EntidadAuditable {
         this.iva = null
         this.orden_compra = null
         this.porcentaje_descuento = null
+        this.descuento = null
         this.precio_unitario = null
         this.producto = null
         this.subtotal = null

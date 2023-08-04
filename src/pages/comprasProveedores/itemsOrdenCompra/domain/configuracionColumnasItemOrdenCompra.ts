@@ -80,7 +80,17 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         name: 'porcentaje_descuento',
         field: 'porcentaje_descuento',
         hint: 'Porcentaje de descuento',
-        label: '% descuento',
+        label: '% desc.',
+        align: 'left',
+        type: 'number',
+        editable: true,
+        sortable: true
+    },
+    {
+        name: 'descuento',
+        field: 'descuento',
+        hint: 'Desc.',
+        label: 'Desc.',
         align: 'left',
         type: 'number',
         editable: true,

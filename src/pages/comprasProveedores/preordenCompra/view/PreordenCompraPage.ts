@@ -27,27 +27,36 @@ import { opcionesForma, opcionesTiempo, tabOptionsPreordenCompra } from "config/
 import { useAuthenticationStore } from "stores/authentication";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { PreordenCompra } from "../domain/PreordenCompra";
 import { PreordenCompraController } from "../infraestructure/PreordenCompraController";
 import { PedidoController } from "pages/bodega/pedidos/infraestructura/PedidoController";
+import { usePreordenStore } from "stores/comprasProveedores/preorden";
+import { useRouter } from "vue-router";
 
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
     setup() {
         const mixin = new ContenedorSimpleMixin(PreordenCompra, new PreordenCompraController())
-        const { entidad: preorden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+        const { entidad: preorden, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const {onConsultado}=mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+        const { onConsultado } = mixin.useHooks()
+        const { confirmar } = useNotificaciones()
 
         //Stores
         useNotificacionStore().setQuasar(useQuasar())
         useCargandoStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
+        const preordenStore = usePreordenStore()
+        const router =useRouter()
 
         const cargando = new StatusEssentialLoading()
+
+        //variables
+        const subtotal = ref(0.00)
+        const descuento = ref(0.00)
+        const iva = ref(0.00)
+        const total = ref(0.00)
 
         // Flags
         let tabSeleccionado = ref()
@@ -55,8 +64,6 @@ export default defineComponent({
         let puedeEditar = ref(false)
         const refItems = ref()
 
-        //Filtros y listados
-        const { proveedores, filtrarProveedores}=useFiltrosListadosSelects(listadosAuxiliares)
 
         //Obtener listados
         const empleados = ref([])
@@ -76,10 +83,10 @@ export default defineComponent({
                 pedidos: {
                     controller: new PedidoController(),
                     params: {
-                        autorizacion_id:2//trae solo los pedidos autorizados
+                        autorizacion_id: 2//trae solo los pedidos autorizados
                     }
                 }
-                
+
             })
         })
 
@@ -92,41 +99,49 @@ export default defineComponent({
 
         const v$ = useVuelidate(reglas, preorden)
         setValidador(v$.value)
-        
+
+        /*******************************************************************************************
+         * HOOKS
+         ******************************************************************************************/
+        onConsultado(() => {
+            if (accion.value == acciones.editar) soloLectura.value = true
+        })
+
         /*******************************************************************************************
          * Funciones
          ******************************************************************************************/
-        
+
         function filtrarPreordenes(tab: string) {
-            if(tab=== 'PENDIENTE') puedeEditar.value=true
+            tabSeleccionado.value = tab
+            if (tab === 'PENDIENTE') puedeEditar.value = true
+            else puedeEditar.value = false
             listar({ solicitante_id: store.user.id, estado: tab })
         }
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => preorden.listadoProductos.splice(posicion, 1))
         }
-        
+
 
         /*******************************************************************************************
          * Botones de tabla
          ******************************************************************************************/
-        const btnEditarFila: CustomActionTable = {
-            titulo: 'Editar',
-            icono: 'bi-pencil',
-            color: 'positive',
-            accion: async ({ entidad, posicion }) => {
-                console.log('Diste clic en editar')
-                console.log('entidad', entidad)
-                console.log('posicion', posicion)
-            }
-        }
         const btnEliminarFila: CustomActionTable = {
             titulo: 'Eliminar',
             icono: 'bi-x',
             color: 'negative',
             accion: ({ entidad, posicion }) => {
                 eliminar({ posicion })
-                // confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
             }
+        }
+        const btnHacerOrdenCompra: CustomActionTable = {
+            titulo: 'Generar OC',
+            color: 'primary',
+            icono: 'bi-pencil-square',
+            accion: ({ entidad, posicion }) => {
+                preordenStore.preorden = entidad
+                router.push('ordenes-compras')
+            },
+            visible: () => tabSeleccionado.value === 'PENDIENTE',
         }
 
         watch(refItems, () => {
@@ -137,7 +152,6 @@ export default defineComponent({
         // configurar los listados
         empleados.value = listadosAuxiliares.empleados
         categorias.value = listadosAuxiliares.categorias
-        // proveedores.value = listadosAuxiliares.proveedores
         autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
         empleadosAutorizadores.value = JSON.parse(LocalStorage.getItem('autorizaciones_especiales')!.toString())
 
@@ -150,7 +164,6 @@ export default defineComponent({
             //listados
             empleados,
             categorias,
-            proveedores,
             autorizaciones,
             empleadosAutorizadores,
             opcionesForma,
@@ -160,18 +173,22 @@ export default defineComponent({
             store,
 
             //botones de tabla
-            btnEditarFila,
             btnEliminarFila,
+            btnHacerOrdenCompra,
 
-            
+
             //tabla de detalles
             //Tabs
             tabOptionsPreordenCompra,
             tabSeleccionado,
             puedeEditar,
+            soloLectura,
 
             //funciones
             filtrarPreordenes,
+
+            //variables computadas
+            subtotal, total, descuento, iva,
 
         }
     }
