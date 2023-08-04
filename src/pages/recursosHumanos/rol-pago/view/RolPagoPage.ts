@@ -118,8 +118,6 @@ export default defineComponent({
       consultar({ id: rolPagoStore.idRolPagoSeleccionada })
     } else rolpago.hydrate(new RolPago())
     if (rolPagoStore.idRolPagoMes) {
-      console.log('nuevo rol de pagos: ' + rolPagoStore.idRolPagoMes);
-
       rolpago.rol_pago_id = rolPagoStore.idRolPagoMes
       rolpago.mes = rolPagoStore.mes
     }

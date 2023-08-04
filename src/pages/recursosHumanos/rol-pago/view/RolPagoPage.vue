@@ -58,7 +58,7 @@
           options-dense
           dense
           outlined
-          :disable="disabled"
+          :disable="disabled || accion === 'EDITAR'"
           :readonly="disabled"
           use-input
           input-debounce="0"
@@ -109,19 +109,6 @@
           placeholder="Obligatorio"
           type="number"
           disable
-          outlined
-          dense
-        >
-        </q-input>
-      </div>
-      <!--salario -->
-      <div class="col-12 col-md-3" v-if="es_consultado">
-        <label class="q-mb-sm block">Salario</label>
-        <q-input
-          v-model="rolpago.salario"
-          placeholder="Obligatorio"
-          type="number"
-          :disable="disabled"
           outlined
           dense
         >

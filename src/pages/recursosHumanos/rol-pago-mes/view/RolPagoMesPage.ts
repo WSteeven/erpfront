@@ -129,6 +129,7 @@ export default defineComponent({
       visible: ({ entidad }) => {return entidad.estado === estadosRolPago.EJECUTANDO && (authenticationStore.esRecursosHumanos)},
       accion: ({ entidad }) => {
         rolPagoStore.idRolPagoSeleccionada = entidad.id
+        rolPagoStore.idRolPagoMes= entidad.id
         rolPagoStore.accion = acciones.editar
         modalesRolPago.abrirModalEntidad('RolPagoPage')
       },
