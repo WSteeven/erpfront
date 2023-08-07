@@ -570,7 +570,7 @@
               :error="!!v$.vehiculo.$errors.length"
               @blur="v$.vehiculo.$touch"
               @filter="filtrarVehiculos"
-              error-message="Debes seleccionar una Tarea"
+              error-message="Debes seleccionar un numero de placa"
               use-input
               input-debounce="0"
               :option-value="(v) => v.id"
