@@ -56,7 +56,7 @@ export default defineComponent({
     } = useNotificaciones()
 
     const empleados = ref([])
-    const autorizaciones = ref()
+    const parentezcos = [{nombre:'CÓNYUGE'},{nombre:'HIJO'},{nombre:'HIJA'}]
     const esRecursosHumanos = store.esRecursosHumanos
 
     const esAutorizador = ref(false)
@@ -99,6 +99,7 @@ export default defineComponent({
       removeAccents,
       mixin,
       familiares,
+      parentezcos,
       filtrarEmpleados,
       esAutorizador,
       esRecursosHumanos,

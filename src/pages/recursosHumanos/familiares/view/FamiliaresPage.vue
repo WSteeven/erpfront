@@ -96,25 +96,43 @@
             </q-input>
           </div>
            <!-- Parentezco -->
-           <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Parentezco</label>
-            <q-input
+            <q-select
               v-model="familiares.parentezco"
-              @update:model-value="(v) => (familiares.parentezco = removeAccents(v))"
-              placeholder="Obligatorio"
-              :disable="disabled"
+              :options="parentezcos"
               :error="!!v$.parentezco.$errors.length"
               @blur="v$.parentezco.$touch"
-              outlined
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
               dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.nombre"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
             >
-              <template v-slot:error>
-                <div v-for="error of v$.parentezco.$errors" :key="error.$uid">
+            <template v-slot:error>
+                <div v-for="error of v$.vehiculo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </q-input>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
+
+
         </div>
       </q-form>
     </template>
