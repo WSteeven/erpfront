@@ -214,7 +214,7 @@
               :options="categorias"
               transition-show="jump-up"
               transition-hide="jump-down"
-              hint="Este campo es opcionall, selecciona una o varias categorias"
+              hint="Este campo es opcional, selecciona una o varias categorias"
               :disable="disabled"
               options-dense
               multiple
@@ -463,8 +463,7 @@
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
-              :accion1="btnEditarFila"
-              :accion2="btnEliminarFila"
+              :accion1="btnEliminarFila"
               v-on:fila-modificada="calcularValores"
             >
             </essential-popup-editable-table>

@@ -2,7 +2,7 @@
 import { configuracionColumnasOrdenesCompras } from "../domain/configuracionColumnasOrdenCompra";
 import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
 import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
-import { required, } from 'shared/i18n-validators'
+import { required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watch, } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
@@ -118,7 +118,7 @@ export default defineComponent({
          ****************************************************************************************/
         const reglas = {
             proveedor: { required },
-            categorias: { required },
+            categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
             // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
             autorizador: { required },
             descripcion: { required },
@@ -158,9 +158,9 @@ export default defineComponent({
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
         }
-        function actualizarPreorden(){
-            if(!orden.preorden||orden.preorden===0)
-            limpiarOrden()
+        function actualizarPreorden() {
+            if (!orden.preorden || orden.preorden === 0)
+                limpiarOrden()
         }
 
         /**
@@ -227,16 +227,6 @@ export default defineComponent({
         /*******************************************************************************************
          * Botones de tabla
          ******************************************************************************************/
-        const btnEditarFila: CustomActionTable = {
-            titulo: 'Editar',
-            icono: 'bi-pencil',
-            color: 'positive',
-            accion: async ({ entidad, posicion }) => {
-                console.log('Diste clic en editar')
-                console.log('entidad', entidad)
-                console.log('posicion', posicion)
-            }
-        }
         const btnEliminarFila: CustomActionTable = {
             titulo: 'Eliminar',
             icono: 'bi-x',
@@ -281,7 +271,6 @@ export default defineComponent({
 
 
             //botones de tabla
-            btnEditarFila,
             btnEliminarFila,
 
             //selector
@@ -314,7 +303,7 @@ export default defineComponent({
 
 
             //variables computadas
-            subtotal,total, descuento, iva,
+            subtotal, total, descuento, iva,
         }
     }
 })
