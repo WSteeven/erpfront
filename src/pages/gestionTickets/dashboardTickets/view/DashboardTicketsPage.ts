@@ -1,5 +1,4 @@
 // Dependencias
-import { configuracionColumnasDashboardTicket } from '../domain/configuracionColumnasDashboardTicket'
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
@@ -465,7 +464,6 @@ export default defineComponent({
       filtrarEmpleados,
       empleados,
       empleadosResponsables,
-      configuracionColumnasDashboardTicket,
       ticketsConSolucion,
       cantTicketsCreados,
       cantTicketsCreadosParaMi,

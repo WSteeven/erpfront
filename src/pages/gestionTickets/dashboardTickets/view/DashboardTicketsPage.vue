@@ -214,7 +214,7 @@
                   <div class="text-h3 text-positive q-mb-md">
                     {{ cantTicketsCalificadosSolicitante }}
                   </div>
-                  <div>Cantidad de tickets creados y calificados</div>
+                  <div>Cantidad de tickets que creó y calificó</div>
                 </q-card>
               </div>
             </div>

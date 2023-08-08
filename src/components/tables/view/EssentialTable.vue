@@ -1146,18 +1146,6 @@
           >{{ 'RUTA COMPLETADA' }}
         </q-chip>
 
-        <q-chip
-          v-if="props.value === 'TICKET TRANSFERIDO'"
-          class="bg-green-1 text-positive"
-        >
-          <q-icon
-            name="bi-check-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
-          >{{ 'TICKET TRANSFERIDOfdf' }}
-        </q-chip>
-
         <estados-subtareas :propsTable="props" />
 
         <!-- estados de la tabla prestamos temporales -->
@@ -1169,6 +1157,44 @@
           ></q-icon
           >DEVUELTO
         </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-observacion="props">
+      <q-td :props="props">
+        <q-chip
+          v-if="props.value === 'TICKET TRANSFERIDO'"
+          class="bg-green-1 text-positive"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET TRANSFERIDO' }}
+        </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-calificado_solicitante="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          class="q-mr-xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
+    <template #body-cell-calificado_responsable="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          class="q-mr-xs"
+        ></q-icon>
       </q-td>
     </template>
 

@@ -2,7 +2,7 @@ type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 's
 type align = 'left' | 'center' | 'right'
 
 export interface ColumnConfig<T> {
-  id: number
+  id?: number
   name: keyof T
   field: keyof T
   label: string
