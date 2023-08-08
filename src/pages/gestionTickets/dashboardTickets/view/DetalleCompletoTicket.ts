@@ -1,6 +1,7 @@
 // Dependencias
 import { configuracionColumnasPausas } from 'pages/gestionTrabajos/subtareas/modules/pausasRealizadas/domain/configuracionColumnasPausas'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
+import { tabOptionsEstadosTickets, tiposPrioridades, estadosTickets } from 'config/tickets.utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -23,6 +24,11 @@ import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTi
 import { TipoTicketController } from 'pages/gestionTickets/tiposTickets/infraestructure/TipoTicketController'
 import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
 import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
+import { useTicketStore } from 'stores/ticket'
+import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
+import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
+import { ArchivoTicketController } from 'pages/gestionTickets/tickets/infraestructure/ArchivoTicketController '
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 
 export default defineComponent({
   components: {
@@ -31,23 +37,22 @@ export default defineComponent({
     ArchivoSeguimiento,
     EstadosSubtareas,
   },
-  props: {
-    ticket: {
-      type: Object as () => Ticket,
-      required: true,
-    },
-  },
   setup(props) {
+    /**********
+     * Stores
+     **********/
+    const ticketStore = useTicketStore()
+
     /*******
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { entidad: ticket, listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
+    const { listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
     const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
 
-    // const mixinArchivoTicket = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
+    const mixinArchivoTicket = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
 
     cargarVista(async () => {
       await obtenerListados({
@@ -83,18 +88,25 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    fechaLimite.value = props.ticket.fecha_hora_limite?.split(' ')[0]
-    horaLimite.value = props.ticket.fecha_hora_limite?.split(' ')[1]
-    props.ticket.establecer_hora_limite = !!horaLimite.value
-    fechaHoraActual.value = props.ticket.fecha_hora_solicitud
-    // clearInterval(tiempoActualInterval)
-    if (props.ticket.departamento_responsable) {
+    const ticket = ticketStore.filaTicket
+    fechaLimite.value = ticket.fecha_hora_limite?.split(' ')[0]
+    horaLimite.value = ticket.fecha_hora_limite?.split(' ')[1]
+    ticket.establecer_hora_limite = !!horaLimite.value
+    fechaHoraActual.value = ticket.fecha_hora_solicitud
+
+    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((categoria: CategoriaTipoTicket) => categoria.departamento_id === ticket.departamento_responsable))
+    const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket_id === ticket.categoria_tipo_ticket))
+
+    if (ticket.departamento_responsable) {
       obtenerResponsables({
-        departamento_id: props.ticket.departamento_responsable,
+        departamento_id: ticket.departamento_responsable,
       })
     }
-    refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id })
-    refArchivoTicket.value.quiero_subir_archivos = false
+
+    onMounted(() => {
+      refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id })
+      refArchivoTicket.value.quiero_subir_archivos = false
+    })
     obtenerPausas()
     obtenerRechazos()
 
@@ -116,7 +128,7 @@ export default defineComponent({
       try {
         cargando.activar()
         const ruta =
-          axios.getEndpoint(endpoints.pausas_tickets) + '/' + props.ticket.id
+          axios.getEndpoint(endpoints.pausas_tickets) + '/' + ticket.id
         const response: AxiosResponse = await axios.get(ruta)
         pausas.value = response.data.results
       } catch (e) {
@@ -127,6 +139,13 @@ export default defineComponent({
     }
 
     async function obtenerRechazos() {
+      const ruta =
+        axios.getEndpoint(endpoints.rechazos_tickets) + '/' + ticket.id
+      const response: AxiosResponse = await axios.get(ruta)
+      rechazos.value = response.data.results
+    }
+
+    async function obtenerCancelados() {
       const ruta =
         axios.getEndpoint(endpoints.rechazos_tickets) + '/' + ticket.id
       const response: AxiosResponse = await axios.get(ruta)
@@ -193,6 +212,10 @@ export default defineComponent({
       pausas,
       rechazos,
       obtenerTexto,
+      categoriasTiposTickets,
+      tiposTickets,
+      tiposPrioridades,
+      mixinArchivoTicket,
     }
   }
 })

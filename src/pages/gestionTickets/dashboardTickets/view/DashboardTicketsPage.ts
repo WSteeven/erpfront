@@ -13,7 +13,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import TableView from 'components/tables/view/TableView.vue'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
+import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
 import { Bar, Pie } from 'vue-chartjs'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
@@ -21,7 +21,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
-import { formatearFechaSeparador, generarColorHexadecimalAleatorio, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import { formatearFechaSeparador, generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { DashboardTicketController } from '../infraestructure/DashboardTicketsController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -31,10 +31,10 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTicketStore } from 'stores/ticket'
 import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
-import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
+import datalabels from 'chartjs-plugin-datalabels'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad },
@@ -44,7 +44,33 @@ export default defineComponent({
     ***********/
     const ticketStore = useTicketStore()
 
-    ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
+    ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement, datalabels)
+    ChartJS.defaults.plugins.datalabels = {
+      // datalabels: {
+      display: true,
+      align: 'center',
+      backgroundColor: '#eee',
+      color: '#fff',
+      borderRadius: 4,
+      opacity: .8,
+      font: {
+        size: 10,
+      },
+      // align: 'end',
+      // anchor: 'end',
+      // color: function (context) {
+      //   return context.dataset.backgroundColor;
+      // },
+      /* font: function (context) {
+        var w = context.chart.width;
+        return {
+          size: w < 512 ? 12 : 14,
+          weight: 'bold',
+        };
+      }, */
+
+      // },
+    };
 
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
@@ -139,17 +165,52 @@ export default defineComponent({
     const optionsPie = {
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: {
+          bottom: 32,
+          top: 32,
+        },
+        margin: {
+          top: 32,
+        }
+      },
 
-      title: {
+      /* title: {
         display: true,
         text: 'Título del gráfico pie',
         fontSize: 16
-      },
+      },*/
 
-      legend: {
+      /* legend: {
         display: true,
         position: 'left' // Puedes usar 'top', 'bottom', 'left' o 'right'
-      }
+      },*/
+      /*plugins: {
+        datalabels: {
+          render: 'label',
+          fontColor: '#000',
+          position: 'outside'
+        }
+      },*/
+      plugins: {
+        datalabels: {
+          align: 'end',
+          anchor: 'end',
+          color: function (context) {
+            return context.dataset.backgroundColor;
+          },
+          font: function (context) {
+            var w = context.chart.width;
+            return {
+              size: w < 512 ? 12 : 14,
+              weight: 'bold',
+            };
+          },
+          formatter: function (value, context) {
+            return value + ': ' + context.chart.data.labels[context.dataIndex]
+          }
+        }
+      },
     }
 
     // Reglas de validacion
@@ -172,7 +233,7 @@ export default defineComponent({
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
         ticketStore.filaTicket = entidad
-        modales.abrirModalEntidad('DetalleTicketAsignadoPage')
+        modales.abrirModalEntidad('DetalleCompletoTicket')
       },
     }
 
@@ -246,43 +307,43 @@ export default defineComponent({
            **************/
           const labels4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.responsable)
           const valores4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.total_tickets)
-          const colores4 = result.ticketsPorDepartamentoEstadoAsignado.map(() => generarColorHexadecimalAleatorio())
+          const colores4 = result.ticketsPorDepartamentoEstadoAsignado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoAsignadoBar.value = mapearDatos(labels4, valores4, 'Cantidades de tickets del departamento con filtro por estado', colores4)
           ticketsPorDepartamentoEstadoAsignado.value = await result.ticketsPorDepartamentoEstadoAsignado
 
           const labels5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => item.responsable)
           const valores5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => item.total_tickets)
-          const colores5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => generarColorHexadecimalAleatorio())
+          const colores5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoReasignadoBar.value = mapearDatos(labels5, valores5, 'Cantidades de tickets del departamento con filtro por estado', colores5)
           ticketsPorDepartamentoEstadoReasignado.value = result.ticketsPorDepartamentoEstadoReasignado
 
           const labels6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => item.responsable)
           const valores6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => item.total_tickets)
-          const colores6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => generarColorHexadecimalAleatorio())
+          const colores6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoEjecutandoBar.value = mapearDatos(labels6, valores6, 'Cantidades de tickets del departamento con filtro por estado', colores6)
           ticketsPorDepartamentoEstadoEjecutando.value = result.ticketsPorDepartamentoEstadoEjecutando
 
           const labels7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => item.responsable)
           const valores7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => item.total_tickets)
-          const colores7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => generarColorHexadecimalAleatorio())
+          const colores7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoPausadoBar.value = mapearDatos(labels7, valores7, 'Cantidades de tickets del departamento con filtro por estado', colores7)
           ticketsPorDepartamentoEstadoPausado.value = result.ticketsPorDepartamentoEstadoPausado
 
           const labels8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.responsable)
           const valores8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.total_tickets)
-          const colores8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => generarColorHexadecimalAleatorio())
+          const colores8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar.value = mapearDatos(labels8, valores8, 'Cantidades de tickets del departamento con filtro por estado', colores8)
           ticketsPorDepartamentoEstadoFinalizadoSolucionado.value = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado
 
           const labels9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => item.responsable)
           const valores9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => item.total_tickets)
-          const colores9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => generarColorHexadecimalAleatorio())
+          const colores9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar.value = mapearDatos(labels9, valores9, 'Cantidades de tickets del departamento con filtro por estado', colores9)
           ticketsPorDepartamentoEstadoFinalizadoSinSolucion.value = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion
 
           const labels10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.responsable)
           const valores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.total_tickets)
-          const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorHexadecimalAleatorio())
+          const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoCalificadoBar.value = mapearDatos(labels10, valores10, 'Cantidades de tickets del departamento con filtro por estado', colores10)
           ticketsPorDepartamentoEstadoCalificado.value = result.ticketsPorDepartamentoEstadoCalificado
 
@@ -339,8 +400,8 @@ export default defineComponent({
             backgroundColor: colores ?? '#666f88',
             label: titulo,
             data: valores,
-          }
-        ]
+          },
+        ],
       }
     }
 
@@ -362,13 +423,15 @@ export default defineComponent({
     function mapearColor(estadoTicket: keyof typeof estadosTickets) {
       switch (estadoTicket) {
         case estadosTickets.ASIGNADO: return '#9fa8da'
+        case estadosTickets.PENDIENTE: return '#9fa8da'
         case estadosTickets.REASIGNADO: return '#78909c'
         case estadosTickets.EJECUTANDO: return '#ffc107'
         case estadosTickets.PAUSADO: return '#616161'
         case estadosTickets.FINALIZADO_SOLUCIONADO: return '#8bc34a'
         case estadosTickets.FINALIZADO_SIN_SOLUCION: return '#9ba98c'
+        case estadosTickets.FINALIZADO: return '#8bc34a'
         case estadosTickets.CANCELADO: return '#c31d25'
-        case estadosTickets.CALIFICADO: return '#98bf23'
+        // case estadosTickets.CALIFICADO: return '#98bf23'
       }
     }
 
@@ -389,12 +452,8 @@ export default defineComponent({
       }
     }
 
-    function saludar() {
-      console.log('hola bebe')
-    }
-
     /*function mapearColorDepartamentoEstado() {
-      return generarColorHexadecimalAleatorio()
+      return generarColorAzulPastelClaro()
     } */
 
     function ordenarEmpleados() {
@@ -402,7 +461,6 @@ export default defineComponent({
     }
 
     return {
-      saludar,
       ordenarEmpleados,
       filtrarEmpleados,
       empleados,

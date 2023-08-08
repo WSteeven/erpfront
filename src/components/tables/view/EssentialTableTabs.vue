@@ -69,6 +69,7 @@
         :permitir-buscar="permitirBuscar"
         @filtrar="consultarTodos"
         @toggle-filtros="toggleFiltros"
+        :mostrarExportar="mostrarExportar"
       ></essential-table>
     </div>
   </div>
@@ -200,6 +201,10 @@ const props = defineProps({
   permitirBuscar: {
     type: Boolean,
     default: true,
+  },
+  mostrarExportar: {
+    type: Boolean,
+    default: false,
   },
 })
 

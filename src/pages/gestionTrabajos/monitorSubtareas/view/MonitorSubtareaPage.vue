@@ -51,6 +51,7 @@
       :altoFijo="altoFijo"
       @filtrar="aplicarFiltro"
       @limpiarListado="() => (listado = [])"
+      :mostrarExportar="true"
     ></essential-table-tabs>
 
     <modales-entidad :comportamiento="modalesSubtarea" :mixin-modal="mixin" />

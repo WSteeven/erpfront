@@ -639,6 +639,13 @@
                     ></q-icon
                     >{{ 'RUTA COMPLETADA' }}
                   </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET TRANSFERIDO'"
+                    class="bg-green-1 text-positive"
+                  >
+                    {{ 'TICKET TRANSFERIDO' }}
+                  </q-chip>
                 </div>
 
                 <span
@@ -1137,6 +1144,18 @@
             class="q-mr-xs"
           ></q-icon
           >{{ 'RUTA COMPLETADA' }}
+        </q-chip>
+
+        <q-chip
+          v-if="props.value === 'TICKET TRANSFERIDO'"
+          class="bg-green-1 text-positive"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET TRANSFERIDOfdf' }}
         </q-chip>
 
         <estados-subtareas :propsTable="props" />

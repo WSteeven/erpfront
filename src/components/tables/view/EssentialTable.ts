@@ -438,8 +438,6 @@ export default defineComponent({
       abrirModalEditar,
       exportTable,
       toggleFiltros,
-
-      mostrarExportar: props.mostrarExportar
     }
   },
 })
