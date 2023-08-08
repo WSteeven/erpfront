@@ -7,6 +7,7 @@ import { GastoPusherEvent } from 'pages/fondosRotativos/gasto/application/GastoP
 import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusherEvent'
 import { TicketPusherEvent } from 'src/pusherEvents/TicketPusherEvent'
 import { DevolucionPusherEvent } from 'pages/bodega/devoluciones/application/DevolucionPusherEvent'
+import { PermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/PermisosEmpleadoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -46,5 +47,13 @@ export class NotificacionesSistema {
     // Tickets
     const ticketPusherEvent = new TicketPusherEvent()
     ticketPusherEvent.start()
+
+    //Recursos Humanos
+    //Permiso de Empleado
+    const permisoEmpleadoPusherEvent = new PermisoEmpleadoPusherEvent()
+    permisoEmpleadoPusherEvent.start()
+
+
+
   }
 }
