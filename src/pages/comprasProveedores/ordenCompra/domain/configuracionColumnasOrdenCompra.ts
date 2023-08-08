@@ -44,4 +44,11 @@ export const configuracionColumnasOrdenesCompras : ColumnConfig<OrdenCompra>[]=[
         align: 'left',
         sortable: true,
       },
+      {
+        name: 'autorizacion',
+        field: 'autorizacion',
+        label: 'Autorización',
+        align: 'left',
+        sortable: true,
+      },
 ] 

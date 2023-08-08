@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="!$q.screen.xs && datos.length"
+    v-if="!$q.screen.xs && datos.length && permitirEditarCeldas"
     class="text-right text-grey-7"
   >
     <q-chip class="bg-grey-2 text-info" color="info">
@@ -611,7 +611,7 @@
     </template>
 
     <!-- Edicion de celdas -->
-    <template v-slot:body-cell="props">
+    <template v-slot:body-cell="props" v-if="permitirEditarCeldas">
       <q-td :key="props.col.name" :props="props">
         {{ props.row[props.col.name] }}
         <!-- :title="'Modificar ' + props.col.label" -->
@@ -635,9 +635,7 @@
             keep-color
             v-model="scope.value"
             :label="scope.value ? 'SIi' : 'NOi'"
-          /><template
-          >
-          </template>
+          /><template> </template>
         </q-popup-edit>
       </q-td>
     </template>
@@ -651,7 +649,7 @@
           :color="props.row[props.col.name] ? 'positive' : 'negative'"
         />
         <q-popup-edit
-          v-if="props.col.editable"
+          v-if="props.col.editable && permitirEditarCeldas"
           v-model="props.row[props.col.name]"
           :title="'¿Es ' + props.col.name + '?'"
           auto-save
@@ -671,7 +669,7 @@
           :color="props.row[props.col.name] ? 'positive' : 'negative'"
         />
         <q-popup-edit
-          v-if="props.col.editable"
+          v-if="props.col.editable && permitirEditarCeldas"
           v-model="props.row[props.col.name]"
           :title="'¿Grava IVA? '"
           auto-save
@@ -683,11 +681,9 @@
       </q-td>
     </template>
   </q-table>
-  
 </template>
 
 <style lang="scss">
-
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 410px;
@@ -759,5 +755,4 @@
 }
 </style>
 
-<script src="./EssentialPopupEditableTable.ts">
-</script>
+<script src="./EssentialPopupEditableTable.ts"></script>

@@ -93,7 +93,7 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         label: 'Desc.',
         align: 'left',
         type: 'number',
-        editable: true,
+        editable: false,
         sortable: true
     },
     {

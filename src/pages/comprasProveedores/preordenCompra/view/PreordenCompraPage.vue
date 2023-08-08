@@ -170,15 +170,12 @@
               "
               :datos="preorden.listadoProductos"
               separador="cell"
-              :permitirEditarModal="true"
-              :editarFilaLocal="true"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
               :accion1="btnEliminarFila"
-              v-on:fila-modificada="calcularValores"
             >
             </essential-popup-editable-table>
           </div>

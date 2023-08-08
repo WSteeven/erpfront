@@ -4,12 +4,12 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Orden de Compra"
     :tab-options="tabOptionsOrdenCompra"
-    @tab-seleccionado="tabEs"
+    tabDefecto="1"
     :filtrar="filtrarOrdenes"
     :permitirEditar="puedeEditar"
-    :accion1="botonDespachar"
-    :accion2="botonAnularAutorizacion"
-    :accion3="botonImprimir"
+    :permitirEliminar="false"
+    :accion1="btnImprimir"
+    :accion2="btnAnularOrden"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -74,8 +74,8 @@
             </q-input>
           </div>
 
-           <!-- Persona que autoriza -->
-           <div class="col-12 col-md-3">
+          <!-- Persona que autoriza -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="orden.autorizador"
@@ -87,7 +87,7 @@
               outlined
               :error="!!v$.autorizador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled || soloLectura||orden.tiene_preorden"
+              :disable="disabled || soloLectura || orden.tiene_preorden"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -95,7 +95,7 @@
             />
           </div>
           <!-- Select autorizacion -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md" v-if="orden.autorizador">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="orden.autorizacion"
@@ -105,7 +105,11 @@
               options-dense
               dense
               outlined
-              :disable="disabled||orden.tiene_preorden"
+              :disable="
+                disabled ||
+                orden.tiene_preorden ||
+                orden.autorizador !== store.user.id
+              "
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -131,7 +135,7 @@
           </div>
 
           <!-- preorden de compra -->
-          <div  class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° preorden</label>
             <q-input
               type="number"
@@ -140,23 +144,21 @@
               hint="Ingresa un numero de preorden y presiona Enter"
               @keyup.enter="llenarOrden(orden.preorden)"
               @update:model-value="actualizarPreorden"
-              :readonly="disabled"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               outlined
               dense
             >
             </q-input>
           </div>
           <!-- pedido -->
-          <div  class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° pedido</label>
             <q-input
               type="number"
               v-model="orden.pedido"
               placeholder="Opcional"
               hint="Este es un campo opcional"
-              :readonly="disabled"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               outlined
               dense
             >
@@ -179,6 +181,7 @@
               @filter="filtrarProveedores"
               :error="!!v$.proveedor.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
+              :disable="disabled || soloLectura"
               :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value
@@ -207,7 +210,10 @@
           </div>
 
           <!--Categorias-->
-          <div class="col-12 col-md-3">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == acciones.nuevo || orden.categorias"
+          >
             <label class="q-mb-sm block">Categorias</label>
             <q-select
               v-model="orden.categorias"
@@ -215,7 +221,7 @@
               transition-show="jump-up"
               transition-hide="jump-down"
               hint="Este campo es opcional, selecciona una o varias categorias"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               options-dense
               multiple
               dense
@@ -262,7 +268,6 @@
               v-model="orden.descripcion"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :error="!!v$.descripcion.$errors.length"
               outlined
               dense
@@ -288,7 +293,6 @@
               outlined
               :error="!!v$.forma.$errors.length"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :option-label="(v) => v.label"
               :option-value="(v) => v.value"
               emit-value
@@ -341,7 +345,7 @@
               </template>
             </q-select>
           </div>
-         
+
           <!-- Observacion de autorizacion -->
           <div
             v-if="store.user.id === orden.per_autoriza_id"
@@ -375,6 +379,7 @@
               </template>
             </q-input>
           </div>
+
           <!-- Select estado -->
           <div
             v-if="orden.estado || accion === acciones.consultar"
@@ -383,14 +388,13 @@
             <label class="q-mb-sm block">Estado de la Orden de Compra</label>
             <q-select
               v-model="orden.estado"
-              :options="opciones_estados"
+              :options="estados"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
               dense
               outlined
               disable
-              :readonly="disabled || soloLectura"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -450,13 +454,22 @@
             <essential-popup-editable-table
               ref="refItems"
               titulo="Productos Seleccionados"
-              :configuracionColumnas="[
-                ...configuracionColumnasItemOrdenCompra,
-                accionesTabla,
-              ]"
+              :configuracionColumnas="
+                accion == acciones.nuevo ||
+                (accion == acciones.editar &&
+                  (orden.autorizador == store.user.id ||
+                    orden.solicitante == store.user.id))
+                  ? [...configuracionColumnasItemOrdenCompra, accionesTabla]
+                  : configuracionColumnasItemOrdenCompra
+              "
               :datos="orden.listadoProductos"
               separador="cell"
-              :permitirEditarModal="true"
+              :permitirEditarCeldas="
+                accion == acciones.nuevo ||
+                (accion == acciones.editar &&
+                  (orden.autorizador == store.user.id ||
+                    orden.solicitante == store.user.id))
+              "
               :editarFilaLocal="true"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -468,7 +481,6 @@
             >
             </essential-popup-editable-table>
           </div>
-
           <!-- Tabla con el resumen -->
           <div class="col-12">
             <div class="row q-col-xs-4 q-col-xs-offset-8 flex-end justify-end">

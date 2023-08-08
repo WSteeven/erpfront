@@ -143,6 +143,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    permitirEditarCeldas: {
+      type: Boolean,
+      default: true,
+    }
   },
   emits: [
     'selected',

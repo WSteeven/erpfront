@@ -31,6 +31,7 @@ export function useOrquestadorSelectorDetalles(entidad: OrdenCompra, endpoint: k
         let ids: any = []
         ids = entidad.listadoProductos.map((entidad: DetalleProducto) => entidad.id)
         items.forEach((item: any) => {
+            item.precio_unitario = 0
             item.facturable = true
             item.grava_iva = true
         })

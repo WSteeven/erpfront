@@ -53,9 +53,9 @@ export const likertCalificacion = [
 ]
 
 export const tabOptionsOrdenCompra: TabOption[] = [
-  { label: 'Sin Autorizador', value: '0' },
-  { label: 'Autorizadas', value: '1' },
-  { label: 'Canceladas', value: '2' }
+  { label: 'Pendientes', value: '1' },
+  { label: 'Autorizadas', value: '2' },
+  { label: 'Canceladas', value: '4' }
 ]
 export const tabOptionsPreordenCompra: TabOption[] = [
   { label: 'Pendiente', value: 'PENDIENTE' },

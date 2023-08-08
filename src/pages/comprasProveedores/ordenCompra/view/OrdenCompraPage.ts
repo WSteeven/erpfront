@@ -25,16 +25,19 @@ import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { acciones, accionesTabla } from "config/utils";
+import { acciones, accionesTabla, opcionesEstados } from "config/utils";
 import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
 import { CategoriaController } from "pages/bodega/categorias/infraestructure/CategoriaController";
 import { useAuthenticationStore } from "stores/authentication";
 import { formatearFecha, obtenerTiempoActual } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { emit } from "process";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
+import { ValidarListadoProductos } from "../application/validaciones/ValidarListadoProductos";
+import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
+import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
+import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 
 
 export default defineComponent({
@@ -52,6 +55,7 @@ export default defineComponent({
         useCargandoStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
         const preordenStore = usePreordenStore()
+        const ordenCompraStore = useOrdenCompraStore()
 
         const cargando = new StatusEssentialLoading()
 
@@ -83,6 +87,7 @@ export default defineComponent({
         const empleados = ref([])
         const categorias = ref([])
         const autorizaciones = ref([])
+        const estados = ref([])
         const empleadosAutorizadores = ref([])
         cargarVista(async () => {
             await obtenerListados({
@@ -91,6 +96,12 @@ export default defineComponent({
                     params: {
                         campos: 'id,nombres,apellidos,cargo_id',
                         estado: 1,
+                    }
+                },
+                autorizadores: {
+                    controller: new EmpleadoRoleController(),
+                    params: {
+                        roles: ['AUTORIZADOR'],
                     }
                 },
                 proveedores: {
@@ -114,6 +125,23 @@ export default defineComponent({
         })
 
         /*****************************************************************************************
+         * Hooks
+         ****************************************************************************************/
+        onReestablecer(() => {
+            orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
+            orden.solicitante = store.user.id
+            soloLectura.value = false
+        })
+        onConsultado(() => {
+            if (accion.value === acciones.editar && store.user.id === orden.autorizador)
+                soloLectura.value = false
+            else
+                soloLectura.value = true
+        })
+
+
+
+        /*****************************************************************************************
          * Validaciones
          ****************************************************************************************/
         const reglas = {
@@ -129,7 +157,10 @@ export default defineComponent({
 
         const v$ = useVuelidate(reglas, orden)
         setValidador(v$.value)
-        console.log(formatearFecha(new Date().getDate().toLocaleString()))
+
+        const validarListadoProductos = new ValidarListadoProductos(orden)
+        mixin.agregarValidaciones(validarListadoProductos)
+
         orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
         orden.solicitante = store.user.id
 
@@ -141,9 +172,9 @@ export default defineComponent({
         function estructuraConsultaCategoria() {
             let parametro = ''
             if (orden.categorias!.length > 1) {
-                console.log('Hay varias categorias')
+                // console.log('Hay varias categorias')
             } else {
-                console.log('Hay solo una categoria')
+                // console.log('Hay solo una categoria')
             }
             orden.categorias?.forEach((v, index) => {
                 if (index === orden.categorias!.length - 1) parametro += v
@@ -153,7 +184,10 @@ export default defineComponent({
             return parametro
         }
         function filtrarOrdenes(tab: string) {
-            listar({ solicitante_id: store.user.id, estado: tab })
+            tabSeleccionado.value = tab
+            if (tab == '1') puedeEditar.value = true
+            else puedeEditar.value = false
+            listar({ estado_id: tab, solicitante_id: store.user.id })
         }
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
@@ -234,6 +268,49 @@ export default defineComponent({
             accion: ({ entidad, posicion }) => {
                 eliminar({ posicion })
                 // confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
+            },
+            visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
+        }
+        const btnImprimir: CustomActionTable = {
+            titulo: 'Imprimir',
+            color: 'secondary',
+            icono: 'bi-printer',
+            accion: async ({ entidad }) => {
+                ordenCompraStore.idOrden = entidad.id
+                await ordenCompraStore.imprimirPdf()
+            },
+            visible: () => tabSeleccionado.value > 1 ? true : false
+        }
+        const btnAnularOrden: CustomActionTable = {
+            titulo: 'Anular',
+            color: 'negative',
+            icono: 'bi-x',
+            accion: async ({ entidad, posicion }) => {
+                confirmar('¿Está seguro de anular la orden de compra?', () => {
+                    const data: CustomActionPrompt = {
+                        titulo: 'Causa de anulación',
+                        mensaje: 'Ingresa el motivo de anulación',
+                        accion: async (data) => {
+                            try {
+                                ordenCompraStore.idOrden = entidad.id
+                                const response = await ordenCompraStore.anularOrden({ motivo: data })
+                                if(response!.status==200){
+                                    notificarCorrecto('Se ha anulado correctamente la orden de compra')
+                                    listado.value.splice(posicion, 1)
+                                }
+                            } catch (e: any) {
+                                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+                            }
+                        }
+                    }
+                    prompt(data)
+                })
+            },
+            visible: ({ entidad }) => {
+                if (tabSeleccionado.value == 1) {
+                    return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
+                }
+                return tabSeleccionado.value <= 2 ? true : false
             }
         }
 
@@ -245,9 +322,10 @@ export default defineComponent({
         // configurar los listados
         empleados.value = listadosAuxiliares.empleados
         categorias.value = listadosAuxiliares.categorias
-        // proveedores.value = listadosAuxiliares.proveedores
+        proveedores.value = listadosAuxiliares.proveedores
         autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-        empleadosAutorizadores.value = JSON.parse(LocalStorage.getItem('autorizaciones_especiales')!.toString())
+        empleadosAutorizadores.value = listadosAuxiliares.autorizadores
+        estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
 
         return {
             mixin, orden, disabled, accion, v$, acciones,
@@ -260,6 +338,7 @@ export default defineComponent({
             categorias,
             proveedores,
             autorizaciones,
+            estados,
             empleadosAutorizadores,
             opcionesForma,
             opcionesTiempo,
@@ -269,9 +348,12 @@ export default defineComponent({
 
             preorden: preordenStore.preorden,
 
+            soloLectura,
 
             //botones de tabla
             btnEliminarFila,
+            btnImprimir,
+            btnAnularOrden,
 
             //selector
             refListado,
@@ -287,11 +369,6 @@ export default defineComponent({
             tabSeleccionado,
             puedeEditar,
 
-            tabEs(val) {
-                tabSeleccionado.value = val
-                console.log(val)
-                puedeEditar.value = true
-            },
 
             //funciones
             filtrarOrdenes,

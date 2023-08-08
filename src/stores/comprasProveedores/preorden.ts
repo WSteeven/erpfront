@@ -50,8 +50,10 @@ export const usePreordenStore = defineStore('preorden', () => {
             statusLoading.activar()
             const modelo = await consultar(id)
             console.log('El modelo es: ', modelo)
-            if (modelo.estado === estadosTransacciones.completa)
+            if (modelo.estado === estadosTransacciones.completa) {
                 notificarAdvertencia('La preorden ya ha sido generada en otra orden de compra')
+                preorden.hydrate(preordenReset)
+            }
             else
                 preorden.hydrate(modelo)
         } catch (e) {
