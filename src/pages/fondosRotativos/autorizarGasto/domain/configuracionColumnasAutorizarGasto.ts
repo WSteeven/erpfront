@@ -4,6 +4,13 @@ import { Gasto } from "pages/fondosRotativos/gasto/domain/Gasto";
 
 export const configuracionColumnasAutorizarGasto: ColumnConfig<Gasto>[] = [
   {
+    name: 'id',
+    field: 'id',
+    label: 'Id',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'fecha_viat',
     field: 'fecha_viat',
     label: 'Fecha',

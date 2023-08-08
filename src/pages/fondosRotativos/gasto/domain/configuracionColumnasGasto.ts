@@ -3,6 +3,13 @@ import { Gasto } from "./Gasto";
 
 export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
   {
+    name: 'id',
+    field: 'id',
+    label: 'Id',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'fecha_viat',
     field: 'fecha_viat',
     label: 'Fecha',
