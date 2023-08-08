@@ -27,4 +27,8 @@ export const iconos = {
     label: 'TICKET',
     icono: 'bi-ticket-perforated'
   },
+  permiso_empleado:{
+    label: 'PERMISO EMPLEADO',
+    icono:'bi-person-fill-lock'
+  }
 }

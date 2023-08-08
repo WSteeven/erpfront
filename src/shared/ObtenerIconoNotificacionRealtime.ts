@@ -17,6 +17,10 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.ticket.icono
       case iconos.devolucion.label:
         return iconos.devolucion.icono
+      case iconos.permiso_empleado.label:
+        return iconos.permiso_empleado.icono
+
+
     }
   }
 }
