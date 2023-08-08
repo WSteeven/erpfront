@@ -454,6 +454,38 @@ export function generarColorPastelAzulAleatorio() {
   return colorHexadecimal;
 }
 
+// --
+export function generarColorAzulPastelClaro() {
+  // Generar valores RGB altos (entre 150 y 220) para obtener un tono azul claro
+  const r = Math.floor(Math.random() * 70) + 150;
+  const g = Math.floor(Math.random() * 70) + 150;
+  const b = Math.floor(Math.random() * 100) + 155; // Para asegurarse de que el tono sea azul claro
+
+  // Ajustar el brillo para hacerlo más claro (entre 0.7 y 1.0)
+  const brillo = Math.random() * 0.3 + 0.7;
+
+  // Convertir a formato hexadecimal
+  const colorHex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+  // Aplicar el brillo al color hexadecimal
+  const colorClaroHex = ajustarBrillo(colorHex, brillo);
+
+  return colorClaroHex;
+}
+
+function ajustarBrillo(colorHex, brillo) {
+  const r = parseInt(colorHex.substr(1, 2), 16);
+  const g = parseInt(colorHex.substr(3, 2), 16);
+  const b = parseInt(colorHex.substr(5, 2), 16);
+
+  const rNuevo = Math.round(r * brillo);
+  const gNuevo = Math.round(g * brillo);
+  const bNuevo = Math.round(b * brillo);
+
+  const colorOscuroHex = `#${(rNuevo << 16 | gNuevo << 8 | bNuevo).toString(16).padStart(6, '0')}`;
+  return colorOscuroHex;
+}
+
 
 /* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
   empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))

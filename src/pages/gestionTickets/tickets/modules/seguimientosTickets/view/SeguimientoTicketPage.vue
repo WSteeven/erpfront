@@ -1,6 +1,8 @@
 <template>
   <q-page>
-    <div class="text-center text-bold q-mb-md">Ingreso del seguimiento</div>
+    <div class="text-center text-subtitle2 q-mb-md">
+      Ingreso del seguimiento
+    </div>
     <q-card class="rounded-card custom-shadow q-pa-md">
       <div class="row">
         <div class="col-12 q-mb-md">

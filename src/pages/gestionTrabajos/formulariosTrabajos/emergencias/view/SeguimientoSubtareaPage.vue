@@ -79,7 +79,7 @@
                   :permitirConsultar="false"
                   :permitirEliminar="false"
                   :permitirEditar="false"
-                  :permitir-buscar="false"
+                  :permitir-buscar="true"
                   :permitirEditarModal="true"
                   separador="cell"
                   :accion1="botonEditarCantidadTarea"

@@ -36,7 +36,7 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 export default defineComponent({
-  components: { TabLayoutFilterTabs2,  ImagenComprimidaComponent },
+  components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -96,12 +96,15 @@ export default defineComponent({
       if (gasto.sub_detalle == null) {
         return false
       }
-      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
+      if(parseInt(gasto.detalle !== null ? gasto.detalle : '') === 24){
+        return true
+      }
+      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6 ) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-          -1 ||
+            -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-          -1 ||
+            -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -209,10 +212,10 @@ export default defineComponent({
         required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1),
       },
       kilometraje: {
-        requiredIfdetalle: esCombustibleEmpresa,
+        required:  requiredIf(() => esCombustibleEmpresa.value  ),
       },
       vehiculo: {
-        requiredIfdetalle: esCombustibleEmpresa,
+        required:  requiredIf(() =>esCombustibleEmpresa.value ),
       },
       observacion: {
         required,
@@ -236,7 +239,7 @@ export default defineComponent({
       await obtenerListados({
         autorizacionesEspeciales: {
           controller: new UsuarioAutorizadoresController(),
-          params: { campos: 'id,name' },
+          params: { campos: 'id,name', estado: 1 },
         },
         proyectos: {
           controller: new ProyectoController(),
@@ -514,7 +517,9 @@ export default defineComponent({
       let tieneFactura = true
       for (let index = 0; index < gasto.sub_detalle!.length; index++) {
         const id_subdetalle = gasto.sub_detalle![index]
-        const subdetalleEncontrado = listadoSubdetalles.value.find((v) => v.id === id_subdetalle)
+        const subdetalleEncontrado = listadoSubdetalles.value.find(
+          (v) => v.id === id_subdetalle
+        )
         if (!subdetalleEncontrado.tiene_factura) {
           tieneFactura = false
           break
@@ -531,7 +536,6 @@ export default defineComponent({
 
     watchEffect(() => {
       gasto.total = gasto.cantidad! * gasto.valor_u!
-
     })
     function existeComprobante() {
       gasto.factura = null
@@ -573,8 +577,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                      LocalStorage.getItem('sub_detalles')!.toString()
-                    )
+                        LocalStorage.getItem('sub_detalles')!.toString()
+                      )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250

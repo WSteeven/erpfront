@@ -131,12 +131,13 @@ export default defineComponent({
       color: 'primary',
       visible: () => permitirSubir,
       accion: ({ entidad, posicion }) => {
+        //
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
           mensaje: 'Ingresa la cantidad',
           defecto: materialesTarea.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => val >= 0 && (accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual, //(accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
           accion: (data) => materialesTarea.value[posicion].cantidad_utilizada = data
         }
 

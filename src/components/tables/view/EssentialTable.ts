@@ -10,7 +10,6 @@ import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'config/utils'
 import { offset } from 'config/utils_tablas'
 import exportFile from 'quasar/src/utils/export-file.js'
-import useQuasar from 'quasar/src/composables/use-quasar.js'
 
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
@@ -202,6 +201,7 @@ export default defineComponent({
       if (props.permitirEditarModal) {
         fila.value = data.entidad
         posicionFilaEditada.value = data.posicion
+        console.log(posicionFilaEditada.value)
         refEditarModal.value.abrir()
       }
     }
@@ -246,6 +246,11 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
+      console.log(data)
+      const posicion = props.datos.findIndex(
+        (fila: any) => fila.id === data.id
+      )
+
       if (props.editarFilaLocal) listado.value.splice(posicionFilaEditada.value, 1, data)
       limpiarFila()
       emit('guardar-fila', data)
@@ -433,8 +438,6 @@ export default defineComponent({
       abrirModalEditar,
       exportTable,
       toggleFiltros,
-
-      mostrarExportar: props.mostrarExportar
     }
   },
 })

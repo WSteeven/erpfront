@@ -74,7 +74,7 @@
 
     <div class="row q-gutter-sm justify-end">
       <!-- Boton guardar -->
-      <q-btn color="secondary" no-caps push @click="enviarCalificacion()">
+      <q-btn color="positive" no-caps push @click="enviarCalificacion()">
         <q-icon name="bi-stars" size="xs" class="q-pr-sm"></q-icon>
         <span>Calificar ticket</span>
       </q-btn>

@@ -137,16 +137,87 @@
           Datos generales
         </div>
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
-          <div v-if="cantTicketsCreados >= 0" class="col-12 col-md-6">
-            <q-card
-              class="rounded-card no-border custom-shadow q-pa-md text-center full-heighht cursor-pointer q-card-hover q-card-press"
-              @click="saludar()"
-            >
-              <div class="text-h3 text-primary q-mb-md">
-                {{ cantTicketsCreados }}
+          <div class="col-12 col-md-6 q-mb-lg">
+            <div class="row q-col-gutter-xs">
+              <div v-if="cantTicketsCreados >= 0" class="col-12">
+                <q-card
+                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center cursor-pointer q-card-hover q-card-press"
+                  style="background-color: #bc98f3"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantTicketsCreados }}
+                  </div>
+                  <div>Cantidad de tickets creados</div>
+                </q-card>
               </div>
-              <div>Cantidad de tickets que creó</div>
-            </q-card>
+
+              <div v-if="cantTicketsCreadosParaMi >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsCreadosParaMi }}
+                  </div>
+                  <div>Cantidad de tickets creados para sí mismo</div>
+                </q-card>
+              </div>
+
+              <div
+                v-if="cantTicketsCreadosInternos >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsCreadosInternos }}
+                  </div>
+                  <div>Cantidad de tickets creados para su departamento</div>
+                </q-card>
+              </div>
+
+              <div
+                v-if="cantTicketsCreadosADepartamentos >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantTicketsCreadosADepartamentos }}
+                  </div>
+                  <div>Cantidad de tickets creados a otros departamentos</div>
+                </q-card>
+              </div>
+
+              <div
+                v-if="cantTicketsCanceladosPorMi >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover bg-negative text-white"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantTicketsCanceladosPorMi }}
+                  </div>
+                  <div>Cantidad de tickets que ha cancelado</div>
+                </q-card>
+              </div>
+
+              <div
+                v-if="cantTicketsCalificadosSolicitante >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-positive q-mb-md">
+                    {{ cantTicketsCalificadosSolicitante }}
+                  </div>
+                  <div>Cantidad de tickets que creó y calificó</div>
+                </q-card>
+              </div>
+            </div>
           </div>
 
           <!-- Segunda columna -->
@@ -154,9 +225,10 @@
             <div class="row q-col-gutter-xs">
               <div class="col-12">
                 <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
+                  class="rounded-card custom-shadow text-white no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
+                  style="background-color: #bc98f3"
                 >
-                  <div class="text-h3 text-primary q-mb-md">
+                  <div class="text-h3 q-mb-md">
                     {{ cantTicketsRecibidos }}
                   </div>
                   <div>Cantidad de tickets asignados</div>
@@ -181,7 +253,7 @@
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsCancelados }}
                   </div>
-                  <div>Cantidad de tickets cancelados</div>
+                  <div>Cantidad de tickets que le cancelaron</div>
                 </q-card>
               </div>
 
@@ -247,20 +319,6 @@
               </div>
 
               <div
-                v-if="cantTicketsCalificadosSolicitante >= 0"
-                class="col-6 col-md-3"
-              >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
-                  <div class="text-h3 text-positive q-mb-md">
-                    {{ cantTicketsCalificadosSolicitante }}
-                  </div>
-                  <div>Cantidad de tickets que creó, calificados</div>
-                </q-card>
-              </div>
-
-              <div
                 v-if="cantTicketsCalificadosResponsable >= 0"
                 class="col-6 col-md-3"
               >
@@ -279,11 +337,10 @@
                   cantTicketsFinalizadosSolucionados >= 0 ||
                   cantTicketsFinalizadosSinSolucion >= 0
                 "
-                class="col-12 col-md-6"
+                class="col-12"
               >
                 <q-card
-                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center full-height q-card-hover"
-                  style="background-color: #bc98f3"
+                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center bg-positive full-height q-card-hover"
                 >
                   <div class="text-h3 q-mb-md">
                     {{
@@ -303,7 +360,7 @@
         </div>
         <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
           <div class="col-12 col-md-6 text-center">
-            <div class="text-subtitle2">Tickets por estado</div>
+            <div class="text-subtitle2">Tickets asignados</div>
             <div>
               <Pie
                 :data="ticketsPorEstadoBar"
@@ -316,9 +373,7 @@
 
         <div v-if="mostrarTitulosSeccion" class="row q-mb-xl">
           <div class="col-12 col-md-6 text-center">
-            <div class="text-subtitle2">
-              Tickets creados a los departamentos
-            </div>
+            <div class="text-subtitle2">Tickets creados</div>
             <div>
               <Pie
                 v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
@@ -329,9 +384,7 @@
           </div>
 
           <div class="col-12 col-md-6 text-center">
-            <div class="text-subtitle2">
-              Tickets recibidos de los departamentos
-            </div>
+            <div class="text-subtitle2">Tickets asignados</div>
             <div>
               <Pie
                 v-if="cantidadesTicketsRecibidosPorDepartamento.length"
@@ -354,7 +407,7 @@
             v-if="ticketsPorDepartamentoEstadoAsignado.length"
             class="col-12 col-md-6 text-center"
           >
-            <div class="text-subtitle2">Asignados</div>
+            <div class="text-subtitle2">Pendientes</div>
             <div>
               <Pie
                 :data="ticketsPorDepartamentoEstadoAsignadoBar"
@@ -368,7 +421,7 @@
             v-if="ticketsPorDepartamentoEstadoReasignado.length"
             class="col-12 col-md-6 text-center"
           >
-            <div class="text-subtitle2">Reasignados</div>
+            <div class="text-subtitle2">Transferidos</div>
             <div>
               <Pie
                 :data="ticketsPorDepartamentoEstadoReasignadoBar"

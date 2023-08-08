@@ -28,7 +28,7 @@
       :accion6="btnReanudar"
       :accion7="btnFinalizar"
       :accion8="btnRechazar"
-      :accion9="btnCalificar"
+      :accion9="btnCalificarResponsable"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
@@ -42,6 +42,7 @@
     <modales-entidad
       :comportamiento="modales"
       :mixin-modal="mixin"
+      :accion="filtrarTrabajoAsignado"
       @guardado="guardado"
     />
   </q-page>

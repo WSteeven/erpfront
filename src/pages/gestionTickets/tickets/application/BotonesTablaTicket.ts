@@ -11,6 +11,7 @@ import { useTicketStore } from 'stores/ticket'
 import { reactive } from 'vue'
 import { MotivoPausaTicket } from 'pages/gestionTickets/motivosPausasTickets/domain/MotivoPausaTicket'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
   const { confirmar, prompt, notificarAdvertencia, notificarCorrecto, promptItems } = useNotificaciones()
@@ -19,6 +20,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
 
   const cambiarEstadoTicket = new CambiarEstadoTicket()
   const ticketStore = useTicketStore()
+  const authenticationStore = useAuthenticationStore()
 
   let filtrarTickets: (estado: string) => void
   const setFiltrarTickets = (funcion: (estado: string) => void) => filtrarTickets = funcion
@@ -173,7 +175,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     titulo: 'Seguimiento',
     icono: 'bi-check2-square',
     color: 'indigo',
-    visible: ({ entidad }) => [estadosTickets.EJECUTANDO, estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO, estadosTickets.CALIFICADO].includes(entidad.estado),
+    visible: ({ entidad }) => [estadosTickets.EJECUTANDO, estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado),
     accion: async ({ entidad }) => {
       confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
         ticketStore.filaTicket = entidad
@@ -262,13 +264,24 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     }
   }
 
-  const btnCalificar: CustomActionTable = {
+  const btnCalificarSolicitante: CustomActionTable = {
     titulo: 'Calificar',
     icono: 'bi-stars',
-    color: 'secondary',
-    visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && entidad.pendiente_calificar,
+    color: 'positive',
+    visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && (authenticationStore.user.id === entidad.solicitante_id && entidad.pendiente_calificar_solicitante),
     accion: ({ entidad, posicion }) => {
-      console.log('dentro')
+      ticketStore.posicionFilaTicket = posicion
+      ticketStore.filaTicket = entidad
+      modales.abrirModalEntidad('CalificarTicketPage')
+    }
+  }
+
+  const btnCalificarResponsable: CustomActionTable = {
+    titulo: 'Calificar',
+    icono: 'bi-stars',
+    color: 'positive',
+    visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && (authenticationStore.user.id === entidad.responsable_id && entidad.pendiente_calificar_responsable),
+    accion: ({ entidad, posicion }) => {
       ticketStore.posicionFilaTicket = posicion
       ticketStore.filaTicket = entidad
       modales.abrirModalEntidad('CalificarTicketPage')
@@ -289,7 +302,8 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     btnReasignar,
     btnCancelar,
     btnRechazar,
-    btnCalificar,
+    btnCalificarSolicitante,
+    btnCalificarResponsable,
     btnAsignar,
     setFiltrarTickets,
   }

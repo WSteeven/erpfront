@@ -58,7 +58,7 @@ export default defineComponent({
     const mostrarDialogPlantilla = ref(false)
     const modales = new ComportamientoModalesTicketAsignado()
     const tabActual = ref()
-    const { btnTransferir, btnEjecutar, btnPausar, btnReanudar, btnFinalizar, btnSeguimiento, setFiltrarTickets, btnRechazar, btnCalificar } = useBotonesTablaTicket(mixin, modales)
+    const { btnTransferir, btnEjecutar, btnPausar, btnReanudar, btnFinalizar, btnSeguimiento, setFiltrarTickets, btnRechazar, btnCalificarSolicitante, btnCalificarResponsable } = useBotonesTablaTicket(mixin, modales)
     setFiltrarTickets(filtrarTrabajoAsignado)
 
     /*********
@@ -94,13 +94,13 @@ export default defineComponent({
     async function guardado(paginaModal: keyof TicketModales) {
       switch (paginaModal) {
         case 'CalificarTicketPage':
-          if (!ticketStore.filaTicket.calificaciones.length) {
+          /* if (!ticketStore.filaTicket.calificaciones.length) {
             const entidad = listado.value[ticketStore.posicionFilaTicket]
             entidad.pendiente_calificar = false
             listado.value.splice(ticketStore.posicionFilaTicket, 1, entidad)
-          } else {
-            filtrarTrabajoAsignado(estadosTickets.CALIFICADO)
-          }
+          } else { */
+          filtrarTrabajoAsignado(tabActual.value)
+          // }
           break
       }
       modales.cerrarModalEntidad()
@@ -123,7 +123,8 @@ export default defineComponent({
       btnSeguimiento,
       btnFinalizar,
       btnRechazar,
-      btnCalificar,
+      btnCalificarSolicitante,
+      btnCalificarResponsable,
       tabActual,
       estadosTickets,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
