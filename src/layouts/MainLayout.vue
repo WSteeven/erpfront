@@ -450,7 +450,7 @@
           <footer-component></footer-component>
         </div>
         <!-- Aplica keep-alive aquí -->
-        <keep-alive>
+        <keep-alive :exclude="['Egresos']">
           <component :is="Component" />
         </keep-alive>
       </router-view>
