@@ -441,7 +441,6 @@
 
     <modales-entidad :comportamiento="modales" />
 
-    <!-- Router -->
     <q-page-container :class="{ 'bg-body': true }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
@@ -450,7 +449,10 @@
         <div class="text-right absolute-bottom">
           <footer-component></footer-component>
         </div>
-        <component :is="Component" />
+        <!-- Aplica keep-alive aquí -->
+        <keep-alive :exclude="['Egresos']">
+          <component :is="Component" />
+        </keep-alive>
       </router-view>
     </q-page-container>
   </q-layout>

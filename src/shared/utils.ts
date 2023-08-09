@@ -490,3 +490,33 @@ function ajustarBrillo(colorHex, brillo) {
 /* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
   empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
 } */
+
+/**
+ * La función verifica si una matriz tiene elementos repetidos.
+ * @param array - El parámetro `array` es una matriz de elementos.
+ * @returns un valor booleano. Devuelve verdadero si la matriz de entrada tiene elementos repetidos y
+ * falso si todos los elementos de la matriz son únicos.
+ */
+export function tieneElementosRepetidos(array) {
+  const set = new Set(array);
+  return set.size !== array.length;
+}
+
+/**
+ * La función comprueba si una matriz de objetos contiene objetos duplicados.
+ * @param arrayDeObjetos - El parámetro `arrayDeObjetos` es una matriz de objetos.
+ * @returns un valor booleano. Devuelve verdadero si hay objetos repetidos en la matriz y falso si no
+ * hay objetos repetidos.
+ */
+export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
+  const objetoSet = new Set()
+  for (const objeto of arrayDeObjetos) {
+    const objetoString = JSON.stringify(objeto)
+    if (objetoSet.has(objetoString)) {
+      return true
+    } else {
+      objetoSet.add(objetoString)
+    }
+  }
+  return false
+}
