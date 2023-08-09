@@ -18,6 +18,9 @@ export const opcionesTipoContacto = [
 export const opcionesForma = [
   { value: 'CONTADO', label: 'CONTADO' },
   { value: 'CREDITO', label: 'CREDITO' },
+  { value: 'TRANSFERENCIA', label: 'TRANSFERENCIA' },
+  { value: 'CHEQUE', label: 'CHEQUE' },
+  { value: 'CANJE', label: 'CANJE' },
 ]
 export const opcionesTiempo = [
   { value: '7 DIAS', label: '7 DIAS' },

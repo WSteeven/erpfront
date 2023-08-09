@@ -470,7 +470,6 @@
                   (orden.autorizador == store.user.id ||
                     orden.solicitante == store.user.id))
               "
-              :editarFilaLocal="true"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"

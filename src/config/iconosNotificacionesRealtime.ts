@@ -27,4 +27,8 @@ export const iconos = {
     label: 'TICKET',
     icono: 'bi-ticket-perforated'
   },
+  preorden: {
+    label: 'PREORDEN',
+    icono: 'bi-list'
+  },
 }

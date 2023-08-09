@@ -170,6 +170,7 @@
               "
               :datos="preorden.listadoProductos"
               separador="cell"
+              :permitirEditarCeldas="accion==acciones.nuevo||accion==acciones.editar"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"

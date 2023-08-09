@@ -7,6 +7,7 @@ import { GastoPusherEvent } from 'pages/fondosRotativos/gasto/application/GastoP
 import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusherEvent'
 import { TicketPusherEvent } from 'src/pusherEvents/TicketPusherEvent'
 import { DevolucionPusherEvent } from 'pages/bodega/devoluciones/application/DevolucionPusherEvent'
+import { PreordenCompraEvent } from 'pages/comprasProveedores/preordenCompra/application/PreordenCompraEvent'
 
 
 export class NotificacionesSistema {
@@ -46,5 +47,9 @@ export class NotificacionesSistema {
     // Tickets
     const ticketPusherEvent = new TicketPusherEvent()
     ticketPusherEvent.start()
+
+    // Preorden de compra
+    const preordenCompraPusherEvent = new PreordenCompraEvent()
+    preordenCompraPusherEvent.start()
   }
 }

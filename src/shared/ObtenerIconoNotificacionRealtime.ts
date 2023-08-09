@@ -17,6 +17,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.ticket.icono
       case iconos.devolucion.label:
         return iconos.devolucion.icono
+      case iconos.preorden.label:
+        return iconos.preorden.icono
     }
   }
 }
