@@ -206,7 +206,7 @@ export default defineComponent({
             };
           },
           formatter: function (value, context) {
-            return value + ': ' + context.chart.data.labels[context.dataIndex]
+            return context.chart.data.labels[context.dataIndex] + ': ' + value
           }
         }
       },

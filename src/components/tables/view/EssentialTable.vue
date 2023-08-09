@@ -15,6 +15,7 @@
     :columns="configuracionColumnas"
     :rows="listado"
     :filter="filter"
+    @filter="handleFilter()"
     row-key="id"
     :visible-columns="visibleColumns"
     :separator="$q.screen.xs ? 'horizontal' : separador"
