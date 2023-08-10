@@ -113,8 +113,9 @@
             :accion5="btnEditarRolPagoEmpleado"
             :accion6="btnImprimir"
             :accion1Header="btnAgregarRolPagoEmpleado"
-            :permitirExportar
-            ="true"
+            :permitirExportar="true"
+            :accion2Header="btnEjecutarMasivo"
+            :accion3Header="btnGenerarReporte"
             :permitirConsultar="false"
             :permitirEditar="false"
             :permitirEliminar="false"

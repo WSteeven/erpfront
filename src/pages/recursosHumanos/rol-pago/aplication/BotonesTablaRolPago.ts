@@ -128,26 +128,6 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
 
 
 
-  const btnImprimir: CustomActionTable = {
-    titulo: ' ',
-    icono: 'bi-printer',
-    color: 'primary',
-    visible: ({ entidad }) =>  [estadosRolPago.EJECUTANDO,estadosRolPago.REALIZADO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos),
-    accion: ({ entidad }) => {
-      generar_reporte(entidad)
-    },
-  }
-  async function generar_reporte(valor: RolPago): Promise<void> {
-    const axios = AxiosHttpRepository.getInstance()
-    const filename = 'rol_pago'
-    const url_pdf =
-      apiConfig.URL_BASE +
-      '/' +
-      axios.getEndpoint(endpoints.imprimir_rol_pago) +
-      valor.id
-    imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
-  }
-
 
 
   return {
@@ -155,6 +135,5 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     btnRealizado,
     btnRealizar,
     btnFinalizar,
-    btnImprimir
   }
 }

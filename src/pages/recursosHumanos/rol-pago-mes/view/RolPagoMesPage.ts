@@ -37,6 +37,9 @@ import { configuracionColumnasRolPagoMes } from '../domain/configuracionColumnas
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import { useBotonesTablaRolPago } from 'pages/recursosHumanos/rol-pago/aplication/BotonesTablaRolPago'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import { log } from 'console'
+import { CambiarEstadoRolPago } from 'pages/recursosHumanos/rol-pago/aplication/CambiarEstadoRolPago'
+import { useBotonesImpresionTablaRolPago } from 'pages/recursosHumanos/rol-pago/aplication/BotonesImpresionRolPago'
 
 export default defineComponent({
   components: {
@@ -85,11 +88,12 @@ export default defineComponent({
     const { notificarAdvertencia, prompt, confirmar } = useNotificaciones()
 
     const { btnFinalizarRolPago } = useBotonesTablaRolPagoMes(mixin)
-    const { btnIniciar, btnRealizar, btnRealizado,btnImprimir } = useBotonesTablaRolPago(
+    const { btnIniciar, btnRealizar, btnRealizado } = useBotonesTablaRolPago(
       roles_empleados,
       modalesRolPago,
       listadosAuxiliares
     )
+    const { btnImprimir,btnGenerarReporte } = useBotonesImpresionTablaRolPago(rolpago)
     const rolPagoStore = useRolPagoStore()
     const tabActual = ref()
 
@@ -111,6 +115,23 @@ export default defineComponent({
         modalesRolPago.abrirModalEntidad('RolPagoPage')
       },
     }
+    const btnEjecutarMasivo: CustomActionTable = {
+      titulo: 'Ejecutar Rol de Pago',
+      icono: 'bi-play-fill',
+      color: 'positive',
+      accion: () => {
+        if (!rolpago.id)
+          return notificarAdvertencia('Primero debe seleccionar una rol.')
+        confirmar('¿Está seguro de iniciar cambios rol de pago?', async () => {
+          const data = {
+            rol_pago_id: rolpago.id,
+          }
+          await new CambiarEstadoRolPago().ejecutarMasivo(data)
+          notificarCorrecto('Rol de Pagos se esta Verificando!')
+        })
+      },
+    }
+
 
     const btnConsultarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Consultar',
@@ -126,15 +147,20 @@ export default defineComponent({
       titulo: 'Editar',
       icono: 'bi-pencil',
       color: 'warning',
-      visible: ({ entidad }) => {return entidad.estado === estadosRolPago.EJECUTANDO && (authenticationStore.esRecursosHumanos)},
+      visible: ({ entidad }) => {
+        return (
+          entidad.estado === estadosRolPago.EJECUTANDO &&
+          authenticationStore.esRecursosHumanos
+        )
+      },
       accion: ({ entidad }) => {
         rolPagoStore.idRolPagoSeleccionada = entidad.id
-        rolPagoStore.idRolPagoMes= entidad.id
+        rolPagoStore.idRolPagoMes = entidad.id
         rolPagoStore.accion = acciones.editar
         modalesRolPago.abrirModalEntidad('RolPagoPage')
       },
     }
-    function  obtenerNombreMes() {
+    function obtenerNombreMes() {
       console.log('nombre mes')
       const meses = [
         'Enero',
@@ -149,10 +175,11 @@ export default defineComponent({
         'Octubre',
         'Noviembre',
         'Diciembre',
-      ];
-      const [mes, anio] = rolpago.mes!.split("-");
-      rolpago.nombre =  `Rol de Pagos de ${meses[parseInt(mes, 10) - 1]} de ${anio}`;
-
+      ]
+      const [mes, anio] = rolpago.mes!.split('-')
+      rolpago.nombre = `Rol de Pagos de ${
+        meses[parseInt(mes, 10) - 1]
+      } de ${anio}`
     }
     let tabActualRolPago = '0'
     function filtrarRolPagoMes(tabSeleccionado: string) {
@@ -194,12 +221,10 @@ export default defineComponent({
       modalesRolPagoMes.cerrarModalEntidad()
     }
 
-
-
     /**Verifica si es un mes */
     function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
-      obtenerNombreMes();
+      obtenerNombreMes()
     }
 
     return {
@@ -218,6 +243,8 @@ export default defineComponent({
       btnRealizado,
       btnConsultarRolPagoEmpleado,
       btnAgregarRolPagoEmpleado,
+      btnGenerarReporte,
+      btnEjecutarMasivo,
       roles_empleados,
       checkValue,
       modalesRolPagoMes,
@@ -246,3 +273,6 @@ export default defineComponent({
     }
   },
 })
+function notificarCorrecto(arg0: string) {
+  throw new Error('Function not implemented.')
+}

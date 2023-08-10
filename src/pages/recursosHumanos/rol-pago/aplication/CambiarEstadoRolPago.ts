@@ -18,6 +18,9 @@ export class CambiarEstadoRolPago {
   async ejecutar(idRolPago: number, data: UnwrapRef<any>) {
     return this.solicitud(idRolPago, data)
   }
+  async ejecutarMasivo(data: UnwrapRef<any>) {
+    return this.solicitudMasiva(data)
+  }
 
   async realizar(idRolPago: number, movilizacion: any) {
     return this.solicitud(idRolPago, movilizacion)
@@ -45,6 +48,27 @@ export class CambiarEstadoRolPago {
       return {
         response,
         result: response.data.modelo,
+      }
+    } catch (e: unknown) {
+      const axiosError = e as AxiosError
+      throw new ApiError(axiosError)
+    } finally {
+      this.cargando.desactivar()
+    }
+  }
+  async solicitudMasiva(data?: UnwrapRef<any>) {
+
+    try {
+      const ruta =
+        this.axios.getEndpoint(endpoints.rol_pago) +'/actualizar_masivo'
+
+      this.cargando.activar()
+
+      const response: AxiosResponse = await this.axios.post(ruta, data)
+
+      return {
+        response,
+        result: response.data,
       }
     } catch (e: unknown) {
       const axiosError = e as AxiosError
