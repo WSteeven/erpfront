@@ -30,5 +30,17 @@ export const iconos = {
   permiso_empleado:{
     label: 'PERMISO EMPLEADO',
     icono:'bi-person-fill-lock'
+  },
+  licencia_empleado:{
+    label: 'LICENCIA EMPLEADO',
+    icono:'bi-person-vcard-fill'
+  },
+  solicitud_prestamo_empleado:{
+    label: 'SOLICITUD PRESTAMO EMPRESARIAL',
+    icono:'fa-solid fa-file-signature'
+  },
+  vacacion:{
+    label: 'VACACION',
+    icono:'bi-umbrella'
   }
 }

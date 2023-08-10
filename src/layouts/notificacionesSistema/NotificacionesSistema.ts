@@ -8,6 +8,9 @@ import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusher
 import { TicketPusherEvent } from 'src/pusherEvents/TicketPusherEvent'
 import { DevolucionPusherEvent } from 'pages/bodega/devoluciones/application/DevolucionPusherEvent'
 import { PermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/PermisosEmpleadoPusherEvent'
+import { LicenciaPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/LicenciaEmpleadoPusherEvent'
+import { SolicitudPrestamoEmpresarialPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/SolicitudPrestamoEmpresarialPusherEvent'
+import { VacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/VacacionPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -52,6 +55,15 @@ export class NotificacionesSistema {
     //Permiso de Empleado
     const permisoEmpleadoPusherEvent = new PermisoEmpleadoPusherEvent()
     permisoEmpleadoPusherEvent.start()
+    //Licencia
+    const licenciaPusherEvent = new LicenciaPusherEvent()
+    licenciaPusherEvent.start()
+    //Solicitud prestamo empresarial
+    const solicitudPrestamoEmpresarialPusherEvent = new SolicitudPrestamoEmpresarialPusherEvent()
+    solicitudPrestamoEmpresarialPusherEvent.start()
+    //Vacacion
+    const vacacionPusherEvent = new VacacionPusherEvent()
+    vacacionPusherEvent.start()
 
 
 

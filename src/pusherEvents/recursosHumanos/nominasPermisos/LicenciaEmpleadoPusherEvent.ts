@@ -1,7 +1,7 @@
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 
-export class PermisoEmpleadoPusherEvent {
+export class LicenciaPusherEvent {
 
   store = useAuthenticationStore()
   notificacionesPusherStore = useNotificationRealtimeStore()
@@ -14,13 +14,12 @@ export class PermisoEmpleadoPusherEvent {
     const pusher = notificacionStore.pusher
 
     // Suscripcion al canal del pedido creado
-    console.log('permiso-empleado-' + this.store.user.id);
+    console.log('licencia-empleado-' + this.store.user.id);
 
-    pusher.subscribe('permiso-empleado-' + this.store.user.id)
-    pusher.bind('permiso-empleado-event', function (e) {
+    pusher.subscribe('licencia-empleado-' + this.store.user.id)
+    pusher.bind('licencia-empleado-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
-
     })
   }
 

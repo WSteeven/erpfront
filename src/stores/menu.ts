@@ -477,7 +477,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Licencia Empleado',
           link: 'licencia-empleado',
-          icon: 'bi-circle',
+          icon: 'bi-person-vcard-fill',
           can: store.can('puede.ver.licencia_empleado'),
         },
         {
