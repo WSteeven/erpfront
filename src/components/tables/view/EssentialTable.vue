@@ -1174,6 +1174,7 @@
           ></q-icon
           >{{ 'TICKET TRANSFERIDO' }}
         </q-chip>
+        <span v-else>{{ props.value }}</span>
       </q-td>
     </template>
 

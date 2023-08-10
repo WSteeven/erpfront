@@ -387,10 +387,6 @@ export default defineComponent({
       })
     }
 
-    function transposeMatrix(matrix) {
-      return matrix[0].map((_, index) => matrix.map(row => row[index]));
-    }
-
     function mapearDatos(labels: [], valores: [], titulo: string, colores?: []) {
       return {
         labels: labels,
@@ -401,21 +397,6 @@ export default defineComponent({
             data: valores,
           },
         ],
-      }
-    }
-
-    function mapearDatosMultiple(labels: string[], labelsColumns: any, valores: any[][]) {
-      return {
-        labels: labels,
-        datasets: valores.map((item, index) => mapearDatosMultiplesColumnas(labelsColumns[index], item))
-      }
-    }
-
-    function mapearDatosMultiplesColumnas(labelsColumns: any, data: any[]) {
-      return {
-        label: labelsColumns.label,
-        backgroundColor: labelsColumns.color,
-        data,
       }
     }
 
@@ -450,10 +431,6 @@ export default defineComponent({
         case departamentos.vehiculos: return '#e7e34e'
       }
     }
-
-    /*function mapearColorDepartamentoEstado() {
-      return generarColorAzulPastelClaro()
-    } */
 
     function ordenarEmpleados() {
       empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
