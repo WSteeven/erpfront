@@ -8,6 +8,7 @@ import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusher
 import { TicketPusherEvent } from 'src/pusherEvents/TicketPusherEvent'
 import { DevolucionPusherEvent } from 'pages/bodega/devoluciones/application/DevolucionPusherEvent'
 import { PreordenCompraEvent } from 'pages/comprasProveedores/preordenCompra/application/PreordenCompraEvent'
+import { OrdenCompraEvent } from 'pages/comprasProveedores/ordenCompra/application/OrdenCompraEvent'
 
 
 export class NotificacionesSistema {
@@ -51,5 +52,9 @@ export class NotificacionesSistema {
     // Preorden de compra
     const preordenCompraPusherEvent = new PreordenCompraEvent()
     preordenCompraPusherEvent.start()
+
+    //Orden de compra
+    const ordenCompraPusherEvent = new OrdenCompraEvent()
+    ordenCompraPusherEvent.start()
   }
 }

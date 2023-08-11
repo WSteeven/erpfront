@@ -20,6 +20,7 @@ export const configuracionColumnasOrdenesCompras : ColumnConfig<OrdenCompra>[]=[
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true,
       },

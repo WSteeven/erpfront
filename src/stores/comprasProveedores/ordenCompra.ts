@@ -27,7 +27,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
             statusLoading.activar
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/imprimir/' + idOrden.value
-            const filename = 'pedido_' + idOrden.value + '_' + Date.now()
+            const filename = 'orden_compra_' + idOrden.value + '_' + Date.now()
             imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
             console.log('Orden de compra impreso con éxito')
         } catch (e) {

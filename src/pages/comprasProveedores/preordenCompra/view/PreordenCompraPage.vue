@@ -8,6 +8,7 @@
     :filtrar="filtrarPreordenes"
     :permitirEditar="puedeEditar"
     :accion1="btnHacerOrdenCompra"
+    :accion2="btnAnularPreorden"
     
   >
     <template #formulario>

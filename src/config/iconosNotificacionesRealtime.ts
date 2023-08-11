@@ -31,4 +31,8 @@ export const iconos = {
     label: 'PREORDEN',
     icono: 'bi-list'
   },
+  orden: {
+    label: 'ORDEN_COMPRA',
+    icono: 'bi-cart-plus'
+  },
 }

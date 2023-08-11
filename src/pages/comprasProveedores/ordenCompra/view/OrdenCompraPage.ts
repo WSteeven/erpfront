@@ -47,7 +47,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
         const { entidad: orden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const { onReestablecer, onConsultado } = mixin.useHooks()
+        const { onReestablecer, onConsultado, onModificado } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         //Stores
@@ -138,6 +138,9 @@ export default defineComponent({
             else
                 soloLectura.value = true
         })
+        onModificado(() => {
+            filtrarOrdenes('1')
+        })
 
 
 
@@ -187,7 +190,7 @@ export default defineComponent({
             tabSeleccionado.value = tab
             if (tab == '1') puedeEditar.value = true
             else puedeEditar.value = false
-            listar({ estado_id: tab, solicitante_id: store.user.id })
+            listar({ autorizacion_id: tab, solicitante_id: store.user.id })
         }
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
@@ -294,7 +297,7 @@ export default defineComponent({
                             try {
                                 ordenCompraStore.idOrden = entidad.id
                                 const response = await ordenCompraStore.anularOrden({ motivo: data })
-                                if(response!.status==200){
+                                if (response!.status == 200) {
                                     notificarCorrecto('Se ha anulado correctamente la orden de compra')
                                     listado.value.splice(posicion, 1)
                                 }
@@ -310,7 +313,7 @@ export default defineComponent({
                 if (tabSeleccionado.value == 1) {
                     return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
                 }
-                return tabSeleccionado.value <= 2 ? true : false
+                return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
             }
         }
 

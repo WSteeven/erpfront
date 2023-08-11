@@ -22,7 +22,7 @@ import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 
-import { acciones, accionesTabla } from "config/utils";
+import { acciones, accionesTabla, estadosTransacciones } from "config/utils";
 import { opcionesForma, opcionesTiempo, tabOptionsPreordenCompra } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
@@ -32,16 +32,17 @@ import { PreordenCompraController } from "../infraestructure/PreordenCompraContr
 import { PedidoController } from "pages/bodega/pedidos/infraestructura/PedidoController";
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
 import { useRouter } from "vue-router";
+import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
     setup() {
         const mixin = new ContenedorSimpleMixin(PreordenCompra, new PreordenCompraController())
-        const { entidad: preorden, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+        const { entidad: preorden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
         const { onConsultado } = mixin.useHooks()
-        const { confirmar } = useNotificaciones()
+        const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         //Stores
         useNotificacionStore().setQuasar(useQuasar())
@@ -143,6 +144,36 @@ export default defineComponent({
             },
             visible: () => tabSeleccionado.value === 'PENDIENTE',
         }
+        const btnAnularPreorden: CustomActionTable = {
+            titulo: 'Anular',
+            color: 'negative',
+            icono: 'bi-x',
+            accion: async ({ entidad, posicion }) => {
+                confirmar('¿Está seguro de anular la orden de compra?', () => {
+                    const data: CustomActionPrompt = {
+                        titulo: 'Causa de anulación',
+                        mensaje: 'Ingresa el motivo de anulación',
+                        accion: async (data) => {
+                            try {
+                                preordenStore.idPreorden = entidad.id
+                                const response = await preordenStore.anularPreorden({ motivo: data })
+                                if(response!.status==200){
+                                    notificarCorrecto('Se ha anulado correctamente la preorden de compra')
+                                    listado.value.splice(posicion, 1)
+                                }
+                            } catch (e: any) {
+                                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+                            }
+                        }
+                    }
+                    prompt(data)
+                })
+            },
+            visible: ({ entidad }) => {
+                return tabSeleccionado.value == estadosTransacciones.pendiente
+            }
+        }
+
 
         watch(refItems, () => {
             console.log('modificacion')
@@ -175,6 +206,7 @@ export default defineComponent({
             //botones de tabla
             btnEliminarFila,
             btnHacerOrdenCompra,
+            btnAnularPreorden,
 
 
             //tabla de detalles

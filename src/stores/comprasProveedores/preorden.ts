@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { endpoints } from "config/api";
+import { apiConfig, endpoints } from "config/api";
 import { acciones, autorizacionesTransacciones, estadosTransacciones } from "config/utils";
 import { PreordenCompra } from "pages/comprasProveedores/preordenCompra/domain/PreordenCompra";
 import { defineStore } from "pinia";
@@ -12,9 +12,9 @@ export const usePreordenStore = defineStore('preorden', () => {
     //State
     const preorden = reactive(new PreordenCompra())
     const preordenReset = new PreordenCompra()
-    const ipPreorden = ref()
+    const idPreorden = ref()
 
-    const { notificarAdvertencia } = useNotificaciones()
+    const { notificarAdvertencia, notificarError } = useNotificaciones()
     const accionPreorden = acciones.nuevo
     const statusLoading = new StatusEssentialLoading()
 
@@ -64,12 +64,27 @@ export const usePreordenStore = defineStore('preorden', () => {
         }
     }
 
+    async function anularPreorden(data:any) {
+        try{
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.preordenes_compras)+'/anular/'+idPreorden.value
+            const response: AxiosResponse = await axios.post(url, data)
+            return response
+        }catch(e:any){
+            notificarError(e)
+        }finally{
+            statusLoading.desactivar()
+        }
+    }
+
     return {
         preorden,
         accionPreorden,
-        ipPreorden,
+        idPreorden,
 
         //funciones
         cargarPreorden,
+        anularPreorden,
     }
 })
