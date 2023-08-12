@@ -6,7 +6,7 @@
     :datos="observaciones"
     :alto-fijo="false"
     :permitirConsultar="false"
-    :permitir-buscar="false"
+    :permitir-buscar="true"
     :permitirEditarModal="true"
     :mostrarFooter="!observaciones.length"
     separador="cell"

@@ -13,7 +13,7 @@
     :accion2="btnReasignar"
     :accion3="btnSeguimiento"
     :accion4="btnCancelar"
-    :accion5="btnCalificar"
+    :accion5="btnCalificarSolicitante"
     subtitulo-pagina="Módulo de Tickets"
   >
     <template #formulario>

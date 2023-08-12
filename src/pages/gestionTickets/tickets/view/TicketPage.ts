@@ -183,7 +183,7 @@ export default defineComponent({
     /************
     * Funciones
     ************/
-    const { btnReasignar, btnSeguimiento, btnCalificar, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
+    const { btnReasignar, btnSeguimiento, btnCalificarSolicitante, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
 
     async function toggleTicketInterno() {
       if (ticket.ticket_interno) {
@@ -280,13 +280,13 @@ export default defineComponent({
     async function guardado(paginaModal: keyof TicketModales) {
       switch (paginaModal) {
         case 'CalificarTicketPage':
-          if (!ticketStore.filaTicket.calificaciones.length) {
+          /*if (!ticketStore.filaTicket.calificaciones.length) {
             const entidad = listado.value[ticketStore.posicionFilaTicket]
             entidad.pendiente_calificar = false
             listado.value.splice(ticketStore.posicionFilaTicket, 1, entidad)
-          } else {
-            filtrarTickets(estadosTickets.CALIFICADO)
-          }
+          } else { */
+          filtrarTickets(tabActual.value)
+          // }
           break
       }
       modalesTicket.cerrarModalEntidad()
@@ -375,7 +375,7 @@ export default defineComponent({
       refArchivoTicket,
       fechaLimite,
       horaLimite,
-      btnReasignar, btnSeguimiento, btnCalificar, btnCancelar, btnAsignar,
+      btnReasignar, btnSeguimiento, btnCalificarSolicitante, btnCancelar, btnAsignar,
       estadosTickets,
       modalesTicket,
       obtenerResponsables,

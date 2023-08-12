@@ -109,6 +109,8 @@ input[type='time']::-webkit-calendar-picker-indicator {
 .q-card-hover:hover {
   /* Cambiar la sombra en hover para crear el efecto */
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02); /* Ajusta el valor para lograr el efecto deseado */
+  transition: transform 0.3s ease; /* Controla la duración y el tipo de transición */
 }
 
 .q-card-press {

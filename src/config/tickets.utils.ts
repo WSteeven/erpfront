@@ -10,13 +10,15 @@ export const tiposPrioridades = [
 export const estadosTickets = {
   RECHAZADO: 'RECHAZADO',
   ASIGNADO: 'ASIGNADO',
+  PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
   REASIGNADO: 'REASIGNADO',
   EJECUTANDO: 'EJECUTANDO',
   PAUSADO: 'PAUSADO',
   CANCELADO: 'CANCELADO',
   FINALIZADO_SIN_SOLUCION: 'FINALIZADO SIN SOLUCIÓN',
+  FINALIZADO: 'FINALIZADO',
   FINALIZADO_SOLUCIONADO: 'FINALIZADO SOLUCIONADO',
-  CALIFICADO: 'CALIFICADO',
+  // CALIFICADO: 'CALIFICADO',
 }
 
 export const tabOptionsEstadosTickets: TabOption[] = [
@@ -27,7 +29,7 @@ export const tabOptionsEstadosTickets: TabOption[] = [
   { label: 'Pausado', value: estadosTickets.PAUSADO },
   { label: 'Finalizado solucionado', value: estadosTickets.FINALIZADO_SOLUCIONADO },
   { label: 'Finalizado sin solución', value: estadosTickets.FINALIZADO_SIN_SOLUCION },
-  { label: 'Calificado', value: estadosTickets.CALIFICADO },
+  { label: 'Cancelado', value: estadosTickets.CANCELADO },
 ]
 
 export const tabOptionsEstadosTicketsAsignados: TabOption[] = [
@@ -37,5 +39,5 @@ export const tabOptionsEstadosTicketsAsignados: TabOption[] = [
   { label: 'Pausado', value: estadosTickets.PAUSADO },
   { label: 'Finalizado solucionado', value: estadosTickets.FINALIZADO_SOLUCIONADO },
   { label: 'Finalizado sin solución', value: estadosTickets.FINALIZADO_SIN_SOLUCION },
-  { label: 'Calificado', value: estadosTickets.CALIFICADO },
+  // { label: 'Calificado', value: estadosTickets.CALIFICADO },
 ]

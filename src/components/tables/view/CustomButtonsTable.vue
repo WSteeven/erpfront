@@ -216,7 +216,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue'
 import { CustomActionTable } from '../domain/CustomActionTable'
 
 const props = defineProps({
@@ -264,6 +263,10 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+  listado: {
+    type: Array,
+    required: true,
+  },
 })
 
 function extraerVisible(accion?: CustomActionTable): boolean {
@@ -305,9 +308,12 @@ function extraerColor(accion?: CustomActionTable) {
 }
 
 function ejecutarAccion(accion?: CustomActionTable) {
+  const posicion = props.listado.findIndex(
+    (fila: any) => fila.id === props.propsTable.row.id
+  )
   accion?.accion({
     entidad: props.propsTable.row,
-    posicion: props.propsTable.rowIndex,
+    posicion, //: props.propsTable.rowIndex,
   })
 }
 </script>

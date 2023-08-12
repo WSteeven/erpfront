@@ -54,6 +54,7 @@ import { ComportamientoModalesEmpleado } from 'pages/recursosHumanos/empleados/a
 import { useEmpleadoStore } from 'stores/empleado'
 
 export default defineComponent({
+  name: 'Egresos',
   components: { TabLayout, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
@@ -135,7 +136,7 @@ export default defineComponent({
 
     //hooks
     onReestablecer(() => {
-      // console.log('se reestableció')
+      listadoPedido.value = []
       puedeEditarCantidad.value = true
       soloLectura.value = false
     })

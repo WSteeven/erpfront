@@ -17,6 +17,7 @@ export class TicketPusherEvent {
     pusher.subscribe('tickets-tracker-' + this.store.user.id)
     pusher.bind('ticket-event', function (e) {
       notificacionStore.agregar(e.notificacion)
+      console.log('Se agrega una notificacion')
     })
   }
 

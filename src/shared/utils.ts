@@ -489,7 +489,69 @@ export function generarColorPastelAzulAleatorio() {
   return colorHexadecimal;
 }
 
+// --
+export function generarColorAzulPastelClaro() {
+  // Generar valores RGB altos (entre 150 y 220) para obtener un tono azul claro
+  const r = Math.floor(Math.random() * 70) + 150;
+  const g = Math.floor(Math.random() * 70) + 150;
+  const b = Math.floor(Math.random() * 100) + 155; // Para asegurarse de que el tono sea azul claro
+
+  // Ajustar el brillo para hacerlo más claro (entre 0.7 y 1.0)
+  const brillo = Math.random() * 0.3 + 0.7;
+
+  // Convertir a formato hexadecimal
+  const colorHex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+  // Aplicar el brillo al color hexadecimal
+  const colorClaroHex = ajustarBrillo(colorHex, brillo);
+
+  return colorClaroHex;
+}
+
+function ajustarBrillo(colorHex, brillo) {
+  const r = parseInt(colorHex.substr(1, 2), 16);
+  const g = parseInt(colorHex.substr(3, 2), 16);
+  const b = parseInt(colorHex.substr(5, 2), 16);
+
+  const rNuevo = Math.round(r * brillo);
+  const gNuevo = Math.round(g * brillo);
+  const bNuevo = Math.round(b * brillo);
+
+  const colorOscuroHex = `#${(rNuevo << 16 | gNuevo << 8 | bNuevo).toString(16).padStart(6, '0')}`;
+  return colorOscuroHex;
+}
+
 
 /* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
   empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
 } */
+
+/**
+ * La función verifica si una matriz tiene elementos repetidos.
+ * @param array - El parámetro `array` es una matriz de elementos.
+ * @returns un valor booleano. Devuelve verdadero si la matriz de entrada tiene elementos repetidos y
+ * falso si todos los elementos de la matriz son únicos.
+ */
+export function tieneElementosRepetidos(array) {
+  const set = new Set(array);
+  return set.size !== array.length;
+}
+
+/**
+ * La función comprueba si una matriz de objetos contiene objetos duplicados.
+ * @param arrayDeObjetos - El parámetro `arrayDeObjetos` es una matriz de objetos.
+ * @returns un valor booleano. Devuelve verdadero si hay objetos repetidos en la matriz y falso si no
+ * hay objetos repetidos.
+ */
+export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
+  const objetoSet = new Set()
+  for (const objeto of arrayDeObjetos) {
+    const objetoString = JSON.stringify(objeto)
+    if (objetoSet.has(objetoString)) {
+      return true
+    } else {
+      objetoSet.add(objetoString)
+    }
+  }
+  return false
+}

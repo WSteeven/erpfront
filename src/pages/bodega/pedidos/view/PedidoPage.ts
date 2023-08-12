@@ -24,9 +24,9 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
 
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { fechaMayorActual } from 'shared/validadores/validaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
@@ -40,6 +40,9 @@ import { useCargandoStore } from 'stores/cargando'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { ordernarListaString } from 'shared/utils'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { PedidoModales } from '../domain/PedidoModales'
+import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
+import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
 
 
 export default defineComponent({
@@ -51,6 +54,7 @@ export default defineComponent({
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
+    const modales = new ComportamientoModalesPedido()
 
     // Stores
     useNotificacionStore().setQuasar(useQuasar())
@@ -253,6 +257,17 @@ export default defineComponent({
       },
       visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
     }
+    const botonCorregir: CustomActionTable = {
+      titulo: 'Corregir pedido',
+      color: 'amber-3',
+      icono: 'bi-gear',
+      accion: ({ entidad, posicion }) => {
+        pedidoStore.pedido = entidad
+        console.log('Entidad es: ',entidad)
+        modales.abrirModalEntidad('CorregirPedidoPage')
+      },
+      visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && (esBodeguero||entidad.per_autoriza_id==store.user.id) && entidad.estado != estadosTransacciones.completa ? true : false
+    }
 
     const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -320,6 +335,7 @@ export default defineComponent({
       configuracionColumnasProductosSeleccionadosAccion,
       configuracionColumnasProductosSeleccionadosDespachado,
       botonEditarCantidad,
+      botonCorregir,
       botonEliminar,
       botonImprimir,
       botonDespachar,
@@ -327,6 +343,7 @@ export default defineComponent({
 
       //stores
       store,
+      modales,
 
       //flags
       soloLectura,

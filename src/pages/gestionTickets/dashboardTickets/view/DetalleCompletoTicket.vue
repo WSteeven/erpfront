@@ -14,18 +14,11 @@
             v-model="ticket.asunto"
             placeholder="Obligatorio"
             outlined
-            :disable="disabled"
+            disable
             dense
             autogrow
             type="textarea"
-            :error="!!v$.asunto.$errors.length"
-            @blur="v$.asunto.$touch"
           >
-            <template v-slot:error>
-              <div v-for="error of v$.asunto.$errors" :key="error.$uid">
-                <div>{{ error.$message }}</div>
-              </div>
-            </template>
           </q-input>
         </div>
 
@@ -36,18 +29,11 @@
             v-model="ticket.descripcion"
             placeholder="Obligatorio"
             outlined
-            :disable="disabled"
+            disable
             dense
             autogrow
             type="textarea"
-            :error="!!v$.descripcion.$errors.length"
-            @blur="v$.descripcion.$touch"
           >
-            <template v-slot:error>
-              <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
-                <div>{{ error.$message }}</div>
-              </div>
-            </template>
           </q-input>
         </div>
 
@@ -55,6 +41,18 @@
         <div v-if="ticket.estado" class="col-12 col-md-3">
           <label class="q-mb-sm block">Estado actual</label>
           <estados-subtareas :propsTable="{ value: ticket.estado }" />
+        </div>
+
+        <!-- Motivo cancelado -->
+        <div v-if="ticket.motivo_cancelado_ticket" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Motivo de cancelación del ticket</label>
+          <q-input
+            v-model="ticket.motivo_cancelado_ticket"
+            disable
+            outlined
+            dense
+          >
+          </q-input>
         </div>
 
         <!-- Codigo -->
@@ -67,7 +65,7 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Solicitante</label>
           <q-input
-            v-model="nombreUsuario"
+            v-model="ticket.solicitante"
             outlined
             dense
             disable
@@ -77,67 +75,29 @@
 
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha y hora de solicitud</label>
-          <q-input v-model="fechaHoraActual" disable outlined dense> </q-input>
+          <q-input v-model="ticket.fecha_hora_solicitud" disable outlined dense>
+          </q-input>
         </div>
 
-        <!-- Departamento -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Departamento que atenderá</label>
-          <q-select
+          <label class="q-mb-sm block">Departamento responsable</label>
+          <q-input
             v-model="ticket.departamento_responsable"
-            :options="departamentos"
-            @filter="filtrarDepartamentos"
-            transition-show="scale"
-            transition-hide="scale"
-            hint="Obligatorio"
-            options-dense
-            dense
             outlined
-            :disable="disabled || departamentoDeshabilitado"
-            :option-label="(item) => item.nombre"
-            :option-value="(item) => item.id"
-            use-input
-            input-debounce="0"
-            emit-value
-            map-options
-            @update:model-value="
-              () => {
-                ticket.responsable = null
-                ticket.categoria_tipo_ticket = null
-                ticket.tipo_ticket = null
-                obtenerResponsables(filtroResponsableDepartamento)
-              }
-            "
-            :error="!!v$.departamento_responsable.$errors.length"
-            @blur="v$.departamento_responsable.$touch"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
-              </q-item>
-            </template>
-
-            <template v-slot:error>
-              <div
-                v-for="error of v$.departamento_responsable.$errors"
-                :key="error.$uid"
-              >
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-select>
+            dense
+            disable
+            autogrow
+          ></q-input>
         </div>
 
         <!-- Ticket interno -->
-        <div v-if="esResponsableDepartamento" class="col-12 col-md-3">
+        <div class="col-12 col-md-3">
           <br />
           <q-checkbox
             v-model="ticket.ticket_interno"
             label="Ticket interno"
             outlined
-            :disable="disabled"
+            disable
             @update:model-value="toggleTicketInterno()"
             dense
           ></q-checkbox>
@@ -150,130 +110,43 @@
             v-model="ticket.ticket_para_mi"
             label="Ticket para mi"
             outlined
-            :disable="disabled"
+            disable
             @update:model-value="toggleTicketParaMi()"
             dense
           ></q-checkbox>
         </div>
 
-        <!-- Responsable -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Responsable</label>
-          <q-select
+          <q-input
             v-model="ticket.responsable"
-            :options="empleados"
-            @filter="filtrarEmpleados"
-            transition-show="scale"
-            transition-hide="scale"
-            hint="Obligatorio"
-            options-dense
-            dense
             outlined
-            :disable="disabled || responsableDeshabilitado"
-            :option-label="(item) => `${item.nombres} ${item.apellidos}`"
-            :option-value="(item) => item.id"
-            use-input
-            input-debounce="0"
-            emit-value
-            map-options
-            :error="!!v$.responsable.$errors.length"
-            @blur="v$.responsable.$touch"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  Seleccione un departamento
-                </q-item-section>
-              </q-item>
-            </template>
-
-            <template v-slot:error>
-              <div v-for="error of v$.responsable.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-select>
+            dense
+            disable
+            autogrow
+          ></q-input>
         </div>
 
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Categorías para tipo de ticket</label>
-          <!--@filter="filtrarCategoriasTiposTickets" -->
-          <q-select
+          <q-input
             v-model="ticket.categoria_tipo_ticket"
-            :options="categoriasTiposTickets"
-            transition-show="scale"
-            transition-hide="scale"
-            hint="Obligatorio"
-            options-dense
-            dense
             outlined
-            :disable="disabled"
-            :option-label="(item) => item.nombre"
-            :option-value="(item) => item.id"
-            use-input
-            input-debounce="0"
-            emit-value
-            map-options
-            @update:model-value="ticket.tipo_ticket = null"
-            :error="!!v$.categoria_tipo_ticket.$errors.length"
-            @blur="v$.categoria_tipo_ticket.$touch"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  Seleccione un departamento
-                </q-item-section>
-              </q-item>
-            </template>
-
-            <template v-slot:error>
-              <div
-                v-for="error of v$.categoria_tipo_ticket.$errors"
-                :key="error.$uid"
-              >
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-select>
+            dense
+            disable
+            autogrow
+          ></q-input>
         </div>
 
-        <!-- Tipo de ticket -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Tipo de ticket</label>
-          <!-- @filter="filtrarTiposTickets" -->
-          <q-select
+          <q-input
             v-model="ticket.tipo_ticket"
-            :options="tiposTickets"
-            transition-show="scale"
-            transition-hide="scale"
-            hint="Obligatorio"
-            options-dense
-            dense
             outlined
-            :disable="disabled"
-            :option-label="(item) => item.nombre"
-            :option-value="(item) => item.id"
-            use-input
-            input-debounce="0"
-            emit-value
-            map-options
-            :error="!!v$.tipo_ticket.$errors.length"
-            @blur="v$.tipo_ticket.$touch"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  Seleccione una categoría
-                </q-item-section>
-              </q-item>
-            </template>
-
-            <template v-slot:error>
-              <div v-for="error of v$.tipo_ticket.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-select>
+            dense
+            disable
+            autogrow
+          ></q-input>
         </div>
 
         <div class="col-12 col-md-3">
@@ -287,15 +160,13 @@
             options-dense
             dense
             outlined
-            :disable="disabled"
+            disable
             :option-label="(item) => item.label"
             :option-value="(item) => item.label"
             use-input
             input-debounce="0"
             emit-value
             map-options
-            :error="!!v$.prioridad.$errors.length"
-            @blur="v$.prioridad.$touch"
           >
             <template v-slot:no-option>
               <q-item>
@@ -315,12 +186,6 @@
                 </q-item-section>
               </q-item>
             </template>
-
-            <template v-slot:error>
-              <div v-for="error of v$.prioridad.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
           </q-select>
         </div>
 
@@ -331,7 +196,7 @@
             v-model="fechaLimite"
             placeholder="Opcional"
             outlined
-            :disable="disabled"
+            disable
             type="datetime"
             dense
           >
@@ -365,7 +230,7 @@
             v-model="ticket.establecer_hora_limite"
             label="Establecer hora límite"
             outlined
-            :disable="disabled"
+            disable
             dense
           ></q-checkbox>
         </div>
@@ -376,7 +241,7 @@
             v-model="horaLimite"
             type="time"
             step="1"
-            :disable="disabled"
+            disable
             stack-label
             outlined
             dense
@@ -389,7 +254,7 @@
             ref="refArchivoTicket"
             :mixin="mixinArchivoTicket"
             :endpoint="endpoint"
-            :disable="disabled"
+            :disable="true"
             :permitir-eliminar="false"
             :listar-al-guardar="false"
           ></archivo-seguimiento>

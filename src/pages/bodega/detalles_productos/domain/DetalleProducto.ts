@@ -43,6 +43,9 @@ export class DetalleProducto extends EntidadAuditable {
     tiene_adicionales: boolean
     calco:boolean
 
+    varios_items: boolean
+    seriales: any[]
+
     constructor() {
         super()
         this.id = null
@@ -82,5 +85,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.tiene_precio_compra = false
         this.tiene_adicionales = false
         this.calco=false
+        this.varios_items=false
+        this.seriales = []
     }
 }
