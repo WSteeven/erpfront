@@ -70,7 +70,6 @@
         :permitir-buscar="permitirBuscar"
         @filtrar="consultarTodos"
         @toggle-filtros="toggleFiltros"
-        :mostrarExportar="mostrarExportar"
       ></essential-table>
     </div>
   </div>
