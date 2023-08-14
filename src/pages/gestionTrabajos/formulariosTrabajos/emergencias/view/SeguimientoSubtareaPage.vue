@@ -5,16 +5,6 @@
       Código de subtarea: <b>{{ codigoSubtarea }}</b>
     </div>
 
-    <!-- <q-space></q-space> -->
-    <!-- <button-submits
-        :accion="accion"
-        @cerrar-modal="emit('cerrar-modal')"
-        @cancelar="reestablecer()"
-        @editar="editarSeguimiento()"
-        @guardar="guardarSeguimiento()"
-      /> -->
-    <!-- </div> -->
-
     <q-card class="rounded-card custom-shadow q-pa-md">
       <div
         v-if="esCoordinador"

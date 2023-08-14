@@ -309,10 +309,12 @@ export default defineComponent({
 
     let cerrarModal = true
     function editarSeguimiento(cerrarVentanaModal = true) {
-      cerrarModal = cerrarVentanaModal
-      fecha_historial.value = null
-      historialMaterialTareaUsadoPorFecha.value = []
-      editar(emergencia, cerrarModal, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
+      if (permitirSubir) {
+        cerrarModal = cerrarVentanaModal
+        fecha_historial.value = null
+        historialMaterialTareaUsadoPorFecha.value = []
+        editar(emergencia, cerrarModal, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
+      }
     }
 
     async function actualizarTablaMateriales() {

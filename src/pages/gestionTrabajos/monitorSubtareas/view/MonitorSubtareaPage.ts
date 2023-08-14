@@ -72,7 +72,7 @@ export default defineComponent({
 
 
     function filtrarSubtareas(estado: string) {
-      console.log(estado)
+      // console.log(estado)
       listar({ estado: estado })
       tabActual.value = estado
     }

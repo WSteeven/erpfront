@@ -29,6 +29,12 @@ const routes: RouteRecordRaw[] = [
        * Módulo de tareas
        *******************/
       {
+        path: '/dashboard-tareas',
+        name: 'dashboard_tareas',
+        component: () => import('gestionTrabajos/dashboardTareas/view/DashboardTareasPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/proyectos',
         name: 'proyectos',
         component: () =>
