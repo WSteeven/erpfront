@@ -67,6 +67,8 @@ export const endpoints = {
   prestamos_quirorafario_empleado: new Endpoint('recursos-humanos/prestamos_quirorafario_empleado'),
   prestamos_hipotecario_empleado: new Endpoint('recursos-humanos/prestamos_hipotecario_empleado'),
   extension_covertura_salud_empleado: new Endpoint('recursos-humanos/extension_covertura_salud_empleado'),
+  extension_covertura_salud: new Endpoint('recursos-humanos/extension_covertura_salud'),
+
   porcentaje_iess: new Endpoint('recursos-humanos/porcentaje_iess'),
   horas_extras_tipo: new Endpoint('recursos-humanos/horas_extras_tipo'),
   horas_extras_subtipo: new Endpoint('recursos-humanos/horas_extras_subtipo'),
@@ -81,6 +83,7 @@ export const endpoints = {
   archivo_prestamo_hipotecario: new Endpoint('recursos-humanos/archivo_prestamo_hipotecario'),
   archivo_prestamo_quirirafario: new Endpoint('recursos-humanos/archivo_prestamo_quirorafario'),
   archivo_rol_pago: new Endpoint('recursos-humanos/archivo_rol_pago'),
+  archivo_extencion_conyugal: new Endpoint('recursos-humanos/archivo_extencion_conyugal'),
 
   descuentos_permiso: new Endpoint('recursos-humanos/descuentos_permiso'),
   prestamo_hipotecario : new Endpoint('recursos-humanos/prestamo_hipotecario'),

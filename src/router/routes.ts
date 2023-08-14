@@ -848,6 +848,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/extension-conyugal',
+        name: 'extension_conyugal',
+        component: () =>
+          import(
+            'pages/recursosHumanos/extension-conyugal/view/ExtensionConyugalPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/familiares',
         name: 'familiares',
         component: () =>

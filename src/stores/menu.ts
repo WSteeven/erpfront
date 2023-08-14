@@ -489,8 +489,14 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Familiares',
           link: 'familiares',
-          icon: 'bi-circle',
+          icon: 'bi-people',
           can: store.can('puede.ver.familiares'),
+        },
+        {
+          title: 'Extension Conyugal',
+          link: 'extension-conyugal',
+          icon: 'fa-solid fa-people-arrows',
+          can: store.can('puede.ver.extension_conyugal'),
         },
         {
           title: 'Prestamos',
