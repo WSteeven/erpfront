@@ -518,7 +518,6 @@ export default defineComponent({
         rolpago.ingreso = rolpago.ingresos[indice_ingreso_busqueda].monto
         indice_ingreso.value = indice_ingreso_busqueda
       }
-
     }
     function verificar_descuento_general() {
       rolpago.egreso = null
@@ -549,9 +548,8 @@ export default defineComponent({
       )
       if (indice_egreso_busqueda !== -1) {
         rolpago.egreso = rolpago.egresos[indice_egreso_busqueda].monto
-        indice_egreso.value =indice_egreso_busqueda
+        indice_egreso.value = indice_egreso_busqueda
       }
-
     }
     function verificar_descuento_ley() {
       rolpago.egreso = null
@@ -593,6 +591,13 @@ export default defineComponent({
     }
     /**Calculo de  descuento del IESS */
     function CalculoIESS() {
+      if (rolpago.iess == null) {
+        consultarIESS()
+      }
+      rolpago.egreso =
+        rolpago.iess == null ? 0 : parseFloat(rolpago.iess.toString())
+    }
+    function consultarIESS() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const params = {
         empleado: rolpago.empleado,
@@ -636,9 +641,9 @@ export default defineComponent({
     /**Añadir Ingreso */
     function aniadirIngreso() {
       //modificar
-      if (indice_ingreso.value>=0) {
+      if (indice_ingreso.value >= 0) {
         rolpago.ingresos[indice_ingreso.value].monto = rolpago.ingreso
-      }else{
+      } else {
         rolpago.ingresos.push({
           concepto: rolpago.concepto_ingreso,
           id_empleado: rolpago.empleado,
@@ -684,9 +689,9 @@ export default defineComponent({
         default:
           break
       }
-      if (indice_egreso.value>=0) {
+      if (indice_egreso.value >= 0) {
         rolpago.egresos[indice_egreso.value].monto = rolpago.egreso
-      }else{
+      } else {
         rolpago.egresos.push({
           tipo: tipo_descuento.value,
           id_descuento: id_descuento,
@@ -694,9 +699,8 @@ export default defineComponent({
           mes: rolpago.mes,
           monto: rolpago.egreso,
         })
-
       }
-           rolpago.egreso = null
+      rolpago.egreso = null
     }
 
     const imprimir: CustomActionTable = {

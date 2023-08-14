@@ -11,7 +11,7 @@ import { AxiosResponse } from 'axios'
 export const useBotonesTablaRolPagoMes = (
   mixin: ContenedorSimpleMixin<RolPagoMes>
 ) => {
-  const { confirmar, prompt, notificarAdvertencia } = useNotificaciones()
+  const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
   const { listado } = mixin.useReferencias()
   const { editarParcial } = mixin.useComportamiento()
   const authenticationStore = useAuthenticationStore()
@@ -32,74 +32,55 @@ export const useBotonesTablaRolPagoMes = (
     accion: async ({ entidad, posicion }) => {
       if (listado.value[posicion].cantidad_subtareas == 0)
         return notificarAdvertencia(
-          'La tarea debe tener al menos una subtarea para poder finalizarla.'
+          'La tarea debe tener al menos un rol de pago de empleado para poder finalizar el rol de pago del mes.'
         )
-      const estanFinalizadas = await verificarTodasSubtareasFinalizadas(
+      const estanFinalizadas = await verificarTodasRolPagoFinalizadas(
         entidad.id
       )
-
+      await FinalizarRolPago(
+        entidad.id
+      )
       if (!estanFinalizadas)
         return notificarAdvertencia(
-          'La tarea aún tiene subtareas pendientes de FINALIZAR, CANCELAR o REAGENDAR.'
+          'El rol de pago aún tiene roles de empleados pendientes de FINALIZAR, REALIZAR o EJECUTAR.'
         )
 
 
       filaFinalizar.id = entidad.id
       filaFinalizar.posicion = posicion
 
-      if (!entidad.codigo_tarea_cliente) {
-        const data: CustomActionPrompt = {
-          titulo: 'Finalizar tarea',
-          mensaje:
-            'Para finalizar la tarea ingrese el código de tarea que le otorgó el cliente corporativo.',
-          validacion: (val) => !!val,
-          accion: (codigoRolPagoCliente) => {
-            filaFinalizar.codigo_tarea_cliente = codigoRolPagoCliente
 
-            const data2: CustomActionPrompt = {
-              titulo: 'Novedad',
-              mensaje: 'Ingrese alguna novedad en caso de presentarse.',
-              accion: (novedad) => {
-                filaFinalizar.novedad = novedad
-              },
-            }
-
-            prompt(data2)
-          },
-        }
-
-        prompt(data)
-      } else {
-        const data: CustomActionPrompt = {
-          titulo: 'Novedad',
-          mensaje: 'Ingrese alguna novedad en caso de presentarse.',
-          accion: (novedad) => {
-            filaFinalizar.novedad = novedad
-            delete (filaFinalizar as any).codigo_tarea_cliente
-
-          },
-        }
-
-        prompt(data)
-      }
     },
   }
 
   function eliminarElemento(posicion: number): void {
     if (posicion >= 0) listado.value.splice(posicion, 1)
   }
-
-  async function verificarTodasSubtareasFinalizadas(idRolPago: number) {
+async function FinalizarRolPago(idRolPago: number)  {
+  const axios = AxiosHttpRepository.getInstance()
+  const ruta = axios.getEndpoint(
+    endpoints.finalizar_rol_pago,
+    { rol_pago_id: idRolPago }
+  )
+  const response: AxiosResponse = await axios.get(ruta)
+  return notificarCorrecto(
+    'El rol de pago ha sido Finalizado.'
+  )
+}
+  async function verificarTodasRolPagoFinalizadas(idRolPago: number) {
     const axios = AxiosHttpRepository.getInstance()
     const ruta = axios.getEndpoint(
-      endpoints.verificar_todas_subtareas_finalizadas,
-      { tarea_id: idRolPago }
+      endpoints.verificar_todos_roles_finalizadas,
+      { rol_pago_id: idRolPago }
     )
     const response: AxiosResponse = await axios.get(ruta)
-    return response.data.estan_finalizadas
+
+    return response.data
   }
 
   return {
     btnFinalizarRolPago,
   }
 }
+
+

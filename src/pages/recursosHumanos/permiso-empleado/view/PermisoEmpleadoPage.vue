@@ -53,7 +53,10 @@
               v-model="permiso.fecha_hora_inicio"
               placeholder="Obligatorio"
               :error="!!v$.fecha_hora_inicio.$errors.length"
-              :disable="disabled"
+              :disable="
+                permiso.id_jefe_inmediato !== store.user.id &&
+                (accion === 'EDITAR' || accion === 'CONSULTAR')
+              "
               @blur="v$.fecha_hora_inicio.$touch"
               readonly
               outlined
@@ -97,7 +100,9 @@
               v-model="permiso.fecha_hora_fin"
               placeholder="Obligatorio"
               :error="!!v$.fecha_hora_fin.$errors.length"
-              :disable="disabled
+              :disable="
+                permiso.id_jefe_inmediato !== store.user.id &&
+                (accion === 'EDITAR' || accion === 'CONSULTAR')
               "
               @blur="v$.fecha_hora_fin.$touch"
               readonly
@@ -138,7 +143,10 @@
           <!-- Sugerir Fecha -->
           <div
             class="col-12 col-md-3"
-            v-if="permiso.id_jefe_inmediato != null "
+            v-if="
+              permiso.id_jefe_inmediato != null &&
+              permiso.id_jefe_inmediato === store.user.id
+            "
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
@@ -151,6 +159,21 @@
               dense
             ></q-checkbox>
           </div>
+          <!-- Aceptar Sugerencias -->
+          <div
+            class="col-12 col-md-3"
+            v-if="permiso.empleado === store.user.id && permiso.suguiere_fecha"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="permiso.aceptar_sugerencia"
+              label="Aceptar Sugerencia"
+              :disable="disabled"
+              @update:model-value="cambiar_fecha"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
           <!-- Fecha sugerida -->
           <div class="col-12 col-md-3" v-if="permiso.suguiere_fecha">
             <label class="q-mb-sm block">Fecha y hora sugerida</label>
@@ -158,7 +181,8 @@
               v-model="permiso.fecha_hora_reagendamiento"
               placeholder="Obligatorio"
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+                permiso.id_jefe_inmediato !== store.user.id &&
+                (accion === 'EDITAR' || accion === 'CONSULTAR')
               "
               readonly
               outlined
@@ -266,7 +290,6 @@
               :esMultiple="false"
             >
             </gestor-documentos>
-
           </div>
 
           <!-- Fecha Recuperacion -->
@@ -332,7 +355,11 @@
           <!-- Recuperable -->
           <div
             class="col-12 col-md-3"
-            v-if="permiso.id_jefe_inmediato != null && permiso.estado == 1"
+            v-if="
+              permiso.id_jefe_inmediato != null &&
+              permiso.estado == 1 &&
+              permiso.id_jefe_inmediato === store.user.id
+            "
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"

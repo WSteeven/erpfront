@@ -73,6 +73,13 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   sortable: true
 },
 {
+  name: 'anticipo',
+  field: 'anticipo',
+  label: 'Anticipo',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'descuento_ley_info',
   field: 'descuento_ley_info',
   label: 'Descuentos de ley',

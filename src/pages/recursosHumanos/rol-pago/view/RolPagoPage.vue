@@ -127,6 +127,19 @@
         >
         </q-input>
       </div>
+       <!-- Anticipo -->
+     <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Anticipo</label>
+        <q-input
+          v-model="rolpago.anticipo"
+          type="number"
+          disable
+          outlined
+          dense
+        >
+        </q-input>
+      </div>
+
     </div>
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"

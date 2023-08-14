@@ -7,7 +7,9 @@
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'rol_pago'"
     :tabOptions="tabOptionsEstadosRolPago"
-    :accion1="btnFinalizarRolPago"
+    :accion1="editarRolPago"
+    :accion2="btnFinalizarRolPago"
+
     :filtrar="filtrarRolPagoMes"
     tabDefecto="0"
     :forzarListar="true"
@@ -46,7 +48,7 @@
                   :value="rolpago.mes"
                   mask="##-####"
                   :error="!!v$.mes.$errors.length"
-                  :disable="disabled"
+                  :disable="accion=='CONSULTAR' || accion=='EDITAR'"
                   @blur="v$.mes.$touch"
                   readonly
                   outlined
@@ -97,6 +99,17 @@
                 >
                 </q-input>
               </div>
+              <!-- Aceptar Sugerencias -->
+          <div class="col-12 col-md-3" >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="rolpago.es_quincena"
+              label="Es quincena"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
             </div>
           </q-form>
         </q-tab-panel>

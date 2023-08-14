@@ -90,7 +90,8 @@ export const endpoints = {
   otener_saldo_empleado_mes : new Endpoint('recursos-humanos/otener_saldo_empleado_mes'),
   imprimir_rol_pago : new Endpoint('recursos-humanos/imprimir_rol_pago/'),
   imprimir_rol_pago_general : new Endpoint('recursos-humanos/imprimir_rol_pago_general/'),
-
+  verificar_todos_roles_finalizadas : new Endpoint('recursos-humanos/verificar-todos_roles-finalizadas'),
+  finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
 
 
 

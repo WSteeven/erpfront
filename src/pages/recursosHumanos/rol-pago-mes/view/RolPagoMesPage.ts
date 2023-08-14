@@ -56,6 +56,7 @@ export default defineComponent({
     )
     const {
       entidad: rolpago,
+      accion,
       disabled,
       listadosAuxiliares,
     } = mixin.useReferencias()
@@ -64,6 +65,7 @@ export default defineComponent({
       editar,
       eliminar,
       reestablecer,
+      consultar,
       setValidador,
       obtenerListados,
       cargarVista,
@@ -227,10 +229,23 @@ export default defineComponent({
       obtenerNombreMes()
     }
 
+    const editarRolPago: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      visible: ({ entidad }) =>
+      authenticationStore.can('puede.editar.rol_pago') && !entidad.finalizado ,
+      accion: ({ entidad }) => {
+        accion.value = 'EDITAR'
+        consultar(entidad)
+      },
+    }
+
     return {
       removeAccents,
       mixin,
       rolpago,
+      accion,
       concepto_ingresos,
       campo,
       is_month,
@@ -250,6 +265,7 @@ export default defineComponent({
       modalesRolPagoMes,
       modalesRolPago,
       guardado,
+      editarRolPago,
       es_calculable,
       v$,
       filtrarRolPagoMes,

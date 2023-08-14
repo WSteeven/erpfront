@@ -78,6 +78,8 @@ export default defineComponent({
 
     const tipos_permisos = ref([])
     const empleados = ref([])
+    const aux_fecha_inicio = ref()
+    const aux_fecha_fin= ref()
     const refArchivoPrestamoEmpresarial = ref()
     const autorizaciones = ref()
     const esRecursosHumanos = store.esRecursosHumanos
@@ -143,6 +145,8 @@ export default defineComponent({
     onConsultado(() => {
       esAutorizador.value =
         store.user.id == permiso.id_jefe_inmediato ? true : false
+        aux_fecha_inicio.value = permiso.fecha_hora_inicio == null?'':permiso.fecha_hora_inicio
+        aux_fecha_fin.value = permiso.fecha_hora_fin == null?'':permiso.fecha_hora_fin
       setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           permiso_id: permiso.id,
@@ -247,11 +251,29 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       color: 'secondary',
       visible: ({ entidad }) =>
-        entidad.empleado !== store.user.id && !esRecursosHumanos,
+        store.can('puede.editar.permiso_nomina'),
       accion: ({ entidad }) => {
+
         accion.value = 'EDITAR'
         consultar(entidad)
       },
+    }
+
+    function cambiar_fecha(){
+      permiso.fecha_hora_inicio = aux_fecha_inicio.value
+      permiso.fecha_hora_fin= aux_fecha_fin.value
+      if(permiso.aceptar_sugerencia){
+        permiso.fecha_hora_inicio = permiso.fecha_hora_reagendamiento
+        const fechaFinSugerida = convertir_fecha( permiso.fecha_hora_reagendamiento) //new Date(anio, mes, dia,parseInt(tiempo[1].split(':')[0]),parseInt(tiempo[1].split(':')[1]));
+        fechaFinSugerida.setHours(fechaFinSugerida.getHours() + 1);
+        const anio = fechaFinSugerida.getFullYear();
+        const mes = String(fechaFinSugerida.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, por lo que sumamos 1
+        const dia = String(fechaFinSugerida.getDate()).padStart(2, '0');
+        const horas = String(fechaFinSugerida.getHours()).padStart(2, '0');
+        const minutos = String(fechaFinSugerida.getMinutes()).padStart(2, '0');
+        permiso.fecha_hora_fin =  dia+'-'+mes+'-'+anio+' '+horas+':'+minutos+':00'
+      }
+
     }
 
     return {
@@ -263,6 +285,7 @@ export default defineComponent({
       filtrarPermisoEmpleado,
       watchEffect,
       optionsFechaInicio,
+      cambiar_fecha,
       editarPermiso,
       esAutorizador,
       esRecursosHumanos,
@@ -278,6 +301,7 @@ export default defineComponent({
       autorizaciones,
       accion,
       maskFecha,
+      store,
       v$,
       disabled,
       tabOptionsSolicitudPedido,

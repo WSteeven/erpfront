@@ -7,6 +7,7 @@ export class RolPagoMes extends EntidadAuditable {
   tiene_empleados: boolean | null
   finalizado: boolean | null
   cantidad_roles_empleado : number|null
+  es_quincena : boolean | null
   constructor() {
     super()
     this.id = null
@@ -14,6 +15,7 @@ export class RolPagoMes extends EntidadAuditable {
     this.nombre = null
     this.tiene_empleados = true
     this.finalizado = false
+    this.es_quincena = false
     this.cantidad_roles_empleado = null
   }
 }
