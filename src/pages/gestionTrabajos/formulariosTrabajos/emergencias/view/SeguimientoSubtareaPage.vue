@@ -1,8 +1,19 @@
 <template>
   <q-page>
+    <!-- <div class="row q-mb-md"> -->
     <div class="q-mb-md">
       Código de subtarea: <b>{{ codigoSubtarea }}</b>
     </div>
+
+    <!-- <q-space></q-space> -->
+    <!-- <button-submits
+        :accion="accion"
+        @cerrar-modal="emit('cerrar-modal')"
+        @cancelar="reestablecer()"
+        @editar="editarSeguimiento()"
+        @guardar="guardarSeguimiento()"
+      /> -->
+    <!-- </div> -->
 
     <q-card class="rounded-card custom-shadow q-pa-md">
       <div
@@ -30,10 +41,11 @@
           <tabla-filas-dinamicas
             :listado="emergencia.trabajo_realizado"
             :configuracion-columnas="configuracionColumnasTrabajoRealizado"
-            @actualizar="(data) => (emergencia.trabajo_realizado = data)"
+            @actualizar="(listado) => (emergencia.trabajo_realizado = listado)"
             :mostrarAccion1Header="permitirSubir"
             :entidad="TrabajoRealizado"
             :accion1="verFotografia"
+            titulo="Cronología de actividades realizadas"
           ></tabla-filas-dinamicas>
         </div>
 
@@ -60,11 +72,13 @@
               <q-tab
                 name="usar_material_tarea"
                 label="Usar material de tarea"
+                @click="actualizarTablaMateriales()"
               />
               <q-tab
                 v-if="esCoordinador"
                 name="historial_material_tarea_usado"
                 label="Historial de material de tarea usado"
+                @click="editarSeguimiento(false)"
               >
               </q-tab>
             </q-tabs>
@@ -87,116 +101,45 @@
               </q-tab-panel>
 
               <q-tab-panel name="historial_material_tarea_usado">
-                <!-- {{ emergencia.historial_material_tarea_usado }} -->
-                <q-tabs
-                  v-model="tabsMateriales"
-                  align="left"
-                  switch-indicator
-                  active-class="tab-active"
-                  indicator-color="transparent"
-                  dense
+                <div
+                  class="row text-center justify-center bg-drawer rounded-card q-py-md q-mb-md custom-shadow"
                 >
-                  <q-tab
-                    name="historial"
-                    label="Historial por fecha"
-                    :class="{ 'tab-inactive': tabs !== 'historial' }"
-                    no-caps
-                  />
-                  <q-tab
-                    name="suma"
-                    label="Suma total"
-                    :class="{ 'tab-inactive': tabs !== 'suma' }"
-                    no-caps
-                  />
-                </q-tabs>
+                  <!-- Fecha historial -->
+                  <div class="col-12 col-md-3 q-mb-md">
+                    <label class="q-mb-sm block"
+                      >Seleccione una fecha para filtrar en el historial</label
+                    >
+                    <small class="text-positive">{{
+                      rangoFechasHistorial
+                    }}</small>
+                  </div>
 
-                <!-- Tab content -->
-                <q-tab-panels
-                  v-model="tabsMateriales"
-                  animated
-                  transition-prev="scale"
-                  transition-next="scale"
-                  :class="{ 'rounded-tabpanel': !$q.screen.xs }"
-                >
-                  <!-- Formulario -->
-                  <q-tab-panel name="historial">
-                    <div class="row text-center justify-center">
-                      <!-- Fecha historial -->
-                      <div class="col-12 col-md-3 q-mb-md">
-                        <label class="q-mb-sm block"
-                          >Seleccione una fecha para filtrar en el
-                          historial</label
-                        >
-                        <q-input v-model="fecha_historial" outlined dense>
-                          <template v-slot:append>
-                            <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                cover
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date
-                                  v-model="fecha_historial"
-                                  mask="DD-MM-YYYY"
-                                  today-btn
-                                  @update:model-value="
-                                    obtenerHistorialMaterialTareaUsadoPorFecha(
-                                      fecha_historial
-                                    )
-                                  "
-                                >
-                                  <div class="row items-center justify-end">
-                                    <q-btn
-                                      v-close-popup
-                                      label="Cerrar"
-                                      color="primary"
-                                      flat
-                                    />
-                                  </div>
-                                </q-date>
-                              </q-popup-proxy>
-                            </q-icon>
-                          </template>
-                        </q-input>
-
-                        <small class="text-positive">{{
-                          rangoFechasHistorial
-                        }}</small>
-                      </div>
+                  <div class="col-12">
+                    <div class="q-gutter-sm">
+                      <q-radio
+                        v-for="fecha in emergencia.fechas_historial_materiales_usados"
+                        :key="fecha.fecha"
+                        v-model="fecha_historial"
+                        :val="fecha.fecha"
+                        :label="fecha.fecha"
+                      />
                     </div>
+                  </div>
+                </div>
 
-                    <essential-table
-                      v-if="historialMaterialTareaUsadoPorFecha.length"
-                      titulo="Historial material tarea usado"
-                      :configuracionColumnas="
-                        configuracionColumnasMaterialOcupadoFormulario
-                      "
-                      :datos="historialMaterialTareaUsadoPorFecha"
-                      :alto-fijo="false"
-                      :permitirConsultar="false"
-                      :permitirEliminar="false"
-                      :permitirEditar="false"
-                      :permitir-buscar="false"
-                      :permitirEditarModal="true"
-                      separador="cell"
-                    ></essential-table>
-                  </q-tab-panel>
-
-                  <q-tab-panel name="suma">
-                    <essential-table
-                      titulo="Sumatoria del historial material tarea usado"
-                      :configuracionColumnas="configuracionColumnasSumaMaterial"
-                      :datos="sumaMaterialesTareaUsado"
-                      :alto-fijo="false"
-                      :permitirConsultar="false"
-                      :permitirEliminar="false"
-                      :permitirEditar="false"
-                      :permitir-buscar="false"
-                      :permitirEditarModal="true"
-                      separador="cell"
-                    ></essential-table>
-                  </q-tab-panel>
-                </q-tab-panels>
+                <essential-table
+                  v-if="historialMaterialTareaUsadoPorFecha.length"
+                  titulo="Historial material tarea usado"
+                  :configuracionColumnas="columnasMaterial"
+                  :datos="historialMaterialTareaUsadoPorFecha"
+                  :alto-fijo="false"
+                  :permitirConsultar="false"
+                  :permitirEliminar="false"
+                  :permitirEditar="false"
+                  :permitirEditarModal="true"
+                  separador="cell"
+                  :accion1="botonEditarCantidadTareaHistorial"
+                ></essential-table>
               </q-tab-panel>
             </q-tab-panels>
           </q-card>

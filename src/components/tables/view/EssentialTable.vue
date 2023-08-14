@@ -671,6 +671,39 @@
       </q-card>
     </template>
 
+    <!-- Estilos de celdas -->
+    <template #body-cell-despachado="props">
+      <q-td :props="props" class="bg-lime-2">
+        <q-badge color="positive">
+          {{ props.value }}
+        </q-badge>
+      </q-td>
+    </template>
+
+    <template #body-cell-total_cantidad_utilizada="props">
+      <q-td :props="props" class="bg-grey-2 text-bold">
+        <!-- <q-badge color="blue-grey-6"> -->
+        {{ props.value }}
+        <!-- </q-badge> -->
+      </q-td>
+    </template>
+
+    <template #body-cell-stock_actual="props">
+      <q-td :props="props" class="bg-indigo-1">
+        <q-badge color="indigo">
+          {{ props.value }}
+        </q-badge>
+      </q-td>
+    </template>
+
+    <template #body-cell-devuelto="props">
+      <q-td :props="props" class="bg-lime-2">
+        <q-badge color="positive">
+          {{ props.value }}
+        </q-badge>
+      </q-td>
+    </template>
+
     <template #body-cell-tamanio_bytes="props">
       <q-td :props="props">
         {{ formatBytes(props.value) }}

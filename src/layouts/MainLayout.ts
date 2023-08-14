@@ -16,6 +16,7 @@ import Swal from 'sweetalert2'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
 
 // Logica y controladores
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
@@ -34,6 +35,7 @@ export default defineComponent({
     EssentialLoading,
     FooterComponent,
     ModalesEntidad,
+    ScrollToTopButton,
   },
 
   setup() {
