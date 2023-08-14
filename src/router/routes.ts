@@ -497,6 +497,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/proformas',
+        name: 'proformas',
+        component: () =>
+          import('pages/comprasProveedores/proforma/view/ProformaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/contactos-proveedores',
         name: 'contactos_proveedores',
         component: () =>

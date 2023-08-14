@@ -622,7 +622,7 @@
           v-slot="scope"
           @hide="guardarCeldaEditada(props.row)"
           ><q-input
-            v-if="props.col.type != 'toggle'"
+            v-if="props.col.type != 'toggle' || props.col.type != 'select'"
             v-model="scope.value"
             :type="props.col.type ? props.col.type : 'text'"
             :hint="props.col.hint"
@@ -678,6 +678,20 @@
         >
           <q-toggle v-model="scope.value" :label="scope.value ? 'SI' : 'NO'" />
         </q-popup-edit>
+      </q-td>
+    </template>
+    <!--Select de unidad de medida-->
+    <template #body-cell-unidad_medida="props">
+      <q-td :key="props.col.name" :props="props">
+        <q-select
+          v-if="props.col.type && props.col.editable"
+          v-model="props.row[props.col.name]"
+          :options="props.col.options"
+          :options-label="(v) => v.label"
+          :options-value="(v) => v.value"
+          emit-value
+          map-options
+        />
       </q-td>
     </template>
   </q-table>

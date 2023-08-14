@@ -78,6 +78,7 @@ export const endpoints = {
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   ordenes_compras: new Endpoint('compras/ordenes-compras'),
   preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  proformas: new Endpoint('compras/proformas'),
   proveedores: new Endpoint('proveedores'),
 
   // Modulo de Bodega

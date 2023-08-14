@@ -556,6 +556,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
         },
         {
+          title: 'Proformas',
+          link: 'proformas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.proformas') || store.esAdministrador,
+        },
+        {
           title: 'Proveedores',
           link: 'proveedores',
           icon: 'bi-boxes',

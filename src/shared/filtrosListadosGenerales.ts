@@ -10,6 +10,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const parroquias = ref([])
   const empresas = ref([])
   const proveedores = ref([])
+  const clientes = ref([])
 
 
   /**************************************************************
@@ -154,6 +155,20 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     })
   }
 
+  /* The `filtrarClientes` function is used to filter a list of clients based on a given search value. */
+  function filtrarClientes(val, update) {
+    if (val === '') {
+      update(() => {
+        clientes.value = listadosAuxiliares.clientes
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      clientes.value = listadosAuxiliares.clientes.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
@@ -161,5 +176,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     parroquias, filtrarParroquias,
     empresas, filtrarEmpresas,
     proveedores, filtrarProveedores,
+    clientes, filtrarClientes,
   }
 }

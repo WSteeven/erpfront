@@ -1,0 +1,42 @@
+import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+
+export class Proforma extends EntidadAuditable {
+    solicitante: number | null
+    cliente: number | null
+    autorizador: number | null
+    autorizacion: number | null
+    descripcion: string | null
+    preorden:number | null
+    pedido:number | null
+    forma: string | null
+    tiempo: string | null
+    estado:number | null
+    fecha: string | null
+    created_at: string | null
+    categorias: [] | null
+    listadoProductos: any[]
+
+    //variables auxiliares
+    tiene_preorden: boolean
+    tiene_pedido: boolean
+
+    constructor() {
+        super()
+        this.solicitante = null
+        this.cliente = null
+        this.autorizador = null
+        this.autorizacion = null
+        this.descripcion = null
+        this.preorden = null
+        this.pedido = null
+        this.forma = null
+        this.created_at = null
+        this.tiempo = null
+        this.estado = null
+        this.fecha = null
+        this.categorias = []
+        this.listadoProductos = []
+        this.tiene_preorden =false
+        this.tiene_pedido= false
+    }
+}
