@@ -1,7 +1,7 @@
 <template>
   <essential-table
     ref="refTrabajos"
-    titulo="Cronología de trabajos realizados"
+    :titulo="titulo"
     :configuracionColumnas="columnas"
     :datos="trabajoRealizado"
     :alto-fijo="false"
@@ -62,6 +62,7 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  titulo: String,
 })
 
 const emit = defineEmits(['actualizar', 'guardar-fila'])

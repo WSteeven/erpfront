@@ -5,8 +5,8 @@ export class MaterialOcupadoFormulario extends EntidadAuditable {
   detalle_producto_id: number | null
   detalle_producto: string | null
   despachado: number | null
-  stock_actual: number | null
-  total_cantidad_utilizada: number | null
+  stock_actual: number
+  total_cantidad_utilizada: number
   cantidad_utilizada: number | null
   cantidad_old: number | null
   medida: string | null
@@ -17,8 +17,8 @@ export class MaterialOcupadoFormulario extends EntidadAuditable {
     this.detalle_producto_id = null
     this.detalle_producto = null
     this.despachado = null
-    this.stock_actual = null
-    this.total_cantidad_utilizada = null
+    this.stock_actual = 0
+    this.total_cantidad_utilizada = 0
     this.cantidad_utilizada = null
     this.cantidad_old = null
     this.medida = null

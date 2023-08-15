@@ -11,6 +11,7 @@ export class Emergencia extends EntidadAuditable {
   materiales_stock_ocupados: MaterialOcupadoFormulario[]
   materiales_devolucion: []
   subtarea: number | null
+  fechas_historial_materiales_usados: string[]
 
   constructor() {
     super()
@@ -21,5 +22,6 @@ export class Emergencia extends EntidadAuditable {
     this.materiales_stock_ocupados = []
     this.materiales_devolucion = []
     this.subtarea = null
+    this.fechas_historial_materiales_usados = []
   }
 }

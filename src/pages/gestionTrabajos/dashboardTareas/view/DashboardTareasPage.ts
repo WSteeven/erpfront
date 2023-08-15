@@ -5,7 +5,7 @@ import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia
 import { required } from '@vuelidate/validators'
 import { computed, defineComponent, reactive, ref } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
-import { accionesTabla, departamentos, tiposJornadas } from 'config/utils'
+import { acciones, accionesTabla, departamentos, estadosTrabajos, tiposJornadas } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -22,7 +22,7 @@ import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { formatearFechaSeparador, generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { DashboardTicketController } from '../infraestructure/DashboardTicketsController'
+import { DashboardTareaController } from '../infraestructure/DashboardTareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { estadosTickets } from 'config/tickets.utils'
@@ -34,6 +34,12 @@ import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import datalabels from 'chartjs-plugin-datalabels'
+import { configuracionColumnasSubtarea } from 'pages/gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
+import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
+import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { useSubtareaStore } from 'stores/subtarea'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad },
@@ -56,9 +62,11 @@ export default defineComponent({
       },
     };
 
+    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
-      new DashboardTicketController()
+      new DashboardTareaController()
     )
 
     const { listadosAuxiliares, listado } = mixin.useReferencias()
@@ -77,35 +85,40 @@ export default defineComponent({
     })
 
     const filtro = reactive(new FiltroDashboardTicket())
-    const dashboardTicketController = new DashboardTicketController()
+    const dashboardTicketController = new DashboardTareaController()
     const cargando = new StatusEssentialLoading()
     const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado)
-    const modales = new ComportamientoModalesTicketAsignado()
+    // const modales = new ComportamientoModalesTicketAsignado()
     const empleadoResponsableDepartamento = ref()
     const esResponsableDepartamento = ref(false)
     const ticketsEmpleadoResponsable = ref([])
     let departamento
 
     // Cantidades
-    const ticketsConSolucion = ref([])
-    const cantTicketsCreados = ref()
-    const cantTicketsCreadosParaMi = ref()
-    const cantTicketsCreadosInternos = ref()
-    const cantTicketsCreadosADepartamentos = ref()
-    const cantTicketsRecibidos = ref()
-    const cantTicketsReasignados = ref()
-    const cantTicketsAsignados = ref()
-    const cantTicketsEjecutados = ref()
-    const cantTicketsCancelados = ref()
-    const cantTicketsCanceladosPorMi = ref()
-    const cantTicketsPausados = ref()
-    const cantTicketsCalificadosResponsable = ref()
-    const cantTicketsCalificadosSolicitante = ref()
-    const cantTicketsFinalizadosSolucionados = ref()
-    const cantTicketsFinalizadosSinSolucion = ref()
-    const cantidadesTicketsSolicitadosPorDepartamento = ref([])
-    const cantidadesTicketsRecibidosPorDepartamento = ref([])
-    const ticketsPorEstado = ref([])
+    const subtareas = ref([])
+
+    const cantidadTareasActivas = ref()
+    const cantidadTareasFinalizadas = ref()
+    const cantidadSubtareasAgendadas = ref()
+    const cantidadSubtareasEjecutadas = ref()
+    const cantidadSubtareasPausadas = ref()
+    const cantidadSubtareasSuspendidas = ref()
+    const cantidadSubtareasCanceladas = ref()
+    const cantidadSubtareasRealizadas = ref()
+    const cantidadSubtareasFinalizadas = ref()
+    const totalSubtareas = computed(() => {
+      return cantidadSubtareasAgendadas.value
+        + cantidadSubtareasEjecutadas.value
+        + cantidadSubtareasPausadas.value
+        + cantidadSubtareasSuspendidas.value
+        + cantidadSubtareasCanceladas.value
+        + cantidadSubtareasRealizadas.value
+        + cantidadSubtareasFinalizadas.value
+    })
+
+    const cantidadesPorEstadosSubtareas = ref([])
+    const cantidadesPorEstadosSubtareasBar = ref()
+
     const ticketsPorDepartamentoEstadoAsignado = ref([])
     const ticketsPorDepartamentoEstadoReasignado = ref([])
     const ticketsPorDepartamentoEstadoEjecutando = ref([])
@@ -116,7 +129,6 @@ export default defineComponent({
 
     const cantidadesTicketsSolicitadosPorDepartamentoBar = ref()
     const cantidadesTicketsRecibidosPorDepartamentoBar = ref()
-    const ticketsPorEstadoBar = ref()
     const ticketsPorDepartamentoEstadoAsignadoBar = ref()
     const ticketsPorDepartamentoEstadoReasignadoBar = ref()
     const ticketsPorDepartamentoEstadoEjecutandoBar = ref()
@@ -191,15 +203,25 @@ export default defineComponent({
     /***************
      * Botones tabla
      ***************/
-    const { btnSeguimiento } = useBotonesTablaTicket(mixin, modales)
+    // const { btnSeguimiento } = useBotonesTablaTicket(mixin, modales)
     // setFiltrarTickets(filtrarTrabajoAsignado)
+    /**********
+    * Modales
+    **********/
+    const modalesSubtarea = new ComportamientoModalesSubtarea()
+    const { btnSeguimiento } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
+
+    const subtareaStore = useSubtareaStore()
 
     const botonVer: CustomActionTable = {
       titulo: 'Más detalles',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
-        ticketStore.filaTicket = entidad
-        modales.abrirModalEntidad('DetalleCompletoTicket')
+        // ticketStore.filaTicket = entidad
+        subtareaStore.idSubtareaSeleccionada = entidad.id
+        subtareaStore.accion = acciones.consultar
+        modalesSubtarea.abrirModalEntidad('SubtareaPage')
+        // modales.abrirModalEntidad('DetalleCompletoTicket')
       },
     }
 
@@ -230,48 +252,41 @@ export default defineComponent({
           departamento = empleadoSeleccionado.departamento_id
           cargando.activar()
 
-          const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado, departamento_responsable_id: departamento })
+          const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado })
           await obtenerResponsables()
 
-          ticketsConSolucion.value = result.tiemposTicketsFinalizados
-          cantTicketsCreados.value = result.cantTicketsCreados
-          cantTicketsCreadosParaMi.value = result.cantTicketsCreadosParaMi
-          cantTicketsCreadosInternos.value = result.cantTicketsCreadosInternos
-          cantTicketsCreadosADepartamentos.value = result.cantTicketsCreadosADepartamentos
-          cantTicketsRecibidos.value = result.cantTicketsRecibidos
-          cantTicketsReasignados.value = result.cantTicketsReasignados
-          cantTicketsAsignados.value = result.cantTicketsAsignados
-          cantTicketsEjecutados.value = result.cantTicketsEjecutados
-          cantTicketsCancelados.value = result.cantTicketsCancelados
-          cantTicketsCanceladosPorMi.value = result.cantTicketsCanceladosPorMi
-          cantTicketsPausados.value = result.cantTicketsPausados
-          cantTicketsFinalizadosSolucionados.value = result.cantTicketsFinalizadosSolucionados
-          cantTicketsFinalizadosSinSolucion.value = result.cantTicketsFinalizadosSinSolucion
-          cantTicketsCalificadosResponsable.value = result.cantTicketsCalificadosResponsable
-          cantTicketsCalificadosSolicitante.value = result.cantTicketsCalificadosSolicitante
+          subtareas.value = result.subtareas
 
-          cantidadesTicketsSolicitadosPorDepartamento.value = result.cantidadesTicketsSolicitadosPorDepartamento
-          const labels = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.nombre)
+          cantidadTareasActivas.value = result.cantidadTareasActivas
+          cantidadTareasFinalizadas.value = result.cantidadTareasFinalizadas
+          cantidadSubtareasAgendadas.value = result.cantidadSubtareasAgendadas
+          cantidadSubtareasEjecutadas.value = result.cantidadSubtareasEjecutadas
+          cantidadSubtareasPausadas.value = result.cantidadSubtareasPausadas
+          cantidadSubtareasSuspendidas.value = result.cantidadSubtareasSuspendidas
+          cantidadSubtareasCanceladas.value = result.cantidadSubtareasCanceladas
+          cantidadSubtareasRealizadas.value = result.cantidadSubtareasRealizadas
+          cantidadSubtareasFinalizadas.value = result.cantidadSubtareasFinalizadas
+
+          /* const labels = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.nombre)
           const valores = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.total)
           const colores1 = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
           cantidadesTicketsSolicitadosPorDepartamentoBar.value = mapearDatos(labels, valores, 'Cantidades de tickets creados a los departamentos', colores1)
 
-          cantidadesTicketsRecibidosPorDepartamento.value = result.cantidadesTicketsRecibidosPorDepartamento
           const labels2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.nombre)
           const valores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.total)
           const colores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
-          cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidades de tickets recibidos por los departamentos', colores2)
+          cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidades de tickets recibidos por los departamentos', colores2) */
 
-          ticketsPorEstado.value = result.ticketsPorEstado
-          const labels3 = result.ticketsPorEstado.map((item) => item.estado)
-          const valores3 = result.ticketsPorEstado.map((item) => item.total_tickets)
-          const colores3 = result.ticketsPorEstado.map((item) => mapearColor(item.estado))
-          ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidades de tickets por estados', colores3)
+          cantidadesPorEstadosSubtareas.value = result.cantidadesPorEstadosSubtareas
+          const labels3 = result.cantidadesPorEstadosSubtareas.map((item) => item.estado)
+          const valores3 = result.cantidadesPorEstadosSubtareas.map((item) => item.total_subtareas)
+          const colores3 = result.cantidadesPorEstadosSubtareas.map((item) => mapearColor(item.estado))
+          cantidadesPorEstadosSubtareasBar.value = mapearDatos(labels3, valores3, 'Cantidades de subtareas por estados', colores3)
 
           /**************
            * Mapear Pies
            **************/
-          const labels4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.responsable)
+          /* const labels4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.responsable)
           const valores4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.total_tickets)
           const colores4 = result.ticketsPorDepartamentoEstadoAsignado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoAsignadoBar.value = mapearDatos(labels4, valores4, 'Cantidades de tickets del departamento con filtro por estado', colores4)
@@ -311,7 +326,7 @@ export default defineComponent({
           const valores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.total_tickets)
           const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoCalificadoBar.value = mapearDatos(labels10, valores10, 'Cantidades de tickets del departamento con filtro por estado', colores10)
-          ticketsPorDepartamentoEstadoCalificado.value = result.ticketsPorDepartamentoEstadoCalificado
+          ticketsPorDepartamentoEstadoCalificado.value = result.ticketsPorDepartamentoEstadoCalificado */
 
           if (filtro.empleado) {
             empleadoResponsableDepartamento.value = filtro.empleado
@@ -369,16 +384,12 @@ export default defineComponent({
 
     function mapearColor(estadoTicket: keyof typeof estadosTickets) {
       switch (estadoTicket) {
-        case estadosTickets.ASIGNADO: return '#9fa8da'
-        case estadosTickets.PENDIENTE: return '#9fa8da'
-        case estadosTickets.REASIGNADO: return '#78909c'
-        case estadosTickets.EJECUTANDO: return '#ffc107'
-        case estadosTickets.PAUSADO: return '#616161'
-        case estadosTickets.FINALIZADO_SOLUCIONADO: return '#8bc34a'
-        case estadosTickets.FINALIZADO_SIN_SOLUCION: return '#9ba98c'
-        case estadosTickets.FINALIZADO: return '#8bc34a'
-        case estadosTickets.CANCELADO: return '#c31d25'
-        // case estadosTickets.CALIFICADO: return '#98bf23'
+        case estadosTrabajos.AGENDADO: return '#9fa8da'
+        case estadosTrabajos.EJECUTANDO: return '#9fa8da'
+        case estadosTrabajos.PAUSADO: return '#78909c'
+        case estadosTrabajos.SUSPENDIDO: return '#ffc107'
+        case estadosTrabajos.REALIZADO: return '#8bc34a'
+        case estadosTrabajos.FINALIZADO: return '#9ba98c'
       }
     }
 
@@ -408,22 +419,21 @@ export default defineComponent({
       filtrarEmpleados,
       empleados,
       empleadosResponsables,
-      ticketsConSolucion,
-      cantTicketsCreados,
-      cantTicketsCreadosParaMi,
-      cantTicketsCreadosInternos,
-      cantTicketsCreadosADepartamentos,
-      cantTicketsRecibidos,
-      cantTicketsReasignados,
-      cantTicketsAsignados,
-      cantTicketsCalificadosResponsable,
-      cantTicketsCalificadosSolicitante,
-      cantTicketsEjecutados,
-      cantTicketsCancelados,
-      cantTicketsCanceladosPorMi,
-      cantTicketsPausados,
-      cantTicketsFinalizadosSolucionados,
-      cantTicketsFinalizadosSinSolucion,
+      subtareas,
+      cantidadTareasActivas,
+      cantidadTareasFinalizadas,
+      cantidadSubtareasAgendadas,
+      cantidadSubtareasPausadas,
+      cantidadSubtareasSuspendidas,
+      cantidadSubtareasCanceladas,
+      cantidadSubtareasRealizadas,
+      cantidadSubtareasFinalizadas,
+      totalSubtareas,
+      columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
+      modalesSubtarea,
+      mixinSubtarea,
+      //--
+      cantidadSubtareasEjecutadas,
       configuracionColumnasTicket,
       v$,
       mixin,
@@ -437,7 +447,7 @@ export default defineComponent({
       optionsPie,
       mostrarTitulosSeccion,
       accionesTabla,
-      modales,
+      // modales,
       empleadoResponsableDepartamento,
       obtenerTicketsEmpleadoResponsable,
       ticketsEmpleadoResponsable,
@@ -449,9 +459,7 @@ export default defineComponent({
       // Consultar
       consultar,
       // Listados
-      cantidadesTicketsSolicitadosPorDepartamento,
-      cantidadesTicketsRecibidosPorDepartamento,
-      ticketsPorEstado,
+      cantidadesPorEstadosSubtareas,
       ticketsPorDepartamentoEstadoAsignado,
       ticketsPorDepartamentoEstadoReasignado,
       ticketsPorDepartamentoEstadoEjecutando,
@@ -462,7 +470,7 @@ export default defineComponent({
       // Bar
       cantidadesTicketsSolicitadosPorDepartamentoBar,
       cantidadesTicketsRecibidosPorDepartamentoBar,
-      ticketsPorEstadoBar,
+      cantidadesPorEstadosSubtareasBar,
       ticketsPorDepartamentoEstadoAsignadoBar,
       ticketsPorDepartamentoEstadoReasignadoBar,
       ticketsPorDepartamentoEstadoEjecutandoBar,

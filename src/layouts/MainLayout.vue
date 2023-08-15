@@ -441,6 +441,8 @@
 
     <modales-entidad :comportamiento="modales" />
 
+    <ScrollToTopButton></ScrollToTopButton>
+
     <q-page-container :class="{ 'bg-body': true }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">

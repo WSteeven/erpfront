@@ -6,7 +6,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { apiConfig, endpoints } from 'config/api'
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, Ref, ref, watch } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
 import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
@@ -111,6 +111,8 @@ export default defineComponent({
     const subtarea = trabajoAsignadoStore.subtarea
     const fecha_historial = ref()
 
+    const axios = AxiosHttpRepository.getInstance()
+
     /************
      * Init
      ************/
@@ -119,8 +121,8 @@ export default defineComponent({
       accion.value = acciones.editar
     }
 
-    obtenerMaterialesTarea()
-    obtenerMaterialesStock()
+    // obtenerMaterialesTarea()
+    // obtenerMaterialesStock()
 
     /****************
      * Botones tabla
@@ -137,7 +139,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           defecto: materialesTarea.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual, //(accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + (entidad.cantidad_utilizada ?? 0),
           accion: (data) => materialesTarea.value[posicion].cantidad_utilizada = data
         }
 
@@ -174,6 +176,31 @@ export default defineComponent({
       }
     }
 
+    const botonEditarCantidadTareaHistorial: CustomActionTable = {
+      titulo: 'Cantidad utilizada',
+      icono: 'bi-pencil-square',
+      color: 'primary',
+      visible: () => permitirSubir,
+      accion: ({ entidad, posicion }) => {
+        //
+        const config: CustomActionPrompt = {
+          titulo: 'Confirmación',
+          mensaje: 'Ingresa la cantidad',
+          defecto: historialMaterialTareaUsadoPorFecha.value[posicion].cantidad_utilizada,
+          tipo: 'number',
+          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada, //(accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          accion: async (valor) => {
+            entidad.cantidad_anterior = entidad.cantidad_utilizada
+            entidad.cantidad_utilizada = valor
+            const modelo = await actualizarCantidadUtilizadaHistorial(entidad)
+            historialMaterialTareaUsadoPorFecha.value[posicion] = modelo
+          }
+        }
+
+        prompt(config)
+      },
+    }
+
     /*************
     * Validaciones
     **************/
@@ -187,13 +214,27 @@ export default defineComponent({
     /************
     * Funciones
     *************/
+    async function actualizarCantidadUtilizadaHistorial(material) {
+      const params = {
+        tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
+        subtarea_id: trabajoAsignadoStore.subtarea.id,
+        empleado_id: obtenerIdEmpleadoResponsable(),
+        detalle_producto_id: material.detalle_producto_id,
+        cantidad_utilizada: material.cantidad_utilizada,
+        cantidad_anterior: material.cantidad_anterior,
+        fecha: fecha_historial.value,
+      }
+      const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_historial, params)
+      const response: AxiosResponse = await axios.post(ruta)
+      return response.data.modelo
+    }
+
     function obtenerIdEmpleadoResponsable() {
       if (esLider) return authenticationStore.user.id
       else return trabajoAsignadoStore.idEmpleadoResponsable
     }
 
     async function obtenerMaterialesTarea() {
-      const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
       const response: AxiosResponse = await axios.get(ruta)
       materialesTarea.value = response.data.results
@@ -204,23 +245,15 @@ export default defineComponent({
       materialesStock.value = result
     }
 
-    async function obtenerSumatoriaMaterialesTareaUsados() {
-      const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.obtener_suma_material_tarea_usado, { subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
-      const response: AxiosResponse = await axios.get(ruta)
-      sumaMaterialesTareaUsado.value = response.data.results
-    }
-
     async function obtenerHistorialMaterialTareaUsadoPorFecha(fecha: string) {
-      const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.obtener_historial_material_tarea_usado_por_fecha, { fecha, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
-      const response: AxiosResponse = await axios.get(ruta)
-      historialMaterialTareaUsadoPorFecha.value = response.data.results
+      cargarVista(async () => {
+        const ruta = axios.getEndpoint(endpoints.obtener_historial_material_tarea_usado_por_fecha, { fecha, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
+        const response: AxiosResponse = await axios.get(ruta)
+        historialMaterialTareaUsadoPorFecha.value = response.data.results
+      })
     }
 
-    if (esCoordinador) obtenerSumatoriaMaterialesTareaUsados()
-
-    // antes de guardar y editar seguimiento
+    // Antes de guardar y editar seguimiento
     function filtrarMaterialesTareaOcupados() {
       return materialesTarea.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
     }
@@ -260,7 +293,6 @@ export default defineComponent({
     }
 
     async function descargarExcel() {
-      const axios = AxiosHttpRepository.getInstance()
       const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + emergencia.id
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
@@ -275,20 +307,41 @@ export default defineComponent({
       refArchivoSeguimiento.value.subir({ seguimiento_id: idSeguimiento })
     }
 
-    function editarSeguimiento() {
-      editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
+    let cerrarModal = true
+    function editarSeguimiento(cerrarVentanaModal = true) {
+      if (permitirSubir) {
+        cerrarModal = cerrarVentanaModal
+        fecha_historial.value = null
+        historialMaterialTareaUsadoPorFecha.value = []
+        editar(emergencia, cerrarModal, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
+      }
     }
+
+    async function actualizarTablaMateriales() {
+      await obtenerMaterialesTarea().then(() => ajustarCantidadesMaterialTareaUtilizadas())
+      await obtenerMaterialesStock().then(() => ajustarCantidadesMaterialStockUtilizadas())
+      // usarMaterialTarea.value = materialesTarea.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
+      // usarStock.value = materialesStock.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
+    }
+
+    /*************
+     * Observers
+     *************/
+    watch(fecha_historial, () => {
+      if (fecha_historial.value) {
+        obtenerHistorialMaterialTareaUsadoPorFecha(
+          fecha_historial.value
+        )
+      }
+    })
 
     /********
     * Hooks
     *********/
     onConsultado(async () => {
-      await obtenerMaterialesTarea().then(() => ajustarCantidadesMaterialTareaUtilizadas())
-      await obtenerMaterialesStock().then(() => ajustarCantidadesMaterialStockUtilizadas())
+      actualizarTablaMateriales()
       existeObservaciones.value = !!emergencia.observaciones.length
       existeMaterialesDevolucion.value = !!emergencia.materiales_devolucion.length
-      usarMaterialTarea.value = materialesTarea.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
-      usarStock.value = materialesStock.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
       refArchivoSeguimiento.value.listarArchivos({ seguimiento_id: emergencia.id })
     })
 
@@ -312,7 +365,8 @@ export default defineComponent({
 
     onModificado((id: number) => {
       subirArchivos(id)
-      emit('cerrar-modal', false)
+      console.log(cerrarModal)
+      if (cerrarModal) emit('cerrar-modal', false)
     })
 
     return {
@@ -341,6 +395,7 @@ export default defineComponent({
       obtenerHistorialMaterialTareaUsadoPorFecha,
       botonEditarCantidadTarea,
       botonEditarCantidadStock,
+      botonEditarCantidadTareaHistorial,
       regiones,
       atenciones,
       guardar,
@@ -363,6 +418,7 @@ export default defineComponent({
       tabsMateriales: ref('historial'),
       fecha_historial,
       rangoFechasHistorial,
+      actualizarTablaMateriales,
     }
   }
 })
