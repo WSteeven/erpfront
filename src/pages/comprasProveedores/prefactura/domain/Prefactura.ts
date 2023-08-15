@@ -1,6 +1,6 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
-export class Proforma extends EntidadAuditable {
+export class Prefactura extends EntidadAuditable {
     codigo: number | null
     solicitante: number | null
     cliente: number | null

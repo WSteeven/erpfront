@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { OrdenCompra } from "./OrdenCompra";
+import { Prefactura } from "./Prefactura";
 
-export const configuracionColumnasOrdenesCompras : ColumnConfig<OrdenCompra>[]=[
+export const configuracionColumnasPrefactura : ColumnConfig<Prefactura>[]=[
     {
         name: 'id',
         field: 'id',
@@ -9,16 +9,9 @@ export const configuracionColumnasOrdenesCompras : ColumnConfig<OrdenCompra>[]=[
         align: 'left',
         sortable: true,
       },
-    {
-        name: 'codigo',
-        field: 'codigo',
-        label: 'Código',
-        align: 'center',
-        sortable: true,
-      },
       {
-        name: 'fecha',
-        field: 'fecha',
+        name: 'created_at',
+        field: 'created_at',
         label: 'Fecha',
         align: 'left',
         sortable: true,
@@ -39,9 +32,9 @@ export const configuracionColumnasOrdenesCompras : ColumnConfig<OrdenCompra>[]=[
         sortable: true,
       },
       {
-        name: 'proveedor',
-        field: 'proveedor',
-        label: 'Proveedor',
+        name: 'cliente',
+        field: 'cliente',
+        label: 'Cliente',
         align: 'left',
         sortable: true,
       },
@@ -59,4 +52,4 @@ export const configuracionColumnasOrdenesCompras : ColumnConfig<OrdenCompra>[]=[
         align: 'left',
         sortable: true,
       },
-] 
+]

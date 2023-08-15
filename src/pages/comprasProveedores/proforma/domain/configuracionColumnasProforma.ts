@@ -10,8 +10,8 @@ export const configuracionColumnasProformas : ColumnConfig<Proforma>[]=[
         sortable: true,
       },
       {
-        name: 'fecha',
-        field: 'fecha',
+        name: 'created_at',
+        field: 'created_at',
         label: 'Fecha',
         align: 'left',
         sortable: true,

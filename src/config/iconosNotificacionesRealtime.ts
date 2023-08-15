@@ -35,4 +35,8 @@ export const iconos = {
     label: 'ORDEN_COMPRA',
     icono: 'bi-cart-plus'
   },
+  proforma: {
+    label: 'PROFORMA',
+    icono: 'bi-receipt-cutoff'
+  },
 }

@@ -2,23 +2,24 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Orden de Compra"
+    titulo-pagina="Proforma"
     :tab-options="tabOptionsOrdenCompra"
     tabDefecto="1"
     :filtrar="filtrarProformas"
     :permitirEditar="puedeEditar"
     :permitirEliminar="false"
-    :accion1="btnImprimir"
-    :accion2="btnAnularOrden"
+    :accion1="btnHacerPrefactura"
+    :accion2="btnImprimir"
+    :accion3="btnAnularProforma"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- N°  proforma de compra -->
-          <div v-if=" proforma.id" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Orden N°</label>
+          <div v-if="proforma.id" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Proforma N°</label>
             <q-input
-              v-model=" proforma.id"
+              v-model="proforma.id"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
@@ -27,16 +28,11 @@
             >
             </q-input>
           </div>
-          <!-- Fecha de  proforma -->
-          <div v-if=" proforma.created_at" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha de creación</label>
-            <q-input v-model=" proforma.created_at" disable outlined dense />
-          </div>
           <!-- Solicitante -->
-          <div v-if=" proforma.solicitante" class="col-12 col-md-3">
+          <div v-if="proforma.solicitante" class="col-12 col-md-3">
             <label class="q-mb-sm block">Solicitante</label>
             <q-select
-              v-model=" proforma.solicitante"
+              v-model="proforma.solicitante"
               :options="empleados"
               transition-show="scale"
               transition-hide="scale"
@@ -60,25 +56,17 @@
             </q-select>
           </div>
 
-          <!-- Fecha  -->
+          <!-- Fecha de  proforma -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha</label>
-            <q-input
-              v-model=" proforma.fecha"
-              placeholder="Obligatorio"
-              disable
-              :readonly="disabled || soloLectura"
-              outlined
-              dense
-            >
-            </q-input>
+            <label class="q-mb-sm block">Fecha de creación</label>
+            <q-input v-model="proforma.created_at" disable outlined dense />
           </div>
 
           <!-- Persona que autoriza -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
-              v-model=" proforma.autorizador"
+              v-model="proforma.autorizador"
               :options="empleadosAutorizadores"
               transition-show="jump-up"
               transition-hide="jump-up"
@@ -92,23 +80,27 @@
               :option-value="(v) => v.id"
               emit-value
               map-options
-            />
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template></q-select
+            >
           </div>
           <!-- Select autorizacion -->
-          <div class="col-12 col-md-3 q-mb-md" v-if=" proforma.autorizador">
+          <div class="col-12 col-md-3 q-mb-md" v-if="proforma.autorizador">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
-              v-model=" proforma.autorizacion"
+              v-model="proforma.autorizacion"
               :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
               dense
               outlined
-              :disable="
-                disabled ||
-                 proforma.autorizador !== store.user.id
-              "
+              :disable="disabled || proforma.autorizador !== store.user.id"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -133,12 +125,11 @@
             </q-select>
           </div>
 
-
           <!-- Cliente -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>
             <q-select
-              v-model=" proforma.cliente"
+              v-model="proforma.cliente"
               :options="clientes"
               transition-show="jump-up"
               transition-hide="jump-up"
@@ -165,14 +156,13 @@
             </q-select>
           </div>
 
-
           <!-- Justificacion -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Descripción</label>
             <q-input
               type="textarea"
               autogrow
-              v-model=" proforma.descripcion"
+              v-model="proforma.descripcion"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
               :error="!!v$.descripcion.$errors.length"
@@ -191,7 +181,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Forma</label>
             <q-select
-              v-model=" proforma.forma"
+              v-model="proforma.forma"
               :options="opcionesForma"
               transition-show="jump-up"
               transition-hide="jump-up"
@@ -223,7 +213,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tiempo</label>
             <q-select
-              v-model=" proforma.tiempo"
+              v-model="proforma.tiempo"
               :options="opcionesTiempo"
               transition-show="jump-up"
               transition-hide="jump-up"
@@ -255,13 +245,13 @@
 
           <!-- Observacion de autorizacion -->
           <div
-            v-if="store.user.id ===  proforma.per_autoriza_id"
+            v-if="store.user.id === proforma.per_autoriza_id"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
-              v-model=" proforma.observacion_aut"
+              v-model="proforma.observacion_aut"
               placeholder="Opcional"
               :disable="
                 disabled ||
@@ -269,7 +259,7 @@
                   !(
                     esCoordinador ||
                     esActivosFijos ||
-                    store.user.id ==  proforma.per_autoriza_id
+                    store.user.id == proforma.per_autoriza_id
                   ))
               "
               :error="!!v$.observacion_aut.$errors.length"
@@ -289,12 +279,12 @@
 
           <!-- Select estado -->
           <div
-            v-if=" proforma.estado || accion === acciones.consultar"
+            v-if="proforma.estado || accion === acciones.consultar"
             class="col-12 col-md-3 q-mb-md"
           >
-            <label class="q-mb-sm block">Estado de la Orden de Compra</label>
+            <label class="q-mb-sm block">Estado de la Proforma</label>
             <q-select
-              v-model=" proforma.estado"
+              v-model="proforma.estado"
               :options="estados"
               transition-show="jum-up"
               transition-hide="jump-down"
@@ -310,7 +300,32 @@
             </q-select>
           </div>
 
-{{ proforma.listadoProductos }}
+          <!-- Modificar IVA -->
+          <div class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="proforma.modificar_iva"
+              label="Modificar IVA establecido"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- IVA general -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">IVA general</label>
+            <q-input
+              v-model="proforma.iva"
+              outlined
+              dense
+              type="number"
+              step=".01"
+              suffix="%"
+              :disable="!proforma.modificar_iva"
+              @update:model-value="actualizarListado"
+            >
+            </q-input>
+          </div>
 
           <!-- Tabla con popup -->
           <div class="col-12">
@@ -320,18 +335,18 @@
               :configuracionColumnas="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  ( proforma.autorizador == store.user.id ||
-                     proforma.solicitante == store.user.id))
+                  (proforma.autorizador == store.user.id ||
+                    proforma.solicitante == store.user.id))
                   ? [...configuracionColumnasDetallesProforma, accionesTabla]
                   : configuracionColumnasDetallesProforma
               "
-              :datos=" proforma.listadoProductos"
+              :datos="proforma.listadoProductos"
               separador="cell"
               :permitirEditarCeldas="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  ( proforma.autorizador == store.user.id ||
-                     proforma.solicitante == store.user.id))
+                  (proforma.autorizador == store.user.id ||
+                    proforma.solicitante == store.user.id))
               "
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -351,7 +366,7 @@
                 bordered
                 separator
                 dense
-                v-if=" proforma.listadoProductos.length > 0"
+                v-if="proforma.listadoProductos.length > 0"
               >
                 <q-item>
                   <q-item-section>Subtotal: </q-item-section>
@@ -366,7 +381,7 @@
                 </q-item>
 
                 <q-item>
-                  <q-item-section>IVA (12%): </q-item-section>
+                  <q-item-section>IVA ({{proforma.iva}} %): </q-item-section>
                   <q-separator vertical></q-separator>
                   <q-item-section avatar>{{ iva }}</q-item-section>
                 </q-item>
@@ -380,7 +395,6 @@
           </div>
         </div>
       </q-form>
-
     </template>
   </tab-layout-filter-tabs2>
   <!-- Modales -->

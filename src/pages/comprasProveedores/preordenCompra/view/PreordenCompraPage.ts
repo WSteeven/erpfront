@@ -42,7 +42,7 @@ export default defineComponent({
         const { entidad: preorden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
         const { onConsultado } = mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         //Stores
         useNotificacionStore().setQuasar(useQuasar())

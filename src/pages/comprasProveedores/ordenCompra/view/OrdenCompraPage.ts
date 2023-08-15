@@ -38,6 +38,7 @@ import { ValidarListadoProductos } from "../application/validaciones/ValidarList
 import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
 import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
+import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
 
 
 export default defineComponent({
@@ -99,9 +100,9 @@ export default defineComponent({
                     }
                 },
                 autorizadores: {
-                    controller: new EmpleadoRoleController(),
+                    controller: new EmpleadoPermisoController(),
                     params: {
-                        roles: ['AUTORIZADOR'],
+                        permisos: ['puede.autorizar.ordenes_compras'],
                     }
                 },
                 proveedores: {
@@ -174,16 +175,15 @@ export default defineComponent({
          ******************************************************************************************/
         function estructuraConsultaCategoria() {
             let parametro = ''
-            if (orden.categorias!.length > 1) {
-                // console.log('Hay varias categorias')
+            if (orden.categorias!.length < 1) {
+                return ''
             } else {
                 // console.log('Hay solo una categoria')
+                orden.categorias?.forEach((v, index) => {
+                    if (index === orden.categorias!.length - 1) parametro += v
+                    else parametro += v + '&categoria_id[]='
+                })
             }
-            orden.categorias?.forEach((v, index) => {
-                if (index === orden.categorias!.length - 1) parametro += v
-                else parametro += v + '&categoria_id[]='
-            })
-
             return parametro
         }
         function filtrarOrdenes(tab: string) {
@@ -207,7 +207,7 @@ export default defineComponent({
          * propiedades:
          */
         function calcularValores(data: any) {
-            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * .12).toFixed(4) : 0
+            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
             data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
             data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
             data.total = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva) - Number(data.descuento)).toFixed(4) : 0
@@ -259,6 +259,16 @@ export default defineComponent({
                 notificarError('' + error)
                 limpiarOrden()
             }
+        }
+
+        /**
+         * La función "actualizarListado" se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo "listadoProductos" del
+         * objeto "orden" y llama a la función "calcularValores" para cada fila.
+         */
+        function actualizarListado() {
+            orden.listadoProductos.forEach((fila) => {
+                calcularValores(fila)
+            })
         }
 
         /*******************************************************************************************
@@ -380,6 +390,7 @@ export default defineComponent({
             filtrarProveedores,
             llenarOrden,
             actualizarPreorden,
+            actualizarListado,
 
 
             //variables computadas

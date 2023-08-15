@@ -497,6 +497,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/prefacturas',
+        name: 'prefacturas',
+        component: () =>
+          import('pages/comprasProveedores/prefactura/view/PrefacturaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/proformas',
         name: 'proformas',
         component: () =>

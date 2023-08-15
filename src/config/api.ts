@@ -78,6 +78,7 @@ export const endpoints = {
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   ordenes_compras: new Endpoint('compras/ordenes-compras'),
   preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  prefacturas: new Endpoint('compras/prefacturas'),
   proformas: new Endpoint('compras/proformas'),
   proveedores: new Endpoint('proveedores'),
 
@@ -88,6 +89,7 @@ export const endpoints = {
   comprobantes: new Endpoint('comprobantes'),
   estados_transacciones: new Endpoint('estados'),
   empleados_roles: new Endpoint('empleados-roles'), //con esta ruta se obtienen los empleados por el/los roles especificados
+  empleados_permisos: new Endpoint('empleados-permisos'), //con esta ruta se obtienen los empleados por el/los permisos especificados
   control_stocks: new Endpoint('control-stocks'),
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles: new Endpoint('detalles'),

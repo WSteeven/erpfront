@@ -1,8 +1,8 @@
 import { opcionesUnidadesMedidas } from 'config/utils';
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ItemProforma } from './ItemProforma';
+import { ItemPrefactura } from './ItemPrefactura';
 
-export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[] =[
+export const configuracionColumnasDetallesPrefactura: ColumnConfig<ItemPrefactura>[] =[
     {
         name: 'cantidad',
         field: 'cantidad',

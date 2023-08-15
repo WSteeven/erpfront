@@ -21,6 +21,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.preorden.icono
       case iconos.orden.label:
         return iconos.orden.icono
+      case iconos.proforma.label:
+        return iconos.proforma.icono
     }
   }
 }

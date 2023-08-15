@@ -92,7 +92,14 @@
               :option-value="(v) => v.id"
               emit-value
               map-options
-            />
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              </q-select>
           </div>
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.autorizador">
@@ -403,6 +410,32 @@
             </q-select>
           </div>
 
+          <!-- Modificar IVA -->
+          <div class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="orden.modificar_iva"
+              label="Modificar IVA establecido"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- IVA general -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">IVA general</label>
+            <q-input
+              v-model="orden.iva"
+              outlined
+              dense
+              type="number"
+              step=".01"
+              suffix="%"
+              :disable="!orden.modificar_iva"
+              @update:model-value="actualizarListado"
+            >
+            </q-input>
+          </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -502,7 +535,7 @@
                 </q-item>
 
                 <q-item>
-                  <q-item-section>IVA (12%): </q-item-section>
+                  <q-item-section>IVA ({{ orden.iva }} %): </q-item-section>
                   <q-separator vertical></q-separator>
                   <q-item-section avatar>{{ iva }}</q-item-section>
                 </q-item>
