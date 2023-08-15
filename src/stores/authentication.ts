@@ -57,8 +57,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false)
   const esGerente = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false)
   const esContabilidad = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false)
-  const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
   const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
+  const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
+
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)

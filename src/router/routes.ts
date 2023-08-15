@@ -507,6 +507,71 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
 
+      //Routes for compras y proveedores
+      {
+        path: '/empresas',
+        name: 'empresas',
+        component: () =>
+          import('pages/administracion/empresas/view/EmpresaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/proveedores',
+        name: 'proveedores',
+        component: () =>
+          import('pages/sistema/proveedores/view/ProveedorPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/preordenes-compras',
+        name: 'preordenes_compras',
+        component: () =>
+          import('pages/comprasProveedores/preordenCompra/view/PreordenCompraPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/ordenes-compras',
+        name: 'ordenes_compras',
+        component: () =>
+          import('pages/comprasProveedores/ordenCompra/view/OrdenCompraPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/prefacturas',
+        name: 'prefacturas',
+        component: () =>
+          import('pages/comprasProveedores/prefactura/view/PrefacturaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/proformas',
+        name: 'proformas',
+        component: () =>
+          import('pages/comprasProveedores/proforma/view/ProformaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/contactos-proveedores',
+        name: 'contactos_proveedores',
+        component: () =>
+          import('pages/comprasProveedores/contactosProveedor/view/ContactoProveedorPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/criterios-calificaciones',
+        name: 'criterios_calificaciones',
+        component: () =>
+          import('pages/comprasProveedores/criteriosCalificaciones/view/CriterioCalificacionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'logs-contactos-proveedores',
+        name: 'log_contactos_proveedores',
+        component: () =>
+          import('pages/comprasProveedores/contactosProveedor/view/logs/ContactoProveedorLogPage.vue'),
+        meta: { requiresAuth: false },
+      },
+
       //Routes for administracion
       {
         path: '/autorizaciones',
@@ -534,23 +599,9 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/empresas',
-        name: 'empresas',
-        component: () =>
-          import('pages/administracion/empresas/view/EmpresaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/clientes',
         name: 'clientes',
         component: () => import('pages/sistema/clientes/view/ClientePage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/proveedores',
-        name: 'proveedores',
-        component: () =>
-          import('pages/sistema/proveedores/view/ProveedorPage.vue'),
         meta: { requiresAuth: true },
       },
       {

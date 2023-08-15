@@ -27,6 +27,12 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.vacacion.icono
 
 
+      case iconos.preorden.label:
+        return iconos.preorden.icono
+      case iconos.orden.label:
+        return iconos.orden.icono
+      case iconos.proforma.label:
+        return iconos.proforma.icono
     }
   }
 }

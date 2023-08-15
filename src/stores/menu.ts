@@ -30,7 +30,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     /*******************
-     * Modulo de tarreas
+     * Modulo de tareas
      *******************/
     {
       title: 'Proyectos y tareas',
@@ -580,6 +580,75 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    //Modulo de compras y proveedores
+    {
+      title: 'Compras y proveedores',
+      icon: 'bi-bag-fill',
+      can: store.can('puede.ver.modulo_compras') || store.esAdministrador,
+      children: [
+        {
+          title: 'Criterios de calificacion de proveedores',
+          link: 'criterios-calificaciones',
+          icon: 'bi-list-check',
+          can: store.can('puede.ver.criterios_calificaciones')  || store.esAdministrador,
+        },
+        // {
+        //   title: 'Empresas',
+        //   link: 'empresas',
+        //   icon: 'bi-building-fill-gear',
+        //   can: store.can('puede.ver.empresas')  || store.esAdministrador,
+        // },
+        {
+          title: 'Preordenes de compras',
+          link: 'preordenes-compras',
+          icon: 'bi-list',
+          can: store.can('puede.ver.preordenes_compras') || store.esAdministrador,
+        },
+        {
+          title: 'Ordenes de compras',
+          link: 'ordenes-compras',
+          icon: 'bi-cart-plus',
+          can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
+        },
+        {
+          title: 'Prefacturas',
+          link: 'prefacturas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.prefacturas') || store.esAdministrador,
+        },
+        {
+          title: 'Proformas',
+          link: 'proformas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.proformas') || store.esAdministrador,
+        },
+        {
+          title: 'Proveedores',
+          link: 'proveedores',
+          icon: 'bi-boxes',
+          can: store.can('puede.ver.proveedores') || store.esAdministrador,
+        },
+        {
+          title: 'Contactos de Proveedores',
+          link: 'contactos-proveedores',
+          icon: 'bi-person-fill-add',
+          can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
+        },
+        {
+          title: 'Logs',
+          icon: 'bi-file-text',
+          can: true,
+          children: [
+            {
+              title: 'Contactos de Proveedores',
+              link: 'logs-contactos-proveedores',
+              icon: 'bi-person-fill-add',
+              can: true,
+            }
+          ]
+        }
+      ]
+    },
     {
       header: 'Administración',
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
@@ -643,18 +712,6 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'codigos-clientes',
           icon: 'bi-circle',
           can: store.can('puede.ver.codigos_clientes') && store.esActivosFijos,
-        },
-        {
-          title: 'Empresas',
-          link: 'empresas',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.empresas') && store.esActivosFijos,
-        },
-        {
-          title: 'Proveedores',
-          link: 'proveedores',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.proveedores'),
         },
         {
           title: 'Estados de transacciones',

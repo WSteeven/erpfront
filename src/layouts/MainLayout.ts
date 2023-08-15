@@ -54,6 +54,7 @@ export default defineComponent({
      * Init
      *******/
     if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+    moment.updateLocale('es', { invalidDate: 'No aplica' })
 
     /************
      * Variables

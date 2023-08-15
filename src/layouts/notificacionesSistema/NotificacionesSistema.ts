@@ -11,6 +11,9 @@ import { PermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nom
 import { LicenciaPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/LicenciaEmpleadoPusherEvent'
 import { SolicitudPrestamoEmpresarialPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/SolicitudPrestamoEmpresarialPusherEvent'
 import { VacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/VacacionPusherEvent'
+import { PreordenCompraEvent } from 'pages/comprasProveedores/preordenCompra/application/PreordenCompraEvent'
+import { OrdenCompraEvent } from 'pages/comprasProveedores/ordenCompra/application/OrdenCompraEvent'
+import { ProformaEvent } from 'pages/comprasProveedores/proforma/application/ProformaEvent'
 
 
 export class NotificacionesSistema {
@@ -67,5 +70,16 @@ export class NotificacionesSistema {
 
 
 
+    // Preorden de compra
+    const preordenCompraPusherEvent = new PreordenCompraEvent()
+    preordenCompraPusherEvent.start()
+
+    //Orden de compra
+    const ordenCompraPusherEvent = new OrdenCompraEvent()
+    ordenCompraPusherEvent.start()
+
+    //Proforma
+    const proformaPusherEvent = new ProformaEvent()
+    proformaPusherEvent.start()
   }
 }

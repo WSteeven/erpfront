@@ -42,5 +42,17 @@ export const iconos = {
   vacacion:{
     label: 'VACACION',
     icono:'bi-umbrella'
-  }
+  },
+  preorden: {
+    label: 'PREORDEN',
+    icono: 'bi-list'
+  },
+  orden: {
+    label: 'ORDEN_COMPRA',
+    icono: 'bi-cart-plus'
+  },
+  proforma: {
+    label: 'PROFORMA',
+    icono: 'bi-receipt-cutoff'
+  },
 }

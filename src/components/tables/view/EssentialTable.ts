@@ -1,5 +1,6 @@
 // Dependencias
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
+import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 import { computed, defineComponent, ref, watchEffect, nextTick, Ref } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
@@ -142,6 +143,10 @@ export default defineComponent({
     mostrarHeader: {
       type: Boolean,
       default: true,
+    },
+    mostrarCantidadElementos:{
+      type: Boolean,
+      default:true,
     },
     mostrarFooter: {
       type: Boolean,
@@ -423,6 +428,8 @@ export default defineComponent({
       estadosCondicionesId,
       estadosCondicionesValue,
       estadosControlStock,
+      //estados compras y proveedores
+      estadosCalificacionProveedor,
       onScroll,
       loading,
       offset,

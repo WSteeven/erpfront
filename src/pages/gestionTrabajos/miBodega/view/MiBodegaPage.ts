@@ -15,6 +15,7 @@ import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoC
 import { useAuthenticationStore } from 'stores/authentication'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
+import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 
@@ -26,8 +27,8 @@ export default defineComponent({
      *********/
     const authenticationStore = useAuthenticationStore()
     const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
+    useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-
     /****************
      * Controladores
      ****************/
@@ -38,7 +39,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { notificarError } = useNotificaciones()
+    const { notificarError, notificarAdvertencia } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
     const materialesTarea = ref([])
     const listadoStockPersonal = ref([])
@@ -48,6 +49,7 @@ export default defineComponent({
       tipoStock: null
     })
     const mensaje = ref()
+    const listado = ref()
 
     /*******
      * Init
@@ -61,6 +63,24 @@ export default defineComponent({
       mensaje.value = ''
       try {
         cargando.activar()
+        if (tipoStock === 'personal') {
+          const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
+          listadoStockPersonal.value = result
+          listadoMaterialesDevolucionStore.listadoMateriales = result
+        } else {
+          if (!filtro.tarea) {
+            return notificarAdvertencia('Debe seleccionar una tarea')
+          }
+
+          const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id })
+          if (result.length === 0) {
+            notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
+          }
+          listado.value = result
+          // asignacion al store de la tarea y el listado de materiales para devolver
+          listadoMaterialesDevolucionStore.listadoMateriales = result
+          listadoMaterialesDevolucionStore.tareaId = filtro.tarea
+        }
         if (tipoStock === 'personal') filtrarStockPersonal()
         else filtrarMaterialTarea()
       } catch (e) {

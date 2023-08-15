@@ -59,6 +59,7 @@ export const endpoints = {
   datos_empleado : new Endpoint('recursos-humanos/datos_empleado/'),
   activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
+  departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
   concepto_ingreso: new Endpoint('recursos-humanos/concepto_ingreso'),
   descuentos_generales: new Endpoint('recursos-humanos/descuentos_generales'),
@@ -104,6 +105,21 @@ export const endpoints = {
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
+  //Modulo de compras y proveedores
+  archivos_proveedores: new Endpoint('compras/archivos-proveedores'),
+  calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
+  contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
+  criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
+  detalles_departamentos_proveedor: new Endpoint('compras/detalles-departamentos-proveedor'),
+  empresas: new Endpoint('empresas'),
+  log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),
+  ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
+  ordenes_compras: new Endpoint('compras/ordenes-compras'),
+  preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  prefacturas: new Endpoint('compras/prefacturas'),
+  proformas: new Endpoint('compras/proformas'),
+  proveedores: new Endpoint('proveedores'),
+
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),
   categorias: new Endpoint('categorias'),
@@ -111,6 +127,7 @@ export const endpoints = {
   comprobantes: new Endpoint('comprobantes'),
   estados_transacciones: new Endpoint('estados'),
   empleados_roles: new Endpoint('empleados-roles'), //con esta ruta se obtienen los empleados por el/los roles especificados
+  empleados_permisos: new Endpoint('empleados-permisos'), //con esta ruta se obtienen los empleados por el/los permisos especificados
   control_stocks: new Endpoint('control-stocks'),
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles: new Endpoint('detalles'),
@@ -119,7 +136,6 @@ export const endpoints = {
   discos: new Endpoint('discos'),
   comprobantes_filtrados: new Endpoint('comprobantes-filtrados'),
   egresos_filtrados: new Endpoint('egresos-filtrados'),
-  empresas: new Endpoint('empresas'),
   rams: new Endpoint('rams'),
   inventarios: new Endpoint('inventarios'),
   hilos: new Endpoint('hilos'),
@@ -129,7 +145,6 @@ export const endpoints = {
   motivos: new Endpoint('motivos'),
   notificaciones: new Endpoint('notificaciones'),
   pedidos: new Endpoint('pedidos'),
-  proveedores: new Endpoint('proveedores'),
   procesadores: new Endpoint('procesadores'),
   prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),
@@ -242,7 +257,6 @@ export const endpoints = {
    * Modulo de tickets
   *********************/
   dashboard_tickets: new Endpoint('tickets/dashboard'),
-  departamentos: new Endpoint('recursos-humanos/departamentos'),
   tickets: new Endpoint('tickets/tickets'),
   tipos_tickets: new Endpoint('tickets/tipos-tickets'),
   categorias_tipos_tickets: new Endpoint('tickets/categorias-tipos-tickets'),

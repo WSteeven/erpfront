@@ -62,8 +62,8 @@ export function useNotificaciones() {
       cancel: true,
       persistent: true,
     })
-      .onOk(() => {
-        callback()
+      .onOk(async() => {
+        await callback()
       })
       .onCancel(() => {
         // console.log('>>>> Cancel')
