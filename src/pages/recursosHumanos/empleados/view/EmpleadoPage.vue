@@ -328,6 +328,39 @@
                 </template>
               </q-input>
             </div>
+                        <!-- Banco -->
+                        <div class="col-12 col-md-3 q-mb-md">
+              <label class="q-mb-sm block">Banco</label>
+              <q-select
+                v-model="empleado.banco"
+                :options="bancos"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                hint="Obligatorio"
+                @blur="v$.banco.$touch"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.banco.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
 
             <!-- Canton -->
             <div class="col-12 col-md-3 q-mb-md">
@@ -471,6 +504,58 @@
                   >
                   </q-input>
                 </div>
+                <!-- Talla de zapato -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Talla de zapato</label>
+                  <q-input
+                    v-model="empleado.talla_zapato"
+                    placeholder="Opcional"
+                    type="number"
+                    :disable="disabled"
+                    outlined
+                    dense
+                  >
+                  </q-input>
+                </div>
+                <!-- Talla de camisa -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Talla de camisa</label>
+                  <q-input
+                    v-model="empleado.talla_camisa"
+                    placeholder="Opcional"
+                    type="number"
+                    :disable="disabled"
+                    outlined
+                    dense
+                  >
+                  </q-input>
+                </div>
+                <!-- Talla de guantes -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Talla de guantes</label>
+                  <q-input
+                    v-model="empleado.talla_guantes"
+                    placeholder="Opcional"
+                    type="number"
+                    :disable="disabled"
+                    outlined
+                    dense
+                  >
+                  </q-input>
+                </div>
+                <!-- Talla de pantalon -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Talla de pantalon</label>
+                  <q-input
+                    v-model="empleado.talla_pantalon"
+                    placeholder="Opcional"
+                    type="number"
+                    :disable="disabled"
+                    outlined
+                    dense
+                  >
+                  </q-input>
+                </div>
               </div>
             </q-expansion-item>
           </div>
@@ -551,7 +636,6 @@
                 </template>
               </q-select>
             </div>
-
 
             <!-- Departamento -->
             <div class="col-12 col-md-3">
@@ -828,7 +912,19 @@
                 </template>
               </q-input>
             </div>
-
+            <!-- SUPA -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">SUPA</label>
+              <q-input
+                v-model="empleado.supa"
+                placeholder="Obligatorio"
+                type="number"
+                :disable="disabled"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
             <div class="col-12 col-md-3 q-mb-xl">
               <q-checkbox
                 class="q-mt-lg q-pt-md"

@@ -47,6 +47,11 @@ export class Empleado extends EntidadAuditable {
   nivel_academico: string | null
   grupo_id: number | null
   responsable_departamento: boolean
+  supa: number | null
+  talla_zapato: string | null
+  talla_camisa: string | null
+  talla_guantes: string | null
+  talla_pantalon: string | null
 
   constructor() {
     super()
@@ -96,5 +101,10 @@ export class Empleado extends EntidadAuditable {
     this.nivel_academico = null
     this.observacion = null
     this.responsable_departamento = false
+    this.supa= null
+    this.talla_zapato= null
+    this.talla_camisa= null
+    this.talla_guantes= null
+    this.talla_pantalon= null
   }
 }

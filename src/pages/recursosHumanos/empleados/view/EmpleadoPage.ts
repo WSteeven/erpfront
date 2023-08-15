@@ -29,6 +29,7 @@ import { TipoContratoController } from 'pages/recursosHumanos/tipo-contrato/infr
 import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { EstadoCivilController } from 'pages/recursosHumanos/estado-civil/infraestructure/EstadoCivilController'
 import { AreasController } from 'pages/recursosHumanos/areas/infraestructure/AreasController'
+import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -56,6 +57,7 @@ export default defineComponent({
     const opciones_cargos = ref([])
     const opciones_empleados = ref([])
     const estado_civiles = ref([])
+    const bancos = ref([])
     const areas = ref([])
     const tipos_contrato = ref([])
     const niveles_academicos = ref([
@@ -82,6 +84,7 @@ export default defineComponent({
           },
         },
         estado_civiles: new EstadoCivilController(),
+        bancos: new BancoController(),
         areas: new AreasController(),
         grupos: {
           controller: new GrupoController(),
@@ -113,7 +116,7 @@ export default defineComponent({
       estado_civil: { required },
       area: { required },
       tipo_contrato: { required },
-      //   banco: { required },
+      banco: { required },
       num_cuenta: { required },
       direccion: { required },
       salario: { required },
@@ -144,6 +147,7 @@ export default defineComponent({
     opcionesDepartamentos.value = listadosAuxiliares.departamentos
     estado_civiles.value = listadosAuxiliares.estado_civiles
     areas.value = listadosAuxiliares.areas
+    bancos.value = listadosAuxiliares.bancos
 
     /********
      * Hooks
@@ -220,6 +224,7 @@ export default defineComponent({
       maskFecha,
       estado_civiles,
       areas,
+      bancos,
       tipos_contrato,
       niveles_academicos,
       //metodos
@@ -283,6 +288,20 @@ export default defineComponent({
         update(() => {
           const needle = val.toLowerCase()
           opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
+        })
+      },
+      filtrobancos(val, update) {
+        if (val === '') {
+          update(() => {
+            bancos.value = listadosAuxiliares.bancos
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opcionesDepartamentos.value = listadosAuxiliares.bancos.filter(
             (v) => v.nombre.toLowerCase().indexOf(needle) > -1
           )
         })
