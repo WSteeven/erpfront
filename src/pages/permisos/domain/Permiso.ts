@@ -5,6 +5,8 @@ export class Permiso extends EntidadAuditable {
   name: string | null
   role_id: number | null
   roles: any[] | null
+  autorizar: boolean
+  acceder: boolean
   ver: boolean
   crear: boolean
   editar: boolean
@@ -18,6 +20,8 @@ export class Permiso extends EntidadAuditable {
     this.name = null
     this.role_id = null
     this.roles = null
+    this.autorizar=false
+    this.acceder=false
     this.ver=false
     this.crear=false
     this.editar=false
