@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasPrefactura } from "../domain/configuracionColumnasPrefactura";
 import { configuracionColumnasDetallesPrefactura } from "../domain/configuracionColumnasDetallesPrefactura";
-import { required} from 'shared/i18n-validators'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watch, } from 'vue'
 
@@ -37,6 +37,7 @@ import { ItemPrefactura } from "../domain/ItemPrefactura";
 import { usePrefacturaStore } from "stores/comprasProveedores/prefactura";
 import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
 import { useRouter } from "vue-router";
+import { useProformaStore } from "stores/comprasProveedores/proforma";
 
 
 export default defineComponent({
@@ -53,11 +54,10 @@ export default defineComponent({
         useNotificacionStore().setQuasar(useQuasar())
         useCargandoStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
-        const preordenStore = usePreordenStore()
+        const proformaStore = useProformaStore()
         const prefacturaStore = usePrefacturaStore()
         const router = useRouter()
 
-        const cargando = new StatusEssentialLoading()
 
         //variables
         const subtotal = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
@@ -103,6 +103,11 @@ export default defineComponent({
                     }
                 },
             })
+            // comprueba si hay una proforma en el store para llenar automaticamente los datos en la prefactura
+            if(proformaStore.proforma.id){
+                prefactura.tiene_proforma = true
+                cargarDatosProforma()
+            }
 
         })
 
@@ -162,6 +167,41 @@ export default defineComponent({
             confirmar('¿Está seguro de continuar?', () => prefactura.listadoProductos.splice(posicion, 1))
         }
 
+        function actualizarProforma() {
+            if (!prefactura.proforma || prefactura.proforma === 0)
+                limpiarPrefactura()
+        }
+        /**
+         * La función "limpiarOrden" reinicia el objeto "orden" reemplazándolo con una nueva instancia
+         * de la clase "OrdenCompra".
+         */
+        function limpiarPrefactura() {
+            prefactura.hydrate(new Prefactura())
+        }
+
+        async function llenarPrefactura(id: number) {
+            limpiarPrefactura()
+            try {
+                await proformaStore.cargarProforma(id)
+                await cargarDatosProforma()
+            } catch (error) {
+                notificarError('' + error)
+            }
+        }
+
+        async function cargarDatosProforma() {
+            prefactura.tiene_proforma = !!proformaStore.proforma.id
+            prefactura.proforma = proformaStore.proforma.id
+            prefactura.solicitante = Number.isInteger(proformaStore.proforma.solicitante) ? proformaStore.proforma.solicitante : proformaStore.proforma.solicitante_id
+            prefactura.autorizador = Number.isInteger(proformaStore.proforma.autorizador) ? proformaStore.proforma.autorizador : proformaStore.proforma.autorizador_id
+            prefactura.autorizacion = Number.isInteger(proformaStore.proforma.autorizacion) ? proformaStore.proforma.autorizacion : proformaStore.proforma.autorizacion_id
+            prefactura.cliente = Number.isInteger(proformaStore.proforma.cliente) ? proformaStore.proforma.cliente : proformaStore.proforma.cliente_id
+            prefactura.forma = proformaStore.proforma.forma
+            prefactura.tiempo = proformaStore.proforma.tiempo
+            prefactura.descripcion = proformaStore.proforma.descripcion
+            prefactura.listadoProductos = proformaStore.proforma.listadoProductos
+        }
+
         /**
          * La función calcula los valores de iva, subtotal y total en función de los datos
          * proporcionados en la tabla de productos seleccionados.
@@ -169,7 +209,7 @@ export default defineComponent({
          * propiedades:
          */
         function calcularValores(data: any) {
-            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * prefactura.iva/100).toFixed(4) : 0
+            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * prefactura.iva / 100).toFixed(4) : 0
             data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
             data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
             data.total = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva) - Number(data.descuento)).toFixed(4) : 0
@@ -295,7 +335,7 @@ export default defineComponent({
             //store
             store,
 
-            preorden: preordenStore.preorden,
+            proforma: proformaStore.proforma,
 
             soloLectura,
 
@@ -319,6 +359,8 @@ export default defineComponent({
             calcularValores,
             filtrarClientes,
             actualizarListado,
+            actualizarProforma,
+            llenarPrefactura,
 
 
             //variables computadas

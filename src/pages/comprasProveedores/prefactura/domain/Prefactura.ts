@@ -4,6 +4,7 @@ export class Prefactura extends EntidadAuditable {
     codigo: number | null
     solicitante: number | null
     cliente: number | null
+    proforma: number | null
     autorizador: number | null
     autorizacion: number | null
     descripcion: string | null
@@ -15,7 +16,7 @@ export class Prefactura extends EntidadAuditable {
     listadoProductos: any[]
 
     //variables auxiliares
-    tiene_preorden: boolean
+    tiene_proforma: boolean
     tiene_pedido: boolean
     modificar_iva: boolean
 
@@ -24,6 +25,7 @@ export class Prefactura extends EntidadAuditable {
         this.codigo = null
         this.solicitante = null
         this.cliente = null
+        this.proforma = null
         this.autorizador = null
         this.autorizacion = null
         this.descripcion = null
@@ -33,7 +35,7 @@ export class Prefactura extends EntidadAuditable {
         this.estado = null
         this.iva = 12
         this.listadoProductos = []
-        this.tiene_preorden = false
+        this.tiene_proforma = false
         this.tiene_pedido = false
         this.modificar_iva = false
     }

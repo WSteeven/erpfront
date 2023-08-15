@@ -3,9 +3,13 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 export class Proforma extends EntidadAuditable {
     codigo: number | null
     solicitante: number | null
+    solicitante_id: number | null
     cliente: number | null
+    cliente_id: number | null
     autorizador: number | null
+    autorizador_id: number | null
     autorizacion: number | null
+    autorizacion_id: number | null
     descripcion: string | null
     forma: string | null
     tiempo: string | null
@@ -23,9 +27,13 @@ export class Proforma extends EntidadAuditable {
         super()
         this.codigo = null
         this.solicitante = null
+        this.solicitante_id = null
         this.cliente = null
+        this.cliente_id= null
         this.autorizador = null
+        this.autorizador_id = null
         this.autorizacion = null
+        this.autorizacion_id= null
         this.descripcion = null
         this.forma = null
         this.created_at = null

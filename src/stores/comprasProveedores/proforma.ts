@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios"
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
 import { apiConfig, endpoints } from "config/api"
-import { acciones } from "config/utils"
+import { acciones, autorizacionesTransacciones, estadosTransacciones } from "config/utils"
 import { Proforma } from "pages/comprasProveedores/proforma/domain/Proforma"
 import { defineStore } from "pinia"
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository"
@@ -22,6 +22,35 @@ export const useProformaStore = defineStore('proforma', () => {
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
+
+    async function consultar(id: number) {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.proformas) + '/show-preview/' + id
+        const response: AxiosResponse = await axios.get(ruta)
+        if (response.data.modelo.autorizacion === autorizacionesTransacciones.aprobado)
+            return response.data.modelo
+
+    }
+
+
+    async function cargarProforma(id: number) {
+        try {
+            statusLoading.activar()
+            const modelo = await consultar(id)
+            if (modelo.estado === autorizacionesTransacciones.aprobado) {
+                proforma.hydrate(modelo)
+            } else {
+                notificarAdvertencia('La proforma no está aprobada')
+                proforma.hydrate(proformaReset)
+            }
+        } catch (e) {
+            notificarAdvertencia('Proforma no encontrada')
+            proforma.hydrate(proformaReset)
+        } finally {
+            statusLoading.desactivar()
+        }
+    }
+
     async function imprimirPdf() {
         try {
             statusLoading.activar
@@ -60,6 +89,7 @@ export const useProformaStore = defineStore('proforma', () => {
         accionProforma,
         idProforma,
 
+        cargarProforma,
         anularProforma,
         resetearproforma,
         imprimirPdf,
