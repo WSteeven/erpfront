@@ -2,9 +2,7 @@
   <q-page padding>
     <q-card class="q-mb-md rounded no-border custom-shadow">
       <q-card-section>
-        <div class="text-right border-1 text-bold q-mb-lg">
-          Análisis de datos: Módulo de tickets
-        </div>
+        <div class="text-bold q-mb-lg">Análisis de datos: Módulo de tareas</div>
 
         <!-- Tiempos -->
         <div class="row q-col-gutter-sm q-mb-md">
@@ -133,39 +131,48 @@
           </div>
         </div>
 
-        <div
-          v-if="mostrarTitulosSeccion"
-          class="text-primary text-bold q-mb-sm"
-        >
-          Información de tickets creados y asignados del empleado seleccionado
+        <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-sm">
+          Datos generales
         </div>
+
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
           <div class="col-12 col-md-6 q-mb-lg">
             <div class="row q-col-gutter-xs">
-              <div v-if="cantTicketsCreados >= 0" class="col-12">
+              <div v-if="cantidadTareasActivas >= 0" class="col-12">
                 <q-card
                   class="rounded-card text-white no-border custom-shadow q-pa-md text-center cursor-pointer q-card-hover q-card-press"
                   style="background-color: #bc98f3"
                 >
                   <div class="text-h3 q-mb-md">
-                    {{ cantTicketsCreados }}
+                    {{ cantidadTareasActivas }}
                   </div>
-                  <div>Cantidad de tickets creados</div>
+                  <div>Cantidad de tareas activas</div>
                 </q-card>
               </div>
 
-              <div v-if="cantTicketsCreadosParaMi >= 0" class="col-6 col-md-3">
+              <div v-if="cantidadTareasFinalizadas >= 0" class="col-12">
+                <q-card
+                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center cursor-pointer q-card-hover q-card-press bg-positive"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantidadTareasFinalizadas }}
+                  </div>
+                  <div>Cantidad de tareas finalizadas</div>
+                </q-card>
+              </div>
+
+              <!-- <div v-if="cantTicketsCreadosParaMi >= 0" class="col-6 col-md-3">
                 <q-card
                   class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
                 >
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsCreadosParaMi }}
                   </div>
-                  <div>Cantidad de tickets creados para sí mismo</div>
+                  <div>Cantidad de tickets creadas para sí mismo</div>
                 </q-card>
-              </div>
+              </div> -->
 
-              <div
+              <!-- <div
                 v-if="cantTicketsCreadosInternos >= 0"
                 class="col-6 col-md-3"
               >
@@ -177,9 +184,9 @@
                   </div>
                   <div>Cantidad de tickets creados para su departamento</div>
                 </q-card>
-              </div>
+              </div> -->
 
-              <div
+              <!-- <div
                 v-if="cantTicketsCreadosADepartamentos >= 0"
                 class="col-6 col-md-3"
               >
@@ -191,9 +198,9 @@
                   </div>
                   <div>Cantidad de tickets creados a otros departamentos</div>
                 </q-card>
-              </div>
+              </div> -->
 
-              <div
+              <!-- <div
                 v-if="cantTicketsCanceladosPorMi >= 0"
                 class="col-6 col-md-3"
               >
@@ -205,9 +212,9 @@
                   </div>
                   <div>Cantidad de tickets que ha cancelado</div>
                 </q-card>
-              </div>
+              </div> -->
 
-              <div
+              <!-- <div
                 v-if="cantTicketsCalificadosSolicitante >= 0"
                 class="col-6 col-md-3"
               >
@@ -219,109 +226,120 @@
                   </div>
                   <div>Cantidad de tickets que creó y calificó</div>
                 </q-card>
-              </div>
+              </div> -->
             </div>
           </div>
 
           <!-- Segunda columna -->
-          <div v-if="cantTicketsRecibidos >= 0" class="col-12 col-md-6 column">
+          <div v-if="totalSubtareas >= 0" class="col-12 col-md-6 column">
             <div class="row q-col-gutter-xs">
               <div class="col-12">
                 <q-card
-                  class="rounded-card custom-shadow text-white no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
-                  style="background-color: #bc98f3"
+                  class="rounded-card custom-shadow text-white no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press bg-primary"
                 >
                   <div class="text-h3 q-mb-md">
-                    {{ cantTicketsRecibidos }}
+                    {{ totalSubtareas }}
                   </div>
-                  <div>Cantidad de tickets asignados</div>
-                </q-card>
-              </div>
-
-              <div v-if="cantTicketsAsignados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover"
-                >
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantTicketsAsignados }}
-                  </div>
-                  <div>Cantidad de tickets pendientes</div>
-                </q-card>
-              </div>
-
-              <div v-if="cantTicketsCancelados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card text-white custom-shadow no-border q-pa-md text-center full-height bg-negative cursor-pointer q-card-hover"
-                >
-                  <div class="text-h3 q-mb-md">
-                    {{ cantTicketsCancelados }}
-                  </div>
-                  <div>Cantidad de tickets que le cancelaron</div>
-                </q-card>
-              </div>
-
-              <div v-if="cantTicketsReasignados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantTicketsReasignados }}
-                  </div>
-                  <div>Cantidad de tickets que le transfirieron</div>
-                </q-card>
-              </div>
-
-              <div v-if="cantTicketsEjecutados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantTicketsEjecutados }}
-                  </div>
-                  <div>Cantidad de tickets que está ejecutando</div>
-                </q-card>
-              </div>
-
-              <div v-if="cantTicketsPausados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantTicketsPausados }}
-                  </div>
-                  <div>Cantidad de tickets pausados</div>
+                  <div>Cantidad de subtareas creadas</div>
                 </q-card>
               </div>
 
               <div
-                v-if="cantTicketsFinalizadosSolucionados >= 0"
+                v-if="cantidadSubtareasAgendadas >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantidadSubtareasAgendadas }}
+                  </div>
+                  <div>Cantidad de subtareas agendadas</div>
+                </q-card>
+              </div>
+
+              <div
+                v-if="cantidadSubtareasCanceladas >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card text-white custom-shadow no-border q-pa-md text-center full-height bg-negative cursor-pointer q-card-hover"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantidadSubtareasCanceladas }}
+                  </div>
+                  <div>Cantidad de subtareas canceladas</div>
+                </q-card>
+              </div>
+
+              <div
+                v-if="cantidadSubtareasEjecutadas >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantidadSubtareasEjecutadas }}
+                  </div>
+                  <div>Cantidad de subtareas en ejecución</div>
+                </q-card>
+              </div>
+
+              <div v-if="cantidadSubtareasPausadas >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantidadSubtareasPausadas }}
+                  </div>
+                  <div>Cantidad de subtareas pausadas</div>
+                </q-card>
+              </div>
+
+              <div
+                v-if="cantidadSubtareasSuspendidas >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card
+                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
+                >
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantidadSubtareasSuspendidas }}
+                  </div>
+                  <div>Cantidad de subtareas suspendidas</div>
+                </q-card>
+              </div>
+
+              <div
+                v-if="cantidadSubtareasRealizadas >= 0"
                 class="col-6 col-md-3"
               >
                 <q-card
                   class="rounded-card no-border custom-shadow q-pa-md text-center q-card-hover"
                 >
                   <div class="text-h3 text-primary q-mb-md">
-                    {{ cantTicketsFinalizadosSolucionados }}
+                    {{ cantidadSubtareasRealizadas }}
                   </div>
-                  <div>Cantidad de tickets finalizados con solución</div>
+                  <div>Cantidad de subtareas realizadas</div>
                 </q-card>
               </div>
 
               <div
-                v-if="cantTicketsFinalizadosSinSolucion >= 0"
+                v-if="cantidadSubtareasFinalizadas >= 0"
                 class="col-6 col-md-3"
               >
                 <q-card
                   class="rounded-card custom-shadow no-border q-pa-md text-center q-card-hover"
                 >
                   <div class="text-h3 text-primary q-mb-md">
-                    {{ cantTicketsFinalizadosSinSolucion }}
+                    {{ cantidadSubtareasFinalizadas }}
                   </div>
-                  <div>Cantidad de tickets finalizados sin solución</div>
+                  <div>Cantidad de subtareas finalizadas</div>
                 </q-card>
               </div>
 
-              <div
+              <!-- <div
                 v-if="cantTicketsCalificadosResponsable >= 0"
                 class="col-6 col-md-3"
               >
@@ -353,28 +371,28 @@
                   </div>
                   <div>Cantidad de tickets finalizados</div>
                 </q-card>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
 
         <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-md">
-          Gráficos estadísticos del empleado consultado
+          Gráficos estadísticos del coordinador consultado
         </div>
         <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
           <div class="col-12 col-md-6 text-center">
-            <div class="text-subtitle2">Tickets asignados</div>
+            <div class="text-subtitle2">Subtareas creadas</div>
             <div>
               <Pie
-                :data="ticketsPorEstadoBar"
+                :data="cantidadesPorEstadosSubtareasBar"
                 :options="optionsPie"
-                v-if="ticketsPorEstado.length"
+                v-if="cantidadesPorEstadosSubtareas.length"
               />
             </div>
           </div>
         </div>
 
-        <div v-if="mostrarTitulosSeccion" class="row q-mb-xl">
+        <!-- <div v-if="mostrarTitulosSeccion" class="row q-mb-xl">
           <div class="col-12 col-md-6 text-center">
             <div class="text-subtitle2">Tickets creados</div>
             <div>
@@ -396,7 +414,7 @@
               />
             </div>
           </div>
-        </div>
+        </div> -->
 
         <div
           v-if="mostrarTitulosSeccion && esResponsableDepartamento"
@@ -406,7 +424,7 @@
         </div>
         <div v-if="esResponsableDepartamento" class="row q-col-gutter-y-xl">
           <!-- Asignados -->
-          <div
+          <!-- <div
             v-if="ticketsPorDepartamentoEstadoAsignado.length"
             class="col-12 col-md-6 text-center"
           >
@@ -502,61 +520,22 @@
                 v-if="ticketsPorDepartamentoEstadoCalificado.length"
               />
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-sm">
-          Tablas de tickets
+          Tabla de subtareas
         </div>
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
-          <!-- Responsable -->
-          <div v-if="esResponsableDepartamento" class="col-12">
-            <label class="q-mb-sm block"
-              >Empleados responsables del departamento seleccionado</label
-            >
-            <q-select
-              v-model="empleadoResponsableDepartamento"
-              :options="empleadosResponsables"
-              transition-show="scale"
-              transition-hide="scale"
-              hint="Obligatorio"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => `${item.nombres} ${item.apellidos}`"
-              :option-value="(item) => item.id"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              @update:model-value="
-                obtenerTicketsEmpleadoResponsable(
-                  empleadoResponsableDepartamento
-                )
-              "
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Seleccione un departamento
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-
           <div class="col-12">
             <essential-table
-              v-if="ticketsEmpleadoResponsable.length"
-              titulo="Tickets finalizados con solución"
-              :configuracionColumnas="[
-                ...configuracionColumnasTicket,
-                accionesTabla,
-              ]"
-              :datos="ticketsEmpleadoResponsable"
+              v-if="subtareas.length"
+              titulo="Subtareas"
+              :configuracionColumnas="columnasSubtareas"
+              :datos="subtareas"
               :permitirConsultar="false"
-              :permitirEliminar="false"
               :permitirEditar="false"
+              :permitirEliminar="false"
               :mostrarBotones="false"
               :alto-fijo="false"
               :accion1="botonVer"
@@ -568,8 +547,11 @@
       </q-card-section>
     </q-card>
 
-    <modales-entidad :comportamiento="modales" />
+    <modales-entidad
+      :comportamiento="modalesSubtarea"
+      :mixin-modal="mixinSubtarea"
+    />
   </q-page>
 </template>
 
-<script src="./DashboardTicketsPage.ts"></script>
+<script src="./DashboardTareasPage.ts"></script>

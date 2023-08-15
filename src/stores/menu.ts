@@ -38,6 +38,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_tareas'),
       children: [
         {
+          title: 'Dashboard',
+          link: 'dashboard-tareas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.dashboard_tareas'),
+        },
+        {
           title: 'Monitor',
           link: 'monitor-subtareas',
           icon: 'bi-circle',
