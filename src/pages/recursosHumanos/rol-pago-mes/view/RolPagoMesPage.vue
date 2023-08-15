@@ -7,8 +7,7 @@
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'rol_pago'"
     :tabOptions="tabOptionsEstadosRolPago"
-    :accion1="editarRolPago"
-    :accion2="btnFinalizarRolPago"
+    :accion1="btnFinalizarRolPago"
 
     :filtrar="filtrarRolPagoMes"
     tabDefecto="0"
@@ -106,6 +105,7 @@
               v-model="rolpago.es_quincena"
               label="Es quincena"
               :disable="disabled"
+              @update:model-value="obtenerNombreMes"
               outlined
               dense
             ></q-checkbox>

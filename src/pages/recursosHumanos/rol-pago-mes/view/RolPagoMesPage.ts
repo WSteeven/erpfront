@@ -95,7 +95,8 @@ export default defineComponent({
       modalesRolPago,
       listadosAuxiliares
     )
-    const { btnImprimir,btnGenerarReporte } = useBotonesImpresionTablaRolPago(rolpago)
+    const { btnImprimir, btnGenerarReporte } =
+      useBotonesImpresionTablaRolPago(rolpago)
     const rolPagoStore = useRolPagoStore()
     const tabActual = ref()
 
@@ -134,7 +135,6 @@ export default defineComponent({
       },
     }
 
-
     const btnConsultarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Consultar',
       icono: 'bi-eye',
@@ -163,7 +163,6 @@ export default defineComponent({
       },
     }
     function obtenerNombreMes() {
-      console.log('nombre mes')
       const meses = [
         'Enero',
         'Febrero',
@@ -179,8 +178,10 @@ export default defineComponent({
         'Diciembre',
       ]
       const [mes, anio] = rolpago.mes!.split('-')
-      rolpago.nombre = `Rol de Pagos de ${
-        meses[parseInt(mes, 10) - 1]
+      rolpago.nombre = `Rol de Pagos de ${ rolpago.es_quincena
+      ? 'QUINCENA DEL MES DE '
+      : ''}  ${
+         meses[parseInt(mes, 10) - 1]
       } de ${anio}`
     }
     let tabActualRolPago = '0'
@@ -234,7 +235,7 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       color: 'secondary',
       visible: ({ entidad }) =>
-      authenticationStore.can('puede.editar.rol_pago') && !entidad.finalizado ,
+        authenticationStore.can('puede.editar.rol_pago') && !entidad.finalizado,
       accion: ({ entidad }) => {
         accion.value = 'EDITAR'
         consultar(entidad)
