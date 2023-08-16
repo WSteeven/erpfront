@@ -61,14 +61,8 @@ export default defineComponent({
       listadosAuxiliares,
     } = mixin.useReferencias()
     const {
-      guardar,
-      editar,
-      eliminar,
-      reestablecer,
       consultar,
       setValidador,
-      obtenerListados,
-      cargarVista,
       listar,
     } = mixin.useComportamiento()
     const mixinRolEmpleado = new ContenedorSimpleMixin(
@@ -87,7 +81,7 @@ export default defineComponent({
 
     const { onConsultado } = mixin.useHooks()
     useCargandoStore().setQuasar(useQuasar())
-    const { notificarAdvertencia, prompt, confirmar } = useNotificaciones()
+    const { notificarAdvertencia,notificarCorrecto, confirmar } = useNotificaciones()
 
     const { btnFinalizarRolPago } = useBotonesTablaRolPagoMes(mixin)
     const { btnIniciar, btnRealizar, btnRealizado } = useBotonesTablaRolPago(
@@ -131,6 +125,7 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().ejecutarMasivo(data)
           notificarCorrecto('Rol de Pagos se esta Verificando!')
+          filtrarRolPagoEmpleado('EJECUTANDO');
         })
       },
     }
@@ -150,9 +145,7 @@ export default defineComponent({
       icono: 'bi-pencil',
       color: 'warning',
       visible: ({ entidad }) => {
-        return (
-          entidad.estado === estadosRolPago.EJECUTANDO &&
-          authenticationStore.esRecursosHumanos
+        return (entidad.estado === estadosRolPago.EJECUTANDO && authenticationStore.esRecursosHumanos
         )
       },
       accion: ({ entidad }) => {
@@ -225,7 +218,7 @@ export default defineComponent({
     }
 
     /**Verifica si es un mes */
-    function checkValue(val, reason, details) {
+    function checkValue(reason) {
       is_month.value = reason === 'month' ? false : true
       obtenerNombreMes()
     }
@@ -290,6 +283,4 @@ export default defineComponent({
     }
   },
 })
-function notificarCorrecto(arg0: string) {
-  throw new Error('Function not implemented.')
-}
+
