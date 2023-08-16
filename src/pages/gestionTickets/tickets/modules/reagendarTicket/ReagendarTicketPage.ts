@@ -10,22 +10,32 @@ import { AxiosResponse } from 'axios'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import DetalleTicket from 'ticketsAsignados/modules/detalleTicketAsignado/view/DetalleTicket.vue'
 
 // Logica y controladores
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useFiltrosListadosTickets } from '../../application/FiltrosListadosTicket'
+import { useAuthenticationStore } from 'stores/authentication'
+import { estadosTickets } from 'config/tickets.utils'
 import { Ticket } from '../../domain/Ticket'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
     EssentialTable,
+    DetalleTicket,
   },
   props: {
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<Ticket>,
       required: true,
     },
+    accion: {
+      type: Function,
+      required: true,
+    }
   },
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
@@ -33,6 +43,7 @@ export default defineComponent({
     * Stores
     *********/
     const ticketStore = useTicketStore()
+    const authenticationStore = useAuthenticationStore()
 
     /*******
     * Mixin
@@ -43,6 +54,7 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         empleados: [],
+        departamentos: new DepartamentoController(),
       })
     })
 
@@ -85,10 +97,13 @@ export default defineComponent({
       empleados.value = listadosAuxiliares.empleados
     }
 
+    const cargando = new StatusEssentialLoading()
+
     async function cambiar() {
       if (await v$.value.$validate()) {
         try {
           confirmar('¿Está seguro de continuar?', async () => {
+            cargando.activar()
             const axios = AxiosHttpRepository.getInstance()
             const ruta = axios.getEndpoint(endpoints.cambiar_responsable_ticket) + '/' + ticket.id
             const response: AxiosResponse = await axios.post(ruta, {
@@ -96,15 +111,27 @@ export default defineComponent({
               responsable: reagendar.responsable,
             })
 
-            const anterior = listado.value[ticketStore.posicionFilaTicket]
-            anterior.departamento_responsable = response.data.modelo.departamento_responsable
-            anterior.responsable = response.data.modelo.responsable
-            listado.value.splice(ticketStore.posicionFilaTicket, 1, anterior)
+            if (ticketStore.filaTicket.responsable_id === reagendar.responsable) {
+              cargando.desactivar()
+              return notificarAdvertencia('Seleccione un empleado diferente al responsable actual.')
+            }
+
+            // Es el solicitante asigna
+            if (authenticationStore.user.id === ticketStore.filaTicket.solicitante_id) {
+              props.accion(estadosTickets.ASIGNADO)
+            } else {
+              // Es el responsable actual transfiere
+              listado.value.splice(ticketStore.posicionFilaTicket, 1)
+            }
+
             notificarCorrecto(response.data.mensaje)
+            cargando.desactivar()
             emit('cerrar-modal', false)
           })
         } catch (e: any) {
           notificarAdvertencia(e)
+        } finally {
+          cargando.desactivar()
         }
       }
     }

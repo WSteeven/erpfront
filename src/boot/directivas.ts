@@ -35,7 +35,7 @@ export default ({ app }) => {
       disableStats: true,
       forceTLS: false,
       enabledTransports: ['ws'],
-    }) 
+    })
     window.Echo.channel('prueba').listen('NewMessagePruebaEvent', (e) => {
       console.log('Llegó algo: ', e.message)
     }) */

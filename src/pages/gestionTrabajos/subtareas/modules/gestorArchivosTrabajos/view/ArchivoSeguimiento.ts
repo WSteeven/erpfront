@@ -41,6 +41,14 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    listarAlGuardar: {
+      type: Boolean,
+      default: true,
+    },
+    permitirSubir: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     /*********
@@ -104,10 +112,11 @@ export default defineComponent({
       try {
         const response: AxiosResponse = await axios.post(ruta, fd)
         files.value = []
-        listado.value.push(response.data.modelo)
+        if (props.listarAlGuardar) listado.value.push(response.data.modelo)
         notificarCorrecto(response.data.mensaje)
-        refGestor.value.removeQueuedFiles()
+        quiero_subir_archivos.value = false
       } catch (error: unknown) {
+        console.log(error)
         const axiosError = error as AxiosError
         notificarError(axiosError.response?.data.mensaje)
       }
@@ -115,7 +124,12 @@ export default defineComponent({
 
     function subir(params: ParamsType) {
       paramsForm = params
-      refGestor.value.upload()
+      if (refGestor.value) {
+        refGestor.value.upload()
+        refGestor.value.reset()
+        refGestor.value.removeUploadedFiles()
+        refGestor.value.removeQueuedFiles()
+      }
     }
 
     function onRejected(rejectedEntries) {
@@ -124,6 +138,7 @@ export default defineComponent({
 
     function limpiarListado() {
       listado.value = []
+      // console.log('limpiado...')
     }
 
     return {

@@ -9,6 +9,9 @@ import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
+import { useNotificaciones } from './notificaciones';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { Ref } from 'vue'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -51,9 +54,7 @@ export function descargarArchivo(
   link.remove()
 }
 
-export function descargarArchivoUrl(
-  url: string,
-): void {
+export function descargarArchivoUrl(url: string): void {
   const link = document.createElement('a')
   link.href = apiConfig.URL_BASE + url
   link.target = '_blank'
@@ -253,28 +254,27 @@ export function obtenerFechaActual() {
  * @returns cadena sin acentos ni tildes
  */
 export function removeAccents(accents: string) {
-  return accents.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  return accents.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
 export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
-  const cargando = new StatusEssentialLoading()
-
   try {
-    cargando.activar()
-    cargando.establecerMensaje('Obteniendo fecha y hora actual')
+    const fecha: AxiosResponse = await axios.get(
+      axios.getEndpoint(endpoints.fecha)
+    )
+    const hora: AxiosResponse = await axios.get(
+      axios.getEndpoint(endpoints.hora)
+    )
 
-    const fecha: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.fecha))
-    const hora: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.hora))
-
-    //const fechaArray = fecha.split('-') //.map(Number)
-    console.log(fecha.data)
-    return { fecha: fecha.data, hora: hora.data, fecha_hora: fecha.data + ' ' + hora.data }
+    return {
+      fecha: fecha.data,
+      hora: hora.data,
+      fecha_hora: fecha.data + ' ' + hora.data,
+    }
   } catch (e: any) {
     throw new ApiError(e)
-  } finally {
-    cargando.desactivar()
   }
 }
 
@@ -320,9 +320,20 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  * @param responseType tipo de respuesta esperada, de la clase axios.ResponseType
  * @param formato tipo de archivo esperado
  * @param titulo  nombre del archivo para descargar
+ * @param data  lo que se envia en el post
+ *
+ * @returns mensaje que indica que no se puede imprimir el archivo
  */
-export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
+export async function imprimirArchivo(
+  ruta: string,
+  metodo: Method,
+  responseType: ResponseType,
+  formato: string,
+  titulo: string,
+  data?: any
+) {
   const statusLoading = new StatusEssentialLoading()
+  const { notificarAdvertencia } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -334,15 +345,42 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
       'Authorization': axiosHttpRepository.getOptions().headers.Authorization
     }
   }).then((response: HttpResponseGet) => {
-    const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
-    const link = document.createElement('a')
-    link.href = fileURL
-    link.target = '_blank'
-    link.setAttribute('download', `${titulo}.${formato}`)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
+    console.log(response.data)
+    if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
+    else {
+      const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+      const link = document.createElement('a')
+      link.href = fileURL
+      link.target = '_blank'
+      link.setAttribute('download', `${titulo}.${formato}`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    }
+  }).catch(error => {
+    notificarAdvertencia(error)
   })
+    .then((response: HttpResponseGet) => {
+      console.log(response.data)
+      if (response.data.size < 100 || response.data.type == 'application/json')
+        throw 'No se obtuvieron resultados para generar el reporte'
+      else {
+        const fileURL = URL.createObjectURL(
+          new Blob([response.data], { type: `appication/${formato}` })
+        )
+        const link = document.createElement('a')
+        link.href = fileURL
+        link.target = '_blank'
+        link.setAttribute('download', `${titulo}.${formato}`)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+      }
+    })
+    .catch((error) => {
+      notificarAdvertencia(error)
+    })
+
   statusLoading.desactivar()
 }
 
@@ -364,18 +402,21 @@ export function ordernarListaString(a: string, b: string) {
 }
 
 export function obtenerUbicacion(onUbicacionConcedida) {
-
-  const onErrorDeUbicacion = err => {
+  const onErrorDeUbicacion = (err) => {
     console.log('Error obteniendo ubicación: ', err)
   }
 
   const opcionesDeSolicitud = {
     enableHighAccuracy: true, // Alta precisión
     maximumAge: 0, // No queremos caché
-    timeout: 5000 // Esperar solo 5 segundos
+    timeout: 5000, // Esperar solo 5 segundos
   }
 
-  navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud)
+  navigator.geolocation.getCurrentPosition(
+    onUbicacionConcedida,
+    onErrorDeUbicacion,
+    opcionesDeSolicitud
+  )
 }
 
 export function extraerRol(roles: string[], rolConsultar: string) {
@@ -402,4 +443,115 @@ export function formatearFechaHora(fecha: string, hora: string) {
   })
 
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
+}
+
+// recibe fecha dd-mm-yyyy y sale yyyy-mm-dd con el nuevo separador
+export function formatearFechaSeparador(fecha: string, separador: string, sumarTiempo?: any) {
+  const arrayFecha = fecha.split('-').map(Number) // YYYY-MM-DD
+  let nuevaFecha = date.buildDate({
+    year: arrayFecha[2],
+    month: arrayFecha[1],
+    day: arrayFecha[0],
+  })
+
+  if (sumarTiempo) nuevaFecha = date.addToDate(nuevaFecha, sumarTiempo)
+
+  return date.formatDate(nuevaFecha, 'YYYY' + separador + 'MM' + separador + 'DD')
+}
+
+export function formatearFechaTexto(fecha: number) {
+  const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(fecha).toLocaleDateString('es-Es', opciones)
+}
+
+export function generarColorHexadecimalAleatorio() {
+  const r = Math.floor(Math.random() * 128 + 128); // Componente rojo entre 128 y 255
+  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 128 y 255
+  const b = Math.floor(Math.random() * 128 + 128); // Componente azul entre 128 y 255
+
+  const colorHexadecimal = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+  return colorHexadecimal;
+}
+
+function componentToHex(component) {
+  const hex = component.toString(16);
+  return hex.length === 1 ? "0" + hex : hex;
+}
+
+export function generarColorPastelAzulAleatorio() {
+  const r = Math.floor(Math.random() * 128); // Componente rojo entre 0 y 127
+  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 0 y 127
+  const b = Math.floor(Math.random() * 128); // Componente azul entre 128 y 255
+
+  const colorHexadecimal = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+  return colorHexadecimal;
+}
+
+// --
+export function generarColorAzulPastelClaro() {
+  // Generar valores RGB altos (entre 150 y 220) para obtener un tono azul claro
+  const r = Math.floor(Math.random() * 70) + 150;
+  const g = Math.floor(Math.random() * 70) + 150;
+  const b = Math.floor(Math.random() * 100) + 155; // Para asegurarse de que el tono sea azul claro
+
+  // Ajustar el brillo para hacerlo más claro (entre 0.7 y 1.0)
+  const brillo = Math.random() * 0.3 + 0.7;
+
+  // Convertir a formato hexadecimal
+  const colorHex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+  // Aplicar el brillo al color hexadecimal
+  const colorClaroHex = ajustarBrillo(colorHex, brillo);
+
+  return colorClaroHex;
+}
+
+function ajustarBrillo(colorHex, brillo) {
+  const r = parseInt(colorHex.substr(1, 2), 16);
+  const g = parseInt(colorHex.substr(3, 2), 16);
+  const b = parseInt(colorHex.substr(5, 2), 16);
+
+  const rNuevo = Math.round(r * brillo);
+  const gNuevo = Math.round(g * brillo);
+  const bNuevo = Math.round(b * brillo);
+
+  const colorOscuroHex = `#${(rNuevo << 16 | gNuevo << 8 | bNuevo).toString(16).padStart(6, '0')}`;
+  return colorOscuroHex;
+}
+
+
+/* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
+  empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+} */
+
+/**
+ * La función verifica si una matriz tiene elementos repetidos.
+ * @param array - El parámetro `array` es una matriz de elementos.
+ * @returns un valor booleano. Devuelve verdadero si la matriz de entrada tiene elementos repetidos y
+ * falso si todos los elementos de la matriz son únicos.
+ */
+export function tieneElementosRepetidos(array) {
+  const set = new Set(array);
+  return set.size !== array.length;
+}
+
+/**
+ * La función comprueba si una matriz de objetos contiene objetos duplicados.
+ * @param arrayDeObjetos - El parámetro `arrayDeObjetos` es una matriz de objetos.
+ * @returns un valor booleano. Devuelve verdadero si hay objetos repetidos en la matriz y falso si no
+ * hay objetos repetidos.
+ */
+export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
+  const objetoSet = new Set()
+  for (const objeto of arrayDeObjetos) {
+    const objetoString = JSON.stringify(objeto)
+    if (objetoSet.has(objetoString)) {
+      return true
+    } else {
+      objetoSet.add(objetoString)
+    }
+  }
+  return false
 }

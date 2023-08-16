@@ -26,10 +26,11 @@
       "controlTareas/*": ["src/pages/tareas/controlTareas/*"],
       "subtareas/*": ["src/pages/gestionTrabajos/subtareas/*"],
       "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"],
-      "gestionTickets/*": ["src/pages/gestionTickets"],
+      "dashboardTickets/*": ["src/pages/gestionTickets/dashboardTickets"],
       "tickets/*": ["gestionTickets/tickets"],
       "ticketsAsignados/*": ["gestionTickets/ticketsAsignados"],
       "tiposTickets/*": ["gestionTickets/tiposTickets"],
+      "categoriasTiposTickets/*": ["gestionTickets/categoriasTiposTickets"],
       "motivosPausasTickets/*": ["gestionTickets/motivosPausasTickets"],
       "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"]
     }

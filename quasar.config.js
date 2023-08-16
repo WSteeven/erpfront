@@ -125,10 +125,18 @@ module.exports = configure(function (/* ctx */) {
           './src/pages/gestionTrabajos/subtareas'
         ),
         tiposTrabajos: path.join(__dirname, './src/pages/tareas/tiposTareas'),
+        dashboardTickets: path.join(
+          __dirname,
+          './src/pages/gestionTickets/dashboardTickets'
+        ),
         tickets: path.join(__dirname, './src/pages/gestionTickets/tickets'),
         ticketsAsignados: path.join(
           __dirname,
           './src/pages/gestionTickets/ticketsAsignados'
+        ),
+        categoriasTiposTickets: path.join(
+          __dirname,
+          './src/pages/gestionTickets/categoriasTiposTickets'
         ),
         tiposTickets: path.join(
           __dirname,
@@ -167,7 +175,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'Dialog'],
+      plugins: ['Notify', 'Dialog', 'Loading'],
     },
 
     // animations: 'all', // --- includes all animations

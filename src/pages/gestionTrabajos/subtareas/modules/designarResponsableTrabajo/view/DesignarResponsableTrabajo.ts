@@ -64,6 +64,7 @@ export default defineComponent({
     const tipoSeleccion = computed(() => cambiarResponsable.value ? 'single' : 'none')
     const notificaciones = useNotificaciones()
     const empleadosGrupo: Ref<Empleado[]> = ref([])
+    const cargando = new StatusEssentialLoading()
 
     /*************
     * Validaciones
@@ -161,12 +162,11 @@ export default defineComponent({
     }
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
-      const cargando = new StatusEssentialLoading()
 
       try {
         cargando.activar()
         const empleadoController = new EmpleadoController()
-        const { result } = await empleadoController.listar({ grupo_id: grupo_id })
+        const { result } = await empleadoController.listar({ grupo_id: grupo_id, estado: 1 })
         empleadosGrupo.value = mapearResponsable(result)
       } catch (error) {
         if (isAxiosError(error)) {

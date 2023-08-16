@@ -1,10 +1,10 @@
 // Dependencias
 import { configuracionColumnasTicketAsignado } from '../domain/configuracionColumnasTicketAsignado'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla, estadosTrabajos } from 'config/utils'
-import { tabTrabajoAsignado } from 'config/tareas.utils'
+import { tabOptionsEstadosTicketsAsignados, estadosTickets } from 'config/tickets.utils'
 import { computed, defineComponent, ref } from 'vue'
+import { useTicketStore } from 'stores/ticket'
 import { date } from 'quasar'
 
 // Componentes
@@ -13,15 +13,15 @@ import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
-import { TrabajoAsignadoController } from 'gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
-import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 import { ComportamientoModalesTicketAsignado } from '../application/ComportamientoModalesTicketAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
+import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
+import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
+import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
+import { MotivoPausaTicketController } from 'pages/gestionTickets/motivosPausasTickets/infraestructure/MotivoPausaTicketController'
+import { TicketModales } from 'pages/gestionTickets/tickets/domain/TicketModales'
 
 export default defineComponent({
   components: {
@@ -33,20 +33,22 @@ export default defineComponent({
     /***********
     * Stores
     ***********/
-    const trabajoAsignadoStore = useTrabajoAsignadoStore()
+    const ticketStore = useTicketStore()
     const authenticationStore = useAuthenticationStore()
 
     /*******
     * Mixin
     ********/
-    const mixin = new ContenedorSimpleMixin(Subtarea, new TrabajoAsignadoController())
-    const { listado, listadosAuxiliares } = mixin.useReferencias()
+    const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
+    const { listado } = mixin.useReferencias()
     const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
-        motivosPausas: new MotivoPausaController(),
-        motivosSuspendidos: new MotivoSuspendidoController(),
+        motivosPausas: {
+          controller: new MotivoPausaTicketController(),
+          params: { activo: 1 },
+        },
       })
     })
 
@@ -56,13 +58,13 @@ export default defineComponent({
     const mostrarDialogPlantilla = ref(false)
     const modales = new ComportamientoModalesTicketAsignado()
     const tabActual = ref()
-    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(listado, modales, listadosAuxiliares)
-    setFiltrarTrabajoAsignado(filtrarTrabajoAsignado)
+    const { btnTransferir, btnEjecutar, btnPausar, btnReanudar, btnFinalizar, btnSeguimiento, setFiltrarTickets, btnRechazar, btnCalificarSolicitante, btnCalificarResponsable } = useBotonesTablaTicket(mixin, modales)
+    setFiltrarTickets(filtrarTrabajoAsignado)
 
     /*********
      * Pusher
      *********/
-    const puedeEjecutar = computed(() => tabActual.value === estadosTrabajos.AGENDADO)
+    const puedeEjecutar = computed(() => tabActual.value === estadosTickets.ASIGNADO)
 
     const subtareaPusherEvent = new SubtareaListadoPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
     subtareaPusherEvent.start()
@@ -74,8 +76,8 @@ export default defineComponent({
       titulo: 'Más detalles',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
-        trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
-        modales.abrirModalEntidad('DetalleTrabajoAsignadoPage')
+        ticketStore.filaTicket = entidad
+        modales.abrirModalEntidad('DetalleTicketAsignadoPage')
       },
     }
 
@@ -83,46 +85,51 @@ export default defineComponent({
     * Funciones
     *************/
     async function filtrarTrabajoAsignado(tabSeleccionado) {
-      listar({ estado: tabSeleccionado })
+      listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado })
       tabActual.value = tabSeleccionado
     }
 
-    filtrarTrabajoAsignado(estadosTrabajos.AGENDADO)
+    filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)
 
-    // - Mostrar formulario modal de acuerdo a su tipo de trabajo
-    const listadoModales = modales.getModales()
-
-    function plantillaSeleccionada(plantilla: keyof typeof listadoModales) {
-      mostrarDialogPlantilla.value = false
-      modales.abrirModalEntidad(plantilla)
-    }
-
-    function abrirGuia() {
-      modales.abrirModalEntidad('GuiaSubtareasPage')
+    async function guardado(paginaModal: keyof TicketModales) {
+      switch (paginaModal) {
+        case 'CalificarTicketPage':
+          /* if (!ticketStore.filaTicket.calificaciones.length) {
+            const entidad = listado.value[ticketStore.posicionFilaTicket]
+            entidad.pendiente_calificar = false
+            listado.value.splice(ticketStore.posicionFilaTicket, 1, entidad)
+          } else { */
+          filtrarTrabajoAsignado(tabActual.value)
+          // }
+          break
+      }
+      modales.cerrarModalEntidad()
     }
 
     return {
       mixin,
       listado,
       configuracionColumnasTicketAsignado,
-      btnIniciar,
-      botonVer,
-      tabTrabajoAsignado,
+      tabOptionsEstadosTicketsAsignados,
       filtrarTrabajoAsignado,
       accionesTabla,
       modales,
       mostrarDialogPlantilla,
-      plantillaSeleccionada,
+      botonVer,
+      btnTransferir,
+      btnEjecutar,
       btnPausar,
       btnReanudar,
       btnSeguimiento,
-      btnSuspender,
-      btnRealizar,
+      btnFinalizar,
+      btnRechazar,
+      btnCalificarSolicitante,
+      btnCalificarResponsable,
       tabActual,
-      abrirGuia,
-      // botonCorregir,
+      estadosTickets,
       fecha: date.formatDate(Date.now(), 'dddd, DD MMMM YYYY'),
       authenticationStore,
+      guardado,
     }
   }
 })

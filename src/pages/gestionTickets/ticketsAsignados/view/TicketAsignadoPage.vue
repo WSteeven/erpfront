@@ -1,46 +1,50 @@
 <template>
   <q-page :padding="!$q.screen.xs">
-    <div class="text-center q-my-md">
-      <div class="q-mb-md">
-        Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>
+    <div class="q-mb-md text-right">
+      <b class="block text-subtitle1 text-primary q-mb-sm">
+        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
+        {{ 'Tickets asignados' }}</b
+      >
+      <div class="q-mb-sm">
+        Bienvenido, <b>{{ authenticationStore.nombreUsuario }}</b>
       </div>
-      <div class="q-mb-md">{{ fecha }}</div>
+      <small>
+        <b>{{ fecha }}</b>
+      </small>
     </div>
 
     <essential-table-tabs
-      :titulo="
-        'Tienes ' + listado.length + ' subtarea(s) en estado ' + tabActual
-      "
+      :titulo="'Tienes ' + listado.length + ' ticket(s) en estado ' + tabActual"
       :configuracionColumnas="[
         ...configuracionColumnasTicketAsignado,
         accionesTabla,
       ]"
       :datos="listado"
       :accion1="botonVer"
-      :accion2="btnIniciar"
-      :accion3="btnSeguimiento"
-      :accion4="btnPausar"
-      :accion5="btnReanudar"
-      :accion6="btnSuspender"
-      :accion7="btnRealizar"
+      :accion2="btnTransferir"
+      :accion3="btnEjecutar"
+      :accion4="btnSeguimiento"
+      :accion5="btnPausar"
+      :accion6="btnReanudar"
+      :accion7="btnFinalizar"
+      :accion8="btnRechazar"
+      :accion9="btnCalificarResponsable"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
       :permitirBuscar="false"
       :mostrar-botones="false"
-      :tab-options="tabTrabajoAsignado"
+      :tab-options="tabOptionsEstadosTicketsAsignados"
       @tab-seleccionado="filtrarTrabajoAsignado"
       :tab-defecto="tabActual"
     ></essential-table-tabs>
 
-    <modales-entidad :comportamiento="modales" :mixin-modal="mixin" />
-
-    <!-- <confirmar-dialog
-      :visible="mostrarDialogPlantilla"
+    <modales-entidad
       :comportamiento="modales"
-      @seleccionar="plantillaSeleccionada"
-      @cerrar="mostrarDialogPlantilla = false"
-    ></confirmar-dialog> -->
+      :mixin-modal="mixin"
+      :accion="filtrarTrabajoAsignado"
+      @guardado="guardado"
+    />
   </q-page>
 </template>
 

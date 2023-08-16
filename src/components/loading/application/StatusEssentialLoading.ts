@@ -1,10 +1,11 @@
+import { QSpinnerGears, QSpinnerHourglass, useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
 import { computed, ComputedRef, Ref } from 'vue'
 
 export class StatusEssentialLoading {
   public estaCargando: ComputedRef<boolean>
   store = useCargandoStore()
-  // mensaje: Ref<string> = 'Cargando'
+  $q = useCargandoStore().$q ?? useQuasar()
 
   constructor() {
     this.estaCargando = computed(() => this.store.cargando)
@@ -12,7 +13,15 @@ export class StatusEssentialLoading {
   }
 
   activar(): void {
-    this.store.activarCargando()
+    // this.store.activarCargando()
+    this.$q.loading.show({
+      spinner: QSpinnerGears,
+      message: '<span class="text-white text-italic">La operación está en progreso.<br/><br/><small class="text-white text-italic q-py-xs q-px-sm bg-positive rounded-card">Espere por favor...</small></span>',
+      html: true,
+      spinnerColor: 'white',
+      customClass: 'bg-desenfoque-loading',
+      // backgroundColor: 'white',
+    })
   }
 
   establecerMensaje(mensaje: string): void {
@@ -20,6 +29,7 @@ export class StatusEssentialLoading {
   }
 
   desactivar(): void {
-    this.store.desactivarCargando()
+    // this.store.desactivarCargando()
+    this.$q.loading.hide()
   }
 }

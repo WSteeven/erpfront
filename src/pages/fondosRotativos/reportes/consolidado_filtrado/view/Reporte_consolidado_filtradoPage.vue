@@ -226,10 +226,11 @@
         <div class="col-12 col-md-4 q-mb-md"
           v-if="(consolidadofiltrado.tipo_filtro == 4 || consolidadofiltrado.tipo_filtro == 0)&& consolidadofiltrado.tipo_saldo == 2">
           <label class="q-mb-sm block">SubDetalle</label>
-          <q-select v-model="consolidadofiltrado.subdetalle" :options="opcionesSubdetalles" transition-show="jump-up"
+          <q-select v-model="consolidadofiltrado.subdetalle" :options="sub_detalles" transition-show="jump-up"
             transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
             :error="!!v$.subdetalle.$errors.length" error-message="Debes seleccionar un canton" use-input
-            input-debounce="0" @filter="filtroSubdetalles"
+            input-debounce="0"
+             @filter="filtroSubdetalles"
             :option-value="(v) => v.id"
             :option-label="(v) => v.descripcion" emit-value map-options>
             <template v-slot:error>
@@ -274,6 +275,16 @@
             <q-input v-model="consolidadofiltrado.ruc" placeholder="" type="textarea" autogrow  :disable="disabled" outlined dense>
             </q-input>
           </div>
+          <div class="col-12 col-md-3"  v-if="consolidadofiltrado.tipo_filtro == 6 || consolidadofiltrado.tipo_filtro == 0" >
+          <q-checkbox
+            v-model="is_inactivo"
+            color="secondary"
+            label="Inactivo"
+            true-value="true"
+            false-value="false"
+            @update:model-value="mostrarInactivos"
+          ></q-checkbox>
+        </div>
       </q-card-section>
 
       <q-separator></q-separator>

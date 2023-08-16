@@ -1,5 +1,6 @@
 // Dependencias
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
+import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
 import { computed, defineComponent, ref, watchEffect, nextTick, Ref } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
@@ -10,7 +11,6 @@ import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'config/utils'
 import { offset } from 'config/utils_tablas'
 import exportFile from 'quasar/src/utils/export-file.js'
-import useQuasar from 'quasar/src/composables/use-quasar.js'
 
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
@@ -33,7 +33,7 @@ export default defineComponent({
   props: {
     referencia: Object as () => Ref,
     entidad: {
-      type: Object as () => Instanciable,
+      type: Object as Instanciable,
       required: false,
     },
     titulo: {
@@ -144,6 +144,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    mostrarCantidadElementos:{
+      type: Boolean,
+      default:true,
+    },
     mostrarFooter: {
       type: Boolean,
       default: true,
@@ -172,8 +176,16 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    editarFilaLocal: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarExportar: {
+      type: Boolean,
+      default: false,
+    }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -194,6 +206,7 @@ export default defineComponent({
       if (props.permitirEditarModal) {
         fila.value = data.entidad
         posicionFilaEditada.value = data.posicion
+        console.log(posicionFilaEditada.value)
         refEditarModal.value.abrir()
       }
     }
@@ -238,8 +251,14 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
-      listado.value.splice(posicionFilaEditada.value, 1, data)
+      console.log(data)
+      const posicion = props.datos.findIndex(
+        (fila: any) => fila.id === data.id
+      )
+
+      if (props.editarFilaLocal) listado.value.splice(posicionFilaEditada.value, 1, data)
       limpiarFila()
+      emit('guardar-fila', data)
     }
 
     const rows = computed(() => listado.value?.length - 1 ?? 0)
@@ -304,6 +323,8 @@ export default defineComponent({
       console.log(filtros.value)
 
       refTableFilters.value.filtrar()
+
+
 
       // emit('filtrar', filtros.value)
     }
@@ -407,6 +428,8 @@ export default defineComponent({
       estadosCondicionesId,
       estadosCondicionesValue,
       estadosControlStock,
+      //estados compras y proveedores
+      estadosCalificacionProveedor,
       onScroll,
       loading,
       offset,

@@ -88,5 +88,12 @@ export const ConfiguracionColumnasContabilidad: ColumnConfig<FondoRotativoContab
     align: 'left',
     sortable: true
   },
+  {
+    name: 'created_at',
+    field: 'created_at',
+    label: 'Fecha de Creación',
+    align: 'left',
+    sortable: true
+  },
 
 ]

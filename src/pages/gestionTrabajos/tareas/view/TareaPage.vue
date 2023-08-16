@@ -12,6 +12,7 @@
     :filtrar="filtrarTarea"
     tabDefecto="0"
     :forzarListar="true"
+    subtitulo-pagina="Módulo de Tareas"
   >
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
@@ -648,13 +649,6 @@
               </div>
             </q-expansion-item>
           </q-form>
-
-          <!-- <div class="row justify-end">
-            <q-btn color="positive" no-caps push @click="emitir('guardar')">
-              <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-              <span>Finalizar tarea</span>
-            </q-btn>
-          </div> -->
         </q-tab-panel>
 
         <q-tab-panel name="subtareas">
@@ -703,6 +697,7 @@
     :mixin-modal="mixin"
     @guardado="guardado"
   />
+
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"

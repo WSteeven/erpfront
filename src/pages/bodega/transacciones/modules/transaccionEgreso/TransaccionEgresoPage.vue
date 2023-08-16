@@ -7,7 +7,8 @@
     :accion1="botonImprimir"
   >
     <template #formulario>
-      <div v-if="transaccion.aviso_liquidacion_cliente"
+      <div
+        v-if="transaccion.aviso_liquidacion_cliente"
         class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
       >
         <q-icon
@@ -221,6 +222,10 @@
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               @update:model-value="buscarListadoPedidoEnInventario"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
+              @popup-show="ordenarSucursales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -237,6 +242,11 @@
                     No hay resultados
                   </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSucursales">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
             </q-select>
           </div>
@@ -267,7 +277,11 @@
           </div>
           <!-- Solicitante -->
           <div v-if="transaccion.solicitante" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Solicitante</label>
+            <label-info-empleado v-if="accion==acciones.consultar"
+              label="Solicitante"
+              @click="infoEmpleado(transaccion.solicitante)"
+            />
+            <label v-else class="q-mb-sm block">Solicitante</label>
             <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
             </q-input> -->
             <q-select
@@ -347,7 +361,11 @@
           </div>
           <!-- Responsable -->
           <div v-if="!esTecnico" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Responsable</label>
+            <label-info-empleado v-if="accion==acciones.consultar"
+              label="Responsable"
+              @click="infoEmpleado(transaccion.responsable)"
+            />
+            <label v-else class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="transaccion.responsable"
               :options="opciones_empleados"
@@ -359,11 +377,12 @@
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
+              @popup-show="ordenarEmpleados"
               error-message="Debes seleccionar el responsable de los materiales"
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -402,7 +421,11 @@
           </div>
           <!-- Persona que retira -->
           <div v-if="transaccion.retira_tercero" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Persona que retira</label>
+            <label-info-empleado v-if="accion==acciones.consultar"
+              label="Persona que retira"
+              @click="infoEmpleado(transaccion.per_retira)"
+            />
+            <label v-else class="q-mb-sm block">Persona que retira</label>
             <q-select
               v-model="transaccion.per_retira"
               :options="opciones_empleados"
@@ -414,9 +437,10 @@
               use-input
               input-debounce="0"
               @filter="filtroEmpleados"
+              @popup-show="ordenarEmpleados"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -445,6 +469,7 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              @popup-show="ordenarClientes"
               @update:model-value="buscarListadoPedidoEnInventario"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
@@ -531,7 +556,7 @@
                   :disable="disabled || soloLectura"
                   color="positive"
                   class="full-width"
-                  style="height: 40px"
+                  style="height:20px; max-height: 40px; "
                   no-caps
                   glossy
                   >Buscar</q-btn
@@ -539,7 +564,6 @@
               </div>
             </div>
           </div>
-
 
           <!-- Tabla -->
           <div class="col-12">
@@ -553,6 +577,7 @@
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
+              :altoFijo="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               @eliminar="eliminar"
@@ -573,5 +598,6 @@
       </essential-selectable-table>
     </template>
   </tab-layout>
+  <modales-entidad :comportamiento="modalesEmpleado" :confirmarCerrar="false"></modales-entidad>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

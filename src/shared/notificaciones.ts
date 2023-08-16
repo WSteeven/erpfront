@@ -62,8 +62,8 @@ export function useNotificaciones() {
       cancel: true,
       persistent: true,
     })
-      .onOk(() => {
-        callback()
+      .onOk(async() => {
+        await callback()
       })
       .onCancel(() => {
         // console.log('>>>> Cancel')
@@ -104,7 +104,7 @@ export function useNotificaciones() {
         model: config.defecto,
         // inline: true
         items: config.items,
-        isValid: val => !!val,
+        isValid: val => config.hasOwnProperty('requerido') ? (!config.requerido || !!val) : (false || !!val),
       },
     })
       .onOk((data) => {

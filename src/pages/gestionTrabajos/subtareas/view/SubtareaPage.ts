@@ -13,8 +13,6 @@ import {
   rolesSistema,
   acciones,
   accionesTabla,
-  tiposIntervenciones,
-  causaIntervencion,
   maskFecha,
 } from 'config/utils'
 import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
@@ -22,7 +20,6 @@ import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
-import { nivelesTrabajos } from 'config/tareas.utils'
 import { useSubtareaStore } from 'stores/subtarea'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
@@ -61,6 +58,8 @@ import { AxiosError } from 'axios'
 import { ClienteFinal } from 'pages/gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
+import { useCargandoStore } from 'stores/cargando'
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -76,8 +75,9 @@ export default defineComponent({
      * Stores
      *********/
     const subtareaStore = useSubtareaStore()
-    const notificacionStore = useNotificacionStore()
-    notificacionStore.setQuasar(useQuasar())
+
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
 
     /********
     * Mixin
@@ -90,10 +90,12 @@ export default defineComponent({
     const { listado: archivos } = mixinArchivo.useReferencias()
     const { listar: listarArchivos } = mixinArchivo.useComportamiento()
 
-
     cargarVista(async () => {
       await obtenerListados({
-        tiposTrabajos: new TipoTrabajoController(),
+        tiposTrabajos: {
+          controller: new TipoTrabajoController(),
+          params: { activo: 1 },
+        },
         tareas: new TareaController(),
         grupos: {
           controller: new GrupoController(),
@@ -104,7 +106,17 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
-        empleados: new EmpleadoController(),
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1
+          }
+        },
+        causasIntervenciones: {
+          controller: new CausaIntervencionController(),
+          params: { tipo_trabajo_id: subtarea.tipo_trabajo },
+        },
       })
 
       // Necesario al consultar
@@ -383,8 +395,6 @@ export default defineComponent({
       fab: ref(false),
       regiones,
       atenciones,
-      tiposIntervenciones,
-      causaIntervencion,
       guardarDatos,
       reestablecerDatos,
       accion,
@@ -401,7 +411,6 @@ export default defineComponent({
       reestablecer,
       modales,
       subtareaStore,
-      nivelesTrabajos,
       acciones,
       maskFecha,
       accionesTabla,

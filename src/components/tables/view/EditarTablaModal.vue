@@ -281,19 +281,19 @@ export default defineComponent({
       emit('limpiar')
     }
 
-    function filtrarSelect(val, update) {
-      // const opciones = fieldsSelect.filter
-      console.log(val)
-      // if(val ===''){
-      //   update(()=>{
-      //     opciones = opciones
-      //   })
-      //   return
-      // }
-      // update(()=>{
-      //   opciones = opciones.filter((item) => item.label.toLowerCase().includes(val.toLowerCase()))
-      // })
-    }
+    // function filtrarSelect(val, update) {
+    // const opciones = fieldsSelect.filter
+    // console.log(val)
+    // if(val ===''){
+    //   update(()=>{
+    //     opciones = opciones
+    //   })
+    //   return
+    // }
+    // update(()=>{
+    //   opciones = opciones.filter((item) => item.label.toLowerCase().includes(val.toLowerCase()))
+    // })
+    // }
 
     // Antes de cerrar el modal
     function validarRequeridos(fila) {
@@ -323,7 +323,6 @@ export default defineComponent({
       abrir,
       guardar,
       cerrarModalEntidad,
-      filtrarSelect,
     }
   },
 })

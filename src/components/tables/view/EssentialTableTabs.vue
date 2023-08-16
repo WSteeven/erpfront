@@ -52,6 +52,7 @@
         :accion3Header="accion3Header"
         :alto-fijo="altoFijo"
         :mostrarFooter="mostrarFooter"
+        :mostrarExportar="permitirExportar"
         @consultar="consultar"
         @editar="editar"
         @eliminar="eliminar"
@@ -124,6 +125,7 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+
   accion2: {
     type: Object as () => CustomActionTable,
     required: false,
@@ -200,6 +202,10 @@ const props = defineProps({
   permitirBuscar: {
     type: Boolean,
     default: true,
+  },
+  mostrarExportar: {
+    type: Boolean,
+    default: false,
   },
 })
 

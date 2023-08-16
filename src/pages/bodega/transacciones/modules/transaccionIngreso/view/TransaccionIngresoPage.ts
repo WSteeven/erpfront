@@ -16,6 +16,7 @@ import { acciones, estadosTransacciones } from 'config/utils'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -42,9 +43,13 @@ import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { useTransferenciaStore } from 'stores/transferencia'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
+import { useCargandoStore } from 'stores/cargando'
+import { ComportamientoModalesTransaccionIngreso } from '../application/ComportamientoModalesGestionarIngreso'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, EssentialSelectableTable },
+  components: { TabLayout, EssentialTable, ModalesEntidad, EssentialSelectableTable },
   // emits: ['creada', 'consultada'],
   setup() {
 
@@ -54,8 +59,11 @@ export default defineComponent({
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
+    //modales
+    const modales = new ComportamientoModalesTransaccionIngreso()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
     const devolucionStore = useDevolucionStore()
@@ -148,6 +156,16 @@ export default defineComponent({
       condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
     }
 
+
+    const abrirModalDetalle: CustomActionTable = {
+      titulo: 'Agregar nuevo detalle',
+      icono: 'bi-plus-lg',
+      color: 'positive',
+      accion: () => {
+        modales.abrirModalEntidad('DetalleProductoPage')
+      },
+      visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+    }
 
     /**
      * It takes an id, loads a devolucion from the server, and then populates a form with the data from
@@ -310,6 +328,11 @@ export default defineComponent({
       transaccion.cliente = opcion_encontrada[0]['cliente_id']
     }
 
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
+
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionIngreso,
@@ -371,6 +394,9 @@ export default defineComponent({
         rowsPerPage: 0
       }),
 
+      //modal
+      modales,
+      abrirModalDetalle,
 
       //selector
       refListadoSeleccionableProductos,
@@ -400,7 +426,7 @@ export default defineComponent({
       esBodeguero: store.esBodeguero,
       esCoordinador: store.esCoordinador,
 
-
+      recargarSucursales,
       filtroEmpleados(val, update) {
         if (val === '') {
           update(() => {
@@ -413,6 +439,18 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
       //ordenacion de listas
       ordenarClientes() {
         opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
@@ -422,6 +460,9 @@ export default defineComponent({
       },
       ordenarSucursales() {
         opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
+      ordenarEmpleados(){
+        opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
       }
     }
   }

@@ -1,7 +1,7 @@
 // Dependencias
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRoute, useRouter } from 'vue-router'
 import { acciones } from 'config/utils'
@@ -30,6 +30,10 @@ export default defineComponent({
     tituloPagina: {
       type: String,
     },
+    subtituloPagina: {
+      type: String,
+      default: 'JPCONSTRUCRED',
+    },
     mostrarFormulario: {
       type: Boolean,
       default: true,
@@ -54,11 +58,27 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    puedeFiltrar: {
+      type: Boolean,
+      default: false,
+    },
+    puedeExportar: {
+      type: Boolean,
+      default: false,
+    },
+    mostrarAcciones: {
+      type: Boolean,
+      default: true,
+    },
     accion1: {
       type: Object as () => CustomActionTable,
       required: false,
     },
-    accion2:{
+    accion2: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion3: {
       type: Object as () => CustomActionTable,
       required: false,
     },
@@ -80,23 +100,22 @@ export default defineComponent({
     const Router = useRouter()
     let listadoCargado = false
 
-    const columnas = [
-      ...(props.configuracionColumnas ? props.configuracionColumnas : []),
-      {
+    let columnas: any = props.configuracionColumnas
+
+    if (props.mostrarAcciones) {
+      columnas = [...columnas, {
         name: 'acciones',
         field: 'acciones',
         label: 'Acciones',
         align: 'center',
         style: 'width:200px'
-      },
-    ]
+      }]
+    }
 
     if (!listadoCargado && props.mostrarListado) {
       listar()
       listadoCargado = true
     }
-
-
 
     const seleccionado = ref()
 
@@ -189,6 +208,8 @@ export default defineComponent({
 
       //acciones personalizadas
       // accion1: props.accion1
+      puedeFiltrar: props.puedeFiltrar,
+      puedeExportar: props.puedeExportar
     }
   },
 })
