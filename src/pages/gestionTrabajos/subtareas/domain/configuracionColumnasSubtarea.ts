@@ -163,9 +163,9 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'empleado',
-    field: 'empleado',
-    label: 'Empleado designado',
+    name: 'empleado_responsable',
+    field: 'empleado_responsable',
+    label: 'Empleado responsable',
     align: 'left',
   },
   {

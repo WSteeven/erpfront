@@ -10,17 +10,26 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         sortable: true
     },
     {
-        name: 'justificacion',
-        field: 'justificacion',
-        label: 'Justificación',
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha',
         align: 'left',
         sortable: true,
         style: 'width:100px'
     },
     {
+        name: 'justificacion',
+        field: 'justificacion',
+        label: 'Justificación',
+        align: 'left',
+        sortable: true,
+        style: 'max-width:300px; overflow: auto;'
+    },
+    {
         name: 'solicitante',
         field: 'solicitante',
         label: 'Solicitante',
+        style: 'max-width:250px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -35,20 +44,22 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         name: 'per_autoriza',
         field: 'per_autoriza',
         label: 'Autoriza',
+        style: 'max-width:250px; overflow: auto;',
         align: 'left',
         sortable: true
     },
-    {
-        name: 'tarea',
-        field: 'tarea',
-        label: 'Tarea',
-        align: 'left',
-        sortable: true
-    },
+    // {
+    //     name: 'tarea',
+    //     field: 'tarea',
+    //     label: 'Tarea',
+    //     align: 'left',
+    //     sortable: true
+    // },
     {
         name: 'responsable',
         field: 'responsable',
         label: 'Responsable',
+        style: 'max-width:250px; overflow: auto;',
         align: 'left',
         sortable: true
     },

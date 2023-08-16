@@ -8,27 +8,39 @@ export class Devolucion extends EntidadAuditable {
     tarea_id: number | null
     canton: number | null
     estado: string | null
+    estado_bodega: string | null
     created_at: string | null
     es_para_stock: boolean
+    observacion_aut: string | null
+    autorizacion: number | null
+    per_autoriza: number | null
+    per_autoriza_id: number | null
 
     listadoProductos: any[]
 
     //variables auxiliares
     es_tarea: boolean | null
+    tiene_observacion_aut: boolean | null
 
     constructor() {
         super()
         this.justificacion = null
         this.solicitante = null
+        this.observacion_aut = null
+        this.autorizacion = null
+        this.per_autoriza = null
+        this.per_autoriza_id = null
         this.tarea = null
         this.tarea_id = null
         this.canton = null
         this.estado = null
+        this.estado_bodega = null
         this.created_at = null
         this.es_para_stock =false
         this.listadoProductos = []
 
         // variables auxiliares
         this.es_tarea = false
+        this.tiene_observacion_aut = false
     }
 }

@@ -9,6 +9,7 @@
       type="submit"
       no-caps
       push
+      :disable="disabled"
       @click="emitir('guardar')"
     >
       <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
@@ -91,6 +92,10 @@ export default defineComponent({
     labelGuardar: {
       type: String,
       default: 'Guardar',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['guardar', 'editar', 'cancelar', 'eliminar', 'cerrar-modal'],

@@ -8,5 +8,6 @@ export interface CustomActionPrompt {
   tipo?: string
   validacion?: funcion
   items?: any[]
+  requerido?: boolean
 }
 

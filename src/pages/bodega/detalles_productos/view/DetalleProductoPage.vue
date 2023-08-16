@@ -545,6 +545,36 @@
             >
             </q-input>
           </div>
+          <!-- Varios numeros de serie -->
+          <div class="col-12 col-md-4">
+            <br />
+            <q-checkbox
+              class="q-mb-lg"
+              v-model="detalle.varios_items"
+              label="Varios items"
+              outlined
+              dense
+            />
+          </div>
+          <!-- rows -->
+          <!-- Aquí se ingresan varios detalles -->
+          <div class="col-12 col-md-4 q-pa-md" v-if="detalle.varios_items">
+            <essential-table
+              ref="refSeriesModalEditable"
+              titulo="Seriales"
+              :datos="detalle.seriales"
+              :configuracionColumnas="columnas"
+              :accion1Header="addRow"
+              :permitirBuscar="false"
+              :permitirConsultar="false"
+              :permitirEditarModal="true"
+              :permitirEliminar="true"
+              :mostrarFooter="false"
+              :altoFijo="false"
+              @eliminar="eliminar"
+            ></essential-table>
+            <!-- todo el detalle -->
+          </div>
         </div>
       </q-form>
     </template>

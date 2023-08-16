@@ -24,17 +24,25 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
 
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { fechaMayorActual } from 'shared/validadores/validaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { ordernarListaString } from 'shared/utils'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { PedidoModales } from '../domain/PedidoModales'
+import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
+import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
 
 
 export default defineComponent({
@@ -46,8 +54,11 @@ export default defineComponent({
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
+    const modales = new ComportamientoModalesPedido()
 
     // Stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const pedidoStore = usePedidoStore()
     const store = useAuthenticationStore()
     const router = useRouter()
@@ -83,6 +94,25 @@ export default defineComponent({
         soloLectura.value = true
       }
     })
+    //variables para cosultar los detalles
+    const all = ref(true)
+    const only_sucursal = ref(false)
+    const only_cliente_tarea = ref(false)
+    const group = ref('todos')
+    const options_groups = [
+      {
+        label: 'Todos los elementos',
+        value: 'todos'
+      },
+      {
+        label: 'Solo bodega seleccionada',
+        value: 'only_sucursal'
+      },
+      {
+        label: 'Solo perteneciente al cliente de la tarea',
+        value: 'only_cliente_tarea'
+      }
+    ]
 
     const opciones_clientes = ref([])
     const opciones_empleados = ref([])
@@ -152,8 +182,12 @@ export default defineComponent({
 
     /*******************************************************************************************
      * Funciones
-     ******************************************************************************************/
-
+     *****************************************************************************************
+     */
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
     function eliminar({ entidad, posicion }) {
       confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
     }
@@ -167,7 +201,7 @@ export default defineComponent({
 
     const botonAnularAutorizacion: CustomActionTable = {
       titulo: 'Anular',
-      color:'negative',
+      color: 'negative',
       icono: 'bi-x',
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de anular el pedido?', () => {
@@ -177,11 +211,11 @@ export default defineComponent({
             accion: async (data) => {
               try {
                 const { result } = await new CambiarEstadoPedido().anular(entidad.id, data)
-                if(result.autorizacion === autorizacionesTransacciones.cancelado){
+                if (result.autorizacion === autorizacionesTransacciones.cancelado) {
                   notificarCorrecto('Pedido anulado con éxito')
                   listado.value.splice(posicion, 1)
                 }
-              }catch(e:any){
+              } catch (e: any) {
                 notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
               }
             }
@@ -189,9 +223,9 @@ export default defineComponent({
           prompt(data)
         })
       },
-      visible: ({entidad, posicion})=>{
-        console.log(posicion, entidad)
-        return tabSeleccionado.value===autorizacionesTransacciones.aprobado && entidad.per_autoriza_id=== store.user.id  && entidad.estado === estadosTransacciones.pendiente
+      visible: ({ entidad, posicion }) => {
+        // console.log(posicion, entidad)
+        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && entidad.per_autoriza_id === store.user.id && entidad.estado === estadosTransacciones.pendiente
       }
     }
     const botonEditarCantidad: CustomActionTable = {
@@ -201,6 +235,7 @@ export default defineComponent({
         const data: CustomActionPrompt = {
           titulo: 'Modifica',
           mensaje: 'Ingresa la cantidad',
+          tipo: 'number',
           defecto: pedido.listadoProductos[posicion].cantidad,
           accion: (data) => pedido.listadoProductos[posicion].cantidad = data,
         }
@@ -222,6 +257,17 @@ export default defineComponent({
       },
       visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
     }
+    const botonCorregir: CustomActionTable = {
+      titulo: 'Corregir pedido',
+      color: 'amber-3',
+      icono: 'bi-gear',
+      accion: ({ entidad, posicion }) => {
+        pedidoStore.pedido = entidad
+        console.log('Entidad es: ',entidad)
+        modales.abrirModalEntidad('CorregirPedidoPage')
+      },
+      visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && (esBodeguero||entidad.per_autoriza_id==store.user.id) && entidad.estado != estadosTransacciones.completa ? true : false
+    }
 
     const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -230,9 +276,9 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         pedidoStore.idPedido = entidad.id
         await pedidoStore.imprimirPdf()
-        console.log(pedidoStore.pedido)
-        console.log(pedidoStore.pedido.listadoProductos)
-        console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
+        // console.log(pedidoStore.pedido)
+        // console.log(pedidoStore.pedido.listadoProductos)
+        // console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
       },
       visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }
@@ -289,6 +335,7 @@ export default defineComponent({
       configuracionColumnasProductosSeleccionadosAccion,
       configuracionColumnasProductosSeleccionadosDespachado,
       botonEditarCantidad,
+      botonCorregir,
       botonEliminar,
       botonImprimir,
       botonDespachar,
@@ -296,9 +343,12 @@ export default defineComponent({
 
       //stores
       store,
+      modales,
 
       //flags
       soloLectura,
+      all, only_sucursal, only_cliente_tarea,
+      group, options_groups,
 
       //Tabs
       tabOptionsPedidos,
@@ -326,7 +376,7 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
 
@@ -372,7 +422,24 @@ export default defineComponent({
       pedidoSeleccionado(val) {
         pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id === val))[0]['cliente_id']
         console.log(pedido.cliente_id)
-      }
+      },
+
+      recargarSucursales,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
     }
   }
 })

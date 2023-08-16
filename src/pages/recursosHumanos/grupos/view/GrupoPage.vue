@@ -27,11 +27,29 @@
             </q-input>
           </div>
 
+          <!-- Región -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Región</label>
+            <q-select
+              v-model="grupo.region"
+              :options="regiones"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Opcional"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+            >
+            </q-select>
+          </div>
+
           <div class="col-12 col-md-3">
             <br />
             <q-toggle
               v-model="grupo.activo"
               checked-icon="check"
+              :disable="disabled"
               label="Activo"
               color="positive"
             />

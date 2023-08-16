@@ -10,7 +10,6 @@
       :permitirEliminar="false"
       :mostrarBotones="false"
       :accion1="BotonMarcarLeido"
-      :permitir-buscar="false"
     >
     </essential-table>
   </q-page>

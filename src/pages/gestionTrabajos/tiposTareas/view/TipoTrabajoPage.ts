@@ -1,7 +1,5 @@
 // Dependencias
-import { configuracionColumnasImagenesAdicionales } from '../domain/configuracionColumnasImagenesAdicionales'
-import { configuracionColumnasCamposAdicionales } from '../domain/configuracionColumnasCamposAdicionales'
-import { configuracionColumnasTiposTareas } from '../domain/configuracionColumnasTiposTareas'
+import { configuracionColumnasTiposTrabajos } from '../domain/configuracionColumnasTiposTrabajos'
 import { useNotificacionStore } from 'stores/notificacion'
 import { required } from 'shared/i18n-validators'
 import { accionesTabla } from 'config/utils'
@@ -17,8 +15,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { TipoTrabajoController } from '../infraestructure/TipoTrabajoController'
-import { ImagenesAdicionales } from '../domain/ImagenesAdicionales'
-import { CamposAdicionales } from '../domain/CamposAdicionales'
 import { TipoTrabajo } from '../domain/TipoTrabajo'
 
 export default defineComponent({
@@ -76,14 +72,9 @@ export default defineComponent({
       disabled,
       accion,
       v$,
-      configuracionColumnasImagenes: [...configuracionColumnasImagenesAdicionales, accionesTabla],
-      configuracionColumnasCampos: [...configuracionColumnasCamposAdicionales, accionesTabla],
-      configuracionColumnasTiposTareas,
+      configuracionColumnasTiposTrabajos,
       filtrarClientes,
       clientes,
-      // Instanciables
-      ImagenesAdicionales,
-      CamposAdicionales,
     }
   },
 })

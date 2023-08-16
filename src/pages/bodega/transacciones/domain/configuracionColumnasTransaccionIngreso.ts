@@ -10,6 +10,13 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         sortable: true,
     },
     {
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'solicitante',
         field: 'solicitante',
         label: 'Solicitante',
@@ -23,14 +30,14 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         align: 'left',
         sortable: true,
     },
-    {
+    /*{
         name: 'comprobante',
         field: 'comprobante',
         label: 'Factura',
         align: 'left',
         sortable: true,
     },
-    /* {
+    {
         name: 'fecha_limite',
         field: 'fecha_limite',
         label: 'Fecha límite',

@@ -43,13 +43,16 @@ export class Subtarea extends EntidadAuditable {
   fiscalizador: number | null
   proyecto: number | null
   cliente: number | null
+  cliente_id: number | null
   subtarea_dependiente: string | null
   tarea: number | null
   tarea_id: number | null
+  causa_intervencion: string | null
 
   // archivos: File[]
   subtarea_dependiente_id: number | null
 
+  empleado_responsable: number | null
   empleado: number | null
   grupo: number | null
   grupo_nombre: string | null
@@ -105,6 +108,7 @@ export class Subtarea extends EntidadAuditable {
     this.tarea = null
     this.codigo_tarea = null
     this.tarea_id = null
+    this.causa_intervencion = null
     // Foreign keys
     this.tipo_trabajo = null
     this.cliente_final = null
@@ -112,6 +116,7 @@ export class Subtarea extends EntidadAuditable {
     this.fiscalizador = null
     this.proyecto = null
     this.cliente = null
+    this.cliente_id = null
     this.trabajo_padre = null
     this.subtarea_dependiente = null
 
@@ -121,6 +126,7 @@ export class Subtarea extends EntidadAuditable {
 
     // Listados
     this.empleado = null
+    this.empleado_responsable = null
     this.grupo = null
     this.grupo_nombre = null
 

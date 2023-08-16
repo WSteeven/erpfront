@@ -4,6 +4,14 @@
       <slot name="modales" />
     </transition>
 
+    <div class="text-right">
+      <b class="block text-subtitle1 text-thin text-primary">
+        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
+        {{ tituloTabla }}</b
+      >
+      <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small>
+    </div>
+
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -42,6 +50,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
+      helpalive
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->
@@ -53,6 +62,7 @@
               v-if="mostrarButtonSubmits"
               :accion="accion"
               :permitirGuardar="puedeCrear"
+              :disabled="storeCargando.cargando"
               :labelGuardar="labelGuardar"
               @cancelar="reestablecer()"
               @editar="editar(entidad, resetFormularioOnUpdate)"
@@ -74,6 +84,9 @@
           :permitirEliminar="puedeEliminar"
           :accion1="accion1"
           :accion2="accion2"
+          :accion3="accion3"
+          :permitirFiltrar="puedeFiltrar"
+          :mostrarExportar="puedeExportar"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"

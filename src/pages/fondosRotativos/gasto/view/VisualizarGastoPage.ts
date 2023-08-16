@@ -1,9 +1,9 @@
-import {  defineComponent,  ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagenTexto from 'components/SelectorImagenTexto.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -20,12 +20,14 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { maskFecha } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
-import { AutorizarGastoModales } from 'pages/fondosRotativos/autorizarGasto/domain/AutorizarGastoModales'
+// import { AutorizarGastoModales } from 'pages/fondosRotativos/autorizarGasto/domain/AutorizarGastoModales'
+import { useCargandoStore } from 'stores/cargando'
+import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagenTexto },
-  emits: ['guardado','cerrar-modal'],
+  components: { TabLayout, ImagenComprimidaComponent },
+  emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
     const usuario = authenticationStore.user
@@ -33,6 +35,7 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     /***********
      * Mixin
      ************/
@@ -42,9 +45,9 @@ export default defineComponent({
       disabled,
       accion,
     } = mixin.useReferencias()
-    const { setValidador,   consultar } =
+    const { setValidador, consultar } =
       mixin.useComportamiento()
-      const {onConsultado} = mixin.useHooks()
+    const { onConsultado } = mixin.useHooks()
 
     const {
       confirmar,
@@ -61,17 +64,21 @@ export default defineComponent({
     const aprobarController = new AprobarGastoController()
 
     const esFactura = ref(true)
+    const estaSemanAC = ref()
 
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
-    onConsultado(()=>{
-      esFactura.value = gasto.factura ==null  || gasto.factura==' '? false:true
+    onConsultado(() => {
+      esFactura.value = gasto.factura == null || gasto.factura == ' ' ? false : true
     })
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
       mostrarListado.value = false
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
+console.log(fondoRotativoStore.estaSemanAC)
+      estaSemanAC.value= fondoRotativoStore.estaSemanAC
+      console.log(estaSemanAC.value)
 
     }
 
@@ -98,7 +105,7 @@ export default defineComponent({
       ruc: {
         minLength: minLength(13),
         maxLength: maxLength(13),
-        requiredIfFactura: requiredIf(()=>esFactura.value)
+        requiredIfFactura: requiredIf(() => esFactura.value)
       },
       factura: {
         maxLength: maxLength(17),
@@ -169,7 +176,7 @@ export default defineComponent({
                 entidad.detalle_estado = data
                 await aprobarController.aprobarGasto(entidad)
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
-                emit('cerrar-modal',false);
+                emit('cerrar-modal', false);
                 emit('guardado');
               } catch (e: any) {
                 notificarError(
@@ -202,28 +209,28 @@ export default defineComponent({
             prompt(data)
           })
           break
-          case 'anular':
-            confirmar('¿Está seguro de anular el gasto?', () => {
-              const data: CustomActionPrompt = {
-                titulo: 'Anular gasto',
-                mensaje: 'Ingrese motivo de anulacion',
-                accion: async (data) => {
-                  try {
-                    entidad.detalle_estado = data
-                    await aprobarController.anularGasto(entidad)
-                    notificarAdvertencia('Se anulado Gasto Exitosamente')
-                    emit('cerrar-modal');
-                    emit('guardado');
-                  } catch (e: any) {
-                    notificarError(
-                      'No se pudo anular, debes ingresar un motivo para la anulación'
-                    )
-                  }
-                },
-              }
-              prompt(data)
-            })
-            break
+        case 'anular':
+          confirmar('¿Está seguro de anular el gasto?', () => {
+            const data: CustomActionPrompt = {
+              titulo: 'Anular gasto',
+              mensaje: 'Ingrese motivo de anulacion',
+              accion: async (data) => {
+                try {
+                  entidad.detalle_estado = data
+                  await aprobarController.anularGasto(entidad)
+                  notificarAdvertencia('Se anulado Gasto Exitosamente')
+                  emit('cerrar-modal');
+                  emit('guardado');
+                } catch (e: any) {
+                  notificarError(
+                    'No se pudo anular, debes ingresar un motivo para la anulación'
+                  )
+                }
+              },
+            }
+            prompt(data)
+          })
+          break
         default:
           break
       }
@@ -238,6 +245,7 @@ export default defineComponent({
       maskFecha,
       accion,
       v$,
+      estaSemanAC,
       configuracionColumnas: configuracionColumnasGasto,
       watchEffect,
       existeComprobante,

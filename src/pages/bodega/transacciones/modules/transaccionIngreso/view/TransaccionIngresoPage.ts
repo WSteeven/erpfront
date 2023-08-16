@@ -16,6 +16,7 @@ import { acciones, estadosTransacciones } from 'config/utils'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -42,9 +43,13 @@ import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { useTransferenciaStore } from 'stores/transferencia'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
+import { useCargandoStore } from 'stores/cargando'
+import { ComportamientoModalesTransaccionIngreso } from '../application/ComportamientoModalesGestionarIngreso'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, EssentialSelectableTable },
+  components: { TabLayout, EssentialTable, ModalesEntidad, EssentialSelectableTable },
   // emits: ['creada', 'consultada'],
   setup() {
 
@@ -54,8 +59,11 @@ export default defineComponent({
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
+    //modales
+    const modales = new ComportamientoModalesTransaccionIngreso()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
     const devolucionStore = useDevolucionStore()
@@ -149,6 +157,16 @@ export default defineComponent({
     }
 
 
+    const abrirModalDetalle: CustomActionTable = {
+      titulo: 'Agregar nuevo detalle',
+      icono: 'bi-plus-lg',
+      color: 'positive',
+      accion: () => {
+        modales.abrirModalEntidad('DetalleProductoPage')
+      },
+      visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+    }
+
     /**
      * It takes an id, loads a devolucion from the server, and then populates a form with the data from
      * the devolucion.
@@ -157,13 +175,14 @@ export default defineComponent({
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
       await devolucionStore.cargarDevolucion(id)
-      console.log(devolucionStore.devolucion)
       transaccion.devolucion = devolucionStore.devolucion.id
       transaccion.justificacion = devolucionStore.devolucion.justificacion
       transaccion.solicitante = devolucionStore.devolucion.solicitante
       transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
       listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
+      //copiar el listado de devolución al listado de la tabla
+      transaccion.listadoProductosTransaccion = [...devolucionStore.devolucion.listadoProductos]
       if (devolucionStore.devolucion.tarea) {
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea : devolucionStore.devolucion.tarea_id
@@ -247,8 +266,8 @@ export default defineComponent({
       titulo: 'Anular',
       color: 'red',
       icono: 'bi-x',
-      accion: async({entidad, posicion})=> {
-        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async()=> {
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
           console.log(entidad)
           console.log(posicion)
           console.log(listado)
@@ -257,9 +276,9 @@ export default defineComponent({
           entidad.estado = transaccionStore.transaccion.estado
         })
       },
-      visible: ({entidad, posicion})=> {
-        console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es activos fijos y no esta anulada')
-        return store.esActivosFijos && entidad.estado===estadosTransacciones.completa
+      visible: ({ entidad, posicion }) => {
+        // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es activos fijos y no esta anulada')
+        return store.esActivosFijos && entidad.estado === estadosTransacciones.completa
       }
 
     }
@@ -307,6 +326,11 @@ export default defineComponent({
     function filtroTareas(val) {
       const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
       transaccion.cliente = opcion_encontrada[0]['cliente_id']
+    }
+
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
     }
 
     return {
@@ -365,6 +389,14 @@ export default defineComponent({
 
       //listado de devoluciones
       configuracionColumnasListadoProductosDevolucion,
+      //paginacion
+      pagination: ref({
+        rowsPerPage: 0
+      }),
+
+      //modal
+      modales,
+      abrirModalDetalle,
 
       //selector
       refListadoSeleccionableProductos,
@@ -394,7 +426,7 @@ export default defineComponent({
       esBodeguero: store.esBodeguero,
       esCoordinador: store.esCoordinador,
 
-
+      recargarSucursales,
       filtroEmpleados(val, update) {
         if (val === '') {
           update(() => {
@@ -407,6 +439,18 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
       //ordenacion de listas
       ordenarClientes() {
         opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
@@ -416,6 +460,9 @@ export default defineComponent({
       },
       ordenarSucursales() {
         opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
+      ordenarEmpleados(){
+        opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
       }
     }
   }

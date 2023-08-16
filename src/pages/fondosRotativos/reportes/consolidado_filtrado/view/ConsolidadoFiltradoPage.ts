@@ -20,6 +20,9 @@ import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestruct
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { useCargandoStore } from 'stores/cargando'
+import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 
 export default defineComponent({
   components: { TabLayout },
@@ -28,6 +31,9 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+    const fondosStore = useFondoRotativoStore()
+
     /***********
      * Mixin
      ************/
@@ -117,7 +123,7 @@ export default defineComponent({
       { value: '5', name: 'Autorizacion' },
       { value: '6', name: 'Empleado' },
       { value: '7', name: 'RUC' },
-      { value: '8', name: 'SIN COMPROBANTE' },
+      { value: '8', name: 'SIN FACTURA' },
     ])
     listadosAuxiliares.tipos_saldos = tipos_saldos
     listadosAuxiliares.tipos_filtro = tipos_filtros
@@ -131,7 +137,7 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizacionesEspeciales = ref([])
     const tareas = ref([])
-    const filteredSubdetalles= []
+    const is_inactivo = ref('false')
     usuarios.value = listadosAuxiliares.usuarios
 
     cargarVista(async () => {
@@ -251,32 +257,33 @@ export default defineComponent({
         )
       })
     }
-    function filtrarTareas(val, update) {
-      if (consolidadofiltrado.proyecto == 0) {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == null
-          )
-        })
-        return
-      }
-      if (val === '') {
-        update(() => {
-          tareas.value = listadosAuxiliares.tareas.filter(
-            (v) => v.proyecto_id == consolidadofiltrado.proyecto
-          )
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tareas.value = listadosAuxiliares.tareas.filter(
-          (v) =>
-            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
-            v.detalle.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+/**Filtro de Tareas */
+function filtrarTareas(val, update) {
+  if (val === '') {
+    update(() => {
+      tareas.value = listadoTareas.value
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    tareas.value = listadoTareas.value.filter(
+      (v) =>
+        v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
+        v.titulo.toLowerCase().indexOf(needle) > -1
+    )
+  })
+}
+const listadoTareas = computed(() => {
+  if (consolidadofiltrado.proyecto == 0) {
+    return listadosAuxiliares.tareas.filter(
+      (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
+    )
+  }
+  return listadosAuxiliares.tareas.filter(
+    (tarea: Tarea) => tarea.proyecto_id === consolidadofiltrado.proyecto || tarea.id == 0
+  )
+})
     // - Filtro tipos Filtro
     function filtrarTiposFiltro(val, update) {
       switch (consolidadofiltrado.tipo_saldo) {
@@ -299,7 +306,7 @@ export default defineComponent({
               { value: '5', name: 'Autorizacion' },
               { value: '6', name: 'Empleado' },
               { value: '7', name: 'RUC' },
-              { value: '8', name: 'SIN COMPROBANTE' },
+              { value: '8', name: 'SIN FACTURA' },
             ]
           })
           break
@@ -345,7 +352,7 @@ export default defineComponent({
       }
       const needle = val.toLowerCase()
       update(() => {
-        return opcionesSubdetalles.value.filter(
+        sub_detalles.value = opcionesSubdetalles.value.filter(
           (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
         )
       })
@@ -377,6 +384,36 @@ export default defineComponent({
           break
       }
     }
+    async function mostrarInactivos(val) {
+      if (val === 'true') {
+        const empleados = (
+          await new EmpleadoController().listar({
+            campos: 'id,nombres,apellidos',
+            estado: 0,
+          })
+        ).result
+        fondosStore.empleados = empleados
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados.value = fondosStore.empleados
+              usuarios.value = empleados.value
+            }, 100),
+          250
+        )
+      } else {
+        const empleados_aux = listadosAuxiliares.usuarios
+        fondosStore.empleados = empleados_aux
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados_aux.value = fondosStore.empleados
+              usuarios.value = empleados_aux.value
+            }, 100),
+          250
+        )
+      }
+    }
     return {
       mixin,
       consolidadofiltrado,
@@ -394,6 +431,8 @@ export default defineComponent({
       proyectos,
       tareas,
       generar_reporte,
+      mostrarInactivos,
+      is_inactivo,
       filtrarUsuarios,
       filtarTiposSaldos,
       filtrarTiposFiltro,

@@ -6,6 +6,7 @@ export const configuracionColumnasDetallesProductosSeleccionables: ColumnConfig<
         name: 'producto',
         field: 'producto',
         label: 'Producto',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -13,6 +14,7 @@ export const configuracionColumnasDetallesProductosSeleccionables: ColumnConfig<
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
+        style: 'max-width: 600px; overflow: auto;',
         align: 'left',
         sortable: true
     },

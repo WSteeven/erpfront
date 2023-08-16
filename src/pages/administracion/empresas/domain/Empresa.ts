@@ -5,9 +5,16 @@ export class Empresa extends EntidadAuditable{
     tipo_contribuyente:string|null
     razon_social:string|null
     nombre_comercial:string|null
+    celular:string|null
     telefono:string|null
     correo:string|null
-    direccion:string|null
+    pais:number|null
+    provincia:number|null
+    canton:string|null
+    ciudad:string|null
+    direccion:string|null   
+    agente_retencion:boolean
+    tipo_negocio:string|null
 
     constructor(){
         super()
@@ -15,9 +22,16 @@ export class Empresa extends EntidadAuditable{
         this.tipo_contribuyente=null
         this.razon_social=null
         this.nombre_comercial=null
+        this.celular=null
         this.telefono=null
+        this.pais=null
+        this.provincia=null
+        this.canton=null
+        this.ciudad=null
         this.correo=null
         this.direccion=null
+        this.agente_retencion=false
+        this.tipo_negocio=null
     }
 
 

@@ -15,6 +15,7 @@
     :columns="configuracionColumnas"
     :rows="listado"
     :filter="filter"
+    @filter="handleFilter()"
     row-key="id"
     :visible-columns="visibleColumns"
     :separator="$q.screen.xs ? 'horizontal' : separador"
@@ -87,7 +88,7 @@
 
       <div
         v-if="titulo"
-        class="row text-bold text-primary q-mb-lg items-center justify-center block"
+        class="row text-primary text-subtitle2 q-mb-lg items-center justify-center block"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
@@ -160,7 +161,7 @@
             </q-btn>
           </div>
         </div>
-        <div class="col-12 col-md-12">
+        <div class="col-12 col-md-12" v-if="false">
           <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
             {{ 'Total de elementos: ' }}
             <b>{{ datos == undefined ? 0 : datos.length }}</b>
@@ -169,7 +170,7 @@
       </div>
 
       <div
-        v-if="permitirFiltrar"
+        v-if="permitirFiltrar || (true && mostrarCantidadElementos)"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
         <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
@@ -211,6 +212,7 @@
           >
 
           <q-btn
+            v-if="mostrarExportar"
             color="positive"
             icon="archive"
             label="Exportar a csv"
@@ -246,6 +248,7 @@
           </q-btn-dropdown> -->
 
           <q-btn
+            v-if="permitirFiltrar"
             :color="mostrarFiltros ? 'negative' : 'primary'"
             no-caps
             push
@@ -290,6 +293,7 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion1Header.titulo }}</span>
+          <q-tooltip class="bg-dark">{{ accion1Header.tooltip }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 2 Header -->
@@ -434,6 +438,7 @@
             :accion9="accion9"
             :accion10="accion10"
             :propsTable="props"
+            :listado="listado"
           ></CustomButtons>
         </div>
       </q-td>
@@ -531,6 +536,7 @@
                   :accion9="accion9"
                   :accion10="accion10"
                   :propsTable="props"
+                  :listado="listado"
                 ></CustomButtons>
               </div>
 
@@ -635,6 +641,13 @@
                     ></q-icon
                     >{{ 'RUTA COMPLETADA' }}
                   </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET TRANSFERIDO'"
+                    class="bg-green-1 text-positive"
+                  >
+                    {{ 'TICKET TRANSFERIDO' }}
+                  </q-chip>
                 </div>
 
                 <span
@@ -657,6 +670,39 @@
           </q-item>
         </q-list>
       </q-card>
+    </template>
+
+    <!-- Estilos de celdas -->
+    <template #body-cell-despachado="props">
+      <q-td :props="props" class="bg-lime-2">
+        <q-badge color="positive">
+          {{ props.value }}
+        </q-badge>
+      </q-td>
+    </template>
+
+    <template #body-cell-total_cantidad_utilizada="props">
+      <q-td :props="props" class="bg-grey-2 text-bold">
+        <!-- <q-badge color="blue-grey-6"> -->
+        {{ props.value }}
+        <!-- </q-badge> -->
+      </q-td>
+    </template>
+
+    <template #body-cell-stock_actual="props">
+      <q-td :props="props" class="bg-indigo-1">
+        <q-badge color="indigo">
+          {{ props.value }}
+        </q-badge>
+      </q-td>
+    </template>
+
+    <template #body-cell-devuelto="props">
+      <q-td :props="props" class="bg-lime-2">
+        <q-badge color="positive">
+          {{ props.value }}
+        </q-badge>
+      </q-td>
     </template>
 
     <template #body-cell-tamanio_bytes="props">
@@ -715,6 +761,26 @@
           color="negative"
           size="xs"
         ></q-icon>
+      </q-td>
+    </template>
+    <template #body-cell-tiene_factura="props">
+      <q-td :props="props">
+        <q-chip v-if="props.value" class="bg-yellow-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="primary"
+            class="q-mr-xs"
+          ></q-icon>
+          SI
+        </q-chip>
+        <q-chip v-if="!props.value" class="bg-yellow-1">
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          NO
+        </q-chip>
       </q-td>
     </template>
 
@@ -863,6 +929,49 @@
         </q-chip>
       </q-td>
     </template>
+    <!-- colores en campo calificacion de proveedores -->
+    <template #body-cell-estado_calificado="props">
+      <q-td :props="props">
+        <q-chip v-if="props.value===estadosCalificacionProveedor.vacio">
+          <q-icon
+            name="bi-circle-fill"
+            color="blue-grey-6"
+            class="q-mr-xs"
+          />
+          {{ props.value }}
+        </q-chip>
+        <q-chip v-if="props.value===estadosCalificacionProveedor.pendiente" :class="{'bg-red-2':!$q.dark.isActive}">
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          />
+          {{ props.value }}
+        </q-chip>
+        <q-chip v-if="props.value===estadosCalificacionProveedor.parcial" :class="{'bg-yellow-2':!$q.dark.isActive}">
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          />
+          {{ props.value }}
+        </q-chip>
+        <q-chip v-if="props.value===estadosCalificacionProveedor.calificado" :class="{'bg-green-1':!$q.dark.isActive}">
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          />
+          {{ props.value }}
+        </q-chip>
+        </q-td>
+    </template>
+    <template #body-cell-facturable="props">
+      <q-td :props="props">
+        <q-chip v-if="props.value==true" :class="{'bg-green-1':!$q.dark.isActive}"><q-icon name="bi-toggle-on"/></q-chip>
+        <q-chip v-else :class="{'bg-red-1':!$q.dark.isActive}"><q-icon name="bi-toggle-off"/></q-chip>
+      </q-td>
+    </template>
     <!-- corregir esto para que sea dinamico -->
     <template #body-cell-condiciones="props">
       <q-td :props="props">
@@ -896,6 +1005,51 @@
           "
           >DAÑADO</q-chip
         >
+      </q-td>
+    </template>
+    <!-- devoluciones de bodega -->
+    <template #body-cell-estado_bodega="props">
+      <q-td :props="props">
+        <q-chip
+          v-if="props.value === estadosTransacciones.completa"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+          ><q-icon name="bi-circle-fill" color="positive"></q-icon
+          >COMPLETA</q-chip
+        >
+        <q-chip
+          v-if="props.value === estadosTransacciones.parcial"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          PARCIAL
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosTransacciones.pendiente"
+          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          PENDIENTE
+        </q-chip>
+        <q-chip
+          v-if="props.value === estadosTransacciones.no_realizada"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
+          <!-- One of primary, secondary, accent, dark, positive, negative, info, warning -->
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          NO REALIZADA
+        </q-chip>
       </q-td>
     </template>
 
@@ -1084,6 +1238,45 @@
       </q-td>
     </template>
 
+    <template #body-cell-observacion="props">
+      <q-td :props="props">
+        <q-chip
+          v-if="props.value === 'TICKET TRANSFERIDO'"
+          class="bg-green-1 text-positive"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET TRANSFERIDO' }}
+        </q-chip>
+        <span v-else>{{ props.value }}</span>
+      </q-td>
+    </template>
+
+    <template #body-cell-calificado_solicitante="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          class="q-mr-xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
+    <template #body-cell-calificado_responsable="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          class="q-mr-xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
     <template #body-cell-requiere_bodega="props">
       <q-td :props="props">
         <q-icon
@@ -1119,6 +1312,24 @@
 
     <!-- tiene firma -->
     <template #body-cell-firma_url="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+
+        <!-- esta pagado -->
+        <template #body-cell-pago_couta="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

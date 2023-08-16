@@ -15,6 +15,7 @@ import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 
 export default defineComponent({
   components: {
@@ -38,6 +39,7 @@ export default defineComponent({
       await obtenerListados({
         motivosSuspendidos: new MotivoSuspendidoController(),
         motivosPausas: new MotivoPausaController(),
+        causasIntervenciones: new CausaIntervencionController(),
       })
     })
 
@@ -70,7 +72,7 @@ export default defineComponent({
 
 
     function filtrarSubtareas(estado: string) {
-      console.log(estado)
+      // console.log(estado)
       listar({ estado: estado })
       tabActual.value = estado
     }

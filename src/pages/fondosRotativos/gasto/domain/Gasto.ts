@@ -10,6 +10,8 @@ export class Gasto extends EntidadAuditable {
   ruc: string | null
   factura: string | null
   num_comprobante: string | null
+  beneficiarios:[] | null
+  beneficiarios_info: string | null
   aut_especial: number | null
   aut_especial_user: string | null
   lugar_info: string | null
@@ -31,6 +33,7 @@ export class Gasto extends EntidadAuditable {
   detalle_estado: string | null
   kilometraje: number | null
   vehiculo: number | null
+  created_at: string | null
 
 
   constructor() {
@@ -47,6 +50,8 @@ export class Gasto extends EntidadAuditable {
     this.ruc = null
     this.factura = null
     this.num_comprobante = null
+    this.beneficiarios = null
+    this.beneficiarios_info = null
     this.aut_especial = null
     this.aut_especial_user = null
     this.detalle = null
@@ -66,6 +71,7 @@ export class Gasto extends EntidadAuditable {
     this.detalle_estado = null
     this.kilometraje = null
     this.vehiculo = null
+    this.created_at = null
 
   }
 }

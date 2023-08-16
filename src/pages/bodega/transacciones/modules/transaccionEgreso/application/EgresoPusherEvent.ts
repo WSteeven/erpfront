@@ -1,6 +1,6 @@
-import { useNotificaciones } from "shared/notificaciones";
-import { useAuthenticationStore } from "stores/authentication";
-import { useNotificationRealtimeStore } from "stores/notificationRealtime";
+import { useNotificaciones } from 'shared/notificaciones';
+import { useAuthenticationStore } from 'stores/authentication';
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 
 export class EgresoPusherEvent {
     store = useAuthenticationStore()

@@ -11,10 +11,17 @@ import { AxiosResponse } from 'axios';
 import useVuelidate from '@vuelidate/core';
 import { required } from 'shared/i18n-validators';
 import { imprimirArchivo } from 'shared/utils';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   components: { EssentialTable },
   setup() {
+
+    //stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
 
     const kardex = reactive({
       detalle: '',

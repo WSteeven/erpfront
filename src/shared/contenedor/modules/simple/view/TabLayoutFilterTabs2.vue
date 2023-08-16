@@ -2,6 +2,14 @@
   <q-page padding>
     <slot name="modales" />
 
+    <div class="text-right">
+      <b class="block text-subtitle1 text-thin text-primary">
+        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
+        {{ tituloTabla }}</b
+      >
+      <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small>
+    </div>
+
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -35,6 +43,7 @@
       transition-prev="scale"
       transition-next="scale"
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
+      keep-alive
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
@@ -61,6 +70,7 @@
               v-if="mostrarButtonSubmits"
               :accion="accion"
               :permitirGuardar="puedeCrear"
+              :disabled="storeCargando.cargando"
               :labelGuardar="labelGuardar"
               @cancelar="reestablecer()"
               @editar="editar(entidad, resetFormularioOnUpdate)"

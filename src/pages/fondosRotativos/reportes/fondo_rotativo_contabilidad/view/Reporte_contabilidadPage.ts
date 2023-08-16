@@ -69,6 +69,7 @@ export default defineComponent({
     const usuarios = ref([])
     const tiposFondos = ref([])
     const tiposFondoRotativoFechas = ref([])
+    const is_inactivo = ref('false')
     usuarios.value = listadosAuxiliares.usuarios
 
     cargarVista(async () => {
@@ -127,7 +128,36 @@ export default defineComponent({
         modales.abrirModalEntidad('VisualizarGastoPage')
       }
     }
-
+    async function mostrarInactivos(val) {
+      if (val === 'true') {
+        const empleados = (
+          await new EmpleadoController().listar({
+            campos: 'id,nombres,apellidos',
+            estado: 0,
+          })
+        ).result
+        fondoRotativoStore.empleados = empleados
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados.value = fondoRotativoStore.empleados
+              usuarios.value = empleados.value
+            }, 100),
+          250
+        )
+      } else {
+        const empleados_aux = listadosAuxiliares.usuarios
+        fondoRotativoStore.empleados = empleados_aux
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados_aux.value = fondoRotativoStore.empleados
+              usuarios.value = empleados_aux.value
+            }, 100),
+          250
+        )
+      }
+    }
     return {
       mixin,
       fondo_rotativo_contabilidad,
@@ -140,6 +170,8 @@ export default defineComponent({
       opened,
       tiposFondos,
       tiposFondoRotativoFechas,
+      mostrarInactivos,
+      is_inactivo,
       abrir_reporte,
       filtrarUsuarios,
       watchEffect,

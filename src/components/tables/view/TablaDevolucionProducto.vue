@@ -2,7 +2,7 @@
   <div class="col-12">
     <essential-table
       ref="refModalEditable"
-      titulo="Productos seleccionados para devolución"
+      :titulo="titulo"
       :configuracionColumnas="configuracionColumnas"
       :datos="data"
       :accion1Header="addRow"
@@ -29,6 +29,10 @@ import EssentialTable from './EssentialTable.vue'
 
 const { confirmar } = useNotificaciones()
 const props = defineProps({
+  titulo: {
+    type: String,
+    default: null,
+  },
   listadoProductos: {
     type: Object as () => Producto[],
     required: true,

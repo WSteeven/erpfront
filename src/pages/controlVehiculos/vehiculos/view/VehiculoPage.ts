@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasVehiculos } from '../domain/configuracionColumnasVehiculos'
-import { required } from "shared/i18n-validators";
+import { required, maxLength, minLength } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 
@@ -13,6 +13,7 @@ import { MarcaController } from 'pages/bodega/marcas/infraestructure/MarcaContro
 import { ModeloController } from 'pages/bodega/modelos/infraestructure/ModeloController';
 import { CombustibleController } from 'pages/controlVehiculos/combustible/infraestructure/CombustibleController';
 import { acciones } from 'config/utils';
+import { opciones_traccion_vehiculos } from 'config/utils_vehiculos';
 
 // Logica y controladores
 
@@ -23,6 +24,8 @@ export default defineComponent({
         const { entidad: vehiculo, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer } = mixin.useHooks()
+
+        // const refCilindraje = ref(null)
 
         const opciones_marcas = ref([])
         const opciones_modelos = ref([])
@@ -49,16 +52,32 @@ export default defineComponent({
         opciones_combustibles.value = listadosAuxiliares.combustibles
 
         // Hooks
+        onReestablecer(async () => {
+            console.log(accion.value)
+            // console.log(refCilindraje.value)
+            reset()
+            console.log('Presionaste cancelar')
+            console.log(accion.value)
+        })
+
+        function reset() {
+            // refCilindraje.value.resetValidation()
+
+        }
 
         //Reglas de validacion
         const reglas = {
             placa: { required },
             num_motor: { required },
             num_chasis: { required },
-            anio_fabricacion: { required },
-            cilindraje: { required },
+            anio_fabricacion: { required, maximo: maxLength(4) },
+            cilindraje: { required, maximo: maxLength(4) },
+            rendimiento: { required, maximo: maxLength(2) },
             modelo: { required },
             combustible: { required },
+            traccion: { required },
+            aire_acondicionado: { required },
+            capacidad_tanque: { required },
         }
         const v$ = useVuelidate(reglas, vehiculo)
         setValidador(v$.value)
@@ -71,6 +90,7 @@ export default defineComponent({
             opciones_marcas,
             opciones_modelos,
             opciones_combustibles,
+            opciones_traccion_vehiculos,
             filtroCombustibles(val, update) {
                 if (val === '') {
                     update(() => {

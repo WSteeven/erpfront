@@ -33,7 +33,11 @@
         no-caps
         inline-label
       >
-        <q-tab name="tareas" label="Material para tarea" />
+        <q-tab
+          name="tareas"
+          label="Material para tarea"
+          @click="() => (mensaje = '')"
+        />
         <q-tab
           name="personal"
           label="Stock personal"
@@ -46,7 +50,7 @@
         <q-tab-panel name="tareas">
           <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
             <!-- Tarea -->
-            <div class="col-12 col-md-10">
+            <div class="col-12">
               <label class="q-mb-sm block">Seleccione una tarea</label>
               <q-select
                 v-model="filtro.tarea"
@@ -63,6 +67,7 @@
                   (item) => item.codigo_tarea + ' - ' + item.titulo
                 "
                 :option-value="(item) => item.id"
+                @update:model-value="filtrarStock()"
                 emit-value
                 map-options
                 ><template v-slot:option="scope">
@@ -77,24 +82,9 @@
                 </template>
               </q-select>
             </div>
-
-            <div class="col-12 col-md-2">
-              <label class="q-mb-sm block">&nbsp;</label>
-              <q-btn
-                color="positive"
-                class="full-width"
-                no-caps
-                push
-                glossy
-                @click="filtrarStock()"
-              >
-                <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
-                <span>Buscar</span>
-              </q-btn>
-            </div>
           </div>
 
-          <div v-if="listado.length" class="row">
+          <div v-if="materialesTarea.length" class="row">
             <div class="col-12 text-center">
               <label class="q-mb-sm block"
                 >Opciones de devolución de material sobrante de la tarea</label
@@ -130,12 +120,12 @@
 
             <div class="col-12">
               <essential-table
-                v-if="listado.length"
+                v-if="materialesTarea.length"
                 titulo="Listado de materiales para tarea"
                 :configuracionColumnas="
                   configuracionColumnasMaterialEmpleadoTarea
                 "
-                :datos="listado"
+                :datos="materialesTarea"
                 :permitirConsultar="false"
                 :permitirEliminar="false"
                 :permitirEditar="false"
@@ -177,11 +167,18 @@
                 :permitir-buscar="false"
                 :alto-fijo="false"
               ></essential-table>
-              <div v-else>Aún no tienes materiales asignados.</div>
+              <!-- <div v-else>Aún no tienes materiales asignados.</div> -->
             </div>
           </div>
         </q-tab-panel>
       </q-tab-panels>
+      <div
+        v-if="mensaje"
+        class="text-center q-my-lg text-negative text-subtitle2"
+      >
+        <q-icon name="bi-emoji-frown" class="q-mr-sm"></q-icon>
+        {{ mensaje }}
+      </div>
     </q-card>
   </q-page>
 </template>

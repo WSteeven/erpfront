@@ -5,16 +5,17 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
   {
     name: 'id',
     field: 'id',
-    label:'N°',
+    label: 'N°',
     align: 'left',
     sortable: true,
-  }, {
-    name: 'codigo',
-    field: 'codigo',
-    label: 'Código',
-    align: 'left',
-    sortable: true
-  },
+  }, 
+  // {
+  //   name: 'codigo',
+  //   field: 'codigo',
+  //   label: 'Código',
+  //   align: 'left',
+  //   sortable: true
+  // },
   {
     name: 'producto',
     field: 'producto',

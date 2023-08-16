@@ -2,7 +2,7 @@ import { defineComponent, reactive, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
@@ -14,6 +14,8 @@ import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useCargandoStore } from 'stores/cargando'
+import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 
 export default defineComponent({
   components: { TabLayout },
@@ -22,6 +24,9 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+    const fondosStore = useFondoRotativoStore()
+
     /***********
      * Mixin
      ************/
@@ -69,10 +74,12 @@ export default defineComponent({
       { value: '4', label: 'Estado de Cuenta' },
     ]);
     const is_all_empleados= ref('false')
+    const is_inactivo = ref('false')
     listadosAuxiliares.tipos_saldos = tipos_saldos;
     const v$ = useVuelidate(reglas, consolidado)
     setValidador(v$.value)
     const usuarios = ref([])
+    const usuariosInactivos = ref()
     const tiposFondos = ref([])
     const tiposFondoRotativoFechas = ref([])
     usuarios.value = listadosAuxiliares.usuarios
@@ -90,6 +97,11 @@ export default defineComponent({
       })
 
       usuarios.value = listadosAuxiliares.usuarios
+      usuariosInactivos.value =
+      LocalStorage.getItem('usuariosInactivos') == null
+        ? []
+        : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
+    listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposFondoRotativoFechas.value =
         listadosAuxiliares.tiposFondoRotativoFechas
@@ -110,6 +122,22 @@ export default defineComponent({
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
           (v) => v.nombres.toLowerCase().indexOf(needle) > -1 ||v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrarUsuariosInactivos(val, update) {
+      if (val === '') {
+        update(() => {
+          usuariosInactivos.value = listadosAuxiliares.usuariosInactivos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        usuariosInactivos.value = listadosAuxiliares.usuariosInactivos.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -199,12 +227,15 @@ export default defineComponent({
       v$,
       maskFecha,
       usuarios,
+      usuariosInactivos,
       tiposFondos,
       tiposFondoRotativoFechas,
       tipos_saldos,
       is_all_empleados,
+      is_inactivo,
       generar_reporte,
       filtrarUsuarios,
+      filtrarUsuariosInactivos,
       filtrarTiposFondos,
       filtrarTiposFondoRotativoFechas,
       filtarTiposSaldos,

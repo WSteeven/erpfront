@@ -22,15 +22,18 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, tabOptionsDevoluciones } from 'config/utils'
+import { acciones, estadosTransacciones, tabOptionsDevoluciones } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoDevolucion } from '../application/CambiarEstadoDevolucion'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { MaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/MaterialEmpleadoTarea'
+import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
+import { useCargandoStore } from 'stores/cargando'
+import { useNotificacionStore } from 'stores/notificacion'
 
 
 export default defineComponent({
@@ -44,9 +47,11 @@ export default defineComponent({
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         //stores
+        useNotificacionStore().setQuasar(useQuasar())
+        useCargandoStore().setQuasar(useQuasar())
         const devolucionStore = useDevolucionStore()
         const store = useAuthenticationStore()
-        const listadoMaterialesDevolucion =  useListadoMaterialesDevolucionStore()
+        const listadoMaterialesDevolucion = useListadoMaterialesDevolucionStore()
 
         //orquestador
         const {
@@ -62,7 +67,9 @@ export default defineComponent({
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
         let esVisibleTarea = ref(false)
-
+        let puedeEditar = ref(false)
+        const esCoordinador = store.esCoordinador
+        const esActivosFijos = store.esActivosFijos
 
 
         onReestablecer(() => {
@@ -72,6 +79,7 @@ export default defineComponent({
         const opciones_empleados = ref([])
         const opciones_cantones = ref([])
         const opciones_tareas = ref([])
+        const opciones_autorizaciones = ref([])
         //Obtener los listados
         cargarVista(async () => {
             await obtenerListados({
@@ -89,15 +97,15 @@ export default defineComponent({
             })
 
             //logica para autocompletar el formulario de devolucion
-            if(listadoMaterialesDevolucion.listadoMateriales.length){
-                devolucion.tarea = listadoMaterialesDevolucion.tareaId?listadoMaterialesDevolucion.tareaId:null
+            if (listadoMaterialesDevolucion.listadoMateriales.length) {
+                devolucion.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
                 devolucion.es_tarea = !!devolucion.tarea
                 devolucion.es_para_stock = listadoMaterialesDevolucion.devolverAlStock
-                devolucion.listadoProductos = listadoMaterialesDevolucion.listadoMateriales.map((material:MaterialEmpleadoTarea)=>{
+                devolucion.listadoProductos = listadoMaterialesDevolucion.listadoMateriales.map((material: MaterialEmpleadoTarea) => {
                     return {
-                        producto:material.producto,
-                        categoria:material.categoria,
-                        descripcion:material.detalle_producto,
+                        producto: material.producto,
+                        categoria: material.categoria,
+                        descripcion: material.detalle_producto,
                         cantidad: material.stock_actual,
                         medida: material.medida,
                         id: material.detalle_producto_id
@@ -110,13 +118,16 @@ export default defineComponent({
         //reglas de validacion
         const reglas = {
             justificacion: { required },
-            // solicitante:{required},
+            observacion_aut: { requiredIfCoordinador: requiredIf(() => devolucion.tiene_observacion_aut!) },
             canton: { required },
             tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
         }
 
         const v$ = useVuelidate(reglas, devolucion)
         setValidador(v$.value)
+
+        const validarListadoProductos = new ValidarListadoProductos(devolucion)
+        mixin.agregarValidaciones(validarListadoProductos)
 
         function eliminar({ entidad, posicion }) {
             confirmar('¿Está seguro de continuar?',
@@ -140,6 +151,7 @@ export default defineComponent({
                 const data: CustomActionPrompt = {
                     titulo: 'Modifica',
                     mensaje: 'Ingresa la cantidad',
+                    tipo: 'number',
                     defecto: devolucion.listadoProductos[posicion].cantidad,
                     accion: (data) => devolucion.listadoProductos[posicion].cantidad = data,
                 }
@@ -162,7 +174,7 @@ export default defineComponent({
                             try {
                                 const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
                                 notificarCorrecto('Devolución anulada exitosamente!')
-                                actualizarElemento(posicion, entidad)
+                                actualizarElemento(posicion, result)
                             } catch (e: any) {
                                 notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
                             }
@@ -171,12 +183,9 @@ export default defineComponent({
 
                     prompt(data)
                 })
-                console.log('entidad', entidad)
-                console.log('posicion', posicion)
             },
-            visible: ({ entidad, posicion }) => {
-                console.log(entidad)
-                return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante ? true : false
+            visible: ({ entidad }) => {
+                return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante && (entidad.estado_bodega === estadosTransacciones.pendiente || entidad.estado_bodega === estadosTransacciones.parcial) ? true : false
             }
         }
         const botonImprimir: CustomActionTable = {
@@ -202,6 +211,7 @@ export default defineComponent({
         //Configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
         opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+        opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
 
         return {
@@ -211,6 +221,8 @@ export default defineComponent({
             opciones_empleados,
             opciones_tareas,
             opciones_cantones,
+            opciones_autorizaciones,
+            store,
 
             //selector
             refListado,
@@ -233,24 +245,21 @@ export default defineComponent({
             //flags
             soloLectura,
             esVisibleTarea,
+            esCoordinador,
+            esActivosFijos,
 
             //Tabs
             tabOptionsDevoluciones,
             tabSeleccionado,
+            puedeEditar,
 
             tabEs(val) {
-                console.log(tabSeleccionado.value)
-                console.log(val)
                 tabSeleccionado.value = val
+                puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
+                    ? true : false
             },
 
             //Filtros
-            filtroTareas(val) {
-                // const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val)
-                // console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
-                // devolucion.cliente = opcion_encontrada[0]['cliente_id']
-            },
-            //filtro de cantones
             filtroCantones(val, update) {
                 if (val === '') {
                     update(() => {

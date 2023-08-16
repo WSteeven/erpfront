@@ -1,13 +1,19 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :mostrarListado="mostrarListado"
-    :mostrarButtonSubmits="!mostrarAprobacion"
+    :tabOptions="tabAutorizarGasto"
+    :full="true"
+    :permitirEditar="false"
+    :permitirEliminar="false"
+    :filtrar="filtrarGasto"
+    tabDefecto="3"
+    :forzarListar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-mb-md">
+        <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
           <!-- Lugar -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar</label>
@@ -55,6 +61,7 @@
               placeholder="Obligatorio"
               :error="!!v$.fecha_viat.$errors.length"
               :disable="disabled"
+              readonly
               @blur="v$.fecha_viat.$touch"
               outlined
               dense
@@ -148,7 +155,7 @@
             <label class="q-mb-sm block">Tareas</label>
             <q-select
               v-model="gasto.num_tarea"
-              :options="listadoTareas"
+              :options="tareas"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -157,6 +164,7 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.num_tarea.$errors.length"
+              @filter="filtrarTareas"
               @blur="v$.num_tarea.$touch"
               error-message="Debes seleccionar una Tarea"
               use-input
@@ -202,7 +210,6 @@
               dense
             ></q-checkbox>
           </div>
-
           <!-- Factura -->
           <div class="col-12 col-md-3" v-if="esFactura">
             <label class="q-mb-sm block">#Factura</label>
@@ -329,14 +336,62 @@
               </template>
             </q-input>
           </div>
+          <!--Beneficiarios-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Beneficiarios</label>
+            <q-select
+              v-model="gasto.beneficiarios"
+              :options="beneficiarios"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              use-chips
+              outlined
+              multiple
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtrarBeneficiarios"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              emit-value
+              map-options
+            >
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.nombres + ' ' + opt.apellidos }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Autorizacion -->
-          <div class="col-12 col-md-3" v-if="esTecnico">
+          <div class="col-12 col-md-3" v-if="visualizarAutorizador">
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-select
               v-model="gasto.aut_especial"
               :options="autorizacionesEspeciales"
-              transition-show="jump-up"
-              transition-hide="jump-down"
+              transition-show="scale"
+              transition-hide="scale"
               options-dense
               dense
               outlined
@@ -347,6 +402,7 @@
               use-input
               input-debounce="0"
               @blur="v$.aut_especial.$touch"
+              @filter="filtrarAutorizacionesEspeciales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
@@ -403,26 +459,33 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar_detalle('detalle')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
             </q-select>
-            <q-btn color="positive" @click="recargar_detalle('detalle')"
-              ><q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"
-            /></q-btn>
           </div>
           <!-- Subdetalle-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Subdetalle</label>
             <q-select
               v-model="gasto.sub_detalle"
-              :options="listadoSubdetalles"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              :disable="disabled"
+              :options="sub_detalles"
+              transition-show="scale"
+              transition-hide="scale"
               options-dense
-              multiple
               dense
               use-chips
               outlined
+              multiple
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtarSubdetalles"
               @blur="v$.sub_detalle.$touch"
+              @update:model-value="tiene_factura_subdetalle()"
               :error="!!v$.sub_detalle.$errors.length"
               error-message="Debes seleccionar uno o varios sub_detalle"
               :option-value="(v) => v.id"
@@ -436,7 +499,7 @@
                 <q-item v-bind="itemProps">
                   <q-item-section>
                     {{ opt.descripcion }}
-                    <q-item-label v-bind:inner-h-t-m-l="opt.descripcion" />
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
                   </q-item-section>
                   <q-item-section side>
                     <q-toggle
@@ -458,10 +521,15 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:after>
+                <q-btn
+                  color="positive"
+                  @click="recargar_detalle('sub_detalle')"
+                >
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
             </q-select>
-            <q-btn color="positive" @click="recargar_detalle('sub_detalle')"
-              ><q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise"
-            /></q-btn>
           </div>
           <!-- Kilometraje -->
           <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">
@@ -484,7 +552,10 @@
             </q-input>
           </div>
           <!-- Placa vehiculo -->
-          <div class="col-12 col-md-3"  v-if="esCombustibleEmpresa" >
+          <div
+            class="col-12 col-md-3"
+            v-if="esCombustibleEmpresa || mostarPlaca"
+          >
             <label class="q-mb-sm block">Placas</label>
             <q-select
               v-model="gasto.vehiculo"
@@ -498,7 +569,8 @@
               :readonly="disabled"
               :error="!!v$.vehiculo.$errors.length"
               @blur="v$.vehiculo.$touch"
-              error-message="Debes seleccionar una Tarea"
+              @filter="filtrarVehiculos"
+              error-message="Debes seleccionar un numero de placa"
               use-input
               input-debounce="0"
               :option-value="(v) => v.id"
@@ -532,7 +604,7 @@
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
-            <selector-imagen
+            <imagen-comprimida-component
               :imagen="gasto.comprobante1"
               file_extensiones=".jpg, image/*"
               :error="!!v$.comprobante1.$errors.length"
@@ -545,13 +617,13 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </selector-imagen>
+            </imagen-comprimida-component>
           </div>
 
           <!-- Comprobante 2 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
-            <selector-imagen
+            <imagen-comprimida-component
               :imagen="gasto.comprobante2"
               file_extensiones=".jpg, image/*"
               :error="!!v$.comprobante2.$errors.length"
@@ -564,7 +636,7 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </selector-imagen>
+            </imagen-comprimida-component>
           </div>
 
           <!-- Observacion -->
@@ -603,6 +675,6 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./GastoPage.ts"></script>

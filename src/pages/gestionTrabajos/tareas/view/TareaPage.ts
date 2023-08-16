@@ -48,6 +48,9 @@ import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TareaModales } from '../domain/TareaModales'
 import { Tarea } from '../domain/Tarea'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 
 export default defineComponent({
   components: {
@@ -71,6 +74,7 @@ export default defineComponent({
     const tareaStore = useTareaStore()
     const subtareaStore = useSubtareaStore()
     const authenticationStore = useAuthenticationStore()
+    useCargandoStore().setQuasar(useQuasar())
 
     /*******
      * Mixin
@@ -98,9 +102,13 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },
-        rutas: new RutaTareaController(),
+        rutas: {
+          controller: new RutaTareaController(),
+          params: { activo: 1 },
+        },
         motivosSuspendidos: new MotivoSuspendidoController(),
         motivosPausas: new MotivoPausaController(),
+        causasIntervenciones: new CausaIntervencionController(),
       })
 
       // Necesario al consultar

@@ -2,6 +2,11 @@
   <q-page padding>
     <slot name="modales" />
 
+    <b class="block q-mb-md">
+      <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon>
+      {{ tituloTabla }}</b
+    >
+
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -61,6 +66,7 @@
               v-if="mostrarButtonSubmits"
               :accion="accion"
               :permitirGuardar="puedeCrear"
+              :disabled="storeCargando.cargando"
               :labelGuardar="labelGuardar"
               @cancelar="reestablecer()"
               @editar="editar(entidad, resetFormularioOnUpdate)"

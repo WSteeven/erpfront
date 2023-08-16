@@ -5,36 +5,81 @@ import { EgresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccio
 import { SubtareaPusherEvent } from 'pages/gestionTrabajos/subtareas/application/SubtareaPusherEvent'
 import { GastoPusherEvent } from 'pages/fondosRotativos/gasto/application/GastoPusherEvent'
 import { PedidoPusherEvent } from 'pages/bodega/pedidos/application/PedidoPusherEvent'
+import { TicketPusherEvent } from 'src/pusherEvents/TicketPusherEvent'
+import { DevolucionPusherEvent } from 'pages/bodega/devoluciones/application/DevolucionPusherEvent'
+import { PermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/PermisosEmpleadoPusherEvent'
+import { LicenciaPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/LicenciaEmpleadoPusherEvent'
+import { SolicitudPrestamoEmpresarialPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/SolicitudPrestamoEmpresarialPusherEvent'
+import { VacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/VacacionPusherEvent'
+import { PreordenCompraEvent } from 'pages/comprasProveedores/preordenCompra/application/PreordenCompraEvent'
+import { OrdenCompraEvent } from 'pages/comprasProveedores/ordenCompra/application/OrdenCompraEvent'
+import { ProformaEvent } from 'pages/comprasProveedores/proforma/application/ProformaEvent'
 
 
 export class NotificacionesSistema {
-    init() {
-        // Pedidos
-        const pedidoPusherEvent = new PedidoPusherEvent()
-        pedidoPusherEvent.start()
+  init() {
+    // Pedidos
+    const pedidoPusherEvent = new PedidoPusherEvent()
+    pedidoPusherEvent.start()
 
-        //Egresos
-        const egresoPusherEvent = new EgresoPusherEvent()
-        egresoPusherEvent.start()
+    //Devoluciones
+    const devolucionPusherEvent = new DevolucionPusherEvent()
+    devolucionPusherEvent.start()
 
-        // Fondos rotativos
-        const fondosRotativoPusherEvent = new GastoPusherEvent()
-        fondosRotativoPusherEvent.start()
+    //Egresos
+    const egresoPusherEvent = new EgresoPusherEvent()
+    egresoPusherEvent.start()
 
-        // Saldos
-        const transferenciaSaldoPusherEvent = new TransferenciaSaldoPusherEvent()
-        transferenciaSaldoPusherEvent.start();
+    // Fondos rotativos
+    const fondosRotativoPusherEvent = new GastoPusherEvent()
+    fondosRotativoPusherEvent.start()
 
-        // Notificar a contabilidad
-        const transferenciaContabilidad = new TransferenciaContabilidadPusherEvent()
-        transferenciaContabilidad.start();
+    // Saldos
+    const transferenciaSaldoPusherEvent = new TransferenciaSaldoPusherEvent()
+    transferenciaSaldoPusherEvent.start();
 
-        // Solicitud de fondos
-        const solicitudFondosPusherEvent = new GastoCoordinadorPusherEvent()
-        solicitudFondosPusherEvent.start()
+    // Notificar a contabilidad
+    const transferenciaContabilidad = new TransferenciaContabilidadPusherEvent()
+    transferenciaContabilidad.start();
 
-        // Subtareas
-        const subtareaPusherEvent = new SubtareaPusherEvent()
-        subtareaPusherEvent.start()
-    }
+    // Solicitud de fondos
+    const solicitudFondosPusherEvent = new GastoCoordinadorPusherEvent()
+    solicitudFondosPusherEvent.start()
+
+    // Subtareas
+    const subtareaPusherEvent = new SubtareaPusherEvent()
+    subtareaPusherEvent.start()
+
+    // Tickets
+    const ticketPusherEvent = new TicketPusherEvent()
+    ticketPusherEvent.start()
+
+    //Recursos Humanos
+    //Permiso de Empleado
+    const permisoEmpleadoPusherEvent = new PermisoEmpleadoPusherEvent()
+    permisoEmpleadoPusherEvent.start()
+    //Licencia
+    const licenciaPusherEvent = new LicenciaPusherEvent()
+    licenciaPusherEvent.start()
+    //Solicitud prestamo empresarial
+    const solicitudPrestamoEmpresarialPusherEvent = new SolicitudPrestamoEmpresarialPusherEvent()
+    solicitudPrestamoEmpresarialPusherEvent.start()
+    //Vacacion
+    const vacacionPusherEvent = new VacacionPusherEvent()
+    vacacionPusherEvent.start()
+
+
+
+    // Preorden de compra
+    const preordenCompraPusherEvent = new PreordenCompraEvent()
+    preordenCompraPusherEvent.start()
+
+    //Orden de compra
+    const ordenCompraPusherEvent = new OrdenCompraEvent()
+    ordenCompraPusherEvent.start()
+
+    //Proforma
+    const proformaPusherEvent = new ProformaEvent()
+    proformaPusherEvent.start()
+  }
 }
