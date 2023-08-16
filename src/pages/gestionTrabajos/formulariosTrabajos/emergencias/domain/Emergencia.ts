@@ -4,8 +4,8 @@ import Observacion from './Observacion'
 import { MaterialOcupadoFormulario } from './MaterialOcupadoFormulario'
 
 export class Emergencia extends EntidadAuditable {
-  trabajo_realizado: TrabajoRealizado[] | string
-  observaciones: Observacion[] | string
+  trabajo_realizado: TrabajoRealizado[]
+  observaciones: Observacion[]
   materiales_tarea_ocupados: MaterialOcupadoFormulario[]
   historial_material_tarea_usado: MaterialOcupadoFormulario[]
   materiales_stock_ocupados: MaterialOcupadoFormulario[]

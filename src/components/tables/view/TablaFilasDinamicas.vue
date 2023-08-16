@@ -31,11 +31,11 @@ import { accionesTabla } from 'config/utils'
 import { Ref, ref, watchEffect } from 'vue'
 
 // Logica y controladores
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 const props = defineProps({
   listado: {
@@ -95,7 +95,7 @@ const agregarActividadRealizada: CustomActionTable = {
       cargando.activar()
       const { fecha_hora } = await obtenerTiempoActual()
       refTrabajos.value.abrirModalEditar({ fecha_hora })
-      emit('actualizar', trabajoRealizado.value)
+      // emit('actualizar', trabajoRealizado.value)
     } catch (e) {
       notificarError(
         'Problemas para obtener la fecha y hora actual del servidor. Verifica tu conexión a Internet.'
