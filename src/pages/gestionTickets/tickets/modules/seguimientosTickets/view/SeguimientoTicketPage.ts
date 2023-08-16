@@ -1,15 +1,15 @@
 // Dependencias
+import { computed, defineComponent, ref } from 'vue'
 import { regiones, atenciones } from 'config/utils'
-import { endpoints } from 'config/api'
-import { computed, defineComponent, Ref, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
+import { endpoints } from 'config/api'
 
 // Componentes
-import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
 import DetalleTicket from 'ticketsAsignados/modules/detalleTicketAsignado/view/DetalleTicket.vue'
 import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
+import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -39,12 +39,6 @@ export default defineComponent({
     VisorImagen,
     DetalleTicket,
   },
-  /* props: {
-    mixinModal: {
-      type: Object as () => ContenedorSimpleMixin<Subtarea>,
-      required: true,
-    },
-  },*/
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     /*********
@@ -59,7 +53,6 @@ export default defineComponent({
     const mixinActividad = new ContenedorSimpleMixin(ActividadRealizadaSeguimientoTicket, new SeguimientoTicketController())
     const { entidad: actividad, accion, listadosAuxiliares, listado: actividadesRealizadas } = mixinActividad.useReferencias()
     const { guardar: guardarActividad, editar, reestablecer, setValidador, listar: listarActividades } = mixinActividad.useComportamiento()
-    const { onBeforeGuardar, onConsultado, onBeforeModificar } = mixinActividad.useHooks()
 
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoTicketController())
     const { listar: listarArchivosTickets } = mixinArchivoSeguimiento.useComportamiento()
@@ -117,48 +110,17 @@ export default defineComponent({
       refArchivoSeguimiento.value.subir({ ticket_id: ticketStore.filaTicket.id })
     }
 
-    function editarSeguimiento() {
-      // editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada })
-    }
-
     function limpiarFila() {
       fila.value = null
     }
 
     function guardarFila(data) {
-      //simple.value.push(data)
       limpiarFila()
     }
 
     function abrirModalArbol() {
       refEditarModal.value.abrir()
     }
-
-    /********
-    * Hooks
-    *********/
-    onConsultado(async () => {
-      // refArchivoSeguimiento.value.listarArchivos({ seguimiento_id: actividad.id })
-    })
-
-    onBeforeGuardar(() => {
-      // emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-    })
-
-    onBeforeModificar(() => {
-      // emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-    })
-
-    /*onGuardado((id: number) => {
-      subirArchivos(id)
-      listarArchivosTickets({ estado: estadosTrabajos.EJECUTANDO })
-      emit('cerrar-modal', false)
-    })*/
-
-    /*onModificado((id: number) => {
-      subirArchivos(id)
-      emit('cerrar-modal', false)
-    })*/
 
     return {
       v$,
@@ -168,11 +130,8 @@ export default defineComponent({
       refArchivoSeguimiento,
       mixinArchivoSeguimiento,
       accion,
-      //      guardarSeguimiento,
-      editarSeguimiento,
       regiones,
       atenciones,
-      //    guardar,
       editar,
       reestablecer,
       emit,

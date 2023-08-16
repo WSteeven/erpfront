@@ -355,6 +355,7 @@ export default defineComponent({
       emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
       emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
+      // emergencia.trabajo_realizado = nuevasActividades.value
     })
 
     onGuardado((id: number) => {
@@ -365,7 +366,7 @@ export default defineComponent({
 
     onModificado((id: number) => {
       subirArchivos(id)
-      console.log(cerrarModal)
+      // console.log(cerrarModal)
       if (cerrarModal) emit('cerrar-modal', false)
     })
 
