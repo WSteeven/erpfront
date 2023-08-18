@@ -10,9 +10,8 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
-import { markRaw, watchEffect } from 'vue'
+import { markRaw, } from 'vue'
 import { ParamsType } from 'config/types'
-import { Usuario } from 'pages/fondosRotativos/usuario/domain/Usuario'
 
 export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
   private hooks = new HooksSimples()
@@ -38,8 +37,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   useComportamiento() {
     return {
       listar: this.listar.bind(this),
+      listarArchivos: this.listarArchivos.bind(this),
       filtrar: this.filtrar.bind(this),
       consultar: this.consultar.bind(this),
+      guardarArchivos: this.guardarArchivos.bind(this),
       guardar: this.guardar.bind(this),
       editar: this.editar.bind(this),
       editarParcial: this.editarParcial.bind(this),
@@ -223,6 +224,64 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.statusEssentialLoading.desactivar()
     }
   }
+
+  /**
+   * Funcion para eliminar un archivo relacionado a un modelo
+   */
+  // private async eliminarArchivo() {
+  //   // 
+  // }
+  /**
+   * Funcion para listar todos los archivos relacionados a un modelo
+   */
+  private async listarArchivos(id:number, params?: ParamsType, append = false) {
+    this.statusEssentialLoading.activar()
+    try {
+      const { result } = await this.controller.listarFiles(id, params)
+      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+
+      if (append) this.refs.listadoArchivos.value.push(...result)
+      else this.refs.listadoArchivos.value = result
+    } catch (error) {
+      this.notificaciones.notificarError('Error al obtener el listado de archivos.')
+    }
+    this.statusEssentialLoading.desactivar()
+  }
+
+  /**
+   * Aqui se guardan los archivos
+   * @param data 
+   * @param agregarAlListado 
+   * @param params 
+   * @returns 
+   */
+  private async guardarArchivos(id, data: T, params?: ParamsType): Promise<any> {
+
+    this.statusEssentialLoading.activar()
+    try {
+      const { response } = await this.controller.guardarFiles(
+        id,
+        data,
+        {
+          ...params,
+          ...this.argsDefault
+        }
+      )
+
+      this.notificaciones.notificarCorrecto(response.data.mensaje)
+      this.agregarElementoListadoArchivosActual(response.data.modelo)
+
+    } catch (error: any) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
+  }
+
+
 
   // Editar
   private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {

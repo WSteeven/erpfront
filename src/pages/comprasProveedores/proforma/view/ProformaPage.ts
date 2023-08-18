@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasProformas } from "../domain/configuracionColumnasProforma";
 import { configuracionColumnasDetallesProforma } from "../domain/configuracionColumnasDetallesProforma";
-import { required} from 'shared/i18n-validators'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watch, } from 'vue'
 
@@ -23,7 +23,7 @@ import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { acciones, accionesTabla } from "config/utils";
-import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
+import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
 import { formatearFecha } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
@@ -103,7 +103,7 @@ export default defineComponent({
                     }
                 },
             })
-
+            proforma.autorizacion = 1
         })
 
         /*****************************************************************************************
@@ -113,6 +113,7 @@ export default defineComponent({
             proforma.created_at = formatearFecha(new Date().getDate().toLocaleString())
             proforma.solicitante = store.user.id
             soloLectura.value = false
+            proforma.autorizacion = 1
         })
         onConsultado(() => {
             if (accion.value === acciones.editar && store.user.id === proforma.autorizador)
@@ -154,6 +155,7 @@ export default defineComponent({
          ******************************************************************************************/
         function filtrarProformas(tab: string) {
             tabSeleccionado.value = tab
+            // if (tab == '1' && proforma.autorizador_id===store.user.id) puedeEditar.value = true
             if (tab == '1') puedeEditar.value = true
             else puedeEditar.value = false
             listar({ autorizacion_id: tab, solicitante_id: store.user.id })
@@ -169,7 +171,7 @@ export default defineComponent({
          * propiedades:
          */
         function calcularValores(data: any) {
-            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * proforma.iva/100).toFixed(4) : 0
+            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * proforma.iva / 100).toFixed(4) : 0
             data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
             data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
             data.total = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva) - Number(data.descuento)).toFixed(4) : 0
@@ -197,9 +199,10 @@ export default defineComponent({
                 const fila = new ItemProforma()
                 fila.unidad_medida = 1
                 proforma.listadoProductos.push(fila)
-                refItems.value.abrirModalEntidad(fila, proforma.listadoProductos.length - 1)
+                // refItems.value.abrirModalEntidad(fila, proforma.listadoProductos.length - 1)
                 emit('actualizar', proforma.listadoProductos)
-            }
+            },
+            visible: () =>accion.value===acciones.nuevo||accion.value===acciones.editar
         }
         const btnEliminarFila: CustomActionTable = {
             titulo: 'Eliminar',
