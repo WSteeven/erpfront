@@ -175,7 +175,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
 
 
-    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+    if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
       // return console.log('Verifique el formulario')

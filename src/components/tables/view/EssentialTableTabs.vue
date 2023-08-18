@@ -52,7 +52,7 @@
         :accion3Header="accion3Header"
         :alto-fijo="altoFijo"
         :mostrarFooter="mostrarFooter"
-        :mostrarExportar="permitirExportar"
+        :mostrarExportar="mostrarExportar"
         @consultar="consultar"
         @editar="editar"
         @eliminar="eliminar"

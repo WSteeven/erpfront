@@ -21,15 +21,15 @@
           <b>Advertencia</b>
         </div>
       </div>
+
       <div class="row">
         <div class="col-12 q-mb-md">
-          <!-- @actualizar="(listado) => (emergencia.trabajo_realizado = listado)" -->
           <tabla-filas-dinamicas
-            :listado="emergencia.trabajo_realizado"
+            :listado="actividadesRealizadas"
             :configuracion-columnas="configuracionColumnasTrabajoRealizado"
-            @guardar-fila="guardarFila"
+            @guardarFila="(fila) => guardarFilaActividad(fila)"
             :mostrarAccion1Header="permitirSubir"
-            :entidad="TrabajoRealizado"
+            :entidad="ActividadRealizadaSeguimientoSubtarea"
             :accion1="verFotografia"
             titulo="Cronología de actividades realizadas"
           ></tabla-filas-dinamicas>
@@ -66,7 +66,7 @@
                 v-if="esCoordinador"
                 name="historial_material_tarea_usado"
                 label="Historial de material de tarea usado"
-                @click="editarSeguimiento(false)"
+                @click="resetearFiltroHistorial()"
               >
               </q-tab>
             </q-tabs>
@@ -105,7 +105,7 @@
                   <div class="col-12">
                     <div class="q-gutter-sm">
                       <q-radio
-                        v-for="fecha in emergencia.fechas_historial_materiales_usados"
+                        v-for="fecha in fechasHistorialMaterialesUsados"
                         :key="fecha.fecha"
                         v-model="fecha_historial"
                         :val="fecha.fecha"
@@ -163,7 +163,7 @@
           ></essential-table>
         </div>
 
-        <div class="col-12 q-mb-md">
+        <!-- <div class="col-12 q-mb-md">
           <br />
           <q-checkbox
             v-model="existeObservaciones"
@@ -176,9 +176,7 @@
           <tabla-observaciones
             :listado="emergencia.observaciones"
           ></tabla-observaciones>
-          <!-- @actualizar="(data) => (emergencia.observaciones = data)" -->
-          <!-- @guardar-fila="guardarObservacion" -->
-        </div>
+        </div> -->
 
         <!-- <div
           v-if="subtarea.cliente_id !== clientes.TELCONET"
@@ -209,7 +207,21 @@
             :mixin="mixinArchivoSeguimiento"
             :endpoint="endpoint"
             :permitir-eliminar="permitirSubir"
-          ></archivo-seguimiento>
+          >
+            <template #boton-subir>
+              <q-btn
+                v-if="mostrarBotonSubir"
+                color="positive"
+                push
+                no-caps
+                class="full-width q-mb-lg"
+                @click="subirArchivos()"
+              >
+                <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                Subir archivos seleccionados</q-btn
+              >
+            </template>
+          </archivo-seguimiento>
         </div>
       </div>
 
@@ -226,13 +238,13 @@
           <span>Descargar Excel</span>
         </q-btn> -->
 
-        <button-submits
+        <!-- <button-submits
           :accion="accion"
           @cerrar-modal="emit('cerrar-modal')"
           @cancelar="reestablecer()"
           @editar="editarSeguimiento()"
           @guardar="guardarSeguimiento()"
-        />
+        /> -->
       </div>
     </q-card>
 
