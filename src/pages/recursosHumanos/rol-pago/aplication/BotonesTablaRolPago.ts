@@ -63,11 +63,11 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
       })
     }
   }
-  const btnRealizar: CustomActionTable = {
+  const btnFirmar: CustomActionTable = {
     titulo: 'Firmar Rol de Pago',
     icono: 'fa-solid fa-file-signature',
     color: 'positive',
-    visible: ({ entidad }) => entidad.estado === estadosRolPago.REALIZADO && (authenticationStore.esRecursosHumanos),
+    visible: ({ entidad }) => entidad.estado === estadosRolPago.REALIZADO && (authenticationStore.esRecursosHumanos) && !entidad.es_quincena,
     accion: ({ entidad, posicion }) => {
 
       confirmar('¿Tiene el rol de pagos firmado?', async () => {
@@ -83,57 +83,22 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     titulo: 'Finalizar',
     color: 'positive',
     icono: 'bi-check',
-    visible: ({ entidad }) => entidad.estado === estadosRolPago.REALIZADO,
+    visible: ({ entidad }) => entidad.estado === estadosRolPago.REALIZADO && entidad.es_quincena,
     accion: ({ entidad }) => {
-      const config: CustomActionPrompt = reactive({
-        mensaje: 'Confirme la causa de intervención',
-        accion: (causa_intervencion_id) => {
-          confirmarFinalizar({ entidad, causa_intervencion_id })
-        },
-        requerido: false,
-        defecto: entidad.causa_intervencion_id,
-        tipo: 'radio',
-        items: listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo).map((causa: CausaIntervencion) => {
-          return {
-            label: causa.nombre,
-            value: causa.id
-          }
-        })
+      confirmar('¿Está seguro de marcar como finalizada el rol de pago?', async () => {
+        entidad.estado = estadosRolPago.FINALIZADO
+        const data = {
+          estado: estadosRolPago.FINALIZADO,
+        }
+        const { result } = await new CambiarEstadoRolPago().finalizar(entidad.id, data)
+        notificarCorrecto('Rol finalizado exitosamente!')
       })
-
-      if (entidad.cliente_id === clientes.NEDETEL) {
-        promptItems(config)
-      } else {
-        confirmarFinalizar({ entidad })
-      }
     }
   }
-
-  function confirmarFinalizar(data: any) {
-    const { entidad, causa_intervencion_id } = data
-
-    confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
-      try {
-
-        notificarCorrecto('Trabajo finalizada exitosamente!')
-      } catch (error: unknown) {
-        if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes, notificaciones)
-        }
-      }
-    })
-  }
-
-
-
-
-
-
   return {
     btnIniciar,
     btnRealizado,
-    btnRealizar,
+    btnFirmar,
     btnFinalizar,
   }
 }

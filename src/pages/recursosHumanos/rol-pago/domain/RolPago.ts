@@ -36,6 +36,7 @@ export class RolPago extends EntidadAuditable {
   rol_pago_id : number | null
   anticipo: string | null
   iess: string | null
+  es_quincena : boolean | null
 
   constructor() {
     super()
@@ -74,5 +75,6 @@ export class RolPago extends EntidadAuditable {
     this.rol_pago_id = null
     this.anticipo = null
     this.iess = null
+    this.es_quincena = false
   }
 }
