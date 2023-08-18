@@ -74,7 +74,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
         rolPagoStore.idRolPagoSeleccionada = entidad.id;
         rolPagoStore.accion= acciones.editar;
         modales.abrirModalEntidad('RolPagoFirmadoPage')
-
+        entidad.estado = estadosRolPago.FINALIZADO
       })
     }
   }

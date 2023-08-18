@@ -114,6 +114,7 @@ export default defineComponent({
           // Subir archivos
           idRolPago = rolpagoAux.id
           subirArchivos(idRolPago)
+
         }
         emit('cerrar-modal', false)
       } catch (e) {

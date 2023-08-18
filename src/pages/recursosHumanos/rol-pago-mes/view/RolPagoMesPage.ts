@@ -276,6 +276,7 @@ export default defineComponent({
       ),
       tabOptionsEstadosRolPagoEmpleado,
       tabOptionsEstadosRolPago,
+      tabActual,
       btnFinalizarRolPago,
       btnFinalizar,
       btnEditarRolPagoEmpleado,

@@ -127,19 +127,26 @@
         >
         </q-input>
       </div>
-       <!-- Anticipo -->
-     <div class="col-12 col-md-3">
+      <!-- Anticipo -->
+      <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Anticipo</label>
-        <q-input
-          v-model="rolpago.anticipo"
-          type="number"
-          disable
-          outlined
-          dense
-        >
+        <q-input v-model="rolpago.anticipo" type="number" disable outlined dense>
         </q-input>
       </div>
-
+      <!-- Documento -->
+      <div class="col-12 col-md-3" v-if="rolpago.estado =='FINALIZADO'">
+        <label class="q-mb-sm block">Rol de Pago Firmado</label>
+        <gestor-documentos
+          ref="refArchivoRolPago"
+          :mixin="mixinRolPago"
+          :endpoint="endpoint"
+          :disable="disabled"
+          :permitir-eliminar="false"
+          :listar-al-guardar="false"
+          :esMultiple="false"
+        >
+        </gestor-documentos>
+      </div>
     </div>
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
@@ -162,7 +169,7 @@
           </q-input>
         </div>
         <!-- Concepto -->
-        <div class="col-12 col-md-3" >
+        <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Concepto</label>
           <q-select
             v-model="rolpago.concepto_ingreso"
@@ -255,7 +262,10 @@
           </q-select>
         </div>
         <!---Campo-->
-        <div class="col-12 col-md-3" v-if="rolpago.concepto_ingreso != '' && rolpago.concepto_ingreso !=null">
+        <div
+          class="col-12 col-md-3"
+          v-if="rolpago.concepto_ingreso != '' && rolpago.concepto_ingreso != null"
+        >
           <label class="q-mb-sm block">Valor</label>
           <q-input
             v-model="rolpago.ingreso"
@@ -345,7 +355,7 @@
           </q-select>
         </div>
         <!-- Multa -->
-        <div class="col-12 col-md-3" >
+        <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Multa</label>
           <q-select
             v-model="rolpago.multa"
@@ -371,7 +381,14 @@
           </q-select>
         </div>
         <!---Campo-->
-        <div class="col-12 col-md-3" v-if="(rolpago.multa != '' && rolpago.multa !=null)||(rolpago.descuento_general != ''&& rolpago.descuento_general!=null)||(rolpago.descuento_ley != ''&& rolpago.descuento_ley!=null)">
+        <div
+          class="col-12 col-md-3"
+          v-if="
+            (rolpago.multa != '' && rolpago.multa != null) ||
+            (rolpago.descuento_general != '' && rolpago.descuento_general != null) ||
+            (rolpago.descuento_ley != '' && rolpago.descuento_ley != null)
+          "
+        >
           <label class="q-mb-sm block">Valor</label>
           <q-input
             v-model="rolpago.egreso"

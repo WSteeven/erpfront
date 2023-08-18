@@ -315,27 +315,6 @@
             >
             </q-input>
           </div>
-          <!-- Solicitud -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Solicitud</label>
-            <q-input
-              v-model="vacacion.solicitud"
-              type="textarea"
-              autogrow
-              @blur="v$.solicitud.$touch"
-              placeholder="Obligatorio"
-              :disable="!esNuevo"
-              :error="!!v$.solicitud.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.solicitud.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
           <!-- Numero de días con cargo a vacaciones-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
