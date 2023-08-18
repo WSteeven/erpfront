@@ -221,8 +221,6 @@ export default defineComponent({
         requiredIf: vacacion.numero_rangos == '1' ? true : false,
         maxValue: maxValue(15),
       },
-
-      solicitud: { required },
     }))
     const v$ = useVuelidate(reglas, vacacion)
     setValidador(v$.value)

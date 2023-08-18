@@ -39,13 +39,30 @@ import { useRolPagoStore } from 'stores/rolPago'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { ComportamientoModalesRolPago } from '../aplication/ComportamientoModalesRolPago'
+import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
+import { ArchivoRolPagoController } from '../infraestructure/ArchivoRolPagoController'
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, EssentialTable, ButtonSubmits },
+  components: {
+    TabLayout,
+    SelectorImagen,
+    EssentialTable,
+    ButtonSubmits,
+    GestorDocumentos,
+  },
   emit: ['cerrar-modal', 'guardado'],
 
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
+      /********
+     * Mixin
+     *********/
+      const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
+      const mixinRolPago = new ContenedorSimpleMixin(
+        Archivo,
+        new ArchivoRolPagoController()
+      )
+
     /*********
      * Stores
      *********/
@@ -55,9 +72,7 @@ export default defineComponent({
     useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
 
-    /********
-     * Mixin
-     *********/
+
     const {
       entidad: rolpago,
       listadosAuxiliares,
@@ -75,6 +90,7 @@ export default defineComponent({
       setValidador,
     } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado } = mixin.useHooks()
+    const refArchivoRolPago = ref()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -147,9 +163,8 @@ export default defineComponent({
     const indice_ingreso = ref()
     const indice_egreso = ref()
     const empleados = ref<Empleado[]>([])
-    onConsultado(() => {
-      es_consultado.value = true
-    })
+    const carga_archivo = ref(false)
+
 
     const listadoHorasExtrasSubTipo = computed(() => {
       return listadosAuxiliares.horas_extras_subtipos.filter(
@@ -238,18 +253,21 @@ export default defineComponent({
     /********
      * Hooks
      *********/
-    onBeforeGuardar(() => {
-      // rolpago.roles = rolpagoStore.roles
-      /*rolpago.empleados_designados = rolpago.empleados_designados.map((empleado: EmpleadoGrupo) => {
-        const empleadoGrupo = new EmpleadoGrupo()
-        empleadoGrupo.hydrate(empleado)
-        empleadoGrupo.es_responsable = empleado.es_responsable ? 1 : 0
-        return empleadoGrupo
-      })*/
+    onConsultado(() => {
+      es_consultado.value = true
+      if (rolpago.estado == 'FINALIZADO') {
+        setTimeout(() => {
+          refArchivoRolPago.value.listarArchivos({
+            rol_pago_id: rolpago.id,
+          })
+          refArchivoRolPago.value.esConsultado = true
+          carga_archivo.value = true
+        }, 2000)
+
+      }
     })
     let idSubtarea: any
 
-    //onConsultado(() => rolpago.tarea = rolpagoStore.codigoTarea)
     async function guardarDatos(rolpago: RolPago) {
       try {
         let entidad: RolPago = new RolPago()
@@ -737,6 +755,8 @@ export default defineComponent({
       is_month,
       empleados,
       imprimir,
+      mixinRolPago,
+      refArchivoRolPago,
       guardarDatos,
       reestablecerDatos,
       datos_empleado,
@@ -751,6 +771,7 @@ export default defineComponent({
       filtrarHorasExtrasSubTipo,
       checkValue,
       es_calculable,
+      carga_archivo,
       aniadirIngreso,
       aniadirEgreso,
       verificar_concepto_ingreso,
@@ -764,6 +785,7 @@ export default defineComponent({
       disabled,
       configuracionColumnasRolPagoTabla,
       configuracionColumnas: configuracionColumnasRolPago,
+      endpoint: endpoints.archivo_rol_pago,
       accion,
       accionesTabla,
     }
