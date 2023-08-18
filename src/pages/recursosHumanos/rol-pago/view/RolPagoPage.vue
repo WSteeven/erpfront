@@ -118,7 +118,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Sueldo</label>
         <q-input
-          v-model="sueldo"
+          v-model="rolpago.sueldo"
           placeholder="Obligatorio"
           type="number"
           disable
