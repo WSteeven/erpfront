@@ -23,7 +23,7 @@ import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { acciones, accionesTabla } from "config/utils";
-import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo } from "config/utils_compras_proveedores";
+import { tabOptionsProformas, opcionesForma, opcionesTiempo } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
 import { formatearFecha } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
@@ -312,7 +312,7 @@ export default defineComponent({
 
             //tabla de detalles
             //Tabs
-            tabOptionsOrdenCompra,
+            tabOptionsProformas,
             tabSeleccionado,
             puedeEditar,
 

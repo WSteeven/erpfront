@@ -3,7 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proforma"
-    :tab-options="tabOptionsOrdenCompra"
+    :tab-options="tabOptionsProformas"
     tabDefecto="1"
     :filtrar="filtrarProformas"
     :permitirEditar="puedeEditar"

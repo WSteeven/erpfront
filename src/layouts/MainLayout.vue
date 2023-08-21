@@ -397,7 +397,7 @@
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
         <!--<img src="~assets/logo.svg" height="80" class="q-mx-auto block" /> -->
         <img
-          src="~assets/logoJP_Borde.png"
+          src="~assets/logo.png"
           height="80"
           class="q-mx-auto block"
         />
