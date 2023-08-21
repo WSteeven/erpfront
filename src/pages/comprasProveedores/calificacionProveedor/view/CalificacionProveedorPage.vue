@@ -198,13 +198,13 @@
           </div>
           <!-- carga de archivos de soporte -->
           <div class="col-12 q-mb-md">
-            <archivo-seguimiento
+            <gestor-archivos
               ref="refArchivo"
               :mixin="mixin"
               :endpoint="endpoint"
               :disable="disabled"
-              :permitir-eliminar="false"
-              :idModelo="21"
+              :permitir-eliminar="true"
+              :idModelo="idDetalleDepartamentoProveedor"
             >
             <template #boton-subir>
               <q-btn
@@ -220,7 +220,7 @@
               >
 
             </template>
-          </archivo-seguimiento>
+          </gestor-archivos>
           </div>
         </div>
       </q-step>

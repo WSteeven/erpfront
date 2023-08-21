@@ -4,7 +4,7 @@ import { computed, defineComponent, reactive, ref } from "vue";
 //Components
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from "components/tables/view/EssentialTable.vue";
-import ArchivoSeguimiento from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue";
+import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
 
 // Logic and controllers
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -29,10 +29,12 @@ import { useBotonesTablaCalificacionProveedor } from "../application/BotonesTabl
 import { Archivo } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo";
 import { ArchivoTicketController } from "pages/gestionTickets/tickets/infraestructure/ArchivoTicketController ";
 import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController";
+import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor";
 
 export default defineComponent({
-    components: { EssentialTable, EssentialSelectableTable, ArchivoSeguimiento },
+    components: { EssentialTable, EssentialSelectableTable, GestorArchivos },
     setup(props, { emit }) {
+        const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController())
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
         const { entidad: calificacion, listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
@@ -118,6 +120,7 @@ export default defineComponent({
          * tiempo con una declaración de "retorno" si se cumplen ciertas condiciones.
          */
         async function botonNext() {
+            console.log(proveedorStore.idDetalleDepartamento)
             // console.log('Clickeaste en Next, actual: ', step.value, ' siguiente step es: ', step.value + 1)
             if (criteriosBienes.value.length == 0 && criteriosServicios.value.length == 0) {
                 notificarAdvertencia('Debes seleccionar al menos un criterio del listado para poder avanzar.')
@@ -308,6 +311,7 @@ export default defineComponent({
 
 
         return {
+            mixinArchivos,
             mixin,
             stepper,
             step,
@@ -341,6 +345,7 @@ export default defineComponent({
             ofertas: listadosAuxiliares.ofertas,
 
             proveedor: proveedorStore.proveedor,
+            idDetalleDepartamentoProveedor: computed(()=>proveedorStore.idDetalleDepartamento),
 
             seleccionados: listadoSeleccionados,
             criterioSeleccionado,

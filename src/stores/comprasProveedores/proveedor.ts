@@ -4,17 +4,18 @@ import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpReposi
 import { Proveedor } from "sistema/proveedores/domain/Proveedor";
 import { reactive, ref } from "vue";
 
-export const useProveedorStore = defineStore('proveedor', ()=>{
+export const useProveedorStore = defineStore('proveedor', () => {
     //State
     const proveedor = reactive(new Proveedor())
     const proveedorReset = new Proveedor()
     const idProveedor = ref()
     const idDepartamento = ref()
+    const idDetalleDepartamento = ref()
     const idTipoOferta = ref()
 
     const statusLoading = new StatusEssentialLoading()
 
-    async function consultar(id:number){
+    async function consultar(id: number) {
         const axios = AxiosHttpRepository.getInstance()
         // const ruta
     }
@@ -25,5 +26,7 @@ export const useProveedorStore = defineStore('proveedor', ()=>{
         idProveedor,
         idDepartamento,
         idTipoOferta,
+        idDetalleDepartamento,
+
     }
 })
