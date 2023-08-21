@@ -5,7 +5,7 @@
     </div>
 
     <q-card class="rounded-card custom-shadow q-pa-md">
-      <div
+      <!-- <div
         v-if="esCoordinador"
         class="col-12 rounded-card q-py-sm q-mb-md text-center text-accent bg-yellow-2"
       >
@@ -20,7 +20,7 @@
           </div>
           <b>Advertencia</b>
         </div>
-      </div>
+      </div> -->
 
       <div class="row">
         <div class="col-12 q-mb-md">
