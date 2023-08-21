@@ -1,21 +1,16 @@
 <template>
   <q-page>
-    <!-- <div class="row q-mb-md"> -->
     <div class="q-mb-md">
       Código de subtarea: <b>{{ codigoSubtarea }}</b>
     </div>
 
     <q-card class="rounded-card custom-shadow q-pa-md">
-      <div
+      <!-- <div
         v-if="esCoordinador"
         class="col-12 rounded-card q-py-sm q-mb-md text-center text-accent bg-yellow-2"
       >
         <div>
-          <q-icon
-            name="bi-exclamation-triangle-fill
-"
-            class="q-mr-sm"
-          ></q-icon>
+          <q-icon name="bi-exclamation-triangle-fill" class="q-mr-sm"></q-icon>
           <div>
             Cualquier cambio realizado aquí sobreescribirá el seguimiento hecho
             por el técnico.
@@ -25,15 +20,16 @@
           </div>
           <b>Advertencia</b>
         </div>
-      </div>
+      </div> -->
+
       <div class="row">
         <div class="col-12 q-mb-md">
           <tabla-filas-dinamicas
-            :listado="emergencia.trabajo_realizado"
+            :listado="actividadesRealizadas"
             :configuracion-columnas="configuracionColumnasTrabajoRealizado"
-            @actualizar="(listado) => (emergencia.trabajo_realizado = listado)"
+            @guardarFila="(fila) => guardarFilaActividad(fila)"
             :mostrarAccion1Header="permitirSubir"
-            :entidad="TrabajoRealizado"
+            :entidad="ActividadRealizadaSeguimientoSubtarea"
             :accion1="verFotografia"
             titulo="Cronología de actividades realizadas"
           ></tabla-filas-dinamicas>
@@ -41,11 +37,13 @@
 
         <div class="col-12 q-mb-md">
           <br />
-          <q-checkbox
+          <q-toggle
             v-model="usarMaterialTarea"
-            label="Utilizar material de la tarea"
+            label="Gestionar material asignado para la tarea"
+            checked-icon="bi-eye"
+            color="positive"
             dense
-          ></q-checkbox>
+          ></q-toggle>
         </div>
 
         <div v-if="usarMaterialTarea" class="col-12 q-mb-md">
@@ -68,7 +66,7 @@
                 v-if="esCoordinador"
                 name="historial_material_tarea_usado"
                 label="Historial de material de tarea usado"
-                @click="editarSeguimiento(false)"
+                @click="resetearFiltroHistorial()"
               >
               </q-tab>
             </q-tabs>
@@ -107,7 +105,7 @@
                   <div class="col-12">
                     <div class="q-gutter-sm">
                       <q-radio
-                        v-for="fecha in emergencia.fechas_historial_materiales_usados"
+                        v-for="fecha in fechasHistorialMaterialesUsados"
                         :key="fecha.fecha"
                         v-model="fecha_historial"
                         :val="fecha.fecha"
@@ -140,11 +138,13 @@
           class="col-12 q-mb-md"
         >
           <br />
-          <q-checkbox
+          <q-toggle
             v-model="usarStock"
-            label="Utilizar material del stock personal"
+            label="Gestionar material del stock personal"
+            checked-icon="bi-eye"
+            color="positive"
             dense
-          ></q-checkbox>
+          ></q-toggle>
         </div>
 
         <div v-if="usarStock" class="col-12 q-mb-md">
@@ -163,7 +163,7 @@
           ></essential-table>
         </div>
 
-        <div class="col-12 q-mb-md">
+        <!-- <div class="col-12 q-mb-md">
           <br />
           <q-checkbox
             v-model="existeObservaciones"
@@ -175,9 +175,8 @@
         <div v-if="existeObservaciones" class="col-12 q-mb-md">
           <tabla-observaciones
             :listado="emergencia.observaciones"
-            @actualizar="(data) => (emergencia.observaciones = data)"
           ></tabla-observaciones>
-        </div>
+        </div> -->
 
         <!-- <div
           v-if="subtarea.cliente_id !== clientes.TELCONET"
@@ -208,7 +207,21 @@
             :mixin="mixinArchivoSeguimiento"
             :endpoint="endpoint"
             :permitir-eliminar="permitirSubir"
-          ></archivo-seguimiento>
+          >
+            <template #boton-subir>
+              <q-btn
+                v-if="mostrarBotonSubir"
+                color="positive"
+                push
+                no-caps
+                class="full-width q-mb-lg"
+                @click="subirArchivos()"
+              >
+                <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                Subir archivos seleccionados</q-btn
+              >
+            </template>
+          </archivo-seguimiento>
         </div>
       </div>
 
@@ -225,13 +238,13 @@
           <span>Descargar Excel</span>
         </q-btn> -->
 
-        <button-submits
+        <!-- <button-submits
           :accion="accion"
           @cerrar-modal="emit('cerrar-modal')"
           @cancelar="reestablecer()"
           @editar="editarSeguimiento()"
           @guardar="guardarSeguimiento()"
-        />
+        /> -->
       </div>
     </q-card>
 

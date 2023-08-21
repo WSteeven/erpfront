@@ -6,7 +6,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { apiConfig, endpoints } from 'config/api'
-import { computed, defineComponent, Ref, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, Ref, ref, watch } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
 import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
@@ -34,9 +34,11 @@ import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Emergencia } from '../domain/Emergencia'
 import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
-import TrabajoRealizado from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/TrabajoRealizado'
 import { clientes } from 'config/clientes'
 import { configuracionColumnasSumaMaterial } from '../domain/configuracionColumnasSumaMaterial'
+import ActividadRealizadaSeguimientoSubtarea from '../domain/ActividadRealizadaSeguimientoSubtarea'
+import { ActividadRealizadaSeguimientoSubtareaController } from '../infraestructure/ActividadRealizadaSeguimientoSubtareaController'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -74,6 +76,10 @@ export default defineComponent({
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoController())
     const { listar: listarSubtareas } = props.mixinModal.useComportamiento()
 
+    const mixinActividad = new ContenedorSimpleMixin(ActividadRealizadaSeguimientoSubtarea, new ActividadRealizadaSeguimientoSubtareaController())
+    const { entidad: actividad, listado: actividadesRealizadas } = mixinActividad.useReferencias()
+    const { guardar: guardarActividad, listar: listarActividadesRealizadas } = mixinActividad.useComportamiento()
+
     /* cargarVista(async () => {
       await obtenerListados({
         productos: new ProductoController(),
@@ -110,16 +116,28 @@ export default defineComponent({
     const refArchivoSeguimiento = ref()
     const subtarea = trabajoAsignadoStore.subtarea
     const fecha_historial = ref()
+    const fechasHistorialMaterialesUsados = ref([])
+
+    const cargando = new StatusEssentialLoading()
 
     const axios = AxiosHttpRepository.getInstance()
 
     /************
      * Init
      ************/
-    if (trabajoAsignadoStore.idEmergencia) {
+    /* if (trabajoAsignadoStore.idEmergencia) {
       consultar({ id: trabajoAsignadoStore.idEmergencia })
       accion.value = acciones.editar
-    }
+    } */
+
+    listarActividadesRealizadas({ subtarea_id: trabajoAsignadoStore.subtarea.id })
+    actualizarTablaMateriales()
+    obtenerFechasHistorialMaterialesUsados()
+    usarMaterialTarea.value = !!materialesTarea.value
+    // existeObservaciones.value = !!emergencia.observaciones.length
+    // existeMaterialesDevolucion.value = !!emergencia.materiales_devolucion.length
+
+    onMounted(() => refArchivoSeguimiento.value.listarArchivos({ subtarea_id: trabajoAsignadoStore.subtarea.id }))
 
     // obtenerMaterialesTarea()
     // obtenerMaterialesStock()
@@ -140,7 +158,15 @@ export default defineComponent({
           defecto: materialesTarea.value[posicion].cantidad_utilizada,
           tipo: 'number',
           validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + (entidad.cantidad_utilizada ?? 0),
-          accion: (data) => materialesTarea.value[posicion].cantidad_utilizada = data
+          accion: async (valor) => {
+            // materialesTarea.value[posicion].cantidad_utilizada = data
+            console.log('Enviando...')
+            entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
+            entidad.cantidad_utilizada = valor
+            console.log(entidad)
+            const modelo = await actualizarCantidadUtilizadaTarea(entidad)
+            materialesTarea.value[posicion] = modelo
+          }
         }
 
         prompt(config)
@@ -229,6 +255,21 @@ export default defineComponent({
       return response.data.modelo
     }
 
+    async function actualizarCantidadUtilizadaTarea(material) {
+      const params = {
+        tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
+        subtarea_id: trabajoAsignadoStore.subtarea.id,
+        empleado_id: obtenerIdEmpleadoResponsable(),
+        detalle_producto_id: material.detalle_producto_id,
+        cantidad_utilizada: material.cantidad_utilizada,
+        cantidad_anterior: material.cantidad_anterior,
+        fecha: fecha_historial.value,
+      }
+      const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_tarea, params)
+      const response: AxiosResponse = await axios.post(ruta)
+      return response.data.modelo
+    }
+
     function obtenerIdEmpleadoResponsable() {
       if (esLider) return authenticationStore.user.id
       else return trabajoAsignadoStore.idEmpleadoResponsable
@@ -253,6 +294,12 @@ export default defineComponent({
       })
     }
 
+    async function obtenerFechasHistorialMaterialesUsados() {
+      const ruta = axios.getEndpoint(endpoints.fechas_historial_materiales_usados) + '/' + trabajoAsignadoStore.subtarea.id
+      const response: AxiosResponse = await axios.get(ruta)
+      fechasHistorialMaterialesUsados.value = response.data.results
+    }
+
     // Antes de guardar y editar seguimiento
     function filtrarMaterialesTareaOcupados() {
       return materialesTarea.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
@@ -262,7 +309,7 @@ export default defineComponent({
       return materialesStock.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
     }
 
-    function ajustarCantidadesMaterialTareaUtilizadas() {
+    /* function ajustarCantidadesMaterialTareaUtilizadas() {
       const materialesTareaOcupados = emergencia.materiales_tarea_ocupados
 
       for (let i = 0; i < materialesTarea.value.length; i++) {
@@ -273,7 +320,7 @@ export default defineComponent({
           materialesTarea.value[i].cantidad_old = materialesTareaOcupados[indexOcupado].cantidad_utilizada
         }
       }
-    }
+    } */
 
     function ajustarCantidadesMaterialStockUtilizadas() {
       const materialesStockOcupados = emergencia.materiales_stock_ocupados
@@ -303,11 +350,16 @@ export default defineComponent({
       })
     }
 
-    function subirArchivos(idSeguimiento: number) {
-      refArchivoSeguimiento.value.subir({ seguimiento_id: idSeguimiento })
+    function subirArchivos() {
+      refArchivoSeguimiento.value.subir({ subtarea_id: trabajoAsignadoStore.subtarea.id })
     }
 
     let cerrarModal = true
+    function resetearFiltroHistorial() {
+      fecha_historial.value = null
+      historialMaterialTareaUsadoPorFecha.value = []
+    }
+
     function editarSeguimiento(cerrarVentanaModal = true) {
       if (permitirSubir) {
         cerrarModal = cerrarVentanaModal
@@ -318,10 +370,25 @@ export default defineComponent({
     }
 
     async function actualizarTablaMateriales() {
-      await obtenerMaterialesTarea().then(() => ajustarCantidadesMaterialTareaUtilizadas())
-      await obtenerMaterialesStock().then(() => ajustarCantidadesMaterialStockUtilizadas())
+      try {
+        cargando.activar()
+        materialesTarea.value = []
+        materialesStock.value = []
+        await obtenerMaterialesTarea() //.then(() => ajustarCantidadesMaterialTareaUtilizadas())
+        await obtenerMaterialesStock() // .then(() => ajustarCantidadesMaterialStockUtilizadas())
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
       // usarMaterialTarea.value = materialesTarea.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
       // usarStock.value = materialesStock.value.some((material: MaterialOcupadoFormulario) => material.cantidad_utilizada)
+    }
+
+    function guardarFilaActividad(data) {
+      actividad.hydrate(data)
+      actividad.subtarea = trabajoAsignadoStore.subtarea.id
+      guardarActividad(actividad)
     }
 
     /*************
@@ -338,12 +405,12 @@ export default defineComponent({
     /********
     * Hooks
     *********/
-    onConsultado(async () => {
+    /* onConsultado(async () => {
       actualizarTablaMateriales()
       existeObservaciones.value = !!emergencia.observaciones.length
       existeMaterialesDevolucion.value = !!emergencia.materiales_devolucion.length
       refArchivoSeguimiento.value.listarArchivos({ seguimiento_id: emergencia.id })
-    })
+    }) */
 
     onBeforeGuardar(() => {
       emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
@@ -355,17 +422,15 @@ export default defineComponent({
       emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
       emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
+      // emergencia.trabajo_realizado = nuevasActividades.value
     })
 
     onGuardado((id: number) => {
-      subirArchivos(id)
       listarSubtareas({ estado: estadosTrabajos.EJECUTANDO })
       emit('cerrar-modal', false)
     })
 
     onModificado((id: number) => {
-      subirArchivos(id)
-      console.log(cerrarModal)
       if (cerrarModal) emit('cerrar-modal', false)
     })
 
@@ -408,7 +473,7 @@ export default defineComponent({
       esCoordinador,
       descargarExcel,
       endpoint: endpoints.archivos_seguimientos,
-      TrabajoRealizado,
+      ActividadRealizadaSeguimientoSubtarea,
       configuracionColumnasTrabajoRealizado,
       verFotografia,
       clientes,
@@ -419,6 +484,12 @@ export default defineComponent({
       fecha_historial,
       rangoFechasHistorial,
       actualizarTablaMateriales,
+      actividadesRealizadas,
+      guardarFilaActividad,
+      mostrarBotonSubir: computed(() => refArchivoSeguimiento.value?.quiero_subir_archivos),
+      subirArchivos,
+      fechasHistorialMaterialesUsados,
+      resetearFiltroHistorial,
     }
   }
 })

@@ -94,7 +94,7 @@ export default defineComponent({
       await obtenerListados({
         tiposTrabajos: {
           controller: new TipoTrabajoController(),
-          params: { activo: 1 },
+          params: { activo: 1, campos: 'id,descripcion,cliente_id' },
         },
         tareas: new TareaController(),
         grupos: {

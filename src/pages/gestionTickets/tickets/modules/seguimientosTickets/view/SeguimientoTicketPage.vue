@@ -13,9 +13,9 @@
             :accion1="verFotografia"
             :mostrarAccion1Header="permitirSubir"
             @guardarFila="(fila) => guardarFilaActividad(fila)"
-            :editarFilaLocal="false"
           ></tabla-filas-dinamicas>
         </div>
+        <!-- :editarFilaLocal="false" -->
 
         <div class="col-12 q-mb-md">
           <archivo-seguimiento

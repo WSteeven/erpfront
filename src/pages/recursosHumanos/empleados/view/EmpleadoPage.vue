@@ -199,7 +199,6 @@
                 </template>
               </q-input>
             </div>
-
             <!--Tipo de Sangre -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Tipo de Sangre</label>
@@ -233,6 +232,7 @@
                 outlined
                 :input-debounce="0"
                 use-input
+                @blur="v$.estado_civil.$touch"
                 hint="Opcional"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
@@ -328,8 +328,8 @@
                 </template>
               </q-input>
             </div>
-                        <!-- Banco -->
-                        <div class="col-12 col-md-3 q-mb-md">
+            <!-- Banco -->
+            <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Banco</label>
               <q-select
                 v-model="empleado.banco"
@@ -361,7 +361,6 @@
                 </template>
               </q-select>
             </div>
-
             <!-- Canton -->
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Canton</label>
@@ -504,8 +503,8 @@
                   >
                   </q-input>
                 </div>
-                <!-- Talla de zapato -->
-                <div class="col-12 col-md-3">
+                   <!-- Talla de zapato -->
+                   <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Talla de zapato</label>
                   <q-input
                     v-model="empleado.talla_zapato"
@@ -617,6 +616,7 @@
                 outlined
                 use-input
                 input-debounce="0"
+                @blur="v$.area.$touch"
                 @filter="filtroDepartamentos"
                 :error="!!v$.area.$errors.length"
                 :option-value="(v) => v.id"
@@ -651,6 +651,7 @@
                 outlined
                 use-input
                 input-debounce="0"
+                @blur="v$.departamento.$touch"
                 @filter="filtroDepartamentos"
                 :error="!!v$.departamento.$errors.length"
                 :option-value="(v) => v.id"
@@ -685,6 +686,7 @@
                 outlined
                 use-input
                 input-debounce="0"
+                @blur="v$.cargo.$touch"
                 @filter="filtroCargos"
                 :error="!!v$.cargo.$errors.length"
                 error-message="Debes seleccionar un cargo"
@@ -718,6 +720,7 @@
                 multiple
                 dense
                 use-chips
+                @blur="v$.roles.$touch"
                 outlined
                 :error="!!v$.roles.$errors.length"
                 error-message="Debes seleccionar uno o varios roles"
@@ -879,7 +882,7 @@
                 </template>
               </q-input>
             </div>
-            <!-- Extensión -->
+            <!-- Antiguedad -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Antiguedad</label>
               <q-input
@@ -891,7 +894,16 @@
               >
               </q-input>
             </div>
-
+            <div class="col-12 col-md-3 q-mb-xl">
+              <q-checkbox
+                class="q-mt-lg q-pt-md"
+                v-model="empleado.tiene_grupo"
+                label="Pertenece a un grupo"
+                :disable="disabled"
+                outlined
+                dense
+              ></q-checkbox>
+            </div>
             <!-- Salario -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Salario</label>
@@ -911,29 +923,6 @@
                   </div>
                 </template>
               </q-input>
-            </div>
-            <!-- SUPA -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">SUPA</label>
-              <q-input
-                v-model="empleado.supa"
-                placeholder="Obligatorio"
-                type="number"
-                :disable="disabled"
-                outlined
-                dense
-              >
-              </q-input>
-            </div>
-            <div class="col-12 col-md-3 q-mb-xl">
-              <q-checkbox
-                class="q-mt-lg q-pt-md"
-                v-model="empleado.tiene_grupo"
-                label="Pertenece a un grupo"
-                :disable="disabled"
-                outlined
-                dense
-              ></q-checkbox>
             </div>
             <!-- Grupo -->
             <div v-if="empleado.tiene_grupo" class="col-12 col-md-3 q-mb-md">

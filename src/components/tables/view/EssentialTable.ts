@@ -144,9 +144,9 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    mostrarCantidadElementos:{
+    mostrarCantidadElementos: {
       type: Boolean,
-      default:true,
+      default: true,
     },
     mostrarFooter: {
       type: Boolean,
@@ -251,12 +251,12 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
-      console.log(data)
-      const posicion = props.datos.findIndex(
+      // console.log(data)
+      /*const posicion = props.datos.findIndex(
         (fila: any) => fila.id === data.id
-      )
+      )*/
 
-      if (props.editarFilaLocal) listado.value.splice(posicionFilaEditada.value, 1, data)
+      // if (props.editarFilaLocal) listado.value.splice(posicionFilaEditada.value, 1, data)
       limpiarFila()
       emit('guardar-fila', data)
     }

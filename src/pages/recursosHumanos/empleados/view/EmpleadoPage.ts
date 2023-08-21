@@ -68,7 +68,7 @@ export default defineComponent({
     const opcionesDepartamentos = ref([])
 
     cargarVista(async () => {
-      await obtenerListados({
+      obtenerListados({
         cantones: new CantonController(),
         cargos: new CargoController(),
         tipos_contrato: new TipoContratoController(),
@@ -112,13 +112,13 @@ export default defineComponent({
         minlength: minLength(10),
         maxlength: maxLength(10),
       },
+      direccion: { required },
       tipo_sangre: { required },
       estado_civil: { required },
       area: { required },
       tipo_contrato: { required },
       banco: { required },
       num_cuenta: { required },
-      direccion: { required },
       salario: { required },
       fecha_ingreso: { required },
       nombres: { required },
@@ -148,7 +148,6 @@ export default defineComponent({
     estado_civiles.value = listadosAuxiliares.estado_civiles
     areas.value = listadosAuxiliares.areas
     bancos.value = listadosAuxiliares.bancos
-
     /********
      * Hooks
      ********/
@@ -221,10 +220,10 @@ export default defineComponent({
       opciones_cargos,
       opciones_empleados,
       opcionesEstados,
+      bancos,
       maskFecha,
       estado_civiles,
       areas,
-      bancos,
       tipos_contrato,
       niveles_academicos,
       //metodos
