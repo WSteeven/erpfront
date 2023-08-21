@@ -1,11 +1,11 @@
 // Dependencias
 import { configuracionColumnasOrdenesCompras } from "../domain/configuracionColumnasOrdenCompra";
+import { configuracionColumnasProductos } from "../domain/configuracionColumnasProductos";
 import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
 import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
 import { required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watch, } from 'vue'
-import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 
 // Componentes
@@ -25,20 +25,19 @@ import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { acciones, accionesTabla, opcionesEstados } from "config/utils";
+import { acciones, accionesTabla } from "config/utils";
 import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
 import { CategoriaController } from "pages/bodega/categorias/infraestructure/CategoriaController";
 import { useAuthenticationStore } from "stores/authentication";
-import { formatearFecha, obtenerTiempoActual } from "shared/utils";
+import { formatearFecha,  } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
 import { ValidarListadoProductos } from "../application/validaciones/ValidarListadoProductos";
-import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
 import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
+import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
 
 
 export default defineComponent({
@@ -58,7 +57,6 @@ export default defineComponent({
         const preordenStore = usePreordenStore()
         const ordenCompraStore = useOrdenCompraStore()
 
-        const cargando = new StatusEssentialLoading()
 
         //variables
         const subtotal = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
@@ -80,7 +78,7 @@ export default defineComponent({
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorDetalles(orden, 'detalles')
+        } = useOrquestadorSelectorProductos(orden, 'productos')
         //Filtros y listados
         const { proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -123,6 +121,7 @@ export default defineComponent({
                 orden.tiene_preorden = true
                 cargarDatosPreorden()
             }
+            orden.autorizacion=1
         })
 
         /*****************************************************************************************
@@ -132,6 +131,7 @@ export default defineComponent({
             orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
             orden.solicitante = store.user.id
             soloLectura.value = false
+            orden.autorizacion=1
         })
         onConsultado(() => {
             if (accion.value === acciones.editar && store.user.id === orden.autorizador)
@@ -227,6 +227,7 @@ export default defineComponent({
             orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
             orden.descripcion = preordenStore.preorden.justificacion
             orden.pedido = preordenStore.preorden.pedido
+            preordenStore.preorden.listadoProductos.forEach((v)=> v.id=v.producto_id)
             orden.listadoProductos = preordenStore.preorden.listadoProductos
             orden.listadoProductos.forEach((item) => {
                 item.facturable = true
@@ -276,11 +277,10 @@ export default defineComponent({
          ******************************************************************************************/
         const btnEliminarFila: CustomActionTable = {
             titulo: 'Eliminar',
-            icono: 'bi-x',
+            icono: 'bi-trash',
             color: 'negative',
-            accion: ({ entidad, posicion }) => {
+            accion: ({ posicion }) => {
                 eliminar({ posicion })
-                // confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
             },
             visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
         }
@@ -345,6 +345,7 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasOrdenesCompras,
             accionesTabla,
             configuracionColumnasDetallesProductos,
+            configuracionColumnasProductos,
             configuracionColumnasItemOrdenCompra,
             //listados
             empleados,

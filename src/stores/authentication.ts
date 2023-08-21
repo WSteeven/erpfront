@@ -37,6 +37,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   // State
   const user = ref()
   const auth = ref(false)
+  const roles = ref()
   const permisos = ref()
   const nombre_usuario = ref()
   const saldo_actual = ref(0)
@@ -78,6 +79,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       LocalStorage.set('token', response.data.access_token)
       setUser(response.data.modelo)
+      roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
       cargarDatosLS()
@@ -255,6 +257,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     recuperacionCuenta,
     nombreUsuario,
     logout,
+    roles,
     permisos,
     can,
     getUser,

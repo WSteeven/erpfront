@@ -116,15 +116,48 @@
         <div class="col-12 col-md-12">
           <q-card flat bordered>
             <q-card-section>
-              <div class="text-h6">Tu calificación es: {{ calificacion_dada.calificacion }}/100 </div>
+              <div class="text-h6">
+                Tu calificación es: {{ calificacion_dada.calificacion }}/100
+              </div>
             </q-card-section>
             <q-card-section>
-              <div class="text">Fecha de calificación: <strong>{{ calificacion_dada.fecha_calificacion }}</strong>  </div>
+              <div class="text">
+                Fecha de calificación:
+                <strong>{{ calificacion_dada.fecha_calificacion }}</strong>
+              </div>
             </q-card-section>
           </q-card>
         </div>
       </div>
     </q-expansion-item>
+    <!-- carga de archivos de soporte -->
+    <div class="col-12 q-mb-md">
+      <gestor-archivos
+        ref="refArchivo"
+        :mixin="mixinArchivos"
+        :endpoint="endpoint"
+        :permitir-subir="false"
+        :permitir-eliminar="false"
+        :idModelo="21"
+      >
+        <template #boton-subir>
+          <q-btn
+            v-if="mostrarBotonSubir"
+            color="positive"
+            push
+            no-caps
+            class="full-width q-mb-lg"
+            @click="subirArchivos()"
+          >
+            <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+            Subir archivos seleccionados</q-btn
+          >
+        </template>
+      </gestor-archivos>
+    </div>
+    <div class="col-12">
+      <q-btn @click="cargarArchivos">Ver archivos</q-btn>
+    </div>
   </div>
 </template>
 <script src="./InfoCalificacionProveedorPage.ts" />

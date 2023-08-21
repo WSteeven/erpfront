@@ -15,17 +15,19 @@
   </div>
   <q-table
     ref="referencia"
+    :hide-header="grid"
     :grid="grid || $q.screen.xs"
-    flat
-    bordered
-    title="Treats"
-    :rows="datos"
     :columns="configuracionColumnas"
+    :rows="listado"
     :filter="filter"
+    @filter="handleFilter()"
+    row-key="id"
     :visible-columns="visibleColumns"
     :separator="$q.screen.xs ? 'horizontal' : separador"
     :hide-bottom="!mostrarFooter"
-    row-key="id"
+    flat
+    bordered
+    :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
     class="bg-body-table my-sticky-column-table borde"
@@ -385,6 +387,7 @@
             :accion9="accion9"
             :accion10="accion10"
             :propsTable="props"
+            :listado="listado"
           ></CustomButtons>
         </div>
       </q-td>
@@ -691,6 +694,7 @@
           :options-value="(v) => v.value"
           options-dense
           outlined
+          :disable="!permitirEditarCeldas"
           dense
           emit-value
           map-options

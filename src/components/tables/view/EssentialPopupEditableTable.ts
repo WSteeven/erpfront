@@ -1,6 +1,6 @@
 // Dependencias
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, nextTick, ref, watchEffect } from 'vue'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns, formatBytes } from 'shared/utils'
 import { TipoSeleccion, TipoSeparador } from 'config/utils'
@@ -156,6 +156,7 @@ export default defineComponent({
     'editar',
     'eliminar',
     'fila-modificada',
+    'onScroll',
   ],
   setup(props, { emit }) {
     const listado = ref()
@@ -174,6 +175,16 @@ export default defineComponent({
       rowsPerPage: props.altoFijo ? 15 : 0,
     })
 
+    watchEffect(() => listado.value = props.datos)
+
+
+    const rows = computed(() => listado.value.length - 1 ?? 0)
+    const pagesNumber = computed(() => {
+      return Math.ceil(listado.value.length / pagination.value.rowsPerPage)
+    })
+
+    const loading = ref(false)
+
     //Observers
     const seleccionar = () => emit('selected', selected.value)
     const tituloBotonFiltros = computed(() =>
@@ -186,9 +197,21 @@ export default defineComponent({
     const eliminar = (data: object) => emit('eliminar', data)
 
     //Funciones
-    function guardarCeldaEditada(fila){
-      // console.log('Fila',  fila)
-      emit('fila-modificada', fila)
+    function onScroll({ to }) {
+      if (!loading.value && to === rows.value) {
+        loading.value = true
+
+        setTimeout(() => {
+          nextTick(() => {
+            loading.value = false
+            emit('onScroll')
+          })
+        }, 500)
+      }
+    }
+
+    function guardarCeldaEditada(fila) {
+        emit('fila-modificada', fila)
     }
     function extraerVisible(
       accion: CustomActionTable,
@@ -206,9 +229,9 @@ export default defineComponent({
     function extraerIcono(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.icono === 'function'
         ? accion.icono({
-            entidad: propsTable.row,
-            posicion: propsTable.rowIndex,
-          })
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex,
+        })
         : accion?.icono
     }
     function filtrar() {
@@ -290,6 +313,7 @@ export default defineComponent({
       inFullscreen,
       mostrarFiltros,
       offset,
+      pagesNumber,
       pagination,
       seleccionar,
       extraerVisible,

@@ -3,7 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proforma"
-    :tab-options="tabOptionsOrdenCompra"
+    :tab-options="tabOptionsProformas"
     tabDefecto="1"
     :filtrar="filtrarProformas"
     :permitirEditar="puedeEditar"
@@ -21,7 +21,7 @@
             <q-input
               v-model="proforma.id"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
+              disable
               :readonly="disabled || soloLectura"
               outlined
               dense
@@ -75,7 +75,7 @@
               outlined
               :error="!!v$.autorizador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled || soloLectura"
+              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -141,7 +141,7 @@
               @filter="filtrarClientes"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled || soloLectura"
+              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
               :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value
@@ -164,7 +164,7 @@
               autogrow
               v-model="proforma.descripcion"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
+              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
               :error="!!v$.descripcion.$errors.length"
               outlined
               dense
@@ -189,7 +189,7 @@
               dense
               outlined
               :error="!!v$.forma.$errors.length"
-              :disable="disabled || soloLectura"
+              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
               :option-label="(v) => v.label"
               :option-value="(v) => v.value"
               emit-value
@@ -221,7 +221,7 @@
               dense
               outlined
               :error="!!v$.tiempo.$errors.length"
-              :disable="disabled || soloLectura"
+              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.label"
               :option-value="(v) => v.value"
@@ -245,7 +245,7 @@
 
           <!-- Observacion de autorizacion -->
           <div
-            v-if="store.user.id === proforma.per_autoriza_id"
+            v-if="store.user.id === proforma.autorizador_id"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
@@ -259,21 +259,12 @@
                   !(
                     esCoordinador ||
                     esActivosFijos ||
-                    store.user.id == proforma.per_autoriza_id
+                    store.user.id == proforma.autorizador_id
                   ))
               "
-              :error="!!v$.observacion_aut.$errors.length"
               outlined
               dense
             >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
             </q-input>
           </div>
 
@@ -298,6 +289,19 @@
               map-options
             >
             </q-select>
+          </div>
+
+           <!-- Causa de anulacion -->
+           <div class="col-12 col-md-3 q-mb-md" v-if="proforma.causa_anulacion">
+            <label class="q-mb-sm block">Causa de anulación</label>
+            <q-input
+              v-model="proforma.causa_anulacion"
+              autogrow
+              outlined
+              dense
+              disable
+            >
+            </q-input>
           </div>
 
           <!-- Modificar IVA -->
@@ -353,6 +357,7 @@
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
+              :hide-header="true"
               :accion1Header="btnAddRow"
               :accion1="btnEliminarFila"
               v-on:fila-modificada="calcularValores"
@@ -381,7 +386,7 @@
                 </q-item>
 
                 <q-item>
-                  <q-item-section>IVA ({{proforma.iva}} %): </q-item-section>
+                  <q-item-section>IVA ({{ proforma.iva }} %): </q-item-section>
                   <q-separator vertical></q-separator>
                   <q-item-section avatar>{{ iva }}</q-item-section>
                 </q-item>

@@ -78,7 +78,6 @@ export default defineComponent({
         //Obtener listados
         const empleados = ref([])
         const categorias = ref([])
-        const autorizaciones = ref([])
         const estados = ref([])
         const empleadosAutorizadores = ref([])
         cargarVista(async () => {
@@ -120,7 +119,7 @@ export default defineComponent({
             soloLectura.value = false
         })
         onConsultado(() => {
-            if (accion.value === acciones.editar && store.user.id === prefactura.autorizador)
+            if (accion.value === acciones.editar)
                 soloLectura.value = false
             else
                 soloLectura.value = true
@@ -136,8 +135,6 @@ export default defineComponent({
          ****************************************************************************************/
         const reglas = {
             cliente: { required },
-            // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
-            autorizador: { required },
             descripcion: { required },
             forma: { required },
             tiempo: { required },
@@ -161,7 +158,7 @@ export default defineComponent({
             tabSeleccionado.value = tab
             if (tab == '1') puedeEditar.value = true
             else puedeEditar.value = false
-            listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+            listar({ estado_id: tab, solicitante_id: store.user.id })
         }
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => prefactura.listadoProductos.splice(posicion, 1))
@@ -193,8 +190,6 @@ export default defineComponent({
             prefactura.tiene_proforma = !!proformaStore.proforma.id
             prefactura.proforma = proformaStore.proforma.id
             prefactura.solicitante = Number.isInteger(proformaStore.proforma.solicitante) ? proformaStore.proforma.solicitante : proformaStore.proforma.solicitante_id
-            prefactura.autorizador = Number.isInteger(proformaStore.proforma.autorizador) ? proformaStore.proforma.autorizador : proformaStore.proforma.autorizador_id
-            prefactura.autorizacion = Number.isInteger(proformaStore.proforma.autorizacion) ? proformaStore.proforma.autorizacion : proformaStore.proforma.autorizacion_id
             prefactura.cliente = Number.isInteger(proformaStore.proforma.cliente) ? proformaStore.proforma.cliente : proformaStore.proforma.cliente_id
             prefactura.forma = proformaStore.proforma.forma
             prefactura.tiempo = proformaStore.proforma.tiempo
@@ -297,10 +292,9 @@ export default defineComponent({
                 })
             },
             visible: ({ entidad }) => {
-                if (tabSeleccionado.value == 1) {
-                    return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
-                }
-                return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
+                
+                    return entidad.estado_id == 2 && entidad.solicitante_id == store.user.id
+                // return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
             }
         }
 
@@ -313,7 +307,6 @@ export default defineComponent({
         empleados.value = listadosAuxiliares.empleados
         categorias.value = listadosAuxiliares.categorias
         clientes.value = listadosAuxiliares.clientes
-        autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
         empleadosAutorizadores.value = listadosAuxiliares.autorizadores
         estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
 
@@ -326,7 +319,6 @@ export default defineComponent({
             empleados,
             categorias,
             clientes,
-            autorizaciones,
             estados,
             empleadosAutorizadores,
             opcionesForma,

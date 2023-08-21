@@ -14,6 +14,7 @@ export class Proforma extends EntidadAuditable {
     forma: string | null
     tiempo: string | null
     estado: number | null
+    causa_anulacion: number | null
     created_at: string | null
     iva: number
     listadoProductos: any[]
@@ -39,6 +40,7 @@ export class Proforma extends EntidadAuditable {
         this.created_at = null
         this.tiempo = null
         this.estado = null
+        this.causa_anulacion = null
         this.iva = 12
         this.listadoProductos = []
         this.tiene_preorden = false

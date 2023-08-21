@@ -1,5 +1,5 @@
 // Dependencies
-import { defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive, ref } from "vue";
 
 //Components
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -28,6 +28,7 @@ import { AxiosResponse } from "axios";
 import { useBotonesTablaCalificacionProveedor } from "../application/BotonesTablaCalificacionProveedor";
 import { Archivo } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo";
 import { ArchivoTicketController } from "pages/gestionTickets/tickets/infraestructure/ArchivoTicketController ";
+import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController";
 
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable, ArchivoSeguimiento },
@@ -39,7 +40,6 @@ export default defineComponent({
         const { confirmar, prompt, promptItems } = useNotificaciones()
 
 
-        const mixinArchivoProveedor = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
         /**************************************************************
          * Stores
          **************************************************************/
@@ -50,12 +50,13 @@ export default defineComponent({
         /************************************************************** 
          * Variables
          **************************************************************/
-        const refArchivoProveedor = ref()
+        const refArchivo = ref()
         const disabled = ref(false)
         // const criteriosBienes = ref<any>([])
         // const criteriosServicios = ref<any>([])
         const step = ref(1)
         const stepper = ref()
+        const detalleDepartamento = ref()
         const resultadosCalificacion = ref()
         const seleccionados = ref([]) //los criterios que son seleccionados en la primera tabla
         const {
@@ -138,7 +139,11 @@ export default defineComponent({
             }
             if (step.value == 4) {
                 if (verificarCalificacionesCriterios()) {
-                    confirmar('¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla', async () => {
+                    const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+                    console.log(result)
+                    detalleDepartamento.value = result
+                    console.log(detalleDepartamento.value)
+                    await confirmar('¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla', async () => {
                         console.log('Aqui se guardan los resultados en la base de datos')
                         console.log(criteriosBienes.value, criteriosServicios.value)
                         let calificacionBienes = 0
@@ -297,9 +302,13 @@ export default defineComponent({
             }
         }
 
+        function subirArchivos(){
+            refArchivo.value.subir()
+        }
 
 
         return {
+            mixin,
             stepper,
             step,
             columnasCriterios: configuracionColumnasCriteriosCalificaciones,
@@ -320,10 +329,10 @@ export default defineComponent({
             // botonPrevious,
 
             //manejo de archivos
-            refArchivoProveedor,
-            mixinArchivoProveedor,
+            refArchivo,
             endpoint: endpoints.archivos_proveedores,
             disabled,
+            mostrarBotonSubir: computed(() => refArchivo.value?.quiero_subir_archivos),
 
             //listados
             criterios: listadosAuxiliares.criterios, //tabla general 
@@ -345,6 +354,9 @@ export default defineComponent({
                 rowsPerPage: 15
                 // rowsNumber: xx if getting data from a server
             },
+
+            subirArchivos,
+            detalleDepartamento,
         }
     }
 })
