@@ -27,6 +27,9 @@ import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/Ca
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TipoContratoController } from 'pages/recursosHumanos/tipo-contrato/infraestructure/TipoContratoController'
 import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
+import { EstadoCivilController } from 'pages/recursosHumanos/estado-civil/infraestructure/EstadoCivilController'
+import { AreasController } from 'pages/recursosHumanos/areas/infraestructure/AreasController'
+import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -53,16 +56,9 @@ export default defineComponent({
     const opciones_roles = ref([])
     const opciones_cargos = ref([])
     const opciones_empleados = ref([])
-    const estado_civiles = ref([
-      { id: 1, nombre: 'Soltero' },
-      { id: 2, nombre: 'Casado' },
-      { id: 3, nombre: 'Divorciado' },
-      { id: 4, nombre: 'Viudo' },
-    ])
-    const areas = ref([
-      { id: 1, nombre: 'Administrativo' },
-      { id: 2, nombre: 'Tecnico' },
-    ])
+    const estado_civiles = ref([])
+    const bancos = ref([])
+    const areas = ref([])
     const tipos_contrato = ref([])
     const niveles_academicos = ref([
       { nombre: 'Estudio Primario' },
@@ -78,30 +74,32 @@ export default defineComponent({
         tipos_contrato: new TipoContratoController(),
         roles: {
           controller: new RolController(),
-          params: { campos: 'id,name' }
+          params: { campos: 'id,name' },
         },
         empleados: {
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos',
-            estado: 1
-          }
+            estado: 1,
+          },
         },
+        estado_civiles: new EstadoCivilController(),
+        bancos: new BancoController(),
+        areas: new AreasController(),
         grupos: {
           controller: new GrupoController(),
           params: { activo: 1 },
         },
-        departamentos:
-        {
+        departamentos: {
           controller: new DepartamentoController(),
           params: { activo: 1 },
-        }
+        },
       })
     })
 
     /*************
-    * Validaciones
-    **************/
+     * Validaciones
+     **************/
     const reglas = {
       identificacion: {
         required,
@@ -114,25 +112,25 @@ export default defineComponent({
         minlength: minLength(10),
         maxlength: maxLength(10),
       },
-      // dirrecion: { required },
-      //   tipo_sangre: { required },
-      //estado_civil: { required },
-      //   area: { required },
-      //  tipo_contrato: { required },
-      //   banco: { required },
-      //    num_cuenta: { required },
-      //     salario: { required },
-      //   fecha_ingreso: { required },
-      //   fecha_salida: { required },
+      direccion: { required },
+      tipo_sangre: { required },
+      estado_civil: { required },
+      area: { required },
+      tipo_contrato: { required },
+      banco: { required },
+      num_cuenta: { required },
+      salario: { required },
+      fecha_ingreso: { required },
+      fecha_salida: { required },
       nombres: { required },
       apellidos: { required },
       jefe: { required },
       email: { required },
-      //  correo_personal: { required },
+      correo_personal: { required },
       usuario: { required },
       fecha_nacimiento: { required },
       cargo: { required },
-      // observacion: { required },
+      observacion: { required },
       departamento: { required },
       roles: { required },
       estado: { required },
@@ -148,7 +146,9 @@ export default defineComponent({
     opciones_empleados.value = listadosAuxiliares.empleados
     tipos_contrato.value = listadosAuxiliares.tipos_contrato
     opcionesDepartamentos.value = listadosAuxiliares.departamentos
-
+    estado_civiles.value = listadosAuxiliares.estado_civiles
+    areas.value = listadosAuxiliares.areas
+    bancos.value = listadosAuxiliares.bancos
     /********
      * Hooks
      ********/
@@ -186,14 +186,17 @@ export default defineComponent({
         diffMonths--
         diffDays += lastMonthDate
       }
-      if (Number.isNaN(diffYears) || Number.isNaN(diffMonths) || Number.isNaN(diffDays)) {
+      if (
+        Number.isNaN(diffYears) ||
+        Number.isNaN(diffMonths) ||
+        Number.isNaN(diffDays)
+      ) {
         return null
       }
       return diffYears + ' Años ' + diffMonths + ' Meses ' + diffDays + ' Dias'
     })
 
-
-    onConsultado(() => empleado.tiene_grupo = !!empleado.grupo)
+    onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
 
     /************
      * Observers
@@ -218,6 +221,7 @@ export default defineComponent({
       opciones_cargos,
       opciones_empleados,
       opcionesEstados,
+      bancos,
       maskFecha,
       estado_civiles,
       areas,
@@ -237,7 +241,11 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+          opciones_empleados.value = listadosAuxiliares.empleados.filter(
+            (v) =>
+              v.nombres.toLowerCase().indexOf(needle) > -1 ||
+              v.apellidos.toLowerCase().indexOf(needle) > -1
+          )
         })
       },
       //filtro de cantones
@@ -250,7 +258,9 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_cantones.value = listadosAuxiliares.cantones.filter((v) => v.canton.toLowerCase().indexOf(needle) > -1)
+          opciones_cantones.value = listadosAuxiliares.cantones.filter(
+            (v) => v.canton.toLowerCase().indexOf(needle) > -1
+          )
         })
       },
       //filtro de cargos
@@ -263,7 +273,9 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_cargos.value = listadosAuxiliares.cargos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+          opciones_cargos.value = listadosAuxiliares.cargos.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
         })
       },
       filtroDepartamentos(val, update) {
@@ -275,10 +287,25 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+          opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
         })
-      }
-
+      },
+      filtrobancos(val, update) {
+        if (val === '') {
+          update(() => {
+            bancos.value = listadosAuxiliares.bancos
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opcionesDepartamentos.value = listadosAuxiliares.bancos.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
+        })
+      },
     }
-  }
+  },
 })
