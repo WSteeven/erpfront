@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasRolPago } from '../domain/configuracionColumnasRolPago'
-import { required } from '@vuelidate/validators'
+import { maxValue,minValue, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed, watchEffect, Ref } from 'vue'
 
@@ -307,6 +307,7 @@ export default defineComponent({
     const reglas = {
       empleado: { required },
       mes: { required },
+      porcentaje_anticipo: {minValue:minValue(3) ,maxValue:maxValue(40)}
     }
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
@@ -740,6 +741,14 @@ export default defineComponent({
         valor.id
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
+    watchEffect(() => {
+      if(rolpago.es_quincena){
+        const sueldo = rolpago.salario == null ? 0 : parseFloat(rolpago.salario);
+        const porcentaje = rolpago.porcentaje_anticipo == null ? 0 : rolpago.porcentaje_anticipo/100;
+        rolpago.sueldo = sueldo*porcentaje;
+      }
+    })
+
 
     return {
       removeAccents,
