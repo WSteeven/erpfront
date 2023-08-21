@@ -121,7 +121,6 @@ export default defineComponent({
       num_cuenta: { required },
       salario: { required },
       fecha_ingreso: { required },
-      fecha_salida: { required },
       nombres: { required },
       apellidos: { required },
       jefe: { required },
