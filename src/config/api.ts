@@ -9,6 +9,7 @@ export const endpoints = {
   // Autenticacion
   csrf_cookie: new Endpoint('api/csrf-cookie', false),
   usuarios: new Endpoint('usuarios'),
+  configuracion: new Endpoint('configuracion'),
   login: new Endpoint('usuarios/login'),
   logout: new Endpoint('usuarios/logout'),
   cambiarContrasena: new Endpoint('usuarios/cambiar-contrasena'),
