@@ -30,6 +30,7 @@ import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infr
 import { EstadoCivilController } from 'pages/recursosHumanos/estado-civil/infraestructure/EstadoCivilController'
 import { AreasController } from 'pages/recursosHumanos/areas/infraestructure/AreasController'
 import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
+import { maxValue, minValue } from '@vuelidate/validators'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -61,9 +62,20 @@ export default defineComponent({
     const areas = ref([])
     const tipos_contrato = ref([])
     const niveles_academicos = ref([
-      { nombre: 'Estudio Primario' },
-      { nombre: 'Estudio Secundario' },
-      { nombre: 'Titulo Superior' },
+      { nombre: 'ESTUDIO PRIMARIO' },
+      { nombre: 'ESTUDIO SECUNDARIO' },
+      { nombre: 'TITULO SUPERIOR' },
+    ])
+    const tipos_sangre = ref([
+      { nombre: 'A POSITIVO' },
+      { nombre: 'B POSITIVO' },
+      { nombre: 'AB POSITIVO' },
+      { nombre: 'O POSITIVO' },
+      { nombre: 'A NEGATIVO' },
+      { nombre: 'B NEGATIVO' },
+      { nombre: 'AB NEGATIVO' },
+      { nombre: 'O NEGATIVO' },
+      // Puedes agregar aquí más tipos de sangre si es necesario
     ])
     const opcionesDepartamentos = ref([])
 
@@ -118,7 +130,8 @@ export default defineComponent({
       area: { required },
       tipo_contrato: { required },
       banco: { required },
-      num_cuenta: { required },
+      num_cuenta: { required,minLength:minLength(12), maxLength:maxLength(20)},
+      nivel_academico: { required},
       salario: { required },
       fecha_ingreso: { required },
       nombres: { required },
@@ -221,6 +234,7 @@ export default defineComponent({
       opciones_empleados,
       opcionesEstados,
       bancos,
+      tipos_sangre,
       maskFecha,
       estado_civiles,
       areas,

@@ -200,24 +200,39 @@
               </q-input>
             </div>
             <!--Tipo de Sangre -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Tipo de Sangre</label>
-              <q-input
+              <q-select
                 v-model="empleado.tipo_sangre"
-                placeholder="Obligatorio"
+                :options="tipos_sangre"
+                transition-show="jump-up"
+                transition-hide="jump-down"
                 :disable="disabled"
-                :error="!!v$.tipo_sangre.$errors.length"
-                @blur="v$.tipo_sangre.$touch"
-                outlined
+                options-dense
                 dense
+                outlined
+                :input-debounce="0"
+                use-input
+                hint="Opcional"
+                @blur="v$.tipo_sangre.$touch"
+                :option-value="(v) => v.nombre"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
               >
                 <template v-slot:error>
                   <div v-for="error of v$.tipo_sangre.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
-              </q-input>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
+
             <!-- Estado Civil -->
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Estado Civil</label>
@@ -769,7 +784,7 @@
                 outlined
                 :input-debounce="0"
                 use-input
-                hint="Opcional"
+                @blur="v$.tipo_contrato.$touch"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
                 emit-value
@@ -801,14 +816,14 @@
                 outlined
                 :input-debounce="0"
                 use-input
-                hint="Opcional"
+                @blur="v$.nivel_academico.$touch"
                 :option-value="(v) => v.nombre"
                 :option-label="(v) => v.nombre"
                 emit-value
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.niveles_academicos.$errors" :key="error.$uid">
+                  <div v-for="error of v$.nivel_academico.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
