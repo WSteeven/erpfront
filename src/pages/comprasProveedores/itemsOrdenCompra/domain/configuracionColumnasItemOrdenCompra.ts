@@ -1,7 +1,5 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { ItemOrdenCompra } from "./ItemOrdenCompra";
-import { opcionesOfertas, opcionesUnidadesMedida } from "config/utils_compras_proveedores";
-import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
 
 export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>[] =[
     {
@@ -13,21 +11,21 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         editable: true,
         sortable: true,
     },
-    // {
-    //     name: 'producto',
-    //     field: 'producto',
-    //     label: 'producto',
-    //     align: 'left',
-    //     editable: false,
-    //     sortable: true
-    // },
+    {
+        name: 'producto',
+        field: 'producto',
+        label: 'Producto',
+        align: 'left',
+        editable: false,
+        sortable: true
+    },
     {
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
         style: 'max-width: 200px; overflow: auto;',
         align: 'left',
-        editable: false,
+        editable: true,
         sortable: true
     },
     {
@@ -40,6 +38,7 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
     },
     {
         name: 'precio_unitario',
+        type:'number',
         field: 'precio_unitario',
         label: 'Precio U',
         hint: 'Precio unitario',
@@ -55,7 +54,7 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         align: 'center',
         default: true,
         editable: true,
-        sortable: true
+        sortable: false
     },
     {
         name: 'grava_iva',
@@ -65,7 +64,7 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         type: 'toggle',
         default: true,
         editable: true,
-        sortable: true
+        sortable: false
     },
     {
         name: 'iva',

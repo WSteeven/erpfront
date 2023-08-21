@@ -358,8 +358,23 @@
           </div>
         </div>
 
-        <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-md">
-          Gráficos estadísticos del empleado consultado
+        <div
+          v-if="mostrarTitulosSeccion"
+          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
+        >
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+          </span>
+          <span class="text-grey-9"
+            >Gráficos estadísticos del empleado consultado</span
+          >
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+          </span>
         </div>
         <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
           <div class="col-12 col-md-6 text-center">
@@ -400,10 +415,23 @@
 
         <div
           v-if="mostrarTitulosSeccion && esResponsableDepartamento"
-          class="text-bold q-mb-xl"
+          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
         >
-          Gráficos estadísticos del departamento
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+          </span>
+          <span class="text-grey-9"
+            >Gráficos estadísticos del departamento</span
+          >
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+          </span>
         </div>
+
         <div v-if="esResponsableDepartamento" class="row q-col-gutter-y-xl">
           <!-- Asignados -->
           <div

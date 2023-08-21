@@ -5,6 +5,7 @@ export class Referencias<T> {
   tabs: Ref
   validador: Ref
   filtros: { [key: string]: any }
+  listadoArchivos: Ref<any[]>
   listado: Ref<any[]>
   currentPageListado: Ref<number>
   nextPageUrl: Ref<string | undefined | null>
@@ -33,6 +34,7 @@ export class Referencias<T> {
     })
 
     this.listado = ref([])
+    this.listadoArchivos = ref([])
     this.currentPageListado = ref(1)
     this.nextPageUrl = ref()
     this.accion = ref(acciones.nuevo)

@@ -1,13 +1,13 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
-import { acciones } from "config/utils";
-import { OrdenCompra } from "pages/comprasProveedores/ordenCompra/domain/OrdenCompra";
-import { defineStore } from "pinia";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { imprimirArchivo, notificarMensajesError } from "shared/utils";
-import { reactive, ref } from "vue";
+import { AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
+import { acciones } from 'config/utils';
+import { OrdenCompra } from 'pages/comprasProveedores/ordenCompra/domain/OrdenCompra';
+import { defineStore } from 'pinia';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { imprimirArchivo, notificarMensajesError } from 'shared/utils';
+import { reactive, ref } from 'vue';
 
 export const useOrdenCompraStore = defineStore('ordenCompra', () => {
     //State

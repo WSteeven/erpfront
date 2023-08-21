@@ -99,7 +99,7 @@
                   </q-item-section>
                 </q-item>
               </template>
-              </q-select>
+            </q-select>
           </div>
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.autorizador">
@@ -410,8 +410,20 @@
             </q-select>
           </div>
 
+          <!-- Causa de anulacion -->
+          <div class="col-12 col-md-3 q-mb-md" v-if="orden.causa_anulacion">
+            <label class="q-mb-sm block">Causa de anulación</label>
+            <q-input
+              v-model="orden.causa_anulacion"
+              autogrow
+              outlined
+              dense
+              disable
+            >
+            </q-input>
+          </div>
           <!-- Modificar IVA -->
-          <div class="col-12 col-md-3 q-mb-xl">
+          <div class="col-12 col-md-3 q-mb-xl" v-if="orden.estado != 4">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="orden.modificar_iva"
@@ -449,7 +461,8 @@
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
                     listarProductos({
-                      tipo_busqueda: 'all',
+                      search: criterioBusquedaProducto,
+                      'categoria_id[]': estructuraConsultaCategoria(),
                     })
                   "
                   @blur="
@@ -464,7 +477,7 @@
                 <q-btn
                   @click="
                     listarProductos({
-                      tipo_busqueda: 'all',
+                      search: criterioBusquedaProducto,
                       'categoria_id[]': estructuraConsultaCategoria(),
                     })
                   "
@@ -482,6 +495,7 @@
             </div>
           </div>
 
+          {{ orden.listadoProductos }}
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table
@@ -553,7 +567,7 @@
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListado"
-        :configuracion-columnas="configuracionColumnasDetallesProductos"
+        :configuracion-columnas="configuracionColumnasProductos"
         separador="cell"
         :datos="listadoProductos"
         tipo-seleccion="multiple"

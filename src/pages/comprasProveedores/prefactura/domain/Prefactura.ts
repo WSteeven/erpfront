@@ -5,8 +5,6 @@ export class Prefactura extends EntidadAuditable {
     solicitante: number | null
     cliente: number | null
     proforma: number | null
-    autorizador: number | null
-    autorizacion: number | null
     descripcion: string | null
     forma: string | null
     tiempo: string | null
@@ -26,8 +24,6 @@ export class Prefactura extends EntidadAuditable {
         this.solicitante = null
         this.cliente = null
         this.proforma = null
-        this.autorizador = null
-        this.autorizacion = null
         this.descripcion = null
         this.forma = null
         this.created_at = null

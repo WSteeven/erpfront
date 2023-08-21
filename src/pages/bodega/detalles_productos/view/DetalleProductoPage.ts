@@ -234,6 +234,7 @@ export default defineComponent({
     const addRow: CustomActionTable = {
       titulo: 'Agregar ítem',
       icono: 'bi-arrow-bar-down',
+      tooltip: 'Agregar elemento',
       color: 'positive',
       accion: () => {
         detalle.seriales.push('')

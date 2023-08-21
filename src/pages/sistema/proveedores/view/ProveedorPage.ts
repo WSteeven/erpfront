@@ -130,6 +130,7 @@ export default defineComponent({
         consultarDepartamento().then(() => {
           proveedorStore.idDepartamento = departamento.value[0].id
         })
+        proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
         // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
         modales.abrirModalEntidad('CalificacionProveedorPage')
@@ -151,7 +152,7 @@ export default defineComponent({
       }
     }
     const botonVerMiCalificacionProveedor: CustomActionTable = {
-      titulo: 'Ver calificación',
+      titulo: 'Ver mi calificación',
       icono: 'bi-eye',
       color: 'positive',
       accion: async ({ entidad, posicion }) => {
@@ -184,7 +185,8 @@ export default defineComponent({
         modales.abrirModalEntidad('InfoCalificacionProveedorPage')
       },
       visible: ({ posicion, entidad }) => {
-        return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (store.esAdministrador && entidad.estado_calificado !== estadosCalificacionProveedor.vacio) || (store.esCompras && entidad.estado_calificado !== estadosCalificacionProveedor.vacio)
+        console.log(store.user.permisos)
+        return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (store.esAdministrador && entidad.estado_calificado !== estadosCalificacionProveedor.vacio) || (store.esCompras && (entidad.estado_calificado !== estadosCalificacionProveedor.vacio||entidad.estado_calificado !== estadosCalificacionProveedor.parcial))
       }
     }
 

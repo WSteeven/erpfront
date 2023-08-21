@@ -55,10 +55,21 @@ export const likertCalificacion = [
   { label: 'MUY MALO', value: '1' },
 ]
 
+export const tabOptionsPrefactura: TabOption[] = [
+  { label: 'Creadas', value: '2' }, //estado CREADO
+  { label: 'Anuladas', value: '4' }, //estado ANULADO
+]
 export const tabOptionsOrdenCompra: TabOption[] = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
+]
+export const tabOptionsProformas: TabOption[] = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Canceladas', value: '3' },  //autorizacion CANCELADO
+  { label: 'Completadas', value: '4' }, //estado ANULADO
+  { label: 'Anuladas', value: '5' }  //autorizacion CANCELADO
 ]
 export const tabOptionsPreordenCompra: TabOption[] = [
   { label: 'Pendiente', value: 'PENDIENTE' },
