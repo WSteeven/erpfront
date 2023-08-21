@@ -45,6 +45,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       editar: this.editar.bind(this),
       editarParcial: this.editarParcial.bind(this),
       eliminar: this.eliminar.bind(this),
+      eliminarArchivo: this.eliminarArchivo.bind(this),
       reestablecer: this.reestablecer.bind(this),
       obtenerListados: this.obtenerListados.bind(this),
       cargarVista: this.cargarVista.bind(this),
@@ -228,9 +229,15 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   /**
    * Funcion para eliminar un archivo relacionado a un modelo
    */
-  // private async eliminarArchivo() {
-  //   // 
-  // }
+  private async eliminarArchivo(data:T, callback?:()=>void) {
+     this.notificaciones.confirmar('¿Está seguro que desea eliminar?', ()=>{
+      if(data.id===null){
+        return this.notificaciones.notificarAdvertencia('No se puede eliminar el recurso con id null')
+      }
+
+      // this.controller.eliminar
+     })
+  }
   /**
    * Funcion para listar todos los archivos relacionados a un modelo
    */

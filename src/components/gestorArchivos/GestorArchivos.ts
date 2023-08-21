@@ -64,7 +64,7 @@ export default defineComponent({
      * Mixin
     *********/
     const { listadoArchivos } = props.mixin.useReferencias()
-    const { eliminar, listarArchivos, guardarArchivos } = props.mixin.useComportamiento()
+    const { eliminarArchivo, listarArchivos, guardarArchivos } = props.mixin.useComportamiento()
 
     const { notificarCorrecto, notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
 
@@ -83,7 +83,7 @@ export default defineComponent({
       color: 'negative',
       visible: () => props.permitirEliminar,
       accion: async ({ entidad }) => {
-        confirmar('Esta operación es irreversible. El archivo se eliminará de forma instantánea.', () => eliminar(entidad))
+        confirmar('Esta operación es irreversible. El archivo se eliminará de forma instantánea.', () => eliminarArchivo(entidad))
       }
     }
 
