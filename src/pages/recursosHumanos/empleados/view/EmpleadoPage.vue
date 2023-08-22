@@ -537,7 +537,7 @@
                   <label class="q-mb-sm block">Talla de zapato</label>
                   <q-input
                     v-model="empleado.talla_zapato"
-                    :placeholder="empleado.tiene_grupo?'Obligatorio':'Opcional'"
+                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
                     type="number"
                     :disable="disabled"
                     :error="!!v$.talla_zapato.$errors.length"
@@ -559,33 +559,46 @@
                 <!-- Talla de camisa -->
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Talla de camisa</label>
-                  <q-input
+                  <q-select
                     v-model="empleado.talla_camisa"
-                    placeholder="obligatorio"
-                    type="number"
+                    :options="talla_letras"
+                    transition-show="jump-up"
+                    transition-hide="jump-down"
+                    :disable="disabled"
+                    options-dense
+                    dense
+                    outlined
+                    :input-debounce="0"
+                    use-input
+                    hint="Opcional"
                     :error="!!v$.talla_camisa.$errors.length"
                     @blur="v$.talla_camisa.$touch"
-                    :disable="disabled"
-                    outlined
-                    dense
+                    :option-value="(v) => v.nombre"
+                    :option-label="(v) => v.nombre"
+                    emit-value
+                    map-options
                   >
-                  <template v-slot:error>
-                      <div
-                        style="clear: inherit"
-                        v-for="error of v$.talla_camisa.$errors"
-                        :key="error.$uid"
-                      >
+                    <template v-slot:error>
+                      <div v-for="error of v$.talla_camisa.$errors" :key="error.$uid">
                         <div class="error-msg">{{ error.$message }}</div>
                       </div>
                     </template>
-                  </q-input>
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No hay resultados
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
                 </div>
+
                 <!-- Talla de guantes -->
-                <div class="col-12 col-md-3" v-if="empleado.tiene_grupo" >
+                <div class="col-12 col-md-3" v-if="empleado.tiene_grupo">
                   <label class="q-mb-sm block">Talla de guantes</label>
                   <q-input
                     v-model="empleado.talla_guantes"
-                    :placeholder="empleado.tiene_grupo?'Obligatorio':'Opcional'"
+                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
                     type="number"
                     :disable="disabled"
                     :error="!!v$.talla_guantes.$errors.length"
@@ -609,7 +622,7 @@
                   <label class="q-mb-sm block">Talla de pantalon</label>
                   <q-input
                     v-model="empleado.talla_pantalon"
-                    placeholder="obligatorio"
+                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
                     type="number"
                     :error="!!v$.talla_pantalon.$errors.length"
                     @blur="v$.talla_pantalon.$touch"
@@ -617,7 +630,7 @@
                     outlined
                     dense
                   >
-                  <template v-slot:error>
+                    <template v-slot:error>
                       <div
                         style="clear: inherit"
                         v-for="error of v$.talla_pantalon.$errors"
