@@ -654,6 +654,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
     },
     {
+      title: 'Configuracion General',
+      link: 'configuracion',
+      icon: 'bi-house-gear-fill',
+      can: store.can('puede.ver.configuracion_general') || store.esAdministrador,
+    },
+    {
       title: 'Proyectos y tareas',
       icon: 'bi-pin-angle-fill',
       can: store.esJefeTecnico || store.esAdministrador,
