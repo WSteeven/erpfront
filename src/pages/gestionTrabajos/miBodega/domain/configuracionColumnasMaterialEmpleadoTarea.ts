@@ -4,9 +4,9 @@ import { MaterialEmpleadoTarea } from './MaterialEmpleadoTarea'
 export const configuracionColumnasMaterialEmpleadoTarea: ColumnConfig<MaterialEmpleadoTarea>[] =
   [
     {
-      name: 'item',
-      field: 'item',
-      label: 'Items',
+      name: 'id',
+      field: 'id',
+      label: 'N°',
       align: 'left',
       sortable: true,
     },
@@ -14,6 +14,13 @@ export const configuracionColumnasMaterialEmpleadoTarea: ColumnConfig<MaterialEm
       name: 'detalle_producto',
       field: 'detalle_producto',
       label: 'Detalle del producto',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'serial',
+      field: 'serial',
+      label: 'Serial',
       align: 'left',
       sortable: true,
     },

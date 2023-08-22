@@ -2,19 +2,19 @@
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { required } from 'shared/i18n-validators'
-import { computed, defineComponent, reactive, ref } from 'vue'
-import { useVuelidate } from '@vuelidate/core'
 import { acciones, accionesTabla, departamentos, estadosTrabajos, tiposJornadas } from 'config/utils'
+import { computed, defineComponent, reactive, ref } from 'vue'
+import { required } from 'shared/i18n-validators'
+import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
+import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
-import TableView from 'components/tables/view/TableView.vue'
-import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
-import { Bar, Pie } from 'vue-chartjs'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import TableView from 'components/tables/view/TableView.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
+import { Bar, Pie } from 'vue-chartjs'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
