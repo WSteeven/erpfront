@@ -67,14 +67,14 @@ export default defineComponent({
       { nombre: 'TITULO SUPERIOR' },
     ])
     const tipos_sangre = ref([
-      { nombre: 'A POSITIVO' },
-      { nombre: 'B POSITIVO' },
-      { nombre: 'AB POSITIVO' },
-      { nombre: 'O POSITIVO' },
-      { nombre: 'A NEGATIVO' },
-      { nombre: 'B NEGATIVO' },
-      { nombre: 'AB NEGATIVO' },
-      { nombre: 'O NEGATIVO' },
+      { nombre: 'A +' },
+      { nombre: 'B +' },
+      { nombre: 'AB +' },
+      { nombre: 'O +' },
+      { nombre: 'A -' },
+      { nombre: 'B -' },
+      { nombre: 'AB -' },
+      { nombre: 'O -' },
       // Puedes agregar aquí más tipos de sangre si es necesario
     ])
     const opcionesDepartamentos = ref([])
@@ -130,7 +130,7 @@ export default defineComponent({
       area: { required },
       tipo_contrato: { required },
       banco: { required },
-      num_cuenta: { required,minLength:minLength(12), maxLength:maxLength(20)},
+      num_cuenta: { required, maxLength:maxLength(12)},
       nivel_academico: { required},
       salario: { required },
       fecha_ingreso: { required },
