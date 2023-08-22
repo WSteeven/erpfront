@@ -483,7 +483,7 @@
               </q-select>
             </div>
             <!-- Departamentos -->
-            <div class="col-12 col-md-3" v-if="false">
+            <!-- <div class="col-12 col-md-3" v-if="false">
               <label>Departamentos calificadores</label>
               <q-option-group
                 :options="
@@ -494,7 +494,7 @@
                 type="checkbox"
                 v-model="proveedor.departamentos"
               />
-            </div>
+            </div> -->
           </div>
         </q-expansion-item>
       </q-form>

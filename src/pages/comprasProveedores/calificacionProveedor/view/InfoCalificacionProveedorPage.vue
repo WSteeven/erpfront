@@ -138,7 +138,7 @@
         :endpoint="endpoint"
         :permitir-subir="false"
         :permitir-eliminar="false"
-        :idModelo="21"
+        :idModelo="1"
       >
         <template #boton-subir>
           <q-btn

@@ -35,6 +35,7 @@ import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
 import { useAuthenticationStore } from 'stores/authentication';
 import moment from 'moment';
 import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor';
+import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController';
 
 
 export default defineComponent({
@@ -58,7 +59,7 @@ export default defineComponent({
     const store = useAuthenticationStore()
 
     //variables
-    const departamento = ref()
+    const detalleDepartamentoProveedor = ref()
     const empresa: Empresa = reactive(new Empresa())
     const categorias = ref([])
     const departamentos = ref([])
@@ -125,13 +126,12 @@ export default defineComponent({
       icono: 'bi-stars',
       color: 'positive',
       accion: async ({ entidad, posicion }) => {
-        // console.log(posicion)
-        // console.log(entidad)
-        consultarDepartamento().then(() => {
-          proveedorStore.idDepartamento = departamento.value[0].id
-        })
+        proveedorStore.idDepartamento = store.user.departamento
         proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
+        consultarDetalleDepartamentoProveedor().then(() => {
+          proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
+        })
         // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
         modales.abrirModalEntidad('CalificacionProveedorPage')
 
@@ -156,10 +156,7 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'positive',
       accion: async ({ entidad, posicion }) => {
-        await consultarDepartamento().then(() => {
-          proveedorStore.idDepartamento = departamento.value[0].id
-
-        })
+        proveedorStore.idDepartamento = store.user.departamento
         proveedorStore.proveedor = entidad
         calificacionStore.idDepartamento = proveedorStore.idDepartamento
         calificacionStore.verMiCalificacion = true
@@ -178,15 +175,14 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'info',
       accion: async ({ entidad, posicion }) => {
-        consultarDepartamento().then(() => {
-          proveedorStore.idDepartamento = departamento.value[0].id
-        })
+        proveedorStore.idDepartamento = store.user.departamento
         proveedorStore.proveedor = entidad
         modales.abrirModalEntidad('InfoCalificacionProveedorPage')
       },
       visible: ({ posicion, entidad }) => {
-        console.log(store.user.permisos)
-        return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (store.esAdministrador && entidad.estado_calificado !== estadosCalificacionProveedor.vacio) || (store.esCompras && (entidad.estado_calificado !== estadosCalificacionProveedor.vacio||entidad.estado_calificado !== estadosCalificacionProveedor.parcial))
+        console.log(entidad)
+        // console.log(store.user.permisos)
+        return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (store.esAdministrador && entidad.estado_calificado !== estadosCalificacionProveedor.vacio) || (store.esCompras && (entidad.estado_calificado !== estadosCalificacionProveedor.vacio || entidad.estado_calificado !== estadosCalificacionProveedor.parcial))
       }
     }
 
@@ -206,9 +202,16 @@ export default defineComponent({
         consultarContactosProveedor()
 
     }
-    async function consultarDepartamento() {
-      const { result } = await new DepartamentoController().listar({ responsable_id: store.user.id })
-      departamento.value = result
+    // async function consultarDepartamento() {
+    //   const { result } = await new DepartamentoController().listar({ responsable_id: store.user.id })
+    //   departamento.value = result
+    // }
+
+    async function consultarDetalleDepartamentoProveedor() {
+      const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+      console.log('El detalle departamento proveedor es: ', result[0])
+      if (result) detalleDepartamentoProveedor.value = result[0]
+
     }
 
     async function consultarEmpresas() {
