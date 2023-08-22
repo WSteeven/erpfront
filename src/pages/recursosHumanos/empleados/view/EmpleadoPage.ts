@@ -142,11 +142,15 @@ export default defineComponent({
       usuario: { required },
       fecha_nacimiento: { required },
       cargo: { required },
-      observacion: { required },
       departamento: { required },
       roles: { required },
       estado: { required },
       grupo: { required: requiredIf(() => empleado.tiene_grupo) },
+      talla_zapato: { required: requiredIf(() => empleado.tiene_grupo )},
+      talla_camisa:{required},
+      talla_pantalon:{required},
+      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo )}
+
     }
 
     const v$ = useVuelidate(reglas, empleado)

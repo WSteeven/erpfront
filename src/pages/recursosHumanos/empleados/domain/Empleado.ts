@@ -52,6 +52,7 @@ export class Empleado extends EntidadAuditable {
   talla_camisa: string | null
   talla_guantes: string | null
   talla_pantalon: string | null
+  genero: string | null
 
   constructor() {
     super()
@@ -106,5 +107,6 @@ export class Empleado extends EntidadAuditable {
     this.talla_camisa= null
     this.talla_guantes= null
     this.talla_pantalon= null
+    this.genero = 'M'
   }
 }
