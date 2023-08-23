@@ -2,7 +2,7 @@
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { required } from '@vuelidate/validators'
+import { required } from 'shared/i18n-validators'
 import { computed, defineComponent, reactive, ref } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { accionesTabla, departamentos, tiposJornadas } from 'config/utils'

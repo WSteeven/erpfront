@@ -77,6 +77,15 @@ export default defineComponent({
       { nombre: 'O -' },
       // Puedes agregar aquí más tipos de sangre si es necesario
     ])
+    const talla_letras = ref([
+      { nombre: 'S' },
+      { nombre: 'M' },
+      { nombre: 'L' },
+      { nombre: 'XL' },
+      { nombre: 'XXL' },
+      { nombre: 'XXXL' }
+      // Puedes agregar aquí más tallas si es necesario
+    ])
     const opcionesDepartamentos = ref([])
 
     cargarVista(async () => {
@@ -142,11 +151,15 @@ export default defineComponent({
       usuario: { required },
       fecha_nacimiento: { required },
       cargo: { required },
-      observacion: { required },
       departamento: { required },
       roles: { required },
       estado: { required },
       grupo: { required: requiredIf(() => empleado.tiene_grupo) },
+      talla_zapato: { required: requiredIf(() => empleado.tiene_grupo )},
+      talla_camisa:{required},
+      talla_pantalon:{required: requiredIf (()=> empleado.tiene_grupo)},
+      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo )}
+
     }
 
     const v$ = useVuelidate(reglas, empleado)
@@ -235,6 +248,7 @@ export default defineComponent({
       opcionesEstados,
       bancos,
       tipos_sangre,
+      talla_letras,
       maskFecha,
       estado_civiles,
       areas,
