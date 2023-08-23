@@ -2,7 +2,7 @@
   <q-page padding>
     <q-card class="q-mb-md rounded no-border custom-shadow">
       <q-card-section>
-        <div class="text-right border-1 text-bold q-mb-lg">
+        <div class="border-1 text-bold q-mb-lg">
           Análisis de datos: Módulo de tickets
         </div>
 
@@ -132,13 +132,31 @@
             </q-select>
           </div>
         </div>
+      </q-card-section>
+    </q-card>
 
+    <q-card class="q-mb-md rounded no-border custom-shadow">
+      <q-card-section>
         <div
           v-if="mostrarTitulosSeccion"
-          class="text-primary text-bold q-mb-sm"
+          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-lg"
         >
-          Información de tickets creados y asignados del empleado seleccionado
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+          </span>
+          <span class="text-primary"
+            >Información de tickets creados y asignados del empleado
+            seleccionado</span
+          >
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+          </span>
         </div>
+
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
           <div class="col-12 col-md-6 q-mb-lg">
             <div class="row q-col-gutter-xs">
@@ -357,17 +375,21 @@
             </div>
           </div>
         </div>
+      </q-card-section>
+    </q-card>
 
+    <q-card class="q-mb-md rounded no-border custom-shadow">
+      <q-card-section>
         <div
           v-if="mostrarTitulosSeccion"
-          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
+          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-lg"
         >
           <span class="q-col-gutter-x-xs">
             <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
             <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
             <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
           </span>
-          <span class="text-grey-9"
+          <span class="text-primary"
             >Gráficos estadísticos del empleado consultado</span
           >
           <span class="q-col-gutter-x-xs">
@@ -376,6 +398,7 @@
             <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
           </span>
         </div>
+
         <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
           <div class="col-12 col-md-6 text-center">
             <div class="text-subtitle2">Tickets asignados</div>
@@ -412,7 +435,11 @@
             </div>
           </div>
         </div>
+      </q-card-section>
+    </q-card>
 
+    <q-card class="q-mb-md rounded no-border custom-shadow">
+      <q-card-section>
         <div
           v-if="mostrarTitulosSeccion && esResponsableDepartamento"
           class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
@@ -422,7 +449,7 @@
             <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
             <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
           </span>
-          <span class="text-grey-9"
+          <span class="text-primary"
             >Gráficos estadísticos del departamento</span
           >
           <span class="q-col-gutter-x-xs">
@@ -532,10 +559,28 @@
             </div>
           </div>
         </div>
+      </q-card-section>
+    </q-card>
 
-        <div v-if="mostrarTitulosSeccion" class="text-bold q-mb-sm">
-          Tablas de tickets
+    <q-card class="q-mb-md rounded no-border custom-shadow">
+      <q-card-section>
+        <div
+          v-if="mostrarTitulosSeccion"
+          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
+        >
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+          </span>
+          <span class="text-primary">Tablas de tickets</span>
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+          </span>
         </div>
+
         <div class="row q-col-gutter-sm q-py-md q-mb-lg">
           <!-- Responsable -->
           <div v-if="esResponsableDepartamento" class="col-12">
