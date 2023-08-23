@@ -1,5 +1,9 @@
 import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
-import { imprimirArchivo, isAxiosError, notificarMensajesError } from 'shared/utils'
+import {
+  imprimirArchivo,
+  isAxiosError,
+  notificarMensajesError,
+} from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
@@ -14,20 +18,28 @@ import { apiConfig, endpoints } from 'config/api'
 import { CambiarEstadoRolPago } from './CambiarEstadoRolPago'
 import { RolPagoMes } from 'pages/recursosHumanos/rol-pago-mes/domain/RolPagoMes'
 
-export const useBotonesImpresionTablaRolPago = (rolPago:RolPagoMes) => {
+export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
   /***********
-  * Stores
-  ***********/
+   * Stores
+   ***********/
   const authenticationStore = useAuthenticationStore()
+  const { promptItems } = useNotificaciones()
+
   /************
    * Variables
    ************/
-
+  const lista_tipo_reporte = [
+    { id: 'pdf', name: 'PDF' },
+    { id: 'xlsx', name: 'EXCEL' },
+  ]
   const btnImprimir: CustomActionTable = {
     titulo: ' ',
     icono: 'bi-printer',
     color: 'primary',
-    visible: ({ entidad }) =>  [estadosRolPago.EJECUTANDO,estadosRolPago.REALIZADO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos),
+    visible: ({ entidad }) =>
+      [estadosRolPago.EJECUTANDO, estadosRolPago.REALIZADO].includes(
+        entidad.estado
+      ) && authenticationStore.esRecursosHumanos,
     accion: ({ entidad }) => {
       generar_reporte(entidad)
     },
@@ -43,27 +55,50 @@ export const useBotonesImpresionTablaRolPago = (rolPago:RolPagoMes) => {
     imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
   }
 
-  async function generar_reporte_general(): Promise<void> {
+  async function generar_reporte_general(tipo: string): Promise<void> {
     const axios = AxiosHttpRepository.getInstance()
     const filename = 'rol_pago'
     const url_pdf =
       apiConfig.URL_BASE +
       '/' +
       axios.getEndpoint(endpoints.imprimir_rol_pago_general) +
-      rolPago.id
-    imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+      rolPago.id+'?tipo='+tipo
+
+    imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
   }
   const btnGenerarReporte: CustomActionTable = {
     titulo: 'Generar Reporte',
     icono: 'bi-file-earmark-ruled',
     color: 'primary',
     accion: () => {
-      generar_reporte_general()
+      const config: CustomActionPrompt = reactive({
+        mensaje: 'Confirme el tipo de reporte',
+        accion: (tipo) => {
+          generar_reporte_general(tipo)
+        },
+        requerido: false,
+        defecto: 'EXCEL',
+        tipo: 'radio',
+        items: lista_tipo_reporte.map((tipo) => {
+          return {
+            label: tipo.name,
+            value: tipo.id,
+          }
+        }),
+      })
+      promptItems(config)
+      //generar_reporte_general()
     },
   }
 
   return {
     btnImprimir,
-    btnGenerarReporte
+    btnGenerarReporte,
   }
+}
+function confirmarFinalizar(arg0: {
+  entidad: any
+  causa_intervencion_id: any
+}) {
+  throw new Error('Function not implemented.')
 }

@@ -198,14 +198,29 @@
           </div>
           <!-- carga de archivos de soporte -->
           <div class="col-12 q-mb-md">
-            <archivo-seguimiento
-              ref="refArchivoProveedor"
-              :mixin="mixinArchivoProveedor"
+            <gestor-archivos
+              ref="refArchivo"
+              :mixin="mixin"
               :endpoint="endpoint"
               :disable="disabled"
-              :permitir-eliminar="false"
-              :listar-al-guardar="false"
-            ></archivo-seguimiento>
+              :permitir-eliminar="true"
+              :idModelo="idDetalleDepartamentoProveedor"
+            >
+            <template #boton-subir>
+              <q-btn
+                v-if="mostrarBotonSubir"
+                color="positive"
+                push
+                no-caps
+                class="full-width q-mb-lg"
+                @click="subirArchivos()"
+              >
+                <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                Subir archivos seleccionados</q-btn
+              >
+
+            </template>
+          </gestor-archivos>
           </div>
         </div>
       </q-step>

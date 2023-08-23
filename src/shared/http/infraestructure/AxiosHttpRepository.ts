@@ -84,7 +84,7 @@ export class AxiosHttpRepository implements HttpRepository {
     return accessor
   }
 
-  private mapearArgumentos(args: Record<string, any>, filtrar = false): string {
+  public mapearArgumentos(args: Record<string, any>, filtrar = false): string {
     const query: any = []
 
     // comprueba si el valor es valido

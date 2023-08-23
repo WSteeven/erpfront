@@ -30,6 +30,7 @@ import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infr
 import { EstadoCivilController } from 'pages/recursosHumanos/estado-civil/infraestructure/EstadoCivilController'
 import { AreasController } from 'pages/recursosHumanos/areas/infraestructure/AreasController'
 import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
+import { maxValue, minValue } from '@vuelidate/validators'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -61,14 +62,34 @@ export default defineComponent({
     const areas = ref([])
     const tipos_contrato = ref([])
     const niveles_academicos = ref([
-      { nombre: 'Estudio Primario' },
-      { nombre: 'Estudio Secundario' },
-      { nombre: 'Titulo Superior' },
+      { nombre: 'ESTUDIO PRIMARIO' },
+      { nombre: 'ESTUDIO SECUNDARIO' },
+      { nombre: 'TITULO SUPERIOR' },
+    ])
+    const tipos_sangre = ref([
+      { nombre: 'A +' },
+      { nombre: 'B +' },
+      { nombre: 'AB +' },
+      { nombre: 'O +' },
+      { nombre: 'A -' },
+      { nombre: 'B -' },
+      { nombre: 'AB -' },
+      { nombre: 'O -' },
+      // Puedes agregar aquí más tipos de sangre si es necesario
+    ])
+    const talla_letras = ref([
+      { nombre: 'S' },
+      { nombre: 'M' },
+      { nombre: 'L' },
+      { nombre: 'XL' },
+      { nombre: 'XXL' },
+      { nombre: 'XXXL' }
+      // Puedes agregar aquí más tallas si es necesario
     ])
     const opcionesDepartamentos = ref([])
 
     cargarVista(async () => {
-      await obtenerListados({
+      obtenerListados({
         cantones: new CantonController(),
         cargos: new CargoController(),
         tipos_contrato: new TipoContratoController(),
@@ -112,13 +133,14 @@ export default defineComponent({
         minlength: minLength(10),
         maxlength: maxLength(10),
       },
+      direccion: { required },
       tipo_sangre: { required },
       estado_civil: { required },
       area: { required },
       tipo_contrato: { required },
       banco: { required },
-      num_cuenta: { required },
-      direccion: { required },
+      num_cuenta: { required, maxLength:maxLength(12)},
+      nivel_academico: { required},
       salario: { required },
       fecha_ingreso: { required },
       nombres: { required },
@@ -129,11 +151,15 @@ export default defineComponent({
       usuario: { required },
       fecha_nacimiento: { required },
       cargo: { required },
-      observacion: { required },
       departamento: { required },
       roles: { required },
       estado: { required },
       grupo: { required: requiredIf(() => empleado.tiene_grupo) },
+      talla_zapato: { required: requiredIf(() => empleado.tiene_grupo )},
+      talla_camisa:{required},
+      talla_pantalon:{required: requiredIf (()=> empleado.tiene_grupo)},
+      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo )}
+
     }
 
     const v$ = useVuelidate(reglas, empleado)
@@ -148,7 +174,6 @@ export default defineComponent({
     estado_civiles.value = listadosAuxiliares.estado_civiles
     areas.value = listadosAuxiliares.areas
     bancos.value = listadosAuxiliares.bancos
-
     /********
      * Hooks
      ********/
@@ -221,10 +246,12 @@ export default defineComponent({
       opciones_cargos,
       opciones_empleados,
       opcionesEstados,
+      bancos,
+      tipos_sangre,
+      talla_letras,
       maskFecha,
       estado_civiles,
       areas,
-      bancos,
       tipos_contrato,
       niveles_academicos,
       //metodos

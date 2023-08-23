@@ -372,7 +372,7 @@
       </q-toolbar>
 
       <div class="text-center">
-        <q-chip v-if="enCamino" class="bg-grey-4 q-mx-auto q-mb-md">
+        <q-chip v-if="enCamino" class="bg-grey-2 q-mx-auto q-mb-md">
           <q-icon
             name="bi-car-front-fill"
             color="positive"
@@ -382,7 +382,7 @@
             Destino:&nbsp;<b>{{ enCamino }}</b>
           </div>
           <q-separator vertical class="q-mx-md"></q-separator>
-          <i class="">VIAJE DE {{ motivo }}</i>
+          <span class="text-grey-8">VIAJE DE {{ motivo }}</span>
         </q-chip>
       </div>
     </q-header>
@@ -395,12 +395,8 @@
     >
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
-        <!--<img src="~assets/logo.svg" height="80" class="q-mx-auto block" /> -->
-        <img
-          src="~assets/logoJP_Borde.png"
-          height="80"
-          class="q-mx-auto block"
-        />
+        <!--<img src="~assets/logo.png" height="80" class="q-mx-auto block" /> -->
+        <img src="~assets/logo.png" height="80" class="q-mx-auto block" />
       </div>
 
       <!-- Drawer Body -->

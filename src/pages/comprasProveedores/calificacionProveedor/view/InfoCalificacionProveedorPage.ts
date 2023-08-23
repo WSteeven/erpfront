@@ -1,8 +1,11 @@
 // Dependencies
-import { defineComponent, ref } from "vue"
+import { defineComponent, ref, onMounted } from "vue"
 
 //Components
 import EssentialTable from "components/tables/view/EssentialTable.vue"
+import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
+
+//Logica y controladores
 import { useProveedorStore } from "stores/comprasProveedores/proveedor"
 import { useNotificaciones } from "shared/notificaciones"
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
@@ -13,34 +16,41 @@ import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pag
 import { useCalificacionProveedorStore } from "stores/comprasProveedores/calificacionProveedor"
 import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController"
 import { date } from "quasar"
+import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor"
+import { endpoints } from "config/api";
 
 //Logica y controladores
 
 
 export default defineComponent({
-    components: { EssentialTable, },
+    components: { EssentialTable, GestorArchivos },
     setup() {
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
         const { entidad: calificacion, listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
+        const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController())
+        const { listadoArchivos } = mixinArchivos.useReferencias()
+        const { listarArchivos } = mixinArchivos.useComportamiento()
         /**************************************************************
          * Stores
          **************************************************************/
         const proveedorStore = useProveedorStore()
         const calificacionProveedorStore = useCalificacionProveedorStore()
         const mostrarCalificacionPersonal = calificacionProveedorStore.verMiCalificacion
+
+
         /************************************************************** 
          * Variables
          **************************************************************/
         const calificacion_dada = ref()
-        const refArchivoProveedor = ref()
-        const disabled = ref(false)
+        const refArchivo = ref()
         const criteriosBienes = ref([])
         const criteriosServicios = ref([])
         const departamentosCalificadores = ref([])
-        const calificacionesDepartamentos = ref([])
+        const calificacionesDepartamentos = ref<any>([])
 
         calificacion_dada.value = { calificacion: 0, fecha_calificacion: Date.now() }
+
 
         cargarVista(async () => {
             obtenerListados({
@@ -57,7 +67,7 @@ export default defineComponent({
                 await calificacionProveedorStore.consultarDepartamentosCalificanProveedor()
                 departamentosCalificadores.value = calificacionProveedorStore.departamentosCalificadoresProveedor
             }
-            await calificacionProveedorStore.departamentosCalificadoresProveedor.forEach(async (v, index) => {
+            await calificacionProveedorStore.departamentosCalificadoresProveedor.forEach(async (v: any, index) => {
                 // console.log(v)
                 calificacionesDepartamentos.value[index] = [v, await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id)]
                 // console.log(await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id))
@@ -73,6 +83,18 @@ export default defineComponent({
 
         })
 
+
+        /************************************************************** 
+         * Init
+         **************************************************************/
+        // listarArchivos(21)
+        function cargarArchivos() {
+            refArchivo.value.listarArchivosAlmacenados(21)
+        }
+
+        onMounted(() =>
+            cargarArchivos()
+        )
         return {
             ofertas: listadosAuxiliares.ofertas,
             proveedor: proveedorStore.proveedor,
@@ -91,6 +113,10 @@ export default defineComponent({
 
             mostrarCalificacionPersonal,
             calificacion_dada,
+            refArchivo,
+            mixinArchivos,
+            endpoint: endpoints.archivos_proveedores,
+            cargarArchivos,
 
         }
 

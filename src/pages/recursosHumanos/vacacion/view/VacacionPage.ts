@@ -147,7 +147,7 @@ export default defineComponent({
         .then((response) => {
           const responseData = response.data
           if (responseData) {
-            const num_dias = parseInt(responseData.duracion.toString())
+            const num_dias = responseData.duracion != null?  parseInt(responseData.duracion.toString()):0
             vacacion.descuento_vacaciones =
               responseData.duracion != null ? Math.floor(num_dias / 24) : 0
             data.dias_descuento_vacaciones = Math.floor(
@@ -221,8 +221,6 @@ export default defineComponent({
         requiredIf: vacacion.numero_rangos == '1' ? true : false,
         maxValue: maxValue(15),
       },
-
-      solicitud: { required },
     }))
     const v$ = useVuelidate(reglas, vacacion)
     setValidador(v$.value)

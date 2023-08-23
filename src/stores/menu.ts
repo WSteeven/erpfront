@@ -611,16 +611,16 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
         },
         {
-          title: 'Prefacturas',
-          link: 'prefacturas',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.prefacturas') || store.esAdministrador,
-        },
-        {
           title: 'Proformas',
           link: 'proformas',
           icon: 'bi-circle',
           can: store.can('puede.ver.proformas') || store.esAdministrador,
+        },
+        {
+          title: 'Prefacturas',
+          link: 'prefacturas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.prefacturas') || store.esAdministrador,
         },
         {
           title: 'Proveedores',
@@ -652,6 +652,12 @@ export const useMenuStore = defineStore('menu', () => {
     {
       header: 'Administración',
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
+    },
+    {
+      title: 'Configuracion General',
+      link: 'configuracion',
+      icon: 'bi-house-gear-fill',
+      can: store.can('puede.ver.configuracion_general') || store.esAdministrador,
     },
     {
       title: 'Proyectos y tareas',

@@ -15,7 +15,6 @@ export class Vacacion extends EntidadAuditable {
   fecha_fin_rango1_vacaciones: string | null
   fecha_inicio_rango2_vacaciones: string | null
   fecha_fin_rango2_vacaciones: string | null
-  solicitud: string | null
   estado: string | null
   numero_rangos:number|string | null
   numero_dias: number | null
@@ -37,7 +36,6 @@ export class Vacacion extends EntidadAuditable {
     this.fecha_fin_rango1_vacaciones = null
     this.fecha_inicio_rango2_vacaciones = null
     this.fecha_fin_rango2_vacaciones = null
-    this.solicitud = null
     this.id_jefe_inmediato = null
     this.estado = null
     this.numero_rangos = 1

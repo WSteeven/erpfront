@@ -16,7 +16,7 @@ export class StatusEssentialLoading {
     // this.store.activarCargando()
     this.$q.loading.show({
       spinner: QSpinnerGears,
-      message: '<span class="text-white text-italic">La operación está en progreso.<br/><br/><small class="text-white text-italic q-py-xs q-px-sm bg-positive rounded-card">Espere por favor...</small></span>',
+      message: '<span class="text-white text-italic">La operación está en progreso.<br/><br/><small class="text-white text-italic q-py-xs q-px-sm bg-light-green rounded-card">Espere por favor...</small></span>',
       html: true,
       spinnerColor: 'white',
       customClass: 'bg-desenfoque-loading',

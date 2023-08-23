@@ -1,10 +1,10 @@
 // Dependencies
-import { defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive, ref } from "vue";
 
 //Components
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from "components/tables/view/EssentialTable.vue";
-import ArchivoSeguimiento from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue";
+import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
 
 // Logic and controllers
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -28,10 +28,13 @@ import { AxiosResponse } from "axios";
 import { useBotonesTablaCalificacionProveedor } from "../application/BotonesTablaCalificacionProveedor";
 import { Archivo } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo";
 import { ArchivoTicketController } from "pages/gestionTickets/tickets/infraestructure/ArchivoTicketController ";
+import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController";
+import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor";
 
 export default defineComponent({
-    components: { EssentialTable, EssentialSelectableTable, ArchivoSeguimiento },
+    components: { EssentialTable, EssentialSelectableTable, GestorArchivos },
     setup(props, { emit }) {
+        const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController())
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
         const { entidad: calificacion, listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
@@ -39,7 +42,6 @@ export default defineComponent({
         const { confirmar, prompt, promptItems } = useNotificaciones()
 
 
-        const mixinArchivoProveedor = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
         /**************************************************************
          * Stores
          **************************************************************/
@@ -50,12 +52,13 @@ export default defineComponent({
         /************************************************************** 
          * Variables
          **************************************************************/
-        const refArchivoProveedor = ref()
+        const refArchivo = ref()
         const disabled = ref(false)
         // const criteriosBienes = ref<any>([])
         // const criteriosServicios = ref<any>([])
         const step = ref(1)
         const stepper = ref()
+        const detalleDepartamento = ref()
         const resultadosCalificacion = ref()
         const seleccionados = ref([]) //los criterios que son seleccionados en la primera tabla
         const {
@@ -117,6 +120,7 @@ export default defineComponent({
          * tiempo con una declaración de "retorno" si se cumplen ciertas condiciones.
          */
         async function botonNext() {
+            console.log(proveedorStore.idDetalleDepartamento)
             // console.log('Clickeaste en Next, actual: ', step.value, ' siguiente step es: ', step.value + 1)
             if (criteriosBienes.value.length == 0 && criteriosServicios.value.length == 0) {
                 notificarAdvertencia('Debes seleccionar al menos un criterio del listado para poder avanzar.')
@@ -138,7 +142,11 @@ export default defineComponent({
             }
             if (step.value == 4) {
                 if (verificarCalificacionesCriterios()) {
-                    confirmar('¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla', async () => {
+                    const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+                    console.log(result)
+                    detalleDepartamento.value = result
+                    console.log(detalleDepartamento.value)
+                    await confirmar('¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla', async () => {
                         console.log('Aqui se guardan los resultados en la base de datos')
                         console.log(criteriosBienes.value, criteriosServicios.value)
                         let calificacionBienes = 0
@@ -297,9 +305,14 @@ export default defineComponent({
             }
         }
 
+        function subirArchivos(){
+            refArchivo.value.subir()
+        }
 
 
         return {
+            mixinArchivos,
+            mixin,
             stepper,
             step,
             columnasCriterios: configuracionColumnasCriteriosCalificaciones,
@@ -320,10 +333,10 @@ export default defineComponent({
             // botonPrevious,
 
             //manejo de archivos
-            refArchivoProveedor,
-            mixinArchivoProveedor,
+            refArchivo,
             endpoint: endpoints.archivos_proveedores,
             disabled,
+            mostrarBotonSubir: computed(() => refArchivo.value?.quiero_subir_archivos),
 
             //listados
             criterios: listadosAuxiliares.criterios, //tabla general 
@@ -332,6 +345,7 @@ export default defineComponent({
             ofertas: listadosAuxiliares.ofertas,
 
             proveedor: proveedorStore.proveedor,
+            idDetalleDepartamentoProveedor: computed(()=>proveedorStore.idDetalleDepartamento),
 
             seleccionados: listadoSeleccionados,
             criterioSeleccionado,
@@ -345,6 +359,9 @@ export default defineComponent({
                 rowsPerPage: 15
                 // rowsNumber: xx if getting data from a server
             },
+
+            subirArchivos,
+            detalleDepartamento,
         }
     }
 })

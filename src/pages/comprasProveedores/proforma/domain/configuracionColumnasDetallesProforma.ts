@@ -36,6 +36,7 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         field: 'precio_unitario',
         label: 'Precio U',
         hint: 'Precio unitario',
+        type: 'number',
         align: 'center',
         editable: true,
         sortable: true
