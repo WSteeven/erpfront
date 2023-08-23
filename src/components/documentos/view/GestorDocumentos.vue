@@ -1,5 +1,14 @@
 <template>
-
+  <div v-if="permitirSubir && !esObligatorio" class="col-12 col-md-3 q-mb-lg">
+    <br />
+    <q-checkbox
+      v-model="quiero_subir_archivos"
+      label="Quiero compartir archivos"
+      :disable="disable"
+      outlined
+      dense
+    ></q-checkbox>
+  </div>
   <div v-if="quiero_subir_archivos && !esConsultado" class="col-12 q-mb-sm">
     <q-uploader
       ref="refGestor"

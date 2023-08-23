@@ -1,6 +1,7 @@
 import { SelectorController } from '../infraestructure/SelectorController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { notificarMensajesError } from 'shared/utils'
 
 export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)
@@ -12,16 +13,23 @@ export function useSelector(selector: any) {
     }
     let result
     if (!criterioBusqueda) delete filtros.search
-    if (params) {
-      // Object.assign(filtros, params)
-      status.activar()
-      const { response } = await controller.listar(params)
-      result = response.data.results
-      status.desactivar()
-    } else {
-      status.activar()
-      const { response } = await controller.listar(filtros)
-      result = response.data.results
+    try{
+
+      if (params) {
+        // Object.assign(filtros, params)
+        status.activar()
+        const { response } = await controller.listar(params)
+        result = response.data.results
+        status.desactivar()
+      } else {
+        status.activar()
+        const { response } = await controller.listar(filtros)
+        result = response.data.results
+        status.desactivar()
+      }
+    }catch(e){
+      console.log('error', e)
+    }finally{
       status.desactivar()
     }
 

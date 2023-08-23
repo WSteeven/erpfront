@@ -5,7 +5,7 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
   {
     name: 'id',
     field: 'id',
-    label:'N°',
+    label: 'N°',
     align: 'left',
     sortable: true,
   }, 

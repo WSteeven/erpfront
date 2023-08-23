@@ -17,7 +17,7 @@
     </div>
     <div class="row q-col-gutter-sm q-mb-md q-mt-md">
       <!-- Estado -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-2">
         <label class="q-mb-sm block">Tipo de permiso</label>
         <q-toggle
           :label="permiso.permiso_personalizado ? 'PERSONALIZADO' : 'NORMAL'"
@@ -30,7 +30,7 @@
         />
       </div>
       <!-- Nombre -->
-      <div class="col-12 col-md-3 q-mb-md">
+      <div class="col-12 col-md-2 q-mb-md">
         <label class="q-mb-sm block">Nombre</label>
         <q-input
           hint="Escribe un nombre de un modulo"
@@ -50,12 +50,30 @@
         </q-input>
       </div>
       <!-- Checks de permisos -->
-      <div v-if="!permiso.permiso_personalizado" class="col-12 col-md-3">
+      <div v-if="!permiso.permiso_personalizado" class="col-12 col-md-5">
         <label class="block">Acciones</label>
         <div class="row q-pt-md">
-          <!-- Ver permiso -->
+          <!-- Autorizar permiso -->
           <q-checkbox
             class=""
+            v-model="permiso.autorizar"
+            label="Autorizar"
+            :disable="disabled || soloLectura"
+            outlined
+            dense
+          ></q-checkbox>
+          <!-- Acceder permiso -->
+          <q-checkbox
+            class="q-ml-lg"
+            v-model="permiso.acceder"
+            label="Acceder"
+            :disable="disabled || soloLectura"
+            outlined
+            dense
+          ></q-checkbox>
+          <!-- Ver permiso -->
+          <q-checkbox
+            class="q-ml-lg"
             v-model="permiso.ver"
             label="Ver"
             :disable="disabled || soloLectura"
@@ -106,7 +124,6 @@
           dense
           use-chips
           outlined
-          @blur="v$.roles.$touch"
           @filter="filtrarRol"
           use-input
           input-debounce="0"

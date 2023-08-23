@@ -80,6 +80,9 @@ export abstract class Contenedor<
   protected agregarElementoListadoActual(modelo: T): void {
     this.refs.listado.value = [modelo, ...this.refs.listado.value]
   }
+  protected agregarElementoListadoArchivosActual(modelo: T): void {
+    this.refs.listadoArchivos.value = [modelo, ...this.refs.listadoArchivos.value]
+  }
 
   protected eliminarElementoListaActual(modelo: T): void {
     const indexElemento = this.indexElementoEnLista(modelo.id)

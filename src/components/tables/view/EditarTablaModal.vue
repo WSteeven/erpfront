@@ -13,7 +13,7 @@
     >
       <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
-          <img src="~assets/logo.svg" />
+          <img src="~assets/logo.png" />
         </q-avatar>
 
         <q-toolbar-title>Editar fila</q-toolbar-title>

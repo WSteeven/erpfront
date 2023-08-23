@@ -170,7 +170,7 @@
       </div>
 
       <div
-        v-if="permitirFiltrar || true"
+        v-if="permitirFiltrar || (true && mostrarCantidadElementos)"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
         <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
@@ -293,6 +293,7 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion1Header.titulo }}</span>
+          <q-tooltip class="bg-dark">{{ accion1Header.tooltip }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 2 Header -->
@@ -928,6 +929,49 @@
         </q-chip>
       </q-td>
     </template>
+    <!-- colores en campo calificacion de proveedores -->
+    <template #body-cell-estado_calificado="props">
+      <q-td :props="props">
+        <q-chip v-if="props.value===estadosCalificacionProveedor.vacio">
+          <q-icon
+            name="bi-circle-fill"
+            color="blue-grey-6"
+            class="q-mr-xs"
+          />
+          {{ props.value }}
+        </q-chip>
+        <q-chip v-if="props.value===estadosCalificacionProveedor.pendiente" :class="{'bg-red-2':!$q.dark.isActive}">
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          />
+          {{ props.value }}
+        </q-chip>
+        <q-chip v-if="props.value===estadosCalificacionProveedor.parcial" :class="{'bg-yellow-2':!$q.dark.isActive}">
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          />
+          {{ props.value }}
+        </q-chip>
+        <q-chip v-if="props.value===estadosCalificacionProveedor.calificado" :class="{'bg-green-1':!$q.dark.isActive}">
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          />
+          {{ props.value }}
+        </q-chip>
+        </q-td>
+    </template>
+    <template #body-cell-facturable="props">
+      <q-td :props="props">
+        <q-chip v-if="props.value==true" :class="{'bg-green-1':!$q.dark.isActive}"><q-icon name="bi-toggle-on"/></q-chip>
+        <q-chip v-else :class="{'bg-red-1':!$q.dark.isActive}"><q-icon name="bi-toggle-off"/></q-chip>
+      </q-td>
+    </template>
     <!-- corregir esto para que sea dinamico -->
     <template #body-cell-condiciones="props">
       <q-td :props="props">
@@ -1268,6 +1312,24 @@
 
     <!-- tiene firma -->
     <template #body-cell-firma_url="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+
+        <!-- esta pagado -->
+        <template #body-cell-pago_couta="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

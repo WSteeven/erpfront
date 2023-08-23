@@ -17,6 +17,22 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.ticket.icono
       case iconos.devolucion.label:
         return iconos.devolucion.icono
+      case iconos.permiso_empleado.label:
+        return iconos.permiso_empleado.icono
+      case iconos.licencia_empleado.label:
+        return iconos.licencia_empleado.icono
+      case iconos.solicitud_prestamo_empleado.label:
+        return iconos.solicitud_prestamo_empleado.icono
+      case iconos.vacacion.label:
+        return iconos.vacacion.icono
+
+
+      case iconos.preorden.label:
+        return iconos.preorden.icono
+      case iconos.orden.label:
+        return iconos.orden.icono
+      case iconos.proforma.label:
+        return iconos.proforma.icono
     }
   }
 }

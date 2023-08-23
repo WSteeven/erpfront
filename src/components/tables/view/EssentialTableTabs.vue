@@ -52,6 +52,7 @@
         :accion3Header="accion3Header"
         :alto-fijo="altoFijo"
         :mostrarFooter="mostrarFooter"
+        :mostrarExportar="mostrarExportar"
         @consultar="consultar"
         @editar="editar"
         @eliminar="eliminar"
@@ -69,7 +70,6 @@
         :permitir-buscar="permitirBuscar"
         @filtrar="consultarTodos"
         @toggle-filtros="toggleFiltros"
-        :mostrarExportar="mostrarExportar"
       ></essential-table>
     </div>
   </div>
@@ -125,6 +125,7 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+
   accion2: {
     type: Object as () => CustomActionTable,
     required: false,

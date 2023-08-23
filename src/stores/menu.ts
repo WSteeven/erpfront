@@ -2,7 +2,6 @@ import { useAuthenticationStore } from './authentication'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
-import { link } from 'fs'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -31,7 +30,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: true
     },
     /*******************
-     * Modulo de tarreas
+     * Modulo de tareas
      *******************/
     {
       title: 'Proyectos y tareas',
@@ -475,28 +474,72 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.permiso_nomina'),
         },
-        /*  {
-            title: 'Rol de Pagos',
-            link: 'rol-pago',
-            icon: 'bi-circle',
-            can: store.can('puede.ver.rol_pago'),
-          },*/
-        /*  {
-            title: 'Prestamos',
-            icon: 'fa-solid fa-hand-holding-dollar',
-            can: true,//store.can('puede.ver.prestamo_empresarial'),
-            children: [
-              {
-                title: 'Prestamos',
-                link: 'prestamo-empresarial',
-                icon: 'bi-circle',
-                can:store.can('puede.ver.prestamo_empresarial'),
-              },
-            ]},*/
+        {
+          title: 'Rol de Pagos',
+          link: 'rol-pago-mes',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.rol_pago_mes'),
+        },
+        {
+          title: 'Licencia Empleado',
+          link: 'licencia-empleado',
+          icon: 'bi-person-vcard-fill',
+          can: store.can('puede.ver.licencia_empleado'),
+        },
+        {
+          title: 'Vacaciones',
+          link: 'vacacion',
+          icon: 'bi-umbrella',
+          can: store.can('puede.ver.vacacion'),
+        },
+        {
+          title: 'Familiares',
+          link: 'familiares',
+          icon: 'bi-people',
+          can: store.can('puede.ver.familiares'),
+        },
+        {
+          title: 'Extension Conyugal',
+          link: 'extension-conyugal',
+          icon: 'fa-solid fa-people-arrows',
+          can: store.can('puede.ver.extension_conyugal'),
+        },
+        {
+          title: 'Prestamos',
+          icon: 'fa-solid fa-hand-holding-dollar',
+          can: true,//store.can('puede.ver.prestamo_empresarial'),
+          children: [
+            {
+              title: 'Prestamos Empresariales',
+              link: 'prestamo-empresarial',
+              icon: 'bi-building',
+              can:store.can('puede.ver.prestamo_empresarial'),
+            },
+            {
+              title: 'Prestamos Hipotecario',
+              link: 'prestamo-hipotecario',
+              icon: 'bi-house',
+              can:store.can('puede.ver.prestamo_hipotecario'),
+            },
+            {
+              title: 'Prestamos Quirorafario',
+              link: 'prestamo-quirorafario',
+              icon: 'fa-solid fa-hands-holding',
+              can:store.can('puede.ver.prestamo_quirorafario'),
+            },
+            {
+              title: 'Solicitud de Prestamos Empresariales',
+              link: 'solicitud-prestamo-empresarial',
+              icon: 'fa-solid fa-file-signature',
+              can:store.can('puede.ver.solicitud_prestamo_empresarial'),
+            },
+          ]},
+
 
 
       ],
     },
+
     //Modulo de Vehículos
     {
       title: 'Vehículos',
@@ -537,9 +580,84 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    //Modulo de compras y proveedores
+    {
+      title: 'Compras y proveedores',
+      icon: 'bi-bag-fill',
+      can: store.can('puede.ver.modulo_compras') || store.esAdministrador,
+      children: [
+        {
+          title: 'Criterios de calificacion de proveedores',
+          link: 'criterios-calificaciones',
+          icon: 'bi-list-check',
+          can: store.can('puede.ver.criterios_calificaciones')  || store.esAdministrador,
+        },
+        // {
+        //   title: 'Empresas',
+        //   link: 'empresas',
+        //   icon: 'bi-building-fill-gear',
+        //   can: store.can('puede.ver.empresas')  || store.esAdministrador,
+        // },
+        {
+          title: 'Preordenes de compras',
+          link: 'preordenes-compras',
+          icon: 'bi-list',
+          can: store.can('puede.ver.preordenes_compras') || store.esAdministrador,
+        },
+        {
+          title: 'Ordenes de compras',
+          link: 'ordenes-compras',
+          icon: 'bi-cart-plus',
+          can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
+        },
+        {
+          title: 'Proformas',
+          link: 'proformas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.proformas') || store.esAdministrador,
+        },
+        {
+          title: 'Prefacturas',
+          link: 'prefacturas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.prefacturas') || store.esAdministrador,
+        },
+        {
+          title: 'Proveedores',
+          link: 'proveedores',
+          icon: 'bi-boxes',
+          can: store.can('puede.ver.proveedores') || store.esAdministrador,
+        },
+        {
+          title: 'Contactos de Proveedores',
+          link: 'contactos-proveedores',
+          icon: 'bi-person-fill-add',
+          can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
+        },
+        {
+          title: 'Logs',
+          icon: 'bi-file-text',
+          can: true,
+          children: [
+            {
+              title: 'Contactos de Proveedores',
+              link: 'logs-contactos-proveedores',
+              icon: 'bi-person-fill-add',
+              can: true,
+            }
+          ]
+        }
+      ]
+    },
     {
       header: 'Administración',
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
+    },
+    {
+      title: 'Configuracion General',
+      link: 'configuracion',
+      icon: 'bi-house-gear-fill',
+      can: store.can('puede.ver.configuracion_general') || store.esAdministrador,
     },
     {
       title: 'Proyectos y tareas',
@@ -600,18 +718,6 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'codigos-clientes',
           icon: 'bi-circle',
           can: store.can('puede.ver.codigos_clientes') && store.esActivosFijos,
-        },
-        {
-          title: 'Empresas',
-          link: 'empresas',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.empresas') && store.esActivosFijos,
-        },
-        {
-          title: 'Proveedores',
-          link: 'proveedores',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.proveedores'),
         },
         {
           title: 'Estados de transacciones',

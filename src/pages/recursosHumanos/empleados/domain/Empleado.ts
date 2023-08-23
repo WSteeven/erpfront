@@ -7,7 +7,7 @@ export class Empleado extends EntidadAuditable {
   telefono: string | null
   fecha_nacimiento: string | null
   tipo_sangre: string | null
-  dirrecion: string | null
+  direccion: string | null
   estado_civil: string | null
   jefe: string | null
   email: string | null
@@ -47,6 +47,12 @@ export class Empleado extends EntidadAuditable {
   nivel_academico: string | null
   grupo_id: number | null
   responsable_departamento: boolean
+  supa: number | null
+  talla_zapato: string | null
+  talla_camisa: string | null
+  talla_guantes: string | null
+  talla_pantalon: string | null
+  genero: string | null
 
   constructor() {
     super()
@@ -56,7 +62,7 @@ export class Empleado extends EntidadAuditable {
     this.telefono = null
     this.fecha_nacimiento = null
     this.tipo_sangre = null
-    this.dirrecion = null
+    this.direccion = null
     this.estado_civil = null
     this.jefe = null
     this.email = null
@@ -96,5 +102,11 @@ export class Empleado extends EntidadAuditable {
     this.nivel_academico = null
     this.observacion = null
     this.responsable_departamento = false
+    this.supa= null
+    this.talla_zapato= null
+    this.talla_camisa= null
+    this.talla_guantes= null
+    this.talla_pantalon= null
+    this.genero = 'M'
   }
 }

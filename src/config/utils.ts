@@ -5,6 +5,8 @@ export const maskFecha = 'DD-MM-YYYY'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
+export type TipoSeparador = 'none' | 'horizontal' | 'vertical' | 'cell' | undefined
+
 export const acciones = {
   nuevo: 'NUEVO',
   eliminar: 'ELIMINAR',
@@ -77,6 +79,28 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Aprobados', value: 'APROBADO' },
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
+]
+export const tabOptionsSolicitudPedido: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Validado', value: '4' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
+]
+export const tabOptionsLicencias: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
+]
+export const tabOptionsVacaciones: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Validado', value: '4' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
+]
+export const tabOptionsPermiso: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
@@ -207,6 +231,13 @@ export const estadosTrabajos = {
   FINALIZADO: 'FINALIZADO',
   //REAGENDADO: 'REAGENDADO',
 }
+export const estadosRolPago = {
+  CREADO: 'CREADO',
+  EJECUTANDO: 'EJECUTANDO',
+  CANCELADO: 'CANCELADO',
+  REALIZADO: 'REALIZADO',
+  FINALIZADO: 'FINALIZADO',
+}
 export const estadosGastos = {
   APROBADO: 1,
   RECHAZADO: 2,
@@ -232,21 +263,21 @@ export const estadosTrabajoArray = [
 ]
 
 export const rolesSistema = {
+  activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
+  bodega: 'BODEGA',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
-  gerente: 'GERENTE',
-  rrhh: 'RECURSOS HUMANOS',
-  empleado: 'EMPLEADO',
   coordinador: 'COORDINADOR',
   coordinadorBackup: 'COORDINADOR_BACKUP',
-  jefe_tecnico: 'JEFE TECNICO',
+  empleado: 'EMPLEADO',
   fiscalizador: 'FISCALIZADOR',
-  bodega: 'BODEGA',
-  activos_fijos: 'ACTIVOS FIJOS',
-  tecnico: 'TECNICO',
-  tecnico_lider: 'LIDER DE GRUPO',
+  gerente: 'GERENTE',
+  jefe_tecnico: 'JEFE TECNICO',
+  rrhh: 'RECURSOS HUMANOS',
   secretario: 'SECRETARIO',
+  tecnico_lider: 'LIDER DE GRUPO',
+  tecnico: 'TECNICO',
 }
 
 export const cargosSistema = {
@@ -334,3 +365,13 @@ export const departamentos = {
   sso: 'SSO',
   vehiculos: 'VEHICULOS',
 }
+export const opcionesUnidadesMedidas = [
+  { value: 1, label: 'UNIDAD' },
+  { value: 2, label: 'KILOGRAMO' },
+  { value: 3, label: 'METRO' },
+  { value: 4, label: 'METRO LINEAL' }, //PERSONA QUE ATIENDE
+  { value: 5, label: 'KILOMETRO' },
+  { value: 6, label: 'KILOMETRO CUBICO' },
+  { value: 7, label: 'LITRO' },
+  { value: 8, label: 'KIT' },
+]

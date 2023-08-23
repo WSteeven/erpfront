@@ -27,4 +27,32 @@ export const iconos = {
     label: 'TICKET',
     icono: 'bi-ticket-perforated'
   },
+  permiso_empleado:{
+    label: 'PERMISO EMPLEADO',
+    icono:'bi-person-fill-lock'
+  },
+  licencia_empleado:{
+    label: 'LICENCIA EMPLEADO',
+    icono:'bi-person-vcard-fill'
+  },
+  solicitud_prestamo_empleado:{
+    label: 'SOLICITUD PRESTAMO EMPRESARIAL',
+    icono:'fa-solid fa-file-signature'
+  },
+  vacacion:{
+    label: 'VACACION',
+    icono:'bi-umbrella'
+  },
+  preorden: {
+    label: 'PREORDEN',
+    icono: 'bi-list'
+  },
+  orden: {
+    label: 'ORDEN_COMPRA',
+    icono: 'bi-cart-plus'
+  },
+  proforma: {
+    label: 'PROFORMA',
+    icono: 'bi-receipt-cutoff'
+  },
 }

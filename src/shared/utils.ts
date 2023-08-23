@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
@@ -10,8 +8,6 @@ import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 import { useNotificaciones } from './notificaciones';
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { Ref } from 'vue'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -54,9 +50,7 @@ export function descargarArchivo(
   link.remove()
 }
 
-export function descargarArchivoUrl(
-  url: string,
-): void {
+export function descargarArchivoUrl(url: string): void {
   const link = document.createElement('a')
   link.href = apiConfig.URL_BASE + url
   link.target = '_blank'
@@ -263,10 +257,18 @@ export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
   try {
-    const fecha: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.fecha))
-    const hora: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.hora))
+    const fecha: AxiosResponse = await axios.get(
+      axios.getEndpoint(endpoints.fecha)
+    )
+    const hora: AxiosResponse = await axios.get(
+      axios.getEndpoint(endpoints.hora)
+    )
 
-    return { fecha: fecha.data, hora: hora.data, fecha_hora: fecha.data + ' ' + hora.data }
+    return {
+      fecha: fecha.data,
+      hora: hora.data,
+      fecha_hora: fecha.data + ' ' + hora.data,
+    }
   } catch (e: any) {
     throw new ApiError(e)
   }
@@ -318,7 +320,7 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  *
  * @returns mensaje que indica que no se puede imprimir el archivo
  */
-export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
+export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any) {
   const statusLoading = new StatusEssentialLoading()
   const { notificarAdvertencia } = useNotificaciones()
   statusLoading.activar()
@@ -328,11 +330,9 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     method: metodo,
     data: data,
     responseType: responseType,
-    headers: {
-      'Authorization': axiosHttpRepository.getOptions().headers.Authorization
-    }
+    headers: { 'Authorization': axiosHttpRepository.getOptions().headers.Authorization }
   }).then((response: HttpResponseGet) => {
-    console.log(response.data)
+    // console.log(response.data)
     if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
     else {
       const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
@@ -346,9 +346,7 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     }
   }).catch(error => {
     notificarAdvertencia(error)
-  })
-
-  statusLoading.desactivar()
+  }).finally(() => statusLoading.desactivar())
 
 }
 
@@ -370,22 +368,36 @@ export function ordernarListaString(a: string, b: string) {
 }
 
 export function obtenerUbicacion(onUbicacionConcedida) {
-
-  const onErrorDeUbicacion = err => {
+  const onErrorDeUbicacion = (err) => {
     console.log('Error obteniendo ubicación: ', err)
   }
 
   const opcionesDeSolicitud = {
     enableHighAccuracy: true, // Alta precisión
     maximumAge: 0, // No queremos caché
-    timeout: 5000 // Esperar solo 5 segundos
+    timeout: 5000, // Esperar solo 5 segundos
   }
 
-  navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud)
+  navigator.geolocation.getCurrentPosition(
+    onUbicacionConcedida,
+    onErrorDeUbicacion,
+    opcionesDeSolicitud
+  )
 }
 
 export function extraerRol(roles: string[], rolConsultar: string) {
   return roles.some((rol: string) => rol === rolConsultar)
+}
+
+/**
+ * La función "extraerPermiso" comprueba si existe un permiso dado en una lista de permisos.
+ * @param {string[]} permisos - Una matriz de cadenas que representan los permisos.
+ * @param {string} permisoConsultar - El parámetro `permisoConsultar` es una cadena que representa el
+ * permiso a consultar. Debe ser en base a la estructura de establecida para nombres de permisos (Ej. 'puede.ver.accion')
+ * @returns un valor booleano.
+ */
+export function extraerPermiso(permisos: string[], permisoConsultar: string) {
+  return permisos.some((permiso: string) => permiso === permisoConsultar)
 }
 
 export function formatearFecha(fecha: string) {
@@ -434,14 +446,14 @@ export function generarColorHexadecimalAleatorio() {
   const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 128 y 255
   const b = Math.floor(Math.random() * 128 + 128); // Componente azul entre 128 y 255
 
-  const colorHexadecimal = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  const colorHexadecimal = '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 
   return colorHexadecimal;
 }
 
 function componentToHex(component) {
   const hex = component.toString(16);
-  return hex.length === 1 ? "0" + hex : hex;
+  return hex.length === 1 ? '0' + hex : hex;
 }
 
 export function generarColorPastelAzulAleatorio() {
@@ -449,7 +461,7 @@ export function generarColorPastelAzulAleatorio() {
   const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 0 y 127
   const b = Math.floor(Math.random() * 128); // Componente azul entre 128 y 255
 
-  const colorHexadecimal = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  const colorHexadecimal = '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 
   return colorHexadecimal;
 }
@@ -465,7 +477,7 @@ export function generarColorAzulPastelClaro() {
   const brillo = Math.random() * 0.3 + 0.7;
 
   // Convertir a formato hexadecimal
-  const colorHex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  const colorHex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 
   // Aplicar el brillo al color hexadecimal
   const colorClaroHex = ajustarBrillo(colorHex, brillo);
@@ -520,3 +532,26 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
   }
   return false
 }
+
+
+/**
+ * NO FUNCIONA
+ * La función `removerCerosIzquierdaObjectArray` elimina los ceros iniciales de los valores numéricos
+ * en una matriz de objetos.
+ * @param objeto - El parámetro `objeto` es un objeto. 
+ * @returns una nueva matriz en la que a cada objeto se le quitan los ceros iniciales de sus valores
+ * numéricos.
+ */
+// export async function removerCerosIzquierdaFromObject(objeto) {
+//   console.log('antes', objeto)
+//   const newObjeto = {}
+//   for (const [key, value] of Object.entries(objeto)) {
+//     if (!isNaN(value))
+//       newObjeto[key] = parseInt(value, 10).toString()
+//     else
+//       newObjeto[key] = value
+//   }
+
+//   console.log('despues', newObjeto)
+//   return newObjeto
+// }

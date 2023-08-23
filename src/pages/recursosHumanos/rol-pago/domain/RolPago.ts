@@ -6,6 +6,7 @@ export class RolPago extends EntidadAuditable {
   empleado: number | null
   empleado_info: string | null
   salario: string | null
+  sueldo: number | null
   dias: number | null
   concepto_ingreso: number | null
   descuento_ley_info: number | null
@@ -29,6 +30,14 @@ export class RolPago extends EntidadAuditable {
   ingresos: any | null
   egresos: any | null
   roles: any | null
+  dias_permiso_sin_recuperar: number | null
+  estado: string | null
+  tieneDocumento: boolean | null
+  rol_pago_id : number | null
+  anticipo: string | null
+  iess: string | null
+  es_quincena : boolean | null
+porcentaje_anticipo: number | null
   constructor() {
     super()
     this.id = null
@@ -36,7 +45,8 @@ export class RolPago extends EntidadAuditable {
     this.empleado = null
     this.empleado_info = null
     this.salario = null
-    this.dias = 30
+    this.sueldo = null
+    this.dias = null
     this.concepto_ingreso = null
     this.concepto_ingreso_info = null
     this.descuento_ley_info = null
@@ -59,5 +69,13 @@ export class RolPago extends EntidadAuditable {
     this.ingresos = null
     this.egresos = null
     this.roles = null
+    this.dias_permiso_sin_recuperar = null
+    this.estado = null
+    this.tieneDocumento = false
+    this.rol_pago_id = null
+    this.anticipo = null
+    this.iess = null
+    this.es_quincena = false
+    this.porcentaje_anticipo = null
   }
 }

@@ -17,9 +17,16 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
     sortable: true
 },
 {
+  name: 'sueldo',
+  field: 'sueldo',
+  label: 'Sueldo',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'dias',
   field: 'dias',
-  label: 'Días',
+  label: 'Días Laborados',
   align: 'left',
   sortable: true
 },
@@ -66,6 +73,13 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   sortable: true
 },
 {
+  name: 'anticipo',
+  field: 'anticipo',
+  label: 'Anticipo',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'descuento_ley_info',
   field: 'descuento_ley_info',
   label: 'Descuentos de ley',
@@ -76,13 +90,6 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   name: 'descuento_general_info',
   field: 'descuento_general_info',
   label: 'Descuentos Generales',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'multa_info',
-  field: 'multa_info',
-  label: 'Multas',
   align: 'left',
   sortable: true
 },

@@ -38,13 +38,13 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .scroll-to-top-button {
   position: fixed;
   bottom: 20px;
   right: 20px;
   padding: 10px;
-  background-color: #007bff;
+  background-color: $primary;
   color: white;
   border: none;
   border-radius: 50%;
