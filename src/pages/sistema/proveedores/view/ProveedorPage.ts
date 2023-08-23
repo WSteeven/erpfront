@@ -182,7 +182,7 @@ export default defineComponent({
       visible: ({ posicion, entidad }) => {
         console.log(entidad)
         // console.log(store.user.permisos)
-        return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (store.esAdministrador && entidad.estado_calificado !== estadosCalificacionProveedor.vacio) || (store.esCompras && (entidad.estado_calificado !== estadosCalificacionProveedor.vacio || entidad.estado_calificado !== estadosCalificacionProveedor.parcial))
+        return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (entidad.estado_calificado == estadosCalificacionProveedor.parcial)// || (store.esCompras && (entidad.estado_calificado !== estadosCalificacionProveedor.vacio || entidad.estado_calificado !== estadosCalificacionProveedor.parcial || entidad.estado_calificado !== estadosCalificacionProveedor.pendiente))
       }
     }
 

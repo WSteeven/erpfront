@@ -68,8 +68,8 @@
     >
       <q-step
         :name="1"
-        title="Configura los parametros a calificar"
-        caption="Ten en cuenta lo que ofrece el proveedor"
+        title="Configura los criterios a calificar"
+        
         icon="settings"
         :done="step > 1"
       >

@@ -12,6 +12,7 @@ import { DescargableRepository } from 'shared/controller/infraestructure/listado
 import { FiltrableRepository } from 'shared/controller/infraestructure/FiltrableRepository'
 import { ListableFileRepository } from 'shared/controller/infraestructure/ListableFilesRepository'
 import { GuardableFileRepository } from 'shared/controller/infraestructure/GuardableFileRepository'
+import { EliminableFileRepository } from 'shared/controller/infraestructure/EliminableFileRepository'
 
 export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   implements Controller<T>
@@ -23,6 +24,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   private guardableFileRepository: GuardableFileRepository<T>
   private editableRepository: EditableRepository<T>
   private eliminableRepository: EliminableRepository<T>
+  private eliminableFileRepository: EliminableFileRepository<T>
   private listableRepository: ListableRepository<T>
   private listableFileRepository: ListableFileRepository<T>
   private filtrableRepository: FiltrableRepository<T>
@@ -34,6 +36,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     this.guardableRepository = new GuardableRepository(endpoint)
     this.guardableFileRepository = new GuardableFileRepository(endpoint)
     this.editableRepository = new EditableRepository(endpoint)
+    this.eliminableFileRepository = new EliminableFileRepository(endpoint)
     this.eliminableRepository = new EliminableRepository(endpoint)
     this.listableRepository = new ListableRepository(endpoint)
     this.listableFileRepository = new ListableFileRepository(endpoint)
@@ -74,6 +77,9 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     return await this.editableRepository.editarParcial(id, data, params)
   }
 
+  async eliminarFile(id: number, params?: any) {
+    return await this.eliminableFileRepository.eliminarFile(id)
+  }
   async eliminar(id: number, params?: any) {
     return await this.eliminableRepository.eliminar(id) //, params)
   }

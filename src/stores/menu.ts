@@ -587,17 +587,29 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_compras') || store.esAdministrador,
       children: [
         {
+          title: 'Empresas',
+          link: 'empresas',
+          icon: 'bi-building-fill-gear',
+          can: store.can('puede.ver.empresas')  || store.esAdministrador,
+        },
+        {
+          title: 'Proveedores',
+          link: 'proveedores',
+          icon: 'bi-boxes',
+          can: store.can('puede.ver.proveedores') || store.esAdministrador,
+        },
+        {
+          title: 'Contactos de Proveedores',
+          link: 'contactos-proveedores',
+          icon: 'bi-person-fill-add',
+          can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
+        },
+        {
           title: 'Criterios de calificacion de proveedores',
           link: 'criterios-calificaciones',
           icon: 'bi-list-check',
           can: store.can('puede.ver.criterios_calificaciones')  || store.esAdministrador,
         },
-        // {
-        //   title: 'Empresas',
-        //   link: 'empresas',
-        //   icon: 'bi-building-fill-gear',
-        //   can: store.can('puede.ver.empresas')  || store.esAdministrador,
-        // },
         {
           title: 'Preordenes de compras',
           link: 'preordenes-compras',
@@ -621,18 +633,6 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'prefacturas',
           icon: 'bi-circle',
           can: store.can('puede.ver.prefacturas') || store.esAdministrador,
-        },
-        {
-          title: 'Proveedores',
-          link: 'proveedores',
-          icon: 'bi-boxes',
-          can: store.can('puede.ver.proveedores') || store.esAdministrador,
-        },
-        {
-          title: 'Contactos de Proveedores',
-          link: 'contactos-proveedores',
-          icon: 'bi-person-fill-add',
-          can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
         },
         {
           title: 'Logs',

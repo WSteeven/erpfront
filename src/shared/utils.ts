@@ -534,24 +534,11 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
 }
 
 
-/**
- * NO FUNCIONA
- * La función `removerCerosIzquierdaObjectArray` elimina los ceros iniciales de los valores numéricos
- * en una matriz de objetos.
- * @param objeto - El parámetro `objeto` es un objeto. 
- * @returns una nueva matriz en la que a cada objeto se le quitan los ceros iniciales de sus valores
- * numéricos.
- */
-// export async function removerCerosIzquierdaFromObject(objeto) {
-//   console.log('antes', objeto)
-//   const newObjeto = {}
-//   for (const [key, value] of Object.entries(objeto)) {
-//     if (!isNaN(value))
-//       newObjeto[key] = parseInt(value, 10).toString()
-//     else
-//       newObjeto[key] = value
-//   }
 
-//   console.log('despues', newObjeto)
-//   return newObjeto
-// }
+export function calcularIva(subtotal: number, descuento: number, porcentaje_iva: number, decimales: number) {
+  return (((subtotal - descuento) * porcentaje_iva) / 100).toFixed(decimales)
+}
+
+export function calcularDescuento(subtotal: number, porcentaje_descuento: number, decimales: number) {
+  return ((subtotal * porcentaje_descuento) / 100).toFixed(decimales)
+}

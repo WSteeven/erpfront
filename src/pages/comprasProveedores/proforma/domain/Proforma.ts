@@ -23,6 +23,8 @@ export class Proforma extends EntidadAuditable {
     tiene_preorden: boolean
     tiene_pedido: boolean
     modificar_iva: boolean
+    copia_proforma: boolean
+    id_aux: number|null
 
     constructor() {
         super()
@@ -46,5 +48,7 @@ export class Proforma extends EntidadAuditable {
         this.tiene_preorden = false
         this.tiene_pedido = false
         this.modificar_iva = false
+        this.copia_proforma = false
+        this.id_aux = null
     }
 }

@@ -33,6 +33,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.orden.icono
       case iconos.proforma.label:
         return iconos.proforma.icono
+      case iconos.proveedor.label:
+        return iconos.proveedor.icono
     }
   }
 }

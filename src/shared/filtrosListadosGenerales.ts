@@ -127,7 +127,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     }
     update(() => {
       const needle = val.toLowerCase()
-      if (listadosAuxiliares.empresas) empresas.value = listadosAuxiliares.empresas.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
+      if (listadosAuxiliares.empresas) empresas.value = listadosAuxiliares.empresas.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.nombre_comercial.toLowerCase().indexOf(needle) > -1)
     })
   }
 

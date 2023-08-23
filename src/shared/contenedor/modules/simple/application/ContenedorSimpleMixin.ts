@@ -229,19 +229,30 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   /**
    * Funcion para eliminar un archivo relacionado a un modelo
    */
-  private async eliminarArchivo(data:T, callback?:()=>void) {
-     this.notificaciones.confirmar('¿Está seguro que desea eliminar?', ()=>{
-      if(data.id===null){
+  private async eliminarArchivo(data: T, callback?: () => void) {
+    this.notificaciones.confirmar('¿Está seguro que desea eliminar?', () => {
+      if (data.id === null) {
         return this.notificaciones.notificarAdvertencia('No se puede eliminar el recurso con id null')
       }
-
-      // this.controller.eliminar
-     })
+      this.controller.eliminarFile(data.id, this.argsDefault).then(({ response }) => {
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+        this.eliminarElementoListaActual(data)
+        this.reestablecer()
+        if (callback) callback()
+      }).catch((error) => {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, this.notificaciones)
+        } else {
+          this.notificaciones.notificarError(error.mensaje)
+        }
+      })
+    })
   }
   /**
    * Funcion para listar todos los archivos relacionados a un modelo
    */
-  private async listarArchivos(id:number, params?: ParamsType, append = false) {
+  private async listarArchivos(id: number, params?: ParamsType, append = false) {
     this.statusEssentialLoading.activar()
     try {
       const { result } = await this.controller.listarFiles(id, params)
