@@ -10,7 +10,7 @@
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
       <q-toolbar class="bg-body rounded-header border-bottom" rounded>
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img src="~assets/logoJP.png" />
         </q-avatar>
 
         <q-toolbar-title class="text-grey-8 text-subtitle1"

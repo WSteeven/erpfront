@@ -383,6 +383,8 @@
             </q-input>
           </div>
 
+
+          {{ proforma.listadoProductos }}
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table

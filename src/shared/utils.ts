@@ -534,11 +534,55 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
 }
 
 
+/**
+ * La función calcula el monto del descuento en función del subtotal y el porcentaje de descuento
+ * proporcionado.
+ * @param {number} subtotal - El subtotal es el monto total antes de aplicar cualquier descuento. Es un
+ * valor numérico.
+ * @param {number} porcentaje_descuento - El parámetro "porcentaje_descuento" representa el porcentaje
+ * de descuento que se aplicará al subtotal.
+ * @param {number} decimales - El parámetro "decimales" es el número de decimales al que se redondeará
+ * el resultado.
+ * @returns el importe del descuento calculado como una cadena con el número especificado de decimales.
+ */
+export function calcularDescuento(subtotal: number, porcentaje_descuento: number, decimales: number) {
+  return ((subtotal * porcentaje_descuento) / 100).toFixed(decimales)
+}
 
+/**
+ * La función calcula el monto del IVA (Impuesto al Valor Agregado) en función del subtotal, descuento,
+ * porcentaje de IVA y número de decimales.
+ * @param {number} subtotal - El subtotal es el monto total antes de que se apliquen descuentos o
+ * impuestos. Representa el monto base sobre el cual se realizarán los cálculos.
+ * @param {number} descuento - El parámetro "descuento" representa el monto del descuento aplicado al
+ * subtotal antes de calcular el impuesto.
+ * @param {number} porcentaje_iva - El parámetro "porcentaje_iva" representa el valor porcentual del
+ * IVA (Impuesto al Valor Agregado) a aplicar al subtotal luego de restar el descuento.
+ * @param {number} decimales - El parámetro "decimales" es el número de decimales al que se redondeará
+ * el resultado.
+ * @returns el valor calculado del IVA (Impuesto al Valor Agregado) en base a los parámetros dados.
+ */
 export function calcularIva(subtotal: number, descuento: number, porcentaje_iva: number, decimales: number) {
   return (((subtotal - descuento) * porcentaje_iva) / 100).toFixed(decimales)
 }
 
-export function calcularDescuento(subtotal: number, porcentaje_descuento: number, decimales: number) {
-  return ((subtotal * porcentaje_descuento) / 100).toFixed(decimales)
+
+/**
+ * La función "encontrarUltimoIdListado" toma una lista de objetos y devuelve el id del objeto con el
+ * valor de id más alto.
+ * @param {any} listado - El parámetro "listado" es una matriz de objetos. Cada objeto de la matriz
+ * tiene una propiedad llamada "id" que representa el identificador único del objeto.
+ * @returns el último valor de identificación de la matriz de listado dada.
+ */
+export function encontrarUltimoIdListado(listado: any) {
+  console.log(listado)
+  console.log(listado.slice(-1)[0])
+  const ultimoId = listado.reduce((ultimo, actual) => {
+    if (!ultimo || actual.id > ultimo.id)
+      return actual.id
+    else return ultimo.id
+  }, null)
+  console.log('Listado: '+listado)
+  console.log('utlimo id: '+ultimoId)
+  return ultimoId
 }
