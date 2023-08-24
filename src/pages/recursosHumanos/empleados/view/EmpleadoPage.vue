@@ -1215,6 +1215,17 @@
                 outlined
                 dense
               >
+<<<<<<< Updated upstream
+=======
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.observacion.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+>>>>>>> Stashed changes
               </q-input>
             </div>
           </div>
