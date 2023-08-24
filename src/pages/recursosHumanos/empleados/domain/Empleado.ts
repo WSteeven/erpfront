@@ -55,6 +55,7 @@ export class Empleado extends EntidadAuditable {
   genero: string | null
   esta_en_rol_pago:boolean | null
   realiza_factura:boolean | null
+  banco_info: string | null
 
   constructor() {
     super()
@@ -110,6 +111,7 @@ export class Empleado extends EntidadAuditable {
     this.talla_guantes= null
     this.talla_pantalon= null
     this.genero = 'M'
+    this.banco_info = null
     this.esta_en_rol_pago = true
     this.realiza_factura = false
   }

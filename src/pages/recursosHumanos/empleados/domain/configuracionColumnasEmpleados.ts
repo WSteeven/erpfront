@@ -82,6 +82,34 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
+      name: 'banco_info',
+      field: 'banco_info',
+      label: 'Banco',
+      align: 'left',
+      sortable: true
+  },
+  {
+    name: 'num_cuenta',
+    field: 'num_cuenta',
+    label: 'Numero de cuenta',
+    align: 'left',
+    sortable: true
+},
+{
+  name: 'fecha_ingreso',
+  field: 'fecha_ingreso',
+  label: 'Fecha de Ingreso',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'salario',
+  field: 'salario',
+  label: 'Salario',
+  align: 'left',
+  sortable: true
+},
+    {
         name: 'estado',
         field: 'estado',
         label: '¿Activo?',
