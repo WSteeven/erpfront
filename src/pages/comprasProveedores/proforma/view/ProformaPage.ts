@@ -171,9 +171,10 @@ export default defineComponent({
          * propiedades:
          */
         function calcularValores(data: any) {
-            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * proforma.iva / 100).toFixed(4) : 0
             data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
+            // data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
             data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
+            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)+Number(data.descuento)) * proforma.iva / 100).toFixed(4) : 0
             data.total = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva) - Number(data.descuento)).toFixed(4) : 0
         }
 
@@ -185,6 +186,20 @@ export default defineComponent({
             proforma.listadoProductos.forEach((fila) => {
                 calcularValores(fila)
             })
+        }
+        async function cargarProformaBD(){
+            if(proforma.id_aux){
+                const {result} = await new ProformaController().consultar(proforma.id_aux)
+                await console.log(result)
+                await proforma.hydrate(result)
+                proforma.id=null
+                proforma.solicitante=store.user.id
+                proforma.created_at = formatearFecha(new Date().getDate().toLocaleString())
+                proforma.autorizacion=1
+                proforma.estado=1
+            }else{
+                proforma.hydrate(new Proforma())
+            }
         }
 
         /*******************************************************************************************
@@ -322,6 +337,7 @@ export default defineComponent({
             calcularValores,
             filtrarClientes,
             actualizarListado,
+            cargarProformaBD,
 
 
             //variables computadas

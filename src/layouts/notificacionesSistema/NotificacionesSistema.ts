@@ -14,6 +14,7 @@ import { VacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPer
 import { PreordenCompraEvent } from 'pages/comprasProveedores/preordenCompra/application/PreordenCompraEvent'
 import { OrdenCompraEvent } from 'pages/comprasProveedores/ordenCompra/application/OrdenCompraEvent'
 import { ProformaEvent } from 'pages/comprasProveedores/proforma/application/ProformaEvent'
+import { ProveedorEvent } from 'sistema/proveedores/application/ProveedorEvent'
 
 
 export class NotificacionesSistema {
@@ -68,7 +69,9 @@ export class NotificacionesSistema {
     const vacacionPusherEvent = new VacacionPusherEvent()
     vacacionPusherEvent.start()
 
-
+    // Proveedor
+    const proveedorPusherEvent = new ProveedorEvent()
+    proveedorPusherEvent.start()
 
     // Preorden de compra
     const preordenCompraPusherEvent = new PreordenCompraEvent()

@@ -52,6 +52,16 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
+                      <q-item-label caption
+                        >{{ scope.opt.identificacion }} |{{ scope.opt.nombre_comercial }}</q-item-label
+                      >
+                    </q-item-section>
+                  </q-item> </template
+                >
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">

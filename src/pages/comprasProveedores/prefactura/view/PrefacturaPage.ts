@@ -184,6 +184,7 @@ export default defineComponent({
             } catch (error) {
                 notificarError('' + error)
             }
+            prefactura.created_at = formatearFecha(new Date().getDate().toLocaleString())
         }
 
         async function cargarDatosProforma() {

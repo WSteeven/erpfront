@@ -55,4 +55,8 @@ export const iconos = {
     label: 'PROFORMA',
     icono: 'bi-receipt-cutoff'
   },
+  proveedor: {
+    label: 'PROVEEDOR',
+    icono: 'bi-stars',
+  },
 }
