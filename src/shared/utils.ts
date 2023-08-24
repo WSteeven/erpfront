@@ -8,6 +8,7 @@ import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 import { useNotificaciones } from './notificaciones';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -533,6 +534,14 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
   return false
 }
 
+/**
+ * La función `ordenarEmpleados` toma una lista de empleados y los ordena alfabeticamente según sus apellidos.
+ * @param {Empleado[]} listadoEmpleados - Una matriz de objetos de tipo Empleado.
+ * @returns una variedad ordenada de empleados.
+ */
+export function ordenarEmpleados(listadoEmpleados: Empleado[]) {
+  return listadoEmpleados.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+}
 
 /**
  * La función calcula el monto del descuento en función del subtotal y el porcentaje de descuento
