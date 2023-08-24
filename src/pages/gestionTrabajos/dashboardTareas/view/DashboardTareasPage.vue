@@ -385,6 +385,46 @@
     >
       <q-card-section>
         <div
+          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
+        >
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+          </span>
+          <span class="text-primary"
+            >Gráficos estadísticos de los empleados subordinados</span
+          >
+          <span class="q-col-gutter-x-xs">
+            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+          </span>
+        </div>
+
+        <div class="row q-col-gutter-y-xl">
+          <!-- Asignados -->
+          <!-- v-if="ticketsPorDepartamentoEstadoAsignado.length" -->
+          <div class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Pendientes</div>
+            <div>
+              <!-- <Pie
+                :data="ticketsPorDepartamentoEstadoAsignadoBar"
+                :options="optionsPie"
+                v-if="ticketsPorDepartamentoEstadoAsignado.length"
+              /> -->
+            </div>
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+
+    <q-card
+      v-if="mostrarTitulosSeccion"
+      class="q-mb-md rounded no-border custom-shadow"
+    >
+      <q-card-section>
+        <div
           class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-lg"
         >
           <span class="q-col-gutter-x-xs">

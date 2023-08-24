@@ -85,6 +85,7 @@ export default defineComponent({
     const esResponsableDepartamento = ref(false)
     const ticketsEmpleadoResponsable = ref([])
     let departamento
+    const tabsTickets = ref('creados')
 
     // Cantidades
     const ticketsConSolucion = ref([])
@@ -331,13 +332,19 @@ export default defineComponent({
       // const controller = new TicketController()
       // ticketsEmpleadoResponsable.value = (await controller.listar({ responsable_id })).result
       if (filtro.fecha_inicio && filtro.fecha_fin) {
+        cargando.activar()
+
         const fechaInicio = formatearFechaSeparador(filtro.fecha_inicio, '/')
         const fechaFin = formatearFechaSeparador(filtro.fecha_fin, '/', { days: 1 })
         const consultaFecha = 'created_at[start]=' + fechaInicio + '&created_at[end]=' + fechaFin
-        const consultaParametros = 'responsable_id=' + responsable_id
+
+        const consultaParametros = tabsTickets.value === 'recibidos' ? 'responsable_id=' + responsable_id : 'solicitante_id=' + responsable_id
+
         const axios = AxiosHttpRepository.getInstance()
         const respuesta: any = await axios.get(axios.getEndpoint(endpoints.tickets) + '?' + consultaParametros + '&' + consultaFecha)
         ticketsEmpleadoResponsable.value = respuesta.data.results
+
+        cargando.desactivar()
       }
       //
     }
@@ -403,7 +410,20 @@ export default defineComponent({
       empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
     }
 
+    function clickTicketPorEstado(event, chartElements) {
+      console.log('click en grafico...')
+      console.log(event)
+      console.log(chartElements)
+      if (chartElements && chartElements.length > 0) {
+        // Aquí puedes acceder a los elementos del gráfico que se han hecho clic
+        const clickedElement = chartElements[0];
+        console.log(clickedElement);
+      }
+    }
+
     return {
+      tabsTickets,
+      clickTicketPorEstado,
       ordenarEmpleados,
       filtrarEmpleados,
       empleados,
