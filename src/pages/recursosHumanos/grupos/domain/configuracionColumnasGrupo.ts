@@ -15,6 +15,12 @@ export const configuracionColumnasGrupo: ColumnConfig<Grupo>[] = [
     align: 'left',
   },
   {
+    name: 'coordinador',
+    field: 'coordinador',
+    label: 'Coordinador',
+    align: 'left',
+  },
+  {
     name: 'activo',
     field: 'activo',
     label: 'Activo',

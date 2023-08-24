@@ -733,7 +733,31 @@
                 </template>
               </q-select>
             </div>
-
+        <!-- Estado -->
+        <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">¿Esta Enrolado?</label>
+              <q-toggle
+                :label="empleado.esta_en_rol_pago ? 'Enrolado' : 'No enrolado'"
+                v-model="empleado.esta_en_rol_pago"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">¿Factura?</label>
+              <q-toggle
+                :label="empleado.realiza_factura ? 'Factura' : 'No factura'"
+                v-model="empleado.realiza_factura"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
             <!-- Area -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Area</label>
@@ -1191,6 +1215,17 @@
                 outlined
                 dense
               >
+<<<<<<< Updated upstream
+=======
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.observacion.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+>>>>>>> Stashed changes
               </q-input>
             </div>
           </div>

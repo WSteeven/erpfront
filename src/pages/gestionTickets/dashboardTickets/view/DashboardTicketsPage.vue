@@ -135,10 +135,12 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mb-md rounded no-border custom-shadow">
+    <q-card
+      v-if="mostrarTitulosSeccion"
+      class="q-mb-md rounded no-border custom-shadow"
+    >
       <q-card-section>
         <div
-          v-if="mostrarTitulosSeccion"
           class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-lg"
         >
           <span class="q-col-gutter-x-xs">
@@ -378,10 +380,12 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mb-md rounded no-border custom-shadow">
+    <q-card
+      v-if="mostrarTitulosSeccion"
+      class="q-mb-md rounded no-border custom-shadow"
+    >
       <q-card-section>
         <div
-          v-if="mostrarTitulosSeccion"
           class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-lg"
         >
           <span class="q-col-gutter-x-xs">
@@ -404,9 +408,10 @@
             <div class="text-subtitle2">Tickets asignados</div>
             <div>
               <Pie
+                v-if="ticketsPorEstado.length"
                 :data="ticketsPorEstadoBar"
                 :options="optionsPie"
-                v-if="ticketsPorEstado.length"
+                @click="clickTicketPorEstado"
               />
             </div>
           </div>
@@ -438,10 +443,12 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mb-md rounded no-border custom-shadow">
+    <q-card
+      v-if="mostrarTitulosSeccion && esResponsableDepartamento"
+      class="q-mb-md rounded no-border custom-shadow"
+    >
       <q-card-section>
         <div
-          v-if="mostrarTitulosSeccion && esResponsableDepartamento"
           class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
         >
           <span class="q-col-gutter-x-xs">
@@ -562,10 +569,12 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mb-md rounded no-border custom-shadow">
+    <q-card
+      v-if="mostrarTitulosSeccion"
+      class="q-mb-md rounded no-border custom-shadow"
+    >
       <q-card-section>
         <div
-          v-if="mostrarTitulosSeccion"
           class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
         >
           <span class="q-col-gutter-x-xs">
@@ -617,7 +626,40 @@
               </template>
             </q-select>
           </div>
+        </div>
 
+        <div class="row q-col-gutter-sm q-pa-sm">
+          <div class="col-12 text-center">
+            <div class="text-bold q-mb-md">Seleccione una opción</div>
+            <q-btn-toggle
+              v-model="tabsTickets"
+              class="toggle-button"
+              spread
+              no-caps
+              rounded
+              glossy
+              toggle-color="positive"
+              @update:model-value="
+                obtenerTicketsEmpleadoResponsable(
+                  empleadoResponsableDepartamento
+                )
+              "
+              unelevated
+              :options="[
+                {
+                  label: 'Creados',
+                  value: 'creados',
+                },
+                {
+                  label: 'Recibidos',
+                  value: 'recibidos',
+                },
+              ]"
+            />
+          </div>
+        </div>
+
+        <div class="row q-col-gutter-sm q-py-md q-mb-lg">
           <div class="col-12">
             <essential-table
               v-if="ticketsEmpleadoResponsable.length"

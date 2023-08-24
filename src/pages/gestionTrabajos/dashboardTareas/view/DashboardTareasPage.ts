@@ -1,12 +1,13 @@
 // Dependencias
+import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
-import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { acciones, accionesTabla, estadosTrabajos, tiposJornadas } from 'config/utils'
+import { obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { computed, defineComponent, reactive, ref } from 'vue'
+import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { modosAsignacionTrabajo } from 'config/tareas.utils'
 
 // Componentes
 import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
@@ -20,7 +21,6 @@ import { Bar, Pie } from 'vue-chartjs'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
-import { formatearFechaSeparador, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
@@ -28,8 +28,9 @@ import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/a
 import { configuracionColumnasSubtarea } from 'pages/gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
+import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { DashboardTareaController } from '../infraestructure/DashboardTareaController'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
@@ -37,9 +38,6 @@ import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { estadosTickets } from 'config/tickets.utils'
 import datalabels from 'chartjs-plugin-datalabels'
 import { useSubtareaStore } from 'stores/subtarea'
-import { endpoints } from 'config/api'
-import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
-import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad },
@@ -57,9 +55,15 @@ export default defineComponent({
       },
     };
 
+    /*********
+     * Stores
+     *********/
     const subtareaStore = useSubtareaStore()
-    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
+    /********
+     * Mixin
+     ********/
+    // mixin reporte subtareas realizadas
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
       new DashboardTareaController()
@@ -67,6 +71,11 @@ export default defineComponent({
 
     const { listadosAuxiliares, listado } = mixin.useReferencias()
     const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+
+    // mixin subtarea
+    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+    const { listado: subtareasResponsable } = mixinSubtarea.useReferencias()
+    const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -260,6 +269,7 @@ export default defineComponent({
 
           subtareas.value = result.subtareas
 
+          // Cantidades
           cantidadTareasActivas.value = result.cantidadTareasActivas
           cantidadTareasFinalizadas.value = result.cantidadTareasFinalizadas
           cantidadSubtareasAgendadas.value = result.cantidadSubtareasAgendadas
@@ -270,13 +280,12 @@ export default defineComponent({
           cantidadSubtareasRealizadas.value = result.cantidadSubtareasRealizadas
           cantidadSubtareasFinalizadas.value = result.cantidadSubtareasFinalizadas
 
+          // Graficos
           cantidadesPorEstadosSubtareas.value = result.cantidadesPorEstadosSubtareas
           const labels3 = result.cantidadesPorEstadosSubtareas.map((item) => item.estado)
           const valores3 = result.cantidadesPorEstadosSubtareas.map((item) => item.total_subtareas)
           const colores3 = result.cantidadesPorEstadosSubtareas.map((item) => mapearColor(item.estado))
           cantidadesPorEstadosSubtareasBar.value = mapearDatos(labels3, valores3, 'Cantidades de subtareas por estados', colores3)
-
-
         } catch (e) {
           console.log(e)
         } finally {
@@ -329,12 +338,6 @@ export default defineComponent({
     function ordenarEmpleadosResponsables() {
       empleadosResponsables.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
     }
-
-    // ***************
-    // -- Mixin subtarea
-    // const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
-    const { listado: subtareasResponsable } = mixinSubtarea.useReferencias()
-    const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
 
     function filtrarSubtareasResponsable() {
       listarSubtareas({ empleado_id: empleadoResponsable.value })
