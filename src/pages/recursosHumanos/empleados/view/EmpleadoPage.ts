@@ -159,7 +159,7 @@ export default defineComponent({
       talla_camisa:{required},
       talla_pantalon:{required: requiredIf (()=> empleado.tiene_grupo)},
       talla_guantes: { required: requiredIf(() => empleado.tiene_grupo )}
-
+      
     }
 
     const v$ = useVuelidate(reglas, empleado)
