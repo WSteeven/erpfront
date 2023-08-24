@@ -733,8 +733,8 @@
                 </template>
               </q-select>
             </div>
-        <!-- Estado -->
-        <div class="col-12 col-md-3">
+            <!-- Estado -->
+            <div class="col-12 col-md-3">
               <label class="q-mb-sm block">¿Esta Enrolado?</label>
               <q-toggle
                 :label="empleado.esta_en_rol_pago ? 'Enrolado' : 'No enrolado'"
@@ -1214,8 +1214,7 @@
                 autogrow
                 outlined
                 dense
-              >
-              </q-input>
+              />
             </div>
           </div>
         </q-expansion-item>
