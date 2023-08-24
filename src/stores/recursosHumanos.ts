@@ -6,6 +6,7 @@ import { endpoints } from 'src/config/api'
 
 export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
   const sueldo_basico = ref()
+  const porcentajeAnticipo = ref()
   const total_descuento = ref()
   const porcentaje_endeudamiento = ref()
   const mensaje = ref()
@@ -19,6 +20,16 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
       return response.data.rubro.valor_rubro
     } catch (e) {
       setSueldoBasico(0)
+    }
+  }
+  async function obtener_porcentaje_anticipo() {
+    try {
+      const userApi = axios.getEndpoint(endpoints.porcentaje_anticipo)
+      const response = await axios.get<AxiosResponse>(userApi)
+      setPorcentajeAnticipo(response.data.rubro.valor_rubro)
+      return response.data.rubro.valor_rubro
+    } catch (e) {
+      setPorcentajeAnticipo(0)
     }
   }
   async function nivel_endeudamiento(id_empleado) {
@@ -41,7 +52,6 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
     }
   }
 
-
   const getSueldoBasico = () => {
     return sueldo_basico.value
   }
@@ -55,6 +65,9 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
   const setPorcentajeEndeudamiento = (porcentaje: number) => {
     porcentaje_endeudamiento.value = porcentaje
   }
+  const setPorcentajeAnticipo = (porcentaje: number) => {
+    porcentajeAnticipo.value = porcentaje
+  }
   const setMensaje = (mensaje_data: string) => {
     mensaje.value = mensaje_data
   }
@@ -66,6 +79,8 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
     sueldo_basico,
     total_descuento,
     porcentaje_endeudamiento,
+    obtener_porcentaje_anticipo,
     mensaje,
+    porcentajeAnticipo,
   }
 })

@@ -42,6 +42,7 @@ import { ComportamientoModalesRolPago } from '../aplication/ComportamientoModale
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { ArchivoRolPagoController } from '../infraestructure/ArchivoRolPagoController'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 
 export default defineComponent({
   components: {
@@ -67,6 +68,7 @@ export default defineComponent({
      * Stores
      *********/
     const rolPagoStore = useRolPagoStore()
+    const recursosHumanosStore = useRecursosHumanosStore()
 
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
@@ -164,7 +166,7 @@ export default defineComponent({
     const indice_egreso = ref()
     const empleados = ref<Empleado[]>([])
     const carga_archivo = ref(false)
-
+    recursosHumanosStore.obtener_porcentaje_anticipo()
 
     const listadoHorasExtrasSubTipo = computed(() => {
       return listadosAuxiliares.horas_extras_subtipos.filter(
@@ -743,6 +745,8 @@ export default defineComponent({
     }
     watchEffect(() => {
       if(rolpago.es_quincena){
+        const dias  = rolpago.dias? rolpago.dias:0
+        rolpago.porcentaje_anticipo = (dias*recursosHumanosStore.porcentajeAnticipo)/15
         const sueldo = rolpago.salario == null ? 0 : parseFloat(rolpago.salario);
         const porcentaje = rolpago.porcentaje_anticipo == null ? 0 : rolpago.porcentaje_anticipo/100;
         rolpago.sueldo = sueldo*porcentaje;

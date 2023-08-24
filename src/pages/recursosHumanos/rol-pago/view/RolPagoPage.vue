@@ -138,7 +138,7 @@
         <q-input
           v-model="rolpago.porcentaje_anticipo"
           type="number"
-          :disable="disabled || !rolpago.es_quincena"
+          disable
           :error="!!v$.porcentaje_anticipo.$errors.length"
           @blur="v$.porcentaje_anticipo.$touch"
           outlined
