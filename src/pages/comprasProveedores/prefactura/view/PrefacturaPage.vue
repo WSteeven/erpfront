@@ -78,69 +78,7 @@
             </q-input>
           </div>
 
-          <!-- Persona que autoriza -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Persona que autoriza</label>
-            <q-select
-              v-model="prefactura.autorizador"
-              :options="empleadosAutorizadores"
-              transition-show="jump-up"
-              transition-hide="jump-up"
-              options-dense
-              dense
-              outlined
-              :error="!!v$.autorizador.$errors.length"
-              error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template></q-select
-            >
-          </div>
-          <!-- Select autorizacion -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="prefactura.autorizador">
-            <label class="q-mb-sm block">Autorizacion</label>
-            <q-select
-              v-model="prefactura.autorizacion"
-              :options="autorizaciones"
-              transition-show="jum-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="disabled || prefactura.autorizador !== store.user.id"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-            >
-              <!--
-                  :error="!!v$.autorizacion.$errors.length"
-                  error-message="Debes seleccionar una autorizacion"
-  
-                  <template v-slot:error>
-                    <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template> -->
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-
+          
           <!-- Cliente -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>

@@ -62,6 +62,38 @@
             <q-input v-model="proforma.created_at" disable outlined dense />
           </div>
 
+          <!-- Copiar proforma -->
+          <div class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="proforma.copia_proforma"
+              label="¿Copiar proforma?"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <!-- Campo proforma auxiliar -->
+          <div class="col-12 col-md-3" v-if="proforma.copia_proforma">
+            <label class="q-mb-sm block">Id Proforma</label>
+            <q-input
+              type="number"
+              v-model="proforma.id_aux"
+              placeholder="Obligatorio"
+              hint="Ingresa un numero de proforma y presiona Enter"
+              @keyup.enter="cargarProformaBD"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- Persona que autoriza -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
@@ -75,7 +107,11 @@
               outlined
               :error="!!v$.autorizador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -141,7 +177,11 @@
               @filter="filtrarClientes"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value
@@ -164,7 +204,11 @@
               autogrow
               v-model="proforma.descripcion"
               placeholder="Obligatorio"
-              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :error="!!v$.descripcion.$errors.length"
               outlined
               dense
@@ -189,7 +233,11 @@
               dense
               outlined
               :error="!!v$.forma.$errors.length"
-              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :option-label="(v) => v.label"
               :option-value="(v) => v.value"
               emit-value
@@ -221,7 +269,11 @@
               dense
               outlined
               :error="!!v$.tiempo.$errors.length"
-              :disable="disabled ||( soloLectura || proforma.autorizador === store.user.id)"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.label"
               :option-value="(v) => v.value"
@@ -291,8 +343,8 @@
             </q-select>
           </div>
 
-           <!-- Causa de anulacion -->
-           <div class="col-12 col-md-3 q-mb-md" v-if="proforma.causa_anulacion">
+          <!-- Causa de anulacion -->
+          <div class="col-12 col-md-3 q-mb-md" v-if="proforma.causa_anulacion">
             <label class="q-mb-sm block">Causa de anulación</label>
             <q-input
               v-model="proforma.causa_anulacion"

@@ -210,7 +210,6 @@ export default defineComponent({
     const modalesSubtarea = new ComportamientoModalesSubtarea()
     const { btnSeguimiento } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
 
-
     const botonVer: CustomActionTable = {
       titulo: 'Más detalles',
       icono: 'bi-eye',
@@ -248,7 +247,6 @@ export default defineComponent({
         empleadosResponsables.value = listadosAuxiliares.empleadosResp.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
       })
     }
-
 
     async function consultar() {
 
@@ -332,7 +330,24 @@ export default defineComponent({
       empleadosResponsables.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
     }
 
+    // ***************
+    // -- Mixin subtarea
+    // const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+    const { listado: subtareasResponsable } = mixinSubtarea.useReferencias()
+    const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
+
+    function filtrarSubtareasResponsable() {
+      listarSubtareas({ empleado_id: empleadoResponsable.value })
+    }
+
+    function filtrarSubtareasGrupo() {
+      listarSubtareas({ grupo_id: grupo.value })
+    }
+
     return {
+      filtrarSubtareasResponsable,
+      filtrarSubtareasGrupo,
+      subtareasResponsable,
       grupos,
       filtrarGrupos,
       grupo,

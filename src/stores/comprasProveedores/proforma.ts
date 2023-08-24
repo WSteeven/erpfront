@@ -37,8 +37,11 @@ export const useProformaStore = defineStore('proforma', () => {
         try {
             statusLoading.activar()
             const modelo = await consultar(id)
-            if (modelo.estado === autorizacionesTransacciones.aprobado) {
+            if (modelo.autorizacion === autorizacionesTransacciones.aprobado && modelo.estado!==estadosTransacciones.completa) {
                 proforma.hydrate(modelo)
+            } else if (modelo.estado === estadosTransacciones.completa) {
+                notificarAdvertencia('La proforma ya está completada')
+                proforma.hydrate(proformaReset)
             } else {
                 notificarAdvertencia('La proforma no está aprobada')
                 proforma.hydrate(proformaReset)
