@@ -572,7 +572,9 @@
                   <label class="q-mb-sm block">Talla de zapato</label>
                   <q-input
                     v-model="empleado.talla_zapato"
-                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
+                    :placeholder="
+                      empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'
+                    "
                     type="number"
                     :disable="disabled"
                     :error="!!v$.talla_zapato.$errors.length"
@@ -614,7 +616,10 @@
                     map-options
                   >
                     <template v-slot:error>
-                      <div v-for="error of v$.talla_camisa.$errors" :key="error.$uid">
+                      <div
+                        v-for="error of v$.talla_camisa.$errors"
+                        :key="error.$uid"
+                      >
                         <div class="error-msg">{{ error.$message }}</div>
                       </div>
                     </template>
@@ -633,7 +638,9 @@
                   <label class="q-mb-sm block">Talla de guantes</label>
                   <q-input
                     v-model="empleado.talla_guantes"
-                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
+                    :placeholder="
+                      empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'
+                    "
                     type="number"
                     :disable="disabled"
                     :error="!!v$.talla_guantes.$errors.length"
@@ -657,7 +664,9 @@
                   <label class="q-mb-sm block">Talla de pantalon</label>
                   <q-input
                     v-model="empleado.talla_pantalon"
-                    :placeholder="empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'"
+                    :placeholder="
+                      empleado.tiene_grupo ? 'Obligatorio' : 'Opcional'
+                    "
                     type="number"
                     :error="!!v$.talla_pantalon.$errors.length"
                     @blur="v$.talla_pantalon.$touch"
@@ -1182,8 +1191,6 @@
                 outlined
                 dense
               >
-<<<<<<< Updated upstream
-=======
                 <template v-slot:error>
                   <div
                     v-for="error of v$.observacion.$errors"
@@ -1192,7 +1199,6 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
->>>>>>> Stashed changes
               </q-input>
             </div>
           </div>

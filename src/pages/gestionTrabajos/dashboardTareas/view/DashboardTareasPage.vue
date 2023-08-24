@@ -448,6 +448,7 @@
               input-debounce="0"
               emit-value
               map-options
+              @update:model-value="filtrarSubtareasGrupo()"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -457,6 +458,21 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <div class="col-12">
+            <essential-table
+              titulo="Subtareas"
+              :configuracionColumnas="columnasSubtareas"
+              :datos="subtareasResponsable"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrarBotones="false"
+              :alto-fijo="false"
+              :accion1="botonVer"
+              :accion2="btnSeguimiento"
+            ></essential-table>
           </div>
         </div>
 
@@ -484,6 +500,7 @@
               input-debounce="0"
               emit-value
               map-options
+              @update:model-value="filtrarSubtareasResponsable()"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -497,10 +514,9 @@
 
           <div class="col-12">
             <essential-table
-              v-if="subtareas.length"
               titulo="Subtareas"
               :configuracionColumnas="columnasSubtareas"
-              :datos="subtareas"
+              :datos="subtareasResponsable"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
