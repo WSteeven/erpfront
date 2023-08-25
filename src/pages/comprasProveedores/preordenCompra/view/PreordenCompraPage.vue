@@ -102,6 +102,7 @@
               options-dense
               dense
               outlined
+              @filter="filtrarEmpleados"
               @popup-show="ordenarEmpleados(empleados)"
               :disable="disabled||soloLectura"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
