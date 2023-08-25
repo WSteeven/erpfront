@@ -34,6 +34,7 @@ import { usePreordenStore } from "stores/comprasProveedores/preorden";
 import { useRouter } from "vue-router";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { ordenarEmpleados } from "shared/utils";
+import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 
 
 export default defineComponent({
@@ -68,7 +69,6 @@ export default defineComponent({
 
 
         //Obtener listados
-        const empleados = ref([])
         const categorias = ref([])
         // const proveedores = ref([])
         const autorizaciones = ref([])
@@ -122,6 +122,8 @@ export default defineComponent({
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => preorden.listadoProductos.splice(posicion, 1))
         }
+
+        const {empleados, filtrarEmpleados} =useFiltrosListadosSelects(listadosAuxiliares)
 
 
         /*******************************************************************************************
@@ -195,7 +197,7 @@ export default defineComponent({
             configuracionColumnasDetallesProductos,
             configuracionColumnasItemOrdenCompra,
             //listados
-            empleados,
+            empleados, filtrarEmpleados,
             categorias,
             autorizaciones,
             empleadosAutorizadores,
