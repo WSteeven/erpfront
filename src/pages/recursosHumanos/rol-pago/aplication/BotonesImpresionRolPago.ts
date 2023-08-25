@@ -70,7 +70,7 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
     titulo: 'Generar Reporte',
     icono: 'bi-file-earmark-ruled',
     color: 'primary',
-    visible: ()=>  rolPago.finalizado!=null ? rolPago.finalizado:false,
+   // visible: ()=>  rolPago.finalizado!=null ? rolPago.finalizado:false,
     accion: () => {
       const config: CustomActionPrompt = reactive({
         mensaje: 'Confirme el tipo de reporte',
