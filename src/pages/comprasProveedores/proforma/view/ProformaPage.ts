@@ -25,7 +25,7 @@ import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestruct
 import { acciones, accionesTabla } from "config/utils";
 import { tabOptionsProformas, opcionesForma, opcionesTiempo } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
-import { formatearFecha } from "shared/utils";
+import { calcularDescuento, encontrarUltimoIdListado, formatearFecha } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
@@ -173,8 +173,9 @@ export default defineComponent({
         function calcularValores(data: any) {
             data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
             // data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
-            data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
-            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)+Number(data.descuento)) * proforma.iva / 100).toFixed(4) : 0
+            data.descuento = data.facturable ? calcularDescuento(data.subtotal, data.porcentaje_descuento, 4) : 0
+            // data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)+Number(data.descuento)) * proforma.iva / 100).toFixed(4) : 0
+            data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario) - Number(data.descuento)) * proforma.iva / 100).toFixed(4) : 0
             data.total = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva) - Number(data.descuento)).toFixed(4) : 0
         }
 
@@ -187,17 +188,17 @@ export default defineComponent({
                 calcularValores(fila)
             })
         }
-        async function cargarProformaBD(){
-            if(proforma.id_aux){
-                const {result} = await new ProformaController().consultar(proforma.id_aux)
+        async function cargarProformaBD() {
+            if (proforma.id_aux) {
+                const { result } = await new ProformaController().consultar(proforma.id_aux)
                 await console.log(result)
                 await proforma.hydrate(result)
-                proforma.id=null
-                proforma.solicitante=store.user.id
+                proforma.id = null
+                proforma.solicitante = store.user.id
                 proforma.created_at = formatearFecha(new Date().getDate().toLocaleString())
-                proforma.autorizacion=1
-                proforma.estado=1
-            }else{
+                proforma.autorizacion = 1
+                proforma.estado = 1
+            } else {
                 proforma.hydrate(new Proforma())
             }
         }
@@ -212,12 +213,13 @@ export default defineComponent({
             tooltip: 'Agregar elemento',
             accion: () => {
                 const fila = new ItemProforma()
+                fila.id = proforma.listadoProductos.length?encontrarUltimoIdListado(proforma.listadoProductos) + 1 : 1
                 fila.unidad_medida = 1
                 proforma.listadoProductos.push(fila)
                 // refItems.value.abrirModalEntidad(fila, proforma.listadoProductos.length - 1)
                 emit('actualizar', proforma.listadoProductos)
             },
-            visible: () =>accion.value===acciones.nuevo||accion.value===acciones.editar
+            visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
         }
         const btnEliminarFila: CustomActionTable = {
             titulo: 'Eliminar',

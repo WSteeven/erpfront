@@ -396,7 +396,7 @@
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
         <!--<img src="~assets/logo.png" height="80" class="q-mx-auto block" /> -->
-        <img src="~assets/logo.png" height="80" class="q-mx-auto block" />
+        <img src="~assets/logoJP.png" height="80" class="q-mx-auto block" />
       </div>
 
       <!-- Drawer Body -->

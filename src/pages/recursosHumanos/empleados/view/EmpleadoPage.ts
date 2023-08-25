@@ -91,7 +91,10 @@ export default defineComponent({
     cargarVista(async () => {
       obtenerListados({
         cantones: new CantonController(),
-        cargos: new CargoController(),
+        cargos: {
+          controller: new CargoController(),
+          params: { estado: 1 }
+        },
         tipos_contrato: new TipoContratoController(),
         roles: {
           controller: new RolController(),
@@ -139,8 +142,8 @@ export default defineComponent({
       area: { required },
       tipo_contrato: { required },
       banco: { required },
-      num_cuenta: { required, maxLength:maxLength(12)},
-      nivel_academico: { required},
+      num_cuenta: { required, maxLength: maxLength(12) },
+      nivel_academico: { required },
       salario: { required },
       fecha_ingreso: { required },
       nombres: { required },
@@ -155,10 +158,10 @@ export default defineComponent({
       roles: { required },
       estado: { required },
       grupo: { required: requiredIf(() => empleado.tiene_grupo) },
-      talla_zapato: { required: requiredIf(() => empleado.tiene_grupo )},
-      talla_camisa:{required},
-      talla_pantalon:{required: requiredIf (()=> empleado.tiene_grupo)},
-      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo )}
+      talla_zapato: { required: requiredIf(() => empleado.tiene_grupo) },
+      talla_camisa: { required },
+      talla_pantalon: { required: requiredIf(() => empleado.tiene_grupo) },
+      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) }
 
     }
 

@@ -441,11 +441,10 @@ export default defineComponent({
         const datasetIndex = activeElements[0].datasetIndex;
         const dataIndex = activeElements[0].index;
         const legendLabel = cantidadesPorEstadosSubtareasBar.value.datasets[datasetIndex].label;
-        console.log('Leyenda del elemento clicado:', legendLabel);
-        console.log('Índice de datos del elemento clicado:', dataIndex);
+        console.log('Leyenda del elemento clicado:', legendLabel)
+        console.log('Índice de datos del elemento clicado:', dataIndex)
       }
-    };
-
+    }
 
     return {
       myChart,

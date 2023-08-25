@@ -17,7 +17,7 @@
       >
         <div class="imagen d-flex align-items-center justify-content-center">
           <q-avatar square size="400px">
-            <img src="~assets/logo.png" />
+            <img src="~assets/logoJP.png" />
           </q-avatar>
         </div>
       </div>

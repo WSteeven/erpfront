@@ -11,6 +11,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const empresas = ref([])
   const proveedores = ref([])
   const clientes = ref([])
+  const empleados = ref([])
 
 
   /**************************************************************
@@ -169,6 +170,19 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     })
   }
 
+  function filtrarEmpleados(val, update) {
+    if (val === '') {
+      update(() => {
+        empleados.value = listadosAuxiliares.empleados
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
@@ -177,5 +191,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     empresas, filtrarEmpresas,
     proveedores, filtrarProveedores,
     clientes, filtrarClientes,
+    empleados, filtrarEmpleados,
   }
 }
