@@ -326,9 +326,11 @@
             <div class="text-subtitle2">Subtareas creadas</div>
             <div>
               <Pie
+                ref="myChart"
                 :data="cantidadesPorEstadosSubtareasBar"
                 :options="optionsPie"
                 v-if="cantidadesPorEstadosSubtareas.length"
+                @click="handleChartClick"
               />
             </div>
           </div>
@@ -404,15 +406,86 @@
 
         <div class="row q-col-gutter-y-xl">
           <!-- Asignados -->
-          <!-- v-if="ticketsPorDepartamentoEstadoAsignado.length" -->
-          <div class="col-12 col-md-6 text-center">
-            <div class="text-subtitle2">Pendientes</div>
+          <div v-if="agendados.length" class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Agendados</div>
             <div>
-              <!-- <Pie
-                :data="ticketsPorDepartamentoEstadoAsignadoBar"
+              <Pie
+                :data="agendadosBar"
                 :options="optionsPie"
-                v-if="ticketsPorDepartamentoEstadoAsignado.length"
-              /> -->
+                v-if="agendados.length"
+              />
+            </div>
+          </div>
+
+          <!-- Ejecutados -->
+          <div v-if="ejecutados.length" class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Ejecutando</div>
+            <div>
+              <Pie
+                :data="ejecutadosBar"
+                :options="optionsPie"
+                v-if="ejecutados.length"
+              />
+            </div>
+          </div>
+
+          <!-- Pausados -->
+          <div v-if="pausados.length" class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Pausados</div>
+            <div>
+              <Pie
+                :data="pausadosBar"
+                :options="optionsPie"
+                v-if="pausados.length"
+              />
+            </div>
+          </div>
+
+          <!-- Suspendidos -->
+          <div v-if="suspendidos.length" class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Suspendidos</div>
+            <div>
+              <Pie
+                :data="suspendidosBar"
+                :options="optionsPie"
+                v-if="suspendidos.length"
+              />
+            </div>
+          </div>
+
+          <!-- Cancelados -->
+          <div v-if="cancelados.length" class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Cancelados</div>
+            <div>
+              <Pie
+                :data="canceladosBar"
+                :options="optionsPie"
+                v-if="cancelados.length"
+              />
+            </div>
+          </div>
+
+          <!-- Realizados -->
+          <div v-if="realizados.length" class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Realizados</div>
+            <div>
+              <Pie
+                :data="realizadosBar"
+                :options="optionsPie"
+                v-if="realizados.length"
+              />
+            </div>
+          </div>
+
+          <!-- Finalizados -->
+          <div v-if="finalizados.length" class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2">Finalizados</div>
+            <div>
+              <Pie
+                :data="finalizadosBar"
+                :options="optionsPie"
+                v-if="finalizados.length"
+              />
             </div>
           </div>
         </div>
@@ -488,7 +561,7 @@
               input-debounce="0"
               emit-value
               map-options
-              @update:model-value="filtrarSubtareasGrupo()"
+              @update:model-value="filtrarSubtareasResponsable(grupo)"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -500,7 +573,7 @@
             </q-select>
           </div>
 
-          <div class="col-12">
+          <div v-if="subtareasResponsable.length" class="col-12">
             <essential-table
               titulo="Subtareas"
               :configuracionColumnas="columnasSubtareas"
@@ -540,7 +613,9 @@
               input-debounce="0"
               emit-value
               map-options
-              @update:model-value="filtrarSubtareasResponsable()"
+              @update:model-value="
+                filtrarSubtareasResponsable(empleadoResponsable)
+              "
             >
               <template v-slot:no-option>
                 <q-item>
@@ -552,7 +627,7 @@
             </q-select>
           </div>
 
-          <div class="col-12">
+          <div v-if="subtareasResponsable.length" class="col-12">
             <essential-table
               titulo="Subtareas"
               :configuracionColumnas="columnasSubtareas"
