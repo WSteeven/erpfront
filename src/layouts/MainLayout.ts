@@ -56,6 +56,20 @@ export default defineComponent({
     if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
     moment.updateLocale('es', { invalidDate: 'No aplica' })
 
+    /***************************
+     * Permitir Notificaciones push
+     ***************************/
+    if ('Notification' in window) {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          console.log('Permiso de notificación concedido.');
+        } else {
+          console.log('Permiso de notificación denegado.');
+        }
+      });
+    }
+
+
     /************
      * Variables
      ************/

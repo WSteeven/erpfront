@@ -25,6 +25,17 @@ export default defineComponent({
     // calling here; equivalent to when component is created
     $q.dark.set(false)
 
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register(process.env.SERVICE_WORKER_FILE)
+        .then((registration) =>
+          console.log('Service Worker registrado con éxito:', registration)
+        )
+        .catch((error) =>
+          console.log('Error al registrar el Service Worker:', error)
+        )
+    }
+
     return {
       //
     }
