@@ -133,24 +133,6 @@
         <q-input v-model="rolpago.anticipo" type="number" disable outlined dense>
         </q-input>
       </div>
-      <div class="col-12 col-md-3" >
-        <label class="q-mb-sm block">Porcentaje Anticipo</label>
-        <q-input
-          v-model="rolpago.porcentaje_anticipo"
-          type="number"
-          disable
-          :error="!!v$.porcentaje_anticipo.$errors.length"
-          @blur="v$.porcentaje_anticipo.$touch"
-          outlined
-          dense
-        >
-          <template v-slot:error>
-            <div v-for="error of v$.porcentaje_anticipo.$errors" :key="error.$uid">
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
-        </q-input>
-      </div>
       <!-- Documento -->
       <div class="col-12 col-md-3" v-if="rolpago.estado == 'FINALIZADO'">
         <label class="q-mb-sm block">Rol de Pago Firmado</label>
