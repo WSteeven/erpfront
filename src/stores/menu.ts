@@ -601,7 +601,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Contactos de Proveedores',
           link: 'contactos-proveedores',
-          icon: 'bi-person-fill-add',
+          icon: 'bi-people-fill',
           can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
         },
         {
@@ -623,18 +623,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
         },
         {
-          title: 'Proformas',
-          link: 'proformas',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.proformas') || store.esAdministrador,
-        },
-        {
-          title: 'Prefacturas',
-          link: 'prefacturas',
-          icon: 'bi-circle',
-          can: store.can('puede.ver.prefacturas') || store.esAdministrador,
-        },
-        {
           title: 'Logs',
           icon: 'bi-file-text',
           can: true,
@@ -647,6 +635,25 @@ export const useMenuStore = defineStore('menu', () => {
             }
           ]
         }
+      ]
+    },
+    {
+      title: 'Ventas',
+      icon: 'sell',
+      can: store.can('puede.ver.modulo_ventas') || store.esAdministrador,
+      children: [
+        {
+          title: 'Proformas',
+          link: 'proformas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.proformas') || store.esAdministrador,
+        },
+        {
+          title: 'Prefacturas',
+          link: 'prefacturas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.prefacturas') || store.esAdministrador,
+        },
       ]
     },
     {

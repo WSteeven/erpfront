@@ -33,6 +33,7 @@ import { PedidoController } from "pages/bodega/pedidos/infraestructura/PedidoCon
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
 import { useRouter } from "vue-router";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
+import { ordenarEmpleados } from "shared/utils";
 
 
 export default defineComponent({
@@ -184,6 +185,7 @@ export default defineComponent({
         empleados.value = listadosAuxiliares.empleados
         categorias.value = listadosAuxiliares.categorias
         autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+        // empleadosAutorizadores.value = JSON.parse(LocalStorage.getItem('autorizaciones_especiales')!.toString())
         empleadosAutorizadores.value = JSON.parse(LocalStorage.getItem('autorizaciones_especiales')!.toString())
 
         return {
@@ -218,6 +220,7 @@ export default defineComponent({
 
             //funciones
             filtrarPreordenes,
+            ordenarEmpleados,
 
             //variables computadas
             subtotal, total, descuento, iva,

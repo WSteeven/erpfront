@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasRolPago } from '../domain/configuracionColumnasRolPago'
-import { maxValue,minValue, required } from '@vuelidate/validators'
+import { maxValue, minValue, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed, watchEffect, Ref } from 'vue'
 
@@ -55,14 +55,14 @@ export default defineComponent({
   emit: ['cerrar-modal', 'guardado'],
 
   setup(props, { emit }) {
-      /********
+    /********
      * Mixin
      *********/
-      const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
-      const mixinRolPago = new ContenedorSimpleMixin(
-        Archivo,
-        new ArchivoRolPagoController()
-      )
+    const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
+    const mixinRolPago = new ContenedorSimpleMixin(
+      Archivo,
+      new ArchivoRolPagoController()
+    )
 
     /*********
      * Stores
@@ -73,7 +73,6 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
-
 
     const {
       entidad: rolpago,
@@ -265,7 +264,6 @@ export default defineComponent({
           refArchivoRolPago.value.esConsultado = true
           carga_archivo.value = true
         }, 2000)
-
       }
     })
     let idSubtarea: any
@@ -309,7 +307,7 @@ export default defineComponent({
     const reglas = {
       empleado: { required },
       mes: { required },
-      porcentaje_anticipo: {minValue:minValue(3) ,maxValue:maxValue(40)}
+      porcentaje_anticipo: { minValue: minValue(3), maxValue: maxValue(40) },
     }
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
@@ -744,15 +742,14 @@ export default defineComponent({
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
     watchEffect(() => {
-      if(rolpago.es_quincena){
-        const dias  = rolpago.dias? rolpago.dias:0
-        rolpago.porcentaje_anticipo = (dias*recursosHumanosStore.porcentajeAnticipo)/15
-        const sueldo = rolpago.salario == null ? 0 : parseFloat(rolpago.salario);
-        const porcentaje = rolpago.porcentaje_anticipo == null ? 0 : rolpago.porcentaje_anticipo/100;
-        rolpago.sueldo = sueldo*porcentaje;
+      if (rolpago.es_quincena) {
+        const dias = rolpago.dias || 0;
+        const dias_totales = dias + 15;
+        const salario = parseFloat(rolpago.salario ?? '0');
+        const sueldo = (salario / 30) * dias_totales;
+        rolpago.sueldo = sueldo * recursosHumanosStore.porcentajeAnticipo;
       }
     })
-
 
     return {
       removeAccents,
