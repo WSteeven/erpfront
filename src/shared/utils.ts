@@ -9,6 +9,7 @@ import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 import { useNotificaciones } from './notificaciones';
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -309,6 +310,20 @@ export function stringToArray(listado: string) {
 export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
+export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(function (registration) {
+      registration.active!.postMessage({
+        action: 'notificacionPush',
+        titulo: data.titulo,
+        mensaje: data.mensaje,
+        icono: data.icono,
+        link: data.link,
+        badge: data.badge,
+      })
+    })
+  }
+}
 
 /**
  * Metodo generico para descargar archivos desde una API
@@ -591,7 +606,7 @@ export function encontrarUltimoIdListado(listado: any) {
       return actual.id
     else return ultimo.id
   }, null)
-  console.log('Listado: '+listado)
-  console.log('utlimo id: '+ultimoId)
+  console.log('Listado: ' + listado)
+  console.log('utlimo id: ' + ultimoId)
   return ultimoId
 }
