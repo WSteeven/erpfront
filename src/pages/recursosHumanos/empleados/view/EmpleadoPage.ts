@@ -150,6 +150,7 @@ export default defineComponent({
       apellidos: { required },
       jefe: { required },
       email: { required },
+      coordenadas:{ required},
       correo_personal: { required },
       usuario: { required },
       fecha_nacimiento: { required },

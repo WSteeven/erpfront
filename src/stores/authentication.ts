@@ -14,13 +14,11 @@ import { SucursalController } from 'pages/administracion/sucursales/infraestruct
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
-import { DetalleFondo } from 'pages/fondosRotativos/detalleFondo/domain/DetalleFondo'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
 import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
@@ -46,7 +44,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
       }`
   )
-  const jefe_inmediato = ref()
 
   const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
   const esCoordinadorBackup = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup) : false)

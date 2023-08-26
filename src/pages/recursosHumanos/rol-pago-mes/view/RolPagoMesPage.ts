@@ -117,6 +117,8 @@ export default defineComponent({
       icono: 'bi-play-fill',
       color: 'positive',
       accion: () => {
+        console.log(rolpago);
+
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
         confirmar('¿Está seguro de iniciar cambios rol de pago?', async () => {

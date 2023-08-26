@@ -39,7 +39,7 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
     visible: ({ entidad }) =>
       [estadosRolPago.EJECUTANDO, estadosRolPago.REALIZADO].includes(
         entidad.estado
-      ) && authenticationStore.esRecursosHumanos,
+      ) && authenticationStore.esRecursosHumanos&&!entidad.es_quincena,
     accion: ({ entidad }) => {
       generar_reporte(entidad)
     },
@@ -70,6 +70,7 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
     titulo: 'Generar Reporte',
     icono: 'bi-file-earmark-ruled',
     color: 'primary',
+   // visible: ()=>  rolPago.finalizado!=null ? rolPago.finalizado:false,
     accion: () => {
       const config: CustomActionPrompt = reactive({
         mensaje: 'Confirme el tipo de reporte',

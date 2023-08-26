@@ -93,7 +93,10 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         clientes: new ClienteController(),
-        proyectos: new ProyectoController(),
+        proyectos: {
+          controller: new ProyectoController(),
+          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0, coordinador_id: authenticationStore.user.id },
+        },
         fiscalizadores: {
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.fiscalizador },
@@ -208,7 +211,7 @@ export default defineComponent({
     async function guardado(paginaModal: keyof TareaModales) {
       switch (paginaModal) {
         case 'ProyectoPage':
-          const { result } = await new ProyectoController().listar()
+          const { result } = await new ProyectoController().listar({ campos: 'id,nombre,codigo_proyecto', finalizado: 0, coordinador_id: authenticationStore.user.id })
           listadosAuxiliares.proyectos = result
           proyectos.value = result
           break

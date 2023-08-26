@@ -2,6 +2,7 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 import { rolesSistema } from 'config/utils';
+import EventEmitter from 'events';
 
 export class PedidoPusherEvent {
 
@@ -33,6 +34,14 @@ export class PedidoPusherEvent {
         notificarCorrecto('Tienes un pedido esperando ser despachado')
       })
     }
+
+    //suscripcion al canal general del service worker 
+    const canalGeneral = pusher.subscribe('mi-canal')
+    canalGeneral.bind('eventoPersonalizado', function (e) {
+      console.log(e)
+      notificarCorrecto('ServiceWorker evento: '+e)
+    })
+
   }
 
 }

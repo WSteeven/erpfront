@@ -37,12 +37,12 @@ export const useBotonesTablaRolPagoMes = (
       const estanFinalizadas = await verificarTodasRolPagoFinalizadas(
         entidad.id
       )
-      await FinalizarRolPago(
-        entidad.id
-      )
-      if (!estanFinalizadas)
+      if (!estanFinalizadas.estan_finalizadas)
         return notificarAdvertencia(
           'El rol de pago aún tiene roles de empleados pendientes de FINALIZAR, REALIZAR o EJECUTAR.'
+        )
+        await FinalizarRolPago(
+          entidad.id
         )
 
 

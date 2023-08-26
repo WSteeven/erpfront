@@ -15,6 +15,7 @@ import { ComportamientoModalesTableroPersonal } from '../application/Comportamie
 import { TableroPersonalController } from '../infraestructure/TableroPersonalController'
 // import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { TableroPersonal } from '../domain/TableroPersonal'
+import { pushEventMesaggeServiceWorker } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -59,6 +60,8 @@ export default defineComponent({
 
     // obtenerSubtareasPendientesAsignar()
 
+    
+
     return {
       tablero,
       store,
@@ -77,6 +80,8 @@ export default defineComponent({
       verSubtarea,
       fecha,
       subtareasPorAsignar,
+
+      pushEventMesaggeServiceWorker,
     }
   },
 })
