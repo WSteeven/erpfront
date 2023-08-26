@@ -96,15 +96,15 @@ export default defineComponent({
       if (gasto.sub_detalle == null) {
         return false
       }
-      if(parseInt(gasto.detalle !== null ? gasto.detalle : '') === 24){
+      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 24) {
         return true
       }
-      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6 ) {
+      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -212,10 +212,10 @@ export default defineComponent({
         required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1),
       },
       kilometraje: {
-        required:  requiredIf(() => esCombustibleEmpresa.value  ),
+        required: requiredIf(() => esCombustibleEmpresa.value),
       },
       vehiculo: {
-        required:  requiredIf(() =>esCombustibleEmpresa.value ),
+        required: requiredIf(() => esCombustibleEmpresa.value),
       },
       observacion: {
         required,
@@ -577,8 +577,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
