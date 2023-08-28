@@ -77,7 +77,6 @@ export default defineComponent({
     })
     onConsultado(() => {
       transaccion.solicitante = transaccion.solicitante_id
-      console.log('la accion actual es: ', accion.value)
       transaccionStore.transaccion.hydrate(transaccion)
     })
     onReestablecer(() => {
@@ -219,23 +218,16 @@ export default defineComponent({
 
 
 
-    function eliminarItem({ posicion }) {
+    function eliminarItem({ entidad }) {
+      const posicion = transaccion.listadoProductosTransaccion.findIndex((fila: any)=>fila.id === entidad.id)
       confirmar('¿Esta seguro de continuar?',
-        () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
-    }
-    const botonEliminar: CustomActionTable = {
-      titulo: 'Quitar',
-      color: 'negative',
-      icono: 'bi-x',
-      accion: ({ posicion }) => {
-        eliminarItem({ posicion })
-      },
-      visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
+        () => {
+          transaccion.listadoProductosTransaccion.splice(posicion, 1)
+        })
     }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Editar cantidad',
       accion: ({ entidad, posicion }) => {
-        console.log(entidad)
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
           mensaje: 'Ingresa la cantidad',
@@ -259,7 +251,6 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.imprimirIngreso()
-        // console.log('Presionaste el boton IMPRIMIR')
       },
     }
     const botonAnular: CustomActionTable = {
@@ -268,9 +259,6 @@ export default defineComponent({
       icono: 'bi-x',
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
-          console.log(entidad)
-          console.log(posicion)
-          console.log(listado)
           transaccionStore.idTransaccion = entidad.id
           await transaccionStore.anular()
           entidad.estado = transaccionStore.transaccion.estado
@@ -371,7 +359,6 @@ export default defineComponent({
         }
       },
       checkDevolucion(val, evt) {
-        console.log('Devolucion: ', val)
         if (!val) {
           limpiarTransaccion()
         }
@@ -381,7 +368,6 @@ export default defineComponent({
       configuracionColumnasProductosSeleccionadosAccion,
       // configuracionColumnasProductosSeleccionados,
       configuracionColumnasDetallesProductosSeleccionables,
-      botonEliminar,
       botonEditarCantidad,
       botonImprimir,
       botonAnular,
@@ -461,7 +447,7 @@ export default defineComponent({
       ordenarSucursales() {
         opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
-      ordenarEmpleados(){
+      ordenarEmpleados() {
         opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
       }
     }

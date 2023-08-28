@@ -27,22 +27,7 @@
         glossy
         >Manuales de usuario</q-btn
       >
-     <!-- <q-btn
-        color="warning"
-        @click="
-          pushEventMesaggeServiceWorker({
-            titulo: 'Botón Evento',
-            mensaje: '[Prueba] Evento lanzado por un boton',
-            link: '/notificaciones',
-            icono: 'bi-x'
-          })
-        "
-        target="_blank"
-        no-caps
-        push
-        glossy
-        >Evento</q-btn
-      >-->
+      
 
       <!--<q-chip
         v-if="store.esCoordinador || store.esTecnicoLider"

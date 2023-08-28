@@ -206,11 +206,14 @@ export default defineComponent({
       if (props.permitirEditarModal) {
         fila.value = data.entidad
         posicionFilaEditada.value = data.posicion
-        console.log(posicionFilaEditada.value)
+        // console.log(posicionFilaEditada.value)
         refEditarModal.value.abrir()
       }
     }
-    const eliminar = (data: object) => emit('eliminar', data)
+    const eliminar = (data: object) => {
+    //  console.log('evento de eliminar: ', data)
+      emit('eliminar', data)
+    }
 
     function abrirModalEntidad(entidad, posicion) {
       fila.value = entidad
@@ -252,11 +255,12 @@ export default defineComponent({
 
     function guardarFila(data) {
       // console.log(data)
-      /*const posicion = props.datos.findIndex(
+      const posicion = props.datos.findIndex(
         (fila: any) => fila.id === data.id
-      )*/
+      )
+      // console.log(posicion)
 
-      // if (props.editarFilaLocal) listado.value.splice(posicionFilaEditada.value, 1, data)
+      if (props.editarFilaLocal) listado.value[posicion] = data
       limpiarFila()
       emit('guardar-fila', data)
     }
