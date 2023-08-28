@@ -42,12 +42,12 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   // Lógica para manejar clics en notificaciones
-  console.log('evento del click de notificacion')
+  console.log('evento del click de notificacion', event)
 })
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.action === 'notificacionPush') {
-    console.log('Evento recibido:', event.data.data)
+    console.log('Evento recibido:', event.data.mensaje)
 
     const options = {
       body: event.data.mensaje,

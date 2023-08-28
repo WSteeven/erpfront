@@ -27,7 +27,7 @@
         glossy
         >Manuales de usuario</q-btn
       >
-      <q-btn
+      <!-- <q-btn
         color="warning"
         @click="
           pushEventMesaggeServiceWorker({
@@ -42,7 +42,7 @@
         push
         glossy
         >Evento</q-btn
-      >
+      > -->
 
       <!--<q-chip
         v-if="store.esCoordinador || store.esTecnicoLider"
