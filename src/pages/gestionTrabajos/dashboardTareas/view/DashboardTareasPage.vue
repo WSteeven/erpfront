@@ -302,82 +302,107 @@
       class="q-mb-md rounded no-border custom-shadow"
     >
       <q-card-section>
-        <div
-          v-if="mostrarTitulosSeccion"
-          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
+        <q-tab-panels
+          v-model="tabsCoordinadorConsultado"
+          animated
+          transition-prev="scale"
+          transition-next="scale"
+          keep-alive
+          :class="{ 'rounded-tabpanel': !$q.screen.xs }"
         >
-          <span class="q-col-gutter-x-xs">
-            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-          </span>
-          <span class="text-primary"
-            >Gráficos estadísticos del coordinador consultado</span
-          >
-          <span class="q-col-gutter-x-xs">
-            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-          </span>
-        </div>
-
-        <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
-          <div class="col-12 col-md-6 text-center">
-            <div class="text-subtitle2">Subtareas creadas</div>
-            <div>
-              <Pie
-                ref="myChart"
-                :data="cantidadesPorEstadosSubtareasBar"
-                :options="optionsPie"
-                v-if="cantidadesPorEstadosSubtareas.length"
-                @click="handleChartClick"
-              />
+          <!-- Formulario -->
+          <q-tab-panel name="coordinadorConsultadoGrafico">
+            <div
+              v-if="mostrarTitulosSeccion"
+              class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
+            >
+              <span class="q-col-gutter-x-xs">
+                <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+                <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+                <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+              </span>
+              <span class="text-primary"
+                >Gráficos estadísticos del coordinador consultado</span
+              >
+              <span class="q-col-gutter-x-xs">
+                <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+                <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+                <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+              </span>
             </div>
-          </div>
-        </div>
-      </q-card-section>
-    </q-card>
 
-    <q-card
-      v-if="mostrarTitulosSeccion"
-      class="q-mb-md rounded no-border custom-shadow"
-    >
-      <q-card-section>
-        <div
-          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-lg"
-        >
-          <span class="q-col-gutter-x-xs">
-            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-          </span>
-          <span class="text-primary"
-            >Tabla de subtareas creadas por el empleado selecionado</span
-          >
-          <span class="q-col-gutter-x-xs">
-            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-          </span>
-        </div>
+            <div
+              v-if="mostrarTitulosSeccion"
+              class="row justify-center q-mb-xl"
+            >
+              <div class="col-12 col-md-6 text-center">
+                <div class="text-subtitle2">Subtareas creadas</div>
+                <small
+                  >Haga click sobre una categoría del gráfico de pastel para más
+                  detalles</small
+                >
+                <div>
+                  <grafico-generico
+                    v-if="cantidadesPorEstadosSubtareas.length"
+                    :data="cantidadesPorEstadosSubtareasBar"
+                    :options="optionsPie"
+                    @click="clickCantidadesPorEstadoSubtareas"
+                  ></grafico-generico>
+                </div>
+              </div>
+            </div>
+          </q-tab-panel>
 
-        <div class="row q-col-gutter-sm q-py-md q-mb-lg">
-          <div class="col-12">
-            <essential-table
-              v-if="subtareas.length"
-              titulo="Subtareas del empleado consultado"
-              :configuracionColumnas="columnasSubtareas"
-              :datos="subtareas"
-              :permitirConsultar="false"
-              :permitirEditar="false"
-              :permitirEliminar="false"
-              :mostrarBotones="false"
-              :alto-fijo="false"
-              :accion1="botonVer"
-              :accion2="btnSeguimiento"
-            ></essential-table>
-          </div>
-        </div>
+          <q-tab-panel name="coordinadorConsultadoListado">
+            <div
+              class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-lg"
+            >
+              <span class="q-col-gutter-x-xs">
+                <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+                <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+                <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+              </span>
+              <span class="text-primary"
+                >Tabla de subtareas creadas por el empleado selecionado</span
+              >
+              <span class="q-col-gutter-x-xs">
+                <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
+                <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
+                <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
+              </span>
+            </div>
+
+            <q-btn
+              color="positive"
+              @click="
+                tabsCoordinadorConsultado = 'coordinadorConsultadoGrafico'
+              "
+              glossy
+              no-caps
+            >
+              <q-icon name="bi-arrow-left"></q-icon>
+              Regresar al gráfico</q-btn
+            >
+
+            <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+              <div class="col-12">
+                <essential-table
+                  v-if="subtareasFiltradas.length"
+                  titulo="Subtareas del empleado consultado"
+                  :configuracionColumnas="columnasSubtareas"
+                  :datos="subtareasFiltradas"
+                  :permitirConsultar="false"
+                  :permitirEditar="false"
+                  :permitirEliminar="false"
+                  :mostrarBotones="false"
+                  :alto-fijo="false"
+                  :accion1="botonVer"
+                  :accion2="btnSeguimiento"
+                ></essential-table>
+              </div>
+            </div>
+          </q-tab-panel>
+        </q-tab-panels>
       </q-card-section>
     </q-card>
 
@@ -409,7 +434,7 @@
           <div v-if="agendados.length" class="col-12 col-md-6 text-center">
             <div class="text-subtitle2">Agendados</div>
             <div>
-              <Pie
+              <grafico-generico
                 :data="agendadosBar"
                 :options="optionsPie"
                 v-if="agendados.length"
@@ -492,7 +517,7 @@
       </q-card-section>
     </q-card>
 
-    <q-card
+    <!-- <q-card
       v-if="mostrarTitulosSeccion"
       class="q-mb-md rounded no-border custom-shadow"
     >
@@ -593,7 +618,6 @@
           v-if="tipoFiltroSubordinados === modosAsignacionTrabajo.por_empleado"
           class="row q-col-gutter-sm q-py-md q-mb-lg"
         >
-          <!-- Responsable -->
           <div v-if="filtro.empleado" class="col-12">
             <label class="q-mb-sm block">Empleados subordinados</label>
             <q-select
@@ -643,7 +667,7 @@
           </div>
         </div>
       </q-card-section>
-    </q-card>
+    </q-card> -->
 
     <modales-entidad
       :comportamiento="modalesSubtarea"
