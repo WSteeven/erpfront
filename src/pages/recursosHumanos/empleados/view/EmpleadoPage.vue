@@ -338,6 +338,7 @@
                     >
                       <q-date
                         v-model="empleado.fecha_nacimiento"
+                        :options="optionsFecha"
                         :mask="maskFecha"
                         today-btn
                       >
@@ -1029,6 +1030,7 @@
                     >
                       <q-date
                         v-model="empleado.fecha_ingreso"
+                        :options="optionsFecha"
                         :mask="maskFecha"
                         today-btn
                       >

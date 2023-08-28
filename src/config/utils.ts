@@ -375,3 +375,37 @@ export const opcionesUnidadesMedidas = [
   { value: 7, label: 'LITRO' },
   { value: 8, label: 'KIT' },
 ]
+export function convertir_fecha(fecha: Date) {
+  const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
+  const month =
+    fecha.getMonth() + 1 < 10
+      ? '0' + (fecha.getMonth() + 1)
+      : fecha.getMonth() + 1
+  const year = fecha.getFullYear()
+  return year + '/' + month + '/' + day
+}
+export const niveles_academicos = [
+  { nombre: 'ESTUDIO PRIMARIO' },
+  { nombre: 'ESTUDIO SECUNDARIO' },
+  { nombre: 'TITULO SUPERIOR' },
+]
+export const tipos_sangre = [
+  { nombre: 'A +' },
+  { nombre: 'B +' },
+  { nombre: 'AB +' },
+  { nombre: 'O +' },
+  { nombre: 'A -' },
+  { nombre: 'B -' },
+  { nombre: 'AB -' },
+  { nombre: 'O -' },
+  // Puedes agregar aquí más tipos de sangre si es necesario
+]
+export const talla_letras = [
+  { nombre: 'S' },
+  { nombre: 'M' },
+  { nombre: 'L' },
+  { nombre: 'XL' },
+  { nombre: 'XXL' },
+  { nombre: 'XXXL' },
+  // Puedes agregar aquí más tallas si es necesario
+]

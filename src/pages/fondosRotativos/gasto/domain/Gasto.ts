@@ -34,6 +34,7 @@ export class Gasto extends EntidadAuditable {
   kilometraje: number | null
   vehiculo: number | null
   created_at: string | null
+  tiene_factura: boolean | null
 
 
   constructor() {
@@ -72,6 +73,7 @@ export class Gasto extends EntidadAuditable {
     this.kilometraje = null
     this.vehiculo = null
     this.created_at = null
+    this.tiene_factura = true
 
   }
 }
