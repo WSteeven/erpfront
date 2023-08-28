@@ -1,5 +1,6 @@
 import { rolesSistema } from "config/utils";
 import { useNotificaciones } from "shared/notificaciones";
+import { pushEventMesaggeServiceWorker } from "shared/utils";
 import { useAuthenticationStore } from "stores/authentication";
 import { useNotificationRealtimeStore } from "stores/notificationRealtime";
 
@@ -19,6 +20,13 @@ export class PreordenCompraEvent {
                 // notificacionStore.agregar(e.notificacion)
                 notificacionStore.actualizar()
                 notificarCorrecto('Tienes una preorden de compra esperando ser atendida')
+
+                //lanzamos la notificación push en el navegador del destinatario
+                pushEventMesaggeServiceWorker({
+                    titulo: 'Preorden de compra nueva',
+                    mensaje: e.notificacion.mensaje,
+                    link: e.notificacion.link,
+                })
             })
         }
     }

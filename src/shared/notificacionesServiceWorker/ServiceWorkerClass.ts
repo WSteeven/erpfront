@@ -1,9 +1,9 @@
 export class ServiceWorkerClass {
-    action: string
+    action?: string
     titulo: string
     mensaje: string
     link: string
-    icono: string
+    icono?: string
     badge?: string
 
     constructor() {

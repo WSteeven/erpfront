@@ -1,4 +1,5 @@
 import { useNotificaciones } from "shared/notificaciones";
+import { pushEventMesaggeServiceWorker } from "shared/utils";
 import { useAuthenticationStore } from "stores/authentication";
 import { useNotificationRealtimeStore } from "stores/notificationRealtime";
 
@@ -16,18 +17,36 @@ export class ProformaEvent{
         proformaCreada.bind('proforma-event', (e)=>{
             notificacionStore.agregar(e.notificacion)
             notificarCorrecto('Tienes una proforma pendiente de aprobación')
+            //lanzamos la notificación push en el navegador del destinatario
+            pushEventMesaggeServiceWorker({
+                titulo: 'Proforma creada',
+                mensaje: e.notificacion.mensaje,
+                link: e.notificacion.link,
+            })
         })
         
         const proformaActualizada = pusher.subscribe('proformas-actualizadas-tracker-' + this.store.user.id)
         proformaActualizada.bind('proforma-event', (e) => {
             notificacionStore.agregar(e.notificacion)
             notificarCorrecto('Se ha actualizado la proforma que generaste')
+            //lanzamos la notificación push en el navegador del destinatario
+            pushEventMesaggeServiceWorker({
+                titulo: 'Proforma actualizada',
+                mensaje: e.notificacion.mensaje,
+                link: e.notificacion.link,
+            })
         })
         
         const proformaAnulada = pusher.subscribe('proformas-vencidas-tracker-'+this.store.user.id)
         proformaAnulada.bind('proforma-event', (e) => {
             notificacionStore.agregar(e.notificacion)
             notificarAdvertencia('Tienes una proforma apunto de caducar')
+            //lanzamos la notificación push en el navegador del destinatario
+            pushEventMesaggeServiceWorker({
+                titulo: 'Proforma vencida',
+                mensaje: e.notificacion.mensaje,
+                link: e.notificacion.link,
+            })
         })
 
     }
