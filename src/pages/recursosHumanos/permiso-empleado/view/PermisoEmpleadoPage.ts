@@ -31,6 +31,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 
 export default defineComponent({
   components: {
@@ -176,13 +177,15 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
-      })
+        autorizaciones: {
+          controller: new AutorizacionController(),
+          params: { campos: 'id,nombre', es_validado: false}}
+
+        })
+
       empleados.value = listadosAuxiliares.empleados
       tipos_permisos.value = listadosAuxiliares.tipos_permisos
-      autorizaciones.value =
-        LocalStorage.getItem('autorizaciones') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      autorizaciones.value =listadosAuxiliares.autorizaciones
     })
     function optionsFechaInicio(date) {
       const currentDate =

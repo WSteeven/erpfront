@@ -46,7 +46,10 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         clientes: new ClienteController(),
-        tiposTrabajos: new TipoTrabajoController(),
+        tiposTrabajos: {
+          controller: new TipoTrabajoController(),
+          params: { activo: 1, campos: 'id,descripcion,cliente_id' },
+        },
         grupos: {
           controller: new GrupoController(),
           params: { campos: 'id,nombre' }

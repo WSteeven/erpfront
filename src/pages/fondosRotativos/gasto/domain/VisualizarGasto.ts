@@ -33,6 +33,8 @@ export class VisualizarGasto extends EntidadAuditable {
   estado_info: string | null
   detalle_estado: string | null
   created_at: string | null
+  tiene_factura: boolean | null
+
   constructor() {
     super()
     this.fecha_viat = null
@@ -69,6 +71,8 @@ export class VisualizarGasto extends EntidadAuditable {
     this.estado_info = 'POR APROBAR'
     this.detalle_estado = null
     this.created_at = null
+    this.tiene_factura = true
+
 
   }
 }

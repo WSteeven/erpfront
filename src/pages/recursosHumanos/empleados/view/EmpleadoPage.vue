@@ -338,6 +338,7 @@
                     >
                       <q-date
                         v-model="empleado.fecha_nacimiento"
+                        :options="optionsFecha"
                         :mask="maskFecha"
                         today-btn
                       >
@@ -562,9 +563,16 @@
                     v-model="empleado.coordenadas"
                     placeholder="Opcional"
                     :disable="disabled"
+                    :error="!!v$.coordenadas.$errors.length"
+                @blur="v$.coordenadas.$touch"
                     outlined
                     dense
                   >
+                  <template v-slot:error>
+                  <div v-for="error of v$.coordenadas.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
                   </q-input>
                 </div>
                 <!-- Talla de zapato -->
@@ -1022,6 +1030,7 @@
                     >
                       <q-date
                         v-model="empleado.fecha_ingreso"
+                        :options="optionsFecha"
                         :mask="maskFecha"
                         today-btn
                       >

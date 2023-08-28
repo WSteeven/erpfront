@@ -30,7 +30,7 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { maskFecha, tabAutorizarGasto, estadosGastos } from 'config/utils'
+import { maskFecha, tabAutorizarGasto, estadosGastos, convertir_fecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
@@ -88,7 +88,9 @@ export default defineComponent({
         ? true
         : false*/
     })
-
+    onConsultado(()=>{
+      esFactura.value = gasto.tiene_factura!=null?gasto.tiene_factura:true;
+    })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
         return false
@@ -96,15 +98,15 @@ export default defineComponent({
       if (gasto.sub_detalle == null) {
         return false
       }
-      if(parseInt(gasto.detalle !== null ? gasto.detalle : '') === 24){
+      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 24) {
         return true
       }
-      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6 ) {
+      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -212,10 +214,10 @@ export default defineComponent({
         required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1),
       },
       kilometraje: {
-        required:  requiredIf(() => esCombustibleEmpresa.value  ),
+        required: requiredIf(() => esCombustibleEmpresa.value),
       },
       vehiculo: {
-        required:  requiredIf(() =>esCombustibleEmpresa.value ),
+        required: requiredIf(() => esCombustibleEmpresa.value),
       },
       observacion: {
         required,
@@ -394,15 +396,7 @@ export default defineComponent({
       return fecha
     }
     // - Filtro Lugares
-    function convertir_fecha(fecha: Date) {
-      const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
-      const month =
-        fecha.getMonth() + 1 < 10
-          ? '0' + (fecha.getMonth() + 1)
-          : fecha.getMonth() + 1
-      const year = fecha.getFullYear()
-      return year + '/' + month + '/' + day
-    }
+
     function filtrarCantones(val, update) {
       if (val === '') {
         update(() => {
@@ -577,8 +571,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250

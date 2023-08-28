@@ -2,18 +2,18 @@
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
-import { acciones, accionesTabla, estadosTrabajos, rolesSistema, tiposJornadas } from 'config/utils'
 import { formatearFechaSeparador, generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
-import { Ref, computed, defineComponent, onMounted, reactive, ref } from 'vue'
+import { acciones, accionesTabla, estadosTrabajos, tiposJornadas } from 'config/utils'
+import { Ref, computed, defineComponent, reactive, ref } from 'vue'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
-import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
 import TableView from 'components/tables/view/TableView.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import { Bar, Pie } from 'vue-chartjs'
@@ -36,27 +36,13 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { estadosTickets } from 'config/tickets.utils'
-import datalabels from 'chartjs-plugin-datalabels'
 import { useSubtareaStore } from 'stores/subtarea'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
   setup() {
-    ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement, datalabels)
-    ChartJS.defaults.plugins.datalabels = {
-      display: true,
-      align: 'center',
-      backgroundColor: '#eee',
-      color: '#fff',
-      borderRadius: 4,
-      opacity: .8,
-      font: {
-        size: 10,
-      },
-    };
-
     /*********
      * Stores
      *********/
@@ -77,7 +63,7 @@ export default defineComponent({
     // mixin subtarea
     const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { listado: subtareasResponsable } = mixinSubtarea.useReferencias()
-    const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
+    // const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -149,6 +135,9 @@ export default defineComponent({
     const realizadosBar = ref()
     const finalizadosBar = ref()
 
+    // Tabs
+    const tabsCoordinadorConsultado = ref('coordinadorConsultadoGrafico')
+
     filtro.fecha_fin = obtenerFechaActual()
 
     const options = {
@@ -164,7 +153,7 @@ export default defineComponent({
       },
       legend: {
         display: true,
-        position: 'bottom' // Cambia la posición según tus necesidades
+        position: 'bottom',
       }
     }
 
@@ -176,30 +165,32 @@ export default defineComponent({
       responsive: true,
       maintainAspectRatio: false,
       layout: {
-        padding: {
-          bottom: 32,
-          top: 32,
-        },
-        margin: {
-          top: 32,
-        },
+        padding: 32,
+      },
+      elements: {
+        arc: {
+          borderWidth: 0,
+        }
       },
       plugins: {
+        legend: {
+          position: 'right',
+        },
         datalabels: {
           align: 'end',
           anchor: 'end',
-          color: function (context) {
-            return context.dataset.backgroundColor;
+          color: '#fff',
+          backgroundColor: function (context) {
+            return context.dataset.backgroundColor
           },
           font: function (context) {
-            var w = context.chart.width;
+            var w = context.chart.width
             return {
-              size: w < 512 ? 12 : 14,
-              weight: 'bold',
-            };
+              size: w < 512 ? 10 : 12,
+            }
           },
           formatter: function (value, context) {
-            return context.chart.data.labels[context.dataIndex] + ': ' + value
+            return value ? context.chart.data.labels[context.dataIndex] + ': (' + value + ')' : null
           }
         }
       },
@@ -268,7 +259,7 @@ export default defineComponent({
           const { result } = await dashboardTareaController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado })
           await obtenerResponsables()
 
-          subtareas.value = result.subtareas
+          subtareas.value = result.subtareasCoordinador
 
           // Cantidades
           cantidadTareasActivas.value = result.cantidadTareasActivas
@@ -286,7 +277,7 @@ export default defineComponent({
           const labels3 = result.cantidadesPorEstadosSubtareas.map((item) => item.estado)
           const valores3 = result.cantidadesPorEstadosSubtareas.map((item) => item.total_subtareas)
           const colores3 = result.cantidadesPorEstadosSubtareas.map((item) => mapearColor(item.estado))
-          cantidadesPorEstadosSubtareasBar.value = mapearDatos(labels3, valores3, 'Cantidades de subtareas por estados', colores3)
+          cantidadesPorEstadosSubtareasBar.value = mapearDatos(labels3, valores3, 'Cantidad de subtareas', colores3)
 
           // Graficos por grupo
           const subtareasPorGrupo = result.cantidadesSubtareasPorGrupo
@@ -294,43 +285,43 @@ export default defineComponent({
           const labelsAgendado = agendados.value.map((item) => item.nombre)
           const valoresAgendado = agendados.value.map((item) => item.total_subtareas)
           const coloresAgendado = agendados.value.map(() => generarColorAzulPastelClaro())
-          agendadosBar.value = mapearDatos(labelsAgendado, valoresAgendado, '', coloresAgendado)
+          agendadosBar.value = mapearDatos(labelsAgendado, valoresAgendado, 'Cantidad de subtareas', coloresAgendado)
 
           ejecutados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.EJECUTANDO)
           const labelsEjecutando = ejecutados.value.map((item) => item.nombre)
           const valoresEjecutando = ejecutados.value.map((item) => item.total_subtareas)
           const coloresEjecutando = ejecutados.value.map(() => generarColorAzulPastelClaro())
-          ejecutadosBar.value = mapearDatos(labelsEjecutando, valoresEjecutando, '', coloresEjecutando)
+          ejecutadosBar.value = mapearDatos(labelsEjecutando, valoresEjecutando, 'Cantidad de subtareas', coloresEjecutando)
 
           pausados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.PAUSADO)
           const labelsPausado = pausados.value.map((item) => item.nombre)
           const valoresPausado = pausados.value.map((item) => item.total_subtareas)
           const coloresPausado = pausados.value.map(() => generarColorAzulPastelClaro())
-          pausadosBar.value = mapearDatos(labelsPausado, valoresPausado, '', coloresPausado)
+          pausadosBar.value = mapearDatos(labelsPausado, valoresPausado, 'Cantidad de subtareas', coloresPausado)
 
           suspendidos.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.SUSPENDIDO)
           const labelsSuspendido = suspendidos.value.map((item) => item.nombre)
           const valoresSuspendido = suspendidos.value.map((item) => item.total_subtareas)
           const coloresSuspendido = suspendidos.value.map(() => generarColorAzulPastelClaro())
-          suspendidosBar.value = mapearDatos(labelsSuspendido, valoresSuspendido, '', coloresSuspendido)
+          suspendidosBar.value = mapearDatos(labelsSuspendido, valoresSuspendido, 'Cantidad de subtareas', coloresSuspendido)
 
           cancelados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.CANCELADO)
           const labelsCancelado = cancelados.value.map((item) => item.nombre)
           const valoresCancelado = cancelados.value.map((item) => item.total_subtareas)
           const coloresCancelado = cancelados.value.map(() => generarColorAzulPastelClaro())
-          canceladosBar.value = mapearDatos(labelsCancelado, valoresCancelado, '', coloresCancelado)
+          canceladosBar.value = mapearDatos(labelsCancelado, valoresCancelado, 'Cantidad de subtareas', coloresCancelado)
 
           realizados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.REALIZADO)
           const labelsRealizado = realizados.value.map((item) => item.nombre)
           const valoresRealizado = realizados.value.map((item) => item.total_subtareas)
           const coloresRealizado = realizados.value.map(() => generarColorAzulPastelClaro())
-          realizadosBar.value = mapearDatos(labelsRealizado, valoresRealizado, '', coloresRealizado)
+          realizadosBar.value = mapearDatos(labelsRealizado, valoresRealizado, 'Cantidad de subtareas', coloresRealizado)
 
           finalizados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.FINALIZADO)
           const labelsFinalizado = finalizados.value.map((item) => item.nombre)
           const valoresFinalizado = finalizados.value.map((item) => item.total_subtareas)
           const coloresFinalizado = finalizados.value.map(() => generarColorAzulPastelClaro())
-          finalizadosBar.value = mapearDatos(labelsFinalizado, valoresFinalizado, '', coloresFinalizado)
+          finalizadosBar.value = mapearDatos(labelsFinalizado, valoresFinalizado, 'Cantidad de subtareas', coloresFinalizado)
 
         } catch (e) {
           console.log(e)
@@ -363,24 +354,18 @@ export default defineComponent({
             data: valores,
           },
         ],
-        events: {
-          click: function (e) {
-            // find the clicked values and the series
-            console.log('hola jsdjjsdjd')
-            console.log(e)
-          },
-        },
       }
     }
 
     function mapearColor(estadoTicket: keyof typeof estadosTickets) {
       switch (estadoTicket) {
-        case estadosTrabajos.AGENDADO: return '#9fa8da'
-        case estadosTrabajos.EJECUTANDO: return '#9fa8da'
+        case estadosTrabajos.AGENDADO: return '#f9de8d'
+        case estadosTrabajos.EJECUTANDO: return '#ffc107'
         case estadosTrabajos.PAUSADO: return '#78909c'
-        case estadosTrabajos.SUSPENDIDO: return '#ffc107'
-        case estadosTrabajos.REALIZADO: return '#8bc34a'
-        case estadosTrabajos.FINALIZADO: return '#9ba98c'
+        case estadosTrabajos.SUSPENDIDO: return '#ec5c64'
+        case estadosTrabajos.REALIZADO: return '#9ba98c'
+        case estadosTrabajos.FINALIZADO: return '#8bc34a'
+        case estadosTrabajos.CANCELADO: return '#c31d25'
       }
     }
 
@@ -391,14 +376,6 @@ export default defineComponent({
     function ordenarEmpleadosResponsables() {
       empleadosResponsables.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
     }
-
-    /*function filtrarSubtareasResponsable() {
-      listarSubtareas({ empleado_id: empleadoResponsable.value })
-    }
-
-    function filtrarSubtareasGrupo() {
-      listarSubtareas({ grupo_id: grupo.value })
-    } */
 
     function filtrarSubtareasGrupoPorEstado(subtareasGrupo: any[], estado: string) {
       return subtareasGrupo.filter((item) =>
@@ -426,29 +403,19 @@ export default defineComponent({
       //
     }
 
-    function funcionClick(event, chartElements) {
-      console.log('saludo...')
-      console.log(event)
-      console.log(chartElements)
-    }
-
-    const myChart = ref();
-
-    const handleChartClick = (event) => {
-      const activeElements = myChart.value.chart.getElementsAtEvent(event);
-
-      if (activeElements.length > 0) {
-        const datasetIndex = activeElements[0].datasetIndex;
-        const dataIndex = activeElements[0].index;
-        const legendLabel = cantidadesPorEstadosSubtareasBar.value.datasets[datasetIndex].label;
-        console.log('Leyenda del elemento clicado:', legendLabel)
-        console.log('Índice de datos del elemento clicado:', dataIndex)
+    const subtareasFiltradas = ref([])
+    function clickCantidadesPorEstadoSubtareas(data) {
+      const { label } = data
+      if (label) {
+        subtareasFiltradas.value = subtareas.value.filter((subtarea: Subtarea) => subtarea.estado === label)
+        tabsCoordinadorConsultado.value = 'coordinadorConsultadoListado'
       }
     }
 
     return {
-      myChart,
-      handleChartClick,
+      tabsCoordinadorConsultado,
+      subtareasFiltradas,
+      clickCantidadesPorEstadoSubtareas,
       agendados,
       ejecutados,
       pausados,
@@ -463,7 +430,6 @@ export default defineComponent({
       canceladosBar,
       realizadosBar,
       finalizadosBar,
-      funcionClick,
       // -
       filtrarSubtareasResponsable,
       subtareasResponsable,
