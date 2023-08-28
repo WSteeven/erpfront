@@ -384,6 +384,23 @@ export function convertir_fecha(fecha: Date) {
   const year = fecha.getFullYear()
   return year + '/' + month + '/' + day
 }
+export function convertir_fecha_guion(fecha) {
+  const partes = fecha.split(' '); // Dividir en fecha y hora
+  const fechaPartes = partes[0].split('-'); // Dividir la fecha en día, mes y año
+  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`; // Construir la nueva fecha en formato dd/mm/yyyy
+  return nuevaFecha;
+}
+export function convertir_fecha_hora(fecha) {
+  const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
+  let tiempo = dateParts[2]
+  tiempo = tiempo.split(' ')
+  tiempo = tiempo[1].split(':')
+  const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
+  const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
+  const anio = parseInt(dateParts[2], 10)
+  const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
+  return fecha_convert
+}
 export const niveles_academicos = [
   { nombre: 'ESTUDIO PRIMARIO' },
   { nombre: 'ESTUDIO SECUNDARIO' },

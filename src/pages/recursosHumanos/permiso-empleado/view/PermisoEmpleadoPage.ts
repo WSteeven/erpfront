@@ -12,7 +12,13 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
 import { removeAccents } from 'shared/utils'
-import { maskFecha, tabOptionsSolicitudPedido } from 'config/utils'
+import {
+  convertir_fecha,
+  convertir_fecha_guion,
+  convertir_fecha_hora,
+  maskFecha,
+  tabOptionsPermiso,
+} from 'config/utils'
 import {
   requiredIf,
   maxLength,
@@ -80,7 +86,7 @@ export default defineComponent({
     const tipos_permisos = ref([])
     const empleados = ref([])
     const aux_fecha_inicio = ref()
-    const aux_fecha_fin= ref()
+    const aux_fecha_fin = ref()
     const refArchivoPrestamoEmpresarial = ref()
     const autorizaciones = ref()
     const esRecursosHumanos = store.esRecursosHumanos
@@ -91,8 +97,8 @@ export default defineComponent({
     })
     const dias_permiso = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = convertir_fecha(permiso.fecha_hora_inicio)
-        const fechaFin = convertir_fecha(permiso.fecha_hora_fin)
+        const fechaInicio = convertir_fecha_hora(permiso.fecha_hora_inicio)
+        const fechaFin = convertir_fecha_hora(permiso.fecha_hora_fin)
         // Calcula la diferencia en dias
         const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
         return diferenciaDias
@@ -102,8 +108,8 @@ export default defineComponent({
     })
     const horas_permisos = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = convertir_fecha(permiso.fecha_hora_inicio)
-        const fechaFin = convertir_fecha(permiso.fecha_hora_fin)
+        const fechaInicio = convertir_fecha_hora(permiso.fecha_hora_inicio)
+        const fechaFin = convertir_fecha_hora(permiso.fecha_hora_fin)
         // Calcula la diferencia en milisegundos
         const diferenciaMilisegundos =
           fechaFin.getTime() - fechaInicio.getTime()
@@ -115,17 +121,6 @@ export default defineComponent({
       }
     })
 
-    function convertir_fecha(fecha) {
-      const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
-      let tiempo = dateParts[2]
-      tiempo = tiempo.split(' ')
-      tiempo = tiempo[1].split(':')
-      const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
-      const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-      const anio = parseInt(dateParts[2], 10)
-      const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
-      return fecha_convert
-    }
     onBeforeGuardar(() => {
       permiso.tieneDocumento =
         refArchivoPrestamoEmpresarial.value.tamanioListado > 0 ? true : false
@@ -146,8 +141,10 @@ export default defineComponent({
     onConsultado(() => {
       esAutorizador.value =
         store.user.id == permiso.id_jefe_inmediato ? true : false
-        aux_fecha_inicio.value = permiso.fecha_hora_inicio == null?'':permiso.fecha_hora_inicio
-        aux_fecha_fin.value = permiso.fecha_hora_fin == null?'':permiso.fecha_hora_fin
+      aux_fecha_inicio.value =
+        permiso.fecha_hora_inicio == null ? '' : permiso.fecha_hora_inicio
+      aux_fecha_fin.value =
+        permiso.fecha_hora_fin == null ? '' : permiso.fecha_hora_fin
       setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           permiso_id: permiso.id,
@@ -179,18 +176,18 @@ export default defineComponent({
         },
         autorizaciones: {
           controller: new AutorizacionController(),
-          params: { campos: 'id,nombre', es_validado: false}}
-
-        })
+          params: { campos: 'id,nombre', es_validado: false },
+        },
+      })
 
       empleados.value = listadosAuxiliares.empleados
       tipos_permisos.value = listadosAuxiliares.tipos_permisos
-      autorizaciones.value =listadosAuxiliares.autorizaciones
+      autorizaciones.value = listadosAuxiliares.autorizaciones
     })
     function optionsFechaInicio(date) {
       const currentDate =
         permiso.fecha_hora_inicio != null
-          ? convertir_fecha(permiso.fecha_hora_inicio)
+          ? convertir_fecha_hora(permiso.fecha_hora_inicio)
           : new Date() // Obtener la fecha actual
       const year = currentDate.getFullYear() // Obtener el año
       const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
@@ -199,7 +196,7 @@ export default defineComponent({
       return date >= currentDateString
     }
     function optionsFecha(date) {
-      const fechaActual = convertir_fecha(permiso.fecha_hora_inicio)
+      const fechaActual = convertir_fecha_hora(permiso.fecha_hora_inicio)
       const fechaIngresada = new Date(date)
       const diferenciaMilisegundos =
         fechaIngresada.getTime() - fechaActual.getTime()
@@ -212,6 +209,23 @@ export default defineComponent({
         diferenciaDias === 1 ||
         diferenciaDias === 2
       )
+    }
+
+    function optionsFechaRecuperacion(date) {
+      const fechaFin = convertir_fecha_guion(
+        permiso.fecha_hora_fin !== null
+          ? permiso.fecha_hora_fin
+          : ' '
+      )
+      return date > fechaFin
+    }
+    function optionsFechaSugerida(date) {
+      const fechaFin = convertir_fecha_guion(
+        permiso.fecha_hora_fin !== null
+          ? permiso.fecha_hora_fin
+          : ' '
+      )
+      return date > fechaFin
     }
     function filtrarEmpleados(val, update) {
       if (val === '')
@@ -253,30 +267,30 @@ export default defineComponent({
       titulo: ' ',
       icono: 'bi-pencil-square',
       color: 'secondary',
-      visible: ({ entidad }) =>
-        store.can('puede.editar.permiso_nomina'),
+      visible: ({ entidad }) => store.can('puede.editar.permiso_nomina'),
       accion: ({ entidad }) => {
-
         accion.value = 'EDITAR'
         consultar(entidad)
       },
     }
 
-    function cambiar_fecha(){
+    function cambiar_fecha() {
       permiso.fecha_hora_inicio = aux_fecha_inicio.value
-      permiso.fecha_hora_fin= aux_fecha_fin.value
-      if(permiso.aceptar_sugerencia){
+      permiso.fecha_hora_fin = aux_fecha_fin.value
+      if (permiso.aceptar_sugerencia) {
         permiso.fecha_hora_inicio = permiso.fecha_hora_reagendamiento
-        const fechaFinSugerida = convertir_fecha( permiso.fecha_hora_reagendamiento) //new Date(anio, mes, dia,parseInt(tiempo[1].split(':')[0]),parseInt(tiempo[1].split(':')[1]));
-        fechaFinSugerida.setHours(fechaFinSugerida.getHours() + 1);
-        const anio = fechaFinSugerida.getFullYear();
-        const mes = String(fechaFinSugerida.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, por lo que sumamos 1
-        const dia = String(fechaFinSugerida.getDate()).padStart(2, '0');
-        const horas = String(fechaFinSugerida.getHours()).padStart(2, '0');
-        const minutos = String(fechaFinSugerida.getMinutes()).padStart(2, '0');
-        permiso.fecha_hora_fin =  dia+'-'+mes+'-'+anio+' '+horas+':'+minutos+':00'
+        const fechaFinSugerida = convertir_fecha_hora(
+          permiso.fecha_hora_reagendamiento
+        ) //new Date(anio, mes, dia,parseInt(tiempo[1].split(':')[0]),parseInt(tiempo[1].split(':')[1]));
+        fechaFinSugerida.setHours(fechaFinSugerida.getHours() + 1)
+        const anio = fechaFinSugerida.getFullYear()
+        const mes = String(fechaFinSugerida.getMonth() + 1).padStart(2, '0') // Los meses son base 0, por lo que sumamos 1
+        const dia = String(fechaFinSugerida.getDate()).padStart(2, '0')
+        const horas = String(fechaFinSugerida.getHours()).padStart(2, '0')
+        const minutos = String(fechaFinSugerida.getMinutes()).padStart(2, '0')
+        permiso.fecha_hora_fin =
+          dia + '-' + mes + '-' + anio + ' ' + horas + ':' + minutos + ':00'
       }
-
     }
 
     return {
@@ -288,6 +302,8 @@ export default defineComponent({
       filtrarPermisoEmpleado,
       watchEffect,
       optionsFechaInicio,
+      optionsFechaRecuperacion,
+      optionsFechaSugerida,
       cambiar_fecha,
       editarPermiso,
       esAutorizador,
@@ -307,7 +323,7 @@ export default defineComponent({
       store,
       v$,
       disabled,
-      tabOptionsSolicitudPedido,
+      tabOptionsPermiso,
       configuracionColumnas: configuracionColumnasPermisoEmpleado,
     }
   },
