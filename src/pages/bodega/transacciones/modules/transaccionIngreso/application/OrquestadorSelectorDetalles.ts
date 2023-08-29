@@ -7,10 +7,12 @@ import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleP
 export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
+    const listadoAux: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()
 
     const singleSelector = {
         refListadoSeleccionable: refListadoSeleccionable,
+        listadoPrecargado: listadoAux,
         listadoSeleccionable: listado,
         endpoint: endpoint,
         limpiar: () => {
@@ -27,8 +29,8 @@ export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, end
     const limpiar = () => singleSelector.limpiar()
 
     const seleccionar = (entidades: DetalleProducto[]) => {
-        console.log(entidades)
-        console.log(entidad.listadoProductosTransaccion)
+        // console.log(entidades)
+        // console.log(entidad.listadoProductosTransaccion)
         let ids: any = []
         ids = entidad.listadoProductosTransaccion.map((entidad) => { entidad.condiciones ?? entidad.id })
         const datos = entidades.filter((v) => !ids.includes(v.id))

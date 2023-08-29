@@ -375,3 +375,54 @@ export const opcionesUnidadesMedidas = [
   { value: 7, label: 'LITRO' },
   { value: 8, label: 'KIT' },
 ]
+export function convertir_fecha(fecha: Date) {
+  const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
+  const month =
+    fecha.getMonth() + 1 < 10
+      ? '0' + (fecha.getMonth() + 1)
+      : fecha.getMonth() + 1
+  const year = fecha.getFullYear()
+  return year + '/' + month + '/' + day
+}
+export function convertir_fecha_guion(fecha) {
+  const partes = fecha.split(' '); // Dividir en fecha y hora
+  const fechaPartes = partes[0].split('-'); // Dividir la fecha en día, mes y año
+  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`; // Construir la nueva fecha en formato dd/mm/yyyy
+  return nuevaFecha;
+}
+export function convertir_fecha_hora(fecha) {
+  const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
+  let tiempo = dateParts[2]
+  tiempo = tiempo.split(' ')
+  tiempo = tiempo[1].split(':')
+  const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
+  const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
+  const anio = parseInt(dateParts[2], 10)
+  const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
+  return fecha_convert
+}
+export const niveles_academicos = [
+  { nombre: 'ESTUDIO PRIMARIO' },
+  { nombre: 'ESTUDIO SECUNDARIO' },
+  { nombre: 'TITULO SUPERIOR' },
+]
+export const tipos_sangre = [
+  { nombre: 'A +' },
+  { nombre: 'B +' },
+  { nombre: 'AB +' },
+  { nombre: 'O +' },
+  { nombre: 'A -' },
+  { nombre: 'B -' },
+  { nombre: 'AB -' },
+  { nombre: 'O -' },
+  // Puedes agregar aquí más tipos de sangre si es necesario
+]
+export const talla_letras = [
+  { nombre: 'S' },
+  { nombre: 'M' },
+  { nombre: 'L' },
+  { nombre: 'XL' },
+  { nombre: 'XXL' },
+  { nombre: 'XXXL' },
+  // Puedes agregar aquí más tallas si es necesario
+]

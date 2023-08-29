@@ -1,4 +1,5 @@
 import { useNotificaciones } from 'shared/notificaciones';
+import { pushEventMesaggeServiceWorker } from 'shared/utils';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 
@@ -17,6 +18,13 @@ export class EgresoPusherEvent {
             notificacionStore.agregar(e.notificacion)
             notificacionStore.actualizar()
             notificarCorrecto('Te despacharon material de bodega')
+            
+            //lanzamos la notificación push en el navegador del destinatario
+            pushEventMesaggeServiceWorker({
+                titulo: 'Egreso de bodega',
+                mensaje: e.notificacion.mensaje,
+                link: e.notificacion.link,
+            })
         })
     }
 }
