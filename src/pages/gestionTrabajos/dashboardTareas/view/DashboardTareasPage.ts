@@ -96,6 +96,8 @@ export default defineComponent({
 
     // Cantidades
     const subtareas = ref([])
+    const subtareasGrupo = ref([])
+    const subtareasSubordinados = ref([])
 
     const cantidadTareasActivas = ref()
     const cantidadTareasFinalizadas = ref()
@@ -136,7 +138,13 @@ export default defineComponent({
     const finalizadosBar = ref()
 
     // Tabs
+    const opcionesSubordinado = {
+      subordinadosGrafico: 'subordinadosGrafico',
+      subordinadosListado: 'subordinadosListado',
+    }
+
     const tabsCoordinadorConsultado = ref('coordinadorConsultadoGrafico')
+    const tabsSubordinados = ref(opcionesSubordinado.subordinadosGrafico)
 
     filtro.fecha_fin = obtenerFechaActual()
 
@@ -260,6 +268,7 @@ export default defineComponent({
           await obtenerResponsables()
 
           subtareas.value = result.subtareasCoordinador
+          subtareasGrupo.value = result.subtareasGrupo
 
           // Cantidades
           cantidadTareasActivas.value = result.cantidadTareasActivas
@@ -412,10 +421,26 @@ export default defineComponent({
       }
     }
 
+    function clickCantidadesSubtareasSubordinados(data, estado) {
+      const { label } = data
+      if (label) {
+        console.log('consultado ...')
+        console.log(label)
+        // console.log(subtareasGrupo.value)
+        subtareasSubordinados.value = subtareasGrupo.value.filter((subtarea: Subtarea) => subtarea.grupo === label && subtarea.estado === estado)
+        tabsSubordinados.value = opcionesSubordinado.subordinadosListado
+      }
+    }
+
     return {
+      estadosTrabajos,
+      opcionesSubordinado,
       tabsCoordinadorConsultado,
+      tabsSubordinados,
       subtareasFiltradas,
+      subtareasSubordinados,
       clickCantidadesPorEstadoSubtareas,
+      clickCantidadesSubtareasSubordinados,
       agendados,
       ejecutados,
       pausados,
