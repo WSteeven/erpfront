@@ -30,7 +30,7 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { maskFecha, tabAutorizarGasto, estadosGastos } from 'config/utils'
+import { maskFecha, tabAutorizarGasto, estadosGastos, convertir_fecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
@@ -88,7 +88,9 @@ export default defineComponent({
         ? true
         : false*/
     })
-
+    onConsultado(()=>{
+      esFactura.value = gasto.tiene_factura!=null?gasto.tiene_factura:true;
+    })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
         return false
@@ -394,15 +396,7 @@ export default defineComponent({
       return fecha
     }
     // - Filtro Lugares
-    function convertir_fecha(fecha: Date) {
-      const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
-      const month =
-        fecha.getMonth() + 1 < 10
-          ? '0' + (fecha.getMonth() + 1)
-          : fecha.getMonth() + 1
-      const year = fecha.getFullYear()
-      return year + '/' + month + '/' + day
-    }
+
     function filtrarCantones(val, update) {
       if (val === '') {
         update(() => {

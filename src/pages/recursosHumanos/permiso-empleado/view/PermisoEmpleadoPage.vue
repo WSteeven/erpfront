@@ -2,7 +2,7 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :tabOptions="tabOptionsSolicitudPedido"
+    :tabOptions="tabOptionsPermiso"
     :full="true"
     :accion1="editarPermiso"
     :permitirEditar="false"
@@ -195,7 +195,7 @@
                       <q-date
                         v-model="permiso.fecha_hora_reagendamiento"
                         mask="DD-MM-YYYY HH:mm"
-                        :options="optionsFecha"
+                              :options="optionsFechaSugerida"
                         today-btn
                       >
                         <div class="row items-center justify-end">
@@ -248,6 +248,7 @@
             <q-input
               v-model="permiso.fecha_hora_solicitud"
               :disable="!esNuevo"
+              readonly
               outlined
               dense
             >
@@ -291,7 +292,26 @@
             >
             </gestor-documentos>
           </div>
-
+       <!-- Recuperable -->
+       <div
+            class="col-12 col-md-3"
+            v-if="
+              permiso.id_jefe_inmediato != null &&
+              permiso.estado == 1 &&
+              permiso.id_jefe_inmediato === store.user.id
+            "
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="permiso.recuperables"
+              label="Recuperables"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+              "
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
           <!-- Fecha Recuperacion -->
           <div class="col-12 col-md-3" v-if="permiso.recuperables">
             <label class="q-mb-sm block">Fecha de Recuperacion</label>
@@ -299,6 +319,7 @@
               v-model="permiso.fecha_recuperacion"
               placeholder="Obligatorio"
               :error="!!v$.fecha_recuperacion.$errors.length"
+              readonly
               :disable="
                 (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
               "
@@ -312,6 +333,7 @@
                     <q-date
                       v-model="permiso.fecha_recuperacion"
                       :mask="maskFecha"
+                      :options="optionsFechaRecuperacion"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -352,26 +374,7 @@
               </template>
             </q-input>
           </div>
-          <!-- Recuperable -->
-          <div
-            class="col-12 col-md-3"
-            v-if="
-              permiso.id_jefe_inmediato != null &&
-              permiso.estado == 1 &&
-              permiso.id_jefe_inmediato === store.user.id
-            "
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="permiso.recuperables"
-              label="Recuperables"
-              :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
-              "
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
+
 
           <!-- Recuperto -->
           <div

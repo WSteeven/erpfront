@@ -1,4 +1,5 @@
 import { useNotificaciones } from "shared/notificaciones";
+import { pushEventMesaggeServiceWorker } from "shared/utils";
 import { useAuthenticationStore } from "stores/authentication";
 import { useNotificationRealtimeStore } from "stores/notificationRealtime";
 
@@ -16,6 +17,13 @@ export class ProveedorEvent {
         proveedorCreado.bind('proveedor-event', (e) => {
             notificacionStore.agregar(e.notificacion)
             notificarCorrecto('Tienes un Proveedor nuevo por calificar');
+            
+            //lanzamos la notificación push en el navegador del destinatario
+            pushEventMesaggeServiceWorker({
+                titulo: 'Calificación de proveedor',
+                mensaje: e.notificacion.mensaje,
+                link: e.notificacion.link,
+            })
         })
     }
 }

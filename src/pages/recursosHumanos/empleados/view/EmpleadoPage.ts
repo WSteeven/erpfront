@@ -8,7 +8,7 @@ import {
   requiredIf,
 } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { maskFecha, opcionesEstados } from 'config/utils'
+import { convertir_fecha, maskFecha, niveles_academicos, opcionesEstados, talla_letras, tipos_sangre } from 'config/utils'
 import { defineComponent, ref, watchEffect, computed } from 'vue'
 
 // Componentes
@@ -61,39 +61,13 @@ export default defineComponent({
     const bancos = ref([])
     const areas = ref([])
     const tipos_contrato = ref([])
-    const niveles_academicos = ref([
-      { nombre: 'ESTUDIO PRIMARIO' },
-      { nombre: 'ESTUDIO SECUNDARIO' },
-      { nombre: 'TITULO SUPERIOR' },
-    ])
-    const tipos_sangre = ref([
-      { nombre: 'A +' },
-      { nombre: 'B +' },
-      { nombre: 'AB +' },
-      { nombre: 'O +' },
-      { nombre: 'A -' },
-      { nombre: 'B -' },
-      { nombre: 'AB -' },
-      { nombre: 'O -' },
-      // Puedes agregar aquí más tipos de sangre si es necesario
-    ])
-    const talla_letras = ref([
-      { nombre: 'S' },
-      { nombre: 'M' },
-      { nombre: 'L' },
-      { nombre: 'XL' },
-      { nombre: 'XXL' },
-      { nombre: 'XXXL' }
-      // Puedes agregar aquí más tallas si es necesario
-    ])
     const opcionesDepartamentos = ref([])
-
     cargarVista(async () => {
       obtenerListados({
         cantones: new CantonController(),
         cargos: {
           controller: new CargoController(),
-          params: { estado: 1 }
+          params: { estado: 1 },
         },
         tipos_contrato: new TipoContratoController(),
         roles: {
@@ -150,7 +124,7 @@ export default defineComponent({
       apellidos: { required },
       jefe: { required },
       email: { required },
-      coordenadas:{ required},
+      coordenadas: { required: requiredIf(()=>{return accion.value==='EDITAR'}) },
       correo_personal: { required },
       usuario: { required },
       fecha_nacimiento: { required },
@@ -162,8 +136,7 @@ export default defineComponent({
       talla_zapato: { required: requiredIf(() => empleado.tiene_grupo) },
       talla_camisa: { required },
       talla_pantalon: { required: requiredIf(() => empleado.tiene_grupo) },
-      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) }
-
+      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) },
     }
 
     const v$ = useVuelidate(reglas, empleado)
@@ -226,6 +199,10 @@ export default defineComponent({
     })
 
     onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
+    function optionsFecha(date) {
+      const hoy = convertir_fecha(new Date())
+      return date <= hoy
+    }
 
     /************
      * Observers
@@ -258,6 +235,7 @@ export default defineComponent({
       areas,
       tipos_contrato,
       niveles_academicos,
+      optionsFecha,
       //metodos
       opcionesDepartamentos,
 
