@@ -28,6 +28,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { ArchivoLicenciaEmpleadoController } from '../infraestructure/ArchivoLicenciaEmpleadoController'
 import { TipoLicenciaController } from 'pages/recursosHumanos/tipo-licencia/infraestructure/TipoLicenciaController'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, GestorDocumentos },
@@ -74,14 +75,12 @@ export default defineComponent({
     const autorizaciones = ref()
     const esRecursosHumanos = store.esRecursosHumanos
 
-    const esAutorizador = ref(false)
+    const es_jefe_inmediato = ref(false)
     const tiene_dias_licencia = ref(false)
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
-    const dias_licencia = ref()
-
     function obtener_dias_licencia() {
       const licencia_filtrada = listadosAuxiliares.tipos_licencias.filter(
         (v) => v.id == licencia.tipo_licencia
@@ -136,19 +135,9 @@ export default defineComponent({
       await refArchivoPrestamoEmpresarial.value.subir({ licencia_id: id })
     }
     onConsultado(() => {
-      esAutorizador.value =
-        store.user.id == licencia.id_jefe_inmediato ? true : false
-      if (esAutorizador.value) {
-        autorizaciones.value.splice(
-          autorizaciones.value.findIndex((obj) => obj.nombre === 'VALIDADO'),
-          1
-        )
-        autorizaciones.value.splice(
-          autorizaciones.value.findIndex((obj) => obj.nombre === 'PENDIENTE'),
-          1
-        )
-      }
-      setTimeout(() => {
+      es_jefe_inmediato.value =
+      store.user.id == licencia.id_jefe_inmediato ? true : false
+        setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           licencia_id: licencia.id,
         })
@@ -169,13 +158,18 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
+        autorizaciones: {
+          controller: new AutorizacionController(),
+          params: {
+            campos: 'id,nombre',
+            es_jefe_inmediato:
+              store.user.id == licencia.id_jefe_inmediato ? true : false,
+          },
+        },
       })
       empleados.value = listadosAuxiliares.empleados
       tipos_licencias.value = listadosAuxiliares.tipos_licencias
-      autorizaciones.value =
-        LocalStorage.getItem('autorizaciones') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      autorizaciones.value =listadosAuxiliares.autorizaciones
     })
     function filtrarEmpleados(val, update) {
       if (val === '')
@@ -207,11 +201,16 @@ export default defineComponent({
     }
     watchEffect(() => {
       if (
-        licencia.fecha_inicio !== null && licencia.dias_licencia !== null && licencia.dias_licencia !== undefined ) {
+        licencia.fecha_inicio !== null &&
+        licencia.dias_licencia !== null &&
+        licencia.dias_licencia !== undefined
+      ) {
         const fechaInicio = convertir_fecha(licencia.fecha_inicio)
         const fechaFinal = fechaInicio
         fechaFinal.setDate(
-          fechaInicio.getDate() + parseInt(licencia.dias_licencia.toString())-1
+          fechaInicio.getDate() +
+            parseInt(licencia.dias_licencia.toString()) -
+            1
         )
         // Formatear la fecha a "año-mes-día"
         const anio = fechaFinal.getFullYear()
@@ -238,7 +237,7 @@ export default defineComponent({
       filtrarEmpleados,
       filtrarPermisoEmpleado,
       watchEffect,
-      esAutorizador,
+      es_jefe_inmediato,
       esRecursosHumanos,
       esNuevo,
       verEmpleado,
