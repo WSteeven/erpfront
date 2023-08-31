@@ -204,7 +204,7 @@
               class="q-mt-lg q-pt-md"
               v-model="esFactura"
               label="¿Tiene Factura?"
-              :disable="disabled"
+              disable
               @update:model-value="existeComprobante()"
               outlined
               dense
