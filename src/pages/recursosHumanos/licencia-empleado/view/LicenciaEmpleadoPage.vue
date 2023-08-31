@@ -166,7 +166,7 @@
             </q-input>
           </div>
            <!-- Autorizacion -->
-           <div class="col-12 col-md-3" v-if="accion == 'EDITAR' && esAutorizador">
+           <div class="col-12 col-md-3" v-if="accion == 'EDITAR' && es_jefe_inmediato">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="licencia.estado"

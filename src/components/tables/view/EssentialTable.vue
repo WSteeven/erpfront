@@ -1327,6 +1327,40 @@
         ></q-icon>
       </q-td>
     </template>
+ <!-- esta en rol -->
+ <template #body-cell-esta_en_rol_pago="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+<!-- factura -->
+<template #body-cell-realiza_factura="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
 
         <!-- esta pagado -->
         <template #body-cell-pago_couta="props">

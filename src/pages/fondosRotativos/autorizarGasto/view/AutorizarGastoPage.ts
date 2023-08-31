@@ -103,7 +103,7 @@ export default defineComponent({
 
       // Calcula la diferencia en días
       const diferenciaDias = fechaInicio.getDate() - fechaFin.getDate()
-      if (diferenciaDias <= 5) {
+      if (diferenciaDias <= 8) {
         return true;
       } else {
         return false;

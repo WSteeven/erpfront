@@ -5,11 +5,11 @@
     :mostrarListado="mostrarListado"
     :tabOptions="tabOptionsSolicitudPedido"
     :full="true"
-    :permitirEditar="esValidador || esAutorizador"
+    :permitirEditar="(esValidador || esAutorizador)& ver_boton_editar"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarSolicitudPrestamo"
-    tabDefecto="1"
+    :tabDefecto="tabSolicitudPrestaamo"
     :forzarListar="true"
   >
     <template #formulario>
@@ -79,7 +79,7 @@
             <q-input
               v-model="solicitudPrestamo.plazo"
               type="number"
-              :disable="accion.value != 'NUEVO' ? false : true"
+              :disable="accion.value != 'NUEVO' ? false : true || disabled"
               :error="!!v$.plazo.$errors.length"
               placeholder="Obligatorio"
               @blur="v$.plazo.$touch"
@@ -99,7 +99,7 @@
             <q-input
               v-model="solicitudPrestamo.motivo"
               placeholder="Obligatorio"
-              :disable="disabled"
+              :disable="!puede_editar"
               type="textarea"
               :error="!!v$.motivo.$errors.length"
               @blur="v$.motivo.$touch"
@@ -135,8 +135,18 @@
               </template>
             </q-input>
           </div>
-          <!--Periodos -->
           <div class="col-12 col-md-3">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="solicitudPrestamo.cargo_utilidad"
+              label="Cargo a Utilidades"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!--Periodos -->
+          <div class="col-12 col-md-3" v-if="solicitudPrestamo.cargo_utilidad">
             <label class="q-mb-sm block">Periodo</label>
             <q-select
               v-model="solicitudPrestamo.periodo"
@@ -151,6 +161,8 @@
               use-input
               input-debounce="0"
               @filter="filtrarPeriodo"
+              :error="!!v$.periodo.$errors.length"
+              @blur="v$.periodo.$touch"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -160,6 +172,11 @@
                 <q-item>
                   <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.periodo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
             </q-select>
           </div>
@@ -220,6 +237,7 @@
               :imagen="solicitudPrestamo.foto"
               file_extensiones=".jpg, image/*"
               :error="!!v$.foto.$errors.length"
+              :disable="!puede_editar"
               error-message="Debes de cargar imagen de comprobante"
               @blur="v$.foto.$touch"
               @update:modelValue="(data) => (solicitudPrestamo.foto = data)"
@@ -249,7 +267,6 @@
             <label class="q-mb-sm block">Porcentaje de Descuentos </label>
             <q-input
               v-model="recursosHumanosStore.porcentaje_endeudamiento"
-              type="number"
               disable
               outlined
               dense
