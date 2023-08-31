@@ -145,12 +145,12 @@ export default defineComponent({
       rechazos.value = response.data.results
     }
 
-    async function obtenerCancelados() {
+    /* async function obtenerCancelados() {
       const ruta =
         axios.getEndpoint(endpoints.rechazos_tickets) + '/' + ticket.id
       const response: AxiosResponse = await axios.get(ruta)
       rechazos.value = response.data.results
-    }
+    } */
 
     async function obtenerResponsables(filtros) {
       cargarVista(async () => {

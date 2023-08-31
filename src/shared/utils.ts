@@ -610,3 +610,11 @@ export function encontrarUltimoIdListado(listado: any) {
   console.log('utlimo id: ' + ultimoId)
   return ultimoId
 }
+
+export function convertirNumeroPositivo(entidad, campo) {
+  if (entidad[campo]) {
+    if (entidad[campo] < 0) {
+      entidad[campo] = -1 * entidad[campo];
+    }
+  }
+}

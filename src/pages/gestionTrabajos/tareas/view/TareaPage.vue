@@ -342,27 +342,23 @@
                   </q-select>
                 </div>
 
-                <!-- Tiene subtareas -->
-                <!-- <div class="col-12 col-md-3">
-                  <br />
-                  <q-checkbox
-                    v-model="tarea.tiene_subtareas"
-                    label="Tiene subtareas"
-                    outlined
+                <!-- Metraje tendido -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block"
+                    >Cantidad de fibra óptica a tender (m)</label
+                  >
+                  <q-input
+                    v-model="tarea.metraje_tendido"
+                    placeholder="Opcional"
                     :disable="disabled"
+                    @update:model-value="
+                      convertirNumeroPositivo(tarea, 'metraje_tendido')
+                    "
+                    outlined
                     dense
-                  ></q-checkbox>
-                </div> -->
-
-                <!--<div class="col-12 col-md-3">
-                  <br />
-                  <q-toggle
-                    v-model="tarea.finalizado"
-                    checked-icon="check"
-                    color="positive"
-                    label="Marcar tarea como finalizada"
-                  />
-                </div> -->
+                  >
+                  </q-input>
+                </div>
 
                 <!-- Titulo -->
                 <div class="col-12">

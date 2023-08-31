@@ -1,11 +1,17 @@
 <template>
-  <canvas ref="chartRef" id="myChart"></canvas>
+  <!-- <div class="bg-yellow full-width"> -->
+  <div
+    style="width: 100%; margin: 0 auto; height: 300px"
+    class="bg-grey-2 rounded"
+  >
+    <canvas ref="chartRef" id="myChart"></canvas>
+  </div>
 </template>
 
 <script lang="ts">
 import { Chart as ChartJS } from 'chart.js'
 import datalabels from 'chartjs-plugin-datalabels'
-import { onMounted, ref, defineComponent } from 'vue'
+import { onMounted, ref, defineComponent, watch, watchEffect } from 'vue'
 import Chart from 'chart.js/auto'
 
 export default defineComponent({
@@ -23,13 +29,14 @@ export default defineComponent({
     }
 
     const chartRef = ref()
+    let myChart
 
     onMounted(() => {
       const ctx = chartRef.value.getContext('2d')
 
       const combinedOptions = Object.assign({}, props.options)
       // Crear el gráfico
-      const myChart = new Chart(ctx, {
+      myChart = new Chart(ctx, {
         type: 'pie',
         data: props.data,
         options: combinedOptions,
@@ -54,13 +61,26 @@ export default defineComponent({
           const chartData = myChart.data
           label = chartData.labels ? chartData.labels[dataIndex] : ''
           value = chartData.datasets[datasetIndex].data[dataIndex]
-
-          console.log(`Clic en ${label}: ${value}`)
         }
 
         emit('click', { label, value })
       })
     })
+
+    function updateChart() {
+      if (myChart) {
+        myChart.data.datasets.data = props.data?.datasets.data
+        myChart.update()
+      }
+    }
+
+    // Observar cambios en la propiedad "data"
+    watch(
+      () => props.data,
+      () => {
+        updateChart()
+      }
+    )
 
     return {
       chartRef,
