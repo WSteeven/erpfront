@@ -440,6 +440,7 @@
                 </template>
               </q-select>
             </div>
+            <!-- {{ categorias }} -->
             <!--Categorias-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Categorias</label>
@@ -485,7 +486,7 @@
                 </template>
               </q-select>
             </div>
-            {{ proveedor.departamentos }}
+            <!-- {{proveedor.categorias_ofrece}}  -->
             <!--Departamentos que califican-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Departamentos que califican</label>
@@ -505,10 +506,7 @@
                 hint="Dept. Contable califica a todos los proveedores"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
-                :option-disable="
-                  (v) =>
-                    v.id === store.user.departamento
-                "
+                :option-disable="(v) =>v.id === store.user.departamento"
                 emit-value
                 map-options
                 ><template
