@@ -77,12 +77,22 @@
               placeholder="Obligatorio"
               type="number"
               :disable="!esNuevo"
-              lazy-rules
-              :rules="maximoValorPrestamo"
+              :error="!!v$.monto.$errors.length"
+              @blur="v$.monto.$touch"
+              :hint="
+                'Solo se permite prestamo menor o igual a 2 SBU (' +
+                parseInt(sueldo_basico) * 2 +
+                ')'
+              "
               outlined
               dense
             >
-              </q-input>
+              <template v-slot:error>
+                <div v-for="error of v$.monto.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
 
           <!-- Plazo -->
@@ -133,8 +143,8 @@
               </template>
             </q-input>
           </div>
-        <!--Periodos -->
-        <div class="col-12 col-md-3">
+          <!--Periodos -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Periodo</label>
             <q-select
               v-model="prestamo.periodo"
@@ -162,7 +172,7 @@
             </q-select>
           </div>
           <!-- Valor  -->
-          <div class="col-12 col-md-3" v-if="prestamo.periodo!=null">
+          <div class="col-12 col-md-3" v-if="prestamo.periodo != null">
             <label class="q-mb-sm block">Valor Utilidades </label>
             <q-input
               v-model="prestamo.valor_utilidad"
