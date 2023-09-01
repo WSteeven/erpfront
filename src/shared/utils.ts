@@ -616,3 +616,11 @@ export function encontrarUltimoIdListado(listado: any) {
 
   return objMayorId.id
 }
+
+export function convertirNumeroPositivo(entidad, campo) {
+  if (entidad[campo]) {
+    if (entidad[campo] < 0) {
+      entidad[campo] = -1 * entidad[campo]
+    }
+  }
+}
