@@ -94,13 +94,7 @@ export default defineComponent({
     async function guardado(paginaModal: keyof TicketModales) {
       switch (paginaModal) {
         case 'CalificarTicketPage':
-          /* if (!ticketStore.filaTicket.calificaciones.length) {
-            const entidad = listado.value[ticketStore.posicionFilaTicket]
-            entidad.pendiente_calificar = false
-            listado.value.splice(ticketStore.posicionFilaTicket, 1, entidad)
-          } else { */
           filtrarTrabajoAsignado(tabActual.value)
-          // }
           break
       }
       modales.cerrarModalEntidad()

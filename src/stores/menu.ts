@@ -611,6 +611,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.criterios_calificaciones')  || store.esAdministrador,
         },
         {
+          title: 'Categorias Tipo Oferta',
+          link: 'categorias-ofertas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.categorias_ofertas') || store.esAdministrador,
+        },
+        {
           title: 'Preordenes de compras',
           link: 'preordenes-compras',
           icon: 'bi-list',

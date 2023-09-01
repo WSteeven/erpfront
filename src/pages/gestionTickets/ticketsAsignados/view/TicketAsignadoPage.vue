@@ -44,6 +44,7 @@
       :mixin-modal="mixin"
       :accion="filtrarTrabajoAsignado"
       @guardado="guardado"
+      :confirmar-cerrar="false"
     />
   </q-page>
 </template>

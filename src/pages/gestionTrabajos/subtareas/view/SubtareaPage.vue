@@ -332,6 +332,24 @@
           >
           </q-input>
         </div>
+
+        <!-- Metraje tendido -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block"
+            >Cantidad de fibra óptica a tender (m)</label
+          >
+          <q-input
+            v-model="subtarea.metraje_tendido"
+            placeholder="Opcional"
+            :disable="disabled"
+            @update:model-value="
+              convertirNumeroPositivo(subtarea, 'metraje_tendido')
+            "
+            outlined
+            dense
+          >
+          </q-input>
+        </div>
       </div>
     </q-expansion-item>
 

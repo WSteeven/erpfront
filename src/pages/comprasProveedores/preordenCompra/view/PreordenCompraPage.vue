@@ -6,7 +6,7 @@
     :tab-options="tabOptionsPreordenCompra"
     tabDefecto="PENDIENTE"
     :filtrar="filtrarPreordenes"
-    :permitirEditar="puedeEditar"
+    :permitirEditar="false"
     :accion1="btnHacerOrdenCompra"
     :accion2="btnAnularPreorden"
     

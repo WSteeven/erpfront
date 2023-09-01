@@ -514,8 +514,10 @@ export default defineComponent({
         const subdetalleEncontrado = listadoSubdetalles.value.find(
           (v) => v.id === id_subdetalle
         )
+        gasto.num_comprobante = null
         if (!subdetalleEncontrado.tiene_factura) {
           tieneFactura = false
+          gasto.factura= null
           break
         }
       }

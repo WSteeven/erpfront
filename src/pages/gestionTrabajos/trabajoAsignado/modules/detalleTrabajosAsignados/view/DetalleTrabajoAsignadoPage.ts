@@ -1,7 +1,5 @@
 // Dependencias
 import { configuracionColumnasEmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
-// import { configuracionColumnasEmpleadoSeleccionado } from 'subtareas/domain/configuracionColumnasEmpleadoSeleccionado'
-// import { configuracionColumnasGrupoSeleccionado } from 'trabajos/domain/configuracionColumnasGrupoSeleccionado'
 import { tiposTareasTelconet, accionesTabla } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
@@ -15,7 +13,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import { TipoTrabajoController } from 'pages/gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'

@@ -28,7 +28,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Empresa, new EmpresaController())
         const { entidad: empresa, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados, } = mixin.useComportamiento()
-        const { onGuardado, onConsultado } = mixin.useHooks()
+        const { onGuardado, onConsultado, onBeforeConsultar } = mixin.useHooks()
 
         const StatusLoading = new StatusEssentialLoading()
 
@@ -37,8 +37,16 @@ export default defineComponent({
         // const cantones = ref([])
         cargarVista(async () => {
             await obtenerListados({
-                paises: new PaisController(),
+                // paises: {
+                //     controller: new PaisController(),
+                //     params: { id: 66 }
+                // },
+                provincias: {
+                    controller: new ProvinciaController(),
+                    params: { pais_id: 66 }
+                }
             })
+            listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
         })
 
 
@@ -46,12 +54,6 @@ export default defineComponent({
             emit('cerrar-modal', false)
             emit('guardado')
         })
-        onConsultado(() => {
-            //obtener listados
-            obtenerProvincias(empresa.pais)
-            obtenerCantones(empresa.provincia)
-        })
-
         /**************************************************************
          * Validaciones
          **************************************************************/
@@ -88,13 +90,15 @@ export default defineComponent({
             }
         }
 
-        const { paises, filtrarPaises,
+
+        const {
+            // paises, filtrarPaises,
             provincias, filtrarProvincias,
             cantones, filtrarCantones,
         } = useFiltrosListadosSelects(listadosAuxiliares)
 
         //carga de listados auxiliares
-        paises.value = listadosAuxiliares.paises
+        // paises.value = listadosAuxiliares.paises
 
 
 
@@ -109,9 +113,12 @@ export default defineComponent({
             opcionesTipoNegocio,
             obtenerProvincias,
             obtenerCantones,
-            paises, filtrarPaises,
+            // paises, filtrarPaises,
             provincias, filtrarProvincias,
             cantones, filtrarCantones,
+
+            //funciones
+            
         }
     }
 })
