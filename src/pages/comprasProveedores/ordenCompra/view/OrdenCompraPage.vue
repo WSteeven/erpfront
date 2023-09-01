@@ -9,7 +9,8 @@
     :permitirEditar="puedeEditar"
     :permitirEliminar="false"
     :accion1="btnImprimir"
-    :accion2="btnAnularOrden"
+    :accion2="btnEnviarMailProveedor"
+    :accion3="btnAnularOrden"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -79,12 +80,14 @@
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="orden.autorizador"
-              :options="empleadosAutorizadores"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
               dense
               outlined
+              @popup-show="filtrarAutorizadores"
+              @popup-hide="reestablecerEmpleados"
               :error="!!v$.autorizador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura || orden.tiene_preorden"
@@ -170,6 +173,43 @@
               dense
             >
             </q-input>
+          </div>
+
+          <!-- Tarea -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">N° Tarea</label>
+            <q-select
+              v-model="orden.tarea"
+              :options="tareas"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarTareas"
+              hint="Opcional"
+              :disable="disabled || soloLectura || orden.tiene_preorden"
+              :option-label="(v) => v.codigo_tarea + ' - ' + v.titulo"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                  </q-item-section>
+                </q-item> </template
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Proveedor -->

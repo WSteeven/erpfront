@@ -157,11 +157,12 @@
               :disable="disabled"
               outlined
               dense
-            ><template v-slot:error>
+              ><template v-slot:error>
                 <div v-for="error of v$.celular.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
-              </template></q-input>
+              </template></q-input
+            >
           </div>
           <!-- telefono-->
           <div class="col-12 col-md-3">
@@ -190,7 +191,7 @@
             ></q-input>
           </div>
           <!--Pais -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="false">
             <label class="q-mb-sm block">País</label>
             <q-select
               v-model="empresa.pais"
@@ -229,8 +230,9 @@
             </q-select>
           </div>
 
+
           <!--Provincia -->
-          <div class="col-12 col-md-3" v-if="empresa.pais">
+          <div class="col-12 col-md-3" >
             <label class="q-mb-sm block">Provincia</label>
             <q-select
               v-model="empresa.provincia"
@@ -316,6 +318,27 @@
               dense
             >
             </q-input>
+          </div>
+          <!--sitio_web-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Sitio web</label>
+            <q-input
+              v-if="accion == acciones.nuevo || accion == acciones.editar"
+              type="url"
+              autogrow
+              v-model="empresa.sitio_web"
+              placeholder="Opcional"
+              :readonly="disabled"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+            <i v-else class="bi bi-globe">
+              <a class="q-mt-md" :href="'https://'+empresa.sitio_web" target="_blank">{{
+                empresa.sitio_web
+              }}</a>
+            </i>
           </div>
         </div>
       </q-form>

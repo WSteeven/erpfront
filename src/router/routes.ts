@@ -523,6 +523,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/categorias-ofertas',
+        name: 'categorias_ofertas',
+        component: () =>
+          import('pages/comprasProveedores/categoriaOfertas/view/CategoriaOfertaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/preordenes-compras',
         name: 'preordenes_compras',
         component: () =>

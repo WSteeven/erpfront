@@ -57,11 +57,13 @@
                     <q-item-section>
                       <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
                       <q-item-label caption
-                        >{{ scope.opt.identificacion }} |{{ scope.opt.nombre_comercial }}</q-item-label
+                        >{{ scope.opt.identificacion }} |{{
+                          scope.opt.nombre_comercial
+                        }}</q-item-label
                       >
                     </q-item-section>
-                  </q-item> </template
-                >
+                  </q-item>
+                </template>
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -212,6 +214,47 @@
                 </template>
               </q-input>
             </div>
+
+            <!--Canton -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Cantón</label>
+              <q-select
+                v-model="proveedor.canton"
+                :options="cantones"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                use-input
+                input-debounce="0"
+                @filter="filtrarCantones"
+                @update:model-value="obtenerParroquias"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.canton"
+                emit-value
+                map-options
+                ><template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.canton }}</q-item-label>
+                      <q-item-label caption
+                        >Provincia {{ scope.opt.provincia }}</q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
             <!--Parroquia -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Parroquia</label>
@@ -312,7 +355,7 @@
                 unchecked-icon="clear"
               />
             </div>
-            <!-- Contactos financiero y tecnico -->
+            <!-- Contactos financiero, tecnico y comercial -->
             <div class="col-12 col-md-12">
               <q-expansion-item
                 class="overflow-hidden q-mb-md expansion"
@@ -366,6 +409,7 @@
                 use-chips
                 outlined
                 :error="!!v$.tipos_ofrece.$errors.length"
+                @update:model-value="actualizarCategorias"
                 error-message="Debes seleccionar al menos una opcion"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
@@ -441,6 +485,7 @@
                 </template>
               </q-select>
             </div>
+            {{ proveedor.departamentos }}
             <!--Departamentos que califican-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Departamentos que califican</label>
@@ -462,7 +507,7 @@
                 :option-label="(v) => v.nombre"
                 :option-disable="
                   (v) =>
-                    v.nombre === 'CONTABILIDAD' || v.nombre === 'contabilidad'
+                    v.id === store.user.departamento
                 "
                 emit-value
                 map-options
