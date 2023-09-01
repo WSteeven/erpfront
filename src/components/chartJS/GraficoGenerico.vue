@@ -69,7 +69,7 @@ export default defineComponent({
 
     function updateChart() {
       if (myChart) {
-        myChart.data.datasets.data = props.data?.datasets.data
+        myChart.data = props.data
         myChart.update()
       }
     }
