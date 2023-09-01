@@ -124,7 +124,7 @@ export default defineComponent({
       apellidos: { required },
       jefe: { required },
       email: { required },
-      coordenadas: { required },
+      coordenadas: { required: requiredIf(()=>{return accion.value==='EDITAR'}) },
       correo_personal: { required },
       usuario: { required },
       fecha_nacimiento: { required },

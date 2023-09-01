@@ -1,9 +1,6 @@
 // Dependencias
-import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
-import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
-import { formatearFechaSeparador, generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
-import { acciones, accionesTabla, estadosTrabajos, tiposJornadas } from 'config/utils'
+import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import { acciones, accionesTabla, estadosTrabajos, rolesSistema } from 'config/utils'
 import { Ref, computed, defineComponent, reactive, ref } from 'vue'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required } from 'shared/i18n-validators'
@@ -16,20 +13,16 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
 import TableView from 'components/tables/view/TableView.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
-import { Bar, Pie } from 'vue-chartjs'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
 import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
 import { configuracionColumnasSubtarea } from 'pages/gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
-import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
-import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { DashboardTareaController } from '../infraestructure/DashboardTareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
@@ -37,11 +30,9 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { estadosTickets } from 'config/tickets.utils'
 import { useSubtareaStore } from 'stores/subtarea'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { endpoints } from 'config/api'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, ModalesEntidad, GraficoGenerico },
   setup() {
     /*********
      * Stores
@@ -57,13 +48,11 @@ export default defineComponent({
       new DashboardTareaController()
     )
 
-    const { listadosAuxiliares, listado } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { listadosAuxiliares } = mixin.useReferencias()
+    const { cargarVista, obtenerListados } = mixin.useComportamiento()
 
     // mixin subtarea
     const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
-    const { listado: subtareasResponsable } = mixinSubtarea.useReferencias()
-    // const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -72,30 +61,24 @@ export default defineComponent({
           params: {
             campos: 'id,nombres,apellidos',
             estado: 1,
-            // rol: rolesSistema.coordinador + ', ' + rolesSistema.coordinadorBackup,
+            rol: [rolesSistema.coordinador, rolesSistema.coordinadorBackup, rolesSistema.jefe_tecnico],
           }
         },
-        grupos: {
-          controller: new GrupoController(),
-          params: { campos: 'id,nombre' }
-        },
       })
-
-      grupos.value = listadosAuxiliares.grupos
     })
 
     const filtro = reactive(new FiltroDashboardTicket())
     const dashboardTareaController = new DashboardTareaController()
     const cargando = new StatusEssentialLoading()
     const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado)
-    const empleadoResponsable = ref()
-    const esResponsableDepartamento = ref(false)
-    const ticketsEmpleadoResponsable = ref([])
     const tipoFiltroSubordinados = ref(modosAsignacionTrabajo.por_grupo)
-    const grupo = ref()
 
     // Cantidades
-    const subtareas = ref([])
+    const subtareas: Ref<Subtarea[]> = ref([])
+    const subtareasGrupo: Ref<Subtarea[]> = ref([])
+    const subtareasEmpleado: Ref<Subtarea[]> = ref([])
+    const subtareasSubordinados: Ref<Subtarea[]> = ref([])
+    const subtareasEmpleadoSubordinado: Ref<Subtarea[]> = ref([])
 
     const cantidadTareasActivas = ref()
     const cantidadTareasFinalizadas = ref()
@@ -119,6 +102,7 @@ export default defineComponent({
     const cantidadesPorEstadosSubtareas = ref([])
     const cantidadesPorEstadosSubtareasBar = ref()
 
+    // Por grupo
     const agendados: Ref<any> = ref([])
     const ejecutados: Ref<any> = ref([])
     const pausados: Ref<any> = ref([])
@@ -135,31 +119,39 @@ export default defineComponent({
     const realizadosBar = ref()
     const finalizadosBar = ref()
 
+    // Por empleado
+    const agendadosEmpleado: Ref<any> = ref([])
+    const ejecutadosEmpleado: Ref<any> = ref([])
+    const pausadosEmpleado: Ref<any> = ref([])
+    const suspendidosEmpleado: Ref<any> = ref([])
+    const canceladosEmpleado: Ref<any> = ref([])
+    const realizadosEmpleado: Ref<any> = ref([])
+    const finalizadosEmpleado: Ref<any> = ref([])
+
+    const agendadosEmpleadoBar = ref()
+    const ejecutadosEmpleadoBar = ref()
+    const pausadosEmpleadoBar = ref()
+    const suspendidosEmpleadoBar = ref()
+    const canceladosEmpleadoBar = ref()
+    const realizadosEmpleadoBar = ref()
+    const finalizadosEmpleadoBar = ref()
+
     // Tabs
-    const tabsCoordinadorConsultado = ref('coordinadorConsultadoGrafico')
+    const opcionesSubordinado = {
+      subordinadosGrafico: 'subordinadosGrafico',
+      subordinadosListado: 'subordinadosListado',
+      subordinadosEmpleadoListado: 'subordinadosEmpleadoListado',
+    }
+
+    const opcionesCoordinadorConsultado = {
+      coordinadorConsultadoGrafico: 'coordinadorConsultadoGrafico',
+      coordinadorConsultadoListado: 'coordinadorConsultadoListado',
+    }
+
+    const tabsCoordinadorConsultado = ref(opcionesCoordinadorConsultado.coordinadorConsultadoGrafico)
+    const tabsSubordinados = ref(opcionesSubordinado.subordinadosGrafico)
 
     filtro.fecha_fin = obtenerFechaActual()
-
-    const options = {
-      responsive: true,
-      indexAxis: 'y',
-      scales: {
-        x: {
-          beginAtZero: true
-        },
-        y: {
-          beginAtZero: true
-        }
-      },
-      legend: {
-        display: true,
-        position: 'bottom',
-      }
-    }
-
-    const optionsVertical = {
-      responsive: true,
-    }
 
     const optionsPie = {
       responsive: true,
@@ -224,13 +216,7 @@ export default defineComponent({
     /*********
    * Filtros
    **********/
-    const {
-      grupos,
-      filtrarGrupos,
-    } = useFiltrosListadosTarea(listadosAuxiliares)
-
     const empleados = ref([])
-    const empleadosResponsables = ref([])
     function filtrarEmpleados(val, update) {
       if (val === '') update(() => empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
 
@@ -240,26 +226,20 @@ export default defineComponent({
       })
     }
 
-    function filtrarEmpleadosResponsables(val, update) {
-      if (val === '') update(() => empleadosResponsables.value = listadosAuxiliares.empleadosResp.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
-
-      update(() => {
-        const needle = val.toLowerCase()
-        empleadosResponsables.value = listadosAuxiliares.empleadosResp.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-      })
-    }
-
     async function consultar() {
+      const campos = 'id,codigo_tarea,codigo_subtarea,titulo,estado,grupo,empleado_responsable,coordinador,tipo_trabajo,cantidad_adjuntos,fecha_solicitud,es_ventana,fecha_hora_creacion,fecha_inicio_trabajo,hora_inicio_trabajo,hora_fin_trabajo,fecha_hora_asignacion,fecha_hora_agendado,fecha_hora_ejecucion,fecha_hora_realizado,fecha_hora_finalizacion,dias_ocupados,fecha_hora_suspendido,motivo_suspendido,fecha_hora_cancelado,motivo_cancelado,subtarea_dependiente,canton,cliente,proyecto'
 
       if (await v$.value.$validate()) {
         try {
 
           cargando.activar()
 
-          const { result } = await dashboardTareaController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado })
-          await obtenerResponsables()
+          const { result } = await dashboardTareaController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado, campos })
 
+          // Listados
           subtareas.value = result.subtareasCoordinador
+          subtareasGrupo.value = result.subtareasGrupo
+          subtareasEmpleado.value = result.subtareasEmpleado
 
           // Cantidades
           cantidadTareasActivas.value = result.cantidadTareasActivas
@@ -280,68 +260,104 @@ export default defineComponent({
           cantidadesPorEstadosSubtareasBar.value = mapearDatos(labels3, valores3, 'Cantidad de subtareas', colores3)
 
           // Graficos por grupo
-          const subtareasPorGrupo = result.cantidadesSubtareasPorGrupo
+          // const subtareasPorGrupo = result.cantidadesSubtareasPorGrupo
+          const subtareasPorGrupo = contarSubtareasGrupo(result.subtareasGrupo)
+          const subtareasPorEmpleado = contarSubtareasEmpleado(result.subtareasEmpleado)
+          // console.log(subtareasPorGrupo)
           agendados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.AGENDADO)
-          const labelsAgendado = agendados.value.map((item) => item.nombre)
+          const labelsAgendado = agendados.value.map((item) => item.grupo)
           const valoresAgendado = agendados.value.map((item) => item.total_subtareas)
           const coloresAgendado = agendados.value.map(() => generarColorAzulPastelClaro())
           agendadosBar.value = mapearDatos(labelsAgendado, valoresAgendado, 'Cantidad de subtareas', coloresAgendado)
 
           ejecutados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.EJECUTANDO)
-          const labelsEjecutando = ejecutados.value.map((item) => item.nombre)
+          const labelsEjecutando = ejecutados.value.map((item) => item.grupo)
           const valoresEjecutando = ejecutados.value.map((item) => item.total_subtareas)
           const coloresEjecutando = ejecutados.value.map(() => generarColorAzulPastelClaro())
           ejecutadosBar.value = mapearDatos(labelsEjecutando, valoresEjecutando, 'Cantidad de subtareas', coloresEjecutando)
 
           pausados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.PAUSADO)
-          const labelsPausado = pausados.value.map((item) => item.nombre)
+          const labelsPausado = pausados.value.map((item) => item.grupo)
           const valoresPausado = pausados.value.map((item) => item.total_subtareas)
           const coloresPausado = pausados.value.map(() => generarColorAzulPastelClaro())
           pausadosBar.value = mapearDatos(labelsPausado, valoresPausado, 'Cantidad de subtareas', coloresPausado)
 
           suspendidos.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.SUSPENDIDO)
-          const labelsSuspendido = suspendidos.value.map((item) => item.nombre)
+          const labelsSuspendido = suspendidos.value.map((item) => item.grupo)
           const valoresSuspendido = suspendidos.value.map((item) => item.total_subtareas)
           const coloresSuspendido = suspendidos.value.map(() => generarColorAzulPastelClaro())
           suspendidosBar.value = mapearDatos(labelsSuspendido, valoresSuspendido, 'Cantidad de subtareas', coloresSuspendido)
 
           cancelados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.CANCELADO)
-          const labelsCancelado = cancelados.value.map((item) => item.nombre)
+          const labelsCancelado = cancelados.value.map((item) => item.grupo)
           const valoresCancelado = cancelados.value.map((item) => item.total_subtareas)
           const coloresCancelado = cancelados.value.map(() => generarColorAzulPastelClaro())
           canceladosBar.value = mapearDatos(labelsCancelado, valoresCancelado, 'Cantidad de subtareas', coloresCancelado)
 
           realizados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.REALIZADO)
-          const labelsRealizado = realizados.value.map((item) => item.nombre)
+          const labelsRealizado = realizados.value.map((item) => item.grupo)
           const valoresRealizado = realizados.value.map((item) => item.total_subtareas)
           const coloresRealizado = realizados.value.map(() => generarColorAzulPastelClaro())
           realizadosBar.value = mapearDatos(labelsRealizado, valoresRealizado, 'Cantidad de subtareas', coloresRealizado)
 
           finalizados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.FINALIZADO)
-          const labelsFinalizado = finalizados.value.map((item) => item.nombre)
+          const labelsFinalizado = finalizados.value.map((item) => item.grupo)
           const valoresFinalizado = finalizados.value.map((item) => item.total_subtareas)
           const coloresFinalizado = finalizados.value.map(() => generarColorAzulPastelClaro())
           finalizadosBar.value = mapearDatos(labelsFinalizado, valoresFinalizado, 'Cantidad de subtareas', coloresFinalizado)
 
+          /***************
+          * Por empleado
+          ****************/
+          agendadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.AGENDADO)
+          const labelsAgendadoEmpleado = agendadosEmpleado.value.map((item) => item.empleado)
+          const valoresAgendadoEmpleado = agendadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresAgendadoEmpleado = agendadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          agendadosEmpleadoBar.value = mapearDatos(labelsAgendadoEmpleado, valoresAgendadoEmpleado, 'Cantidad de subtareas', coloresAgendadoEmpleado)
+
+          ejecutadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.EJECUTANDO)
+          const labelsEjecutandoEmpleado = ejecutadosEmpleado.value.map((item) => item.empleado)
+          const valoresEjecutandoEmpleado = ejecutadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresEjecutandoEmpleado = ejecutadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          ejecutadosEmpleadoBar.value = mapearDatos(labelsEjecutandoEmpleado, valoresEjecutandoEmpleado, 'Cantidad de subtareas', coloresEjecutandoEmpleado)
+
+          pausadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.PAUSADO)
+          const labelsPausadoEmpleado = pausadosEmpleado.value.map((item) => item.empleado)
+          const valoresPausadoEmpleado = pausadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresPausadoEmpleado = pausadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          pausadosEmpleadoBar.value = mapearDatos(labelsPausadoEmpleado, valoresPausadoEmpleado, 'Cantidad de subtareas', coloresPausadoEmpleado)
+
+          suspendidosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.SUSPENDIDO)
+          console.log(suspendidosEmpleado.value)
+          const labelsSuspendidoEmpleado = suspendidosEmpleado.value.map((item) => item.empleado)
+          const valoresSuspendidoEmpleado = suspendidosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresSuspendidoEmpleado = suspendidosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          suspendidosEmpleadoBar.value = mapearDatos(labelsSuspendidoEmpleado, valoresSuspendidoEmpleado, 'Cantidad de subtareas', coloresSuspendidoEmpleado)
+
+          canceladosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.CANCELADO)
+          const labelsCanceladoEmpleado = canceladosEmpleado.value.map((item) => item.empleado)
+          const valoresCanceladoEmpleado = canceladosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresCanceladoEmpleado = canceladosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          canceladosEmpleadoBar.value = mapearDatos(labelsCanceladoEmpleado, valoresCanceladoEmpleado, 'Cantidad de subtareas', coloresCanceladoEmpleado)
+
+          realizadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.REALIZADO)
+          const labelsRealizadoEmpleado = realizadosEmpleado.value.map((item) => item.empleado)
+          const valoresRealizadoEmpleado = realizadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresRealizadoEmpleado = realizadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          realizadosEmpleadoBar.value = mapearDatos(labelsRealizadoEmpleado, valoresRealizadoEmpleado, 'Cantidad de subtareas', coloresRealizadoEmpleado)
+
+          finalizadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.FINALIZADO)
+          const labelsFinalizadoEmpleado = finalizadosEmpleado.value.map((item) => item.empleado)
+          const valoresFinalizadoEmpleado = finalizadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresFinalizadoEmpleado = finalizadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          finalizadosEmpleadoBar.value = mapearDatos(labelsFinalizadoEmpleado, valoresFinalizadoEmpleado, 'Cantidad de subtareas', coloresFinalizadoEmpleado)
+
         } catch (e) {
           console.log(e)
         } finally {
-
           cargando.desactivar()
         }
       }
-    }
-
-    async function obtenerResponsables() {
-      cargarVista(async () => {
-        await obtenerListados({
-          empleadosResp: {
-            controller: new EmpleadoController(),
-            params: { jefe_id: filtro.empleado, campos: 'id,nombres,apellidos' },
-          },
-        })
-        empleadosResponsables.value = listadosAuxiliares.empleadosResp
-      })
     }
 
     function mapearDatos(labels: [], valores: [], titulo: string, colores?: []) {
@@ -373,49 +389,97 @@ export default defineComponent({
       empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
     }
 
-    function ordenarEmpleadosResponsables() {
-      empleadosResponsables.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
-    }
-
     function filtrarSubtareasGrupoPorEstado(subtareasGrupo: any[], estado: string) {
+      console.log(subtareasGrupo)
       return subtareasGrupo.filter((item) =>
         item.estado === estado
       )
     }
 
-    async function filtrarSubtareasResponsable(responsable_id: number) {
-      if (filtro.fecha_inicio && filtro.fecha_fin) {
-        cargando.activar()
+    function contarSubtareasGrupo(subtareas: Subtarea[]): any[] {
+      const conteo = subtareas.reduce((acumulador: any, subtarea) => {
+        const estado = subtarea.estado
+        const grupo = subtarea.grupo
 
-        const fechaInicio = formatearFechaSeparador(filtro.fecha_inicio, '/')
-        const fechaFin = formatearFechaSeparador(filtro.fecha_fin, '/', { days: 1 })
-        const consultaFecha = 'created_at[start]=' + fechaInicio + '&created_at[end]=' + fechaFin
+        // Verificar si la clave ya existe en el acumulador
+        const elementoExistente: any = acumulador.find((item: any) => item.estado === estado && item.grupo === grupo)
 
-        const consultaParametros = tipoFiltroSubordinados.value === modosAsignacionTrabajo.por_empleado ? 'responsable_id=' + responsable_id : 'grupo_id=' + responsable_id
-        // const params = 'coordinador_id=' + filtro.empleado
+        if (!elementoExistente) {
+          acumulador.push({ estado, grupo, total_subtareas: 1 })
+        } else {
+          elementoExistente.total_subtareas++
+        }
 
-        const axios = AxiosHttpRepository.getInstance()
-        const respuesta: any = await axios.get(axios.getEndpoint(endpoints.subtareas) + '?' + consultaParametros + '&' + consultaFecha)
-        subtareasResponsable.value = respuesta.data.results.filter((subtarea: Subtarea) => subtarea.coordinador_id === filtro.empleado)
+        return acumulador
+      }, [])
 
-        cargando.desactivar()
-      }
-      //
+      return conteo
     }
 
-    const subtareasFiltradas = ref([])
+    function contarSubtareasEmpleado(subtareas: Subtarea[]): any[] {
+      const conteo = subtareas.reduce((acumulador: any, subtarea) => {
+        const estado = subtarea.estado
+        const empleado = subtarea.empleado_responsable
+
+        // Verificar si la clave ya existe en el acumulador
+        const elementoExistente: any = acumulador.find((item: any) => item.estado === estado && item.empleado === empleado)
+
+        if (!elementoExistente) {
+          console.log(estado)
+          acumulador.push({ estado, empleado, total_subtareas: 1 })
+        } else {
+          elementoExistente.total_subtareas++
+        }
+
+        return acumulador
+      }, [])
+
+      return conteo
+    }
+
+    const subtareasFiltradas: Ref<Subtarea[]> = ref([])
     function clickCantidadesPorEstadoSubtareas(data) {
       const { label } = data
       if (label) {
         subtareasFiltradas.value = subtareas.value.filter((subtarea: Subtarea) => subtarea.estado === label)
-        tabsCoordinadorConsultado.value = 'coordinadorConsultadoListado'
+        tabsCoordinadorConsultado.value = opcionesCoordinadorConsultado.coordinadorConsultadoListado
+      }
+    }
+
+    function clickCantidadesSubtareasSubordinados(data, estado) {
+      const { label } = data
+      if (label) {
+        subtareasSubordinados.value = subtareasGrupo.value.filter((subtarea: Subtarea) => subtarea.grupo === label && subtarea.estado === estado)
+        tabsSubordinados.value = opcionesSubordinado.subordinadosListado
+      }
+    }
+
+    function clickGraficoEmpleadoSubordinado(data, estado) {
+      const { label } = data
+      if (label) {
+        subtareasEmpleadoSubordinado.value = subtareasEmpleado.value.filter((subtarea: Subtarea) => subtarea.empleado_responsable === label && subtarea.estado === estado)
+        tabsSubordinados.value = opcionesSubordinado.subordinadosEmpleadoListado
       }
     }
 
     return {
-      tabsCoordinadorConsultado,
-      subtareasFiltradas,
-      clickCantidadesPorEstadoSubtareas,
+      modoUnaColumna: ref(false),
+      // Por empleado
+      agendadosEmpleado,
+      ejecutadosEmpleado,
+      pausadosEmpleado,
+      suspendidosEmpleado,
+      canceladosEmpleado,
+      realizadosEmpleado,
+      finalizadosEmpleado,
+      agendadosEmpleadoBar,
+      ejecutadosEmpleadoBar,
+      pausadosEmpleadoBar,
+      suspendidosEmpleadoBar,
+      canceladosEmpleadoBar,
+      realizadosEmpleadoBar,
+      finalizadosEmpleadoBar,
+      // Por grupo
       agendados,
       ejecutados,
       pausados,
@@ -430,20 +494,24 @@ export default defineComponent({
       canceladosBar,
       realizadosBar,
       finalizadosBar,
-      // -
-      filtrarSubtareasResponsable,
-      subtareasResponsable,
-      grupos,
-      filtrarGrupos,
-      grupo,
+      // Graficos
+      estadosTrabajos,
+      opcionesSubordinado,
+      opcionesCoordinadorConsultado,
+      tabsCoordinadorConsultado,
+      tabsSubordinados,
+      subtareasFiltradas,
+      subtareasSubordinados,
+      subtareasEmpleadoSubordinado,
+      clickCantidadesPorEstadoSubtareas,
+      clickCantidadesSubtareasSubordinados,
+      clickGraficoEmpleadoSubordinado,
+      // otro
       modosAsignacionTrabajo,
       tipoFiltroSubordinados,
       ordenarEmpleados,
-      ordenarEmpleadosResponsables,
       filtrarEmpleados,
-      filtrarEmpleadosResponsables,
       empleados,
-      empleadosResponsables,
       subtareas,
       cantidadTareasActivas,
       cantidadTareasFinalizadas,
@@ -458,31 +526,14 @@ export default defineComponent({
       modalesSubtarea,
       mixinSubtarea,
       //--
-      cantidadSubtareasEjecutadas,
-      configuracionColumnasTicket,
       v$,
-      mixin,
-      listar,
-      listado,
       filtro,
-      listadosAuxiliares,
-      tiposJornadas,
-      options,
-      optionsVertical,
       optionsPie,
       mostrarTitulosSeccion,
-      accionesTabla,
-      // modales,
-      empleadoResponsable,
-      ticketsEmpleadoResponsable,
-      esResponsableDepartamento,
       // Configuracion columnas
-      configuracionColumnasSubtareasRealizadasPorRegion,
-      configuracionColumnasSubtareasRealizadasPorGrupo,
-      configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia,
-      // Consultar
       consultar,
       // Listados
+      cantidadSubtareasEjecutadas,
       cantidadesPorEstadosSubtareas,
       // Bar
       cantidadesPorEstadosSubtareasBar,

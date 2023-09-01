@@ -51,6 +51,7 @@ import { Tarea } from '../domain/Tarea'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
+import { convertirNumeroPositivo } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -348,6 +349,7 @@ export default defineComponent({
     }
 
     return {
+      convertirNumeroPositivo,
       refVisorImagen,
       seleccionarGrupo,
       seleccionarEmpleado,

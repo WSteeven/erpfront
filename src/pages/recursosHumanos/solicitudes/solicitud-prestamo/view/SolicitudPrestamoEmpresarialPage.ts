@@ -35,6 +35,7 @@ import { AxiosResponse } from 'axios'
 import { endpoints } from 'config/api'
 import { LocalStorage } from 'quasar'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen },
@@ -50,7 +51,8 @@ export default defineComponent({
       listado,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador,cargarVista,obtenerListados, listar } = mixin.useComportamiento()
+    const { setValidador, cargarVista, obtenerListados, listar } =
+      mixin.useComportamiento()
 
     const {
       confirmar,
@@ -64,12 +66,24 @@ export default defineComponent({
 
     const maximoAPrestar = ref()
     const esMayorsolicitudPrestamo = ref(false)
+    const puede_editar = ref(true)
+
     // Stores
     const recursosHumanosStore = useRecursosHumanosStore()
     const store = useAuthenticationStore()
     const router = useRouter()
     const autorizaciones = ref()
-    const  periodos = ref()
+    const periodos = ref()
+    const ver_boton_editar = computed(() => {
+      let validar = false;
+      if (esValidador.value === true) {
+        validar=  tabSolicitudPrestaamo.value==='1'?true:false
+      }
+      if (esAutorizador.value === true) {
+        validar =tabSolicitudPrestaamo.value==='4'?true:false
+      }
+      return validar;
+    })
     const sueldo_basico = computed(() => {
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
@@ -91,39 +105,22 @@ export default defineComponent({
           controller: new PeriodoController(),
           params: { campos: 'id,nombre', activo: 1 },
         },
-
+        autorizaciones: {
+          controller: new AutorizacionController(),
+          params: { campos: 'id,nombre', es_validado: false },
+        },
       })
-      autorizaciones.value =
-      LocalStorage.getItem('autorizaciones') == null
-        ? []
-        : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-      periodos.value = listadosAuxiliares.periodos
+      autorizaciones.value = listadosAuxiliares.autorizaciones
+    })
+    onConsultado(() => {
+      puede_editar.value = false
+      recursosHumanosStore.nivel_endeudamiento(
+        solicitudPrestamo.solicitante == null
+          ? store.user.id
+          : solicitudPrestamo.solicitante
+      )
     })
 
-    onConsultado(() => {
-      if (esValidador.value) {
-        if (!store.esAdministrador) {
-          autorizaciones.value.splice(
-            autorizaciones.value.findIndex((obj) => obj.nombre === 'APROBADO'),
-            1
-          )
-          autorizaciones.value.splice(
-            autorizaciones.value.findIndex((obj) => obj.nombre === 'PENDIENTE'),
-            1
-          )
-        }
-      }
-      if (esAutorizador.value) {
-        autorizaciones.value.splice(
-          autorizaciones.value.findIndex((obj) => obj.nombre === 'VALIDADO'),
-          1
-        )
-        autorizaciones.value.splice(
-          autorizaciones.value.findIndex((obj) => obj.nombre === 'PENDIENTE'),
-          1
-        )
-      }
-    })
     //Reglas de validacion
     const reglas = computed(() => ({
       fecha: { required },
@@ -132,7 +129,20 @@ export default defineComponent({
       foto: { required },
       estado: requiredIf(esValidador.value),
       observacion: { requiredValidador: requiredIf(esValidador.value) },
-      valor_utilidad: { requiredIf: requiredIf(solicitudPrestamo.periodo != null) },
+      periodo: {
+        requiredIf: requiredIf(
+          solicitudPrestamo.cargo_utilidad != null
+            ? solicitudPrestamo.cargo_utilidad
+            : false
+        ),
+      },
+      valor_utilidad: {
+        requiredIf: requiredIf(
+          solicitudPrestamo.cargo_utilidad != null
+            ? solicitudPrestamo.cargo_utilidad
+            : false
+        ),
+      },
       plazo: {
         minValue: minValue(1),
         maxValue: maxValue(12),
@@ -151,12 +161,12 @@ export default defineComponent({
       const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
       return date >= currentDateString
     }
-    let tabSolicitudPrestaamo = '1'
+    const tabSolicitudPrestaamo = ref('1')
     function filtrarSolicitudPrestamo(tabSeleccionado: string) {
       listar({ estado: tabSeleccionado }, false)
-      tabSolicitudPrestaamo = tabSeleccionado
+      tabSolicitudPrestaamo.value = tabSeleccionado
     }
-      /**
+    /**
      * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
      * lista filtrada.
      * @param val - El parámetro `val` es un valor de cadena que representa el valor de entrada para
@@ -167,20 +177,20 @@ export default defineComponent({
      * interna es responsable de actualizar el valor de `periodos` en función del parámetro `val` dado.
      * @returns nada (indefinido).
      */
-      function filtrarPeriodo(val, update) {
-        if (val === '') {
-          update(() => {
-            periodos.value = listadosAuxiliares.periodos
-          })
-          return
-        }
+    function filtrarPeriodo(val, update) {
+      if (val === '') {
         update(() => {
-          const needle = val.toLowerCase()
-          periodos.value = listadosAuxiliares.periodos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
+          periodos.value = listadosAuxiliares.periodos
         })
+        return
       }
+      update(() => {
+        const needle = val.toLowerCase()
+        periodos.value = listadosAuxiliares.periodos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
 
     return {
       removeAccents,
@@ -210,9 +220,11 @@ export default defineComponent({
       recursosHumanosStore,
       tabOptionsSolicitudPedido,
       accion,
+      puede_editar,
       configuracionColumnas: configuracionColumnasSolicitudPrestamo,
-
+      tabSolicitudPrestaamo,
       accionesTabla,
+      ver_boton_editar,
     }
   },
 })

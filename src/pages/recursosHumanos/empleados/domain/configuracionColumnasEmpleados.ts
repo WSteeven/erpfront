@@ -117,6 +117,20 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
+      name:'esta_en_rol_pago',
+      field: 'esta_en_rol_pago',
+      label: '¿Esta enrolado?',
+      align: 'left',
+      sortable: true
+    },
+    {
+      name:'realiza_factura',
+      field: 'realiza_factura',
+      label: 'Factura',
+      align: 'left',
+      sortable: true
+    },
+    {
         name: 'firma_url',
         field: 'firma_url',
         label: '¿Firma?',

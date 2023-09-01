@@ -14,6 +14,7 @@ export class SolicitudPrestamo extends EntidadAuditable {
   motivo:string | null
   foto:string | null
   observacion: string | null
+  cargo_utilidad:boolean | null
 
   constructor() {
     super()
@@ -30,5 +31,6 @@ export class SolicitudPrestamo extends EntidadAuditable {
     this.motivo=null
     this.foto=null
     this.observacion = null
+    this.cargo_utilidad = false
   }
 }
