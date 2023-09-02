@@ -11,6 +11,7 @@ export class Proveedor extends EntidadAuditable {
   parroquia: string | null
   direccion: string | null
   celular: string | null
+  sitio_web: string | null
   telefono: string | null
   contactos: Ref<any[]>
 
@@ -35,6 +36,7 @@ export class Proveedor extends EntidadAuditable {
     this.direccion = null
     this.celular = null
     this.telefono = null
+    this.sitio_web = null
     this.contactos = ref([])
     this.tipos_ofrece = []
     this.categorias_ofrece = ref([])

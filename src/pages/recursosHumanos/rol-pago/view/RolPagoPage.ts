@@ -742,7 +742,7 @@ export default defineComponent({
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
     watchEffect(() => {
-      const dias_quincena = rolpago.es_quincena ? 15 : 0
+      const dias_quincena = rolpago.es_quincena == true ? 15 : 0
       const dias = parseFloat(
         rolpago.dias != null ? rolpago.dias.toString() : '0'
       )
@@ -750,7 +750,7 @@ export default defineComponent({
       const salario = parseFloat(rolpago.salario ?? '0')
       const sueldo = (salario / 30) * dias_totales
       const total_sueldo =
-        (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100
+      rolpago.es_quincena == true ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100:sueldo
       rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
     })
     return {

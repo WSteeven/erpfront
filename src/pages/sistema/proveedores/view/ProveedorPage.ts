@@ -76,19 +76,18 @@ export default defineComponent({
         ofertas: new OfertaProveedorController(),
       })
       listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
-      console.log(store.user.departamento_id)
-      proveedor.departamentos = store.user.departamento
+      proveedor.departamentos = [...proveedor.departamentos, store.user.departamento]
     })
-    
+
     /**************************************************************
      * Hooks
     **************************************************************/
-   onConsultado(() => {
+    onConsultado(() => {
       obtenerEmpresa(proveedor.empresa)
     })
     onReestablecer(() => {
       empresa.hydrate(new Empresa())
-      proveedor.departamentos = store.user.departamento
+      proveedor.departamentos = [...proveedor.departamentos, store.user.departamento]
     })
     /**************************************************************
      * Validaciones
@@ -159,8 +158,8 @@ export default defineComponent({
       }
     }
     const botonVerMiCalificacionProveedor: CustomActionTable = {
-      titulo: 'Ver mi calificación',
-      icono: 'bi-eye',
+      titulo: 'Mi calificación',
+      icono: 'bi-search',
       color: 'positive',
       accion: async ({ entidad, posicion }) => {
         proveedorStore.idDepartamento = store.user.departamento
@@ -178,7 +177,7 @@ export default defineComponent({
       }
     }
     const botonVerCalificacionProveedor: CustomActionTable = {
-      titulo: 'Todas las calificaciones',
+      titulo: 'Todas calificaciones',
       icono: 'bi-eye',
       color: 'info',
       accion: async ({ entidad, posicion }) => {
