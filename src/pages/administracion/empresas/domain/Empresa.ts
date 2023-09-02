@@ -15,6 +15,7 @@ export class Empresa extends EntidadAuditable{
     direccion:string|null   
     agente_retencion:boolean
     tipo_negocio:string|null
+    sitio_web:string|null
 
     constructor(){
         super()
@@ -32,6 +33,7 @@ export class Empresa extends EntidadAuditable{
         this.direccion=null
         this.agente_retencion=false
         this.tipo_negocio=null
+        this.sitio_web=null
     }
 
 

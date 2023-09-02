@@ -111,6 +111,7 @@ export const endpoints = {
   //Modulo de compras y proveedores
   archivos_proveedores: new Endpoint('compras/archivos-proveedores'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
+  categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
   criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
   detalles_departamentos_proveedor: new Endpoint('compras/detalles-departamentos-proveedor'),

@@ -2,59 +2,45 @@
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { required } from 'shared/i18n-validators'
-import { computed, defineComponent, reactive, ref } from 'vue'
-import { useVuelidate } from '@vuelidate/core'
 import { accionesTabla, departamentos, tiposJornadas } from 'config/utils'
+import { computed, defineComponent, reactive, ref } from 'vue'
+import { required } from 'shared/i18n-validators'
+import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
-import TableView from 'components/tables/view/TableView.vue'
-import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
-import { Bar, Pie } from 'vue-chartjs'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
+import TableView from 'components/tables/view/TableView.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
+import { Bar, Pie } from 'vue-chartjs'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
-import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
+import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
 import { formatearFechaSeparador, generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { DashboardTicketController } from '../infraestructure/DashboardTicketsController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { estadosTickets } from 'config/tickets.utils'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useTicketStore } from 'stores/ticket'
-import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
-import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
-import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
+import { estadosTickets } from 'config/tickets.utils'
+import { useTicketStore } from 'stores/ticket'
 import { endpoints } from 'config/api'
-import datalabels from 'chartjs-plugin-datalabels'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
   setup() {
     /***********
     * Stores
     ***********/
     const ticketStore = useTicketStore()
-
-    ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement, datalabels)
-    ChartJS.defaults.plugins.datalabels = {
-      display: true,
-      align: 'center',
-      backgroundColor: '#eee',
-      color: '#fff',
-      borderRadius: 4,
-      opacity: .8,
-      font: {
-        size: 10,
-      },
-    };
 
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
@@ -84,8 +70,8 @@ export default defineComponent({
     const empleadoResponsableDepartamento = ref()
     const esResponsableDepartamento = ref(false)
     const ticketsEmpleadoResponsable = ref([])
-    let departamento
     const tabsTickets = ref('creados')
+    let departamento
 
     // Cantidades
     const ticketsConSolucion = ref([])
@@ -126,55 +112,38 @@ export default defineComponent({
     const ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar = ref()
     const ticketsPorDepartamentoEstadoCalificadoBar = ref()
 
-    const options = {
-      responsive: true,
-      indexAxis: 'y',
-      scales: {
-        x: {
-          beginAtZero: true
-        },
-        y: {
-          beginAtZero: true
-        }
-      },
-      legend: {
-        display: true,
-        position: 'bottom' // Cambia la posición según tus necesidades
-      }
-    }
-
-    const optionsVertical = {
-      responsive: true,
-    }
+    const creados = ref([])
 
     const optionsPie = {
       responsive: true,
       maintainAspectRatio: false,
       layout: {
-        padding: {
-          bottom: 32,
-          top: 32,
-        },
-        margin: {
-          top: 32,
+        padding: 32,
+      },
+      elements: {
+        arc: {
+          borderWidth: 0,
         }
       },
       plugins: {
+        legend: {
+          position: 'right',
+        },
         datalabels: {
           align: 'end',
           anchor: 'end',
-          color: function (context) {
-            return context.dataset.backgroundColor;
+          color: '#fff',
+          backgroundColor: function (context) {
+            return context.dataset.backgroundColor
           },
           font: function (context) {
-            var w = context.chart.width;
+            var w = context.chart.width
             return {
-              size: w < 512 ? 12 : 14,
-              weight: 'bold',
-            };
+              size: w < 512 ? 10 : 12,
+            }
           },
           formatter: function (value, context) {
-            return context.chart.data.labels[context.dataIndex] + ': ' + value
+            return value ? context.chart.data.labels[context.dataIndex] + ': (' + value + ')' : null
           }
         }
       },
@@ -233,6 +202,8 @@ export default defineComponent({
 
           const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado, departamento_responsable_id: departamento })
           await obtenerResponsables()
+
+          creados.value = result.creados
 
           ticketsConSolucion.value = result.tiemposTicketsFinalizados
           cantTicketsCreados.value = result.cantTicketsCreados
@@ -411,17 +382,19 @@ export default defineComponent({
     }
 
     function clickTicketPorEstado(event, chartElements) {
-      console.log('click en grafico...')
-      console.log(event)
-      console.log(chartElements)
+      // console.log('click en grafico...')
+      // console.log(event)
+      // console.log(chartElements)
       if (chartElements && chartElements.length > 0) {
         // Aquí puedes acceder a los elementos del gráfico que se han hecho clic
         const clickedElement = chartElements[0];
-        console.log(clickedElement);
+        // console.log(clickedElement);
       }
     }
 
     return {
+      creados,
+      modoUnaColumna: ref(false),
       tabsTickets,
       clickTicketPorEstado,
       ordenarEmpleados,
@@ -452,8 +425,6 @@ export default defineComponent({
       filtro,
       listadosAuxiliares,
       tiposJornadas,
-      options,
-      optionsVertical,
       optionsPie,
       mostrarTitulosSeccion,
       accionesTabla,

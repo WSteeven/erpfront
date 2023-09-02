@@ -10,6 +10,7 @@ import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 import { useNotificaciones } from './notificaciones';
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
+import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -590,6 +591,18 @@ export function calcularIva(subtotal: number, descuento: number, porcentaje_iva:
   return (((subtotal - descuento) * porcentaje_iva) / 100).toFixed(decimales)
 }
 
+export function calcularSubtotalSinImpuestosLista(val: ItemProforma) {
+  let suma = 0
+  suma += val.grava_iva ? 0 : Number(val.subtotal) || 0
+  suma -= val.grava_iva ? 0 : Number(val.descuento) || 0
+  return suma
+}
+export function calcularSubtotalConImpuestosLista(val: ItemProforma) {
+  let suma = 0
+  suma += val.facturable && val.grava_iva ? Number(val.subtotal) || 0 : 0
+  suma -= val.facturable && val.grava_iva ? Number(val.descuento) || 0 : 0
+  return suma
+}
 
 /**
  * La función "encontrarUltimoIdListado" toma una lista de objetos y devuelve el id del objeto con el
@@ -599,22 +612,15 @@ export function calcularIva(subtotal: number, descuento: number, porcentaje_iva:
  * @returns el último valor de identificación de la matriz de listado dada.
  */
 export function encontrarUltimoIdListado(listado: any) {
-  console.log(listado)
-  console.log(listado.slice(-1)[0])
-  const ultimoId = listado.reduce((ultimo, actual) => {
-    if (!ultimo || actual.id > ultimo.id)
-      return actual.id
-    else return ultimo.id
-  }, null)
-  console.log('Listado: ' + listado)
-  console.log('utlimo id: ' + ultimoId)
-  return ultimoId
+  const objMayorId = listado.reduce((max, objeto) => objeto.id > max.id ? objeto : max, listado[0]);
+
+  return objMayorId.id
 }
 
 export function convertirNumeroPositivo(entidad, campo) {
   if (entidad[campo]) {
     if (entidad[campo] < 0) {
-      entidad[campo] = -1 * entidad[campo];
+      entidad[campo] = -1 * entidad[campo]
     }
   }
 }

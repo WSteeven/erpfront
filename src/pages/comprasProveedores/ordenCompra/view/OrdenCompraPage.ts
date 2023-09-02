@@ -29,7 +29,7 @@ import { acciones, accionesTabla } from "config/utils";
 import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
 import { CategoriaController } from "pages/bodega/categorias/infraestructure/CategoriaController";
 import { useAuthenticationStore } from "stores/authentication";
-import { formatearFecha,  } from "shared/utils";
+import { formatearFecha, } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
@@ -38,6 +38,8 @@ import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
 import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
+import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
+import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 
 
 export default defineComponent({
@@ -88,12 +90,14 @@ export default defineComponent({
         const autorizaciones = ref([])
         const estados = ref([])
         const empleadosAutorizadores = ref([])
+        const tareas = ref([])
         cargarVista(async () => {
             await obtenerListados({
                 empleados: {
                     controller: new EmpleadoController(),
                     params: {
                         campos: 'id,nombres,apellidos,cargo_id',
+                        area_id: 1,
                         estado: 1,
                     }
                 },
@@ -102,6 +106,14 @@ export default defineComponent({
                     params: {
                         permisos: ['puede.autorizar.ordenes_compras'],
                     }
+                },
+                tareas: {
+                    controller: new TareaController(),
+                    params: {
+                        campos: 'id,codigo_tarea,titulo,cliente_id',
+                        formulario: true,
+                        //   coordinador_id: 7,
+                    },
                 },
                 proveedores: {
                     controller: new ProveedorController(),
@@ -121,7 +133,7 @@ export default defineComponent({
                 orden.tiene_preorden = true
                 cargarDatosPreorden()
             }
-            orden.autorizacion=1
+            orden.autorizacion = 1
         })
 
         /*****************************************************************************************
@@ -131,7 +143,7 @@ export default defineComponent({
             orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
             orden.solicitante = store.user.id
             soloLectura.value = false
-            orden.autorizacion=1
+            orden.autorizacion = 1
         })
         onConsultado(() => {
             if (accion.value === acciones.editar && store.user.id === orden.autorizador)
@@ -150,7 +162,8 @@ export default defineComponent({
          ****************************************************************************************/
         const reglas = {
             proveedor: { required },
-            categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
+            categorias: { requiredIfNoPreorden: requiredIf(() => false) },
+            // categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
             // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
             autorizador: { required },
             descripcion: { required },
@@ -227,7 +240,7 @@ export default defineComponent({
             orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
             orden.descripcion = preordenStore.preorden.justificacion
             orden.pedido = preordenStore.preorden.pedido
-            preordenStore.preorden.listadoProductos.forEach((v)=> v.id=v.producto_id)
+            preordenStore.preorden.listadoProductos.forEach((v) => v.id = v.producto_id)
             orden.listadoProductos = preordenStore.preorden.listadoProductos
             orden.listadoProductos.forEach((item) => {
                 item.facturable = true
@@ -327,6 +340,17 @@ export default defineComponent({
             }
         }
 
+        const btnEnviarMailProveedor: CustomActionTable = {
+            titulo: 'Enviar al proveedor',
+            color: 'positive',
+            icono: 'bi-envelope-at',
+            accion: async ({ entidad }) => {
+                ordenCompraStore.idOrden = entidad.id
+                await ordenCompraStore.enviarPdf()
+            },
+            visible: ({ entidad }) => entidad.autorizacion_id === 2
+        }
+
         watch(refItems, () => {
             console.log('modificacion')
             console.log(refItems.value)
@@ -339,6 +363,7 @@ export default defineComponent({
         autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
         empleadosAutorizadores.value = listadosAuxiliares.autorizadores
         estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
+        tareas.value = listadosAuxiliares.tareas
 
         return {
             mixin, orden, disabled, accion, v$, acciones,
@@ -352,8 +377,9 @@ export default defineComponent({
             categorias,
             proveedores,
             autorizaciones,
+            tareas,
             estados,
-            empleadosAutorizadores,
+            // empleadosAutorizadores,
             opcionesForma,
             opcionesTiempo,
 
@@ -368,6 +394,7 @@ export default defineComponent({
             btnEliminarFila,
             btnImprimir,
             btnAnularOrden,
+            btnEnviarMailProveedor,
 
             //selector
             refListado,
@@ -392,6 +419,21 @@ export default defineComponent({
             llenarOrden,
             actualizarPreorden,
             actualizarListado,
+            filtrarTareas(val, update) {
+                if (val === '') update(() => tareas.value = listadosAuxiliares.tareas)
+
+                update(() => {
+                    const needle = val.toLowerCase()
+                    tareas.value = listadosAuxiliares.tareas.filter((v) => v.codigo_tarea.toLowerCase().indexOf(needle) > -1)
+                })
+            },
+            filtrarAutorizadores() {
+                let ids_autorizadores = listadosAuxiliares.autorizadores.map((entidad: Empleado) => entidad.id)
+                empleados.value = empleados.value.filter((v: Empleado) => ids_autorizadores.includes(v.id || orden.autorizador))
+            },
+            reestablecerEmpleados() {
+                empleados.value = listadosAuxiliares.empleados
+            },
 
 
             //variables computadas

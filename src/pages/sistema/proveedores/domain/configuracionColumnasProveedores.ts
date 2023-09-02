@@ -51,4 +51,11 @@ export const configuracionColumnasProveedores: ColumnConfig<Proveedor>[]=[
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'sitio_web',
+    field: 'sitio_web',
+    label: 'Sitio web',
+    align: 'left',
+    sortable: true,
+  },
 ]
