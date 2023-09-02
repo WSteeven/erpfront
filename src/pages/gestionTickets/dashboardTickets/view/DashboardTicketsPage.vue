@@ -407,7 +407,7 @@
           <div class="col-12 col-md-6 text-center">
             <div class="text-subtitle2">Tickets asignados</div>
             <div>
-              <Pie
+              <grafico-generico
                 v-if="ticketsPorEstado.length"
                 :data="ticketsPorEstadoBar"
                 :options="optionsPie"
@@ -417,11 +417,14 @@
           </div>
         </div>
 
-        <div v-if="mostrarTitulosSeccion" class="row q-mb-xl">
+        <div
+          v-if="mostrarTitulosSeccion"
+          class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
+        >
           <div class="col-12 col-md-6 text-center">
             <div class="text-subtitle2">Tickets creados</div>
             <div>
-              <Pie
+              <grafico-generico
                 v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
                 :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
                 :options="optionsPie"
@@ -432,7 +435,7 @@
           <div class="col-12 col-md-6 text-center">
             <div class="text-subtitle2">Tickets asignados</div>
             <div>
-              <Pie
+              <grafico-generico
                 v-if="cantidadesTicketsRecibidosPorDepartamento.length"
                 :data="cantidadesTicketsRecibidosPorDepartamentoBar"
                 :options="optionsPie"
@@ -466,7 +469,30 @@
           </span>
         </div>
 
-        <div v-if="esResponsableDepartamento" class="row q-col-gutter-y-xl">
+        <div class="q-mb-xl q-gutter-y-md column items-center">
+          <q-btn-group push>
+            <q-btn
+              push
+              label="Una columna"
+              icon="bi-list"
+              no-caps
+              @click="() => (modoUnaColumna = true)"
+            />
+            <q-btn
+              push
+              label="Dos columnas"
+              icon="bi-grid"
+              no-caps
+              @click="() => (modoUnaColumna = false)"
+            />
+          </q-btn-group>
+        </div>
+
+        <div
+          v-if="esResponsableDepartamento"
+          class="q-col-gutter-y-xl q-col-gutter-x-xs"
+          :class="{ row: !modoUnaColumna, column: modoUnaColumna }"
+        >
           <!-- Asignados -->
           <div
             v-if="ticketsPorDepartamentoEstadoAsignado.length"
@@ -474,7 +500,7 @@
           >
             <div class="text-subtitle2">Pendientes</div>
             <div>
-              <Pie
+              <grafico-generico
                 :data="ticketsPorDepartamentoEstadoAsignadoBar"
                 :options="optionsPie"
                 v-if="ticketsPorDepartamentoEstadoAsignado.length"
@@ -488,7 +514,7 @@
           >
             <div class="text-subtitle2">Transferidos</div>
             <div>
-              <Pie
+              <grafico-generico
                 :data="ticketsPorDepartamentoEstadoReasignadoBar"
                 :options="optionsPie"
                 v-if="ticketsPorDepartamentoEstadoReasignado.length"
@@ -502,7 +528,7 @@
           >
             <div class="text-subtitle2">Ejecutando</div>
             <div>
-              <Pie
+              <grafico-generico
                 :data="ticketsPorDepartamentoEstadoEjecutandoBar"
                 :options="optionsPie"
                 v-if="ticketsPorDepartamentoEstadoEjecutando.length"
@@ -516,7 +542,7 @@
           >
             <div class="text-subtitle2">Pausados</div>
             <div>
-              <Pie
+              <grafico-generico
                 :data="ticketsPorDepartamentoEstadoPausadoBar"
                 :options="optionsPie"
                 v-if="ticketsPorDepartamentoEstadoPausado.length"
@@ -530,7 +556,7 @@
           >
             <div class="text-subtitle2">Finalizado solucionado</div>
             <div>
-              <Pie
+              <grafico-generico
                 :data="ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar"
                 :options="optionsPie"
                 v-if="ticketsPorDepartamentoEstadoFinalizadoSolucionado.length"
@@ -544,7 +570,7 @@
           >
             <div class="text-subtitle2">Finalizado sin solución</div>
             <div>
-              <Pie
+              <grafico-generico
                 :data="ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar"
                 :options="optionsPie"
                 v-if="ticketsPorDepartamentoEstadoFinalizadoSinSolucion.length"
@@ -558,7 +584,7 @@
           >
             <div class="text-subtitle2">Calificado</div>
             <div>
-              <Pie
+              <grafico-generico
                 :data="ticketsPorDepartamentoEstadoCalificadoBar"
                 :options="optionsPie"
                 v-if="ticketsPorDepartamentoEstadoCalificado.length"
