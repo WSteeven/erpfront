@@ -390,7 +390,7 @@ export default defineComponent({
     }
 
     function filtrarSubtareasGrupoPorEstado(subtareasGrupo: any[], estado: string) {
-      console.log(subtareasGrupo)
+      // console.log(subtareasGrupo)
       return subtareasGrupo.filter((item) =>
         item.estado === estado
       )
@@ -425,7 +425,7 @@ export default defineComponent({
         const elementoExistente: any = acumulador.find((item: any) => item.estado === estado && item.empleado === empleado)
 
         if (!elementoExistente) {
-          console.log(estado)
+          //console.log(estado)
           acumulador.push({ estado, empleado, total_subtareas: 1 })
         } else {
           elementoExistente.total_subtareas++

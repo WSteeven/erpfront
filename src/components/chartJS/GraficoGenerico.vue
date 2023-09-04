@@ -2,7 +2,7 @@
   <!-- <div class="bg-yellow full-width"> -->
   <div
     style="width: 100%; margin: 0 auto; height: 300px"
-    class="bg-grey-2 rounded"
+    class="bg-body rounded"
   >
     <canvas ref="chartRef" id="myChart"></canvas>
   </div>
