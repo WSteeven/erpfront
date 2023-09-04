@@ -98,6 +98,52 @@
               dense
             ></q-input>
           </div>
+          <!--Regimen tributario -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Regimen tributario</label>
+            <q-select
+              v-model="empresa.regimen_tributario"
+              :options="opcionesTipoNegocio"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.regimen_tributario.$errors.length"
+              error-message="Debes seleccionar un elemento"
+              :option-value="(v) => v.value"
+              :option-label="(v) => v.label"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.regimen_tributario.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Lleva contabilidad -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Lleva contabilidad</label>
+            <q-toggle
+              :label="empresa.lleva_contabilidad ? 'SI' : 'NO'"
+              v-model="empresa.lleva_contabilidad"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
           <!-- Agente de retención -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Agente de retención</label>
@@ -111,42 +157,22 @@
               :disable="disabled"
             />
           </div>
-          <!--Tipo de negocio -->
+          <!-- Contribuyente especial -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Tipo de negocio</label>
-            <q-select
-              v-model="empresa.tipo_negocio"
-              :options="opcionesTipoNegocio"
-              transition-show="jump-up"
-              transition-hide="jump-down"
+            <label class="q-mb-sm block">Contribuyente especial</label>
+            <q-toggle
+              :label="empresa.contribuyente_especial ? 'SI' : 'NO'"
+              v-model="empresa.contribuyente_especial"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
               :disable="disabled"
-              options-dense
-              dense
-              outlined
-              :error="!!v$.tipo_negocio.$errors.length"
-              error-message="Debes seleccionar un elemento"
-              :option-value="(v) => v.value"
-              :option-label="(v) => v.label"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.tipo_negocio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+            />
           </div>
 
           <!-- celular-->
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Celular</label>
             <q-input
               mask="##########"
@@ -163,9 +189,9 @@
                 </div>
               </template></q-input
             >
-          </div>
+          </div> -->
           <!-- telefono-->
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Telefono</label>
             <q-input
               mask="##########"
@@ -177,7 +203,7 @@
               outlined
               dense
             ></q-input>
-          </div>
+          </div> -->
           <!-- correo-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Correo</label>
@@ -191,7 +217,7 @@
             ></q-input>
           </div>
           <!--Pais -->
-          <div class="col-12 col-md-3" v-if="false">
+          <!-- <div class="col-12 col-md-3" v-if="false">
             <label class="q-mb-sm block">País</label>
             <q-select
               v-model="empresa.pais"
@@ -228,11 +254,10 @@
                 </q-item>
               </template>
             </q-select>
-          </div>
-
+          </div> -->
 
           <!--Provincia -->
-          <div class="col-12 col-md-3" >
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Provincia</label>
             <q-select
               v-model="empresa.provincia"
@@ -263,7 +288,7 @@
 
           <!--Canton -->
           <div class="col-12 col-md-3" v-if="empresa.provincia">
-            <label class="q-mb-sm block">Cantón</label>
+            <label class="q-mb-sm block">Ciudad</label>
             <q-select
               v-model="empresa.canton"
               :options="cantones"
@@ -290,7 +315,7 @@
             </q-select>
           </div>
           <!--ciudad-->
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Ciudad</label>
             <q-input
               type="textarea"
@@ -303,22 +328,7 @@
               dense
             >
             </q-input>
-          </div>
-          <!--direccion-->
-          <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Dirección</label>
-            <q-input
-              type="textarea"
-              autogrow
-              v-model="empresa.direccion"
-              placeholder="Obligatorio"
-              :readonly="disabled"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
+          </div> -->
           <!--sitio_web-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Sitio web</label>
@@ -335,10 +345,43 @@
             >
             </q-input>
             <i v-else class="bi bi-globe">
-              <a class="q-mt-md" :href="'https://'+empresa.sitio_web" target="_blank">{{
-                empresa.sitio_web
-              }}</a>
+              <a
+                class="q-mt-md"
+                :href="'https://' + empresa.sitio_web"
+                target="_blank"
+                >{{ empresa.sitio_web }}</a
+              >
             </i>
+          </div>
+          <!--direccion-->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Dirección</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="empresa.direccion"
+              placeholder="Obligatorio"
+              :readonly="disabled"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!--actividad economica-->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Actividad economica</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="empresa.actividad_economica"
+              placeholder="Obligatorio"
+              :readonly="disabled"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
           </div>
         </div>
       </q-form>

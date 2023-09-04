@@ -38,6 +38,7 @@
                 use-input
                 input-debounce="0"
                 @filter="filtrarEmpresas"
+                @popup-show="ordenarEmpresas"
                 @update:model-value="obtenerEmpresa"
                 :error="!!v$.empresa.$errors.length"
                 hint="Agrega elementos desde el panel de empresas"
@@ -503,7 +504,7 @@
                 outlined
                 :error="!!v$.departamentos.$errors.length"
                 error-message="Debes seleccionar al menos una opcion"
-                hint="Dept. Contable califica a todos los proveedores"
+                hint="Dept. Financiero califica a todos los proveedores"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
                 :option-disable="(v) =>v.id === store.user.departamento"

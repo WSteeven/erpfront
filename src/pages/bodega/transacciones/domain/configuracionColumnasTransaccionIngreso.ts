@@ -21,6 +21,7 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         field: 'solicitante',
         label: 'Solicitante',
         align: 'left',
+        style: 'max-width:250px; overflow: auto;',
         sortable: true,
     },
     {
@@ -28,6 +29,7 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         field: 'justificacion',
         label: 'Justificación',
         align: 'left',
+        style: 'max-width:300px; overflow: auto;',
         sortable: true,
     },
     /*{
@@ -63,6 +65,7 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         field: 'per_autoriza',
         label: 'Autoriza',
         align: 'left',
+        style: 'max-width:250px; overflow: auto;',
         sortable: true,
     },
     {
@@ -70,6 +73,7 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         field: 'tarea',
         label: 'Tarea',
         align: 'left',
+        style: 'max-width:200px; overflow: auto;',
         sortable: true,
     },
     /* {

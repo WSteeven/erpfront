@@ -254,7 +254,6 @@
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Telefono</label>
               <q-input
-                mask="##########"
                 v-model="contacto.ext"
                 hint="Número de telefono o extensión"
                 placeholder="Opcional"
