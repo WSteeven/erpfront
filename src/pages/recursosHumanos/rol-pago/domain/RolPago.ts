@@ -16,6 +16,8 @@ export class RolPago extends EntidadAuditable {
   descuento_general: number | null
   descuento_ley: number | null
   multa: number | null
+  fondos_reserva: number | null
+  prestamo_empresarial: number | null
   decimo_tercero: number |null
   decimo_cuarto: number| null
   total_ingreso: number | null
@@ -57,6 +59,8 @@ porcentaje_anticipo: number | null
     this.decimo_cuarto = null
     this.descuento_ley = null
     this.multa = null
+    this.fondos_reserva = null
+    this.prestamo_empresarial= null
     this.ingreso = null
     this.egreso = null
     this.total_ingreso = null
