@@ -118,7 +118,7 @@ export default defineComponent({
             sucursal_destino: { required },
             cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
             autorizacion: {
-                requiredIfCoordinador: requiredIf(esCoordinador),
+                requiredIfCoordinador: requiredIf(esCoordinador&& !store.esBodegueroTelconet),
             },
             // estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {

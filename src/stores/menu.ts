@@ -187,7 +187,8 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Detalles de productos',
           link: 'detalles',
           icon: 'bi-circle',
-          can: store.esBodeguero,// can('puede.ver.detalles'),
+          // can: store.esBodeguero,// can('puede.ver.detalles'),
+          can: store.can('puede.acceder.detalles'),
         },
         {
           title: 'Inventario',
@@ -218,20 +219,20 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Ingreso de materiales',
           link: 'transacciones-ingresos',
-          can: store.can('puede.ver.transacciones_ingresos') || store.esBodeguero,
+          can: store.can('puede.acceder.transacciones_ingresos') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
           title: 'Egreso de materiales',
           link: 'transacciones-egresos',
           // can: store.can('puede.ver.transacciones_egresos'),
-          can: store.can('puede.ver.transacciones_egresos') || store.esBodeguero,
+          can: store.can('puede.acceder.transacciones_egresos') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
           title: 'Transferencias',
           link: 'transferencias',
-          can: store.can('puede.ver.transferencias') || store.esBodeguero,
+          can: store.can('puede.acceder.transferencias') || store.esBodeguero,
           icon: 'bi-circle',
         },
         {
@@ -590,7 +591,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Empresas',
           link: 'empresas',
           icon: 'bi-building-fill-gear',
-          can: store.can('puede.ver.empresas')  || store.esAdministrador,
+          can: store.can('puede.acceder.empresas')  || store.esAdministrador,
         },
         {
           title: 'Proveedores',
@@ -778,7 +779,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Sucursales',
           link: 'sucursales',
           icon: 'bi-circle',
-          can: store.can('puede.ver.sucursales') && store.esActivosFijos,
+          can: store.can('puede.acceder.sucursales') || store.esActivosFijos,
         },
         {
           title: 'Ubicaciones',

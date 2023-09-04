@@ -40,7 +40,7 @@
             <q-input v-model="transaccion.created_at" disable outlined dense />
           </div>
           <!-- Select motivo -->
-          <div v-if="esBodeguero" class="col-12 col-md-3 q-mb-md">
+          <div v-if="esBodeguero || esBodegueroTelconet" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
             <q-select
               v-model="transaccion.motivo"
@@ -73,7 +73,7 @@
           <!-- Select autorizacion -->
           <div
             v-if="
-              transaccion.autorizacion || esVisibleAutorizacion || esCoordinador
+              transaccion.autorizacion || esVisibleAutorizacion
             "
             class="col-12 col-md-3 q-mb-md"
           >

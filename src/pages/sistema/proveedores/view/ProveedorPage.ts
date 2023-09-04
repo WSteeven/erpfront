@@ -197,14 +197,19 @@ export default defineComponent({
         StatusLoading.activar()
         const { result } = await new EmpresaController().consultar(empresaId)
         empresa.hydrate(result)
+        proveedor.contactos = empresa.contactos
+        proveedor.canton = empresa.canton
+        proveedor.direccion = empresa.direccion
+        listadosAuxiliares.parroquias = listadosAuxiliares.parroquias.filter((v) => v.canton_id === proveedor.canton)//se actualiza el listado de parroquias con el canton
+        proveedor.sucursal = empresa.sucursal
         StatusLoading.desactivar()
       }
     }
     async function guardado() {
       consultarEmpresas()
-      listar()
+      // listar()
       console.log('accion', accion.value)
-      if (accion.value === acciones.editar)
+      if (accion.value === acciones.editar || accion.value === acciones.nuevo)
         consultarContactosProveedor()
 
     }
@@ -236,13 +241,13 @@ export default defineComponent({
       empresas.value = result
     }
     async function consultarContactosProveedor() {
-      const { result } = await new ContactoProveedorController().listar({ proveedor_id: proveedor.id })
+      const { result } = await new ContactoProveedorController().listar({ empresa_id: proveedor.empresa, proveedor_id: proveedor.id })
       proveedor.contactos = result
     }
     const {
       cantones, filtrarCantones,
       parroquias, filtrarParroquias,
-      empresas, filtrarEmpresas
+      empresas, filtrarEmpresas, ordenarEmpresas,
 
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -252,6 +257,7 @@ export default defineComponent({
     empresas.value = listadosAuxiliares.empresas
     departamentos.value = listadosAuxiliares.departamentos
     ofertas.value = listadosAuxiliares.ofertas
+    cantones.value = listadosAuxiliares.cantones
 
     return {
       mixin, proveedor, disabled, v$, accion, acciones,
@@ -283,6 +289,7 @@ export default defineComponent({
       obtenerEmpresa,
       obtenerParroquias,
       actualizarCategorias,
+      ordenarEmpresas,
 
       //botones
       botonCalificarProveedor,
