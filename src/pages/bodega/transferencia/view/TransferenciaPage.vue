@@ -415,6 +415,8 @@
               </div>
             </div>
           </div>
+
+          {{ v$.$errors }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -425,6 +427,7 @@
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
+              :altoFijo="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               @eliminar="eliminar"

@@ -265,6 +265,7 @@ export const rolesSistema = {
   activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
   bodega: 'BODEGA',
+  bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
   coordinador: 'COORDINADOR',

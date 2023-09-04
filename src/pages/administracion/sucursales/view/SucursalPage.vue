@@ -100,6 +100,7 @@
               hint="Este campo es obligatorio"
               :error="!!v$.cliente.$errors.length"
               @filter="filtroClientes"
+              @popup-show="ordenarClientes"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.razon_social"

@@ -21,6 +21,7 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         field: 'solicitante',
         label: 'Solicitante',
         align: 'left',
+        style: 'max-width:250px; overflow: auto;',
         sortable: true,
     },
     {
@@ -36,6 +37,7 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         field: 'responsable',
         label: 'Responsable',
         align: 'left',
+        style: 'max-width:250px; overflow: auto;',
         sortable: true,
     },
     {
@@ -50,6 +52,7 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         field: 'motivo',
         label: 'Motivo',
         align: 'left',
+        style: 'max-width:250px; overflow: auto;',
         sortable: true,
     },
     {
@@ -57,6 +60,7 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         field: 'sucursal',
         label: 'Sucursal',
         align: 'left',
+        style: 'max-width:200px; overflow: auto;',
         sortable: true,
     },
     {
@@ -64,6 +68,7 @@ export const configuracionColumnasTransaccionEgreso: ColumnConfig<Transaccion>[]
         field: 'per_autoriza',
         label: 'Autoriza',
         align: 'left',
+        style: 'max-width:250px; overflow: auto;',
         sortable: true,
     },
     {

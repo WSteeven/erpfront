@@ -219,7 +219,7 @@ export default defineComponent({
 
 
     function eliminarItem({ entidad }) {
-      const posicion = transaccion.listadoProductosTransaccion.findIndex((fila: any)=>fila.id === entidad.id)
+      const posicion = transaccion.listadoProductosTransaccion.findIndex((fila: any) => fila.id === entidad.id)
       confirmar('¿Esta seguro de continuar?',
         () => {
           transaccion.listadoProductosTransaccion.splice(posicion, 1)
@@ -439,13 +439,18 @@ export default defineComponent({
       },
       //ordenacion de listas
       ordenarClientes() {
-        opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+        if(store.esBodegueroTelconet){
+          opciones_clientes.value =  opciones_clientes.value.filter((v:Cliente)=>v.razon_social!.indexOf('TELCONET')>-1)
+        }else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
       },
       ordenarMotivos() {
         opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
       },
       ordenarSucursales() {
-        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+        if (store.esBodegueroTelconet) {
+          const sucursalesTelconet = opciones_sucursales.value.filter((v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1)
+          opciones_sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+        } else opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
       ordenarEmpleados() {
         opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))

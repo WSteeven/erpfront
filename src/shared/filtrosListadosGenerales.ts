@@ -1,4 +1,6 @@
+import { Empresa } from "pages/administracion/empresas/domain/Empresa";
 import { Ref, ref } from "vue";
+import { ordernarListaString } from "./utils";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -128,10 +130,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     }
     update(() => {
       const needle = val.toLowerCase()
-      if (listadosAuxiliares.empresas) empresas.value = listadosAuxiliares.empresas.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.nombre_comercial.toLowerCase().indexOf(needle) > -1)
+      if (listadosAuxiliares.empresas) empresas.value = listadosAuxiliares.empresas.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.nombre_comercial?.toLowerCase().indexOf(needle) > -1)
     })
   }
 
+  function ordenarEmpresas() {
+    empresas.value.sort((a: Empresa, b: Empresa) => ordernarListaString(a.razon_social!, b.razon_social!))
+  }
 
   /**
    * Esta función filtra una lista de proveedores en función de un valor de búsqueda y actualiza la
@@ -188,7 +193,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     provincias, filtrarProvincias,
     cantones, filtrarCantones,
     parroquias, filtrarParroquias,
-    empresas, filtrarEmpresas,
+    empresas, filtrarEmpresas, ordenarEmpresas,
     proveedores, filtrarProveedores,
     clientes, filtrarClientes,
     empleados, filtrarEmpleados,

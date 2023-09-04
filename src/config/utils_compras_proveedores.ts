@@ -1,14 +1,15 @@
 import { TabOption } from "components/tables/domain/TabOption"
 
 export const opcionesTipoContribuyente = [
-  { value: 'NATURAL', label: 'NATURAL' },
-  { value: 'PRIVADA', label: 'PRIVADA' },
-  { value: 'PUBLICA', label: 'PUBLICA' },
+  { value: 'PERSONA NATURAL', label: 'PERSONA NATURAL' },
+  { value: 'SOCIEDAD', label: 'SOCIEDAD' },
+  // { value: 'PUBLICA', label: 'PUBLICA' },
 ]
 
 export const opcionesTipoNegocio = [
-  { value: 'RIMPE CON IVA', label: 'RIMPE CON IVA' },
-  { value: 'RIMPE SIN IVA', label: 'RIMPE SIN IVA' },
+  { value: 'RIMPE EMPRENDEDOR', label: 'RIMPE EMPRENDEDOR' },
+  { value: 'RIMPE NEGOCIOS POPULARES', label: 'RIMPE NEGOCIOS POPULARES' },
+  { value: 'GENERAL', label: 'GENERAL' },
 ]
 export const opcionesTipoContacto = [
   { value: 'TECNICO', label: 'TÉCNICO' },

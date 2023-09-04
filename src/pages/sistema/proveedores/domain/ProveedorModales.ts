@@ -15,7 +15,7 @@ export class ProveedorModales{
   InfoCalificacionProveedorPage: ComponenteModal
 
   constructor(){
-    this.EmpresaPage = markRaw(new ComponenteModal('Empresa', EmpresaPage))
+    this.EmpresaPage = markRaw(new ComponenteModal('Información tributaria', EmpresaPage))
     this.ContactoProveedorPage = markRaw(new ComponenteModal('Contacto de Proveedor', ContactoProveedorPage))
     this.CalificacionProveedorPage = markRaw(new ComponenteModal('Calificación del Proveedor', CalificacionProveedorPage))
     this.InfoCalificacionProveedorPage = markRaw(new ComponenteModal('Resultados de la calificación del Proveedor', InfoCalificacionProveedorPage))

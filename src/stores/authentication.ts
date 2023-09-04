@@ -50,6 +50,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esJefeTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false)
   const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico_lider) : false)
   const esBodeguero = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false)
+  const esBodegueroTelconet = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet) : false)
   const esActivosFijos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.activos_fijos) : false)
   const esTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false)
   const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false)
@@ -145,17 +146,17 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.set('tareas', JSON.stringify(tareas))
     const usuariosInactivos = (await new EmpleadoController().listar({ campos: 'id,nombres,apellidos', estado: 0 })).result
     LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-    const concepto_ingresos= ( await new ConceptoIngresoController().listar()).result
+    const concepto_ingresos = (await new ConceptoIngresoController().listar()).result
     LocalStorage.set('concepto_ingresos', JSON.stringify(concepto_ingresos))
-    const descuentos_generales= ( await new DescuentosGenralesController().listar()).result
+    const descuentos_generales = (await new DescuentosGenralesController().listar()).result
     LocalStorage.set('descuentos_generales', JSON.stringify(descuentos_generales))
-    const descuentos_ley= ( await new DescuentosLeyController().listar()).result
+    const descuentos_ley = (await new DescuentosLeyController().listar()).result
     LocalStorage.set('descuentos_ley', JSON.stringify(descuentos_ley))
-    const multas= ( await new MultaController().listar()).result
+    const multas = (await new MultaController().listar()).result
     LocalStorage.set('multas', JSON.stringify(multas))
-    const horas_extras_tipos= ( await new HorasExtrasTipoController().listar()).result
+    const horas_extras_tipos = (await new HorasExtrasTipoController().listar()).result
     LocalStorage.set('horas_extras_tipos', JSON.stringify(horas_extras_tipos))
-    const horas_extras_subtipos= ( await new HorasExtrasSubTipoController().listar()).result
+    const horas_extras_subtipos = (await new HorasExtrasSubTipoController().listar()).result
     LocalStorage.set('horas_extras_subtipos', JSON.stringify(horas_extras_subtipos))
     // const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
     // LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
@@ -267,7 +268,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esJefeTecnico,
     esTecnico,
     esTecnicoLider,
-    esBodeguero,
+    esBodeguero, esBodegueroTelconet,
     esActivosFijos,
     esRecursosHumanos,
     esGerente,
