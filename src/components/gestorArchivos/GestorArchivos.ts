@@ -49,9 +49,9 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    idModelo:{
+    idModelo: {
       type: Number,
-      required:false,
+      required: false,
     }
   },
   setup(props) {
@@ -68,8 +68,8 @@ export default defineComponent({
 
     const { notificarCorrecto, notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
 
-    function listarArchivosAlmacenados(id:number, params:ParamsType){
-        listarArchivos(id, params)
+    function listarArchivosAlmacenados(id: number, params: ParamsType) {
+      listarArchivos(id, params)
     }
 
     let paramsForm
@@ -88,10 +88,13 @@ export default defineComponent({
     }
 
     const btnDescargar: CustomActionTable = {
-      titulo: 'Descargar',
-      icono: 'bi-download',
+      titulo: 'Ver/Descargar',
+      icono: 'bi-eye',
       color: 'positive',
-      accion: ({ entidad }) => descargarArchivoUrl(entidad.ruta)
+      accion: ({ entidad }) => {
+        console.log(entidad)
+        descargarArchivoUrl(entidad.ruta)
+      }
     }
 
     const refGestor = ref()
@@ -114,9 +117,12 @@ export default defineComponent({
       }
 
       try {
-        const response: AxiosResponse = await guardarArchivos(props.idModelo, fd)
+        const response: AxiosResponse = await guardarArchivos(props.idModelo!, fd)
+        console.log(response.data.modelo[0])
+        console.log(listadoArchivos.value)
+
         files.value = []
-        if (props.listarAlGuardar) listadoArchivos.value.push(response.data.modelo)
+        if (props.listarAlGuardar) listadoArchivos.value.push(response.data.modelo[0])
         notificarCorrecto(response.data.mensaje)
         quiero_subir_archivos.value = false
       } catch (error: unknown) {
@@ -126,7 +132,7 @@ export default defineComponent({
       }
     }
 
-    function subir(id:number, params: ParamsType) {
+    function subir(id: number, params: ParamsType) {
       paramsForm = params
       if (refGestor.value) {
         refGestor.value.upload()
@@ -140,7 +146,7 @@ export default defineComponent({
       notificarAdvertencia('El tamaño total de los archivos no deben exceder los 10mb.')
     }
 
-    
+
     function limpiarListado() {
       listadoArchivos.value = []
       // console.log('limpiado...')

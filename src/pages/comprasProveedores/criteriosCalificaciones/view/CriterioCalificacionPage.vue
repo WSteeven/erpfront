@@ -15,8 +15,8 @@
         @submit.prevent
         v-if="departamento"
       >
-        Criterios de calificaciones para el departamento de
-        <strong>{{  departamento.nombre }}</strong>
+        <!-- Criterios de calificaciones para el departamento de
+        <strong>{{  departamento.nombre }}</strong> -->
         <div class="row q-col-gutter-sm q-pa-sm">
           <!-- departamento -->
           <div class="col-12 col-md-3">

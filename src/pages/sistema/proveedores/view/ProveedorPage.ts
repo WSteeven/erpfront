@@ -25,7 +25,6 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { estadosCalificacionProveedor, opcionesTipoContribuyente, opcionesTipoNegocio } from 'config/utils_compras_proveedores';
 import { ParroquiaController } from 'sistema/parroquia/infraestructure/ParroquiaController';
 import { OfertaProveedorController } from '../modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
-import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController';
 import { DepartamentoController } from '../modules/departamentos/infraestructure/DepartamentoController';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { ContactoProveedor } from 'pages/comprasProveedores/contactosProveedor/domain/ContactoProveedor';
@@ -36,9 +35,13 @@ import { useAuthenticationStore } from 'stores/authentication';
 import moment from 'moment';
 import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor';
 import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController';
-import { LocalStorage } from 'quasar';
+import { LocalStorage, useQuasar } from 'quasar';
 import { CategoriaOfertaController } from 'pages/comprasProveedores/categoriaOfertas/infraestructure/CategoriaOfertaController';
 import { CategoriaOferta } from 'pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta';
+import { ordernarListaString } from 'shared/utils';
+import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
 
 
 export default defineComponent({
@@ -55,6 +58,8 @@ export default defineComponent({
     /**************************************************************
      * Stores
      **************************************************************/
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const modales = new ComportamientoModalesProveedores()
     const StatusLoading = new StatusEssentialLoading()
     const proveedorStore = useProveedorStore()
@@ -67,16 +72,18 @@ export default defineComponent({
     const categorias = ref([])
     const departamentos = ref([])
     const ofertas = ref([])
+    const departamentoFinanciero = computed(() => listadosAuxiliares.departamentos.length > 0 ? listadosAuxiliares.departamentos.filter((v: Departamento) => v.nombre == 'FINANCIERO')[0] : new Departamento())
     cargarVista(async () => {
-      obtenerListados({
+      await obtenerListados({
         empresas: new EmpresaController(),
         parroquias: new ParroquiaController(),
         categorias: new CategoriaOfertaController(),
         departamentos: new DepartamentoController(),
         ofertas: new OfertaProveedorController(),
+      }).then(() => {
+        proveedor.departamentos = [...proveedor.departamentos, departamentoFinanciero.value.id]
       })
       listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
-      proveedor.departamentos = [...proveedor.departamentos, store.user.departamento]
     })
 
     /**************************************************************
@@ -87,7 +94,7 @@ export default defineComponent({
     })
     onReestablecer(() => {
       empresa.hydrate(new Empresa())
-      proveedor.departamentos = [...proveedor.departamentos, store.user.departamento]
+      proveedor.departamentos = [...proveedor.departamentos, departamentoFinanciero.value.id]
     })
     /**************************************************************
      * Validaciones
@@ -163,15 +170,19 @@ export default defineComponent({
       color: 'positive',
       accion: async ({ entidad, posicion }) => {
         proveedorStore.idDepartamento = store.user.departamento
+        proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
         calificacionStore.idDepartamento = proveedorStore.idDepartamento
         calificacionStore.verMiCalificacion = true
+        await consultarDetalleDepartamentoProveedor().then(() => {
+          proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
+        })
         modales.abrirModalEntidad('InfoCalificacionProveedorPage')
       },
       visible: ({ posicion, entidad }) => {
         const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
         if (departamento_calificador) {
-          return departamento_calificador.pivot.calificacion !== null
+          return departamento_calificador.pivot.calificacion !== null//aqui se muestra aunque de 0, corregir esta parte
         }
         return false
       }
@@ -182,7 +193,11 @@ export default defineComponent({
       color: 'info',
       accion: async ({ entidad, posicion }) => {
         proveedorStore.idDepartamento = store.user.departamento
+        proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
+        await consultarDetalleDepartamentoProveedor().then(() => {
+          proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
+        })
         modales.abrirModalEntidad('InfoCalificacionProveedorPage')
       },
       visible: ({ posicion, entidad }) => {
@@ -205,12 +220,21 @@ export default defineComponent({
         StatusLoading.desactivar()
       }
     }
-    async function guardado() {
-      consultarEmpresas()
-      // listar()
-      console.log('accion', accion.value)
-      if (accion.value === acciones.editar || accion.value === acciones.nuevo)
-        consultarContactosProveedor()
+    async function guardado(data) {
+      switch (data) {
+        case 'CategoriaOfertaPage':
+          consultarCategoriasOfertas()
+          break
+        case 'ContactoProveedorPage':
+          consultarContactosProveedor()
+          break
+          case 'CalificacionProveedorPage':
+            listar()
+            break
+        default:
+          consultarEmpresas()
+
+      }
 
     }
     async function obtenerParroquias(parroquiaId: number | null) {
@@ -244,6 +268,11 @@ export default defineComponent({
       const { result } = await new ContactoProveedorController().listar({ empresa_id: proveedor.empresa, proveedor_id: proveedor.id })
       proveedor.contactos = result
     }
+    async function consultarCategoriasOfertas() {
+      const { result } = await new CategoriaOfertaController().listar()
+      listadosAuxiliares.categorias = result
+      categorias.value = result
+    }
     const {
       cantones, filtrarCantones,
       parroquias, filtrarParroquias,
@@ -263,6 +292,7 @@ export default defineComponent({
       mixin, proveedor, disabled, v$, accion, acciones,
       configuracionColumnas: configuracionColumnasProveedores,
       columnasContactosProveedor,
+      departamentoFinanciero,
 
       //store
       store,
@@ -290,6 +320,9 @@ export default defineComponent({
       obtenerParroquias,
       actualizarCategorias,
       ordenarEmpresas,
+      ordenarCategorias() {
+        categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
+      },
 
       //botones
       botonCalificarProveedor,

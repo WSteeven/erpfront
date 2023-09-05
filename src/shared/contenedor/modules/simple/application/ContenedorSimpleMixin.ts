@@ -203,6 +203,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
       //console.log(this.entidad)
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
+      // console.log(this.entidad)
+      // console.log(copiaEntidad)
       this.reestablecer()
       this.hooks.onGuardado(copiaEntidad.id)
       return copiaEntidad
@@ -273,7 +275,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
    * @param params 
    * @returns 
    */
-  private async guardarArchivos(id, data: T, params?: ParamsType): Promise<any> {
+  private async guardarArchivos(id:number, data: T, params?: ParamsType): Promise<any> {
 
     this.statusEssentialLoading.activar()
     try {
@@ -287,8 +289,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       )
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
-      this.agregarElementoListadoArchivosActual(response.data.modelo)
+      // this.agregarElementoListadoArchivosActual(response.data.modelo)
+      // console.log(response)
 
+      return response
     } catch (error: any) {
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion
