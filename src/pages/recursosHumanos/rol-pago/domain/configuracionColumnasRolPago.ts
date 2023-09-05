@@ -59,6 +59,14 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   sortable: true
 },
 {
+  name: 'fondos_reserva',
+  field: 'fondos_reserva',
+  label: 'Fondo de Reserva',
+  align: 'left',
+  sortable: true
+},
+
+{
   name: 'concepto_ingreso_info',
   field: 'concepto_ingreso_info',
   label: 'Concepto',
@@ -87,9 +95,23 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   sortable: true
 },
 {
+  name: 'prestamo_empresarial',
+  field: 'prestamo_empresarial',
+  label: 'Prestamo Empresarial',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'descuento_general_info',
   field: 'descuento_general_info',
   label: 'Descuentos Generales',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'multa_info',
+  field: 'multa_info',
+  label: 'Multas',
   align: 'left',
   sortable: true
 },
