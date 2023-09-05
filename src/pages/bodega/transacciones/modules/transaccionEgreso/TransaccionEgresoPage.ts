@@ -181,7 +181,7 @@ export default defineComponent({
       // responsable: { requiredIfPedido: requiredIf(transaccion.pedido! > 0) },
       responsable: { required },
       autorizacion: {
-        requiredIfCoordinador: requiredIf(esCoordinador),
+        requiredIfCoordinador: requiredIf(esCoordinador && !store.esBodegueroTelconet),
         requiredIfEsVisibleAut: requiredIf(false)
       },
       observacion_aut: {
