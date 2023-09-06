@@ -32,7 +32,7 @@
           </div>
           <!--Tipo de contribuyente -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Tipo de contribuyente</label>
+            <label class="q-mb-sm block">Tipo de Contribuyente</label>
             <q-select
               v-model="empresa.tipo_contribuyente"
               :options="opcionesTipoContribuyente"
@@ -68,7 +68,7 @@
           </div>
           <!-- razon social-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Razón social</label>
+            <label class="q-mb-sm block">Razón Social</label>
             <q-input
               v-model="empresa.razon_social"
               placeholder="Obligatorio"
@@ -88,7 +88,7 @@
 
           <!-- nombre comercial-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Nombre comercial</label>
+            <label class="q-mb-sm block">Nombre Comercial</label>
             <q-input
               v-model="empresa.nombre_comercial"
               placeholder="Opcional"
@@ -100,7 +100,7 @@
           </div>
           <!--Regimen tributario -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Regimen tributario</label>
+            <label class="q-mb-sm block">Regimen Tributario</label>
             <q-select
               v-model="empresa.regimen_tributario"
               :options="opcionesTipoNegocio"
@@ -133,7 +133,7 @@
           </div>
           <!-- Lleva contabilidad -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Lleva contabilidad</label>
+            <label class="q-mb-sm block">Lleva Contabilidad</label>
             <q-toggle
               :label="empresa.lleva_contabilidad ? 'SI' : 'NO'"
               v-model="empresa.lleva_contabilidad"
@@ -146,7 +146,7 @@
           </div>
           <!-- Agente de retención -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Agente de retención</label>
+            <label class="q-mb-sm block">Agente de Retención</label>
             <q-toggle
               :label="empresa.agente_retencion ? 'SI' : 'NO'"
               v-model="empresa.agente_retencion"
@@ -159,7 +159,7 @@
           </div>
           <!-- Contribuyente especial -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Contribuyente especial</label>
+            <label class="q-mb-sm block">Contribuyente Especial</label>
             <q-toggle
               :label="empresa.contribuyente_especial ? 'SI' : 'NO'"
               v-model="empresa.contribuyente_especial"
@@ -331,7 +331,7 @@
           </div> -->
           <!--sitio_web-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Sitio web</label>
+            <label class="q-mb-sm block">Sitio Web</label>
             <q-input
               v-if="accion == acciones.nuevo || accion == acciones.editar"
               type="url"
@@ -370,7 +370,7 @@
           </div>
           <!--actividad economica-->
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Actividad economica</label>
+            <label class="q-mb-sm block">Actividad Económica</label>
             <q-input
               type="textarea"
               autogrow

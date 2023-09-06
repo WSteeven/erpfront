@@ -6,6 +6,7 @@
     :accion1="botonCalificarProveedor"
     :accion2="botonVerMiCalificacionProveedor"
     :accion3="botonVerCalificacionProveedor"
+    :puedeExportar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -183,6 +184,16 @@
               <q-input
                 v-model="empresa.correo"
                 placeholder="Opcional"
+                disable
+                outlined
+                dense
+              ></q-input>
+            </div>
+            <!-- actividad economica-->
+            <div class="col-12 col-md-9" v-if="empresa.actividad_economica">
+              <label class="q-mb-sm block">Actividad económica</label>
+              <q-input
+                v-model="empresa.actividad_economica"
                 disable
                 outlined
                 dense
@@ -380,7 +391,7 @@
                       :permitirEditarModal="true"
                       :modalMaximized="false"
                       :alto-fijo="false"
-                      :mostrarFooter="mostrarFooter"
+                      :mostrarFooter="false"
                     ></essential-table>
                   </div>
                 </div>
@@ -449,9 +460,7 @@
                 label="Categorias"
                 @click="modales.abrirModalEntidad('CategoriaOfertaPage')"
               />
-              <label v-else class="q-mb-sm block"
-                >Categorias</label
-              >
+              <label v-else class="q-mb-sm block">Categorias</label>
               <q-select
                 v-model="proveedor.categorias_ofrece"
                 :options="categorias"
@@ -515,7 +524,7 @@
                 hint="Dept. Financiero califica a todos los proveedores"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
-                :option-disable="(v) =>v.id === departamentoFinanciero.id"
+                :option-disable="(v) => v.id === departamentoFinanciero.id"
                 emit-value
                 map-options
                 ><template
@@ -565,7 +574,7 @@
   </tab-layout>
   <modales-entidad
     :comportamiento="modales"
-    @guardado="(data)=>guardado(data)"
+    @guardado="(data) => guardado(data)"
   ></modales-entidad>
 </template>
 

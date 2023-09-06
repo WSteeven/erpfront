@@ -54,7 +54,7 @@ export default defineComponent({
     const { confirmar } = useNotificaciones()
     const refContactos = ref()
     const contactosProveedor: Ref<ContactoProveedor[]> = ref(proveedor.contactos)
-    const mostrarLabelModal = computed(() => accion.value === acciones.nuevo)
+    const mostrarLabelModal = computed(() => accion.value === acciones.nuevo ||accion.value ===acciones.editar)
     /**************************************************************
      * Stores
      **************************************************************/
@@ -124,7 +124,7 @@ export default defineComponent({
      * Funciones
      **************************************************************/
     const abrirModalContacto: CustomActionTable = {
-      titulo: 'Agregar contacto',
+      titulo: 'Agregar Contacto',
       icono: 'bi-person-fill-add',
       color: 'positive',
       tooltip: 'Puede modificar o eliminar un contacto desde el panel contactos de proveedores',
