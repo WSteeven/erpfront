@@ -541,7 +541,7 @@
               v-if="ticketsPorDepartamentoEstadoAsignado.length"
               class="col-12 col-md-6 text-center"
             >
-              <div class="text-subtitle2">Pendientes</div>
+              <div class="text-subtitle2 q-mb-lg">Pendientes</div>
               <div>
                 <grafico-generico
                   :data="ticketsPorDepartamentoEstadoAsignadoBar"
@@ -562,7 +562,7 @@
               v-if="ticketsPorDepartamentoEstadoReasignado.length"
               class="col-12 col-md-6 text-center"
             >
-              <div class="text-subtitle2">Transferidos</div>
+              <div class="text-subtitle2 q-mb-lg">Transferidos</div>
               <div>
                 <grafico-generico
                   :data="ticketsPorDepartamentoEstadoReasignadoBar"
@@ -590,7 +590,7 @@
               v-if="ticketsPorDepartamentoEstadoPausado.length"
               class="col-12 col-md-6 text-center"
             >
-              <div class="text-subtitle2">Pausados</div>
+              <div class="text-subtitle2 q-mb-lg">Pausados</div>
               <div>
                 <grafico-generico
                   :data="ticketsPorDepartamentoEstadoPausadoBar"
@@ -604,7 +604,7 @@
               v-if="ticketsPorDepartamentoEstadoFinalizadoSolucionado.length"
               class="col-12 col-md-6 text-center"
             >
-              <div class="text-subtitle2">Finalizado solucionado</div>
+              <div class="text-subtitle2 q-mb-lg">Finalizado solucionado</div>
               <div>
                 <grafico-generico
                   :data="ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar"
@@ -620,7 +620,7 @@
               v-if="ticketsPorDepartamentoEstadoFinalizadoSinSolucion.length"
               class="col-12 col-md-6 text-center"
             >
-              <div class="text-subtitle2">Finalizado sin solución</div>
+              <div class="text-subtitle2 q-mb-lg">Finalizado sin solución</div>
               <div>
                 <grafico-generico
                   :data="ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar"
@@ -636,7 +636,7 @@
               v-if="ticketsPorDepartamentoEstadoCalificado.length"
               class="col-12 col-md-6 text-center"
             >
-              <div class="text-subtitle2">Calificado</div>
+              <div class="text-subtitle2 q-mb-lg">Calificado</div>
               <div>
                 <grafico-generico
                   :data="ticketsPorDepartamentoEstadoCalificadoBar"
@@ -684,121 +684,6 @@
           </div>
         </q-tab-panel>
       </q-tab-panels>
-      <!-- </q-card-section> -->
-    </q-card>
-
-    <q-card
-      v-if="mostrarTitulosSeccion"
-      class="q-mb-md rounded no-border custom-shadow"
-    >
-      <q-card-section>
-        <div
-          class="row bg-grey-2 text-bold q-pa-md rounded justify-between q-mb-md"
-        >
-          <span class="q-col-gutter-x-xs">
-            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-          </span>
-          <span class="text-primary">Tablas de tickets</span>
-          <span class="q-col-gutter-x-xs">
-            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-          </span>
-        </div>
-
-        <div class="row q-col-gutter-sm q-py-md q-mb-lg">
-          <!-- Responsable -->
-          <div v-if="esResponsableDepartamento" class="col-12">
-            <label class="q-mb-sm block"
-              >Empleados responsables del departamento seleccionado</label
-            >
-            <q-select
-              v-model="empleadoResponsableDepartamento"
-              :options="empleadosResponsables"
-              transition-show="scale"
-              transition-hide="scale"
-              hint="Obligatorio"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => `${item.nombres} ${item.apellidos}`"
-              :option-value="(item) => item.id"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              @update:model-value="
-                obtenerTicketsEmpleadoResponsable(
-                  empleadoResponsableDepartamento
-                )
-              "
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Seleccione un departamento
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-        </div>
-
-        <div class="row q-col-gutter-sm q-pa-sm">
-          <div class="col-12 text-center">
-            <div class="text-bold q-mb-md">Seleccione una opción</div>
-            <q-btn-toggle
-              v-model="tabsTickets"
-              class="toggle-button"
-              spread
-              no-caps
-              rounded
-              glossy
-              toggle-color="positive"
-              @update:model-value="
-                obtenerTicketsEmpleadoResponsable(
-                  empleadoResponsableDepartamento
-                )
-              "
-              unelevated
-              :options="[
-                {
-                  label: 'Creados',
-                  value: 'creados',
-                },
-                {
-                  label: 'Recibidos',
-                  value: 'recibidos',
-                },
-              ]"
-            />
-          </div>
-        </div>
-
-        <div class="row q-col-gutter-sm q-py-md q-mb-lg">
-          <div class="col-12">
-            <essential-table
-              v-if="ticketsEmpleadoResponsable.length"
-              titulo="Tickets finalizados con solución"
-              :configuracionColumnas="[
-                ...configuracionColumnasTicket,
-                accionesTabla,
-              ]"
-              :datos="ticketsEmpleadoResponsable"
-              :permitirConsultar="false"
-              :permitirEliminar="false"
-              :permitirEditar="false"
-              :mostrarBotones="false"
-              :alto-fijo="false"
-              :accion1="botonVer"
-              :accion2="btnSeguimiento"
-            ></essential-table>
-          </div>
-          <!-- {{ ticketsEmpleadoResponsable }} -->
-        </div>
-      </q-card-section>
     </q-card>
 
     <modales-entidad :comportamiento="modales" />
