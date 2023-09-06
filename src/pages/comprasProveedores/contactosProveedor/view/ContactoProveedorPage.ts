@@ -60,7 +60,7 @@ export default defineComponent({
         })
         onGuardado(() => {
             emit('cerrar-modal', false)
-            emit('guardado')
+            emit('guardado', 'ContactoProveedorPage')
         })
 
         /**************************************************************

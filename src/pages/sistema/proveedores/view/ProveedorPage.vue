@@ -444,7 +444,14 @@
             <!-- {{ categorias }} -->
             <!--Categorias-->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Categorias</label>
+              <label-abrir-modal
+                v-if="mostrarLabelModal"
+                label="Categorias"
+                @click="modales.abrirModalEntidad('CategoriaOfertaPage')"
+              />
+              <label v-else class="q-mb-sm block"
+                >Categorias</label
+              >
               <q-select
                 v-model="proveedor.categorias_ofrece"
                 :options="categorias"
@@ -456,6 +463,7 @@
                 dense
                 use-chips
                 outlined
+                @popup-show="ordenarCategorias"
                 :error="!!v$.categorias_ofrece.$errors.length"
                 error-message="Debes seleccionar al menos una opcion"
                 :option-value="(v) => v.id"
@@ -507,7 +515,7 @@
                 hint="Dept. Financiero califica a todos los proveedores"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
-                :option-disable="(v) =>v.id === store.user.departamento"
+                :option-disable="(v) =>v.id === departamentoFinanciero.id"
                 emit-value
                 map-options
                 ><template
@@ -536,6 +544,7 @@
                 </template>
               </q-select>
             </div>
+
             <!-- Departamentos -->
             <!-- <div class="col-12 col-md-3" v-if="false">
               <label>Departamentos calificadores</label>
@@ -556,7 +565,7 @@
   </tab-layout>
   <modales-entidad
     :comportamiento="modales"
-    @guardado="guardado"
+    @guardado="(data)=>guardado(data)"
   ></modales-entidad>
 </template>
 

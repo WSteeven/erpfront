@@ -186,7 +186,7 @@ export default defineComponent({
             }
             if (step.value == 5) {
                 emit('cerrar-modal', false)
-                emit('guardado') //se  envia a recargar listado de proveedores para que no se muestre el boton 
+                emit('guardado', 'CalificacionProveedorPage') //se  envia a recargar listado de proveedores para que no se muestre el boton 
             }
             stepper.value.next()
         }

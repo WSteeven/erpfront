@@ -1,5 +1,5 @@
 // Dependencies
-import { defineComponent, ref, onMounted } from "vue"
+import { defineComponent, ref, onMounted, computed } from "vue"
 
 //Components
 import EssentialTable from "components/tables/view/EssentialTable.vue"
@@ -48,6 +48,7 @@ export default defineComponent({
         const criteriosServicios = ref([])
         const departamentosCalificadores = ref([])
         const calificacionesDepartamentos = ref<any>([])
+        const idDetalleDepartamentoProveedor = computed(()=>proveedorStore.idDetalleDepartamento)
 
         calificacion_dada.value = { calificacion: 0, fecha_calificacion: Date.now() }
 
@@ -87,9 +88,8 @@ export default defineComponent({
         /************************************************************** 
          * Init
          **************************************************************/
-        // listarArchivos(21)
         function cargarArchivos() {
-            refArchivo.value.listarArchivosAlmacenados(21)
+            refArchivo.value.listarArchivosAlmacenados(idDetalleDepartamentoProveedor.value)
         }
 
         onMounted(() =>
@@ -100,6 +100,7 @@ export default defineComponent({
             proveedor: proveedorStore.proveedor,
             columnasCriteriosConCalificacion: configuracionColumnasCriteriosCalificacionesConCalificacion,
 
+            //listados
             calificacionesDepartamentos,
             criteriosServicios,
             criteriosBienes,
@@ -118,6 +119,7 @@ export default defineComponent({
             endpoint: endpoints.archivos_proveedores,
             cargarArchivos,
 
+            idDetalleDepartamentoProveedor,
         }
 
     }

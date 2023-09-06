@@ -49,8 +49,15 @@ export class PedidoPusherEvent {
         })
       })
     }
+    if (this.store.esBodegueroTelconet) {
+      const pedidoAutorizado = pusher.subscribe('pedidos-aprobados-BODEGA_TELCONET')
+      pedidoAutorizado.bind('pedido-event', function (e) {
+        notificacionStore.actualizar()
+        notificarCorrecto('Tienes un pedido esperando ser despachado')
+      })
+    }
 
-    // //suscripcion al canal general del service worker 
+    // //suscripcion al canal general del service worker
     // const canalGeneral = pusher.subscribe('mi-canal')
     // canalGeneral.bind('eventoPersonalizado', function (e) {
     //   console.log(e)

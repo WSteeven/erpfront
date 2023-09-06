@@ -72,6 +72,8 @@ export default defineComponent({
       { value: '2', label: 'Gasto' },
       { value: '3', label: 'Consolidado' },
       { value: '4', label: 'Estado de Cuenta' },
+      { value: '5', label: 'Transferencia de Saldos' },
+
     ]);
     const is_all_empleados= ref('false')
     const is_inactivo = ref('false')

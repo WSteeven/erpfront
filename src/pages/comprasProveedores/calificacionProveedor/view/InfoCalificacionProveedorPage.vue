@@ -138,7 +138,7 @@
         :endpoint="endpoint"
         :permitir-subir="false"
         :permitir-eliminar="false"
-        :idModelo="1"
+        :idModelo="idDetalleDepartamentoProveedor"
       >
         <template #boton-subir>
           <q-btn
@@ -155,7 +155,7 @@
         </template>
       </gestor-archivos>
     </div>
-    <div class="col-12">
+    <div class="col-12" v-if="false">
       <q-btn @click="cargarArchivos">Ver archivos</q-btn>
     </div>
   </div>

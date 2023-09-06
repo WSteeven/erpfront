@@ -7,17 +7,20 @@ import EmpresaPage from "pages/administracion/empresas/view/EmpresaPage.vue"
 import ContactoProveedorPage from "pages/comprasProveedores/contactosProveedor/view/ContactoProveedorPage.vue"
 import CalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/CalificacionProveedorPage.vue'
 import InfoCalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/InfoCalificacionProveedorPage.vue'
+import CategoriaOfertaPage from 'pages/comprasProveedores/categoriaOfertas/view/CategoriaOfertaPage.vue'
 
 export class ProveedorModales{
   EmpresaPage: ComponenteModal
   ContactoProveedorPage: ComponenteModal
   CalificacionProveedorPage: ComponenteModal
   InfoCalificacionProveedorPage: ComponenteModal
+  CategoriaOfertaPage: ComponenteModal
 
   constructor(){
     this.EmpresaPage = markRaw(new ComponenteModal('Información tributaria', EmpresaPage))
     this.ContactoProveedorPage = markRaw(new ComponenteModal('Contacto de Proveedor', ContactoProveedorPage))
     this.CalificacionProveedorPage = markRaw(new ComponenteModal('Calificación del Proveedor', CalificacionProveedorPage))
     this.InfoCalificacionProveedorPage = markRaw(new ComponenteModal('Resultados de la calificación del Proveedor', InfoCalificacionProveedorPage))
+    this.CategoriaOfertaPage = markRaw(new ComponenteModal('Categoria de Oferta', CategoriaOfertaPage))
   }
 }
