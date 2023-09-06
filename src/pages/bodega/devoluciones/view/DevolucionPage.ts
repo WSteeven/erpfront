@@ -255,7 +255,7 @@ export default defineComponent({
 
             tabEs(val) {
                 tabSeleccionado.value = val
-                puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
+                puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos) && tabSeleccionado.value === estadosTransacciones.pendiente
                     ? true : false
             },
 
