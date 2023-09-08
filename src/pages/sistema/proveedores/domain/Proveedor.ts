@@ -7,7 +7,7 @@ export class Proveedor extends EntidadAuditable {
   razon_social: string | null
   sucursal: string | null
   ubicacion: string | null
-  canton: string | null
+  canton: number|string | null
   parroquia: string | null
   direccion: string | null
   celular: string | null

@@ -12,7 +12,7 @@
       <q-form @submit.prevent>
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="Información general"
+          label="Información General"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -24,9 +24,8 @@
                 label="Persona (natural/juridica)"
                 @click="modales.abrirModalEntidad('EmpresaPage')"
               />
-              <label v-else class="q-mb-sm block"
-                >Persona (natural/juridica)</label
-              >
+              <label v-else class="q-mb-sm block">Razón Social</label>
+              <!-- Persona (natural/juridica) -->
               <q-select
                 v-model="proveedor.empresa"
                 :options="empresas"
@@ -90,7 +89,7 @@
             </div>
             <!--Tipo de contribuyente -->
             <div class="col-12 col-md-3" v-if="empresa.tipo_contribuyente">
-              <label class="q-mb-sm block">Tipo de contribuyente</label>
+              <label class="q-mb-sm block">Tipo de Contribuyente</label>
               <q-select
                 v-model="empresa.tipo_contribuyente"
                 :options="opcionesTipoContribuyente"
@@ -115,8 +114,8 @@
               </q-select>
             </div>
             <!-- razon social-->
-            <div class="col-12 col-md-3" v-if="empresa.razon_social">
-              <label class="q-mb-sm block">Razón social</label>
+            <div class="col-12 col-md-3" v-if="empresa.nombre_comercial">
+              <label class="q-mb-sm block">Nombre Comercial</label>
               <q-input
                 v-model="empresa.razon_social"
                 placeholder="Obligatorio"
@@ -128,10 +127,10 @@
               </q-input>
             </div>
             <!--Tipo de negocio -->
-            <div class="col-12 col-md-3" v-if="empresa.tipo_negocio">
-              <label class="q-mb-sm block">Tipo de negocio</label>
+            <div class="col-12 col-md-3" v-if="empresa.regimen_tributario">
+              <label class="q-mb-sm block">Régimen Tributario</label>
               <q-select
-                v-model="empresa.tipo_negocio"
+                v-model="empresa.regimen_tributario"
                 :options="opcionesTipoNegocio"
                 transition-show="jump-up"
                 transition-hide="jump-down"
@@ -154,46 +153,60 @@
               </q-select>
             </div>
 
-            <!-- celular-->
-            <div class="col-12 col-md-3" v-if="empresa.celular">
-              <label class="q-mb-sm block">Celular</label>
-              <q-input
-                mask="##########"
-                v-model="empresa.celular"
-                placeholder="Opcional"
-                disable
-                outlined
-                dense
-              ></q-input>
-            </div>
-            <!-- telefono-->
-            <div class="col-12 col-md-3" v-if="empresa.telefono">
-              <label class="q-mb-sm block">Telefono</label>
-              <q-input
-                mask="##########"
-                v-model="empresa.telefono"
-                placeholder="Opcional"
-                disable
-                outlined
-                dense
-              ></q-input>
-            </div>
             <!-- correo-->
             <div class="col-12 col-md-3" v-if="empresa.correo">
               <label class="q-mb-sm block">Correo</label>
               <q-input
                 v-model="empresa.correo"
-                placeholder="Opcional"
+                autogrow
                 disable
                 outlined
                 dense
               ></q-input>
             </div>
+            <!-- provincia -->
+            <div class="col-12 col-md-3" v-if="empresa.nombre_provincia">
+              <label class="q-mb-sm block">Provincia</label>
+              <q-input
+                v-model="empresa.nombre_provincia"
+                autogrow
+                disable
+                outlined
+                dense
+              ></q-input>
+            </div>
+
+            <!--sitio_web-->
+            <div class="col-12 col-md-3" v-if="empresa.sitio_web">
+              <label class="q-mb-sm block">Sitio Web</label>
+              <i class="bi bi-globe q-mt-lg">
+                <a
+                  class="q-mt-lg"
+                  :href="'https://' + empresa.sitio_web"
+                  target="_blank"
+                  >{{ empresa.sitio_web }}</a
+                >
+              </i>
+            </div>
+
             <!-- actividad economica-->
             <div class="col-12 col-md-9" v-if="empresa.actividad_economica">
-              <label class="q-mb-sm block">Actividad económica</label>
+              <label class="q-mb-sm block">Actividad Económica</label>
               <q-input
                 v-model="empresa.actividad_economica"
+                autogrow
+                disable
+                outlined
+                dense
+              ></q-input>
+            </div>
+
+            <!-- años de experiencia -->
+            <div class="col-12 col-md-3" v-if="empresa.antiguedad_proveedor">
+              <label class="q-mb-sm block">Actividades Comerciales desde</label>
+              <q-input
+                v-model="empresa.antiguedad_proveedor"
+                autogrow
                 disable
                 outlined
                 dense
@@ -203,7 +216,7 @@
         </q-expansion-item>
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="Datos del proveedor"
+          label="Datos Comerciales del Proveedor"
           header-class="text-bold bg-header-collapse"
           default-opened
           ><div class="row q-col-gutter-sm q-pa-sm">
@@ -229,7 +242,7 @@
 
             <!--Canton -->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Cantón</label>
+              <label class="q-mb-sm block">Ciudad</label>
               <q-select
                 v-model="proveedor.canton"
                 :options="cantones"
@@ -367,11 +380,62 @@
                 unchecked-icon="clear"
               />
             </div>
+            <!-- Datos financieros del proveedor -->
+            <div class="col-12 col-md-12">
+              <q-expansion-item
+                class="overflow-hidden q-mb-md expansion"
+                label="Datos Financieros del Proveedor"
+                header-class="text-bold bg-header-collapse"
+                default-opened
+              >
+                <div class="row q-col-gutter-sm q-pa-sm">
+                  <!-- Banco -->
+                  <div class="col-12 col-md-3">
+                    <label class="q-mb-sm block">Banco</label>
+                    <q-select
+                      v-model="proveedor.banco"
+                      :options="bancos"
+                      transition-show="jump-up"
+                      transition-hide="jump-down"
+                      :disable="disabled"
+                      options-dense
+                      dense
+                      outlined
+                      :input-debounce="0"
+                      use-input
+                      hint="Obligatorio"
+                      :error="!!v$.banco.$errors.length"
+                      @blur="v$.banco.$touch"
+                      :option-value="(v) => v.id"
+                      :option-label="(v) => v.nombre"
+                      emit-value
+                      map-options
+                    >
+                      <template v-slot:error>
+                        <div
+                          v-for="error of v$.banco.$errors"
+                          :key="error.$uid"
+                        >
+                          <div class="error-msg">{{ error.$message }}</div>
+                        </div>
+                      </template>
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No hay resultados
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
+                  </div>
+                </div>
+              </q-expansion-item>
+            </div>
             <!-- Contactos financiero, tecnico y comercial -->
             <div class="col-12 col-md-12">
               <q-expansion-item
                 class="overflow-hidden q-mb-md expansion"
-                label="Contactos del proveedor"
+                label="Contactos del Proveedor"
                 header-class="text-bold bg-header-collapse"
                 default-opened
               >
@@ -379,7 +443,7 @@
                   <div class="col-12 col-md-12">
                     <essential-table
                       ref="refContactos"
-                      titulo="Contactos del proveedor"
+                      titulo="Contactos del Proveedor"
                       :configuracionColumnas="columnasContactosProveedor"
                       :datos="proveedor.contactos"
                       :accion1Header="abrirModalContacto"
@@ -388,6 +452,7 @@
                       :permitirEditar="true"
                       :permitirEliminar="true"
                       :mostrarBotones="false"
+                      :mostrarCantidadElementos="false"
                       :permitirEditarModal="true"
                       :modalMaximized="false"
                       :alto-fijo="false"
@@ -401,7 +466,7 @@
         </q-expansion-item>
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="Configuración inicial"
+          label="Información para Calificador del Proveedor"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -507,7 +572,9 @@
             <!-- {{proveedor.categorias_ofrece}}  -->
             <!--Departamentos que califican-->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Departamentos que califican</label>
+              <label class="q-mb-sm block"
+                >Departamentos que Califican al Proveedor</label
+              >
               <q-select
                 v-model="proveedor.departamentos"
                 :options="departamentos"
