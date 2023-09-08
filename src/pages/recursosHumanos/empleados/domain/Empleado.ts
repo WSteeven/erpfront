@@ -118,7 +118,7 @@ export class Empleado extends EntidadAuditable {
     this.genero = 'M'
     this.banco_info = null
     this.esta_en_rol_pago = true
-    this.acumula_fondos_reserva = true
+    this.acumula_fondos_reserva = false
     this.realiza_factura = false
   }
 }
