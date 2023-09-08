@@ -695,6 +695,19 @@
                 </template>
               </q-select>
             </div>
+             <!-- Acumula fondos de reserva -->
+             <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">¿Acumula fondos de reserva?</label>
+              <q-toggle
+                :label="empleado.acumula_fondos_reserva ? 'Acumula Fondos de Reserva' : 'No Acumula Fondos de Reserva'"
+                v-model="empleado.acumula_fondos_reserva"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
             <!-- Estado -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">¿Esta Enrolado?</label>
