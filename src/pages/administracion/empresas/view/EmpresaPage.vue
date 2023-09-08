@@ -42,6 +42,7 @@
               options-dense
               dense
               outlined
+              @update:model-value="actualizarCamposRepresentanteLegal"
               :error="!!v$.tipo_contribuyente.$errors.length"
               error-message="Debes seleccionar un elemento"
               :option-value="(v) => v.value"
@@ -66,6 +67,60 @@
               </template>
             </q-select>
           </div>
+          <!-- representante legal -->
+          <div
+            class="col-12 col-md-3"
+            v-if="empresa.tipo_contribuyente == 'SOCIEDAD'"
+          >
+            <label class="q-mb-sm block">Representante Legal</label>
+            <q-input
+              v-model="empresa.representante_legal"
+              placeholder="Obligatorio"
+              :readonly="disabled"
+              :disable="disabled"
+              :error="!!v$.representante_legal.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.representante_legal.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- identificacion representante legal -->
+          <div
+            class="col-12 col-md-3"
+            v-if="empresa.tipo_contribuyente == 'SOCIEDAD'"
+          >
+            <label class="q-mb-sm block"
+              >Identificación del Representante Legal</label
+            >
+            <q-input
+              v-model="empresa.identificacion_representante"
+              placeholder="Obligatorio"
+              mask="##########"
+              :readonly="disabled"
+              :disable="disabled"
+              :error="!!v$.identificacion_representante.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.identificacion_representante.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
           <!-- razon social-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Razón Social</label>
@@ -118,7 +173,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.regimen_tributario.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.regimen_tributario.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -330,7 +388,7 @@
             </q-input>
           </div> -->
           <!--sitio_web-->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="empresa.sitio_web||accion==acciones.nuevo||accion==acciones.editar">
             <label class="q-mb-sm block">Sitio Web</label>
             <q-input
               v-if="accion == acciones.nuevo || accion == acciones.editar"
@@ -381,6 +439,80 @@
               outlined
               dense
             >
+            </q-input>
+          </div>
+
+          <!-- checkbox para añadir experiencia como proveedor -->
+          <div class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="experiencia_comercial"
+              label="¿Experiencia comercial?"
+              :disable="disabled || soloLectura"
+              @update:model-value="
+                () =>
+                  (empresa.antiguedad_proveedor = experiencia_comercial ?? null)
+              "
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <!-- Experiencia como proveedor -->
+          <div class="col-12 col-md-3" v-if="experiencia_comercial">
+            <label class="q-mb-sm block"
+              >Fecha de Inicio Comercial 
+            </label>
+            <q-input
+              v-model="empresa.antiguedad_proveedor"
+              placeholder="Obligatorio"
+              :value="empresa.antiguedad_proveedor"
+              mask="##-####"
+              hint="Fecha de inicio de actividades comerciales como proveedor"
+              :error="!!v$.antiguedad_proveedor.$errors.length"
+              :disable="disabled"
+              readonly
+              @blur="v$.antiguedad_proveedor.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                    v-model="is_month"
+                  >
+                    <q-date
+                      v-model="empresa.antiguedad_proveedor"
+                      minimal
+                      mask="MM-YYYY"
+                      emit-immediately
+                      default-view="Years"
+                      @update:model-value="checkValue"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.antiguedad_proveedor.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
         </div>

@@ -54,7 +54,7 @@ export default defineComponent({
     const { confirmar } = useNotificaciones()
     const refContactos = ref()
     const contactosProveedor: Ref<ContactoProveedor[]> = ref(proveedor.contactos)
-    const mostrarLabelModal = computed(() => accion.value === acciones.nuevo ||accion.value ===acciones.editar)
+    const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
     /**************************************************************
      * Stores
      **************************************************************/
@@ -84,16 +84,19 @@ export default defineComponent({
         proveedor.departamentos = [...proveedor.departamentos, departamentoFinanciero.value.id]
       })
       listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
     })
 
     /**************************************************************
      * Hooks
     **************************************************************/
     onConsultado(() => {
+      console.log(accion.value)
       obtenerEmpresa(proveedor.empresa)
     })
     onReestablecer(() => {
       empresa.hydrate(new Empresa())
+      cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
       proveedor.departamentos = [...proveedor.departamentos, departamentoFinanciero.value.id]
     })
     /**************************************************************
@@ -121,7 +124,7 @@ export default defineComponent({
     columnasContactosProveedor.splice(2, 1)
 
     /**************************************************************
-     * Funciones
+     * Botones de tablas
      **************************************************************/
     const abrirModalContacto: CustomActionTable = {
       titulo: 'Agregar Contacto',
@@ -207,6 +210,10 @@ export default defineComponent({
       }
     }
 
+    /**************************************************************
+     * Funciones
+     **************************************************************/
+
     async function obtenerEmpresa(empresaId: number | null) {
       if (empresaId !== null) {
         StatusLoading.activar()
@@ -215,7 +222,7 @@ export default defineComponent({
         proveedor.contactos = empresa.contactos
         proveedor.canton = empresa.canton
         proveedor.direccion = empresa.direccion
-        listadosAuxiliares.parroquias = listadosAuxiliares.parroquias.filter((v) => v.canton_id === proveedor.canton)//se actualiza el listado de parroquias con el canton
+        obtenerParroquias(proveedor.canton)
         proveedor.sucursal = empresa.sucursal
         StatusLoading.desactivar()
       }
@@ -228,16 +235,16 @@ export default defineComponent({
         case 'ContactoProveedorPage':
           consultarContactosProveedor()
           break
-          case 'CalificacionProveedorPage':
-            listar()
-            break
+        case 'CalificacionProveedorPage':
+          listar()
+          break
         default:
           consultarEmpresas()
 
       }
 
     }
-    async function obtenerParroquias(parroquiaId: number | null) {
+    async function obtenerParroquias(parroquiaId: number | string | null) {
       proveedor.parroquia = null
       if (parroquiaId !== null) {
         StatusLoading.activar()

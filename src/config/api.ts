@@ -114,6 +114,7 @@ export const endpoints = {
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
   criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
+  datos_bancarios_proveedor: new Endpoint('compras/datos-bancarios-proveedores'),
   detalles_departamentos_proveedor: new Endpoint('compras/detalles-departamentos-proveedor'),
   empresas: new Endpoint('empresas'),
   log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),

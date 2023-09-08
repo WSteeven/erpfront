@@ -1,8 +1,8 @@
 //Dependencias
 import { configuracionColumnasEmpresas } from "../domain/configuracionColumnasEmpresas";
-import { required } from "shared/i18n-validators";
+import { required, requiredIf } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
 //Componentes
 import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
@@ -12,7 +12,6 @@ import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/applicat
 import { Empresa } from "../domain/Empresa";
 import { EmpresaController } from "../infraestructure/EmpresaController";
 import { opcionesTipoContribuyente, opcionesTipoNegocio } from "config/utils_compras_proveedores";
-import { PaisController } from "sistema/pais/infraestructure/pais.controller";
 import { ProvinciaController } from "sistema/provincia/infraestructure/ProvinciaController";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
@@ -28,27 +27,42 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Empresa, new EmpresaController())
         const { entidad: empresa, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados, } = mixin.useComportamiento()
-        const { onGuardado, onConsultado, onBeforeConsultar } = mixin.useHooks()
+        const { onGuardado, onConsultado, onReestablecer, onBeforeGuardar, onBeforeConsultar } = mixin.useHooks()
 
         const StatusLoading = new StatusEssentialLoading()
 
-        // const paises = ref([])
+        const experiencia_comercial = ref(false)
+        const is_month = ref(false)
         // const provincias = ref([])
         // const cantones = ref([])
         cargarVista(async () => {
             await obtenerListados({
-                // paises: {
-                //     controller: new PaisController(),
-                //     params: { id: 66 }
-                // },
                 provincias: {
                     controller: new ProvinciaController(),
                     params: { pais_id: 66 }
                 }
             })
             listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+            cantones.value = listadosAuxiliares.cantones
         })
 
+        /**************************************************************
+         * Hooks
+         **************************************************************/
+        onBeforeConsultar(() => {
+            experiencia_comercial.value=false
+        })
+        onBeforeGuardar(() => {
+            // actualizarCamposRepresentanteLegal()
+        })
+        onConsultado(() => {
+            experiencia_comercial.value = empresa.antiguedad_proveedor?true:false
+            cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+        })
+        onReestablecer(() => {
+            cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+            experiencia_comercial.value=false
+        })
 
         onGuardado(() => {
             emit('cerrar-modal', false)
@@ -62,6 +76,9 @@ export default defineComponent({
             tipo_contribuyente: { required },
             regimen_tributario: { required },
             razon_social: { required },
+            representante_legal: { requiredIfTipoContribuyenteSociedad: requiredIf(() => empresa.tipo_contribuyente == 'SOCIEDAD') },
+            identificacion_representante: { requiredIfTipoContribuyenteSociedad: requiredIf(() => empresa.tipo_contribuyente == 'SOCIEDAD') },
+            antiguedad_proveedor: { requiredIfTipoContribuyenteSociedad: requiredIf(() => experiencia_comercial.value) },
             // celular: { required },
         }
         const v$ = useVuelidate(reglas, empresa)
@@ -90,6 +107,18 @@ export default defineComponent({
             }
         }
 
+        function actualizarCamposRepresentanteLegal() {
+            console.log(empresa.tipo_contribuyente)
+            if (empresa.tipo_contribuyente != 'SOCIEDAD') {
+                empresa.representante_legal = null
+                empresa.identificacion_representante = null
+            }
+        }
+
+        /**Verifica si es un mes */
+        function checkValue(val, reason, details) {
+            is_month.value = reason === 'month' ? false : true
+        }
 
         const {
             // paises, filtrarPaises,
@@ -100,6 +129,8 @@ export default defineComponent({
         //carga de listados auxiliares
         // paises.value = listadosAuxiliares.paises
 
+        provincias.value = listadosAuxiliares.provincias
+        cantones.value = listadosAuxiliares.cantones
 
 
         return {
@@ -107,6 +138,9 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasEmpresas,
 
             acciones,
+
+            experiencia_comercial,
+            is_month,
 
             //listados
             opcionesTipoContribuyente,
@@ -118,7 +152,8 @@ export default defineComponent({
             cantones, filtrarCantones,
 
             //funciones
-            
+            actualizarCamposRepresentanteLegal,
+            checkValue,
         }
     }
 })

@@ -17,10 +17,10 @@ export class ProveedorModales{
   CategoriaOfertaPage: ComponenteModal
 
   constructor(){
-    this.EmpresaPage = markRaw(new ComponenteModal('Información tributaria', EmpresaPage))
+    this.EmpresaPage = markRaw(new ComponenteModal('Información Tributaria', EmpresaPage))
     this.ContactoProveedorPage = markRaw(new ComponenteModal('Contacto de Proveedor', ContactoProveedorPage))
     this.CalificacionProveedorPage = markRaw(new ComponenteModal('Calificación del Proveedor', CalificacionProveedorPage))
-    this.InfoCalificacionProveedorPage = markRaw(new ComponenteModal('Resultados de la calificación del Proveedor', InfoCalificacionProveedorPage))
+    this.InfoCalificacionProveedorPage = markRaw(new ComponenteModal('Resultados de la Calificación del Proveedor', InfoCalificacionProveedorPage))
     this.CategoriaOfertaPage = markRaw(new ComponenteModal('Categoria de Oferta', CategoriaOfertaPage))
   }
 }

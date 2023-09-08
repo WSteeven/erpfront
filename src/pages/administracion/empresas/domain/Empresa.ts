@@ -10,7 +10,8 @@ export class Empresa extends EntidadAuditable {
     correo: string | null
     pais: number | null
     provincia: number | null
-    canton: string | null
+    nombre_provincia: number | null
+    canton: string | number| null
     ciudad: string | null
     sucursal: string | null
     direccion: string | null
@@ -20,6 +21,11 @@ export class Empresa extends EntidadAuditable {
     regimen_tributario: string | null
     sitio_web: string | null
     actividad_economica: string | null
+    created_at: string | null
+    updated_at: string | null
+    representante_legal: string | null
+    identificacion_representante: string | null
+    antiguedad_proveedor: string | null
 
     contactos: any[]
 
@@ -33,6 +39,7 @@ export class Empresa extends EntidadAuditable {
         this.telefono = null
         this.pais = null
         this.provincia = null
+        this.nombre_provincia = null
         this.canton = null
         this.ciudad = null
         this.correo = null
@@ -45,6 +52,12 @@ export class Empresa extends EntidadAuditable {
         this.sitio_web = null
         this.actividad_economica = null
         this.contactos = []
+        this.created_at = null
+        this.updated_at = null
+        this.representante_legal = null
+        this.identificacion_representante = null
+        this.antiguedad_proveedor = null
+
     }
 
 
