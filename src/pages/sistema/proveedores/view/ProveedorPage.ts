@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasProveedores } from './../domain/configuracionColumnasProveedores'
 import { configuracionColumnasContactosProveedores } from 'pages/comprasProveedores/contactosProveedor/domain/configuracionColumnasContactosProveedores';
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core';
 
 //Componentes
@@ -10,6 +10,7 @@ import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
@@ -22,7 +23,7 @@ import { EmpresaController } from 'pages/administracion/empresas/infraestructure
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { Empresa } from 'pages/administracion/empresas/domain/Empresa';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { estadosCalificacionProveedor, opcionesTipoContribuyente, opcionesTipoNegocio } from 'config/utils_compras_proveedores';
+import { estadosCalificacionProveedor, opcionesTipoContribuyente, opcionesTipoNegocio, tiposEnvios, formasPagos } from 'config/utils_compras_proveedores';
 import { ParroquiaController } from 'sistema/parroquia/infraestructure/ParroquiaController';
 import { OfertaProveedorController } from '../modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
 import { DepartamentoController } from '../modules/departamentos/infraestructure/DepartamentoController';
@@ -42,15 +43,19 @@ import { ordernarListaString } from 'shared/utils';
 import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento';
 import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
+import { configuracionColumnasDatosBancariosProveedor } from 'pages/comprasProveedores/datosBancariosProveedor/domain/configuracionColumnasDatosBancariosProveedor';
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { Categoria } from 'pages/bodega/categorias/domain/Categoria';
 
 
 export default defineComponent({
-  components: { TabLayout, LabelAbrirModal, ModalesEntidad, TablaDevolucionProducto, EssentialTable },
-  setup(props, { emit }) {
+  components: { TabLayout, LabelAbrirModal, ModalesEntidad, TablaDevolucionProducto, EssentialTable, GestorArchivos },
+  setup() {
+    const mixinEmpresas = new ContenedorSimpleMixin(Empresa, new EmpresaController(), new ArchivoController())
     const mixin = new ContenedorSimpleMixin(Proveedor, new ProveedorController())
     const { entidad: proveedor, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer } = mixin.useHooks()
+    const { onConsultado, onReestablecer, onGuardado, onModificado, onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
     const { confirmar } = useNotificaciones()
     const refContactos = ref()
     const contactosProveedor: Ref<ContactoProveedor[]> = ref(proveedor.contactos)
@@ -67,6 +72,9 @@ export default defineComponent({
     const store = useAuthenticationStore()
 
     //variables
+    const refArchivo = ref()
+    const esReferido = ref(false)
+    const idEmpresaParaArchivos = ref()
     const detalleDepartamentoProveedor = ref()
     const empresa: Empresa = reactive(new Empresa())
     const categorias = ref([])
@@ -91,13 +99,35 @@ export default defineComponent({
      * Hooks
     **************************************************************/
     onConsultado(() => {
-      console.log(accion.value)
-      obtenerEmpresa(proveedor.empresa)
+      proveedor.tipo_envio = proveedor.tipo_envio != null ? JSON.parse(proveedor.tipo_envio.toString()) : []
+      console.log()
+      obtenerEmpresa(proveedor.empresa).then(() => refArchivo.value.listarArchivosAlmacenados(empresa.id))
     })
     onReestablecer(() => {
       empresa.hydrate(new Empresa())
       cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
       proveedor.departamentos = [...proveedor.departamentos, departamentoFinanciero.value.id]
+      refArchivo.value.limpiarListado()
+    })
+
+    onBeforeGuardar(() => {
+      console.log(empresa)
+      console.log(proveedor)
+    })
+    onGuardado((id: number) => {
+      console.log('id guardado: ', id)
+      // refArchivo.value.idModelo = id
+      idEmpresaParaArchivos.value = id
+      subirArchivos(id)
+    })
+    onBeforeModificar(() => {
+      subirArchivos(empresa.id!)
+    })
+    onModificado((id: number) => {
+      console.log('id modificado: ', id)
+      // refArchivo.value.idModelo = id
+      idEmpresaParaArchivos.value = id
+      console.log(idEmpresaParaArchivos.value)
     })
     /**************************************************************
      * Validaciones
@@ -110,6 +140,8 @@ export default defineComponent({
       tipos_ofrece: { required },
       categorias_ofrece: { required },
       departamentos: { required },
+
+      tipo_envio: { requiredIfRealizaEnvios: requiredIf(proveedor.envios) },
     }
     const v$ = useVuelidate(reglas, proveedor)
     setValidador(v$.value)
@@ -123,9 +155,23 @@ export default defineComponent({
     ]
     columnasContactosProveedor.splice(2, 1)
 
+    const columnasDatosBancarios: any = [
+      ...configuracionColumnasDatosBancariosProveedor
+    ]
+    columnasDatosBancarios.splice(0, 1) //se elimina el campo empresa por ser irrelevante en este caso
+
     /**************************************************************
      * Botones de tablas
      **************************************************************/
+    const desactivarProveedor: CustomActionTable = {
+      titulo: 'Desactivar',
+      icono: 'bi-toggle2-off',
+      color: 'negative',
+      tooltip: 'Desactivar proveedor',
+      accion: () => {
+        console.log('Diste clic en desactivar proveedor')
+      }
+    }
     const abrirModalContacto: CustomActionTable = {
       titulo: 'Agregar Contacto',
       icono: 'bi-person-fill-add',
@@ -135,6 +181,15 @@ export default defineComponent({
         modales.abrirModalEntidad('ContactoProveedorPage')
       },
       visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+    }
+    const abrirModalDatoBancario: CustomActionTable = {
+      titulo: 'Agregar N° Cuenta',
+      icono: 'bi-bank',
+      color: 'positive',
+      tooltip: 'Agregar N° Cuenta asociado al proveedor',
+      accion: () => {
+        modales.abrirModalEntidad('DatoBancarioPage')
+      }
     }
 
     const botonCalificarProveedor: CustomActionTable = {
@@ -214,6 +269,10 @@ export default defineComponent({
      * Funciones
      **************************************************************/
 
+    async function subirArchivos(id: number) {
+      await refArchivo.value.subir(id);
+    }
+
     async function obtenerEmpresa(empresaId: number | null) {
       if (empresaId !== null) {
         StatusLoading.activar()
@@ -222,8 +281,8 @@ export default defineComponent({
         proveedor.contactos = empresa.contactos
         proveedor.canton = empresa.canton
         proveedor.direccion = empresa.direccion
-        obtenerParroquias(proveedor.canton)
-        proveedor.sucursal = empresa.sucursal
+        if (!proveedor.parroquia) obtenerParroquias(proveedor.canton)
+        proveedor.sucursal = proveedor.sucursal ? proveedor.sucursal : empresa.sucursal
         StatusLoading.desactivar()
       }
     }
@@ -296,10 +355,16 @@ export default defineComponent({
     cantones.value = listadosAuxiliares.cantones
 
     return {
+      mixinEmpresas,
       mixin, proveedor, disabled, v$, accion, acciones,
       configuracionColumnas: configuracionColumnasProveedores,
       columnasContactosProveedor,
+      columnasDatosBancarios,
       departamentoFinanciero,
+      refArchivo,
+      idEmpresaParaArchivos,
+      esReferido,
+
 
       //store
       store,
@@ -309,6 +374,8 @@ export default defineComponent({
       categorias,
       departamentos,
       ofertas,
+      tiposEnvios,
+      formasPagos,
       opcionesTipoContribuyente,
       opcionesTipoNegocio,
       cantones, filtrarCantones,
@@ -320,6 +387,7 @@ export default defineComponent({
       mostrarLabelModal,
       guardado,
       abrirModalContacto,
+      abrirModalDatoBancario,
       refContactos,
 
       //funciones
@@ -329,6 +397,12 @@ export default defineComponent({
       ordenarEmpresas,
       ordenarCategorias() {
         categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
+      },
+      actualizarDepartamentos(val) {
+        let catSeleccionadas = categorias.value.filter((v: CategoriaOferta) => proveedor.categorias_ofrece.includes(v.id))
+        console.log(catSeleccionadas)
+        // console.log(catSeleccionadas.map((v:CategoriaOferta)=>v.departamentos))
+        // proveedor.departamentos = departamentos.value.filter((v: Departamento) => catSeleccionadas.includes(v.id)).map((v: Departamento) => v.id)
       },
 
       //botones

@@ -8,6 +8,7 @@ import ContactoProveedorPage from "pages/comprasProveedores/contactosProveedor/v
 import CalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/CalificacionProveedorPage.vue'
 import InfoCalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/InfoCalificacionProveedorPage.vue'
 import CategoriaOfertaPage from 'pages/comprasProveedores/categoriaOfertas/view/CategoriaOfertaPage.vue'
+import DatoBancarioPage from 'pages/comprasProveedores/datosBancariosProveedor/view/DatoBancarioPage.vue'
 
 export class ProveedorModales{
   EmpresaPage: ComponenteModal
@@ -15,6 +16,7 @@ export class ProveedorModales{
   CalificacionProveedorPage: ComponenteModal
   InfoCalificacionProveedorPage: ComponenteModal
   CategoriaOfertaPage: ComponenteModal
+  DatoBancarioPage: ComponenteModal
 
   constructor(){
     this.EmpresaPage = markRaw(new ComponenteModal('Información Tributaria', EmpresaPage))
@@ -22,5 +24,6 @@ export class ProveedorModales{
     this.CalificacionProveedorPage = markRaw(new ComponenteModal('Calificación del Proveedor', CalificacionProveedorPage))
     this.InfoCalificacionProveedorPage = markRaw(new ComponenteModal('Resultados de la Calificación del Proveedor', InfoCalificacionProveedorPage))
     this.CategoriaOfertaPage = markRaw(new ComponenteModal('Categoria de Oferta', CategoriaOfertaPage))
+    this.DatoBancarioPage = markRaw(new ComponenteModal('Datos Bancarios del Proveedor', DatoBancarioPage))
   }
 }

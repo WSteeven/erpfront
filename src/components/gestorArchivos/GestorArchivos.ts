@@ -1,13 +1,11 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
-import { apiConfig } from 'config/api'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -15,7 +13,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { Endpoint } from 'shared/http/domain/Endpoint'
 import { useSubtareaStore } from 'stores/subtarea'
 import { ParamsType } from 'config/types'
 
@@ -28,15 +25,11 @@ export default defineComponent({
       type: Object as () => ContenedorSimpleMixin<any>,
       required: true,
     },
-    endpoint: {
-      type: Object as () => Endpoint,
-      required: true,
-    },
-    entidad: Object as () => EntidadAuditable,
-    disable: {
-      type: Boolean,
-      default: false,
-    },
+    // entidad: Object as () => EntidadAuditable,
+    // disable: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     permitirEliminar: {
       type: Boolean,
       default: true,
@@ -86,7 +79,7 @@ export default defineComponent({
         confirmar('Esta operación es irreversible. El archivo se eliminará de forma instantánea.', () => eliminarArchivo(entidad))
       }
     }
-
+ 
     const btnDescargar: CustomActionTable = {
       titulo: 'Ver/Descargar',
       icono: 'bi-eye',
@@ -98,9 +91,7 @@ export default defineComponent({
     }
 
     const refGestor = ref()
-    const axios = AxiosHttpRepository.getInstance()
 
-    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(props.endpoint)}`
 
     /************
     * Funciones
@@ -132,7 +123,7 @@ export default defineComponent({
       }
     }
 
-    function subir(id: number, params: ParamsType) {
+    function subir(params: ParamsType) {
       paramsForm = params
       if (refGestor.value) {
         refGestor.value.upload()

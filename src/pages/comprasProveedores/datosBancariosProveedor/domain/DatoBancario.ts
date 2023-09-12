@@ -2,7 +2,7 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class DatoBancario extends EntidadAuditable {
     banco: string | null
-    empresa: string | null
+    empresa: number | null
     tipo_cuenta: string | null
     numero_cuenta: string | null
     identificacion: string | null

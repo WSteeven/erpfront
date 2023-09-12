@@ -600,6 +600,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.proveedores') || store.esAdministrador,
         },
         {
+          title: 'Datos Bancarios de Proveedores',
+          link: 'datos-bancarios-proveedores',
+          icon: 'bi-bank',
+          can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
+        },
+        {
           title: 'Contactos de Proveedores',
           link: 'contactos-proveedores',
           icon: 'bi-people-fill',

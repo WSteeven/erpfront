@@ -367,19 +367,102 @@
                 </template>
               </q-input>
             </div>
-
             <!-- Estado -->
-            <div class="col-12 col-md-3">
+            <div
+              class="col-12 col-md-3"
+              v-if="accion != acciones.nuevo && accion != acciones.editar"
+            >
               <label>Estado</label> <br />
               <q-toggle
                 :label="proveedor.estado ? 'ACTIVO' : 'INACTIVO'"
                 v-model="proveedor.estado"
                 color="primary"
+                :disable="disabled"
                 keep-color
                 icon="bi-check2-circle"
                 unchecked-icon="clear"
               />
             </div>
+
+            <!-- referido -->
+            <div class="col-12 col-md-3 q-mb-xl">
+              <q-checkbox
+                class="q-mt-lg q-pt-md"
+                v-model="esReferido"
+                label="¿Es referido?"
+                :disable="disabled || soloLectura"
+                @update:model-value="
+                  () =>
+                    (proveedor.referencia = esReferido
+                      ? proveedor.referencia
+                      : null)
+                "
+                outlined
+                dense
+              ></q-checkbox>
+            </div>
+
+            <!-- Referencia  -->
+            <div class="col-12 col-md-3" v-if="esReferido">
+              <label class="q-mb-sm block">Referido por</label>
+              <q-input
+                v-model="proveedor.referencia"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                outlined
+                dense
+              />
+            </div>
+            <!-- Forma de pago-->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Forma de pago</label>
+              <q-select
+                v-model="proveedor.forma_pago"
+                :options="formasPagos"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :option-value="(v) => v.value"
+                :option-label="(v) => v.label"
+                emit-value
+                map-options
+                ><template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <!-- Plazo de creditos-->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Plazo crédito</label>
+              <q-input
+                v-model="proveedor.plazo_credito"
+                placeholder="Opcional"
+                :disable="disabled"
+                autogrow
+                outlined
+                dense
+              />
+            </div>
+            <!-- Anticipos -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Anticipos</label>
+              <q-input
+                v-model="proveedor.anticipos"
+                autogrow
+                placeholder="Opcional"
+                :disable="disabled"
+                outlined
+                dense
+              />
+            </div>
+
             <!-- Datos financieros del proveedor -->
             <div class="col-12 col-md-12">
               <q-expansion-item
@@ -389,35 +472,107 @@
                 default-opened
               >
                 <div class="row q-col-gutter-sm q-pa-sm">
-                  <!-- Banco -->
+                  <div class="col-12 col-md-12">
+                    <essential-table
+                      ref="refContactos"
+                      titulo="Datos Bancarios del Proveedor"
+                      :configuracionColumnas="columnasDatosBancarios"
+                      :datos="empresa.datos_bancarios"
+                      :accion1Header="abrirModalDatoBancario"
+                      :permitirBuscar="false"
+                      :permitirConsultar="false"
+                      :permitirEditar="true"
+                      :permitirEliminar="true"
+                      :mostrarBotones="false"
+                      :mostrarCantidadElementos="false"
+                      :permitirEditarModal="true"
+                      :modalMaximized="false"
+                      :alto-fijo="false"
+                      :mostrarFooter="false"
+                    ></essential-table>
+                  </div>
+                </div>
+              </q-expansion-item>
+            </div>
+            <!-- Datos logisticos del proveedor -->
+            <div class="col-12 col-md-12">
+              <q-expansion-item
+                class="overflow-hidden q-mb-md expansion"
+                label="Logísticas del Proveedor"
+                header-class="text-bold bg-header-collapse"
+                default-opened
+              >
+                <div class="row q-col-gutter-sm q-pa-sm">
+                  <!-- Tiempo de entrega  -->
                   <div class="col-12 col-md-3">
-                    <label class="q-mb-sm block">Banco</label>
+                    <label class="q-mb-sm block">Tiempo de Entrega</label>
+                    <q-input
+                      v-model="proveedor.tiempo_entrega"
+                      placeholder="Obligatorio"
+                      :disable="disabled"
+                      outlined
+                      dense
+                    />
+                  </div>
+                  <!-- Envio -->
+                  <div class="col-12 col-md-3">
+                    <label>Realiza envios</label> <br />
+                    <q-toggle
+                      :label="proveedor.envios ? 'SI' : 'NO'"
+                      v-model="proveedor.envios"
+                      @update:model-value="
+                        () =>
+                          proveedor.envios
+                            ? proveedor.tipo_envio
+                            : (proveedor.tipo_envio = [])
+                      "
+                      color="primary"
+                      keep-color
+                      icon="bi-check2-circle"
+                      unchecked-icon="clear"
+                    />
+                  </div>
+
+                  <!-- Tipo de envio-->
+                  <div class="col-12 col-md-3" v-if="proveedor.envios">
+                    <label class="q-mb-sm block">Tipo de envío</label>
                     <q-select
-                      v-model="proveedor.banco"
-                      :options="bancos"
+                      v-model="proveedor.tipo_envio"
+                      :options="tiposEnvios"
                       transition-show="jump-up"
                       transition-hide="jump-down"
                       :disable="disabled"
                       options-dense
+                      multiple
                       dense
+                      use-chips
                       outlined
-                      :input-debounce="0"
-                      use-input
-                      hint="Obligatorio"
-                      :error="!!v$.banco.$errors.length"
-                      @blur="v$.banco.$touch"
-                      :option-value="(v) => v.id"
-                      :option-label="(v) => v.nombre"
+                      :error="!!v$.tipo_envio.$errors.length"
+                      error-message="Debes seleccionar al menos una opcion"
+                      :option-value="(v) => v.value"
+                      :option-label="(v) => v.label"
                       emit-value
                       map-options
-                    >
-                      <template v-slot:error>
-                        <div
-                          v-for="error of v$.banco.$errors"
-                          :key="error.$uid"
-                        >
-                          <div class="error-msg">{{ error.$message }}</div>
-                        </div>
+                      ><template
+                        v-slot:option="{
+                          itemProps,
+                          opt,
+                          selected,
+                          toggleOption,
+                        }"
+                      >
+                        <q-item v-bind="itemProps">
+                          <q-item-section>
+                            {{ opt.label }}
+                            <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-toggle
+                              :model-value="selected"
+                              @update:model-value="toggleOption(opt)"
+                            />
+                          </q-item-section>
+                        </q-item>
                       </template>
                       <template v-slot:no-option>
                         <q-item>
@@ -427,6 +582,89 @@
                         </q-item>
                       </template>
                     </q-select>
+                  </div>
+
+                  <!-- Transporte incluido -->
+                  <div class="col-12 col-md-3" v-if="proveedor.envios">
+                    <label>Transporte incluído</label> <br />
+                    <q-toggle
+                      :label="proveedor.transporte_incluido ? 'SI' : 'NO'"
+                      v-model="proveedor.transporte_incluido"
+                      color="primary"
+                      keep-color
+                      icon="bi-check2-circle"
+                      unchecked-icon="clear"
+                    />
+                  </div>
+
+                  <!-- Costos de transporte  -->
+                  <div
+                    class="col-12 col-md-3"
+                    v-if="proveedor.transporte_incluido"
+                  >
+                    <label class="q-mb-sm block">Costos de Transporte</label>
+                    <q-input
+                      v-model="proveedor.costo_transporte"
+                      placeholder="Opcional"
+                      autogrow
+                      hint="Si son varios costos de transporte separa con comas"
+                      :disable="disabled"
+                      outlined
+                      dense
+                    />
+                  </div>
+
+                  <!-- Garantía-->
+                  <div class="col-12 col-md-3">
+                    <label
+                      >Ofrece garantías
+                      <q-tooltip
+                        >Da garantías en los bienes o servicios
+                        ofertados</q-tooltip
+                      ></label
+                    >
+                    <br />
+                    <q-toggle
+                      :label="proveedor.garantia ? 'SI' : 'NO'"
+                      v-model="proveedor.garantia"
+                      color="primary"
+                      keep-color
+                      icon="bi-check2-circle"
+                      unchecked-icon="clear"
+                    />
+                  </div>
+
+                  <!-- Tabla de archivos -->
+                  <div class="col-12 q-mb-md">
+                    <gestor-archivos
+                      ref="refArchivo"
+                      :mixin="mixinEmpresas"
+                      :endpoint="endpoint"
+                      :disable="disabled"
+                      :listarAlGuardar="false"
+                      :permitir-eliminar="
+                        accion == acciones.nuevo || accion == acciones.editar
+                      "
+                      :idModelo="empresa.id"
+                    >
+                      <template #boton-subir>
+                        <q-btn
+                          v-if="mostrarBotonSubir"
+                          color="positive"
+                          push
+                          no-caps
+                          class="full-width q-mb-lg"
+                          @click="subirArchivos()"
+                        >
+                          <q-icon
+                            name="bi-upload"
+                            class="q-mr-sm"
+                            size="xs"
+                          ></q-icon>
+                          Subir archivos seleccionados</q-btn
+                        >
+                      </template>
+                    </gestor-archivos>
                   </div>
                 </div>
               </q-expansion-item>
@@ -517,7 +755,7 @@
                 </template>
               </q-select>
             </div>
-            <!-- {{ categorias }} -->
+            {{ proveedor.departamentos }}
             <!--Categorias-->
             <div class="col-12 col-md-3">
               <label-abrir-modal
@@ -538,6 +776,7 @@
                 use-chips
                 outlined
                 @popup-show="ordenarCategorias"
+                @update:model-value="actualizarDepartamentos"
                 :error="!!v$.categorias_ofrece.$errors.length"
                 error-message="Debes seleccionar al menos una opcion"
                 :option-value="(v) => v.id"

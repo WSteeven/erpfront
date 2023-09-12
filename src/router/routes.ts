@@ -558,6 +558,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/datos-bancarios-proveedores',
+        name: 'datos_bancarios_proveedores',
+        component: () =>
+          import('pages/comprasProveedores/datosBancariosProveedor/view/DatoBancarioPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/contactos-proveedores',
         name: 'contactos_proveedores',
         component: () =>

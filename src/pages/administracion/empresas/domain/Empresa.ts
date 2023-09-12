@@ -28,6 +28,7 @@ export class Empresa extends EntidadAuditable {
     antiguedad_proveedor: string | null
 
     contactos: any[]
+    datos_bancarios: any[]
 
     constructor() {
         super()
@@ -52,6 +53,7 @@ export class Empresa extends EntidadAuditable {
         this.sitio_web = null
         this.actividad_economica = null
         this.contactos = []
+        this.datos_bancarios = []
         this.created_at = null
         this.updated_at = null
         this.representante_legal = null

@@ -1,6 +1,7 @@
 import { Empresa } from "pages/administracion/empresas/domain/Empresa";
 import { Ref, ref } from "vue";
 import { ordernarListaString } from "./utils";
+import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -14,6 +15,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const proveedores = ref([])
   const clientes = ref([])
   const empleados = ref([])
+  const bancos = ref([])
 
 
   /**************************************************************
@@ -188,6 +190,19 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     })
   }
 
+  function filtrarBancos(val, update){
+    if (val === '') {
+      update(() => {
+        bancos.value = listadosAuxiliares.bancos
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      bancos.value = listadosAuxiliares.bancos.filter((v: Banco) => v.nombre!.toLowerCase().indexOf(needle) > -1 )
+    })
+  }
+
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
@@ -197,5 +212,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     proveedores, filtrarProveedores,
     clientes, filtrarClientes,
     empleados, filtrarEmpleados,
+    bancos, filtrarBancos,
   }
 }

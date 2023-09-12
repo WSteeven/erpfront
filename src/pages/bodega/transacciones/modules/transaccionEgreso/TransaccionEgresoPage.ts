@@ -330,7 +330,7 @@ export default defineComponent({
             v.cantidad = cantidadPendiente
             console.log('hay más en inventario')
           } else {
-            console.log('hay menos en inventario')
+            console.log('hay menos en inventario', v.detalle_id, v.cantidad)
           }
         }
       })

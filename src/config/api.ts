@@ -31,6 +31,8 @@ export const endpoints = {
   asignar_permisos: new Endpoint('asignar-permisos'),
   asignar_permisos_individual: new Endpoint('asignar-permisos-usuario'),
   crear_permiso: new Endpoint('crear-permiso'),
+  //Archivos
+  archivos: new Endpoint('archivos'),
   // Ubicacion
   paises: new Endpoint('paises'),
   provincias: new Endpoint('provincias'),
@@ -109,7 +111,7 @@ export const endpoints = {
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   //Modulo de compras y proveedores
-  archivos_proveedores: new Endpoint('compras/archivos-proveedores'),
+  // archivos_proveedores: new Endpoint('compras/archivos-proveedores'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),

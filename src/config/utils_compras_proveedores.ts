@@ -16,6 +16,15 @@ export const opcionesTipoContacto = [
   { value: 'FINANCIERO', label: 'FINANCIERO' },
   { value: 'COMERCIAL', label: 'COMERCIAL' },
 ]
+export const tiposCuentas = [
+  { value: 'AHORROS', label: 'AHORROS' },
+  { value: 'CORRIENTE', label: 'CORRIENTE' },
+]
+export const tiposEnvios = [
+  { value: 'LOCALES', label: 'LOCALES' },
+  { value: 'PROVINCIALES', label: 'PROVINCIALES' },
+  { value: 'NACIONALES', label: 'NACIONALES' },
+]
 export const opcionesForma = [
   { value: 'CONTADO', label: 'CONTADO' },
   { value: 'CREDITO', label: 'CREDITO' },
@@ -84,3 +93,16 @@ export const estadosCalificacionProveedor = {
   calificado: 'CALIFICADO',
   parcial: 'PARCIAL',
 }
+
+export const formasPagos = [
+  { value: 'CHEQUE', label: 'CHEQUE' },
+  { value: 'CREDITO', label: 'CREDITO' },
+  { value: 'DEPOSITO', label: 'DEPOSITO' },
+  { value: 'EFECTIVO', label: 'EFECTIVO' },
+  { value: 'MULTIPLE', label: 'MULTIPLE' },
+  { value: 'NC INTERNA', label: 'NC INTERNA' },
+  { value: 'ND INTERNA', label: 'ND INTERNA' },
+  { value: 'NOTA DE CREDITO', label: 'NOTA DE CREDITO' },
+  { value: 'NOTA DE DEBITO', label: 'NOTA DE DEBITO' },
+  { value: 'TARJETA DE CREDITO', label: 'TARJETA DE CREDITO' },
+]
