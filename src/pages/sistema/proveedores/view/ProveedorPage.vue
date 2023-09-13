@@ -415,7 +415,7 @@
             </div>
             <!-- Forma de pago-->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Forma de pago</label>
+              <label class="q-mb-sm block">Forma de Pago</label>
               <q-select
                 v-model="proveedor.forma_pago"
                 :options="formasPagos"
@@ -440,7 +440,7 @@
             </div>
             <!-- Plazo de creditos-->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Plazo crédito</label>
+              <label class="q-mb-sm block">Plazo de Crédito</label>
               <q-input
                 v-model="proveedor.plazo_credito"
                 placeholder="Opcional"
@@ -516,7 +516,7 @@
                   </div>
                   <!-- Envio -->
                   <div class="col-12 col-md-3">
-                    <label>Realiza envios</label> <br />
+                    <label>Realiza Envios</label> <br />
                     <q-toggle
                       :label="proveedor.envios ? 'SI' : 'NO'"
                       v-model="proveedor.envios"
@@ -535,7 +535,7 @@
 
                   <!-- Tipo de envio-->
                   <div class="col-12 col-md-3" v-if="proveedor.envios">
-                    <label class="q-mb-sm block">Tipo de envío</label>
+                    <label class="q-mb-sm block">Tipo de Envío</label>
                     <q-select
                       v-model="proveedor.tipo_envio"
                       :options="tiposEnvios"
@@ -586,7 +586,7 @@
 
                   <!-- Transporte incluido -->
                   <div class="col-12 col-md-3" v-if="proveedor.envios">
-                    <label>Transporte incluído</label> <br />
+                    <label>Transporte Incluído</label> <br />
                     <q-toggle
                       :label="proveedor.transporte_incluido ? 'SI' : 'NO'"
                       v-model="proveedor.transporte_incluido"
@@ -755,7 +755,6 @@
                 </template>
               </q-select>
             </div>
-            {{ proveedor.departamentos }}
             <!--Categorias-->
             <div class="col-12 col-md-3">
               <label-abrir-modal
