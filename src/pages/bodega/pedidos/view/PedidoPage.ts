@@ -40,8 +40,6 @@ import { useCargandoStore } from 'stores/cargando'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { ordernarListaString } from 'shared/utils'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { PedidoModales } from '../domain/PedidoModales'
-import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
 import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
 
 

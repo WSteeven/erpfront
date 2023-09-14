@@ -638,7 +638,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Logs',
           icon: 'bi-file-text',
-          can: true,
+          can: store.esAdministrador,
           children: [
             {
               title: 'Contactos de Proveedores',

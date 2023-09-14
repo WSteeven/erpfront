@@ -388,7 +388,14 @@
             </q-input>
           </div> -->
           <!--sitio_web-->
-          <div class="col-12 col-md-3" v-if="empresa.sitio_web||accion==acciones.nuevo||accion==acciones.editar">
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              empresa.sitio_web ||
+              accion == acciones.nuevo ||
+              accion == acciones.editar
+            "
+          >
             <label class="q-mb-sm block">Sitio Web</label>
             <q-input
               v-if="accion == acciones.nuevo || accion == acciones.editar"
@@ -460,9 +467,7 @@
 
           <!-- Experiencia como proveedor -->
           <div class="col-12 col-md-3" v-if="experiencia_comercial">
-            <label class="q-mb-sm block"
-              >Fecha de Inicio Comercial 
-            </label>
+            <label class="q-mb-sm block">Fecha de Inicio Comercial </label>
             <q-input
               v-model="empresa.antiguedad_proveedor"
               placeholder="Obligatorio"
@@ -514,6 +519,38 @@
                 </div>
               </template>
             </q-input>
+          </div>
+
+          <!-- Es proveedor-->
+          <div class="col-12 col-md-3">
+            <label>¿Es Proveedor?</label> <br />
+            <q-toggle
+              :label="empresa.es_proveedor ? 'SI' : 'NO'"
+              v-model="empresa.es_proveedor"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+            />
+          </div>
+
+          <!-- Es cliente -->
+          <div class="col-12 col-md-3">
+            <label
+              >¿Es Cliente?
+              <q-tooltip
+                >Da garantías en los bienes o servicios ofertados</q-tooltip
+              ></label
+            >
+            <br />
+            <q-toggle
+              :label="empresa.es_cliente ? 'SI' : 'NO'"
+              v-model="empresa.es_cliente"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+            />
           </div>
         </div>
       </q-form>

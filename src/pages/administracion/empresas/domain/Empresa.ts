@@ -26,6 +26,8 @@ export class Empresa extends EntidadAuditable {
     representante_legal: string | null
     identificacion_representante: string | null
     antiguedad_proveedor: string | null
+    es_cliente: boolean
+    es_proveedor: boolean
 
     contactos: any[]
     datos_bancarios: any[]
@@ -59,7 +61,9 @@ export class Empresa extends EntidadAuditable {
         this.representante_legal = null
         this.identificacion_representante = null
         this.antiguedad_proveedor = null
-
+        this.es_cliente= false
+        this.es_proveedor= true
+    
     }
 
 

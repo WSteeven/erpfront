@@ -1,5 +1,5 @@
 // Dependencies
-import { computed, defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive, ref, watch } from "vue";
 
 //Components
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -30,12 +30,14 @@ import { Archivo } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosT
 import { ArchivoTicketController } from "pages/gestionTickets/tickets/infraestructure/ArchivoTicketController ";
 import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController";
 import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor";
+import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
+import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable, GestorArchivos },
     setup(props, { emit }) {
-        const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController())
-        const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
+        const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController(), new ArchivoController())
+        const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController(), new ArchivoController())
         const { entidad: calificacion, listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
         const { onConsultado } = mixin.useHooks()
@@ -47,6 +49,7 @@ export default defineComponent({
          **************************************************************/
         const proveedorStore = useProveedorStore()
         const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const statusLoading = new StatusEssentialLoading()
 
 
         /************************************************************** 
@@ -57,6 +60,7 @@ export default defineComponent({
         // const criteriosBienes = ref<any>([])
         // const criteriosServicios = ref<any>([])
         const step = ref(1)
+        const idDetalleDepartamentoProveedor = computed(() => proveedorStore.idDetalleDepartamento)
         const stepper = ref()
         const detalleDepartamento = ref()
         const resultadosCalificacion = ref()
@@ -120,7 +124,7 @@ export default defineComponent({
          * tiempo con una declaración de "retorno" si se cumplen ciertas condiciones.
          */
         async function botonNext() {
-            console.log(proveedorStore.idDetalleDepartamento)
+            // console.log(proveedorStore.idDetalleDepartamento)
             // console.log('Clickeaste en Next, actual: ', step.value, ' siguiente step es: ', step.value + 1)
             if (criteriosBienes.value.length == 0 && criteriosServicios.value.length == 0) {
                 notificarAdvertencia('Debes seleccionar al menos un criterio del listado para poder avanzar.')
@@ -141,6 +145,7 @@ export default defineComponent({
                 } else return
             }
             if (step.value == 4) {
+                statusLoading.activar()
                 if (verificarCalificacionesCriterios()) {
                     const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
                     console.log(result)
@@ -178,8 +183,10 @@ export default defineComponent({
                             stepper.value.previous()
                         }
                     })
+                    statusLoading.desactivar()
                     return
                 } else {
+                    statusLoading.desactivar()
                     notificarError('¡Debes calificar todos los criterios para poder avanzar!.')
                     return
                 }
@@ -305,8 +312,11 @@ export default defineComponent({
             }
         }
 
-        function subirArchivos(){
+        function subirArchivos() {
             refArchivo.value.subir()
+        }
+        function cargarArchivos() {
+            refArchivo.value.listarArchivosAlmacenados(idDetalleDepartamentoProveedor.value)
         }
 
 
@@ -334,7 +344,6 @@ export default defineComponent({
 
             //manejo de archivos
             refArchivo,
-            endpoint: endpoints.archivos_proveedores,
             disabled,
             mostrarBotonSubir: computed(() => refArchivo.value?.quiero_subir_archivos),
 
@@ -345,7 +354,7 @@ export default defineComponent({
             ofertas: listadosAuxiliares.ofertas,
 
             proveedor: proveedorStore.proveedor,
-            idDetalleDepartamentoProveedor: computed(()=>proveedorStore.idDetalleDepartamento),
+            idDetalleDepartamentoProveedor,
 
             seleccionados: listadoSeleccionados,
             criterioSeleccionado,
@@ -362,6 +371,8 @@ export default defineComponent({
 
             subirArchivos,
             detalleDepartamento,
+
+            cargarArchivos,
         }
     }
 })

@@ -22,7 +22,6 @@ export const tiposCuentas = [
 ]
 export const tiposEnvios = [
   { value: 'LOCALES', label: 'LOCALES' },
-  { value: 'PROVINCIALES', label: 'PROVINCIALES' },
   { value: 'NACIONALES', label: 'NACIONALES' },
 ]
 export const opcionesForma = [

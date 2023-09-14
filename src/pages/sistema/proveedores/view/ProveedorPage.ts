@@ -45,7 +45,7 @@ import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
 import { configuracionColumnasDatosBancariosProveedor } from 'pages/comprasProveedores/datosBancariosProveedor/domain/configuracionColumnasDatosBancariosProveedor';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
-import { Categoria } from 'pages/bodega/categorias/domain/Categoria';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 
 
 export default defineComponent({
@@ -56,7 +56,7 @@ export default defineComponent({
     const { entidad: proveedor, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado, onModificado, onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
-    const { confirmar } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
     const refContactos = ref()
     const contactosProveedor: Ref<ContactoProveedor[]> = ref(proveedor.contactos)
     const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
@@ -74,7 +74,6 @@ export default defineComponent({
     //variables
     const refArchivo = ref()
     const esReferido = ref(false)
-    const idEmpresaParaArchivos = ref()
     const detalleDepartamentoProveedor = ref()
     const empresa: Empresa = reactive(new Empresa())
     const categorias = ref([])
@@ -83,7 +82,10 @@ export default defineComponent({
     const departamentoFinanciero = computed(() => listadosAuxiliares.departamentos.length > 0 ? listadosAuxiliares.departamentos.filter((v: Departamento) => v.nombre == 'FINANCIERO')[0] : new Departamento())
     cargarVista(async () => {
       await obtenerListados({
-        empresas: new EmpresaController(),
+        empresas: {
+          controller: new EmpresaController(),
+          params: { es_proveedor: 1 }
+        },
         parroquias: new ParroquiaController(),
         categorias: new CategoriaOfertaController(),
         departamentos: new DepartamentoController(),
@@ -111,23 +113,20 @@ export default defineComponent({
     })
 
     onBeforeGuardar(() => {
-      console.log(empresa)
-      console.log(proveedor)
+      // console.log(empresa)
+      // console.log(proveedor)
     })
     onGuardado((id: number) => {
-      console.log('id guardado: ', id)
-      // refArchivo.value.idModelo = id
-      idEmpresaParaArchivos.value = id
-      subirArchivos(id)
+      // console.log('id guardado: ', id)
+      subirArchivos()
     })
     onBeforeModificar(() => {
-      subirArchivos(empresa.id!)
+      subirArchivos()
     })
     onModificado((id: number) => {
-      console.log('id modificado: ', id)
+      // console.log('id modificado: ', id)
       // refArchivo.value.idModelo = id
-      idEmpresaParaArchivos.value = id
-      console.log(idEmpresaParaArchivos.value)
+      // console.log(idEmpresaParaArchivos.value)
     })
     /**************************************************************
      * Validaciones
@@ -163,14 +162,59 @@ export default defineComponent({
     /**************************************************************
      * Botones de tablas
      **************************************************************/
-    const desactivarProveedor: CustomActionTable = {
+    const botonDesactivarProveedor: CustomActionTable = {
       titulo: 'Desactivar',
       icono: 'bi-toggle2-off',
       color: 'negative',
       tooltip: 'Desactivar proveedor',
-      accion: () => {
-        console.log('Diste clic en desactivar proveedor')
-      }
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de desactivar el proveedor?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Causa de deactivación',
+            mensaje: 'Ingresa el motivo por el que quieres desactivar este proveedor?',
+            accion: async (data) => {
+              try {
+                proveedorStore.idProveedor = entidad.id
+                const response = await proveedorStore.anularProveedor({ motivo: data })
+                if (response?.status == 200) {
+                  notificarCorrecto('Se ha desactivado correctamente el proveedor')
+                  listado.value.splice(posicion, 1, response.data.modelo)
+                }
+              } catch (error: any) {
+                notificarError('No se pudo desactivar el proveedor!')
+              }
+            }
+          }
+          prompt(data)
+        })
+      }, visible: ({ entidad }) => entidad.estado
+    }
+    const botonActivarProveedor: CustomActionTable = {
+      titulo: 'Activar',
+      icono: 'bi-toggle2-off',
+      color: 'positive',
+      tooltip: 'Activar proveedor',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de activar el proveedor?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Causa de deactivación',
+            mensaje: 'Ingresa el motivo por el que quieres desactivar este proveedor?',
+            accion: async (data) => {
+              try {
+                proveedorStore.idProveedor = entidad.id
+                const response = await proveedorStore.anularProveedor({ motivo: data })
+                if (response?.status == 200) {
+                  notificarCorrecto('Se ha activado correctamente el proveedor')
+                  listado.value.splice(posicion, 1, response.data.modelo)
+                }
+              } catch (error: any) {
+                notificarError('No se pudo activar el proveedor!')
+              }
+            }
+          }
+          prompt(data)
+        })
+      }, visible: ({ entidad }) => !entidad.estado
     }
     const abrirModalContacto: CustomActionTable = {
       titulo: 'Agregar Contacto',
@@ -269,8 +313,8 @@ export default defineComponent({
      * Funciones
      **************************************************************/
 
-    async function subirArchivos(id: number) {
-      await refArchivo.value.subir(id);
+    async function subirArchivos() {
+      await refArchivo.value.subir();
     }
 
     async function obtenerEmpresa(empresaId: number | null) {
@@ -362,7 +406,6 @@ export default defineComponent({
       columnasDatosBancarios,
       departamentoFinanciero,
       refArchivo,
-      idEmpresaParaArchivos,
       esReferido,
 
 
@@ -401,6 +444,8 @@ export default defineComponent({
       actualizarDepartamentos(val) {
         let catSeleccionadas = categorias.value.filter((v: CategoriaOferta) => proveedor.categorias_ofrece.includes(v.id))
         console.log(catSeleccionadas)
+        console.log(new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos)))
+        proveedor.departamentos = [... new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos))]
         // console.log(catSeleccionadas.map((v:CategoriaOferta)=>v.departamentos))
         // proveedor.departamentos = departamentos.value.filter((v: Departamento) => catSeleccionadas.includes(v.id)).map((v: Departamento) => v.id)
       },
@@ -409,6 +454,8 @@ export default defineComponent({
       botonCalificarProveedor,
       botonVerCalificacionProveedor,
       botonVerMiCalificacionProveedor,
+      botonDesactivarProveedor,
+      botonActivarProveedor,
     }
 
   }

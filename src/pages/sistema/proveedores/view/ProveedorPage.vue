@@ -3,9 +3,11 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proveedores"
-    :accion1="botonCalificarProveedor"
-    :accion2="botonVerMiCalificacionProveedor"
-    :accion3="botonVerCalificacionProveedor"
+    :accion1="botonDesactivarProveedor"
+    :accion2="botonActivarProveedor"
+    :accion3="botonCalificarProveedor"
+    :accion4="botonVerMiCalificacionProveedor"
+    :accion5="botonVerCalificacionProveedor"
     :puedeExportar="true"
   >
     <template #formulario>
@@ -597,23 +599,7 @@
                     />
                   </div>
 
-                  <!-- Costos de transporte  -->
-                  <div
-                    class="col-12 col-md-3"
-                    v-if="proveedor.transporte_incluido"
-                  >
-                    <label class="q-mb-sm block">Costos de Transporte</label>
-                    <q-input
-                      v-model="proveedor.costo_transporte"
-                      placeholder="Opcional"
-                      autogrow
-                      hint="Si son varios costos de transporte separa con comas"
-                      :disable="disabled"
-                      outlined
-                      dense
-                    />
-                  </div>
-
+                  
                   <!-- Garantía-->
                   <div class="col-12 col-md-3">
                     <label
@@ -638,6 +624,7 @@
                   <div class="col-12 q-mb-md">
                     <gestor-archivos
                       ref="refArchivo"
+                      label="Información Adicional del Proveedor"
                       :mixin="mixinEmpresas"
                       :endpoint="endpoint"
                       :disable="disabled"
@@ -807,7 +794,7 @@
                 </template>
               </q-select>
             </div>
-            <!-- {{proveedor.categorias_ofrece}}  -->
+            {{ proveedor.departamentos }}
             <!--Departamentos que califican-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block"
@@ -824,9 +811,10 @@
                 dense
                 use-chips
                 outlined
+                :max-values="3"
                 :error="!!v$.departamentos.$errors.length"
                 error-message="Debes seleccionar al menos una opcion"
-                hint="Dept. Financiero califica a todos los proveedores"
+                hint="Dept. Financiero califica a todos los proveedores (Máx. 3 depts.)"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
                 :option-disable="(v) => v.id === departamentoFinanciero.id"
