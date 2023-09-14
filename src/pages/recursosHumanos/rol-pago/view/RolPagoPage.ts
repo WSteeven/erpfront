@@ -742,7 +742,10 @@ export default defineComponent({
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
     watchEffect(() => {
-      const dias_quincena = rolpago.es_quincena == true ? 15 : 0
+      let dias_quincena = rolpago.es_quincena == true ? 15 : 0
+      if(rolpago.medio_tiempo){
+        dias_quincena = 0
+      }
       const dias = parseFloat(
         rolpago.dias != null ? rolpago.dias.toString() : '0'
       )
