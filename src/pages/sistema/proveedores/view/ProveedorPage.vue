@@ -599,7 +599,7 @@
                     />
                   </div>
 
-                  
+
                   <!-- Garantía-->
                   <div class="col-12 col-md-3">
                     <label
@@ -794,7 +794,7 @@
                 </template>
               </q-select>
             </div>
-            {{ proveedor.departamentos }}
+            <!-- {{ proveedor.departamentos }} -->
             <!--Departamentos que califican-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block"

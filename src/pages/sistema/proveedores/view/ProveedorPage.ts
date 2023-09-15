@@ -46,6 +46,7 @@ import { useCargandoStore } from 'stores/cargando';
 import { configuracionColumnasDatosBancariosProveedor } from 'pages/comprasProveedores/datosBancariosProveedor/domain/configuracionColumnasDatosBancariosProveedor';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { ValidarPropiedadesProveedor } from '../application/validaciones/ValidarPropiedadesProveedor';
 
 
 export default defineComponent({
@@ -144,6 +145,9 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, proveedor)
     setValidador(v$.value)
+
+    const validarPropiedadesProveedor = new ValidarPropiedadesProveedor(proveedor)
+    mixin.agregarValidaciones(validarPropiedadesProveedor)
 
     /***************************
      * Configuracion de columnas
