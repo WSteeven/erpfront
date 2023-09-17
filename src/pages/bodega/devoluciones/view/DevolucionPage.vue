@@ -271,6 +271,36 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Evidencia de la devolución"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idDevolucion"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="mostrarBotonSubir"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
+          </div>
+
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">

@@ -12,6 +12,7 @@
           <label class="q-mb-sm block">Razón social</label>
           <q-input
             disable
+            autogrow
             dense
             outlined
             v-model:model-value="proveedor.razon_social"
@@ -33,6 +34,7 @@
           <q-input
             disable
             dense
+            autogrow
             outlined
             v-model:model-value="proveedor.direccion"
           />
@@ -135,7 +137,6 @@
       <gestor-archivos
         ref="refArchivo"
         :mixin="mixinArchivos"
-        :endpoint="endpoint"
         :permitir-subir="false"
         :permitir-eliminar="false"
         :idModelo="idDetalleDepartamentoProveedor"

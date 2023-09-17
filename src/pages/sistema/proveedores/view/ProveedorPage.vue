@@ -626,7 +626,6 @@
                       ref="refArchivo"
                       label="Información Adicional del Proveedor"
                       :mixin="mixinEmpresas"
-                      :endpoint="endpoint"
                       :disable="disabled"
                       :listarAlGuardar="false"
                       :permitir-eliminar="

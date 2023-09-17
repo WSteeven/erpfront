@@ -18,14 +18,14 @@ export const useCalificacionProveedorStore = defineStore('calificacion', ()=>{
      */
     async function consultarDepartamentosCalificanProveedor(){
         const axios = AxiosHttpRepository.getInstance()
-        const url = axios.getEndpoint(endpoints.detalles_departamentos_proveedor)+'/?proveedor_id='+idProveedor.value
+        const url = axios.getEndpoint(endpoints.detalles_departamentos_proveedor)+'?proveedor_id='+idProveedor.value
         const response: AxiosResponse = await axios.get(url)
         departamentosCalificadoresProveedor.value = response.data.results
     }
     async function consultarCalificacionMiDepartamento(){
         console.log('STORE: ',idProveedor.value, idDepartamento.value)
         const axios = AxiosHttpRepository.getInstance()
-        const url = axios.getEndpoint(endpoints.detalles_departamentos_proveedor)+'/?proveedor_id='+idProveedor.value+'&departamento_id='+idDepartamento.value
+        const url = axios.getEndpoint(endpoints.detalles_departamentos_proveedor)+'?proveedor_id='+idProveedor.value+'&departamento_id='+idDepartamento.value
         const response: AxiosResponse = await axios.get(url)
         departamentosCalificadoresProveedor.value = response.data.results
     }
@@ -40,14 +40,14 @@ export const useCalificacionProveedorStore = defineStore('calificacion', ()=>{
      */
     async function consultarCalificacionesProveedorDepartamento(departamento_id:number){
         const axios = AxiosHttpRepository.getInstance()
-        const url = axios.getEndpoint(endpoints.calificacion_proveedor)+'/?detalle_departamento_id='+departamento_id
+        const url = axios.getEndpoint(endpoints.calificacion_proveedor)+'?detalle_departamento_id='+departamento_id
         const response: AxiosResponse = await axios.get(url)
-        return response.data.results        
+        return response.data.results
     }
 
     return {
         calificacion,
-        idDepartamento, 
+        idDepartamento,
         idProveedor,
         departamentosCalificadoresProveedor,
         verMiCalificacion,

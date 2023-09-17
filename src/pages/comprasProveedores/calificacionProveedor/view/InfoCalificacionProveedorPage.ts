@@ -39,7 +39,7 @@ export default defineComponent({
         const mostrarCalificacionPersonal = calificacionProveedorStore.verMiCalificacion
 
 
-        /************************************************************** 
+        /**************************************************************
          * Variables
          **************************************************************/
         const calificacion_dada = ref()
@@ -85,7 +85,7 @@ export default defineComponent({
         })
 
 
-        /************************************************************** 
+        /**************************************************************
          * Init
          **************************************************************/
         function cargarArchivos() {
@@ -116,7 +116,6 @@ export default defineComponent({
             calificacion_dada,
             refArchivo,
             mixinArchivos,
-            endpoint: endpoints.archivos_proveedores,
             cargarArchivos,
 
             idDetalleDepartamentoProveedor,

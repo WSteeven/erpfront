@@ -374,7 +374,7 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras|| store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
 

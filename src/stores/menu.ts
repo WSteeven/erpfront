@@ -254,7 +254,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Todos los comprobantes',
               link: 'egresos-filtrados',
               icon: 'bi-files',
-              can: store.esBodeguero || store.esContabilidad || store.esCoordinador || store.esGerente
+              can: store.esBodeguero || store.esContabilidad || store.esCoordinador || store.esGerente || store.can('puede.ver.comprobantes_egresos')
             }
           ]
         },
