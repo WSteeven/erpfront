@@ -141,10 +141,10 @@ export default defineComponent({
             if (step.value == 4) {
                 statusLoading.activar()
                 if (verificarCalificacionesCriterios()) {
-                    const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
-                    console.log(result)
-                    detalleDepartamento.value = result
-                    console.log(detalleDepartamento.value)
+                    // const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+                    // console.log(result)
+                    // detalleDepartamento.value = result
+                    // console.log(detalleDepartamento.value)
                     await confirmar('¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla', async () => {
                         console.log('Aqui se guardan los resultados en la base de datos')
                         console.log(criteriosBienes.value, criteriosServicios.value)

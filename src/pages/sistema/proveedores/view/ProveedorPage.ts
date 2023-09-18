@@ -282,8 +282,10 @@ export default defineComponent({
         calificacionStore.verMiCalificacion = true
         await consultarDetalleDepartamentoProveedor().then(() => {
           proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
+          calificacionStore.idDetalleDepartamentoProveedor = detalleDepartamentoProveedor.value.id
+          calificacionStore.detalleDepartamentoProveedor = detalleDepartamentoProveedor.value
         })
-        modales.abrirModalEntidad('InfoCalificacionProveedorPage')
+        modales.abrirModalEntidad('MiCalificacionProveedorPage')
       },
       visible: ({ posicion, entidad }) => {
         const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]

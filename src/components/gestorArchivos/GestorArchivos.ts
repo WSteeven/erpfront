@@ -63,7 +63,7 @@ export default defineComponent({
     const { listadoArchivos } = props.mixin.useReferencias()
     const { eliminarArchivo, listarArchivos, guardarArchivos } = props.mixin.useComportamiento()
 
-    const { notificarCorrecto, notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
+    const { notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
 
     function listarArchivosAlmacenados(id: number, params: ParamsType) {
       listarArchivos(id, params)
