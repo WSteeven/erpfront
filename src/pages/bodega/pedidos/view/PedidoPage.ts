@@ -40,8 +40,6 @@ import { useCargandoStore } from 'stores/cargando'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { ordernarListaString } from 'shared/utils'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { PedidoModales } from '../domain/PedidoModales'
-import { ComportamientoModales } from 'components/modales/application/ComportamientoModales'
 import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
 
 
@@ -376,7 +374,7 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras|| store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
 

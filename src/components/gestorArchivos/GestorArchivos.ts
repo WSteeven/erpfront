@@ -5,7 +5,7 @@ import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -45,9 +45,13 @@ export default defineComponent({
     idModelo: {
       type: Number,
       required: false,
-    }
+    },
+    label: {
+      type: String,
+      required: false,
+    },
   },
-  setup(props) {
+  setup(props, {emit}) {
     /*********
      * Stores
     *********/
@@ -59,7 +63,7 @@ export default defineComponent({
     const { listadoArchivos } = props.mixin.useReferencias()
     const { eliminarArchivo, listarArchivos, guardarArchivos } = props.mixin.useComportamiento()
 
-    const { notificarCorrecto, notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
+    const { notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
 
     function listarArchivosAlmacenados(id: number, params: ParamsType) {
       listarArchivos(id, params)
@@ -79,7 +83,7 @@ export default defineComponent({
         confirmar('Esta operación es irreversible. El archivo se eliminará de forma instantánea.', () => eliminarArchivo(entidad))
       }
     }
- 
+
     const btnDescargar: CustomActionTable = {
       titulo: 'Ver/Descargar',
       icono: 'bi-eye',
@@ -92,6 +96,9 @@ export default defineComponent({
 
     const refGestor = ref()
 
+    onMounted(()=>{
+      emit('inicializado')
+    })
 
     /************
     * Funciones
@@ -109,12 +116,12 @@ export default defineComponent({
 
       try {
         const response: AxiosResponse = await guardarArchivos(props.idModelo!, fd)
-        console.log(response.data.modelo[0])
-        console.log(listadoArchivos.value)
+        // console.log(response.data.modelo[0])
+        // console.log(listadoArchivos.value)
 
         files.value = []
         if (props.listarAlGuardar) listadoArchivos.value.push(response.data.modelo[0])
-        notificarCorrecto(response.data.mensaje)
+        // notificarCorrecto(response.data.mensaje)
         quiero_subir_archivos.value = false
       } catch (error: unknown) {
         console.log(error)

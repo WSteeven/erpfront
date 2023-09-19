@@ -85,6 +85,8 @@
           :accion1="accion1"
           :accion2="accion2"
           :accion3="accion3"
+          :accion4="accion4"
+          :accion5="accion5"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
           @consultar="accionTabla.consultar"

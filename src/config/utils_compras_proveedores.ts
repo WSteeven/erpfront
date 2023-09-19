@@ -22,7 +22,6 @@ export const tiposCuentas = [
 ]
 export const tiposEnvios = [
   { value: 'LOCALES', label: 'LOCALES' },
-  { value: 'PROVINCIALES', label: 'PROVINCIALES' },
   { value: 'NACIONALES', label: 'NACIONALES' },
 ]
 export const opcionesForma = [
@@ -105,4 +104,18 @@ export const formasPagos = [
   { value: 'NOTA DE CREDITO', label: 'NOTA DE CREDITO' },
   { value: 'NOTA DE DEBITO', label: 'NOTA DE DEBITO' },
   { value: 'TARJETA DE CREDITO', label: 'TARJETA DE CREDITO' },
+]
+
+export const ofertas = [
+  { value: 1, label: 'BIENES' },
+  { value: 2, label: 'SERVICIOS' },
+]
+
+export const opcionesReportesProveedores = [
+  { value: 0, label: 'RUC' },
+  { value: 1, label: 'RAZON SOCIAL' },
+  { value: 2, label: 'NOMBRE COMERCIAL' },
+  { value: 3, label: 'CIUDAD' },
+  { value: 4, label: 'CATEGORIAS' },
+  
 ]

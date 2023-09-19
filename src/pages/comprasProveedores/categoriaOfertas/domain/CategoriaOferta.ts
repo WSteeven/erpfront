@@ -6,6 +6,7 @@ export class CategoriaOferta extends EntidadAuditable{
     tipo_oferta_id: number|null
     estado: boolean
     departamentos: any[]
+    nombres_departamentos: any[]
 
     constructor(){
         super()
@@ -14,5 +15,6 @@ export class CategoriaOferta extends EntidadAuditable{
         this.tipo_oferta_id = null
         this.estado = true
         this.departamentos =[]
+        this.nombres_departamentos =[]
     }
 }

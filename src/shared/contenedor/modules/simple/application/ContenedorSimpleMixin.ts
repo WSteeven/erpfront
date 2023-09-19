@@ -273,23 +273,16 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   /**
    * Aqui se guardan los archivos
-   * @param data 
-   * @param agregarAlListado 
-   * @param params 
-   * @returns 
+   * @param data
+   * @param agregarAlListado
+   * @param params
+   * @returns
    */
   private async guardarArchivos(id:number, data: T, params?: ParamsType): Promise<any> {
 
     this.statusEssentialLoading.activar()
     try {
-      const { response } = await this.controller.guardarFiles(
-        id,
-        data,
-        {
-          ...params,
-          ...this.argsDefault
-        }
-      )
+      const { response } = await this.controller.guardarFiles(id,data)
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
       // this.agregarElementoListadoArchivosActual(response.data.modelo)

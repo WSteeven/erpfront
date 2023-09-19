@@ -254,14 +254,14 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Todos los comprobantes',
               link: 'egresos-filtrados',
               icon: 'bi-files',
-              can: store.esBodeguero || store.esContabilidad || store.esCoordinador || store.esGerente
+              can: store.esBodeguero || store.esContabilidad || store.esCoordinador || store.esGerente || store.can('puede.ver.comprobantes_egresos')
             }
           ]
         },
         {
           title: 'Reportes',
           icon: 'bi-clipboard2-data-fill',
-          can: store.esBodeguero || store.esContabilidad || store.can('puede.ver.reportes_bodega'),
+          can: store.esAdministrador || store.esBodeguero || store.esContabilidad || store.can('puede.ver.reportes_bodega'),
           children: [
             {
               title: 'Reporte de ingresos',
@@ -514,27 +514,28 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Prestamos Empresariales',
               link: 'prestamo-empresarial',
               icon: 'bi-building',
-              can:store.can('puede.ver.prestamo_empresarial'),
+              can: store.can('puede.ver.prestamo_empresarial'),
             },
             {
               title: 'Prestamos Hipotecario',
               link: 'prestamo-hipotecario',
               icon: 'bi-house',
-              can:store.can('puede.ver.prestamo_hipotecario'),
+              can: store.can('puede.ver.prestamo_hipotecario'),
             },
             {
               title: 'Prestamos Quirorafario',
               link: 'prestamo-quirorafario',
               icon: 'fa-solid fa-hands-holding',
-              can:store.can('puede.ver.prestamo_quirorafario'),
+              can: store.can('puede.ver.prestamo_quirorafario'),
             },
             {
               title: 'Solicitud de Prestamos Empresariales',
               link: 'solicitud-prestamo-empresarial',
               icon: 'fa-solid fa-file-signature',
-              can:store.can('puede.ver.solicitud_prestamo_empresarial'),
+              can: store.can('puede.ver.solicitud_prestamo_empresarial'),
             },
-          ]},
+          ]
+        },
 
 
 
@@ -581,7 +582,9 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
-    //Modulo de compras y proveedores
+    /*********************************************************
+     * Modulo de compras y proveedores
+     *********************************************************/
     {
       title: 'Compras y proveedores',
       icon: 'bi-bag-fill',
@@ -591,7 +594,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Empresas',
           link: 'empresas',
           icon: 'bi-building-fill-gear',
-          can: store.can('puede.acceder.empresas')  || store.esAdministrador,
+          can: store.can('puede.acceder.empresas') || store.esAdministrador,
         },
         {
           title: 'Proveedores',
@@ -612,10 +615,10 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
         },
         {
-          title: 'Criterios de calificacion de proveedores',
+          title: 'Criterios de Calificacion de Proveedores',
           link: 'criterios-calificaciones',
           icon: 'bi-list-check',
-          can: store.can('puede.ver.criterios_calificaciones')  || store.esAdministrador,
+          can: store.can('puede.ver.criterios_calificaciones') || store.esAdministrador,
         },
         {
           title: 'Categorias Tipo Oferta',
@@ -624,21 +627,34 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.categorias_ofertas') || store.esAdministrador,
         },
         {
-          title: 'Preordenes de compras',
+          title: 'Preordenes de Compras',
           link: 'preordenes-compras',
           icon: 'bi-list',
           can: store.can('puede.ver.preordenes_compras') || store.esAdministrador,
         },
         {
-          title: 'Ordenes de compras',
+          title: 'Ordenes de Compras',
           link: 'ordenes-compras',
           icon: 'bi-cart-plus',
           can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
         },
         {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          can: store.esAdministrador || store.esCompras,
+          children: [
+            {
+              title: 'Reporte de Proveedores',
+              link: 'reporte-proveedores',
+              icon: 'bi-person-fill-add',
+              can: true,
+            }
+          ]
+        },
+        {
           title: 'Logs',
           icon: 'bi-file-text',
-          can: true,
+          can: store.esAdministrador,
           children: [
             {
               title: 'Contactos de Proveedores',
@@ -647,7 +663,7 @@ export const useMenuStore = defineStore('menu', () => {
               can: true,
             }
           ]
-        }
+        },
       ]
     },
     {

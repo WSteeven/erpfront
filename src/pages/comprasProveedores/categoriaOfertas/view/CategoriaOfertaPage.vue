@@ -63,54 +63,54 @@
 
           <!--Departamentos responsables de calificar-->
           <div class="col-12 col-md-4">
-              <label class="q-mb-sm block"
-                >Departamentos Responsables de Calificar</label
+            <label class="q-mb-sm block"
+              >Departamentos Responsables de Calificar</label
+            >
+            <q-select
+              v-model="categoria.departamentos"
+              :options="departamentos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              multiple
+              dense
+              use-chips
+              outlined
+              :error="!!v$.departamentos.$errors.length"
+              error-message="Debes seleccionar al menos una opcion"
+              hint="Dept. Financiero califica a todos los proveedores"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              :option-disable="(v) => v.id === departamentoFinanciero.id"
+              emit-value
+              map-options
+              ><template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
               >
-              <q-select
-                v-model="categoria.departamentos"
-                :options="departamentos"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                :disable="disabled"
-                options-dense
-                multiple
-                dense
-                use-chips
-                outlined
-                :error="!!v$.departamentos.$errors.length"
-                error-message="Debes seleccionar al menos una opcion"
-                hint="Dept. Financiero califica a todos los proveedores"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
-                :option-disable="(v) => v.id === departamentoFinanciero.id"
-                emit-value
-                map-options
-                ><template
-                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
-                >
-                  <q-item v-bind="itemProps">
-                    <q-item-section>
-                      {{ opt.nombre }}
-                      <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
-                      <q-item-label caption>{{ opt.responsable }}</q-item-label>
-                    </q-item-section>
-                    <q-item-section side>
-                      <q-toggle
-                        :model-value="selected"
-                        @update:model-value="toggleOption(opt)"
-                      />
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.nombre }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                    <q-item-label caption>{{ opt.responsable }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
 
           <!-- Estado -->
           <div class="col-12 col-md-3">

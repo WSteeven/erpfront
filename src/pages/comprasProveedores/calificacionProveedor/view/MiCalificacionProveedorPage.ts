@@ -1,5 +1,5 @@
 // Dependencies
-import { defineComponent, ref, onMounted, computed, nextTick } from "vue"
+import { defineComponent, ref, onMounted, computed } from "vue"
 
 //Components
 import EssentialTable from "components/tables/view/EssentialTable.vue"
@@ -15,8 +15,6 @@ import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pag
 import { useCalificacionProveedorStore } from "stores/comprasProveedores/calificacionProveedor"
 import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController"
 import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor"
-import { Proveedor } from "sistema/proveedores/domain/Proveedor"
-import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController"
 
 //Logica y controladores
 
@@ -27,13 +25,12 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
         const { listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
-        const mixinArchivos = new ContenedorSimpleMixin(Proveedor, new ProveedorController())
+        const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController())
         /**************************************************************
          * Stores
          **************************************************************/
         const proveedorStore = useProveedorStore()
         const calificacionProveedorStore = useCalificacionProveedorStore()
-        const mostrarCalificacionPersonal = calificacionProveedorStore.verMiCalificacion
 
 
         /**************************************************************
@@ -47,9 +44,9 @@ export default defineComponent({
         const calificacionesDepartamentos = ref<any>([])
         const idDetalleDepartamentoProveedor = computed(() => proveedorStore.idDetalleDepartamento)
 
-        console.log(idDetalleDepartamentoProveedor.value)
         calificacion_dada.value = { calificacion: 0, fecha_calificacion: Date.now() }
 
+        calificacionProveedorStore.departamentosCalificadoresProveedor = []
 
         cargarVista(async () => {
             obtenerListados({
@@ -58,17 +55,18 @@ export default defineComponent({
             // console.log('INFO CALIFICACION', proveedorStore.idProveedor, proveedorStore.idDepartamento)
             calificacionProveedorStore.idProveedor = proveedorStore.proveedor.id
             calificacionProveedorStore.idDepartamento = proveedorStore.idDepartamento
-            await calificacionProveedorStore.consultarDepartamentosCalificanProveedor()
+            await calificacionProveedorStore.consultarCalificacionMiDepartamento()
             departamentosCalificadores.value = calificacionProveedorStore.departamentosCalificadoresProveedor
-            await calificacionProveedorStore.departamentosCalificadoresProveedor.forEach(async (v: any, index) => {
-                // console.log(v)
-                calificacionesDepartamentos.value[index] = [v, await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id)]
-                // console.log(await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id))
-            })
-            console.log(calificacionesDepartamentos.value)
+                console.log(departamentosCalificadores.value)
 
-            console.log(calificacionProveedorStore.detalleDepartamentoProveedor)
+            await calificacionProveedorStore.departamentosCalificadoresProveedor.forEach(async (v: any, index) => {
+                console.log(v)
+                calificacionesDepartamentos.value[index] = [v, await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id)]
+            })
+
+            //aqui consulta el departamento y la calificación
             calificacion_dada.value = calificacionProveedorStore.detalleDepartamentoProveedor
+
 
         })
 
@@ -76,14 +74,12 @@ export default defineComponent({
         /**************************************************************
          * Init
          **************************************************************/
-        function cargarArchivos(id: number) {
-            refArchivo.value.listarArchivosAlmacenados(id)
+        function cargarArchivos() {
+            refArchivo.value.listarArchivosAlmacenados(idDetalleDepartamentoProveedor.value)
         }
-        
-        onMounted(() => {
-                cargarArchivos(proveedorStore.idProveedor)
-            console.log(refArchivo.value)
-        }
+
+        onMounted(() =>
+            cargarArchivos()
         )
         return {
             ofertas: listadosAuxiliares.ofertas,
@@ -100,7 +96,6 @@ export default defineComponent({
                 return listadoFiltrado
             },
 
-            mostrarCalificacionPersonal,
             calificacion_dada,
             refArchivo,
             mixinArchivos,

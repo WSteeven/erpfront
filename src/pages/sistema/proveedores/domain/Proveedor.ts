@@ -24,6 +24,7 @@ export class Proveedor extends EntidadAuditable {
   tipos_ofrece: any[]
   categorias_ofrece: any[]
   departamentos: any[]
+  related_departamentos: any[]
 
   //auxiliares
   calificacion: number | null
@@ -55,6 +56,7 @@ export class Proveedor extends EntidadAuditable {
     this.tipos_ofrece = []
     this.categorias_ofrece = []
     this.departamentos = []
+    this.related_departamentos = []
 
     this.referencia = null
     this.forma_pago = null

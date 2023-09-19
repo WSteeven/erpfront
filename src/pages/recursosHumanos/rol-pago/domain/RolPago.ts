@@ -12,6 +12,7 @@ export class RolPago extends EntidadAuditable {
   descuento_ley_info: number | null
   concepto_ingreso_info: string | null
   descuento_general_info: string | null
+  medio_tiempo:boolean|null
   multa_info: string | null
   descuento_general: number | null
   descuento_ley: number | null
@@ -80,6 +81,7 @@ porcentaje_anticipo: number | null
     this.anticipo = null
     this.iess = null
     this.es_quincena = false
+    this.medio_tiempo = false
     this.porcentaje_anticipo = null
   }
 }

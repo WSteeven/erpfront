@@ -3,12 +3,8 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proveedores"
-    :accion1="botonDesactivarProveedor"
-    :accion2="botonActivarProveedor"
-    :accion3="botonCalificarProveedor"
-    :accion4="botonVerMiCalificacionProveedor"
-    :accion5="botonVerCalificacionProveedor"
-    :puedeExportar="true"
+    :mostrarListado="false"
+    :mostrarButtonSubmits="false"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -21,60 +17,8 @@
           <div class="row q-col-gutter-sm q-pa-sm">
             <!--Empresa -->
             <div class="col-12 col-md-3">
-              <label-abrir-modal
-                v-if="mostrarLabelModal"
-                label="Persona (natural/juridica)"
-                @click="modales.abrirModalEntidad('EmpresaPage')"
-              />
-              <label v-else class="q-mb-sm block">Razón Social</label>
-              <!-- Persona (natural/juridica) -->
-              <q-select
-                v-model="proveedor.empresa"
-                :options="empresas"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                :disable="disabled"
-                options-dense
-                dense
-                outlined
-                use-input
-                input-debounce="0"
-                @filter="filtrarEmpresas"
-                @popup-show="ordenarEmpresas"
-                @update:model-value="obtenerEmpresa"
-                :error="!!v$.empresa.$errors.length"
-                hint="Agrega elementos desde el panel de empresas"
-                error-message="Debes seleccionar una empresa"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.razon_social"
-                emit-value
-                map-options
-              >
-                <template v-slot:error>
-                  <div v-for="error of v$.empresa.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
-                      <q-item-label caption
-                        >{{ scope.opt.identificacion }} |{{
-                          scope.opt.nombre_comercial
-                        }}</q-item-label
-                      >
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              <label class="q-mb-sm block">Razón Social</label>
+              <q-input v-model="empresa.razon_social" disable dense outlined />
             </div>
             <!-- identificacion-->
             <div class="col-12 col-md-3" v-if="empresa.identificacion">
@@ -228,104 +172,22 @@
               <q-input
                 v-model="proveedor.sucursal"
                 placeholder="Obligatorio"
-                :disable="disabled"
-                :error="!!v$.sucursal.$errors.length"
-                @blur="v$.sucursal.$touch"
+                disable
                 outlined
                 dense
-              >
-                <template v-slot:error>
-                  <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-input>
+              />
             </div>
 
             <!--Canton -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Ciudad</label>
-              <q-select
-                v-model="proveedor.canton"
-                :options="cantones"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                :disable="disabled"
-                options-dense
-                dense
-                outlined
-                use-input
-                input-debounce="0"
-                @filter="filtrarCantones"
-                @update:model-value="obtenerParroquias"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.canton"
-                emit-value
-                map-options
-                ><template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.canton }}</q-item-label>
-                      <q-item-label caption
-                        >Provincia {{ scope.opt.provincia }}</q-item-label
-                      >
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              <q-input v-model="proveedor.canton" disable dense outlined />
             </div>
 
             <!--Parroquia -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Parroquia</label>
-              <q-select
-                v-model="proveedor.parroquia"
-                :options="parroquias"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                :disable="disabled"
-                options-dense
-                dense
-                outlined
-                use-input
-                input-debounce="0"
-                @filter="filtrarParroquias"
-                :error="!!v$.parroquia.$errors.length"
-                error-message="Debes seleccionar una parroquia"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.parroquia"
-                emit-value
-                map-options
-              >
-                <template v-slot:error>
-                  <div v-for="error of v$.parroquia.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.parroquia }}</q-item-label>
-                      <q-item-label caption
-                        >Cantón {{ scope.opt.canton }}</q-item-label
-                      >
-                    </q-item-section>
-                  </q-item> </template
-                ><template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              <q-input v-model="proveedor.parroquia" disable dense outlined />
             </div>
             <!-- Celular  -->
             <div class="col-12 col-md-3">
@@ -333,20 +195,20 @@
               <q-input
                 v-model="proveedor.celular"
                 placeholder="Opcional"
-                :disable="disabled"
+                disable
                 outlined
                 dense
               >
               </q-input>
             </div>
             <!-- Telefono  -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3" v-if="proveedor.telefono">
               <label class="q-mb-sm block">Teléfono</label>
               <q-input
                 v-model="proveedor.telefono"
                 placeholder="Opcional"
                 hint="Número de telefono fijo o extensión"
-                :disable="disabled"
+                disable
                 outlined
                 dense
               >
@@ -358,16 +220,10 @@
               <q-input
                 v-model="proveedor.direccion"
                 placeholder="Obligatorio"
-                :disable="disabled"
-                :error="!!v$.direccion.$errors.length"
+                disable
                 outlined
                 dense
-                ><template v-slot:error>
-                  <div v-for="error of v$.direccion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-input>
+              />
             </div>
             <!-- Estado -->
             <div
@@ -379,7 +235,7 @@
                 :label="proveedor.estado ? 'ACTIVO' : 'INACTIVO'"
                 v-model="proveedor.estado"
                 color="primary"
-                :disable="disabled"
+                disable
                 keep-color
                 icon="bi-check2-circle"
                 unchecked-icon="clear"
@@ -392,13 +248,7 @@
                 class="q-mt-lg q-pt-md"
                 v-model="esReferido"
                 label="¿Es referido?"
-                :disable="disabled || soloLectura"
-                @update:model-value="
-                  () =>
-                    (proveedor.referencia = esReferido
-                      ? proveedor.referencia
-                      : null)
-                "
+                disable
                 outlined
                 dense
               ></q-checkbox>
@@ -410,7 +260,7 @@
               <q-input
                 v-model="proveedor.referencia"
                 placeholder="Obligatorio"
-                :disable="disabled"
+                disable
                 outlined
                 dense
               />
@@ -423,7 +273,7 @@
                 :options="formasPagos"
                 transition-show="jump-up"
                 transition-hide="jump-down"
-                :disable="disabled"
+                disable
                 options-dense
                 dense
                 outlined
@@ -446,7 +296,7 @@
               <q-input
                 v-model="proveedor.plazo_credito"
                 placeholder="Opcional"
-                :disable="disabled"
+                disable
                 autogrow
                 outlined
                 dense
@@ -459,7 +309,7 @@
                 v-model="proveedor.anticipos"
                 autogrow
                 placeholder="Opcional"
-                :disable="disabled"
+                disable
                 outlined
                 dense
               />
@@ -480,7 +330,6 @@
                       titulo="Datos Bancarios del Proveedor"
                       :configuracionColumnas="columnasDatosBancarios"
                       :datos="empresa.datos_bancarios"
-                      :accion1Header="abrirModalDatoBancario"
                       :permitirBuscar="false"
                       :permitirConsultar="false"
                       :permitirEditar="true"
@@ -511,7 +360,7 @@
                     <q-input
                       v-model="proveedor.tiempo_entrega"
                       placeholder="Obligatorio"
-                      :disable="disabled"
+                      disable
                       outlined
                       dense
                     />
@@ -543,14 +392,12 @@
                       :options="tiposEnvios"
                       transition-show="jump-up"
                       transition-hide="jump-down"
-                      :disable="disabled"
+                      disable
                       options-dense
                       multiple
                       dense
                       use-chips
                       outlined
-                      :error="!!v$.tipo_envio.$errors.length"
-                      error-message="Debes seleccionar al menos una opcion"
                       :option-value="(v) => v.value"
                       :option-label="(v) => v.label"
                       emit-value
@@ -599,7 +446,6 @@
                     />
                   </div>
 
-
                   <!-- Garantía-->
                   <div class="col-12 col-md-3">
                     <label
@@ -626,11 +472,10 @@
                       ref="refArchivo"
                       label="Información Adicional del Proveedor"
                       :mixin="mixinEmpresas"
-                      :disable="disabled"
+                      disable
                       :listarAlGuardar="false"
-                      :permitir-eliminar="
-                        accion == acciones.nuevo || accion == acciones.editar
-                      "
+                      :permitir-subir="false"
+                      :permitir-eliminar="false"
                       :idModelo="empresa.id"
                     >
                       <template #boton-subir>
@@ -703,46 +548,20 @@
                 :options="ofertas"
                 transition-show="jump-up"
                 transition-hide="jump-down"
-                :disable="disabled"
+                disable
                 options-dense
                 multiple
                 dense
                 use-chips
                 outlined
-                :error="!!v$.tipos_ofrece.$errors.length"
-                @update:model-value="actualizarCategorias"
-                error-message="Debes seleccionar al menos una opcion"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="(v) => v.value"
+                :option-label="(v) => v.label"
                 emit-value
                 map-options
-                ><template
-                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
-                >
-                  <q-item v-bind="itemProps">
-                    <q-item-section>
-                      {{ opt.nombre }}
-                      <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
-                    </q-item-section>
-                    <q-item-section side>
-                      <q-toggle
-                        :model-value="selected"
-                        @update:model-value="toggleOption(opt)"
-                      />
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              />
             </div>
             <!--Categorias-->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-4">
               <label-abrir-modal
                 v-if="mostrarLabelModal"
                 label="Categorias"
@@ -754,7 +573,7 @@
                 :options="categorias"
                 transition-show="jump-up"
                 transition-hide="jump-down"
-                :disable="disabled"
+                disable
                 options-dense
                 multiple
                 dense
@@ -762,8 +581,6 @@
                 outlined
                 @popup-show="ordenarCategorias"
                 @update:model-value="actualizarDepartamentos"
-                :error="!!v$.categorias_ofrece.$errors.length"
-                error-message="Debes seleccionar al menos una opcion"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
                 emit-value
@@ -793,9 +610,8 @@
                 </template>
               </q-select>
             </div>
-            <!-- {{ proveedor.departamentos }} -->
             <!--Departamentos que califican-->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-5">
               <label class="q-mb-sm block"
                 >Departamentos que Califican al Proveedor</label
               >
@@ -804,19 +620,16 @@
                 :options="departamentos"
                 transition-show="jump-up"
                 transition-hide="jump-down"
-                :disable="disabled"
+                disable
                 options-dense
                 multiple
                 dense
                 use-chips
                 outlined
                 :max-values="3"
-                :error="!!v$.departamentos.$errors.length"
-                error-message="Debes seleccionar al menos una opcion"
                 hint="Dept. Financiero califica a todos los proveedores (Máx. 3 depts.)"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
-                :option-disable="(v) => v.id === departamentoFinanciero.id"
                 emit-value
                 map-options
                 ><template
@@ -836,38 +649,13 @@
                     </q-item-section>
                   </q-item>
                 </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
               </q-select>
             </div>
-
-            <!-- Departamentos -->
-            <!-- <div class="col-12 col-md-3" v-if="false">
-              <label>Departamentos calificadores</label>
-              <q-option-group
-                :options="
-                  departamentos.map((v) => {
-                    return { label: v.nombre, value: v.id }
-                  })
-                "
-                type="checkbox"
-                v-model="proveedor.departamentos"
-              />
-            </div> -->
           </div>
         </q-expansion-item>
       </q-form>
     </template>
   </tab-layout>
-  <modales-entidad
-    :comportamiento="modales"
-    @guardado="(data) => guardado(data)"
-  ></modales-entidad>
 </template>
 
-<script src="./ProveedorPage.ts"></script>
+<script src="./VisualizarProveedorPage.ts"></script>
