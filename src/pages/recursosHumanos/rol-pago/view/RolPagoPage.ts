@@ -307,7 +307,6 @@ export default defineComponent({
     const reglas = {
       empleado: { required },
       mes: { required },
-      porcentaje_anticipo: { minValue: minValue(3), maxValue: maxValue(40) },
     }
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
