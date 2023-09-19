@@ -103,7 +103,6 @@ export default defineComponent({
     **************************************************************/
     onConsultado(() => {
       proveedor.tipo_envio = proveedor.tipo_envio != null ? JSON.parse(proveedor.tipo_envio.toString()) : []
-      console.log()
       obtenerEmpresa(proveedor.empresa).then(() => refArchivo.value.listarArchivosAlmacenados(empresa.id))
     })
     onReestablecer(() => {

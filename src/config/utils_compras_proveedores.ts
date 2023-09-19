@@ -105,3 +105,8 @@ export const formasPagos = [
   { value: 'NOTA DE DEBITO', label: 'NOTA DE DEBITO' },
   { value: 'TARJETA DE CREDITO', label: 'TARJETA DE CREDITO' },
 ]
+
+export const ofertas = [
+  { value: 1, label: 'BIENES' },
+  { value: 2, label: 'SERVICIOS' },
+]

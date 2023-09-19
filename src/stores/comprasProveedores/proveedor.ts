@@ -1,11 +1,12 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
-import { defineStore } from "pinia";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { Proveedor } from "sistema/proveedores/domain/Proveedor";
-import { reactive, ref } from "vue";
+import { AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
+import { defineStore } from 'pinia';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { imprimirArchivo } from 'shared/utils';
+import { Proveedor } from 'sistema/proveedores/domain/Proveedor';
+import { reactive, ref } from 'vue';
 
 export const useProveedorStore = defineStore('proveedor', () => {
     //State
@@ -17,12 +18,12 @@ export const useProveedorStore = defineStore('proveedor', () => {
     const idTipoOferta = ref()
 
     const statusLoading = new StatusEssentialLoading()
-    const { notificarError } = useNotificaciones()
+    const { notificarError, notificarAdvertencia } = useNotificaciones()
 
-    async function consultar(id: number) {
-        const axios = AxiosHttpRepository.getInstance()
-        // const ruta
-    }
+    // async function consultar(id: number) {
+    //     const axios = AxiosHttpRepository.getInstance()
+    //     // const ruta
+    // }
 
     async function anularProveedor(data: any) {
         try {
@@ -38,6 +39,43 @@ export const useProveedorStore = defineStore('proveedor', () => {
         }
     }
 
+    async function showPreview() {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.proveedores) + '/show-preview/' + idProveedor.value
+        const response: AxiosResponse = await axios.get(ruta)
+        proveedor.hydrate(response.data.modelo)
+    }
+    async function buscarReporte(accion: string, data) {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            // let url = axios.getEndpoint(endpoints.proveedores) + '/reportes'
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.proveedores) + '/reportes'
+            const filename = 'reporte_proveedores'
+            switch (accion) {
+                case 'excel':
+                    data.accion = 'excel'
+                    imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+                    break
+                case 'pdf':
+                    data.accion = 'pdf'
+                    imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+                    break
+                default:
+                    data.accion = ''
+                    const response: AxiosResponse = await axios.post(url, data)
+                    console.log(response)
+                    if (response.data.results.length > 0) return response.data.results
+                    else notificarAdvertencia('No se obtuvieron resultados')
+            }
+        } catch (error) {
+            console.log(error)
+            notificarError('Error al obtener el reporte')
+        } finally {
+            statusLoading.desactivar()
+        }
+    }
+
     return {
         proveedor,
         proveedorReset,
@@ -47,5 +85,7 @@ export const useProveedorStore = defineStore('proveedor', () => {
         idDetalleDepartamento,
 
         anularProveedor,
+        showPreview,
+        buscarReporte,
     }
 })
