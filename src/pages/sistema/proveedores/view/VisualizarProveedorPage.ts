@@ -50,7 +50,7 @@ export default defineComponent({
         const empresa: Empresa = reactive(new Empresa())
         const esReferido = computed(() => { return !!proveedor.referencia })
 
-        cargarVista(() => {
+        cargarVista(async()=>{
             obtenerListados({
                 categorias: new CategoriaOfertaController(),
                 departamentos: new DepartamentoController(),

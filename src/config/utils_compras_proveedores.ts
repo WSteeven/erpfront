@@ -110,3 +110,12 @@ export const ofertas = [
   { value: 1, label: 'BIENES' },
   { value: 2, label: 'SERVICIOS' },
 ]
+
+export const opcionesReportesProveedores = [
+  { value: 0, label: 'RUC' },
+  { value: 1, label: 'RAZON SOCIAL' },
+  { value: 2, label: 'NOMBRE COMERCIAL' },
+  { value: 3, label: 'CIUDAD' },
+  { value: 4, label: 'CATEGORIAS' },
+  
+]

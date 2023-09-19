@@ -541,7 +541,7 @@
         >
           <div class="row q-col-gutter-sm q-pa-sm">
             <!--Ofrece-->
-            <div class="col-12 col-md-2">
+            <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Ofrece</label>
               <q-select
                 v-model="proveedor.tipos_ofrece"
@@ -561,7 +561,7 @@
               />
             </div>
             <!--Categorias-->
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-4">
               <label-abrir-modal
                 v-if="mostrarLabelModal"
                 label="Categorias"

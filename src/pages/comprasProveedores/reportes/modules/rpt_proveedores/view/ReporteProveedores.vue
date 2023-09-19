@@ -5,8 +5,91 @@
         <div class="col">
           <q-card class="rounded-card custom-shadow">
             <div class="row q-col-gutter-sm q-pa-sm q-py-md">
+              <!--Canton -->
+              <div class="col-12 col-md-3">
+                <label class="q-mb-sm block">Ciudad</label>
+                <q-select
+                  v-model="reporte.canton"
+                  :options="cantones"
+                  transition-show="jump-up"
+                  transition-hide="jump-down"
+                  :disable="disabled"
+                  options-dense
+                  dense
+                  outlined
+                  use-input
+                  input-debounce="0"
+                  @filter="filtrarCantones"
+                  :option-value="(v) => v.id"
+                  :option-label="(v) => v.canton"
+                  emit-value
+                  map-options
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No hay resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.canton }}</q-item-label>
+                        <q-item-label caption
+                          >Provincia {{ scope.opt.provincia }}</q-item-label
+                        >
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
+              <!--Categorias-->
+            <div class="col-12 col-md-3">
+              <label  class="q-mb-sm block">Categorias</label>
+              <q-select
+                v-model="reporte.categorias"
+                :options="categorias"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                multiple
+                dense
+                use-chips
+                outlined
+                @popup-show="ordenarCategorias"
+                @filter="filtrarCategoriasProveedor"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+                ><template
+                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                >
+                  <q-item v-bind="itemProps">
+                    <q-item-section>
+                      {{ opt.nombre }}
+                      <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-toggle
+                        :model-value="selected"
+                        @update:model-value="toggleOption(opt)"
+                      />
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
               <!-- razon social -->
-              <div class="col-12 col-md-3 q-mb-md" >
+              <div class="col-12 col-md-3 q-mb-md">
                 <label class="q-mb-sm block">Razón Social</label>
                 <q-input
                   v-model="reporte.razon_social"

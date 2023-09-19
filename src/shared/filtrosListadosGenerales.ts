@@ -2,6 +2,7 @@ import { Empresa } from "pages/administracion/empresas/domain/Empresa";
 import { Ref, ref } from "vue";
 import { ordernarListaString } from "./utils";
 import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
+import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -16,6 +17,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const clientes = ref([])
   const empleados = ref([])
   const bancos = ref([])
+  const categorias = ref([])
 
 
   /**************************************************************
@@ -190,7 +192,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     })
   }
 
-  function filtrarBancos(val, update){
+  function filtrarBancos(val, update) {
     if (val === '') {
       update(() => {
         bancos.value = listadosAuxiliares.bancos
@@ -199,8 +201,22 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     }
     update(() => {
       const needle = val.toLowerCase()
-      bancos.value = listadosAuxiliares.bancos.filter((v: Banco) => v.nombre!.toLowerCase().indexOf(needle) > -1 )
+      bancos.value = listadosAuxiliares.bancos.filter((v: Banco) => v.nombre!.toLowerCase().indexOf(needle) > -1)
     })
+  }
+
+  function filtrarCategoriasProveedor(val, update) {
+    if (val === '') {
+      update(() => categorias.value = listadosAuxiliares.categorias)
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      categorias.value = listadosAuxiliares.categorias.filter((v: CategoriaOferta) => v.nombre!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+  function ordenarCategorias() {
+    categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
   }
 
   return {
@@ -213,5 +229,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     clientes, filtrarClientes,
     empleados, filtrarEmpleados,
     bancos, filtrarBancos,
+    categorias, filtrarCategoriasProveedor, ordenarCategorias,
   }
 }

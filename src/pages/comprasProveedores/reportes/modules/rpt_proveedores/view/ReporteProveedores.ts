@@ -1,5 +1,5 @@
 //Dependencias
-import { useQuasar } from "quasar";
+import { LocalStorage, useQuasar } from "quasar";
 
 //Componentes
 import EssentialTable from "components/tables/view/EssentialTable.vue"
@@ -21,6 +21,8 @@ import { useProveedorStore } from "stores/comprasProveedores/proveedor";
 import { ComportamientoModalesProveedores } from "sistema/proveedores/application/ComportamientoModalesProveedores";
 import { configuracionColumnasProveedores } from "sistema/proveedores/domain/configuracionColumnasProveedores";
 import { accionesTabla } from "config/utils";
+import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
+import { CategoriaOfertaController } from "pages/comprasProveedores/categoriaOfertas/infraestructure/CategoriaOfertaController";
 
 export default defineComponent({
     components: { EssentialTable, ModalEntidad },
@@ -42,6 +44,8 @@ export default defineComponent({
         const modales = new ComportamientoModalesProveedores()
 
         const reporte = reactive({
+            categorias: null,
+            canton: null,
             razon_social: null,
             tipo: null,
             accion: null,
@@ -52,9 +56,13 @@ export default defineComponent({
         const listado = ref([])
         cargarVista(async () => {
             await obtenerListados({
-                // empleados: new EmpleadoController(),
+                categorias: new CategoriaOfertaController(),
             })
+            listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+            cantones.value = listadosAuxiliares.cantones
         })
+
+        const { cantones, filtrarCantones, categorias, filtrarCategoriasProveedor, ordenarCategorias } = useFiltrosListadosSelects(listadosAuxiliares)
 
         /*************************
          * FUNCIONES
@@ -92,6 +100,9 @@ export default defineComponent({
             modales,
             //listados
             listado,
+            cantones, filtrarCantones,
+            categorias, filtrarCategoriasProveedor, ordenarCategorias,
+
 
 
             //funciones
