@@ -1,9 +1,11 @@
 <template>
   <q-page padding>
     <q-card class="q-mb-md rounded no-border custom-shadow">
-      <q-card-section>
-        <div class="text-bold q-mb-lg">Análisis de datos: Módulo de tareas</div>
+      <div class="row bg-body text-bold q-pa-md rounded q-mb-lg">
+        Análisis de datos: Módulo de tareas
+      </div>
 
+      <q-card-section>
         <!-- Tiempos -->
         <div class="row q-col-gutter-sm q-mb-md">
           <div class="col-12 col-md-3">
@@ -137,25 +139,15 @@
       v-if="mostrarTitulosSeccion"
       class="q-mb-md rounded no-border custom-shadow"
     >
-      <q-card-section>
-        <div
-          v-if="mostrarTitulosSeccion"
-          class="row bg-body text-bold q-pa-md rounded justify-between q-mb-lg"
-        >
-          <span class="q-col-gutter-x-xs">
-            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-          </span>
-          <span class="text-primary">Datos generales</span>
-          <span class="q-col-gutter-x-xs">
-            <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-            <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-          </span>
-        </div>
+      <div
+        v-if="mostrarTitulosSeccion"
+        class="row bg-body text-bold q-pa-md rounded text-primary block text-center q-mb-lg"
+      >
+        Datos generales
+      </div>
 
-        <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+      <q-card-section>
+        <div class="row q-col-gutter-sm q-mb-lg">
           <div class="col-12 col-md-6 q-mb-lg">
             <div class="row q-col-gutter-xs">
               <div v-if="cantidadTareasActivas >= 0" class="col-12">
@@ -301,6 +293,15 @@
       v-if="mostrarTitulosSeccion"
       class="q-mb-md rounded no-border custom-shadow"
     >
+      <div
+        v-if="mostrarTitulosSeccion"
+        class="row bg-body text-bold q-pa-md rounded justify-center q-mb-md"
+      >
+        <span class="text-primary"
+          >Gráficos estadísticos del coordinador consultado</span
+        >
+      </div>
+
       <q-tab-panels
         v-model="tabsCoordinadorConsultado"
         animated
@@ -309,29 +310,9 @@
         keep-alive
         :class="{ 'rounded-tabpanel': !$q.screen.xs }"
       >
-        <!-- Formulario -->
         <q-tab-panel
           :name="opcionesCoordinadorConsultado.coordinadorConsultadoGrafico"
         >
-          <div
-            v-if="mostrarTitulosSeccion"
-            class="row bg-body text-bold q-pa-md rounded justify-between q-mb-md"
-          >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            </span>
-            <span class="text-primary"
-              >Gráficos estadísticos del coordinador consultado</span
-            >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            </span>
-          </div>
-
           <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
             <div class="col-12 col-md-6 text-center">
               <div class="text-subtitle2">Subtareas creadas</div>
@@ -354,24 +335,6 @@
         <q-tab-panel
           :name="opcionesCoordinadorConsultado.coordinadorConsultadoListado"
         >
-          <div
-            class="row bg-body text-bold q-pa-md rounded justify-between q-mb-lg"
-          >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            </span>
-            <span class="text-primary"
-              >Tabla de subtareas creadas por el empleado selecionado</span
-            >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            </span>
-          </div>
-
           <q-btn
             color="primary"
             @click="tabsCoordinadorConsultado = 'coordinadorConsultadoGrafico'"
@@ -410,6 +373,11 @@
       v-if="mostrarTitulosSeccion"
       class="q-mb-md rounded no-border custom-shadow"
     >
+      <div
+        class="row bg-body text-bold q-pa-md rounded block text-center text-primary q-mb-md"
+      >
+        Gráficos estadísticos de los empleados subordinados
+      </div>
       <!-- <q-card-section> -->
       <q-tab-panels
         v-model="tabsSubordinados"
@@ -420,24 +388,6 @@
       >
         <!-- Graficos -->
         <q-tab-panel :name="opcionesSubordinado.subordinadosGrafico">
-          <div
-            class="row bg-body text-bold q-pa-md rounded justify-between q-mb-md"
-          >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            </span>
-            <span class="text-primary"
-              >Gráficos estadísticos de los empleados subordinados</span
-            >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            </span>
-          </div>
-
           <div class="row q-col-gutter-sm">
             <div class="col-12">
               <q-btn-toggle
@@ -828,24 +778,6 @@
         </q-tab-panel>
 
         <q-tab-panel :name="opcionesSubordinado.subordinadosListado">
-          <div
-            class="row bg-body text-bold q-pa-md rounded justify-between q-mb-lg"
-          >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            </span>
-            <span class="text-primary"
-              >Tabla de subtareas de grupos subordinados</span
-            >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            </span>
-          </div>
-
           <q-btn
             color="primary"
             @click="tabsSubordinados = opcionesSubordinado.subordinadosGrafico"

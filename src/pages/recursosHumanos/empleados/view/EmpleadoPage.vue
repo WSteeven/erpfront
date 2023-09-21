@@ -695,6 +695,19 @@
                 </template>
               </q-select>
             </div>
+             <!-- Acumula fondos de reserva -->
+             <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">¿Acumula fondos de reserva?</label>
+              <q-toggle
+                :label="empleado.acumula_fondos_reserva ? 'Acumula Fondos de Reserva' : 'No Acumula Fondos de Reserva'"
+                v-model="empleado.acumula_fondos_reserva"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
             <!-- Estado -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">¿Esta Enrolado?</label>
@@ -979,6 +992,46 @@
                 </template>
               </q-input>
             </div>
+            <div class="col-12 col-md-3 q-mb-xl">
+              <q-checkbox
+                class="q-mt-lg q-pt-md"
+                v-model="empleado.modificar_fecha_vinculacion"
+                label="Modificar fecha Vinculacion"
+                :disable="disabled"
+                outlined
+                dense
+              ></q-checkbox>
+            </div>
+            <!-- Fecha Vinculacion -->
+            <div class="col-12 col-md-3" v-if="empleado.modificar_fecha_vinculacion">
+              <label class="q-mb-sm block">Fecha de vinculacion</label>
+              <q-input
+                v-model="empleado.fecha_vinculacion"
+                placeholder="Opcional"
+                :disable="disabled || soloLectura"
+                readonly
+                outlined
+                dense
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                      <q-date
+                        v-model="empleado.fecha_vinculacion"
+                        :options="optionsFecha"
+                        :mask="maskFecha"
+                        today-btn
+                      >
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+
             <!-- Fecha Salida -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Fecha de Salida</label>

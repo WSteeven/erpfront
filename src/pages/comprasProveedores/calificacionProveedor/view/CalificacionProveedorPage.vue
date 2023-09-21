@@ -201,10 +201,10 @@
             <gestor-archivos
               ref="refArchivo"
               :mixin="mixin"
-              :endpoint="endpoint"
               :disable="disabled"
               :permitir-eliminar="true"
               :idModelo="idDetalleDepartamentoProveedor"
+              @inicializado="cargarArchivos"
             >
             <template #boton-subir>
               <q-btn
@@ -230,7 +230,7 @@
         caption="Valoración global del proveedor"
         icon="bi-plus-circle"
       >
-        <q-card>
+        <q-card class="q-pa-sm">
           <div class="col-12 justify-center">
             Tu calificación para el proveedor es:
             <h4>{{ resultadosCalificacion.calificacion }}/100</h4>

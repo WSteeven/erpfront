@@ -128,7 +128,7 @@
               <!--
                 :error="!!v$.autorizacion.$errors.length"
                 error-message="Debes seleccionar una autorizacion"
-  
+
                 <template v-slot:error>
                   <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
@@ -535,7 +535,6 @@
             </div>
           </div>
 
-          {{ orden.listadoProductos }}
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table

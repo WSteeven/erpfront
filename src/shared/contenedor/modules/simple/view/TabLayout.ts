@@ -82,6 +82,14 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion4: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion5: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
     full: {
       type: Boolean,
       default: false,

@@ -545,6 +545,7 @@
             >
             </q-input>
           </div>
+
           <!-- Varios numeros de serie -->
           <div class="col-12 col-md-4">
             <br />

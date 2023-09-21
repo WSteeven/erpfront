@@ -43,6 +43,7 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
                 mensaje: 'Ingresa la cantidad',
                 defecto: criteriosBienes.value[posicion].peso,
                 tipo: 'number',
+                validacion: (val) => val > 0 && val <= 100,
                 accion: (data) => {
                     criteriosBienes.value[posicion].peso = data
                 },
@@ -53,7 +54,7 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
         visible: () => true
     }
     const btnEditarCantidadCriterioServicio: CustomActionTable = {
-        titulo: 'Cantidad',
+        titulo: 'Peso',
         icono: 'bi-pencil',
         accion: ({ posicion }) => {
             const config: CustomActionPrompt = {
@@ -61,6 +62,7 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
                 mensaje: 'Ingresa la cantidad',
                 defecto: criteriosServicios.value[posicion].peso,
                 tipo: 'number',
+                validacion: (val) => val > 0 && val <= 100,
                 accion: (data) => {
                     criteriosServicios.value[posicion].peso = data
                 },
@@ -168,7 +170,7 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
         btnEliminarCriterioBien,
         btnEliminarCriterioServicio,
         // btnSubirArchivosBien,
-        
+
         //listados
         criteriosBienes,
         criteriosServicios,

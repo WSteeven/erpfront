@@ -1,19 +1,28 @@
 import { TabOption } from "components/tables/domain/TabOption"
 
 export const opcionesTipoContribuyente = [
-  { value: 'NATURAL', label: 'NATURAL' },
-  { value: 'PRIVADA', label: 'PRIVADA' },
-  { value: 'PUBLICA', label: 'PUBLICA' },
+  { value: 'PERSONA NATURAL', label: 'PERSONA NATURAL' },
+  { value: 'SOCIEDAD', label: 'SOCIEDAD' },
+  // { value: 'PUBLICA', label: 'PUBLICA' },
 ]
 
 export const opcionesTipoNegocio = [
-  { value: 'RIMPE CON IVA', label: 'RIMPE CON IVA' },
-  { value: 'RIMPE SIN IVA', label: 'RIMPE SIN IVA' },
+  { value: 'RIMPE EMPRENDEDOR', label: 'RIMPE EMPRENDEDOR' },
+  { value: 'RIMPE NEGOCIOS POPULARES', label: 'RIMPE NEGOCIOS POPULARES' },
+  { value: 'GENERAL', label: 'GENERAL' },
 ]
 export const opcionesTipoContacto = [
   { value: 'TECNICO', label: 'TÉCNICO' },
   { value: 'FINANCIERO', label: 'FINANCIERO' },
   { value: 'COMERCIAL', label: 'COMERCIAL' },
+]
+export const tiposCuentas = [
+  { value: 'AHORROS', label: 'AHORROS' },
+  { value: 'CORRIENTE', label: 'CORRIENTE' },
+]
+export const tiposEnvios = [
+  { value: 'LOCALES', label: 'LOCALES' },
+  { value: 'NACIONALES', label: 'NACIONALES' },
 ]
 export const opcionesForma = [
   { value: 'CONTADO', label: 'CONTADO' },
@@ -83,3 +92,36 @@ export const estadosCalificacionProveedor = {
   calificado: 'CALIFICADO',
   parcial: 'PARCIAL',
 }
+
+export const formasPagos = [
+  { value: 'CHEQUE', label: 'CHEQUE' },
+  { value: 'CREDITO', label: 'CREDITO' },
+  { value: 'DEPOSITO', label: 'DEPOSITO' },
+  { value: 'EFECTIVO', label: 'EFECTIVO' },
+  { value: 'MULTIPLE', label: 'MULTIPLE' },
+  { value: 'NC INTERNA', label: 'NC INTERNA' },
+  { value: 'ND INTERNA', label: 'ND INTERNA' },
+  { value: 'NOTA DE CREDITO', label: 'NOTA DE CREDITO' },
+  { value: 'NOTA DE DEBITO', label: 'NOTA DE DEBITO' },
+  { value: 'TARJETA DE CREDITO', label: 'TARJETA DE CREDITO' },
+]
+
+export const ofertas = [
+  { value: 1, label: 'BIENES' },
+  { value: 2, label: 'SERVICIOS' },
+]
+
+export const opcionesReportesProveedores = [
+  { value: 0, label: 'RUC' },
+  { value: 1, label: 'RAZON SOCIAL' },
+  { value: 2, label: 'NOMBRE COMERCIAL' },
+  { value: 3, label: 'CIUDAD' },
+  { value: 4, label: 'CATEGORIAS' },
+]
+
+export const opcionesCalificacionProveedor = [
+  { value: 'SIN CONFIGURAR', label: 'SIN CONFIGURAR' },
+  { value: 'SIN CALIFICAR', label: 'SIN CALIFICAR' },
+  { value: 'CALIFICADO', label: 'CALIFICADO' },
+  { value: 'PARCIAL', label: 'PARCIAL' },
+]

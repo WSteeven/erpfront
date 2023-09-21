@@ -181,7 +181,7 @@ export default defineComponent({
       // responsable: { requiredIfPedido: requiredIf(transaccion.pedido! > 0) },
       responsable: { required },
       autorizacion: {
-        requiredIfCoordinador: requiredIf(esCoordinador),
+        requiredIfCoordinador: requiredIf(esCoordinador && !store.esBodegueroTelconet),
         requiredIfEsVisibleAut: requiredIf(false)
       },
       observacion_aut: {
@@ -330,7 +330,7 @@ export default defineComponent({
             v.cantidad = cantidadPendiente
             console.log('hay más en inventario')
           } else {
-            console.log('hay menos en inventario')
+            console.log('hay menos en inventario', v.detalle_id, v.cantidad)
           }
         }
       })
@@ -423,7 +423,7 @@ export default defineComponent({
       await empleadoStore.cargarEmpleado()
       modalesEmpleado.abrirModalEntidad('EmpleadoInfoPage')
     }
-    
+
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
@@ -454,7 +454,7 @@ export default defineComponent({
       //funciones
       recargarSucursales,
       infoEmpleado,
-      
+
 
       //filtros
       filtroTareas,
@@ -536,7 +536,7 @@ export default defineComponent({
 
       //rol
       rolSeleccionado,
-      esBodeguero,
+      esBodeguero, esBodegueroTelconet: store.esBodegueroTelconet,
       esCoordinador,
 
       llenarTransaccion,
@@ -554,10 +554,14 @@ export default defineComponent({
         opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
       },
       ordenarClientes() {
-        opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+        if (store.esBodegueroTelconet) opciones_clientes.value = opciones_clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
+        else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
       },
       ordenarSucursales() {
-        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+        if (store.esBodegueroTelconet) {
+          const sucursalesTelconet = opciones_sucursales.value.filter((v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1)
+          opciones_sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+        } else opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
       ordenarEmpleados() {
         opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))

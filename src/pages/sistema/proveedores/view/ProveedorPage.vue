@@ -3,15 +3,18 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proveedores"
-    :accion1="botonCalificarProveedor"
-    :accion2="botonVerMiCalificacionProveedor"
-    :accion3="botonVerCalificacionProveedor"
+    :accion1="botonDesactivarProveedor"
+    :accion2="botonActivarProveedor"
+    :accion3="botonCalificarProveedor"
+    :accion4="botonVerMiCalificacionProveedor"
+    :accion5="botonVerCalificacionProveedor"
+    :puedeExportar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="Información general"
+          label="Información General"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -23,9 +26,8 @@
                 label="Persona (natural/juridica)"
                 @click="modales.abrirModalEntidad('EmpresaPage')"
               />
-              <label v-else class="q-mb-sm block"
-                >Persona (natural/juridica)</label
-              >
+              <label v-else class="q-mb-sm block">Razón Social</label>
+              <!-- Persona (natural/juridica) -->
               <q-select
                 v-model="proveedor.empresa"
                 :options="empresas"
@@ -38,6 +40,7 @@
                 use-input
                 input-debounce="0"
                 @filter="filtrarEmpresas"
+                @popup-show="ordenarEmpresas"
                 @update:model-value="obtenerEmpresa"
                 :error="!!v$.empresa.$errors.length"
                 hint="Agrega elementos desde el panel de empresas"
@@ -88,7 +91,7 @@
             </div>
             <!--Tipo de contribuyente -->
             <div class="col-12 col-md-3" v-if="empresa.tipo_contribuyente">
-              <label class="q-mb-sm block">Tipo de contribuyente</label>
+              <label class="q-mb-sm block">Tipo de Contribuyente</label>
               <q-select
                 v-model="empresa.tipo_contribuyente"
                 :options="opcionesTipoContribuyente"
@@ -113,8 +116,8 @@
               </q-select>
             </div>
             <!-- razon social-->
-            <div class="col-12 col-md-3" v-if="empresa.razon_social">
-              <label class="q-mb-sm block">Razón social</label>
+            <div class="col-12 col-md-3" v-if="empresa.nombre_comercial">
+              <label class="q-mb-sm block">Nombre Comercial</label>
               <q-input
                 v-model="empresa.razon_social"
                 placeholder="Obligatorio"
@@ -126,10 +129,10 @@
               </q-input>
             </div>
             <!--Tipo de negocio -->
-            <div class="col-12 col-md-3" v-if="empresa.tipo_negocio">
-              <label class="q-mb-sm block">Tipo de negocio</label>
+            <div class="col-12 col-md-3" v-if="empresa.regimen_tributario">
+              <label class="q-mb-sm block">Régimen Tributario</label>
               <q-select
-                v-model="empresa.tipo_negocio"
+                v-model="empresa.regimen_tributario"
                 :options="opcionesTipoNegocio"
                 transition-show="jump-up"
                 transition-hide="jump-down"
@@ -152,36 +155,60 @@
               </q-select>
             </div>
 
-            <!-- celular-->
-            <div class="col-12 col-md-3" v-if="empresa.celular">
-              <label class="q-mb-sm block">Celular</label>
-              <q-input
-                mask="##########"
-                v-model="empresa.celular"
-                placeholder="Opcional"
-                disable
-                outlined
-                dense
-              ></q-input>
-            </div>
-            <!-- telefono-->
-            <div class="col-12 col-md-3" v-if="empresa.telefono">
-              <label class="q-mb-sm block">Telefono</label>
-              <q-input
-                mask="##########"
-                v-model="empresa.telefono"
-                placeholder="Opcional"
-                disable
-                outlined
-                dense
-              ></q-input>
-            </div>
             <!-- correo-->
             <div class="col-12 col-md-3" v-if="empresa.correo">
               <label class="q-mb-sm block">Correo</label>
               <q-input
                 v-model="empresa.correo"
-                placeholder="Opcional"
+                autogrow
+                disable
+                outlined
+                dense
+              ></q-input>
+            </div>
+            <!-- provincia -->
+            <div class="col-12 col-md-3" v-if="empresa.nombre_provincia">
+              <label class="q-mb-sm block">Provincia</label>
+              <q-input
+                v-model="empresa.nombre_provincia"
+                autogrow
+                disable
+                outlined
+                dense
+              ></q-input>
+            </div>
+
+            <!--sitio_web-->
+            <div class="col-12 col-md-3" v-if="empresa.sitio_web">
+              <label class="q-mb-sm block">Sitio Web</label>
+              <i class="bi bi-globe q-mt-lg">
+                <a
+                  class="q-mt-lg"
+                  :href="'https://' + empresa.sitio_web"
+                  target="_blank"
+                  >{{ empresa.sitio_web }}</a
+                >
+              </i>
+            </div>
+
+            <!-- actividad economica-->
+            <div class="col-12 col-md-9" v-if="empresa.actividad_economica">
+              <label class="q-mb-sm block">Actividad Económica</label>
+              <q-input
+                v-model="empresa.actividad_economica"
+                autogrow
+                disable
+                outlined
+                dense
+              ></q-input>
+            </div>
+
+            <!-- años de experiencia -->
+            <div class="col-12 col-md-3" v-if="empresa.antiguedad_proveedor">
+              <label class="q-mb-sm block">Actividades Comerciales desde</label>
+              <q-input
+                v-model="empresa.antiguedad_proveedor"
+                autogrow
                 disable
                 outlined
                 dense
@@ -191,7 +218,7 @@
         </q-expansion-item>
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="Datos del proveedor"
+          label="Datos Comerciales del Proveedor"
           header-class="text-bold bg-header-collapse"
           default-opened
           ><div class="row q-col-gutter-sm q-pa-sm">
@@ -217,7 +244,7 @@
 
             <!--Canton -->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Cantón</label>
+              <label class="q-mb-sm block">Ciudad</label>
               <q-select
                 v-model="proveedor.canton"
                 :options="cantones"
@@ -342,24 +369,107 @@
                 </template>
               </q-input>
             </div>
-
             <!-- Estado -->
-            <div class="col-12 col-md-3">
+            <div
+              class="col-12 col-md-3"
+              v-if="accion != acciones.nuevo && accion != acciones.editar"
+            >
               <label>Estado</label> <br />
               <q-toggle
                 :label="proveedor.estado ? 'ACTIVO' : 'INACTIVO'"
                 v-model="proveedor.estado"
                 color="primary"
+                :disable="disabled"
                 keep-color
                 icon="bi-check2-circle"
                 unchecked-icon="clear"
               />
             </div>
-            <!-- Contactos financiero, tecnico y comercial -->
+
+            <!-- referido -->
+            <div class="col-12 col-md-3 q-mb-xl">
+              <q-checkbox
+                class="q-mt-lg q-pt-md"
+                v-model="esReferido"
+                label="¿Es referido?"
+                :disable="disabled || soloLectura"
+                @update:model-value="
+                  () =>
+                    (proveedor.referencia = esReferido
+                      ? proveedor.referencia
+                      : null)
+                "
+                outlined
+                dense
+              ></q-checkbox>
+            </div>
+
+            <!-- Referencia  -->
+            <div class="col-12 col-md-3" v-if="esReferido">
+              <label class="q-mb-sm block">Referido por</label>
+              <q-input
+                v-model="proveedor.referencia"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                outlined
+                dense
+              />
+            </div>
+            <!-- Forma de pago-->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Forma de Pago</label>
+              <q-select
+                v-model="proveedor.forma_pago"
+                :options="formasPagos"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :option-value="(v) => v.value"
+                :option-label="(v) => v.label"
+                emit-value
+                map-options
+                ><template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <!-- Plazo de creditos-->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Plazo de Crédito</label>
+              <q-input
+                v-model="proveedor.plazo_credito"
+                placeholder="Opcional"
+                :disable="disabled"
+                autogrow
+                outlined
+                dense
+              />
+            </div>
+            <!-- Anticipos -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Anticipos</label>
+              <q-input
+                v-model="proveedor.anticipos"
+                autogrow
+                placeholder="Opcional"
+                :disable="disabled"
+                outlined
+                dense
+              />
+            </div>
+
+            <!-- Datos financieros del proveedor -->
             <div class="col-12 col-md-12">
               <q-expansion-item
                 class="overflow-hidden q-mb-md expansion"
-                label="Contactos del proveedor"
+                label="Datos Financieros del Proveedor"
                 header-class="text-bold bg-header-collapse"
                 default-opened
               >
@@ -367,7 +477,197 @@
                   <div class="col-12 col-md-12">
                     <essential-table
                       ref="refContactos"
-                      titulo="Contactos del proveedor"
+                      titulo="Datos Bancarios del Proveedor"
+                      :configuracionColumnas="columnasDatosBancarios"
+                      :datos="empresa.datos_bancarios"
+                      :accion1Header="abrirModalDatoBancario"
+                      :permitirBuscar="false"
+                      :permitirConsultar="false"
+                      :permitirEditar="true"
+                      :permitirEliminar="true"
+                      :mostrarBotones="false"
+                      :mostrarCantidadElementos="false"
+                      :permitirEditarModal="true"
+                      :modalMaximized="false"
+                      :alto-fijo="false"
+                      :mostrarFooter="false"
+                    ></essential-table>
+                  </div>
+                </div>
+              </q-expansion-item>
+            </div>
+            <!-- Datos logisticos del proveedor -->
+            <div class="col-12 col-md-12">
+              <q-expansion-item
+                class="overflow-hidden q-mb-md expansion"
+                label="Logísticas del Proveedor"
+                header-class="text-bold bg-header-collapse"
+                default-opened
+              >
+                <div class="row q-col-gutter-sm q-pa-sm">
+                  <!-- Tiempo de entrega  -->
+                  <div class="col-12 col-md-3">
+                    <label class="q-mb-sm block">Tiempo de Entrega</label>
+                    <q-input
+                      v-model="proveedor.tiempo_entrega"
+                      placeholder="Obligatorio"
+                      :disable="disabled"
+                      outlined
+                      dense
+                    />
+                  </div>
+                  <!-- Envio -->
+                  <div class="col-12 col-md-3">
+                    <label>Realiza Envios</label> <br />
+                    <q-toggle
+                      :label="proveedor.envios ? 'SI' : 'NO'"
+                      v-model="proveedor.envios"
+                      @update:model-value="
+                        () =>
+                          proveedor.envios
+                            ? proveedor.tipo_envio
+                            : (proveedor.tipo_envio = [])
+                      "
+                      color="primary"
+                      keep-color
+                      icon="bi-check2-circle"
+                      unchecked-icon="clear"
+                    />
+                  </div>
+
+                  <!-- Tipo de envio-->
+                  <div class="col-12 col-md-3" v-if="proveedor.envios">
+                    <label class="q-mb-sm block">Tipo de Envío</label>
+                    <q-select
+                      v-model="proveedor.tipo_envio"
+                      :options="tiposEnvios"
+                      transition-show="jump-up"
+                      transition-hide="jump-down"
+                      :disable="disabled"
+                      options-dense
+                      multiple
+                      dense
+                      use-chips
+                      outlined
+                      :error="!!v$.tipo_envio.$errors.length"
+                      error-message="Debes seleccionar al menos una opcion"
+                      :option-value="(v) => v.value"
+                      :option-label="(v) => v.label"
+                      emit-value
+                      map-options
+                      ><template
+                        v-slot:option="{
+                          itemProps,
+                          opt,
+                          selected,
+                          toggleOption,
+                        }"
+                      >
+                        <q-item v-bind="itemProps">
+                          <q-item-section>
+                            {{ opt.label }}
+                            <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-toggle
+                              :model-value="selected"
+                              @update:model-value="toggleOption(opt)"
+                            />
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No hay resultados
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
+                  </div>
+
+                  <!-- Transporte incluido -->
+                  <div class="col-12 col-md-3" v-if="proveedor.envios">
+                    <label>Transporte Incluído</label> <br />
+                    <q-toggle
+                      :label="proveedor.transporte_incluido ? 'SI' : 'NO'"
+                      v-model="proveedor.transporte_incluido"
+                      color="primary"
+                      keep-color
+                      icon="bi-check2-circle"
+                      unchecked-icon="clear"
+                    />
+                  </div>
+
+
+                  <!-- Garantía-->
+                  <div class="col-12 col-md-3">
+                    <label
+                      >Ofrece garantías
+                      <q-tooltip
+                        >Da garantías en los bienes o servicios
+                        ofertados</q-tooltip
+                      ></label
+                    >
+                    <br />
+                    <q-toggle
+                      :label="proveedor.garantia ? 'SI' : 'NO'"
+                      v-model="proveedor.garantia"
+                      color="primary"
+                      keep-color
+                      icon="bi-check2-circle"
+                      unchecked-icon="clear"
+                    />
+                  </div>
+
+                  <!-- Tabla de archivos -->
+                  <div class="col-12 q-mb-md">
+                    <gestor-archivos
+                      ref="refArchivo"
+                      label="Información Adicional del Proveedor"
+                      :mixin="mixinEmpresas"
+                      :disable="disabled"
+                      :listarAlGuardar="false"
+                      :permitir-eliminar="
+                        accion == acciones.nuevo || accion == acciones.editar
+                      "
+                      :idModelo="empresa.id"
+                    >
+                      <template #boton-subir>
+                        <q-btn
+                          v-if="mostrarBotonSubir"
+                          color="positive"
+                          push
+                          no-caps
+                          class="full-width q-mb-lg"
+                          @click="subirArchivos()"
+                        >
+                          <q-icon
+                            name="bi-upload"
+                            class="q-mr-sm"
+                            size="xs"
+                          ></q-icon>
+                          Subir archivos seleccionados</q-btn
+                        >
+                      </template>
+                    </gestor-archivos>
+                  </div>
+                </div>
+              </q-expansion-item>
+            </div>
+            <!-- Contactos financiero, tecnico y comercial -->
+            <div class="col-12 col-md-12">
+              <q-expansion-item
+                class="overflow-hidden q-mb-md expansion"
+                label="Contactos del Proveedor"
+                header-class="text-bold bg-header-collapse"
+                default-opened
+              >
+                <div class="row q-col-gutter-sm q-pa-sm">
+                  <div class="col-12 col-md-12">
+                    <essential-table
+                      ref="refContactos"
+                      titulo="Contactos del Proveedor"
                       :configuracionColumnas="columnasContactosProveedor"
                       :datos="proveedor.contactos"
                       :accion1Header="abrirModalContacto"
@@ -376,10 +676,11 @@
                       :permitirEditar="true"
                       :permitirEliminar="true"
                       :mostrarBotones="false"
+                      :mostrarCantidadElementos="false"
                       :permitirEditarModal="true"
                       :modalMaximized="false"
                       :alto-fijo="false"
-                      :mostrarFooter="mostrarFooter"
+                      :mostrarFooter="false"
                     ></essential-table>
                   </div>
                 </div>
@@ -389,7 +690,7 @@
         </q-expansion-item>
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="Configuración inicial"
+          label="Información para Calificador del Proveedor"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -440,10 +741,14 @@
                 </template>
               </q-select>
             </div>
-            <!-- {{ categorias }} -->
             <!--Categorias-->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Categorias</label>
+              <label-abrir-modal
+                v-if="mostrarLabelModal"
+                label="Categorias"
+                @click="modales.abrirModalEntidad('CategoriaOfertaPage')"
+              />
+              <label v-else class="q-mb-sm block">Categorias</label>
               <q-select
                 v-model="proveedor.categorias_ofrece"
                 :options="categorias"
@@ -455,6 +760,8 @@
                 dense
                 use-chips
                 outlined
+                @popup-show="ordenarCategorias"
+                @update:model-value="actualizarDepartamentos"
                 :error="!!v$.categorias_ofrece.$errors.length"
                 error-message="Debes seleccionar al menos una opcion"
                 :option-value="(v) => v.id"
@@ -486,10 +793,12 @@
                 </template>
               </q-select>
             </div>
-            <!-- {{proveedor.categorias_ofrece}}  -->
+            <!-- {{ proveedor.departamentos }} -->
             <!--Departamentos que califican-->
             <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Departamentos que califican</label>
+              <label class="q-mb-sm block"
+                >Departamentos que Califican al Proveedor</label
+              >
               <q-select
                 v-model="proveedor.departamentos"
                 :options="departamentos"
@@ -501,12 +810,13 @@
                 dense
                 use-chips
                 outlined
+                :max-values="3"
                 :error="!!v$.departamentos.$errors.length"
                 error-message="Debes seleccionar al menos una opcion"
-                hint="Dept. Contable califica a todos los proveedores"
+                hint="Dept. Financiero califica a todos los proveedores (Máx. 3 depts.)"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
-                :option-disable="(v) =>v.id === store.user.departamento"
+                :option-disable="(v) => v.id === departamentoFinanciero.id"
                 emit-value
                 map-options
                 ><template
@@ -535,6 +845,7 @@
                 </template>
               </q-select>
             </div>
+
             <!-- Departamentos -->
             <!-- <div class="col-12 col-md-3" v-if="false">
               <label>Departamentos calificadores</label>
@@ -555,7 +866,7 @@
   </tab-layout>
   <modales-entidad
     :comportamiento="modales"
-    @guardado="guardado"
+    @guardado="(data) => guardado(data)"
   ></modales-entidad>
 </template>
 

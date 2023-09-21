@@ -27,6 +27,8 @@ export class Empleado extends EntidadAuditable {
   permisos: string[] | string // | null
   grupo: number | null
   fecha_ingreso: string | null
+  fecha_vinculacion: string | null
+  modificar_fecha_vinculacion: boolean | null
   fecha_salida: string | null
   tipo_contrato: number | null
   disponible: boolean
@@ -56,6 +58,7 @@ export class Empleado extends EntidadAuditable {
   esta_en_rol_pago:boolean | null
   realiza_factura:boolean | null
   banco_info: string | null
+  acumula_fondos_reserva : boolean | null
 
   constructor() {
     super()
@@ -85,6 +88,8 @@ export class Empleado extends EntidadAuditable {
     this.permisos = []
     this.grupo = null
     this.fecha_ingreso = null
+    this.modificar_fecha_vinculacion = false
+    this.fecha_vinculacion = null
     this.fecha_salida = null
     this.tipo_contrato = null
     this.disponible = true
@@ -113,6 +118,7 @@ export class Empleado extends EntidadAuditable {
     this.genero = 'M'
     this.banco_info = null
     this.esta_en_rol_pago = true
+    this.acumula_fondos_reserva = false
     this.realiza_factura = false
   }
 }

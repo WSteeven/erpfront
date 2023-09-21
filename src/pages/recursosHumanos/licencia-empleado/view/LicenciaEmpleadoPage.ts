@@ -162,6 +162,7 @@ export default defineComponent({
           controller: new AutorizacionController(),
           params: {
             campos: 'id,nombre',
+            es_modulo_rhh:true,
             es_jefe_inmediato:
               store.user.id == licencia.id_jefe_inmediato ? true : false,
           },
