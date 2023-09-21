@@ -45,7 +45,7 @@ export const useProveedorStore = defineStore('proveedor', () => {
         const response: AxiosResponse = await axios.get(ruta)
         proveedor.hydrate(response.data.modelo)
     }
-    async function buscarReporte(accion: string, data) {
+    async function buscarReporte(accion: string, data, listado) {
         try {
             statusLoading.activar()
             const axios = AxiosHttpRepository.getInstance()
@@ -56,17 +56,21 @@ export const useProveedorStore = defineStore('proveedor', () => {
                 case 'excel':
                     data.accion = 'excel'
                     imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+                    return listado
                     break
                 case 'pdf':
                     data.accion = 'pdf'
                     imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+                    return listado
                     break
                 default:
                     data.accion = ''
                     const response: AxiosResponse = await axios.post(url, data)
-                    console.log(response)
-                    if (response.data.results.length > 0) return response.data.results
-                    else notificarAdvertencia('No se obtuvieron resultados')
+                    // console.log(response)
+                    if (response.data.results) {
+                        if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
+                        return response.data.results
+                    } else return listado
             }
         } catch (error) {
             console.log(error)

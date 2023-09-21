@@ -14,8 +14,6 @@ import { useNotificacionStore } from "stores/notificacion";
 import { defineComponent, reactive, ref } from "vue";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useNotificaciones } from "shared/notificaciones";
-import { usePedidoStore } from "stores/pedido";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { useProveedorStore } from "stores/comprasProveedores/proveedor";
 import { ComportamientoModalesProveedores } from "sistema/proveedores/application/ComportamientoModalesProveedores";
@@ -23,6 +21,9 @@ import { configuracionColumnasProveedores } from "sistema/proveedores/domain/con
 import { accionesTabla } from "config/utils";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { CategoriaOfertaController } from "pages/comprasProveedores/categoriaOfertas/infraestructure/CategoriaOfertaController";
+import { estadosCalificacionProveedor, opcionesCalificacionProveedor } from "config/utils_compras_proveedores";
+import { useAuthenticationStore } from "stores/authentication";
+import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController";
 
 export default defineComponent({
     components: { EssentialTable, ModalEntidad },
@@ -36,14 +37,16 @@ export default defineComponent({
          ***********************/
         useNotificacionStore().setQuasar(useQuasar())
         useCargandoStore().setQuasar(useQuasar())
-        useNotificacionStore().setQuasar(useQuasar())
-        useCargandoStore().setQuasar(useQuasar())
         const { notificarError, notificarAdvertencia } = useNotificaciones()
+        const store = useAuthenticationStore()
         const proveedorStore = useProveedorStore()
         const cargando = new StatusEssentialLoading()
         const modales = new ComportamientoModalesProveedores()
 
+        //variables
+        const detalleDepartamentoProveedor = ref()
         const reporte = reactive({
+            estado_calificado: null,
             categorias: null,
             canton: null,
             razon_social: null,
@@ -74,9 +77,14 @@ export default defineComponent({
             reporte.fecha_inicio = null
             reporte.fecha_fin = null
         }
+        async function consultarDetalleDepartamentoProveedor() {
+            const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+            // console.log('El detalle departamento proveedor es: ', result[0])
+            if (result) detalleDepartamentoProveedor.value = result[0]
+        }
         async function buscarReporte(accion: string) {
-            listado.value = await proveedorStore.buscarReporte(accion, reporte)
-            console.log(listado.value)
+            listado.value = await proveedorStore.buscarReporte(accion, reporte, listado.value)
+            // console.log(listado.value)
 
         }
         /*************************
@@ -92,6 +100,23 @@ export default defineComponent({
                 modales.abrirModalEntidad('VisualizarProveedorPage')
             }
         }
+        const btnVerCalificacionProveedor: CustomActionTable = {
+            titulo: 'Todas calificaciones',
+            icono: 'bi-eye',
+            color: 'positive',
+            accion: async ({ entidad }) => {
+                proveedorStore.idDepartamento = store.user.departamento
+                proveedorStore.idProveedor = entidad.id
+                proveedorStore.proveedor = entidad
+                await consultarDetalleDepartamentoProveedor().then(() => {
+                    proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
+                })
+                modales.abrirModalEntidad('InfoCalificacionProveedorPage')
+            },
+            visible: ({ posicion, entidad }) => {
+                return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (entidad.estado_calificado == estadosCalificacionProveedor.parcial)
+            }
+        }
 
         const configuracionColumnas = [...configuracionColumnasProveedores, accionesTabla]
         return {
@@ -102,7 +127,7 @@ export default defineComponent({
             listado,
             cantones, filtrarCantones,
             categorias, filtrarCategoriasProveedor, ordenarCategorias,
-
+            opcionesCalificacionProveedor,
 
 
             //funciones
@@ -110,6 +135,7 @@ export default defineComponent({
 
             //botones de tabla
             btnVerProveedor,
+            btnVerCalificacionProveedor,
 
         }
     }

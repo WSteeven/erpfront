@@ -15,6 +15,7 @@
                   transition-hide="jump-down"
                   :disable="disabled"
                   options-dense
+                  hint="opcional"
                   dense
                   outlined
                   use-input
@@ -44,56 +45,101 @@
                 </q-select>
               </div>
               <!--Categorias-->
-            <div class="col-12 col-md-3">
-              <label  class="q-mb-sm block">Categorias</label>
-              <q-select
-                v-model="reporte.categorias"
-                :options="categorias"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                :disable="disabled"
-                options-dense
-                multiple
-                dense
-                use-chips
-                outlined
-                @popup-show="ordenarCategorias"
-                @filter="filtrarCategoriasProveedor"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
-                emit-value
-                map-options
-                ><template
-                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
-                >
-                  <q-item v-bind="itemProps">
-                    <q-item-section>
-                      {{ opt.nombre }}
-                      <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
-                    </q-item-section>
-                    <q-item-section side>
-                      <q-toggle
-                        :model-value="selected"
-                        @update:model-value="toggleOption(opt)"
-                      />
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
+              <div class="col-12 col-md-3">
+                <label class="q-mb-sm block">Categorias</label>
+                <q-select
+                  v-model="reporte.categorias"
+                  :options="categorias"
+                  transition-show="jump-up"
+                  transition-hide="jump-down"
+                  :disable="disabled"
+                  options-dense
+                  multiple
+                  dense
+                  use-chips
+                  hint="opcional"
+                  outlined
+                  @popup-show="ordenarCategorias"
+                  @filter="filtrarCategoriasProveedor"
+                  :option-value="(v) => v.id"
+                  :option-label="(v) => v.nombre"
+                  emit-value
+                  map-options
+                  ><template
+                    v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                  >
+                    <q-item v-bind="itemProps">
+                      <q-item-section>
+                        {{ opt.nombre }}
+                        <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                      </q-item-section>
+                      <q-item-section side>
+                        <q-toggle
+                          :model-value="selected"
+                          @update:model-value="toggleOption(opt)"
+                        />
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No hay resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
+              <!--Tipo de calificacion-->
+              <div class="col-12 col-md-3">
+                <label class="q-mb-sm block">Estado de Calificación</label>
+                <q-select
+                  v-model="reporte.estado_calificado"
+                  :options="opcionesCalificacionProveedor"
+                  transition-show="jump-up"
+                  transition-hide="jump-down"
+                  :disable="disabled"
+                  options-dense
+                  multiple
+                  dense
+                  use-chips
+                  hint="opcional"
+                  outlined
+                  :option-value="(v) => v.value"
+                  :option-label="(v) => v.label"
+                  emit-value
+                  map-options
+                  ><template
+                    v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                  >
+                    <q-item v-bind="itemProps">
+                      <q-item-section>
+                        {{ opt.label }}
+                        <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+                      </q-item-section>
+                      <q-item-section side>
+                        <q-toggle
+                          :model-value="selected"
+                          @update:model-value="toggleOption(opt)"
+                        />
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No hay resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
               <!-- razon social -->
               <div class="col-12 col-md-3 q-mb-md">
                 <label class="q-mb-sm block">Razón Social</label>
                 <q-input
                   v-model="reporte.razon_social"
-                  placeholder="Obligatorio"
+                  placeholder="Opcional"
                   @keyup.enter="buscarReporte('consulta')"
                   outlined
                   dense
@@ -258,6 +304,7 @@
                   :mostrarBotones="false"
                   :permitir-buscar="true"
                   :accion1="btnVerProveedor"
+                  :accion2="btnVerCalificacionProveedor"
                   :alto-fijo="false"
                 ></essential-table>
               </div>
@@ -265,7 +312,10 @@
             <!-- <div v-else>&nbsp;&nbsp; No hay movimientos de esta consulta.</div> -->
           </q-card>
         </div>
-        <modal-entidad :comportamiento="modales"></modal-entidad>
+        <modal-entidad
+          :comportamiento="modales"
+          :persistente="false"
+        ></modal-entidad>
       </q-page>
     </q-page-container>
   </q-layout>

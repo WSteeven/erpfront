@@ -102,14 +102,16 @@ export default defineComponent({
      * Hooks
     **************************************************************/
     onConsultado(() => {
-      proveedor.tipo_envio = proveedor.tipo_envio != null ? JSON.parse(proveedor.tipo_envio.toString()) : []
+      // proveedor.tipo_envio = proveedor.tipo_envio != null ? JSON.parse(proveedor.tipo_envio.toString()) : []
       obtenerEmpresa(proveedor.empresa).then(() => refArchivo.value.listarArchivosAlmacenados(empresa.id))
+      categorias.value = listadosAuxiliares.categorias.filter((v)=>proveedor.tipos_ofrece.includes(v.tipo_oferta_id))
     })
     onReestablecer(() => {
       empresa.hydrate(new Empresa())
       cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
       proveedor.departamentos = [...proveedor.departamentos, departamentoFinanciero.value.id]
       refArchivo.value.limpiarListado()
+      categorias.value = listadosAuxiliares.categorias
     })
 
     onBeforeGuardar(() => {
@@ -447,12 +449,13 @@ export default defineComponent({
         categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
       },
       actualizarDepartamentos(val) {
-        let catSeleccionadas = categorias.value.filter((v: CategoriaOferta) => proveedor.categorias_ofrece.includes(v.id))
-        console.log(catSeleccionadas)
-        console.log(new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos)))
-        proveedor.departamentos = [... new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos))]
-        // console.log(catSeleccionadas.map((v:CategoriaOferta)=>v.departamentos))
-        // proveedor.departamentos = departamentos.value.filter((v: Departamento) => catSeleccionadas.includes(v.id)).map((v: Departamento) => v.id)
+        if(accion.value==acciones.nuevo){
+          let catSeleccionadas = categorias.value.filter((v: CategoriaOferta) => proveedor.categorias_ofrece.includes(v.id))
+          // console.log(catSeleccionadas)
+          // console.log(new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos)))
+          proveedor.departamentos = [... new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos))]
+        }
+        
       },
 
       //botones

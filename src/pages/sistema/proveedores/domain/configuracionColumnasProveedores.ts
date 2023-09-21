@@ -52,6 +52,20 @@ export const configuracionColumnasProveedores: ColumnConfig<Proveedor>[]=[
     sortable: true,
   },
   {
+    name: 'salud',
+    field: 'salud',
+    label: 'Categoria',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'observaciones',
+    field: 'observaciones',
+    label: 'Observaciones',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'sitio_web',
     field: 'sitio_web',
     label: 'Sitio web',

@@ -29,6 +29,8 @@ export class Proveedor extends EntidadAuditable {
   //auxiliares
   calificacion: number | null
   estado_calificado: string | null
+  salud: string | null
+  observaciones: string | null
 
 
   //logistica del proveedor
@@ -74,5 +76,7 @@ export class Proveedor extends EntidadAuditable {
     this.transporte_incluido = false
     this.costo_transporte = null
     this.garantia = false
+    this.salud = null
+    this.observaciones = null
   }
 }
