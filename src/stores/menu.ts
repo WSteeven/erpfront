@@ -641,13 +641,13 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-clipboard2-data-fill',
-          can: store.esAdministrador || store.esCompras,
+          can: store.esAdministrador || store.esCompras||store.can('puede.ver.reportes_proveedores'),
           children: [
             {
               title: 'Reporte de Proveedores',
               link: 'reporte-proveedores',
               icon: 'bi-person-fill-add',
-              can: true,
+              can: true || store.can('puede.ver.reporte_proveedores'),
             }
           ]
         },
