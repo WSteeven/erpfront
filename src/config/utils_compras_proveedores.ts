@@ -117,5 +117,11 @@ export const opcionesReportesProveedores = [
   { value: 2, label: 'NOMBRE COMERCIAL' },
   { value: 3, label: 'CIUDAD' },
   { value: 4, label: 'CATEGORIAS' },
-  
+]
+
+export const opcionesCalificacionProveedor = [
+  { value: 'SIN CONFIGURAR', label: 'SIN CONFIGURAR' },
+  { value: 'SIN CALIFICAR', label: 'SIN CALIFICAR' },
+  { value: 'CALIFICADO', label: 'CALIFICADO' },
+  { value: 'PARCIAL', label: 'PARCIAL' },
 ]

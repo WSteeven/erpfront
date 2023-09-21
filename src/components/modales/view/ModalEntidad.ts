@@ -25,6 +25,11 @@ export default defineComponent({
       type: Object as () => ContenedorSimpleMixin<any>,
       required: false,
     },
+    persistente: {
+      type: Boolean,
+      default: true,
+      required: false,
+    }
   },
   // emits: ['seleccionar', 'accion1'],
   emits: ['guardado', 'cerrado'],

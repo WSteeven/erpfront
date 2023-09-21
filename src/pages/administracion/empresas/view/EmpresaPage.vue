@@ -458,7 +458,7 @@
               :disable="disabled || soloLectura"
               @update:model-value="
                 () =>
-                  (empresa.antiguedad_proveedor = experiencia_comercial ?? null)
+                  (empresa.antiguedad_proveedor = experiencia_comercial ?empresa.antiguedad_proveedor: null)
               "
               outlined
               dense
