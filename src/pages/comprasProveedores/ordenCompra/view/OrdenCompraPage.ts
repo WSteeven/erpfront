@@ -121,8 +121,8 @@ export default defineComponent({
                         // campos: 'id,codigo_tarea,titulo,cliente_id',
                         // finalizado: 0
                         // http://localhost:8000/api/proveedores?calificacion[operator]=>&calificacion[value]=70
-                        'calificacion[operator]': '>',
-                        'calificacion[value]': 70,
+                        // 'calificacion[operator]': '>',
+                        // 'calificacion[value]': 0,
                         'estado_calificado': estadosCalificacionProveedor.calificado
                     }
                 },
