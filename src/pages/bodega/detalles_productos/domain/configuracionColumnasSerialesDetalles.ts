@@ -2,10 +2,19 @@ import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 
 export const configuracionColumnasSerialesDetalles: ColumnConfig<any>[] = [
     {
+        name: 'id',
+        field: 'id',
+        label: 'id',
+        align: 'center',
+        visible: false,
+        editable: false,
+    },
+    {
         name: 'serial',
         field: 'serial',
         label: 'Serial',
-        align: 'center',
+        sortable:false,
+        align: 'left',
     },
     {
         name: 'acciones',

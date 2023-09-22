@@ -29,6 +29,7 @@ import { ProcesadorController } from '../modules/computadoras/modules/procesador
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { ValidarListadoSeriales } from '../application/validaciones/ValidarListadoSeriales'
+import { encontrarUltimoIdListado } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },
@@ -42,7 +43,6 @@ export default defineComponent({
     //variable aux
     const descripcion = ref()
     const refSeriesModalEditable = ref()
-    const serial = ''
 
     //listas
     const opciones_productos = ref([])
@@ -237,8 +237,12 @@ export default defineComponent({
       tooltip: 'Agregar elemento',
       color: 'positive',
       accion: () => {
-        detalle.seriales.push('')
-        refSeriesModalEditable.value.abrirModalEntidad(serial, detalle.seriales.length - 1)
+        const fila = {
+          id: detalle.seriales.length? encontrarUltimoIdListado(detalle.seriales)+1:1,
+          serial: '',
+        }
+        detalle.seriales.push(fila)
+        refSeriesModalEditable.value.abrirModalEntidad(fila, detalle.seriales.length-1)
       }
     }
     function eliminar({ posicion }) {

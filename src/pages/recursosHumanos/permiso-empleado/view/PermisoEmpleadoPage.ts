@@ -176,7 +176,7 @@ export default defineComponent({
         },
         autorizaciones: {
           controller: new AutorizacionController(),
-          params: { campos: 'id,nombre', es_validado: false },
+          params: { campos: 'id,nombre', es_validado: false , es_modulo_rhh:true},
         },
       })
 

@@ -61,8 +61,8 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     return await this.consultableRepository.consultar(id, params)
   }
 
-  async guardarFiles(id:number, entidad: T, params?: ParamsType) {
-    return await this.guardableFileRepository.guardarArchivos(id, entidad, params)
+  async guardarFiles(id:number, entidad: T) {
+    return await this.guardableFileRepository.guardarArchivos(id, entidad)
   }
   async guardar(entidad: T, params?: ParamsType) {
     return await this.guardableRepository.guardar(entidad, params)

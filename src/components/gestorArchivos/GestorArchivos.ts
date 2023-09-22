@@ -1,13 +1,11 @@
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { descargarArchivoUrl, formatBytes } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { AxiosError, AxiosResponse } from 'axios'
 import { accionesTabla } from 'config/utils'
-import { defineComponent, ref } from 'vue'
-import { apiConfig } from 'config/api'
+import { defineComponent, onMounted, ref } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -15,7 +13,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { Endpoint } from 'shared/http/domain/Endpoint'
 import { useSubtareaStore } from 'stores/subtarea'
 import { ParamsType } from 'config/types'
 
@@ -28,15 +25,11 @@ export default defineComponent({
       type: Object as () => ContenedorSimpleMixin<any>,
       required: true,
     },
-    endpoint: {
-      type: Object as () => Endpoint,
-      required: true,
-    },
-    entidad: Object as () => EntidadAuditable,
-    disable: {
-      type: Boolean,
-      default: false,
-    },
+    // entidad: Object as () => EntidadAuditable,
+    // disable: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     permitirEliminar: {
       type: Boolean,
       default: true,
@@ -52,9 +45,13 @@ export default defineComponent({
     idModelo: {
       type: Number,
       required: false,
-    }
+    },
+    label: {
+      type: String,
+      required: false,
+    },
   },
-  setup(props) {
+  setup(props, {emit}) {
     /*********
      * Stores
     *********/
@@ -66,7 +63,7 @@ export default defineComponent({
     const { listadoArchivos } = props.mixin.useReferencias()
     const { eliminarArchivo, listarArchivos, guardarArchivos } = props.mixin.useComportamiento()
 
-    const { notificarCorrecto, notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
+    const { notificarError, notificarAdvertencia, confirmar } = useNotificaciones()
 
     function listarArchivosAlmacenados(id: number, params: ParamsType) {
       listarArchivos(id, params)
@@ -98,9 +95,10 @@ export default defineComponent({
     }
 
     const refGestor = ref()
-    const axios = AxiosHttpRepository.getInstance()
 
-    const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(props.endpoint)}`
+    onMounted(()=>{
+      emit('inicializado')
+    })
 
     /************
     * Funciones
@@ -118,12 +116,12 @@ export default defineComponent({
 
       try {
         const response: AxiosResponse = await guardarArchivos(props.idModelo!, fd)
-        console.log(response.data.modelo[0])
-        console.log(listadoArchivos.value)
+        // console.log(response.data.modelo[0])
+        // console.log(listadoArchivos.value)
 
         files.value = []
         if (props.listarAlGuardar) listadoArchivos.value.push(response.data.modelo[0])
-        notificarCorrecto(response.data.mensaje)
+        // notificarCorrecto(response.data.mensaje)
         quiero_subir_archivos.value = false
       } catch (error: unknown) {
         console.log(error)
@@ -132,7 +130,7 @@ export default defineComponent({
       }
     }
 
-    function subir(id: number, params: ParamsType) {
+    function subir(params: ParamsType) {
       paramsForm = params
       if (refGestor.value) {
         refGestor.value.upload()

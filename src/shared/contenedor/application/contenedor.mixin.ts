@@ -9,12 +9,15 @@ import { compararObjetos } from 'shared/utils'
 import { reactive, UnwrapRef } from 'vue'
 import { Validador } from 'shared/validadores/domain/Validador'
 import { useNotificaciones } from 'shared/notificaciones'
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 // Componentes
 
 export abstract class Contenedor<
   T extends EntidadAuditable,
   R extends Referencias<T>,
-  C extends Controller<T>
+  C extends Controller<T>,
+  CF extends ArchivoController
 > {
   protected refs: R
   // referencias internas de la entidad a la que pertenece la transaccion
@@ -26,10 +29,12 @@ export abstract class Contenedor<
   // protected readonly modal = useBvModal()
   protected argsDefault: any
   protected readonly controller: C
+  protected readonly controllerFiles: CF | undefined
   private validaciones: Validador[] = []
 
-  constructor(entidad: Instanciable, controller: C, refs: R) {
+  constructor(entidad: Instanciable, controller: C, refs: R, controllerFiles?: CF) {
     this.controller = controller
+    this.controllerFiles = controllerFiles
     this.refs = refs
 
     // crear instancias de la entidad
@@ -70,13 +75,25 @@ export abstract class Contenedor<
     this.validaciones.splice(1, this.validaciones.length - 1)
   }
 
-  // Operaciones de la lista
+  /**
+   * Operaciones de la lista
+   */
+  // buscar elemento en el listado
   protected indexElementoEnLista(id: number | null): number {
     return this.refs.listado.value.findIndex(
       (elemento: T) => elemento.id === id
     )
   }
+  // buscar el elemento en la lista de archivos
+  protected indexElementoEnListaArchivos(id: number | null): number {
+    return this.refs.listadoArchivos.value.findIndex(
+      (elemento: T) => elemento.id === id
+    )
+  }
 
+  /**
+   * Agregar elementos en los listados
+   */
   protected agregarElementoListadoActual(modelo: T): void {
     this.refs.listado.value = [modelo, ...this.refs.listado.value]
   }
@@ -84,10 +101,21 @@ export abstract class Contenedor<
     this.refs.listadoArchivos.value = [modelo, ...this.refs.listadoArchivos.value]
   }
 
+  /**
+   * Eliminar el elemento del listado y del listado de archivos
+   */
   protected eliminarElementoListaActual(modelo: T): void {
     const indexElemento = this.indexElementoEnLista(modelo.id)
     if (indexElemento >= 0) {
       this.refs.listado.value.splice(indexElemento, 1)
+      this.refs.listado.value = [...this.refs.listado.value]
+    }
+  }
+  //eliminar elemento del listado de archivos actual
+  protected eliminarElementoListaArchivosActual(modelo: T): void {
+    const indexElemento = this.indexElementoEnListaArchivos(modelo.id)
+    if (indexElemento >= 0) {
+      this.refs.listadoArchivos.value.splice(indexElemento, 1)
       this.refs.listado.value = [...this.refs.listado.value]
     }
   }

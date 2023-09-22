@@ -26,7 +26,6 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
-import { ComprobanteController } from 'pages/bodega/comprobantes/infraestructure/ComprobanteController'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useRoute } from 'vue-router'
@@ -38,7 +37,6 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
     const { entidad: transaccion } = mixin.useReferencias()
     const { notificarError, notificarCorrecto, confirmar, prompt } = useNotificaciones()
-    const comprobanteController = new ComprobanteController()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()

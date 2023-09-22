@@ -546,6 +546,7 @@
                       search: criterioBusquedaProducto,
                       sucursal_id: pedido.sucursal,
                       cliente_id: pedido.cliente || pedido.cliente_id,
+                      stock: true,
                     })
                   "
                   @blur="

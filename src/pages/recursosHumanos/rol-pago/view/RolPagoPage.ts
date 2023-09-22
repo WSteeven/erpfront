@@ -307,7 +307,6 @@ export default defineComponent({
     const reglas = {
       empleado: { required },
       mes: { required },
-      porcentaje_anticipo: { minValue: minValue(3), maxValue: maxValue(40) },
     }
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
@@ -742,7 +741,10 @@ export default defineComponent({
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
     watchEffect(() => {
-      const dias_quincena = rolpago.es_quincena == true ? 15 : 0
+      let dias_quincena = rolpago.es_quincena == true ? 15 : 0
+      if(rolpago.medio_tiempo){
+        dias_quincena = 0
+      }
       const dias = parseFloat(
         rolpago.dias != null ? rolpago.dias.toString() : '0'
       )

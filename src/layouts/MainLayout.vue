@@ -439,7 +439,7 @@
 
     <ScrollToTopButton></ScrollToTopButton>
 
-    <q-page-container :class="{ 'bg-body': true }">
+    <q-page-container :class="{ 'bg-body': true }" class="window-height">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>

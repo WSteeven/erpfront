@@ -507,7 +507,9 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
 
-      //Routes for compras y proveedores
+      /*********************************************
+       * COMPRAS Y PROVEEDORES
+       *********************************************/
       {
         path: '/empresas',
         name: 'empresas',
@@ -558,6 +560,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/datos-bancarios-proveedores',
+        name: 'datos_bancarios_proveedores',
+        component: () =>
+          import('pages/comprasProveedores/datosBancariosProveedor/view/DatoBancarioPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/contactos-proveedores',
         name: 'contactos_proveedores',
         component: () =>
@@ -578,6 +587,15 @@ const routes: RouteRecordRaw[] = [
           import('pages/comprasProveedores/contactosProveedor/view/logs/ContactoProveedorLogPage.vue'),
         meta: { requiresAuth: false },
       },
+      //reportes de proveedores
+      {
+        path: 'reporte-proveedores',
+        name: 'reportes_proveedores',
+        component: () =>
+          import('pages/comprasProveedores/reportes/modules/rpt_proveedores/view/ReporteProveedores.vue'),
+        meta: { requiresAuth: false },
+      },
+
 
       //Routes for administracion
       {

@@ -32,13 +32,14 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         style: 'max-width:300px; overflow: auto;',
         sortable: true,
     },
-    /*{
+    {
         name: 'comprobante',
         field: 'comprobante',
         label: 'Factura',
         align: 'left',
         sortable: true,
     },
+    /*
     {
         name: 'fecha_limite',
         field: 'fecha_limite',
