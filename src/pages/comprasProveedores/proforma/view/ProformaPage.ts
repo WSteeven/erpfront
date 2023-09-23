@@ -27,7 +27,6 @@ import { tabOptionsProformas, opcionesForma, opcionesTiempo } from "config/utils
 import { useAuthenticationStore } from "stores/authentication";
 import { calcularDescuento, calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, encontrarUltimoIdListado, formatearFecha } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
 import { ValidarListadoProductos } from "../application/validaciones/ValidarListadoProductos";
@@ -37,7 +36,6 @@ import { ItemProforma } from "../domain/ItemProforma";
 import { useProformaStore } from "stores/comprasProveedores/proforma";
 import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
 import { useRouter } from "vue-router";
-import { Autorizacion } from "pages/administracion/autorizaciones/domain/Autorizacion";
 import { requiredIf } from "@vuelidate/validators";
 
 
@@ -226,7 +224,7 @@ export default defineComponent({
 
         /*******************************************************************************************
          * Botones de tabla
-        ******************************************************************************************/
+        *******************************************************************************************/
         const btnAddRow: CustomActionTable = {
             titulo: 'Agregar ítem',
             icono: 'bi-arrow-bar-down',
