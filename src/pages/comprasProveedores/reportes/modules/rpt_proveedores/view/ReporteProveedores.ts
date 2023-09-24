@@ -101,9 +101,9 @@ export default defineComponent({
             }
         }
         const btnVerCalificacionProveedor: CustomActionTable = {
-            titulo: 'Todas calificaciones',
-            icono: 'bi-eye',
-            color: 'positive',
+            titulo: 'Calificaciones',
+            icono: 'bi-stars',
+            color: 'warning',
             accion: async ({ entidad }) => {
                 proveedorStore.idDepartamento = store.user.departamento
                 proveedorStore.idProveedor = entidad.id
@@ -116,6 +116,16 @@ export default defineComponent({
             visible: ({ posicion, entidad }) => {
                 return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (entidad.estado_calificado == estadosCalificacionProveedor.parcial)
             }
+        }
+        const btnReporteCalificacionProveedor: CustomActionTable = {
+            titulo: '',
+            icono: 'bi-file-earmark-excel-fill',
+            color: 'positive',
+            accion: async ({entidad}) => {
+                proveedorStore.idProveedor = entidad.id
+                await proveedorStore.imprimirReporteCalificacion()
+            },
+            visible: ({ entidad }) => entidad.estado_calificado === estadosCalificacionProveedor.calificado || (entidad.estado_calificado == estadosCalificacionProveedor.parcial)
         }
 
         const configuracionColumnas = [...configuracionColumnasProveedores, accionesTabla]
@@ -136,6 +146,7 @@ export default defineComponent({
             //botones de tabla
             btnVerProveedor,
             btnVerCalificacionProveedor,
+            btnReporteCalificacionProveedor,
 
         }
     }

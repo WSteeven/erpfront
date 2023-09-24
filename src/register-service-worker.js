@@ -1,6 +1,6 @@
 // src-pwa/register-service-worker.js file
 
-import {register}  from 'service-worker'
+import {register}  from 'src/service-worker'
 
 register(process.env.SERVICE_WORKER_FILE, {
   registrationOptions: { scope: './' },

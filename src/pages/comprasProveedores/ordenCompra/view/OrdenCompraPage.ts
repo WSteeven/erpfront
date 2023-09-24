@@ -123,7 +123,7 @@ export default defineComponent({
                         // http://localhost:8000/api/proveedores?calificacion[operator]=>&calificacion[value]=70
                         // 'calificacion[operator]': '>',
                         // 'calificacion[value]': 0,
-                        'estado_calificado': estadosCalificacionProveedor.calificado
+                        // 'estado_calificado': estadosCalificacionProveedor.calificado
                     }
                 },
                 categorias: new CategoriaController()
@@ -292,7 +292,8 @@ export default defineComponent({
             titulo: 'Eliminar',
             icono: 'bi-trash',
             color: 'negative',
-            accion: ({ posicion }) => {
+            accion: ({ entidad, posicion }) => {
+                //: props.propsTable.rowIndex,
                 eliminar({ posicion })
             },
             visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
@@ -351,10 +352,10 @@ export default defineComponent({
             visible: ({ entidad }) => entidad.autorizacion_id === 2
         }
 
-        watch(refItems, () => {
-            console.log('modificacion')
-            console.log(refItems.value)
-        })
+        // watch(refItems, () => {
+        //     console.log('modificacion')
+        //     console.log(refItems.value)
+        // })
 
         // configurar los listados
         empleados.value = listadosAuxiliares.empleados
@@ -372,6 +373,7 @@ export default defineComponent({
             configuracionColumnasDetallesProductos,
             configuracionColumnasProductos,
             configuracionColumnasItemOrdenCompra,
+            refItems,
             //listados
             empleados,
             categorias,

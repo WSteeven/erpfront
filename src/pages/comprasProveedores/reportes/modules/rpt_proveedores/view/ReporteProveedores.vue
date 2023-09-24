@@ -146,76 +146,6 @@
                 >
                 </q-input>
               </div>
-              <!-- fecha de inicio -->
-              <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Fecha de inicio</label>
-                <q-input
-                  v-model="reporte.fecha_inicio"
-                  placeholder="Opcional"
-                  outlined
-                  dense
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="reporte.fecha_inicio"
-                          mask="DD-MM-YYYY"
-                          today-btn
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Cerrar"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-              <!-- fecha de fin -->
-              <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Fecha fin </label>
-                <q-input
-                  v-model="reporte.fecha_fin"
-                  placeholder="Opcional"
-                  outlined
-                  dense
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="reporte.fecha_fin"
-                          mask="DD-MM-YYYY"
-                          today-btn
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Cerrar"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
               <!-- Proveedor activo o inactivo -->
               <div class="col-12 col-md-3">
                 <label>Estado</label> <br />
@@ -305,6 +235,7 @@
                   :permitir-buscar="true"
                   :accion1="btnVerProveedor"
                   :accion2="btnVerCalificacionProveedor"
+                  :accion3="btnReporteCalificacionProveedor"
                   :alto-fijo="false"
                 ></essential-table>
               </div>
