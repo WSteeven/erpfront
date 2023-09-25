@@ -249,6 +249,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="configuracion.logo_claro"
+                :comprimir="false"
                 :alto="'400px'"
                 @update:model-value="
                   (data) => (configuracion.logo_claro = data)
@@ -262,6 +263,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="configuracion.logo_oscuro"
+                :comprimir="false"
                 :alto="'400px'"
                 @update:model-value="
                   (data) => (configuracion.logo_oscuro = data)
@@ -275,6 +277,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="configuracion.logo_marca_agua"
+                :comprimir="false"
                 :alto="'400px'"
                 @update:model-value="
                   (data) => (configuracion.logo_marca_agua = data)

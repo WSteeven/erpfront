@@ -453,6 +453,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="empleado.foto_url"
+                :comprimir="true"
                 :alto="'400px'"
                 @update:model-value="(data) => (empleado.foto_url = data)"
               ></selector-imagen>
@@ -1139,6 +1140,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="empleado.firma_url"
+                :comprimir="false"
                 :alto="'80px'"
                 @update:model-value="(data) => (empleado.firma_url = data)"
               ></selector-imagen>
