@@ -27,6 +27,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useIdle, useTimestamp } from '@vueuse/core'
 import { formatearFechaTexto } from 'shared/utils'
 import { Idle, NotIdle } from 'idlejs'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -245,8 +246,13 @@ export default defineComponent({
       LocalStorage.remove('lastActivity')
     }
 
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+    configuracionGeneralStore.consultarConfiguracion()
 
     return {
+      // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
+      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
+      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
       enCamino,
       motivo,
       modales,
