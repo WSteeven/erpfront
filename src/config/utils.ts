@@ -364,6 +364,7 @@ export const departamentos = {
   bodega: 'BODEGA',
   sso: 'SSO',
   vehiculos: 'VEHICULOS',
+  comercial: 'COMERCIAL',
 }
 export const opcionesUnidadesMedidas = [
   { value: 1, label: 'UNIDAD' },
