@@ -192,7 +192,7 @@ export default defineComponent({
           }
           prompt(data)
         })
-      }, visible: ({ entidad }) => entidad.estado
+      }, visible: ({ entidad }) => entidad.estado && store.esCompras
     }
     const botonActivarProveedor: CustomActionTable = {
       titulo: 'Activar',
@@ -455,7 +455,7 @@ export default defineComponent({
           // console.log(new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos)))
           proveedor.departamentos = [... new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos))]
         }
-        
+
       },
 
       //botones
