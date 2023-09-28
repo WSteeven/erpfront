@@ -50,6 +50,7 @@
         :accion1Header="accion1Header"
         :accion2Header="accion2Header"
         :accion3Header="accion3Header"
+        :accion4Header="accion4Header"
         :alto-fijo="altoFijo"
         :mostrarFooter="mostrarFooter"
         :mostrarExportar="mostrarExportar"
@@ -171,6 +172,10 @@ const props = defineProps({
     required: false,
   },
   accion3Header: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  accion4Header: {
     type: Object as () => CustomActionTable,
     required: false,
   },
