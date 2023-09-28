@@ -2,7 +2,8 @@
   <q-page padding>
     <q-card class="q-mb-md rounded no-border custom-shadow">
       <q-card-section>
-        <div class="border-1 text-bold q-mb-lg">
+        <div class="border-1 text-primary text-bold q-mb-lg">
+          <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
           Análisis de datos: Módulo de tickets
         </div>
 
@@ -95,7 +96,9 @@
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Seleccione un empleado</label>
+            <label class="q-mb-sm block"
+              >Seleccione el empleado a consultar</label
+            >
             <q-select
               v-model="filtro.empleado"
               :options="empleados"
@@ -150,13 +153,12 @@
             <div class="row q-col-gutter-xs">
               <div v-if="cantTicketsCreados >= 0" class="col-12">
                 <q-card
-                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center cursor-pointer q-card-hover q-card-press"
-                  style="background-color: #bc98f3"
+                  class="rounded-card no-border text-primary q-pa-md text-center cursor-pointer q-card-hover q-card-press bg-grey-2"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsCreados }}
                   </div>
-                  <div>Cantidad de tickets creados</div>
+                  <div class="text-bold">Cantidad de tickets creados</div>
                 </q-card>
               </div>
 
@@ -223,7 +225,9 @@
                   <div class="text-h3 text-positive q-mb-md">
                     {{ cantTicketsCalificadosSolicitante }}
                   </div>
-                  <div>Cantidad de tickets que creó y calificó</div>
+                  <div class="text-bold">
+                    Cantidad de tickets que creó y calificó
+                  </div>
                 </q-card>
               </div>
             </div>
@@ -234,8 +238,7 @@
             <div class="row q-col-gutter-xs">
               <div class="col-12">
                 <q-card
-                  class="rounded-card custom-shadow text-white no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press"
-                  style="background-color: #bc98f3"
+                  class="rounded-card custom-shadow text-white no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press bg-primary"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsRecibidos }}
@@ -337,7 +340,9 @@
                   <div class="text-h3 text-positive q-mb-md">
                     {{ cantTicketsCalificadosResponsable }}
                   </div>
-                  <div>Cantidad de tickets que finalizó, calificados</div>
+                  <div class="text-bold">
+                    Cantidad de tickets que finalizó, calificados
+                  </div>
                 </q-card>
               </div>
 
@@ -551,7 +556,7 @@
                     (data) =>
                       clickGraficoTicketsDepartamento(
                         data,
-                        estadosTickets.AGENDADO
+                        estadosTickets.ASIGNADO
                       )
                   "
                 />
@@ -568,6 +573,13 @@
                   :data="ticketsPorDepartamentoEstadoReasignadoBar"
                   :options="optionsPie"
                   v-if="ticketsPorDepartamentoEstadoReasignado.length"
+                  @click="
+                    (data) =>
+                      clickGraficoTicketsDepartamento(
+                        data,
+                        estadosTickets.REASIGNADO
+                      )
+                  "
                 />
               </div>
             </div>
@@ -576,12 +588,19 @@
               v-if="ticketsPorDepartamentoEstadoEjecutando.length"
               class="col-12 col-md-6 text-center"
             >
-              <div class="text-subtitle2">Ejecutando</div>
+              <div class="text-subtitle2 q-mb-lg">Ejecutando</div>
               <div>
                 <grafico-generico
                   :data="ticketsPorDepartamentoEstadoEjecutandoBar"
                   :options="optionsPie"
                   v-if="ticketsPorDepartamentoEstadoEjecutando.length"
+                  @click="
+                    (data) =>
+                      clickGraficoTicketsDepartamento(
+                        data,
+                        estadosTickets.EJECUTANDO
+                      )
+                  "
                 />
               </div>
             </div>
@@ -596,6 +615,13 @@
                   :data="ticketsPorDepartamentoEstadoPausadoBar"
                   :options="optionsPie"
                   v-if="ticketsPorDepartamentoEstadoPausado.length"
+                  @click="
+                    (data) =>
+                      clickGraficoTicketsDepartamento(
+                        data,
+                        estadosTickets.PAUSADO
+                      )
+                  "
                 />
               </div>
             </div>
@@ -612,6 +638,13 @@
                   v-if="
                     ticketsPorDepartamentoEstadoFinalizadoSolucionado.length
                   "
+                  @click="
+                    (data) =>
+                      clickGraficoTicketsDepartamento(
+                        data,
+                        estadosTickets.FINALIZADO_SOLUCIONADO
+                      )
+                  "
                 />
               </div>
             </div>
@@ -627,6 +660,13 @@
                   :options="optionsPie"
                   v-if="
                     ticketsPorDepartamentoEstadoFinalizadoSinSolucion.length
+                  "
+                  @click="
+                    (data) =>
+                      clickGraficoTicketsDepartamento(
+                        data,
+                        estadosTickets.FINALIZADO_SIN_SOLUCION
+                      )
                   "
                 />
               </div>
@@ -664,9 +704,9 @@
 
           <div class="row q-col-gutter-sm q-py-md q-mb-lg">
             <div class="col-12">
+              <!-- v-if="ticketsEmpleadoResponsable.length" -->
               <essential-table
-                v-if="ticketsEmpleadoResponsable.length"
-                titulo="Tickets finalizados con solución"
+                titulo="Tickets"
                 :configuracionColumnas="[
                   ...configuracionColumnasTicket,
                   accionesTabla,

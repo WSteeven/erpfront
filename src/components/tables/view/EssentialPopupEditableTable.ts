@@ -159,6 +159,7 @@ export default defineComponent({
     'onScroll',
   ],
   setup(props, { emit }) {
+    const referencia= ref()
     const listado = ref()
     const filter = ref()
     const filtros = ref()
@@ -305,6 +306,7 @@ export default defineComponent({
     }
 
     return {
+      referencia,
       refTableFilters,
       grid,
       filter,

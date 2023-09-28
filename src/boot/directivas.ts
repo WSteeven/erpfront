@@ -25,6 +25,10 @@ window.onload = function () {
 }
 
 export default ({ app }) => {
+  app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    next();
+  })
   app.directive('focus', {
     mounted: (el) => el.focus()
     /* window.Echo = new Echo({

@@ -8,9 +8,13 @@
     </div>
 
     <q-card class="rounded custom-shadow no-border">
+      <div class="row bg-body text-bold text-grey-10 q-pa-md rounded">
+        Configuración general
+      </div>
+
       <q-card-section>
         <q-form @submit.prevent>
-          <div class="row q-col-gutter-sm q-py-md">
+          <div class="row q-col-gutter-sm q-py-md q-mb-xl">
             <!-- ruc -->
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">RUC/Identificacion</label>
@@ -18,7 +22,6 @@
                 v-model="configuracion.ruc"
                 placeholder="Obligatorio"
                 type="number"
-                :readonly="disabled"
                 :error="!!v$.ruc.$errors.length"
                 outlined
                 dense
@@ -31,13 +34,33 @@
               </q-input>
             </div>
 
+            <!-- ruc -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Tipo contribuyente</label>
+              <q-input
+                v-model="configuracion.tipo_contribuyente"
+                placeholder="Obligatorio"
+                :error="!!v$.tipo_contribuyente.$errors.length"
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.tipo_contribuyente.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-input>
+            </div>
+
             <!-- representante -->
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Representante</label>
               <q-input
                 v-model="configuracion.representante"
                 placeholder="Obligatorio"
-                :readonly="disabled"
                 :error="!!v$.representante.$errors.length"
                 outlined
                 dense
@@ -59,7 +82,6 @@
               <q-input
                 v-model="configuracion.razon_social"
                 placeholder="Obligatorio"
-                :readonly="disabled"
                 :error="!!v$.razon_social.$errors.length"
                 outlined
                 dense
@@ -100,6 +122,32 @@
               </q-input>
             </div>
 
+            <!-- Direccion secundaria 1 -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Dirección secundaria 1</label>
+              <q-input
+                v-model="configuracion.direccion_secundaria1"
+                autogrow
+                placeholder="Opcional"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+
+            <!-- Direccion secundaria 2 -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Dirección secundaria 2</label>
+              <q-input
+                v-model="configuracion.direccion_secundaria2"
+                autogrow
+                placeholder="Opcional"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+
             <!-- telefono -->
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Telefono</label>
@@ -122,6 +170,20 @@
                 autogrow
                 type="tel"
                 placeholder="Obligatorio"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+
+            <!-- Celular 2 -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Celular 2</label>
+              <q-input
+                v-model="configuracion.celular2"
+                autogrow
+                type="tel"
+                placeholder="Opcional"
                 outlined
                 dense
               >
@@ -155,6 +217,19 @@
               </q-input>
             </div>
 
+            <!-- Correo secundario -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Correo secundario</label>
+              <q-input
+                v-model="configuracion.correo_secundario"
+                autogrow
+                placeholder="Obligatorio"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+
             <!-- Moneda -->
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Moneda</label>
@@ -174,6 +249,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="configuracion.logo_claro"
+                :comprimir="false"
                 :alto="'400px'"
                 @update:model-value="
                   (data) => (configuracion.logo_claro = data)
@@ -187,6 +263,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="configuracion.logo_oscuro"
+                :comprimir="false"
                 :alto="'400px'"
                 @update:model-value="
                   (data) => (configuracion.logo_oscuro = data)
@@ -200,6 +277,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="configuracion.logo_marca_agua"
+                :comprimir="false"
                 :alto="'400px'"
                 @update:model-value="
                   (data) => (configuracion.logo_marca_agua = data)
@@ -208,18 +286,19 @@
             </div>
           </div>
 
-          <div class="row justify-end">
+          <div class="row q-mb-md">
             <!-- Boton guardar -->
             <q-btn
               color="primary"
               type="submit"
               no-caps
               push
-              :class="{ 'full-width': $q.screen.xs }"
               @click="guardar(configuracion)"
+              class="full-width"
             >
+              <!-- :class="{ 'full-width': $q.screen.xs }" -->
               <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-              <span>{{ 'Guardar' }}</span>
+              <span>{{ 'Actualizar información general' }}</span>
             </q-btn>
           </div>
         </q-form>

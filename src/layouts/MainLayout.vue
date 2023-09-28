@@ -396,7 +396,13 @@
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
         <!--<img src="~assets/logo.png" height="80" class="q-mx-auto block" /> -->
-        <img src="~assets/logo.png" height="80" class="q-mx-auto block" />
+        <!-- <img src="~assets/logo.png" height="80" class="q-mx-auto block" /> -->
+        <img
+          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+          height="80"
+          class="q-mx-auto block"
+        />
+        <!-- {{ logoClaro }} -->
       </div>
 
       <!-- Drawer Body -->

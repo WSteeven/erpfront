@@ -4,6 +4,7 @@ import { Ref, ref } from "vue";
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 import { useSelector } from "components/tables/application/selector";
 import { Producto } from "pages/bodega/productos/domain/Producto";
+import { encontrarUltimoIdListado } from "shared/utils";
 
 export function useOrquestadorSelectorProductos(entidad: OrdenCompra, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
@@ -20,6 +21,9 @@ export function useOrquestadorSelectorProductos(entidad: OrdenCompra, endpoint: 
         },
         seleccionar: (items: Producto[]) => {
             entidad.listadoProductos = [...entidad.listadoProductos, ...items]
+            entidad.listadoProductos.forEach((v) => {
+                v.id = encontrarUltimoIdListado(entidad.listadoProductos) + 1
+            })
         }
     }
 

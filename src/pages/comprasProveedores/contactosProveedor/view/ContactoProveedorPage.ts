@@ -22,6 +22,7 @@ import { ComportamientoModalesContactosProveedor } from "../application/Comporta
 import { useContactoProveedorStore } from "stores/comprasProveedores/contactoProveedor";
 import { EmpresaController } from "pages/administracion/empresas/infraestructure/EmpresaController";
 import { Empresa } from "pages/administracion/empresas/domain/Empresa";
+import { useAuthenticationStore } from "stores/authentication";
 
 
 export default defineComponent({
@@ -33,6 +34,7 @@ export default defineComponent({
         const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
         //variables
+        const store = useAuthenticationStore()
         const contactoProveedorStore = useContactoProveedorStore()
         const StatusLoading = new StatusEssentialLoading()
         const proveedor = reactive(new Proveedor())
@@ -112,7 +114,8 @@ export default defineComponent({
                 // console.log(entidad.id)
                 contactoProveedorStore.idcontacto = entidad.id
                 modales.abrirModalEntidad('ContactoProveedorLogPage')
-            }
+            },
+            visible:()=>store.esAdministrador
         }
 
         onBeforeUnmount(() => {

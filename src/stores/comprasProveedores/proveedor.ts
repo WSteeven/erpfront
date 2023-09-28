@@ -80,6 +80,14 @@ export const useProveedorStore = defineStore('proveedor', () => {
         }
     }
 
+    async function imprimirReporteCalificacion(entidad) {
+        console.log(entidad)
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.proveedores) + '/imprimir-calificacion/' + idProveedor.value
+        const filename = 'calificacion_proveedor_' + entidad.ruc + '_' + entidad.sucursal
+        imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', filename)
+    }
+
     return {
         proveedor,
         proveedorReset,
@@ -91,5 +99,6 @@ export const useProveedorStore = defineStore('proveedor', () => {
         anularProveedor,
         showPreview,
         buscarReporte,
+        imprimirReporteCalificacion,
     }
 })

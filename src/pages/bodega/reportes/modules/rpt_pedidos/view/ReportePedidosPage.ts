@@ -7,6 +7,7 @@ import useVuelidate from "@vuelidate/core";
 
 //Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from "components/modales/view/ModalEntidad.vue";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
 
@@ -19,11 +20,16 @@ import { endpoints } from "config/api";
 import { useNotificaciones } from "shared/notificaciones";
 import { useNotificacionStore } from "stores/notificacion";
 import { useCargandoStore } from "stores/cargando";
+import { accionesTabla } from "config/utils";
+import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { usePedidoStore } from "stores/pedido";
+import { ComportamientoModalesPedido } from "pages/bodega/pedidos/application/ComportamientoModalesPedido";
+import { report } from "process";
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 export default defineComponent({
-  components: { EssentialTable, Doughnut },
+  components: { EssentialTable, Doughnut, ModalEntidad },
   setup() {
     const reporte = reactive({
       fecha_inicio: '',
@@ -33,6 +39,10 @@ export default defineComponent({
     })
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+    const pedidoStore = usePedidoStore()
+    const cargando = new StatusEssentialLoading()
+
+    const modales = new ComportamientoModalesPedido()
     const listado = ref([])
     const datos = ref([])
     let datosConfigurados = ref()
@@ -47,19 +57,10 @@ export default defineComponent({
     /**
      * Funciones
      */
-    async function buscarReporte() {
-      const cargando = new StatusEssentialLoading()
+    async function buscarReporte(accion: string) {
       try {
         cargando.activar()
-        const axios = AxiosHttpRepository.getInstance()
-        const url = axios.getEndpoint(endpoints.pedidos) + '/reportes'
-        const response: AxiosResponse = await axios.post(url, reporte)
-        console.log(response)
-        if (response.data.results) {
-          listado.value = response.data.results
-          datos.value = response.data.estadisticas
-          llenarDiccionario(datos)
-        }
+        listado.value = await pedidoStore.buscarReporte(accion, reporte, listado.value)
         cargando.desactivar()
       } catch (e) {
         console.log(e)
@@ -77,6 +78,30 @@ export default defineComponent({
             data: Object.values(datos.value)
           }
         ]
+      }
+    }
+
+    /**
+     * Botones de tabla
+     */
+    const btnVerPedido: CustomActionTable = {
+      titulo: '', icono: 'bi-eye', color: 'primary',
+      accion: async ({ entidad }) => {
+        pedidoStore.idPedido = entidad.id
+        await pedidoStore.showPreview()
+        modales.abrirModalEntidad('VisualizarPedidoPage')
+      }
+    }
+    const btnImprimir: CustomActionTable = {
+      titulo: 'Imprimir',
+      color: 'secondary',
+      icono: 'bi-printer',
+      accion: async ({ entidad }) => {
+        pedidoStore.idPedido = entidad.id
+        await pedidoStore.imprimirPdf()
+      },
+      visible: ({ entidad }) => {
+        return entidad.estado == 'COMPLETA' ? true : false
       }
     }
 
@@ -105,7 +130,7 @@ export default defineComponent({
       maintainAspectRatio: false
     }
 
-    const configuracionColumnas = [...configuracionColumnasPedidos]
+    const configuracionColumnas = [...configuracionColumnasPedidos, accionesTabla]
 
     return {
       configuracionColumnas,
@@ -113,12 +138,18 @@ export default defineComponent({
       autorizaciones,
       estados,
       listado,
+      modales,
       //funciones
       buscarReporte,
       //grafico
       data, options,
       datos,
       datosConfigurados,
+
+      //botones de tabla
+      btnVerPedido,
+      btnImprimir,
+
 
     }
   }

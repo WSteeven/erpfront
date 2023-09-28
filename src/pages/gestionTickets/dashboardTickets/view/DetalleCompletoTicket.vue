@@ -44,6 +44,21 @@
         </div>
 
         <!-- Motivo cancelado -->
+        <div v-if="ticket.motivo_ticket_no_solucionado" class="col-12 col-md-3">
+          <label class="q-mb-sm block"
+            >Motivo por el cual no se dió solución al ticket</label
+          >
+          <q-input
+            v-model="ticket.motivo_ticket_no_solucionado"
+            disable
+            outlined
+            dense
+            autogrow
+          >
+          </q-input>
+        </div>
+
+        <!-- Motivo cancelado -->
         <div v-if="ticket.motivo_cancelado_ticket" class="col-12 col-md-3">
           <label class="q-mb-sm block">Motivo de cancelación del ticket</label>
           <q-input
