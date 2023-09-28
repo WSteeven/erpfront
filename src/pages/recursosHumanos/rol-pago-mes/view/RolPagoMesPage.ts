@@ -131,6 +131,26 @@ export default defineComponent({
         })
       },
     }
+    const btnFinalizarMasivo: CustomActionTable = {
+      titulo: 'Finalizar Rol de Pago',
+      icono: 'bi-check',
+      color: 'positive',
+      accion: () => {
+        console.log(rolpago);
+
+        if (!rolpago.id)
+          return notificarAdvertencia('Primero debe seleccionar una rol.')
+        confirmar('¿Está seguro de finalizar rol de pago?', async () => {
+          const data = {
+            rol_pago_id: rolpago.id,
+          }
+          await new CambiarEstadoRolPago().ejecutarMasivo(data)
+          notificarCorrecto('Rol de Pagos Finalizado!')
+          filtrarRolPagoEmpleado('EJECUTANDO');
+        })
+      },
+    }
+
 
     const btnConsultarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Consultar',
@@ -280,6 +300,7 @@ export default defineComponent({
       tabOptionsEstadosRolPago,
       tabActual,
       btnFinalizarRolPago,
+      btnFinalizarMasivo,
       btnFinalizar,
       btnEditarRolPagoEmpleado,
       configuracionColumnas: configuracionColumnasRolPagoMes,

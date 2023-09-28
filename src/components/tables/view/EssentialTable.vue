@@ -40,6 +40,7 @@
     :virtual-scroll-item-size="offset"
     :pagination="pagination"
     no-data-label="Aún no se han agregado elementos"
+    :wrap-cells="ajustarCeldas"
   >
     <!-- wrap-cells -->
     <!--@virtual-scroll="onScroll" -->

@@ -121,9 +121,9 @@ export default defineComponent({
             titulo: '',
             icono: 'bi-file-earmark-excel-fill',
             color: 'positive',
-            accion: async ({entidad}) => {
+            accion: async ({ entidad }) => {
                 proveedorStore.idProveedor = entidad.id
-                await proveedorStore.imprimirReporteCalificacion()
+                await proveedorStore.imprimirReporteCalificacion(entidad)
             },
             visible: ({ entidad }) => entidad.estado_calificado === estadosCalificacionProveedor.calificado || (entidad.estado_calificado == estadosCalificacionProveedor.parcial)
         }

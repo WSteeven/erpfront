@@ -72,6 +72,11 @@ export default defineComponent({
       type: String as () => TipoSeleccion,
       default: 'none',
     },
+    ajustarCeldas:{
+      type: Boolean,
+      default:false,
+      required: false,
+    },
     accion1: {
       type: Object as () => CustomActionTable,
       required: false,

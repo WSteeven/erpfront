@@ -161,14 +161,14 @@ export default defineComponent({
          * Validaciones
          ****************************************************************************************/
         const reglas = {
-            proveedor: { required },
+            proveedor: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
             categorias: { requiredIfNoPreorden: requiredIf(() => false) },
             // categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
             // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
             autorizador: { required },
             descripcion: { required },
-            forma: { required },
-            tiempo: { required },
+            forma: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
+            tiempo:{ requiredIfRolCompras: requiredIf(() => store.esCompras) },
             fecha: { required },
         }
 

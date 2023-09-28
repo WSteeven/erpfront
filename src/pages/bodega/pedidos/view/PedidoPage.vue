@@ -597,6 +597,7 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
+              :ajustarCeldas="true"
             >
               <template v-slot:body="props">
                 <q-tr :props="props" @click="onRowClick(props.row)">
