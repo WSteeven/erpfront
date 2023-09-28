@@ -156,7 +156,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Control de Stock',
           link: 'control-stock',
-          can: store.esActivosFijos,//store.can('puede.ver.control_stock'),
+          can: store.esBodeguero || store.can('puede.acceder.control_stock'),
           icon: 'bi-circle',
         },
         {

@@ -11,11 +11,7 @@
         v-if="transaccion.aviso_liquidacion_cliente"
         class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
       >
-        <q-icon
-          name="bi-exclamation-triangle-fill"
-          class="q-mr-sm"
-          size="1em"
-        ></q-icon
+        <q-icon name="bi-exclamation-triangle-fill" class="q-mr-sm" size="1em"></q-icon
         ><b>&nbsp; Advertencia</b>
         <div>Esta transacción no se cargará al stock de ningún empleado</div>
       </div>
@@ -40,7 +36,10 @@
             <q-input v-model="transaccion.created_at" disable outlined dense />
           </div>
           <!-- Select motivo -->
-          <div v-if="esBodeguero || esBodegueroTelconet" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="esBodeguero || esBodegueroTelconet || store.esAdministrador"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">Motivo</label>
             <q-select
               v-model="transaccion.motivo"
@@ -63,18 +62,14 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="
-              transaccion.autorizacion || esVisibleAutorizacion
-            "
+            v-if="transaccion.autorizacion || esVisibleAutorizacion"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -102,18 +97,13 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Transferencia -->
-          <div
-            v-if="transaccion.es_transferencia"
-            class="col-12 col-md-3 q-mb-md"
-          >
+          <div v-if="transaccion.es_transferencia" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° transferencia</label>
             <q-input
               type="number"
@@ -181,9 +171,7 @@
           </div>
           <!-- observacion autorizacion -->
           <div
-            v-if="
-              transaccion.tiene_observacion_aut || transaccion.observacion_aut
-            "
+            v-if="transaccion.tiene_observacion_aut || transaccion.observacion_aut"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
@@ -197,10 +185,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.observacion_aut.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -238,9 +223,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
@@ -266,10 +249,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.justificacion.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.justificacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -277,7 +257,8 @@
           </div>
           <!-- Solicitante -->
           <div v-if="transaccion.solicitante" class="col-12 col-md-3">
-            <label-info-empleado v-if="accion==acciones.consultar"
+            <label-info-empleado
+              v-if="accion == acciones.consultar"
               label="Solicitante"
               @click="infoEmpleado(transaccion.solicitante)"
             />
@@ -301,9 +282,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -327,10 +306,7 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div
-            v-if="esVisibleTarea || transaccion.es_tarea"
-            class="col-12 col-md-3"
-          >
+          <div v-if="esVisibleTarea || transaccion.es_tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="transaccion.tarea"
@@ -361,7 +337,8 @@
           </div>
           <!-- Responsable -->
           <div v-if="!esTecnico" class="col-12 col-md-3">
-            <label-info-empleado v-if="accion==acciones.consultar"
+            <label-info-empleado
+              v-if="accion == acciones.consultar"
               label="Responsable"
               @click="infoEmpleado(transaccion.responsable)"
             />
@@ -389,9 +366,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
@@ -421,7 +396,8 @@
           </div>
           <!-- Persona que retira -->
           <div v-if="transaccion.retira_tercero" class="col-12 col-md-3">
-            <label-info-empleado v-if="accion==acciones.consultar"
+            <label-info-empleado
+              v-if="accion == acciones.consultar"
               label="Persona que retira"
               @click="infoEmpleado(transaccion.per_retira)"
             />
@@ -447,9 +423,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -483,9 +457,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -514,10 +486,7 @@
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
-          <div
-            v-if="!transferenciaStore.transferencia.id"
-            class="col-12 col-md-12"
-          >
+          <div v-if="!transferenciaStore.transferencia.id" class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
             <div class="row q-col-gutter-x-xs">
               <div class="col-12 col-md-10 q-mb-md">
@@ -533,9 +502,7 @@
                       search: criterioBusquedaProducto,
                     })
                   "
-                  @blur="
-                    criterioBusquedaProducto === '' ? limpiarProducto() : null
-                  "
+                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
                   outlined
                   dense
                 >
@@ -556,7 +523,7 @@
                   :disable="disabled || soloLectura"
                   color="positive"
                   class="full-width"
-                  style="height:20px; max-height: 40px; "
+                  style="height: 20px; max-height: 40px"
                   no-caps
                   glossy
                   >Buscar</q-btn
@@ -569,9 +536,7 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
-              "
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -598,6 +563,9 @@
       </essential-selectable-table>
     </template>
   </tab-layout>
-  <modales-entidad :comportamiento="modalesEmpleado" :confirmarCerrar="false"></modales-entidad>
+  <modales-entidad
+    :comportamiento="modalesEmpleado"
+    :confirmarCerrar="false"
+  ></modales-entidad>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

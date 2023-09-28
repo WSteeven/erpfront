@@ -336,7 +336,13 @@ export default defineComponent({
       })
     }
 
+    function seleccionarClientePropietario(val) {
+      const sucursalSeleccionada = opciones_sucursales.value.filter((v: Sucursal) => v.id === val)
+      transaccion.cliente = sucursalSeleccionada[0]['cliente_id']
+     }
+
     async function buscarListadoPedidoEnInventario() {
+      seleccionarClientePropietario(transaccion.sucursal)
       transaccion.listadoProductosTransaccion = []
       if (transaccion.pedido) {
         const detalles_ids = listadoPedido.value.map((v) => v.id)
@@ -414,7 +420,7 @@ export default defineComponent({
     } */
 
     async function recargarSucursales() {
-      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
     }
 
@@ -536,7 +542,9 @@ export default defineComponent({
 
       //rol
       rolSeleccionado,
-      esBodeguero, esBodegueroTelconet: store.esBodegueroTelconet,
+      esBodeguero,
+      esBodegueroTelconet: store.esBodegueroTelconet,
+      store,
       esCoordinador,
 
       llenarTransaccion,
