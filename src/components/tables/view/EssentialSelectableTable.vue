@@ -16,6 +16,7 @@
           :mostrar-botones="false"
           :tipoSeleccion="tipoSeleccion"
           @selected="emitSelected"
+          :ajustarCeldas="true"
         ></essential-table>
       </q-card-section>
 

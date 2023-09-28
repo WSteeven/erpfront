@@ -646,7 +646,7 @@ export const useMenuStore = defineStore('menu', () => {
             {
               title: 'Reporte de Proveedores',
               link: 'reporte-proveedores',
-              icon: 'bi-person-fill-add',
+              icon: 'bi-boxes',
               can: true || store.can('puede.ver.reporte_proveedores'),
             }
           ]

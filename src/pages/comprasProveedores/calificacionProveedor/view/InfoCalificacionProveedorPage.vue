@@ -109,7 +109,7 @@
         <div class="col-12 col-md-12">
           <q-card flat bordered>
             <q-card-section>
-                <div class="text-h5">
+                <div class="text-h6">
                   Empleado: {{ departamento[0].empleado }}
                 </div>
               </q-card-section>
