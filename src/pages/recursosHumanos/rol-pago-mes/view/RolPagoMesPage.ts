@@ -2,7 +2,7 @@
 import { configuracionColumnasRolPago } from '../../rol-pago/domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, Ref } from 'vue'
+import { defineComponent, ref, computed, Ref, reactive } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -12,7 +12,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { RolPagoController } from '../../rol-pago/infraestructure/RolPagoController'
 import { RolPago } from '../../rol-pago/domain/RolPago'
-import { removeAccents } from 'shared/utils'
+import { imprimirArchivo, removeAccents } from 'shared/utils'
 import { acciones, accionesTabla, estadosRolPago } from 'config/utils'
 import { configuracionColumnasRolPagoTabla } from '../../rol-pago/domain/configuracionColumnasRolPagoTabla'
 import { ConceptoIngreso } from 'pages/recursosHumanos/concepto_ingreso/domain/ConceptoIngreso'
@@ -40,6 +40,9 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { log } from 'console'
 import { CambiarEstadoRolPago } from 'pages/recursosHumanos/rol-pago/aplication/CambiarEstadoRolPago'
 import { useBotonesImpresionTablaRolPago } from 'pages/recursosHumanos/rol-pago/aplication/BotonesImpresionRolPago'
+import { apiConfig, endpoints } from 'config/api'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: {
@@ -81,7 +84,7 @@ export default defineComponent({
 
     const { onConsultado } = mixin.useHooks()
     useCargandoStore().setQuasar(useQuasar())
-    const { notificarAdvertencia,notificarCorrecto, confirmar } = useNotificaciones()
+    const { notificarAdvertencia,notificarCorrecto, confirmar,promptItems } = useNotificaciones()
 
     const { btnFinalizarRolPago } = useBotonesTablaRolPagoMes(mixin)
     const { btnIniciar, btnFirmar, btnRealizado, btnFinalizar } = useBotonesTablaRolPago(
@@ -93,7 +96,10 @@ export default defineComponent({
       useBotonesImpresionTablaRolPago(rolpago)
     const rolPagoStore = useRolPagoStore()
     const tabActual = ref()
-
+    const lista_tipo_reporte = [
+      { id: 'pdf', name: 'PDF' },
+      { id: 'xlsx', name: 'EXCEL' },
+    ]
     const btnAgregarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Agregar rol pago empleado',
       icono: 'bi-plus',
@@ -135,18 +141,17 @@ export default defineComponent({
       titulo: 'Finalizar Rol de Pago',
       icono: 'bi-check',
       color: 'positive',
+      visible: () => rolpago.es_quincena==true,
       accion: () => {
-        console.log(rolpago);
-
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
         confirmar('¿Está seguro de finalizar rol de pago?', async () => {
           const data = {
             rol_pago_id: rolpago.id,
           }
-          await new CambiarEstadoRolPago().ejecutarMasivo(data)
+          await new CambiarEstadoRolPago().finalizarMasivo(data)
           notificarCorrecto('Rol de Pagos Finalizado!')
-          filtrarRolPagoEmpleado('EJECUTANDO');
+          filtrarRolPagoEmpleado('FINALIZADO');
         })
       },
     }
@@ -167,7 +172,7 @@ export default defineComponent({
       icono: 'bi-pencil',
       color: 'warning',
       visible: ({ entidad }) => {
-        return (entidad.estado === estadosRolPago.EJECUTANDO && authenticationStore.esRecursosHumanos
+        return (entidad.estado === estadosRolPago.EJECUTANDO && (authenticationStore.can('puede.editar.rol_pago'))
         )
       },
       accion: ({ entidad }) => {
@@ -256,7 +261,46 @@ export default defineComponent({
         consultar(entidad)
       },
     }
+    const btnImprimirRolPago: CustomActionTable = {
+      titulo: 'Reporte General',
+      icono: 'bi-printer',
+      color: 'primary',
+      visible: ({ entidad }) =>
+        authenticationStore.can('puede.ver.rol_pago')&& !entidad.es_quincena,
+      accion: ({ entidad }) => {
+       // generar_reporte_general_mes(entidad.id,'pdf')
 
+       const config: CustomActionPrompt = reactive({
+        mensaje: 'Confirme el tipo de reporte',
+        accion: (tipo) => {
+          generar_reporte_general_mes(entidad.id,tipo)
+        },
+        requerido: false,
+        defecto: 'EXCEL',
+        tipo: 'radio',
+        items: lista_tipo_reporte.map((tipo) => {
+          return {
+            label: tipo.name,
+            value: tipo.id,
+          }
+        }),
+      })
+      promptItems(config)
+
+      },
+    }
+
+    async function generar_reporte_general_mes(id:number,tipo: string): Promise<void> {
+      const axios = AxiosHttpRepository.getInstance()
+      const filename = 'rol_pago'
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.imprimir_reporte_general) +
+        id+'?tipo='+tipo
+
+      imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
+    }
     return {
       removeAccents,
       mixin,
@@ -303,9 +347,12 @@ export default defineComponent({
       btnFinalizarMasivo,
       btnFinalizar,
       btnEditarRolPagoEmpleado,
+      btnImprimirRolPago,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,
     }
   },
 })
+
+
 
