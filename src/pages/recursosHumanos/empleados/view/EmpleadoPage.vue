@@ -1224,6 +1224,10 @@
       </q-form>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+    @guardado="(data) => guardado(data)"
+  ></modales-entidad>
 </template>
 
 <script src="./EmpleadoPage.ts" />
