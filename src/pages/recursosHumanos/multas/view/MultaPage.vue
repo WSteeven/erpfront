@@ -9,7 +9,7 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- nombre -->
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Nombre del Cargo</label>
+            <label class="q-mb-sm block">Nombre de la Multa</label>
             <q-input
               v-model="multa.nombre"
               @update:model-value="(v) => (multa.nombre = removeAccents(v))"
@@ -33,4 +33,4 @@
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 
-<script src="./CargoPage.ts"></script>
+<script src="./MultaPage.ts"></script>

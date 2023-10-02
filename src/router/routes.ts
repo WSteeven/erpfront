@@ -947,6 +947,33 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/descuentos-generales',
+        name: 'descuentos_generales',
+        component: () =>
+          import(
+            'pages/recursosHumanos/descuentos_generales/view/DescuentosGeneralesPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/multa',
+        name: 'multa',
+        component: () =>
+          import(
+            'pages/recursosHumanos/multas/view/MultaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/concepto-ingreso',
+        name: 'concepto_ingreso',
+        component: () =>
+          import(
+            'pages/recursosHumanos/concepto_ingreso/view/ConceptoIngresoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

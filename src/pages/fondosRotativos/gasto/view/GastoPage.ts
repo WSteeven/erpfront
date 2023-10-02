@@ -378,8 +378,10 @@ export default defineComponent({
         )
       } else {
         sabadoAnterior = convertir_fecha(
-          new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
-        )
+          new Date(today.setDate(today.getDate() - ((today.getDay()+1) % 7)))
+          //new Date(today.setDate(today.getDate() - ((today.getDay()) % 7)))
+
+          )
       }
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
