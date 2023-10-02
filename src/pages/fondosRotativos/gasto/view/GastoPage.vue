@@ -210,8 +210,117 @@
               dense
             ></q-checkbox>
           </div>
+                    <!-- Detalle -->
+                    <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Detalle</label>
+            <q-select
+              v-model="gasto.detalle"
+              :options="detalles"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.detalle.$errors.length"
+              error-message="Debes seleccionar un detalle"
+              use-input
+              input-debounce="0"
+              @blur="v$.detalle.$touch"
+              @update:model-value="cambiar_detalle()"
+              @filter="filtrarDetalles"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.descripcion"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.detalle.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar_detalle('detalle')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
+            </q-select>
+          </div>
+          <!-- Subdetalle-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Subdetalle</label>
+            <q-select
+              v-model="gasto.sub_detalle"
+              :options="sub_detalles"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              use-chips
+              outlined
+              multiple
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtarSubdetalles"
+              @blur="v$.sub_detalle.$touch"
+              @update:model-value="tiene_factura_subdetalle()"
+              :error="!!v$.sub_detalle.$errors.length"
+              error-message="Debes seleccionar uno o varios sub_detalle"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.descripcion"
+              emit-value
+              map-options
+            >
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.descripcion }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.sub_detalle.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn
+                  color="positive"
+                  @click="recargar_detalle('sub_detalle')"
+                >
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
+            </q-select>
+          </div>
           <!-- Factura -->
-          <div class="col-12 col-md-3" v-if="esFactura">
+          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle!=null ">
             <label class="q-mb-sm block">#Factura</label>
             <q-input
               v-model="gasto.factura"
@@ -256,7 +365,7 @@
             </q-input>
           </div>
           <!-- RUC -->
-          <div class="col-12 col-md-3" v-if="esFactura">
+          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle!=null">
             <label class="q-mb-sm block">RUC</label>
             <q-input
               v-model="gasto.ruc"
@@ -422,115 +531,7 @@
               </template>
             </q-select>
           </div>
-          <!-- Detalle -->
-          <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Detalle</label>
-            <q-select
-              v-model="gasto.detalle"
-              :options="detalles"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              options-dense
-              dense
-              outlined
-              :disable="disabled"
-              :readonly="disabled"
-              :error="!!v$.detalle.$errors.length"
-              error-message="Debes seleccionar un detalle"
-              use-input
-              input-debounce="0"
-              @blur="v$.detalle.$touch"
-              @update:model-value="cambiar_detalle()"
-              @filter="filtrarDetalles"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.descripcion"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.detalle.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:after>
-                <q-btn color="positive" @click="recargar_detalle('detalle')">
-                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
-                </q-btn>
-              </template>
-            </q-select>
-          </div>
-          <!-- Subdetalle-->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Subdetalle</label>
-            <q-select
-              v-model="gasto.sub_detalle"
-              :options="sub_detalles"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              use-chips
-              outlined
-              multiple
-              :disable="disabled"
-              :readonly="disabled"
-              use-input
-              input-debounce="0"
-              @filter="filtarSubdetalles"
-              @blur="v$.sub_detalle.$touch"
-              @update:model-value="tiene_factura_subdetalle()"
-              :error="!!v$.sub_detalle.$errors.length"
-              error-message="Debes seleccionar uno o varios sub_detalle"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.descripcion"
-              emit-value
-              map-options
-            >
-              <template
-                v-slot:option="{ itemProps, opt, selected, toggleOption }"
-              >
-                <q-item v-bind="itemProps">
-                  <q-item-section>
-                    {{ opt.descripcion }}
-                    <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-toggle
-                      :model-value="selected"
-                      @update:model-value="toggleOption(opt)"
-                    />
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:error>
-                <div v-for="error of v$.sub_detalle.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:after>
-                <q-btn
-                  color="positive"
-                  @click="recargar_detalle('sub_detalle')"
-                >
-                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
-                </q-btn>
-              </template>
-            </q-select>
-          </div>
+
           <!-- Kilometraje -->
           <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">
             <label class="q-mb-sm block">Kilometraje</label>
