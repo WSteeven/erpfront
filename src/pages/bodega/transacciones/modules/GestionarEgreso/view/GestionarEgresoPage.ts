@@ -1,4 +1,3 @@
-import { useNotificacionStore } from './../../../../../../stores/notificaciones';
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionEgreso'
 import { defineComponent } from 'vue'
@@ -18,6 +17,7 @@ import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useQuasar } from 'quasar';
 import { useCargandoStore } from 'stores/cargando';
+import { useNotificacionStore } from 'stores/notificacion'
 
 export default defineComponent({
   components: { EssentialTableTabs, ModalEntidad, },
