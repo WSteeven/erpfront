@@ -20,6 +20,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 import { RolPagoMes } from '../domain/RolPagoMes'
+import axios from 'axios'
 import { RolPagoMesController } from '../infrestucture/RolPagoMesController'
 import { ComportamientoModalesRolPagoMes } from '../aplication/ComportamientoModalesRolPagoMes'
 import { ComportamientoModalesRolPago } from 'pages/recursosHumanos/rol-pago/aplication/ComportamientoModalesRolPago'
@@ -43,6 +44,7 @@ import { useBotonesImpresionTablaRolPago } from 'pages/recursosHumanos/rol-pago/
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 
 export default defineComponent({
   components: {
@@ -63,11 +65,7 @@ export default defineComponent({
       disabled,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const {
-      consultar,
-      setValidador,
-      listar,
-    } = mixin.useComportamiento()
+    const { consultar, setValidador, listar } = mixin.useComportamiento()
     const mixinRolEmpleado = new ContenedorSimpleMixin(
       RolPago,
       new RolPagoController()
@@ -84,14 +82,16 @@ export default defineComponent({
 
     const { onConsultado } = mixin.useHooks()
     useCargandoStore().setQuasar(useQuasar())
-    const { notificarAdvertencia,notificarCorrecto, confirmar,promptItems } = useNotificaciones()
+    const { notificarAdvertencia, notificarCorrecto, confirmar, promptItems } =
+      useNotificaciones()
 
     const { btnFinalizarRolPago } = useBotonesTablaRolPagoMes(mixin)
-    const { btnIniciar, btnFirmar, btnRealizado, btnFinalizar } = useBotonesTablaRolPago(
-      roles_empleados,
-      modalesRolPago,
-      listadosAuxiliares
-    )
+    const { btnIniciar, btnFirmar, btnRealizado, btnFinalizar } =
+      useBotonesTablaRolPago(
+        roles_empleados,
+        modalesRolPago,
+        listadosAuxiliares
+      )
     const { btnImprimir, btnGenerarReporte } =
       useBotonesImpresionTablaRolPago(rolpago)
     const rolPagoStore = useRolPagoStore()
@@ -123,7 +123,7 @@ export default defineComponent({
       icono: 'bi-play-fill',
       color: 'positive',
       accion: () => {
-        console.log(rolpago);
+        console.log(rolpago)
 
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
@@ -133,7 +133,7 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().ejecutarMasivo(data)
           notificarCorrecto('Rol de Pagos se esta Verificando!')
-          filtrarRolPagoEmpleado('EJECUTANDO');
+          filtrarRolPagoEmpleado('EJECUTANDO')
         })
       },
     }
@@ -141,7 +141,7 @@ export default defineComponent({
       titulo: 'Finalizar Rol de Pago',
       icono: 'bi-check',
       color: 'positive',
-      visible: () => rolpago.es_quincena==true,
+      visible: () => rolpago.es_quincena == true,
       accion: () => {
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
@@ -151,11 +151,10 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().finalizarMasivo(data)
           notificarCorrecto('Rol de Pagos Finalizado!')
-          filtrarRolPagoEmpleado('FINALIZADO');
+          filtrarRolPagoEmpleado('FINALIZADO')
         })
       },
     }
-
 
     const btnConsultarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Consultar',
@@ -172,7 +171,9 @@ export default defineComponent({
       icono: 'bi-pencil',
       color: 'warning',
       visible: ({ entidad }) => {
-        return (entidad.estado === estadosRolPago.EJECUTANDO && (authenticationStore.can('puede.editar.rol_pago'))
+        return (
+          entidad.estado === estadosRolPago.EJECUTANDO &&
+          authenticationStore.can('puede.editar.rol_pago')
         )
       },
       accion: ({ entidad }) => {
@@ -198,11 +199,9 @@ export default defineComponent({
         'Diciembre',
       ]
       const [mes, anio] = rolpago.mes!.split('-')
-      rolpago.nombre = `Rol de Pagos de ${ rolpago.es_quincena
-      ? 'QUINCENA DEL MES DE '
-      : ''}  ${
-         meses[parseInt(mes, 10) - 1]
-      } de ${anio}`
+      rolpago.nombre = `Rol de Pagos de ${
+        rolpago.es_quincena ? 'QUINCENA DEL MES DE ' : ''
+      }  ${meses[parseInt(mes, 10) - 1]} de ${anio}`
     }
     let tabActualRolPago = '0'
     function filtrarRolPagoMes(tabSeleccionado: string) {
@@ -266,38 +265,72 @@ export default defineComponent({
       icono: 'bi-printer',
       color: 'primary',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.rol_pago')&& !entidad.es_quincena,
+        authenticationStore.can('puede.ver.rol_pago') && !entidad.es_quincena,
       accion: ({ entidad }) => {
-       // generar_reporte_general_mes(entidad.id,'pdf')
+        // generar_reporte_general_mes(entidad.id,'pdf')
 
-       const config: CustomActionPrompt = reactive({
-        mensaje: 'Confirme el tipo de reporte',
-        accion: (tipo) => {
-          generar_reporte_general_mes(entidad.id,tipo)
-        },
-        requerido: false,
-        defecto: 'EXCEL',
-        tipo: 'radio',
-        items: lista_tipo_reporte.map((tipo) => {
-          return {
-            label: tipo.name,
-            value: tipo.id,
-          }
-        }),
-      })
-      promptItems(config)
-
+        const config: CustomActionPrompt = reactive({
+          mensaje: 'Confirme el tipo de reporte',
+          accion: (tipo) => {
+            generar_reporte_general_mes(entidad.id, tipo)
+          },
+          requerido: false,
+          defecto: 'EXCEL',
+          tipo: 'radio',
+          items: lista_tipo_reporte.map((tipo) => {
+            return {
+              label: tipo.name,
+              value: tipo.id,
+            }
+          }),
+        })
+        promptItems(config)
       },
     }
+    const btnEnviarRolPago: CustomActionTable = {
+      titulo: 'Enviar Rol de Pagos',
+      icono: 'bi-envelope-fill',
+      color: 'primary',
+      visible: ({ entidad }) =>
+        authenticationStore.can('puede.ver.rol_pago') && !entidad.es_quincena,
+      accion: ({ entidad }) => {
+        enviar_rol_pago(entidad)
+      },
+    }
+    async function enviar_rol_pago(entidad): Promise<void> {
+      const axios_repository = AxiosHttpRepository.getInstance()
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios_repository.getEndpoint(endpoints.enviar_rol_pago)+entidad.id
+      axios({
+        url: url_pdf,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          Authorization: axios_repository.getOptions().headers.Authorization,
+        },
+      }).then((response: HttpResponseGet) => {
+        const { data } = response
+        if (data) {
+          console.log(data)
+        }
+      })
+    }
 
-    async function generar_reporte_general_mes(id:number,tipo: string): Promise<void> {
+    async function generar_reporte_general_mes(
+      id: number,
+      tipo: string
+    ): Promise<void> {
       const axios = AxiosHttpRepository.getInstance()
       const filename = 'rol_pago'
       const url_pdf =
         apiConfig.URL_BASE +
         '/' +
         axios.getEndpoint(endpoints.imprimir_reporte_general) +
-        id+'?tipo='+tipo
+        id +
+        '?tipo=' +
+        tipo
 
       imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
     }
@@ -332,6 +365,7 @@ export default defineComponent({
       filtrarRolPagoEmpleado,
       obtenerNombreMes,
       disabled,
+      btnEnviarRolPago,
       configuracionColumnasRolPago,
       columnasRolPagoEmpleados: [
         ...configuracionColumnasRolPago,
@@ -353,6 +387,3 @@ export default defineComponent({
     }
   },
 })
-
-
-
