@@ -9,6 +9,7 @@
     :tabOptions="tabOptionsEstadosRolPago"
     :accion1="btnFinalizarRolPago"
     :accion2="btnImprimirRolPago"
+    :accion3="btnEnviarRolPago"
     :filtrar="filtrarRolPagoMes"
     tabDefecto="0"
     :forzarListar="true"

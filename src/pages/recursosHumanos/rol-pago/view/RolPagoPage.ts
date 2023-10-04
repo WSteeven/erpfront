@@ -740,20 +740,33 @@ export default defineComponent({
         valor.id
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
-    watchEffect(() => {
+    function calcularSalario(tipo_contrato){
       let dias_quincena = rolpago.es_quincena == true ? 15 : 0
-      if(rolpago.medio_tiempo){
-        dias_quincena = 0
-      }
       const dias = parseFloat(
         rolpago.dias != null ? rolpago.dias.toString() : '0'
       )
-      const dias_totales = dias + dias_quincena
-      const salario = parseFloat(rolpago.salario ?? '0')
+      if(rolpago.medio_tiempo || rolpago.tipo_contrato ==3 ){
+        dias_quincena = 0
+      }
+      const salario = parseFloat(rolpago.salario ?? '0');
+      const dias_totales = dias + dias_quincena;
       const sueldo = (salario / 30) * dias_totales
-      const total_sueldo =
-      rolpago.es_quincena == true ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100:sueldo
-      rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
+      let total_sueldo =0;
+    switch (tipo_contrato) {
+      case 3:
+        total_sueldo = sueldo
+        break;
+      default:
+         total_sueldo = rolpago.es_quincena == true ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100:sueldo
+        break;
+    }
+    rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
+
+
+    }
+    watchEffect(() => {
+
+      calcularSalario(rolpago.tipo_contrato)
     })
     return {
       removeAccents,

@@ -34,6 +34,7 @@ export class RolPago extends EntidadAuditable {
   egresos: any | null
   roles: any | null
   dias_permiso_sin_recuperar: number | null
+  tipo_contrato : number | null
   estado: string | null
   tieneDocumento: boolean | null
   rol_pago_id : number | null
@@ -75,6 +76,7 @@ porcentaje_anticipo: number | null
     this.egresos = null
     this.roles = null
     this.dias_permiso_sin_recuperar = null
+    this.tipo_contrato = null
     this.estado = null
     this.tieneDocumento = false
     this.rol_pago_id = null
