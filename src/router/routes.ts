@@ -511,6 +511,13 @@ const routes: RouteRecordRaw[] = [
        * COMPRAS Y PROVEEDORES
        *********************************************/
       {
+        path: '/bancos',
+        name: 'bancos',
+        component: () =>
+          import('pages/recursosHumanos/banco/view/BancoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/empresas',
         name: 'empresas',
         component: () =>

@@ -615,6 +615,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.empresas') || store.esAdministrador,
         },
         {
+          title: 'Bancos',
+          link: 'bancos',
+          icon: 'bi-bank',
+          can: store.can('puede.acceder.bancos') || store.esAdministrador,
+        },
+        {
           title: 'Proveedores',
           link: 'proveedores',
           icon: 'bi-boxes',
@@ -623,7 +629,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Datos Bancarios de Proveedores',
           link: 'datos-bancarios-proveedores',
-          icon: 'bi-bank',
+          icon: 'bi-bank2',
           can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
         },
         {
