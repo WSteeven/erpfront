@@ -103,6 +103,7 @@ export const endpoints = {
   verificar_todos_roles_finalizadas: new Endpoint('recursos-humanos/verificar-todos_roles-finalizadas'),
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
   enviar_rol_pago: new Endpoint('recursos-humanos/enviar-roles-pago/'),
+  crear_cash_roles_pago: new Endpoint('recursos-humanos/crear-cash-roles-pago/'),
   rubros: new Endpoint('recursos-humanos/rubros'),
 
 

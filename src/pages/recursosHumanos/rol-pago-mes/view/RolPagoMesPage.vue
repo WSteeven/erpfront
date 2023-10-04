@@ -10,6 +10,7 @@
     :accion1="btnFinalizarRolPago"
     :accion2="btnImprimirRolPago"
     :accion3="btnEnviarRolPago"
+    :accion4="btnCashRolPago"
     :filtrar="filtrarRolPagoMes"
     tabDefecto="0"
     :forzarListar="true"
