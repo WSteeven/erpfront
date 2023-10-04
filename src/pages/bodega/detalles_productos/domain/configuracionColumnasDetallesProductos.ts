@@ -8,14 +8,14 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     label: 'N°',
     align: 'left',
     sortable: true,
-  }, 
-  // {
-  //   name: 'codigo',
-  //   field: 'codigo',
-  //   label: 'Código',
-  //   align: 'left',
-  //   sortable: true
-  // },
+  },
+  {
+    name: 'categoria',
+    field: 'categoria',
+    label: 'Categoria',
+    align: 'left',
+    sortable: true
+  },
   {
     name: 'producto',
     field: 'producto',
