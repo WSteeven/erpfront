@@ -5,6 +5,8 @@
     :pagination="pagination"
     :puedeExportar="true"
     titulo-pagina="Detalles de productos"
+    :accion1="botonActivarDetalle"
+    :accion2="botonDesactivarDetalle"
   >
     <template #formulario>
       <q-form @submit.prevent>

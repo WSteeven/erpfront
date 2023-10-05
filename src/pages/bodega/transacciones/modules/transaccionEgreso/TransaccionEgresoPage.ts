@@ -339,10 +339,13 @@ export default defineComponent({
     function seleccionarClientePropietario(val) {
       const sucursalSeleccionada = opciones_sucursales.value.filter((v: Sucursal) => v.id === val)
       transaccion.cliente = sucursalSeleccionada[0]['cliente_id']
-     }
+
+      buscarListadoPedidoEnInventario()
+    }
+
+
 
     async function buscarListadoPedidoEnInventario() {
-      seleccionarClientePropietario(transaccion.sucursal)
       transaccion.listadoProductosTransaccion = []
       if (transaccion.pedido) {
         const detalles_ids = listadoPedido.value.map((v) => v.id)
@@ -538,6 +541,7 @@ export default defineComponent({
 
       limpiarProducto,
       seleccionarProducto,
+      seleccionarClientePropietario,
       configuracionColumnasProductos,
 
       //rol
