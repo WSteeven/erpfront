@@ -29,9 +29,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -57,7 +55,9 @@
                       item.descripcion +
                       ' &nbsp; | &nbsp; ' +
                       item.serial
-                    : item.id? item.modelo+' | '+item.descripcion:null
+                    : item.id
+                    ? item.modelo + ' | ' + item.descripcion
+                    : null
               "
               :option-value="(item) => item.id"
               emit-value
@@ -70,9 +70,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -88,6 +86,10 @@
               options-dense
               dense
               outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarSucursales"
+              @update:model-value="seleccionarPropietario"
               :error="!!v$.sucursal_id.$errors.length"
               error-message="Debes seleccionar una sucursal"
               :option-label="(item) => item.lugar"
@@ -112,6 +114,7 @@
               transition-hide="scale"
               options-dense
               dense
+              disable
               outlined
               :error="!!v$.cliente_id.$errors.length"
               error-message="Debes seleccionar el propietario del producto"

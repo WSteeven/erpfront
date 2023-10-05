@@ -8,7 +8,9 @@
     :mostrarButtonSubmits="tab === 'rol_pago'"
     :tabOptions="tabOptionsEstadosRolPago"
     :accion1="btnFinalizarRolPago"
-
+    :accion2="btnImprimirRolPago"
+    :accion3="btnEnviarRolPago"
+    :accion4="btnCashRolPago"
     :filtrar="filtrarRolPagoMes"
     tabDefecto="0"
     :forzarListar="true"
@@ -47,7 +49,7 @@
                   :value="rolpago.mes"
                   mask="##-####"
                   :error="!!v$.mes.$errors.length"
-                  :disable="accion=='CONSULTAR' || accion=='EDITAR'"
+                  :disable="accion == 'CONSULTAR' || accion == 'EDITAR'"
                   @blur="v$.mes.$touch"
                   readonly
                   outlined
@@ -99,17 +101,17 @@
                 </q-input>
               </div>
               <!-- Aceptar Sugerencias -->
-          <div class="col-12 col-md-3" >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="rolpago.es_quincena"
-              label="Es quincena"
-              :disable="disabled"
-              @update:model-value="obtenerNombreMes"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
+              <div class="col-12 col-md-3">
+                <q-checkbox
+                  class="q-mt-lg q-pt-md"
+                  v-model="rolpago.es_quincena"
+                  label="Es quincena"
+                  :disable="disabled"
+                  @update:model-value="obtenerNombreMes"
+                  outlined
+                  dense
+                ></q-checkbox>
+              </div>
             </div>
           </q-form>
         </q-tab-panel>
@@ -131,7 +133,6 @@
             :accion2Header="btnEjecutarMasivo"
             :accion3Header="btnFinalizarMasivo"
             :accion4Header="btnGenerarReporte"
-
             :permitirConsultar="false"
             :permitirEditar="false"
             :permitirEliminar="false"

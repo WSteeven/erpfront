@@ -8,7 +8,7 @@ import {
   requiredIf,
 } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { convertir_fecha, maskFecha, niveles_academicos, opcionesEstados, talla_letras, tipos_sangre } from 'config/utils'
+import { acciones, accionesTabla, convertir_fecha, maskFecha, niveles_academicos, opcionesEstados, talla_letras, tipos_sangre } from 'config/utils'
 import { defineComponent, ref, watchEffect, computed } from 'vue'
 
 // Componentes
@@ -17,6 +17,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { EmpleadoController } from '../infraestructure/EmpleadoController'
@@ -31,14 +32,20 @@ import { EstadoCivilController } from 'pages/recursosHumanos/estado-civil/infrae
 import { AreasController } from 'pages/recursosHumanos/areas/infraestructure/AreasController'
 import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
 import { maxValue, minValue } from '@vuelidate/validators'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import { configuracionColumnasFamiliaresEmpleado } from 'pages/recursosHumanos/familiares/domain/configuracionColumnasFamiliaresEmpleado'
+import { ComportamientoModalesEmpleado } from '../application/ComportamientoModalesEmpleado'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: { TabLayout, SelectorImagen,ModalesEntidad, EssentialTable },
   setup() {
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    const storeRecursosHumanos = useRecursosHumanosStore()
 
     /***********
      * Mixin
@@ -62,6 +69,9 @@ export default defineComponent({
     const areas = ref([])
     const tipos_contrato = ref([])
     const opcionesDepartamentos = ref([])
+    const refFamiliares = ref()
+    const modales = new ComportamientoModalesEmpleado()
+
     cargarVista(async () => {
       obtenerListados({
         cantones: new CantonController(),
@@ -94,6 +104,14 @@ export default defineComponent({
         },
       })
     })
+     /***************************
+     * Configuracion de columnas
+     ****************************/
+     const columnasFamiliares: any = [
+      ...configuracionColumnasFamiliaresEmpleado,
+      accionesTabla,
+    ]
+    columnasFamiliares.splice(2, 1)
 
     /*************
      * Validaciones
@@ -156,6 +174,17 @@ export default defineComponent({
      ********/
 
     onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
+    async function guardado(data) {
+      switch (data) {
+        case 'EmpleadoPage':
+          const { result } = await new EmpleadoController().listar()
+          listadosAuxiliares.rolpago = result
+          break
+        case 'FamiliaresPage':
+          break
+      }
+      modales.cerrarModalEntidad()
+    }
 
     const antiguedad = computed(() => {
       const fechaActual = new Date()
@@ -203,7 +232,17 @@ export default defineComponent({
       const hoy = convertir_fecha(new Date())
       return date <= hoy
     }
-
+    const abrirModalFamiliares: CustomActionTable = {
+      titulo: 'Agregar Familiar',
+      icono: 'bi-person-fill-add',
+      color: 'positive',
+      tooltip: 'Puede modificar o eliminar un familiar desde el panel familiares de empleados',
+      accion: () => {
+        storeRecursosHumanos.listar_familiares = false;
+        modales.abrirModalEntidad('FamiliaresPage')
+      },
+      visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+    }
     /************
      * Observers
      ************/
@@ -218,6 +257,7 @@ export default defineComponent({
       accion,
       v$,
       configuracionColumnas: configuracionColumnasEmpleados,
+      columnasFamiliares,
       isPwd: ref(true),
       listadosAuxiliares,
       antiguedad,
@@ -235,10 +275,13 @@ export default defineComponent({
       areas,
       tipos_contrato,
       niveles_academicos,
+      refFamiliares,
       optionsFecha,
+      abrirModalFamiliares,
       //metodos
       opcionesDepartamentos,
-
+      modales,
+      guardado,
       //  FILTROS
       //filtro de empleados
       filtroEmpleados(val, update) {

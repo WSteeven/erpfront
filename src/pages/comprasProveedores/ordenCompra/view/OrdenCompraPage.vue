@@ -489,7 +489,7 @@
             </q-input>
           </div>
           <!-- Configuracion para seleccionar productos -->
-          {{ orden.listadoProductos }}
+          <!-- {{ orden.listadoProductos }} -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>

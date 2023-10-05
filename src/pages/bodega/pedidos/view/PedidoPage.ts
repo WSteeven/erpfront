@@ -223,7 +223,7 @@ export default defineComponent({
       },
       visible: ({ entidad, posicion }) => {
         // console.log(posicion, entidad)
-        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && entidad.per_autoriza_id === store.user.id && entidad.estado === estadosTransacciones.pendiente
+        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && (entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esAdministrador
       }
     }
     const botonEditarCantidad: CustomActionTable = {
@@ -253,7 +253,7 @@ export default defineComponent({
         console.log('Pedido a despachar es: ', pedidoStore.pedido)
         router.push('transacciones-egresos')
       },
-      visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
     }
     const botonCorregir: CustomActionTable = {
       titulo: 'Corregir pedido',
@@ -261,10 +261,10 @@ export default defineComponent({
       icono: 'bi-gear',
       accion: ({ entidad, posicion }) => {
         pedidoStore.pedido = entidad
-        console.log('Entidad es: ',entidad)
+        console.log('Entidad es: ', entidad)
         modales.abrirModalEntidad('CorregirPedidoPage')
       },
-      visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && (esBodeguero||entidad.per_autoriza_id==store.user.id) && entidad.estado != estadosTransacciones.completa ? true : false
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado != estadosTransacciones.completa ? true : false
     }
 
     const botonImprimir: CustomActionTable = {
@@ -278,7 +278,7 @@ export default defineComponent({
         // console.log(pedidoStore.pedido.listadoProductos)
         // console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
       },
-      visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'COMPLETA' ? true : false
+      visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }
 
     function actualizarElemento(posicion: number, entidad: any): void {
@@ -374,7 +374,7 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras|| store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
 

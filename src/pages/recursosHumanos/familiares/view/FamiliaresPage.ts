@@ -19,6 +19,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { FamiliaresController } from '../infraestructure/FamiliaresController'
 import { configuracionColumnasFamiliares } from '../domain/configuracionColumnasFamiliares'
+import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
@@ -47,6 +48,7 @@ export default defineComponent({
       onReestablecer,
     } = mixin.useHooks()
     const store = useAuthenticationStore()
+    const storeRecursosHumanos = useRecursosHumanosStore()
     const {
       confirmar,
       prompt,
@@ -107,6 +109,7 @@ export default defineComponent({
       verEmpleado,
       empleados,
       accion,
+      storeRecursosHumanos,
       v$,
       disabled,
       configuracionColumnas: configuracionColumnasFamiliares,

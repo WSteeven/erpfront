@@ -75,6 +75,21 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
+      name: 'departamento',
+      field: 'departamento',
+      label: 'Departamento',
+      align: 'left',
+      sortable: true
+  },
+  //tipo_contrato
+  {
+    name: 'tipo_contrato_info',
+    field: 'tipo_contrato_info',
+    label: 'Tipo de Contrato',
+    align: 'left',
+    sortable: true
+},
+    {
         name: 'roles',
         field: 'roles',
         label: 'Roles',

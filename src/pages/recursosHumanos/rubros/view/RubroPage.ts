@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasConceptoIngreso } from '../domain/configuracionColumnasConceptoIngreso'
+import { configuracionColumnasRubro } from '../domain/configuracionColumnasRubro'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent } from 'vue'
@@ -9,34 +9,33 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
-
+import { RubroController } from '../infraestructure/RubroController'
+import { Rubro } from '../domain/Rubro'
 import { removeAccents } from 'shared/utils'
-import { ConceptoIngreso } from '../domain/ConceptoIngreso'
 
 export default defineComponent({
     components: { TabLayout },
     setup() {
-        const mixin = new ContenedorSimpleMixin(ConceptoIngreso, new CargoController())
-        const { entidad: concepto_ingreso, disabled } = mixin.useReferencias()
+        const mixin = new ContenedorSimpleMixin(Rubro, new RubroController())
+        const { entidad: rubro, disabled } = mixin.useReferencias()
         const { setValidador } = mixin.useComportamiento()
 
         //Reglas de validacion
         const reglas = {
-            nombre: { required }
+          nombre_rubro: { required }
         }
 
-        const v$ = useVuelidate(reglas, concepto_ingreso)
+        const v$ = useVuelidate(reglas, rubro)
         setValidador(v$.value)
 
 
         return {
             removeAccents,
             mixin,
-            concepto_ingreso,
+            rubro,
             v$,
             disabled,
-            configuracionColumnas: configuracionColumnasConceptoIngreso,
+            configuracionColumnas: configuracionColumnasRubro,
         }
     }
 })
