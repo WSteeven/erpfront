@@ -51,7 +51,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     titulo: 'Realizar',
     icono: 'bi-check-circle',
     color: 'positive',
-    visible: ({ entidad }) => [estadosRolPago.EJECUTANDO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos || authenticationStore.esAdministrador),
+    visible: ({ entidad }) => [estadosRolPago.EJECUTANDO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos || authenticationStore.esAdministrador ||authenticationStore.esContabilidad),
     accion: ({ entidad }) => {
       confirmar('¿Está seguro de iniciar cambios rol de pago?', async () => {
         entidad.estado = estadosRolPago.REALIZADO

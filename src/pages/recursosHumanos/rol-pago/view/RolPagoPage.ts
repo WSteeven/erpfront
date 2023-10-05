@@ -92,31 +92,50 @@ export default defineComponent({
     } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado } = mixin.useHooks()
     const refArchivoRolPago = ref()
+/**
+ *   cargarVista(async () => {
+        await obtenerListados({
+          autorizacionesEspeciales: {
+            controller: new DescuentosGenralesController(),
 
+          },
+          autorizacionesEspeciales: {
+            controller: new DescuentosLeyController(),
+
+          },
+          autorizacionesEspeciales: {
+            controller: new MultaController(),
+
+          },
+          autorizacionesEspeciales: {
+            controller: new ConceptoIngresoController(),
+
+          },
+
+        })
+        autorizacionesEspeciales.value =
+          listadosAuxiliares.autorizacionesEspeciales
+        beneficiarios.value = listadosAuxiliares.beneficiarios
+        listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
+        proyectos.value = listadosAuxiliares.proyectos
+        tareas.value = listadosAuxiliares.tareas
+        vehiculos.value = listadosAuxiliares.vehiculos
+        autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
+      })
+ */
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
+
       })
       empleados.value = listadosAuxiliares.empleados
-      concepto_ingresos.value =
-        LocalStorage.getItem('concepto_ingresos') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('concepto_ingresos')!.toString())
-      descuentos_generales.value =
-        LocalStorage.getItem('descuentos_generales') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('descuentos_generales')!.toString())
-      descuentos_ley.value =
-        LocalStorage.getItem('descuentos_ley') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('descuentos_ley')!.toString())
-      multas.value =
-        LocalStorage.getItem('multas') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('multas')!.toString())
+      concepto_ingresos.value= (await new ConceptoIngresoController().listar()).result;
+      descuentos_generales.value = (await new DescuentosGenralesController().listar()).result
+      descuentos_ley.value = (await new DescuentosLeyController().listar()).result
+      multas.value = (await new MultaController().listar()).result
       horas_extras_tipos.value =
         LocalStorage.getItem('horas_extras_tipos') == null
           ? []

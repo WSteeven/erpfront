@@ -45,6 +45,10 @@ import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
+import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
+import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
+import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
 
 export default defineComponent({
   components: {
@@ -65,7 +69,7 @@ export default defineComponent({
       disabled,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { consultar, setValidador, listar } = mixin.useComportamiento()
+    const { consultar, setValidador, listar,obtenerListados,cargarVista } = mixin.useComportamiento()
     const mixinRolEmpleado = new ContenedorSimpleMixin(
       RolPago,
       new RolPagoController()
