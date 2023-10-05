@@ -206,7 +206,7 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
-              @update:model-value="buscarListadoPedidoEnInventario"
+              @update:model-value="seleccionarClientePropietario"
               use-input
               input-debounce="0"
               @filter="filtroSucursales"
