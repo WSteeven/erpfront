@@ -58,7 +58,7 @@ export default defineComponent({
           params: {
             campos: 'id,nombres,apellidos,departamento_id,responsable_departamento',
             estado: 1,
-            id: authenticationStore.user.id,
+            // id: authenticationStore.user.id,
           }
         },
       })
