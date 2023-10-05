@@ -11,7 +11,7 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
   const porcentaje_endeudamiento = ref()
   const mensaje = ref()
   const axios = AxiosHttpRepository.getInstance()
-
+const listar_familiares = ref(true)
   async function obtener_sueldo_basico() {
     try {
       const userApi = axios.getEndpoint(endpoints.sueldo_basico)
@@ -79,6 +79,7 @@ export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {
     sueldo_basico,
     total_descuento,
     porcentaje_endeudamiento,
+    listar_familiares,
     obtener_porcentaje_anticipo,
     mensaje,
     porcentajeAnticipo,

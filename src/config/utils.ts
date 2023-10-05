@@ -76,7 +76,8 @@ export const tabOptionsTransferencias: TabOption[] = [
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
-  { label: 'Aprobados', value: 'APROBADO' },
+  { label: 'Aprobados Pendiente', value: 'APROBADO' },
+  { label: 'Aprobados Parcial', value: 'PARCIAL' },
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]

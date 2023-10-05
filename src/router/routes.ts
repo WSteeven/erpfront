@@ -511,6 +511,13 @@ const routes: RouteRecordRaw[] = [
        * COMPRAS Y PROVEEDORES
        *********************************************/
       {
+        path: '/bancos',
+        name: 'bancos',
+        component: () =>
+          import('pages/recursosHumanos/banco/view/BancoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/empresas',
         name: 'empresas',
         component: () =>
@@ -944,6 +951,33 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/recursosHumanos/familiares/view/FamiliaresPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/descuentos-generales',
+        name: 'descuentos_generales',
+        component: () =>
+          import(
+            'pages/recursosHumanos/descuentos_generales/view/DescuentosGeneralesPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/multa',
+        name: 'multa',
+        component: () =>
+          import(
+            'pages/recursosHumanos/multas/view/MultaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/concepto-ingreso',
+        name: 'concepto_ingreso',
+        component: () =>
+          import(
+            'pages/recursosHumanos/concepto_ingreso/view/ConceptoIngresoPage.vue'
           ),
         meta: { requiresAuth: true },
       },

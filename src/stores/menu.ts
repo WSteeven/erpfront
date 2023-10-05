@@ -156,7 +156,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Control de Stock',
           link: 'control-stock',
-          can: store.esActivosFijos,//store.can('puede.ver.control_stock'),
+          can: store.esBodeguero || store.can('puede.acceder.control_stock'),
           icon: 'bi-circle',
         },
         {
@@ -500,6 +500,24 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.familiares'),
         },
         {
+          title: 'Descuentos Generales',
+          link: 'descuentos-generales',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.descuentos_generales'),
+        },
+        {
+          title: 'Multas',
+          link: 'multa',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.multa'),
+        },
+        {
+          title: 'Conceptos de Ingresos',
+          link: 'concepto-ingreso',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.concepto_ingreso'),
+        },
+        {
           title: 'Extension Conyugal',
           link: 'extension-conyugal',
           icon: 'fa-solid fa-people-arrows',
@@ -597,6 +615,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.empresas') || store.esAdministrador,
         },
         {
+          title: 'Bancos',
+          link: 'bancos',
+          icon: 'bi-bank',
+          can: store.can('puede.acceder.bancos') || store.esAdministrador,
+        },
+        {
           title: 'Proveedores',
           link: 'proveedores',
           icon: 'bi-boxes',
@@ -605,7 +629,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Datos Bancarios de Proveedores',
           link: 'datos-bancarios-proveedores',
-          icon: 'bi-bank',
+          icon: 'bi-bank2',
           can: store.can('puede.ver.contactos_proveedores') || store.esAdministrador,
         },
         {

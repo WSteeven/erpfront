@@ -696,11 +696,15 @@
                 </template>
               </q-select>
             </div>
-             <!-- Acumula fondos de reserva -->
-             <div class="col-12 col-md-3">
+            <!-- Acumula fondos de reserva -->
+            <div class="col-12 col-md-3">
               <label class="q-mb-sm block">¿Acumula fondos de reserva?</label>
               <q-toggle
-                :label="empleado.acumula_fondos_reserva ? 'Acumula Fondos de Reserva' : 'No Acumula Fondos de Reserva'"
+                :label="
+                  empleado.acumula_fondos_reserva
+                    ? 'Acumula Fondos de Reserva'
+                    : 'No Acumula Fondos de Reserva'
+                "
                 v-model="empleado.acumula_fondos_reserva"
                 color="primary"
                 keep-color
@@ -1189,9 +1193,41 @@
             </div>
           </div>
         </q-expansion-item>
+        <q-expansion-item
+          class="overflow-hidden q-mb-md expansion"
+          label="Familiares"
+          header-class="text-bold bg-header-collapse"
+          default-opened
+        >
+          <div class="row q-col-gutter-sm q-pa-sm">
+            <div class="col-12 col-md-12">
+              <essential-table
+                ref="refFamiliares"
+                titulo="Familiares"
+                :configuracionColumnas="columnasFamiliares"
+                :datos="empleado.familiares"
+                :accion1Header="abrirModalFamiliares"
+                :permitirBuscar="false"
+                :permitirConsultar="false"
+                :permitirEditar="true"
+                :permitirEliminar="true"
+                :mostrarBotones="false"
+                :mostrarCantidadElementos="false"
+                :permitirEditarModal="true"
+                :modalMaximized="false"
+                :alto-fijo="false"
+                :mostrarFooter="false"
+              ></essential-table>
+            </div>
+          </div>
+        </q-expansion-item>
       </q-form>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+    @guardado="(data) => guardado(data)"
+  ></modales-entidad>
 </template>
 
 <script src="./EmpleadoPage.ts" />

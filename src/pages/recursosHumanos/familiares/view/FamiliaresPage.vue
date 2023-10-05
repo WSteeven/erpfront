@@ -1,6 +1,7 @@
 <template>
   <tab-layout
   :mixin="mixin" :configuracionColumnas="configuracionColumnas"
+  :mostrarListado = storeRecursosHumanos.listar_familiares
   >
     <template #formulario>
       <q-form @submit.prevent>

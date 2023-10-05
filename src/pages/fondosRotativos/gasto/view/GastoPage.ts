@@ -35,6 +35,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],
@@ -240,8 +241,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         autorizacionesEspeciales: {
-          controller: new UsuarioAutorizadoresController(),
-          params: { campos: 'id,name', estado: 1 },
+          controller: new EmpleadoRoleController(),
+          params: {roles: ['AUTORIZADOR']},
         },
         proyectos: {
           controller: new ProyectoController(),
@@ -378,8 +379,10 @@ export default defineComponent({
         )
       } else {
         sabadoAnterior = convertir_fecha(
-          new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
-        )
+          //new Date(today.setDate(today.getDate() - ((today.getDay()+1) % 7)))
+          new Date(today.setDate(today.getDate() - ((today.getDay()) % 7)))
+
+          )
       }
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)

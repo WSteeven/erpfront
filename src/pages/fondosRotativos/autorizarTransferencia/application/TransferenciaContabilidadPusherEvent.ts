@@ -1,5 +1,6 @@
 import Pusher from 'pusher-js'
 import { useNotificaciones } from 'shared/notificaciones'
+import { pushEventMesaggeServiceWorker } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { Ref, computed } from 'vue'
@@ -22,6 +23,11 @@ export class TransferenciaContabilidadPusherEvent {
     pusher.bind('transferencia-saldo-contabilidad-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificarCorrecto('Han realizado  o aprobado una transferencia de saldo')
+      pushEventMesaggeServiceWorker({
+        titulo: 'Informacion de Transferencias de Saldos',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+      })
    })
 
   }

@@ -10,12 +10,18 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
     sortable: true,
     type: 'text'
   },
-  /* {
+  {
+    name: 'serial',
+    field: 'serial',
+    label: 'Serial',
+    align: 'left',
+  },
+  {
     name: 'medida',
     field: 'medida',
     label: 'Medida',
     align: 'left',
-  }, */
+  },
   {
     name: 'despachado',
     field: 'despachado',

@@ -2,19 +2,18 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Cargos"
+    titulo-pagina="Categorias"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- nombre -->
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Nombre del Ingreso</label>
+            <label class="q-mb-sm block">Nombre del Banco</label>
             <q-input
-              v-model="concepto_ingreso.nombre"
-              @update:model-value="(v) => (concepto_ingreso.nombre = removeAccents(v))"
+              v-model="banco.nombre"
               placeholder="Obligatorio"
-              :disable="disabled"
+              :readonly="disabled"
               :error="!!v$.nombre.$errors.length"
               outlined
               dense
@@ -26,11 +25,22 @@
               </template>
             </q-input>
           </div>
+          <!-- codigo -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Código</label>
+            <q-input
+              v-model="banco.codigo"
+              placeholder="Opcional"
+              :readonly="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
         </div>
       </q-form>
     </template>
   </tab-layout>
 </template>
-<!-- :error="v$.nombre.$errors"  -->
 
-<script src="./ConceptoIngresoPage.ts"></script>
+<script src="./BancoPage.ts"></script>
