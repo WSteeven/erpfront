@@ -292,7 +292,7 @@ export default defineComponent({
       icono: 'bi-envelope-fill',
       color: 'primary',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.rol_pago') && !entidad.es_quincena,
+      authenticationStore.can('puede.ver.campo.enviar_rol_pago') && !entidad.es_quincena,
       accion: ({ entidad }) => {
         enviar_rol_pago(entidad)
       },
@@ -301,8 +301,8 @@ export default defineComponent({
       titulo: 'Cash Rol de Pagos',
       icono: 'bi-cash-stack',
       color: 'primary',
-      visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.rol_pago') && !entidad.es_quincena,
+      visible: () =>
+        authenticationStore.can('puede.ver.campo.cash') ,
       accion: ({ entidad }) => {
         cash_rol_pago(entidad)
       },
