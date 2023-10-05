@@ -292,9 +292,19 @@ export default defineComponent({
       icono: 'bi-envelope-fill',
       color: 'primary',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.rol_pago') && !entidad.es_quincena,
+      authenticationStore.can('puede.ver.campo.enviar_rol_pago') && !entidad.es_quincena,
       accion: ({ entidad }) => {
         enviar_rol_pago(entidad)
+      },
+    }
+    const btnCashRolPago: CustomActionTable = {
+      titulo: 'Cash Rol de Pagos',
+      icono: 'bi-cash-stack',
+      color: 'primary',
+      visible: () =>
+        authenticationStore.can('puede.ver.campo.cash') ,
+      accion: ({ entidad }) => {
+        cash_rol_pago(entidad)
       },
     }
     async function enviar_rol_pago(entidad): Promise<void> {
@@ -317,7 +327,15 @@ export default defineComponent({
         }
       })
     }
-
+    async function cash_rol_pago(entidad): Promise<void> {
+      const filename = 'cash_rol_pago'
+      const axios_repository = AxiosHttpRepository.getInstance()
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios_repository.getEndpoint(endpoints.crear_cash_roles_pago)+entidad.id
+        imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+    }
     async function generar_reporte_general_mes(
       id: number,
       tipo: string
@@ -382,6 +400,7 @@ export default defineComponent({
       btnFinalizar,
       btnEditarRolPagoEmpleado,
       btnImprimirRolPago,
+      btnCashRolPago,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,
     }
