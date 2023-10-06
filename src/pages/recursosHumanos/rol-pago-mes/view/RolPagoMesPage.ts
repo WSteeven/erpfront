@@ -349,6 +349,7 @@ export default defineComponent({
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
+          notificarCorrecto('Rol de Pagos enviado correctamente!')
           console.log(data)
         }
       })
@@ -369,6 +370,7 @@ export default defineComponent({
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
+          notificarCorrecto('Roles de Pagos enviado correctamente!')
           console.log(data)
         }
       })
