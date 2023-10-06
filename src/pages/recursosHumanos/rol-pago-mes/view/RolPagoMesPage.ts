@@ -75,7 +75,7 @@ export default defineComponent({
       new RolPagoController()
     )
     const { listado: roles_empleados } = mixinRolEmpleado.useReferencias()
-    const { listar: listarRolEmpleado } = mixinRolEmpleado.useComportamiento()
+    const { listar: listarRolEmpleado,eliminar } = mixinRolEmpleado.useComportamiento()
     const authenticationStore = useAuthenticationStore()
 
     /**********
@@ -264,6 +264,27 @@ export default defineComponent({
         consultar(entidad)
       },
     }
+    const btnEnviarRolPagoEmpleado: CustomActionTable = {
+      titulo: 'Enviar Rol Pago',
+      icono: 'bi-envelope-fill',
+      color: 'secondary',
+      visible: ({ entidad }) =>
+      authenticationStore.can('puede.ver.campo.enviar_rol_pago') && !entidad.es_quincena,
+      accion: ({ entidad }) => {
+        enviar_rol_pago_empleado(entidad)
+      },
+    }
+    const btnEliminarRolPago: CustomActionTable = {
+      titulo: 'Eliminar',
+      icono: 'bi-trash',
+      color: 'secondary',
+      visible: ({ entidad }) =>
+        authenticationStore.can('puede.eliminar.rol_pago') && !entidad.finalizado,
+      accion: ({ entidad }) => {
+        accion.value = 'ELIMINAR'
+        eliminar(entidad)
+      },
+    }
     const btnImprimirRolPago: CustomActionTable = {
       titulo: 'Reporte General',
       icono: 'bi-printer',
@@ -291,6 +312,7 @@ export default defineComponent({
         promptItems(config)
       },
     }
+
     const btnEnviarRolPago: CustomActionTable = {
       titulo: 'Enviar Rol de Pagos',
       icono: 'bi-envelope-fill',
@@ -310,6 +332,26 @@ export default defineComponent({
       accion: ({ entidad }) => {
         cash_rol_pago(entidad)
       },
+    }
+    async function enviar_rol_pago_empleado(entidad): Promise<void> {
+      const axios_repository = AxiosHttpRepository.getInstance()
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios_repository.getEndpoint(endpoints.enviar_rol_pago_empleado)+entidad.id
+      axios({
+        url: url_pdf,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          Authorization: axios_repository.getOptions().headers.Authorization,
+        },
+      }).then((response: HttpResponseGet) => {
+        const { data } = response
+        if (data) {
+          console.log(data)
+        }
+      })
     }
     async function enviar_rol_pago(entidad): Promise<void> {
       const axios_repository = AxiosHttpRepository.getInstance()
@@ -402,8 +444,10 @@ export default defineComponent({
       btnFinalizarRolPago,
       btnFinalizarMasivo,
       btnFinalizar,
+      btnEliminarRolPago,
       btnEditarRolPagoEmpleado,
       btnImprimirRolPago,
+      btnEnviarRolPagoEmpleado,
       btnCashRolPago,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,
