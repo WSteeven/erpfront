@@ -161,7 +161,7 @@ export default defineComponent({
     }
 
     const btnConsultarRolPagoEmpleado: CustomActionTable = {
-      titulo: 'Consultar',
+      titulo: '',
       icono: 'bi-eye',
       accion: ({ entidad }) => {
         rolPagoStore.idRolPagoSeleccionada = entidad.id
@@ -171,7 +171,7 @@ export default defineComponent({
     }
 
     const btnEditarRolPagoEmpleado: CustomActionTable = {
-      titulo: 'Editar',
+      titulo: '',
       icono: 'bi-pencil',
       color: 'warning',
       visible: ({ entidad }) => {
@@ -265,7 +265,7 @@ export default defineComponent({
       },
     }
     const btnEnviarRolPagoEmpleado: CustomActionTable = {
-      titulo: 'Enviar Rol Pago',
+      titulo: '',
       icono: 'bi-envelope-fill',
       color: 'secondary',
       visible: ({ entidad }) =>
@@ -275,7 +275,7 @@ export default defineComponent({
       },
     }
     const btnEliminarRolPago: CustomActionTable = {
-      titulo: 'Eliminar',
+      titulo: '',
       icono: 'bi-trash',
       color: 'secondary',
       visible: ({ entidad }) =>

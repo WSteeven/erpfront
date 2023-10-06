@@ -32,7 +32,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
   const { notificarAdvertencia, confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
   const notificaciones = useNotificaciones()
   const btnIniciar: CustomActionTable = {
-    titulo: 'Ejecutar',
+    titulo: '',
     icono: 'bi-play-fill',
     color: 'positive',
     visible: ({ entidad }) => [estadosRolPago.CREADO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos || authenticationStore.esAdministrador),
@@ -48,7 +48,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     }
   }
   const btnRealizado: CustomActionTable = {
-    titulo: 'Realizar',
+    titulo: '',
     icono: 'bi-check-circle',
     color: 'positive',
     visible: ({ entidad }) => [estadosRolPago.EJECUTANDO].includes(entidad.estado) && (authenticationStore.esRecursosHumanos || authenticationStore.esAdministrador ||authenticationStore.esContabilidad),
@@ -64,7 +64,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     }
   }
   const btnFirmar: CustomActionTable = {
-    titulo: 'Firmar Rol de Pago',
+    titulo: '',
     icono: 'fa-solid fa-file-signature',
     color: 'positive',
     visible: ({ entidad }) => entidad.estado === estadosRolPago.REALIZADO && (authenticationStore.esRecursosHumanos) && !entidad.es_quincena,
@@ -80,7 +80,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
   }
 
   const btnFinalizar: CustomActionTable = {
-    titulo: 'Finalizar',
+    titulo: '',
     color: 'positive',
     icono: 'bi-check',
     visible: ({ entidad }) => entidad.estado === estadosRolPago.REALIZADO && entidad.es_quincena,
