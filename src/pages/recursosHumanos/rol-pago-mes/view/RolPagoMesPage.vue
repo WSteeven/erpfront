@@ -144,6 +144,7 @@
             @tab-seleccionado="filtrarRolPagoEmpleado"
             :tabDefecto="tabActual"
             :alto-fijo="true"
+            :primeraColumnaFija="true"
           ></essential-table-tabs>
         </q-tab-panel>
       </q-tab-panels>

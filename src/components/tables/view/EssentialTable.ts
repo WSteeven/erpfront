@@ -68,6 +68,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    primeraColumnaFija: {
+      type: Boolean,
+      default:false,
+    },
     tipoSeleccion: {
       type: String as () => TipoSeleccion,
       default: 'none',
