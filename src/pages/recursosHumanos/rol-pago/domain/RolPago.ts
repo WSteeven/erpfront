@@ -18,7 +18,11 @@ export class RolPago extends EntidadAuditable {
   descuento_ley: number | null
   multa: number | null
   fondos_reserva: number | null
+  extension_cobertura_salud: number | null
+  prestamo_hipotecario: number | null
+  prestamo_quirorafario: number | null
   prestamo_empresarial: number | null
+  supa: number | null
   decimo_tercero: number |null
   decimo_cuarto: number| null
   total_ingreso: number | null
@@ -39,7 +43,7 @@ export class RolPago extends EntidadAuditable {
   tieneDocumento: boolean | null
   rol_pago_id : number | null
   anticipo: string | null
-  iess: string | null
+  iess: number | null
   es_quincena : boolean | null
 porcentaje_anticipo: number | null
   constructor() {
@@ -62,7 +66,11 @@ porcentaje_anticipo: number | null
     this.descuento_ley = null
     this.multa = null
     this.fondos_reserva = null
+    this.extension_cobertura_salud = null
+    this.prestamo_hipotecario=null
+    this.prestamo_quirorafario=null
     this.prestamo_empresarial= null
+    this.supa = null
     this.ingreso = null
     this.egreso = null
     this.total_ingreso = null
