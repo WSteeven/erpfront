@@ -117,6 +117,7 @@ export default defineComponent({
           )
         rolPagoStore.idRolPagoMes = rolpago.id
         rolPagoStore.mes = rolpago.mes
+        rolPagoStore.es_quincena= rolpago.es_quincena
         rolPagoStore.accion = acciones.nuevo
         rolPagoStore.idRolPagoSeleccionada = null
         modalesRolPago.abrirModalEntidad('RolPagoPage')
@@ -242,6 +243,7 @@ export default defineComponent({
           roles_empleados.value = result
           break
         case 'RolPagoPage':
+
           break
       }
       modalesRolPagoMes.cerrarModalEntidad()

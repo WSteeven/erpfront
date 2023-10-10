@@ -1,13 +1,14 @@
 <template>
   <tab-layout
-  :mixin="mixin" :configuracionColumnas="configuracionColumnas"
-  :mostrarListado = storeRecursosHumanos.listar_familiares
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :mostrarListado="familiarStore.listar_familiares"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
-                    <!-- Empleado -->
-                    <div class="col-12 col-md-3">
+          <!-- Empleado -->
+          <div class="col-12 col-md-3" v-if="!familiarStore.idEmpleado">
             <label class="q-mb-sm block">Empleado</label>
             <q-select
               v-model="familiares.empleado"
@@ -29,15 +30,13 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
-           <!-- Identificacion -->
-           <div class="col-12 col-md-3">
+          <!-- Identificacion -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Identificación</label>
             <q-input
               v-model="familiares.identificacion"
@@ -96,7 +95,7 @@
               </template>
             </q-input>
           </div>
-           <!-- Parentezco -->
+          <!-- Parentezco -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Parentezco</label>
             <q-select
@@ -118,22 +117,18 @@
               emit-value
               map-options
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.vehiculo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
-
-
         </div>
       </q-form>
     </template>

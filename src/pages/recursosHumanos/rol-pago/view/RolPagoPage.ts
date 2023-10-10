@@ -92,37 +92,6 @@ export default defineComponent({
     } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado } = mixin.useHooks()
     const refArchivoRolPago = ref()
-/**
- *   cargarVista(async () => {
-        await obtenerListados({
-          autorizacionesEspeciales: {
-            controller: new DescuentosGenralesController(),
-
-          },
-          autorizacionesEspeciales: {
-            controller: new DescuentosLeyController(),
-
-          },
-          autorizacionesEspeciales: {
-            controller: new MultaController(),
-
-          },
-          autorizacionesEspeciales: {
-            controller: new ConceptoIngresoController(),
-
-          },
-
-        })
-        autorizacionesEspeciales.value =
-          listadosAuxiliares.autorizacionesEspeciales
-        beneficiarios.value = listadosAuxiliares.beneficiarios
-        listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
-        proyectos.value = listadosAuxiliares.proyectos
-        tareas.value = listadosAuxiliares.tareas
-        vehiculos.value = listadosAuxiliares.vehiculos
-        autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
-      })
- */
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
