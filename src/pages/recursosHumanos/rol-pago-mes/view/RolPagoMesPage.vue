@@ -139,7 +139,7 @@
             :permitirEditar="false"
             :permitirEliminar="false"
             :mostrar-botones="false"
-            :mostrarFooter="false"
+            :mostrarFooter="true"
             :permitirFiltrar="true"
             @tab-seleccionado="filtrarRolPagoEmpleado"
             :tabDefecto="tabActual"
