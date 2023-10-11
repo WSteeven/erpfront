@@ -1,3 +1,4 @@
+import { pushEventMesaggeServiceWorker } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 
@@ -20,6 +21,11 @@ export class LicenciaPusherEvent {
     pusher.bind('licencia-empleado-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
+      pushEventMesaggeServiceWorker({
+        titulo: 'Licencias de Empleados',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+      })
     })
   }
 

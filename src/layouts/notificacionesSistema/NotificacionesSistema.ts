@@ -16,6 +16,7 @@ import { OrdenCompraEvent } from 'pages/comprasProveedores/ordenCompra/applicati
 import { ProformaEvent } from 'pages/comprasProveedores/proforma/application/ProformaEvent'
 import { ProveedorEvent } from 'sistema/proveedores/application/ProveedorEvent'
 import { ActualizarNotificacionesPusherEvent } from 'src/pusherEvents/ActualizarNotificacionesPusherEvent'
+import { NotificarVacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarVacacionPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -78,6 +79,9 @@ export class NotificacionesSistema {
     //Vacacion
     const vacacionPusherEvent = new VacacionPusherEvent()
     vacacionPusherEvent.start()
+    // Notificar Vacaciones
+    const notificarVacacionPusherEvent = new NotificarVacacionPusherEvent()
+    notificarVacacionPusherEvent.start()
 
     // Proveedor
     const proveedorPusherEvent = new ProveedorEvent()
