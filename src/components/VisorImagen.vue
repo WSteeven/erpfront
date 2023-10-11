@@ -15,8 +15,8 @@
           push
           dense
           color="white"
-          text-color="dark"
-          glossy
+          rounded
+          outline
           icon="bi-dash"
           @click="zoomOut()"
         />
@@ -24,9 +24,9 @@
         <q-btn
           dense
           push
+          outline
+          rounded
           color="white"
-          text-color="dark"
-          glossy
           icon="bi-plus"
           @click="zoomIn()"
         />

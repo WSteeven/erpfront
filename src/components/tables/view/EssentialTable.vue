@@ -643,12 +643,19 @@
                     >{{ 'RUTA COMPLETADA' }}
                   </q-chip>
 
-                  <q-chip
+                  <!--<q-chip
                     v-if="col.value === 'TICKET TRANSFERIDO'"
                     class="bg-green-1 text-positive"
                   >
                     {{ 'TICKET TRANSFERIDO' }}
                   </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET PAUSADO'"
+                    class="bg-grey-2 text-grey-8"
+                  >
+                    {{ 'TICKET PAUSADO' }}
+                  </q-chip> -->
                 </div>
 
                 <span
@@ -933,44 +940,43 @@
     <!-- colores en campo calificacion de proveedores -->
     <template #body-cell-estado_calificado="props">
       <q-td :props="props">
-        <q-chip v-if="props.value===estadosCalificacionProveedor.vacio">
-          <q-icon
-            name="bi-circle-fill"
-            color="blue-grey-6"
-            class="q-mr-xs"
-          />
+        <q-chip v-if="props.value === estadosCalificacionProveedor.vacio">
+          <q-icon name="bi-circle-fill" color="blue-grey-6" class="q-mr-xs" />
           {{ props.value }}
         </q-chip>
-        <q-chip v-if="props.value===estadosCalificacionProveedor.pendiente" :class="{'bg-red-2':!$q.dark.isActive}">
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          />
+        <q-chip
+          v-if="props.value === estadosCalificacionProveedor.pendiente"
+          :class="{ 'bg-red-2': !$q.dark.isActive }"
+        >
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs" />
           {{ props.value }}
         </q-chip>
-        <q-chip v-if="props.value===estadosCalificacionProveedor.parcial" :class="{'bg-yellow-2':!$q.dark.isActive}">
-          <q-icon
-            name="bi-circle-fill"
-            color="warning"
-            class="q-mr-xs"
-          />
+        <q-chip
+          v-if="props.value === estadosCalificacionProveedor.parcial"
+          :class="{ 'bg-yellow-2': !$q.dark.isActive }"
+        >
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs" />
           {{ props.value }}
         </q-chip>
-        <q-chip v-if="props.value===estadosCalificacionProveedor.calificado" :class="{'bg-green-1':!$q.dark.isActive}">
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          />
+        <q-chip
+          v-if="props.value === estadosCalificacionProveedor.calificado"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs" />
           {{ props.value }}
         </q-chip>
-        </q-td>
+      </q-td>
     </template>
     <template #body-cell-facturable="props">
       <q-td :props="props">
-        <q-chip v-if="props.value==true" :class="{'bg-green-1':!$q.dark.isActive}"><q-icon name="bi-toggle-on"/></q-chip>
-        <q-chip v-else :class="{'bg-red-1':!$q.dark.isActive}"><q-icon name="bi-toggle-off"/></q-chip>
+        <q-chip
+          v-if="props.value == true"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+          ><q-icon name="bi-toggle-on"
+        /></q-chip>
+        <q-chip v-else :class="{ 'bg-red-1': !$q.dark.isActive }"
+          ><q-icon name="bi-toggle-off"
+        /></q-chip>
       </q-td>
     </template>
     <!-- corregir esto para que sea dinamico -->
@@ -1242,7 +1248,7 @@
     <template #body-cell-observacion="props">
       <q-td :props="props">
         <q-chip
-          v-if="props.value === 'TICKET TRANSFERIDO'"
+          v-if="props.value === 'TICKET REASIGNADO'"
           class="bg-green-1 text-positive"
         >
           <q-icon
@@ -1250,9 +1256,25 @@
             color="positive"
             class="q-mr-xs"
           ></q-icon
-          >{{ 'TICKET TRANSFERIDO' }}
+          >{{ 'TICKET REASIGNADO' }}
         </q-chip>
-        <span v-else>{{ props.value }}</span>
+
+        <q-chip
+          v-if="props.value === 'TICKET PAUSADO'"
+          class="bg-grey-2 text-grey-8"
+        >
+          <q-icon
+            name="bi-pause-circle-fill"
+            color="text-grey-8"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET PAUSADO' }}
+        </q-chip>
+
+        <span
+          v-if="!['TICKET TRANSFERIDO', 'TICKET PAUSADO'].includes(props.value)"
+          >{{ props.value }}</span
+        >
       </q-td>
     </template>
 
@@ -1328,8 +1350,8 @@
         ></q-icon>
       </q-td>
     </template>
- <!-- esta en rol -->
- <template #body-cell-esta_en_rol_pago="props">
+    <!-- esta en rol -->
+    <template #body-cell-esta_en_rol_pago="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
@@ -1345,8 +1367,8 @@
         ></q-icon>
       </q-td>
     </template>
-<!-- factura -->
-<template #body-cell-realiza_factura="props">
+    <!-- factura -->
+    <template #body-cell-realiza_factura="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
@@ -1363,8 +1385,8 @@
       </q-td>
     </template>
 
-        <!-- esta pagado -->
-        <template #body-cell-pago_couta="props">
+    <!-- esta pagado -->
+    <template #body-cell-pago_couta="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
