@@ -25,7 +25,7 @@
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table borde"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -33,6 +33,7 @@
       'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
       'my-sticky-column-table-dark': $q.dark.isActive,
       'my-sticky-column-table-light': !$q.dark.isActive,
+      'my-sticky-column-first-table': primeraColumnaFija,
       'rounded-header': $q.screen.xs,
       'bg-header-table': mostrarFiltros,
     }"
@@ -647,7 +648,7 @@
                     v-if="col.value === 'TICKET TRANSFERIDO'"
                     class="bg-green-1 text-positive"
                   >
-                    {{ 'TICKET TRANSFERIDO' }}
+                    {{ "TICKET TRANSFERIDO" }}
                   </q-chip>
 
                   <q-chip
@@ -1493,9 +1494,20 @@
 }
 
 // Columna estatica ---
+.my-sticky-column-first-table {
+  max-width: 100%;
+  th:first-child,
+  td:first-child {
+    position: sticky;
+    left: 0; /* Cambia 'right' a 'left' para que la primera columna se mantenga estática en el lado izquierdo */
+    z-index: 1;
+    border-right: 1px solid $grey-4; /* Cambia 'border-left' a 'border-right' para mantener el borde en el lado derecho de la primera columna */
+    border-bottom: 1px solid $grey-4;
+    background-color: #fff;
+  }
+}
 .my-sticky-column-table {
   max-width: 100%;
-
   th:last-child,
   td:last-child {
     position: sticky;
@@ -1503,6 +1515,11 @@
     z-index: 1;
     border-left: 1px solid $grey-4;
     border-bottom: 1px solid $grey-4;
+  }
+  /* prevent scrolling behind sticky top row on focus */
+  tbody {
+    /* height of all previous header rows */
+    scroll-margin-top: 48px;
   }
 }
 
@@ -1523,6 +1540,27 @@
 
   td:last-child {
     background-color: #fff;
+  }
+}
+
+.my-sticky-header-column-table {
+  tr th {
+    position: sticky;
+    /* higher than z-index for td below */
+    z-index: 2;
+    /* bg color is important; just specify one */
+  }
+
+  thead tr:first-child th,
+  thead tr:last-child th {
+    top: 0;
+    z-index: 1;
+  }
+
+  tr:first-child th:first-child,
+  tr:last-child th:last-child {
+    /* highest z-index */
+    z-index: 3;
   }
 }
 </style>

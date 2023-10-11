@@ -87,6 +87,7 @@
           :accion3="accion3"
           :accion4="accion4"
           :accion5="accion5"
+          :ajustarCeldas="ajustarCeldas"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
           @consultar="accionTabla.consultar"

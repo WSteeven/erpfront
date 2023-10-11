@@ -45,6 +45,10 @@ import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
+import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
+import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
+import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
 
 export default defineComponent({
   components: {
@@ -65,13 +69,13 @@ export default defineComponent({
       disabled,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { consultar, setValidador, listar } = mixin.useComportamiento()
+    const { consultar, setValidador, listar,obtenerListados,cargarVista } = mixin.useComportamiento()
     const mixinRolEmpleado = new ContenedorSimpleMixin(
       RolPago,
       new RolPagoController()
     )
     const { listado: roles_empleados } = mixinRolEmpleado.useReferencias()
-    const { listar: listarRolEmpleado } = mixinRolEmpleado.useComportamiento()
+    const { listar: listarRolEmpleado,eliminar } = mixinRolEmpleado.useComportamiento()
     const authenticationStore = useAuthenticationStore()
 
     /**********
@@ -113,6 +117,7 @@ export default defineComponent({
           )
         rolPagoStore.idRolPagoMes = rolpago.id
         rolPagoStore.mes = rolpago.mes
+        rolPagoStore.es_quincena= rolpago.es_quincena
         rolPagoStore.accion = acciones.nuevo
         rolPagoStore.idRolPagoSeleccionada = null
         modalesRolPago.abrirModalEntidad('RolPagoPage')
@@ -157,7 +162,7 @@ export default defineComponent({
     }
 
     const btnConsultarRolPagoEmpleado: CustomActionTable = {
-      titulo: 'Consultar',
+      titulo: '',
       icono: 'bi-eye',
       accion: ({ entidad }) => {
         rolPagoStore.idRolPagoSeleccionada = entidad.id
@@ -167,7 +172,7 @@ export default defineComponent({
     }
 
     const btnEditarRolPagoEmpleado: CustomActionTable = {
-      titulo: 'Editar',
+      titulo: '',
       icono: 'bi-pencil',
       color: 'warning',
       visible: ({ entidad }) => {
@@ -238,6 +243,7 @@ export default defineComponent({
           roles_empleados.value = result
           break
         case 'RolPagoPage':
+
           break
       }
       modalesRolPagoMes.cerrarModalEntidad()
@@ -258,6 +264,27 @@ export default defineComponent({
       accion: ({ entidad }) => {
         accion.value = 'EDITAR'
         consultar(entidad)
+      },
+    }
+    const btnEnviarRolPagoEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-envelope-fill',
+      color: 'secondary',
+      visible: ({ entidad }) =>
+      authenticationStore.can('puede.ver.campo.enviar_rol_pago') && !entidad.es_quincena,
+      accion: ({ entidad }) => {
+        enviar_rol_pago_empleado(entidad)
+      },
+    }
+    const btnEliminarRolPago: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-trash',
+      color: 'secondary',
+      visible: ({ entidad }) =>
+        authenticationStore.can('puede.eliminar.rol_pago') && !entidad.finalizado,
+      accion: ({ entidad }) => {
+        accion.value = 'ELIMINAR'
+        eliminar(entidad)
       },
     }
     const btnImprimirRolPago: CustomActionTable = {
@@ -287,6 +314,7 @@ export default defineComponent({
         promptItems(config)
       },
     }
+
     const btnEnviarRolPago: CustomActionTable = {
       titulo: 'Enviar Rol de Pagos',
       icono: 'bi-envelope-fill',
@@ -307,6 +335,27 @@ export default defineComponent({
         cash_rol_pago(entidad)
       },
     }
+    async function enviar_rol_pago_empleado(entidad): Promise<void> {
+      const axios_repository = AxiosHttpRepository.getInstance()
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios_repository.getEndpoint(endpoints.enviar_rol_pago_empleado)+entidad.id
+      axios({
+        url: url_pdf,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          Authorization: axios_repository.getOptions().headers.Authorization,
+        },
+      }).then((response: HttpResponseGet) => {
+        const { data } = response
+        if (data) {
+          notificarCorrecto('Rol de Pagos enviado correctamente!')
+          console.log(data)
+        }
+      })
+    }
     async function enviar_rol_pago(entidad): Promise<void> {
       const axios_repository = AxiosHttpRepository.getInstance()
       const url_pdf =
@@ -323,6 +372,7 @@ export default defineComponent({
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
+          notificarCorrecto('Roles de Pagos enviado correctamente!')
           console.log(data)
         }
       })
@@ -398,8 +448,10 @@ export default defineComponent({
       btnFinalizarRolPago,
       btnFinalizarMasivo,
       btnFinalizar,
+      btnEliminarRolPago,
       btnEditarRolPagoEmpleado,
       btnImprimirRolPago,
+      btnEnviarRolPagoEmpleado,
       btnCashRolPago,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,

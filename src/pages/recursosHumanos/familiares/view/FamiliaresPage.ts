@@ -9,9 +9,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Familiares } from '../domain/Familiares'
 import { removeAccents } from 'shared/utils'
-import {
-  required,
-} from 'shared/i18n-validators'
+import { required } from 'shared/i18n-validators'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
@@ -20,6 +18,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { FamiliaresController } from '../infraestructure/FamiliaresController'
 import { configuracionColumnasFamiliares } from '../domain/configuracionColumnasFamiliares'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
+import { useFamiliarStore } from 'stores/familiar'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
@@ -37,7 +36,7 @@ export default defineComponent({
       listado,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } =
+    const { setValidador, cargarVista, obtenerListados, listar, consultar } =
       mixin.useComportamiento()
     const {
       onBeforeGuardar,
@@ -58,7 +57,11 @@ export default defineComponent({
     } = useNotificaciones()
 
     const empleados = ref([])
-    const parentezcos = [{nombre:'CÓNYUGE'},{nombre:'HIJO'},{nombre:'HIJA'}]
+    const parentezcos = [
+      { nombre: 'CÓNYUGE' },
+      { nombre: 'HIJO' },
+      { nombre: 'HIJA' },
+    ]
     const esRecursosHumanos = store.esRecursosHumanos
 
     const esAutorizador = ref(false)
@@ -66,6 +69,9 @@ export default defineComponent({
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
+
+    const familiarStore = useFamiliarStore()
+
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
@@ -75,6 +81,16 @@ export default defineComponent({
       })
       empleados.value = listadosAuxiliares.empleados
     })
+    if (familiarStore.idFamiliarSeleccionada) {
+      consultar({ id: familiarStore.idFamiliarSeleccionada })
+    } else {
+      familiares.hydrate(new Familiares())
+    }
+    if (familiarStore.idEmpleado) {
+      familiares.empleado = familiarStore.idEmpleado
+    }
+    accion.value = familiarStore.accion
+
     function filtrarEmpleados(val, update) {
       if (val === '')
         update(() => (empleados.value = listadosAuxiliares.empleados))
@@ -88,6 +104,7 @@ export default defineComponent({
         )
       })
     }
+
     //Reglas de validacion
     const reglas = {
       nombres: { required },
@@ -110,10 +127,10 @@ export default defineComponent({
       empleados,
       accion,
       storeRecursosHumanos,
+      familiarStore,
       v$,
       disabled,
       configuracionColumnas: configuracionColumnasFamiliares,
-
     }
   },
 })

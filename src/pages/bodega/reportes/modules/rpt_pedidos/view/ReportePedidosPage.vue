@@ -5,22 +5,33 @@
         <div class="col">
           <q-card class="rounded-card custom-shadow">
             <div class="row q-col-gutter-sm q-pa-sm q-py-md">
-              <!-- autorizaciones -->
-              <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Autorización</label>
+              <!-- Empleado -->
+              <div class="col-12 col-md-3" v-if="false">
+                <label class="q-mb-sm block">Empleado</label>
                 <q-select
-                  v-model="reporte.autorizacion"
-                  :options="autorizaciones"
-                  transition-show="scale"
-                  transition-hide="scale"
+                  v-model="reporte.empleado"
+                  :options="empleados"
+                  transition-show="jump-up"
+                  transition-hide="jump-up"
                   options-dense
                   dense
+                  hint="Opcional, no seleccionar si desea todos los empleados"
                   outlined
-                  :option-label="(item) => item.nombre"
-                  :option-value="(item) => item.id"
+                  use-input
+                  input-debounce="0"
+                  @filter="filtroEmpleado"
+                  :option-label="(v) => v.nombres + ' ' + v.apellidos"
+                  :option-value="(v) => v.id"
                   emit-value
                   map-options
                 >
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No hay resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                 </q-select>
               </div>
               <!-- estados -->
@@ -92,7 +103,7 @@
                 <label class="q-mb-sm block">Fecha fin </label>
                 <q-input
                   v-model="reporte.fecha_fin"
-                  placeholder="Obligatorio"
+                  placeholder="opcional"
                   :error="!!v$.fecha_fin.$errors.length"
                   @blur="v$.fecha_fin.$touch"
                   outlined
@@ -215,7 +226,8 @@
                   :permitirEditar="false"
                   :mostrarBotones="false"
                   :permitir-buscar="true"
-                  :alto-fijo="false"
+                  :ajustarCeldas="true"
+                  :alto-fijo="true"
                   :accion1="btnVerPedido"
                   :accion2="btnImprimir"
                 ></essential-table>

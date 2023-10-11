@@ -37,6 +37,7 @@ export const useRolPagoStore = defineStore('rolpago', () => {
   const roles = ref()
   const dias_permiso_sin_recuperar = ref()
   const estado = ref()
+  const es_quincena = ref()
 
   return {
     idRolPagoMes,
@@ -74,5 +75,6 @@ export const useRolPagoStore = defineStore('rolpago', () => {
     roles,
     dias_permiso_sin_recuperar,
     estado,
+    es_quincena
   }
 })

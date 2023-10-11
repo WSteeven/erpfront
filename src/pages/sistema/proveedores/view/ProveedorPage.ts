@@ -96,6 +96,7 @@ export default defineComponent({
       })
       listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
       cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      listar({ filtrarProveedores: true }) // aqui se lista solo los proveedores que me corresponde calificar
     })
 
     /**************************************************************
@@ -104,7 +105,7 @@ export default defineComponent({
     onConsultado(() => {
       // proveedor.tipo_envio = proveedor.tipo_envio != null ? JSON.parse(proveedor.tipo_envio.toString()) : []
       obtenerEmpresa(proveedor.empresa).then(() => refArchivo.value.listarArchivosAlmacenados(empresa.id))
-      categorias.value = listadosAuxiliares.categorias.filter((v)=>proveedor.tipos_ofrece.includes(v.tipo_oferta_id))
+      categorias.value = listadosAuxiliares.categorias.filter((v) => proveedor.tipos_ofrece.includes(v.tipo_oferta_id))
     })
     onReestablecer(() => {
       empresa.hydrate(new Empresa())
@@ -192,7 +193,7 @@ export default defineComponent({
           }
           prompt(data)
         })
-      }, visible: ({ entidad }) => entidad.estado && store.esCompras
+      }, visible: ({ entidad }) => entidad.estado && (store.esCompras || store.can('puede.desactivar.proveedores'))
     }
     const botonActivarProveedor: CustomActionTable = {
       titulo: 'Activar',
@@ -219,7 +220,7 @@ export default defineComponent({
           }
           prompt(data)
         })
-      }, visible: ({ entidad }) => !entidad.estado
+      }, visible: ({ entidad }) => !entidad.estado && (store.esCompras || store.can('puede.activar.proveedores'))
     }
     const abrirModalContacto: CustomActionTable = {
       titulo: 'Agregar Contacto',
@@ -449,7 +450,7 @@ export default defineComponent({
         categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
       },
       actualizarDepartamentos(val) {
-        if(accion.value==acciones.nuevo){
+        if (accion.value == acciones.nuevo) {
           let catSeleccionadas = categorias.value.filter((v: CategoriaOferta) => proveedor.categorias_ofrece.includes(v.id))
           // console.log(catSeleccionadas)
           // console.log(new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos)))

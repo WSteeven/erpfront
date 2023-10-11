@@ -9,6 +9,7 @@
     :accion4="botonVerMiCalificacionProveedor"
     :accion5="botonVerCalificacionProveedor"
     :puedeExportar="true"
+    :listar="false"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -69,7 +70,9 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -106,7 +109,9 @@
               >
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -143,7 +148,9 @@
               >
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -152,7 +159,13 @@
             <!-- correo-->
             <div class="col-12 col-md-3" v-if="empresa.correo">
               <label class="q-mb-sm block">Correo</label>
-              <q-input v-model="empresa.correo" autogrow disable outlined dense></q-input>
+              <q-input
+                v-model="empresa.correo"
+                autogrow
+                disable
+                outlined
+                dense
+              ></q-input>
             </div>
             <!-- provincia -->
             <div class="col-12 col-md-3" v-if="empresa.nombre_provincia">
@@ -252,7 +265,9 @@
                 map-options
                 ><template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
                 <template v-slot:option="scope">
@@ -299,12 +314,16 @@
                   <q-item v-bind="scope.itemProps">
                     <q-item-section>
                       <q-item-label>{{ scope.opt.parroquia }}</q-item-label>
-                      <q-item-label caption>Cantón {{ scope.opt.canton }}</q-item-label>
+                      <q-item-label caption
+                        >Cantón {{ scope.opt.canton }}</q-item-label
+                      >
                     </q-item-section>
                   </q-item> </template
                 ><template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -376,7 +395,10 @@
                 label="¿Es referido?"
                 :disable="disabled || soloLectura"
                 @update:model-value="
-                  () => (proveedor.referencia = esReferido ? proveedor.referencia : null)
+                  () =>
+                    (proveedor.referencia = esReferido
+                      ? proveedor.referencia
+                      : null)
                 "
                 outlined
                 dense
@@ -404,15 +426,34 @@
                 transition-hide="jump-down"
                 :disable="disabled"
                 options-dense
+                multiple
+                use-chips
                 dense
                 outlined
                 :option-value="(v) => v.value"
                 :option-label="(v) => v.label"
                 emit-value
                 map-options
+                ><template
+                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                >
+                  <q-item v-bind="itemProps">
+                    <q-item-section>
+                      {{ opt.label }}
+                      <q-item-label v-bind:inner-h-t-m-l="opt.value" />
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-toggle
+                        :model-value="selected"
+                        @update:model-value="toggleOption(opt)"
+                      />
+                    </q-item-section>
+                  </q-item> </template
                 ><template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -533,7 +574,12 @@
                       emit-value
                       map-options
                       ><template
-                        v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                        v-slot:option="{
+                          itemProps,
+                          opt,
+                          selected,
+                          toggleOption,
+                        }"
                       >
                         <q-item v-bind="itemProps">
                           <q-item-section>
@@ -576,7 +622,8 @@
                     <label
                       >Ofrece garantías
                       <q-tooltip
-                        >Da garantías en los bienes o servicios ofertados</q-tooltip
+                        >Da garantías en los bienes o servicios
+                        ofertados</q-tooltip
                       ></label
                     >
                     <br />
@@ -612,7 +659,11 @@
                           class="full-width q-mb-lg"
                           @click="subirArchivos()"
                         >
-                          <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                          <q-icon
+                            name="bi-upload"
+                            class="q-mr-sm"
+                            size="xs"
+                          ></q-icon>
                           Subir archivos seleccionados</q-btn
                         >
                       </template>
@@ -682,7 +733,9 @@
                 :option-label="(v) => v.nombre"
                 emit-value
                 map-options
-                ><template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+                ><template
+                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                >
                   <q-item v-bind="itemProps">
                     <q-item-section>
                       {{ opt.nombre }}
@@ -698,7 +751,9 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -730,7 +785,9 @@
                 :option-label="(v) => v.nombre"
                 emit-value
                 map-options
-                ><template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+                ><template
+                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                >
                   <q-item v-bind="itemProps">
                     <q-item-section>
                       {{ opt.nombre }}
@@ -746,7 +803,9 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -777,7 +836,9 @@
                 :option-disable="(v) => v.id === departamentoFinanciero.id"
                 emit-value
                 map-options
-                ><template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+                ><template
+                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
+                >
                   <q-item v-bind="itemProps">
                     <q-item-section>
                       {{ opt.nombre }}
@@ -794,7 +855,9 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
                   </q-item>
                 </template>
               </q-select>

@@ -1207,13 +1207,16 @@
                 :configuracionColumnas="columnasFamiliares"
                 :datos="empleado.familiares"
                 :accion1Header="abrirModalFamiliares"
+                :accion1="btnConsultarFamiliar"
+                :accion2="btnEditarFamiliar"
+                :accion3="btnEliminarFamiliar"
                 :permitirBuscar="false"
                 :permitirConsultar="false"
-                :permitirEditar="true"
-                :permitirEliminar="true"
+                :permitirEditar="false"
+                :permitirEliminar="false"
                 :mostrarBotones="false"
                 :mostrarCantidadElementos="false"
-                :permitirEditarModal="true"
+                :permitirEditarModal="false"
                 :modalMaximized="false"
                 :alto-fijo="false"
                 :mostrarFooter="false"
@@ -1227,6 +1230,7 @@
   <modales-entidad
     :comportamiento="modales"
     @guardado="(data) => guardado(data)"
+    :mixin-modal="mixinFamiliares"
   ></modales-entidad>
 </template>
 

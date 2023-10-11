@@ -118,6 +118,13 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
   sortable: true
 },
 {
+  name: 'antiguedad',
+  field: 'antiguedad',
+  label: 'Antiguedad',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'fecha_vinculacion',
   field: 'fecha_vinculacion',
   label: 'Fecha de Vinculacion',

@@ -103,6 +103,8 @@ export const endpoints = {
   verificar_todos_roles_finalizadas: new Endpoint('recursos-humanos/verificar-todos_roles-finalizadas'),
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
   enviar_rol_pago: new Endpoint('recursos-humanos/enviar-roles-pago/'),
+  enviar_rol_pago_empleado: new Endpoint('recursos-humanos/enviar-rol-pago-empleado/'),
+
   crear_cash_roles_pago: new Endpoint('recursos-humanos/crear-cash-roles-pago/'),
   rubros: new Endpoint('recursos-humanos/rubros'),
 
@@ -114,7 +116,6 @@ export const endpoints = {
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   //Modulo de compras y proveedores
-  // archivos_proveedores: new Endpoint('compras/archivos-proveedores'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
@@ -126,6 +127,7 @@ export const endpoints = {
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   ordenes_compras: new Endpoint('compras/ordenes-compras'),
   preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  novedades_ordenes_compras: new Endpoint('compras/novedades-ordenes-compras'),
   prefacturas: new Endpoint('compras/prefacturas'),
   proformas: new Endpoint('compras/proformas'),
   proveedores: new Endpoint('proveedores'),

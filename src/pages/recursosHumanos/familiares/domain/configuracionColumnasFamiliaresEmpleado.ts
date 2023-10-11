@@ -4,6 +4,13 @@ import { Familiares } from './Familiares'
 export const configuracionColumnasFamiliaresEmpleado: ColumnConfig<Familiares>[] =
   [
     {
+      name: 'identificacion',
+      field: 'identificacion',
+      label: 'Identificacion',
+      align: 'left',
+      sortable: true,
+    },
+    {
       name: 'nombres',
       field: 'nombres',
       label: 'Nombres',

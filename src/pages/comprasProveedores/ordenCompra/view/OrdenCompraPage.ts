@@ -40,6 +40,7 @@ import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infra
 import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
 import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
+import { ComportamientoModalesOrdenCompra } from "../application/ComportamientoModalesOrdenCompra";
 
 
 export default defineComponent({
@@ -58,6 +59,7 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const preordenStore = usePreordenStore()
         const ordenCompraStore = useOrdenCompraStore()
+        const modales = new ComportamientoModalesOrdenCompra()
 
 
         //variables
@@ -168,7 +170,7 @@ export default defineComponent({
             autorizador: { required },
             descripcion: { required },
             forma: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-            tiempo:{ requiredIfRolCompras: requiredIf(() => store.esCompras) },
+            tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
             fecha: { required },
         }
 
@@ -341,6 +343,22 @@ export default defineComponent({
             }
         }
 
+        const btnRegistrarNovedades: CustomActionTable = {
+            titulo: 'Novedades',
+            color: 'primary',
+            icono: 'bi-wrench',
+            accion: async ({ entidad, posicion }) => {
+                ordenCompraStore.idOrden = entidad.id
+                confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
+                    console.log(ordenCompraStore.idOrden)
+                    modales.abrirModalEntidad("SeguimientoNovedadesOrdenesCompras")
+                })
+            },
+            visible: ({ entidad }) => {
+                return true
+            }
+        }
+
         const btnEnviarMailProveedor: CustomActionTable = {
             titulo: 'Enviar al proveedor',
             color: 'positive',
@@ -389,7 +407,7 @@ export default defineComponent({
             store,
 
             preorden: preordenStore.preorden,
-
+            modales,
             soloLectura,
 
             //botones de tabla
@@ -397,6 +415,7 @@ export default defineComponent({
             btnImprimir,
             btnAnularOrden,
             btnEnviarMailProveedor,
+            btnRegistrarNovedades,
 
             //selector
             refListado,

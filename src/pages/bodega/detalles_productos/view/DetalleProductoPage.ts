@@ -31,6 +31,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { ValidarListadoSeriales } from '../application/validaciones/ValidarListadoSeriales'
 import { encontrarUltimoIdListado } from 'shared/utils'
 import { useDetalleStore } from 'stores/detalle'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },
@@ -43,6 +44,7 @@ export default defineComponent({
 
     //stores
     const detalleStore = useDetalleStore()
+    const store = useAuthenticationStore()
 
     //variable aux
     const descripcion = ref()
@@ -275,7 +277,7 @@ export default defineComponent({
           }
         })
       },
-      visible: ({ entidad }) => entidad.activo
+      visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.detalles')
     }
     const botonActivarDetalle: CustomActionTable = {
       titulo: 'Activar',
@@ -295,7 +297,7 @@ export default defineComponent({
             notificarError('No se pudo activar el detalle!')
           }
         })
-      }, visible: ({ entidad }) => !entidad.activo
+      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.detalles')
     }
     return {
       mixin, detalle, disabled, accion, v$, listado, listadoBackup,
