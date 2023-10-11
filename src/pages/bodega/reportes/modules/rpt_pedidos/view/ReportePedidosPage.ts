@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasPedidos } from "pages/bodega/pedidos/domain/configuracionColumnasPedidos";
-import { defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive, ref } from "vue";
 import { required } from "shared/i18n-validators";
 import { LocalStorage, useQuasar, } from "quasar";
 import useVuelidate from "@vuelidate/core";
@@ -14,9 +14,6 @@ import { Doughnut } from 'vue-chartjs'
 
 //Logica y controladores
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { AxiosResponse } from "axios"
-import { endpoints } from "config/api";
 import { useNotificaciones } from "shared/notificaciones";
 import { useNotificacionStore } from "stores/notificacion";
 import { useCargandoStore } from "stores/cargando";
@@ -24,7 +21,7 @@ import { accionesTabla } from "config/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { usePedidoStore } from "stores/pedido";
 import { ComportamientoModalesPedido } from "pages/bodega/pedidos/application/ComportamientoModalesPedido";
-import { report } from "process";
+import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -34,7 +31,6 @@ export default defineComponent({
     const reporte = reactive({
       fecha_inicio: '',
       fecha_fin: '',
-      autorizacion: '',
       estado: '',
     })
     useNotificacionStore().setQuasar(useQuasar())
@@ -45,6 +41,8 @@ export default defineComponent({
     const modales = new ComportamientoModalesPedido()
     const listado = ref([])
     const datos = ref([])
+    const empleados = ref()
+    const listadoEmpleados = ref()
     let datosConfigurados = ref()
     const { notificarError } = useNotificaciones()
     const reglas = {
@@ -54,9 +52,11 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, reporte)
 
 
+
+
     /**
      * Funciones
-     */
+    */
     async function buscarReporte(accion: string) {
       try {
         cargando.activar()
@@ -69,6 +69,10 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
+    async function cargarEmpleados() {
+      listadoEmpleados.value = await (await new EmpleadoController().listar({ estado: 1 })).response.data.results
+      empleados.value = listadoEmpleados.value
+    }
     function llenarDiccionario(datos) {
       datosConfigurados.value = {
         labels: Object.keys(datos.value),
@@ -80,6 +84,8 @@ export default defineComponent({
         ]
       }
     }
+
+    cargarEmpleados()
 
     /**
      * Botones de tabla
@@ -107,11 +113,9 @@ export default defineComponent({
 
     //listados
     const estados = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
-    const autorizaciones = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
 
     //agregar otra opcion
     estados.unshift({ id: 0, nombre: 'TODOS LOS ESTADOS', })
-    autorizaciones.unshift({ id: 0, nombre: 'TODAS LAS AUTORIZACIONES', })
 
 
     //datos para el grafico
@@ -135,7 +139,7 @@ export default defineComponent({
     return {
       configuracionColumnas,
       reporte, v$,
-      autorizaciones,
+      empleados,
       estados,
       listado,
       modales,
@@ -149,6 +153,20 @@ export default defineComponent({
       //botones de tabla
       btnVerPedido,
       btnImprimir,
+      //Filtros
+      filtroEmpleado(val, update) {
+        if (val === '') {
+          update(() => {
+            // opciones_empleados.value = listadosAuxiliares.empleados
+            empleados.value = listadoEmpleados.value
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          empleados.value = listadoEmpleados.value.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
+        })
+      },
 
 
     }

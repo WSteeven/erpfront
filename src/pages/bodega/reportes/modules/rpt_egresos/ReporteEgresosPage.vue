@@ -445,11 +445,13 @@
                   titulo="Listado de transacciones"
                   :configuracionColumnas="configuracionColumnas"
                   :datos="listado"
+                  :mostrarExportar="true"
                   :permitirConsultar="false"
                   :permitirEliminar="false"
                   :permitirEditar="false"
                   :mostrarBotones="false"
                   :permitir-buscar="true"
+                  :ajustarCeldas="true"
                   :accion1="botonVerTransaccion"
                   :alto-fijo="true"
                 ></essential-table>

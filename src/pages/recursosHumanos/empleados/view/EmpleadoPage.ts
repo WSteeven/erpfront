@@ -8,7 +8,16 @@ import {
   requiredIf,
 } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { acciones, accionesTabla, convertir_fecha, maskFecha, niveles_academicos, opcionesEstados, talla_letras, tipos_sangre } from 'config/utils'
+import {
+  acciones,
+  accionesTabla,
+  convertir_fecha,
+  maskFecha,
+  niveles_academicos,
+  opcionesEstados,
+  talla_letras,
+  tipos_sangre,
+} from 'config/utils'
 import { defineComponent, ref, watchEffect, computed } from 'vue'
 
 // Componentes
@@ -17,7 +26,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { EmpleadoController } from '../infraestructure/EmpleadoController'
@@ -32,14 +41,18 @@ import { EstadoCivilController } from 'pages/recursosHumanos/estado-civil/infrae
 import { AreasController } from 'pages/recursosHumanos/areas/infraestructure/AreasController'
 import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
 import { maxValue, minValue } from '@vuelidate/validators'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { configuracionColumnasFamiliaresEmpleado } from 'pages/recursosHumanos/familiares/domain/configuracionColumnasFamiliaresEmpleado'
 import { ComportamientoModalesEmpleado } from '../application/ComportamientoModalesEmpleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
+import { useFamiliarStore } from 'stores/familiar'
+import { useAuthenticationStore } from 'stores/authentication'
+import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
+import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen,ModalesEntidad, EssentialTable },
+  components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
   setup() {
     /*********
      * Stores
@@ -60,6 +73,7 @@ export default defineComponent({
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
+
     const opciones_cantones = ref([])
     const opciones_roles = ref([])
     const opciones_cargos = ref([])
@@ -71,6 +85,13 @@ export default defineComponent({
     const opcionesDepartamentos = ref([])
     const refFamiliares = ref()
     const modales = new ComportamientoModalesEmpleado()
+    const familiarStore = useFamiliarStore()
+    const authenticationStore = useAuthenticationStore()
+    const mixinFamiliares = new ContenedorSimpleMixin(
+      Familiares,
+      new FamiliaresController()
+    )
+    const { eliminar } = mixinFamiliares.useComportamiento()
 
     cargarVista(async () => {
       obtenerListados({
@@ -104,15 +125,13 @@ export default defineComponent({
         },
       })
     })
-     /***************************
+    /***************************
      * Configuracion de columnas
      ****************************/
-     const columnasFamiliares: any = [
+    const columnasFamiliares: any = [
       ...configuracionColumnasFamiliaresEmpleado,
       accionesTabla,
     ]
-    columnasFamiliares.splice(2, 1)
-
     /*************
      * Validaciones
      **************/
@@ -142,7 +161,11 @@ export default defineComponent({
       apellidos: { required },
       jefe: { required },
       email: { required },
-      coordenadas: { required: requiredIf(()=>{return accion.value==='EDITAR'}) },
+      coordenadas: {
+        required: requiredIf(() => {
+          return accion.value === 'EDITAR'
+        }),
+      },
       correo_personal: { required },
       usuario: { required },
       fecha_nacimiento: { required },
@@ -236,12 +259,18 @@ export default defineComponent({
       titulo: 'Agregar Familiar',
       icono: 'bi-person-fill-add',
       color: 'positive',
-      tooltip: 'Puede modificar o eliminar un familiar desde el panel familiares de empleados',
+      tooltip:
+        'Puede modificar o eliminar un familiar desde el panel familiares de empleados',
       accion: () => {
-        storeRecursosHumanos.listar_familiares = false;
+        familiarStore.idEmpleado = empleado.id
+        familiarStore.listar_familiares = false
+        familiarStore.accion = acciones.nuevo
+
         modales.abrirModalEntidad('FamiliaresPage')
       },
-      visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+      visible: () => {
+        return accion.value == acciones.nuevo || accion.value == acciones.editar
+      },
     }
     /************
      * Observers
@@ -249,7 +278,47 @@ export default defineComponent({
     watchEffect(() => {
       if (!empleado.tiene_grupo) empleado.grupo = null
     })
-
+    const btnConsultarFamiliar: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-eye',
+      accion: ({ entidad }) => {
+        familiarStore.idFamiliarSeleccionada = entidad.id
+        familiarStore.idEmpleado = empleado.id
+        familiarStore.accion = acciones.consultar
+        modales.abrirModalEntidad('FamiliaresPage')
+      },
+    }
+    const btnEditarFamiliar: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-pencil',
+      color: 'warning',
+      visible: () => {
+        return (
+          authenticationStore.can('puede.editar.familiares')
+        )
+      },
+      accion: ({ entidad }) => {
+        familiarStore.idFamiliarSeleccionada = entidad.id
+        familiarStore.idEmpleado = empleado.id
+        familiarStore.nombres = entidad.nombres
+        familiarStore.apellidos = entidad.apellidos
+        familiarStore.identificacion = entidad.identificacion
+        familiarStore.parentezco = entidad.parentezco
+        familiarStore.accion = acciones.editar
+        modales.abrirModalEntidad('FamiliaresPage')
+      },
+    }
+    const btnEliminarFamiliar: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-trash',
+      color: 'secondary',
+      visible: () =>
+        authenticationStore.can('puede.eliminar.familiares'),
+      accion: ({ entidad }) => {
+        accion.value = 'ELIMINAR'
+        eliminar(entidad)
+      },
+    }
     return {
       mixin,
       empleado,
@@ -280,6 +349,9 @@ export default defineComponent({
       abrirModalFamiliares,
       //metodos
       opcionesDepartamentos,
+      btnConsultarFamiliar,
+      btnEditarFamiliar,
+      btnEliminarFamiliar,
       modales,
       guardado,
       //  FILTROS

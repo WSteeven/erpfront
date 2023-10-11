@@ -68,6 +68,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    primeraColumnaFija: {
+      type: Boolean,
+      default:false,
+    },
     tipoSeleccion: {
       type: String as () => TipoSeleccion,
       default: 'none',
@@ -75,7 +79,6 @@ export default defineComponent({
     ajustarCeldas:{
       type: Boolean,
       default:false,
-      required: false,
     },
     accion1: {
       type: Object as () => CustomActionTable,

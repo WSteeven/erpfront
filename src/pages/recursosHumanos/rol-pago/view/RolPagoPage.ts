@@ -92,31 +92,19 @@ export default defineComponent({
     } = mixin.useComportamiento()
     const { onBeforeGuardar, onConsultado } = mixin.useHooks()
     const refArchivoRolPago = ref()
-
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
+
       })
       empleados.value = listadosAuxiliares.empleados
-      concepto_ingresos.value =
-        LocalStorage.getItem('concepto_ingresos') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('concepto_ingresos')!.toString())
-      descuentos_generales.value =
-        LocalStorage.getItem('descuentos_generales') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('descuentos_generales')!.toString())
-      descuentos_ley.value =
-        LocalStorage.getItem('descuentos_ley') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('descuentos_ley')!.toString())
-      multas.value =
-        LocalStorage.getItem('multas') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('multas')!.toString())
+      concepto_ingresos.value= (await new ConceptoIngresoController().listar()).result;
+      descuentos_generales.value = (await new DescuentosGenralesController().listar()).result
+      descuentos_ley.value = (await new DescuentosLeyController().listar()).result
+      multas.value = (await new MultaController().listar()).result
       horas_extras_tipos.value =
         LocalStorage.getItem('horas_extras_tipos') == null
           ? []

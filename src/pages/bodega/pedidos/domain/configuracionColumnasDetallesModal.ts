@@ -22,7 +22,7 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
         field: 'modelo',
         label: 'Modelo',
         align: 'left',
-        sortable: true
+        sortable: true 
     },
     {
         name: 'serial',

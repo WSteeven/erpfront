@@ -128,6 +128,8 @@
             :accion5="btnEditarRolPagoEmpleado"
             :accion6="btnFinalizar"
             :accion7="btnImprimir"
+            :accion8="btnEliminarRolPago"
+            :accion9="btnEnviarRolPagoEmpleado"
             :accion1Header="btnAgregarRolPagoEmpleado"
             :permitirExportar="true"
             :accion2Header="btnEjecutarMasivo"
@@ -138,10 +140,11 @@
             :permitirEliminar="false"
             :mostrar-botones="false"
             :mostrarFooter="true"
-            :permitirFiltrar="false"
+            :permitirFiltrar="true"
             @tab-seleccionado="filtrarRolPagoEmpleado"
             :tabDefecto="tabActual"
             :alto-fijo="true"
+            :primeraColumnaFija="true"
           ></essential-table-tabs>
         </q-tab-panel>
       </q-tab-panels>

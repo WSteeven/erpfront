@@ -8,26 +8,25 @@ import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, SessionStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
-import moment from 'moment'
 import Swal from 'sweetalert2'
-
+import moment from 'moment'
 
 // Componentes
+import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import EssentialLink from 'components/EssentialLink.vue'
-import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
 
 // Logica y controladores
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
 import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacionRealtime'
 import { NotificacionesSistema } from './notificacionesSistema/NotificacionesSistema'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useIdle, useTimestamp } from '@vueuse/core'
 import { formatearFechaTexto } from 'shared/utils'
 import { Idle, NotIdle } from 'idlejs'
-import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   name: 'MainLayout',

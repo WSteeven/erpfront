@@ -552,6 +552,13 @@ const routes: RouteRecordRaw[] = [
           import('pages/comprasProveedores/ordenCompra/view/OrdenCompraPage.vue'),
         meta: { requiresAuth: true },
       },
+      // {
+      //   path: '/seguimientos',
+      //   name: 'seguimientos',
+      //   component: () =>
+      //     import('pages/comprasProveedores/ordenCompra/modules/novedadesOrdenesCompras/view/SeguimientoOrdenCompraPage.vue'),
+      //   meta: { requiresAuth: false },
+      // },
       {
         path: '/prefacturas',
         name: 'prefacturas',

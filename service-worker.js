@@ -26,6 +26,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+//aqui se ejecuta el evento desde el navegador
 self.addEventListener('push', (event) => {
   // Lógica para mostrar notificaciones push
   console.log('evento push de la notificación');
@@ -57,10 +58,11 @@ self.addEventListener('message', (event) => {
     const options = {
       body: event.data.mensaje,
       icon: './src/assets/logo.png', // Ruta a un icono para la notificación
-      vibrate: [200, 100, 200], 
+      vibrate: [200, 100, 200],
       data: { url: event.data.link }, // Cambia event.data.link a la propiedad correcta que contiene la URL
     };
 
     self.registration.showNotification(event.data.titulo, options);
   }
+  //ejecutar otro comportamiento
 });
