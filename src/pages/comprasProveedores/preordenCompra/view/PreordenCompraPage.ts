@@ -35,198 +35,204 @@ import { useRouter } from "vue-router";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { ordenarEmpleados } from "shared/utils";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
+import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
-    setup() {
-        const mixin = new ContenedorSimpleMixin(PreordenCompra, new PreordenCompraController())
-        const { entidad: preorden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const { onConsultado } = mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+  components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
+  setup() {
+    const mixin = new ContenedorSimpleMixin(PreordenCompra, new PreordenCompraController())
+    const { entidad: preorden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const { onConsultado } = mixin.useHooks()
+    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
-        //Stores
-        useNotificacionStore().setQuasar(useQuasar())
-        useCargandoStore().setQuasar(useQuasar())
-        const store = useAuthenticationStore()
-        const preordenStore = usePreordenStore()
-        const router =useRouter()
+    //Stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+    const store = useAuthenticationStore()
+    const preordenStore = usePreordenStore()
+    const router = useRouter()
 
-        const cargando = new StatusEssentialLoading()
+    const cargando = new StatusEssentialLoading()
 
-        //variables
-        const subtotal = ref(0.00)
-        const descuento = ref(0.00)
-        const iva = ref(0.00)
-        const total = ref(0.00)
+    //variables
+    const subtotal = ref(0.00)
+    const descuento = ref(0.00)
+    const iva = ref(0.00)
+    const total = ref(0.00)
 
-        // Flags
-        let tabSeleccionado = ref()
-        let soloLectura = ref(false)
-        let puedeEditar = ref(false)
-        const refItems = ref()
+    // Flags
+    let tabSeleccionado = ref()
+    let soloLectura = ref(false)
+    let puedeEditar = ref(false)
+    const refItems = ref()
 
 
-        //Obtener listados
-        const categorias = ref([])
-        // const proveedores = ref([])
-        const autorizaciones = ref([])
-        const empleadosAutorizadores = ref([])
-        cargarVista(async () => {
-            await obtenerListados({
-                empleados: {
-                    controller: new EmpleadoController(),
-                    params: {
-                        campos: 'id,nombres,apellidos,cargo_id',
-                        estado: 1,
-                    }
-                },
-                pedidos: {
-                    controller: new PedidoController(),
-                    params: {
-                        autorizacion_id: 2//trae solo los pedidos autorizados
-                    }
-                }
-
-            })
-        })
-
-        /*****************************************************************************************
-         * Validaciones
-         ****************************************************************************************/
-        const reglas = {
-            autorizador: { required },
+    //Obtener listados
+    const categorias = ref([])
+    // const proveedores = ref([])
+    const autorizaciones = ref([])
+    // const empleadosAutorizadores = ref([])
+    cargarVista(async () => {
+      await obtenerListados({
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos,cargo_id',
+            estado: 1,
+          }
+        },
+        //   autorizadores: {
+        //     controller: new EmpleadoRoleController(),
+        //     params: {
+        //         roles: ['AUTORIZADOR'],
+        //     }
+        // },
+        pedidos: {
+          controller: new PedidoController(),
+          params: {
+            autorizacion_id: 2//trae solo los pedidos autorizados
+          }
         }
 
-        const v$ = useVuelidate(reglas, preorden)
-        setValidador(v$.value)
+      })
+    })
 
-        /*******************************************************************************************
-         * HOOKS
-         ******************************************************************************************/
-        onConsultado(() => {
-            if (accion.value == acciones.editar) soloLectura.value = true
-        })
-
-        /*******************************************************************************************
-         * Funciones
-         ******************************************************************************************/
-
-        function filtrarPreordenes(tab: string) {
-            tabSeleccionado.value = tab
-            if (tab === 'PENDIENTE') puedeEditar.value = true
-            else puedeEditar.value = false
-            listar({ solicitante_id: store.user.id, estado: tab })
-        }
-        function eliminar({ posicion }) {
-            confirmar('¿Está seguro de continuar?', () => preorden.listadoProductos.splice(posicion, 1))
-        }
-
-        const {empleados, filtrarEmpleados} =useFiltrosListadosSelects(listadosAuxiliares)
-
-
-        /*******************************************************************************************
-         * Botones de tabla
-         ******************************************************************************************/
-        const btnEliminarFila: CustomActionTable = {
-            titulo: 'Eliminar',
-            icono: 'bi-x',
-            color: 'negative',
-            accion: ({ entidad, posicion }) => {
-                eliminar({ posicion })
-            }
-        }
-        const btnHacerOrdenCompra: CustomActionTable = {
-            titulo: 'Generar OC',
-            color: 'primary',
-            icono: 'bi-pencil-square',
-            accion: ({ entidad, posicion }) => {
-                preordenStore.preorden = entidad
-                router.push('ordenes-compras')
-            },
-            visible: () => tabSeleccionado.value === 'PENDIENTE',
-        }
-        const btnAnularPreorden: CustomActionTable = {
-            titulo: 'Anular',
-            color: 'negative',
-            icono: 'bi-x',
-            accion: async ({ entidad, posicion }) => {
-                confirmar('¿Está seguro de anular la orden de compra?', () => {
-                    const data: CustomActionPrompt = {
-                        titulo: 'Causa de anulación',
-                        mensaje: 'Ingresa el motivo de anulación',
-                        accion: async (data) => {
-                            try {
-                                preordenStore.idPreorden = entidad.id
-                                const response = await preordenStore.anularPreorden({ motivo: data })
-                                if(response!.status==200){
-                                    notificarCorrecto('Se ha anulado correctamente la preorden de compra')
-                                    listado.value.splice(posicion, 1)
-                                }
-                            } catch (e: any) {
-                                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
-                            }
-                        }
-                    }
-                    prompt(data)
-                })
-            },
-            visible: ({ entidad }) => {
-                return tabSeleccionado.value == estadosTransacciones.pendiente
-            }
-        }
-
-
-        watch(refItems, () => {
-            console.log('modificacion')
-            console.log(refItems.value)
-        })
-
-        // configurar los listados
-        empleados.value = listadosAuxiliares.empleados
-        categorias.value = listadosAuxiliares.categorias
-        autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-        // empleadosAutorizadores.value = JSON.parse(LocalStorage.getItem('autorizaciones_especiales')!.toString())
-        empleadosAutorizadores.value = JSON.parse(LocalStorage.getItem('autorizaciones_especiales')!.toString())
-
-        return {
-            mixin, preorden, disabled, accion, v$, acciones,
-            configuracionColumnas: configuracionColumnasPreordenesCompras,
-            accionesTabla,
-            configuracionColumnasDetallesProductos,
-            configuracionColumnasItemOrdenCompra,
-            //listados
-            empleados, filtrarEmpleados,
-            categorias,
-            autorizaciones,
-            empleadosAutorizadores,
-            opcionesForma,
-            opcionesTiempo,
-
-            //store
-            store,
-
-            //botones de tabla
-            btnEliminarFila,
-            btnHacerOrdenCompra,
-            btnAnularPreorden,
-
-
-            //tabla de detalles
-            //Tabs
-            tabOptionsPreordenCompra,
-            tabSeleccionado,
-            puedeEditar,
-            soloLectura,
-
-            //funciones
-            filtrarPreordenes,
-            ordenarEmpleados,
-
-            //variables computadas
-            subtotal, total, descuento, iva,
-
-        }
+    /*****************************************************************************************
+     * Validaciones
+     ****************************************************************************************/
+    const reglas = {
+      autorizador: { required },
     }
+
+    const v$ = useVuelidate(reglas, preorden)
+    setValidador(v$.value)
+
+    /*******************************************************************************************
+     * HOOKS
+     ******************************************************************************************/
+    onConsultado(() => {
+      if (accion.value == acciones.editar) soloLectura.value = true
+    })
+
+    /*******************************************************************************************
+     * Funciones
+     ******************************************************************************************/
+
+    function filtrarPreordenes(tab: string) {
+      tabSeleccionado.value = tab
+      if (tab === 'PENDIENTE') puedeEditar.value = true
+      else puedeEditar.value = false
+      listar({ solicitante_id: store.user.id, estado: tab })
+    }
+    function eliminar({ posicion }) {
+      confirmar('¿Está seguro de continuar?', () => preorden.listadoProductos.splice(posicion, 1))
+    }
+
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
+
+
+    /*******************************************************************************************
+     * Botones de tabla
+     ******************************************************************************************/
+    const btnEliminarFila: CustomActionTable = {
+      titulo: 'Eliminar',
+      icono: 'bi-x',
+      color: 'negative',
+      accion: ({ entidad, posicion }) => {
+        eliminar({ posicion })
+      }
+    }
+    const btnHacerOrdenCompra: CustomActionTable = {
+      titulo: 'Generar OC',
+      color: 'primary',
+      icono: 'bi-pencil-square',
+      accion: ({ entidad, posicion }) => {
+        preordenStore.preorden = entidad
+        router.push('ordenes-compras')
+      },
+      visible: () => tabSeleccionado.value === 'PENDIENTE',
+    }
+    const btnAnularPreorden: CustomActionTable = {
+      titulo: 'Anular',
+      color: 'negative',
+      icono: 'bi-x',
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de anular la orden de compra?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Causa de anulación',
+            mensaje: 'Ingresa el motivo de anulación',
+            accion: async (data) => {
+              try {
+                preordenStore.idPreorden = entidad.id
+                const response = await preordenStore.anularPreorden({ motivo: data })
+                if (response!.status == 200) {
+                  notificarCorrecto('Se ha anulado correctamente la preorden de compra')
+                  listado.value.splice(posicion, 1)
+                }
+              } catch (e: any) {
+                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+              }
+            }
+          }
+          prompt(data)
+        })
+      },
+      visible: ({ entidad }) => {
+        return tabSeleccionado.value == estadosTransacciones.pendiente
+      }
+    }
+
+
+    watch(refItems, () => {
+      console.log('modificacion')
+      console.log(refItems.value)
+    })
+
+    // configurar los listados
+    empleados.value = listadosAuxiliares.empleados
+    categorias.value = listadosAuxiliares.categorias
+    autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+    // empleadosAutorizadores.value = listadosAuxiliares.autorizadores
+
+    return {
+      mixin, preorden, disabled, accion, v$, acciones,
+      configuracionColumnas: configuracionColumnasPreordenesCompras,
+      accionesTabla,
+      configuracionColumnasDetallesProductos,
+      configuracionColumnasItemOrdenCompra,
+      //listados
+      empleados, filtrarEmpleados,
+      categorias,
+      autorizaciones,
+      // empleadosAutorizadores,
+      opcionesForma,
+      opcionesTiempo,
+
+      //store
+      store,
+
+      //botones de tabla
+      btnEliminarFila,
+      btnHacerOrdenCompra,
+      btnAnularPreorden,
+
+
+      //tabla de detalles
+      //Tabs
+      tabOptionsPreordenCompra,
+      tabSeleccionado,
+      puedeEditar,
+      soloLectura,
+
+      //funciones
+      filtrarPreordenes,
+      ordenarEmpleados,
+
+      //variables computadas
+      subtotal, total, descuento, iva,
+
+    }
+  }
 })
