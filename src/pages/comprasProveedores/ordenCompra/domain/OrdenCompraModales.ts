@@ -1,10 +1,10 @@
 // dependencies
-
 import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
 import { markRaw } from "vue";
-import SeguimientoOrdenCompraPage from "../modules/novedadesOrdenesCompras/view/SeguimientoOrdenCompraPage";
+
 
 // paginas
+import SeguimientoOrdenCompraPage from "../modules/novedadesOrdenesCompras/view/SeguimientoOrdenCompraPage.vue";
 
 export class OrdenCompraModales{
     SeguimientoNovedadesOrdenesCompras: ComponenteModal

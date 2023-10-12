@@ -99,7 +99,7 @@ export default defineComponent({
                     controller: new EmpleadoController(),
                     params: {
                         campos: 'id,nombres,apellidos,cargo_id',
-                        area_id: 1,
+                        // area_id: 1,
                         estado: 1,
                     }
                 },
@@ -350,8 +350,7 @@ export default defineComponent({
             accion: async ({ entidad, posicion }) => {
                 ordenCompraStore.idOrden = entidad.id
                 confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
-                    console.log(ordenCompraStore.idOrden)
-                    modales.abrirModalEntidad("SeguimientoNovedadesOrdenesCompras")
+                    modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
                 })
             },
             visible: ({ entidad }) => {

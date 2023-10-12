@@ -22,18 +22,11 @@ import { NovedadOrdenCompraController } from '../infraestructure/NovedadOrdenCom
 import { useOrdenCompraStore } from 'stores/comprasProveedores/ordenCompra'
 import { OrdenCompra } from 'pages/comprasProveedores/ordenCompra/domain/OrdenCompra'
 import { OrdenCompraController } from 'pages/comprasProveedores/ordenCompra/infraestructure/OrdenCompraController'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 
 export default defineComponent({
-    components: {
-        EssentialTable,
-        SelectorImagen,
-        ButtonSubmits,
-        TablaFilasDinamicas,
-        GestorArchivos,
-        VisorImagen,
-    },
-    emits: ['cerrar-modal'],
-    setup(props, { emit }) {
+    components: { TablaFilasDinamicas, GestorArchivos, VisorImagen, },
+    setup() {
         /*********
          * Stores
          *********/
@@ -42,10 +35,10 @@ export default defineComponent({
         /********
         * Mixin
         *********/
-        const mixinOrdenCompra = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
+        const mixinOrdenCompra = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController(), new ArchivoController())
         const mixin = new ContenedorSimpleMixin(NovedadOrdenCompra, new NovedadOrdenCompraController())
-        const { entidad: actividad, accion, listado } = mixin.useReferencias()
-        const { guardar: guardarNovedad, editar, reestablecer, setValidador, listar: listarNovedades } = mixin.useComportamiento()
+        const { entidad: actividad,  listado } = mixin.useReferencias()
+        const { guardar: guardarNovedad, setValidador, listar: listarNovedades } = mixin.useComportamiento()
 
         /************
          * Variables
@@ -59,10 +52,6 @@ export default defineComponent({
          * Init
          ************/
         listarNovedades({ orden_compra_id: ordenCompraStore.idOrden })
-        function cargarArchivos() {
-            console.log('Se ha inicializado el componente de  GestorArchivo: ' + ordenCompraStore.idOrden)
-            refArchivo.value.listarArchivosAlmacenados(ordenCompraStore.idOrden)
-        }
 
 
         /****************
@@ -79,7 +68,7 @@ export default defineComponent({
         }
 
         /*************
-        * Validaciones
+         * Validaciones
         **************/
         const reglas = {
             // regional: { required },
@@ -89,7 +78,7 @@ export default defineComponent({
         setValidador(v$.value)
 
         /************
-        * Funciones
+         * Funciones
         *************/
         function guardarFilaActividad(data) {
             actividad.hydrate(data)
@@ -101,36 +90,17 @@ export default defineComponent({
             await refArchivo.value.subir()
         }
 
-        function limpiarFila() {
-            fila.value = null
+        function cargarArchivos() {
+            refArchivo.value.listarArchivosAlmacenados(ordenCompraStore.idOrden)
         }
 
-        function guardarFila(data) {
-            limpiarFila()
-        }
-
-
-
-        onMounted(() => {
-            console.log(listado.value)
-
-            setTimeout(() => {
-                console.log(listado.value)
-            }, 3000);
-        })
 
         return {
-            v$,
             refVisorImagen,
             mixin,
             mixinOrdenCompra,
             refArchivo,
-            accion,
-            editar,
-            reestablecer,
-            emit,
             columnas: configuracionColumnasSeguimientoOrdenCompra,
-            guardarFila,
             listado,
             NovedadOrdenCompra,
             verFotografia,
@@ -139,10 +109,7 @@ export default defineComponent({
             mostrarBotonSubir: computed(() => refArchivo.value?.quiero_subir_archivos),
             permitirSubir,
             cargarArchivos,
-            idModelo: computed(() => {
-                console.log(ordenCompraStore.idOrden)
-                return ordenCompraStore.idOrden
-            })
+            idModelo: computed(() => ordenCompraStore.idOrden)
         }
     }
 })

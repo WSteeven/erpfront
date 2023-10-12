@@ -626,12 +626,6 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-boxes',
           can: store.can('puede.ver.proveedores') || store.esAdministrador,
         },
-        // {
-        //   title: 'seguimientos',
-        //   link: 'seguimientos',
-        //   icon: 'bi-boxes',
-        //   can: true,
-        // },
         {
           title: 'Datos Bancarios de Proveedores',
           link: 'datos-bancarios-proveedores',
