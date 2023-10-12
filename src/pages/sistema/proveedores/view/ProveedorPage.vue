@@ -9,6 +9,7 @@
     :accion4="botonVerMiCalificacionProveedor"
     :accion5="botonVerCalificacionProveedor"
     :puedeExportar="true"
+    :listar="false"
   >
     <template #formulario>
       <q-form @submit.prevent>

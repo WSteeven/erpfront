@@ -12,8 +12,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { useSubtareaStore } from 'stores/subtarea'
 import { ParamsType } from 'config/types'
 
 export default defineComponent({
@@ -25,11 +23,6 @@ export default defineComponent({
       type: Object as () => ContenedorSimpleMixin<any>,
       required: true,
     },
-    // entidad: Object as () => EntidadAuditable,
-    // disable: {
-    //   type: Boolean,
-    //   default: false,
-    // },
     permitirEliminar: {
       type: Boolean,
       default: true,
@@ -51,12 +44,7 @@ export default defineComponent({
       required: false,
     },
   },
-  setup(props, {emit}) {
-    /*********
-     * Stores
-    *********/
-    const subtareaStore = useSubtareaStore()
-
+  setup(props, { emit }) {
     /********
      * Mixin
     *********/
@@ -89,14 +77,14 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'positive',
       accion: ({ entidad }) => {
-        console.log(entidad)
+        // console.log(entidad)
         descargarArchivoUrl(entidad.ruta)
       }
     }
 
     const refGestor = ref()
 
-    onMounted(()=>{
+    onMounted(() => {
       emit('inicializado')
     })
 
@@ -116,15 +104,16 @@ export default defineComponent({
 
       try {
         const response: AxiosResponse = await guardarArchivos(props.idModelo!, fd)
-        // console.log(response.data.modelo[0])
+        // console.log(response.data.modelo)
         // console.log(listadoArchivos.value)
 
         files.value = []
-        if (props.listarAlGuardar) listadoArchivos.value.push(response.data.modelo[0])
+        if (props.listarAlGuardar) listadoArchivos.value.push(response.data.modelo)
         // notificarCorrecto(response.data.mensaje)
+        // console.log(response.data.mensaje)
         quiero_subir_archivos.value = false
       } catch (error: unknown) {
-        console.log(error)
+        // console.log('err',error)
         const axiosError = error as AxiosError
         notificarError(axiosError.response?.data.mensaje)
       }
@@ -153,11 +142,10 @@ export default defineComponent({
     return {
       listadoArchivos,
       refGestor,
-      extraerExtension: (nombre: string) => nombre.split('.').at(-1),
-      formatBytes,
+      // extraerExtension: (nombre: string) => nombre.split('.').at(-1),
+      // formatBytes,
       quiero_subir_archivos,
       columnas: [...configuracionColumnasArchivoSubtarea, accionesTabla],
-      codigoSubtareaSeleccionada: subtareaStore.codigoSubtareaSeleccionada,
       onRejected,
       btnEliminar,
       btnDescargar,

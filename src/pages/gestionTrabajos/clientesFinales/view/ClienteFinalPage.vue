@@ -83,12 +83,12 @@
                 v-model="clienteFinal.cedula"
                 placeholder="Opcional"
                 :disable="disabled"
-                :error="!!v$.cedula.$errors.length"
-                @blur="v$.cedula.$touch"
                 outlined
                 dense
               >
-                <template v-slot:error>
+                <!-- :error="!!v$.cedula.$errors.length" -->
+                <!-- @blur="v$.cedula.$touch" -->
+                <!-- <template v-slot:error>
                   <div
                     style="clear: inherit"
                     v-for="error of v$.cedula.$errors"
@@ -96,7 +96,7 @@
                   >
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
-                </template>
+                </template> -->
               </q-input>
             </div>
 

@@ -1,3 +1,4 @@
+import { pushEventMesaggeServiceWorker } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 
@@ -17,6 +18,11 @@ export class VacacionPusherEvent {
     pusher.bind('vacacion-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
+      pushEventMesaggeServiceWorker({
+        titulo: 'Vacaciones',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+      })
     })
   }
 }

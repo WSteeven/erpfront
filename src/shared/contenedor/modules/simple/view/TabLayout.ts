@@ -114,6 +114,14 @@ export default defineComponent({
       type: String,
       default: 'Guardar',
     },
+    listar: {
+      type: Boolean,
+      default: true,
+    },
+    ajustarCeldas: { //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
+      type: Boolean,
+      default: false,
+    },
   },
   components: { EssentialTable, ButtonSubmits },
   setup(props) {
@@ -136,7 +144,7 @@ export default defineComponent({
       }]
     }
 
-    if (!listadoCargado && props.mostrarListado) {
+    if (!listadoCargado && props.mostrarListado && props.listar) {
       listar()
       listadoCargado = true
     }

@@ -11,6 +11,7 @@
     :accion1="btnImprimir"
     :accion2="btnEnviarMailProveedor"
     :accion3="btnAnularOrden"
+    :accion4="btnRegistrarNovedades"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -60,7 +61,6 @@
               </template>
             </q-select>
           </div>
-
           <!-- Fecha  -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
@@ -616,6 +616,9 @@
     </template>
   </tab-layout-filter-tabs2>
   <!-- Modales -->
-  <!-- <modales-entidad :comportamiento="modales"></modales-entidad> -->
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+  ></modales-entidad>
 </template>
 <script src="./OrdenCompraPage.ts"></script>

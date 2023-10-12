@@ -80,7 +80,7 @@ export default defineComponent({
     const verFotografia: CustomActionTable = {
       titulo: 'Ver fotografía',
       icono: 'bi-image-fill',
-      color: 'secondary',
+      color: 'primary',
       visible: ({ entidad }) => entidad.fotografia,
       accion: async ({ entidad }) => {
         refVisorImagen.value.abrir(entidad.fotografia)

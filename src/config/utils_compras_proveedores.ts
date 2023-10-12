@@ -32,6 +32,7 @@ export const opcionesForma = [
   { value: 'CANJE', label: 'CANJE' },
 ]
 export const opcionesTiempo = [
+  { value: '3 DIAS', label: '3 DIAS' },
   { value: '7 DIAS', label: '7 DIAS' },
   { value: '15 DIAS', label: '15 DIAS' },
   { value: '30 DIAS', label: '30 DIAS' },
