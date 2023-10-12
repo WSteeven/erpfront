@@ -31,9 +31,7 @@
               map-options
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -69,9 +67,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -106,9 +102,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -139,9 +133,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -222,10 +214,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.anio_fabricacion.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.anio_fabricacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -268,7 +257,7 @@
               @blur="v$.rendimiento.$touch"
               outlined
               dense
-            ><template v-slot:error>
+              ><template v-slot:error>
                 <div v-for="error of v$.rendimiento.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
@@ -303,6 +292,32 @@
               unchecked-icon="clear"
               :disable="disabled"
             />
+          </div>
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Fotografías y documentación del vehículo"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="accion == acciones.nuevo || accion == acciones.editar"
+              :idModelo="idVehiculo"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="mostrarBotonSubir"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
           </div>
         </div>
       </q-form>

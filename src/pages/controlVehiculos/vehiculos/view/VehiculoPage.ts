@@ -6,6 +6,9 @@ import { defineComponent, ref } from "vue";
 
 // componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
+
+// Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { Vehiculo } from '../domain/Vehiculo';
 import { VehiculoController } from '../infraestructure/VehiculoController';
@@ -14,18 +17,18 @@ import { ModeloController } from 'pages/bodega/modelos/infraestructure/ModeloCon
 import { CombustibleController } from 'pages/controlVehiculos/combustible/infraestructure/CombustibleController';
 import { acciones } from 'config/utils';
 import { opciones_traccion_vehiculos } from 'config/utils_vehiculos';
-
-// Logica y controladores
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
 
 export default defineComponent({
-    components: { TabLayout },
+    components: { TabLayout, GestorArchivos },
     setup() {
-        const mixin = new ContenedorSimpleMixin(Vehiculo, new VehiculoController())
+        const mixin = new ContenedorSimpleMixin(Vehiculo, new VehiculoController(), new ArchivoController())
         const { entidad: vehiculo, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onReestablecer } = mixin.useHooks()
+        const { onReestablecer, onGuardado, onConsultado, onModificado } = mixin.useHooks()
 
-        // const refCilindraje = ref(null)
+        const idVehiculo = ref()
+        const refArchivo = ref()
 
         const opciones_marcas = ref([])
         const opciones_modelos = ref([])
@@ -46,24 +49,6 @@ export default defineComponent({
                 }
             })
         })
-        //cargar datos en listados
-        opciones_marcas.value = listadosAuxiliares.marcas
-        opciones_modelos.value = listadosAuxiliares.modelos
-        opciones_combustibles.value = listadosAuxiliares.combustibles
-
-        // Hooks
-        onReestablecer(async () => {
-            console.log(accion.value)
-            // console.log(refCilindraje.value)
-            reset()
-            console.log('Presionaste cancelar')
-            console.log(accion.value)
-        })
-
-        function reset() {
-            // refCilindraje.value.resetValidation()
-
-        }
 
         //Reglas de validacion
         const reglas = {
@@ -82,10 +67,58 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, vehiculo)
         setValidador(v$.value)
 
+        /*********************************
+         * Hooks
+        *********************************/
+        onReestablecer(async () => {
+            console.log(accion.value)
+            reset()
+            console.log('Presionaste cancelar')
+
+            refArchivo.value.limpiarListado() //se borra listado de archivos
+        })
+        onConsultado(()=>{
+          setTimeout(() => {
+            refArchivo.value.listarArchivosAlmacenados(vehiculo.id)
+          }, 1);
+        })
+
+        onGuardado((id:number)=>{
+          idVehiculo.value = id
+          setTimeout(() => {
+            subirArchivos()
+          }, 1)
+        })
+        onModificado((id:number)=>{
+          idVehiculo.value = id
+          setTimeout(() => {
+            subirArchivos()
+          }, 1)
+        })
+
+
+        /*********************************
+         * Funciones
+        *********************************/
+        function reset() {
+            // refCilindraje.value.resetValidation()
+        }
+        async function subirArchivos(){
+          await refArchivo.value.subir()
+        }
+
+
+
+        //cargar datos en listados
+        opciones_marcas.value = listadosAuxiliares.marcas
+        opciones_modelos.value = listadosAuxiliares.modelos
+        opciones_combustibles.value = listadosAuxiliares.combustibles
 
         return {
             mixin, vehiculo, disabled, v$, accion, acciones,
             configuracionColumnas: configuracionColumnasVehiculos,
+            refArchivo,
+            idVehiculo,
             //listados
             opciones_marcas,
             opciones_modelos,
@@ -151,6 +184,9 @@ export default defineComponent({
                 }
                 // })
             },
+
+
+
         }
     }
 })
