@@ -87,14 +87,10 @@
           :accion3="accion3"
           :accion4="accion4"
           :accion5="accion5"
-<<<<<<< HEAD
           :accion1Header="accion1Header"
           :accion2Header="accion2Header"
           :accion3Header="accion3Header"
           :accion4Header="accion4Header"
-=======
-          :ajustarCeldas="ajustarCeldas"
->>>>>>> 0984b366830ae487fcd75eb7e2048cd986134d22
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
           @consultar="accionTabla.consultar"
