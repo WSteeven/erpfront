@@ -2,6 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :accion1Header="btnImprimirEmpleados"
     titulo-pagina="Empleados"
     :puedeFiltrar="false"
     :puedeExportar="true"

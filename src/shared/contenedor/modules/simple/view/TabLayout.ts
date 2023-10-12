@@ -90,6 +90,22 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion1Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion2Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion3Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion4Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
     full: {
       type: Boolean,
       default: false,

@@ -50,6 +50,10 @@ import { useFamiliarStore } from 'stores/familiar'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
 import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { imprimirArchivo } from 'shared/utils'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
@@ -58,6 +62,7 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const storeRecursosHumanos = useRecursosHumanosStore()
 
     /***********
@@ -319,6 +324,27 @@ export default defineComponent({
         eliminar(entidad)
       },
     }
+    const btnImprimirEmpleados: CustomActionTable = {
+      titulo: 'Reporte General',
+      icono: 'bi-printer',
+      color: 'primary',
+      visible: ({ entidad }) =>
+        authenticationStore.can('puede.ver.empleados') ,
+      accion: () => {
+        generar_reporte_general()
+      },
+    }
+    async function generar_reporte_general( ): Promise<void> {
+      console.log('generar_reporte_general')
+      const axios = AxiosHttpRepository.getInstance()
+      const filename = 'empleados'
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.imprimir_reporte_general_empleado)
+      imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
+    }
+
     return {
       mixin,
       empleado,
@@ -352,6 +378,7 @@ export default defineComponent({
       btnConsultarFamiliar,
       btnEditarFamiliar,
       btnEliminarFamiliar,
+      btnImprimirEmpleados,
       modales,
       guardado,
       //  FILTROS
