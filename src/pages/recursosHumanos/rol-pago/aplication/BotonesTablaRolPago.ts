@@ -67,7 +67,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     titulo: '',
     icono: 'fa-solid fa-file-signature',
     color: 'positive',
-    visible: ({ entidad }) => entidad.estado === estadosRolPago.REALIZADO && (authenticationStore.esRecursosHumanos) && !entidad.es_quincena,
+    visible: ({ entidad }) => entidad.estado === estadosRolPago.EJECUTANDO && (authenticationStore.esRecursosHumanos) && !entidad.es_quincena,
     accion: ({ entidad, posicion }) => {
 
       confirmar('¿Tiene el rol de pagos firmado?', async () => {
