@@ -134,6 +134,7 @@
             :accion2Header="btnEjecutarMasivo"
             :accion3Header="btnFinalizarMasivo"
             :accion4Header="btnGenerarReporte"
+            :accion5Header ="btnRefrescar"
             :permitirConsultar="false"
             :permitirEditar="false"
             :permitirEliminar="false"
