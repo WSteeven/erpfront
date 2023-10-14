@@ -560,12 +560,20 @@ export const useMenuStore = defineStore('menu', () => {
       ],
     },
 
-    //Modulo de Vehículos
+    /*****************************************
+     * MODULO DE VEHICULOS
+     *****************************************/
     {
       title: 'Vehículos',
       icon: 'garage',
       can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
       children: [
+        {
+          title: 'Conductores',
+          link: 'conductores',
+          icon: 'bi-person-vcard-fill',
+          can: store.can('puede.ver.conductores')||true,
+        },
         {
           title: 'Combustibles',
           link: 'combustibles',
@@ -586,6 +594,8 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ]
     },
+
+
     //Modulo Activos Fijos
     {
       title: 'Activos fijos',

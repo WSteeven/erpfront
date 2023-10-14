@@ -13,6 +13,7 @@ export class Vehiculo extends EntidadAuditable {
     traccion: string | null
     aire_acondicionado: boolean|false
     capacidad_tanque: number | null
+    color:string | null
     // modelo_id: number | null
     // combustible_id: number | null
 
@@ -30,6 +31,7 @@ export class Vehiculo extends EntidadAuditable {
         this.traccion = null
         this.aire_acondicionado =false
         this.capacidad_tanque = null
+        this.color = null
         // this.modelo_id = null
         // this.combustible_id = null
     }

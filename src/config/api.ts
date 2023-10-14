@@ -109,11 +109,14 @@ export const endpoints = {
   rubros: new Endpoint('recursos-humanos/rubros'),
 
 
-  //Modulo de Vehiculos
+  /******************************
+   * Modulo de Vehiculos
+   ******************************/
   combustibles: new Endpoint('vehiculos/combustibles'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
+  conductores: new Endpoint('vehiculos/conductores'),
 
   //Modulo de compras y proveedores
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),

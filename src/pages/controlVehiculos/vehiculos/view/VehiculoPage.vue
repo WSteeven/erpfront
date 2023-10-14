@@ -8,7 +8,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Marca -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Marca</label>
             <q-select
               v-model="vehiculo.marca"
@@ -37,7 +37,7 @@
             </q-select>
           </div>
           <!-- Modelo -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Modelo</label>
             <q-select
               v-model="vehiculo.modelo"
@@ -73,7 +73,7 @@
             </q-select>
           </div>
           <!-- Combustible -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo de combustible</label>
             <q-select
               v-model="vehiculo.combustible"
@@ -108,7 +108,7 @@
             </q-select>
           </div>
           <!-- Tracción -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tracción</label>
             <q-select
               v-model="vehiculo.traccion"
@@ -139,7 +139,7 @@
             </q-select>
           </div>
           <!-- placa -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Placa</label>
             <q-input
               v-model="vehiculo.placa"
@@ -161,7 +161,7 @@
             </q-input>
           </div>
           <!-- num_chasis -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">N° Chasis</label>
             <q-input
               v-model="vehiculo.num_chasis"
@@ -180,7 +180,7 @@
             </q-input>
           </div>
           <!-- num_motor -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">N° Motor</label>
             <q-input
               v-model="vehiculo.num_motor"
@@ -199,7 +199,7 @@
             </q-input>
           </div>
           <!-- año -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Año de fabricación</label>
             <q-input
               type="number"
@@ -222,7 +222,7 @@
           </div>
 
           <!-- cilindraje -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cilindraje (cc)</label>
             <q-input
               type="number"
@@ -244,7 +244,7 @@
             </q-input>
           </div>
           <!-- rendimiento -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Rendimiento (km/gl)</label>
             <q-input
               type="number"
@@ -265,7 +265,7 @@
             </q-input>
           </div>
           <!-- capacidad tanque-->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Capacidad tanque (gl)</label>
             <q-input
               v-model="vehiculo.capacidad_tanque"
@@ -280,8 +280,22 @@
             >
             </q-input>
           </div>
+          <!-- capacidad tanque-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Color</label>
+            <q-input
+              v-model="vehiculo.color"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :readonly="disabled"
+              error-message="Ingrese el color del vehiculo"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- aire acondicionado -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tiene aire acondicionado</label>
             <q-toggle
               :label="vehiculo.aire_acondicionado ? 'SI' : 'NO'"
@@ -297,7 +311,7 @@
           <div class="col-12 q-mb-md">
             <gestor-archivos
               ref="refArchivo"
-              label="Fotografías y documentación del vehículo"
+              label="Fotografías y Documentación del Vehículo"
               :mixin="mixin"
               :disable="disabled"
               :listarAlGuardar="false"

@@ -3,6 +3,7 @@ import { Ref, ref } from "vue";
 import { ordernarListaString } from "./utils";
 import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
 import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta";
+import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -191,6 +192,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
     })
   }
+  function ordenarEmpleados() {
+    empleados.value.sort((a: Empleado, b:Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+  }
 
   function filtrarBancos(val, update) {
     if (val === '') {
@@ -227,7 +231,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     empresas, filtrarEmpresas, ordenarEmpresas,
     proveedores, filtrarProveedores,
     clientes, filtrarClientes,
-    empleados, filtrarEmpleados,
+    empleados, filtrarEmpleados,ordenarEmpleados,
     bancos, filtrarBancos,
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
   }

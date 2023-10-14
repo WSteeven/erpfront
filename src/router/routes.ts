@@ -473,7 +473,18 @@ const routes: RouteRecordRaw[] = [
           import('pages/recursosHumanos/grupos/view/GrupoPage.vue'),
         meta: { requiresAuth: true },
       },
-      //Routes for Vehiculos
+      /*****************************************
+       * MODULO DE VEHICULOS
+       *****************************************/
+      {
+        path: '/conductores',
+        name: 'conductores',
+        component: () =>
+          import(
+            'pages/controlVehiculos/conductores/view/ConductorPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
       {
         path: '/control-vehiculos',
         name: 'bitacoras_vehiculos',
