@@ -19,6 +19,8 @@ import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { LocalStorage } from "quasar";
 import { tiposLicencias } from "config/utils_vehiculos";
+import { maskFecha } from "config/utils";
+import { formatearFecha, formatearFechaTexto } from "shared/utils";
 
 // Logica y Controladores
 
@@ -75,6 +77,13 @@ export default defineComponent({
                 statusLoading.desactivar()
             }
         }
+        function calcularFechaFinal() {
+            console.log(conductor.inicio_vigencia)
+            const fecha = new Date(conductor.inicio_vigencia!);
+            fecha.setFullYear(fecha.getFullYear() + 5);
+            fecha.setDate(fecha.getDate() - 1); // Restar un día para obtener el resultado deseado
+            conductor.fin_vigencia = fecha.toISOString().slice(0, 10); // Formato YYYY-MM-DD
+        }
 
         /********************************
          * LISTADOS Y FILTROS
@@ -90,6 +99,7 @@ export default defineComponent({
             mixin, conductor, disabled, accion, v$,
             configuracionColumnas: configuracioncolumnasConductores,
             empleado,
+            maskFecha,
 
 
             //listados
@@ -97,7 +107,8 @@ export default defineComponent({
             cantones,
             tiposLicencias,
 
-
+            //funciones
+            calcularFechaFinal,
 
         }
     }

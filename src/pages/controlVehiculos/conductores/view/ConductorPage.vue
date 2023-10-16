@@ -183,7 +183,6 @@
                 placeholder="Obligatorio"
                 :error="!!v$.inicio_vigencia.$errors.length"
                 :disable="disabled"
-                
                 outlined
                 dense
               >
@@ -198,6 +197,7 @@
                         v-model="conductor.inicio_vigencia"
                         :mask="maskFecha"
                         today-btn
+                        @update:model-value="calcularFechaFinal"
                       >
                         <div class="row items-center justify-end">
                           <q-btn
