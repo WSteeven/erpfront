@@ -93,6 +93,7 @@
           :accion4Header="accion4Header"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
+          :ajustarCeldas="ajustarCeldas"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"

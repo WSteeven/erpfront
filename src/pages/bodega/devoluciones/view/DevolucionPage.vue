@@ -5,6 +5,7 @@
     titulo-pagina="Devoluciones"
     :tab-options="tabOptionsDevoluciones"
     @tab-seleccionado="tabEs"
+    :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
     :accion1="botonAnular"
     :accion2="botonImprimir"
@@ -76,10 +77,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.justificacion.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.justificacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -107,9 +105,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -130,10 +126,7 @@
           </div>
 
           <!-- Es devolucion de tarea -->
-          <div
-            v-if="devolucion.es_tarea || accion === 'NUEVO'"
-            class="col-12 col-md-3"
-          >
+          <div v-if="devolucion.es_tarea || accion === 'NUEVO'" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.es_tarea"
@@ -144,10 +137,7 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div
-            v-if="esVisibleTarea || devolucion.es_tarea"
-            class="col-12 col-md-3"
-          >
+          <div v-if="esVisibleTarea || devolucion.es_tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="devolucion.tarea"
@@ -175,9 +165,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -231,18 +219,13 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Observacion de autorizacion -->
-          <div
-            v-if="store.user.id === devolucion.per_autoriza"
-            class="col-12 col-md-3"
-          >
+          <div v-if="store.user.id === devolucion.per_autoriza" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
@@ -262,10 +245,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.observacion_aut.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -280,9 +260,7 @@
               :mixin="mixin"
               :disable="disabled"
               :listarAlGuardar="false"
-              :permitir-eliminar="
-                accion == acciones.nuevo || accion == acciones.editar
-              "
+              :permitir-eliminar="accion == acciones.nuevo || accion == acciones.editar"
               :idModelo="idDevolucion"
             >
               <template #boton-subir>
@@ -312,9 +290,7 @@
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="listarProductos()"
-                  @blur="
-                    criterioBusquedaProducto === '' ? limpiarProducto() : null
-                  "
+                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
                   outlined
                   dense
                 >
@@ -338,9 +314,7 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
-              "
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
               :datos="devolucion.listadoProductos"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -348,6 +322,7 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
+              :ajustarCeldas="true"
             ></essential-table>
           </div>
         </div>

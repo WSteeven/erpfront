@@ -4,6 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Ingresos"
     :permitirEditar="false"
+    :ajustarCeldas="true"
     :accion1="botonImprimir"
     :accion2="botonAnular"
   >
