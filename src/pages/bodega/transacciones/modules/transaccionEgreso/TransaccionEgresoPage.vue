@@ -543,6 +543,7 @@
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
+              :ajustarCeldas="true"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               @eliminar="eliminar"
