@@ -73,6 +73,7 @@
         :primeraColumnaFija="primeraColumnaFija"
         @filtrar="consultarTodos"
         @toggle-filtros="toggleFiltros"
+        :ajustarCeldas="ajustarCeldas"
       ></essential-table>
     </div>
   </div>
@@ -214,11 +215,16 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  primeraColumnaFija:{
+  primeraColumnaFija: {
     type: Boolean,
     default: false,
   },
   mostrarExportar: {
+    type: Boolean,
+    default: false,
+  },
+  ajustarCeldas: {
+    //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
     type: Boolean,
     default: false,
   },

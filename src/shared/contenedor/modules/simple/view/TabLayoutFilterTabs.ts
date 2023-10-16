@@ -111,6 +111,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    ajustarCeldas: { //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
