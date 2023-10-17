@@ -125,6 +125,7 @@ export default defineComponent({
     if (rolPagoStore.idRolPagoMes) {
       rolpago.rol_pago_id = rolPagoStore.idRolPagoMes
       rolpago.mes = rolPagoStore.mes
+      rolpago.es_quincena = rolPagoStore.es_quincena
     }
 
     accion.value = rolPagoStore.accion
@@ -244,6 +245,8 @@ export default defineComponent({
      *********/
     onConsultado(() => {
       es_consultado.value = true
+      console.log('consultado');
+
       if (rolpago.estado == 'FINALIZADO') {
         setTimeout(() => {
           refArchivoRolPago.value.listarArchivos({
@@ -510,7 +513,7 @@ export default defineComponent({
         if (data) {
           rolpago.dias_permiso_sin_recuperar =
             data.totalDiasPermiso != null ? data.totalDiasPermiso : 0
-          rolpago.dias = 30
+          rolpago.dias = rolpago.es_quincena?15:30
         }
       })
     }

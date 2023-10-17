@@ -101,6 +101,7 @@
           @eliminar="accionTabla.eliminar"
           :tab-options="tabOptions"
           @tab-seleccionado="aplicarFiltro"
+          :ajustarCeldas="ajustarCeldas"
         ></essential-table-tabs>
         <!--@onScroll="cargarListado" -->
       </q-tab-panel>

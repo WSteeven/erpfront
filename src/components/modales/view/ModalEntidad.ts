@@ -28,7 +28,6 @@ export default defineComponent({
     persistente: {
       type: Boolean,
       default: true,
-      required: false,
     }
   },
   // emits: ['seleccionar', 'accion1'],

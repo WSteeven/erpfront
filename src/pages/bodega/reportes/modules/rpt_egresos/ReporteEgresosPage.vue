@@ -263,12 +263,8 @@
                   ><template v-slot:option="scope">
                     <q-item v-bind="scope.itemProps">
                       <q-item-section>
-                        <q-item-label>{{
-                          scope.opt.codigo_tarea
-                        }}</q-item-label>
-                        <q-item-label caption>{{
-                          scope.opt.titulo
-                        }}</q-item-label>
+                        <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                        <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </template>
@@ -318,12 +314,7 @@
                           today-btn
                         >
                           <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Cerrar"
-                              color="primary"
-                              flat
-                            />
+                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -347,18 +338,9 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date
-                          v-model="reporte.fecha_fin"
-                          mask="DD-MM-YYYY"
-                          today-btn
-                        >
+                        <q-date v-model="reporte.fecha_fin" mask="DD-MM-YYYY" today-btn>
                           <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Cerrar"
-                              color="primary"
-                              flat
-                            />
+                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -369,7 +351,7 @@
               <!-- Egresos firmados y sin firmar -->
               <div class="col-12 col-md-3">
                 <q-checkbox
-                class="q-mt-sm"
+                  class="q-mt-sm"
                   v-model="reporte.firmada"
                   label="Firmada"
                   outlined
@@ -390,11 +372,7 @@
                       glossy
                       @click="buscarReporte('consulta')"
                     >
-                      <q-icon
-                        name="bi-search"
-                        size="xs"
-                        class="q-pr-sm"
-                      ></q-icon>
+                      <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
                       <span>Buscar</span>
                     </q-btn>
                     <!-- Boton excel -->
@@ -435,10 +413,7 @@
                 </div>
               </div>
             </div>
-            <div
-              v-if="listado.length"
-              class="row q-col-gutter-sm q-pa-sm q-py-md"
-            >
+            <div v-if="listado.length" class="row q-col-gutter-sm q-pa-sm q-py-md">
               <div class="col-12 col-md-12">
                 <essential-table
                   v-if="listado.length"
@@ -460,7 +435,7 @@
             <!-- <div v-else>&nbsp;&nbsp; No hay movimientos de esta consulta.</div> -->
           </q-card>
         </div>
-        <modal-entidad :comportamiento="modales"></modal-entidad>
+        <modal-entidad :comportamiento="modales" :persistente="false"></modal-entidad>
       </q-page>
     </q-page-container>
   </q-layout>
