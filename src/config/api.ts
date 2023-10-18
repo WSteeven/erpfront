@@ -262,7 +262,7 @@ export const endpoints = {
   consolidado_filtrado_excel: new Endpoint('fondos-rotativos/consolidado_filtrado/excel'),
   autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
   autorizaciones_transferencia: new Endpoint('fondos-rotativos/autorizaciones_transferencia'),
-
+  umbral: new Endpoint('fondos-rotativos/umbral'),
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
@@ -271,6 +271,9 @@ export const endpoints = {
   reporte_solicitud_fondo_pdf: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/pdf'),
   reporte_solicitud_fondo_excel: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/excel'),
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
+  acreditacion_semana: new Endpoint('fondos-rotativos/acreditacion-semana'),
+  valor_acreditar: new Endpoint('fondos-rotativos/valor-acreditar'),
+
 
   /********************
    * Modulo de tickets
