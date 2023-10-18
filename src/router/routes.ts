@@ -762,7 +762,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/fondosRotativos/umbral/view/UmbralPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/acreditacion-semana',
@@ -771,7 +771,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/fondosRotativos/acreditacionSemana/view/Acreditacion_semanaPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/autorizar-transferencia',
