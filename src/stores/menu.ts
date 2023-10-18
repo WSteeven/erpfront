@@ -380,6 +380,18 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.ver.acreditacion'),
             },
             {
+              title: 'Umbral',
+              link: 'umbral-fondos-rotativos',
+              icon: 'bi-circle',
+              can: true,
+            },
+            {
+              title: 'Acreditacion Semana',
+              link: 'acreditacion-semana',
+              icon: 'bi-circle',
+              can: true,
+            },
+            {
               title: 'Transferencia',
               link: 'transferencia',
               icon: 'bi-circle',

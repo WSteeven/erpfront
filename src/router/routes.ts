@@ -756,6 +756,24 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: '/umbral-fondos-rotativos',
+        name: 'umbral_fondos_rotativos',
+        component: () =>
+          import(
+            'pages/fondosRotativos/umbral/view/UmbralPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/acreditacion-semana',
+        name: 'acreditacion_semana',
+        component: () =>
+          import(
+            'pages/fondosRotativos/acreditacionSemana/view/Acreditacion_semanaPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/autorizar-transferencia',
         name: 'autorizar_transferencia',
         component: () =>

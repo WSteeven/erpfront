@@ -263,25 +263,17 @@ export default defineComponent({
       try {
         let entidad: RolPago = new RolPago()
         if (accion.value == 'NUEVO') {
-          await guardar(rolpago)
+          entidad = await guardar(rolpago)
         } else {
           await editar(rolpago, false)
           entidad = rolpago
         }
-
         const rolpagoAux = new RolPago()
         rolpagoAux.hydrate(entidad)
 
         if (rolpagoAux.id) {
-          // Por el momento se asigna automaticamente pero a futuro quienes lo harán serán los trabajadores de la torre de control
-          // hacia los coordinadores
-
           listado.value = [rolpagoAux, ...listado.value]
-
-          // Subir archivos
-          idSubtarea = rolpagoAux.id
         }
-
         emit('cerrar-modal', false)
       } catch (e) {
         console.log(e)
