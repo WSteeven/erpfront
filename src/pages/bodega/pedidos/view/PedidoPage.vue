@@ -104,8 +104,7 @@
               autogrow
               v-model="pedido.justificacion"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :disable="(disabled  && !store.esAdministrador)|| (soloLectura&&!store.esAdministrador)"
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense

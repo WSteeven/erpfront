@@ -5,6 +5,7 @@
     titulo-pagina="Transacciones - Egresos"
     :permitirEditar="false"
     :accion1="botonImprimir"
+    :accion2="botonAnular"
     :ajustarCeldas="true"
   >
     <template #formulario>

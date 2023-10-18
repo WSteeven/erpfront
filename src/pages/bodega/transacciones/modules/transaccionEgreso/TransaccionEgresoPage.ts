@@ -2,7 +2,7 @@
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { Ref, defineComponent, ref, watch } from 'vue'
+import { Ref, defineComponent, ref } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
@@ -10,7 +10,7 @@ import { configuracionColumnasProductosSeleccionados } from './domain/configurac
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, motivos } from 'config/utils'
+import { acciones, estadosTransacciones, motivos } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -241,6 +241,24 @@ export default defineComponent({
       },
     }
 
+    const botonAnular: CustomActionTable = {
+      titulo: 'Anular',
+      color: 'red',
+      icono: 'bi-x',
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
+          transaccionStore.idTransaccion = entidad.id
+          await transaccionStore.anularEgreso()
+          entidad.estado = transaccionStore.transaccion.estado
+        })
+      },
+      visible: ({ entidad, posicion }) => {
+        // console.log(entidad)
+        // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es administrador y no esta anulada')
+        return store.esAdministrador && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante =='PENDIENTE'
+      }
+
+    }
 
     /**
      * It loads a transaction from the database, and if it fails, it cleans the fields that were
@@ -531,6 +549,7 @@ export default defineComponent({
       botonEditarCantidad,
       botonEliminar,
       botonImprimir,
+      botonAnular,
       eliminar,
 
       //selector

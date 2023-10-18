@@ -161,6 +161,7 @@ export const endpoints = {
   motivos: new Endpoint('motivos'),
   notificaciones: new Endpoint('notificaciones'),
   pedidos: new Endpoint('pedidos'),
+  preingresos: new Endpoint('preingresos'),
   procesadores: new Endpoint('procesadores'),
   prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),

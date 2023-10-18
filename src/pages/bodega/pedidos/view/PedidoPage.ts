@@ -223,7 +223,7 @@ export default defineComponent({
       },
       visible: ({ entidad, posicion }) => {
         // console.log(posicion, entidad)
-        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && (entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esAdministrador
+        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente ||store.esActivosFijos) || store.esAdministrador
       }
     }
     const botonEditarCantidad: CustomActionTable = {
