@@ -267,7 +267,9 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
-      // Routes for bodega
+      /**************************************
+       * Routes for bodega
+       *************************************/
       {
         path: '/gestionar-egresos',
         name: 'gestionar_egresos',
@@ -362,6 +364,12 @@ const routes: RouteRecordRaw[] = [
         name: 'pedidos',
         component: () => import('pages/bodega/pedidos/view/PedidoPage.vue'),
         meta: { requiresAuth: true },
+      },
+      {
+        path: '/preingresos-materiales',
+        name: 'preingresos_materiales',
+        component: () => import('pages/bodega/preingresoMateriales/view/PreingresoMaterialPage.vue'),
+        meta: { requiresAuth: false},
       },
       {
         path: '/devoluciones',

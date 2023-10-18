@@ -428,3 +428,10 @@ export const talla_letras = [
   { nombre: 'XXXL' },
   // Puedes agregar aquí más tallas si es necesario
 ]
+
+
+export const tabOptionsPreingresoMateriales = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
+]
