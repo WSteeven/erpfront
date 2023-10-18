@@ -3,7 +3,7 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
-          <!-- Usuarios -->
+          <!-- Empleados -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Empleado</label>
             <q-select

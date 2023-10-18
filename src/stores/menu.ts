@@ -373,7 +373,7 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-circle',
               can: store.can('puede.ver.acreditacion'),
             },
-            {
+          /*  {
               title: 'Umbral',
               link: 'umbral-fondos-rotativos',
               icon: 'bi-circle',
@@ -384,7 +384,7 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'acreditacion-semana',
               icon: 'bi-circle',
               can: true,
-            },
+            },*/
             {
               title: 'Transferencia',
               link: 'transferencia',
