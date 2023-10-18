@@ -4,6 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     :pagination="pagination"
     :puedeExportar="true"
+    :ajustarCeldas="true"
     titulo-pagina="Detalles de productos"
     :accion1="botonActivarDetalle"
     :accion2="botonDesactivarDetalle"
