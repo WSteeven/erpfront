@@ -260,7 +260,7 @@ export default defineComponent({
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
           transaccionStore.idTransaccion = entidad.id
-          await transaccionStore.anular()
+          await transaccionStore.anularIngreso()
           entidad.estado = transaccionStore.transaccion.estado
         })
       },

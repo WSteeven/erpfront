@@ -47,6 +47,7 @@ import { configuracionColumnasDatosBancariosProveedor } from 'pages/comprasProve
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 import { ValidarPropiedadesProveedor } from '../application/validaciones/ValidarPropiedadesProveedor';
+import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosProveedor/infraestructure/DatoBancarioController';
 
 
 export default defineComponent({
@@ -349,6 +350,9 @@ export default defineComponent({
         case 'CalificacionProveedorPage':
           listar()
           break
+        case 'DatoBancarioPage':
+          consultarDatosBancarios()
+          break
         default:
           consultarEmpresas()
 
@@ -381,6 +385,10 @@ export default defineComponent({
       const { result } = await new EmpresaController().listar()
       listadosAuxiliares.empresas = result
       empresas.value = result
+    }
+    async function consultarDatosBancarios() {
+      const { result } = await new DatoBancarioController().listar({ empresa_id: proveedor.empresa })
+      empresa.datos_bancarios = result
     }
     async function consultarContactosProveedor() {
       const { result } = await new ContactoProveedorController().listar({ empresa_id: proveedor.empresa, proveedor_id: proveedor.id })

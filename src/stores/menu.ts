@@ -138,10 +138,10 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ]
     },
-    /**
-     * Modulo de bodega.
+    /*****************************************************************************
+     * MÓDULO DE BODEGA.
      * Toda la estructura de pedidos, devoluciones y despachos de materiales
-     */
+     *****************************************************************************/
     {
       title: 'Bodega',
       icon: 'bi-building-fill',
@@ -213,6 +213,12 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Pedidos',
           link: 'pedidos',
           can: store.can('puede.ver.pedidos'),
+          icon: 'bi-circle',
+        },
+        {
+          title: 'Preingresos de Materiales',
+          link: 'preingresos-materiales',
+          can: store.can('puede.ver.preingresos_materiales')||true,
           icon: 'bi-circle',
         },
 
@@ -372,6 +378,18 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'acreditacion',
               icon: 'bi-circle',
               can: store.can('puede.ver.acreditacion'),
+            },
+            {
+              title: 'Umbral',
+              link: 'umbral-fondos-rotativos',
+              icon: 'bi-circle',
+              can: true,
+            },
+            {
+              title: 'Acreditacion Semana',
+              link: 'acreditacion-semana',
+              icon: 'bi-circle',
+              can: true,
             },
             {
               title: 'Transferencia',

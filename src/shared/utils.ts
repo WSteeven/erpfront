@@ -455,7 +455,7 @@ export function formatearFechaSeparador(fecha: string, separador: string, sumarT
 
 export function formatearFechaTexto(fecha: number) {
   const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-  return new Date(fecha).toLocaleDateString('es-Es', opciones)
+  return new Date(fecha).toLocaleDateString('es-Es', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 export function generarColorHexadecimalAleatorio() {

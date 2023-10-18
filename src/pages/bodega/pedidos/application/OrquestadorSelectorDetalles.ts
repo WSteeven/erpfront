@@ -4,12 +4,13 @@ import { endpoints } from 'config/api'
 import { Ref, ref } from 'vue'
 import { Pedido } from '../domain/Pedido'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export function useOrquestadorSelectorDetalles(entidad: Pedido, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()
-
+    const store = useAuthenticationStore()
     const singleSelector = {
         refListadoSeleccionable: refListadoSeleccionable,
         listadoSeleccionable: listado,
@@ -31,6 +32,9 @@ export function useOrquestadorSelectorDetalles(entidad: Pedido, endpoint: keyof 
         let ids: any = []
         ids = entidad.listadoProductos.map((entidad: DetalleProducto) => entidad.id)
         const datos = items.filter((v) => !ids.includes(v.id))
+        datos.forEach((item:any)=>{
+            item.solicitante = store.user.id
+        })
 
         singleSelector.seleccionar(datos)
     }

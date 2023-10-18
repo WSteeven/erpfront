@@ -267,7 +267,9 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
-      // Routes for bodega
+      /**************************************
+       * Routes for bodega
+       *************************************/
       {
         path: '/gestionar-egresos',
         name: 'gestionar_egresos',
@@ -362,6 +364,12 @@ const routes: RouteRecordRaw[] = [
         name: 'pedidos',
         component: () => import('pages/bodega/pedidos/view/PedidoPage.vue'),
         meta: { requiresAuth: true },
+      },
+      {
+        path: '/preingresos-materiales',
+        name: 'preingresos_materiales',
+        component: () => import('pages/bodega/preingresoMateriales/view/PreingresoMaterialPage.vue'),
+        meta: { requiresAuth: false},
       },
       {
         path: '/devoluciones',
@@ -744,6 +752,24 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/fondosRotativos/autorizarGasto/view/AutorizarGastoPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/umbral-fondos-rotativos',
+        name: 'umbral_fondos_rotativos',
+        component: () =>
+          import(
+            'pages/fondosRotativos/umbral/view/UmbralPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/acreditacion-semana',
+        name: 'acreditacion_semana',
+        component: () =>
+          import(
+            'pages/fondosRotativos/acreditacionSemana/view/Acreditacion_semanaPage.vue'
           ),
         meta: { requiresAuth: false },
       },
