@@ -1,10 +1,11 @@
 <template>
-  <tab-layout-filter-tabs
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Devoluciones"
-    :tab-options="tabOptionsDevoluciones"
-    @tab-seleccionado="tabEs"
+    :tab-options="tabOptionsPedidos"
+    tabDefecto="PENDIENTE"
+    :filtrar="filtrarDevoluciones"
     :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
     :accion1="botonAnular"
@@ -338,6 +339,6 @@
         @selected="seleccionarProducto"
       ></essential-selectable-table>
     </template>
-  </tab-layout-filter-tabs>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./DevolucionPage.ts"></script>

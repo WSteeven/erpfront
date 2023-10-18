@@ -6,7 +6,7 @@ import { defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
-import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
@@ -23,7 +23,7 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, estadosTransacciones, tabOptionsDevoluciones } from 'config/utils'
+import { acciones, estadosTransacciones, tabOptionsDevoluciones, tabOptionsPedidos } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
@@ -38,12 +38,12 @@ import { useNotificacionStore } from 'stores/notificacion'
 
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, GestorArchivos, },
+  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, GestorArchivos, },
 
   setup() {
     const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
     const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
@@ -81,7 +81,7 @@ export default defineComponent({
     })
     onConsultado(() => {
       setTimeout(() => {
-         refArchivo.value.listarArchivosAlmacenados(devolucion.id)
+        refArchivo.value.listarArchivosAlmacenados(devolucion.id)
       }, 1);
     })
     onGuardado((id: number) => {
@@ -144,16 +144,35 @@ export default defineComponent({
     const validarListadoProductos = new ValidarListadoProductos(devolucion)
     mixin.agregarValidaciones(validarListadoProductos)
 
+    /*******************************************************************************************
+     * Funciones
+     ******************************************************************************************/
     async function subirArchivos() {
       await refArchivo.value.subir()
     }
-
-
 
     function eliminar({ entidad, posicion }) {
       confirmar('¿Está seguro de continuar?',
         () => devolucion.listadoProductos.splice(posicion, 1))
     }
+
+    function actualizarElemento(posicion: number, entidad: any): void {
+      if (posicion >= 0) {
+        listado.value.splice(posicion, 1, entidad)
+        listado.value = [...listado.value]
+      }
+    }
+
+    function filtrarDevoluciones(tab: string) {
+      tabSeleccionado.value = tab
+      listar({ estado: tab })
+    }
+
+
+
+    /*******************************************************************************************
+     * Botones de tabla
+     ******************************************************************************************/
     const botonEliminar: CustomActionTable = {
       titulo: 'Quitar',
       color: 'negative',
@@ -221,14 +240,6 @@ export default defineComponent({
     }
 
 
-    function actualizarElemento(posicion: number, entidad: any): void {
-      if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad)
-        listado.value = [...listado.value]
-      }
-    }
-
-
     //Configurar los listados
     opciones_empleados.value = listadosAuxiliares.empleados
     opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
@@ -272,15 +283,18 @@ export default defineComponent({
       esActivosFijos,
 
       //Tabs
-      tabOptionsDevoluciones,
+      tabOptionsPedidos,
       tabSeleccionado,
       puedeEditar,
 
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos||store.can('puede.autorizar.devoluciones')) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos || store.can('puede.autorizar.devoluciones')) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
+
+      //funciones
+      filtrarDevoluciones,
 
       //Filtros
       filtroCantones(val, update) {
