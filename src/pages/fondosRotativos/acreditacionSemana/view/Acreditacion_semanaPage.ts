@@ -5,19 +5,21 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { AcreditacionSemana } from '../domain/AcreditacionSemana'
 import { AcreditacionSemanaController } from '../infrestructure/AcreditacionSemanaController'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ConfiguracionColumnasAcreditacionSemana } from '../domain/ConfiguracionColumnasAcreditacionSemana'
-import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { accionesTabla, maskFecha } from 'config/utils'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useAcreditacionesStore } from 'stores/acreditaciones'
+import { ComportamientoModalesAcreditacionSemanas } from '../application/ComportamientoModalesAcreditacionSemanas'
+import { ValorAcreditar } from 'pages/fondosRotativos/valorAcreditar/domain/ValorAcreditar'
+import { ValorAcreditarController } from 'pages/fondosRotativos/valorAcreditar/infrestructure/ValorAcreditarController'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable },
+  components: { TabLayout, EssentialTable ,ModalesEntidad},
   setup() {
     /*********
      * Stores
@@ -31,6 +33,11 @@ export default defineComponent({
       AcreditacionSemana,
       new AcreditacionSemanaController()
     )
+    const mixinAcreditacion = new ContenedorSimpleMixin(
+      ValorAcreditar,
+      new ValorAcreditarController()
+    )
+    const { listado: roles_empleados } = mixinAcreditacion.useReferencias()
 
     const {
       entidad: fondo_rotativo_contabilidad,
@@ -41,6 +48,10 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
+    /************
+     * Modales
+     ************/
+    const modalesAcreditacionSemana = new ComportamientoModalesAcreditacionSemanas()
 
     /*************
      * Validaciones
@@ -65,7 +76,8 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'indigo',
       accion: ({ entidad }) => {
-        acreditacionesStore.idAcreditacion = entidad.id
+        acreditacionesStore.idAcreditacionSeleccionada = entidad.id
+        modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')
       },
     }
 
@@ -78,6 +90,7 @@ export default defineComponent({
       v$,
       maskFecha,
       opened,
+      modalesAcreditacionSemana,
       watchEffect,
       listado,
       botonVerModalGasto,

@@ -48,7 +48,7 @@ export default defineComponent({
     const { setValidador, consultar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-
+const issubmit = ref(true);
     const {
       confirmar,
       prompt,
@@ -166,6 +166,7 @@ console.log(fondoRotativoStore.estaSemanAC)
       gasto.factura = null
     }
     function aprobar_gasto(entidad, tipo_aprobacion: string) {
+      issubmit.value= false
       switch (tipo_aprobacion) {
         case 'aprobar':
           const data: CustomActionPrompt = {
@@ -242,6 +243,7 @@ console.log(fondoRotativoStore.estaSemanAC)
       esFactura,
       usuario,
       disabled,
+      issubmit,
       maskFecha,
       accion,
       v$,

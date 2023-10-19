@@ -1,14 +1,19 @@
 <template>
   <q-page padding>
-
-    <essential-table titulo="Acreditaciones Semanales"
-      :configuracionColumnas="[...ConfiguracionColumnasAcreditacionSemana,accionesTabla]"
+    <essential-table
+      titulo="Acreditaciones Semanales"
+      :configuracionColumnas="[...ConfiguracionColumnasAcreditacionSemana, accionesTabla]"
       :datos="listado"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
-      :accion1="botonVerModalGasto">
+      :accion1="botonVerModalGasto"
+    >
     </essential-table>
+    <modales-entidad
+    :comportamiento="modalesAcreditacionSemana"
+    :mixin-modal="mixinAcreditacion"
+  />
   </q-page>
 
 </template>
