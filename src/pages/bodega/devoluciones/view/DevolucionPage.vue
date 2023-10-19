@@ -8,8 +8,9 @@
     :filtrar="filtrarDevoluciones"
     :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
-    :accion1="botonAnular"
-    :accion2="botonImprimir"
+    :accion1="botonDespachar"
+    :accion2="botonAnular"
+    :accion3="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>

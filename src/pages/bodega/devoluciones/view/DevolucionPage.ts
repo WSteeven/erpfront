@@ -35,6 +35,7 @@ import { MaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/Mat
 import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
 import { useCargandoStore } from 'stores/cargando'
 import { useNotificacionStore } from 'stores/notificacion'
+import { useRouter } from 'vue-router'
 
 
 export default defineComponent({
@@ -53,6 +54,7 @@ export default defineComponent({
     const devolucionStore = useDevolucionStore()
     const store = useAuthenticationStore()
     const listadoMaterialesDevolucion = useListadoMaterialesDevolucionStore()
+    const router = useRouter()
 
     //orquestador
     const {
@@ -214,7 +216,10 @@ export default defineComponent({
               try {
                 const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
                 notificarCorrecto('Devolución anulada exitosamente!')
-                actualizarElemento(posicion, result)
+                if (posicion >= 0) {
+                  listado.value.splice(posicion, 1,)
+                  listado.value = [...listado.value]
+                }
               } catch (e: any) {
                 notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
               }
@@ -225,7 +230,9 @@ export default defineComponent({
         })
       },
       visible: ({ entidad }) => {
-        return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante && (entidad.estado_bodega === estadosTransacciones.pendiente || entidad.estado_bodega === estadosTransacciones.parcial) ? true : false
+        console.log(entidad)
+        return entidad.estado_bodega == 'PENDIENTE' && (entidad.solicitante_id == store.user.id || entidad.per_autoriza_id == store.user.id || store.esBodeguero || store.esAdministrador)
+        // return tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PENDIENTE' && store.user.id == entidad.solicitante_id && (entidad.estado_bodega === estadosTransacciones.pendiente || entidad.estado_bodega === estadosTransacciones.parcial) ? true : false
       }
     }
     const botonImprimir: CustomActionTable = {
@@ -237,6 +244,18 @@ export default defineComponent({
         await devolucionStore.imprimirPdf()
       },
       visible: () => tabSeleccionado.value == 'CREADA' ? true : false
+    }
+
+    const botonDespachar: CustomActionTable = {
+      titulo: 'Gestionar',
+      color: 'primary',
+      icono: 'bi-pencil-square',
+      accion: ({ entidad, posicion }) => {
+        devolucionStore.devolucion = entidad
+        console.log('Devolución a ingresar a bodega es: ', devolucionStore.devolucion)
+        router.push('transacciones-ingresos')
+      },
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.esBodeguero ? true : false
     }
 
 
@@ -275,6 +294,7 @@ export default defineComponent({
       botonEliminar,
       botonAnular,
       botonImprimir,
+      botonDespachar,
 
       //flags
       soloLectura,

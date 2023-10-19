@@ -4,6 +4,7 @@ import { endpoints } from 'config/api'
 import { Ref, ref } from 'vue'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
+import { encontrarUltimoIdListado } from 'shared/utils'
 export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
@@ -21,6 +22,9 @@ export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, end
         },
         seleccionarMultiple: (items: DetalleProducto[]) => {
             entidad.listadoProductosTransaccion = [...entidad.listadoProductosTransaccion, ...items]
+            entidad.listadoProductosTransaccion.forEach((v)=>{
+                v.id = encontrarUltimoIdListado(entidad.listadoProductosTransaccion)+1
+            })
         }
     }
 
@@ -34,7 +38,7 @@ export function useOrquestadorSelectorItemsTransaccion(entidad: Transaccion, end
         let ids: any = []
         ids = entidad.listadoProductosTransaccion.map((entidad) => { entidad.condiciones ?? entidad.id })
         const datos = entidades.filter((v) => !ids.includes(v.id))
-        // datos.map((v) =>v.cantidad=null)
+        datos.forEach((v: any) => { v.cantidad = 1 })
         singleSelector.seleccionarMultiple(datos)
     }
 
