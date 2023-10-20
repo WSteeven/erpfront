@@ -1013,6 +1013,10 @@
           "
           >DAÑADO</q-chip
         >
+        <q-chip v-if="
+            props.value == estadosCondicionesId.buen_estado ||
+            props.value == estadosCondicionesValue.buen_estado
+          ">BUEN ESTADO</q-chip>
       </q-td>
     </template>
     <!-- devoluciones de bodega -->

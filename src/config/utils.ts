@@ -200,12 +200,14 @@ export const estadosCondicionesId = {
   usado: '2',
   mal_estado: '3',
   danado: '4',
+  buen_estado: '5',
 }
 export const estadosCondicionesValue = {
   nuevo: 'NUEVO',
   usado: 'USADO',
   mal_estado: 'MAL ESTADO',
   danado: 'DAÑADO',
+  buen_estado: 'BUEN ESTADO',
 }
 
 export const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
@@ -371,7 +373,7 @@ export const opcionesUnidadesMedidas = [
   { value: 1, label: 'UNIDAD' },
   { value: 2, label: 'KILOGRAMO' },
   { value: 3, label: 'METRO' },
-  { value: 4, label: 'METRO LINEAL' }, //PERSONA QUE ATIENDE
+  { value: 4, label: 'METRO LINEAL' }, 
   { value: 5, label: 'KILOMETRO' },
   { value: 6, label: 'KILOMETRO CUBICO' },
   { value: 7, label: 'LITRO' },

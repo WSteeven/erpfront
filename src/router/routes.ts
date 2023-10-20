@@ -369,7 +369,7 @@ const routes: RouteRecordRaw[] = [
         path: '/preingresos-materiales',
         name: 'preingresos_materiales',
         component: () => import('pages/bodega/preingresoMateriales/view/PreingresoMaterialPage.vue'),
-        meta: { requiresAuth: false},
+        meta: { requiresAuth: true},
       },
       {
         path: '/devoluciones',

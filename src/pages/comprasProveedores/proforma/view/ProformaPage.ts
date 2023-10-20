@@ -37,6 +37,8 @@ import { useProformaStore } from "stores/comprasProveedores/proforma";
 import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
 import { useRouter } from "vue-router";
 import { requiredIf } from "@vuelidate/validators";
+import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
+import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
 
 
 export default defineComponent({
@@ -88,6 +90,7 @@ export default defineComponent({
         const empleadosAutorizadores = ref([])
         cargarVista(async () => {
             await obtenerListados({
+                unidades_medidas: new UnidadMedidaController(),
                 empleados: {
                     controller: new EmpleadoController(),
                     params: {
@@ -109,6 +112,8 @@ export default defineComponent({
                 },
             })
             proforma.autorizacion = 1
+
+            configuracionColumnasDetallesProforma.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
         })
 
         /*****************************************************************************************

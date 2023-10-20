@@ -172,6 +172,7 @@
               input-debounce="0"
               @filter="filtroSucursales"
               @popup-show="ordenarSucursales"
+              @update:model-value="seleccionarClientePropietario"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
