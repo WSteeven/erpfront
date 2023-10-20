@@ -27,7 +27,7 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         label: 'Medida',
         align: 'left',
         type:'select',
-        options: opcionesUnidadesMedidas,
+        // options: opcionesUnidadesMedidas,
         editable: true,
         sortable: true
     },

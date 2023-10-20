@@ -13,18 +13,6 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
-          <!-- Fecha -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block"
-              >Fecha de recepción de los materiales</label
-            >
-            <q-input
-              v-model="preingreso.fecha"
-              :disable="disabled"
-              outlined
-              dense
-            />
-          </div>
           <!-- Solicitante -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Responsable</label>
@@ -37,6 +25,52 @@
               dense
             >
             </q-input>
+          </div>
+          
+          <!-- Fecha -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Fecha de recepción de los materiales</label
+            >
+            <q-input
+              v-model="preingreso.fecha"
+              :disable="disabled"
+              outlined
+              dense
+              ><template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="preingreso.fecha"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon> </template
+            ></q-input>
+          </div>
+          <!-- Cuadrilla -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cuadrilla</label>
+            <q-input
+              v-model="preingreso.cuadrilla"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-input>
           </div>
           <!-- Coordinador -->
           <div class="col-12 col-md-3">
@@ -93,9 +127,19 @@
             </q-select>
           </div>
 
+          <!-- numero de guia -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">N° Guía/Documento <q-icon name="info" color="grey"/> <q-tooltip class="bg-dark">NA en caso de no haber guía</q-tooltip></label>
+            <q-input
+              v-model="preingreso.num_guia"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-input>
+          </div>
           <!-- Tarea -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">N° Tarea</label>
+            <label class="q-mb-sm block">N° Tarea <q-icon name="info" color="grey"/> <q-tooltip class="bg-dark">{{ 'Campo es obligatorio si el material recibido es para tarea de soporte, caso contrario se asignará al stock del técnico' }}</q-tooltip> </label>
             <q-select
               v-model="preingreso.tarea"
               :options="tareas"
@@ -128,6 +172,52 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <!-- Select clientes -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cliente</label>
+            <q-select
+              v-model="preingreso.cliente"
+              :options="clientes"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :error="!!v$.cliente.$errors.length"
+              error-message="Debes seleccionar un cliente"
+              @popup-show="ordenarClientes"
+              :option-value="(item) => item.id"
+              :option-label="(item) => item.razon_social"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Curier -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Courier</label>
+            <q-input
+              v-model="preingreso.courier"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-input>
           </div>
 
           <!-- Observacion -->
@@ -174,6 +264,8 @@
                   @click="
                     listarProductos({
                       search: criterioBusquedaProducto,
+                      campos: 'id,producto_id,descripcion',
+                      activo: 1,
                     })
                   "
                   icon="search"
@@ -189,23 +281,37 @@
               </div>
             </div>
           </div>
+          {{ preingreso.listadoProductos }}
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table
+              v-if="componenteCargado"
               ref="refItems"
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasItemPreingreso"
+              :configuracionColumnas="
+                accion == acciones.nuevo ||
+                (accion == acciones.editar &&
+                  preingreso.responsable_id == store.user.id)
+                  ? [...configuracionColumnasItemPreingreso, accionesTabla]
+                  : configuracionColumnasItemPreingreso
+              "
               :datos="preingreso.listadoProductos"
               separador="cell"
               :permitirEditarCeldas="true"
               :permitirConsultar="false"
-              :permitirEditar="false"
+              :permitirEditar="true"
+              :permitirEditarModal="true"
+              :modalMaximized="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
-              :accion1="btnEliminarFila"
+              :hide-header="true"
+              :accion1Header="btnAddRow"
+              :accion1="btnVerFotografia"
+              :accion2="btnEliminarFila"
+              @guardarFila="(fila) => guardarFilaEditada(fila)"
+              v-on:fila-modificada="calcularFila"
             >
-              <!-- v-on:fila-modificada="calcularValores" -->
             </essential-popup-editable-table>
           </div>
         </div>
@@ -214,7 +320,7 @@
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListado"
-        :configuracion-columnas="configuracionColumnasProductos"
+        :configuracion-columnas="configuracionColumnasDetallesProductos"
         separador="cell"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
@@ -222,6 +328,9 @@
       ></essential-selectable-table>
     </template>
   </tab-layout-filter-tabs2>
+
+  <!-- Visor de imagenes -->
+  <visor-imagen ref="refVisorImagen"></visor-imagen>
   <!-- Modales -->
   <!-- <modales-entidad
     :comportamiento="modales"

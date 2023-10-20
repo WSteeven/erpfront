@@ -36,7 +36,9 @@ export function useOrquestadorSelectorProductos(entidad: PreingresoMaterial, end
         ids = entidad.listadoProductos.map((entidad: Producto) => entidad.id)
         items.forEach((item: any) => {
             item.cantidad = 1
-            item.producto = item.nombre
+            item.producto = item.producto
+            item.descripcion = item.descripcion
+            item.serial = ''
         })
 
         singleSelector.seleccionar(items)

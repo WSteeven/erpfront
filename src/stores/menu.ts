@@ -218,7 +218,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Preingresos de Materiales',
           link: 'preingresos-materiales',
-          can: store.can('puede.ver.preingresos_materiales')||true,
+          can: store.can('puede.acceder.preingresos_materiales')||true,
           icon: 'bi-circle',
         },
 

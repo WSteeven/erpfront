@@ -167,6 +167,9 @@ export default defineComponent({
 
     function filtrarDevoluciones(tab: string) {
       tabSeleccionado.value = tab
+      puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos || store.can('puede.autorizar.devoluciones')) && tabSeleccionado.value === estadosTransacciones.pendiente ? true : false
+      if (tab == 'PENDIENTE') puedeEditar.value = true
+      else puedeEditar.value = false
       listar({ estado: tab })
     }
 
@@ -230,7 +233,6 @@ export default defineComponent({
         })
       },
       visible: ({ entidad }) => {
-        console.log(entidad)
         return entidad.estado_bodega == 'PENDIENTE' && (entidad.solicitante_id == store.user.id || entidad.per_autoriza_id == store.user.id || store.esBodeguero || store.esAdministrador)
         // return tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PENDIENTE' && store.user.id == entidad.solicitante_id && (entidad.estado_bodega === estadosTransacciones.pendiente || entidad.estado_bodega === estadosTransacciones.parcial) ? true : false
       }
@@ -307,11 +309,6 @@ export default defineComponent({
       tabSeleccionado,
       puedeEditar,
 
-      tabEs(val) {
-        tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos || store.can('puede.autorizar.devoluciones')) && tabSeleccionado.value === estadosTransacciones.pendiente
-          ? true : false
-      },
 
       //funciones
       filtrarDevoluciones,

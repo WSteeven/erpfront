@@ -8,7 +8,7 @@ import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
+import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
 import { acciones, estadosTransacciones, motivos } from 'config/utils'
 
@@ -82,7 +82,7 @@ export default defineComponent({
       listar: listarProductos,
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
-    } = useOrquestadorSelectorItemsTransaccion(transaccion, 'inventarios')
+    } = useOrquestadorSelectorItemsEgreso(transaccion, 'inventarios')
 
 
     const usuarioLogueado = store.user

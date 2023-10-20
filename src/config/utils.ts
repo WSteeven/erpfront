@@ -373,7 +373,7 @@ export const opcionesUnidadesMedidas = [
   { value: 1, label: 'UNIDAD' },
   { value: 2, label: 'KILOGRAMO' },
   { value: 3, label: 'METRO' },
-  { value: 4, label: 'METRO LINEAL' }, //PERSONA QUE ATIENDE
+  { value: 4, label: 'METRO LINEAL' }, 
   { value: 5, label: 'KILOMETRO' },
   { value: 6, label: 'KILOMETRO CUBICO' },
   { value: 7, label: 'LITRO' },
