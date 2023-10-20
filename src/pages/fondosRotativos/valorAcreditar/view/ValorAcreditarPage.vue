@@ -81,7 +81,7 @@
       <button-submits
         :accion="accion"
         label-guardar="Guardar"
-        :permitirCancelar="false"
+        :permitirCancelar="true"
         @cancelar="reestablecerDatos()"
         @editar="guardarDatos(valorAcreditar)"
         @guardar="guardarDatos(valorAcreditar)"

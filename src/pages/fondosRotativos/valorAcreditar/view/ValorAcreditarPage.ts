@@ -91,12 +91,13 @@ export default defineComponent({
           await editar(valoracreditar, false)
           entidad = valoracreditar
         }
-        const valorAcreditarAux = new ValorAcreditar()
+        /*const valorAcreditarAux = new ValorAcreditar()
         valorAcreditarAux.hydrate(entidad)
 
         if (valorAcreditarAux.id) {
           listado.value = [valorAcreditarAux, ...listado.value]
-        }
+        }*/
+       // consultar();
       } catch (e) {
         console.log(e)
       }
