@@ -34,6 +34,13 @@ export const configuracionColumnasPreingresosMateriales: ColumnConfig<Preingreso
         sortable: true
     },
     {
+        name: 'autorizador',
+        field: 'autorizador',
+        label: 'Autoriza',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'coordinador',
         field: 'coordinador',
         label: 'Coordinador',

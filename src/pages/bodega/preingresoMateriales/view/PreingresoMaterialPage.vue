@@ -1,6 +1,7 @@
 <template>
   <tab-layout-filter-tabs2
     :mixin="mixin"
+    :ajustarCeldas="true"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Registro de materiales recibidos al cliente"
     :tab-options="tabOptionsPreingresoMateriales"
@@ -293,25 +294,31 @@
                 (accion == acciones.editar &&
                   preingreso.responsable_id == store.user.id)
                   ? [...configuracionColumnasItemPreingreso, accionesTabla]
-                  : configuracionColumnasItemPreingreso
+                  : [...configuracionColumnasItemPreingreso, accionesTabla]
               "
               :datos="preingreso.listadoProductos"
               separador="cell"
-              :permitirEditarCeldas="true"
+              :permitirEditarCeldas="accion == acciones.nuevo ||
+                (accion == acciones.editar &&
+                  (preingreso.autorizador == store.user.id ||
+                    preingreso.responsable_id == store.user.id))"
               :permitirConsultar="false"
-              :permitirEditar="true"
+              :permitirEditar="accion == acciones.nuevo ||
+                (accion == acciones.editar &&
+                  (preingreso.autorizador == store.user.id ||
+                    preingreso.responsable_id == store.user.id))"
               :permitirEditarModal="true"
               :modalMaximized="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
               :hide-header="true"
-              :accion1Header="btnAddRow"
               :accion1="btnVerFotografia"
               :accion2="btnEliminarFila"
               @guardarFila="(fila) => guardarFilaEditada(fila)"
               v-on:fila-modificada="calcularFila"
-            >
+              >
+              <!-- :accion1Header="btnAddRow" -->
             </essential-popup-editable-table>
           </div>
         </div>
