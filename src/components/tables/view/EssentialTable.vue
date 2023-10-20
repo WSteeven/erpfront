@@ -1277,7 +1277,7 @@
         </q-chip>
 
         <span
-          v-if="!['TICKET TRANSFERIDO', 'TICKET PAUSADO'].includes(props.value)"
+          v-if="!['TICKET REASIGNADO', 'TICKET PAUSADO'].includes(props.value)"
           >{{ props.value }}</span
         >
       </q-td>
