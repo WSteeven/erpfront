@@ -83,18 +83,19 @@
         label-guardar="Guardar"
         :permitirCancelar="false"
         @cancelar="reestablecerDatos()"
-        @editar="guardarDatos(rolpago)"
-        @guardar="guardarDatos(rolpago)"
+        @editar="guardarDatos(valorAcreditar)"
+        @guardar="guardarDatos(valorAcreditar)"
       />
     </div>
   </q-form>
+  <div class="text-h5 q-py-sm">Total: {{ totalAcreditar.toFixed(2) }}</div>
     <essential-table titulo="Valores a Acreditar"
-      :configuracionColumnas="configuracionColumnasValorAcreditar"
+      :configuracionColumnas="[...configuracionColumnasValorAcreditar,accionesTabla]"
       :datos="listado"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
-      :accion1="botonModificarAcreditacion">
+      :accion1="btnEditarAcreditacionEmpleado">
     </essential-table>
   </q-page>
 

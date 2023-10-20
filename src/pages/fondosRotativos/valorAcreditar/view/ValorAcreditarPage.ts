@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { ValorAcreditar } from '../domain/ValorAcreditar'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -13,9 +13,11 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useAcreditacionesStore } from 'stores/acreditaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useAuthenticationStore } from 'stores/authentication'
+import { acciones, accionesTabla } from 'config/utils'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable,ButtonSubmits },
+  components: { TabLayout, EssentialTable, ButtonSubmits },
   setup() {
     /*********
      * Stores
@@ -33,6 +35,7 @@ export default defineComponent({
     const { setValidador, guardar, editar, reestablecer } =
       mixin.useComportamiento()
     const { entidad: valorAcreditar, disabled, accion } = mixin.useReferencias()
+    const authenticationStore = useAuthenticationStore()
 
     /*************
      * Validaciones
@@ -102,6 +105,32 @@ export default defineComponent({
       reestablecer()
     }
 
+    const btnEditarAcreditacionEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-pencil',
+      color: 'warning',
+      visible: () => {
+        return authenticationStore.can('puede.editar.rol_pago')
+      },
+      accion: ({ entidad }) => {
+        accion.value = 'EDITAR'
+        valorAcreditar.id = entidad.id
+        valorAcreditar.empleado = entidad.empleado
+        valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
+        valorAcreditar.monto_generado = entidad.monto_generado
+        valorAcreditar.monto_modificado = entidad.monto_modificado
+      },
+    }
+
+    const totalAcreditar = computed(() => {
+      const suma = listado.value.reduce(
+        (acumulador, elemento) =>
+          acumulador + parseFloat(elemento.monto_generado),
+        0
+      )
+      return suma
+    })
+
     return {
       mixin,
       disabled,
@@ -110,10 +139,13 @@ export default defineComponent({
       reestablecerDatos,
       v$,
       valorAcreditar,
+      totalAcreditar,
       empleados,
       listado,
       configuracionColumnasValorAcreditar,
       botonModificarAcreditacion,
+      btnEditarAcreditacionEmpleado,
+      accionesTabla,
     }
   },
 })
