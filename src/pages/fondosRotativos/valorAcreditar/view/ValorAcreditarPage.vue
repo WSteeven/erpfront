@@ -77,6 +77,16 @@
       </div>
 
     </div>
+    <div class="row justify-end q-col-gutter-x-xs">
+      <button-submits
+        :accion="accion"
+        label-guardar="Guardar"
+        :permitirCancelar="false"
+        @cancelar="reestablecerDatos()"
+        @editar="guardarDatos(rolpago)"
+        @guardar="guardarDatos(rolpago)"
+      />
+    </div>
   </q-form>
     <essential-table titulo="Valores a Acreditar"
       :configuracionColumnas="configuracionColumnasValorAcreditar"

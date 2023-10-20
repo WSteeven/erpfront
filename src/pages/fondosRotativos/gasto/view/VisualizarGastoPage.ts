@@ -166,7 +166,6 @@ console.log(fondoRotativoStore.estaSemanAC)
       gasto.factura = null
     }
     function aprobar_gasto(entidad, tipo_aprobacion: string) {
-      issubmit.value= false
       switch (tipo_aprobacion) {
         case 'aprobar':
           const data: CustomActionPrompt = {
@@ -176,6 +175,7 @@ console.log(fondoRotativoStore.estaSemanAC)
               try {
                 entidad.detalle_estado = data
                 await aprobarController.aprobarGasto(entidad)
+                issubmit.value= false
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
                 emit('cerrar-modal', false);
                 emit('guardado');
@@ -197,6 +197,7 @@ console.log(fondoRotativoStore.estaSemanAC)
                 try {
                   entidad.detalle_estado = data
                   await aprobarController.rechazarGasto(entidad)
+                  issubmit.value= false
                   notificarAdvertencia('Se rechazado Gasto Exitosamente')
                   emit('cerrar-modal');
                   emit('guardado');
@@ -219,6 +220,7 @@ console.log(fondoRotativoStore.estaSemanAC)
                 try {
                   entidad.detalle_estado = data
                   await aprobarController.anularGasto(entidad)
+                  issubmit.value= false
                   notificarAdvertencia('Se anulado Gasto Exitosamente')
                   emit('cerrar-modal');
                   emit('guardado');
