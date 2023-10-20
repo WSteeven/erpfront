@@ -1,5 +1,6 @@
 import { truncate } from 'fs'
 import { RouteRecordRaw } from 'vue-router'
+import rutasMedico from './rutasMedico'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -177,6 +178,7 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },*/
+      ...rutasMedico,
       /********************
        * Modulo de tickets
        ********************/

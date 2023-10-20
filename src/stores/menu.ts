@@ -138,6 +138,22 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ]
     },
+    /********************
+    * Modulo medico
+    ********************/
+    {
+      title: 'Médico',
+      icon: 'bi-heart-pulse-fill',
+      // can: store.can('puede.ver.modulo_medico'),
+      children: [
+        {
+          title: 'Gestionar pacientes',
+          link: 'gestionar-pacientes',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.gestionar_pacientes'),
+        },
+      ]
+    },
     /**
      * Modulo de bodega.
      * Toda la estructura de pedidos, devoluciones y despachos de materiales
@@ -665,7 +681,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-clipboard2-data-fill',
-          can: store.esAdministrador || store.esCompras||store.can('puede.ver.reportes_proveedores'),
+          can: store.esAdministrador || store.esCompras || store.can('puede.ver.reportes_proveedores'),
           children: [
             {
               title: 'Reporte de Proveedores',

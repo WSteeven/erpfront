@@ -15,6 +15,7 @@ export class Empleado extends EntidadAuditable {
   password: string | null
   usuario: string | null
   canton: string | null
+  nombre_canton: string | null
   estado: boolean | null
   cargo: number | null
   area: number | null
@@ -27,7 +28,7 @@ export class Empleado extends EntidadAuditable {
   permisos: string[] | string // | null
   grupo: number | null
   fecha_ingreso: string | null
-  antiguedad : string | null
+  antiguedad: string | null
   fecha_vinculacion: string | null
   modificar_fecha_vinculacion: boolean | null
   fecha_salida: string | null
@@ -57,11 +58,11 @@ export class Empleado extends EntidadAuditable {
   talla_guantes: string | null
   talla_pantalon: string | null
   genero: string | null
-  esta_en_rol_pago:boolean | null
-  realiza_factura:boolean | null
+  esta_en_rol_pago: boolean | null
+  realiza_factura: boolean | null
   banco_info: string | null
-  acumula_fondos_reserva : boolean | null
-  familiares: [] |null
+  acumula_fondos_reserva: boolean | null
+  familiares: [] | null
 
   constructor() {
     super()
@@ -79,6 +80,7 @@ export class Empleado extends EntidadAuditable {
     this.password = null
     this.usuario = null
     this.canton = null
+    this.nombre_canton = null
     this.estado = true
     this.cargo = null
     this.area = null
@@ -96,7 +98,7 @@ export class Empleado extends EntidadAuditable {
     this.fecha_vinculacion = null
     this.fecha_salida = null
     this.tipo_contrato = null
-    this.tipo_contrato_info=null
+    this.tipo_contrato_info = null
     this.disponible = true
     this.es_lider = false
     this.grupo_id = null
@@ -115,11 +117,11 @@ export class Empleado extends EntidadAuditable {
     this.nivel_academico = null
     this.observacion = null
     this.responsable_departamento = false
-    this.supa= null
-    this.talla_zapato= null
-    this.talla_camisa= null
-    this.talla_guantes= null
-    this.talla_pantalon= null
+    this.supa = null
+    this.talla_zapato = null
+    this.talla_camisa = null
+    this.talla_guantes = null
+    this.talla_pantalon = null
     this.genero = 'M'
     this.banco_info = null
     this.esta_en_rol_pago = true
