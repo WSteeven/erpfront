@@ -80,6 +80,15 @@ export default defineComponent({
         modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')
       },
     }
+    const botonAcreditar: CustomActionTable = {
+      titulo: 'Acreditar',
+      icono: 'bi-check-all',
+      color: 'primary',
+      accion: ({ entidad }) => {
+        console.log()
+      },
+    }
+
 
     return {
       mixin,
@@ -94,6 +103,7 @@ export default defineComponent({
       watchEffect,
       listado,
       botonVerModalGasto,
+      botonAcreditar,
       accionesTabla,
     }
   },

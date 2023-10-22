@@ -8,6 +8,7 @@
       :permitirEditar="false"
       :permitirEliminar="false"
       :accion1="botonVerModalGasto"
+      :accion2="botonAcreditar"
     >
     </essential-table>
     <modales-entidad

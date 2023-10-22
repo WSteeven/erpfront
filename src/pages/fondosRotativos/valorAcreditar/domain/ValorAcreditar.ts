@@ -1,5 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class ValorAcreditar extends EntidadAuditable {
+  id: number | null;
   empleado: number | null
   empleado_info: string | null
   acreditacion_semana: number  | null
@@ -9,6 +10,7 @@ export class ValorAcreditar extends EntidadAuditable {
 
   constructor() {
     super()
+    this.id = null
     this.empleado = null
     this.empleado_info = null
     this.acreditacion_semana = null

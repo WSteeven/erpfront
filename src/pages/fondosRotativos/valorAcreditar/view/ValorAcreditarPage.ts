@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { ValorAcreditar } from '../domain/ValorAcreditar'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -13,9 +13,11 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useAcreditacionesStore } from 'stores/acreditaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useAuthenticationStore } from 'stores/authentication'
+import { acciones, accionesTabla } from 'config/utils'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable,ButtonSubmits },
+  components: { TabLayout, EssentialTable, ButtonSubmits },
   setup() {
     /*********
      * Stores
@@ -33,7 +35,9 @@ export default defineComponent({
     const { setValidador, guardar, editar, reestablecer } =
       mixin.useComportamiento()
     const { entidad: valorAcreditar, disabled, accion } = mixin.useReferencias()
-
+    const authenticationStore = useAuthenticationStore()
+const deshabilitar_empleado = ref(true);
+const mostrar_formulario = ref(false);
     /*************
      * Validaciones
      **************/
@@ -71,36 +75,87 @@ export default defineComponent({
         })
       ).result
     })
-    const botonModificarAcreditacion: CustomActionTable = {
-      titulo: 'Consultar',
-      icono: 'bi-eye',
-      color: 'indigo',
-      accion: ({ entidad }) => {
-        //acreditacionesStore.idAcreditacion = entidad.id
-      },
-    }
+
     async function guardarDatos(valoracreditar: ValorAcreditar) {
       try {
         let entidad: ValorAcreditar = new ValorAcreditar()
         if (accion.value == 'NUEVO') {
           entidad = await guardar(valoracreditar)
+          const valorAcreditarAux = new ValorAcreditar()
+          valorAcreditarAux.hydrate(entidad)
+          if (valorAcreditarAux.id) {
+            listado.value = [valorAcreditarAux, ...listado.value]
+          }
         } else {
-          await editar(valoracreditar, false)
-          entidad = valoracreditar
+          await editar(valoracreditar, true)
         }
-        const valorAcreditarAux = new ValorAcreditar()
-        valorAcreditarAux.hydrate(entidad)
+        mostrar_formulario.value = false
 
-        if (valorAcreditarAux.id) {
-          listado.value = [valorAcreditarAux, ...listado.value]
-        }
       } catch (e) {
         console.log(e)
       }
     }
+
     function reestablecerDatos() {
       reestablecer()
+      mostrar_formulario.value = false
     }
+    function filtrarEmpleados(val, update) {
+      if (val === '') {
+        update(() => {
+          empleados.value =
+            listadosAuxiliares.empleados
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        empleados.value =
+          listadosAuxiliares.empleados.filter(
+            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+          )
+      })
+    }
+    const btnEditarAcreditacionEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-pencil',
+      color: 'warning',
+      visible: () => {
+        return authenticationStore.can('puede.editar.rol_pago')
+      },
+      accion: ({ entidad }) => {
+        deshabilitar_empleado.value= true
+        accion.value = 'EDITAR'
+        valorAcreditar.id = entidad.id
+        valorAcreditar.empleado = entidad.empleado
+        valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
+        valorAcreditar.monto_generado = entidad.monto_generado
+        valorAcreditar.monto_modificado = entidad.monto_modificado
+        mostrar_formulario.value = true
+      },
+    }
+    const btnNevoEmpleadoAcreditar: CustomActionTable = {
+      titulo: 'Agregar',
+      icono: 'bi-plus',
+      color: 'positive',
+      visible: () => {
+        return authenticationStore.can('puede.editar.rol_pago')
+      },
+      accion: () => {
+        accion.value = 'NUEVO'
+        mostrar_formulario.value = true
+        deshabilitar_empleado.value= false
+      },
+    }
+
+    const totalAcreditar = computed(() => {
+      const suma = listado.value.reduce(
+        (acumulador, elemento) =>
+          acumulador + parseFloat(elemento.monto_modificado),
+        0
+      )
+      return suma
+    })
 
     return {
       mixin,
@@ -110,10 +165,17 @@ export default defineComponent({
       reestablecerDatos,
       v$,
       valorAcreditar,
+      filtrarEmpleados,
+      totalAcreditar,
       empleados,
+      deshabilitar_empleado,
       listado,
       configuracionColumnasValorAcreditar,
-      botonModificarAcreditacion,
+      btnNevoEmpleadoAcreditar,
+      btnEditarAcreditacionEmpleado,
+      mostrar_formulario,
+      accionesTabla,
+
     }
   },
 })
