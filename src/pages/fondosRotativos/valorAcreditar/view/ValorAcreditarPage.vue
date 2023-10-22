@@ -1,6 +1,6 @@
 <template >
   <q-page padding>
-    <q-form @submit.prevent>
+    <q-form @submit.prevent v-if="mostrar_formulario">
     <div class="row q-col-gutter-sm q-mb-md">
                 <!-- Usuarios -->
                 <div class="col-12 col-md-3">
@@ -13,14 +13,14 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="deshabilitar_empleado"
               :readonly="disabled"
               :error="!!v$.empleado.$errors.length"
               @blur="v$.empleado.$touch"
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
-              @filter="filtrarUsuarios"
+              @filter="filtrarEmpleados"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
@@ -44,7 +44,7 @@
         <q-input
           v-model="valorAcreditar.monto_generado"
           placeholder="Obligatorio"
-          :disable="disabled"
+          disable
           :error="!!v$.monto_generado.$errors.length"
           @blur="v$.monto_generado.$touch"
           outlined
@@ -95,6 +95,7 @@
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
+      :accion1Header="btnNevoEmpleadoAcreditar"
       :accion1="btnEditarAcreditacionEmpleado">
     </essential-table>
   </q-page>
