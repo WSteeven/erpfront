@@ -27,7 +27,7 @@
             >
             </q-input>
           </div>
-          
+
           <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
@@ -130,7 +130,12 @@
 
           <!-- numero de guia -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">N° Guía/Documento <q-icon name="info" color="grey"/> <q-tooltip class="bg-dark">NA en caso de no haber guía</q-tooltip></label>
+            <label class="q-mb-sm block"
+              >N° Guía/Documento <q-icon name="info" color="grey" />
+              <q-tooltip class="bg-dark"
+                >NA en caso de no haber guía</q-tooltip
+              ></label
+            >
             <q-input
               v-model="preingreso.num_guia"
               :disable="disabled"
@@ -140,7 +145,12 @@
           </div>
           <!-- Tarea -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">N° Tarea <q-icon name="info" color="grey"/> <q-tooltip class="bg-dark">{{ 'Campo es obligatorio si el material recibido es para tarea de soporte, caso contrario se asignará al stock del técnico' }}</q-tooltip> </label>
+            <label class="q-mb-sm block"
+              >N° Tarea <q-icon name="info" color="grey" />
+              <q-tooltip class="bg-dark">{{
+                'Campo es obligatorio si el material recibido es para tarea de soporte, caso contrario se asignará al stock del técnico'
+              }}</q-tooltip>
+            </label>
             <q-select
               v-model="preingreso.tarea"
               :options="tareas"
@@ -282,7 +292,7 @@
               </div>
             </div>
           </div>
-          {{ preingreso.listadoProductos }}
+          <!-- {{ preingreso.listadoProductos }} -->
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table
@@ -298,15 +308,17 @@
               "
               :datos="preingreso.listadoProductos"
               separador="cell"
-              :permitirEditarCeldas="accion == acciones.nuevo ||
+              :permitirEditarCeldas="
+                accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  (preingreso.autorizador == store.user.id ||
-                    preingreso.responsable_id == store.user.id))"
+                  preingreso.responsable_id == store.user.id)
+              "
               :permitirConsultar="false"
-              :permitirEditar="accion == acciones.nuevo ||
+              :permitirEditar="
+                accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  (preingreso.autorizador == store.user.id ||
-                    preingreso.responsable_id == store.user.id))"
+                  preingreso.responsable_id == store.user.id)
+              "
               :permitirEditarModal="true"
               :modalMaximized="false"
               :permitirEliminar="false"
@@ -317,7 +329,7 @@
               :accion2="btnEliminarFila"
               @guardarFila="(fila) => guardarFilaEditada(fila)"
               v-on:fila-modificada="calcularFila"
-              >
+            >
               <!-- :accion1Header="btnAddRow" -->
             </essential-popup-editable-table>
           </div>

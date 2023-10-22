@@ -238,6 +238,27 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
+      /**
+       * RUTAS PARA GEOGRAFIA (PROVINCIAS, CANTONES, PARROQUIAS)
+       */
+      // {
+      //   path: '/provincias',
+      //   name: 'provincias',
+      //   component: () => import('pages/sistema/provincia'),
+      //   meta: { requiresAuth: false },
+      // },
+      // {
+      //   path: '/cantones',
+      //   name: 'cantones',
+      //   component: () => import('pages/sistema/ciudad'),
+      //   meta: { requiresAuth: false },
+      // },
+      {
+        path: '/parroquias',
+        name: 'parroquias',
+        component: () => import('pages/sistema/parroquia/view/ParroquiaPage.vue'),
+        meta: { requiresAuth: true },
+      },
       //Routes for permissions
       {
         path: '/roles',

@@ -218,7 +218,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Preingresos de Materiales',
           link: 'preingresos-materiales',
-          can: store.can('puede.acceder.preingresos_materiales')||true,
+          can: store.can('puede.acceder.preingresos_materiales') || true,
           icon: 'bi-circle',
         },
 
@@ -379,7 +379,7 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-circle',
               can: store.can('puede.ver.acreditacion'),
             },
-           {
+            {
               title: 'Umbral',
               link: 'umbral-fondos-rotativos',
               icon: 'bi-circle',
@@ -683,7 +683,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-clipboard2-data-fill',
-          can: store.esAdministrador || store.esCompras||store.can('puede.ver.reportes_proveedores'),
+          can: store.esAdministrador || store.esCompras || store.can('puede.ver.reportes_proveedores'),
           children: [
             {
               title: 'Reporte de Proveedores',
@@ -736,6 +736,31 @@ export const useMenuStore = defineStore('menu', () => {
       link: 'configuracion',
       icon: 'bi-house-gear-fill',
       can: store.can('puede.ver.configuracion_general') || store.esAdministrador,
+    },
+    {
+      title: 'Geografía General',
+      icon: 'bi-globe-americas',
+      can: store.esAdministrador,
+      children: [
+        {
+          title: 'Provincias',
+          link: 'provincias',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.provincias'),
+        },
+        {
+          title: 'Cantones',
+          link: 'cantones',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.cantones'),
+        },
+        {
+          title: 'Parroquias',
+          link: 'parroquias',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.parroquias'),
+        },
+      ]
     },
     {
       title: 'Proyectos y tareas',

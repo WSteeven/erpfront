@@ -175,7 +175,7 @@ export default defineComponent({
                 //: props.propsTable.rowIndex,
                 eliminar({ posicion })
             },
-            visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
+            visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && preingreso.responsable_id==store.user.id
         }
         const btnAddRow: CustomActionTable = {
             titulo: 'Agregar ítem',

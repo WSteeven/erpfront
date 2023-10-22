@@ -4,6 +4,7 @@ import { ordernarListaString } from "./utils";
 import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
 import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta";
 import { Producto } from "pages/bodega/productos/domain/Producto";
+import { Canton } from "sistema/ciudad/domain/Canton";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -91,6 +92,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
         (v) => v.canton.toLowerCase().indexOf(needle) > -1
       )
     })
+  }
+  function ordenarCantones() {
+    cantones.value.sort((a:Canton, b:Canton) => ordernarListaString(a.canton!, b.canton!))
   }
 
 
@@ -235,7 +239,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
-    cantones, filtrarCantones,
+    cantones, filtrarCantones,ordenarCantones,
     parroquias, filtrarParroquias,
     empresas, filtrarEmpresas, ordenarEmpresas,
     proveedores, filtrarProveedores,
