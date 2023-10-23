@@ -1,6 +1,8 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class Parroquia extends EntidadAuditable {
+    provincia: string | null
+    canton: string | null
     parroquia: string
     canton_id: number | null
     cod_parroquia: number | null
@@ -8,7 +10,9 @@ export class Parroquia extends EntidadAuditable {
 
     constructor() {
         super()
-        this.parroquia =''
+        this.provincia = null
+        this.canton = null
+        this.parroquia = ''
         this.canton_id = null
         this.cod_parroquia = null
         this.cod_postal = null

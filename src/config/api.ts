@@ -100,8 +100,12 @@ export const endpoints = {
   imprimir_rol_pago: new Endpoint('recursos-humanos/imprimir_rol_pago/'),
   imprimir_rol_pago_general: new Endpoint('recursos-humanos/imprimir_rol_pago_general/'),
   imprimir_reporte_general: new Endpoint('recursos-humanos/imprimir_reporte_general/'),
+  imprimir_reporte_general_empleado: new Endpoint('recursos-humanos/imprimir_reporte_general_empleado'),
+
   verificar_todos_roles_finalizadas: new Endpoint('recursos-humanos/verificar-todos_roles-finalizadas'),
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
+  actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
+
   enviar_rol_pago: new Endpoint('recursos-humanos/enviar-roles-pago/'),
   enviar_rol_pago_empleado: new Endpoint('recursos-humanos/enviar-rol-pago-empleado/'),
 
@@ -157,6 +161,7 @@ export const endpoints = {
   motivos: new Endpoint('motivos'),
   notificaciones: new Endpoint('notificaciones'),
   pedidos: new Endpoint('pedidos'),
+  preingresos: new Endpoint('preingresos'),
   procesadores: new Endpoint('procesadores'),
   prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),
@@ -258,15 +263,23 @@ export const endpoints = {
   consolidado_filtrado_excel: new Endpoint('fondos-rotativos/consolidado_filtrado/excel'),
   autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
   autorizaciones_transferencia: new Endpoint('fondos-rotativos/autorizaciones_transferencia'),
-
+  umbral: new Endpoint('fondos-rotativos/umbral'),
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
+  monto_acreditar_usuario: new Endpoint('fondos-rotativos/monto_acreditar_usuario/'),
+  cortar_saldo: new Endpoint('fondos-rotativos/cortar_saldo'),
+
   reporte_saldo_actual_excel: new Endpoint('fondos-rotativos/reporte/saldo_actual/excel'),
   reporte_saldo_actual_pdf: new Endpoint('fondos-rotativos/reporte/saldo_actual/pdf'),
   reporte_solicitud_fondo_pdf: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/pdf'),
   reporte_solicitud_fondo_excel: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/excel'),
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
+  acreditacion_semana: new Endpoint('fondos-rotativos/acreditacion-semana'),
+  valor_acreditar: new Endpoint('fondos-rotativos/valor-acreditar'),
+  crear_cash_acreditacion_saldo: new Endpoint('fondos-rotativos/crear-cash-acreditacion-saldo/'),
+  acreditacion_saldo_semana: new Endpoint('fondos-rotativos/acreditacion-saldo-semana/'),
+
 
   /********************
    * Modulo de tickets

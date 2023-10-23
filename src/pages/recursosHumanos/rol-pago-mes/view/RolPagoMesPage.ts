@@ -20,7 +20,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 import { RolPagoMes } from '../domain/RolPagoMes'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { RolPagoMesController } from '../infrestucture/RolPagoMesController'
 import { ComportamientoModalesRolPagoMes } from '../aplication/ComportamientoModalesRolPagoMes'
 import { ComportamientoModalesRolPago } from 'pages/recursosHumanos/rol-pago/aplication/ComportamientoModalesRolPago'
@@ -69,13 +69,15 @@ export default defineComponent({
       disabled,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { consultar, setValidador, listar,obtenerListados,cargarVista } = mixin.useComportamiento()
+    const { consultar, setValidador, listar, obtenerListados, cargarVista } =
+      mixin.useComportamiento()
     const mixinRolEmpleado = new ContenedorSimpleMixin(
       RolPago,
       new RolPagoController()
     )
     const { listado: roles_empleados } = mixinRolEmpleado.useReferencias()
-    const { listar: listarRolEmpleado,eliminar } = mixinRolEmpleado.useComportamiento()
+    const { listar: listarRolEmpleado, eliminar } =
+      mixinRolEmpleado.useComportamiento()
     const authenticationStore = useAuthenticationStore()
 
     /**********
@@ -117,7 +119,7 @@ export default defineComponent({
           )
         rolPagoStore.idRolPagoMes = rolpago.id
         rolPagoStore.mes = rolpago.mes
-        rolPagoStore.es_quincena= rolpago.es_quincena
+        rolPagoStore.es_quincena = rolpago.es_quincena
         rolPagoStore.accion = acciones.nuevo
         rolPagoStore.idRolPagoSeleccionada = null
         modalesRolPago.abrirModalEntidad('RolPagoPage')
@@ -227,8 +229,6 @@ export default defineComponent({
     const tab = ref('rol_pago')
 
     onConsultado(() => filtrarRolPagoEmpleado(''))
-
-    //Reglas de validacion
     const reglas = {
       mes: { required },
       nombre: { required },
@@ -243,7 +243,6 @@ export default defineComponent({
           roles_empleados.value = result
           break
         case 'RolPagoPage':
-
           break
       }
       modalesRolPagoMes.cerrarModalEntidad()
@@ -271,7 +270,8 @@ export default defineComponent({
       icono: 'bi-envelope-fill',
       color: 'secondary',
       visible: ({ entidad }) =>
-      authenticationStore.can('puede.ver.campo.enviar_rol_pago') && !entidad.es_quincena,
+        authenticationStore.can('puede.ver.campo.enviar_rol_pago') &&
+        !entidad.es_quincena,
       accion: ({ entidad }) => {
         enviar_rol_pago_empleado(entidad)
       },
@@ -281,7 +281,8 @@ export default defineComponent({
       icono: 'bi-trash',
       color: 'secondary',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.eliminar.rol_pago') && !entidad.finalizado,
+        authenticationStore.can('puede.eliminar.rol_pago') &&
+        !entidad.finalizado,
       accion: ({ entidad }) => {
         accion.value = 'ELIMINAR'
         eliminar(entidad)
@@ -320,7 +321,8 @@ export default defineComponent({
       icono: 'bi-envelope-fill',
       color: 'primary',
       visible: ({ entidad }) =>
-      authenticationStore.can('puede.ver.campo.enviar_rol_pago') && !entidad.es_quincena,
+        authenticationStore.can('puede.ver.campo.enviar_rol_pago') &&
+        !entidad.es_quincena,
       accion: ({ entidad }) => {
         enviar_rol_pago(entidad)
       },
@@ -329,8 +331,7 @@ export default defineComponent({
       titulo: 'Cash Rol de Pagos',
       icono: 'bi-cash-stack',
       color: 'primary',
-      visible: () =>
-        authenticationStore.can('puede.ver.campo.cash') ,
+      visible: () => authenticationStore.can('puede.ver.campo.cash'),
       accion: ({ entidad }) => {
         cash_rol_pago(entidad)
       },
@@ -340,7 +341,8 @@ export default defineComponent({
       const url_pdf =
         apiConfig.URL_BASE +
         '/' +
-        axios_repository.getEndpoint(endpoints.enviar_rol_pago_empleado)+entidad.id
+        axios_repository.getEndpoint(endpoints.enviar_rol_pago_empleado) +
+        entidad.id
       axios({
         url: url_pdf,
         method: 'GET',
@@ -361,7 +363,8 @@ export default defineComponent({
       const url_pdf =
         apiConfig.URL_BASE +
         '/' +
-        axios_repository.getEndpoint(endpoints.enviar_rol_pago)+entidad.id
+        axios_repository.getEndpoint(endpoints.enviar_rol_pago) +
+        entidad.id
       axios({
         url: url_pdf,
         method: 'GET',
@@ -383,8 +386,9 @@ export default defineComponent({
       const url_pdf =
         apiConfig.URL_BASE +
         '/' +
-        axios_repository.getEndpoint(endpoints.crear_cash_roles_pago)+entidad.id
-        imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+        axios_repository.getEndpoint(endpoints.crear_cash_roles_pago) +
+        entidad.id
+      imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
     }
     async function generar_reporte_general_mes(
       id: number,
@@ -401,6 +405,24 @@ export default defineComponent({
         tipo
 
       imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
+    }
+
+    const btnRefrescar: CustomActionTable = {
+      titulo: 'Actualizar Rol de Pago',
+      icono: 'bi-arrow-clockwise',
+      color: 'warning',
+      accion: async () => {
+        const id = rolpago.id != null ? rolpago.id : 0
+        actualizarRolPago(id)
+      },
+    }
+    async function actualizarRolPago(idRolPago: number) {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.actualizar_rol_pago) + idRolPago
+      const response: AxiosResponse = await axios.get(ruta)
+      filtrarRolPagoEmpleado('')
+
+      return notificarCorrecto(response.data.mensaje)
     }
     return {
       removeAccents,
@@ -453,6 +475,7 @@ export default defineComponent({
       btnImprimirRolPago,
       btnEnviarRolPagoEmpleado,
       btnCashRolPago,
+      btnRefrescar,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,
     }

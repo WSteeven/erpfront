@@ -1,11 +1,7 @@
 <template>
   <q-page padding>
     <div class="col-12 row justify-end q-gutter-sm q-mb-md">
-      <q-btn
-        color="primary"
-        no-caps
-        @click="actualizarInventario"
-      >
+      <q-btn color="primary" no-caps @click="actualizarInventario">
         <q-icon name="bi-arrow-clockwise" size="xs" class="q-pr-sm"></q-icon>
         <span>Actualizar inventario</span>
       </q-btn>
@@ -18,6 +14,7 @@
       :permitirEditar="false"
       :permitirEliminar="false"
       :permitirFiltrar="false"
+      :ajustarCeldas="true"
     ></essential-table>
   </q-page>
 </template>

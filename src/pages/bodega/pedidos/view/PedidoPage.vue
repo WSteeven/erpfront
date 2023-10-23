@@ -6,6 +6,7 @@
     :tab-options="tabOptionsPedidos"
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
+    :ajustarCeldas="true"
     :accion1="botonDespachar"
     :accion2="botonAnularAutorizacion"
     :accion3="botonCorregir"
@@ -90,9 +91,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -105,17 +104,13 @@
               autogrow
               v-model="pedido.justificacion"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :disable="(disabled  && !store.esAdministrador)|| (soloLectura&&!store.esAdministrador)"
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.justificacion.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.justificacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -136,23 +131,10 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="pedido.fecha_limite"
-                      mask="DD-MM-YYYY"
-                      today-btn
-                    >
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="pedido.fecha_limite" mask="DD-MM-YYYY" today-btn>
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -233,9 +215,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
@@ -282,9 +262,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
@@ -402,18 +380,13 @@
               </template> -->
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Observacion de autorizacion -->
-          <div
-            v-if="store.user.id === pedido.per_autoriza_id"
-            class="col-12 col-md-3"
-          >
+          <div v-if="store.user.id === pedido.per_autoriza_id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
@@ -433,10 +406,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.observacion_aut.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -479,10 +449,7 @@
             ></q-checkbox>
           </div>
           <!-- Evidencia fotografica 1 -->
-          <div
-            v-if="pedido.tiene_evidencia || pedido.evidencia1"
-            class="col-12 col-md-3"
-          >
+          <div v-if="pedido.tiene_evidencia || pedido.evidencia1" class="col-12 col-md-3">
             <label class="q-mb-sm block">Evidencia 1 </label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
@@ -492,10 +459,7 @@
             ></selector-imagen>
           </div>
           <!-- Evidencia fotografica 2 -->
-          <div
-            v-if="pedido.tiene_evidencia || pedido.evidencia2"
-            class="col-12 col-md-3"
-          >
+          <div v-if="pedido.tiene_evidencia || pedido.evidencia2" class="col-12 col-md-3">
             <label class="q-mb-sm block">Evidencia 2</label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
@@ -523,11 +487,7 @@
           </div>
           <!-- Configuracion de opciones para que puedan seleccionar los detalles en el listado -->
           <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
-            <q-option-group
-              v-model="group"
-              :options="options_groups"
-              color="primary"
-            />
+            <q-option-group v-model="group" :options="options_groups" color="primary" />
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
@@ -549,9 +509,7 @@
                       stock: true,
                     })
                   "
-                  @blur="
-                    criterioBusquedaProducto === '' ? limpiarProducto() : null
-                  "
+                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
                   outlined
                   dense
                 >
@@ -598,6 +556,7 @@
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               :ajustarCeldas="true"
+              :altoFijo="false"
             >
               <template v-slot:body="props">
                 <q-tr :props="props" @click="onRowClick(props.row)">

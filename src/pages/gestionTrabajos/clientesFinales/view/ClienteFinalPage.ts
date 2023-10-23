@@ -50,9 +50,9 @@ export default defineComponent({
       cliente: { required },
       id_cliente_final: { required },
       nombres: { required },
-      cedula: {
+      /*cedula: {
         cedula_valida: helpers.withMessage('La cédula no es válida', validarCedula)
-      },
+      },*/
     }
 
     useNotificacionStore().setQuasar(useQuasar())

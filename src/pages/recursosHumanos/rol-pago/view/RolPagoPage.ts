@@ -125,6 +125,7 @@ export default defineComponent({
     if (rolPagoStore.idRolPagoMes) {
       rolpago.rol_pago_id = rolPagoStore.idRolPagoMes
       rolpago.mes = rolPagoStore.mes
+      rolpago.es_quincena = rolPagoStore.es_quincena
     }
 
     accion.value = rolPagoStore.accion
@@ -244,6 +245,8 @@ export default defineComponent({
      *********/
     onConsultado(() => {
       es_consultado.value = true
+      console.log('consultado');
+
       if (rolpago.estado == 'FINALIZADO') {
         setTimeout(() => {
           refArchivoRolPago.value.listarArchivos({
@@ -260,25 +263,17 @@ export default defineComponent({
       try {
         let entidad: RolPago = new RolPago()
         if (accion.value == 'NUEVO') {
-          await guardar(rolpago)
+          entidad = await guardar(rolpago)
         } else {
           await editar(rolpago, false)
           entidad = rolpago
         }
-
         const rolpagoAux = new RolPago()
         rolpagoAux.hydrate(entidad)
 
         if (rolpagoAux.id) {
-          // Por el momento se asigna automaticamente pero a futuro quienes lo harán serán los trabajadores de la torre de control
-          // hacia los coordinadores
-
           listado.value = [rolpagoAux, ...listado.value]
-
-          // Subir archivos
-          idSubtarea = rolpagoAux.id
         }
-
         emit('cerrar-modal', false)
       } catch (e) {
         console.log(e)
@@ -510,7 +505,7 @@ export default defineComponent({
         if (data) {
           rolpago.dias_permiso_sin_recuperar =
             data.totalDiasPermiso != null ? data.totalDiasPermiso : 0
-          rolpago.dias = 30
+          rolpago.dias = rolpago.es_quincena?15:30
         }
       })
     }
