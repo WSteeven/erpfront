@@ -93,5 +93,12 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     align: 'left',
     sortable: true
   },
+  {
+    name: 'activo',
+    field: 'activo',
+    label: 'Estado',
+    align: 'left',
+    sortable: true
+  },
 
 ]

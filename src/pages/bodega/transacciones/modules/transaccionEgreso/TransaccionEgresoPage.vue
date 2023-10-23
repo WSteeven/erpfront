@@ -5,6 +5,7 @@
     titulo-pagina="Transacciones - Egresos"
     :permitirEditar="false"
     :accion1="botonImprimir"
+    :accion2="botonAnular"
     :ajustarCeldas="true"
   >
     <template #formulario>
@@ -12,7 +13,11 @@
         v-if="transaccion.aviso_liquidacion_cliente"
         class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
       >
-        <q-icon name="bi-exclamation-triangle-fill" class="q-mr-sm" size="1em"></q-icon
+        <q-icon
+          name="bi-exclamation-triangle-fill"
+          class="q-mr-sm"
+          size="1em"
+        ></q-icon
         ><b>&nbsp; Advertencia</b>
         <div>Esta transacción no se cargará al stock de ningún empleado</div>
       </div>
@@ -63,7 +68,9 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -98,13 +105,18 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Transferencia -->
-          <div v-if="transaccion.es_transferencia" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="transaccion.es_transferencia"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">N° transferencia</label>
             <q-input
               type="number"
@@ -172,7 +184,9 @@
           </div>
           <!-- observacion autorizacion -->
           <div
-            v-if="transaccion.tiene_observacion_aut || transaccion.observacion_aut"
+            v-if="
+              transaccion.tiene_observacion_aut || transaccion.observacion_aut
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
@@ -186,7 +200,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion_aut.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.observacion_aut.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -224,7 +241,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
@@ -250,7 +269,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.justificacion.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.justificacion.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -283,7 +305,9 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -307,7 +331,10 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div v-if="esVisibleTarea || transaccion.es_tarea" class="col-12 col-md-3">
+          <div
+            v-if="esVisibleTarea || transaccion.es_tarea"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="transaccion.tarea"
@@ -367,7 +394,9 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
@@ -424,7 +453,9 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -458,7 +489,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -487,7 +520,10 @@
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
-          <div v-if="!transferenciaStore.transferencia.id" class="col-12 col-md-12">
+          <div
+            v-if="!transferenciaStore.transferencia.id"
+            class="col-12 col-md-12"
+          >
             <label class="q-mb-sm block">Agregar productos</label>
             <div class="row q-col-gutter-x-xs">
               <div class="col-12 col-md-10 q-mb-md">
@@ -503,7 +539,9 @@
                       search: criterioBusquedaProducto,
                     })
                   "
-                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
+                  @blur="
+                    criterioBusquedaProducto === '' ? limpiarProducto() : null
+                  "
                   outlined
                   dense
                 >
@@ -532,12 +570,13 @@
               </div>
             </div>
           </div>
-
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"

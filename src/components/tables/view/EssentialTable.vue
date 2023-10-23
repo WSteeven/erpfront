@@ -1013,6 +1013,10 @@
           "
           >DAÑADO</q-chip
         >
+        <q-chip v-if="
+            props.value == estadosCondicionesId.buen_estado ||
+            props.value == estadosCondicionesValue.buen_estado
+          ">BUEN ESTADO</q-chip>
       </q-td>
     </template>
     <!-- devoluciones de bodega -->
@@ -1273,7 +1277,7 @@
         </q-chip>
 
         <span
-          v-if="!['TICKET TRANSFERIDO', 'TICKET PAUSADO'].includes(props.value)"
+          v-if="!['TICKET REASIGNADO', 'TICKET PAUSADO'].includes(props.value)"
           >{{ props.value }}</span
         >
       </q-td>

@@ -104,8 +104,7 @@
               autogrow
               v-model="pedido.justificacion"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :disable="(disabled  && !store.esAdministrador)|| (soloLectura&&!store.esAdministrador)"
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
@@ -557,6 +556,7 @@
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               :ajustarCeldas="true"
+              :altoFijo="false"
             >
               <template v-slot:body="props">
                 <q-tr :props="props" @click="onRowClick(props.row)">

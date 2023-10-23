@@ -1,0 +1,21 @@
+<template>
+  <q-page padding>
+    <essential-table
+      titulo="Acreditaciones Semanales"
+      :configuracionColumnas="[...ConfiguracionColumnasAcreditacionSemana, accionesTabla]"
+      :datos="listado"
+      :permitirConsultar="false"
+      :permitirEditar="false"
+      :permitirEliminar="false"
+      :accion1="botonVerModalGasto"
+      :accion2="botonAcreditar"
+    >
+    </essential-table>
+    <modales-entidad
+    :comportamiento="modalesAcreditacionSemana"
+    :mixin-modal="mixinAcreditacion"
+  />
+  </q-page>
+
+</template>
+<script src="./Acreditacion_semanaPage.ts"></script>

@@ -17,6 +17,7 @@ import { ProformaEvent } from 'pages/comprasProveedores/proforma/application/Pro
 import { ProveedorEvent } from 'sistema/proveedores/application/ProveedorEvent'
 import { ActualizarNotificacionesPusherEvent } from 'src/pusherEvents/ActualizarNotificacionesPusherEvent'
 import { NotificarVacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarVacacionPusherEvent'
+import { PreingresoMaterialPusherEvent } from 'pages/bodega/preingresoMateriales/application/PreingresoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -28,6 +29,10 @@ export class NotificacionesSistema {
     // Pedidos
     const pedidoPusherEvent = new PedidoPusherEvent()
     pedidoPusherEvent.start()
+
+    // Preingresos de materiales
+    const preingresoMaterialEvent = new PreingresoMaterialPusherEvent()
+    preingresoMaterialEvent.start()
 
     //Devoluciones
     const devolucionPusherEvent = new DevolucionPusherEvent()

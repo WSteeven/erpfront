@@ -6,6 +6,7 @@
     titulo-pagina="Empleados"
     :puedeFiltrar="false"
     :puedeExportar="true"
+    :ajustarCeldas="true"
   >
     <template #formulario>
       <q-form @submit.prevent>

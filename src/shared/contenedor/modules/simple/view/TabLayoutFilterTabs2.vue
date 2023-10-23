@@ -106,6 +106,7 @@
           :tab-options="tabOptions"
           @tab-seleccionado="aplicarFiltro"
           :tab-defecto="tabDefecto"
+          :ajustarCeldas="ajustarCeldas"
         ></essential-table-tabs>
         <!-- :tab-defecto="tabDefecto" -->
       </q-tab-panel>
