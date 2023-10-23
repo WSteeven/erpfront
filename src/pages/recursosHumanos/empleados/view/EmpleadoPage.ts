@@ -203,15 +203,7 @@ export default defineComponent({
 
     onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
     async function guardado(data) {
-      switch (data) {
-        case 'EmpleadoPage':
-          const { result } = await new EmpleadoController().listar()
-          listadosAuxiliares.rolpago = result
-          break
-        case 'FamiliaresPage':
-          break
-      }
-      modales.cerrarModalEntidad()
+      empleado.familiares!.push(data.model) ;
     }
 
     const antiguedad = computed(() => {
