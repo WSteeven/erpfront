@@ -18,7 +18,9 @@ export class Empleado extends EntidadAuditable {
   nombre_canton: string | null
   estado: boolean | null
   cargo: number | null
+  nombre_cargo: string | null
   area: number | null
+  area_info: string | null
   num_cuenta: string | null
   banco: number | null
   salario: number | null
@@ -83,7 +85,9 @@ export class Empleado extends EntidadAuditable {
     this.nombre_canton = null
     this.estado = true
     this.cargo = null
+    this.nombre_cargo = null
     this.area = null
+    this.area_info = null
     this.num_cuenta = null
     this.banco = null
     this.salario = null

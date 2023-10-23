@@ -2,7 +2,7 @@
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useQuasar } from 'quasar'
 
 // Componentes
@@ -32,9 +32,12 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
     const { entidad: empleado } = mixin.useReferencias()
 
+    const tabs = ref('1')
+
     return {
       mixin,
       empleado,
+      tabs,
       configuracionColumnas: configuracionColumnasEmpleados,
     }
   },
