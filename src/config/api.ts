@@ -267,6 +267,7 @@ export const endpoints = {
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
+  monto_acreditar_usuario: new Endpoint('fondos-rotativos/monto_acreditar_usuario/'),
   cortar_saldo: new Endpoint('fondos-rotativos/cortar_saldo'),
 
   reporte_saldo_actual_excel: new Endpoint('fondos-rotativos/reporte/saldo_actual/excel'),
@@ -276,6 +277,8 @@ export const endpoints = {
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
   acreditacion_semana: new Endpoint('fondos-rotativos/acreditacion-semana'),
   valor_acreditar: new Endpoint('fondos-rotativos/valor-acreditar'),
+  crear_cash_acreditacion_saldo: new Endpoint('fondos-rotativos/crear-cash-acreditacion-saldo/'),
+  acreditacion_saldo_semana: new Endpoint('fondos-rotativos/acreditacion-saldo-semana/'),
 
 
   /********************

@@ -21,6 +21,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarEmpleados"
+              @update:model-value="saldo_anterior()"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value

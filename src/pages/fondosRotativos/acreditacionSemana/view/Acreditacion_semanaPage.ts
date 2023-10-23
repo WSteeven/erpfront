@@ -16,6 +16,12 @@ import { ComportamientoModalesAcreditacionSemanas } from '../application/Comport
 import { ValorAcreditar } from 'pages/fondosRotativos/valorAcreditar/domain/ValorAcreditar'
 import { ValorAcreditarController } from 'pages/fondosRotativos/valorAcreditar/infrestructure/ValorAcreditarController'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { imprimirArchivo } from 'shared/utils'
+import { AxiosResponse } from 'axios'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useCargandoStore } from 'stores/cargando'
 
 
 export default defineComponent({
@@ -48,6 +54,9 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
+      const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
+      useCargandoStore().setQuasar(useQuasar())
+
     /************
      * Modales
      ************/
@@ -74,7 +83,7 @@ export default defineComponent({
     const botonVerModalGasto: CustomActionTable = {
       titulo: 'Consultar',
       icono: 'bi-eye',
-      color: 'indigo',
+      color: 'primary',
       accion: ({ entidad }) => {
         acreditacionesStore.idAcreditacionSeleccionada = entidad.id
         modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')
@@ -83,12 +92,41 @@ export default defineComponent({
     const botonAcreditar: CustomActionTable = {
       titulo: 'Acreditar',
       icono: 'bi-check-all',
-      color: 'primary',
+      color: 'positive',
       accion: ({ entidad }) => {
-        console.log()
+        acreditacion_saldo(entidad)
       },
     }
-
+    const botonCash: CustomActionTable = {
+      titulo: 'Cash',
+      icono: 'bi-cash-stack',
+      color: 'primary',
+      accion: ({ entidad }) => {
+        cash_rol_acreditacion_saldo(entidad)
+      },
+    }
+    async function cash_rol_acreditacion_saldo(entidad): Promise<void> {
+      const filename = 'cash_rol_pago'
+      const axios_repository = AxiosHttpRepository.getInstance()
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios_repository.getEndpoint(endpoints.crear_cash_acreditacion_saldo) +
+        entidad.id
+      imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+    }
+    async function acreditacion_saldo(entidad): Promise<void> {
+      const axios_repository = AxiosHttpRepository.getInstance()
+      const url =
+        apiConfig.URL_BASE +
+        '/' +
+        axios_repository.getEndpoint(endpoints.acreditacion_saldo_semana) +
+        entidad.id
+        const response: AxiosResponse = await axios_repository.get(url)
+        return notificarCorrecto(
+          'El rol de pago ha sido Finalizado.'
+        )
+    }
 
     return {
       mixin,
@@ -103,6 +141,7 @@ export default defineComponent({
       watchEffect,
       listado,
       botonVerModalGasto,
+      botonCash,
       botonAcreditar,
       accionesTabla,
     }

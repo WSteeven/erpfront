@@ -1,6 +1,6 @@
 import { defineComponent, computed, ref } from 'vue'
 import { ValorAcreditar } from '../domain/ValorAcreditar'
-
+import { apiConfig, endpoints } from 'config/api'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -15,6 +15,9 @@ import { useAcreditacionesStore } from 'stores/acreditaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { acciones, accionesTabla } from 'config/utils'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import axios from 'axios'
+import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits },
@@ -36,8 +39,8 @@ export default defineComponent({
       mixin.useComportamiento()
     const { entidad: valorAcreditar, disabled, accion } = mixin.useReferencias()
     const authenticationStore = useAuthenticationStore()
-const deshabilitar_empleado = ref(true);
-const mostrar_formulario = ref(false);
+    const deshabilitar_empleado = ref(true)
+    const mostrar_formulario = ref(false)
     /*************
      * Validaciones
      **************/
@@ -90,7 +93,6 @@ const mostrar_formulario = ref(false);
           await editar(valoracreditar, true)
         }
         mostrar_formulario.value = false
-
       } catch (e) {
         console.log(e)
       }
@@ -103,17 +105,17 @@ const mostrar_formulario = ref(false);
     function filtrarEmpleados(val, update) {
       if (val === '') {
         update(() => {
-          empleados.value =
-            listadosAuxiliares.empleados
+          empleados.value = listadosAuxiliares.empleados
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        empleados.value =
-          listadosAuxiliares.empleados.filter(
-            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
+        empleados.value = listadosAuxiliares.empleados.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
       })
     }
     const btnEditarAcreditacionEmpleado: CustomActionTable = {
@@ -124,7 +126,7 @@ const mostrar_formulario = ref(false);
         return authenticationStore.can('puede.editar.rol_pago')
       },
       accion: ({ entidad }) => {
-        deshabilitar_empleado.value= true
+        deshabilitar_empleado.value = true
         accion.value = 'EDITAR'
         valorAcreditar.id = entidad.id
         valorAcreditar.empleado = entidad.empleado
@@ -144,7 +146,7 @@ const mostrar_formulario = ref(false);
       accion: () => {
         accion.value = 'NUEVO'
         mostrar_formulario.value = true
-        deshabilitar_empleado.value= false
+        deshabilitar_empleado.value = false
       },
     }
 
@@ -156,6 +158,31 @@ const mostrar_formulario = ref(false);
       )
       return suma
     })
+    function saldo_anterior() {
+      if (accion.value == 'NUEVO') {
+        const axiosHttpRepository = AxiosHttpRepository.getInstance()
+        const url_acreditacion =
+          apiConfig.URL_BASE +
+          '/' +
+          axiosHttpRepository.getEndpoint(endpoints.monto_acreditar_usuario) +
+          valorAcreditar.empleado
+        axios({
+          url: url_acreditacion,
+          method: 'GET',
+          responseType: 'json',
+          headers: {
+            Authorization:
+              axiosHttpRepository.getOptions().headers.Authorization,
+          },
+        }).then((response: HttpResponseGet) => {
+          const { data } = response
+          if (data) {
+            valorAcreditar.monto_generado = data.monto_acreditar
+            valorAcreditar.monto_modificado = data.monto_acreditar
+          }
+        })
+      }
+    }
 
     return {
       mixin,
@@ -166,6 +193,7 @@ const mostrar_formulario = ref(false);
       v$,
       valorAcreditar,
       filtrarEmpleados,
+      saldo_anterior,
       totalAcreditar,
       empleados,
       deshabilitar_empleado,
@@ -175,7 +203,6 @@ const mostrar_formulario = ref(false);
       btnEditarAcreditacionEmpleado,
       mostrar_formulario,
       accionesTabla,
-
     }
   },
 })
