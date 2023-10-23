@@ -124,7 +124,7 @@ export default defineComponent({
       color: 'warning',
       visible: (entidad) => {
         console.log(entidad)
-        return authenticationStore.can('puede.editar.valor_acreditar') && entidad.es_acreditado== false
+        return authenticationStore.can('puede.editar.valor_acreditar')
       },
       accion: ({ entidad }) => {
         deshabilitar_empleado.value = true
