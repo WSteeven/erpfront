@@ -235,17 +235,8 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
-    async function guardado(paginaModal: keyof RolPagoMesModales) {
-      switch (paginaModal) {
-        case 'RolPagoMesPage':
-          const { result } = await new RolPagoMesController().listar()
-          listadosAuxiliares.rolpago = result
-          roles_empleados.value = result
-          break
-        case 'RolPagoPage':
-          break
-      }
-      modalesRolPagoMes.cerrarModalEntidad()
+    async function guardado(data) {
+      filtrarRolPagoEmpleado('EJECUTANDO')
     }
 
     /**Verifica si es un mes */

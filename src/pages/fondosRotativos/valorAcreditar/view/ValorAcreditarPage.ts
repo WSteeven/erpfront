@@ -122,12 +122,30 @@ export default defineComponent({
       titulo: '',
       icono: 'bi-pencil',
       color: 'warning',
-      visible: () => {
-        return authenticationStore.can('puede.editar.rol_pago')
+      visible: (entidad) => {
+        console.log(entidad)
+        return authenticationStore.can('puede.editar.valor_acreditar') && entidad.es_acreditado== false
       },
       accion: ({ entidad }) => {
         deshabilitar_empleado.value = true
         accion.value = 'EDITAR'
+        valorAcreditar.id = entidad.id
+        valorAcreditar.empleado = entidad.empleado
+        valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
+        valorAcreditar.monto_generado = entidad.monto_generado
+        valorAcreditar.monto_modificado = entidad.monto_modificado
+        mostrar_formulario.value = true
+      },
+    }
+    const btnVerAcreditacionEmpleado: CustomActionTable = {
+      titulo: 'Consultar',
+      icono: 'bi-eye',
+      color: 'primary',
+      visible: () => {
+        return authenticationStore.can('puede.ver.valor_acreditar')
+      },
+      accion: ({ entidad }) => {
+        accion.value = 'CONSULTAR'
         valorAcreditar.id = entidad.id
         valorAcreditar.empleado = entidad.empleado
         valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
@@ -201,6 +219,7 @@ export default defineComponent({
       configuracionColumnasValorAcreditar,
       btnNevoEmpleadoAcreditar,
       btnEditarAcreditacionEmpleado,
+      btnVerAcreditacionEmpleado,
       mostrar_formulario,
       accionesTabla,
     }
