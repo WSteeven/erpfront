@@ -1028,6 +1028,24 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/producto-ventas',
+        name: 'producto_ventas',
+        component: () =>
+          import(
+            'pages/ventas-claro/productoVentas/view/ProductoVentasPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/vendedor',
+        name: 'vendedor',
+        component: () =>
+          import(
+            'pages/ventas-claro/vendedores/view/VendedoresPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

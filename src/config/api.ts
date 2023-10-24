@@ -296,4 +296,15 @@ export const endpoints = {
   actividades_realizadas_seguimientos_tickets: new Endpoint('tickets/actividades-realizadas-seguimientos-tickets'),
   pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
+
+  /********************
+  * Modulo de Ventas de Claro
+  *********************/
+   bonos: new Endpoint('ventas-claro/bonos'),
+   comisiones: new Endpoint('ventas-claro/comisiones'),
+   modalidad: new Endpoint('ventas-claro/modalidad'),
+   planes: new Endpoint('ventas-claro/planes'),
+   producto_ventas: new Endpoint('ventas-claro/producto-ventas'),
+   vendedor: new Endpoint('ventas-claro/vendedor'),
+   ventas: new Endpoint('ventas-claro/ventas'),
 }

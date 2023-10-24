@@ -727,6 +727,29 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ]
     },
+    /*********************************************************
+     * Modulo de ventas de claro
+     *********************************************************/
+    {
+      title: 'Ventas de Claro',
+      icon: 'bi-phone-fill',
+      can: store.can('puede.ver.modulo_ventas_claro'),
+      children: [
+        {
+          title: 'Productos',
+          link: 'producto-ventas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.producto_ventas'),
+        },
+        {
+          title: 'Vendedores',
+          link: 'vendedor',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.vendedor'),
+        },
+
+      ]
+    },
     {
       header: 'Administración',
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
