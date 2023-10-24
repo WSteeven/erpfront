@@ -22,7 +22,6 @@ import { useFamiliarStore } from 'stores/familiar'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
-  emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
       Familiares,
@@ -104,7 +103,10 @@ export default defineComponent({
         )
       })
     }
-
+    onGuardado((entidad,data) => {
+      emit('cerrar-modal', false)
+      emit('guardado',{ key:'EmpleadoPage',model:data.modelo})
+    })
     //Reglas de validacion
     const reglas = {
       nombres: { required },
