@@ -200,6 +200,7 @@ export default defineComponent({
         limpiarTransaccion()
         limpiarProducto()
         limpiarListado(listadoDevolucion.value)
+        devolucionStore.resetearDevolucion()
       }
 
     }
