@@ -82,12 +82,13 @@ export default defineComponent({
 
     /**Modales */
 
-    const botonVerModalGasto: CustomActionTable = {
+    const botonVerModalValorAcreditar: CustomActionTable = {
       titulo: 'Consultar',
       icono: 'bi-eye',
       color: 'primary',
       accion: ({ entidad }) => {
         acreditacionesStore.idAcreditacionSeleccionada = entidad.id
+        acreditacionesStore.esta_acreditado= entidad.acreditar
         modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')
       },
     }
@@ -145,7 +146,7 @@ export default defineComponent({
       modalesAcreditacionSemana,
       watchEffect,
       listado,
-      botonVerModalGasto,
+      botonVerModalValorAcreditar,
       botonCash,
       botonAcreditar,
       accionesTabla,

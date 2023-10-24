@@ -60,7 +60,7 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, valorAcreditar)
     setValidador(v$.value)
-    const { consultar, cargarVista, obtenerListados } =
+    const { consultar, cargarVista, obtenerListados,eliminar } =
       mixin.useComportamiento()
     const { listado, listadosAuxiliares } = mixin.useReferencias()
     const empleados = ref([])
@@ -99,6 +99,17 @@ export default defineComponent({
       reestablecer()
       mostrar_formulario.value = false
     }
+    const btnEliminarAcreditacionEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-trash',
+      color: 'secondary',
+      visible: () =>
+        authenticationStore.can('puede.eliminar.valor_acreditar') && !acreditacionesStore.esta_acreditado,
+      accion: ({ entidad }) => {
+        accion.value = 'ELIMINAR'
+        eliminar(entidad)
+      },
+    }
     function filtrarEmpleados(val, update) {
       if (val === '') {
         update(() => {
@@ -121,7 +132,7 @@ export default defineComponent({
       color: 'warning',
       visible: (entidad) => {
         console.log(entidad)
-        return authenticationStore.can('puede.editar.valor_acreditar')
+        return authenticationStore.can('puede.editar.valor_acreditar') && !acreditacionesStore.esta_acreditado
       },
       accion: ({ entidad }) => {
         deshabilitar_empleado.value = true
@@ -217,6 +228,7 @@ export default defineComponent({
       configuracionColumnasValorAcreditar,
       btnNevoEmpleadoAcreditar,
       btnEditarAcreditacionEmpleado,
+      btnEliminarAcreditacionEmpleado,
       btnVerAcreditacionEmpleado,
       mostrar_formulario,
       accionesTabla,

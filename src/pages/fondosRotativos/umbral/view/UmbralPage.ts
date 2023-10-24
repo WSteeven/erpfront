@@ -51,9 +51,26 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, umbral)
     setValidador(v$.value)
+    function filtrarEmpleados(val, update) {
+      if (val === '') {
+        update(() => {
+          empleados.value = listadosAuxiliares.empleados
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        empleados.value = listadosAuxiliares.empleados.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
     return {
       mixin,
       umbral,
+      filtrarEmpleados,
       empleados,
       disabled, accion, v$,
       configuracionColumnas: configuracionColumnasUmbral,
