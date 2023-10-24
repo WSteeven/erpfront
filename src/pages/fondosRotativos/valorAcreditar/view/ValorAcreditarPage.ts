@@ -74,7 +74,7 @@ export default defineComponent({
       empleados.value = listadosAuxiliares.empleados
       listado.value = (
         await new ValorAcreditarController().listar({
-          id: acreditacionesStore.idAcreditacionSeleccionada,
+          acreditacion_semana_id: acreditacionesStore.idAcreditacionSeleccionada,
         })
       ).result
     })
@@ -86,9 +86,6 @@ export default defineComponent({
           entidad = await guardar(valoracreditar)
           const valorAcreditarAux = new ValorAcreditar()
           valorAcreditarAux.hydrate(entidad)
-          if (valorAcreditarAux.id) {
-            listado.value = [valorAcreditarAux, ...listado.value]
-          }
         } else {
           await editar(valoracreditar, true)
         }
@@ -163,6 +160,7 @@ export default defineComponent({
       },
       accion: () => {
         accion.value = 'NUEVO'
+        valorAcreditar.acreditacion_semana = acreditacionesStore.idAcreditacionSeleccionada
         mostrar_formulario.value = true
         deshabilitar_empleado.value = false
       },
