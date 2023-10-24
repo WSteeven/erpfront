@@ -1,3 +1,4 @@
+import { limpiarListado } from 'shared/utils';
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
 import { configuracionColumnasListadoProductosDevolucion } from '../../transaccionContent/domain/configuracionColumnasListadoProductosDevolucion'
@@ -192,8 +193,14 @@ export default defineComponent({
      */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
-      await devolucionStore.cargarDevolucion(id)
-      await cargarDatosDevolucion()
+      try {
+        await devolucionStore.cargarDevolucion(id)
+        await cargarDatosDevolucion()
+      } catch (error) {
+        limpiarTransaccion()
+        limpiarProducto()
+        limpiarListado(listadoDevolucion.value)
+      }
 
     }
     async function cargarDatosDevolucion() {
