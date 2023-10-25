@@ -103,6 +103,7 @@ export default defineComponent({
     function guardarFilaActividad(data) {
       actividad.hydrate(data)
       actividad.ticket = ticketStore.filaTicket.id
+      actividad.responsable = authenticationStore.user.id
       guardarActividad(actividad)
     }
 
