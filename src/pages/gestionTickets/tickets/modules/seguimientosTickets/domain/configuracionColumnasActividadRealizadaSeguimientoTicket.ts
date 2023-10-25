@@ -21,6 +21,13 @@ export const configuracionColumnasActividadRealizadaSeguimientoTicket: ColumnCon
     requerido: true,
   },
   {
+    name: 'responsable',
+    field: 'responsable',
+    label: 'Responsable',
+    align: 'left',
+    editable: false,
+  },
+  {
     name: 'observacion',
     field: 'observacion',
     label: 'Observación',
