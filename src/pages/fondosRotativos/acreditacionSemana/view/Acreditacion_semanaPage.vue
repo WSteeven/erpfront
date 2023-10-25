@@ -7,7 +7,7 @@
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
-      :accion1="botonVerModalGasto"
+      :accion1="botonVerModalValorAcreditar"
       :accion2="botonAcreditar"
       :accion3="botonCash"
     >

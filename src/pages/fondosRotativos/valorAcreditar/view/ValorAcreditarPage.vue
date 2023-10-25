@@ -99,6 +99,7 @@
       :accion1Header="btnNevoEmpleadoAcreditar"
       :accion1="btnVerAcreditacionEmpleado"
       :accion2="btnEditarAcreditacionEmpleado"
+      :accion3="btnEliminarAcreditacionEmpleado"
       >
     </essential-table>
   </q-page>
