@@ -373,7 +373,7 @@ export const opcionesUnidadesMedidas = [
   { value: 1, label: 'UNIDAD' },
   { value: 2, label: 'KILOGRAMO' },
   { value: 3, label: 'METRO' },
-  { value: 4, label: 'METRO LINEAL' }, 
+  { value: 4, label: 'METRO LINEAL' },
   { value: 5, label: 'KILOMETRO' },
   { value: 6, label: 'KILOMETRO CUBICO' },
   { value: 7, label: 'LITRO' },
@@ -436,4 +436,13 @@ export const tabOptionsPreingresoMateriales = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
+]
+export const formas_pago =[
+  {label: 'EFECTIVO', value: 'EFECTIVO'},
+  {label: 'TC', value: 'TARJETA DE CREDITO'},
+  {label: 'D.BANCAREO', value: 'DEBITO BANCAREO'},
+]
+export const estados_activacion =[
+  {label: 'PENDIENTE', value: 'PENDIENTE'},
+  {label: 'APROBADO', value: 'APROBADO'},
 ]

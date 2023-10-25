@@ -1046,6 +1046,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/ventas',
+        name: 'ventas',
+        component: () =>
+          import(
+            'pages/ventas-claro/ventas/view/VentasPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

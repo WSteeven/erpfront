@@ -307,4 +307,5 @@ export const endpoints = {
    producto_ventas: new Endpoint('ventas-claro/producto-ventas'),
    vendedor: new Endpoint('ventas-claro/vendedor'),
    ventas: new Endpoint('ventas-claro/ventas'),
+   obtener_comision: new Endpoint('ventas-claro/obtener-comision'),
 }

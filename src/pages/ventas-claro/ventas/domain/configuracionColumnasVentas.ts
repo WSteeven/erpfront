@@ -1,0 +1,63 @@
+import { ColumnConfig } from "components/tables/domain/ColumnConfig";
+import { Ventas } from "./Ventas";
+
+export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
+  {
+    name: 'orden_id',
+    field: 'orden_id',
+    label: '#Orden',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'orden_interna',
+    field: 'orden_interna',
+    label: 'Orden Interna',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'vendedor_info',
+    field: 'vendedor_info',
+    label: 'Vendedor',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'producto_info',
+    field: 'producto_info',
+    label: 'Producto',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'fecha_activ',
+    field: 'fecha_activ',
+    label: 'Fecha de Activacion',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'forma_pago',
+    field: 'forma_pago',
+    label: 'Forma de Pago',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'comision_vendedor',
+    field: 'comision_vendedor',
+    label: 'Comision',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'chargeback',
+    field: 'chargeback',
+    label: 'Chargeback',
+    align: 'left',
+    sortable: true
+  },
+
+
+]
