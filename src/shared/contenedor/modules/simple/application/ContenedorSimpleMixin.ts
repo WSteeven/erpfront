@@ -60,7 +60,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       onBeforeGuardar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeGuardar', callback),
-      onGuardado: (callback: (id?: number) => void) =>
+      onGuardado: (callback: (id?: number, response_data?:any) => void) =>
         this.hooks.bindHook('onGuardado', callback),
       onBeforeConsultar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeConsultar', callback),
@@ -209,7 +209,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // console.log(this.entidad)
       // console.log(copiaEntidad)
       this.reestablecer()
-      this.hooks.onGuardado(copiaEntidad.id)
+      this.hooks.onGuardado(copiaEntidad.id,response.data )
       return copiaEntidad
       /* const stop = watchEffect(() => {
         // console.log('dentrode  watch')

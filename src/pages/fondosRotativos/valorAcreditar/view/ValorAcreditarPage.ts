@@ -60,7 +60,7 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, valorAcreditar)
     setValidador(v$.value)
-    const { consultar, cargarVista, obtenerListados } =
+    const { consultar, cargarVista, obtenerListados,eliminar } =
       mixin.useComportamiento()
     const { listado, listadosAuxiliares } = mixin.useReferencias()
     const empleados = ref([])
@@ -74,7 +74,7 @@ export default defineComponent({
       empleados.value = listadosAuxiliares.empleados
       listado.value = (
         await new ValorAcreditarController().listar({
-          id: acreditacionesStore.idAcreditacionSeleccionada,
+          acreditacion_semana_id: acreditacionesStore.idAcreditacionSeleccionada,
         })
       ).result
     })
@@ -86,9 +86,6 @@ export default defineComponent({
           entidad = await guardar(valoracreditar)
           const valorAcreditarAux = new ValorAcreditar()
           valorAcreditarAux.hydrate(entidad)
-          if (valorAcreditarAux.id) {
-            listado.value = [valorAcreditarAux, ...listado.value]
-          }
         } else {
           await editar(valoracreditar, true)
         }
@@ -101,6 +98,17 @@ export default defineComponent({
     function reestablecerDatos() {
       reestablecer()
       mostrar_formulario.value = false
+    }
+    const btnEliminarAcreditacionEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-trash',
+      color: 'secondary',
+      visible: () =>
+        authenticationStore.can('puede.eliminar.valor_acreditar') && !acreditacionesStore.esta_acreditado,
+      accion: ({ entidad }) => {
+        accion.value = 'ELIMINAR'
+        eliminar(entidad)
+      },
     }
     function filtrarEmpleados(val, update) {
       if (val === '') {
@@ -122,12 +130,30 @@ export default defineComponent({
       titulo: '',
       icono: 'bi-pencil',
       color: 'warning',
-      visible: () => {
-        return authenticationStore.can('puede.editar.rol_pago')
+      visible: (entidad) => {
+        console.log(entidad)
+        return authenticationStore.can('puede.editar.valor_acreditar') && !acreditacionesStore.esta_acreditado
       },
       accion: ({ entidad }) => {
         deshabilitar_empleado.value = true
         accion.value = 'EDITAR'
+        valorAcreditar.id = entidad.id
+        valorAcreditar.empleado = entidad.empleado
+        valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
+        valorAcreditar.monto_generado = entidad.monto_generado
+        valorAcreditar.monto_modificado = entidad.monto_modificado
+        mostrar_formulario.value = true
+      },
+    }
+    const btnVerAcreditacionEmpleado: CustomActionTable = {
+      titulo: 'Consultar',
+      icono: 'bi-eye',
+      color: 'primary',
+      visible: () => {
+        return authenticationStore.can('puede.ver.valor_acreditar')
+      },
+      accion: ({ entidad }) => {
+        accion.value = 'CONSULTAR'
         valorAcreditar.id = entidad.id
         valorAcreditar.empleado = entidad.empleado
         valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
@@ -145,6 +171,7 @@ export default defineComponent({
       },
       accion: () => {
         accion.value = 'NUEVO'
+        valorAcreditar.acreditacion_semana = acreditacionesStore.idAcreditacionSeleccionada
         mostrar_formulario.value = true
         deshabilitar_empleado.value = false
       },
@@ -201,6 +228,8 @@ export default defineComponent({
       configuracionColumnasValorAcreditar,
       btnNevoEmpleadoAcreditar,
       btnEditarAcreditacionEmpleado,
+      btnEliminarAcreditacionEmpleado,
+      btnVerAcreditacionEmpleado,
       mostrar_formulario,
       accionesTabla,
     }

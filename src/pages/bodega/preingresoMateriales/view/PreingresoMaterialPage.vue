@@ -30,33 +30,14 @@
 
           <!-- Fecha -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block"
-              >Fecha de recepción de los materiales</label
-            >
-            <q-input
-              v-model="preingreso.fecha"
-              :disable="disabled"
-              outlined
-              dense
+            <label class="q-mb-sm block">Fecha de recepción de los materiales</label>
+            <q-input v-model="preingreso.fecha" :disable="disabled" outlined dense
               ><template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="preingreso.fecha"
-                      mask="DD-MM-YYYY"
-                      today-btn
-                    >
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="preingreso.fecha" mask="DD-MM-YYYY" today-btn>
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -94,9 +75,7 @@
               map-options
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -120,9 +99,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -132,9 +109,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >N° Guía/Documento <q-icon name="info" color="grey" />
-              <q-tooltip class="bg-dark"
-                >NA en caso de no haber guía</q-tooltip
-              ></label
+              <q-tooltip class="bg-dark">NA en caso de no haber guía</q-tooltip></label
             >
             <q-input
               v-model="preingreso.num_guia"
@@ -148,7 +123,7 @@
             <label class="q-mb-sm block"
               >N° Tarea <q-icon name="info" color="grey" />
               <q-tooltip class="bg-dark">{{
-                'Campo es obligatorio si el material recibido es para tarea de soporte, caso contrario se asignará al stock del técnico'
+                "Campo es obligatorio si el material recibido es para tarea de soporte, caso contrario se asignará al stock del técnico"
               }}</q-tooltip>
             </label>
             <q-select
@@ -177,9 +152,7 @@
                 </q-item> </template
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -212,9 +185,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -262,9 +233,7 @@
                       search: criterioBusquedaProducto,
                     })
                   "
-                  @blur="
-                    criterioBusquedaProducto === '' ? limpiarProducto() : null
-                  "
+                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
                   outlined
                   dense
                 >
@@ -301,8 +270,7 @@
               titulo="Productos Seleccionados"
               :configuracionColumnas="
                 accion == acciones.nuevo ||
-                (accion == acciones.editar &&
-                  preingreso.responsable_id == store.user.id)
+                (accion == acciones.editar && preingreso.responsable_id == store.user.id)
                   ? [...configuracionColumnasItemPreingreso, accionesTabla]
                   : [...configuracionColumnasItemPreingreso, accionesTabla]
               "
@@ -310,14 +278,12 @@
               separador="cell"
               :permitirEditarCeldas="
                 accion == acciones.nuevo ||
-                (accion == acciones.editar &&
-                  preingreso.responsable_id == store.user.id)
+                (accion == acciones.editar && preingreso.responsable_id == store.user.id)
               "
               :permitirConsultar="false"
               :permitirEditar="
                 accion == acciones.nuevo ||
-                (accion == acciones.editar &&
-                  preingreso.responsable_id == store.user.id)
+                (accion == acciones.editar && preingreso.responsable_id == store.user.id)
               "
               :permitirEditarModal="true"
               :modalMaximized="false"

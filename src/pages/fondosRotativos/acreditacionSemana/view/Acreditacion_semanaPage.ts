@@ -22,6 +22,7 @@ import { imprimirArchivo } from 'shared/utils'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useCargandoStore } from 'stores/cargando'
+import { useAuthenticationStore } from 'stores/authentication'
 
 
 export default defineComponent({
@@ -55,6 +56,7 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
       const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
+      const store = useAuthenticationStore()
       useCargandoStore().setQuasar(useQuasar())
 
     /************
@@ -80,12 +82,13 @@ export default defineComponent({
 
     /**Modales */
 
-    const botonVerModalGasto: CustomActionTable = {
+    const botonVerModalValorAcreditar: CustomActionTable = {
       titulo: 'Consultar',
       icono: 'bi-eye',
       color: 'primary',
       accion: ({ entidad }) => {
         acreditacionesStore.idAcreditacionSeleccionada = entidad.id
+        acreditacionesStore.esta_acreditado= entidad.acreditar
         modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')
       },
     }
@@ -93,14 +96,17 @@ export default defineComponent({
       titulo: 'Acreditar',
       icono: 'bi-check-all',
       color: 'positive',
+      visible: ({entidad}) => store.can('puede.ver.campo.acreditar_saldo_masivo')&& !entidad.acreditar,
       accion: ({ entidad }) => {
+        entidad.acreditar = true;
         acreditacion_saldo(entidad)
       },
     }
     const botonCash: CustomActionTable = {
       titulo: 'Cash',
       icono: 'bi-cash-stack',
-      color: 'primary',
+      color: 'warning',
+      visible: () => store.can('puede.ver.campo.cash_acreditacion_saldo'),
       accion: ({ entidad }) => {
         cash_rol_acreditacion_saldo(entidad)
       },
@@ -140,7 +146,7 @@ export default defineComponent({
       modalesAcreditacionSemana,
       watchEffect,
       listado,
-      botonVerModalGasto,
+      botonVerModalValorAcreditar,
       botonCash,
       botonAcreditar,
       accionesTabla,

@@ -41,10 +41,16 @@ export const useDevolucionStore = defineStore('devolucion', () => {
         try {
             statusLoading.activar()
             const modelo = await consultar(id)
-            if (modelo.estado_bodega === estadosTransacciones.pendiente || modelo.estado_bodega === estadosTransacciones.parcial)
-                devolucion.hydrate(modelo)
-            else {
-                notificarAdvertencia('La devolución ya ha sido completada')
+            console.log(modelo)
+            if (modelo.autorizacion == 2) {
+                if (modelo.estado_bodega === estadosTransacciones.pendiente || modelo.estado_bodega === estadosTransacciones.parcial)
+                    devolucion.hydrate(modelo)
+                else {
+                    notificarAdvertencia('La devolución ya ha sido completada')
+                    devolucion.hydrate(devolucionReset)
+                }
+            } else {
+                notificarAdvertencia('La devolución no está aprobada')
                 devolucion.hydrate(devolucionReset)
             }
         } catch (e) {

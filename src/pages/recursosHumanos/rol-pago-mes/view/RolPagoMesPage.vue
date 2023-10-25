@@ -134,7 +134,7 @@
             :accion2Header="btnEjecutarMasivo"
             :accion3Header="btnFinalizarMasivo"
             :accion4Header="btnGenerarReporte"
-            :accion5Header ="btnRefrescar"
+            :accion5Header="btnRefrescar"
             :permitirConsultar="false"
             :permitirEditar="false"
             :permitirEliminar="false"
@@ -154,7 +154,11 @@
         @guardado="guardado"
       />
 
-      <modales-entidad :comportamiento="modalesRolPago" :mixin-modal="mixinRolEmpleado" />
+      <modales-entidad
+        :comportamiento="modalesRolPago"
+        :mixin-modal="mixinRolEmpleado"
+        @guardado="(data) => guardado(data)"
+      />
     </template>
   </tab-layout-filter-tabs2>
 </template>
