@@ -76,7 +76,8 @@ export const tabOptionsTransferencias: TabOption[] = [
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
-  { label: 'Aprobados', value: 'APROBADO' },
+  { label: 'Aprobados Pendiente', value: 'APROBADO' },
+  { label: 'Aprobados Parcial', value: 'PARCIAL' },
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
@@ -93,7 +94,6 @@ export const tabOptionsLicencias: TabOption[] = [
 ]
 export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Pendiente', value: '1' },
-  { label: 'Validado', value: '4' },
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
 ]
@@ -200,12 +200,14 @@ export const estadosCondicionesId = {
   usado: '2',
   mal_estado: '3',
   danado: '4',
+  buen_estado: '5',
 }
 export const estadosCondicionesValue = {
   nuevo: 'NUEVO',
   usado: 'USADO',
   mal_estado: 'MAL ESTADO',
   danado: 'DAÑADO',
+  buen_estado: 'BUEN ESTADO',
 }
 
 export const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
@@ -266,6 +268,7 @@ export const rolesSistema = {
   activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
   bodega: 'BODEGA',
+  bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
   coordinador: 'COORDINADOR',
@@ -364,14 +367,73 @@ export const departamentos = {
   bodega: 'BODEGA',
   sso: 'SSO',
   vehiculos: 'VEHICULOS',
+  comercial: 'COMERCIAL',
 }
 export const opcionesUnidadesMedidas = [
   { value: 1, label: 'UNIDAD' },
   { value: 2, label: 'KILOGRAMO' },
   { value: 3, label: 'METRO' },
-  { value: 4, label: 'METRO LINEAL' }, //PERSONA QUE ATIENDE
+  { value: 4, label: 'METRO LINEAL' }, 
   { value: 5, label: 'KILOMETRO' },
   { value: 6, label: 'KILOMETRO CUBICO' },
   { value: 7, label: 'LITRO' },
   { value: 8, label: 'KIT' },
+]
+export function convertir_fecha(fecha: Date) {
+  const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
+  const month =
+    fecha.getMonth() + 1 < 10
+      ? '0' + (fecha.getMonth() + 1)
+      : fecha.getMonth() + 1
+  const year = fecha.getFullYear()
+  return year + '/' + month + '/' + day
+}
+export function convertir_fecha_guion(fecha) {
+  const partes = fecha.split(' '); // Dividir en fecha y hora
+  const fechaPartes = partes[0].split('-'); // Dividir la fecha en día, mes y año
+  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`; // Construir la nueva fecha en formato dd/mm/yyyy
+  return nuevaFecha;
+}
+export function convertir_fecha_hora(fecha) {
+  const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
+  let tiempo = dateParts[2]
+  tiempo = tiempo.split(' ')
+  tiempo = tiempo[1].split(':')
+  const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
+  const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
+  const anio = parseInt(dateParts[2], 10)
+  const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
+  return fecha_convert
+}
+export const niveles_academicos = [
+  { nombre: 'ESTUDIO PRIMARIO' },
+  { nombre: 'ESTUDIO SECUNDARIO' },
+  { nombre: 'TITULO SUPERIOR' },
+]
+export const tipos_sangre = [
+  { nombre: 'A +' },
+  { nombre: 'B +' },
+  { nombre: 'AB +' },
+  { nombre: 'O +' },
+  { nombre: 'A -' },
+  { nombre: 'B -' },
+  { nombre: 'AB -' },
+  { nombre: 'O -' },
+  // Puedes agregar aquí más tipos de sangre si es necesario
+]
+export const talla_letras = [
+  { nombre: 'S' },
+  { nombre: 'M' },
+  { nombre: 'L' },
+  { nombre: 'XL' },
+  { nombre: 'XXL' },
+  { nombre: 'XXXL' },
+  // Puedes agregar aquí más tallas si es necesario
+]
+
+
+export const tabOptionsPreingresoMateriales = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
 ]

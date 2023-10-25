@@ -8,7 +8,9 @@
     :mostrarButtonSubmits="tab === 'rol_pago'"
     :tabOptions="tabOptionsEstadosRolPago"
     :accion1="btnFinalizarRolPago"
-
+    :accion2="btnImprimirRolPago"
+    :accion3="btnEnviarRolPago"
+    :accion4="btnCashRolPago"
     :filtrar="filtrarRolPagoMes"
     tabDefecto="0"
     :forzarListar="true"
@@ -47,7 +49,7 @@
                   :value="rolpago.mes"
                   mask="##-####"
                   :error="!!v$.mes.$errors.length"
-                  :disable="accion=='CONSULTAR' || accion=='EDITAR'"
+                  :disable="accion == 'CONSULTAR' || accion == 'EDITAR'"
                   @blur="v$.mes.$touch"
                   readonly
                   outlined
@@ -99,17 +101,17 @@
                 </q-input>
               </div>
               <!-- Aceptar Sugerencias -->
-          <div class="col-12 col-md-3" >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="rolpago.es_quincena"
-              label="Es quincena"
-              :disable="disabled"
-              @update:model-value="obtenerNombreMes"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
+              <div class="col-12 col-md-3">
+                <q-checkbox
+                  class="q-mt-lg q-pt-md"
+                  v-model="rolpago.es_quincena"
+                  label="Es quincena"
+                  :disable="disabled"
+                  @update:model-value="obtenerNombreMes"
+                  outlined
+                  dense
+                ></q-checkbox>
+              </div>
             </div>
           </q-form>
         </q-tab-panel>
@@ -121,23 +123,28 @@
             :tabOptions="tabOptionsEstadosRolPagoEmpleado"
             :accion1="btnConsultarRolPagoEmpleado"
             :accion2="btnIniciar"
-            :accion3="btnRealizar"
-            :accion4="btnRealizado"
-            :accion5="btnEditarRolPagoEmpleado"
+            :accion3="btnFirmar"
+            :accion4="btnEditarRolPagoEmpleado"
+            :accion5="btnFinalizar"
             :accion6="btnImprimir"
+            :accion7="btnEliminarRolPago"
+            :accion8="btnEnviarRolPagoEmpleado"
             :accion1Header="btnAgregarRolPagoEmpleado"
             :permitirExportar="true"
             :accion2Header="btnEjecutarMasivo"
-            :accion3Header="btnGenerarReporte"
+            :accion3Header="btnFinalizarMasivo"
+            :accion4Header="btnGenerarReporte"
+            :accion5Header="btnRefrescar"
             :permitirConsultar="false"
             :permitirEditar="false"
             :permitirEliminar="false"
             :mostrar-botones="false"
             :mostrarFooter="true"
-            :permitirFiltrar="false"
+            :permitirFiltrar="true"
             @tab-seleccionado="filtrarRolPagoEmpleado"
             :tabDefecto="tabActual"
-            :alto-fijo="false"
+            :alto-fijo="true"
+            :primeraColumnaFija="true"
           ></essential-table-tabs>
         </q-tab-panel>
       </q-tab-panels>
@@ -147,7 +154,11 @@
         @guardado="guardado"
       />
 
-      <modales-entidad :comportamiento="modalesRolPago" :mixin-modal="mixinRolEmpleado" />
+      <modales-entidad
+        :comportamiento="modalesRolPago"
+        :mixin-modal="mixinRolEmpleado"
+        @guardado="(data) => guardado(data)"
+      />
     </template>
   </tab-layout-filter-tabs2>
 </template>

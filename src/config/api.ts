@@ -9,6 +9,7 @@ export const endpoints = {
   // Autenticacion
   csrf_cookie: new Endpoint('api/csrf-cookie', false),
   usuarios: new Endpoint('usuarios'),
+  configuracion: new Endpoint('configuracion'),
   login: new Endpoint('usuarios/login'),
   logout: new Endpoint('usuarios/logout'),
   cambiarContrasena: new Endpoint('usuarios/cambiar-contrasena'),
@@ -30,6 +31,8 @@ export const endpoints = {
   asignar_permisos: new Endpoint('asignar-permisos'),
   asignar_permisos_individual: new Endpoint('asignar-permisos-usuario'),
   crear_permiso: new Endpoint('crear-permiso'),
+  //Archivos
+  archivos: new Endpoint('archivos'),
   // Ubicacion
   paises: new Endpoint('paises'),
   provincias: new Endpoint('provincias'),
@@ -71,6 +74,8 @@ export const endpoints = {
   extension_covertura_salud: new Endpoint('recursos-humanos/extension_covertura_salud'),
 
   porcentaje_iess: new Endpoint('recursos-humanos/porcentaje_iess'),
+  porcentaje_anticipo: new Endpoint('recursos-humanos/porcentaje_anticipo'),
+
   horas_extras_tipo: new Endpoint('recursos-humanos/horas_extras_tipo'),
   horas_extras_subtipo: new Endpoint('recursos-humanos/horas_extras_subtipo'),
   forma_pago: new Endpoint('forma_pago'),
@@ -94,9 +99,18 @@ export const endpoints = {
   otener_saldo_empleado_mes: new Endpoint('recursos-humanos/otener_saldo_empleado_mes'),
   imprimir_rol_pago: new Endpoint('recursos-humanos/imprimir_rol_pago/'),
   imprimir_rol_pago_general: new Endpoint('recursos-humanos/imprimir_rol_pago_general/'),
+  imprimir_reporte_general: new Endpoint('recursos-humanos/imprimir_reporte_general/'),
+  imprimir_reporte_general_empleado: new Endpoint('recursos-humanos/imprimir_reporte_general_empleado'),
+
   verificar_todos_roles_finalizadas: new Endpoint('recursos-humanos/verificar-todos_roles-finalizadas'),
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
+  actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
 
+  enviar_rol_pago: new Endpoint('recursos-humanos/enviar-roles-pago/'),
+  enviar_rol_pago_empleado: new Endpoint('recursos-humanos/enviar-rol-pago-empleado/'),
+
+  crear_cash_roles_pago: new Endpoint('recursos-humanos/crear-cash-roles-pago/'),
+  rubros: new Endpoint('recursos-humanos/rubros'),
 
 
   //Modulo de Vehiculos
@@ -106,16 +120,18 @@ export const endpoints = {
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   //Modulo de compras y proveedores
-  archivos_proveedores: new Endpoint('compras/archivos-proveedores'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
+  categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
   criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
+  datos_bancarios_proveedor: new Endpoint('compras/datos-bancarios-proveedores'),
   detalles_departamentos_proveedor: new Endpoint('compras/detalles-departamentos-proveedor'),
   empresas: new Endpoint('empresas'),
   log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   ordenes_compras: new Endpoint('compras/ordenes-compras'),
   preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  novedades_ordenes_compras: new Endpoint('compras/novedades-ordenes-compras'),
   prefacturas: new Endpoint('compras/prefacturas'),
   proformas: new Endpoint('compras/proformas'),
   proveedores: new Endpoint('proveedores'),
@@ -145,6 +161,7 @@ export const endpoints = {
   motivos: new Endpoint('motivos'),
   notificaciones: new Endpoint('notificaciones'),
   pedidos: new Endpoint('pedidos'),
+  preingresos: new Endpoint('preingresos'),
   procesadores: new Endpoint('procesadores'),
   prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),
@@ -246,15 +263,23 @@ export const endpoints = {
   consolidado_filtrado_excel: new Endpoint('fondos-rotativos/consolidado_filtrado/excel'),
   autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
   autorizaciones_transferencia: new Endpoint('fondos-rotativos/autorizaciones_transferencia'),
-
+  umbral: new Endpoint('fondos-rotativos/umbral'),
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
+  monto_acreditar_usuario: new Endpoint('fondos-rotativos/monto_acreditar_usuario/'),
+  cortar_saldo: new Endpoint('fondos-rotativos/cortar_saldo'),
+
   reporte_saldo_actual_excel: new Endpoint('fondos-rotativos/reporte/saldo_actual/excel'),
   reporte_saldo_actual_pdf: new Endpoint('fondos-rotativos/reporte/saldo_actual/pdf'),
   reporte_solicitud_fondo_pdf: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/pdf'),
   reporte_solicitud_fondo_excel: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/excel'),
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
+  acreditacion_semana: new Endpoint('fondos-rotativos/acreditacion-semana'),
+  valor_acreditar: new Endpoint('fondos-rotativos/valor-acreditar'),
+  crear_cash_acreditacion_saldo: new Endpoint('fondos-rotativos/crear-cash-acreditacion-saldo/'),
+  acreditacion_saldo_semana: new Endpoint('fondos-rotativos/acreditacion-saldo-semana/'),
+
 
   /********************
    * Modulo de tickets

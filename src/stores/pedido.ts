@@ -2,8 +2,6 @@ import axios, { AxiosResponse } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
 import { acciones, autorizacionesTransacciones, estadosTransacciones } from 'config/utils'
-import { ax } from 'dist/spa/assets/index.926ee4b4'
-import { Axis } from 'echarts'
 import { Pedido } from 'pages/bodega/pedidos/domain/Pedido'
 import { defineStore } from 'pinia'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
@@ -17,7 +15,7 @@ export const usePedidoStore = defineStore('pedido', () => {
   const pedidoReset = new Pedido()
   const idPedido = ref()
 
-  const { notificarAdvertencia } = useNotificaciones()
+  const { notificarAdvertencia, notificarError } = useNotificaciones()
   const accionPedido = acciones.nuevo
   const statusLoading = new StatusEssentialLoading()
 
@@ -80,24 +78,57 @@ export const usePedidoStore = defineStore('pedido', () => {
   }
 
 
-/**
- * La función `eliminarDetalle` es una función asíncrona que utiliza Axios para enviar una solicitud
- * POST a un punto final específico para eliminar un artículo de un pedido.
- * @param detalle_id - El parámetro `detalle_id` es el ID del elemento de detalle que desea eliminar de
- * un pedido.
- * @param pedido_id - El parámetro `pedido_id` representa el ID del pedido del que se quiere dar de
- * baja un artículo.
- * @returns un objeto AxiosResponse.
- */
+  /**
+   * La función `eliminarDetalle` es una función asíncrona que utiliza Axios para enviar una solicitud
+   * POST a un punto final específico para eliminar un artículo de un pedido.
+   * @param detalle_id - El parámetro `detalle_id` es el ID del elemento de detalle que desea eliminar de
+   * un pedido.
+   * @param pedido_id - El parámetro `pedido_id` representa el ID del pedido del que se quiere dar de
+   * baja un artículo.
+   * @returns un objeto AxiosResponse.
+   */
   async function eliminarDetalle(detalle_id, pedido_id) {
     const axios = AxiosHttpRepository.getInstance()
     const ruta = axios.getEndpoint(endpoints.pedidos) + '/eliminar-item'
     const response: AxiosResponse = await axios.post(ruta, { pedido_id, detalle_id })
-    return  response
+    return response
   }
 
   function resetearPedido() {
     pedido.hydrate(pedidoReset)
+  }
+
+  async function buscarReporte(accion: string, data, listado) {
+    try {
+      statusLoading.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      // let url = axios.getEndpoint(endpoints.proveedores) + '/reportes'
+      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.pedidos) + '/reportes'
+      const filename = 'reporte_pedidos'
+      switch (accion) {
+        case 'excel':
+          data.accion = 'excel'
+          imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+          return listado
+        case 'pdf':
+          data.accion = 'pdf'
+          imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+          return listado
+        default:
+          data.accion = ''
+          const response: AxiosResponse = await axios.post(url, data)
+          // console.log(response)
+          if (response.data.results) {
+            if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
+            return response.data.results
+          } else return listado
+      }
+    } catch (error) {
+      console.log(error)
+      notificarError('Error al obtener el reporte')
+    } finally {
+      statusLoading.desactivar()
+    }
   }
 
   return {
@@ -110,6 +141,7 @@ export const usePedidoStore = defineStore('pedido', () => {
     imprimirPdf,
     modificarPedido,
     eliminarDetalle,
+    buscarReporte,
   }
 
 })

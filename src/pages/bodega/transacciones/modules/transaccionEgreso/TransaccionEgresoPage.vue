@@ -5,6 +5,8 @@
     titulo-pagina="Transacciones - Egresos"
     :permitirEditar="false"
     :accion1="botonImprimir"
+    :accion2="botonAnular"
+    :ajustarCeldas="true"
   >
     <template #formulario>
       <div
@@ -40,7 +42,10 @@
             <q-input v-model="transaccion.created_at" disable outlined dense />
           </div>
           <!-- Select motivo -->
-          <div v-if="esBodeguero" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="esBodeguero || esBodegueroTelconet || store.esAdministrador"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">Motivo</label>
             <q-select
               v-model="transaccion.motivo"
@@ -72,9 +77,7 @@
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="
-              transaccion.autorizacion || esVisibleAutorizacion || esCoordinador
-            "
+            v-if="transaccion.autorizacion || esVisibleAutorizacion"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -221,7 +224,7 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
-              @update:model-value="buscarListadoPedidoEnInventario"
+              @update:model-value="seleccionarClientePropietario"
               use-input
               input-debounce="0"
               @filter="filtroSucursales"
@@ -277,7 +280,8 @@
           </div>
           <!-- Solicitante -->
           <div v-if="transaccion.solicitante" class="col-12 col-md-3">
-            <label-info-empleado v-if="accion==acciones.consultar"
+            <label-info-empleado
+              v-if="accion == acciones.consultar"
               label="Solicitante"
               @click="infoEmpleado(transaccion.solicitante)"
             />
@@ -361,7 +365,8 @@
           </div>
           <!-- Responsable -->
           <div v-if="!esTecnico" class="col-12 col-md-3">
-            <label-info-empleado v-if="accion==acciones.consultar"
+            <label-info-empleado
+              v-if="accion == acciones.consultar"
               label="Responsable"
               @click="infoEmpleado(transaccion.responsable)"
             />
@@ -421,7 +426,8 @@
           </div>
           <!-- Persona que retira -->
           <div v-if="transaccion.retira_tercero" class="col-12 col-md-3">
-            <label-info-empleado v-if="accion==acciones.consultar"
+            <label-info-empleado
+              v-if="accion == acciones.consultar"
               label="Persona que retira"
               @click="infoEmpleado(transaccion.per_retira)"
             />
@@ -556,7 +562,7 @@
                   :disable="disabled || soloLectura"
                   color="positive"
                   class="full-width"
-                  style="height:20px; max-height: 40px; "
+                  style="height: 20px; max-height: 40px"
                   no-caps
                   glossy
                   >Buscar</q-btn
@@ -564,7 +570,6 @@
               </div>
             </div>
           </div>
-
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -578,6 +583,7 @@
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
+              :ajustarCeldas="true"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               @eliminar="eliminar"
@@ -598,6 +604,9 @@
       </essential-selectable-table>
     </template>
   </tab-layout>
-  <modales-entidad :comportamiento="modalesEmpleado" :confirmarCerrar="false"></modales-entidad>
+  <modales-entidad
+    :comportamiento="modalesEmpleado"
+    :confirmarCerrar="false"
+  ></modales-entidad>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

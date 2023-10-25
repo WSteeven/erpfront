@@ -8,20 +8,20 @@ import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, SessionStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
-import moment from 'moment'
 import Swal from 'sweetalert2'
-
+import moment from 'moment'
 
 // Componentes
+import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import EssentialLink from 'components/EssentialLink.vue'
-import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
 
 // Logica y controladores
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
 import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacionRealtime'
 import { NotificacionesSistema } from './notificacionesSistema/NotificacionesSistema'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useIdle, useTimestamp } from '@vueuse/core'
@@ -55,6 +55,20 @@ export default defineComponent({
      *******/
     if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
     moment.updateLocale('es', { invalidDate: 'No aplica' })
+
+    /***************************
+     * Permitir Notificaciones push
+     ***************************/
+    if ('Notification' in window) {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          console.log('Permiso de notificación concedido.');
+        } else {
+          console.log('Permiso de notificación denegado.');
+        }
+      });
+    }
+
 
     /************
      * Variables
@@ -231,8 +245,13 @@ export default defineComponent({
       LocalStorage.remove('lastActivity')
     }
 
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+    configuracionGeneralStore.consultarConfiguracion()
 
     return {
+      // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
+      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
+      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
       enCamino,
       motivo,
       modales,

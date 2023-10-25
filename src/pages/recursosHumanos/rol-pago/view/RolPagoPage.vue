@@ -114,11 +114,24 @@
         >
         </q-input>
       </div>
+      <!-- Medio Tiempo -->
+      <div class="col-12 col-md-3" v-if="rolpago.es_quincena">
+        <label class="q-mb-sm block">Trabaja Medio tiempo</label>
+        <q-toggle
+          :label="rolpago.medio_tiempo ? 'Medio Tiempo' : 'Tiempo completo'"
+          v-model="rolpago.medio_tiempo"
+          color="primary"
+          keep-color
+          icon="bi-clock-history"
+          unchecked-icon="bi-clock"
+          :disable="disabled"
+        />
+      </div>
       <!-- Sueldo -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Sueldo</label>
         <q-input
-          v-model="sueldo"
+          v-model="rolpago.sueldo"
           placeholder="Obligatorio"
           type="number"
           disable
@@ -127,21 +140,29 @@
         >
         </q-input>
       </div>
-       <!-- Anticipo -->
-     <div class="col-12 col-md-3">
+      <!-- Anticipo -->
+      <div class="col-12 col-md-3" v-if="!rolpago.es_quincena">
         <label class="q-mb-sm block">Anticipo</label>
-        <q-input
-          v-model="rolpago.anticipo"
-          type="number"
-          disable
-          outlined
-          dense
-        >
+        <q-input v-model="rolpago.anticipo" type="number" disable outlined dense>
         </q-input>
       </div>
-
+      <!-- Documento -->
+      <div class="col-12 col-md-3" v-if="rolpago.estado == 'FINALIZADO'">
+        <label class="q-mb-sm block">Rol de Pago Firmado</label>
+        <gestor-documentos
+          ref="refArchivoRolPago"
+          :mixin="mixinRolPago"
+          :endpoint="endpoint"
+          :disable="disabled"
+          :permitir-eliminar="false"
+          :listar-al-guardar="false"
+          :esMultiple="false"
+        >
+        </gestor-documentos>
+      </div>
     </div>
     <q-expansion-item
+      v-if="!rolpago.es_quincena"
       class="overflow-hidden q-mb-md expansion"
       label="Ingresos"
       header-class="text-bold bg-header-collapse"
@@ -162,7 +183,7 @@
           </q-input>
         </div>
         <!-- Concepto -->
-        <div class="col-12 col-md-3" >
+        <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Concepto</label>
           <q-select
             v-model="rolpago.concepto_ingreso"
@@ -255,7 +276,10 @@
           </q-select>
         </div>
         <!---Campo-->
-        <div class="col-12 col-md-3" v-if="rolpago.concepto_ingreso != '' && rolpago.concepto_ingreso !=null">
+        <div
+          class="col-12 col-md-3"
+          v-if="rolpago.concepto_ingreso != '' && rolpago.concepto_ingreso != null"
+        >
           <label class="q-mb-sm block">Valor</label>
           <q-input
             v-model="rolpago.ingreso"
@@ -286,6 +310,7 @@
       </div>
     </q-expansion-item>
     <q-expansion-item
+      v-if="!rolpago.es_quincena"
       class="overflow-hidden q-mb-md expansion"
       label="Egresos"
       header-class="text-bold bg-header-collapse"
@@ -345,7 +370,7 @@
           </q-select>
         </div>
         <!-- Multa -->
-        <div class="col-12 col-md-3" >
+        <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Multa</label>
           <q-select
             v-model="rolpago.multa"
@@ -371,7 +396,14 @@
           </q-select>
         </div>
         <!---Campo-->
-        <div class="col-12 col-md-3" v-if="(rolpago.multa != '' && rolpago.multa !=null)||(rolpago.descuento_general != ''&& rolpago.descuento_general!=null)||(rolpago.descuento_ley != ''&& rolpago.descuento_ley!=null)">
+        <div
+          class="col-12 col-md-3"
+          v-if="
+            (rolpago.multa != '' && rolpago.multa != null) ||
+            (rolpago.descuento_general != '' && rolpago.descuento_general != null) ||
+            (rolpago.descuento_ley != '' && rolpago.descuento_ley != null)
+          "
+        >
           <label class="q-mb-sm block">Valor</label>
           <q-input
             v-model="rolpago.egreso"

@@ -35,23 +35,10 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="gasto.fecha_viat"
-                      :mask="maskFecha"
-                      today-btn
-                    >
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="gasto.fecha_viat" :mask="maskFecha" today-btn>
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -274,13 +261,7 @@
           <!-- Estado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado</label>
-            <q-input
-              v-model="gasto.estado_info"
-              placeholder=""
-              disable
-              outlined
-              dense
-            >
+            <q-input v-model="gasto.estado_info" placeholder="" disable outlined dense>
             </q-input>
           </div>
           <!-- Empleado -->
@@ -348,21 +329,23 @@
       </q-form>
       <div
         class="q-pa-md q-gutter-sm flex flex-center"
-        v-if="
-          usuario.id == gasto.aut_especial && gasto.estado_info == 'POR APROBAR'
-        "
+        v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'POR APROBAR'"
       >
-        <q-btn color="positive" @click="aprobar_gasto(gasto, 'aprobar')">
+        <q-btn color="positive" @click="aprobar_gasto(gasto, 'aprobar')" v-if="issubmit">
           <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobar</q-btn
         >
-        <q-btn color="negative" @click="aprobar_gasto(gasto, 'rechazar')">
+        <q-btn color="negative" @click="aprobar_gasto(gasto, 'rechazar')" v-if="issubmit">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn
         >
       </div>
       <div
         class="q-pa-md q-gutter-sm flex flex-center"
         v-if="
-          usuario.id == gasto.aut_especial && gasto.estado_info == 'APROBADO'  && estaSemanAC==true "
+          usuario.id == gasto.aut_especial &&
+          gasto.estado_info == 'APROBADO' &&
+          estaSemanAC == true &&
+          issubmit == true
+        "
       >
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn

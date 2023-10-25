@@ -9,7 +9,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { CargoController } from '../infraestructure/ConceptoIngresoController'
+import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 
 import { removeAccents } from 'shared/utils'
 import { ConceptoIngreso } from '../domain/ConceptoIngreso'

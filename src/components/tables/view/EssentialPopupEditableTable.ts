@@ -1,6 +1,6 @@
 // Dependencias
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, nextTick, ref, watchEffect } from 'vue'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { getVisibleColumns, formatBytes } from 'shared/utils'
 import { TipoSeleccion, TipoSeparador } from 'config/utils'
@@ -11,9 +11,10 @@ import exportFile from 'quasar/src/utils/export-file.js'
 // Componentes
 import CustomButtons from './CustomButtonsTable.vue'
 import BotonesPaginacion from './BotonesPaginacion.vue'
+import EditarTablaModal from './EditarTablaModal.vue'
 
 export default defineComponent({
-  components: { CustomButtons, BotonesPaginacion },
+  components: { CustomButtons, BotonesPaginacion, EditarTablaModal, },
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
@@ -146,7 +147,19 @@ export default defineComponent({
     permitirEditarCeldas: {
       type: Boolean,
       default: true,
-    }
+    },
+    editarFilaLocal: {
+      type: Boolean,
+      default: true,
+    },
+    permitirEditarModal: {
+      type: Boolean,
+      default: false,
+    },
+    modalMaximized: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: [
     'selected',
@@ -156,11 +169,17 @@ export default defineComponent({
     'editar',
     'eliminar',
     'fila-modificada',
+    'onScroll',
+    'guardar-fila',
   ],
   setup(props, { emit }) {
+    const referencia = ref()
     const listado = ref()
     const filter = ref()
     const filtros = ref()
+    const refEditarModal = ref()
+    const fila = ref()
+    const posicionFilaEditada = ref()
     const refTableFilters = ref()
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -174,6 +193,15 @@ export default defineComponent({
       rowsPerPage: props.altoFijo ? 15 : 0,
     })
 
+    watchEffect(() => listado.value = props.datos)
+
+    const rows = computed(() => listado.value.length - 1 ?? 0)
+    const pagesNumber = computed(() => {
+      return Math.ceil(listado.value.length / pagination.value.rowsPerPage)
+    })
+
+    const loading = ref(false)
+
     //Observers
     const seleccionar = () => emit('selected', selected.value)
     const tituloBotonFiltros = computed(() =>
@@ -182,12 +210,48 @@ export default defineComponent({
 
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
-    const editar = (data: any) => emit('editar', data)
+    const editar = (data: any) =>{
+      emit('editar', data)
+
+      if(props.permitirEditarModal){
+        fila.value = data.entidad
+        posicionFilaEditada.value = data.posicion
+        refEditarModal.value.abrir()
+      }
+    } 
     const eliminar = (data: object) => emit('eliminar', data)
 
     //Funciones
-    function guardarCeldaEditada(fila){
-      // console.log('Fila',  fila)
+    function limpiarFila() {
+      fila.value = null
+    }
+
+    function guardarFila(data) {
+      console.log(data)
+      const posicion = props.datos.findIndex(
+        (fila: any) => fila.id === data.id
+      )
+      // console.log(posicion)
+
+      if (props.editarFilaLocal) listado.value[posicion] = data
+      limpiarFila()
+      emit('guardar-fila', data)
+    }
+
+    function onScroll({ to }) {
+      if (!loading.value && to === rows.value) {
+        loading.value = true
+
+        setTimeout(() => {
+          nextTick(() => {
+            loading.value = false
+            emit('onScroll')
+          })
+        }, 500)
+      }
+    }
+
+    function guardarCeldaEditada(fila) {
       emit('fila-modificada', fila)
     }
     function extraerVisible(
@@ -206,9 +270,9 @@ export default defineComponent({
     function extraerIcono(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.icono === 'function'
         ? accion.icono({
-            entidad: propsTable.row,
-            posicion: propsTable.rowIndex,
-          })
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex,
+        })
         : accion?.icono
     }
     function filtrar() {
@@ -282,6 +346,8 @@ export default defineComponent({
     }
 
     return {
+      refEditarModal,
+      referencia,
       refTableFilters,
       grid,
       filter,
@@ -290,6 +356,7 @@ export default defineComponent({
       inFullscreen,
       mostrarFiltros,
       offset,
+      pagesNumber,
       pagination,
       seleccionar,
       extraerVisible,
@@ -306,6 +373,9 @@ export default defineComponent({
       editar,
       eliminar,
       guardarCeldaEditada,
+      fila,
+      guardarFila,
+      limpiarFila,
     }
   },
 })

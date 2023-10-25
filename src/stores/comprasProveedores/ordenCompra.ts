@@ -1,13 +1,13 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
-import { acciones } from "config/utils";
-import { OrdenCompra } from "pages/comprasProveedores/ordenCompra/domain/OrdenCompra";
-import { defineStore } from "pinia";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { imprimirArchivo, notificarMensajesError } from "shared/utils";
-import { reactive, ref } from "vue";
+import { AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
+import { acciones } from 'config/utils';
+import { OrdenCompra } from 'pages/comprasProveedores/ordenCompra/domain/OrdenCompra';
+import { defineStore } from 'pinia';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { imprimirArchivo, notificarMensajesError } from 'shared/utils';
+import { reactive, ref } from 'vue';
 
 export const useOrdenCompraStore = defineStore('ordenCompra', () => {
     //State
@@ -15,7 +15,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
     const ordenReset = new OrdenCompra()
     const idOrden = ref()
 
-    const { notificarAdvertencia, notificarError } = useNotificaciones()
+    const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
     const accionOrden = acciones.nuevo
     const statusLoading = new StatusEssentialLoading()
 
@@ -24,7 +24,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
      ******************************************************************************************/
     async function imprimirPdf() {
         try {
-            statusLoading.activar
+            statusLoading.activar()
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/imprimir/' + idOrden.value
             const filename = 'orden_compra_' + idOrden.value + '_' + Date.now()
@@ -36,6 +36,23 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
             statusLoading.desactivar()
         }
     }
+
+    async function enviarPdf() {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/toProveedor/' + idOrden.value
+            const response: AxiosResponse = await axios.get(url)
+            if (response.status = 200) notificarCorrecto(response.data.mensaje)
+            else notificarAdvertencia(response.data.mensaje)
+
+        } catch (e) {
+            notificarError('Error al enviar la orden de compra al proveedor.' + e)
+        } finally {
+            statusLoading.desactivar()
+        }
+    }
+
 
     async function anularOrden(data: any) {
         try {
@@ -63,5 +80,6 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
         anularOrden,
         resetearOrden,
         imprimirPdf,
+        enviarPdf,
     }
 })

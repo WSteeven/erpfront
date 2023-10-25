@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasRolPago } from '../domain/configuracionColumnasRolPago'
-import { required } from '@vuelidate/validators'
+import { maxValue, minValue, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed, watchEffect, Ref } from 'vue'
 
@@ -39,25 +39,40 @@ import { useRolPagoStore } from 'stores/rolPago'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { ComportamientoModalesRolPago } from '../aplication/ComportamientoModalesRolPago'
+import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
+import { ArchivoRolPagoController } from '../infraestructure/ArchivoRolPagoController'
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, EssentialTable, ButtonSubmits },
-  emit: ['cerrar-modal', 'guardado'],
+  components: {
+    TabLayout,
+    SelectorImagen,
+    EssentialTable,
+    ButtonSubmits,
+    GestorDocumentos,
+  },
 
   setup(props, { emit }) {
+    /********
+     * Mixin
+     *********/
     const mixin = new ContenedorSimpleMixin(RolPago, new RolPagoController())
+    const mixinRolPago = new ContenedorSimpleMixin(
+      Archivo,
+      new ArchivoRolPagoController()
+    )
+
     /*********
      * Stores
      *********/
     const rolPagoStore = useRolPagoStore()
+    const recursosHumanosStore = useRecursosHumanosStore()
 
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
 
-    /********
-     * Mixin
-     *********/
     const {
       entidad: rolpago,
       listadosAuxiliares,
@@ -74,8 +89,8 @@ export default defineComponent({
       reestablecer,
       setValidador,
     } = mixin.useComportamiento()
-    const { onBeforeGuardar, onConsultado } = mixin.useHooks()
-
+    const { onBeforeGuardar, onConsultado, onGuardado } = mixin.useHooks()
+    const refArchivoRolPago = ref()
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
@@ -84,22 +99,16 @@ export default defineComponent({
         },
       })
       empleados.value = listadosAuxiliares.empleados
-      concepto_ingresos.value =
-        LocalStorage.getItem('concepto_ingresos') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('concepto_ingresos')!.toString())
-      descuentos_generales.value =
-        LocalStorage.getItem('descuentos_generales') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('descuentos_generales')!.toString())
-      descuentos_ley.value =
-        LocalStorage.getItem('descuentos_ley') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('descuentos_ley')!.toString())
-      multas.value =
-        LocalStorage.getItem('multas') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('multas')!.toString())
+      concepto_ingresos.value = (
+        await new ConceptoIngresoController().listar()
+      ).result
+      descuentos_generales.value = (
+        await new DescuentosGenralesController().listar()
+      ).result
+      descuentos_ley.value = (
+        await new DescuentosLeyController().listar()
+      ).result
+      multas.value = (await new MultaController().listar()).result
       horas_extras_tipos.value =
         LocalStorage.getItem('horas_extras_tipos') == null
           ? []
@@ -120,6 +129,7 @@ export default defineComponent({
     if (rolPagoStore.idRolPagoMes) {
       rolpago.rol_pago_id = rolPagoStore.idRolPagoMes
       rolpago.mes = rolPagoStore.mes
+      rolpago.es_quincena = rolPagoStore.es_quincena
     }
 
     accion.value = rolPagoStore.accion
@@ -147,9 +157,8 @@ export default defineComponent({
     const indice_ingreso = ref()
     const indice_egreso = ref()
     const empleados = ref<Empleado[]>([])
-    onConsultado(() => {
-      es_consultado.value = true
-    })
+    const carga_archivo = ref(false)
+    recursosHumanosStore.obtener_porcentaje_anticipo()
 
     const listadoHorasExtrasSubTipo = computed(() => {
       return listadosAuxiliares.horas_extras_subtipos.filter(
@@ -238,42 +247,34 @@ export default defineComponent({
     /********
      * Hooks
      *********/
-    onBeforeGuardar(() => {
-      // rolpago.roles = rolpagoStore.roles
-      /*rolpago.empleados_designados = rolpago.empleados_designados.map((empleado: EmpleadoGrupo) => {
-        const empleadoGrupo = new EmpleadoGrupo()
-        empleadoGrupo.hydrate(empleado)
-        empleadoGrupo.es_responsable = empleado.es_responsable ? 1 : 0
-        return empleadoGrupo
-      })*/
+    onConsultado(() => {
+      es_consultado.value = true
+      console.log('consultado')
+
+      if (rolpago.estado == 'FINALIZADO') {
+        setTimeout(() => {
+          refArchivoRolPago.value.listarArchivos({
+            rol_pago_id: rolpago.id,
+          })
+          refArchivoRolPago.value.esConsultado = true
+          carga_archivo.value = true
+        }, 2000)
+      }
     })
+
     let idSubtarea: any
 
-    //onConsultado(() => rolpago.tarea = rolpagoStore.codigoTarea)
     async function guardarDatos(rolpago: RolPago) {
       try {
         let entidad: RolPago = new RolPago()
         if (accion.value == 'NUEVO') {
-          await guardar(rolpago)
+          entidad = await guardar(rolpago)
         } else {
           await editar(rolpago, false)
           entidad = rolpago
         }
-
-        const rolpagoAux = new RolPago()
-        rolpagoAux.hydrate(entidad)
-
-        if (rolpagoAux.id) {
-          // Por el momento se asigna automaticamente pero a futuro quienes lo harán serán los trabajadores de la torre de control
-          // hacia los coordinadores
-
-          listado.value = [rolpagoAux, ...listado.value]
-
-          // Subir archivos
-          idSubtarea = rolpagoAux.id
-        }
-
         emit('cerrar-modal', false)
+        emit('guardado', { key: 'RolPagoMesPage', model: rolpago })
       } catch (e) {
         console.log(e)
       }
@@ -504,7 +505,7 @@ export default defineComponent({
         if (data) {
           rolpago.dias_permiso_sin_recuperar =
             data.totalDiasPermiso != null ? data.totalDiasPermiso : 0
-          rolpago.dias = 30
+          rolpago.dias = rolpago.es_quincena ? 15 : 30
         }
       })
     }
@@ -722,7 +723,34 @@ export default defineComponent({
         valor.id
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
-
+    function calcularSalario(tipo_contrato) {
+      let dias_quincena = rolpago.es_quincena == true ? 15 : 0
+      const dias = parseFloat(
+        rolpago.dias != null ? rolpago.dias.toString() : '0'
+      )
+      if (rolpago.medio_tiempo || rolpago.tipo_contrato == 3) {
+        dias_quincena = 0
+      }
+      const salario = parseFloat(rolpago.salario ?? '0')
+      const dias_totales = dias + dias_quincena
+      const sueldo = (salario / 30) * dias_totales
+      let total_sueldo = 0
+      switch (tipo_contrato) {
+        case 3:
+          total_sueldo = sueldo
+          break
+        default:
+          total_sueldo =
+            rolpago.es_quincena == true
+              ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100
+              : sueldo
+          break
+      }
+      rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
+    }
+    watchEffect(() => {
+      calcularSalario(rolpago.tipo_contrato)
+    })
     return {
       removeAccents,
       rolpago,
@@ -737,6 +765,8 @@ export default defineComponent({
       is_month,
       empleados,
       imprimir,
+      mixinRolPago,
+      refArchivoRolPago,
       guardarDatos,
       reestablecerDatos,
       datos_empleado,
@@ -751,6 +781,7 @@ export default defineComponent({
       filtrarHorasExtrasSubTipo,
       checkValue,
       es_calculable,
+      carga_archivo,
       aniadirIngreso,
       aniadirEgreso,
       verificar_concepto_ingreso,
@@ -764,6 +795,7 @@ export default defineComponent({
       disabled,
       configuracionColumnasRolPagoTabla,
       configuracionColumnas: configuracionColumnasRolPago,
+      endpoint: endpoints.archivo_rol_pago,
       accion,
       accionesTabla,
     }

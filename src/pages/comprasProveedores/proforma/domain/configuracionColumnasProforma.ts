@@ -52,4 +52,11 @@ export const configuracionColumnasProformas : ColumnConfig<Proforma>[]=[
         align: 'left',
         sortable: true,
       },
+      {
+        name: 'estado',
+        field: 'estado',
+        label: 'Estado Prefacturado',
+        align: 'left',
+        sortable: true,
+      },
 ]

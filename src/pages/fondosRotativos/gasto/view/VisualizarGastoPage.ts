@@ -48,7 +48,7 @@ export default defineComponent({
     const { setValidador, consultar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-
+const issubmit = ref(true);
     const {
       confirmar,
       prompt,
@@ -69,7 +69,7 @@ export default defineComponent({
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     onConsultado(() => {
-      esFactura.value = gasto.factura == null || gasto.factura == ' ' ? false : true
+      esFactura.value = gasto.tiene_factura!=null?gasto.tiene_factura:true;
     })
     if (fondoRotativoStore.id_gasto) {
       consultar({ id: fondoRotativoStore.id_gasto })
@@ -175,6 +175,7 @@ console.log(fondoRotativoStore.estaSemanAC)
               try {
                 entidad.detalle_estado = data
                 await aprobarController.aprobarGasto(entidad)
+                issubmit.value= false
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
                 emit('cerrar-modal', false);
                 emit('guardado');
@@ -196,6 +197,7 @@ console.log(fondoRotativoStore.estaSemanAC)
                 try {
                   entidad.detalle_estado = data
                   await aprobarController.rechazarGasto(entidad)
+                  issubmit.value= false
                   notificarAdvertencia('Se rechazado Gasto Exitosamente')
                   emit('cerrar-modal');
                   emit('guardado');
@@ -218,6 +220,7 @@ console.log(fondoRotativoStore.estaSemanAC)
                 try {
                   entidad.detalle_estado = data
                   await aprobarController.anularGasto(entidad)
+                  issubmit.value= false
                   notificarAdvertencia('Se anulado Gasto Exitosamente')
                   emit('cerrar-modal');
                   emit('guardado');
@@ -242,6 +245,7 @@ console.log(fondoRotativoStore.estaSemanAC)
       esFactura,
       usuario,
       disabled,
+      issubmit,
       maskFecha,
       accion,
       v$,

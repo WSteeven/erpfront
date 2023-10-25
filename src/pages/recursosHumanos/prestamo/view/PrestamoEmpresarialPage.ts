@@ -438,8 +438,10 @@ export default defineComponent({
       prestamo,
       empleados,
       sueldo_basico,
+      periodos,
       watchEffect,
       filtrarEmpleado,
+      filtrarPeriodo,
       recargar_tabla,
       esMayorPrestamo,
       maximoValorPrestamo: [

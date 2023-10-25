@@ -1,101 +1,84 @@
 // Dependencias
-import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
-import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
-import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { required } from '@vuelidate/validators'
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import { acciones, accionesTabla, estadosTrabajos, rolesSistema } from 'config/utils'
+import { Ref, computed, defineComponent, reactive, ref } from 'vue'
+import { modosAsignacionTrabajo } from 'config/tareas.utils'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { acciones, accionesTabla, departamentos, estadosTrabajos, tiposJornadas } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
-import TableView from 'components/tables/view/TableView.vue'
-import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js'
-import { Bar, Pie } from 'vue-chartjs'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
+import TableView from 'components/tables/view/TableView.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
-import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
-import { formatearFechaSeparador, generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { DashboardTareaController } from '../infraestructure/DashboardTareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { estadosTickets } from 'config/tickets.utils'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useTicketStore } from 'stores/ticket'
-import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
-import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
-import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { endpoints } from 'config/api'
-import datalabels from 'chartjs-plugin-datalabels'
+import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
 import { configuracionColumnasSubtarea } from 'pages/gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
-import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
-import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { DashboardTareaController } from '../infraestructure/DashboardTareaController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
+import { estadosTickets } from 'config/tickets.utils'
 import { useSubtareaStore } from 'stores/subtarea'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, ModalesEntidad, GraficoGenerico },
   setup() {
-    /***********
-    * Stores
-    ***********/
-    const ticketStore = useTicketStore()
+    /*********
+     * Stores
+     *********/
+    const subtareaStore = useSubtareaStore()
 
-    ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale, ArcElement, datalabels)
-    ChartJS.defaults.plugins.datalabels = {
-      display: true,
-      align: 'center',
-      backgroundColor: '#eee',
-      color: '#fff',
-      borderRadius: 4,
-      opacity: .8,
-      font: {
-        size: 10,
-      },
-    };
-
-    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
-
+    /********
+     * Mixin
+     ********/
+    // mixin reporte subtareas realizadas
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
       new DashboardTareaController()
     )
 
-    const { listadosAuxiliares, listado } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { listadosAuxiliares } = mixin.useReferencias()
+    const { cargarVista, obtenerListados } = mixin.useComportamiento()
+
+    // mixin subtarea
+    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
 
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos,departamento_id,responsable_departamento',
-            estado: 1
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+            rol: [rolesSistema.coordinador, rolesSistema.coordinadorBackup, rolesSistema.jefe_tecnico],
           }
         },
       })
     })
 
     const filtro = reactive(new FiltroDashboardTicket())
-    const dashboardTicketController = new DashboardTareaController()
+    const dashboardTareaController = new DashboardTareaController()
     const cargando = new StatusEssentialLoading()
     const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado)
-    // const modales = new ComportamientoModalesTicketAsignado()
-    const empleadoResponsableDepartamento = ref()
-    const esResponsableDepartamento = ref(false)
-    const ticketsEmpleadoResponsable = ref([])
-    let departamento
+    const tipoFiltroSubordinados = ref(modosAsignacionTrabajo.por_grupo)
 
     // Cantidades
-    const subtareas = ref([])
+    const subtareas: Ref<Subtarea[]> = ref([])
+    const subtareasGrupo: Ref<Subtarea[]> = ref([])
+    const subtareasEmpleado: Ref<Subtarea[]> = ref([])
+    const subtareasSubordinados: Ref<Subtarea[]> = ref([])
+    const subtareasEmpleadoSubordinado: Ref<Subtarea[]> = ref([])
 
     const cantidadTareasActivas = ref()
     const cantidadTareasFinalizadas = ref()
@@ -119,73 +102,87 @@ export default defineComponent({
     const cantidadesPorEstadosSubtareas = ref([])
     const cantidadesPorEstadosSubtareasBar = ref()
 
-    const ticketsPorDepartamentoEstadoAsignado = ref([])
-    const ticketsPorDepartamentoEstadoReasignado = ref([])
-    const ticketsPorDepartamentoEstadoEjecutando = ref([])
-    const ticketsPorDepartamentoEstadoPausado = ref([])
-    const ticketsPorDepartamentoEstadoFinalizadoSolucionado = ref([])
-    const ticketsPorDepartamentoEstadoFinalizadoSinSolucion = ref([])
-    const ticketsPorDepartamentoEstadoCalificado = ref([])
+    // Por grupo
+    const agendados: Ref<any> = ref([])
+    const ejecutados: Ref<any> = ref([])
+    const pausados: Ref<any> = ref([])
+    const suspendidos: Ref<any> = ref([])
+    const cancelados: Ref<any> = ref([])
+    const realizados: Ref<any> = ref([])
+    const finalizados: Ref<any> = ref([])
 
-    const cantidadesTicketsSolicitadosPorDepartamentoBar = ref()
-    const cantidadesTicketsRecibidosPorDepartamentoBar = ref()
-    const ticketsPorDepartamentoEstadoAsignadoBar = ref()
-    const ticketsPorDepartamentoEstadoReasignadoBar = ref()
-    const ticketsPorDepartamentoEstadoEjecutandoBar = ref()
-    const ticketsPorDepartamentoEstadoPausadoBar = ref()
-    const ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar = ref()
-    const ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar = ref()
-    const ticketsPorDepartamentoEstadoCalificadoBar = ref()
+    const agendadosBar = ref()
+    const ejecutadosBar = ref()
+    const pausadosBar = ref()
+    const suspendidosBar = ref()
+    const canceladosBar = ref()
+    const realizadosBar = ref()
+    const finalizadosBar = ref()
 
-    const options = {
-      responsive: true,
-      indexAxis: 'y',
-      scales: {
-        x: {
-          beginAtZero: true
-        },
-        y: {
-          beginAtZero: true
-        }
-      },
-      legend: {
-        display: true,
-        position: 'bottom' // Cambia la posición según tus necesidades
-      }
+    // Por empleado
+    const agendadosEmpleado: Ref<any> = ref([])
+    const ejecutadosEmpleado: Ref<any> = ref([])
+    const pausadosEmpleado: Ref<any> = ref([])
+    const suspendidosEmpleado: Ref<any> = ref([])
+    const canceladosEmpleado: Ref<any> = ref([])
+    const realizadosEmpleado: Ref<any> = ref([])
+    const finalizadosEmpleado: Ref<any> = ref([])
+
+    const agendadosEmpleadoBar = ref()
+    const ejecutadosEmpleadoBar = ref()
+    const pausadosEmpleadoBar = ref()
+    const suspendidosEmpleadoBar = ref()
+    const canceladosEmpleadoBar = ref()
+    const realizadosEmpleadoBar = ref()
+    const finalizadosEmpleadoBar = ref()
+
+    // Tabs
+    const opcionesSubordinado = {
+      subordinadosGrafico: 'subordinadosGrafico',
+      subordinadosListado: 'subordinadosListado',
+      subordinadosEmpleadoListado: 'subordinadosEmpleadoListado',
     }
 
-    const optionsVertical = {
-      responsive: true,
+    const opcionesCoordinadorConsultado = {
+      coordinadorConsultadoGrafico: 'coordinadorConsultadoGrafico',
+      coordinadorConsultadoListado: 'coordinadorConsultadoListado',
     }
+
+    const tabsCoordinadorConsultado = ref(opcionesCoordinadorConsultado.coordinadorConsultadoGrafico)
+    const tabsSubordinados = ref(opcionesSubordinado.subordinadosGrafico)
+
+    filtro.fecha_fin = obtenerFechaActual()
 
     const optionsPie = {
       responsive: true,
       maintainAspectRatio: false,
       layout: {
-        padding: {
-          bottom: 32,
-          top: 32,
-        },
-        margin: {
-          top: 32,
+        padding: 32,
+      },
+      elements: {
+        arc: {
+          borderWidth: 0,
         }
       },
       plugins: {
+        legend: {
+          position: 'right',
+        },
         datalabels: {
           align: 'end',
           anchor: 'end',
-          color: function (context) {
-            return context.dataset.backgroundColor;
+          color: '#fff',
+          backgroundColor: function (context) {
+            return context.dataset.backgroundColor
           },
           font: function (context) {
-            var w = context.chart.width;
+            var w = context.chart.width
             return {
-              size: w < 512 ? 12 : 14,
-              weight: 'bold',
-            };
+              size: w < 512 ? 10 : 12,
+            }
           },
           formatter: function (value, context) {
-            return context.chart.data.labels[context.dataIndex] + ': ' + value
+            return value ? context.chart.data.labels[context.dataIndex] + ': (' + value + ')' : null
           }
         }
       },
@@ -200,28 +197,19 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, filtro)
 
-    /***************
-     * Botones tabla
-     ***************/
-    // const { btnSeguimiento } = useBotonesTablaTicket(mixin, modales)
-    // setFiltrarTickets(filtrarTrabajoAsignado)
     /**********
     * Modales
     **********/
     const modalesSubtarea = new ComportamientoModalesSubtarea()
     const { btnSeguimiento } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
 
-    const subtareaStore = useSubtareaStore()
-
     const botonVer: CustomActionTable = {
       titulo: 'Más detalles',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
-        // ticketStore.filaTicket = entidad
         subtareaStore.idSubtareaSeleccionada = entidad.id
         subtareaStore.accion = acciones.consultar
         modalesSubtarea.abrirModalEntidad('SubtareaPage')
-        // modales.abrirModalEntidad('DetalleCompletoTicket')
       },
     }
 
@@ -229,7 +217,6 @@ export default defineComponent({
    * Filtros
    **********/
     const empleados = ref([])
-    const empleadosResponsables = ref([])
     function filtrarEmpleados(val, update) {
       if (val === '') update(() => empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
 
@@ -239,24 +226,22 @@ export default defineComponent({
       })
     }
 
-    filtro.fecha_fin = obtenerFechaActual()
-
     async function consultar() {
+      const campos = 'id,codigo_tarea,codigo_subtarea,titulo,estado,grupo,empleado_responsable,coordinador,tipo_trabajo,cantidad_adjuntos,fecha_solicitud,es_ventana,fecha_hora_creacion,fecha_inicio_trabajo,hora_inicio_trabajo,hora_fin_trabajo,fecha_hora_asignacion,fecha_hora_agendado,fecha_hora_ejecucion,fecha_hora_realizado,fecha_hora_finalizacion,dias_ocupados,fecha_hora_suspendido,motivo_suspendido,fecha_hora_cancelado,motivo_cancelado,subtarea_dependiente,canton,cliente,proyecto'
 
       if (await v$.value.$validate()) {
         try {
 
-          const empleadoSeleccionado: Empleado = empleados.value.filter((emp: Empleado) => emp.id === filtro.empleado)[0]
-
-          esResponsableDepartamento.value = empleadoSeleccionado.responsable_departamento
-          departamento = empleadoSeleccionado.departamento_id
           cargando.activar()
 
-          const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado })
-          await obtenerResponsables()
+          const { result } = await dashboardTareaController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado, campos })
 
-          subtareas.value = result.subtareas
+          // Listados
+          subtareas.value = result.subtareasCoordinador
+          subtareasGrupo.value = result.subtareasGrupo
+          subtareasEmpleado.value = result.subtareasEmpleado
 
+          // Cantidades
           cantidadTareasActivas.value = result.cantidadTareasActivas
           cantidadTareasFinalizadas.value = result.cantidadTareasFinalizadas
           cantidadSubtareasAgendadas.value = result.cantidadSubtareasAgendadas
@@ -267,106 +252,112 @@ export default defineComponent({
           cantidadSubtareasRealizadas.value = result.cantidadSubtareasRealizadas
           cantidadSubtareasFinalizadas.value = result.cantidadSubtareasFinalizadas
 
-          /* const labels = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.nombre)
-          const valores = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => item.total)
-          const colores1 = result.cantidadesTicketsSolicitadosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
-          cantidadesTicketsSolicitadosPorDepartamentoBar.value = mapearDatos(labels, valores, 'Cantidades de tickets creados a los departamentos', colores1)
-
-          const labels2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.nombre)
-          const valores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => item.total)
-          const colores2 = result.cantidadesTicketsRecibidosPorDepartamento.map((item) => mapearColorDepartamentos(item.nombre))
-          cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidades de tickets recibidos por los departamentos', colores2) */
-
+          // Graficos del coordinador consultado
           cantidadesPorEstadosSubtareas.value = result.cantidadesPorEstadosSubtareas
           const labels3 = result.cantidadesPorEstadosSubtareas.map((item) => item.estado)
           const valores3 = result.cantidadesPorEstadosSubtareas.map((item) => item.total_subtareas)
           const colores3 = result.cantidadesPorEstadosSubtareas.map((item) => mapearColor(item.estado))
-          cantidadesPorEstadosSubtareasBar.value = mapearDatos(labels3, valores3, 'Cantidades de subtareas por estados', colores3)
+          cantidadesPorEstadosSubtareasBar.value = mapearDatos(labels3, valores3, 'Cantidad de subtareas', colores3)
 
-          /**************
-           * Mapear Pies
-           **************/
-          /* const labels4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.responsable)
-          const valores4 = result.ticketsPorDepartamentoEstadoAsignado.map((item) => item.total_tickets)
-          const colores4 = result.ticketsPorDepartamentoEstadoAsignado.map(() => generarColorAzulPastelClaro())
-          ticketsPorDepartamentoEstadoAsignadoBar.value = mapearDatos(labels4, valores4, 'Cantidades de tickets del departamento con filtro por estado', colores4)
-          ticketsPorDepartamentoEstadoAsignado.value = await result.ticketsPorDepartamentoEstadoAsignado
+          // Graficos por grupo
+          // const subtareasPorGrupo = result.cantidadesSubtareasPorGrupo
+          const subtareasPorGrupo = contarSubtareasGrupo(result.subtareasGrupo)
+          const subtareasPorEmpleado = contarSubtareasEmpleado(result.subtareasEmpleado)
+          // console.log(subtareasPorGrupo)
+          agendados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.AGENDADO)
+          const labelsAgendado = agendados.value.map((item) => item.grupo)
+          const valoresAgendado = agendados.value.map((item) => item.total_subtareas)
+          const coloresAgendado = agendados.value.map(() => generarColorAzulPastelClaro())
+          agendadosBar.value = mapearDatos(labelsAgendado, valoresAgendado, 'Cantidad de subtareas', coloresAgendado)
 
-          const labels5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => item.responsable)
-          const valores5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => item.total_tickets)
-          const colores5 = result.ticketsPorDepartamentoEstadoReasignado.map((item) => generarColorAzulPastelClaro())
-          ticketsPorDepartamentoEstadoReasignadoBar.value = mapearDatos(labels5, valores5, 'Cantidades de tickets del departamento con filtro por estado', colores5)
-          ticketsPorDepartamentoEstadoReasignado.value = result.ticketsPorDepartamentoEstadoReasignado
+          ejecutados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.EJECUTANDO)
+          const labelsEjecutando = ejecutados.value.map((item) => item.grupo)
+          const valoresEjecutando = ejecutados.value.map((item) => item.total_subtareas)
+          const coloresEjecutando = ejecutados.value.map(() => generarColorAzulPastelClaro())
+          ejecutadosBar.value = mapearDatos(labelsEjecutando, valoresEjecutando, 'Cantidad de subtareas', coloresEjecutando)
 
-          const labels6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => item.responsable)
-          const valores6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => item.total_tickets)
-          const colores6 = result.ticketsPorDepartamentoEstadoEjecutando.map((item) => generarColorAzulPastelClaro())
-          ticketsPorDepartamentoEstadoEjecutandoBar.value = mapearDatos(labels6, valores6, 'Cantidades de tickets del departamento con filtro por estado', colores6)
-          ticketsPorDepartamentoEstadoEjecutando.value = result.ticketsPorDepartamentoEstadoEjecutando
+          pausados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.PAUSADO)
+          const labelsPausado = pausados.value.map((item) => item.grupo)
+          const valoresPausado = pausados.value.map((item) => item.total_subtareas)
+          const coloresPausado = pausados.value.map(() => generarColorAzulPastelClaro())
+          pausadosBar.value = mapearDatos(labelsPausado, valoresPausado, 'Cantidad de subtareas', coloresPausado)
 
-          const labels7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => item.responsable)
-          const valores7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => item.total_tickets)
-          const colores7 = result.ticketsPorDepartamentoEstadoPausado.map((item) => generarColorAzulPastelClaro())
-          ticketsPorDepartamentoEstadoPausadoBar.value = mapearDatos(labels7, valores7, 'Cantidades de tickets del departamento con filtro por estado', colores7)
-          ticketsPorDepartamentoEstadoPausado.value = result.ticketsPorDepartamentoEstadoPausado
+          suspendidos.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.SUSPENDIDO)
+          const labelsSuspendido = suspendidos.value.map((item) => item.grupo)
+          const valoresSuspendido = suspendidos.value.map((item) => item.total_subtareas)
+          const coloresSuspendido = suspendidos.value.map(() => generarColorAzulPastelClaro())
+          suspendidosBar.value = mapearDatos(labelsSuspendido, valoresSuspendido, 'Cantidad de subtareas', coloresSuspendido)
 
-          const labels8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.responsable)
-          const valores8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.total_tickets)
-          const colores8 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => generarColorAzulPastelClaro())
-          ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar.value = mapearDatos(labels8, valores8, 'Cantidades de tickets del departamento con filtro por estado', colores8)
-          ticketsPorDepartamentoEstadoFinalizadoSolucionado.value = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado
+          cancelados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.CANCELADO)
+          const labelsCancelado = cancelados.value.map((item) => item.grupo)
+          const valoresCancelado = cancelados.value.map((item) => item.total_subtareas)
+          const coloresCancelado = cancelados.value.map(() => generarColorAzulPastelClaro())
+          canceladosBar.value = mapearDatos(labelsCancelado, valoresCancelado, 'Cantidad de subtareas', coloresCancelado)
 
-          const labels9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => item.responsable)
-          const valores9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => item.total_tickets)
-          const colores9 = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => generarColorAzulPastelClaro())
-          ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar.value = mapearDatos(labels9, valores9, 'Cantidades de tickets del departamento con filtro por estado', colores9)
-          ticketsPorDepartamentoEstadoFinalizadoSinSolucion.value = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion
+          realizados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.REALIZADO)
+          const labelsRealizado = realizados.value.map((item) => item.grupo)
+          const valoresRealizado = realizados.value.map((item) => item.total_subtareas)
+          const coloresRealizado = realizados.value.map(() => generarColorAzulPastelClaro())
+          realizadosBar.value = mapearDatos(labelsRealizado, valoresRealizado, 'Cantidad de subtareas', coloresRealizado)
 
-          const labels10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.responsable)
-          const valores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.total_tickets)
-          const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorAzulPastelClaro())
-          ticketsPorDepartamentoEstadoCalificadoBar.value = mapearDatos(labels10, valores10, 'Cantidades de tickets del departamento con filtro por estado', colores10)
-          ticketsPorDepartamentoEstadoCalificado.value = result.ticketsPorDepartamentoEstadoCalificado */
+          finalizados.value = filtrarSubtareasGrupoPorEstado(subtareasPorGrupo, estadosTrabajos.FINALIZADO)
+          const labelsFinalizado = finalizados.value.map((item) => item.grupo)
+          const valoresFinalizado = finalizados.value.map((item) => item.total_subtareas)
+          const coloresFinalizado = finalizados.value.map(() => generarColorAzulPastelClaro())
+          finalizadosBar.value = mapearDatos(labelsFinalizado, valoresFinalizado, 'Cantidad de subtareas', coloresFinalizado)
 
-          if (filtro.empleado) {
-            empleadoResponsableDepartamento.value = filtro.empleado
-            obtenerTicketsEmpleadoResponsable(filtro.empleado)
-          }
+          /***************
+          * Por empleado
+          ****************/
+          agendadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.AGENDADO)
+          const labelsAgendadoEmpleado = agendadosEmpleado.value.map((item) => item.empleado)
+          const valoresAgendadoEmpleado = agendadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresAgendadoEmpleado = agendadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          agendadosEmpleadoBar.value = mapearDatos(labelsAgendadoEmpleado, valoresAgendadoEmpleado, 'Cantidad de subtareas', coloresAgendadoEmpleado)
+
+          ejecutadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.EJECUTANDO)
+          const labelsEjecutandoEmpleado = ejecutadosEmpleado.value.map((item) => item.empleado)
+          const valoresEjecutandoEmpleado = ejecutadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresEjecutandoEmpleado = ejecutadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          ejecutadosEmpleadoBar.value = mapearDatos(labelsEjecutandoEmpleado, valoresEjecutandoEmpleado, 'Cantidad de subtareas', coloresEjecutandoEmpleado)
+
+          pausadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.PAUSADO)
+          const labelsPausadoEmpleado = pausadosEmpleado.value.map((item) => item.empleado)
+          const valoresPausadoEmpleado = pausadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresPausadoEmpleado = pausadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          pausadosEmpleadoBar.value = mapearDatos(labelsPausadoEmpleado, valoresPausadoEmpleado, 'Cantidad de subtareas', coloresPausadoEmpleado)
+
+          suspendidosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.SUSPENDIDO)
+          console.log(suspendidosEmpleado.value)
+          const labelsSuspendidoEmpleado = suspendidosEmpleado.value.map((item) => item.empleado)
+          const valoresSuspendidoEmpleado = suspendidosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresSuspendidoEmpleado = suspendidosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          suspendidosEmpleadoBar.value = mapearDatos(labelsSuspendidoEmpleado, valoresSuspendidoEmpleado, 'Cantidad de subtareas', coloresSuspendidoEmpleado)
+
+          canceladosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.CANCELADO)
+          const labelsCanceladoEmpleado = canceladosEmpleado.value.map((item) => item.empleado)
+          const valoresCanceladoEmpleado = canceladosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresCanceladoEmpleado = canceladosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          canceladosEmpleadoBar.value = mapearDatos(labelsCanceladoEmpleado, valoresCanceladoEmpleado, 'Cantidad de subtareas', coloresCanceladoEmpleado)
+
+          realizadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.REALIZADO)
+          const labelsRealizadoEmpleado = realizadosEmpleado.value.map((item) => item.empleado)
+          const valoresRealizadoEmpleado = realizadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresRealizadoEmpleado = realizadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          realizadosEmpleadoBar.value = mapearDatos(labelsRealizadoEmpleado, valoresRealizadoEmpleado, 'Cantidad de subtareas', coloresRealizadoEmpleado)
+
+          finalizadosEmpleado.value = filtrarSubtareasGrupoPorEstado(subtareasPorEmpleado, estadosTrabajos.FINALIZADO)
+          const labelsFinalizadoEmpleado = finalizadosEmpleado.value.map((item) => item.empleado)
+          const valoresFinalizadoEmpleado = finalizadosEmpleado.value.map((item) => item.total_subtareas)
+          const coloresFinalizadoEmpleado = finalizadosEmpleado.value.map(() => generarColorAzulPastelClaro())
+          finalizadosEmpleadoBar.value = mapearDatos(labelsFinalizadoEmpleado, valoresFinalizadoEmpleado, 'Cantidad de subtareas', coloresFinalizadoEmpleado)
 
         } catch (e) {
           console.log(e)
         } finally {
-
           cargando.desactivar()
         }
       }
-    }
-
-    async function obtenerTicketsEmpleadoResponsable(responsable_id: number) {
-      // const controller = new TicketController()
-      // ticketsEmpleadoResponsable.value = (await controller.listar({ responsable_id })).result
-      if (filtro.fecha_inicio && filtro.fecha_fin) {
-        const fechaInicio = formatearFechaSeparador(filtro.fecha_inicio, '/')
-        const fechaFin = formatearFechaSeparador(filtro.fecha_fin, '/', { days: 1 })
-        const consultaFecha = 'created_at[start]=' + fechaInicio + '&created_at[end]=' + fechaFin
-        const consultaParametros = 'responsable_id=' + responsable_id
-        const axios = AxiosHttpRepository.getInstance()
-        const respuesta: any = await axios.get(axios.getEndpoint(endpoints.tickets) + '?' + consultaParametros + '&' + consultaFecha)
-        ticketsEmpleadoResponsable.value = respuesta.data.results
-      }
-      //
-    }
-
-    async function obtenerResponsables() {
-      cargarVista(async () => {
-        await obtenerListados({
-          empleadosResp: {
-            controller: new EmpleadoController(),
-            params: { departamento_id: departamento, campos: 'id,nombres,apellidos' },
-          },
-        })
-        empleadosResponsables.value = listadosAuxiliares.empleadosResp
-      })
     }
 
     function mapearDatos(labels: [], valores: [], titulo: string, colores?: []) {
@@ -384,29 +375,13 @@ export default defineComponent({
 
     function mapearColor(estadoTicket: keyof typeof estadosTickets) {
       switch (estadoTicket) {
-        case estadosTrabajos.AGENDADO: return '#9fa8da'
-        case estadosTrabajos.EJECUTANDO: return '#9fa8da'
+        case estadosTrabajos.AGENDADO: return '#f9de8d'
+        case estadosTrabajos.EJECUTANDO: return '#ffc107'
         case estadosTrabajos.PAUSADO: return '#78909c'
-        case estadosTrabajos.SUSPENDIDO: return '#ffc107'
-        case estadosTrabajos.REALIZADO: return '#8bc34a'
-        case estadosTrabajos.FINALIZADO: return '#9ba98c'
-      }
-    }
-
-    function mapearColorDepartamentos(estadoTicket: keyof typeof estadosTickets) {
-      switch (estadoTicket) {
-        case departamentos.xtrim_cuenca: return '#9fa8da'
-        case departamentos.medico: return '#78909c'
-        case departamentos.activos_fijos: return '#ffc107'
-        case departamentos.gerencia: return '#616161'
-        case departamentos.proyectos: return '#8bc34a'
-        case departamentos.recursos_humanos: return '#9ba98c'
-        case departamentos.tecnico: return '#1de48d'
-        case departamentos.contabilidad: return '#db4cb2'
-        case departamentos.informatica: return '#9fa8da'
-        case departamentos.bodega: return '#eb548c'
-        case departamentos.sso: return '#eabd3b'
-        case departamentos.vehiculos: return '#e7e34e'
+        case estadosTrabajos.SUSPENDIDO: return '#ec5c64'
+        case estadosTrabajos.REALIZADO: return '#9ba98c'
+        case estadosTrabajos.FINALIZADO: return '#8bc34a'
+        case estadosTrabajos.CANCELADO: return '#c31d25'
       }
     }
 
@@ -414,11 +389,129 @@ export default defineComponent({
       empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
     }
 
+    function filtrarSubtareasGrupoPorEstado(subtareasGrupo: any[], estado: string) {
+      // console.log(subtareasGrupo)
+      return subtareasGrupo.filter((item) =>
+        item.estado === estado
+      )
+    }
+
+    function contarSubtareasGrupo(subtareas: Subtarea[]): any[] {
+      const conteo = subtareas.reduce((acumulador: any, subtarea) => {
+        const estado = subtarea.estado
+        const grupo = subtarea.grupo
+
+        // Verificar si la clave ya existe en el acumulador
+        const elementoExistente: any = acumulador.find((item: any) => item.estado === estado && item.grupo === grupo)
+
+        if (!elementoExistente) {
+          acumulador.push({ estado, grupo, total_subtareas: 1 })
+        } else {
+          elementoExistente.total_subtareas++
+        }
+
+        return acumulador
+      }, [])
+
+      return conteo
+    }
+
+    function contarSubtareasEmpleado(subtareas: Subtarea[]): any[] {
+      const conteo = subtareas.reduce((acumulador: any, subtarea) => {
+        const estado = subtarea.estado
+        const empleado = subtarea.empleado_responsable
+
+        // Verificar si la clave ya existe en el acumulador
+        const elementoExistente: any = acumulador.find((item: any) => item.estado === estado && item.empleado === empleado)
+
+        if (!elementoExistente) {
+          //console.log(estado)
+          acumulador.push({ estado, empleado, total_subtareas: 1 })
+        } else {
+          elementoExistente.total_subtareas++
+        }
+
+        return acumulador
+      }, [])
+
+      return conteo
+    }
+
+    const subtareasFiltradas: Ref<Subtarea[]> = ref([])
+    function clickCantidadesPorEstadoSubtareas(data) {
+      const { label } = data
+      if (label) {
+        subtareasFiltradas.value = subtareas.value.filter((subtarea: Subtarea) => subtarea.estado === label)
+        tabsCoordinadorConsultado.value = opcionesCoordinadorConsultado.coordinadorConsultadoListado
+      }
+    }
+
+    function clickCantidadesSubtareasSubordinados(data, estado) {
+      const { label } = data
+      if (label) {
+        subtareasSubordinados.value = subtareasGrupo.value.filter((subtarea: Subtarea) => subtarea.grupo === label && subtarea.estado === estado)
+        tabsSubordinados.value = opcionesSubordinado.subordinadosListado
+      }
+    }
+
+    function clickGraficoEmpleadoSubordinado(data, estado) {
+      const { label } = data
+      if (label) {
+        subtareasEmpleadoSubordinado.value = subtareasEmpleado.value.filter((subtarea: Subtarea) => subtarea.empleado_responsable === label && subtarea.estado === estado)
+        tabsSubordinados.value = opcionesSubordinado.subordinadosEmpleadoListado
+      }
+    }
+
     return {
+      modoUnaColumna: ref(false),
+      // Por empleado
+      agendadosEmpleado,
+      ejecutadosEmpleado,
+      pausadosEmpleado,
+      suspendidosEmpleado,
+      canceladosEmpleado,
+      realizadosEmpleado,
+      finalizadosEmpleado,
+      agendadosEmpleadoBar,
+      ejecutadosEmpleadoBar,
+      pausadosEmpleadoBar,
+      suspendidosEmpleadoBar,
+      canceladosEmpleadoBar,
+      realizadosEmpleadoBar,
+      finalizadosEmpleadoBar,
+      // Por grupo
+      agendados,
+      ejecutados,
+      pausados,
+      suspendidos,
+      cancelados,
+      realizados,
+      finalizados,
+      agendadosBar,
+      ejecutadosBar,
+      pausadosBar,
+      suspendidosBar,
+      canceladosBar,
+      realizadosBar,
+      finalizadosBar,
+      // Graficos
+      estadosTrabajos,
+      opcionesSubordinado,
+      opcionesCoordinadorConsultado,
+      tabsCoordinadorConsultado,
+      tabsSubordinados,
+      subtareasFiltradas,
+      subtareasSubordinados,
+      subtareasEmpleadoSubordinado,
+      clickCantidadesPorEstadoSubtareas,
+      clickCantidadesSubtareasSubordinados,
+      clickGraficoEmpleadoSubordinado,
+      // otro
+      modosAsignacionTrabajo,
+      tipoFiltroSubordinados,
       ordenarEmpleados,
       filtrarEmpleados,
       empleados,
-      empleadosResponsables,
       subtareas,
       cantidadTareasActivas,
       cantidadTareasFinalizadas,
@@ -433,51 +526,17 @@ export default defineComponent({
       modalesSubtarea,
       mixinSubtarea,
       //--
-      cantidadSubtareasEjecutadas,
-      configuracionColumnasTicket,
       v$,
-      mixin,
-      listar,
-      listado,
       filtro,
-      listadosAuxiliares,
-      tiposJornadas,
-      options,
-      optionsVertical,
       optionsPie,
       mostrarTitulosSeccion,
-      accionesTabla,
-      // modales,
-      empleadoResponsableDepartamento,
-      obtenerTicketsEmpleadoResponsable,
-      ticketsEmpleadoResponsable,
-      esResponsableDepartamento,
       // Configuracion columnas
-      configuracionColumnasSubtareasRealizadasPorRegion,
-      configuracionColumnasSubtareasRealizadasPorGrupo,
-      configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia,
-      // Consultar
       consultar,
       // Listados
+      cantidadSubtareasEjecutadas,
       cantidadesPorEstadosSubtareas,
-      ticketsPorDepartamentoEstadoAsignado,
-      ticketsPorDepartamentoEstadoReasignado,
-      ticketsPorDepartamentoEstadoEjecutando,
-      ticketsPorDepartamentoEstadoPausado,
-      ticketsPorDepartamentoEstadoFinalizadoSolucionado,
-      ticketsPorDepartamentoEstadoFinalizadoSinSolucion,
-      ticketsPorDepartamentoEstadoCalificado,
       // Bar
-      cantidadesTicketsSolicitadosPorDepartamentoBar,
-      cantidadesTicketsRecibidosPorDepartamentoBar,
       cantidadesPorEstadosSubtareasBar,
-      ticketsPorDepartamentoEstadoAsignadoBar,
-      ticketsPorDepartamentoEstadoReasignadoBar,
-      ticketsPorDepartamentoEstadoEjecutandoBar,
-      ticketsPorDepartamentoEstadoPausadoBar,
-      ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar,
-      ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar,
-      ticketsPorDepartamentoEstadoCalificadoBar,
       // botones
       botonVer,
       btnSeguimiento,

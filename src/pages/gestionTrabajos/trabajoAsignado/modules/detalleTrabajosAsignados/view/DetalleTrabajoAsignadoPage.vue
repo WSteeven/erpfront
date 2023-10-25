@@ -47,6 +47,15 @@
         </q-select>
       </div>
 
+      <!-- Metraje tendido -->
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block"
+          >Cantidad de fibra óptica a tender (m)</label
+        >
+        <q-input v-model="trabajo.metraje_tendido" outlined dense disable>
+        </q-input>
+      </div>
+
       <!-- Titulo -->
       <div class="col-12 col-md-6">
         <label class="q-mb-sm block">Título del trabajo a realizar</label>

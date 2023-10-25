@@ -8,7 +8,7 @@
       >
         <div class="imagen d-flex align-items-center justify-content-center">
           <q-avatar square size="400px">
-            <img src="~assets/logo.svg" />
+            <img src="~assets/logo.png" />
           </q-avatar>
         </div>
       </div>
@@ -23,7 +23,7 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img src="~assets/logo.svg" />
+          <img src="~assets/logo.png" />
         </q-avatar>
 
         <form

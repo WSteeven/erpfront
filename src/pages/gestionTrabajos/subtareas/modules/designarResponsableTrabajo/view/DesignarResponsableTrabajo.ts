@@ -51,7 +51,13 @@ export default defineComponent({
           controller: new GrupoController(),
           params: { campos: 'id,nombre' }
         },
-        empleados: new EmpleadoController(),
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1
+          }
+        },
       })
 
       grupos.value = listadosAuxiliares.grupos

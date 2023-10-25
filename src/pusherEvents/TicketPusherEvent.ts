@@ -1,5 +1,6 @@
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
+import { pushEventMesaggeServiceWorker } from 'shared/utils'
 
 export class TicketPusherEvent {
 
@@ -16,8 +17,15 @@ export class TicketPusherEvent {
     // Suscripcion al canal del pedido creado
     pusher.subscribe('tickets-tracker-' + this.store.user.id)
     pusher.bind('ticket-event', function (e) {
-      notificacionStore.agregar(e.notificacion)
+      // notificacionStore.agregar(e.notificacion)
       console.log('Se agrega una notificacion')
+
+      //lanzamos la notificación push en el navegador del destinatario
+      pushEventMesaggeServiceWorker({
+        titulo: e.notificacion.tipo_notificacion,
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+      })
     })
   }
 

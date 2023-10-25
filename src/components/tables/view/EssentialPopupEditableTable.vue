@@ -1,4 +1,12 @@
 <template>
+  <EditarTablaModal
+    ref="refEditarModal"
+    :configuracionColumnas="configuracionColumnas"
+    :fila="fila"
+    @limpiar="limpiarFila"
+    @guardar="guardarFila"
+    :modalMaximized="modalMaximized"
+  ></EditarTablaModal>
   <div
     v-if="!$q.screen.xs && datos.length && permitirEditarCeldas"
     class="text-right text-grey-7"
@@ -15,17 +23,19 @@
   </div>
   <q-table
     ref="referencia"
+    :hide-header="grid"
     :grid="grid || $q.screen.xs"
-    flat
-    bordered
-    title="Treats"
-    :rows="datos"
     :columns="configuracionColumnas"
+    :rows="listado"
     :filter="filter"
+    @filter="handleFilter()"
+    row-key="id"
     :visible-columns="visibleColumns"
     :separator="$q.screen.xs ? 'horizontal' : separador"
     :hide-bottom="!mostrarFooter"
-    row-key="id"
+    flat
+    bordered
+    :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
     class="bg-body-table my-sticky-column-table borde"
@@ -385,6 +395,7 @@
             :accion9="accion9"
             :accion10="accion10"
             :propsTable="props"
+            :listado="listado"
           ></CustomButtons>
         </div>
       </q-td>
@@ -680,22 +691,52 @@
         </q-popup-edit>
       </q-td>
     </template>
+    <!--Select de producto -->
+    <template #body-cell-producto="props">
+      <q-td :key="props.col.name" :props="props">
+        <q-select
+          v-if="props.col.type === 'select' && props.col.editable"
+          v-model="props.row[props.col.name]"
+          :options="props.col.options"
+          options-dense
+          dense
+          outlined
+          :use-input="props.col.filtrar"
+          input-debounce="0"
+          @filter="props.col.filtro"
+          :disable="!permitirEditarCeldas"
+          :options-label="(v) => v.label"
+          :options-value="(v) => v.value"
+          emit-value
+          map-options
+          ><template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                No hay resultados
+              </q-item-section>
+            </q-item>
+          </template></q-select
+        >
+        <span v-else>{{ props.row[props.col.name] }}</span>
+      </q-td>
+    </template>
     <!--Select de unidad de medida-->
     <template #body-cell-unidad_medida="props">
       <q-td :key="props.col.name" :props="props">
         <q-select
-          v-if="props.col.type==='select' && props.col.editable"
+          v-if="props.col.type === 'select' && props.col.editable"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
           :options-label="(v) => v.label"
           :options-value="(v) => v.value"
           options-dense
           outlined
+          :disable="!permitirEditarCeldas"
           dense
           emit-value
           map-options
         />
-        <span v-else>{{props.row[props.col.name]}}</span>
+        <span v-else>{{ props.row[props.col.name] }}</span>
       </q-td>
     </template>
   </q-table>

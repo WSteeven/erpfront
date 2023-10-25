@@ -27,7 +27,7 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         label: 'Medida',
         align: 'left',
         type:'select',
-        options: opcionesUnidadesMedidas,
+        // options: opcionesUnidadesMedidas,
         editable: true,
         sortable: true
     },
@@ -36,7 +36,8 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         field: 'precio_unitario',
         label: 'Precio U',
         hint: 'Precio unitario',
-        align: 'center',
+        type: 'number',
+        align: 'left',
         editable: true,
         sortable: true
     },
@@ -64,7 +65,7 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         name: 'iva',
         field: 'iva',
         label: 'IVA',
-        align: 'left',
+        align: 'right',
         type: 'number',
         editable: false,
         sortable: true
@@ -84,7 +85,7 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         field: 'descuento',
         hint: 'Desc.',
         label: 'Desc.',
-        align: 'left',
+        align: 'right',
         type: 'number',
         editable: false,
         sortable: true
@@ -93,7 +94,7 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         name: 'subtotal',
         field: 'subtotal',
         label: 'Subtotal',
-        align: 'left',
+        align: 'right',
         type: 'number',
         editable: false,
         sortable: true
@@ -102,7 +103,7 @@ export const configuracionColumnasDetallesProforma: ColumnConfig<ItemProforma>[]
         name: 'total',
         field: 'total',
         label: 'Total',
-        align: 'left',
+        align: 'right',
         type: 'number',
         editable: false,
         sortable: true

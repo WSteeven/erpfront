@@ -50,6 +50,8 @@
         :accion1Header="accion1Header"
         :accion2Header="accion2Header"
         :accion3Header="accion3Header"
+        :accion4Header="accion4Header"
+        :accion5Header="accion5Header"
         :alto-fijo="altoFijo"
         :mostrarFooter="mostrarFooter"
         :mostrarExportar="mostrarExportar"
@@ -68,30 +70,32 @@
         @accion10="emitAccion10"
         :permitir-filtrar="permitirFiltrar"
         :permitir-buscar="permitirBuscar"
+        :primeraColumnaFija="primeraColumnaFija"
         @filtrar="consultarTodos"
         @toggle-filtros="toggleFiltros"
+        :ajustarCeldas="ajustarCeldas"
       ></essential-table>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { CustomActionTable } from '../domain/CustomActionTable'
-import { TabOption } from 'components/tables/domain/TabOption'
-import { ColumnConfig } from '../domain/ColumnConfig'
-import EssentialTable from './EssentialTable.vue'
-import { TipoSeleccion } from 'config/utils'
-import { ref, watchEffect } from 'vue'
+import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { CustomActionTable } from "../domain/CustomActionTable";
+import { TabOption } from "components/tables/domain/TabOption";
+import { ColumnConfig } from "../domain/ColumnConfig";
+import EssentialTable from "./EssentialTable.vue";
+import { TipoSeleccion } from "config/utils";
+import { ref, watchEffect } from "vue";
 
 const props = defineProps({
   titulo: {
     type: String,
-    default: 'Listado',
+    default: "Listado",
   },
   separador: {
     type: String,
-    default: 'horizontal',
+    default: "horizontal",
   },
   configuracionColumnas: {
     type: Object as () => ColumnConfig<EntidadAuditable>[],
@@ -119,7 +123,7 @@ const props = defineProps({
   },
   tipoSeleccion: {
     type: String as () => TipoSeleccion,
-    default: 'none',
+    default: "none",
   },
   accion1: {
     type: Object as () => CustomActionTable,
@@ -174,6 +178,14 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+  accion4Header: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  accion5Header: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
   mostrarBotones: {
     type: Boolean,
     default: true,
@@ -203,59 +215,68 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  primeraColumnaFija: {
+    type: Boolean,
+    default: false,
+  },
   mostrarExportar: {
     type: Boolean,
     default: false,
   },
-})
+  ajustarCeldas: {
+    //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
+    type: Boolean,
+    default: false,
+  },
+});
 
 const emit = defineEmits([
-  'consultar',
-  'editar',
-  'eliminar',
-  'accion1',
-  'accion2',
-  'accion3',
-  'accion4',
-  'accion5',
-  'accion6',
-  'accion7',
-  'accion8',
-  'accion9',
-  'accion10',
-  'tab-seleccionado',
-  'filtrar',
-  'limpiar-listado',
-])
+  "consultar",
+  "editar",
+  "eliminar",
+  "accion1",
+  "accion2",
+  "accion3",
+  "accion4",
+  "accion5",
+  "accion6",
+  "accion7",
+  "accion8",
+  "accion9",
+  "accion10",
+  "tab-seleccionado",
+  "filtrar",
+  "limpiar-listado",
+]);
 
-const tabSeleccionado = ref(props.tabDefecto)
-const mostrarTabs = ref(true)
+const tabSeleccionado = ref(props.tabDefecto);
+const mostrarTabs = ref(true);
 
 watchEffect(() => {
-  tabSeleccionado.value = props.tabDefecto
-})
+  tabSeleccionado.value = props.tabDefecto;
+});
 
 function toggleFiltros(mostrarFiltros: boolean) {
-  mostrarTabs.value = !mostrarFiltros
-  if (mostrarTabs.value) emit('tab-seleccionado', tabSeleccionado.value)
-  else emit('limpiar-listado')
+  mostrarTabs.value = !mostrarFiltros;
+  if (mostrarTabs.value) emit("tab-seleccionado", tabSeleccionado.value);
+  else emit("limpiar-listado");
 }
 
-const consultar = (data) => emit('consultar', data)
-const editar = (data) => emit('editar', data)
-const eliminar = (data) => emit('eliminar', data)
-const emitAccion1 = (data) => emit('accion1', data)
-const emitAccion2 = (data) => emit('accion2', data)
-const emitAccion3 = (data) => emit('accion3', data)
-const emitAccion4 = (data) => emit('accion4', data)
-const emitAccion5 = (data) => emit('accion5', data)
-const emitAccion6 = (data) => emit('accion6', data)
-const emitAccion7 = (data) => emit('accion7', data)
-const emitAccion8 = (data) => emit('accion8', data)
-const emitAccion9 = (data) => emit('accion9', data)
-const emitAccion10 = (data) => emit('accion10', data)
+const consultar = (data) => emit("consultar", data);
+const editar = (data) => emit("editar", data);
+const eliminar = (data) => emit("eliminar", data);
+const emitAccion1 = (data) => emit("accion1", data);
+const emitAccion2 = (data) => emit("accion2", data);
+const emitAccion3 = (data) => emit("accion3", data);
+const emitAccion4 = (data) => emit("accion4", data);
+const emitAccion5 = (data) => emit("accion5", data);
+const emitAccion6 = (data) => emit("accion6", data);
+const emitAccion7 = (data) => emit("accion7", data);
+const emitAccion8 = (data) => emit("accion8", data);
+const emitAccion9 = (data) => emit("accion9", data);
+const emitAccion10 = (data) => emit("accion10", data);
 
 function consultarTodos(uri) {
-  emit('filtrar', uri)
+  emit("filtrar", uri);
 }
 </script>

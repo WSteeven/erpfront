@@ -1,10 +1,10 @@
 // Dependencies
-import { defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent,  ref, } from "vue";
 
 //Components
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from "components/tables/view/EssentialTable.vue";
-import ArchivoSeguimiento from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue";
+import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
 
 // Logic and controllers
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -12,50 +12,51 @@ import { CalificacionProveedorController } from "../infraestructure/Calificacion
 import { CriterioCalificacionController } from "pages/comprasProveedores/criteriosCalificaciones/infraestructure/CriterioCalificacionController";
 import { configuracionColumnasCriteriosCalificaciones } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificaciones";
 import { CalificacionProveedor } from "../domain/CalificacionProveedor";
-import { useOrquestadorSelectorCriterios } from "../application/OrquestadorSelectorCriterios";
 import { useProveedorStore } from "stores/comprasProveedores/proveedor";
 import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController";
-import { likertCalificacion, tiposOfertas } from "config/utils_compras_proveedores";
+import { tiposOfertas } from "config/utils_compras_proveedores";
 import { accionesTabla } from "config/utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { useNotificaciones } from "shared/notificaciones";
 import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion";
 import { configuracionColumnasCriteriosCalificacionesConPeso } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConPeso";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { endpoints } from "config/api";
 import { AxiosResponse } from "axios";
 import { useBotonesTablaCalificacionProveedor } from "../application/BotonesTablaCalificacionProveedor";
-import { Archivo } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo";
-import { ArchivoTicketController } from "pages/gestionTickets/tickets/infraestructure/ArchivoTicketController ";
+import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController";
+import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor";
+import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
+import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
+import { useNotificaciones } from "shared/notificaciones";
 
 export default defineComponent({
-    components: { EssentialTable, EssentialSelectableTable, ArchivoSeguimiento },
+    components: { EssentialTable, EssentialSelectableTable, GestorArchivos },
     setup(props, { emit }) {
-        const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController())
+        const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController(), new ArchivoController())
+        const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController(), new ArchivoController())
         const { entidad: calificacion, listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
         const { onConsultado } = mixin.useHooks()
-        const { confirmar, prompt, promptItems } = useNotificaciones()
+        const { confirmar,notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
 
-        const mixinArchivoProveedor = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
         /**************************************************************
          * Stores
          **************************************************************/
         const proveedorStore = useProveedorStore()
-        const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const statusLoading = new StatusEssentialLoading()
 
 
-        /************************************************************** 
+        /**************************************************************
          * Variables
          **************************************************************/
-        const refArchivoProveedor = ref()
+        const refArchivo = ref()
         const disabled = ref(false)
         // const criteriosBienes = ref<any>([])
         // const criteriosServicios = ref<any>([])
         const step = ref(1)
+        const idDetalleDepartamentoProveedor = computed(() => proveedorStore.idDetalleDepartamento)
         const stepper = ref()
+        const detalleDepartamento = ref()
         const resultadosCalificacion = ref()
         const seleccionados = ref([]) //los criterios que son seleccionados en la primera tabla
         const {
@@ -102,7 +103,7 @@ export default defineComponent({
         })
 
 
-        /************************************************************** 
+        /**************************************************************
          * Funciones
          **************************************************************/
         // function botonPrevious() {
@@ -117,6 +118,7 @@ export default defineComponent({
          * tiempo con una declaración de "retorno" si se cumplen ciertas condiciones.
          */
         async function botonNext() {
+            // console.log(proveedorStore.idDetalleDepartamento)
             // console.log('Clickeaste en Next, actual: ', step.value, ' siguiente step es: ', step.value + 1)
             if (criteriosBienes.value.length == 0 && criteriosServicios.value.length == 0) {
                 notificarAdvertencia('Debes seleccionar al menos un criterio del listado para poder avanzar.')
@@ -137,8 +139,13 @@ export default defineComponent({
                 } else return
             }
             if (step.value == 4) {
+                statusLoading.activar()
                 if (verificarCalificacionesCriterios()) {
-                    confirmar('¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla', async () => {
+                    // const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+                    // console.log(result)
+                    // detalleDepartamento.value = result
+                    // console.log(detalleDepartamento.value)
+                    await confirmar('¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla', async () => {
                         console.log('Aqui se guardan los resultados en la base de datos')
                         console.log(criteriosBienes.value, criteriosServicios.value)
                         let calificacionBienes = 0
@@ -170,15 +177,17 @@ export default defineComponent({
                             stepper.value.previous()
                         }
                     })
+                    statusLoading.desactivar()
                     return
                 } else {
+                    statusLoading.desactivar()
                     notificarError('¡Debes calificar todos los criterios para poder avanzar!.')
                     return
                 }
             }
             if (step.value == 5) {
                 emit('cerrar-modal', false)
-                emit('guardado') //se  envia a recargar listado de proveedores para que no se muestre el boton 
+                emit('guardado', 'CalificacionProveedorPage') //se  envia a recargar listado de proveedores para que no se muestre el boton
             }
             stepper.value.next()
         }
@@ -272,7 +281,7 @@ export default defineComponent({
          * @param fila - El parámetro "fila" es un objeto que representa una fila de datos. Contiene
          * una propiedad llamada "agregado" que indica si la fila se agregó o eliminó. También contiene
          * una propiedad llamada "filas", que es una matriz de objetos que representan filas
-         * individuales dentro de la fila principal. 
+         * individuales dentro de la fila principal.
          */
         function criterioSeleccionado(fila) {
             // console.log(fila)
@@ -297,9 +306,17 @@ export default defineComponent({
             }
         }
 
+        function subirArchivos() {
+            refArchivo.value.subir()
+        }
+        function cargarArchivos() {
+            refArchivo.value.listarArchivosAlmacenados(idDetalleDepartamentoProveedor.value)
+        }
 
 
         return {
+            mixinArchivos,
+            mixin,
             stepper,
             step,
             columnasCriterios: configuracionColumnasCriteriosCalificaciones,
@@ -320,18 +337,18 @@ export default defineComponent({
             // botonPrevious,
 
             //manejo de archivos
-            refArchivoProveedor,
-            mixinArchivoProveedor,
-            endpoint: endpoints.archivos_proveedores,
+            refArchivo,
             disabled,
+            mostrarBotonSubir: computed(() => refArchivo.value?.quiero_subir_archivos),
 
             //listados
-            criterios: listadosAuxiliares.criterios, //tabla general 
+            criterios: listadosAuxiliares.criterios, //tabla general
             criteriosBienes, //tabla de criterios de bienes
             criteriosServicios, //tabla de criterios de servicios
             ofertas: listadosAuxiliares.ofertas,
 
             proveedor: proveedorStore.proveedor,
+            idDetalleDepartamentoProveedor,
 
             seleccionados: listadoSeleccionados,
             criterioSeleccionado,
@@ -345,6 +362,11 @@ export default defineComponent({
                 rowsPerPage: 15
                 // rowsNumber: xx if getting data from a server
             },
+
+            subirArchivos,
+            detalleDepartamento,
+
+            cargarArchivos,
         }
     }
 })

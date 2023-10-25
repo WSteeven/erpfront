@@ -68,8 +68,8 @@
     >
       <q-step
         :name="1"
-        title="Configura los parametros a calificar"
-        caption="Ten en cuenta lo que ofrece el proveedor"
+        title="Configura los criterios a calificar"
+        
         icon="settings"
         :done="step > 1"
       >
@@ -198,14 +198,29 @@
           </div>
           <!-- carga de archivos de soporte -->
           <div class="col-12 q-mb-md">
-            <archivo-seguimiento
-              ref="refArchivoProveedor"
-              :mixin="mixinArchivoProveedor"
-              :endpoint="endpoint"
+            <gestor-archivos
+              ref="refArchivo"
+              :mixin="mixin"
               :disable="disabled"
-              :permitir-eliminar="false"
-              :listar-al-guardar="false"
-            ></archivo-seguimiento>
+              :permitir-eliminar="true"
+              :idModelo="idDetalleDepartamentoProveedor"
+              @inicializado="cargarArchivos"
+            >
+            <template #boton-subir>
+              <q-btn
+                v-if="mostrarBotonSubir"
+                color="positive"
+                push
+                no-caps
+                class="full-width q-mb-lg"
+                @click="subirArchivos()"
+              >
+                <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                Subir archivos seleccionados</q-btn
+              >
+
+            </template>
+          </gestor-archivos>
           </div>
         </div>
       </q-step>
@@ -215,7 +230,7 @@
         caption="Valoración global del proveedor"
         icon="bi-plus-circle"
       >
-        <q-card>
+        <q-card class="q-pa-sm">
           <div class="col-12 justify-center">
             Tu calificación para el proveedor es:
             <h4>{{ resultadosCalificacion.calificacion }}/100</h4>

@@ -1,11 +1,11 @@
 // Dependencias
 import { configuracionColumnasOrdenesCompras } from "../domain/configuracionColumnasOrdenCompra";
+import { configuracionColumnasProductos } from "../domain/configuracionColumnasProductos";
 import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
 import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
 import { required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watch, } from 'vue'
-import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 
 // Componentes
@@ -25,20 +25,22 @@ import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { acciones, accionesTabla, opcionesEstados } from "config/utils";
+import { acciones, accionesTabla } from "config/utils";
 import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
 import { CategoriaController } from "pages/bodega/categorias/infraestructure/CategoriaController";
 import { useAuthenticationStore } from "stores/authentication";
-import { formatearFecha, obtenerTiempoActual } from "shared/utils";
+import { formatearFecha, } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
 import { ValidarListadoProductos } from "../application/validaciones/ValidarListadoProductos";
-import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
 import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
+import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
+import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
+import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
+import { ComportamientoModalesOrdenCompra } from "../application/ComportamientoModalesOrdenCompra";
 
 
 export default defineComponent({
@@ -57,8 +59,8 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const preordenStore = usePreordenStore()
         const ordenCompraStore = useOrdenCompraStore()
+        const modales = new ComportamientoModalesOrdenCompra()
 
-        const cargando = new StatusEssentialLoading()
 
         //variables
         const subtotal = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
@@ -80,7 +82,7 @@ export default defineComponent({
             listar: listarProductos,
             limpiar: limpiarProducto,
             seleccionar: seleccionarProducto
-        } = useOrquestadorSelectorDetalles(orden, 'detalles')
+        } = useOrquestadorSelectorProductos(orden, 'productos')
         //Filtros y listados
         const { proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -90,12 +92,14 @@ export default defineComponent({
         const autorizaciones = ref([])
         const estados = ref([])
         const empleadosAutorizadores = ref([])
+        const tareas = ref([])
         cargarVista(async () => {
             await obtenerListados({
                 empleados: {
                     controller: new EmpleadoController(),
                     params: {
                         campos: 'id,nombres,apellidos,cargo_id',
+                        // area_id: 1,
                         estado: 1,
                     }
                 },
@@ -105,15 +109,23 @@ export default defineComponent({
                         permisos: ['puede.autorizar.ordenes_compras'],
                     }
                 },
+                tareas: {
+                    controller: new TareaController(),
+                    params: {
+                        campos: 'id,codigo_tarea,titulo,cliente_id',
+                        formulario: true,
+                        //   coordinador_id: 7,
+                    },
+                },
                 proveedores: {
                     controller: new ProveedorController(),
                     params: {
                         // campos: 'id,codigo_tarea,titulo,cliente_id',
                         // finalizado: 0
                         // http://localhost:8000/api/proveedores?calificacion[operator]=>&calificacion[value]=70
-                        'calificacion[operator]': '>',
-                        'calificacion[value]': 70,
-                        'estado_calificado': estadosCalificacionProveedor.calificado
+                        // 'calificacion[operator]': '>',
+                        // 'calificacion[value]': 0,
+                        // 'estado_calificado': estadosCalificacionProveedor.calificado
                     }
                 },
                 categorias: new CategoriaController()
@@ -123,6 +135,7 @@ export default defineComponent({
                 orden.tiene_preorden = true
                 cargarDatosPreorden()
             }
+            orden.autorizacion = 1
         })
 
         /*****************************************************************************************
@@ -132,6 +145,7 @@ export default defineComponent({
             orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
             orden.solicitante = store.user.id
             soloLectura.value = false
+            orden.autorizacion = 1
         })
         onConsultado(() => {
             if (accion.value === acciones.editar && store.user.id === orden.autorizador)
@@ -149,13 +163,14 @@ export default defineComponent({
          * Validaciones
          ****************************************************************************************/
         const reglas = {
-            proveedor: { required },
-            categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
+            proveedor: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
+            categorias: { requiredIfNoPreorden: requiredIf(() => false) },
+            // categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
             // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
             autorizador: { required },
             descripcion: { required },
-            forma: { required },
-            tiempo: { required },
+            forma: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
+            tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
             fecha: { required },
         }
 
@@ -227,6 +242,7 @@ export default defineComponent({
             orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
             orden.descripcion = preordenStore.preorden.justificacion
             orden.pedido = preordenStore.preorden.pedido
+            preordenStore.preorden.listadoProductos.forEach((v) => v.id = v.producto_id)
             orden.listadoProductos = preordenStore.preorden.listadoProductos
             orden.listadoProductos.forEach((item) => {
                 item.facturable = true
@@ -276,11 +292,11 @@ export default defineComponent({
          ******************************************************************************************/
         const btnEliminarFila: CustomActionTable = {
             titulo: 'Eliminar',
-            icono: 'bi-x',
+            icono: 'bi-trash',
             color: 'negative',
             accion: ({ entidad, posicion }) => {
+                //: props.propsTable.rowIndex,
                 eliminar({ posicion })
-                // confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
             },
             visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
         }
@@ -327,10 +343,36 @@ export default defineComponent({
             }
         }
 
-        watch(refItems, () => {
-            console.log('modificacion')
-            console.log(refItems.value)
-        })
+        const btnRegistrarNovedades: CustomActionTable = {
+            titulo: 'Novedades',
+            color: 'primary',
+            icono: 'bi-wrench',
+            accion: async ({ entidad, posicion }) => {
+                ordenCompraStore.idOrden = entidad.id
+                confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
+                    modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
+                })
+            },
+            visible: ({ entidad }) => {
+                return true
+            }
+        }
+
+        const btnEnviarMailProveedor: CustomActionTable = {
+            titulo: 'Enviar al proveedor',
+            color: 'positive',
+            icono: 'bi-envelope-at',
+            accion: async ({ entidad }) => {
+                ordenCompraStore.idOrden = entidad.id
+                await ordenCompraStore.enviarPdf()
+            },
+            visible: ({ entidad }) => entidad.autorizacion_id === 2
+        }
+
+        // watch(refItems, () => {
+        //     console.log('modificacion')
+        //     console.log(refItems.value)
+        // })
 
         // configurar los listados
         empleados.value = listadosAuxiliares.empleados
@@ -339,20 +381,24 @@ export default defineComponent({
         autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
         empleadosAutorizadores.value = listadosAuxiliares.autorizadores
         estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
+        tareas.value = listadosAuxiliares.tareas
 
         return {
             mixin, orden, disabled, accion, v$, acciones,
             configuracionColumnas: configuracionColumnasOrdenesCompras,
             accionesTabla,
             configuracionColumnasDetallesProductos,
+            configuracionColumnasProductos,
             configuracionColumnasItemOrdenCompra,
+            refItems,
             //listados
             empleados,
             categorias,
             proveedores,
             autorizaciones,
+            tareas,
             estados,
-            empleadosAutorizadores,
+            // empleadosAutorizadores,
             opcionesForma,
             opcionesTiempo,
 
@@ -360,13 +406,15 @@ export default defineComponent({
             store,
 
             preorden: preordenStore.preorden,
-
+            modales,
             soloLectura,
 
             //botones de tabla
             btnEliminarFila,
             btnImprimir,
             btnAnularOrden,
+            btnEnviarMailProveedor,
+            btnRegistrarNovedades,
 
             //selector
             refListado,
@@ -391,6 +439,21 @@ export default defineComponent({
             llenarOrden,
             actualizarPreorden,
             actualizarListado,
+            filtrarTareas(val, update) {
+                if (val === '') update(() => tareas.value = listadosAuxiliares.tareas)
+
+                update(() => {
+                    const needle = val.toLowerCase()
+                    tareas.value = listadosAuxiliares.tareas.filter((v) => v.codigo_tarea.toLowerCase().indexOf(needle) > -1)
+                })
+            },
+            filtrarAutorizadores() {
+                let ids_autorizadores = listadosAuxiliares.autorizadores.map((entidad: Empleado) => entidad.id)
+                empleados.value = empleados.value.filter((v: Empleado) => ids_autorizadores.includes(v.id || orden.autorizador))
+            },
+            reestablecerEmpleados() {
+                empleados.value = listadosAuxiliares.empleados
+            },
 
 
             //variables computadas

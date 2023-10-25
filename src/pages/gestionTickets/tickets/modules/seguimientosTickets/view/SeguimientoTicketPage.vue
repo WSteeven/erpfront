@@ -1,9 +1,21 @@
 <template>
   <q-page>
     <div class="text-center text-subtitle2 q-mb-md">
-      Ingreso del seguimiento
+      Ticket {{ ticket.codigo }}
     </div>
+
     <q-card class="rounded-card custom-shadow q-pa-md">
+      <div class="column q-col-gutter-sm q-mb-lg">
+        <div class="col-12">
+          <label class="q-mb-sm block">Asunto</label>
+          <b>{{ ticket.asunto }}</b>
+        </div>
+
+        <div class="col-12">
+          <label class="q-mb-sm block">Descripción</label>
+          <b>{{ ticket.descripcion }}</b>
+        </div>
+      </div>
       <div class="row">
         <div class="col-12 q-mb-md">
           <tabla-filas-dinamicas

@@ -3,7 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proforma"
-    :tab-options="tabOptionsOrdenCompra"
+    :tab-options="tabOptionsProformas"
     tabDefecto="1"
     :filtrar="filtrarProformas"
     :permitirEditar="puedeEditar"
@@ -21,7 +21,7 @@
             <q-input
               v-model="proforma.id"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
+              disable
               :readonly="disabled || soloLectura"
               outlined
               dense
@@ -62,6 +62,38 @@
             <q-input v-model="proforma.created_at" disable outlined dense />
           </div>
 
+          <!-- Copiar proforma -->
+          <div class="col-12 col-md-3 q-mb-xl" v-if="accion === acciones.nuevo">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="proforma.copia_proforma"
+              label="¿Copiar proforma?"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <!-- Campo proforma auxiliar -->
+          <div class="col-12 col-md-3" v-if="proforma.copia_proforma">
+            <label class="q-mb-sm block">Id Proforma</label>
+            <q-input
+              type="number"
+              v-model="proforma.id_aux"
+              placeholder="Obligatorio"
+              hint="Ingresa un numero de proforma y presiona Enter"
+              @keyup.enter="cargarProformaBD"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- Persona que autoriza -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
@@ -75,7 +107,11 @@
               outlined
               :error="!!v$.autorizador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled || soloLectura"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -100,21 +136,20 @@
               options-dense
               dense
               outlined
+              :error="!!v$.autorizacion.$errors.length"
+              error-message="Debes seleccionar una autorizacion"
+              @blur="v$.autorizacion.$touch"
               :disable="disabled || proforma.autorizador !== store.user.id"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
-              <!--
-                :error="!!v$.autorizacion.$errors.length"
-                error-message="Debes seleccionar una autorizacion"
-
-                <template v-slot:error>
-                  <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template> -->
+              <template v-slot:error>
+                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -123,6 +158,34 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <!-- Observacion de autorizacion -->
+          <div
+            v-if="
+              store.user.id === proforma.autorizador_id ||
+              proforma.observacion_aut
+            "
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              autogrow
+              v-model="proforma.observacion_aut"
+              placeholder="Opcional"
+              :disable="
+                disabled ||
+                (soloLectura &&
+                  !(
+                    esCoordinador ||
+                    esActivosFijos ||
+                    store.user.id == proforma.autorizador_id
+                  ))
+              "
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <!-- Cliente -->
@@ -141,7 +204,11 @@
               @filter="filtrarClientes"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled || soloLectura"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value
@@ -164,7 +231,11 @@
               autogrow
               v-model="proforma.descripcion"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :error="!!v$.descripcion.$errors.length"
               outlined
               dense
@@ -189,7 +260,11 @@
               dense
               outlined
               :error="!!v$.forma.$errors.length"
-              :disable="disabled || soloLectura"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :option-label="(v) => v.label"
               :option-value="(v) => v.value"
               emit-value
@@ -221,7 +296,11 @@
               dense
               outlined
               :error="!!v$.tiempo.$errors.length"
-              :disable="disabled || soloLectura"
+              :disable="
+                disabled ||
+                soloLectura ||
+                proforma.autorizador === store.user.id
+              "
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.label"
               :option-value="(v) => v.value"
@@ -241,40 +320,6 @@
                 </div>
               </template>
             </q-select>
-          </div>
-
-          <!-- Observacion de autorizacion -->
-          <div
-            v-if="store.user.id === proforma.per_autoriza_id"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Observacion</label>
-            <q-input
-              autogrow
-              v-model="proforma.observacion_aut"
-              placeholder="Opcional"
-              :disable="
-                disabled ||
-                (soloLectura &&
-                  !(
-                    esCoordinador ||
-                    esActivosFijos ||
-                    store.user.id == proforma.per_autoriza_id
-                  ))
-              "
-              :error="!!v$.observacion_aut.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
           </div>
 
           <!-- Select estado -->
@@ -300,8 +345,21 @@
             </q-select>
           </div>
 
+          <!-- Causa de anulacion -->
+          <div class="col-12 col-md-3 q-mb-md" v-if="proforma.causa_anulacion">
+            <label class="q-mb-sm block">Causa de anulación</label>
+            <q-input
+              v-model="proforma.causa_anulacion"
+              autogrow
+              outlined
+              dense
+              disable
+            >
+            </q-input>
+          </div>
+
           <!-- Modificar IVA -->
-          <div class="col-12 col-md-3 q-mb-xl">
+          <div class="col-12 col-md-3 q-mb-xl" v-if="accion === acciones.nuevo">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="proforma.modificar_iva"
@@ -327,6 +385,36 @@
             </q-input>
           </div>
 
+          <!-- Modificar Descuento -->
+          <div class="col-12 col-md-3 q-mb-xl" v-if="accion === acciones.nuevo||accion === acciones.editar">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="proforma.modificar_descuento"
+              label="¿Aplicar descuento a toda la proforma?"
+              :disable="disabled "
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- DESCUENTO general -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Descuento general</label>
+            <q-input
+              v-model="proforma.descuento_general"
+              outlined
+              dense
+              placeholder="OPCIONAL"
+              hint="INGRESA LA CANTIDAD DE DESCUENTO EN $"
+              type="number"
+              step=".01"
+              :disable="!proforma.modificar_descuento"
+              @update:model-value="actualizarDescuento"
+            >
+            </q-input>
+          </div>
+
+        <!-- {{ proforma.listadoProductos }} -->
+
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table
@@ -335,8 +423,7 @@
               :configuracionColumnas="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  (proforma.autorizador == store.user.id ||
-                    proforma.solicitante == store.user.id))
+                  proforma.solicitante == store.user.id)
                   ? [...configuracionColumnasDetallesProforma, accionesTabla]
                   : configuracionColumnasDetallesProforma
               "
@@ -345,14 +432,14 @@
               :permitirEditarCeldas="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  (proforma.autorizador == store.user.id ||
-                    proforma.solicitante == store.user.id))
+                  proforma.solicitante == store.user.id)
               "
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
+              :hide-header="true"
               :accion1Header="btnAddRow"
               :accion1="btnEliminarFila"
               v-on:fila-modificada="calcularValores"
@@ -373,6 +460,16 @@
                   <q-separator vertical></q-separator>
                   <q-item-section avatar>{{ subtotal }}</q-item-section>
                 </q-item>
+                <q-item>
+                  <q-item-section>Subtotal 0%: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ subtotal_sin_impuestos }}</q-item-section>
+                </q-item>
+                <q-item>
+                  <q-item-section>Subtotal ({{ proforma.iva }} %): </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{ subtotal_con_impuestos }}</q-item-section>
+                </q-item>
 
                 <q-item>
                   <q-item-section class="q-mr-md">Descuento: </q-item-section>
@@ -381,7 +478,7 @@
                 </q-item>
 
                 <q-item>
-                  <q-item-section>IVA ({{proforma.iva}} %): </q-item-section>
+                  <q-item-section>IVA ({{ proforma.iva }} %): </q-item-section>
                   <q-separator vertical></q-separator>
                   <q-item-section avatar>{{ iva }}</q-item-section>
                 </q-item>

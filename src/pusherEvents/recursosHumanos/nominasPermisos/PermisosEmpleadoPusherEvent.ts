@@ -1,3 +1,4 @@
+import { pushEventMesaggeServiceWorker } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 
@@ -20,7 +21,11 @@ export class PermisoEmpleadoPusherEvent {
     pusher.bind('permiso-empleado-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
-
+      pushEventMesaggeServiceWorker({
+        titulo: 'Permisos de Empleados',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+      })
     })
   }
 

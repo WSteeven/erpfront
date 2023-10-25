@@ -51,7 +51,7 @@ import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
-import { descargarArchivoUrl } from 'shared/utils'
+import { convertirNumeroPositivo, descargarArchivoUrl } from 'shared/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
@@ -94,25 +94,25 @@ export default defineComponent({
       await obtenerListados({
         tiposTrabajos: {
           controller: new TipoTrabajoController(),
-          params: { activo: 1 },
+          params: { activo: 1, campos: 'id,descripcion,cliente_id' },
         },
-        tareas: new TareaController(),
+        // tareas: new TareaController(),
         grupos: {
           controller: new GrupoController(),
           params: { campos: 'id,nombre' }
         },
-        clientes: new ClienteController(),
-        coordinadores: {
+        //clientes: new ClienteController(),
+        /*coordinadores: {
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
-        },
-        empleados: {
+        },*/
+        /*empleados: {
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos',
             estado: 1
           }
-        },
+        },*/
         causasIntervenciones: {
           controller: new CausaIntervencionController(),
           params: { tipo_trabajo_id: subtarea.tipo_trabajo },
@@ -377,6 +377,7 @@ export default defineComponent({
     })
 
     return {
+      convertirNumeroPositivo,
       tiempoFormateado,
       convertir,
       v$,

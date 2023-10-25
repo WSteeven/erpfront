@@ -28,6 +28,7 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { LocalStorage } from 'quasar'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
@@ -83,11 +84,12 @@ export default defineComponent({
             estado: 1,
           },
         },
+        autorizaciones: {
+          controller: new AutorizacionController(),
+          params: { campos: 'id,nombre', es_validado: false, es_modulo_rhh:true },
+        },
       })
-      autorizaciones.value =
-        LocalStorage.getItem('autorizaciones') == null
-          ? []
-          : JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      autorizaciones.value = listadosAuxiliares.autorizaciones
       data.empleado = listadosAuxiliares.empleados[0]
       periodos.value = listadosAuxiliares.periodos
     })
@@ -147,7 +149,7 @@ export default defineComponent({
         .then((response) => {
           const responseData = response.data
           if (responseData) {
-            const num_dias = parseInt(responseData.duracion.toString())
+            const num_dias = responseData.duracion != null?  parseInt(responseData.duracion.toString()):0
             vacacion.descuento_vacaciones =
               responseData.duracion != null ? Math.floor(num_dias / 24) : 0
             data.dias_descuento_vacaciones = Math.floor(
@@ -221,8 +223,6 @@ export default defineComponent({
         requiredIf: vacacion.numero_rangos == '1' ? true : false,
         maxValue: maxValue(15),
       },
-
-      solicitud: { required },
     }))
     const v$ = useVuelidate(reglas, vacacion)
     setValidador(v$.value)

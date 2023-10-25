@@ -13,7 +13,7 @@
     >
       <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
-          <img src="~assets/logo.svg" />
+          <img src="~assets/logo.png" />
         </q-avatar>
 
         <q-toolbar-title>Editar fila</q-toolbar-title>
@@ -184,7 +184,7 @@ export default defineComponent({
         )
     )
 
-    // normal
+    // select
     const fieldsSelect = computed(() =>
       props.configuracionColumnas
         .map((fila: ColumnConfig<any>) => {
@@ -301,7 +301,7 @@ export default defineComponent({
         .filter((item) => item.requerido)
         .map((item) => item.field)
 
-      console.log(requeridos)
+      // console.log(requeridos)
       let valido = true
 
       for (let key in fila) {

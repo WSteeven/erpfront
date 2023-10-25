@@ -59,6 +59,8 @@ export default defineComponent({
 
     // obtenerSubtareasPendientesAsignar()
 
+    
+
     return {
       tablero,
       store,
@@ -77,6 +79,7 @@ export default defineComponent({
       verSubtarea,
       fecha,
       subtareasPorAsignar,
+
     }
   },
 })

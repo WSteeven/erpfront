@@ -8,14 +8,14 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     label: 'N°',
     align: 'left',
     sortable: true,
-  }, 
-  // {
-  //   name: 'codigo',
-  //   field: 'codigo',
-  //   label: 'Código',
-  //   align: 'left',
-  //   sortable: true
-  // },
+  },
+  {
+    name: 'categoria',
+    field: 'categoria',
+    label: 'Categoria',
+    align: 'left',
+    sortable: true
+  },
   {
     name: 'producto',
     field: 'producto',
@@ -90,6 +90,13 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     name: 'adicionales',
     field: 'adicionales',
     label: 'Campos adicionales',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'activo',
+    field: 'activo',
+    label: 'Estado',
     align: 'left',
     sortable: true
   },

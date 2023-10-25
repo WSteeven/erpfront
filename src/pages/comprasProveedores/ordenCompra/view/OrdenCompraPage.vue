@@ -9,7 +9,9 @@
     :permitirEditar="puedeEditar"
     :permitirEliminar="false"
     :accion1="btnImprimir"
-    :accion2="btnAnularOrden"
+    :accion2="btnEnviarMailProveedor"
+    :accion3="btnAnularOrden"
+    :accion4="btnRegistrarNovedades"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -59,7 +61,6 @@
               </template>
             </q-select>
           </div>
-
           <!-- Fecha  -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
@@ -79,12 +80,14 @@
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="orden.autorizador"
-              :options="empleadosAutorizadores"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
               dense
               outlined
+              @popup-show="filtrarAutorizadores"
+              @popup-hide="reestablecerEmpleados"
               :error="!!v$.autorizador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura || orden.tiene_preorden"
@@ -99,7 +102,7 @@
                   </q-item-section>
                 </q-item>
               </template>
-              </q-select>
+            </q-select>
           </div>
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.autorizador">
@@ -125,7 +128,7 @@
               <!--
                 :error="!!v$.autorizacion.$errors.length"
                 error-message="Debes seleccionar una autorizacion"
-  
+
                 <template v-slot:error>
                   <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
@@ -170,6 +173,43 @@
               dense
             >
             </q-input>
+          </div>
+
+          <!-- Tarea -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">N° Tarea</label>
+            <q-select
+              v-model="orden.tarea"
+              :options="tareas"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarTareas"
+              hint="Opcional"
+              :disable="disabled || soloLectura || orden.tiene_preorden"
+              :option-label="(v) => v.codigo_tarea + ' - ' + v.titulo"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                  </q-item-section>
+                </q-item> </template
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Proveedor -->
@@ -410,8 +450,20 @@
             </q-select>
           </div>
 
+          <!-- Causa de anulacion -->
+          <div class="col-12 col-md-3 q-mb-md" v-if="orden.causa_anulacion">
+            <label class="q-mb-sm block">Causa de anulación</label>
+            <q-input
+              v-model="orden.causa_anulacion"
+              autogrow
+              outlined
+              dense
+              disable
+            >
+            </q-input>
+          </div>
           <!-- Modificar IVA -->
-          <div class="col-12 col-md-3 q-mb-xl">
+          <div class="col-12 col-md-3 q-mb-xl" v-if="orden.estado != 4">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="orden.modificar_iva"
@@ -437,6 +489,7 @@
             </q-input>
           </div>
           <!-- Configuracion para seleccionar productos -->
+          <!-- {{ orden.listadoProductos }} -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
@@ -449,7 +502,8 @@
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
                     listarProductos({
-                      tipo_busqueda: 'all',
+                      search: criterioBusquedaProducto,
+                      'categoria_id[]': estructuraConsultaCategoria(),
                     })
                   "
                   @blur="
@@ -464,7 +518,7 @@
                 <q-btn
                   @click="
                     listarProductos({
-                      tipo_busqueda: 'all',
+                      search: criterioBusquedaProducto,
                       'categoria_id[]': estructuraConsultaCategoria(),
                     })
                   "
@@ -553,7 +607,7 @@
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListado"
-        :configuracion-columnas="configuracionColumnasDetallesProductos"
+        :configuracion-columnas="configuracionColumnasProductos"
         separador="cell"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
@@ -562,6 +616,9 @@
     </template>
   </tab-layout-filter-tabs2>
   <!-- Modales -->
-  <!-- <modales-entidad :comportamiento="modales"></modales-entidad> -->
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+  ></modales-entidad>
 </template>
 <script src="./OrdenCompraPage.ts"></script>

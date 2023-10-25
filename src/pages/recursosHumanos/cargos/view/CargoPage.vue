@@ -26,6 +26,20 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Estado -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado</label>
+            <q-toggle
+              :label="cargo.estado ? 'ACTIVO' : 'INACTIVO'"
+              v-model="cargo.estado"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
         </div>
       </q-form>
     </template>

@@ -1,16 +1,26 @@
+import { Empresa } from "pages/administracion/empresas/domain/Empresa";
 import { Ref, ref } from "vue";
+import { ordernarListaString } from "./utils";
+import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
+import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta";
+import { Producto } from "pages/bodega/productos/domain/Producto";
+import { Canton } from "sistema/ciudad/domain/Canton";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
    * Variables
    **************************************************************/
   const paises = ref([])
+  const productos = ref([])
   const provincias = ref([])
   const cantones = ref([])
   const parroquias = ref([])
   const empresas = ref([])
   const proveedores = ref([])
   const clientes = ref([])
+  const empleados = ref([])
+  const bancos = ref([])
+  const categorias = ref([])
 
 
   /**************************************************************
@@ -83,6 +93,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       )
     })
   }
+  function ordenarCantones() {
+    cantones.value.sort((a:Canton, b:Canton) => ordernarListaString(a.canton!, b.canton!))
+  }
 
 
   /**
@@ -107,6 +120,16 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     })
   }
 
+  function filtrarProductos(val, update) {
+    if (val === '' || val === undefined) {
+      update(() => productos.value = listadosAuxiliares.productos)
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      if (listadosAuxiliares.productos) productos.value = listadosAuxiliares.productos.filter((v: Producto) => v.nombre!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
 
   /**
    * La función filtra una lista de empresas en función de un valor de búsqueda y actualiza la lista en
@@ -127,10 +150,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     }
     update(() => {
       const needle = val.toLowerCase()
-      if (listadosAuxiliares.empresas) empresas.value = listadosAuxiliares.empresas.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
+      if (listadosAuxiliares.empresas) empresas.value = listadosAuxiliares.empresas.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.nombre_comercial?.toLowerCase().indexOf(needle) > -1)
     })
   }
 
+  function ordenarEmpresas() {
+    empresas.value.sort((a: Empresa, b: Empresa) => ordernarListaString(a.razon_social!, b.razon_social!))
+  }
 
   /**
    * Esta función filtra una lista de proveedores en función de un valor de búsqueda y actualiza la
@@ -156,6 +182,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   }
 
   /* The `filtrarClientes` function is used to filter a list of clients based on a given search value. */
+  clientes.value = listadosAuxiliares.clientes
   function filtrarClientes(val, update) {
     if (val === '') {
       update(() => {
@@ -169,13 +196,57 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     })
   }
 
+  function filtrarEmpleados(val, update) {
+    if (val === '') {
+      update(() => {
+        empleados.value = listadosAuxiliares.empleados
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+
+  function filtrarBancos(val, update) {
+    if (val === '') {
+      update(() => {
+        bancos.value = listadosAuxiliares.bancos
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      bancos.value = listadosAuxiliares.bancos.filter((v: Banco) => v.nombre!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+
+  function filtrarCategoriasProveedor(val, update) {
+    if (val === '') {
+      update(() => categorias.value = listadosAuxiliares.categorias)
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      categorias.value = listadosAuxiliares.categorias.filter((v: CategoriaOferta) => v.nombre!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+  function ordenarCategorias() {
+    categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
+  }
+
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
-    cantones, filtrarCantones,
+    cantones, filtrarCantones,ordenarCantones,
     parroquias, filtrarParroquias,
-    empresas, filtrarEmpresas,
+    empresas, filtrarEmpresas, ordenarEmpresas,
     proveedores, filtrarProveedores,
     clientes, filtrarClientes,
+    empleados, filtrarEmpleados,
+    bancos, filtrarBancos,
+    categorias, filtrarCategoriasProveedor, ordenarCategorias,
+    productos, filtrarProductos,
   }
 }

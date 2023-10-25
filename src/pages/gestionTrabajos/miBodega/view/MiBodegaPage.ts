@@ -54,7 +54,7 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    tareaController.listar({ finalizado: 0 }).then((data) => tareasSource.value = data.result)
+    tareaController.listar({ finalizado: 0, campos: 'id,titulo,codigo_tarea', coordinador_id: authenticationStore.user.jefe_id }).then((data) => tareasSource.value = data.result)
 
     /************
      * Funciones
