@@ -43,7 +43,16 @@ export const configuracionColumnasProductosSeleccionadosDespachado: ColumnConfig
     label: 'Despachado',
     align: 'left',
     sortable: true,
-  }, {
+  },
+  {
+    name: 'solicitante',
+    field: 'solicitante',
+    label: 'Registrado Por',
+    align: 'center',
+    sortable: false,
+    style: 'width:250px'
+  },
+  {
     name: 'acciones',
     field: 'acciones',
     label: 'Acciones',

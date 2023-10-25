@@ -25,7 +25,7 @@
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table borde"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -33,6 +33,7 @@
       'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
       'my-sticky-column-table-dark': $q.dark.isActive,
       'my-sticky-column-table-light': !$q.dark.isActive,
+      'my-sticky-column-first-table': primeraColumnaFija,
       'rounded-header': $q.screen.xs,
       'bg-header-table': mostrarFiltros,
     }"
@@ -40,6 +41,7 @@
     :virtual-scroll-item-size="offset"
     :pagination="pagination"
     no-data-label="Aún no se han agregado elementos"
+    :wrap-cells="ajustarCeldas"
   >
     <!-- wrap-cells -->
     <!--@virtual-scroll="onScroll" -->
@@ -642,12 +644,19 @@
                     >{{ 'RUTA COMPLETADA' }}
                   </q-chip>
 
-                  <q-chip
+                  <!--<q-chip
                     v-if="col.value === 'TICKET TRANSFERIDO'"
                     class="bg-green-1 text-positive"
                   >
-                    {{ 'TICKET TRANSFERIDO' }}
+                    {{ "TICKET TRANSFERIDO" }}
                   </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET PAUSADO'"
+                    class="bg-grey-2 text-grey-8"
+                  >
+                    {{ 'TICKET PAUSADO' }}
+                  </q-chip> -->
                 </div>
 
                 <span
@@ -932,44 +941,43 @@
     <!-- colores en campo calificacion de proveedores -->
     <template #body-cell-estado_calificado="props">
       <q-td :props="props">
-        <q-chip v-if="props.value===estadosCalificacionProveedor.vacio">
-          <q-icon
-            name="bi-circle-fill"
-            color="blue-grey-6"
-            class="q-mr-xs"
-          />
+        <q-chip v-if="props.value === estadosCalificacionProveedor.vacio">
+          <q-icon name="bi-circle-fill" color="blue-grey-6" class="q-mr-xs" />
           {{ props.value }}
         </q-chip>
-        <q-chip v-if="props.value===estadosCalificacionProveedor.pendiente" :class="{'bg-red-2':!$q.dark.isActive}">
-          <q-icon
-            name="bi-circle-fill"
-            color="negative"
-            class="q-mr-xs"
-          />
+        <q-chip
+          v-if="props.value === estadosCalificacionProveedor.pendiente"
+          :class="{ 'bg-red-2': !$q.dark.isActive }"
+        >
+          <q-icon name="bi-circle-fill" color="negative" class="q-mr-xs" />
           {{ props.value }}
         </q-chip>
-        <q-chip v-if="props.value===estadosCalificacionProveedor.parcial" :class="{'bg-yellow-2':!$q.dark.isActive}">
-          <q-icon
-            name="bi-circle-fill"
-            color="warning"
-            class="q-mr-xs"
-          />
+        <q-chip
+          v-if="props.value === estadosCalificacionProveedor.parcial"
+          :class="{ 'bg-yellow-2': !$q.dark.isActive }"
+        >
+          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs" />
           {{ props.value }}
         </q-chip>
-        <q-chip v-if="props.value===estadosCalificacionProveedor.calificado" :class="{'bg-green-1':!$q.dark.isActive}">
-          <q-icon
-            name="bi-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          />
+        <q-chip
+          v-if="props.value === estadosCalificacionProveedor.calificado"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon name="bi-circle-fill" color="positive" class="q-mr-xs" />
           {{ props.value }}
         </q-chip>
-        </q-td>
+      </q-td>
     </template>
     <template #body-cell-facturable="props">
       <q-td :props="props">
-        <q-chip v-if="props.value==true" :class="{'bg-green-1':!$q.dark.isActive}"><q-icon name="bi-toggle-on"/></q-chip>
-        <q-chip v-else :class="{'bg-red-1':!$q.dark.isActive}"><q-icon name="bi-toggle-off"/></q-chip>
+        <q-chip
+          v-if="props.value == true"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+          ><q-icon name="bi-toggle-on"
+        /></q-chip>
+        <q-chip v-else :class="{ 'bg-red-1': !$q.dark.isActive }"
+          ><q-icon name="bi-toggle-off"
+        /></q-chip>
       </q-td>
     </template>
     <!-- corregir esto para que sea dinamico -->
@@ -1005,6 +1013,10 @@
           "
           >DAÑADO</q-chip
         >
+        <q-chip v-if="
+            props.value == estadosCondicionesId.buen_estado ||
+            props.value == estadosCondicionesValue.buen_estado
+          ">BUEN ESTADO</q-chip>
       </q-td>
     </template>
     <!-- devoluciones de bodega -->
@@ -1241,7 +1253,7 @@
     <template #body-cell-observacion="props">
       <q-td :props="props">
         <q-chip
-          v-if="props.value === 'TICKET TRANSFERIDO'"
+          v-if="props.value === 'TICKET REASIGNADO'"
           class="bg-green-1 text-positive"
         >
           <q-icon
@@ -1249,9 +1261,25 @@
             color="positive"
             class="q-mr-xs"
           ></q-icon
-          >{{ 'TICKET TRANSFERIDO' }}
+          >{{ 'TICKET REASIGNADO' }}
         </q-chip>
-        <span v-else>{{ props.value }}</span>
+
+        <q-chip
+          v-if="props.value === 'TICKET PAUSADO'"
+          class="bg-grey-2 text-grey-8"
+        >
+          <q-icon
+            name="bi-pause-circle-fill"
+            color="text-grey-8"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET PAUSADO' }}
+        </q-chip>
+
+        <span
+          v-if="!['TICKET REASIGNADO', 'TICKET PAUSADO'].includes(props.value)"
+          >{{ props.value }}</span
+        >
       </q-td>
     </template>
 
@@ -1327,9 +1355,43 @@
         ></q-icon>
       </q-td>
     </template>
+    <!-- esta en rol -->
+    <template #body-cell-esta_en_rol_pago="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+    <!-- factura -->
+    <template #body-cell-realiza_factura="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
 
-        <!-- esta pagado -->
-        <template #body-cell-pago_couta="props">
+    <!-- esta pagado -->
+    <template #body-cell-pago_couta="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
@@ -1436,9 +1498,20 @@
 }
 
 // Columna estatica ---
+.my-sticky-column-first-table {
+  max-width: 100%;
+  th:first-child,
+  td:first-child {
+    position: sticky;
+    left: 0; /* Cambia 'right' a 'left' para que la primera columna se mantenga estática en el lado izquierdo */
+    z-index: 1;
+    border-right: 1px solid $grey-4; /* Cambia 'border-left' a 'border-right' para mantener el borde en el lado derecho de la primera columna */
+    border-bottom: 1px solid $grey-4;
+    background-color: #fff;
+  }
+}
 .my-sticky-column-table {
   max-width: 100%;
-
   th:last-child,
   td:last-child {
     position: sticky;
@@ -1446,6 +1519,11 @@
     z-index: 1;
     border-left: 1px solid $grey-4;
     border-bottom: 1px solid $grey-4;
+  }
+  /* prevent scrolling behind sticky top row on focus */
+  tbody {
+    /* height of all previous header rows */
+    scroll-margin-top: 48px;
   }
 }
 
@@ -1466,6 +1544,27 @@
 
   td:last-child {
     background-color: #fff;
+  }
+}
+
+.my-sticky-header-column-table {
+  tr th {
+    position: sticky;
+    /* higher than z-index for td below */
+    z-index: 2;
+    /* bg color is important; just specify one */
+  }
+
+  thead tr:first-child th,
+  thead tr:last-child th {
+    top: 0;
+    z-index: 1;
+  }
+
+  tr:first-child th:first-child,
+  tr:last-child th:last-child {
+    /* highest z-index */
+    z-index: 3;
   }
 }
 </style>

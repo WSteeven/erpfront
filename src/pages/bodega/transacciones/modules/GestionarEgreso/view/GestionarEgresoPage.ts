@@ -15,12 +15,19 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesGestionarEgreso } from '../application/ComportamientoModalesGestionarEgreso'
 import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useQuasar } from 'quasar';
+import { useCargandoStore } from 'stores/cargando';
+import { useNotificacionStore } from 'stores/notificacion'
 
 export default defineComponent({
   components: { EssentialTableTabs, ModalEntidad, },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new GestionarEgresoController())
     const { entidad: transaccion, disabled, listado } = mixin.useReferencias()
+
+    //stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const statusLoading = new StatusEssentialLoading()
 
     const transaccionStore = useTransaccionEgresoStore()

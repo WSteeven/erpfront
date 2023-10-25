@@ -82,19 +82,23 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps([
-  'modelValue',
-  'imagen',
-  'disable',
-  'file_extensiones',
-  'error',
-  'alto',
-  'hint',
-  'texto1',
-  'texto2',
-  'texto3',
-  'texto4',
-])
+const props = defineProps({
+  modelValue: String,
+  imagen: String,
+  disable: Boolean,
+  file_extensiones: String,
+  error: Boolean,
+  alto: String,
+  hint: String,
+  texto1: String,
+  texto2: String,
+  texto3: String,
+  texto4: String,
+  comprimir: {
+    type: Boolean,
+    default: true,
+  },
+})
 const emit = defineEmits(['update:modelValue'])
 
 const fileSize = ref()
@@ -109,7 +113,8 @@ const setBase64 = async (file: File) => {
     fileSize.value = file.size
     // console.log('tamaño de imagen_1', fileSize.value)
     const reader = new FileReader()
-    const compressedFile = await compressImage(file)
+    const compressedFile = props.comprimir ? await compressImage(file) : file
+
     // console.log('Imagen comprimida en el archivo', compressedFile)
     reader.readAsDataURL(compressedFile)
     reader.onload = () => emit('update:modelValue', reader.result)

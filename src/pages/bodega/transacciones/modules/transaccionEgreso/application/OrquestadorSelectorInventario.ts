@@ -24,11 +24,11 @@ export function useOrquestadorSelectorItemsEgreso(entidad: Transaccion, endpoint
 
   }
   const selector = useSelector(singleSelector)
-  const listar = () => selector.listar(criterioBusqueda.value)
+  const listar = (params) => selector.listar(criterioBusqueda.value, params)
   const limpiar = () => singleSelector.limpiar()
 
   const seleccionar = (items: Inventario[]) => {
-    console.log(items)
+    // console.log(items)
     let ids: any = []
     ids = entidad.listadoProductosTransaccion.map((entidad: Inventario) => entidad.id)
     const datos = items.filter((v) => !ids.includes(v.id))

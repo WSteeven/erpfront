@@ -2,15 +2,15 @@
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { Ref, defineComponent, ref, watch } from 'vue'
+import { Ref, defineComponent, ref } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
+import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, motivos } from 'config/utils'
+import { acciones, estadosTransacciones, motivos } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -82,7 +82,7 @@ export default defineComponent({
       listar: listarProductos,
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
-    } = useOrquestadorSelectorItemsTransaccion(transaccion, 'inventarios')
+    } = useOrquestadorSelectorItemsEgreso(transaccion, 'inventarios')
 
 
     const usuarioLogueado = store.user
@@ -181,7 +181,7 @@ export default defineComponent({
       // responsable: { requiredIfPedido: requiredIf(transaccion.pedido! > 0) },
       responsable: { required },
       autorizacion: {
-        requiredIfCoordinador: requiredIf(esCoordinador),
+        requiredIfCoordinador: requiredIf(esCoordinador && !store.esBodegueroTelconet),
         requiredIfEsVisibleAut: requiredIf(false)
       },
       observacion_aut: {
@@ -241,6 +241,24 @@ export default defineComponent({
       },
     }
 
+    const botonAnular: CustomActionTable = {
+      titulo: 'Anular',
+      color: 'red',
+      icono: 'bi-x',
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
+          transaccionStore.idTransaccion = entidad.id
+          await transaccionStore.anularEgreso()
+          entidad.estado = transaccionStore.transaccion.estado
+        })
+      },
+      visible: ({ entidad, posicion }) => {
+        // console.log(entidad)
+        // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es administrador y no esta anulada')
+        return store.esAdministrador && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante =='PENDIENTE'
+      }
+
+    }
 
     /**
      * It loads a transaction from the database, and if it fails, it cleans the fields that were
@@ -330,11 +348,20 @@ export default defineComponent({
             v.cantidad = cantidadPendiente
             console.log('hay más en inventario')
           } else {
-            console.log('hay menos en inventario')
+            console.log('hay menos en inventario', v.detalle_id, v.cantidad)
           }
         }
       })
     }
+
+    function seleccionarClientePropietario(val) {
+      const sucursalSeleccionada = opciones_sucursales.value.filter((v: Sucursal) => v.id === val)
+      transaccion.cliente = sucursalSeleccionada[0]['cliente_id']
+
+      buscarListadoPedidoEnInventario()
+    }
+
+
 
     async function buscarListadoPedidoEnInventario() {
       transaccion.listadoProductosTransaccion = []
@@ -414,7 +441,7 @@ export default defineComponent({
     } */
 
     async function recargarSucursales() {
-      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
     }
 
@@ -423,7 +450,7 @@ export default defineComponent({
       await empleadoStore.cargarEmpleado()
       modalesEmpleado.abrirModalEntidad('EmpleadoInfoPage')
     }
-    
+
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
@@ -454,7 +481,7 @@ export default defineComponent({
       //funciones
       recargarSucursales,
       infoEmpleado,
-      
+
 
       //filtros
       filtroTareas,
@@ -522,6 +549,7 @@ export default defineComponent({
       botonEditarCantidad,
       botonEliminar,
       botonImprimir,
+      botonAnular,
       eliminar,
 
       //selector
@@ -532,11 +560,14 @@ export default defineComponent({
 
       limpiarProducto,
       seleccionarProducto,
+      seleccionarClientePropietario,
       configuracionColumnasProductos,
 
       //rol
       rolSeleccionado,
       esBodeguero,
+      esBodegueroTelconet: store.esBodegueroTelconet,
+      store,
       esCoordinador,
 
       llenarTransaccion,
@@ -554,10 +585,14 @@ export default defineComponent({
         opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
       },
       ordenarClientes() {
-        opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+        if (store.esBodegueroTelconet) opciones_clientes.value = opciones_clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
+        else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
       },
       ordenarSucursales() {
-        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+        if (store.esBodegueroTelconet) {
+          const sucursalesTelconet = opciones_sucursales.value.filter((v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1)
+          opciones_sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+        } else opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
       ordenarEmpleados() {
         opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))

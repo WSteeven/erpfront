@@ -4,7 +4,7 @@
     :maximized="$q.screen.xs"
     :full-width="true"
     :full-height="true"
-    :persistent="true"
+    :persistent="persistente"
   >
     <q-card class="bg-transparent rounded-card no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->

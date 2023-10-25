@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasPausas } from 'pages/gestionTrabajos/subtareas/modules/pausasRealizadas/domain/configuracionColumnasPausas'
 import { computed, defineComponent, onMounted, ref } from 'vue'
-import { tabOptionsEstadosTickets, tiposPrioridades, estadosTickets } from 'config/tickets.utils'
+import { tiposPrioridades } from 'config/tickets.utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -47,10 +47,10 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
-    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
+    const { listadosAuxiliares, accion, disabled } = mixin.useReferencias()
+    const { guardar, editar, eliminar, reestablecer, obtenerListados, cargarVista } =
       mixin.useComportamiento()
-    const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
+    // const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
 
     const mixinArchivoTicket = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
 
@@ -145,12 +145,12 @@ export default defineComponent({
       rechazos.value = response.data.results
     }
 
-    async function obtenerCancelados() {
+    /* async function obtenerCancelados() {
       const ruta =
         axios.getEndpoint(endpoints.rechazos_tickets) + '/' + ticket.id
       const response: AxiosResponse = await axios.get(ruta)
       rechazos.value = response.data.results
-    }
+    } */
 
     async function obtenerResponsables(filtros) {
       cargarVista(async () => {

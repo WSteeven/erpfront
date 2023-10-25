@@ -8,6 +8,9 @@ import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 import { useNotificaciones } from './notificaciones';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
+import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -308,6 +311,20 @@ export function stringToArray(listado: string) {
 export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
+export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(function (registration) {
+      registration.active!.postMessage({
+        action: 'notificacionPush',
+        titulo: data.titulo,
+        mensaje: data.mensaje,
+        icono: data.icono,
+        link: data.link,
+        badge: data.badge,
+      })
+    })
+  }
+}
 
 /**
  * Metodo generico para descargar archivos desde una API
@@ -438,7 +455,7 @@ export function formatearFechaSeparador(fecha: string, separador: string, sumarT
 
 export function formatearFechaTexto(fecha: number) {
   const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-  return new Date(fecha).toLocaleDateString('es-Es', opciones)
+  return new Date(fecha).toLocaleDateString('es-Es', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 export function generarColorHexadecimalAleatorio() {
@@ -533,25 +550,77 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
   return false
 }
 
+/**
+ * La función `ordenarEmpleados` toma una lista de empleados y los ordena alfabeticamente según sus apellidos.
+ * @param {Empleado[]} listadoEmpleados - Una matriz de objetos de tipo Empleado.
+ * @returns una variedad ordenada de empleados.
+ */
+export function ordenarEmpleados(listadoEmpleados: Empleado[]) {
+  return listadoEmpleados.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+}
 
 /**
- * NO FUNCIONA
- * La función `removerCerosIzquierdaObjectArray` elimina los ceros iniciales de los valores numéricos
- * en una matriz de objetos.
- * @param objeto - El parámetro `objeto` es un objeto. 
- * @returns una nueva matriz en la que a cada objeto se le quitan los ceros iniciales de sus valores
- * numéricos.
+ * La función calcula el monto del descuento en función del subtotal y el porcentaje de descuento
+ * proporcionado.
+ * @param {number} subtotal - El subtotal es el monto total antes de aplicar cualquier descuento. Es un
+ * valor numérico.
+ * @param {number} porcentaje_descuento - El parámetro "porcentaje_descuento" representa el porcentaje
+ * de descuento que se aplicará al subtotal.
+ * @param {number} decimales - El parámetro "decimales" es el número de decimales al que se redondeará
+ * el resultado.
+ * @returns el importe del descuento calculado como una cadena con el número especificado de decimales.
  */
-// export async function removerCerosIzquierdaFromObject(objeto) {
-//   console.log('antes', objeto)
-//   const newObjeto = {}
-//   for (const [key, value] of Object.entries(objeto)) {
-//     if (!isNaN(value))
-//       newObjeto[key] = parseInt(value, 10).toString()
-//     else
-//       newObjeto[key] = value
-//   }
+export function calcularDescuento(subtotal: number, porcentaje_descuento: number, decimales: number) {
+  return ((subtotal * porcentaje_descuento) / 100).toFixed(decimales)
+}
 
-//   console.log('despues', newObjeto)
-//   return newObjeto
-// }
+/**
+ * La función calcula el monto del IVA (Impuesto al Valor Agregado) en función del subtotal, descuento,
+ * porcentaje de IVA y número de decimales.
+ * @param {number} subtotal - El subtotal es el monto total antes de que se apliquen descuentos o
+ * impuestos. Representa el monto base sobre el cual se realizarán los cálculos.
+ * @param {number} descuento - El parámetro "descuento" representa el monto del descuento aplicado al
+ * subtotal antes de calcular el impuesto.
+ * @param {number} porcentaje_iva - El parámetro "porcentaje_iva" representa el valor porcentual del
+ * IVA (Impuesto al Valor Agregado) a aplicar al subtotal luego de restar el descuento.
+ * @param {number} decimales - El parámetro "decimales" es el número de decimales al que se redondeará
+ * el resultado.
+ * @returns el valor calculado del IVA (Impuesto al Valor Agregado) en base a los parámetros dados.
+ */
+export function calcularIva(subtotal: number, descuento: number, porcentaje_iva: number, decimales: number) {
+  return (((subtotal - descuento) * porcentaje_iva) / 100).toFixed(decimales)
+}
+
+export function calcularSubtotalSinImpuestosLista(val: ItemProforma) {
+  let suma = 0
+  suma += val.grava_iva ? 0 : Number(val.subtotal) || 0
+  suma -= val.grava_iva ? 0 : Number(val.descuento) || 0
+  return suma
+}
+export function calcularSubtotalConImpuestosLista(val: ItemProforma) {
+  let suma = 0
+  suma += val.facturable && val.grava_iva ? Number(val.subtotal) || 0 : 0
+  suma -= val.facturable && val.grava_iva ? Number(val.descuento) || 0 : 0
+  return suma
+}
+
+/**
+ * La función "encontrarUltimoIdListado" toma una lista de objetos y devuelve el id del objeto con el
+ * valor de id más alto.
+ * @param {any} listado - El parámetro "listado" es una matriz de objetos. Cada objeto de la matriz
+ * tiene una propiedad llamada "id" que representa el identificador único del objeto.
+ * @returns el último valor de identificación de la matriz de listado dada.
+ */
+export function encontrarUltimoIdListado(listado: any) {
+  const objMayorId = listado.reduce((max, objeto) => objeto.id > max.id ? objeto : max, listado[0]);
+
+  return objMayorId.id
+}
+
+export function convertirNumeroPositivo(entidad, campo) {
+  if (entidad[campo]) {
+    if (entidad[campo] < 0) {
+      entidad[campo] = -1 * entidad[campo]
+    }
+  }
+}

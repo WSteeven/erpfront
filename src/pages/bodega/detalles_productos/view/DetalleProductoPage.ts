@@ -29,6 +29,9 @@ import { ProcesadorController } from '../modules/computadoras/modules/procesador
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { ValidarListadoSeriales } from '../application/validaciones/ValidarListadoSeriales'
+import { encontrarUltimoIdListado } from 'shared/utils'
+import { useDetalleStore } from 'stores/detalle'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },
@@ -37,12 +40,15 @@ export default defineComponent({
     const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onGuardado, onReestablecer } = mixin.useHooks()
-    const { confirmar } = useNotificaciones()
+    const { confirmar, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+
+    //stores
+    const detalleStore = useDetalleStore()
+    const store = useAuthenticationStore()
 
     //variable aux
     const descripcion = ref()
     const refSeriesModalEditable = ref()
-    const serial = ''
 
     //listas
     const opciones_productos = ref([])
@@ -237,14 +243,62 @@ export default defineComponent({
       tooltip: 'Agregar elemento',
       color: 'positive',
       accion: () => {
-        detalle.seriales.push('')
-        refSeriesModalEditable.value.abrirModalEntidad(serial, detalle.seriales.length - 1)
+        const fila = {
+          id: detalle.seriales.length ? encontrarUltimoIdListado(detalle.seriales) + 1 : 1,
+          serial: '',
+        }
+        detalle.seriales.push(fila)
+        refSeriesModalEditable.value.abrirModalEntidad(fila, detalle.seriales.length - 1)
       }
     }
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => detalle.seriales.splice(posicion, 1))
     }
 
+    /**************************************************************
+     * Botones de tablas
+     **************************************************************/
+    const botonDesactivarDetalle: CustomActionTable = {
+      titulo: 'Desactivar',
+      icono: 'bi-toggle2-off',
+      color: 'negative',
+      tooltip: 'Desactivar detalle',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de desactivar el detalle?', async () => {
+          try {
+            detalleStore.idDetalle = entidad.id
+            const response = await detalleStore.anularDetalle()
+            if (response?.status == 200) {
+              notificarCorrecto('Se ha desactivado correctamente el detalle')
+              listado.value.splice(posicion, 1, response.data.modelo)
+            }
+          } catch (error: any) {
+            notificarError('No se pudo desactivar el detalle!')
+          }
+        })
+      },
+      visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.detalles')
+    }
+    const botonActivarDetalle: CustomActionTable = {
+      titulo: 'Activar',
+      icono: 'bi-toggle2-off',
+      color: 'positive',
+      tooltip: 'Activar detalle',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de activar el detalle?', async () => {
+          try {
+            detalleStore.idDetalle = entidad.id
+            const response = await detalleStore.anularDetalle()
+            if (response?.status == 200) {
+              notificarCorrecto('Se ha activado correctamente el detalle')
+              listado.value.splice(posicion, 1, response.data.modelo)
+            }
+          } catch (error: any) {
+            notificarError('No se pudo activar el detalle!')
+          }
+        })
+      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.detalles')
+    }
     return {
       mixin, detalle, disabled, accion, v$, listado, listadoBackup,
       configuracionColumnas: configuracionColumnasDetallesProductos,
@@ -414,6 +468,9 @@ export default defineComponent({
       columnas: configuracionColumnasSerialesDetalles,
       addRow,
       eliminar,
+
+      botonDesactivarDetalle,
+      botonActivarDetalle,
     }
   }
 })

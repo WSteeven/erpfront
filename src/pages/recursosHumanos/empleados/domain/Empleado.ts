@@ -27,8 +27,12 @@ export class Empleado extends EntidadAuditable {
   permisos: string[] | string // | null
   grupo: number | null
   fecha_ingreso: string | null
+  antiguedad : string | null
+  fecha_vinculacion: string | null
+  modificar_fecha_vinculacion: boolean | null
   fecha_salida: string | null
   tipo_contrato: number | null
+  tipo_contrato_info: string | null
   disponible: boolean
   es_lider: boolean
   tiene_grupo: boolean
@@ -53,6 +57,11 @@ export class Empleado extends EntidadAuditable {
   talla_guantes: string | null
   talla_pantalon: string | null
   genero: string | null
+  esta_en_rol_pago:boolean | null
+  realiza_factura:boolean | null
+  banco_info: string | null
+  acumula_fondos_reserva : boolean | null
+  familiares: any[] |null
 
   constructor() {
     super()
@@ -82,8 +91,12 @@ export class Empleado extends EntidadAuditable {
     this.permisos = []
     this.grupo = null
     this.fecha_ingreso = null
+    this.antiguedad = null
+    this.modificar_fecha_vinculacion = false
+    this.fecha_vinculacion = null
     this.fecha_salida = null
     this.tipo_contrato = null
+    this.tipo_contrato_info=null
     this.disponible = true
     this.es_lider = false
     this.grupo_id = null
@@ -108,5 +121,10 @@ export class Empleado extends EntidadAuditable {
     this.talla_guantes= null
     this.talla_pantalon= null
     this.genero = 'M'
+    this.banco_info = null
+    this.esta_en_rol_pago = true
+    this.acumula_fondos_reserva = false
+    this.realiza_factura = false
+    this.familiares = []
   }
 }

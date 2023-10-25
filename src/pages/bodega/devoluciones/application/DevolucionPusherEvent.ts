@@ -2,6 +2,7 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 import { rolesSistema } from 'config/utils';
+import { pushEventMesaggeServiceWorker } from 'shared/utils';
 
 export class DevolucionPusherEvent {
 
@@ -23,6 +24,13 @@ export class DevolucionPusherEvent {
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
       notificarCorrecto('Tienes una devolución esperando ser atendido')
+
+      //lanzamos la notificación push en el navegador del destinatario
+      pushEventMesaggeServiceWorker({
+        titulo: 'Devolución creada',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+    })
     })
 
     
@@ -32,6 +40,13 @@ export class DevolucionPusherEvent {
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
       notificarCorrecto('Tu devolución ha sido actualizada')
+
+      //lanzamos la notificación push en el navegador del destinatario
+      pushEventMesaggeServiceWorker({
+        titulo: 'Devolución actualizada',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+    })
     })
 
 
@@ -42,6 +57,12 @@ export class DevolucionPusherEvent {
         notificacionStore.agregar(e.notificacion)
         notificacionStore.actualizar()
         notificarCorrecto('Tienes una devolución esperando ser atendida')
+        //lanzamos la notificación push en el navegador del destinatario
+        pushEventMesaggeServiceWorker({
+          titulo: 'Devolución pendiente de ingresar a bodega',
+          mensaje: e.notificacion.mensaje,
+          link: e.notificacion.link,
+      })
       })
     }
   }

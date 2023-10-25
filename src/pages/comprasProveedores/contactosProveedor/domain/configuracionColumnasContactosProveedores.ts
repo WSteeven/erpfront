@@ -17,8 +17,8 @@ export const configuracionColumnasContactosProveedores: ColumnConfig<ContactoPro
     sortable: true
 },
 {
-    name: 'proveedor',
-    field: 'proveedor',
+    name: 'razon_social',
+    field: 'razon_social',
     label: 'Proveedor',
     align: 'left',
     sortable: true,

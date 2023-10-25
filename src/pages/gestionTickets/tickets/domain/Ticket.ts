@@ -14,6 +14,7 @@ export class Ticket extends EntidadAuditable {
   responsable: number | null
   responsable_id: number | null
   departamento_responsable: number | null
+  departamento_solicitante: string | null
   tipo_ticket: number | null
   categoria_tipo_ticket: number | null
   establecer_hora_limite: boolean
@@ -42,6 +43,7 @@ export class Ticket extends EntidadAuditable {
     this.responsable = null
     this.responsable_id = null
     this.departamento_responsable = null
+    this.departamento_solicitante = null
     this.tipo_ticket = null
     this.categoria_tipo_ticket = null
     this.establecer_hora_limite = false

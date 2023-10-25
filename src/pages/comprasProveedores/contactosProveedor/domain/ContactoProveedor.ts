@@ -8,7 +8,9 @@ export class ContactoProveedor extends EntidadAuditable {
   ext: string | null
   correo: string | null
   tipo_contacto: string | null
+  empresa: number | null
   proveedor: number | null
+  razon_social: number | null
 
   constructor() {
     super()
@@ -19,6 +21,8 @@ export class ContactoProveedor extends EntidadAuditable {
     this.ext = null
     this.correo = null
     this.tipo_contacto = null
+    this.empresa = null
     this.proveedor = null
+    this.razon_social = null
   }
 }

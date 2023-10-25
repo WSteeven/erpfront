@@ -114,6 +114,19 @@
         >
         </q-input>
       </div>
+      <!-- Medio Tiempo -->
+      <div class="col-12 col-md-3" v-if="rolpago.es_quincena">
+        <label class="q-mb-sm block">Trabaja Medio tiempo</label>
+        <q-toggle
+          :label="rolpago.medio_tiempo ? 'Medio Tiempo' : 'Tiempo completo'"
+          v-model="rolpago.medio_tiempo"
+          color="primary"
+          keep-color
+          icon="bi-clock-history"
+          unchecked-icon="bi-clock"
+          :disable="disabled"
+        />
+      </div>
       <!-- Sueldo -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Sueldo</label>
@@ -131,24 +144,6 @@
       <div class="col-12 col-md-3" v-if="!rolpago.es_quincena">
         <label class="q-mb-sm block">Anticipo</label>
         <q-input v-model="rolpago.anticipo" type="number" disable outlined dense>
-        </q-input>
-      </div>
-      <div class="col-12 col-md-3" >
-        <label class="q-mb-sm block">Porcentaje Anticipo</label>
-        <q-input
-          v-model="rolpago.porcentaje_anticipo"
-          type="number"
-          :disable="disabled || !rolpago.es_quincena"
-          :error="!!v$.porcentaje_anticipo.$errors.length"
-          @blur="v$.porcentaje_anticipo.$touch"
-          outlined
-          dense
-        >
-          <template v-slot:error>
-            <div v-for="error of v$.porcentaje_anticipo.$errors" :key="error.$uid">
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
         </q-input>
       </div>
       <!-- Documento -->

@@ -200,6 +200,7 @@
           :permitirEliminar="false"
           :mostrarBotones="false"
           :alto-fijo="false"
+          :ajustarCeldas="true"
           :accion1="botonEditarCantidad"
           :accion2="botonEliminar"
         >

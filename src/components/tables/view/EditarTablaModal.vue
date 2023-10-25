@@ -184,7 +184,7 @@ export default defineComponent({
         )
     )
 
-    // normal
+    // select
     const fieldsSelect = computed(() =>
       props.configuracionColumnas
         .map((fila: ColumnConfig<any>) => {
@@ -301,7 +301,7 @@ export default defineComponent({
         .filter((item) => item.requerido)
         .map((item) => item.field)
 
-      console.log(requeridos)
+      // console.log(requeridos)
       let valido = true
 
       for (let key in fila) {

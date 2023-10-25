@@ -12,16 +12,19 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
 import { markRaw, } from 'vue'
 import { ParamsType } from 'config/types'
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 
-export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
+export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>, ArchivoController> {
   private hooks = new HooksSimples()
   private statusEssentialLoading = new StatusEssentialLoading()
 
   constructor(
     entidad: Instanciable,
-    controller: TransaccionSimpleController<T>
+    controller: TransaccionSimpleController<T>,
+    controllerFiles?: TransaccionSimpleController<Archivo>,
   ) {
-    super(entidad, controller, markRaw(new Referencias()))
+    super(entidad, controller, markRaw(new Referencias()), controllerFiles)
   }
 
   private async cargarVista(callback: () => Promise<void>): Promise<void> {
@@ -57,7 +60,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       onBeforeGuardar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeGuardar', callback),
-      onGuardado: (callback: (id?: number) => void) =>
+      onGuardado: (callback: (id?: number, response_data?:any) => void) =>
         this.hooks.bindHook('onGuardado', callback),
       onBeforeConsultar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeConsultar', callback),
@@ -203,8 +206,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
       //console.log(this.entidad)
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
+      // console.log(this.entidad)
+      // console.log(copiaEntidad)
       this.reestablecer()
-      this.hooks.onGuardado(copiaEntidad.id)
+      this.hooks.onGuardado(copiaEntidad.id,response.data )
       return copiaEntidad
       /* const stop = watchEffect(() => {
         // console.log('dentrode  watch')
@@ -229,19 +234,30 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   /**
    * Funcion para eliminar un archivo relacionado a un modelo
    */
-  private async eliminarArchivo(data:T, callback?:()=>void) {
-     this.notificaciones.confirmar('¿Está seguro que desea eliminar?', ()=>{
-      if(data.id===null){
+  private async eliminarArchivo(data: T, callback?: () => void) {
+    this.notificaciones.confirmar('¿Está seguro que desea eliminar?', () => {
+      if (data.id === null) {
         return this.notificaciones.notificarAdvertencia('No se puede eliminar el recurso con id null')
       }
-
-      // this.controller.eliminar
-     })
+      this.controllerFiles?.eliminarFile(data.id, this.argsDefault).then(({ response }) => {
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+        this.eliminarElementoListaArchivosActual(data)
+        this.reestablecer()
+        if (callback) callback()
+      }).catch((error) => {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, this.notificaciones)
+        } else {
+          this.notificaciones.notificarError(error.mensaje)
+        }
+      })
+    })
   }
   /**
    * Funcion para listar todos los archivos relacionados a un modelo
    */
-  private async listarArchivos(id:number, params?: ParamsType, append = false) {
+  private async listarArchivos(id: number, params?: ParamsType, append = false) {
     this.statusEssentialLoading.activar()
     try {
       const { result } = await this.controller.listarFiles(id, params)
@@ -257,27 +273,22 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   /**
    * Aqui se guardan los archivos
-   * @param data 
-   * @param agregarAlListado 
-   * @param params 
-   * @returns 
+   * @param data
+   * @param agregarAlListado
+   * @param params
+   * @returns
    */
-  private async guardarArchivos(id, data: T, params?: ParamsType): Promise<any> {
+  private async guardarArchivos(id:number, data: T, params?: ParamsType): Promise<any> {
 
     this.statusEssentialLoading.activar()
     try {
-      const { response } = await this.controller.guardarFiles(
-        id,
-        data,
-        {
-          ...params,
-          ...this.argsDefault
-        }
-      )
+      const { response } = await this.controller.guardarFiles(id,data)
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
-      this.agregarElementoListadoArchivosActual(response.data.modelo)
+      // this.agregarElementoListadoArchivosActual(response.data.modelo)
+      // console.log(response)
 
+      return response
     } catch (error: any) {
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion

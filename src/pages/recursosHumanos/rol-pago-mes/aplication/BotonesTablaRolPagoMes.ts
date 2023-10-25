@@ -37,12 +37,12 @@ export const useBotonesTablaRolPagoMes = (
       const estanFinalizadas = await verificarTodasRolPagoFinalizadas(
         entidad.id
       )
-      await FinalizarRolPago(
-        entidad.id
-      )
-      if (!estanFinalizadas)
+      if (!estanFinalizadas.estan_finalizadas)
         return notificarAdvertencia(
           'El rol de pago aún tiene roles de empleados pendientes de FINALIZAR, REALIZAR o EJECUTAR.'
+        )
+        await FinalizarRolPago(
+          entidad.id
         )
 
 
@@ -52,10 +52,25 @@ export const useBotonesTablaRolPagoMes = (
 
     },
   }
+  const btnRefrescar: CustomActionTable = {
+    titulo: '',
+    icono: 'bi-arrow-clockwise',
+    color: 'positive',
+    accion: async ({ entidad, posicion }) => {
+     actualizarRolPago(entidad.id)
+    },
+  }
 
   function eliminarElemento(posicion: number): void {
     if (posicion >= 0) listado.value.splice(posicion, 1)
   }
+async function actualizarRolPago(idRolPago:number){
+  const axios = AxiosHttpRepository.getInstance()
+  const ruta = endpoints.actualizar_rol_pago
+  return notificarCorrecto(
+    'El rol de pago ha sido Actualizado.'
+  )
+}
 async function FinalizarRolPago(idRolPago: number)  {
   const axios = AxiosHttpRepository.getInstance()
   const ruta = axios.getEndpoint(
@@ -80,6 +95,7 @@ async function FinalizarRolPago(idRolPago: number)  {
 
   return {
     btnFinalizarRolPago,
+    btnRefrescar
   }
 }
 

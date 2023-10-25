@@ -14,16 +14,59 @@
           default-opened
         >
           <div class="row q-col-gutter-sm q-pa-sm">
-            <!--Proveedor -->
+            <!--Empresa -->
             <div class="col-12 col-md-3">
-              <label-abrir-modal
-                v-if="mostrarLabelModal"
-                label="Proveedor"
-                @click="modales.abrirModalEntidad('ProveedorPage')"
-              />
-              <label v-else class="q-mb-sm block"
-                >Proveedor (Razón social)</label
+              <label class="q-mb-sm block">Razón Social</label>
+              <q-select
+                v-model="contacto.empresa"
+                :options="empresas"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                use-input
+                input-debounce="0"
+                @filter="filtrarEmpresas"
+                @update:model-value="obtenerEmpresa"
+                :error="!!v$.empresa.$errors.length"
+                hint="Agrega elementos desde el panel de empresas"
+                error-message="Debes seleccionar una empresa"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.razon_social"
+                emit-value
+                map-options
               >
+                <template v-slot:error>
+                  <div v-for="error of v$.empresa.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
+                      <q-item-label caption
+                        >{{ scope.opt.identificacion }} |{{
+                          scope.opt.nombre_comercial
+                        }}</q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <!--Proveedor -->
+            <div class="col-12 col-md-3" v-if="false">
+              <label class="q-mb-sm block">Proveedor (Razón social)</label>
               <q-select
                 v-model="contacto.proveedor"
                 :options="proveedores"
@@ -37,7 +80,7 @@
                 input-debounce="0"
                 @filter="filtrarProveedores"
                 @update:model-value="obtenerProveedor"
-                :error="!!v$.proveedor.$errors.length"
+                @popup-hide="reestablecerListadoProveedores"
                 hint="Agrega elementos desde el panel de proveedores"
                 error-message="Debes seleccionar un proveedor"
                 :option-value="(v) => v.id"
@@ -55,11 +98,6 @@
                     </q-item-section>
                   </q-item>
                 </template>
-                <template v-slot:error>
-                  <div v-for="error of v$.proveedor.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -69,26 +107,39 @@
                 </template>
               </q-select>
             </div>
-            <!-- sucursal -->
-            <div class="col-12 col-md-3" v-if="proveedor.sucursal">
-              <label class="q-mb-sm block">Sucursal</label>
+            <!-- identificacion-->
+            <div class="col-12 col-md-3" v-if="empresa.identificacion">
+              <label class="q-mb-sm block">Identificacion/RUC</label>
               <q-input
-                v-model="proveedor.sucursal"
+                mask="#############"
+                v-model="empresa.identificacion"
                 disable
                 outlined
                 dense
               >
               </q-input>
             </div>
+            <!-- sucursal -->
+            <div class="col-12 col-md-3" v-if="proveedor.sucursal">
+              <label class="q-mb-sm block">Sucursal</label>
+              <q-input v-model="proveedor.sucursal" disable outlined dense>
+              </q-input>
+            </div>
+            <!-- correo-->
+            <div class="col-12 col-md-3" v-if="empresa.correo">
+              <label class="q-mb-sm block">Correo</label>
+              <q-input
+                v-model="empresa.correo"
+                disable
+                autogrow
+                outlined
+                dense
+              ></q-input>
+            </div>
             <!-- celular -->
             <div class="col-12 col-md-3" v-if="proveedor.celular">
               <label class="q-mb-sm block">Celular</label>
-              <q-input
-                v-model="proveedor.celular"
-                disable
-                outlined
-                dense
-              >
+              <q-input v-model="proveedor.celular" disable outlined dense>
               </q-input>
             </div>
             <!-- ubicacion -->
@@ -96,6 +147,7 @@
               <label class="q-mb-sm block">Ubicación</label>
               <q-input
                 v-model="proveedor.ubicacion"
+                autogrow
                 disable
                 outlined
                 dense
@@ -128,8 +180,11 @@
                 emit-value
                 map-options
               >
-              <template v-slot:error>
-                  <div v-for="error of v$.tipo_contacto.$errors" :key="error.$uid">
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.tipo_contacto.$errors"
+                    :key="error.$uid"
+                  >
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -153,7 +208,7 @@
                 outlined
                 dense
               >
-              <template v-slot:error>
+                <template v-slot:error>
                   <div v-for="error of v$.nombres.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
@@ -170,7 +225,7 @@
                 :error="!!v$.apellidos.$errors.length"
                 outlined
                 dense
-              ><template v-slot:error>
+                ><template v-slot:error>
                   <div v-for="error of v$.apellidos.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
@@ -188,18 +243,17 @@
                 :error="!!v$.celular.$errors.length"
                 outlined
                 dense
-              ><template v-slot:error>
+                ><template v-slot:error>
                   <div v-for="error of v$.celular.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
-            </q-input>
+              </q-input>
             </div>
             <!-- telefono-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Telefono</label>
               <q-input
-                mask="##########"
                 v-model="contacto.ext"
                 hint="Número de telefono o extensión"
                 placeholder="Opcional"
@@ -218,11 +272,12 @@
                 :error="!!v$.correo.$errors.length"
                 outlined
                 dense
-              ><template v-slot:error>
+                ><template v-slot:error>
                   <div v-for="error of v$.correo.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
-                </template></q-input>
+                </template></q-input
+              >
             </div>
           </div>
         </q-expansion-item>
@@ -233,7 +288,10 @@
     :comportamiento="modales"
     @guardado="guardado"
   ></modales-entidad>
-  <modal-entidad :comportamiento="modales" :confirmarCerrar="false"></modal-entidad>
+  <modal-entidad
+    :comportamiento="modales"
+    :confirmarCerrar="false"
+  ></modal-entidad>
 </template>
 
 <script src="./ContactoProveedorPage.ts"></script>

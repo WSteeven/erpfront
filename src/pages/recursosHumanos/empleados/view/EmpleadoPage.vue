@@ -2,9 +2,11 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :accion1Header="btnImprimirEmpleados"
     titulo-pagina="Empleados"
     :puedeFiltrar="false"
     :puedeExportar="true"
+    :ajustarCeldas="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -114,10 +116,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.identificacion.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.identificacion.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -191,17 +190,12 @@
                 :disable="disabled"
                 :error="!!v$.correo_personal.$errors.length"
                 @blur="v$.correo_personal.$touch"
-                @update:model-value="
-                  (v) => (empleado.correo_personal = v.toLowerCase())
-                "
+                @update:model-value="(v) => (empleado.correo_personal = v.toLowerCase())"
                 outlined
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.correo_personal.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.correo_personal.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -230,18 +224,13 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_sangre.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.tipo_sangre.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -268,18 +257,13 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.estado_civil.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.estado_civil.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -331,23 +315,15 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="empleado.fecha_nacimiento"
+                        :options="optionsFecha"
                         :mask="maskFecha"
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Cerrar"
-                            color="primary"
-                            flat
-                          />
+                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -413,9 +389,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -447,9 +421,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -483,6 +455,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="empleado.foto_url"
+                :comprimir="true"
                 :alto="'400px'"
                 @update:model-value="(data) => (empleado.foto_url = data)"
               ></selector-imagen>
@@ -511,9 +484,7 @@
                 </div>
                 <!-- Vive con discapacitados -->
                 <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Convive con personas discapacitadas</label
-                  >
+                  <label class="q-mb-sm block">Convive con personas discapacitadas</label>
                   <q-toggle
                     :label="empleado.vive_con_discapacitados ? 'SI' : 'NO'"
                     v-model="empleado.vive_con_discapacitados"
@@ -554,17 +525,22 @@
                 </div>
                 <!-- Coordenadas -->
                 <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block"
-                    >Coordenadas del lugar donde vive</label
-                  >
+                  <label class="q-mb-sm block">Coordenadas del lugar donde vive</label>
                   <q-input
                     type="tel"
                     v-model="empleado.coordenadas"
-                    placeholder="Opcional"
+                    :placeholder="accion === 'EDITAR' ? 'Obligatorio' : 'Opcional'"
                     :disable="disabled"
+                    :error="!!v$.coordenadas.$errors.length"
+                    @blur="v$.coordenadas.$touch"
                     outlined
                     dense
                   >
+                    <template v-slot:error>
+                      <div v-for="error of v$.coordenadas.$errors" :key="error.$uid">
+                        <div class="error-msg">{{ error.$message }}</div>
+                      </div>
+                    </template>
                   </q-input>
                 </div>
                 <!-- Talla de zapato -->
@@ -717,14 +693,53 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
             </div>
-
+            <!-- Acumula fondos de reserva -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">¿Acumula fondos de reserva?</label>
+              <q-toggle
+                :label="
+                  empleado.acumula_fondos_reserva
+                    ? 'Acumula Fondos de Reserva'
+                    : 'No Acumula Fondos de Reserva'
+                "
+                v-model="empleado.acumula_fondos_reserva"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
+            <!-- Estado -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">¿Esta Enrolado?</label>
+              <q-toggle
+                :label="empleado.esta_en_rol_pago ? 'Enrolado' : 'No enrolado'"
+                v-model="empleado.esta_en_rol_pago"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">¿Factura?</label>
+              <q-toggle
+                :label="empleado.realiza_factura ? 'Factura' : 'No factura'"
+                v-model="empleado.realiza_factura"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
             <!-- Area -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Area</label>
@@ -754,9 +769,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -785,18 +798,13 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.departamento.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.departamento.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -832,9 +840,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -861,9 +867,7 @@
                 emit-value
                 map-options
               >
-                <template
-                  v-slot:option="{ itemProps, opt, selected, toggleOption }"
-                >
+                <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                   <q-item v-bind="itemProps">
                     <q-item-section>
                       {{ opt.name }}
@@ -884,9 +888,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -913,18 +915,13 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_contrato.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.tipo_contrato.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -951,18 +948,13 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.nivel_academico.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.nivel_academico.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -982,23 +974,15 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="empleado.fecha_ingreso"
+                        :options="optionsFecha"
                         :mask="maskFecha"
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Cerrar"
-                            color="primary"
-                            flat
-                          />
+                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -1015,6 +999,46 @@
                 </template>
               </q-input>
             </div>
+            <div class="col-12 col-md-3 q-mb-xl">
+              <q-checkbox
+                class="q-mt-lg q-pt-md"
+                v-model="empleado.modificar_fecha_vinculacion"
+                label="Modificar fecha Vinculacion"
+                :disable="disabled"
+                outlined
+                dense
+              ></q-checkbox>
+            </div>
+            <!-- Fecha Vinculacion -->
+            <div class="col-12 col-md-3" v-if="empleado.modificar_fecha_vinculacion">
+              <label class="q-mb-sm block">Fecha de vinculacion</label>
+              <q-input
+                v-model="empleado.fecha_vinculacion"
+                placeholder="Opcional"
+                :disable="disabled || soloLectura"
+                readonly
+                outlined
+                dense
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                      <q-date
+                        v-model="empleado.fecha_vinculacion"
+                        :options="optionsFecha"
+                        :mask="maskFecha"
+                        today-btn
+                      >
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+
             <!-- Fecha Salida -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Fecha de Salida</label>
@@ -1028,23 +1052,10 @@
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date
-                        v-model="empleado.fecha_salida"
-                        :mask="maskFecha"
-                        today-btn
-                      >
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                      <q-date v-model="empleado.fecha_salida" :mask="maskFecha" today-btn>
                         <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Cerrar"
-                            color="primary"
-                            flat
-                          />
+                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -1102,9 +1113,7 @@
                 </template>
                 <template v-slot:no-option>
                   <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
                   </q-item>
                 </template>
               </q-select>
@@ -1130,6 +1139,19 @@
                 </template>
               </q-input>
             </div>
+            <!-- Supa-->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Supa</label>
+              <q-input
+                v-model="empleado.supa"
+                placeholder="Opcional"
+                type="number"
+                :disable="disabled"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
 
             <!-- Firma del empleado -->
             <div class="col-12 col-md-3">
@@ -1137,6 +1159,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="empleado.firma_url"
+                :comprimir="false"
                 :alto="'80px'"
                 @update:model-value="(data) => (empleado.firma_url = data)"
               ></selector-imagen>
@@ -1181,25 +1204,49 @@
                 autogrow
                 outlined
                 dense
-              >
-<<<<<<< Updated upstream
-=======
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.observacion.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
->>>>>>> Stashed changes
-              </q-input>
+              />
+            </div>
+          </div>
+        </q-expansion-item>
+        <q-expansion-item
+          class="overflow-hidden q-mb-md expansion"
+          label="Familiares"
+          header-class="text-bold bg-header-collapse"
+          default-opened
+        >
+          <div class="row q-col-gutter-sm q-pa-sm">
+            <div class="col-12 col-md-12">
+              <essential-table
+                ref="refFamiliares"
+                titulo="Familiares"
+                :configuracionColumnas="columnasFamiliares"
+                :datos="empleado.familiares"
+                :accion1Header="abrirModalFamiliares"
+                :accion1="btnConsultarFamiliar"
+                :accion2="btnEditarFamiliar"
+                :accion3="btnEliminarFamiliar"
+                :permitirBuscar="false"
+                :permitirConsultar="false"
+                :permitirEditar="false"
+                :permitirEliminar="false"
+                :mostrarBotones="false"
+                :mostrarCantidadElementos="false"
+                :permitirEditarModal="false"
+                :modalMaximized="false"
+                :alto-fijo="false"
+                :mostrarFooter="false"
+              ></essential-table>
             </div>
           </div>
         </q-expansion-item>
       </q-form>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+    @guardado="(data) => guardado(data)"
+    :mixin-modal="mixinFamiliares"
+  ></modales-entidad>
 </template>
 
 <script src="./EmpleadoPage.ts" />

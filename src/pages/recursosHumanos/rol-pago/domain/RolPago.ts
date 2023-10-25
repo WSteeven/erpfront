@@ -12,10 +12,17 @@ export class RolPago extends EntidadAuditable {
   descuento_ley_info: number | null
   concepto_ingreso_info: string | null
   descuento_general_info: string | null
+  medio_tiempo:boolean|null
   multa_info: string | null
   descuento_general: number | null
   descuento_ley: number | null
   multa: number | null
+  fondos_reserva: number | null
+  extension_cobertura_salud: number | null
+  prestamo_hipotecario: number | null
+  prestamo_quirorafario: number | null
+  prestamo_empresarial: number | null
+  supa: number | null
   decimo_tercero: number |null
   decimo_cuarto: number| null
   total_ingreso: number | null
@@ -31,11 +38,12 @@ export class RolPago extends EntidadAuditable {
   egresos: any | null
   roles: any | null
   dias_permiso_sin_recuperar: number | null
+  tipo_contrato : number | null
   estado: string | null
   tieneDocumento: boolean | null
   rol_pago_id : number | null
   anticipo: string | null
-  iess: string | null
+  iess: number | null
   es_quincena : boolean | null
 porcentaje_anticipo: number | null
   constructor() {
@@ -57,6 +65,12 @@ porcentaje_anticipo: number | null
     this.decimo_cuarto = null
     this.descuento_ley = null
     this.multa = null
+    this.fondos_reserva = null
+    this.extension_cobertura_salud = null
+    this.prestamo_hipotecario=null
+    this.prestamo_quirorafario=null
+    this.prestamo_empresarial= null
+    this.supa = null
     this.ingreso = null
     this.egreso = null
     this.total_ingreso = null
@@ -70,12 +84,14 @@ porcentaje_anticipo: number | null
     this.egresos = null
     this.roles = null
     this.dias_permiso_sin_recuperar = null
+    this.tipo_contrato = null
     this.estado = null
     this.tieneDocumento = false
     this.rol_pago_id = null
     this.anticipo = null
     this.iess = null
     this.es_quincena = false
+    this.medio_tiempo = false
     this.porcentaje_anticipo = null
   }
 }

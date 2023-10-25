@@ -30,11 +30,12 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { maskFecha, tabAutorizarGasto, estadosGastos } from 'config/utils'
+import { maskFecha, tabAutorizarGasto, estadosGastos, convertir_fecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],
@@ -88,7 +89,9 @@ export default defineComponent({
         ? true
         : false*/
     })
-
+    onConsultado(()=>{
+      esFactura.value = gasto.tiene_factura!=null?gasto.tiene_factura:true;
+    })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
         return false
@@ -96,15 +99,15 @@ export default defineComponent({
       if (gasto.sub_detalle == null) {
         return false
       }
-      if(parseInt(gasto.detalle !== null ? gasto.detalle : '') === 24){
+      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 24) {
         return true
       }
-      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6 ) {
+      if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -212,10 +215,10 @@ export default defineComponent({
         required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1),
       },
       kilometraje: {
-        required:  requiredIf(() => esCombustibleEmpresa.value  ),
+        required: requiredIf(() => esCombustibleEmpresa.value),
       },
       vehiculo: {
-        required:  requiredIf(() =>esCombustibleEmpresa.value ),
+        required: requiredIf(() => esCombustibleEmpresa.value),
       },
       observacion: {
         required,
@@ -238,8 +241,8 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         autorizacionesEspeciales: {
-          controller: new UsuarioAutorizadoresController(),
-          params: { campos: 'id,name', estado: 1 },
+          controller: new EmpleadoRoleController(),
+          params: {roles: ['AUTORIZADOR']},
         },
         proyectos: {
           controller: new ProyectoController(),
@@ -376,8 +379,10 @@ export default defineComponent({
         )
       } else {
         sabadoAnterior = convertir_fecha(
-          new Date(today.setDate(today.getDate() - ((today.getDay() + 1) % 7)))
-        )
+          //new Date(today.setDate(today.getDate() - ((today.getDay()+1) % 7)))
+          new Date(today.setDate(today.getDate() - ((today.getDay()) % 7)))
+
+          )
       }
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
@@ -394,15 +399,7 @@ export default defineComponent({
       return fecha
     }
     // - Filtro Lugares
-    function convertir_fecha(fecha: Date) {
-      const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
-      const month =
-        fecha.getMonth() + 1 < 10
-          ? '0' + (fecha.getMonth() + 1)
-          : fecha.getMonth() + 1
-      const year = fecha.getFullYear()
-      return year + '/' + month + '/' + day
-    }
+
     function filtrarCantones(val, update) {
       if (val === '') {
         update(() => {
@@ -520,8 +517,10 @@ export default defineComponent({
         const subdetalleEncontrado = listadoSubdetalles.value.find(
           (v) => v.id === id_subdetalle
         )
+        gasto.num_comprobante = null
         if (!subdetalleEncontrado.tiene_factura) {
           tieneFactura = false
+          gasto.factura= null
           break
         }
       }
@@ -577,8 +576,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250

@@ -3,6 +3,20 @@ import { Empresa } from "./Empresa";
 
 export const configuracionColumnasEmpresas: ColumnConfig<Empresa>[]=[
     {
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha Creación',
+        align:'left',
+        sortable:true
+    },
+    {
+        name: 'updated_at',
+        field: 'updated_at',
+        label: 'Ultima Modificación',
+        align:'left',
+        sortable:true
+    },
+    {
         name: 'identificacion',
         field: 'identificacion',
         label: 'Identificación',
@@ -20,13 +34,6 @@ export const configuracionColumnasEmpresas: ColumnConfig<Empresa>[]=[
         name: 'razon_social',
         field: 'razon_social',
         label: 'Razón Social',
-        align:'left',
-        sortable:true
-    },
-    {
-        name: 'telefono',
-        field: 'telefono',
-        label: 'Telefono',
         align:'left',
         sortable:true
     },

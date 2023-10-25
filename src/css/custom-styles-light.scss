@@ -5,7 +5,7 @@
   }
 
   .bg-body {
-    background-color: $grey-3;
+    background-color: $grey-2;
   }
 
   .bg-body-table {
@@ -96,6 +96,11 @@
   // Toggle
   .toggle-button {
     border: 1px solid $positive;
+    background-color: #fff;
+  }
+
+  .toggle-button-primary {
+    border: 1px solid $primary;
     background-color: #fff;
   }
 

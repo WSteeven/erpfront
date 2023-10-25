@@ -18,8 +18,8 @@ export class LoginController {
       const existeYEsArreglo = typeof (roles) === 'object' && roles
 
       //if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
-      console.log(roles)
-      console.log(existeYEsArreglo)
+      // console.log(roles)
+      // console.log(existeYEsArreglo)
 
       // if (typeof usuario.cargo === 'string' && [cargosSistema.tecnico_lider, cargosSistema.tecnico_secretario].includes(usuario.cargo)) {
       if (roles?.includes(rolesSistema.tecnico_lider)) {

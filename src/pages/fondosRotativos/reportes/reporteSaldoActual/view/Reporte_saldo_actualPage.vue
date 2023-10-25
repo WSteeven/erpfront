@@ -144,6 +144,10 @@
           <q-icon name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm"></q-icon
           >PDF</q-btn
         >
+        <q-btn color="warning" @click="cortar_saldo()" v-if="store.can('puede.ver.acreditacion_semana') ">
+          <q-icon name="bi-scissors" size="xs" class="q-mr-sm"></q-icon
+          >Cortar Saldo </q-btn
+        >
       </q-card-actions>
     </q-card>
   </q-page>

@@ -20,27 +20,36 @@ import { opcionesTipoContacto } from "config/utils_compras_proveedores";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { ComportamientoModalesContactosProveedor } from "../application/ComportamientoModalesContactosProveedor";
 import { useContactoProveedorStore } from "stores/comprasProveedores/contactoProveedor";
+import { EmpresaController } from "pages/administracion/empresas/infraestructure/EmpresaController";
+import { Empresa } from "pages/administracion/empresas/domain/Empresa";
+import { useAuthenticationStore } from "stores/authentication";
 
 
 export default defineComponent({
     components: { TabLayout, ModalEntidad, },
-    setup(props, {emit}) {
+    setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(ContactoProveedor, new ContactoProveedorController())
         const { entidad: contacto, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
-        const { onConsultado, onReestablecer,onGuardado } = mixin.useHooks()
+        const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
+        //variables
+        const store = useAuthenticationStore()
         const contactoProveedorStore = useContactoProveedorStore()
         const StatusLoading = new StatusEssentialLoading()
         const proveedor = reactive(new Proveedor())
+        const empresa: Empresa = reactive(new Empresa())
 
         const modales = new ComportamientoModalesContactosProveedor()
+        const proveedoresAux = ref([])
 
 
         cargarVista(async () => {
             obtenerListados({
+                empresas: new EmpresaController(),
                 proveedores: new ProveedorController(),
             })
+            proveedoresAux.value = listadosAuxiliares.proveedores
         })
         /**************************************************************
          * Hooks
@@ -51,9 +60,9 @@ export default defineComponent({
         onReestablecer(() => {
             proveedor.hydrate(new Proveedor())
         })
-        onGuardado(()=>{
+        onGuardado(() => {
             emit('cerrar-modal', false)
-            emit('guardado')
+            emit('guardado', 'ContactoProveedorPage')
         })
 
         /**************************************************************
@@ -65,7 +74,8 @@ export default defineComponent({
             celular: { required },
             correo: { required },
             tipo_contacto: { required },
-            proveedor: { required },
+            empresa: { required },
+            // proveedor: { required },
         }
         const v$ = useVuelidate(reglas, contacto)
         setValidador(v$.value)
@@ -73,6 +83,16 @@ export default defineComponent({
         /**************************************************************
          * Funciones
          **************************************************************/
+        async function obtenerEmpresa(empresaId: number | null) {
+            if (empresaId !== null) {
+                StatusLoading.activar()
+                const { result } = await new EmpresaController().consultar(empresaId)
+                empresa.hydrate(result)
+                StatusLoading.desactivar()
+                listadosAuxiliares.proveedores = listadosAuxiliares.proveedores.filter((v: Proveedor) => v.empresa == empresaId)
+            }
+            contacto.proveedor=null
+        }
         async function obtenerProveedor(proveedorId: number | null) {
             if (proveedorId !== null) {
                 StatusLoading.activar()
@@ -80,6 +100,9 @@ export default defineComponent({
                 proveedor.hydrate(result)
                 StatusLoading.desactivar()
             }
+        }
+        function reestablecerListadoProveedores() {
+            listadosAuxiliares.proveedores = proveedoresAux.value
         }
 
 
@@ -91,14 +114,16 @@ export default defineComponent({
                 // console.log(entidad.id)
                 contactoProveedorStore.idcontacto = entidad.id
                 modales.abrirModalEntidad('ContactoProveedorLogPage')
-            }
+            },
+            visible:()=>store.esAdministrador
         }
 
-        onBeforeUnmount(()=>{
+        onBeforeUnmount(() => {
             contactoProveedorStore.idcontacto = null
         })
-        
+
         const {
+            empresas, filtrarEmpresas,
             proveedores, filtrarProveedores,
         } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -112,14 +137,17 @@ export default defineComponent({
             //modales
             modales,
 
+            empresa,
             proveedor,
             //listados
-            proveedores,
             opcionesTipoContacto,
+            proveedores, filtrarProveedores,
+            empresas, filtrarEmpresas,
 
             //funciones
-            filtrarProveedores,
+            obtenerEmpresa,
             obtenerProveedor,
+            reestablecerListadoProveedores,
             botonVerLogs,
 
         }

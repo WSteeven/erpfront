@@ -19,7 +19,11 @@ export class CambiarEstadoRolPago {
     return this.solicitud(idRolPago, data)
   }
   async ejecutarMasivo(data: UnwrapRef<any>) {
-    return this.solicitudMasiva(data)
+    return this.solicitudMasiva(data,'actualizar_masivo')
+  }
+  async finalizarMasivo(data: UnwrapRef<any>) {
+
+    return this.solicitudMasiva(data,'finalizar_masivo')
   }
 
   async realizar(idRolPago: number, movilizacion: any) {
@@ -56,11 +60,11 @@ export class CambiarEstadoRolPago {
       this.cargando.desactivar()
     }
   }
-  async solicitudMasiva(data?: UnwrapRef<any>) {
+  async solicitudMasiva(data?: UnwrapRef<any>,$tipo?: string) {
 
     try {
       const ruta =
-        this.axios.getEndpoint(endpoints.rol_pago) +'/actualizar_masivo'
+        this.axios.getEndpoint(endpoints.rol_pago) +'/'+$tipo
 
       this.cargando.activar()
 

@@ -3,6 +3,10 @@ export const iconos = {
     label: 'PEDIDO',
     icono: 'bi-file-earmark-text'
   },
+  preingreso: {
+    label: 'PREINGRESO DE MATERIALES',
+    icono: 'bi-file-earmark-text'
+  },
   devolucion: {
     label: 'DEVOLUCION',
     icono: 'bi-box-seam-fill'
@@ -54,5 +58,9 @@ export const iconos = {
   proforma: {
     label: 'PROFORMA',
     icono: 'bi-receipt-cutoff'
+  },
+  proveedor: {
+    label: 'PROVEEDOR',
+    icono: 'bi-stars',
   },
 }

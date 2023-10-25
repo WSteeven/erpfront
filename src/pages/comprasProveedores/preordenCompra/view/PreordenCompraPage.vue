@@ -6,7 +6,7 @@
     :tab-options="tabOptionsPreordenCompra"
     tabDefecto="PENDIENTE"
     :filtrar="filtrarPreordenes"
-    :permitirEditar="puedeEditar"
+    :permitirEditar="false"
     :accion1="btnHacerOrdenCompra"
     :accion2="btnAnularPreorden"
     
@@ -96,14 +96,16 @@
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="preorden.autorizador"
-              :options="empleadosAutorizadores"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
               dense
               outlined
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarEmpleados(empleados)"
               :disable="disabled||soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options

@@ -1,7 +1,6 @@
 import { SelectorController } from '../infraestructure/SelectorController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { notificarMensajesError } from 'shared/utils'
 
 export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)

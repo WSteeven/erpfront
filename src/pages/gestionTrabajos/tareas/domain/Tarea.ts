@@ -8,8 +8,6 @@ export class Tarea extends EntidadAuditable {
   medio_notificacion: string | null
   tiene_subtareas: boolean
 
-  // Foreign keys
-
   // Trabajo ----
   codigo_trabajo: string | null
   codigo_tarea_cliente: string | null
@@ -72,6 +70,7 @@ export class Tarea extends EntidadAuditable {
   finalizado: boolean
   ubicacion_trabajo: string
   ruta_tarea: number | null
+  metraje_tendido: number | null
 
   constructor() {
     super()
@@ -127,6 +126,7 @@ export class Tarea extends EntidadAuditable {
     this.hora_inicio_trabajo = null
     this.hora_fin_trabajo = null
     this.tarea = null
+    this.metraje_tendido = null
 
     // Foreign keys
     this.tipo_trabajo = null

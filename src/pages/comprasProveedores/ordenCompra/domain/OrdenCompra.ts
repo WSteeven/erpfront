@@ -9,6 +9,7 @@ export class OrdenCompra extends EntidadAuditable {
     descripcion: string | null
     preorden: number | null
     pedido: number | null
+    tarea: number | null
     forma: string | null
     tiempo: string | null
     estado: number | null
@@ -34,6 +35,7 @@ export class OrdenCompra extends EntidadAuditable {
         this.descripcion = null
         this.preorden = null
         this.pedido = null
+        this.tarea = null
         this.forma = null
         this.created_at = null
         this.tiempo = null
