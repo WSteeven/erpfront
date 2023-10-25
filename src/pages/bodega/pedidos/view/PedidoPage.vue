@@ -10,7 +10,8 @@
     :accion1="botonDespachar"
     :accion2="botonAnularAutorizacion"
     :accion3="botonCorregir"
-    :accion4="botonImprimir"
+    :accion4="botonMarcarComoCompletado"
+    :accion5="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -104,7 +105,10 @@
               autogrow
               v-model="pedido.justificacion"
               placeholder="Obligatorio"
-              :disable="(disabled  && !store.esAdministrador)|| (soloLectura&&!store.esAdministrador)"
+              :disable="
+                (disabled && !store.esAdministrador) ||
+                (soloLectura && !store.esAdministrador)
+              "
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
@@ -483,6 +487,12 @@
               outlined
               dense
             >
+            </q-input>
+          </div>
+          <!-- observacion bodega -->
+          <div v-if="pedido.observacion_bodega" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observacion del bodeguero</label>
+            <q-input autogrow v-model="pedido.observacion_bodega" disable outlined dense>
             </q-input>
           </div>
           <!-- Configuracion de opciones para que puedan seleccionar los detalles en el listado -->

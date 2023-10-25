@@ -5,6 +5,7 @@ export class Pedido extends EntidadAuditable {
     fecha_limite: string | null
     observacion_aut: string | null
     observacion_est: string | null
+    observacion_bodega: string | null
     solicitante: number | null
     solicitante_id: number | null
     responsable: number | null
@@ -42,6 +43,7 @@ export class Pedido extends EntidadAuditable {
         this.fecha_limite = null
         this.observacion_aut = null
         this.observacion_est = null
+        this.observacion_bodega = null
         this.solicitante = null
         this.solicitante_id = null
         this.responsable = null

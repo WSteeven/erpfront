@@ -337,7 +337,7 @@ export default defineComponent({
             },
             visible: ({ entidad }) => {
                 if (tabSeleccionado.value == 1) {
-                    return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
+                    return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id||store.esCompras)
                 }
                 return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
             }
