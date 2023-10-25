@@ -4,6 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Orden de Compra"
     :tab-options="tabOptionsOrdenCompra"
+    :ajustarCeldas="true"
     tabDefecto="1"
     :filtrar="filtrarOrdenes"
     :permitirEditar="puedeEditar"
@@ -54,9 +55,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -69,6 +68,34 @@
               placeholder="Obligatorio"
               disable
               :readonly="disabled || soloLectura"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <!-- Copiar orden de compra -->
+          <div class="col-12 col-md-3 q-mb-xl" v-if="accion === acciones.nuevo">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="orden.copia_orden"
+              label="¿Copiar orden de compra?"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <!-- Campo proforma auxiliar -->
+          <div class="col-12 col-md-3" v-if="orden.copia_orden">
+            <label class="q-mb-sm block">Id Orden de Compra</label>
+            <q-input
+              type="number"
+              v-model="orden.id_aux"
+              placeholder="Obligatorio"
+              hint="Ingresa un numero de OC y presiona Enter"
+              @keyup.enter="cargarOrdenBD"
+              :disable="disabled || soloLectura || orden.autorizador === store.user.id"
               outlined
               dense
             >
@@ -97,9 +124,7 @@
               map-options
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -116,9 +141,7 @@
               dense
               outlined
               :disable="
-                disabled ||
-                orden.tiene_preorden ||
-                orden.autorizador !== store.user.id
+                disabled || orden.tiene_preorden || orden.autorizador !== store.user.id
               "
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
@@ -136,9 +159,7 @@
                 </template> -->
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -204,9 +225,7 @@
                 </q-item> </template
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -239,18 +258,14 @@
                     <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
                     <q-item-label caption
                       >Sucursal:
-                      {{
-                        scope.opt.sucursal || scope.opt.direccion
-                      }}</q-item-label
+                      {{ scope.opt.sucursal || scope.opt.direccion }}</q-item-label
                     >
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -280,9 +295,7 @@
               :option-label="(v) => v.nombre"
               emit-value
               map-options
-              ><template
-                v-slot:option="{ itemProps, opt, selected, toggleOption }"
-              >
+              ><template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                 <q-item v-bind="itemProps">
                   <q-item-section>
                     {{ opt.nombre }}
@@ -298,9 +311,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -347,9 +358,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
@@ -380,9 +389,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
@@ -394,10 +401,7 @@
           </div>
 
           <!-- Observacion de autorizacion -->
-          <div
-            v-if="store.user.id === orden.per_autoriza_id"
-            class="col-12 col-md-3"
-          >
+          <div v-if="store.user.id === orden.per_autoriza_id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
@@ -417,10 +421,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.observacion_aut.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -453,13 +454,7 @@
           <!-- Causa de anulacion -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.causa_anulacion">
             <label class="q-mb-sm block">Causa de anulación</label>
-            <q-input
-              v-model="orden.causa_anulacion"
-              autogrow
-              outlined
-              dense
-              disable
-            >
+            <q-input v-model="orden.causa_anulacion" autogrow outlined dense disable>
             </q-input>
           </div>
           <!-- Modificar IVA -->
@@ -506,9 +501,7 @@
                       'categoria_id[]': estructuraConsultaCategoria(),
                     })
                   "
-                  @blur="
-                    criterioBusquedaProducto === '' ? limpiarProducto() : null
-                  "
+                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
                   outlined
                   dense
                 >
@@ -570,12 +563,7 @@
           <!-- Tabla con el resumen -->
           <div class="col-12">
             <div class="row q-col-xs-4 q-col-xs-offset-8 flex-end justify-end">
-              <q-list
-                bordered
-                separator
-                dense
-                v-if="orden.listadoProductos.length > 0"
-              >
+              <q-list bordered separator dense v-if="orden.listadoProductos.length > 0">
                 <q-item>
                   <q-item-section>Subtotal: </q-item-section>
                   <q-separator vertical></q-separator>
@@ -616,9 +604,6 @@
     </template>
   </tab-layout-filter-tabs2>
   <!-- Modales -->
-  <modales-entidad
-    :comportamiento="modales"
-    :persistente="false"
-  ></modales-entidad>
+  <modales-entidad :comportamiento="modales" :persistente="false"></modales-entidad>
 </template>
 <script src="./OrdenCompraPage.ts"></script>
