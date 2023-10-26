@@ -55,6 +55,7 @@ import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
@@ -65,6 +66,8 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const storeRecursosHumanos = useRecursosHumanosStore()
+    const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
+
 
     /***********
      * Mixin
@@ -340,10 +343,11 @@ export default defineComponent({
     const btnHabilitarEmpleado: CustomActionTable = {
       titulo: '',
       icono: 'bi-toggle2-on',
-      color: 'warning',
+      color: 'positive',
+      tooltip: 'Habilitar',
       visible: ({entidad}) => {
         return (
-          entidad.estado
+          !entidad.estado
         )
       },
       accion: ({ entidad }) => {
@@ -353,11 +357,12 @@ export default defineComponent({
     }
     const btnDesHabilitarEmpleado: CustomActionTable = {
       titulo: '',
-      icono: 'bi-toggle2-off"',
-      color: 'warning',
+      icono: 'bi-toggle2-off',
+      color: 'negative',
+      tooltip: 'DesHabilitar',
       visible: ({entidad}) => {
         return (
-          !entidad.estado
+          entidad.estado
         )
       },
       accion: ({ entidad }) => {
@@ -372,7 +377,7 @@ export default defineComponent({
         { id: id,estado:estado }
       )
       const response: AxiosResponse = await axios.get(ruta)
-       notificarCorrecto(
+      notificarCorrecto(
         estado?'Ha Habilitado empleado':'Ha deshabilitado empleado'
       )
     }
@@ -493,7 +498,5 @@ export default defineComponent({
     }
   },
 })
-function notificarCorrecto(arg0: string) {
-  throw new Error('Function not implemented.')
-}
+
 
