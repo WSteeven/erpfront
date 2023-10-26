@@ -54,6 +54,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
@@ -336,7 +337,45 @@ export default defineComponent({
         axios.getEndpoint(endpoints.imprimir_reporte_general_empleado)
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
     }
-
+    const btnHabilitarEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-toggle2-on',
+      color: 'warning',
+      visible: ({entidad}) => {
+        return (
+          entidad.estado
+        )
+      },
+      accion: ({ entidad }) => {
+        HabilitarEmpleado(entidad.id,false)
+        entidad.estado= true
+      },
+    }
+    const btnDesHabilitarEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-toggle2-off"',
+      color: 'warning',
+      visible: ({entidad}) => {
+        return (
+          !entidad.estado
+        )
+      },
+      accion: ({ entidad }) => {
+        HabilitarEmpleado(entidad.id,true)
+        entidad.estado=false
+      },
+    }
+    async function HabilitarEmpleado(id: number, estado:boolean)  {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(
+        endpoints.habilitar_empleado,
+        { id: id,estado:estado }
+      )
+      const response: AxiosResponse = await axios.get(ruta)
+       notificarCorrecto(
+        estado?'Ha Habilitado empleado':'Ha deshabilitado empleado'
+      )
+    }
     return {
       mixin,
       empleado,
@@ -371,6 +410,8 @@ export default defineComponent({
       btnEditarFamiliar,
       btnEliminarFamiliar,
       btnImprimirEmpleados,
+      btnHabilitarEmpleado,
+      btnDesHabilitarEmpleado,
       modales,
       guardado,
       //  FILTROS
@@ -452,3 +493,7 @@ export default defineComponent({
     }
   },
 })
+function notificarCorrecto(arg0: string) {
+  throw new Error('Function not implemented.')
+}
+
