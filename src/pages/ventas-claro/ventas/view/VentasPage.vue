@@ -160,7 +160,6 @@
               placeholder="Opcional"
               type="textarea"
               disable
-              :error="!!v$.orden_id.$errors.length"
               autogrow
               outlined
               dense
@@ -229,6 +228,20 @@
                   </q-popup-proxy>
                 </q-icon>
               </template>
+            </q-input>
+          </div>
+           <!-- Comision -->
+           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Comision</label>
+            <q-input
+              v-model="comision_vendedor"
+              placeholder="Opcional"
+              type="textarea"
+              disable
+              autogrow
+              outlined
+              dense
+            >
             </q-input>
           </div>
         </div>

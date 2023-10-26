@@ -156,7 +156,7 @@ const comision_vendedor = ref(0)
       })
     }
     watchEffect(() => {
-      if (ventas.producto != null) {
+      if (ventas.producto != null && ventas.forma_pago != null) {
         obtenerProducto()
         obtenerComision()
       }
@@ -174,6 +174,7 @@ const comision_vendedor = ref(0)
       productos,
       maskFecha,
       precio_producto,
+      comision_vendedor,
       filtrarProductos,
       filtrarVendedores,
     }
