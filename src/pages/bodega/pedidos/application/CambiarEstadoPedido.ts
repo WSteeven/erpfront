@@ -10,6 +10,10 @@ export class CambiarEstadoPedido {
     this.axios = AxiosHttpRepository.getInstance()
   }
 
+  async marcarCompletado(pedidoId:number, mensaje){
+    return this.solicitud('/marcar-completado/', pedidoId, {motivo: mensaje})
+  }
+
   async anular(pedidoId: number, mensaje: string) {
     return this.solicitud('/anular/', pedidoId, { motivo: mensaje })
   }

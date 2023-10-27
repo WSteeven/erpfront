@@ -220,8 +220,8 @@ export default defineComponent({
           LocalStorage.set('lastActivity', new Date().getTime().toString())
         })
         .start()
-      const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
-      // const LIMIT = 1 * 15 * 1000 // 5 segundos for logout session
+      // const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
+      const LIMIT = 4 * 60 * 60 * 1000 // 4 horas for logout session
       setInterval(() => {
         if (authenticationStore.user) {
           let la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()

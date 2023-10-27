@@ -223,7 +223,37 @@ export default defineComponent({
       },
       visible: ({ entidad, posicion }) => {
         // console.log(posicion, entidad)
-        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente ||store.esActivosFijos) || store.esAdministrador
+        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
+      }
+    }
+    const botonMarcarComoCompletado: CustomActionTable = {
+      titulo: 'Marcar Completado',
+      color: 'green-6',
+      icono: 'bi-check-circle-fill',
+      tooltip: 'Marcar pedido como completado',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de marcar el pedido como completado?', () => {
+          console.log(entidad, posicion)
+          const data: CustomActionPrompt = {
+            titulo: 'Observación',
+            mensaje: 'Ingresa el motivo de marcar como completo el pedido',
+            accion: async (data) => {
+              try {
+                const { result } = await new CambiarEstadoPedido().marcarCompletado(entidad.id, data)
+                if (result.estado === estadosTransacciones.completa) {
+                  notificarCorrecto('Pedido marcado completado con éxito')
+                  listado.value.splice(posicion, 1)
+                }
+              } catch (e: any) {
+                notificarError('No se pudo completar el pedido, debes ingresar un motivo para la anulación')
+              }
+            }
+          }
+          prompt(data)
+        })
+      },
+      visible: ({ entidad, posicion }) => {
+        return tabSeleccionado.value === estadosTransacciones.parcial && store.esBodeguero && store.esCoordinadorBodega
       }
     }
     const botonEditarCantidad: CustomActionTable = {
@@ -338,6 +368,7 @@ export default defineComponent({
       botonImprimir,
       botonDespachar,
       botonAnularAutorizacion,
+      botonMarcarComoCompletado,
 
       //stores
       store,
