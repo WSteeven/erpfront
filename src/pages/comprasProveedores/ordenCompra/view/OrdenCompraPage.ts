@@ -170,7 +170,7 @@ export default defineComponent({
       autorizador: { required },
       descripcion: { required },
       forma: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-      tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
+      tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras && (orden.forma!='CONTADO' && orden.forma!='TRANSFERENCIA') )},
       fecha: { required },
     }
 
