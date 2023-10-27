@@ -67,6 +67,8 @@ export default defineComponent({
     const ticket = ticketStore.filaTicket
     const refArchivoSeguimiento = ref()
     const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id && ticket.estado === estadosTickets.EJECUTANDO
+    const position = ref(0)
+    const scrollAreaRef = ref()
 
     /************
      * Init
@@ -123,6 +125,16 @@ export default defineComponent({
       refEditarModal.value.abrir()
     }
 
+    function siguiente() {
+      scrollAreaRef.value.setScrollPercentage('horizontal', position.value, 300)
+      position.value = position.value < 1 ? position.value + 0.1 : position.value
+    }
+
+    function anterior() {
+      scrollAreaRef.value.setScrollPercentage('horizontal', position.value, 300)
+      position.value = position.value > 0 ? position.value - 0.1 : position.value
+    }
+
     return {
       v$,
       refEditarModal,
@@ -149,6 +161,10 @@ export default defineComponent({
       subirArchivos,
       mostrarBotonSubir: computed(() => refArchivoSeguimiento.value?.quiero_subir_archivos),
       permitirSubir,
+      siguiente,
+      anterior,
+      position,
+      scrollAreaRef,
     }
   }
 })
