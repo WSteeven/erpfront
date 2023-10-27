@@ -54,6 +54,8 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
+import { AxiosResponse } from 'axios'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
@@ -64,6 +66,8 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const storeRecursosHumanos = useRecursosHumanosStore()
+    const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
+
 
     /***********
      * Mixin
@@ -336,7 +340,47 @@ export default defineComponent({
         axios.getEndpoint(endpoints.imprimir_reporte_general_empleado)
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
     }
-
+    const btnHabilitarEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-toggle2-on',
+      color: 'positive',
+      tooltip: 'Habilitar',
+      visible: ({entidad}) => {
+        return (
+          !entidad.estado
+        )
+      },
+      accion: ({ entidad }) => {
+        HabilitarEmpleado(entidad.id,false)
+        entidad.estado= true
+      },
+    }
+    const btnDesHabilitarEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-toggle2-off',
+      color: 'negative',
+      tooltip: 'DesHabilitar',
+      visible: ({entidad}) => {
+        return (
+          entidad.estado
+        )
+      },
+      accion: ({ entidad }) => {
+        HabilitarEmpleado(entidad.id,true)
+        entidad.estado=false
+      },
+    }
+    async function HabilitarEmpleado(id: number, estado:boolean)  {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(
+        endpoints.habilitar_empleado,
+        { id: id,estado:estado }
+      )
+      const response: AxiosResponse = await axios.get(ruta)
+      notificarCorrecto(
+        estado?'Ha Habilitado empleado':'Ha deshabilitado empleado'
+      )
+    }
     return {
       mixin,
       empleado,
@@ -371,6 +415,8 @@ export default defineComponent({
       btnEditarFamiliar,
       btnEliminarFamiliar,
       btnImprimirEmpleados,
+      btnHabilitarEmpleado,
+      btnDesHabilitarEmpleado,
       modales,
       guardado,
       //  FILTROS
@@ -452,3 +498,5 @@ export default defineComponent({
     }
   },
 })
+
+
