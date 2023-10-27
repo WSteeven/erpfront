@@ -753,6 +753,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.ventas'),
         },
+        {
+          title: 'Chargeback',
+          link: 'chargebacks',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.chargebacks'),
+        },
       ]
     },
     {

@@ -1055,6 +1055,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/chargebacks',
+        name: 'chargebacks',
+        component: () =>
+          import(
+            'pages/ventas-claro/chargeBack/view/ChargebackPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

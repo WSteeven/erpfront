@@ -308,4 +308,6 @@ export const endpoints = {
    vendedor: new Endpoint('ventas-claro/vendedor'),
    ventas: new Endpoint('ventas-claro/ventas'),
    obtener_comision: new Endpoint('ventas-claro/obtener-comision'),
+   tipo_chargebacks: new Endpoint('ventas-claro/tipo-chargeback'),
+   chargebacks: new Endpoint('ventas-claro/chargebacks')
 }
