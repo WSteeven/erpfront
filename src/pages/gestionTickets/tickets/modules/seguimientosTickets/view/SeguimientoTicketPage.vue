@@ -16,25 +16,67 @@
       </div>
     </div>
 
-    <div id="responsables" class="row items-center">
-      <div class="col-12 col-md-1">
-        <div class="text-grey-7 text-subtitle2 text-shadow">
-          Seleccione un responsable para filtrar actividades
+    <div
+      id="responsables"
+      class="row items-center bg-blue-5 rounded-header q-pt-md"
+    >
+      <div class="col-12">
+        <div class="row q-px-md items-center">
+          <div class="col-12 col-sm-6 col-md-6 q-mb-sm">
+            <div class="text-white text-subtitle2 text-shadow">
+              Seleccione un responsable para filtrar las actividades
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-6 q-mb-md">
+            <div
+              class="row"
+              :class="{
+                'justify-center': $q.screen.xs,
+                'justify-end': !$q.screen.xs,
+              }"
+            >
+              <q-btn
+                icon="bi-chevron-left"
+                color="primary"
+                class="bg-primary q-pr-md q-mr-sm"
+                label="Anterior"
+                @click="anterior"
+                rounded
+                no-caps
+                dense
+              ></q-btn>
+              <q-btn
+                icon-right="bi-chevron-right"
+                color="primary"
+                class="bg-primary q-pl-md"
+                label="Siguiente"
+                @click.stop="siguiente"
+                rounded
+                no-caps
+                dense
+              ></q-btn>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="col-12 col-md-11 background-shadodw bg-grey-7d rounded">
-        <q-scroll-area style="height: 250px; max-width: 100%" class="q-pa-sm">
+      <div class="col-12 rounded">
+        <q-scroll-area
+          ref="scrollAreaRef"
+          style="height: 200px; max-width: 100%"
+          class="q-pa-sm"
+        >
           <div class="row q-gutter-md items-center no-wrap">
             <q-card
-              class="custom-shadow2 rounded-card bg-grey-7 text-white cursor-pointer q-card-hover q-card-press"
+              class="custom-shadow2 rounded-card bg-primary text-white cursor-pointer q-card-hover q-card-press"
               style="width: 180px"
             >
               <q-card-section class="column q-gutter-sm items-center">
-                <q-icon name="boy" size="100px"></q-icon>
+                <q-icon name="boy" size="50px"></q-icon>
                 <span class="text-primary">.</span>
                 <b>Todas las actividades</b>
-                <span>...</span>
+                <span class="text-primary">...</span>
               </q-card-section>
             </q-card>
 
@@ -43,93 +85,171 @@
               style="width: 180px"
             >
               <q-card-section class="column q-gutter-sm items-center">
-                <q-icon name="boy" size="100px" color="grey"></q-icon>
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
                 <span class="text-primary">Recursos Humanos</span>
-                <b>Glenda Mendoza</b>
+                <b>1. Glenda Mendoza</b>
                 <span>1 hora con 30 minutos</span>
               </q-card-section>
             </q-card>
 
-            <q-icon name="bi-chevron-right" size="md" color="grey-6"></q-icon>
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
 
             <q-card
               class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
               style="width: 180px"
             >
               <q-card-section class="column q-gutter-sm items-center">
-                <q-icon name="boy" size="100px" color="grey"></q-icon>
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
                 <span class="text-primary">Informática</span>
-                <b>Wilson Córdova</b>
+                <b>2. Wilson Córdova</b>
                 <span>1 hora con 30 minutos</span>
               </q-card-section>
             </q-card>
 
-            <q-icon name="bi-chevron-right" size="md" color="grey-6"></q-icon>
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
 
             <q-card
               class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
               style="width: 180px"
             >
               <q-card-section class="column q-gutter-sm items-center">
-                <q-icon name="boy" size="100px" color="grey"></q-icon>
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
                 <span class="text-primary">Recursos Humanos</span>
-                <b>Glenda Mendoza</b>
+                <b>3. Glenda Mendoza</b>
                 <span>1 hora con 30 minutos</span>
               </q-card-section>
             </q-card>
 
-            <q-icon name="bi-chevron-right" size="md" color="grey-6"></q-icon>
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
 
             <q-card
               class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
               style="width: 180px"
             >
               <q-card-section class="column q-gutter-sm items-center">
-                <q-icon name="boy" size="100px" color="grey"></q-icon>
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
                 <span class="text-primary">Recursos Humanos</span>
-                <b>Glenda Mendoza</b>
+                <b>4. Glenda Mendoza</b>
                 <span>1 hora con 30 minutos</span>
               </q-card-section>
             </q-card>
 
-            <q-icon name="bi-chevron-right" size="md" color="grey-6"></q-icon>
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
 
             <q-card
               class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
               style="width: 180px"
             >
               <q-card-section class="column q-gutter-sm items-center">
-                <q-icon name="boy" size="100px" color="grey"></q-icon>
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
                 <span class="text-primary">Recursos Humanos</span>
-                <b>Glenda Mendoza</b>
+                <b>5. Glenda Mendoza</b>
                 <span>1 hora con 30 minutos</span>
               </q-card-section>
             </q-card>
 
-            <q-icon name="bi-chevron-right" size="md" color="grey-6"></q-icon>
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
 
             <q-card
               class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
               style="width: 180px"
             >
               <q-card-section class="column q-gutter-sm items-center">
-                <q-icon name="boy" size="100px" color="grey"></q-icon>
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
                 <span class="text-primary">Recursos Humanos</span>
-                <b>Glenda Mendoza</b>
+                <b>6. Glenda Mendoza</b>
                 <span>1 hora con 30 minutos</span>
               </q-card-section>
             </q-card>
 
-            <q-icon name="bi-chevron-right" size="md" color="grey-6"></q-icon>
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
 
             <q-card
               class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
               style="width: 180px"
             >
               <q-card-section class="column q-gutter-sm items-center">
-                <q-icon name="boy" size="100px" color="grey"></q-icon>
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
                 <span class="text-primary">Recursos Humanos</span>
-                <b>Glenda Mendoza</b>
+                <b>7. Glenda Mendoza</b>
+                <span>1 hora con 30 minutos</span>
+              </q-card-section>
+            </q-card>
+
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
+
+            <q-card
+              class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
+              style="width: 180px"
+            >
+              <q-card-section class="column q-gutter-sm items-center">
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
+                <span class="text-primary">Recursos Humanos</span>
+                <b>8. Glenda Mendoza</b>
+                <span>1 hora con 30 minutos</span>
+              </q-card-section>
+            </q-card>
+
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
+
+            <q-card
+              class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
+              style="width: 180px"
+            >
+              <q-card-section class="column q-gutter-sm items-center">
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
+                <span class="text-primary">Recursos Humanos</span>
+                <b>9. Glenda Mendoza</b>
+                <span>1 hora con 30 minutos</span>
+              </q-card-section>
+            </q-card>
+
+            <q-icon
+              name="bi-caret-right-fill"
+              size="md"
+              color="primary"
+            ></q-icon>
+
+            <q-card
+              class="custom-shadow2 no-border rounded-card cursor-pointer q-card-hover q-card-press"
+              style="width: 180px"
+            >
+              <q-card-section class="column q-gutter-sm items-center">
+                <q-icon name="boy" size="50px" color="grey"></q-icon>
+                <span class="text-primary">Médico</span>
+                <b>10. Jeferson Freire</b>
                 <span>1 hora con 30 minutos</span>
               </q-card-section>
             </q-card>
@@ -145,7 +265,7 @@
           Tiempo total del ticket
         </div>
       </div> -->
-
+      {{ actividadesRealizadas }}
       <div class="row">
         <div class="col-12 q-mb-md">
           <tabla-filas-dinamicas
@@ -194,9 +314,7 @@
 <style lang="scss" scoped>
 #responsables {
   position: relative;
-  bottom: -6px;
-  // left: 20px;
-  z-index: 10;
+  bottom: -10px;
 }
 
 .background-shadow {
