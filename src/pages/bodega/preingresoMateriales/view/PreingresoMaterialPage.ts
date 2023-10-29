@@ -148,12 +148,12 @@ export default defineComponent({
         }
 
         function calcularFila(data: any) {
-            console.log(data)
+            // console.log(data)
 
         }
 
         function guardarFilaEditada(fila: any) {
-            console.log(fila)
+            // console.log(fila)
         }
         /*******************************************************************************************
          * Botones de tabla
