@@ -3,7 +3,7 @@ import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/con
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { accionesTabla, departamentos, tiposJornadas } from 'config/utils'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 
@@ -18,21 +18,21 @@ import { Bar, Pie } from 'vue-chartjs'
 
 // Logica y controladores
 import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
-import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
+import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { DashboardTicketController } from '../infraestructure/DashboardTicketsController'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
-import { estadosTickets } from 'config/tickets.utils'
-import { useTicketStore } from 'stores/ticket'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { useAuthenticationStore } from 'stores/authentication'
+import { estadosTickets } from 'config/tickets.utils'
+import { useTicketStore } from 'stores/ticket'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
@@ -41,7 +41,6 @@ export default defineComponent({
     * Stores
     ***********/
     const ticketStore = useTicketStore()
-    const authenticationStore = useAuthenticationStore()
 
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
@@ -58,13 +57,9 @@ export default defineComponent({
           params: {
             campos: 'id,nombres,apellidos,departamento_id,responsable_departamento',
             estado: 1,
-            // id: authenticationStore.user.id,
           }
         },
       })
-
-      // watchEffect(() => filtro.empleado = authenticationStore.user.es_responsable_departamento ? authenticationStore.user.id : null)
-      // console.log(filtro.empleado)
     })
 
     const filtro = reactive(new FiltroDashboardTicket())
@@ -157,6 +152,8 @@ export default defineComponent({
           align: 'end',
           anchor: 'end',
           color: '#fff',
+          borderRadius: 16,
+          padding: 6,
           backgroundColor: function (context) {
             return context.dataset.backgroundColor
           },
@@ -167,7 +164,7 @@ export default defineComponent({
             }
           },
           formatter: function (value, context) {
-            return value ? context.chart.data.labels[context.dataIndex] + ': (' + value + ')' : null
+            return value ? context.chart.data.labels[context.dataIndex] + ' (' + value + ')' : null
           }
         }
       },
