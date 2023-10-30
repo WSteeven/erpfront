@@ -298,4 +298,5 @@ export const endpoints = {
   actividades_realizadas_seguimientos_tickets: new Endpoint('tickets/actividades-realizadas-seguimientos-tickets'),
   pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
+  linea_tiempo_tickets: new Endpoint('tickets/linea-tiempo'),
 }

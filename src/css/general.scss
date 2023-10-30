@@ -122,3 +122,8 @@ input[type='time']::-webkit-calendar-picker-indicator {
 .q-card-press:active {
   transform: scale(0.98);
 }
+
+.text-wrap {
+  white-space: normal !important;
+  word-wrap: break-word;
+}

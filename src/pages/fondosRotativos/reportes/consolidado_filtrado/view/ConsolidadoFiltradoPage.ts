@@ -23,6 +23,8 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { useCargandoStore } from 'stores/cargando'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout },
@@ -33,6 +35,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const fondosStore = useFondoRotativoStore()
+    const {notificarError} = useNotificaciones()
 
     /***********
      * Mixin
@@ -124,11 +127,11 @@ export default defineComponent({
       { value: '6', name: 'Empleado' },
       { value: '7', name: 'RUC' },
       { value: '8', name: 'SIN FACTURA' },
+      { value: '9', name: 'CIUDAD' },
     ])
     listadosAuxiliares.tipos_saldos = tipos_saldos
     listadosAuxiliares.tipos_filtro = tipos_filtros
     const v$ = useVuelidate(reglas, consolidadofiltrado)
-    setValidador(v$.value)
     const usuarios = ref([])
     const tiposFondos = ref([])
     const tiposFondoRotativoFechas = ref([])
@@ -137,6 +140,7 @@ export default defineComponent({
     const proyectos = ref([])
     const autorizacionesEspeciales = ref([])
     const tareas = ref([])
+    const cantones = ref([])
     const is_inactivo = ref('false')
     usuarios.value = listadosAuxiliares.usuarios
 
@@ -170,6 +174,10 @@ export default defineComponent({
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
         },
+        cantones: {
+          controller: new CantonController(),
+          params: { campos: 'id,canton' },
+        },
       })
 
       usuarios.value = listadosAuxiliares.usuarios
@@ -182,6 +190,7 @@ export default defineComponent({
       sub_detalles.value = listadosAuxiliares.sub_detalles
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
+      cantones.value = listadosAuxiliares.cantones
     })
     /*********
      * Filtros
@@ -239,8 +248,22 @@ export default defineComponent({
         )
       })
     }
-
-
+    //Filtro de Cantones
+    function filtrarCiudades(val, update) {
+      if (val === '') {
+        update(() => {
+          cantones.value = listadosAuxiliares.cantones
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        cantones.value = listadosAuxiliares.cantones.filter(
+          (v) => v.canton.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    //Filtro de Protyectos
     function filtrarProyectos(val, update) {
       if (val === '') {
         update(() => {
@@ -257,33 +280,34 @@ export default defineComponent({
         )
       })
     }
-/**Filtro de Tareas */
-function filtrarTareas(val, update) {
-  if (val === '') {
-    update(() => {
-      tareas.value = listadoTareas.value
+    /**Filtro de Tareas */
+    function filtrarTareas(val, update) {
+      if (val === '') {
+        update(() => {
+          tareas.value = listadoTareas.value
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tareas.value = listadoTareas.value.filter(
+          (v) =>
+            v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
+            v.titulo.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    const listadoTareas = computed(() => {
+      if (consolidadofiltrado.proyecto == 0) {
+        return listadosAuxiliares.tareas.filter(
+          (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
+        )
+      }
+      return listadosAuxiliares.tareas.filter(
+        (tarea: Tarea) =>
+          tarea.proyecto_id === consolidadofiltrado.proyecto || tarea.id == 0
+      )
     })
-    return
-  }
-  update(() => {
-    const needle = val.toLowerCase()
-    tareas.value = listadoTareas.value.filter(
-      (v) =>
-        v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
-        v.titulo.toLowerCase().indexOf(needle) > -1
-    )
-  })
-}
-const listadoTareas = computed(() => {
-  if (consolidadofiltrado.proyecto == 0) {
-    return listadosAuxiliares.tareas.filter(
-      (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
-    )
-  }
-  return listadosAuxiliares.tareas.filter(
-    (tarea: Tarea) => tarea.proyecto_id === consolidadofiltrado.proyecto || tarea.id == 0
-  )
-})
     // - Filtro tipos Filtro
     function filtrarTiposFiltro(val, update) {
       switch (consolidadofiltrado.tipo_saldo) {
@@ -307,6 +331,8 @@ const listadoTareas = computed(() => {
               { value: '6', name: 'Empleado' },
               { value: '7', name: 'RUC' },
               { value: '8', name: 'SIN FACTURA' },
+              { value: '9', name: 'CIUDAD' },
+
             ]
           })
           break
@@ -335,11 +361,15 @@ const listadoTareas = computed(() => {
     }
 
     const opcionesSubdetalles = computed(() => {
-      if (consolidadofiltrado.detalle == null || consolidadofiltrado.detalle == 0) {
+      if (
+        consolidadofiltrado.detalle == null ||
+        consolidadofiltrado.detalle == 0
+      ) {
         return listadosAuxiliares.sub_detalles
       }
       return listadosAuxiliares.sub_detalles.filter(
-        (subdetalle) => subdetalle.id_detalle_viatico === consolidadofiltrado.detalle
+        (subdetalle) =>
+          subdetalle.id_detalle_viatico === consolidadofiltrado.detalle
       )
     })
 
@@ -425,6 +455,7 @@ const listadoTareas = computed(() => {
       tiposFondoRotativoFechas,
       tipos_saldos,
       tipos_filtros,
+      cantones,
       autorizacionesEspeciales,
       detalles,
       sub_detalles,
@@ -442,6 +473,7 @@ const listadoTareas = computed(() => {
       filtrarDetalles,
       filtrarProyectos,
       filtrarTareas,
+      filtrarCiudades,
       watchEffect,
       listadosAuxiliares,
     }
