@@ -644,6 +644,61 @@
                     >{{ 'RUTA COMPLETADA' }}
                   </q-chip>
 
+                  <q-chip
+                    v-if="col.value === 'TICKET REASIGNADO'"
+                    class="bg-blue-1 text-blue"
+                  >
+                    <q-icon
+                      name="bi-arrow-left-right"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon>
+                    <small>
+                      {{ 'TICKET REASIGNADO' }}
+                    </small>
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET PAUSADO'"
+                    class="bg-grey-2 text-grey-8"
+                  >
+                    <q-icon
+                      name="bi-pause-circle-fill"
+                      color="text-grey-8"
+                      class="q-mr-xs"
+                      size="14px"
+                    ></q-icon>
+                    <small>
+                      {{ 'TICKET PAUSADO' }}
+                    </small>
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET EJECUTADO'"
+                    class="bg-yellow-1 text-yellow-8"
+                  >
+                    <q-icon
+                      name="bi-play-circle-fill"
+                      color="text-primary"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon
+                    ><small>{{ 'TICKET EJECUTADO' }}</small>
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET FINALIZADO'"
+                    class="bg-green-1 text-positive"
+                  >
+                    <q-icon
+                      name="bi-check-circle-fill"
+                      color="positive"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon
+                    ><small>{{ 'TICKET FINALIZADO' }}</small>
+                  </q-chip>
+
                   <!--<q-chip
                     v-if="col.value === 'TICKET TRANSFERIDO'"
                     class="bg-green-1 text-positive"
@@ -670,6 +725,7 @@
                       'es_responsable',
                       'tamanio_bytes',
                       'tiene_subtareas',
+                      'observacion',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -1013,10 +1069,13 @@
           "
           >DAÑADO</q-chip
         >
-        <q-chip v-if="
+        <q-chip
+          v-if="
             props.value == estadosCondicionesId.buen_estado ||
             props.value == estadosCondicionesValue.buen_estado
-          ">BUEN ESTADO</q-chip>
+          "
+          >BUEN ESTADO</q-chip
+        >
       </q-td>
     </template>
     <!-- devoluciones de bodega -->
@@ -1254,13 +1313,9 @@
       <q-td :props="props">
         <q-chip
           v-if="props.value === 'TICKET REASIGNADO'"
-          class="bg-green-1 text-positive"
+          class="bg-blue-1 text-blue"
         >
-          <q-icon
-            name="bi-check-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
+          <q-icon name="bi-arrow-left-right" class="q-mr-xs"></q-icon
           >{{ 'TICKET REASIGNADO' }}
         </q-chip>
 
@@ -1276,8 +1331,39 @@
           >{{ 'TICKET PAUSADO' }}
         </q-chip>
 
+        <q-chip
+          v-if="props.value === 'TICKET EJECUTADO'"
+          class="bg-yellow-1 text-yellow-8"
+        >
+          <q-icon
+            name="bi-play-circle-fill"
+            color="text-primary"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET EJECUTADO' }}
+        </q-chip>
+
+        <q-chip
+          v-if="props.value === 'TICKET FINALIZADO'"
+          class="bg-green-1 text-positive"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET FINALIZADO' }}
+        </q-chip>
+
         <span
-          v-if="!['TICKET REASIGNADO', 'TICKET PAUSADO'].includes(props.value)"
+          v-if="
+            ![
+              'TICKET REASIGNADO',
+              'TICKET PAUSADO',
+              'TICKET EJECUTADO',
+              'TICKET FINALIZADO',
+            ].includes(props.value)
+          "
           >{{ props.value }}</span
         >
       </q-td>

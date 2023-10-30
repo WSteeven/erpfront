@@ -1,5 +1,5 @@
 // Dependencias
-import { computed, defineComponent, ref } from 'vue'
+import { Ref, computed, defineComponent, onMounted, ref, watch, watchEffect } from 'vue'
 import { regiones, atenciones } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
@@ -26,6 +26,8 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTicketStore } from 'stores/ticket'
 import { estadosTickets } from 'config/tickets.utils'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   components: {
@@ -67,6 +69,8 @@ export default defineComponent({
     const ticket = ticketStore.filaTicket
     const refArchivoSeguimiento = ref()
     const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id && ticket.estado === estadosTickets.EJECUTANDO
+    const position = ref(0)
+    const scrollAreaRef = ref()
 
     /************
      * Init
@@ -115,13 +119,49 @@ export default defineComponent({
       fila.value = null
     }
 
-    function guardarFila(data) {
+    /* function guardarFila(data) {
       limpiarFila()
-    }
+    } */
 
     function abrirModalArbol() {
       refEditarModal.value.abrir()
     }
+
+    function siguiente() {
+      scrollAreaRef.value.setScrollPercentage('horizontal', position.value, 300)
+      position.value = position.value < 1 ? position.value + 0.1 : position.value
+    }
+
+    function anterior() {
+      scrollAreaRef.value.setScrollPercentage('horizontal', position.value, 300)
+      position.value = position.value > 0 ? position.value - 0.1 : position.value
+    }
+
+    const lineaTiempo = ref()
+    async function consultarLineaTiempoTicket() {
+      const axios = AxiosHttpRepository.getInstance()
+      const response: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.linea_tiempo_tickets) + '/' + ticket.id)
+      lineaTiempo.value = response.data.results
+    }
+
+    consultarLineaTiempoTicket()
+
+    const actividadesFiltradas: Ref<ActividadRealizadaSeguimientoTicket[]> = ref([])
+    const filtrado = ref(false)
+    const indice = ref()
+    const mensajeFiltro = ref('Se muestran todas las actividades registradas hasta el momento')
+    function filtrarActividades(linea, index: number) {
+      filtrado.value = index === indice.value ? !filtrado.value : true
+      indice.value = index
+      mensajeFiltro.value = filtrado.value ? `Se muestran las actividades de ${linea.responsable} a partir de la fecha ${linea.created_at}` : 'Se muestran todas las actividades registradas hasta el momento'
+      actividadesFiltradas.value = filtrado.value ? actividadesRealizadas.value.filter((actividad: ActividadRealizadaSeguimientoTicket) => actividad.responsable === linea.responsable && (actividad.fecha_hora ? actividad.fecha_hora >= linea.created_at : false)) : actividadesRealizadas.value
+    }
+
+    watch(actividadesRealizadas, () => {
+      if (actividadesRealizadas.value.length) {
+        actividadesFiltradas.value = actividadesRealizadas.value
+      }
+    })
 
     return {
       v$,
@@ -141,7 +181,7 @@ export default defineComponent({
       endpoint: endpoints.archivos_seguimientos_tickets,
       columnasActividades: configuracionColumnasActividadRealizadaSeguimientoTicket,
       abrirModalArbol,
-      guardarFila,
+      // guardarFila,
       actividadesRealizadas,
       ActividadRealizadaSeguimientoTicket,
       verFotografia,
@@ -149,6 +189,16 @@ export default defineComponent({
       subirArchivos,
       mostrarBotonSubir: computed(() => refArchivoSeguimiento.value?.quiero_subir_archivos),
       permitirSubir,
+      siguiente,
+      anterior,
+      position,
+      scrollAreaRef,
+      lineaTiempo,
+      filtrarActividades,
+      actividadesFiltradas,
+      filtrado,
+      indice,
+      mensajeFiltro,
     }
   }
 })
