@@ -39,6 +39,8 @@ export function useOrquestadorSelectorProductos(entidad: PreingresoMaterial, end
             item.producto = item.producto
             item.descripcion = item.descripcion
             item.serial = ''
+            item.punta_inicial = ''
+            item.punta_final = ''
         })
 
         singleSelector.seleccionar(items)

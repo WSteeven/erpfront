@@ -61,7 +61,7 @@ export default defineComponent({
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
-    const { confirmar, prompt } = useNotificaciones()
+    const { confirmar, prompt, notificarError } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
@@ -246,16 +246,20 @@ export default defineComponent({
       color: 'red',
       icono: 'bi-x',
       accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
-          transaccionStore.idTransaccion = entidad.id
-          await transaccionStore.anularEgreso()
-          entidad.estado = transaccionStore.transaccion.estado
+        confirmar('¿Está seguro que desea anular la transacción?. Esta acción sumará al inventario los materiales egresados previamente', async () => {
+          try {
+            transaccionStore.idTransaccion = entidad.id
+            await transaccionStore.anularEgreso()
+            entidad.estado = transaccionStore.transaccion.estado
+          } catch (err) {
+            notificarError('' + err)
+          }
         })
       },
       visible: ({ entidad, posicion }) => {
         // console.log(entidad)
         // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es administrador y no esta anulada')
-        return store.esAdministrador && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante =='PENDIENTE'
+        return store.esAdministrador && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == 'PENDIENTE'
       }
 
     }

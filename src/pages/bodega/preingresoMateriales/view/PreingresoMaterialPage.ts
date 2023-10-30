@@ -102,10 +102,13 @@ export default defineComponent({
          * Hooks
          ****************************************************************************************/
         onReestablecer(() => {
+            console.log('Reestablecido', accion.value, soloLectura.value)
+            soloLectura.value = false
             cargarDatosDefecto()
         })
         onConsultado(() => {
-            if (accion.value === acciones.editar && store.user.id === preingreso.autorizador)
+            console.log('Consultado ', accion.value)
+            if (accion.value === acciones.editar && store.user.id === preingreso.responsable_id)
                 soloLectura.value = false
             else
                 soloLectura.value = true
@@ -221,6 +224,7 @@ export default defineComponent({
             componenteCargado,
             accionesTabla,
             store,
+            soloLectura,
             //listados
             coordinadores,
             autorizaciones,
