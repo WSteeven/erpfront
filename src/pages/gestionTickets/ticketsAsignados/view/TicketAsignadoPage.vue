@@ -13,33 +13,7 @@
       </small>
     </div>
 
-    <div class="row justify-end q-mb-md">
-      <!--<q-btn
-        :color="
-          tabsOpcionesFiltrado === opcionesFiltrado.listado
-            ? 'primary'
-            : 'secondary'
-        "
-        rounded
-        no-caps
-        unelevated
-        @click="buscarIndividual()"
-      >
-        <q-icon
-          :name="
-            tabsOpcionesFiltrado === opcionesFiltrado.listado
-              ? 'bi-search'
-              : 'bi-segmented-nav'
-          "
-          class="q-mr-sm"
-        ></q-icon>
-        {{
-          tabsOpcionesFiltrado === opcionesFiltrado.listado
-            ? 'Buscar un ticket en específico'
-            : 'Mostrar tickets por estado'
-        }}
-      </q-btn> -->
-
+    <!-- <div class="row justify-end q-mb-md">
       <q-btn-toggle
         v-model="tabsOpcionesFiltrado"
         class="toggle-button-primary"
@@ -60,7 +34,7 @@
           },
         ]"
       />
-    </div>
+    </div> -->
 
     <q-tab-panels
       v-model="tabsOpcionesFiltrado"

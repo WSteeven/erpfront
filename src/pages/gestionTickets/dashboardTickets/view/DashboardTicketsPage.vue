@@ -416,13 +416,16 @@
             v-if="mostrarTitulosSeccion"
             class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
           >
-            <div class="col-12 col-md-6 text-center">
+            <div
+              v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
+              class="col-12 col-md-6 text-center"
+            >
               <div class="text-subtitle2 q-mb-lg">
                 Tickets creados a los departamentos
               </div>
               <div>
                 <grafico-generico
-                  v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
+                  v-show="cantidadesTicketsSolicitadosPorDepartamento.length"
                   :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
                   :options="optionsPie"
                   @click="

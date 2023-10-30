@@ -30,7 +30,6 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
-import { useAuthenticationStore } from 'stores/authentication'
 import { estadosTickets } from 'config/tickets.utils'
 import { useTicketStore } from 'stores/ticket'
 
@@ -112,7 +111,7 @@ export default defineComponent({
     const ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar = ref()
     const ticketsPorDepartamentoEstadoCalificadoBar = ref()
 
-    const creados = ref([])
+    // const creados = ref([])
 
     const opcionesDepartamento = {
       departamentoGrafico: 'departamentoGrafico',
@@ -229,7 +228,7 @@ export default defineComponent({
           const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado, departamento_responsable_id: departamento })
           // await obtenerResponsables()
 
-          creados.value = result.creados
+          // creados.value = result.creados
 
           ticketsConSolucion.value = result.tiemposTicketsFinalizados
           cantTicketsCreados.value = result.cantTicketsCreados
@@ -256,6 +255,8 @@ export default defineComponent({
           const colores3 = graficoTicketsPorEstado.map((item) => mapearColor(item.estado))
           ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidad de tickets', colores3)
 
+          console.log('1')
+
           cantidadesTicketsSolicitadosPorDepartamento.value = result.ticketsCreadosADepartamentos
           const graficoTicketsCreadosDepartamento = contarTicketsDepartamento(result.ticketsCreadosADepartamentos)
           const labels = graficoTicketsCreadosDepartamento.map((item) => item.departamento_responsable)
@@ -263,12 +264,16 @@ export default defineComponent({
           const colores1 = graficoTicketsCreadosDepartamento.map((item) => mapearColorDepartamentos(item.departamento_responsable))
           cantidadesTicketsSolicitadosPorDepartamentoBar.value = mapearDatos(labels, valores, 'Cantidad de tickets creados a los departamentos', colores1)
 
+          console.log('2')
+
           cantidadesTicketsRecibidosPorDepartamento.value = result.ticketsRecibidosPorDepartamentos
           const graficoTicketsRecibidosDepartamento = contarTicketsDepartamentoSolicitante(result.ticketsRecibidosPorDepartamentos)
           const labels2 = graficoTicketsRecibidosDepartamento.map((item) => item.departamento_solicitante)
           const valores2 = graficoTicketsRecibidosDepartamento.map((item) => item.total_tickets)
           const colores2 = graficoTicketsRecibidosDepartamento.map((item) => mapearColorDepartamentos(item.departamento_solicitante))
           cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidad de tickets recibidos por los departamentos', colores2)
+
+          console.log('3')
 
           // Graficos estadisticos del empleado
           ticketsPorDepartamentoEstadoAsignado.value = await result.ticketsPorDepartamentoEstadoAsignado
@@ -278,12 +283,16 @@ export default defineComponent({
           const colores4 = graficoTicketsPorDepartamentoEstadoAsignado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoAsignadoBar.value = mapearDatos(labels4, valores4, 'Cantidad de tickets del departamento con filtro por estado', colores4)
 
+          console.log('4')
+
           ticketsPorDepartamentoEstadoReasignado.value = result.ticketsPorDepartamentoEstadoReasignado
           const graficoTicketsPorDepartamentoEstadoReasignado = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoReasignado)
           const labels5 = graficoTicketsPorDepartamentoEstadoReasignado.map((item) => item.responsable)
           const valores5 = graficoTicketsPorDepartamentoEstadoReasignado.map((item) => item.total_tickets)
           const colores5 = graficoTicketsPorDepartamentoEstadoReasignado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoReasignadoBar.value = mapearDatos(labels5, valores5, 'Cantidad de tickets del departamento con filtro por estado', colores5)
+
+          console.log('5')
 
           ticketsPorDepartamentoEstadoEjecutando.value = result.ticketsPorDepartamentoEstadoEjecutando
           const graficoTicketsPorDepartamentoEstadoEjecutando = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoEjecutando)
@@ -292,12 +301,16 @@ export default defineComponent({
           const colores6 = graficoTicketsPorDepartamentoEstadoEjecutando.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoEjecutandoBar.value = mapearDatos(labels6, valores6, 'Cantidad de tickets del departamento con filtro por estado', colores6)
 
+          console.log('6')
+
           ticketsPorDepartamentoEstadoPausado.value = result.ticketsPorDepartamentoEstadoPausado
           const graficoTicketsPorDepartamentoEstadoPausado = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoPausado)
           const labels7 = graficoTicketsPorDepartamentoEstadoPausado.map((item) => item.responsable)
           const valores7 = graficoTicketsPorDepartamentoEstadoPausado.map((item) => item.total_tickets)
           const colores7 = graficoTicketsPorDepartamentoEstadoPausado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoPausadoBar.value = mapearDatos(labels7, valores7, 'Cantidad de tickets del departamento con filtro por estado', colores7)
+
+          console.log('7')
 
           ticketsPorDepartamentoEstadoFinalizadoSolucionado.value = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado
           const graficoTicketsPorDepartamentoEstadoFinalizadoSolucionado = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoFinalizadoSolucionado)
@@ -306,6 +319,8 @@ export default defineComponent({
           const colores8 = graficoTicketsPorDepartamentoEstadoFinalizadoSolucionado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar.value = mapearDatos(labels8, valores8, 'Cantidad de tickets del departamento con filtro por estado', colores8)
 
+          console.log('8')
+
           ticketsPorDepartamentoEstadoFinalizadoSinSolucion.value = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion
           const graficoTicketsPorDepartamentoEstadoFinalizadoSinSolucion = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion)
           const labels9 = graficoTicketsPorDepartamentoEstadoFinalizadoSinSolucion.map((item) => item.responsable)
@@ -313,11 +328,15 @@ export default defineComponent({
           const colores9 = graficoTicketsPorDepartamentoEstadoFinalizadoSinSolucion.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar.value = mapearDatos(labels9, valores9, 'Cantidad de tickets del departamento con filtro por estado', colores9)
 
+          console.log('9')
+
           ticketsPorDepartamentoEstadoCalificado.value = result.ticketsPorDepartamentoEstadoCalificado
           const labels10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.responsable)
           const valores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.total_tickets)
           const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoCalificadoBar.value = mapearDatos(labels10, valores10, 'Cantidad de tickets del departamento con filtro por estado', colores10)
+
+          console.log('10')
         } catch (e) {
           console.log(e)
         } finally {
@@ -444,10 +463,12 @@ export default defineComponent({
       const conteo = tickets.reduce((acumulador: any, ticket) => {
         const departamento_responsable = ticket.departamento_responsable
 
-        const elementoExistente: any = acumulador.find((item: any) => item.departamento_responsable === departamento_responsable)
+        if (departamento_responsable) {
+          const elementoExistente: any = acumulador.find((item: any) => item.departamento_responsable === departamento_responsable)
 
-        if (!elementoExistente) acumulador.push({ departamento_responsable, total_tickets: 1 })
-        else elementoExistente.total_tickets++
+          if (!elementoExistente) acumulador.push({ departamento_responsable, total_tickets: 1 })
+          else elementoExistente.total_tickets++
+        }
 
         return acumulador
       }, [])
@@ -486,7 +507,7 @@ export default defineComponent({
     }
 
     return {
-      creados,
+      // creados,
       tabsDepartamento,
       tabsEmpleado,
       opcionesDepartamento,

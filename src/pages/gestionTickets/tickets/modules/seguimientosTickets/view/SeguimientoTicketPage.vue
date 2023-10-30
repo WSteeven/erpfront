@@ -22,7 +22,10 @@
     >
       <div class="col-12">
         <div class="row q-px-md items-center">
-          <div class="col-12 col-sm-6 col-md-6 text-white">
+          <div
+            class="col-12 col-sm-6 col-md-6 text-white"
+            :class="{ 'text-center q-mb-md': $q.screen.xs }"
+          >
             <div class="text-subtitle2 text-shadow">
               Linea de tiempo del ticket
             </div>
@@ -332,9 +335,15 @@
       <!-- {{ actividadesRealizadas }} -->
       <div class="row">
         <div class="col-12 text-center q-mb-md">
-          <q-chip class="text-primary text-center bg-blue-2">{{
-            mensajeFiltro
-          }}</q-chip>
+          <q-chip
+            class="text-primary text-center bg-blue-2"
+            :class="{ 'q-py-xl': $q.screen.xs }"
+          >
+            <q-icon name="bi-clock-history" class="q-mr-sm"></q-icon>
+            <span class="text-wrap">
+              {{ mensajeFiltro }}
+            </span>
+          </q-chip>
         </div>
 
         <div class="col-12 q-mb-md">
@@ -397,5 +406,6 @@
   overflow: hidden !important;
   height: 40px;
   width: 40px;
+  background-color: #fff;
 }
 </style>
