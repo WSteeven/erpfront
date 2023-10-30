@@ -36,7 +36,7 @@ export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMat
         style: 'max-width: 200px; overflow: auto;',
         align: 'left',
         type: 'textarea',
-        editable: true,
+        editable: false,
         sortable: true
     },
     {
@@ -45,8 +45,8 @@ export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMat
         label: 'Medida',
         align: 'left',
         type: 'select',
-        editable: true,
-        sortable: true
+        editable: false,
+        sortable: false
     },
     {
         name: 'serial',

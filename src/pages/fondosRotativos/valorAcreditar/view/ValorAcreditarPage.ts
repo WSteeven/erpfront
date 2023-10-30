@@ -167,7 +167,7 @@ export default defineComponent({
       icono: 'bi-plus',
       color: 'positive',
       visible: () => {
-        return authenticationStore.can('puede.editar.rol_pago')
+        return authenticationStore.can('puede.crear.valor_acreditar')&& acreditacionesStore.esta_acreditado==false
       },
       accion: () => {
         accion.value = 'NUEVO'

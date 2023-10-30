@@ -170,7 +170,7 @@ export default defineComponent({
       autorizador: { required },
       descripcion: { required },
       forma: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-      tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
+      tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras && (orden.forma!='CONTADO' && orden.forma!='TRANSFERENCIA') )},
       fecha: { required },
     }
 
@@ -222,6 +222,8 @@ export default defineComponent({
      * propiedades:
      */
     function calcularValores(data: any) {
+      console.log(data)
+      data.precio_unitario = Number(data.precio_unitario).toFixed(2)
       data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
       data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
       data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0

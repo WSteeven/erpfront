@@ -55,12 +55,12 @@ export const configuracionColumnasTarea: ColumnConfig<Tarea>[] = [
     label: 'Coordinador',
     align: 'left',
   },
-  /* {
-    name: 'canton',
-    field: 'canton',
-    label: 'Cantón',
+  {
+    name: 'created_at',
+    field: 'created_at',
+    label: 'Fecha creación',
     align: 'left',
-  }, */
+  },
   {
     name: 'cliente',
     field: 'cliente',

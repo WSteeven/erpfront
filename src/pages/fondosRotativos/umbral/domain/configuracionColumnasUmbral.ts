@@ -3,8 +3,8 @@ import { Umbral } from "./Umbral";
 
 export const configuracionColumnasUmbral: ColumnConfig<Umbral>[] = [
   {
-    name: 'empleado',
-    field: 'empleado',
+    name: 'empleado_info',
+    field: 'empleado_info',
     label: 'Empleado',
     align: 'left',
     sortable: true

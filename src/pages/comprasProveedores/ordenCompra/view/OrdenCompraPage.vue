@@ -166,7 +166,10 @@
           </div>
 
           <!-- preorden de compra -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div
+            class="col-12 col-md-3 q-mb-md"
+            v-if="orden.tiempo || accion == acciones.nuevo"
+          >
             <label class="q-mb-sm block">N° preorden</label>
             <q-input
               type="number"
@@ -182,7 +185,10 @@
             </q-input>
           </div>
           <!-- pedido -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div
+            class="col-12 col-md-3 q-mb-md"
+            v-if="orden.tiempo || accion == acciones.nuevo"
+          >
             <label class="q-mb-sm block">N° pedido</label>
             <q-input
               type="number"
@@ -197,7 +203,7 @@
           </div>
 
           <!-- Tarea -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="orden.tiempo || accion == acciones.nuevo">
             <label class="q-mb-sm block">N° Tarea</label>
             <q-select
               v-model="orden.tarea"
@@ -369,7 +375,7 @@
             </q-select>
           </div>
           <!-- Tiempo -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="orden.tiempo || accion == acciones.nuevo">
             <label class="q-mb-sm block">Tiempo</label>
             <q-select
               v-model="orden.tiempo"
@@ -458,7 +464,10 @@
             </q-input>
           </div>
           <!-- Modificar IVA -->
-          <div class="col-12 col-md-3 q-mb-xl" v-if="orden.estado != 4">
+          <div
+            class="col-12 col-md-3 q-mb-xl"
+            v-if="accion == acciones.nuevo || accion == acciones.editar"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="orden.modificar_iva"

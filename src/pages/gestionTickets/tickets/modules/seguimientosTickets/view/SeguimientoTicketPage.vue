@@ -18,14 +18,21 @@
 
     <div
       id="responsables"
-      class="row items-center bg-blue-5 rounded-header q-pt-md"
+      class="row items-center bg-blue-5 rounded-header q-pt-sm"
     >
       <div class="col-12">
         <div class="row q-px-md items-center">
-          <div class="col-12 col-sm-6 col-md-6 q-mb-sm">
-            <div class="text-white text-subtitle2 text-shadow">
-              Seleccione un responsable para filtrar las actividades
+          <div
+            class="col-12 col-sm-6 col-md-6 text-white"
+            :class="{ 'text-center q-mb-md': $q.screen.xs }"
+          >
+            <div class="text-subtitle2 text-shadow">
+              Linea de tiempo del ticket
             </div>
+            <small
+              >Seleccione un responsable para filtrar las actividades
+              registradas de la linea de tiempo del ticket</small
+            >
           </div>
 
           <div class="col-12 col-sm-6 col-md-6 q-mb-md">
@@ -61,6 +68,65 @@
         </div>
       </div>
 
+      <div class="col-12 rounded">
+        <q-scroll-area
+          ref="scrollAreaRef"
+          style="height: 250px; max-width: 100%"
+          class="q-pa-sm"
+        >
+          <div v-if="lineaTiempo" class="row q-gutter-md items-center no-wrap">
+            <div
+              v-for="(linea, index) in lineaTiempo"
+              :key="index"
+              class="row items-center no-wrap"
+            >
+              <q-card
+                class="custom-shadow2 text-white rounded-card cursor-pointer q-card-hover q-card-press bg-primary"
+                style="width: 180px"
+                @click="filtrarActividades(linea, index)"
+              >
+                <q-badge
+                  v-if="filtrado && indice === index"
+                  color="transparent"
+                  floating
+                  class="q-mt-xs"
+                >
+                  <q-icon
+                    name="bi-check-circle-fill"
+                    color="white"
+                    size="sm"
+                  ></q-icon>
+                </q-badge>
+
+                <q-card-section
+                  class="column q-gutter-sm items-center text-center"
+                >
+                  <!-- <q-icon name="boy" size="50px" color="grey"></q-icon> -->
+                  <div class="circulo">
+                    <q-img
+                      :src="linea.foto"
+                      height="50px"
+                      :fit="'contain'"
+                    ></q-img>
+                  </div>
+                  <small>{{ linea.departamento }}</small>
+                  <b>{{ linea.responsable }}</b>
+                  <small>{{ linea.estado }}</small>
+                  <small>{{ linea.created_at }}</small>
+                </q-card-section>
+              </q-card>
+
+              <q-icon
+                name="bi-caret-right-fill"
+                size="md"
+                color="primary"
+                class="q-ml-md"
+              ></q-icon>
+            </div>
+          </div>
+        </q-scroll-area>
+      </div>
+      <!--
       <div class="col-12 rounded">
         <q-scroll-area
           ref="scrollAreaRef"
@@ -256,7 +322,8 @@
           </div>
         </q-scroll-area>
       </div>
-    </div>
+
+    --></div>
 
     <q-card class="rounded-card custom-shadow no-border q-pa-md">
       <!--<div class="row justify-center q-gutter-md q-pt-xl q-pb-md">
@@ -265,15 +332,28 @@
           Tiempo total del ticket
         </div>
       </div> -->
-      {{ actividadesRealizadas }}
+      <!-- {{ actividadesRealizadas }} -->
       <div class="row">
+        <div class="col-12 text-center q-mb-md">
+          <q-chip
+            class="text-primary text-center bg-blue-2"
+            :class="{ 'q-py-xl': $q.screen.xs }"
+          >
+            <q-icon name="bi-clock-history" class="q-mr-sm"></q-icon>
+            <span class="text-wrap">
+              {{ mensajeFiltro }}
+            </span>
+          </q-chip>
+        </div>
+
         <div class="col-12 q-mb-md">
           <tabla-filas-dinamicas
-            :listado="actividadesRealizadas"
+            :listado="actividadesFiltradas"
             :configuracion-columnas="columnasActividades"
             :entidad="ActividadRealizadaSeguimientoTicket"
             :accion1="verFotografia"
             :mostrarAccion1Header="permitirSubir"
+            titulo="Cronología de actividades realizadas"
             @guardarFila="(fila) => guardarFilaActividad(fila)"
           ></tabla-filas-dinamicas>
         </div>
@@ -319,5 +399,13 @@
 
 .background-shadow {
   background-image: linear-gradient(127deg, #f2f2f2 80%, #dee3e4);
+}
+
+.circulo {
+  border-radius: 100px !important;
+  overflow: hidden !important;
+  height: 40px;
+  width: 40px;
+  background-color: #fff;
 }
 </style>
