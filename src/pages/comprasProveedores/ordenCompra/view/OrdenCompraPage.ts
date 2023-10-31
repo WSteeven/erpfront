@@ -41,9 +41,13 @@ import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelec
 import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { ComportamientoModalesOrdenCompra } from "../application/ComportamientoModalesOrdenCompra";
+import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
+import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
+import { PreordenCompra } from "pages/comprasProveedores/preordenCompra/domain/PreordenCompra";
 
 
 export default defineComponent({
+  name: 'OrdenCompraPage',
   components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
   emits: ['actualizar', 'fila-modificada'],
   setup(props, { emit }) {
@@ -95,6 +99,7 @@ export default defineComponent({
     const tareas = ref([])
     cargarVista(async () => {
       await obtenerListados({
+        unidades_medidas: new UnidadMedidaController(),
         empleados: {
           controller: new EmpleadoController(),
           params: {
@@ -131,11 +136,12 @@ export default defineComponent({
         categorias: new CategoriaController()
       })
       //comprueba si hay una preorden en el store para llenar automaticamente los datos en la orden de compra
+      orden.autorizacion = 1
       if (preordenStore.preorden.id) {
         orden.tiene_preorden = true
         cargarDatosPreorden()
       }
-      orden.autorizacion = 1
+      configuracionColumnasItemOrdenCompra.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
     })
 
     /*****************************************************************************************
@@ -170,7 +176,7 @@ export default defineComponent({
       autorizador: { required },
       descripcion: { required },
       forma: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-      tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras && (orden.forma!='CONTADO' && orden.forma!='TRANSFERENCIA') )},
+      tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras && (orden.forma != 'CONTADO' && orden.forma != 'TRANSFERENCIA')) },
       fecha: { required },
     }
 
@@ -223,7 +229,7 @@ export default defineComponent({
      */
     function calcularValores(data: any) {
       console.log(data)
-      data.precio_unitario = Number(data.precio_unitario).toFixed(2)
+      data.precio_unitario = Number(data.precio_unitario).toFixed(4)
       data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
       data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
       data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
@@ -269,8 +275,9 @@ export default defineComponent({
      * preorden.
      */
     async function llenarOrden(id: number) {
-      limpiarOrden()
       try {
+        limpiarOrden()
+        preordenStore.preorden.hydrate(new PreordenCompra())
         await preordenStore.cargarPreorden(id)
         await cargarDatosPreorden()
       } catch (error) {

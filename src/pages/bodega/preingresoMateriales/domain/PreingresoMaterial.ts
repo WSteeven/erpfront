@@ -8,6 +8,7 @@ export class PreingresoMaterial extends EntidadAuditable {
     tarea: number | null
     observacion: string | null
     autorizacion: number | null
+    observacion_aut: number | null
     autorizador: number | null
     responsable: string | null
     responsable_id: number | null
@@ -29,6 +30,7 @@ export class PreingresoMaterial extends EntidadAuditable {
         this.coordinador= null
         this.courier= null
         this.autorizacion= null
+        this.observacion_aut= null
         this.listadoProductos = []
 
 
