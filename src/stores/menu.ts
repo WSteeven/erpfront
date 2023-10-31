@@ -672,13 +672,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Preordenes de Compras',
           link: 'preordenes-compras',
           icon: 'bi-list',
-          can: store.can('puede.ver.preordenes_compras') || store.esAdministrador,
+          can: store.can('puede.acceder.preordenes_compras') || store.esAdministrador,
         },
         {
           title: 'Ordenes de Compras',
           link: 'ordenes-compras',
           icon: 'bi-cart-plus',
-          can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
+          can: store.can('puede.acceder.ordenes_compras') || store.esAdministrador,
         },
         {
           title: 'Reportes',

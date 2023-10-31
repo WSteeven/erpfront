@@ -278,7 +278,7 @@
           </div>
 
           <!--Categorias-->
-          <div
+          <!-- <div
             class="col-12 col-md-3"
             v-if="accion == acciones.nuevo || orden.categorias"
           >
@@ -321,7 +321,7 @@
                 </q-item>
               </template>
             </q-select>
-          </div>
+          </div> -->
 
           <!-- Justificacion -->
           <div class="col-12 col-md-6">
@@ -375,7 +375,7 @@
             </q-select>
           </div>
           <!-- Tiempo -->
-          <div class="col-12 col-md-3" v-if="orden.tiempo || accion == acciones.nuevo">
+          <div class="col-12 col-md-3" v-if="orden.tiempo || accion == acciones.nuevo||accion == acciones.editar">
             <label class="q-mb-sm block">Tiempo</label>
             <q-select
               v-model="orden.tiempo"
@@ -507,7 +507,7 @@
                   @keydown.enter="
                     listarProductos({
                       search: criterioBusquedaProducto,
-                      'categoria_id[]': estructuraConsultaCategoria(),
+                      filtrarTipo: 1,
                     })
                   "
                   @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
@@ -521,7 +521,7 @@
                   @click="
                     listarProductos({
                       search: criterioBusquedaProducto,
-                      'categoria_id[]': estructuraConsultaCategoria(),
+                      filtrarTipo: 1,
                     })
                   "
                   icon="search"
