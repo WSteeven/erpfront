@@ -259,7 +259,7 @@ export default defineComponent({
       visible: ({ entidad, posicion }) => {
         // console.log(entidad)
         // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es administrador y no esta anulada')
-        return store.esAdministrador && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == 'PENDIENTE'
+        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == 'PENDIENTE'
       }
 
     }
