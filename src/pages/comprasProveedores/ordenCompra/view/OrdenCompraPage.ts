@@ -41,6 +41,8 @@ import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelec
 import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { ComportamientoModalesOrdenCompra } from "../application/ComportamientoModalesOrdenCompra";
+import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
+import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
 
 
 export default defineComponent({
@@ -95,6 +97,7 @@ export default defineComponent({
     const tareas = ref([])
     cargarVista(async () => {
       await obtenerListados({
+        unidades_medidas: new UnidadMedidaController(),
         empleados: {
           controller: new EmpleadoController(),
           params: {
@@ -136,6 +139,8 @@ export default defineComponent({
         cargarDatosPreorden()
       }
       orden.autorizacion = 1
+
+      configuracionColumnasItemOrdenCompra.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
     })
 
     /*****************************************************************************************
