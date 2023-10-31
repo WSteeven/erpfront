@@ -26,7 +26,6 @@ export default defineComponent({
     const { entidad: comision, disabled, accion,listadosAuxiliares } = mixin.useReferencias()
     const { setValidador ,obtenerListados, cargarVista} = mixin.useComportamiento()
 
-
     /*************
     * Validaciones
     **************/

@@ -759,6 +759,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.chargebacks'),
         },
+        {
+          title: 'Pagar Comisiones',
+          link: 'comision-pago',
+          icon: 'bi-circle',
+          can: true//store.can('puede.ver.comision_pago'),
+        },
       ]
     },
     {
