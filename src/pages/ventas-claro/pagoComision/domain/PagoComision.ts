@@ -2,7 +2,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class PagoComision extends EntidadAuditable {
   id: number | null
-  mes: string | null
+  fecha: string | null
   vendedor: number | null
   vendedor_id:number | null
   vendedor_info: string | null
@@ -12,7 +12,7 @@ export class PagoComision extends EntidadAuditable {
   constructor() {
     super()
     this.id = null
-    this.mes = null
+    this.fecha = null
     this.vendedor = null
     this.vendedor_id = null
     this.vendedor_info = null

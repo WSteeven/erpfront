@@ -10,7 +10,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { imprimirArchivo, removeAccents } from 'shared/utils'
-import { acciones, accionesTabla } from 'config/utils'
+import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { ConceptoIngreso } from 'pages/recursosHumanos/concepto_ingreso/domain/ConceptoIngreso'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useCargandoStore } from 'stores/cargando'
@@ -48,7 +48,7 @@ export default defineComponent({
     useCargandoStore().setQuasar(useQuasar())
 
     const reglas = {
-      mes: {
+      fecha: {
         required: true,
       },
     }
@@ -56,6 +56,8 @@ export default defineComponent({
     setValidador(v$.value)
 
     onGuardado(() => {
+      console.log('guardado');
+
       listar({})
     })
     return {
@@ -65,6 +67,7 @@ export default defineComponent({
       pagocomision,
       accion,
       disabled,
+      maskFecha,
       configuracionColumnas: configuracionColumnasPagoComision,
     }
   },

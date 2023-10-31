@@ -1065,13 +1065,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/comision-pago',
-        name: 'comision_pago',
+        path: '/pago-comision',
+        name: 'pago_comision',
         component: () =>
           import(
             'pages/ventas-claro/pagoComision/view/PagoComisionPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
     ],
   },

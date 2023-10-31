@@ -761,9 +761,9 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Pagar Comisiones',
-          link: 'comision-pago',
+          link: 'pago-comision',
           icon: 'bi-circle',
-          can: true//store.can('puede.ver.comision_pago'),
+          can: store.can('puede.ver.pago_comision'),
         },
       ]
     },
