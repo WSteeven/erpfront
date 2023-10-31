@@ -149,11 +149,11 @@ export default defineComponent({
     const actividadesFiltradas: Ref<ActividadRealizadaSeguimientoTicket[]> = ref([])
     const filtrado = ref(false)
     const indice = ref()
-    const mensajeFiltro = ref('Se muestran todas las actividades registradas')
+    const mensajeFiltro = ref('Se muestran todas las actividades registradas hasta el momento')
     function filtrarActividades(linea, index: number) {
       filtrado.value = index === indice.value ? !filtrado.value : true
       indice.value = index
-      mensajeFiltro.value = filtrado.value ? `Se muestran las actividades de ${linea.responsable} a partir de la fecha ${linea.created_at}` : 'Se muestran todas las actividades registradas'
+      mensajeFiltro.value = filtrado.value ? `Se muestran las actividades de ${linea.responsable} a partir de la fecha ${linea.created_at}` : 'Se muestran todas las actividades registradas hasta el momento'
       actividadesFiltradas.value = filtrado.value ? actividadesRealizadas.value.filter((actividad: ActividadRealizadaSeguimientoTicket) => actividad.responsable === linea.responsable && (actividad.fecha_hora ? actividad.fecha_hora >= linea.created_at : false)) : actividadesRealizadas.value
     }
 

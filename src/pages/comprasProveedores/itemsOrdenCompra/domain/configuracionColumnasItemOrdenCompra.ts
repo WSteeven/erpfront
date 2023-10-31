@@ -33,7 +33,8 @@ export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>
         field: 'unidad_medida',
         label: 'Medida',
         align: 'left',
-        editable: false,
+        type:'select',
+        editable: true,
         sortable: true
     },
     {

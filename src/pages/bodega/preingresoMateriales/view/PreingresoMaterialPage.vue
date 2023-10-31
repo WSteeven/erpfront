@@ -21,7 +21,6 @@
               v-model="preingreso.responsable"
               placeholder="Obligatorio"
               disable
-              :readonly="disabled || soloLectura"
               outlined
               dense
             >
@@ -30,14 +29,33 @@
 
           <!-- Fecha -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha de recepción de los materiales</label>
-            <q-input v-model="preingreso.fecha" :disable="disabled" outlined dense
+            <label class="q-mb-sm block"
+              >Fecha de recepción de los materiales</label
+            >
+            <q-input
+              v-model="preingreso.fecha"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
               ><template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="preingreso.fecha" mask="DD-MM-YYYY" today-btn>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="preingreso.fecha"
+                      mask="DD-MM-YYYY"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -49,7 +67,7 @@
             <label class="q-mb-sm block">Cuadrilla</label>
             <q-input
               v-model="preingreso.cuadrilla"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               outlined
               dense
             ></q-input>
@@ -68,14 +86,16 @@
               @popup-show="ordenarCoordinadores"
               :error="!!v$.coordinador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
               map-options
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -99,21 +119,44 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <!-- observacion autorizacion -->
+          <div
+            v-if="
+              preingreso.autorizador === store.user.id ||
+              preingreso.observacion_aut
+            "
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              autogrow
+              v-model="preingreso.observacion_aut"
+              placeholder="Opcional"
+              :disable="disabled || preingreso.autorizador !== store.user.id"
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <!-- numero de guia -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >N° Guía/Documento <q-icon name="info" color="grey" />
-              <q-tooltip class="bg-dark">NA en caso de no haber guía</q-tooltip></label
+              <q-tooltip class="bg-dark"
+                >NA en caso de no haber guía</q-tooltip
+              ></label
             >
             <q-input
               v-model="preingreso.num_guia"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               outlined
               dense
             ></q-input>
@@ -123,7 +166,7 @@
             <label class="q-mb-sm block"
               >N° Tarea <q-icon name="info" color="grey" />
               <q-tooltip class="bg-dark">{{
-                "Campo es obligatorio si el material recibido es para tarea de soporte, caso contrario se asignará al stock del técnico"
+                'Campo es obligatorio si el material recibido es para tarea de soporte, caso contrario se asignará al stock del técnico'
               }}</q-tooltip>
             </label>
             <q-select
@@ -152,7 +195,9 @@
                 </q-item> </template
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -169,7 +214,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="disabled  || soloLectura"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
               @popup-show="ordenarClientes"
@@ -185,7 +230,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -196,7 +243,7 @@
             <label class="q-mb-sm block">Courier</label>
             <q-input
               v-model="preingreso.courier"
-              :disable="disabled"
+              :disable="disabled  || soloLectura"
               outlined
               dense
             ></q-input>
@@ -225,7 +272,7 @@
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaProducto"
-                  :disable="disabled"
+                  :disable="disabled  || soloLectura"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
@@ -233,7 +280,9 @@
                       search: criterioBusquedaProducto,
                     })
                   "
-                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
+                  @blur="
+                    criterioBusquedaProducto === '' ? limpiarProducto() : null
+                  "
                   outlined
                   dense
                 >
@@ -253,7 +302,7 @@
                   color="positive"
                   class="full-width"
                   style="height: 40px"
-                  :disable="disabled"
+                  :disable="disabled  || soloLectura"
                   no-caps
                   glossy
                   >Buscar</q-btn
@@ -270,7 +319,8 @@
               titulo="Productos Seleccionados"
               :configuracionColumnas="
                 accion == acciones.nuevo ||
-                (accion == acciones.editar && preingreso.responsable_id == store.user.id)
+                (accion == acciones.editar &&
+                  preingreso.responsable_id == store.user.id)
                   ? [...configuracionColumnasItemPreingreso, accionesTabla]
                   : [...configuracionColumnasItemPreingreso, accionesTabla]
               "
@@ -278,12 +328,14 @@
               separador="cell"
               :permitirEditarCeldas="
                 accion == acciones.nuevo ||
-                (accion == acciones.editar && preingreso.responsable_id == store.user.id)
+                (accion == acciones.editar &&
+                  preingreso.responsable_id == store.user.id)
               "
               :permitirConsultar="false"
               :permitirEditar="
                 accion == acciones.nuevo ||
-                (accion == acciones.editar && preingreso.responsable_id == store.user.id)
+                (accion == acciones.editar &&
+                  preingreso.responsable_id == store.user.id)
               "
               :permitirEditarModal="true"
               :modalMaximized="false"
