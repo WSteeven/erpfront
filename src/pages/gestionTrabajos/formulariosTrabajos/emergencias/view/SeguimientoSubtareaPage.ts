@@ -340,7 +340,8 @@ export default defineComponent({
     }
 
     async function descargarExcel() {
-      const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + emergencia.id
+      console.log(subtarea)
+      const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + subtarea.id
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
 

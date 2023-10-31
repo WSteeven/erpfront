@@ -226,7 +226,7 @@
       </div>
 
       <div class="row justify-end q-col-gutter-x-xs">
-        <!-- <q-btn
+        <q-btn
           v-if="esCoordinador"
           color="positive"
           no-caps
@@ -236,7 +236,7 @@
         >
           <q-icon name="bi-file-spreadsheet" size="xs" class="q-pr-sm"></q-icon>
           <span>Descargar Excel</span>
-        </q-btn> -->
+        </q-btn>
 
         <!-- <button-submits
           :accion="accion"
