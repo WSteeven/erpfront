@@ -47,7 +47,6 @@
                 icon="bi-chevron-left"
                 color="primary"
                 class="bg-primary q-pr-md q-mr-sm"
-                label="Anterior"
                 @click="anterior"
                 rounded
                 no-caps
@@ -57,7 +56,6 @@
                 icon-right="bi-chevron-right"
                 color="primary"
                 class="bg-primary q-pl-md"
-                label="Siguiente"
                 @click.stop="siguiente"
                 rounded
                 no-caps

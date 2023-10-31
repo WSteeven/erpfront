@@ -97,7 +97,7 @@ export default defineComponent({
     const existeObservaciones = ref(false)
     const usarMaterialTarea = ref(false)
     const usarStock = ref(false)
-    const permitirSubir = ![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
+    const permitirSubir = ![estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
     const columnasMaterial = permitirSubir ? [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla] : configuracionColumnasMaterialOcupadoFormulario
     const { prompt, notificarAdvertencia } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea

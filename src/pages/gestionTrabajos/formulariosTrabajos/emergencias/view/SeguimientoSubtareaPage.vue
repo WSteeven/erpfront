@@ -1,7 +1,21 @@
 <template>
   <q-page>
-    <div class="q-mb-md">
-      Código de subtarea: <b>{{ codigoSubtarea }}</b>
+    <div class="row items-center justify-between q-gutter-xs q-mb-md">
+      <div :class="{ 'text-center full-width': $q.screen.xs }">
+        Código de subtarea: <b>{{ codigoSubtarea }}</b>
+      </div>
+
+      <!-- <q-btn
+        color="positive"
+        no-caps
+        push
+        class="q-mr-sm"
+        :class="{ 'full-width': $q.screen.xs }"
+        @click="descargarExcel()"
+      >
+        <q-icon name="bi-file-spreadsheet" size="xs" class="q-pr-sm"></q-icon>
+        <span>Descargar informe</span>
+      </q-btn> -->
     </div>
 
     <q-card class="rounded-card custom-shadow q-pa-md">
@@ -207,6 +221,7 @@
             :mixin="mixinArchivoSeguimiento"
             :endpoint="endpoint"
             :permitir-eliminar="permitirSubir"
+            :permitir-subir="permitirSubir"
           >
             <template #boton-subir>
               <q-btn
@@ -225,27 +240,16 @@
         </div>
       </div>
 
-      <div class="row justify-end q-col-gutter-x-xs">
-        <q-btn
-          v-if="esCoordinador"
-          color="positive"
-          no-caps
-          push
-          class="q-mr-sm"
-          @click="descargarExcel()"
-        >
-          <q-icon name="bi-file-spreadsheet" size="xs" class="q-pr-sm"></q-icon>
-          <span>Descargar Excel</span>
-        </q-btn>
+      <!-- <div class="row justify-end q-col-gutter-x-xs"> -->
 
-        <!-- <button-submits
+      <!-- <button-submits
           :accion="accion"
           @cerrar-modal="emit('cerrar-modal')"
           @cancelar="reestablecer()"
           @editar="editarSeguimiento()"
           @guardar="guardarSeguimiento()"
         /> -->
-      </div>
+      <!-- </div> -->
     </q-card>
 
     <visor-imagen ref="refVisorImagen"></visor-imagen>
