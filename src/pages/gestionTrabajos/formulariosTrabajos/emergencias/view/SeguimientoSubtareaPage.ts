@@ -160,10 +160,10 @@ export default defineComponent({
           validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + (entidad.cantidad_utilizada ?? 0),
           accion: async (valor) => {
             // materialesTarea.value[posicion].cantidad_utilizada = data
-            console.log('Enviando...')
+            // console.log('Enviando...')
             entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
             entidad.cantidad_utilizada = valor
-            console.log(entidad)
+            // console.log(entidad)
             const modelo = await actualizarCantidadUtilizadaTarea(entidad)
             materialesTarea.value[posicion] = modelo
           }

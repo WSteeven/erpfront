@@ -5,7 +5,7 @@
         Código de subtarea: <b>{{ codigoSubtarea }}</b>
       </div>
 
-      <!-- <q-btn
+      <q-btn
         color="positive"
         no-caps
         push
@@ -15,7 +15,7 @@
       >
         <q-icon name="bi-file-spreadsheet" size="xs" class="q-pr-sm"></q-icon>
         <span>Descargar informe</span>
-      </q-btn> -->
+      </q-btn>
     </div>
 
     <q-card class="rounded-card custom-shadow q-pa-md">
