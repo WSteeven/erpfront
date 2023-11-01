@@ -149,7 +149,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
           confirmarRealizar({ entidad, posicion, causa_intervencion_id })
         },
         tipo: 'radio',
-        requerido: false,
+        requerido: true,
         items: listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo).map((causa: CausaIntervencion) => {
           return {
             label: causa.nombre,

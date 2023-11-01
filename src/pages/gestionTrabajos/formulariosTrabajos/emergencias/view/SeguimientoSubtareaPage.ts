@@ -97,7 +97,7 @@ export default defineComponent({
     const existeObservaciones = ref(false)
     const usarMaterialTarea = ref(false)
     const usarStock = ref(false)
-    const permitirSubir = ![estadosTrabajos.REALIZADO, estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
+    const permitirSubir = ![estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
     const columnasMaterial = permitirSubir ? [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla] : configuracionColumnasMaterialOcupadoFormulario
     const { prompt, notificarAdvertencia } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
@@ -160,10 +160,10 @@ export default defineComponent({
           validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + (entidad.cantidad_utilizada ?? 0),
           accion: async (valor) => {
             // materialesTarea.value[posicion].cantidad_utilizada = data
-            console.log('Enviando...')
+            // console.log('Enviando...')
             entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
             entidad.cantidad_utilizada = valor
-            console.log(entidad)
+            // console.log(entidad)
             const modelo = await actualizarCantidadUtilizadaTarea(entidad)
             materialesTarea.value[posicion] = modelo
           }
@@ -340,7 +340,8 @@ export default defineComponent({
     }
 
     async function descargarExcel() {
-      const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + emergencia.id
+      console.log(subtarea)
+      const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + subtarea.id
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
 
