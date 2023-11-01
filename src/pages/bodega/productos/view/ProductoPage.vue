@@ -7,8 +7,41 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <!--Tipo de producto -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Tipo</label>
+            <q-select
+              v-model="producto.tipo"
+              :options="tiposProductos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :error="!!v$.tipo.$errors.length"
+              error-message="Debes seleccionar un tipo "
+              :option-value="(v) => v.value"
+              :option-label="(v) => v.label"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Categoria -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Categoria</label>
             <q-select
               v-model="producto.categoria"
@@ -46,7 +79,7 @@
             </q-select>
           </div>
           <!--Unidad de medida -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Unidad de medida</label>
             <q-select
               v-model="producto.unidad_medida"
@@ -82,7 +115,7 @@
             </q-select>
           </div>
           <!-- Nombre -->
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Nombre</label>
             <q-input
               v-model="producto.nombre"

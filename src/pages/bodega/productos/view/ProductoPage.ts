@@ -20,7 +20,7 @@ import { ProductoController } from '../infraestructure/ProductoController'
 import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
-import { acciones } from 'config/utils';
+import { acciones, tiposProductos } from 'config/utils';
 import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController'
 
 export default defineComponent({
@@ -62,6 +62,7 @@ export default defineComponent({
       nombre: { required },
       categoria: { required },
       unidad_medida: { required },
+      tipo: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -84,7 +85,7 @@ export default defineComponent({
       //listado
       opciones,
       unidades_medidas,
-
+      tiposProductos,
       /**
        * Función para filtrar el SELECT de categorias,
        * @param val String, tecla que ingresa el usuario para la busqueda

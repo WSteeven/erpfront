@@ -300,6 +300,10 @@ export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
   { value: 0, label: 'INACTIVO' }
 ]
+export const tiposProductos = [
+  { value: 'BIEN', label: 'BIEN' },
+  { value: 'SERVICIO', label: 'SERVICIO' },
+]
 
 export const opcionesTipoContribuyente = [
   { value: 'NATURAL', label: 'NATURAL' },

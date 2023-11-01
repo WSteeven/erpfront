@@ -92,7 +92,7 @@ export default defineComponent({
 
     //Obtener listados
     const empleados = ref([])
-    const categorias = ref([])
+    // const categorias = ref([])
     const autorizaciones = ref([])
     const estados = ref([])
     const empleadosAutorizadores = ref([])
@@ -133,7 +133,7 @@ export default defineComponent({
             // 'estado_calificado': estadosCalificacionProveedor.calificado
           }
         },
-        categorias: new CategoriaController()
+        // categorias: new CategoriaController()
       })
       //comprueba si hay una preorden en el store para llenar automaticamente los datos en la orden de compra
       orden.autorizacion = 1
@@ -170,7 +170,7 @@ export default defineComponent({
      ****************************************************************************************/
     const reglas = {
       proveedor: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-      categorias: { requiredIfNoPreorden: requiredIf(() => false) },
+      // categorias: { requiredIfNoPreorden: requiredIf(() => false) },
       // categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
       // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
       autorizador: { required },
@@ -194,19 +194,19 @@ export default defineComponent({
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
-    function estructuraConsultaCategoria() {
-      let parametro = ''
-      if (orden.categorias!.length < 1) {
-        return ''
-      } else {
-        // console.log('Hay solo una categoria')
-        orden.categorias?.forEach((v, index) => {
-          if (index === orden.categorias!.length - 1) parametro += v
-          else parametro += v + '&categoria_id[]='
-        })
-      }
-      return parametro
-    }
+    // function estructuraConsultaCategoria() {
+    //   let parametro = ''
+    //   if (orden.categorias!.length < 1) {
+    //     return ''
+    //   } else {
+    //     // console.log('Hay solo una categoria')
+    //     orden.categorias?.forEach((v, index) => {
+    //       if (index === orden.categorias!.length - 1) parametro += v
+    //       else parametro += v + '&categoria_id[]='
+    //     })
+    //   }
+    //   return parametro
+    // }
     function filtrarOrdenes(tab: string) {
       tabSeleccionado.value = tab
       if (tab == '1') puedeEditar.value = true
@@ -306,7 +306,7 @@ export default defineComponent({
         orden.autorizacion = 1
         orden.estado = 1
         orden.causa_anulacion = null
-        orden.categorias = []
+        // orden.categorias = []
       } else orden.hydrate(new OrdenCompra())
     }
     /*******************************************************************************************
@@ -398,7 +398,7 @@ export default defineComponent({
 
     // configurar los listados
     empleados.value = listadosAuxiliares.empleados
-    categorias.value = listadosAuxiliares.categorias
+    // categorias.value = listadosAuxiliares.categorias
     proveedores.value = listadosAuxiliares.proveedores
     autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     empleadosAutorizadores.value = listadosAuxiliares.autorizadores
@@ -415,7 +415,7 @@ export default defineComponent({
       refItems,
       //listados
       empleados,
-      categorias,
+      // categorias,
       proveedores,
       autorizaciones,
       tareas,
@@ -456,7 +456,7 @@ export default defineComponent({
       //funciones
       filtrarOrdenes,
       calcularValores,
-      estructuraConsultaCategoria,
+      // estructuraConsultaCategoria,
       filtrarProveedores,
       llenarOrden,
       actualizarPreorden,
