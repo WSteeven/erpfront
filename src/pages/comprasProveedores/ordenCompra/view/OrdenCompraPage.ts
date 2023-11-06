@@ -211,7 +211,23 @@ export default defineComponent({
       tabSeleccionado.value = tab
       if (tab == '1') puedeEditar.value = true
       else puedeEditar.value = false
-      listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+      switch (tab) {
+        case '2':
+          listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+          break
+        case '3':
+          listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+          break
+        case '4':
+          listar({ realizada: 1, pagada: 0, solicitante_id: store.user.id })
+          break
+        case '5':
+          listar({ realizada: 0, pagada: 1, solicitante_id: store.user.id })
+          break
+        default:
+          listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+
+      }
     }
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
