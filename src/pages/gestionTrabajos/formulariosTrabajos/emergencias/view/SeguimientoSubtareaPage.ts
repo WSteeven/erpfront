@@ -189,7 +189,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           defecto: materialesStock.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => val >= 0 && (accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + (entidad.cantidad_utilizada ?? 0),
           accion: async (valor) => {
             entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
             entidad.cantidad_utilizada = valor
