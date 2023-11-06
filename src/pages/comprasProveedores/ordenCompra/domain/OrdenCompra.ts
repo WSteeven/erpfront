@@ -19,6 +19,9 @@ export class OrdenCompra extends EntidadAuditable {
   iva: number
   categorias: [] //| null
   listadoProductos: any[]
+  realizada: boolean
+  observacion_realizada: string | null
+  pagada: boolean
 
   //variables auxiliares
   copia_orden: boolean
@@ -52,5 +55,8 @@ export class OrdenCompra extends EntidadAuditable {
     this.tiene_preorden = false
     this.tiene_pedido = false
     this.modificar_iva = false
+    this.realizada = false
+    this.observacion_realizada = null
+    this.pagada = false
   }
 }

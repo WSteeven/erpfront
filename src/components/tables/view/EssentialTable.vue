@@ -1078,6 +1078,39 @@
         >
       </q-td>
     </template>
+    <!-- ordenes de compra -->
+    <template #body-cell-realizada="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+    <template #body-cell-pagada="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
     <!-- devoluciones de bodega -->
     <template #body-cell-estado_bodega="props">
       <q-td :props="props">

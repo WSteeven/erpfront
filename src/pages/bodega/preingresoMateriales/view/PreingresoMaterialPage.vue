@@ -214,7 +214,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled  || soloLectura"
+              :disable="disabled || soloLectura"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
               @popup-show="ordenarClientes"
@@ -243,7 +243,7 @@
             <label class="q-mb-sm block">Courier</label>
             <q-input
               v-model="preingreso.courier"
-              :disable="disabled  || soloLectura"
+              :disable="disabled || soloLectura"
               outlined
               dense
             ></q-input>
@@ -263,6 +263,34 @@
             />
           </div>
 
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Adjuntar archivos"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idPreingreso"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="mostrarBotonSubir"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
+          </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- {{ orden.listadoProductos }} -->
           <!-- Selector de productos -->
@@ -272,7 +300,7 @@
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaProducto"
-                  :disable="disabled  || soloLectura"
+                  :disable="disabled || soloLectura"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
@@ -302,7 +330,7 @@
                   color="positive"
                   class="full-width"
                   style="height: 40px"
-                  :disable="disabled  || soloLectura"
+                  :disable="disabled || soloLectura"
                   no-caps
                   glossy
                   >Buscar</q-btn

@@ -12,7 +12,9 @@
     :accion1="btnImprimir"
     :accion2="btnEnviarMailProveedor"
     :accion3="btnAnularOrden"
-    :accion4="btnRegistrarNovedades"
+    :accion4="btnMarcarRealizada"
+    :accion5="btnMarcarPagada"
+    :accion6="btnRegistrarNovedades"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -129,7 +131,7 @@
               </template>
             </q-select>
           </div>
-          <!-- Select autorizacion -->
+         <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.autorizador">
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
