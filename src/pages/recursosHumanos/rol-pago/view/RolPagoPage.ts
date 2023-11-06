@@ -740,10 +740,18 @@ export default defineComponent({
           total_sueldo = sueldo
           break
         default:
-          total_sueldo =
+          if(rolpago.es_vendedor_medio_tiempo){
+            total_sueldo =
+            rolpago.es_quincena == true
+              ? (sueldo * rolpago.porcentaje_quincena) / 100
+              : sueldo
+          }else{
+            total_sueldo =
             rolpago.es_quincena == true
               ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100
               : sueldo
+          }
+
           break
       }
       rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
