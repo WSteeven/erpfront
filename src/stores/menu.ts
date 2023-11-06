@@ -467,7 +467,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Empleados',
           link: 'empleados',
           icon: 'bi-circle',
-          can: store.can('puede.ver.empleados'),
+          can: store.can('puede.acceder.empleados'),
         },
         {
           title: 'Cargos',
@@ -557,7 +557,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Configuracion',
           icon: 'bi-gear-fill',
-          can: true,//store.can('puede.ver.prestamo_empresarial'),
+          can: store.can('puede.acceder.configuracion_modulo_rrhh'),
           children: [
             {
               title: 'Conceptos de Ingresos',
