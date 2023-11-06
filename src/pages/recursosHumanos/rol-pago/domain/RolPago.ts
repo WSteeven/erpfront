@@ -47,6 +47,8 @@ export class RolPago extends EntidadAuditable {
   es_quincena : boolean | null
 porcentaje_anticipo: number | null
 es_vendedor_medio_tiempo : boolean | null
+porcentaje_quincena:number | null
+
   constructor() {
     super()
     this.id = null
@@ -95,5 +97,6 @@ es_vendedor_medio_tiempo : boolean | null
     this.medio_tiempo = false
     this.porcentaje_anticipo = null
     this.es_vendedor_medio_tiempo = false
+    this.porcentaje_quincena=100
   }
 }

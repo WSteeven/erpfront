@@ -741,9 +741,10 @@ export default defineComponent({
           break
         default:
           if(rolpago.es_vendedor_medio_tiempo){
+            const porcentaje = rolpago.porcentaje_quincena!=null?rolpago.porcentaje_quincena:0
             total_sueldo =
             rolpago.es_quincena == true
-              ? (sueldo * rolpago.porcentaje_quincena) / 100
+              ? (sueldo * porcentaje) / 100
               : sueldo
           }else{
             total_sueldo =
