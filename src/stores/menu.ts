@@ -518,24 +518,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.familiares'),
         },
         {
-          title: 'Descuentos Generales',
-          link: 'descuentos-generales',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.descuentos_generales'),
-        },
-        {
-          title: 'Multas',
-          link: 'multa',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.multa'),
-        },
-        {
-          title: 'Conceptos de Ingresos',
-          link: 'concepto-ingreso',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.concepto_ingreso'),
-        },
-        {
           title: 'Extension Conyugal',
           link: 'extension-conyugal',
           icon: 'fa-solid fa-people-arrows',
@@ -572,6 +554,38 @@ export const useMenuStore = defineStore('menu', () => {
             },
           ]
         },
+        {
+          title: 'Configuracion',
+          icon: 'bi-gear-fill',
+          can: true,//store.can('puede.ver.prestamo_empresarial'),
+          children: [
+            {
+              title: 'Conceptos de Ingresos',
+              link: 'concepto-ingreso',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.concepto_ingreso'),
+            },
+            {
+              title: 'Descuentos Generales',
+              link: 'descuentos-generales',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.descuentos_generales'),
+            },
+            {
+              title: 'Multas',
+              link: 'multa',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.multa'),
+            },
+            {
+              title: 'Rubro',
+              link: 'rubro',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.rubro'),
+            },
+          ]
+        },
+
 
 
 
