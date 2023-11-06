@@ -96,7 +96,7 @@ export default defineComponent({
         clientes: new ClienteController(),
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0, coordinador_id: authenticationStore.user.id },
+          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0, coordinador_id: authenticationStore.esJefeTecnico ? null : authenticationStore.user.id },
         },
         fiscalizadores: {
           controller: new EmpleadoController(),

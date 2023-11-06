@@ -1,7 +1,21 @@
 <template>
   <q-page>
-    <div class="q-mb-md">
-      Código de subtarea: <b>{{ codigoSubtarea }}</b>
+    <div class="row items-center justify-between q-gutter-xs q-mb-md">
+      <div :class="{ 'text-center full-width': $q.screen.xs }">
+        Código de subtarea: <b>{{ codigoSubtarea }}</b>
+      </div>
+
+      <q-btn
+        color="positive"
+        no-caps
+        push
+        class="q-mr-sm"
+        :class="{ 'full-width': $q.screen.xs }"
+        @click="descargarExcel()"
+      >
+        <q-icon name="bi-file-spreadsheet" size="xs" class="q-pr-sm"></q-icon>
+        <span>Descargar informe</span>
+      </q-btn>
     </div>
 
     <q-card class="rounded-card custom-shadow q-pa-md">
@@ -39,7 +53,7 @@
           <br />
           <q-toggle
             v-model="usarMaterialTarea"
-            label="Gestionar material asignado para la tarea"
+            label="Usar material asignado para la tarea"
             checked-icon="bi-eye"
             color="positive"
             dense
@@ -60,7 +74,7 @@
               <q-tab
                 name="usar_material_tarea"
                 label="Usar material de tarea"
-                @click="actualizarTablaMateriales()"
+                @click="actualizarTablaMaterialesTarea()"
               />
               <q-tab
                 v-if="esCoordinador"
@@ -133,8 +147,106 @@
           </q-card>
         </div>
 
-        <div
-          v-if="subtarea.cliente_id !== clientes.TELCONET"
+        <div class="col-12 q-mb-md">
+          <br />
+          <q-toggle
+            v-model="usarMaterialStock"
+            label="Usar material de mi stock"
+            checked-icon="bi-eye"
+            color="positive"
+            dense
+          ></q-toggle>
+        </div>
+
+        <div v-if="usarMaterialStock" class="col-12 q-mb-md">
+          <q-card class="rounded-card">
+            <q-tabs
+              v-model="tabMaterialStock"
+              class="text-primary"
+              :class="{ 'bg-grey-1': !$q.dark.isActive }"
+              active-color="primary"
+              align="justify"
+              no-caps
+              inline-label
+            >
+              <q-tab
+                name="usar_material_stock"
+                label="Usar material de mi stock"
+                @click="actualizarTablaMaterialesStock()"
+              />
+              <q-tab
+                v-if="esCoordinador"
+                name="historial_material_stock_usado"
+                label="Historial de material de stock usado"
+                @click="resetearFiltroHistorialStock()"
+              >
+              </q-tab>
+            </q-tabs>
+
+            <q-tab-panels v-model="tabMaterialStock" animated class="bg-body">
+              <q-tab-panel name="usar_material_stock">
+                <essential-table
+                  titulo="Materiales de stock del responsable"
+                  :configuracionColumnas="columnasMaterial"
+                  :datos="materialesStock"
+                  :alto-fijo="false"
+                  :permitirConsultar="false"
+                  :permitirEliminar="false"
+                  :permitirEditar="false"
+                  :permitir-buscar="true"
+                  :permitirEditarModal="true"
+                  separador="cell"
+                  :accion1="botonEditarCantidadStock"
+                ></essential-table>
+              </q-tab-panel>
+
+              <q-tab-panel name="historial_material_stock_usado">
+                <div
+                  class="row text-center justify-center bg-drawer rounded-card q-py-md q-mb-md custom-shadow"
+                >
+                  <!-- Fecha historial -->
+                  <div class="col-12 col-md-3 q-mb-md">
+                    <label class="q-mb-sm block"
+                      >Seleccione una fecha para filtrar en el historial</label
+                    >
+                    <small class="text-positive">{{
+                      rangoFechasHistorial
+                    }}</small>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="q-gutter-sm">
+                      <q-radio
+                        v-for="fecha in fechasHistorialMaterialesStockUsados"
+                        :key="fecha.fecha"
+                        v-model="fecha_historial_stock"
+                        :val="fecha.fecha"
+                        :label="fecha.fecha"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <essential-table
+                  v-if="historialMaterialStockUsadoPorFecha.length"
+                  titulo="Historial material stock usado"
+                  :configuracionColumnas="columnasMaterial"
+                  :datos="historialMaterialStockUsadoPorFecha"
+                  :alto-fijo="false"
+                  :permitirConsultar="false"
+                  :permitirEliminar="false"
+                  :permitirEditar="false"
+                  :permitirEditarModal="true"
+                  separador="cell"
+                  :accion1="botonEditarCantidadStockHistorial"
+                ></essential-table>
+              </q-tab-panel>
+            </q-tab-panels>
+          </q-card>
+        </div>
+
+        <!-- v-if="subtarea.cliente_id !== clientes.TELCONET" -->
+        <!-- <div
           class="col-12 q-mb-md"
         >
           <br />
@@ -161,7 +273,7 @@
             separador="cell"
             :accion1="botonEditarCantidadStock"
           ></essential-table>
-        </div>
+        </div> -->
 
         <!-- <div class="col-12 q-mb-md">
           <br />
@@ -207,6 +319,7 @@
             :mixin="mixinArchivoSeguimiento"
             :endpoint="endpoint"
             :permitir-eliminar="permitirSubir"
+            :permitir-subir="permitirSubir"
           >
             <template #boton-subir>
               <q-btn
@@ -225,27 +338,16 @@
         </div>
       </div>
 
-      <div class="row justify-end q-col-gutter-x-xs">
-        <!-- <q-btn
-          v-if="esCoordinador"
-          color="positive"
-          no-caps
-          push
-          class="q-mr-sm"
-          @click="descargarExcel()"
-        >
-          <q-icon name="bi-file-spreadsheet" size="xs" class="q-pr-sm"></q-icon>
-          <span>Descargar Excel</span>
-        </q-btn> -->
+      <!-- <div class="row justify-end q-col-gutter-x-xs"> -->
 
-        <!-- <button-submits
+      <!-- <button-submits
           :accion="accion"
           @cerrar-modal="emit('cerrar-modal')"
           @cancelar="reestablecer()"
           @editar="editarSeguimiento()"
           @guardar="guardarSeguimiento()"
         /> -->
-      </div>
+      <!-- </div> -->
     </q-card>
 
     <visor-imagen ref="refVisorImagen"></visor-imagen>

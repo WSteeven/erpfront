@@ -46,6 +46,18 @@
               </template>
             </q-input>
           </div>
+           <!-- Fecha de creacion-->
+           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha de Creacion</label>
+            <q-input
+              v-model="gasto.created_at"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
 
           <!-- Proyectos -->
           <div class="col-12 col-md-3">
@@ -249,6 +261,20 @@
             <label class="q-mb-sm block">Observación</label>
             <q-input
               v-model="gasto.observacion"
+              placeholder="Opcional"
+              type="textarea"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+           <!-- Observacion -->
+           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observación Autorizador</label>
+            <q-input
+              v-model="gasto.detalle_estado"
               placeholder="Opcional"
               type="textarea"
               disable
