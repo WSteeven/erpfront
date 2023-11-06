@@ -1073,6 +1073,24 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/bono-mensual-cumplimiento',
+        name: 'bono_mensual_cumplimiento',
+        component: () =>
+          import(
+            'pages/ventas-claro/bonoMensualCumplimiento/view/BonoMensualCumplimientoPagePage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/bono-trimestral-cumplimiento',
+        name: 'bono_trimestral_cumplimiento',
+        component: () =>
+          import(
+            'pages/ventas-claro/bonoTrimestralCumplimiento/view/BonoTrimestralCumplimientoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

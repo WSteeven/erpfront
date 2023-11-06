@@ -765,6 +765,18 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.pago_comision'),
         },
+        {
+          title: 'Bono Mensual Cumplimento',
+          link: 'bono-mensual-cumplimiento',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.bono_mensual_cumplimiento'),
+        },
+        {
+          title: 'Bono Trimestral Cumplimiento',
+          link: 'bono-trimestral-cumplimiento',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.bono_trimestral_cumplimiento'),
+        },
       ]
     },
     {
