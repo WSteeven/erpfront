@@ -903,7 +903,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Clientes',
       link: 'clientes',
       icon: 'bi-person-circle',
-      can: store.can('puede.ver.clientes'),
+      can: store.can('puede.acceder.clientes'),
     },
     {
       title: 'Roles y Permisos',

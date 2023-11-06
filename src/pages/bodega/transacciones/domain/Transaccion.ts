@@ -6,6 +6,7 @@ export class Transaccion extends EntidadAuditable {
     observacion_aut: string | null
     justificacion: string | null
     comprobante: string | null
+    proveedor: string | null
     fecha_limite: string | null
     estado: number | null
     observacion_est: string | null
@@ -55,6 +56,7 @@ export class Transaccion extends EntidadAuditable {
         this.id = null
         this.justificacion = null
         this.comprobante = null
+        this.proveedor = null
         this.fecha_limite = null
         this.solicitante_id = null
         this.devolucion = null

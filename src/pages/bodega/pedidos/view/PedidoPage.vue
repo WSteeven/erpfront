@@ -476,6 +476,12 @@
             <q-input autogrow v-model="pedido.observacion_bodega" disable outlined dense>
             </q-input>
           </div>
+          <!-- estado orden compra -->
+          <div v-if="pedido.estado_orden_compra" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado Orden de Compra</label>
+            <q-input autogrow v-model="pedido.estado_orden_compra" disable outlined dense>
+            </q-input>
+          </div>
           <!-- Configuracion de opciones para que puedan seleccionar los detalles en el listado -->
           <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
             <q-option-group v-model="group" :options="options_groups" color="primary" />

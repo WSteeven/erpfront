@@ -442,3 +442,15 @@ export const tabOptionsPreingresoMateriales = [
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
 ]
+
+export const autorizaciones = [
+  { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
+  { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
+  { nombre: 'Cancelado', id: 3 }  //autorizacion CANCELADO
+]
+export const estados = [
+  { nombre: 'Pendiente', id: 1 }, //estado PENDIENTE
+  { nombre: 'Completa', id: 2 }, //estado COMPLETA
+  { nombre: 'Parcial', id: 3 }, //estado PARCIAL
+  { nombre: 'Anulado', id: 4 }  //estado ANULADO
+]
