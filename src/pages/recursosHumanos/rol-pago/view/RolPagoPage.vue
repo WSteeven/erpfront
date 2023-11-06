@@ -128,7 +128,7 @@
         />
       </div>
        <!-- Medio Tiempo -->
-       <div class="col-12 col-md-3" v-if="!rolpago.es_quincena">
+       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Vendedor Trabaja Medio tiempo</label>
         <q-toggle
           :label="rolpago.es_vendedor_medio_tiempo ? 'Vendedor Medio Tiempo' : 'Vendedor Tiempo completo'"
@@ -148,6 +148,18 @@
           placeholder="Obligatorio"
           type="number"
           disable
+          outlined
+          dense
+        >
+        </q-input>
+      </div>
+      <div class="col-12 col-md-3" v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_vendedor_medio_tiempo">
+        <label class="q-mb-sm block">Porcentaje Quincena</label>
+        <q-input
+          v-model="rolpago.porcentaje_quincena"
+          placeholder="Opcional"
+          type="number"
+          :disable="disabled"
           outlined
           dense
         >
