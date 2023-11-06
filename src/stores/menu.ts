@@ -473,73 +473,55 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Cargos',
           link: 'cargos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.cargos'),
+          can: store.can('puede.acceder.cargos'),
         },
         {
           title: 'Departamentos',
           link: 'departamentos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.departamentos'),
+          can: store.can('puede.acceder.departamentos'),
         },
         {
           title: 'Grupos técnicos',
           link: 'grupos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.grupos'),
+          can: store.can('puede.acceder.grupos'),
         },
         {
           title: 'Permiso',
           link: 'permiso-nomina',
           icon: 'bi-circle',
-          can: store.can('puede.ver.permiso_nomina'),
+          can: store.can('puede.acceder.permiso_nomina'),
         },
         {
           title: 'Rol de Pagos',
           link: 'rol-pago-mes',
           icon: 'bi-circle',
-          can: store.can('puede.ver.rol_pago_mes'),
+          can: store.can('puede.acceder.rol_pago_mes'),
         },
         {
           title: 'Licencia Empleado',
           link: 'licencia-empleado',
           icon: 'bi-person-vcard-fill',
-          can: store.can('puede.ver.licencia_empleado'),
+          can: store.can('puede.acceder.licencia_empleado'),
         },
         {
           title: 'Vacaciones',
           link: 'vacacion',
           icon: 'bi-umbrella',
-          can: store.can('puede.ver.vacacion'),
+          can: store.can('puede.acceder.vacacion'),
         },
         {
           title: 'Familiares',
           link: 'familiares',
           icon: 'bi-people',
-          can: store.can('puede.ver.familiares'),
-        },
-        {
-          title: 'Descuentos Generales',
-          link: 'descuentos-generales',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.descuentos_generales'),
-        },
-        {
-          title: 'Multas',
-          link: 'multa',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.multa'),
-        },
-        {
-          title: 'Conceptos de Ingresos',
-          link: 'concepto-ingreso',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.concepto_ingreso'),
+          can: store.can('puede.acceder.familiares'),
         },
         {
           title: 'Extension Conyugal',
           link: 'extension-conyugal',
           icon: 'fa-solid fa-people-arrows',
-          can: store.can('puede.ver.extension_conyugal'),
+          can: store.can('puede.acceder.extension_conyugal'),
         },
         {
           title: 'Prestamos',
@@ -550,28 +532,60 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Prestamos Empresariales',
               link: 'prestamo-empresarial',
               icon: 'bi-building',
-              can: store.can('puede.ver.prestamo_empresarial'),
+              can: store.can('puede.acceder.prestamo_empresarial'),
             },
             {
               title: 'Prestamos Hipotecario',
               link: 'prestamo-hipotecario',
               icon: 'bi-house',
-              can: store.can('puede.ver.prestamo_hipotecario'),
+              can: store.can('puede.acceder.prestamo_hipotecario'),
             },
             {
               title: 'Prestamos Quirorafario',
               link: 'prestamo-quirorafario',
               icon: 'fa-solid fa-hands-holding',
-              can: store.can('puede.ver.prestamo_quirorafario'),
+              can: store.can('puede.acceder.prestamo_quirorafario'),
             },
             {
               title: 'Solicitud de Prestamos Empresariales',
               link: 'solicitud-prestamo-empresarial',
               icon: 'fa-solid fa-file-signature',
-              can: store.can('puede.ver.solicitud_prestamo_empresarial'),
+              can: store.can('puede.acceder.solicitud_prestamo_empresarial'),
             },
           ]
         },
+        {
+          title: 'Configuracion',
+          icon: 'bi-gear-fill',
+          can: true,//store.can('puede.ver.prestamo_empresarial'),
+          children: [
+            {
+              title: 'Conceptos de Ingresos',
+              link: 'concepto-ingreso',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.concepto_ingreso'),
+            },
+            {
+              title: 'Descuentos Generales',
+              link: 'descuentos-generales',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.descuentos_generales'),
+            },
+            {
+              title: 'Multas',
+              link: 'multa',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.multa'),
+            },
+            {
+              title: 'Rubro',
+              link: 'rubro',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.rubro'),
+            },
+          ]
+        },
+
 
 
 
