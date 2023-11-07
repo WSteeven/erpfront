@@ -1091,6 +1091,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/reporte_cobrojp',
+        name: 'reporte_cobrojp',
+        component: () =>
+          import(
+            'pages/ventas-claro/reporte/cobroJP/view/CobroJPPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

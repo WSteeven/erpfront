@@ -423,4 +423,5 @@ export const endpoints = {
   pago_comision: new Endpoint('ventas-claro/pago-comision'),
   bono_mensual_cumplimiento: new Endpoint('ventas-claro/bono-mensual-cumplimiento'),
   bono_trimestral_cumplimiento: new Endpoint('ventas-claro/bono-trimestral-cumplimiento'),
+  cobrojp:new Endpoint('ventas-claro/cobrojp')
 }

@@ -777,6 +777,19 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.bono_trimestral_cumplimiento'),
         },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          children: [
+            {
+              title: 'Valores a cobrar para JP',
+              link: 'reporte_cobrojp',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_cobrojp'),
+            },
+
+          ]
+        },
       ]
     },
     {
