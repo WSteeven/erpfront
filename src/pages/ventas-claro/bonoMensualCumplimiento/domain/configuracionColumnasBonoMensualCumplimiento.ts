@@ -4,13 +4,6 @@ import { BonoMensualCumplimiento } from './BonoMensualCumplimiento'
 export const configuracionColumnasBonoMensualCumplimiento: ColumnConfig<BonoMensualCumplimiento>[] = [
 
 {
-  name: 'mes',
-  field: 'mes',
-  label: 'Mes',
-  align: 'left',
-  sortable: true
-},
-{
   name: 'vendedor_info',
   field: 'vendedor_info',
   label: 'Vendedor',
@@ -31,13 +24,7 @@ export const configuracionColumnasBonoMensualCumplimiento: ColumnConfig<BonoMens
   align: 'left',
   sortable: true
 },
-{
-  name: 'mes',
-  field: 'mes',
-  label: 'Mes',
-  align: 'left',
-  sortable: true
-},
+
 {
   name: 'valor',
   field: 'valor',

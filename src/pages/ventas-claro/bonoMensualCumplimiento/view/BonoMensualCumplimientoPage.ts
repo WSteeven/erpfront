@@ -46,6 +46,7 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
 
     useCargandoStore().setQuasar(useQuasar())
+    const is_month = ref(false)
 
     const reglas = {
       mes: {
@@ -60,10 +61,16 @@ export default defineComponent({
 
       listar({})
     })
+     /**Verifica si es un mes */
+     function checkValue(val, reason, details) {
+      is_month.value = reason === 'month' ? false : true
+    }
     return {
       removeAccents,
       mixin,
       v$,
+      is_month,
+      checkValue,
       bono_mensual_cumplimiento,
       accion,
       disabled,
