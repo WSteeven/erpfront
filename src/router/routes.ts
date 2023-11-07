@@ -1028,6 +1028,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/rubro',
+        name: 'rubro',
+        component: () =>
+          import(
+            'pages/recursosHumanos/rubros/view/RubroPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

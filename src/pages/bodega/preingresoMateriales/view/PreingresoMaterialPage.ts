@@ -17,6 +17,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
 import VisorImagen from 'components/VisorImagen.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -41,21 +42,24 @@ import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { ValidarListadoProductos } from "../application/validation/ValidarListadoProductos";
 import { Cliente } from "sistema/clientes/domain/Cliente";
 import { ClienteController } from "sistema/clientes/infraestructure/ClienteController";
+import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs, TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, EssentialPopupEditableTable, ModalesEntidad, SelectorImagen, VisorImagen, },
+    components: { TabLayoutFilterTabs, TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, EssentialPopupEditableTable, ModalesEntidad, SelectorImagen, VisorImagen, GestorArchivos },
     emits: ['actualizar', 'fila-modificada', 'cargado'],
     setup(props, { emit }) {
-        const mixin = new ContenedorSimpleMixin(PreingresoMaterial, new PreingresoMaterialController())
+        const mixin = new ContenedorSimpleMixin(PreingresoMaterial, new PreingresoMaterialController(),new ArchivoController())
         const { entidad: preingreso, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const { onReestablecer, onConsultado } = mixin.useHooks()
+        const { onReestablecer, onConsultado, onGuardado, onModificado } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
         let tabSeleccionado = ref()
         let componenteCargado = ref(false)
         let puedeEditar = ref(false)
         const refVisorImagen = ref()
+        const refArchivo = ref()
+        const idPreingreso = ref()
         const store = useAuthenticationStore()
 
         //Orquestador
@@ -102,13 +106,32 @@ export default defineComponent({
          * Hooks
          ****************************************************************************************/
         onReestablecer(() => {
+            console.log('Reestablecido', accion.value, soloLectura.value)
+            soloLectura.value = false
             cargarDatosDefecto()
+            refArchivo.value.limpiarListado()
         })
         onConsultado(() => {
-            if (accion.value === acciones.editar && store.user.id === preingreso.autorizador)
+            setTimeout(() => {
+                refArchivo.value.listarArchivosAlmacenados(preingreso.id)
+              }, 1);
+            console.log('Consultado ', accion.value)
+            if (accion.value === acciones.editar && store.user.id === preingreso.responsable_id)
                 soloLectura.value = false
             else
                 soloLectura.value = true
+        })
+        onModificado((id:number)=>{
+            idPreingreso.value = id
+            setTimeout(() => {
+                subirArchivos()
+              }, 1)
+        })
+        onGuardado((id:number)=>{
+            idPreingreso.value = id
+            setTimeout(() => {
+                subirArchivos()
+              }, 1)
         })
         // onModificado(() => {
         //     filtrar('1')
@@ -132,6 +155,10 @@ export default defineComponent({
         /*******************************************************************************************
         * Funciones
         ******************************************************************************************/
+        async function subirArchivos() {
+            await refArchivo.value.subir()
+          }
+      
         function filtrarPreingresos(tab: string) {
             tabSeleccionado.value = tab
             if (tab == '1') puedeEditar.value = true
@@ -221,6 +248,9 @@ export default defineComponent({
             componenteCargado,
             accionesTabla,
             store,
+            soloLectura,
+            refArchivo,
+            idPreingreso,
             //listados
             coordinadores,
             autorizaciones,

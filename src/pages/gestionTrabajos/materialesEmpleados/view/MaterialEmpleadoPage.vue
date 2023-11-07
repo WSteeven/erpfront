@@ -158,7 +158,6 @@
                 :permitirEliminar="false"
                 :permitirEditar="false"
                 :mostrarBotones="false"
-                :permitir-buscar="false"
                 :alto-fijo="false"
               ></essential-table>
             </div>
@@ -192,7 +191,6 @@
                 :permitirEliminar="false"
                 :permitirEditar="false"
                 :mostrarBotones="false"
-                :permitir-buscar="false"
                 :alto-fijo="false"
               ></essential-table>
               <!-- <div v-else>El empleado seleccionado no tiene materiales asignados.</div> -->

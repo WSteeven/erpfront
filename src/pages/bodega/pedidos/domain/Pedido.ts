@@ -15,8 +15,8 @@ export class Pedido extends EntidadAuditable {
     per_autoriza_id: number | null
     per_retira: number | null
     per_retira_id: number | null
-    evidencia1:string | null
-    evidencia2:string | null
+    evidencia1: string | null
+    evidencia2: string | null
     tarea: number | null
     tarea_id: number | null
     cliente: number | null
@@ -26,10 +26,11 @@ export class Pedido extends EntidadAuditable {
     estado: number | null
     created_at: string | null
 
+    estado_orden_compra: string | null
     listadoProductos: any[]
 
     //variables auxiliares
-    es_tarea: boolean |null
+    es_tarea: boolean | null
     tiene_fecha_limite: boolean | null
     tiene_observacion_aut: boolean | null
     tiene_observacion_est: boolean | null
@@ -51,10 +52,10 @@ export class Pedido extends EntidadAuditable {
         this.autorizacion = null
         this.per_autoriza = null
         this.per_autoriza_id = null
-        this.per_retira= null
-        this.per_retira_id= null
-        this.evidencia1= null
-        this.evidencia2= null
+        this.per_retira = null
+        this.per_retira_id = null
+        this.evidencia1 = null
+        this.evidencia2 = null
         this.tarea = null
         this.tarea_id = null
         this.cliente = null
@@ -64,6 +65,7 @@ export class Pedido extends EntidadAuditable {
         this.estado = null
         this.created_at = null
 
+        this.estado_orden_compra = null
         this.listadoProductos = []
 
         //variables auxiliares

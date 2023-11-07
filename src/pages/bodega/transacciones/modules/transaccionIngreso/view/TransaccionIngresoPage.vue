@@ -153,6 +153,21 @@
             >
             </q-input>
           </div>
+          <!--Proveedor -->
+          <div
+            v-if="esVisibleComprobante || transaccion.proveedor"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">Proveedor</label>
+            <q-input
+              v-model="transaccion.proveedor"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Select sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
