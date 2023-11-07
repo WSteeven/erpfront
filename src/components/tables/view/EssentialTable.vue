@@ -286,7 +286,6 @@
           push
           rounded
           no-caps
-          glossy
           @click="accion1Header.accion"
         >
           <q-icon
@@ -305,7 +304,6 @@
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
           rounded
-          glossy
           no-caps
           @click="accion2Header.accion"
         >
@@ -323,7 +321,6 @@
           :color="accion3Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion3Header.accion"
@@ -342,7 +339,6 @@
           :color="accion4Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion4Header.accion"
@@ -361,7 +357,6 @@
           :color="accion5Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion5Header.accion"
@@ -391,7 +386,6 @@
               v-if="permitirConsultar"
               class="bg-primary q-px-md"
               dense
-              glossy
               @click="
                 consultar({ entidad: props.row, posicion: props.rowIndex })
               "
@@ -404,7 +398,6 @@
             <q-btn
               v-if="permitirEditar"
               class="bg-secondary q-px-md"
-              glossy
               dense
               @click="editar({ entidad: props.row, posicion: props.rowIndex })"
             >
@@ -416,7 +409,6 @@
             <q-btn
               v-if="permitirEliminar"
               class="bg-negative q-px-md"
-              glossy
               dense
               @click="
                 eliminar({ entidad: props.row, posicion: props.rowIndex })
@@ -480,7 +472,6 @@
                   v-if="permitirConsultar"
                   class="bg-btn-table"
                   round
-                  glossy
                   dense
                   @click="
                     consultar({ entidad: props.row, posicion: props.rowIndex })
@@ -495,7 +486,6 @@
                   v-if="permitirEditar"
                   class="bg-btn-table"
                   round
-                  glossy
                   color="secondary"
                   dense
                   @click="
@@ -516,7 +506,6 @@
                   class="bg-btn-table"
                   round
                   color="negative"
-                  glossy
                   dense
                   @click="
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
