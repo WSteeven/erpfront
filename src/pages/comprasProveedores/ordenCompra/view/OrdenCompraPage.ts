@@ -5,7 +5,7 @@ import { configuracionColumnasDetallesProductos } from "../domain/configuracionC
 import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
 import { required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref,  } from 'vue'
+import { computed, defineComponent, ref, } from 'vue'
 
 
 // Componentes
@@ -25,8 +25,8 @@ import { useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { acciones, accionesTabla, autorizaciones  , estados } from "config/utils";
-import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo,  } from "config/utils_compras_proveedores";
+import { acciones, accionesTabla, autorizaciones, estados } from "config/utils";
+import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
 import { formatearFecha, } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
@@ -151,7 +151,8 @@ export default defineComponent({
       orden.autorizacion = 1
     })
     onConsultado(() => {
-      if (accion.value === acciones.editar && store.user.id === orden.autorizador)
+      console.log(accion.value)
+      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras))
         soloLectura.value = false
       else
         soloLectura.value = true
@@ -206,11 +207,11 @@ export default defineComponent({
     // }
     function filtrarOrdenes(tab: string) {
       tabSeleccionado.value = tab
-      if (tab == '1') puedeEditar.value = true
+      if (tab == '1' || tab == '2') puedeEditar.value = true
       else puedeEditar.value = false
       switch (tab) {
         case '2':
-          listar({ autorizacion_id: tab, realizada: 0, pagada: 0, solicitante_id: store.user.id })
+          listar({ autorizacion_id: tab, estado_id: 1, realizada: 0, pagada: 0, solicitante_id: store.user.id })
           break
         case '3':
           listar({ autorizacion_id: tab, solicitante_id: store.user.id })
@@ -220,6 +221,9 @@ export default defineComponent({
           break
         case '5':
           listar({ realizada: 1, pagada: 1, solicitante_id: store.user.id })
+          break
+        case '6':
+          listar({ autorizacion_id: 2, estado_id: 2, realizada: 0, pagada: 0, solicitante_id: store.user.id })
           break
         default:
           listar({ autorizacion_id: tab, solicitante_id: store.user.id })
@@ -333,7 +337,7 @@ export default defineComponent({
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
-      visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
+      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && orden.autorizacion == 1 ||store.esCompras
     }
     const btnImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -343,7 +347,7 @@ export default defineComponent({
         ordenCompraStore.idOrden = entidad.id
         await ordenCompraStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value > 1 ? true : false
+      visible: () => tabSeleccionado.value > 2 ? true : false
     }
     const btnAnularOrden: CustomActionTable = {
       titulo: 'Anular',
@@ -401,7 +405,7 @@ export default defineComponent({
         ordenCompraStore.idOrden = entidad.id
         await ordenCompraStore.enviarPdf()
       },
-      visible: ({ entidad }) => entidad.autorizacion_id === 2 && tabSeleccionado.value == 2
+      visible: ({ entidad }) => entidad.estado_id === 2 && tabSeleccionado.value == 6
     }
     const btnMarcarRealizada: CustomActionTable = {
       titulo: 'Realizada',

@@ -72,8 +72,9 @@ export const tabOptionsPrefactura: TabOption[] = [
 export const tabOptionsOrdenCompra: TabOption[] = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Revisadas', value: '6' },  //revisadas
   { label: 'Realizadas', value: '4' },  //realizada
-  { label: 'Pagadas', value: '5' },  //realizada
+  { label: 'Pagadas', value: '5' },  //pagada
   { label: 'Canceladas', value: '3' },  //autorizacion CANCELADO
 ]
 export const tabOptionsProformas: TabOption[] = [

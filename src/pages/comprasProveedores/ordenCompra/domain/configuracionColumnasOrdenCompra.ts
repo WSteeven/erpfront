@@ -60,6 +60,13 @@ export const configuracionColumnasOrdenesCompras : ColumnConfig<OrdenCompra>[]=[
         sortable: true,
       },
       {
+        name: 'estado',
+        field: 'estado',
+        label: 'Revisada Compras',
+        align: 'left',
+        sortable: true,
+      },
+      {
         name: 'realizada',
         field: 'realizada',
         label: 'Realizada',
