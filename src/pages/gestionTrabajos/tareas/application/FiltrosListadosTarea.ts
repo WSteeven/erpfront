@@ -3,6 +3,7 @@ import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { computed, Ref, ref, UnwrapRef } from 'vue'
 import { Tarea } from '../domain/Tarea'
 import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
+import { ordernarListaString } from 'shared/utils'
 
 export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<any>) => {// Tarea | Subtarea | any>) => {
   // - Filtro clientes corporativos
@@ -146,13 +147,11 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
   // - Filtro empleados
   const empleados = ref([])
   function filtrarEmpleados(val, update) {
-    if (val === '') update(() => empleados.value = listadosAuxiliares.empleados)
+    if (val === '') update(() => empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
 
     update(() => {
       const needle = val.toLowerCase()
-      empleados.value = listadosAuxiliares.empleados.filter(
-        (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-      )
+      empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
     })
   }
 

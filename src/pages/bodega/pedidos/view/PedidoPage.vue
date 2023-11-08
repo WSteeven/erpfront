@@ -10,7 +10,8 @@
     :accion1="botonDespachar"
     :accion2="botonAnularAutorizacion"
     :accion3="botonCorregir"
-    :accion4="botonImprimir"
+    :accion4="botonMarcarComoCompletado"
+    :accion5="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -22,7 +23,6 @@
               v-model="pedido.id"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               outlined
               dense
             >
@@ -45,7 +45,6 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
               use-input
@@ -83,7 +82,6 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -104,7 +102,10 @@
               autogrow
               v-model="pedido.justificacion"
               placeholder="Obligatorio"
-              :disable="(disabled  && !store.esAdministrador)|| (soloLectura&&!store.esAdministrador)"
+              :disable="
+                (disabled && !store.esAdministrador) ||
+                (soloLectura && !store.esAdministrador)
+              "
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
@@ -125,7 +126,6 @@
               :error="!!v$.fecha_limite.$errors.length"
               @blur="v$.fecha_limite.$touch"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               outlined
               dense
             >
@@ -207,7 +207,6 @@
               error-message="Debes seleccionar el responsable de los materiales"
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -254,7 +253,6 @@
               error-message="Debes seleccionar la persona que retira los materiales"
               :error="!!v$.per_retira.$errors.length"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -301,7 +299,6 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :error="!!v$.tarea.$errors.length"
               @update:model-value="pedidoSeleccionado"
               error-message="Debe seleccionar una tarea"
@@ -336,7 +333,6 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -369,15 +365,6 @@
               emit-value
               map-options
             >
-              <!--
-              :error="!!v$.autorizacion.$errors.length"
-              error-message="Debes seleccionar una autorizacion"
-
-              <template v-slot:error>
-                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template> -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -427,7 +414,6 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -479,10 +465,21 @@
               v-model="pedido.observacion_est"
               placeholder="Opcional"
               :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
               outlined
               dense
             >
+            </q-input>
+          </div>
+          <!-- observacion bodega -->
+          <div v-if="pedido.observacion_bodega" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observacion del bodeguero</label>
+            <q-input autogrow v-model="pedido.observacion_bodega" disable outlined dense>
+            </q-input>
+          </div>
+          <!-- estado orden compra -->
+          <div v-if="pedido.estado_orden_compra" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado Orden de Compra</label>
+            <q-input autogrow v-model="pedido.estado_orden_compra" disable outlined dense>
             </q-input>
           </div>
           <!-- Configuracion de opciones para que puedan seleccionar los detalles en el listado -->

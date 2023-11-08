@@ -21,7 +21,8 @@ export class Tarea extends EntidadAuditable {
   modo_asignacion_trabajo: string
 
   // Tiempos
-  fecha_hora_creacion: string | null
+  created_at: string | null
+  // fecha_hora_creacion: string | null
   fecha_hora_asignacion: string | null
   fecha_hora_agendado: string | null
   fecha_hora_ejecucion: string | null
@@ -105,7 +106,7 @@ export class Tarea extends EntidadAuditable {
     this.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
 
     // Tiempos
-    this.fecha_hora_creacion = null
+    this.created_at = null
     this.fecha_hora_asignacion = null
     this.fecha_hora_agendado = null
     this.fecha_hora_ejecucion = null

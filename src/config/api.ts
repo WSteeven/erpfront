@@ -146,6 +146,8 @@ export const endpoints = {
     'recursos-humanos/verificar-todos_roles-finalizadas'
   ),
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
+  habilitar_empleado: new Endpoint('recursos-humanos/habilitar-empleado'),
+
   actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
 
   enviar_rol_pago: new Endpoint('recursos-humanos/enviar-roles-pago/'),
@@ -282,33 +284,19 @@ export const endpoints = {
   clientes: new Endpoint('clientes'),
   grupos: new Endpoint('grupos'),
   exportExcelSeguimiento: new Endpoint('tareas/export-seguimiento'),
-  verificar_todas_subtareas_finalizadas: new Endpoint(
-    'tareas/verificar-todas-subtareas-finalizadas'
-  ),
-  verificar_material_tarea_devuelto: new Endpoint(
-    'tareas/verificar-material-tarea-devuelto'
-  ),
-  transferir_mis_tareas_activas: new Endpoint(
-    'tareas/transferir-mis-tareas-activas'
-  ),
-  obtener_suma_material_tarea_usado: new Endpoint(
-    'tareas/obtener-suma-material-tarea-usado'
-  ),
-  obtener_historial_material_tarea_usado_por_fecha: new Endpoint(
-    'tareas/obtener-historial-material-tarea-usado-por-fecha'
-  ),
-  actualizar_cantidad_utilizada_historial: new Endpoint(
-    'tareas/actualizar-cantidad-utilizada-historial'
-  ),
-  actualizar_cantidad_utilizada_tarea: new Endpoint(
-    'tareas/actualizar-cantidad-utilizada-tarea'
-  ),
-  actividades_realizadas_seguimientos_subtareas: new Endpoint(
-    'tareas/actividades-realizadas-seguimientos-subtareas'
-  ),
-  fechas_historial_materiales_usados: new Endpoint(
-    'tareas/obtener-fechas-historial-materiales-usados'
-  ),
+  verificar_todas_subtareas_finalizadas: new Endpoint('tareas/verificar-todas-subtareas-finalizadas'),
+  verificar_material_tarea_devuelto: new Endpoint('tareas/verificar-material-tarea-devuelto'),
+  transferir_mis_tareas_activas: new Endpoint('tareas/transferir-mis-tareas-activas'),
+  obtener_suma_material_tarea_usado: new Endpoint('tareas/obtener-suma-material-tarea-usado'),
+  obtener_historial_material_tarea_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-tarea-usado-por-fecha'),
+  obtener_historial_material_stock_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-stock-usado-por-fecha'),
+  actualizar_cantidad_utilizada_historial: new Endpoint('tareas/actualizar-cantidad-utilizada-historial'),
+  actualizar_cantidad_utilizada_historial_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-historial-stock'),
+  actualizar_cantidad_utilizada_tarea: new Endpoint('tareas/actualizar-cantidad-utilizada-tarea'),
+  actualizar_cantidad_utilizada_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-stock'),
+  actividades_realizadas_seguimientos_subtareas: new Endpoint('tareas/actividades-realizadas-seguimientos-subtareas'),
+  fechas_historial_materiales_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-usados'),
+  fechas_historial_materiales_stock_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-stock-usados'),
 
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),

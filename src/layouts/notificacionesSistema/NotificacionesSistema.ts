@@ -18,6 +18,7 @@ import { ProveedorEvent } from 'sistema/proveedores/application/ProveedorEvent'
 import { ActualizarNotificacionesPusherEvent } from 'src/pusherEvents/ActualizarNotificacionesPusherEvent'
 import { NotificarVacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarVacacionPusherEvent'
 import { PreingresoMaterialPusherEvent } from 'pages/bodega/preingresoMateriales/application/PreingresoPusherEvent'
+import { IngresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/IngresoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -38,6 +39,9 @@ export class NotificacionesSistema {
     const devolucionPusherEvent = new DevolucionPusherEvent()
     devolucionPusherEvent.start()
 
+    //Ingresos
+    const ingresoPusherEvent = new IngresoPusherEvent()
+    ingresoPusherEvent.start()
     //Egresos
     const egresoPusherEvent = new EgresoPusherEvent()
     egresoPusherEvent.start()

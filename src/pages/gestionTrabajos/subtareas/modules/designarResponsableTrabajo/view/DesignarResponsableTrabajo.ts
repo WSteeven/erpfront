@@ -20,7 +20,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { extraerRol, isAxiosError, notificarMensajesError } from 'shared/utils'
+import { extraerRol, isAxiosError, notificarMensajesError, ordernarListaString } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
@@ -193,6 +193,10 @@ export default defineComponent({
       })
     }
 
+    function ordenarEmpleados() {
+      empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+    }
+
     return {
       seleccionarGrupo,
       seleccionarEmpleado,
@@ -203,6 +207,7 @@ export default defineComponent({
       columnasEmpleado: [...configuracionColumnasEmpleadoGrupo, accionesTabla],
       configuracionColumnasEmpleadoGrupo,
       empleadosGrupo,
+      ordenarEmpleados,
       // empleadosAdicionales,
       grupos,
       filtrarGrupos,

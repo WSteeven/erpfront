@@ -6,6 +6,7 @@ export default class ActividadRealizadaSeguimientoTicket extends EntidadAuditabl
   observacion: string | null
   fotografia: string | null
   ticket: number | null
+  responsable: number | null
 
   constructor() {
     super()
@@ -14,5 +15,6 @@ export default class ActividadRealizadaSeguimientoTicket extends EntidadAuditabl
     this.observacion = null
     this.fotografia = null
     this.ticket = null
+    this.responsable = null
   }
 }

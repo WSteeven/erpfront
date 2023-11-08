@@ -204,7 +204,8 @@ export default defineComponent({
     *********/
     onBeforeGuardar(() => {
       subtarea.tarea = subtareaStore.idTarea
-      subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => empleado.id)
+      if (subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => empleado.id)
+      else subtarea.empleados_designados = [subtarea.empleado]
       /*subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => {
         const empleadoGrupo = new EmpleadoGrupo()
         empleadoGrupo.hydrate(empleado)

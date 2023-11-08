@@ -3,6 +3,9 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :accion1Header="btnImprimirEmpleados"
+    :accion1="btnHabilitarEmpleado"
+    :accion2="btnDesHabilitarEmpleado"
+
     titulo-pagina="Empleados"
     :puedeFiltrar="false"
     :puedeExportar="true"

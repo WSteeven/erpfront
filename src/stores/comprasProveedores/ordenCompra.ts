@@ -68,6 +68,36 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
         }
     }
 
+    async function marcarRealizada(data: any) {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/realizada/' + idOrden.value
+            const response: AxiosResponse = await axios.post(url, data)
+            if (response.status = 200) notificarCorrecto(response.data.mensaje)
+            else notificarAdvertencia(response.data.mensaje)
+        } catch (e) {
+            notificarError('Error al marcar como realizada la orden de compra.' + e)
+        } finally {
+            statusLoading.desactivar()
+        }
+    }
+    async function marcarPagada() {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/pagada/' + idOrden.value
+            const response: AxiosResponse = await axios.get(url)
+            if (response.status = 200) notificarCorrecto(response.data.mensaje)
+            else notificarAdvertencia(response.data.mensaje)
+        } catch (e) {
+            notificarError('Error al marcar como realizada la orden de compra.' + e)
+        } finally {
+            statusLoading.desactivar()
+        }
+    }
+
+
     function resetearOrden() {
         orden.hydrate(ordenReset)
     }
@@ -81,5 +111,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
         resetearOrden,
         imprimirPdf,
         enviarPdf,
+        marcarRealizada,
+        marcarPagada,
     }
 })

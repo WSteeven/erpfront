@@ -75,7 +75,7 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1,es_reporte__saldo_actual:true },
         },
       })
       usuarios.value = listadosAuxiliares.usuarios

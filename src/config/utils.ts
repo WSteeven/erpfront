@@ -272,6 +272,7 @@ export const rolesSistema = {
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
   coordinador: 'COORDINADOR',
+  coordinadorBodega: 'COORDINADOR DE BODEGA',
   coordinadorBackup: 'COORDINADOR_BACKUP',
   empleado: 'EMPLEADO',
   fiscalizador: 'FISCALIZADOR',
@@ -298,6 +299,10 @@ export const tiposMovimientos = {
 export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
   { value: 0, label: 'INACTIVO' }
+]
+export const tiposProductos = [
+  { value: 'BIEN', label: 'BIEN' },
+  { value: 'SERVICIO', label: 'SERVICIO' },
 ]
 
 export const opcionesTipoContribuyente = [
@@ -445,4 +450,16 @@ export const formas_pago =[
 export const estados_activacion =[
   {label: 'PENDIENTE', value: 'PENDIENTE'},
   {label: 'APROBADO', value: 'APROBADO'},
+]
+
+export const autorizaciones = [
+  { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
+  { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
+  { nombre: 'Cancelado', id: 3 }  //autorizacion CANCELADO
+]
+export const estados = [
+  { nombre: 'Pendiente', id: 1 }, //estado PENDIENTE
+  { nombre: 'Completa', id: 2 }, //estado COMPLETA
+  { nombre: 'Parcial', id: 3 }, //estado PARCIAL
+  { nombre: 'Anulado', id: 4 }  //estado ANULADO
 ]
