@@ -76,10 +76,7 @@ const issubmit = ref(true);
       mostrarListado.value = false
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
-console.log(fondoRotativoStore.estaSemanAC)
       estaSemanAC.value= fondoRotativoStore.estaSemanAC
-      console.log(estaSemanAC.value)
-
     }
 
 
