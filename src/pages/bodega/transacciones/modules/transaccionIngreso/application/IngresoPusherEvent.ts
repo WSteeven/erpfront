@@ -19,7 +19,7 @@ export class IngresoPusherEvent {
             notificarCorrecto('Se ha realizado un ingreso por compra en bodega')
             pushEventMesaggeServiceWorker({
                 titulo: 'Nuevo ingreso por compra en bodega',
-                mensaje: e.mensaje,
+                mensaje: e.notificacion.mensaje,
                 link: e.notificacion.link
             })
         })
