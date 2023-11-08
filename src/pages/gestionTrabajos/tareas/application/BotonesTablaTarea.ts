@@ -91,7 +91,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     titulo: 'Ver imagen informe',
     icono: 'bi-image-fill',
     color: 'secondary',
-    visible: ({ entidad }) => entidad.imagen_informe,
+    visible: ({ entidad }) => !!entidad.imagen_informe,
     accion: async ({ entidad }) => {
       refVisorImagen.value.abrir(entidad.imagen_informe)
     }
