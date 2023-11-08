@@ -728,7 +728,13 @@
 
     <!-- Estilos de celdas -->
     <template #body-cell-despachado="props">
-      <q-td :props="props" class="bg-lime-2">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-lime-2': !$q.dark.isActive,
+          'bg-green-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="positive">
           {{ props.value }}
         </q-badge>
@@ -736,7 +742,14 @@
     </template>
 
     <template #body-cell-total_cantidad_utilizada="props">
-      <q-td :props="props" class="bg-grey-2 text-bold">
+      <q-td
+        :props="props"
+        class="text-bold"
+        :class="{
+          'bg-grey-2': !$q.dark.isActive,
+          'bg-grey-10': $q.dark.isActive,
+        }"
+      >
         <!-- <q-badge color="blue-grey-6"> -->
         {{ props.value }}
         <!-- </q-badge> -->
@@ -744,7 +757,13 @@
     </template>
 
     <template #body-cell-stock_actual="props">
-      <q-td :props="props" class="bg-indigo-1">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-indigo-1': !$q.dark.isActive,
+          'bg-indigo-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="indigo">
           {{ props.value }}
         </q-badge>
@@ -752,7 +771,13 @@
     </template>
 
     <template #body-cell-devuelto="props">
-      <q-td :props="props" class="bg-lime-2">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-lime-2': !$q.dark.isActive,
+          'bg-green-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="positive">
           {{ props.value }}
         </q-badge>

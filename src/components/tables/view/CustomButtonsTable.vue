@@ -515,7 +515,7 @@ const props = defineProps({
   },
 })
 
-function extraerVisible(accion?: any) {
+/* function extraerVisible(accion?: any) {
   //CustomActionTable): boolean {
   if (
     accion &&
@@ -530,6 +530,26 @@ function extraerVisible(accion?: any) {
     return accion !== undefined && accion.hasOwnProperty('visible')
       ? accion.visible
       : false
+  }
+} */
+
+function extraerVisible(accion?: any) {
+  //CustomActionTable): boolean {
+  if (accion) {
+    if (accion.hasOwnProperty('visible')) {
+      if (typeof accion.visible === 'function') {
+        return accion.visible({
+          entidad: props.propsTable.row,
+          posicion: props.propsTable.rowIndex,
+        })
+      } else {
+        return accion.visible
+      }
+    } else {
+      return true
+    }
+  } else {
+    return false
   }
 }
 
