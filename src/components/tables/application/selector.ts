@@ -1,10 +1,14 @@
 import { SelectorController } from '../infraestructure/SelectorController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { AxiosError } from 'axios'
+import { ApiError } from 'shared/error/domain/ApiError'
 
 export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)
   const status = new StatusEssentialLoading()
+  const notificaciones = useNotificaciones()
 
   const listar = async (criterioBusqueda?: string | null, params?: any) => {
     const filtros = {
@@ -12,7 +16,7 @@ export function useSelector(selector: any) {
     }
     let result
     if (!criterioBusqueda) delete filtros.search
-    try{
+    try {
 
       if (params) {
         // Object.assign(filtros, params)
@@ -26,9 +30,11 @@ export function useSelector(selector: any) {
         result = response.data.results
         status.desactivar()
       }
-    }catch(e){
+    } catch (e: unknown) {
       console.log('error', e)
-    }finally{
+      const axiosError = e as AxiosError
+      notificaciones.notificarError(axiosError + '')
+    } finally {
       status.desactivar()
     }
 

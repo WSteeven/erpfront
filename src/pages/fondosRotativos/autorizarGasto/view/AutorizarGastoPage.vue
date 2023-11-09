@@ -20,7 +20,7 @@
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
-      :permitirBuscar="false"
+      :permitirBuscar="true"
       :mostrar-botones="false"
       :tab-options="tabAutorizarGasto"
       @tab-seleccionado="filtrarAutorizacionesGasto"
