@@ -93,6 +93,20 @@ export const usePreordenStore = defineStore('preorden', () => {
         }
     }
 
+    async function crearPreordenConsolida(data) {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.preordenes_compras)
+            const response: AxiosResponse = await axios.post(url, data)
+            console.log(response)
+        } catch (e: any) {
+            notificarError(e)
+        } finally {
+            statusLoading.desactivar()
+        }
+    }
+
     return {
         preorden,
         accionPreorden,
@@ -102,6 +116,7 @@ export const usePreordenStore = defineStore('preorden', () => {
         cargarPreorden,
         anularPreorden,
         consolidarPreordenes,
+        crearPreordenConsolida,
         listadoItems,
     }
 })

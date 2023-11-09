@@ -233,6 +233,6 @@
     </template>
   </tab-layout-filter-tabs2>
   <!-- Modales -->
-  <modales-entidad :comportamiento="modales"></modales-entidad>
+  <modales-entidad :comportamiento="modales" :persistente="false" @guardado="(data) => guardado(data)"></modales-entidad>
 </template>
 <script src="./PreordenCompraPage.ts"></script>

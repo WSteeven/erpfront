@@ -77,25 +77,25 @@ export default defineComponent({
     // const empleadosAutorizadores = ref([])
     cargarVista(async () => {
       await obtenerListados({
-        empleados: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos,cargo_id',
-            estado: 1,
-          }
-        },
+        // empleados: {
+        //   controller: new EmpleadoController(),
+        //   params: {
+        //     campos: 'id,nombres,apellidos,cargo_id',
+        //     estado: 1,
+        //   }
+        // },
         //   autorizadores: {
         //     controller: new EmpleadoRoleController(),
         //     params: {
         //         roles: ['AUTORIZADOR'],
         //     }
         // },
-        pedidos: {
-          controller: new PedidoController(),
-          params: {
-            autorizacion_id: 2//trae solo los pedidos autorizados
-          }
-        }
+        // pedidos: {
+        //   controller: new PedidoController(),
+        //   params: {
+        //     autorizacion_id: 2//trae solo los pedidos autorizados
+        //   }
+        // }
 
       })
     })
@@ -133,6 +133,10 @@ export default defineComponent({
 
     const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
 
+    async function guardado(data) {
+      console.log(data)
+      await listar({ solicitante_id: store.user.id, estado: tabSeleccionado.value })
+    }
 
     /*******************************************************************************************
      * Botones de tabla
@@ -189,13 +193,12 @@ export default defineComponent({
       tooltip: 'Consolida varias preordenes en una sola preorden de compra',
       icono: 'bi-box-arrow-in-down',
       accion: async () => {
-        await preordenStore.consolidarPreordenes()
-        modales.abrirModalEntidad('ConsolidarPreordenPage')
-        // confirmar('¿Está seguro de consolidar preordenes de compras?', async()=>{
-        //   confirmar('Esto anular las preordenes existentes y creará nuevas preordenes con la sumatoria de los items encontrados. ¿Desea continuar?',async ()=>{
-        //     const response = await preordenStore.consolidarPreordenes()
-        //   })
-        // })
+        confirmar('¿Está seguro de consolidar preordenes de compras?', async () => {
+          confirmar('Esto anular las preordenes existentes y creará nuevas preordenes con la sumatoria de los items encontrados. ¿Desea continuar?', async () => {
+            await preordenStore.consolidarPreordenes()
+            await modales.abrirModalEntidad('ConsolidarPreordenPage')
+          })
+        })
       }, visible: () => tabSeleccionado.value == estadosTransacciones.pendiente
     }
 
@@ -246,6 +249,7 @@ export default defineComponent({
       //funciones
       filtrarPreordenes,
       ordenarEmpleados,
+      guardado,
 
       //variables computadas
       subtotal, total, descuento, iva,
