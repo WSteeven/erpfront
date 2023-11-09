@@ -1117,7 +1117,21 @@ const routes: RouteRecordRaw[] = [
           import('pages/ventas-claro/reporte/cobroJP/view/CobroJPPage.vue'),
         meta: { requiresAuth: true },
       },
-    ],
+      {
+        path: '/reporte_pago',
+        name: 'reporte_pago',
+        component: () =>
+          import('pages/ventas-claro/reporte/pagos/view/PagoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+
+    {
+        path: '/reporte_venta',
+        name: 'reporte_venta',
+        component: () =>
+          import('pages/ventas-claro/reporte/reporte_ventas/view/ReporteVentasPage.vue'),
+        meta: { requiresAuth: true },
+      },],
   },
   {
     path: '/login',

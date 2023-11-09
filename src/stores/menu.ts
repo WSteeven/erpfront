@@ -801,6 +801,18 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-circle',
               can: store.can('puede.ver.reporte_cobrojp'),
             },
+            {
+              title: 'Pagos',
+              link: 'reporte_pago',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_pago'),
+            },
+            {
+              title: 'Ventas',
+              link: 'reporte_venta',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_venta'),
+            },
 
           ]
         },
