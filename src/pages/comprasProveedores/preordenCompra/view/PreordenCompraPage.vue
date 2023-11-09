@@ -6,9 +6,10 @@
     :tab-options="tabOptionsPreordenCompra"
     tabDefecto="PENDIENTE"
     :filtrar="filtrarPreordenes"
-    :permitirEditar="false"
+    :permitirEditar="puedeEditar"
     :accion1="btnHacerOrdenCompra"
     :accion2="btnAnularPreorden"
+    :accion1Header="btnConsolidarPreordenes"
     
   >
     <template #formulario>
@@ -232,6 +233,6 @@
     </template>
   </tab-layout-filter-tabs2>
   <!-- Modales -->
-  <!-- <modales-entidad :comportamiento="modales"></modales-entidad> -->
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./PreordenCompraPage.ts"></script>

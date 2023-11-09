@@ -133,6 +133,7 @@ export const endpoints = {
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   ordenes_compras: new Endpoint('compras/ordenes-compras'),
   preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  preordenes_compras_consolidadas: new Endpoint('compras/preordenes-consolidadas'),
   novedades_ordenes_compras: new Endpoint('compras/novedades-ordenes-compras'),
   prefacturas: new Endpoint('compras/prefacturas'),
   proformas: new Endpoint('compras/proformas'),

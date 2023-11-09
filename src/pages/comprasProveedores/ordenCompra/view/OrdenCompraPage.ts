@@ -168,9 +168,6 @@ export default defineComponent({
      ****************************************************************************************/
     const reglas = {
       proveedor: { requiredIf: requiredIf(() => store.esCompras) },
-      // categorias: { requiredIfNoPreorden: requiredIf(() => false) },
-      // categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
-      // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
       autorizador: { required },
       descripcion: { required },
       forma: { requiredIf: requiredIf(() => store.esCompras) },
@@ -244,7 +241,7 @@ export default defineComponent({
      * propiedades:
      */
     function calcularValores(data: any) {
-      console.log(data)
+      // console.log(data)
       data.precio_unitario = Number(data.precio_unitario).toFixed(4)
       data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
       data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
