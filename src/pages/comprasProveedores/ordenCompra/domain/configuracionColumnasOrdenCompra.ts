@@ -80,4 +80,11 @@ export const configuracionColumnasOrdenesCompras : ColumnConfig<OrdenCompra>[]=[
         align: 'left',
         sortable: true,
       },
-] 
+      {
+        name: 'novedades',
+        field: 'novedades',
+        label: 'Novedades',
+        align: 'left',
+        sortable: true,
+      },
+]

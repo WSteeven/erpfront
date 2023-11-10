@@ -122,6 +122,7 @@ export const endpoints = {
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   //Modulo de compras y proveedores
+  dashboard_compras: new Endpoint('compras/dashboard'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
