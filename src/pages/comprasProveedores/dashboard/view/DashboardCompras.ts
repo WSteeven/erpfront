@@ -115,5 +115,22 @@ export default defineComponent({
       },
     }
 
+    /***************
+     * Funciones
+     ***************/
+    async function consultar(){
+      if(await v$.value.$validate()){
+        try {
+          const {result} = await ordenCompraStore.consultarDashboard(dashboard)
+          console.log(result)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+    function mapearDatos(){
+      
+    }
+
   },
 })

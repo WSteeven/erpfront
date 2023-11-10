@@ -19,6 +19,15 @@ export const configuracionColumnasDetallesProductosSeleccionables: ColumnConfig<
         sortable: true
     },
     {
+        name: 'id',
+        field: 'id',
+        label: 'Id Detalle',
+        align: 'left',
+        visible: false,
+        editable: false,
+
+    },
+    {
         name: 'modelo',
         field: 'modelo',
         label: 'Modelo',
