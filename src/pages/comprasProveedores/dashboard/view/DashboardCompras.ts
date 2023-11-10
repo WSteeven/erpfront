@@ -45,7 +45,7 @@ export default defineComponent({
     const modales = new ComportamientoModalesOrdenesCompras()
 
     const empleados = ref([])
-    const proveedores= ref([])
+    const proveedores = ref([])
     cargarVista(async () => {
       await obtenerListados({
         proveedores: new ProveedorController(),
@@ -62,11 +62,13 @@ export default defineComponent({
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
-      empleado: { required },
+      // empleado: { required },
     }
 
-    const v$ = useVuelidate(reglas,dashboard)
+    const v$ = useVuelidate(reglas, dashboard)
 
+    const ordenesPorEstado = ref([])
+    const ordenesPorEstadoBar = ref([])
     const optionsPie = {
       responsive: true,
       maintainAspectRatio: false,
@@ -118,19 +120,32 @@ export default defineComponent({
     /***************
      * Funciones
      ***************/
-    async function consultar(){
-      if(await v$.value.$validate()){
+    async function consultar() {
+      if (await v$.value.$validate()) {
         try {
-          const {result} = await ordenCompraStore.consultarDashboard(dashboard)
+          const { result } = await ordenCompraStore.consultarDashboard(dashboard)
           console.log(result)
         } catch (error) {
           console.log(error)
         }
       }
     }
-    function mapearDatos(){
-      
+    function mapearDatos() {
+
+    }
+    function clickGrafico() {
+      console.log('Diste clic en grafico')
     }
 
+
+    return {
+      ordenesPorEstado, ordenesPorEstadoBar,
+      v$,
+      dashboard,
+      btnVer,
+      consultar,
+      clickGrafico
+
+    }
   },
 })
