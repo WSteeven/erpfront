@@ -23,7 +23,7 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, estadosTransacciones, tabOptionsDevoluciones, tabOptionsPedidos } from 'config/utils'
+import { acciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
@@ -36,6 +36,9 @@ import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
 import { useCargandoStore } from 'stores/cargando'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useRouter } from 'vue-router'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { ordernarListaString } from 'shared/utils'
 
 
 export default defineComponent({
@@ -46,7 +49,7 @@ export default defineComponent({
     const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError, notificarInformacion } = useNotificaciones()
 
     //stores
     useNotificacionStore().setQuasar(useQuasar())
@@ -97,6 +100,7 @@ export default defineComponent({
     const opciones_cantones = ref([])
     const opciones_tareas = ref([])
     const opciones_autorizaciones = ref([])
+    const opciones_sucursales = ref([])
     //Obtener los listados
     cargarVista(async () => {
       await obtenerListados({
@@ -136,7 +140,8 @@ export default defineComponent({
     const reglas = {
       justificacion: { required },
       observacion_aut: { requiredIfCoordinador: requiredIf(() => devolucion.tiene_observacion_aut!) },
-      canton: { required },
+      // canton: { required },
+      sucursal: { required },
       tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
     }
 
@@ -173,6 +178,13 @@ export default defineComponent({
       listar({ estado: tab })
     }
 
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
+    function comunicarComportamiento(value) {
+      if (value) notificarInformacion('Esta opción generará un pedido automáticamente con los mismos items de la devolución, cuando la devolución sea aprobada')
+    }
 
 
     /*******************************************************************************************
@@ -265,6 +277,7 @@ export default defineComponent({
     opciones_empleados.value = listadosAuxiliares.empleados
     opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
     opciones_tareas.value = listadosAuxiliares.tareas
 
     return {
@@ -275,6 +288,7 @@ export default defineComponent({
       opciones_tareas,
       opciones_cantones,
       opciones_autorizaciones,
+      opciones_sucursales,
       store,
       refArchivo,
       idDevolucion,
@@ -338,6 +352,23 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
+      recargarSucursales,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
+      comunicarComportamiento,
     }
   }
 })

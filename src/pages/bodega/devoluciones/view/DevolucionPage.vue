@@ -34,7 +34,7 @@
             <q-input v-model="devolucion.created_at" disable outlined dense />
           </div>
           <!-- Canton select -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <!-- <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Lugar de devolución</label>
             <q-select
               v-model="devolucion.canton"
@@ -63,6 +63,42 @@
                 </div>
               </template>
             </q-select>
+          </div> -->
+          <!-- Sucursal select -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Lugar de devolución</label>
+            <q-select
+              v-model="devolucion.sucursal"
+              :options="opciones_sucursales"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :error="!!v$.sucursal.$errors.length"
+              error-message="Debes seleccionar una sucursal"
+              hint="Bodega donde se realiza la devolución de materiales"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
+              @popup-show="ordenarSucursales"
+              :option-label="(item) => item.lugar"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSucursales">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
+            </q-select>
           </div>
           <!-- Justificacion -->
           <div class="col-12 col-md-6">
@@ -79,7 +115,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.justificacion.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.justificacion.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -107,7 +146,9 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -126,9 +167,26 @@
               dense
             ></q-checkbox>
           </div>
-
+          <!-- Es pedido automatico -->
+          <div
+            v-if="devolucion.pedido_automatico || accion === 'NUEVO'"
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="devolucion.pedido_automatico"
+              label="¿Pedido automático?"
+              :disable="disabled || soloLectura"
+              @update:model-value="comunicarComportamiento"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
           <!-- Es devolucion de tarea -->
-          <div v-if="devolucion.es_tarea || accion === 'NUEVO'" class="col-12 col-md-3">
+          <div
+            v-if="devolucion.es_tarea || accion === 'NUEVO'"
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.es_tarea"
@@ -139,7 +197,10 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div v-if="esVisibleTarea || devolucion.es_tarea" class="col-12 col-md-3">
+          <div
+            v-if="esVisibleTarea || devolucion.es_tarea"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="devolucion.tarea"
@@ -167,7 +228,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -221,13 +284,18 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Observacion de autorizacion -->
-          <div v-if="store.user.id === devolucion.per_autoriza" class="col-12 col-md-3">
+          <div
+            v-if="store.user.id === devolucion.per_autoriza"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               autogrow
@@ -247,7 +315,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion_aut.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.observacion_aut.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -262,7 +333,9 @@
               :mixin="mixin"
               :disable="disabled"
               :listarAlGuardar="false"
-              :permitir-eliminar="accion == acciones.nuevo || accion == acciones.editar"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
               :idModelo="idDevolucion"
             >
               <template #boton-subir>
@@ -292,7 +365,9 @@
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="listarProductos()"
-                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
+                  @blur="
+                    criterioBusquedaProducto === '' ? limpiarProducto() : null
+                  "
                   outlined
                   dense
                 >
@@ -316,7 +391,9 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="devolucion.listadoProductos"
               :permitirConsultar="false"
               :permitirEditar="false"
