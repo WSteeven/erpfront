@@ -25,6 +25,7 @@ export class OrdenCompra extends EntidadAuditable {
   observacion_realizada: string | null
   completada: boolean
   pagada: boolean
+  novedades:number|null
 
   //variables auxiliares
   copia_orden: boolean
@@ -64,5 +65,6 @@ export class OrdenCompra extends EntidadAuditable {
     this.observacion_realizada = null
     this.pagada = false
     this.completada = false
+    this.novedades =null
   }
 }

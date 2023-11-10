@@ -11,6 +11,18 @@ export function useNotificaciones() {
     return mensaje
   }
 
+  function notificarInformacion(mensaje: string | string[]) {
+    $q.notify({
+      html: true,
+      color: 'light-blue-7',
+      textColor: 'white',
+      icon: 'bi-info-circle-fill',
+      message: 'Información',
+      caption: obtenerMensaje(mensaje),
+      position: 'bottom',
+    })
+  }
+  
   function notificarCorrecto(mensaje: string | string[]) {
     $q.notify({
       html: true,
@@ -118,6 +130,7 @@ export function useNotificaciones() {
 
   return {
     // Notificaciones
+    notificarInformacion,
     notificarCorrecto,
     notificarError,
     notificarAdvertencia,
