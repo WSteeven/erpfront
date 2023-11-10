@@ -359,7 +359,7 @@ export const tiposReportesEgresos = {
   transferencia: 10,
 }
 
-export const departamentos = {
+export const opcionesDepartamentos = {
   xtrim_cuenca: 'XTRIM CUENCA',
   medico: 'MEDICO',
   activos_fijos: 'ACTIVOS FIJOS',

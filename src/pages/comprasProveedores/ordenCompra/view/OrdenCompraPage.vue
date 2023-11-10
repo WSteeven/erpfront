@@ -7,14 +7,15 @@
     :ajustarCeldas="true"
     tabDefecto="1"
     :filtrar="filtrarOrdenes"
-    :permitirEditar="puedeEditar"
+    :permitirEditar="false"
     :permitirEliminar="false"
-    :accion1="btnImprimir"
+    :accion1="btnEditarRegistro"
     :accion2="btnEnviarMailProveedor"
     :accion3="btnAnularOrden"
     :accion4="btnMarcarRealizada"
     :accion5="btnMarcarPagada"
     :accion6="btnRegistrarNovedades"
+    :accion7="btnImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -107,7 +108,7 @@
             >
             </q-input>
           </div>
-
+          <!-- {{ v$.$errors }} -->
           <!-- Persona que autoriza -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
@@ -133,12 +134,17 @@
               :option-value="(v) => v.id"
               emit-value
               map-options
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
+              ><template v-slot:error>
+                <div v-for="error of v$.autorizador.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item
+                  ><q-item-section class="text-grey">
                     No hay resultados
-                  </q-item-section>
-                </q-item>
+                  </q-item-section></q-item
+                >
               </template>
             </q-select>
           </div>
@@ -181,11 +187,33 @@
               </template>
             </q-select>
           </div>
-
+          <!-- Observacion de autorizacion -->
+          <div
+            v-if="store.user.id === orden.autorizador || orden.observacion_aut"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              autogrow
+              v-model="orden.observacion_aut"
+              placeholder="Opcional"
+              :disable="
+                disabled ||
+                (soloLectura &&
+                  !(
+                    esCoordinador ||
+                    esActivosFijos ||
+                    store.user.id == orden.autorizador
+                  ))
+              "
+              outlined
+              dense
+            />
+          </div>
           <!-- preorden de compra -->
           <div
             class="col-12 col-md-3 q-mb-md"
-            v-if="orden.tiempo || accion == acciones.nuevo"
+            v-if="orden.preorden || accion == acciones.nuevo"
           >
             <label class="q-mb-sm block">N° preorden</label>
             <q-input
@@ -204,7 +232,7 @@
           <!-- pedido -->
           <div
             class="col-12 col-md-3 q-mb-md"
-            v-if="orden.tiempo || accion == acciones.nuevo"
+            v-if="orden.pedido || accion == acciones.nuevo"
           >
             <label class="q-mb-sm block">N° pedido</label>
             <q-input
@@ -222,7 +250,7 @@
           <!-- Tarea -->
           <div
             class="col-12 col-md-3"
-            v-if="orden.tiempo || accion == acciones.nuevo"
+            v-if="orden.tarea || accion == acciones.nuevo"
           >
             <label class="q-mb-sm block">N° Tarea</label>
             <q-select
@@ -258,7 +286,7 @@
               </template>
             </q-select>
           </div>
-
+          
           <!-- Proveedor -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proveedor</label>
@@ -302,52 +330,6 @@
               </template>
             </q-select>
           </div>
-
-          <!--Categorias-->
-          <!-- <div
-            class="col-12 col-md-3"
-            v-if="accion == acciones.nuevo || orden.categorias"
-          >
-            <label class="q-mb-sm block">Categorias</label>
-            <q-select
-              v-model="orden.categorias"
-              :options="categorias"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              hint="Este campo es opcional, selecciona una o varias categorias"
-              :disable="disabled || soloLectura"
-              options-dense
-              multiple
-              dense
-              use-chips
-              outlined
-              :error="!!v$.categorias.$errors.length"
-              error-message="Debes seleccionar al menos una opcion"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-              ><template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-                <q-item v-bind="itemProps">
-                  <q-item-section>
-                    {{ opt.nombre }}
-                    <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-toggle
-                      :model-value="selected"
-                      @update:model-value="toggleOption(opt)"
-                    />
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div> -->
 
           <!-- Justificacion -->
           <div class="col-12 col-md-6">
@@ -447,40 +429,6 @@
             </q-select>
           </div>
 
-          <!-- Observacion de autorizacion -->
-          <div
-            v-if="store.user.id === orden.per_autoriza_id"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Observacion</label>
-            <q-input
-              autogrow
-              v-model="orden.observacion_aut"
-              placeholder="Opcional"
-              :disable="
-                disabled ||
-                (soloLectura &&
-                  !(
-                    esCoordinador ||
-                    esActivosFijos ||
-                    store.user.id == orden.per_autoriza_id
-                  ))
-              "
-              :error="!!v$.observacion_aut.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-
           <!-- Select estado -->
           <div
             v-if="orden.estado || accion === acciones.consultar"
@@ -544,6 +492,24 @@
               @update:model-value="actualizarListado"
             >
             </q-input>
+          </div>
+
+          <!-- Marcar como completado -->
+          <div
+            class="col-12 col-md-3 q-mb-xl"
+            v-if="
+              (accion == acciones.nuevo || accion == acciones.editar) &&
+              store.esCompras
+            "
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="orden.completada"
+              label="Marcar como completada"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-checkbox>
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- {{ orden.listadoProductos }} -->

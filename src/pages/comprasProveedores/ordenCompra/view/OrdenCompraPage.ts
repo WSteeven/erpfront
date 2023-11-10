@@ -25,7 +25,7 @@ import { useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { acciones, accionesTabla, autorizaciones, estados } from "config/utils";
+import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from "config/utils";
 import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
 import { formatearFecha, } from "shared/utils";
@@ -51,8 +51,8 @@ export default defineComponent({
   emits: ['actualizar', 'fila-modificada'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
-    const { entidad: orden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const { entidad: orden, disabled, accion, listadosAuxiliares, listado, tabs } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar, consultar } = mixin.useComportamiento()
     const { onReestablecer, onConsultado, onModificado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
@@ -167,14 +167,11 @@ export default defineComponent({
      * Validaciones
      ****************************************************************************************/
     const reglas = {
-      proveedor: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-      // categorias: { requiredIfNoPreorden: requiredIf(() => false) },
-      // categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
-      // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
+      proveedor: { requiredIf: requiredIf(() => store.esCompras) },
       autorizador: { required },
       descripcion: { required },
-      forma: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-      tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras && (orden.forma != 'CONTADO' && orden.forma != 'TRANSFERENCIA')) },
+      forma: { requiredIf: requiredIf(() => store.esCompras) },
+      tiempo: { requiredIf: requiredIf(() => store.esCompras && (orden.forma != 'CONTADO' && orden.forma != 'TRANSFERENCIA')) },
       fecha: { required },
     }
 
@@ -225,9 +222,8 @@ export default defineComponent({
         case '6':
           listar({ autorizacion_id: 2, estado_id: 2, realizada: 0, pagada: 0, solicitante_id: store.user.id })
           break
-        default:
+        default: //si tab es 1 u 7 entra aquí
           listar({ autorizacion_id: tab, solicitante_id: store.user.id })
-
       }
     }
     function eliminar({ posicion }) {
@@ -245,7 +241,7 @@ export default defineComponent({
      * propiedades:
      */
     function calcularValores(data: any) {
-      console.log(data)
+      // console.log(data)
       data.precio_unitario = Number(data.precio_unitario).toFixed(4)
       data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
       data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
@@ -323,6 +319,7 @@ export default defineComponent({
         orden.autorizacion = 1
         orden.estado = 1
         orden.causa_anulacion = null
+        orden.codigo = null
         // orden.categorias = []
       } else orden.hydrate(new OrdenCompra())
     }
@@ -337,7 +334,7 @@ export default defineComponent({
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
-      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && orden.autorizacion == 1 ||store.esCompras
+      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && orden.autorizacion == 1 || store.esCompras
     }
     const btnImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -375,9 +372,10 @@ export default defineComponent({
         })
       },
       visible: ({ entidad }) => {
-        if (tabSeleccionado.value == 1) {
-          return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
+        if (tabSeleccionado.value == 1 || tabSeleccionado.value == 6) {
+          return (entidad.autorizacion_id == 1 || entidad.autorizacion_id == 2) && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
         }
+
         return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
       }
     }
@@ -387,6 +385,7 @@ export default defineComponent({
       color: 'warning',
       icono: 'bi-wrench',
       accion: async ({ entidad, posicion }) => {
+        console.log(entidad)
         ordenCompraStore.idOrden = entidad.id
         confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
           modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
@@ -424,7 +423,7 @@ export default defineComponent({
           prompt(data)
         })
       },
-      visible: ({ entidad }) => tabSeleccionado.value == 2 && store.esCompras
+      visible: ({ entidad }) => tabSeleccionado.value == 6 && store.esCompras
     }
     const btnMarcarPagada: CustomActionTable = {
       titulo: 'Pagada',
@@ -440,6 +439,23 @@ export default defineComponent({
       visible: ({ entidad }) => tabSeleccionado.value == 4 && store.esContabilidad
     }
 
+    const btnEditarRegistro: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      tooltip: 'Editar',
+      accion: ({ entidad }) => {
+        console.log('diste clic en editar')
+        accion.value = acciones.editar
+        consultar(entidad)
+        tabs.value = 'formulario'
+
+      }, visible: ({ entidad, posicion }) => {
+        if ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.pendiente && (store.esCompras || entidad.solicitante_id == store.user.id)) return true
+        if ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.aprobado && (store.esCompras || entidad.autorizador_id == store.user.id)) return true
+        return false
+      }
+    }
     // watch(refItems, () => {
     //     console.log('modificacion')
     //     console.log(refItems.value)
@@ -486,6 +502,7 @@ export default defineComponent({
       btnRegistrarNovedades,
       btnMarcarRealizada,
       btnMarcarPagada,
+      btnEditarRegistro,
 
       //selector
       refListado,
