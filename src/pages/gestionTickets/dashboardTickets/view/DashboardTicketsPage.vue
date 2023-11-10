@@ -95,7 +95,79 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
+            <label class="block q-mb-sm">Filtrar por</label>
+            <q-btn-toggle
+              v-model="filtro.departamento_empleado"
+              class="toggle-button"
+              spread
+              no-caps
+              rounded
+              toggle-color="positive"
+              unelevated
+              :options="[
+                {
+                  label: 'Por departamento',
+                  value: opcionesFiltroDepartamentoEmpleado.porDepartamento,
+                },
+                {
+                  label: 'Por empleado',
+                  value: opcionesFiltroDepartamentoEmpleado.porEmpleado,
+                },
+              ]"
+            />
+          </div>
+
+          <!-- Departamento -->
+          <div
+            v-if="
+              filtro.departamento_empleado ===
+              opcionesFiltroDepartamentoEmpleado.porDepartamento
+            "
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Seleccione un departamento</label>
+            <q-select
+              v-model="filtro.departamento"
+              :options="departamentos"
+              @filter="filtrarDepartamentos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :error="!!v$.departamento.$errors.length"
+              @blur="v$.departamento.$touch"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.departamento.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <div
+            v-if="
+              filtro.departamento_empleado ===
+              opcionesFiltroDepartamentoEmpleado.porEmpleado
+            "
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block"
               >Seleccione el empleado a consultar</label
             >
