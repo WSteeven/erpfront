@@ -319,6 +319,7 @@ export default defineComponent({
         orden.autorizacion = 1
         orden.estado = 1
         orden.causa_anulacion = null
+        orden.codigo = null
         // orden.categorias = []
       } else orden.hydrate(new OrdenCompra())
     }
