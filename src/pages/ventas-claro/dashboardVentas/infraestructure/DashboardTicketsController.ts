@@ -4,6 +4,6 @@ import { endpoints } from 'config/api'
 
 export class DashboardTicketController extends TransaccionSimpleController<ReporteSubtareasRealizadas> {
   constructor() {
-    super(endpoints.dashboard_tickets)
+    super(endpoints.dashboard_ventas_claro)
   }
 }

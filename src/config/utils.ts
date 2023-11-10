@@ -450,6 +450,8 @@ export const formas_pago =[
 export const estados_activacion =[
   {label: 'PENDIENTE', value: 'PENDIENTE'},
   {label: 'APROBADO', value: 'APROBADO'},
+  {label: 'RECHAZADA', value: 'RECHAZADA'},
+
 ]
 
 export const autorizaciones = [

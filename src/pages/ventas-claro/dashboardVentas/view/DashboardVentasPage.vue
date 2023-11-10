@@ -733,4 +733,4 @@
   </q-page>
 </template>
 
-<script src="./DashboardTicketsPage.ts"></script>
+<script src="./DashboardVentasPage.ts"></script>

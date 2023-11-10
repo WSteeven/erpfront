@@ -413,7 +413,6 @@ export const endpoints = {
   bono_trimestral_cumplimiento: new Endpoint('ventas-claro/bono-trimestral-cumplimiento'),
   cobrojp:new Endpoint('ventas-claro/cobrojp'),
   pago:new Endpoint('ventas-claro/pago'),
-  reporte_ventas:new Endpoint('ventas-claro/reporte-ventas')
-
-
+  reporte_ventas:new Endpoint('ventas-claro/reporte-ventas'),
+  dashboard_ventas_claro:new Endpoint('ventas-claro/dashboard')
 }
