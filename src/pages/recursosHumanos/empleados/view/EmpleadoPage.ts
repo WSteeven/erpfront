@@ -351,7 +351,7 @@ export default defineComponent({
         )
       },
       accion: ({ entidad }) => {
-        HabilitarEmpleado(entidad.id,false)
+        HabilitarEmpleado(entidad.id,true)
         entidad.estado= true
       },
     }
@@ -366,7 +366,7 @@ export default defineComponent({
         )
       },
       accion: ({ entidad }) => {
-        HabilitarEmpleado(entidad.id,true)
+        HabilitarEmpleado(entidad.id,false)
         entidad.estado=false
       },
     }
