@@ -22,7 +22,7 @@
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
-                      v-model="filtro.fecha_inicio"
+                      v-model="dashboard.fecha_inicio"
                       mask="DD-MM-YYYY"
                       @update:model-value="consultar()"
                       today-btn
@@ -46,7 +46,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de fin</label>
             <q-input
-              v-model="filtro.fecha_fin"
+              v-model="dashboard.fecha_fin"
               :error="!!v$.fecha_fin.$errors.length"
               @blur="v$.fecha_fin.$touch"
               outlined
@@ -56,7 +56,7 @@
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
-                      v-model="filtro.fecha_fin"
+                      v-model="dashboard.fecha_fin"
                       mask="DD-MM-YYYY"
                       today-btn
                       @update:model-value="consultar()"
@@ -76,11 +76,14 @@
               </template>
             </q-input>
           </div>
+          <div class="col-12 col-md-3">
+            <q-btn class="q-mt-lg" color="primary" @click="consultar()">Consultar</q-btn>
+          </div>
 
-          <div class="col-12 col-md-6">
+          <!-- <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Seleccione el empleado a consultar</label>
             <q-select
-              v-model="filtro.empleado"
+              v-model="dashboard.empleado"
               :options="empleados"
               transition-show="scale"
               transition-hide="scale"
@@ -111,10 +114,25 @@
                 </div>
               </template>
             </q-select>
+          </div> -->
+        </div>
+      </q-card-section>
+      <q-card-section>
+        <div class="col-12 col-md-6 text-center">
+          <div class="text-subtitle2 q-mb-lg">
+            Estado actual de las ordenes de compras
+          </div>
+          <div>
+            <grafico-generico
+              v-if="ordenesPorEstado.length"
+              :data="ordenesPorEstadoBar"
+              :options="optionsPie"
+              @click="(data) => clickGrafico(data)"
+            />
           </div>
         </div>
-      </q-card-section></q-card
-    >
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 

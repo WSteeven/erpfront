@@ -102,7 +102,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
       statusLoading.activar()
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.dashboard_compras)
-      const response: AxiosResponse = await axios.get(url, data)
+      const response: AxiosResponse = await axios.post(url, data)
       console.log(response)
       return response.data.results
     } catch (error) {

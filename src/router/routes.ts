@@ -390,7 +390,7 @@ const routes: RouteRecordRaw[] = [
         path: '/preingresos-materiales',
         name: 'preingresos_materiales',
         component: () => import('pages/bodega/preingresoMateriales/view/PreingresoMaterialPage.vue'),
-        meta: { requiresAuth: true},
+        meta: { requiresAuth: true },
       },
       {
         path: '/devoluciones',
@@ -539,6 +539,12 @@ const routes: RouteRecordRaw[] = [
       /*********************************************
        * COMPRAS Y PROVEEDORES
        *********************************************/
+      {
+        path: '/dashboard-ordenes-compras',
+        name: 'dashboard_ordenes_compras',
+        component: () => import('pages/comprasProveedores/dashboard/view/DashboardCompras.vue'),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/bancos',
         name: 'bancos',
