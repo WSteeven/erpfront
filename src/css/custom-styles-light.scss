@@ -108,6 +108,11 @@
     background-color: #fff;
   }
 
+  .toggle-button-grey {
+    border: 1px solid $grey;
+    background-color: transparent;
+  }
+
   // Tabla
   .q-table__top,
   thead tr:first-child th {
