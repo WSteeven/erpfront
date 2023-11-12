@@ -453,7 +453,11 @@ export const estados_activacion =[
   {label: 'RECHAZADA', value: 'RECHAZADA'},
 
 ]
-
+export const estadosVentas = {
+  APROBADO: 'APROBADO',
+  RECHAZADO: 'RECHAZADO',
+  PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
+}
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO

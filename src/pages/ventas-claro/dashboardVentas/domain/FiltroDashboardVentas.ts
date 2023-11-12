@@ -1,14 +1,14 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class FiltroDashboardTicket extends EntidadAuditable {
+export class FiltroDashboardVentas extends EntidadAuditable {
   fecha_inicio: string | null
   fecha_fin: string | null
-  empleado: number | null
+  vendedor: number | null
 
   constructor() {
     super()
     this.fecha_inicio = null
     this.fecha_fin = null
-    this.empleado = null
+    this.vendedor = null
   }
 }

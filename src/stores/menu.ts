@@ -750,6 +750,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_ventas_claro'),
       children: [
         {
+          title: 'Dashboard',
+          link: 'dashboard-ventas',
+          icon: 'bi-circle',
+          can: true //store.can('puede.ver.dashboard_venta'),
+        },
+        {
           title: 'Productos',
           link: 'producto-ventas',
           icon: 'bi-circle',
@@ -813,7 +819,6 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-circle',
               can: store.can('puede.ver.reporte_venta'),
             },
-
           ]
         },
       ]

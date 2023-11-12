@@ -1124,6 +1124,13 @@ const routes: RouteRecordRaw[] = [
           import('pages/ventas-claro/reporte/pagos/view/PagoPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/dashboard-ventas',
+        name: 'dashboard_ventas',
+        component: () =>
+          import('pages/ventas-claro/dashboardVentas/view/DashboardVentasPage.vue'),
+        meta: { requiresAuth: false },
+      },
 
     {
         path: '/reporte_venta',

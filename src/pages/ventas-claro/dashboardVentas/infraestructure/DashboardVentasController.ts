@@ -2,7 +2,7 @@ import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/in
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { endpoints } from 'config/api'
 
-export class DashboardTicketController extends TransaccionSimpleController<ReporteSubtareasRealizadas> {
+export class DashboardVentasController extends TransaccionSimpleController<ReporteSubtareasRealizadas> {
   constructor() {
     super(endpoints.dashboard_ventas_claro)
   }

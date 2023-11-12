@@ -2,7 +2,7 @@
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { accionesTabla, departamentos, tiposJornadas } from 'config/utils'
+import { accionesTabla, tiposJornadas } from 'config/utils'
 import { computed, defineComponent, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -17,22 +17,18 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { Bar, Pie } from 'vue-chartjs'
 
 // Logica y controladores
-import { ComportamientoModalesVentasAsignado } from 'pages/gestionVentas/ventasAsignados/application/ComportamientoModalesVentasAsignado'
-import { configuracionColumnasVentas } from 'pages/gestionVentas/ventas/domain/configuracionColumnasVentas'
+
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { useBotonesTablaVentas } from 'pages/gestionVentas/ventas/application/BotonesTablaVentas'
 import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { DashboardVentasController } from '../infraestructure/DashboardVentasController'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { FiltroDashboardVentas } from '../domain/FiltroReporteMaterial'
-import { estadosVentas } from 'config/ventas.utils'
-import { useVentasStore } from 'stores/venta'
 import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedoresController'
 import { Ventas } from 'pages/ventas-claro/ventas/domain/Ventas'
+import { DashboardVentasController } from '../infraestructure/DashboardVentasController'
+import { FiltroDashboardVentas } from '../domain/FiltroDashboardVentas'
+import { ComportamientoModalesVentas } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentas'
+import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
@@ -40,7 +36,7 @@ export default defineComponent({
     /***********
     * Stores
     ***********/
-    const ventaStore = useVentasStore()
+   // const ventaStore = ventaStore()
 
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
@@ -64,9 +60,9 @@ export default defineComponent({
     const filtro = reactive(new FiltroDashboardVentas())
     const dashboardVentasController = new DashboardVentasController()
     const cargando = new StatusEssentialLoading()
-    const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado)
-    const modales = new ComportamientoModalesVentasAsignado()
-    const empleadoResponsableDepartamento = ref()
+    const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.vendedor)
+    const modales = new ComportamientoModalesVentas()
+    const vendedorResponsableDepartamento = ref()
     const esResponsableDepartamento = ref(false)
     const ventasEmpleadoResponsable = ref([])
     const tabsVentas = ref('creados')
@@ -97,8 +93,8 @@ export default defineComponent({
     }
 
     const opcionesEmpleado = {
-      empleadoGrafico: 'empleadoGrafico',
-      empleadoListado: 'empleadoListado',
+      vendedorGrafico: 'vendedorGrafico',
+      vendedorListado: 'vendedorListado',
     }
 
     const categoriaGraficosEmpleado = {
@@ -108,7 +104,7 @@ export default defineComponent({
     }
 
     const tabsDepartamento = ref(opcionesDepartamento.departamentoGrafico)
-    const tabsEmpleado = ref(opcionesEmpleado.empleadoGrafico)
+    const tabsEmpleado = ref(opcionesEmpleado.vendedorGrafico)
 
     const optionsPie = {
       responsive: true,
@@ -156,7 +152,7 @@ export default defineComponent({
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
-      empleado: { required },
+      vendedor: { required },
     }
 
     const v$ = useVuelidate(reglas, filtro)
@@ -164,29 +160,29 @@ export default defineComponent({
     /***************
      * Botones tabla
      ***************/
-    const { btnSeguimiento } = useBotonesTablaVentas(mixin, modales)
+    //const { btnSeguimiento } = useBotonesTablaVentas(mixin, modales)
     // setFiltrarVentas(filtrarTrabajoAsignado)
 
-    const botonVer: CustomActionTable = {
+   /* const botonVer: CustomActionTable = {
       titulo: 'Más detalles',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
         ventaStore.filaVentas = entidad
         modales.abrirModalEntidad('DetalleCompletoVentas')
       },
-    }
+    }*/
 
     /*********
    * Filtros
    **********/
-    const empleados = ref([])
-    const empleadosResponsables = ref([])
+    const vendedores = ref([])
+    const vendedoresResponsables = ref([])
     function filtrarEmpleados(val, update) {
-      if (val === '') update(() => empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
+      if (val === '') update(() => vendedores.value = listadosAuxiliares.vendedores.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
 
       update(() => {
         const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+        vendedores.value = listadosAuxiliares.vendedores.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
       })
     }
 
@@ -198,7 +194,7 @@ export default defineComponent({
         try {
           cargando.activar()
 
-          const { result } = await dashboardVentasController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado })
+          const { result } = await dashboardVentasController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, vendedor_id: filtro.vendedor })
           // await obtenerResponsables()
 
           // creados.value = result.creados
@@ -208,7 +204,7 @@ export default defineComponent({
           cantVentasPendientas.value = result.cantidad_ventas_por_instalar
           cantVentasRechazadas.value = result.cantidad_ventas_por_rechazada
 
-          // Grafico empleado consultado
+          // Grafico vendedor consultado
           ventasPorEstado.value = result.ventasPorEstado
           const graficoVentasPorEstado = contarVentasEmpleado(result.ventasPorEstado)
           const labels3 = graficoVentasPorEstado.map((item) => item.estado)
@@ -238,40 +234,18 @@ export default defineComponent({
       }
     }
 
-    function mapearColor(estadoVentas: keyof typeof estadosVentas) {
-      switch (estadoVentas) {
-        case estadosVentas.ASIGNADO: return '#9fa8da'
-        case estadosVentas.PENDIENTE: return '#9fa8da'
-        case estadosVentas.REASIGNADO: return '#78909c'
-        case estadosVentas.EJECUTANDO: return '#ffc107'
-        case estadosVentas.PAUSADO: return '#616161'
-        case estadosVentas.FINALIZADO_SOLUCIONADO: return '#8bc34a'
-        case estadosVentas.FINALIZADO_SIN_SOLUCION: return '#9ba98c'
-        case estadosVentas.FINALIZADO: return '#8bc34a'
-        case estadosVentas.CANCELADO: return '#c31d25'
-      }
+    function mapearColor(estadoVentas:string) {
+      const coloresPorEstado = {
+        ['APROBADO']: '#9fa8da',
+        ['RECHAZADO']: '#9fa8da',
+        ['PENDIENTE']: '#78909c',
+      };
+      return  coloresPorEstado[estadoVentas]
     }
 
-    function mapearColorDepartamentos(estadoVentas: keyof typeof estadosVentas) {
-      switch (estadoVentas) {
-        case departamentos.xtrim_cuenca: return '#9fa8da'
-        case departamentos.medico: return '#78909c'
-        case departamentos.activos_fijos: return '#ffc107'
-        case departamentos.gerencia: return '#616161'
-        case departamentos.proyectos: return '#8bc34a'
-        case departamentos.recursos_humanos: return '#bcafe7'
-        case departamentos.tecnico: return '#987795'
-        case departamentos.contabilidad: return '#96c4e7'
-        case departamentos.informatica: return '#c4becb'
-        case departamentos.bodega: return '#eb548c'
-        case departamentos.sso: return '#ab8ba7'
-        case departamentos.vehiculos: return '#a98d7c'
-        case departamentos.comercial: return '#aaa698'
-      }
-    }
 
     function ordenarEmpleados() {
-      empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+      vendedores.value.sort((a: Vendedores, b: Vendedores) => ordernarListaString(a.empleado_info!, b.empleado_info!))
     }
 
     const ventasPorEstadoListado = ref([])
@@ -281,17 +255,17 @@ export default defineComponent({
         switch (categoriaGrafico) {
           case categoriaGraficosEmpleado.ESTADO_ACTUAL:
             ventasPorEstadoListado.value = ventasPorEstado.value.filter((venta: Ventas) => venta.estado === label)
-            // tabsEmpleado.value = opcionesEmpleado.empleadoListado
+            // tabsEmpleado.value = opcionesEmpleado.vendedorListado
             break
           case categoriaGraficosEmpleado.CREADOS_A_DEPARTAMENTOS:
             ventasPorEstadoListado.value = cantidadesVentasSolicitadosPorDepartamento.value.filter((venta: Ventas) => venta.departamento_responsable === label)
-            // tabsEmpleado.value = opcionesEmpleado.empleadoListado
+            // tabsEmpleado.value = opcionesEmpleado.vendedorListado
             break
           case categoriaGraficosEmpleado.ASIGNADOS_POR_DEPARTAMENTOS:
             ventasPorEstadoListado.value = cantidadesVentasRecibidosPorDepartamento.value.filter((venta: Ventas) => venta.departamento_solicitante === label)
             break
         }
-        tabsEmpleado.value = opcionesEmpleado.empleadoListado
+        tabsEmpleado.value = opcionesEmpleado.vendedorListado
       }
     }*/
 
@@ -398,9 +372,8 @@ export default defineComponent({
       tabsVentas,
       ordenarEmpleados,
       filtrarEmpleados,
-      estadosVentas,
-      empleados,
-      empleadosResponsables,
+      vendedores,
+      vendedoresResponsables,
      // ventasConSolucion,
       cantVentasCreados,
     /*  cantVentasCreadosParaMi,
@@ -417,7 +390,6 @@ export default defineComponent({
       cantVentasPausados,
       cantVentasFinalizadosSolucionados,
       cantVentasFinalizadosSinSolucion,*/
-      configuracionColumnasVentas,
       v$,
       mixin,
       listar,
@@ -429,7 +401,7 @@ export default defineComponent({
       mostrarTitulosSeccion,
       accionesTabla,
       modales,
-      empleadoResponsableDepartamento,
+      vendedorResponsableDepartamento,
       ventasEmpleadoResponsable,
       esResponsableDepartamento,
       // Configuracion columnas
@@ -461,8 +433,6 @@ export default defineComponent({
       ventasPorDepartamentoEstadoFinalizadoSinSolucionBar,
       ventasPorDepartamentoEstadoCalificadoBar,*/
       // botones
-      botonVer,
-      btnSeguimiento,
       ventasPorEstadoListado,
     }
   },
